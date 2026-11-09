@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
 import { numberTag } from '../../lib/format';
 import { Link } from 'react-router-dom';
-import { BarChart3, Globe2, History } from 'lucide-react';
+import { BarChart3, Globe2, History, ShoppingBasket } from 'lucide-react';
+import { useHomePriceSummary } from '../../lib/homePriceSummary';
 import { homeScopeCountriesCount } from '../../lib/homeWorkbench';
 import { compactIndicatorCount, historyYears, startYear } from '../../lib/homeStats';
 import { pluralRu, useWorldCountries } from '../../lib/worldApi';
-import { russiaCategoriesPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../../lib/sitePaths';
+import { regionHubPath, russiaCategoriesPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
 import CountUp from './CountUp';
 import '../../styles/shell.css';
 import '../../styles/z3-home.css';
+import '../../styles/r9a-home.css';
 
 const groupDigits = (locale) => {
   const formatter = new Intl.NumberFormat(numberTag(locale));
@@ -43,6 +45,8 @@ export default function HomeDataScope() {
   const t = useT();
   const { locale } = useLocale();
   const countriesQ = useWorldCountries();
+  // R9-A: четвёртое число: сколько цен и тарифов (только для русской версии: в английской нет раздела цен регионов).
+  const priceTotal = useHomePriceSummary().data?.total || 0;
   const data = countriesQ.data;
   const numberFormat = useMemo(() => groupDigits(locale), [locale]);
 
@@ -74,7 +78,7 @@ export default function HomeDataScope() {
           {t('home.scope.title')}
         </h2>
 
-        <dl className="fe-scope-stats">
+        <dl className={`fe-scope-stats${priceTotal && !isEn ? ' fe-scope-stats--four' : ''}`}>
           <Stat
             to={isEn ? worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT) : russiaCategoriesPath()}
             label={t('w6b.scope.indicators')}
@@ -100,6 +104,11 @@ export default function HomeDataScope() {
               </>
             ) : dash}
           </Stat>
+          {priceTotal && !isEn ? (
+            <Stat to={regionHubPath()} label={t('r9a.scope.prices')} icon={ShoppingBasket}>
+              <CountUp value={priceTotal} format={numberFormat} group="scope" />
+            </Stat>
+          ) : null}
         </dl>
 
       </div>

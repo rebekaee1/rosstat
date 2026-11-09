@@ -13,10 +13,11 @@ import { useDockSuppressed } from '../lib/dockSuppress';
 import '../styles/k3-shell.css';
 
 const ITEMS = [
-  { id: 'countries', to: '/#countries', labelKey: 'w6b.nav.countriesShort', icon: Globe2 },
   // Круг 3 (R3-A): цены регионов и курсы ЦБ в панели; «Сравнение» и «Прогнозы» остались в «Ещё».
+  // Круг 9 (R9-A): «Цены» и «Валюты» первыми: с ними приходят из поиска («цены на продукты в регионах»).
   { id: 'region-prices', to: regionHubPath(), labelKey: 'r3a.dock.prices', icon: ShoppingBasket },
   { id: 'currencies', to: RATES_TO, labelKey: 'z2.nav.ratesShort', icon: Coins },
+  { id: 'countries', to: '/#countries', labelKey: 'w6b.nav.countriesShort', icon: Globe2 },
   { id: 'world-rating', to: WORLD_RATING_TO, labelKey: 'w6b.nav.ratingShort', icon: BarChart3 },
 ];
 
