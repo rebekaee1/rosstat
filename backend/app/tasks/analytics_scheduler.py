@@ -192,6 +192,23 @@ async def _pwa_install_lines(report_date: date) -> list[str]:
     ]
 
 
+async def _research_download_lines(report_date: date) -> list[str]:
+    """Скачивания исследований за день по источникам (09.11.2026: «трекерить, сколько с сайта загрузили»)."""
+    from app.api.research import downloads_by_source
+    from app.database import async_session
+
+    async with async_session() as db:
+        by = await downloads_by_source(db, report_date)
+    site, bot, tg, direct = (by.get(k, 0) for k in ("site", "bot", "tg", "direct"))
+    line = f"📚 Скачали исследования вчера: {site + bot + tg} (с сайта {site}"
+    if bot or tg:
+        line += f", из бота {bot}, из канала {tg}"
+    line += ")"
+    if direct:
+        line += f"; ещё {direct} без перехода с сайта — похоже на роботов, не считаю"
+    return [line]
+
+
 async def _metrika_goal_lines(report_date: date) -> list[str]:
     """Достижения всех целей счётчика за указанный день (для дайджеста CTA).
 
@@ -337,6 +354,10 @@ async def telegram_daily_digest_job() -> None:
         parts += await _pwa_install_lines(yesterday)
     except Exception:
         logger.warning("Telegram digest: PWA installs failed", exc_info=True)
+    try:
+        parts += await _research_download_lines(yesterday)
+    except Exception:  # noqa: BLE001 - строка дайджеста не должна ронять дайджест
+        logger.warning("Telegram digest: research downloads failed", exc_info=True)
     if settings.analytics_enabled and settings.yandex_metrika_read_token:
         try:
             parts += await _metrika_goal_lines(yesterday)
