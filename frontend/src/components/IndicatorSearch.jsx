@@ -35,7 +35,8 @@ import '../styles/z8-tools.css';
 import '../styles/k8-tools.css';
 import '../styles/z4s-search.css';
 import '../styles/r6a-search.css';
-import { labourSuggestions } from './searchLabourHints';
+import '../styles/r7a-search.css';
+import { labourNoteKey, labourSuggestions, localSuggestions } from './searchLabourHints';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
@@ -767,23 +768,29 @@ export default function IndicatorSearch({
                           : (
                             <div className="text-center" data-testid="search-nothing">
                               <EmptyState variant="no-results" size={80} title={t('search.nothingFound', { query: qTrim })} />
+                              {(() => {
+                                const regionName = globalSearch.data?.intent?.region_name;
+                                const labour = labourSuggestions(qTrim, t, regionName);
+                                const items = labour.length > 0 ? labour : localSuggestions(regionName, t);
+                                if (items.length === 0) return null;
+                                return (
+                                  <div className="r6a-labour r7a-local" data-testid="search-labour-hints">
+                                    <p className="r6a-labour__note">{labour.length > 0 ? t(labourNoteKey(qTrim)) : t('r7a.search.localNote', { region: regionName })}</p>
+                                    <ul className="r6a-labour__chips">
+                                      {items.map((example) => (
+                                        <li key={example}>
+                                          <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                );
+                              })()}
                               <ul className="mx-auto mt-3 max-w-sm space-y-1 text-left text-sm text-text-secondary">
                                 <li>{t('shell.search.tip.spelling')}</li>
                                 <li>{t('shell.search.tip.short')}</li>
                                 <li>{t('shell.search.tip.place')}</li>
                               </ul>
-                              {labourSuggestions(qTrim, t).length > 0 && (
-                                <div className="r6a-labour" data-testid="search-labour-hints">
-                                  <p className="r6a-labour__note">{t('r6a.search.labourNote')}</p>
-                                  <ul className="r6a-labour__chips">
-                                    {labourSuggestions(qTrim, t).map((example) => (
-                                      <li key={example}>
-                                        <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
                               <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
                               {/* R2-Z4: один ряд подсказок без повторов: курсы валют и домашние темы вместе, без второго заголовка. */}
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">

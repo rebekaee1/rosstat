@@ -14,9 +14,27 @@ export function placeFromQuery(query) {
   return rest.slice(-2).join(' ');
 }
 
-export function labourSuggestions(query, t) {
+// R7-A: МРОТ — одна федеральная величина, ряда по региону нет; говорим это прямо, а не про «профессии».
+const MROT_RE = /(мрот|минимальн[а-я]* (зарплат|заработн|оплат)|minimum wage)/i;
+export function isMrotQuery(query) {
+  return MROT_RE.test(String(query || ''));
+}
+
+// R7-A: пустая выдача по региону (backend назвал регион) — ближайшие ряды этого региона, а не общий список.
+const LOCAL_KEYS = ['r7a.local.cpi', 'r7a.local.wage', 'r7a.local.unemployment', 'r7a.local.population', 'r7a.local.prices', 'r7a.local.housing'];
+export function localSuggestions(regionName, t) {
+  const place = String(regionName || '').trim();
+  if (!place) return [];
+  return LOCAL_KEYS.map((key) => `${t(key)} ${place}`);
+}
+
+export function labourNoteKey(query) {
+  return isMrotQuery(query) ? 'r7a.search.mrotNote' : 'r6a.search.labourNote';
+}
+
+export function labourSuggestions(query, t, regionName) {
   if (!isLabourQuery(query)) return [];
-  const place = placeFromQuery(query);
+  const place = String(regionName || '').trim() || placeFromQuery(query).replace(/(^|\s)([а-я])/g, (m, a, b) => a + b.toUpperCase());
   return ['r6a.labour.wage', 'r6a.labour.unemployment', 'r6a.labour.living', 'r6a.labour.pension', 'r6a.labour.income']
     .map((key) => [String(t(key)), place].filter(Boolean).join(' '));
 }

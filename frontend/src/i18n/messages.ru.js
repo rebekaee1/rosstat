@@ -3990,4 +3990,12 @@ export default {
   'r7d.less': 'Свернуть',
   'r7d.jump': 'Индексы цен — ниже ↓',
   'r7d.jumpHub': 'Индексы цен →',
+  'r7a.search.mrotNote': 'МРОТ один на всю страну, по регионам его нет. Рядом есть показатели вашего региона.',
+  'r7a.search.localNote': 'Такого ряда по региону «{region}» у нас нет. Есть другие:',
+  'r7a.local.cpi': 'Инфляция',
+  'r7a.local.wage': 'Зарплата',
+  'r7a.local.unemployment': 'Безработица',
+  'r7a.local.population': 'Население',
+  'r7a.local.prices': 'Цены на продукты',
+  'r7a.local.housing': 'Цены на жильё',
 };
