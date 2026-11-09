@@ -1,0 +1,25 @@
+/* R9-C: рейтинг регионов по месячной цене — «ваш регион», типичная цена, отличие и годовое изменение */
+.r9c-mine { display: flex; flex-direction: column; gap: 2px; flex-basis: 100%; padding: 10px 14px 6px; border-radius: 16px; background: rgba(60, 78, 110, 0.05); }
+.r9c-mine .r7c-rate-mine__sum { font-size: 20px; font-weight: 700; min-height: 32px; }
+.r9c-mine__cmp { font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }
+.r9c-mine__link { margin-top: 2px; font-size: 13px; font-weight: 600; color: #1E3A6E; text-decoration: none; }
+.r9c-mine__link:hover { color: var(--color-champagne-ink, #8A6A2A); }
+
+.r9c-typical__sub { margin-top: 2px; font-size: 12px; line-height: 1.3; color: var(--color-text-secondary); }
+.r9c-tile-link { color: inherit; text-decoration: none; }
+.r9c-tile-link:hover { color: var(--color-champagne-ink, #8A6A2A); }
+
+.r3b-rate-bar { position: relative; }
+.r9c-tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 0.5px rgba(30, 58, 110, 0.35); }
+
+.r9c-yoy { display: block; margin-top: 3px; font-size: 11.5px; line-height: 1.2; color: var(--color-text-secondary); }
+.r9c-dev { display: block; margin-top: 1px; font-size: 11.5px; line-height: 1.2; font-weight: 500; color: var(--color-text-secondary); }
+
+.r9c-mine-active { background: rgba(176, 138, 58, 0.1); }
+
+.r9c-chip-first { order: 1; }
+.r9c-chip-last { order: 2; }
+.r7c-rate-tiles__year.r9c-typical { padding-block: 14px; }
+:root:root .r9c-typical > div { display: block; margin-left: 0; }
+.r3b-rate-box thead th button { white-space: nowrap; }
+.r9c-missing { margin: -12px 0 20px; padding: 0 4px; font-size: 13px; line-height: 1.5; color: var(--color-text-secondary); }

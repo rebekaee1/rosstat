@@ -12,6 +12,7 @@ import { Plus, Minus, Maximize2, X, ArrowRight, GitCompare } from 'lucide-react'
 import mapData from '../lib/regionsMap.json';
 import { formatRegionValue } from '../lib/regionsApi';
 import { unitLabel } from '../lib/regionUi';
+import { priceUnitLabel } from '../lib/r9cPriceUnit';
 import { colorsBySlug, valueExtent, MAP_SCALE, MAP_NO_DATA } from '../lib/regionsMapColors';
 import { bubbleLayout } from '../lib/regionsBubbles';
 import {
@@ -295,7 +296,7 @@ export default function RegionsMap({
 
   const hoverValue = hover && valuesBySlug ? valuesBySlug.get(hover.slug) : null;
   const { k, tx, ty } = view;
-  const unitText = unitLabel(unit) || unit;
+  const unitText = priceUnitLabel(unit) || unitLabel(unit) || unit;
 
   // Compact-тултип: одна строка «имя + значение», прижатая внутрь квадрата —
   // контейнер витрины overflow-hidden, обычный перевод на -50% резал бы края.

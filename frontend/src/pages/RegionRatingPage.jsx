@@ -4,7 +4,8 @@ import { ArrowDown, ArrowUp, Trophy, BarChart3, GitCompare } from 'lucide-react'
 import useDocumentMeta from '../lib/useMeta';
 import { useRegionsHeatmap } from '../lib/regionsApi';
 import { formatRegionNumber, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
-import R4YourRegion from '../components/regions/R4YourRegion';
+import { priceUnitLabel } from '../lib/r9cPriceUnit';
+import { medianOf } from '../components/regions/R4YourRegion';
 import RegionsMap from '../components/RegionsMap';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
@@ -25,6 +26,17 @@ import '../styles/regions-w4.css';
 import '../styles/k6-country.css';
 import '../styles/r3b-regions.css';
 import '../styles/r7c-regions.css';
+import '../styles/r9c-price-rating.css';
+
+/** «Средняя цена: мука, рублей за кг» → «Средняя цена: мука»: единица стоит в колонке, в заголовке она лишняя. */
+function cleanPriceName(name, unit) {
+  const n = String(name || '');
+  if (unit) {
+    const tail = `, ${unit}`;
+    if (n.toLowerCase().endsWith(tail.toLowerCase())) return n.slice(0, -tail.length);
+  }
+  return n.replace(/,\s*(рублей|руб\.?|rubles?|RUB)\b[^,]*$/i, '');
+}
 
 export default function RegionRatingPage() {
   const t = useT();
@@ -33,7 +45,9 @@ export default function RegionRatingPage() {
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsHeatmap(code);
   const achievement = Boolean(data?.rank_as_achievement);
-  const serverSort = data?.default_sort === 'asc' ? 'asc' : 'desc';
+  const isPrice = data?.month != null;
+  // Цены: владельцу точки важно «где дешевле» — по умолчанию сначала дешёвые.
+  const serverSort = isPrice ? 'asc' : (data?.default_sort === 'asc' ? 'asc' : 'desc');
   // null = ещё не трогали переключатель → берём направление с сервера.
   // Выбор привязан к коду показателя, поэтому при смене показателя сбрасывается сам.
   const [sortState, setSortState] = useState({ code, value: null });
@@ -52,10 +66,10 @@ export default function RegionRatingPage() {
   }, [data, sortDirection]);
 
   // «Мой регион» общий с хабом: выбор помнится в браузере.
-  const [mine, setMine] = useState(() => { try { return localStorage.getItem('fe-my-region') || ''; } catch { return ''; } });
+  const [mine, setMine] = useState(() => { try { return localStorage.getItem('fe-my-region') || localStorage.getItem('r4a-my-region') || ''; } catch { return ''; } });
   const pickMine = (slug) => {
     setMine(slug);
-    try { if (slug) localStorage.setItem('fe-my-region', slug); else localStorage.removeItem('fe-my-region'); } catch { /* без хранилища работает так же */ }
+    try { if (slug) { localStorage.setItem('fe-my-region', slug); localStorage.setItem('r4a-my-region', slug); } else { localStorage.removeItem('fe-my-region'); localStorage.removeItem('r4a-my-region'); } } catch { /* без хранилища работает так же */ }
     if (slug && typeof document !== 'undefined') {
       window.requestAnimationFrame(() => document.getElementById(`r7c-row-${slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
     }
@@ -63,10 +77,25 @@ export default function RegionRatingPage() {
   const mineRow = ranked.find((r) => r.slug === mine) || null;
 
   // Цены ЕМИСС (месячный ряд): места не показываем — только значения и сравнение.
-  const isPrice = data?.month != null;
+  const period = isPrice ? (data.period_label || String(data.year)) : null;
+  const rawName = data?.indicator?.name || '';
+  const shortName = isPrice ? cleanPriceName(rawName, data.indicator.unit) : rawName;
+  const val = (r) => Number(r.raw ?? r.value);
+  const stats = useMemo(() => {
+    if (!isPrice || !ranked.length) return null;
+    const nums = ranked.map(val);
+    const med = medianOf(nums);
+    const lo = ranked.reduce((a, b) => (val(b) < val(a) ? b : a));
+    const hi = ranked.reduce((a, b) => (val(b) > val(a) ? b : a));
+    return { med, lo, hi, ratio: val(lo) > 0 ? val(hi) / val(lo) : null };
+  }, [ranked, isPrice]);
+  const pUnit = isPrice ? priceUnitLabel(data.indicator.unit) : '';
+  const fmtU = (v) => (pUnit ? `${formatRegionNumber(v, data.indicator.unit, locale)}\u00a0${pUnit.replace(/ /g, '\u00a0')}` : formatRegionWithUnit(v, data.indicator.unit, locale));
+  const num1 = (x) => x.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 });
+  const signed = (pct) => `${pct > 0 ? '+' : pct < 0 ? '−' : ''}${num1(Math.abs(pct))}${locale === 'en' ? '%' : '\u00a0%'}`;
   const maxAbs =Math.max(1e-9, ...ranked.map((r) => Math.abs(Number(r.raw ?? r.value) || 0)));
-  const top = ranked[0];
-  const bottom = ranked[ranked.length - 1];
+  const top = isPrice && stats ? stats.lo : ranked[0];
+  const bottom = isPrice && stats ? stats.hi : ranked[ranked.length - 1];
   const mapValues = useMemo(() => {
     if (!data?.values) return null;
     return new Map(data.values.map((v) => [v.slug, v.raw ?? v.value]));
@@ -76,19 +105,21 @@ export default function RegionRatingPage() {
     return Object.fromEntries(data.values.map((v) => [v.slug, v.name]));
   }, [data]);
 
-  const bestLabel = achievement ? t('regions.rating.best') : t('regions.rating.highest');
-  const worstLabel = achievement ? t('regions.rating.worst') : t('regions.rating.lowest');
-  const listTitle = achievement
+  const bestLabel = isPrice ? t('r9c.price.lowest') : (achievement ? t('regions.rating.best') : t('regions.rating.highest'));
+  const worstLabel = isPrice ? t('r9c.price.highest') : (achievement ? t('regions.rating.worst') : t('regions.rating.lowest'));
+  const listTitle = isPrice ? t('r9c.price.list', { n: ranked.length }) : achievement
     ? t('regions.rating.listAchievement', { n: ranked.length })
     : t('regions.rating.listNeutral', { n: ranked.length });
   const tableCol = achievement ? t('regions.rating.place') : '№';
 
   useDocumentMeta(data ? {
-    title: achievement
+    title: isPrice
+      ? t('r9c.price.title', { name: shortName, period })
+      : achievement
       ? t('regions.rating.titleAchievement', { name: data.indicator.name, year: data.year })
       : t('regions.rating.titleNeutral', { name: data.indicator.name, year: data.year }),
     description:
-      `${data.indicator.name} (${data.year}): `
+      `${shortName} (${period || data.year}): `
       + `${ranked.length}.`
       + (top ? ` ${bestLabel} — ${top.name}.` : ''),
     path: regionRatingPath(code),
@@ -98,7 +129,7 @@ export default function RegionRatingPage() {
     <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-12 sm:pb-16">
       <Breadcrumbs
         items={regionRatingTrail(
-          achievement ? t('w4.rating.crumb', { name: data?.indicator?.name || '…' }) : (data?.indicator?.name || '…'),
+          achievement ? t('w4.rating.crumb', { name: data?.indicator?.name || '…' }) : (shortName || '…'),
           code,
         )}
       />
@@ -131,24 +162,29 @@ export default function RegionRatingPage() {
           <p className="mb-2 text-sm font-medium text-champagne-ink">
             {achievement ? t('regions.rating.eyebrowAchievement') : t('regions.rating.eyebrowNeutral')}
             {' — '}
-            {data.year}
-            {' '}
-            {t('common.year').toLowerCase()}
+            {isPrice ? period : `${data.year} ${t('common.year').toLowerCase()}`}
           </p>
           <h1 className="r3b-rate-h1 font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
-            {data.indicator.name}
+            {shortName}
             :
             {' '}
-            {achievement ? t('regions.rating.h1Achievement') : t('regions.rating.h1Neutral')}
+            {isPrice ? t('r9c.price.h1') : (achievement ? t('regions.rating.h1Achievement') : t('regions.rating.h1Neutral'))}
           </h1>
           <p className="r7c-rate-lead mb-5 max-w-3xl text-[15px] leading-relaxed text-text-secondary">
-            {t('w4.rating.lead', {
+            {isPrice && stats ? t('r9c.price.lead', {
+              n: ranked.length,
+              period,
+              lo: fmtU(val(stats.lo)),
+              loRegion: stats.lo.name,
+              hi: fmtU(val(stats.hi)),
+              hiRegion: stats.hi.name,
+            }) : t('w4.rating.lead', {
               n: ranked.length,
               name: data.indicator.name,
               year: data.year,
               best: bestLabel,
               region: top.name,
-              value: formatRegionWithUnit(top.raw ?? top.value, data.indicator.unit, locale),
+              value: fmtU(top.raw ?? top.value),
             })}
           </p>
 
@@ -156,15 +192,15 @@ export default function RegionRatingPage() {
             <span className="mr-1 text-sm text-text-secondary">
               {t('regions.rating.sort')}
             </span>
-            <Chip active={sortDirection === 'desc'} onClick={() => setSortOverride('desc')}>
-              {t('regions.rating.sortDesc')}
+            <Chip active={sortDirection === 'desc'} className={isPrice ? 'r9c-chip-last' : ''} onClick={() => setSortOverride('desc')}>
+              {t(isPrice ? 'r9c.price.sortDesc' : 'regions.rating.sortDesc')}
             </Chip>
-            <Chip active={sortDirection === 'asc'} onClick={() => setSortOverride('asc')}>
-              {t('regions.rating.sortAsc')}
+            <Chip active={sortDirection === 'asc'} className={isPrice ? 'r9c-chip-first' : ''} onClick={() => setSortOverride('asc')}>
+              {t(isPrice ? 'r9c.price.sortAsc' : 'regions.rating.sortAsc')}
             </Chip>
           </div>
 
-          {!isPrice && (
+          {(
             <div className="r7c-rate-mine" data-testid="rating-mine">
               <label className="r7c-mine">
                 <span className="r7c-mine__label">{t('r7c.rank.mineLabel')}</span>
@@ -173,11 +209,31 @@ export default function RegionRatingPage() {
                   {[...ranked].sort((a, b) => a.name.localeCompare(b.name, locale)).map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>)}
                 </select>
               </label>
-              {mineRow && (
+              {mineRow && isPrice && stats && (
+                <div className="r9c-mine" data-testid="r9c-mine">
+                  <a href="#r7c-mine-row" className="r7c-rate-mine__sum fe-num" onClick={(e) => { e.preventDefault(); document.getElementById(`r7c-row-${mineRow.slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}>
+                    {fmtU(val(mineRow))}
+                  </a>
+                  <span className="r9c-mine__cmp">
+                    {(() => {
+                      const diff = stats.med ? ((val(mineRow) - stats.med) / stats.med) * 100 : 0;
+                      if (Math.abs(diff) < 0.5) return t('r4a.your.typical');
+                      return t(diff > 0 ? 'r9c.price.more' : 'r9c.price.less', { pct: num1(Math.abs(diff)), typical: fmtU(stats.med) });
+                    })()}
+                  </span>
+                  <span className="r9c-mine__cmp">
+                    {t('r9c.price.cheaperThan', { n: ranked.filter((r) => val(r) > val(mineRow)).length, total: ranked.length })}
+                  </span>
+                  <Link to={regionIndicatorPath(mineRow.slug, code)} className="r9c-mine__link fe-tap-inline">
+                    {t('r9c.price.history')}
+                  </Link>
+                </div>
+              )}
+              {mineRow && !isPrice && (
                 <a href="#r7c-mine-row" className="r7c-rate-mine__sum fe-num" onClick={(e) => { e.preventDefault(); document.getElementById(`r7c-row-${mineRow.slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}>
                   {t('r7c.rank.mineSub', { rank: mineRow.rank, n: ranked.length })}
                   {', '}
-                  {formatRegionWithUnit(mineRow.raw ?? mineRow.value, data.indicator.unit, locale)}
+                  {fmtU(mineRow.raw ?? mineRow.value)}
                 </a>
               )}
             </div>
@@ -189,31 +245,37 @@ export default function RegionRatingPage() {
                 {achievement && <Trophy size={13} className="text-champagne-ink" aria-hidden="true" />}
                 {bestLabel}
               </div>
-              <div className="mt-1 font-semibold text-text-primary">{top.name}</div>
+              <div className="mt-1 font-semibold text-text-primary">
+                {isPrice ? <Link to={regionIndicatorPath(top.slug, code)} className="r9c-tile-link">{top.name}</Link> : top.name}
+              </div>
               <div className="fe-num text-sm text-text-secondary">
-                {formatRegionWithUnit(top.raw ?? top.value, data.indicator.unit, locale)}
+                {fmtU(top.raw ?? top.value)}
               </div>
             </div>
             <div className="k6-place k6-place--last rounded-2xl p-4 fe-glass-lite">
               <div className="text-xs font-medium text-text-secondary">{worstLabel}</div>
-              <div className="mt-1 font-semibold text-text-primary">{bottom.name}</div>
+              <div className="mt-1 font-semibold text-text-primary">
+                {isPrice ? <Link to={regionIndicatorPath(bottom.slug, code)} className="r9c-tile-link">{bottom.name}</Link> : bottom.name}
+              </div>
               <div className="fe-num text-sm text-text-secondary">
-                {formatRegionWithUnit(bottom.raw ?? bottom.value, data.indicator.unit, locale)}
+                {fmtU(bottom.raw ?? bottom.value)}
               </div>
             </div>
-            <div className="r7c-rate-tiles__year rounded-2xl p-4 fe-glass-lite">
-              <div className="text-xs font-medium text-text-secondary">{t('regions.rating.dataFor')}</div>
-              <div className="fe-num mt-1 font-semibold text-text-primary">{t('w4.map.yearLabel', { year: data.year })}</div>
-            </div>
+            {isPrice && stats ? (
+              <div className="r7c-rate-tiles__year r9c-typical rounded-2xl p-4 fe-glass-lite">
+                <div className="text-xs font-medium text-text-secondary">{t('r9c.price.typical')}</div>
+                <div className="fe-num mt-1 font-semibold text-text-primary">{fmtU(stats.med)}</div>
+                {stats.ratio && (
+                  <div className="r9c-typical__sub">{t('r9c.price.spread', { x: num1(stats.ratio) })}</div>
+                )}
+              </div>
+            ) : (
+              <div className="r7c-rate-tiles__year rounded-2xl p-4 fe-glass-lite">
+                <div className="text-xs font-medium text-text-secondary">{t('regions.rating.dataFor')}</div>
+                <div className="fe-num mt-1 font-semibold text-text-primary">{t('w4.map.yearLabel', { year: data.year })}</div>
+              </div>
+            )}
           </div>
-
-          {isPrice && (
-            <R4YourRegion
-              rows={ranked}
-              unit={data.indicator.unit}
-              cheapestSlug={[...ranked].sort((a, b) => (a.raw ?? a.value) - (b.raw ?? b.value))[0]?.slug}
-            />
-          )}
 
           {top.slug && bottom.slug && top.slug !== bottom.slug && (
             <Link to={regionVsPath(top.slug, bottom.slug)} className="r3b-vs-link fe-tap-inline mb-8">
@@ -230,7 +292,7 @@ export default function RegionRatingPage() {
               colorDirection={sortDirection}
               onSelect={(slug) => navigate(regionIndicatorPath(slug, code))}
             />
-            <p className="r7c-map-hint">{t('r7c.rate.mapHint')}</p>
+            <p className="r7c-map-hint">{t(isPrice ? 'r9c.price.mapHint' : 'r7c.rate.mapHint')}</p>
           </div>
 
           <section id="chart" className="mb-8 scroll-mt-28">
@@ -255,7 +317,7 @@ export default function RegionRatingPage() {
                           : t('regions.rating.sortDesc')}
                         className="fe-tap-inline gap-1 rounded-lg transition-colors hover:text-champagne-ink"
                       >
-                        {unitLabel(data.indicator.unit, locale) || t('regions.rating.colValue')}
+                        {pUnit || unitLabel(data.indicator.unit, locale) || t('regions.rating.colValue')}
                         {sortDirection === 'asc'
                           ? <ArrowUp size={12} aria-hidden="true" />
                           : <ArrowDown size={12} aria-hidden="true" />}
@@ -265,7 +327,7 @@ export default function RegionRatingPage() {
                 </thead>
                 <tbody>
                   {ranked.map((row) => (
-                    <tr key={row.slug} id={`r7c-row-${row.slug}`} className={`fe-row-link border-t border-border-subtle${row.slug === mine && !isPrice ? ' is-mine' : ''}`}>
+                    <tr key={row.slug} id={`r7c-row-${row.slug}`} className={`fe-row-link border-t border-border-subtle${row.slug === mine ? ' is-mine' : ''}`}>
                       {!isPrice && (
                         <td className="fe-num px-4 py-2 text-text-secondary">
                           {achievement && row.rank <= 3
@@ -282,7 +344,13 @@ export default function RegionRatingPage() {
                         </Link>
                         <span className="r3b-rate-bar" aria-hidden="true">
                           <span style={{ width: `${Math.max(2, (Math.abs(Number(row.raw ?? row.value) || 0) / maxAbs) * 100)}%` }} />
+                          {isPrice && stats?.med ? <i className="r9c-tick" style={{ left: `${(stats.med / maxAbs) * 100}%` }} /> : null}
                         </span>
+                        {isPrice && Number.isFinite(row.prev) && row.prev > 0 && (
+                          <span className="r9c-yoy fe-num">
+                            {t('r9c.price.yoy', { pct: signed(((val(row) - row.prev) / row.prev) * 100) })}
+                          </span>
+                        )}
                       </td>
                       <td className="fe-num whitespace-nowrap px-4 py-2 text-right text-text-primary">
                         <Link
@@ -292,6 +360,11 @@ export default function RegionRatingPage() {
                         >
                           {formatRegionNumber(row.raw ?? row.value, data.indicator.unit, locale)}
                         </Link>
+                        {isPrice && stats?.med ? (
+                          <span className="r9c-dev fe-num" title={t('r9c.price.devTitle')}>
+                            {signed(((val(row) - stats.med) / stats.med) * 100)}
+                          </span>
+                        ) : null}
                       </td>
                     </tr>
                   ))}
@@ -300,10 +373,16 @@ export default function RegionRatingPage() {
             </div>
           </section>
 
+          {isPrice && Array.isArray(data.missing) && data.missing.length > 0 && (
+            <p className="r9c-missing" data-testid="r9c-missing">
+              {t('r9c.price.missing', { period, names: data.missing.map((m) => m.name).join(', ') })}
+            </p>
+          )}
+
           <section className="rounded-3xl p-5 fe-glass-lite">
             <h2 className="mb-2 font-display text-base font-semibold text-text-primary">{t('regions.rating.sourceHeading')}</h2>
             <p className="text-sm leading-relaxed text-text-secondary">
-              {t('w4.rating.source', { year: data.year })}
+              {isPrice ? t('r9c.price.source', { period }) : t('w4.rating.source', { year: data.year })}
             </p>
           </section>
         </>
