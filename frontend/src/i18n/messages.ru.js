@@ -3962,4 +3962,7 @@ export default {
   'regions.ind.deltaYoYAbs': 'за год',
   'r6c.sibsMore': 'Показать ещё {n}',
   'r6c.sibsLess': 'Свернуть список',
+  'r6b.flatSince': 'с {date}',
+  'r6b.related': 'Связанные показатели',
+  'r6b.toTop': 'Наверх, к показателю',
 };

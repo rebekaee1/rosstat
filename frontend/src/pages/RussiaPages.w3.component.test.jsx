@@ -122,8 +122,8 @@ describe('IndicatorTile', () => {
     );
     const badge = container.querySelector('.fe-delta-badge');
     expect(badge.textContent).toContain('+0,40');
-    // Слова вместо жаргона «п. п.».
-    expect(badge.textContent.replace(/\u00a0/g, ' ')).toContain('процентного пункта');
+    // R6-B: в плитке короткая единица «п. п.», без длинных слов.
+    expect(badge.textContent.replace(/\u00a0/g, ' ')).toContain('п. п.');
     expect(badge.className).toContain('fe-tone--bad');
     expect(container.textContent).toContain('за месяц');
     expect(container.textContent).toContain('за\u00A0август\u00A02026');

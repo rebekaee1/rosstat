@@ -24,6 +24,7 @@ import { resolveDateFormat } from '../lib/format';
 import { WorldHeroLine } from './WorldStatTiles';
 import { isFreshIntraday, useLiveQuote } from '../lib/tickerLive';
 import IndicatorHeroValue from './IndicatorHeroValue';
+import R6bPulseStrip from './R6bPulseStrip';
 import FreshnessNote from './FreshnessNote';
 import BrentLiveNote from './BrentLiveNote';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
@@ -31,6 +32,7 @@ import { indicatorPolarity } from '../lib/deltaTone';
 import '../styles/z4-indicator.css';
 import '../styles/k5-pages.css';
 import '../styles/r3d-card.css';
+import '../styles/r6b-card.css';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';
@@ -229,6 +231,17 @@ export default function GenericIndicatorView({
       >
         {!loadingInd && heroSummary ? (
           <WorldHeroLine summary={heroSummary} place="" dateFormat={heroDateFormat} frequency={heroFreq} />
+        ) : null}
+        {!loadingInd && heroSummary ? (
+          <R6bPulseStrip
+            summary={heroSummary}
+            polarity={heroPolarity}
+            deltaSuffix={heroDeltaSuffix}
+            dateFormat={heroDateFormat}
+            related={relatedIndicators}
+            code={code}
+            category={indicator?.category}
+          />
         ) : null}
       </IndicatorDetailHeader>
 

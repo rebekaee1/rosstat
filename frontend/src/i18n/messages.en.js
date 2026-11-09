@@ -3957,4 +3957,7 @@ export default {
   'regions.ind.deltaYoYAbs': 'a year',
   'r6c.sibsMore': 'Show {n} more',
   'r6c.sibsLess': 'Collapse the list',
+  'r6b.flatSince': 'since {date}',
+  'r6b.related': 'Related indicators',
+  'r6b.toTop': 'Back to the top of the indicator',
 };

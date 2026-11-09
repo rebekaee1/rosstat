@@ -159,6 +159,8 @@ const LADDER_RU = [
 ];
 const LADDER_EN = [
   { re: /^billion(?=\s|$)/i, min: 1000, div: 1000, to: 'trillion' },
+  { re: /^bln(?=\s|$)/i, min: 1000, div: 1000, to: 'trln' },
+  { re: /^mln(?=\s|$)/i, min: 1000, div: 1000, to: 'bln' },
   { re: /^million(?=\s|$)/i, min: 1000, div: 1000, to: 'billion' },
   { re: /^(ths|thousand)\s+(persons|people)/i, min: 1000, div: 1000, to: 'million people' },
   { re: /^(people|persons)$/i, min: 1e6, div: 1e6, to: 'million people' },
@@ -208,7 +210,8 @@ export function formatTileValue(value, unit, { dataDigits = 2, locale = 'ru' } =
   for (const rule of ladder) {
     if (rule.re.test(u) && Math.abs(n) >= rule.min) {
       const scaled = n / rule.div;
-      const digits = compactDigits(scaled);
+      // Триллионы: «137,6 трлн ₽», а не «138»: десятая доля нужна и при трёх знаках до запятой (R6-B).
+      const digits = /^(трлн|trln|trillion)$/.test(rule.to) && Math.abs(scaled) < 1000 ? 1 : compactDigits(scaled);
       return {
         text: formatValue(scaled, digits, locale),
         unit: u.replace(rule.re, rule.to),
