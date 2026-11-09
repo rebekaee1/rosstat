@@ -1909,10 +1909,12 @@ class ResearchDownload(Base):
     увеличивает счётчик (метка в Redis с хэшем адреса и сроком 24 ч). Каталог отчётов — `app/data/research_catalog.json`.
     """
     __tablename__ = "research_downloads"
-    __table_args__ = (UniqueConstraint("slug", "date", name="uq_research_downloads_slug_date"),)
+    __table_args__ = (UniqueConstraint("slug", "date", "source", name="uq_research_downloads_slug_date_src"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     slug: Mapped[str] = mapped_column(String(120), nullable=False)
     date: Mapped[date] = mapped_column(Date, nullable=False)
+    # site / bot / tg / direct (без перехода с сайта и без метки — почти всегда ферма, в публичный счёт не входит)
+    source: Mapped[str] = mapped_column(String(16), nullable=False, default="site", server_default="site")
     count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
