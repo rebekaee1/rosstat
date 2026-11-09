@@ -1,6 +1,6 @@
 // Раздел «Курсы валют и криптовалют». Слева: две плитки доллара («Курс ЦБ» и «Рынок»), конвертер, вкладки «Валюты / Крипто / Мир»
 // и строки курсов. Справа: график выбранной пары за год и «Золото, нефть, биткоин». На телефоне всё идёт одной колонкой.
-import { useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Info, Search, X } from 'lucide-react';
 import Button from './Button';
@@ -8,7 +8,7 @@ import DeltaBadge from './DeltaBadge';
 import Sparkline from './Sparkline';
 import { CoinBadge } from './CurrencySelect';
 import { Converter } from './CurrencyConverter';
-import CurrencyPairChart from './CurrencyPairChart';
+import { SkeletonBox } from './Skeleton';
 import { DocRates } from './R5cTools';
 import { useIndicatorData } from '../lib/hooks';
 import { cn, formatValue } from '../lib/format';
@@ -17,10 +17,11 @@ import { indicatorPolarity } from '../lib/deltaTone';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import EmptyState from './brand/EmptyState';
 import {
-  CURRENCY_TABS, TRAVEL_UNITS, buildEdges, convertibleUnits, currencySearchText, formatConverted, nominalFor, pairTab, pairTitle, parsePair, quoteUnitsOf, rateBasis,
+  CURRENCY_TABS, TRIP_UNITS, buildEdges, convertibleUnits, currencySearchText, formatConverted, nominalFor, pairTab, pairTitle, parsePair, quoteUnitsOf, rateBasis,
   sortByPopularity, unitMeta, unitWord,
 } from '../lib/currencyRates';
 import { coinOf } from '../lib/currencyChart';
+import { useSaveRates } from '../lib/currencySaved';
 import { MARKET_BOARD_CODES, chartPairFor, useMarketState } from '../lib/currencyMarket';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
@@ -32,6 +33,19 @@ import '../styles/k4-charts.css';
 import '../styles/k8-tools.css';
 import '../styles/c8-currency.css';
 import '../styles/z3-cur.css';
+import '../styles/r8d-currency.css';
+
+// График пары тянет за собой всю библиотеку графиков (около 120 КБ в сжатом виде): на слабой связи сначала приходят курсы и конвертер,
+// график догружается следом, а место под него занято с самого начала.
+const CurrencyPairChart = lazy(() => import('./CurrencyPairChart'));
+
+function ChartHolder() {
+  return (
+    <section className="fe-panel fe-z8-chart" aria-busy="true" data-block="currency-year-chart">
+      <SkeletonBox className="fe-z8-chart__skeleton" />
+    </section>
+  );
+}
 
 const MARKET_LABEL_KEYS = { 'gold-rub-live': 'w6b.ticker.gold', brent: 'w6b.ticker.brent', 'btc-usd': 'w6b.ticker.btc' };
 const MARKET_LINKS = { 'gold-rub-live': 'gold-price', brent: 'brent', 'btc-usd': 'btc-usd' };
@@ -56,6 +70,26 @@ function ageInDays(iso) {
 }
 /** Данные старше трёх суток считаются устаревшими (в строке вместо изменения серая пометка). */
 const STALE_AFTER_DAYS = 3;
+
+/**
+ * Мини-график строки запрашивает свой ряд с сервера. На слабой связи полсотни запросов разом душат страницу,
+ * поэтому ряд берётся, только когда строка подъехала к экрану, и совсем не берётся в режиме экономии трафика.
+ */
+function useNearScreen() {
+  const ref = useRef(null);
+  const [near, setNear] = useState(() => typeof IntersectionObserver === 'undefined');
+  useEffect(() => {
+    if (near) return undefined;
+    const saver = typeof navigator !== 'undefined' && navigator.connection?.saveData;
+    if (saver || !ref.current) return undefined;
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) { setNear(true); io.disconnect(); }
+    }, { rootMargin: '240px 0px' });
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [near]);
+  return [ref, near];
+}
 
 function pctOf(change, value) {
   const prev = value - change;
@@ -180,6 +214,7 @@ function MarketBoard({ market }) {
 function CurrencyRow({ ind, index }) {
   const t = useT();
   const { locale } = useLocale();
+  const [sparkRef, sparkNear] = useNearScreen();
   const pair = parsePair(ind.code);
   const quote = pair ? unitMeta(pair.quote) : null;
   const coin = pair ? coinOf(pair.base) : {};
@@ -204,7 +239,7 @@ function CurrencyRow({ ind, index }) {
   const showDelta = delta && !delta.flat && !stale;
   // Для тех, кто отправляет рубли: у валют «в дорогу» вместо даты (она одна для всех строк) стоит «1 000 ₽ = 112 сомони».
   const perOneRub = value / (apiN || 1);
-  const sendText = pair && pair.quote === 'RUB' && TRAVEL_UNITS.includes(pair.base) && perOneRub > 0 && !stale
+  const sendText = pair && pair.quote === 'RUB' && TRIP_UNITS.includes(pair.base) && perOneRub > 0 && !stale
     ? (() => {
       const got = 1000 / perOneRub;
       return `1\u00a0000\u00a0₽ = ${formatConverted(got, locale, { money: true })}\u00a0${unitWord(got, pair.base, locale)}`;
@@ -235,8 +270,8 @@ function CurrencyRow({ ind, index }) {
           )}
         </span>
       </span>
-      <span className="fe-trow__spark" aria-hidden="true">
-        <RowSpark code={ind.code} index={index} />
+      <span className="fe-trow__spark" aria-hidden="true" ref={sparkRef}>
+        {sparkNear && <RowSpark code={ind.code} index={index} />}
       </span>
       <span className="fe-trow__val z3-val">
         <span className="z3-val__main">
@@ -263,8 +298,9 @@ function matchesQuery(ind, needle) {
   return needle.split(/\s+/).filter(Boolean).every((word) => text.includes(word));
 }
 
-export default function CurrencyDesk({ indicators }) {
+export default function CurrencyDesk({ indicators, offline = false }) {
   const t = useT();
+  useSaveRates(offline ? null : indicators);
   const [tab, setTab] = useState('rub');
   const [query, setQuery] = useState('');
   // Валюта конвертера по умолчанию из настроек кабинета (круг 12); пока человек не выбрал сам, входит «настройка → RUB», иначе «USD → RUB».
@@ -302,7 +338,9 @@ export default function CurrencyDesk({ indicators }) {
         <DocRates edges={edges} />
       </div>
       <div className="fe-z8-cur__conv"><Converter edges={edges} from={from} to={to} onFrom={setFrom} onTo={setTo} /></div>
-      <div className="fe-z8-cur__chart"><CurrencyPairChart pair={pair} edges={edges} /></div>
+      <div className="fe-z8-cur__chart">
+        <Suspense fallback={<ChartHolder />}><CurrencyPairChart pair={pair} edges={edges} /></Suspense>
+      </div>
 
       <section className="fe-z8-cur__list" data-block="currency-list" aria-label={t('w6g.cur.listTitle')}>
         <div className="fe-z8-toolbar">
@@ -326,12 +364,12 @@ export default function CurrencyDesk({ indicators }) {
           </div>
           <label className="fe-z8-search">
             <Search size={16} aria-hidden="true" />
-            <span className="sr-only">{t('w6g.cur.search')}</span>
+            <span className="sr-only">{t('r8d.search')}</span>
             <input
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder={t('w6g.cur.search')}
+              placeholder={t('r8d.search')}
               autoComplete="off"
               className="fe-z8-search__input"
             />
@@ -348,7 +386,7 @@ export default function CurrencyDesk({ indicators }) {
             <EmptyState
               variant="no-results"
               size={88}
-              title={t('w6g.cur.nothing')}
+              title={t('r8d.nothing')}
               action={<Button variant="secondary" onClick={() => setQuery('')}>{t('w4.compare.clearSearch')}</Button>}
             />
           </div>
@@ -362,6 +400,35 @@ export default function CurrencyDesk({ indicators }) {
       </section>
 
       <div className="fe-z8-cur__board"><MarketBoard market={market} /></div>
+    </div>
+  );
+}
+
+/** Каркас раздела на время загрузки: те же места, что у готовой страницы (конвертер, плитки, график, список), чтобы ничего не прыгало. */
+export function CurrencyDeskSkeleton({ label }) {
+  return (
+    <div className="fe-z8-cur r8d-skel" role="status" aria-busy="true" aria-label={label}>
+      <div className="fe-z8-cur__conv">
+        <div className="fe-panel r8d-skel__conv" aria-hidden="true">
+          <SkeletonBox className="h-6 w-44 mb-5" />
+          <SkeletonBox className="r8d-skel__field" />
+          <div className="r8d-skel__chips"><SkeletonBox /><SkeletonBox /><SkeletonBox /><SkeletonBox /></div>
+          <SkeletonBox className="r8d-skel__out" />
+        </div>
+      </div>
+      <div className="fe-z8-cur__rates">
+        <div className="fe-z8-rates" aria-hidden="true">
+          <div className="fe-z8-rates__grid"><div className="fe-z8-rate-ghost" /><div className="fe-z8-rate-ghost" /></div>
+        </div>
+      </div>
+      <div className="fe-z8-cur__chart"><ChartHolder /></div>
+      <section className="fe-z8-cur__list" aria-hidden="true">
+        <div className="fe-trow-list fe-z8-rows">
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="r8d-skel__row"><SkeletonBox className="r8d-skel__coin" /><SkeletonBox className="r8d-skel__line" /><SkeletonBox className="r8d-skel__val" /></div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import CurrencySelect, { CoinBadge } from './CurrencySelect';
 import { useIndicator, useIndicatorData } from '../lib/hooks';
 import { cn, formatDate, formatValue } from '../lib/format';
 import {
-  TRAVEL_UNITS, amountPresets, buildEdges, convert, convertibleUnits, currencySearchText, describeRate, formatConverted,
+  TRIP_UNITS, amountPresets, buildEdges, convert, convertibleUnits, currencySearchText, describeRate, formatConverted,
   parseAmountInput, parsePair, rateBasis, unitMeta, unitWord,
 } from '../lib/currencyRates';
 import { coinOf, unitName } from '../lib/currencyChart';
@@ -147,7 +147,7 @@ export function Converter({ edges, from, to, onFrom, onTo }) {
   // Выпадающий список: привычные валюты, затем «в дорогу», затем остальные.
   const ordered = useMemo(() => {
     const head = ['RUB', 'USD', 'EUR', 'CNY', 'GBP'];
-    const travel = TRAVEL_UNITS.filter((u) => units.includes(u));
+    const travel = TRIP_UNITS.filter((u) => units.includes(u));
     return [...units.filter((u) => head.includes(u)), ...travel, ...units.filter((u) => !head.includes(u) && !travel.includes(u))];
   }, [units]);
   if (units.length < 2) return null;
@@ -172,8 +172,9 @@ export function Converter({ edges, from, to, onFrom, onTo }) {
   const fromOptions = ordered.map(optionOf);
   const toOptions = ordered.filter((unit) => unit !== safeFrom).map(optionOf);
   // Для закупок: юань, лира, дирхам идут первыми, дальше валюты поездок.
-  const BUSINESS = ['CNY', 'TRY', 'AED'];
-  const travel = [...BUSINESS, ...TRAVEL_UNITS.filter((u) => !BUSINESS.includes(u))].filter((u) => units.includes(u));
+  // Первыми идут те, за чем спешат в аэропорту и на закупки: лира, дирхам, бат, юань, донг; дальше соседи.
+  const BUSINESS = ['TRY', 'AED', 'THB', 'CNY', 'VND', 'EGP'];
+  const travel = [...BUSINESS, ...TRIP_UNITS.filter((u) => !BUSINESS.includes(u))].filter((u) => units.includes(u));
   const pickTravel = (unit) => {
     track(events.COMPARE_CHANGE, { converter: 'travel-chip', unit });
     // Рубли в руках у всех: нажатие на валюту всегда считает «рубли → эта валюта» (отправить семье, поменять в дорогу).
@@ -184,6 +185,28 @@ export function Converter({ edges, from, to, onFrom, onTo }) {
   return (
     <section className="fe-panel fe-z8-conv z3-conv" data-block="currency-converter" aria-label={t('w6g.cur.converterTitle')}>
       <h2 className="fe-z8-conv__title">{t('w6g.cur.converterTitle')}</h2>
+      {travel.length > 0 && (
+        <div className="z3-pop">
+          <p className="z3-pop__label">{t('r5c.pop.title')}</p>
+          <div className="z3-pop__row" role="group" aria-label={t('r5c.pop.title')}>
+            {travel.map((unit) => {
+              const meta = coinOf(unit);
+              return (
+                <button
+                  key={unit}
+                  type="button"
+                  className={cn('fe-z8-quick__btn fe-press z3-pop__btn', (unit === safeFrom || unit === safeTo) && 'is-active')}
+                  aria-pressed={unit === safeFrom || unit === safeTo}
+                  onClick={() => pickTravel(unit)}
+                >
+                  <CoinBadge className="z3-pop__coin" flag={meta.flag} symbol={meta.symbol} />
+                  {chipName(unit, locale)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <AmountField id={`${id}-amount`} amount={amount} text={text} setText={setText} locale={locale} label={t('w6g.cur.amount')} suffix={unitMeta(safeFrom)?.symbol || safeFrom} />
       <QuickAmounts presets={presets} amount={amount} setText={setText} locale={locale} />
       <ConverterOut result={result} rate={rate} safeTo={safeTo} basisKey={basisKey} from={safeFrom} amount={amount} />
@@ -219,28 +242,6 @@ export function Converter({ edges, from, to, onFrom, onTo }) {
           className="fe-z8-conv__to"
         />
       </div>
-      {travel.length > 0 && (
-        <div className="z3-pop">
-          <p className="z3-pop__label">{t('r5c.pop.title')}</p>
-          <div className="z3-pop__row" role="group" aria-label={t('r5c.pop.title')}>
-            {travel.map((unit) => {
-              const meta = coinOf(unit);
-              return (
-                <button
-                  key={unit}
-                  type="button"
-                  className={cn('fe-z8-quick__btn fe-press z3-pop__btn', (unit === safeFrom || unit === safeTo) && 'is-active')}
-                  aria-pressed={unit === safeFrom || unit === safeTo}
-                  onClick={() => pickTravel(unit)}
-                >
-                  <CoinBadge className="z3-pop__coin" flag={meta.flag} symbol={meta.symbol} />
-                  {chipName(unit, locale)}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </section>
   );
 }
@@ -269,7 +270,7 @@ export function CurrencyCardConverter({ code }) {
     }]);
   }, [pair, code, indicator, series]);
   // Валюты, в которые рубли отправляют и меняют в дорогу (сомони, сум, сом…): карточка открывается на «рубли → валюта».
-  const [reversed, setReversed] = useState(Boolean(pair && pair.quote === 'RUB' && TRAVEL_UNITS.includes(pair.base)));
+  const [reversed, setReversed] = useState(Boolean(pair && pair.quote === 'RUB' && TRIP_UNITS.includes(pair.base)));
   const [turns, setTurns] = useState(0);
   const from = pair ? (reversed ? pair.quote : pair.base) : null;
   const to = pair ? (reversed ? pair.base : pair.quote) : null;

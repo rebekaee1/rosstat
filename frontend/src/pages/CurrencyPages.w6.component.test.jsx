@@ -29,7 +29,7 @@ describe('/currencies', () => {
     ]);
     const { container } = renderPage(<CategoryPage fixedSlug="currencies" />, { path: '/currencies', route: '/currencies' });
     expect(await screen.findByRole('heading', { name: 'Конвертер валют' })).toBeTruthy();
-    expect(screen.getByPlaceholderText('Найти валюту')).toBeTruthy();
+    expect(screen.getByPlaceholderText('Валюта, страна, город или код')).toBeTruthy();
     // Общего поля «Найти показатель или страну» на этой странице нет.
     expect(container.querySelector('[data-block="category-list"]').textContent).not.toMatch(/Найти показатель или страну/);
     const titles = [...container.querySelectorAll('.fe-w6g-currency-row .fe-trow__title')].map((n) => n.textContent);

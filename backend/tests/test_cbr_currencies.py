@@ -73,3 +73,14 @@ def test_measure_rule_separates_similar_currencies():
     assert not measure_matches(gbp, code="egp-rub", names=("Курс египетского фунта",))
     aud = (("aud-rub",),)
     assert not measure_matches(aud, code="usd-rub", names=("Курс доллара США",))
+
+
+def test_r8d_travel_city_aliases_lead_to_currency():
+    """Круг 8: человек в поездке ищет по городу или курорту, а не по названию валюты."""
+    from app.data.cbr_currencies import search_concepts
+
+    by_code = {codes[0]: aliases for aliases, codes in search_concepts()}
+    assert "пхукет" in by_code["thb-rub"]
+    assert "нячанг" in by_code["vnd-rub"]
+    assert "хургада" in by_code["egp-rub"]
+    assert "дубай" in by_code["aed-rub"]

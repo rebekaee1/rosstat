@@ -7,6 +7,10 @@ describe('курсы мелких валют за 100 / 10 000 единиц (Ц�
     expect(quoteUnitsOf('руб. за 100')).toBe(100);
     expect(quoteUnitsOf('руб. за 10 000')).toBe(10000);
     expect(quoteUnitsOf('руб. за 1 000 000')).toBe(1000000);
+    // Английская версия отдаёт «RUB per 10,000»: раньше это читалось как «за 1» и донг считался в 10 000 раз мимо.
+    expect(quoteUnitsOf('RUB per 10,000')).toBe(10000);
+    expect(quoteUnitsOf('RUB per 100')).toBe(100);
+    expect(quoteUnitsOf('RUB')).toBe(1);
   });
 
   it('конвертер считает за одну единицу', () => {

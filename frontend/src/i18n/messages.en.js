@@ -3993,4 +3993,8 @@ export default {
   'r7a.local.population': 'Population',
   'r7a.local.prices': 'Food prices',
   'r7a.local.housing': 'Housing prices',
+  'r8d.offline': 'No connection. Showing the rates saved on {date}: they may have changed.',
+  'r8d.retry': 'Refresh',
+  'r8d.search': 'Currency, country, city or code',
+  'r8d.nothing': 'Nothing found. Try a country (“Turkey”), a city (“Phuket”) or a code (TRY).',
 };
