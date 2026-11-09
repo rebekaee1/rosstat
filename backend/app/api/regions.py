@@ -472,15 +472,13 @@ async def russia_prices_summary(db: AsyncSession = Depends(get_db)):
         select(RegionIndicator).where(RegionIndicator.code.in_(list(HEADLINE_PRICE_CODES)))
     )).scalars().all()
     by_code = {i.code: i for i in inds}
-    rows = (await db.execute(
-        select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
-        .where(RegionMonthlyPoint.region_id == region.id,
-               RegionMonthlyPoint.indicator_id.in_([i.id for i in inds]))
-        .order_by(RegionMonthlyPoint.month)
-    )).all()
-    series: dict[int, list[tuple[int, float]]] = {}
-    for iid, month, value in rows:
-        series.setdefault(iid, []).append((int(month), float(value)))
+    # Не больше 13 последних месяцев на ряд через индекс (helper regional_monthly_latest, 09.11.2026).
+    from app.services.regional_monthly_latest import latest_monthly_points
+
+    latest = await latest_monthly_points(db, [i.id for i in inds], [region.id], n=13)
+    series: dict[int, list[tuple[int, float]]] = {
+        iid: sorted(points) for (iid, _rid), points in latest.items()
+    }
 
     items = []
     for code in HEADLINE_PRICE_CODES:
@@ -536,24 +534,21 @@ async def _russia_price_movers(db: AsyncSession, region_id: int, top: int = 10) 
     by_id = {i.id: i for i in inds}
     if not by_id:
         return None
-    last_month = (await db.execute(
-        select(func.max(RegionMonthlyPoint.month)).where(
-            RegionMonthlyPoint.region_id == region_id,
-            RegionMonthlyPoint.indicator_id.in_(list(by_id)),
-        )
-    )).scalar_one_or_none()
-    if not last_month:
+    # Через индекс: не больше 13 последних месяцев на ряд (вся история 2000–2026 на проде упирается в диск).
+    from app.services.regional_monthly_latest import latest_monthly_points
+
+    latest = await latest_monthly_points(db, list(by_id), [region_id], n=13)
+    if not latest:
         return None
-    rows = (await db.execute(
-        select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
-        .where(RegionMonthlyPoint.region_id == region_id,
-               RegionMonthlyPoint.indicator_id.in_(list(by_id)),
-               RegionMonthlyPoint.month.in_([int(last_month), int(last_month) - 100]))
-    )).all()
+    last_month = max(points[0][0] for points in latest.values())
     cur: dict[int, float] = {}
     old: dict[int, float] = {}
-    for iid, month, value in rows:
-        (cur if int(month) == int(last_month) else old)[iid] = float(value)
+    for (iid, _rid), points in latest.items():
+        months = dict(points)
+        if last_month in months:
+            cur[iid] = months[last_month]
+        if last_month - 100 in months:
+            old[iid] = months[last_month - 100]
     cand = []
     for iid, v in cur.items():
         base = old.get(iid)
