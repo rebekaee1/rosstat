@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2410,
-    "code_files": 1950,
-    "current_reviews": 2410,
+    "files": 2411,
+    "code_files": 1951,
+    "current_reviews": 2411,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 162,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2150
+      "reviewed": 2151
     },
-    "definitions": 15580,
-    "annotated_definitions": 15580,
+    "definitions": 15584,
+    "annotated_definitions": 15584,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -1272,9 +1272,9 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "sha256": "a72678322c5c7b8deb9d815e3324ed1d93abaef9659f30353754aae378333cbd",
-      "bytes": 40442,
-      "lines": 953,
+      "sha256": "fbb85a95aba93f6c4e2237cd761699cf8ebf73da92c4de3e6cb21b4c1592a928",
+      "bytes": 40338,
+      "lines": 945,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4496,9 +4496,9 @@
     },
     {
       "path": "backend/app/services/r4a_price_compare.py",
-      "sha256": "0af748315c9eb85f8f88efbaede25c48b7ee334e4c5eb2b2394b86664aea4848",
-      "bytes": 6413,
-      "lines": 151,
+      "sha256": "c77ce23c0edd466f76f39b5b30c9ef2386a0b7254ba9dda10a1e147b456a7688",
+      "bytes": 6279,
+      "lines": 147,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4518,6 +4518,19 @@
       "issues": [],
       "definitions": 1,
       "annotated_definitions": 1,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/regional_monthly_latest.py",
+      "sha256": "2155d47d0463cd9ef05fde4edff83659989d3557af87e7a363f908c9f8a2bb86",
+      "bytes": 3410,
+      "lines": 61,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
       "missing_definitions": []
     },
     {
@@ -9930,15 +9943,15 @@
     },
     {
       "path": "backend/tests/test_r4a_price_compare.py",
-      "sha256": "0d49dff7a8d779baf409e4c7bf12e5fd1479e7fc6d7aa52e983ea83b8a059908",
-      "bytes": 2798,
-      "lines": 54,
+      "sha256": "e20a88e362d28737680b155edce367638a2630410464378f69661bf257e8ff5d",
+      "bytes": 4199,
+      "lines": 80,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 4,
-      "annotated_definitions": 4,
+      "definitions": 6,
+      "annotated_definitions": 6,
       "missing_definitions": []
     },
     {
@@ -12439,9 +12452,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "9a240afea32a0d121e69793d104f2cbfb3699dbcd5a54ac22f181f5c495b6ed5",
-      "bytes": 25489,
-      "lines": 179,
+      "sha256": "6fa2f4134b173185fe081e8729d228e81e3f3d82082ca9614ebb34e2710a1da5",
+      "bytes": 25758,
+      "lines": 180,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13323,9 +13336,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "6dedfc8227ef42b01fda67f5b1cda4cea17a0ba889824254f07403a88720176f",
-      "bytes": 698394,
-      "lines": 3242,
+      "sha256": "3cd7b05f7165763ba66c22591ebd3971a02e5517c0f7badff7d6f22c86b33699",
+      "bytes": 699560,
+      "lines": 3248,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13921,9 +13934,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "8fdef444bce687365692dae0668d9d4cbdf20f8cfbe6753b6a7b0907e6a0d8fd",
-      "bytes": 3833056,
-      "lines": 135558,
+      "sha256": "635dc9a02f01647169d52c2bdadb3ec902d038cafa5bed24c07d5d5117cf68bb",
+      "bytes": 3833186,
+      "lines": 135563,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13973,9 +13986,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "5e775c859d0a8da442bd929e45e031fde1c33384431a31d31ddac555583836a1",
-      "bytes": 12054158,
-      "lines": 361506,
+      "sha256": "f4ff119eb970c1ab3351ceba582375e9110278368b5b23c5bd1c70357badfb50",
+      "bytes": 12049804,
+      "lines": 361283,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13986,9 +13999,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "7a1b3a8481155d8d80d61ffca61b078d19635c0ff85abd40f84cd19a43e41806",
-      "bytes": 618602,
-      "lines": 3359,
+      "sha256": "07788e2457c678468c6858c25bc92e28fc9bf96b8c634c572669c888b4c06c16",
+      "bytes": 618798,
+      "lines": 3360,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -31367,15 +31380,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "7a91cb1c4b84034c3e04226edf1527b5a3475ffe353da01303cfb2deebe1f948",
+  "ledger_sha256": "08e59b4abe8a55417981523f48d832815e0f5c8664b690dcf72c13da70c76266",
   "javascript_inventory_sha256": "07058111520c55d3edc10d591fba3b57c9e94b1fd37602b06a2cabb71d3a4f83",
-  "baseline_commit": "1a85770d5c209005681070d5278599e3db8e3995",
-  "branch": "circle-data/int",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "baseline_commit": "415d35ac1363e3aabde15ff56532232004a1881e",
+  "branch": "release/2026-11-09-c8",
+  "unstaged_at_capture": []
 }

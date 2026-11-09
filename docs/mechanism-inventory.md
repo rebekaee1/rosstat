@@ -13,10 +13,10 @@
 - Direct environment reads: **35**
 - Jobs: **57**
 - Middleware: **6**
-- Registry declarations: **1323**
-- Registry references: **2504**
+- Registry declarations: **1324**
+- Registry references: **2505**
 - Migration operations: **464**
-- Candidate effects: **2779**
+- Candidate effects: **2778**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -90,8 +90,8 @@
 | GET | /api/v1/regions/vs/{slug_a}/{slug_b}/prices | app.api.regions.regions_compare_prices | [backend/app/api/regions.py:415](../backend/app/api/regions.py#L415) |
 | GET | /api/v1/regions/russia/prices-summary | app.api.regions.russia_prices_summary | [backend/app/api/regions.py:455](../backend/app/api/regions.py#L455) |
 | GET | /api/v1/regions/{slug} | app.api.regions.region_profile | [backend/app/api/regions.py:528](../backend/app/api/regions.py#L528) |
-| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:745](../backend/app/api/regions.py#L745) |
-| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:850](../backend/app/api/regions.py#L850) |
+| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:737](../backend/app/api/regions.py#L737) |
+| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:842](../backend/app/api/regions.py#L842) |
 | GET | /api/v1/admin/bi/dashboard | app.api.admin_bi.bi_dashboard | [backend/app/api/admin_bi.py:216](../backend/app/api/admin_bi.py#L216) |
 | GET | /api/v1/admin/bi/slices/meta | app.api.admin_bi.slices_meta | [backend/app/api/admin_bi.py:275](../backend/app/api/admin_bi.py#L275) |
 | GET | /api/v1/admin/bi/slices | app.api.admin_bi.slices_query | [backend/app/api/admin_bi.py:299](../backend/app/api/admin_bi.py#L299) |
@@ -2046,7 +2046,7 @@ Relationships: `[]`
 | app.api.regions.LANDING_TABLES | Tuple | sequence/source expression | [backend/app/api/regions.py:73](../backend/app/api/regions.py#L73) |
 | app.api.regions._MONTHS_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:431](../backend/app/api/regions.py#L431) |
 | app.api.regions._MONTHS_EN | Tuple | sequence/source expression | [backend/app/api/regions.py:433](../backend/app/api/regions.py#L433) |
-| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:837](../backend/app/api/regions.py#L837) |
+| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:829](../backend/app/api/regions.py#L829) |
 | app.api.research.SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:32](../backend/app/api/research.py#L32) |
 | app.api.research.PUBLIC_SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:33](../backend/app/api/research.py#L33) |
 | app.api.research._LINK_SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:34](../backend/app/api/research.py#L34) |
@@ -2693,6 +2693,7 @@ Relationships: `[]`
 | app.services.r4a_price_compare.BASKET | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:18](../backend/app/services/r4a_price_compare.py#L18) |
 | app.services.r4a_price_compare._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:32](../backend/app/services/r4a_price_compare.py#L32) |
 | app.services.r4a_price_compare._MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:34](../backend/app/services/r4a_price_compare.py#L34) |
+| app.services.regional_monthly_latest._PG_SQL | Call | computed source expression | [backend/app/services/regional_monthly_latest.py:18](../backend/app/services/regional_monthly_latest.py#L18) |
 | app.services.rosstat_cpi_parser.PARSER_REGISTRY | Dict | RosstatCpiParser.parser_type, CbrKeyRateParser.parser_type, CbrFxParser.parser_type, CbrRuoniaParser.parser_type, CbrMonetaryParser.parser_type, CbrDataServiceParser.parser_type, EmissLaborParser.parser_type, RosstatLaborParser.parser_type, RosstatGdpParser.parser_type, CbrDataServiceSumParser.parser_type, MinfinBudgetParser.parser_type, RosstatWeeklyCpiParser.parser_type, RosstatIpiParser.parser_type, RosstatHousingParser.parser_type, RosstatPopulationParser.parser_type, RosstatPpiParser.parser_type, CbrBopParser.parser_type, CbrTradeGoodsMonthlyParser.parser_type, CbrTradeServicesMonthlyParser.parser_type, CbrReservesParser.parser_type, CbrDebtParser.parser_type, CbrGoldParser.parser_type, RosstatDemoParser.parser_type, RosstatIndParser.parser_type, RosstatScienceParser.parser_type, RosstatFixedAssetsParser.parser_type, BinanceBtcUsdtParser.parser_type, BrentDailyFredParser.parser_type, FredCsvParser.parser_type, WorldBankPinkSheetParser.parser_type, EcbFxParser.parser_type, ImfWeoParser.parser_type, CbrMonetaryAggParser.parser_type, MoexIndexParser.parser_type, RosstatWeeklyPriceParser.parser_type | [backend/app/services/rosstat_cpi_parser.py:92](../backend/app/services/rosstat_cpi_parser.py#L92) |
 | app.services.rosstat_demo_parser.DEMO_FILES | Dict | 'births', 'deaths', 'birth-rate', 'death-rate', 'working-age-population', 'pop-under-working-age', 'pop-over-working-age', 'pensioners' | [backend/app/services/rosstat_demo_parser.py:278](../backend/app/services/rosstat_demo_parser.py#L278) |
 | app.services.rosstat_gdp_parser._Q_RE | Call | computed source expression | [backend/app/services/rosstat_gdp_parser.py:49](../backend/app/services/rosstat_gdp_parser.py#L49) |

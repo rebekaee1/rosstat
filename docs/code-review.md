@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `1a85770d5c209005681070d5278599e3db8e3995`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `415d35ac1363e3aabde15ff56532232004a1881e`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2410 |
-| Код, шаблоны и стили | 1950 |
-| Актуальные рецензии без пропусков guard | 2410 |
-| Именованные определения Python/JS: с аннотацией / всего | 15580 / 15580 |
+| Файлы в явно определённом scope | 2411 |
+| Код, шаблоны и стили | 1951 |
+| Актуальные рецензии без пропусков guard | 2411 |
+| Именованные определения Python/JS: с аннотацией / всего | 15584 / 15584 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -383,6 +383,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/pulse_report.py](../backend/app/services/pulse_report.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/r4a_price_compare.py](../backend/app/services/r4a_price_compare.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/region_compare_data.py](../backend/app/services/region_compare_data.py) | reviewed | 1/1 | актуально |
+| [backend/app/services/regional_monthly_latest.py](../backend/app/services/regional_monthly_latest.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/regional_storage.py](../backend/app/services/regional_storage.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/rosstat_cpi_parser.py](../backend/app/services/rosstat_cpi_parser.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/rosstat_demo_parser.py](../backend/app/services/rosstat_demo_parser.py) | reviewed | 13/13 | актуально |
@@ -799,7 +800,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_pulse_telegram_html.py](../backend/tests/test_pulse_telegram_html.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_push.py](../backend/tests/test_push.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_pwa.py](../backend/tests/test_pwa.py) | reviewed | 13/13 | актуально |
-| [backend/tests/test_r4a_price_compare.py](../backend/tests/test_r4a_price_compare.py) | reviewed | 4/4 | актуально |
+| [backend/tests/test_r4a_price_compare.py](../backend/tests/test_r4a_price_compare.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_r7b_price_quality.py](../backend/tests/test_r7b_price_quality.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_r7d_prices_summary.py](../backend/tests/test_r7d_prices_summary.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_rate_limit.py](../backend/tests/test_rate_limit.py) | reviewed | 10/10 | актуально |
