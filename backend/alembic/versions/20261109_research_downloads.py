@@ -1,7 +1,7 @@
 """Счётчик скачиваний отчётов раздела «Исследования» (09.11.2026).
 
 Revision ID: 20261109_research_downloads
-Revises: 20261108b_gsc_page_daily
+Revises: 20261109_public_bot_dialog
 
 Только добавляющая миграция: таблица `research_downloads` (отчёт × день × источник → число скачиваний), без ПДн.
 Источник (09.11.2026, до первого выпуска): site — переход со страницы сайта, bot / tg — помеченные ссылки бота и
@@ -11,7 +11,7 @@ from alembic import op
 import sqlalchemy as sa
 
 revision = "20261109_research_downloads"
-down_revision = "20261108b_gsc_page_daily"
+down_revision = "20261109_public_bot_dialog"
 branch_labels = None
 depends_on = None
 
