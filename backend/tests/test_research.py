@@ -55,7 +55,7 @@ def test_ssr_lists_reports():
     assert status == 200
     assert "Исследования" in html
     assert "/api/v1/research/ergodicity/download" in html
-    assert "Средний результат — не твой" in html
+    assert "Эргодичность и кредитное плечо" in html
 
 
 def test_reserved_and_static():
