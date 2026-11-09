@@ -3967,5 +3967,6 @@ export default {
   'r7c.rank.mineSub': 'No. {rank} of {n}',
   'r7c.rank.mineClear': 'Clear my region',
   'r7c.rank.median': 'regional midpoint: {v}',
+  'r7c.card.wageBar': 'Wage compared with the highest among regions',
   'r7c.rate.mapHint': 'Tap a region on the map to open this indicator for it.',
 };

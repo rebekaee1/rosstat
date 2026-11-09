@@ -75,4 +75,7 @@
   :root:root .r3b-rate-box th, :root:root .r3b-rate-box td { padding-left: 10px; padding-right: 10px; }
   :root:root .r3b-rate-box th.w-16 { width: 44px; }
 }
+/* Карточка региона в списке: тонкая полоса зарплаты относительно самой высокой по стране. */
+.r7c-card-bar { display: block; height: 4px; margin-top: 10px; border-radius: 9999px; background: var(--k6-groove, rgba(60, 78, 110, 0.10)); overflow: hidden; }
+.r7c-card-bar > span { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #2C4A8A, #1E3A6E); }
 .r7c-map-hint { margin: 10px 4px 0; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }

@@ -3970,6 +3970,7 @@ export default {
   'r7c.rank.mineAria': 'Выберите свой регион, чтобы увидеть его место',
   'r7c.rank.minePlaceholder': 'Выбрать…',
   'r7c.rank.mineSub': '{rank}-е место из {n}',
+  'r7c.card.wageBar': 'Зарплата в сравнении с самой высокой среди регионов',
   'r7c.rate.mapHint': 'Нажмите на регион на карте: откроется этот показатель в нём.',
   'r7c.rank.mineClear': 'Убрать мой регион',
   'r7c.rank.median': 'середина по регионам: {v}',
