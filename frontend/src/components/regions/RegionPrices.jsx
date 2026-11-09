@@ -8,12 +8,16 @@ import DeltaBadge from '../DeltaBadge';
 import { yearDelta } from '../../lib/regionsApi';
 import { formatDeltaPercent } from '../../lib/regionUi';
 import { RegionIndicatorRow, RegionSectionHeading } from './RegionParts';
+import { GOODS_GROUP, GoodsSubChips, splitGoods } from './RegionPricesSubgroups';
 import { useLocale } from '../../i18n';
 import '../../styles/z1-prices.css';
 import '../../styles/r5b-region.css';
+import '../../styles/r8b-region.css';
 
 const FIRST_ROWS = 10;
-const PAGE = 30;
+const PAGE = 20; // R8-B: порция короче — при крупном шрифте 30 строк это четыре экрана
+// R8-B: порядок групп для человека, который считает пенсию: еда, коммуналка, лекарства — первыми.
+const R8B_FIRST = ['Продукты', 'ЖКХ', 'Лекарства'];
 const NBSP = ' ';
 
 /** Позиции с ценой (есть группа от сервера). */
@@ -157,6 +161,7 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
   const [open, setOpen] = useState(() => new Set());
   const [indexesOpen, setIndexesOpen] = useState(false);
   const [pages, setPages] = useState({});
+  const [sub, setSub] = useState('');
 
   const { plain, groups } = useMemo(() => {
     const plainRows = [];
@@ -167,7 +172,12 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
       map.get(item.price_group).items.push(item);
     });
     plainRows.sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
-    const rank = (k) => { const i = (groupOrder || []).indexOf(k); return i < 0 ? 99 : i; };
+    const rank = (k) => {
+      const first = R8B_FIRST.indexOf(k);
+      if (first >= 0) return first - 10;
+      const i = (groupOrder || []).indexOf(k);
+      return i < 0 ? 99 : i;
+    };
     const list = [...map.values()].sort((a, b) => rank(a.key) - rank(b.key));
     list.forEach((g) => {
       // Сначала живые в порядке справочника, затем снятые Росстатом.
@@ -206,11 +216,14 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
         </div>
       )}
       {shownGroups.map((g) => {
-        const expanded = searching || !!activeGroup || open.has(g.key);
+        const parts = g.key === GOODS_GROUP && !searching && g.items.length > 60 ? splitGoods(g.items) : null;
+        const subKey = parts && parts.some((p) => p.key === sub) ? sub : '';
+        const items = subKey ? parts.find((p) => p.key === subKey).items : g.items;
+        const expanded = searching || !!activeGroup || !!subKey || open.has(g.key);
         // В одной группе (лекарства — 155 позиций) показываем порциями по 30, чтобы страница не превращалась в простыню.
-        const pageLimit = activeGroup && !searching ? PAGE * (1 + (pages[g.key] || 0)) : Infinity;
-        const rows = (expanded ? g.items : g.items.slice(0, FIRST_ROWS)).slice(0, pageLimit);
-        const rest = Math.max(0, (expanded ? g.items.length : 0) - rows.length);
+        const pageLimit = (activeGroup || subKey) && !searching ? PAGE * (1 + (pages[g.key + subKey] || 0)) : Infinity;
+        const rows = (expanded ? items : items.slice(0, FIRST_ROWS)).slice(0, pageLimit);
+        const rest = Math.max(0, (expanded ? items.length : 0) - rows.length);
         return (
           <div key={g.key} className="z1p-group" data-testid={`price-group-${g.key}`}>
             {!searching && (
@@ -219,15 +232,16 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
                 <span className="z1p-group__n">{g.items.length}</span>
               </h3>
             )}
+            {parts && <GoodsSubChips parts={parts} total={g.items.length} value={subKey} onChange={setSub} />}
             <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
               {rows.map((item) => <PriceRow key={item.code} item={item} to={pathFor(item.code)} hidePeriod={!!common && item.period_label === common} />)}
             </div>
             {rest > 0 && (
-              <button type="button" className="fe-chip fe-press z1p-more" onClick={() => setPages((p) => ({ ...p, [g.key]: (p[g.key] || 0) + 1 }))}>
+              <button type="button" className="fe-chip fe-press z1p-more" onClick={() => setPages((p) => ({ ...p, [g.key + subKey]: (p[g.key + subKey] || 0) + 1 }))}>
                 {t('r2z1.prices.moreN', { n: Math.min(PAGE, rest) })}
               </button>
             )}
-            {!expanded && g.items.length > FIRST_ROWS && (
+            {!expanded && items.length > FIRST_ROWS && (
               <button type="button" className="fe-chip fe-press z1p-more" onClick={() => toggle(g.key)}>
                 {t('z1.prices.showMore', { n: g.items.length })}
               </button>

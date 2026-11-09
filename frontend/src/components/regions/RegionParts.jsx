@@ -94,7 +94,7 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
       className="fe-panel fe-summary-card fe-press fe-reveal group flex min-w-0 flex-col rounded-2xl p-3.5 transition-colors fe-float"
       style={{ '--fe-delay': `${Math.min(index, 5) * 0.04}s`, '--fe-rise': '8px' }}
     >
-      <div className="line-clamp-2 min-h-[2.4em] text-[13px] leading-snug text-text-secondary">{label}</div>
+      <div className="line-clamp-2 min-h-[2.4em] text-[14px] leading-snug text-text-secondary">{label}</div>
       <div className="fe-num mt-1.5 whitespace-nowrap text-[1.15rem] font-semibold leading-tight tabular-nums text-text-primary">
         <RegionValue value={item.value} unit={item.unit} locale={locale} />
       </div>
@@ -119,7 +119,7 @@ export function RegionIndicatorRow({ item, to, title, compact = false, hidePerio
       className={`${old ? 'z1p-row-old ' : ''}${compact ? 'r5b-row ' : ''}fe-press group flex min-w-0 flex-col gap-2 rounded-2xl px-3.5 py-3 transition-colors sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 fe-glass-lite fe-float`}
     >
       <div className="min-w-0 flex-1">
-        <div className="text-[14px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
+        <div className="text-[15px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
           {title || plainIndicatorTitle(item.name, locale)}
         </div>
         {old ? (
@@ -130,13 +130,13 @@ export function RegionIndicatorRow({ item, to, title, compact = false, hidePerio
         {explain ? <div className="mt-1 text-xs leading-snug text-text-secondary" data-testid="row-explain">{explain}</div> : null}
       </div>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
-        <div className="fe-num min-w-0 text-[15px] font-semibold tabular-nums text-text-primary sm:whitespace-nowrap">
+        <div className="fe-num min-w-0 text-[16px] font-semibold tabular-nums text-text-primary sm:whitespace-nowrap">
           <RegionValue value={item.value} unit={item.unit} locale={locale} />
         </div>
         <div className="flex items-center gap-2">
           {old ? null : <TrendTick value={item.value} prevValue={item.prev_value} polarity={indicatorPolarity(item.name)} />}
           {old ? null : <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />}
-          {hidePeriod && !old ? null : <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>}
+          {hidePeriod && !old ? null : <span className="r8b-period text-[13px] text-text-secondary">{item.period_label || item.year}</span>}
         </div>
       </div>
     </Card>

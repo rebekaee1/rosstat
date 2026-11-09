@@ -1,0 +1,23 @@
+/* R8-B: страница региона глазами человека с крупным шрифтом: контраст подписей, размер касания, подгруппы товаров. */
+
+/* Числа в кнопках и заголовках групп — не бледнее и не мельче основного текста. */
+.z1p-chips__n { font-size: 14px; opacity: 1; color: var(--color-text-secondary); }
+.fe-chip.is-active .z1p-chips__n { color: inherit; opacity: .85; }
+.z1p-group__n { font-size: 15px; }
+.z1p-group__title { font-size: 1.2rem; line-height: 1.25; }
+
+/* «Показать ещё» — заметная крупная кнопка на всю ширину узкого экрана. */
+.z1p-more { min-height: 52px; padding-inline: 20px; font-size: 1rem; font-weight: 600; color: var(--color-champagne-ink, var(--color-text-primary)); }
+@media (max-width: 639px) { .z1p-more { width: 100%; justify-content: center; } }
+
+/* Подгруппы «Одежда и товары»: кнопки переносятся, а не прячутся за край. */
+.r8b-subchips { margin: 0 0 14px; flex-wrap: wrap; gap: 8px; }
+.r8b-subchips .fe-chip { min-height: 44px; }
+
+/* Название цены в карточке не обрезается до двух строк при крупном шрифте. */
+.z1p-card__name { -webkit-line-clamp: 3; min-height: 0; font-size: 15px; }
+.z1p-card__month, .z1p-card__flat { font-size: 14px; }
+
+/* Подгруппы видны все сразу, без горизонтальной прокрутки (основной ряд групп остаётся лентой). */
+:root .z1p-chips.r8b-subchips { flex-wrap: wrap; overflow: visible; padding-right: 0; -webkit-mask-image: none; mask-image: none; }
+:root .z1p-chips.r8b-subchips > .fe-chip { flex: 0 1 auto; white-space: normal; text-align: left; }
