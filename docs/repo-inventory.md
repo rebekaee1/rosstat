@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2191  ·  **Строк:** 1 386 986  ·  **Токенов (≈):** 13 184 600
+**Файлов:** 2191  ·  **Строк:** 1 386 987  ·  **Токенов (≈):** 13 184 637
 
 ## По верхним папкам
 
@@ -19,8 +19,8 @@
 | `backend` | 884 | 309 925 | 3 371 189 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 122 | 16 382 |
-| `docs` | 141 | 865 471 | 7 426 273 |
-| `frontend` | 995 | 182 488 | 1 994 037 |
+| `docs` | 141 | 865 471 | 7 426 282 |
+| `frontend` | 995 | 182 489 | 1 994 065 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 652 | 307 147 |
 
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 349 625 | 2 870 151 |
-| `docs/client-mechanism-inventory.json` | 252 200 | 1 782 658 |
+| `docs/client-mechanism-inventory.json` | 252 200 | 1 782 667 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -375,9 +375,9 @@
 | `backend/tests/test_data_loading_c28.py` | 383 | 4 098 |
 | `scripts/search-history-audit.py` | 279 | 4 090 |
 | `backend/tests/test_calendar_seed.py` | 442 | 4 075 |
+| `frontend/src/components/GenericIndicatorView.jsx` | 385 | 4 065 |
 | `frontend/src/pages/Privacy.jsx` | 299 | 4 063 |
 | `backend/app/services/world_adapters/estat_api.py` | 438 | 4 057 |
-| `frontend/src/components/GenericIndicatorView.jsx` | 385 | 4 057 |
 | `docs/adr/0013-country-first-url-architecture.md` | 309 | 4 041 |
 | `frontend/src/lib/compareRepresentation.js` | 362 | 4 039 |
 | `backend/tests/test_telegram_order_and_alert_noise.py` | 446 | 4 038 |
@@ -455,8 +455,8 @@
 | `frontend/src/lib/track.js` | 345 | 3 423 |
 | `scripts/build-us-bea-catalog.py` | 263 | 3 407 |
 | `docs/research/emiss-opendata-placement-2026-11-09.md` | 113 | 3 395 |
+| `frontend/src/lib/indicatorSummary.js` | 326 | 3 382 |
 | `backend/tests/test_perf_batch2.py` | 347 | 3 380 |
-| `frontend/src/lib/indicatorSummary.js` | 326 | 3 377 |
 | `frontend/src/components/regions/RegionRanking.jsx` | 278 | 3 371 |
 | `frontend/src/styles/k4-charts.css` | 285 | 3 353 |
 | `backend/tests/forecast_strategies/snapshots/prod_generic_ols.json` | 985 | 3 333 |
@@ -674,10 +674,10 @@
 | `frontend/src/components/regions/RegionParts.jsx` | 186 | 2 260 |
 | `backend/tests/test_world_forecast_candidates.py` | 210 | 2 256 |
 | `scripts/emiss/grid_to_series.py` | 207 | 2 255 |
+| `frontend/src/lib/regionUi.js` | 213 | 2 252 |
 | `backend/tests/test_world_boc_valet_adapter.py` | 292 | 2 250 |
 | `scripts/audit-public-language.py` | 256 | 2 250 |
 | `backend/app/services/rosstat_ind_parser.py` | 295 | 2 248 |
-| `frontend/src/lib/regionUi.js` | 212 | 2 242 |
 | `backend/app/services/eurostat_structure.py` | 218 | 2 238 |
 | `docs/design/local-acceptance/performance-country-before.json` | 263 | 2 228 |
 | `frontend/src/components/Sparkline.jsx` | 279 | 2 227 |
@@ -1358,8 +1358,8 @@
 | `backend/app/data/housing_historical.py` | 92 | 884 |
 | `backend/tests/test_attribution_query.py` | 116 | 883 |
 | `frontend/src/components/UsCatalogNav.jsx` | 86 | 883 |
-| `frontend/src/lib/regionUi.test.js` | 89 | 883 |
 | `backend/tests/forecast_strategies/test_monthly_auto.py` | 100 | 881 |
+| `frontend/src/lib/regionUi.test.js` | 89 | 881 |
 | `scripts/insert-gdp-q1-2026-estimate.py` | 85 | 878 |
 | `frontend/src/lib/chartForecastMerge.test.js` | 90 | 877 |
 | `frontend/src/lib/ratingConcepts.js` | 91 | 877 |
@@ -1617,10 +1617,10 @@
 | `backend/app/services/forecast_strategies/cpi_combined.py` | 71 | 623 |
 | `frontend/src/lib/chartForecastMerge.js` | 72 | 623 |
 | `frontend/src/components/BrentLiveNote.component.test.jsx` | 51 | 622 |
+| `frontend/src/lib/deltaText.js` | 49 | 622 |
 | `frontend/src/components/IndicatorTelemetryGrid.component.test.jsx` | 50 | 619 |
 | `frontend/src/lib/countryBootstrap.js` | 66 | 618 |
 | `frontend/src/lib/dataFreshness.test.js` | 49 | 617 |
-| `frontend/src/lib/deltaText.js` | 49 | 616 |
 | `backend/tests/test_digest_period.py` | 60 | 615 |
 | `docs/agent-briefs/selector-brief.md` | 18 | 615 |
 | `backend/alembic/versions/20260409_add_economic_events.py` | 54 | 613 |
@@ -1862,7 +1862,7 @@
 | `frontend/src/lib/periodPhrase.js` | 33 | 398 |
 | `frontend/src/lib/r6Annual.js` | 46 | 398 |
 | `backend/app/services/oauth/fake.py` | 45 | 397 |
-| `frontend/src/styles/r8e-fixes.css` | 18 | 396 |
+| `frontend/src/styles/r8e-fixes.css` | 18 | 397 |
 | `backend/tests/test_search_r6a_labour.py` | 35 | 395 |
 | `frontend/src/components/PasswordField.jsx` | 44 | 395 |
 | `frontend/src/lib/z3Past.js` | 31 | 395 |

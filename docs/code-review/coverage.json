@@ -21,7 +21,7 @@
   "counts": {
     "files": 2350,
     "code_files": 1934,
-    "current_reviews": 2350,
+    "current_reviews": 2349,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 120,
@@ -30,8 +30,8 @@
       "reviewed": 2132
     },
     "definitions": 15322,
-    "annotated_definitions": 15322,
-    "files_needing_attention": 0
+    "annotated_definitions": 15313,
+    "files_needing_attention": 1
   },
   "orphan_reviews": [],
   "files": [
@@ -13141,8 +13141,8 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "9e46e8f7e7961235ca11b93603b8836a044fe4ee042b5e9e8f7db1d6c5bf7b63",
-      "bytes": 7166509,
+      "sha256": "3c71985aa8ec344a016cb6bd6d0c94c06cfa22ccd959e860e4dffdda0d602260",
+      "bytes": 7166542,
       "lines": 252200,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -13713,7 +13713,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "6d77e6828bb5c13ac361a7008ed3fc3bfd572c4eb53705775acbcbfbdd259127",
+      "sha256": "a9d004671a135ac341d5be996693ba8665276ff4f2dc1de6c4337ac76da9dad8",
       "bytes": 3818642,
       "lines": 134983,
       "code": false,
@@ -17418,8 +17418,8 @@
     },
     {
       "path": "frontend/src/components/GenericIndicatorView.jsx",
-      "sha256": "dd1193c51c55a32c83b87e2d2e3a2696e3b776986af1c4c101735fad1539910e",
-      "bytes": 17650,
+      "sha256": "4cc910db3488fb5f65f4ed7422d6db4cc7db16554fc4c6713bb031fc9815d5a9",
+      "bytes": 17683,
       "lines": 385,
       "code": true,
       "status": "reviewed",
@@ -22514,8 +22514,8 @@
     },
     {
       "path": "frontend/src/lib/deltaText.js",
-      "sha256": "a0d8444f28ac2996caa8b1e17fb6dca720512e4a667b85825101dede62acc91d",
-      "bytes": 3127,
+      "sha256": "d89e6afef0b65f50f643c81eaf0edbfabfe673cf9da5fe97dcbe1e79ab165045",
+      "bytes": 3150,
       "lines": 49,
       "code": true,
       "status": "reviewed",
@@ -23138,8 +23138,8 @@
     },
     {
       "path": "frontend/src/lib/indicatorSummary.js",
-      "sha256": "b2b98242215ea22e0b52740f300d3ca148cc02dbdbe370fd84cf8c37f745b041",
-      "bytes": 16028,
+      "sha256": "515262e79bfa92143519dfd0870663edc8d01824e47254c55cca3d5f55d943bc",
+      "bytes": 16051,
       "lines": 326,
       "code": true,
       "status": "reviewed",
@@ -24217,16 +24217,73 @@
     },
     {
       "path": "frontend/src/lib/regionUi.js",
-      "sha256": "eb53836481db5e259562a55835d0a5d84cc2ec87defa0d22271040a60b86ecf0",
-      "bytes": 11059,
-      "lines": 212,
+      "sha256": "56de782a26fe71654ae93fd3178b5ad618dff1fbec1caec1452841cf63158ded",
+      "bytes": 11100,
+      "lines": 213,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 15,
-      "annotated_definitions": 15,
-      "missing_definitions": []
+      "annotated_definitions": 6,
+      "missing_definitions": [
+        {
+          "name": "formatPointsDelta",
+          "line": 75,
+          "end_line": 86,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "glueNumbers",
+          "line": 92,
+          "end_line": 96,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "plainIndicatorTitle",
+          "line": 104,
+          "end_line": 118,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "explainIndicator",
+          "line": 124,
+          "end_line": 153,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "plainName",
+          "line": 156,
+          "end_line": 158,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "compactParts",
+          "line": 176,
+          "end_line": 190,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "formatRegionCompact",
+          "line": 193,
+          "end_line": 196,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "prioritizeIndicators",
+          "line": 202,
+          "end_line": 213,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "prioritizeIndicators.score",
+          "line": 203,
+          "end_line": 208,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/lib/regionUi.points.test.js",
@@ -24243,8 +24300,8 @@
     },
     {
       "path": "frontend/src/lib/regionUi.test.js",
-      "sha256": "c411d5f98d2bb442d34c21f78c19160281328367dc33ea74b6876fa9e28b8304",
-      "bytes": 4408,
+      "sha256": "bc9a4360b1741063f01090b9c8869e066b08d60e36bef5615b8ed5e270c3da5b",
+      "bytes": 4401,
       "lines": 89,
       "code": true,
       "status": "reviewed",
@@ -28260,8 +28317,8 @@
     },
     {
       "path": "frontend/src/styles/r8e-fixes.css",
-      "sha256": "c31741a4db7347224b80086c81f91a946646ce7317e7e2ab94231910826350e7",
-      "bytes": 1886,
+      "sha256": "b31bbc800cb1057af9d8ca569e16ac0e929420b1c5e27bb11dacfd2c363c8cc3",
+      "bytes": 1887,
       "lines": 18,
       "code": true,
       "status": "reviewed",
@@ -30587,11 +30644,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "14ebd2358dc025e1fb57fc23bd53eed3160e46cff24191379609ce93111fbb82",
-  "javascript_inventory_sha256": "6ad472c4a0097b2beddf645aee51410cfaefaec1a85a5c500db0508f1a3d7670",
-  "baseline_commit": "05b0fad3ec4b9f84285f026ff53a23ef9045c2f8",
+  "ledger_sha256": "314880049819b2ee4d1bdfaa74d1a6bae341935250603246f11da380e47d82f9",
+  "javascript_inventory_sha256": "b8d7e7839f0bc6b888629ca5fdbe044905ce0997062cec8a1f22f61b813e2924",
+  "baseline_commit": "e2a74f12cad5f25b3af600bd803b84374efd2689",
   "branch": "circle-data/int",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json"
+    "docs/client-mechanism-inventory.json",
+    "docs/indicator-index.json"
   ]
 }

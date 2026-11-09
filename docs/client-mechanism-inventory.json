@@ -26050,7 +26050,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/GenericIndicatorView.jsx": {
-      "sha256": "dd1193c51c55a32c83b87e2d2e3a2696e3b776986af1c4c101735fad1539910e",
+      "sha256": "4cc910db3488fb5f65f4ed7422d6db4cc7db16554fc4c6713bb031fc9815d5a9",
       "imports": [
         {
           "line": 1,
@@ -26902,7 +26902,7 @@
           "owner": "GenericIndicatorView",
           "callee": "useMemo",
           "arguments": [
-            "() => {\n    const pair = isCurrency ? parsePair(code) : null;\n    const value = Number(heroSummary?.last?.value);\n    if (!pair || pair.quote !== 'RUB' || !TRIP_UNITS.includes(pair.base) || !(value > 0)) return '';\n    const perOneRub = value / quoteUnitsOf(effectiveIndicator?.unit);\n    if (!(perOneRub > 0)) return '';\n    const got = 1000 / perOneRub;\n    return `1\\u00a0000\\u00a0₽ = ${formatConverted(got, locale, { money: true })}\\u00a0${unitWord(got, pair.base, locale)}`;\n  }",
+            "() => {\n    const pair = isCurrency ? parsePair(code) : null;\n    const value = Number(heroSummary?.last?.value);\n    if (!pair || pair.quote !== 'RUB' || !TRIP_UNITS.includes(pair.base) || !(value > 0)) return '';\n    const perOneRub = value / quoteUnitsOf(effectiveIndicator?.unit);\n    if (!(perOneRub > 0)) return '';\n    const got = 1000 / perOneRub;\n    return `${locale === 'en' ? '1,000' : '1\\u00a0000'}\\u00a0₽ = ${formatConverted(got, locale, { money: true })}\\u00a0${unitWord(got, pair.base, locale)}`;\n  }",
             "[isCurrency, code, heroSummary, effectiveIndicator?.unit, locale]"
           ]
         }
@@ -136451,7 +136451,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/deltaText.js": {
-      "sha256": "a0d8444f28ac2996caa8b1e17fb6dca720512e4a667b85825101dede62acc91d",
+      "sha256": "d89e6afef0b65f50f643c81eaf0edbfabfe673cf9da5fe97dcbe1e79ab165045",
       "imports": [
         {
           "line": 7,
@@ -144261,7 +144261,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/indicatorSummary.js": {
-      "sha256": "b2b98242215ea22e0b52740f300d3ca148cc02dbdbe370fd84cf8c37f745b041",
+      "sha256": "515262e79bfa92143519dfd0870663edc8d01824e47254c55cca3d5f55d943bc",
       "imports": [
         {
           "line": 8,
@@ -157447,7 +157447,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/regionUi.js": {
-      "sha256": "eb53836481db5e259562a55835d0a5d84cc2ec87defa0d22271040a60b86ecf0",
+      "sha256": "56de782a26fe71654ae93fd3178b5ad618dff1fbec1caec1452841cf63158ded",
       "imports": [
         {
           "line": 3,
@@ -157520,99 +157520,91 @@
         },
         {
           "line": 62,
-          "end_line": 68,
+          "end_line": 69,
           "owner": "<module>",
           "name": "formatDeltaPercent",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 74,
-          "end_line": 85,
+          "line": 75,
+          "end_line": 86,
           "owner": "<module>",
           "name": "formatPointsDelta",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 91,
-          "end_line": 95,
+          "line": 92,
+          "end_line": 96,
           "owner": "<module>",
           "name": "glueNumbers",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 103,
-          "end_line": 117,
+          "line": 104,
+          "end_line": 118,
           "owner": "<module>",
           "name": "plainIndicatorTitle",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 123,
-          "end_line": 152,
+          "line": 124,
+          "end_line": 153,
           "owner": "<module>",
           "name": "explainIndicator",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 155,
-          "end_line": 157,
+          "line": 156,
+          "end_line": 158,
           "owner": "<module>",
           "name": "plainName",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 175,
-          "end_line": 189,
+          "line": 176,
+          "end_line": 190,
           "owner": "<module>",
           "name": "compactParts",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 181,
-          "end_line": 181,
+          "line": 182,
+          "end_line": 182,
           "owner": "compactParts",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rules?.find"
         },
         {
-          "line": 192,
-          "end_line": 195,
+          "line": 193,
+          "end_line": 196,
           "owner": "<module>",
           "name": "formatRegionCompact",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 201,
-          "end_line": 212,
+          "line": 202,
+          "end_line": 213,
           "owner": "<module>",
           "name": "prioritizeIndicators",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 202,
-          "end_line": 207,
+          "line": 203,
+          "end_line": 208,
           "owner": "prioritizeIndicators",
           "name": "score",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
-        },
-        {
-          "line": 209,
-          "end_line": 209,
-          "owner": "prioritizeIndicators",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "indicators\n    .map"
         },
         {
           "line": 210,
@@ -157620,11 +157612,19 @@
           "owner": "prioritizeIndicators",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "indicators\n    .map((item, index) => ({ item, index, score: score(item) }))\n    .sort"
+          "callback_context": "indicators\n    .map"
         },
         {
           "line": 211,
           "end_line": 211,
+          "owner": "prioritizeIndicators",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "indicators\n    .map((item, index) => ({ item, index, score: score(item) }))\n    .sort"
+        },
+        {
+          "line": 212,
+          "end_line": 212,
           "owner": "prioritizeIndicators",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -157638,8 +157638,8 @@
       "jsx_handlers": [],
       "registries": [
         {
-          "line": 159,
-          "end_line": 165,
+          "line": 160,
+          "end_line": 166,
           "owner": "<module>",
           "name": "COMPACT_RULES_RU",
           "kind": "ObjectExpression",
@@ -157653,8 +157653,8 @@
           "initializer": null
         },
         {
-          "line": 166,
-          "end_line": 172,
+          "line": 167,
+          "end_line": 173,
           "owner": "<module>",
           "name": "COMPACT_RULES_EN",
           "kind": "ObjectExpression",
@@ -157821,7 +157821,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/regionUi.test.js": {
-      "sha256": "c411d5f98d2bb442d34c21f78c19160281328367dc33ea74b6876fa9e28b8304",
+      "sha256": "bc9a4360b1741063f01090b9c8869e066b08d60e36bef5615b8ed5e270c3da5b",
       "imports": [
         {
           "line": 1,

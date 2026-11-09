@@ -5808,7 +5808,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/components/GenericIndicatorView.jsx": {
-    "sha256": "dd1193c51c55a32c83b87e2d2e3a2696e3b776986af1c4c101735fad1539910e",
+    "sha256": "4cc910db3488fb5f65f4ed7422d6db4cc7db16554fc4c6713bb031fc9815d5a9",
     "definitions": [
       {
         "name": "IDENTITY",
@@ -33682,7 +33682,7 @@
     "anonymous_functions": 5
   },
   "frontend/src/lib/deltaText.js": {
-    "sha256": "a0d8444f28ac2996caa8b1e17fb6dca720512e4a667b85825101dede62acc91d",
+    "sha256": "d89e6afef0b65f50f643c81eaf0edbfabfe673cf9da5fe97dcbe1e79ab165045",
     "definitions": [
       {
         "name": "formatDeltaNumber",
@@ -36844,7 +36844,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/indicatorSummary.js": {
-    "sha256": "b2b98242215ea22e0b52740f300d3ca148cc02dbdbe370fd84cf8c37f745b041",
+    "sha256": "515262e79bfa92143519dfd0870663edc8d01824e47254c55cca3d5f55d943bc",
     "definitions": [
       {
         "name": "isPercentChangeUnit",
@@ -41639,7 +41639,7 @@
     "anonymous_functions": 14
   },
   "frontend/src/lib/regionUi.js": {
-    "sha256": "eb53836481db5e259562a55835d0a5d84cc2ec87defa0d22271040a60b86ecf0",
+    "sha256": "56de782a26fe71654ae93fd3178b5ad618dff1fbec1caec1452841cf63158ded",
     "definitions": [
       {
         "name": "numberLocale",
@@ -41674,61 +41674,61 @@
       {
         "name": "formatDeltaPercent",
         "line": 62,
-        "end_line": 68,
+        "end_line": 69,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatPointsDelta",
-        "line": 74,
-        "end_line": 85,
+        "line": 75,
+        "end_line": 86,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "glueNumbers",
-        "line": 91,
-        "end_line": 95,
+        "line": 92,
+        "end_line": 96,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "plainIndicatorTitle",
-        "line": 103,
-        "end_line": 117,
+        "line": 104,
+        "end_line": 118,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "explainIndicator",
-        "line": 123,
-        "end_line": 152,
+        "line": 124,
+        "end_line": 153,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "plainName",
-        "line": 155,
-        "end_line": 157,
+        "line": 156,
+        "end_line": 158,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compactParts",
-        "line": 175,
-        "end_line": 189,
+        "line": 176,
+        "end_line": 190,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatRegionCompact",
-        "line": 192,
-        "end_line": 195,
+        "line": 193,
+        "end_line": 196,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "prioritizeIndicators",
-        "line": 201,
-        "end_line": 212,
+        "line": 202,
+        "end_line": 213,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "prioritizeIndicators.score",
-        "line": 202,
-        "end_line": 207,
+        "line": 203,
+        "end_line": 208,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -41783,49 +41783,49 @@
         "names": [
           "formatPointsDelta"
         ],
-        "line": 74
+        "line": 75
       },
       {
         "names": [
           "glueNumbers"
         ],
-        "line": 91
+        "line": 92
       },
       {
         "names": [
           "plainIndicatorTitle"
         ],
-        "line": 103
+        "line": 104
       },
       {
         "names": [
           "explainIndicator"
         ],
-        "line": 123
+        "line": 124
       },
       {
         "names": [
           "plainName"
         ],
-        "line": 155
+        "line": 156
       },
       {
         "names": [
           "compactParts"
         ],
-        "line": 175
+        "line": 176
       },
       {
         "names": [
           "formatRegionCompact"
         ],
-        "line": 192
+        "line": 193
       },
       {
         "names": [
           "prioritizeIndicators"
         ],
-        "line": 201
+        "line": 202
       }
     ],
     "anonymous_functions": 4
@@ -41847,7 +41847,7 @@
     "anonymous_functions": 13
   },
   "frontend/src/lib/regionUi.test.js": {
-    "sha256": "c411d5f98d2bb442d34c21f78c19160281328367dc33ea74b6876fa9e28b8304",
+    "sha256": "bc9a4360b1741063f01090b9c8869e066b08d60e36bef5615b8ed5e270c3da5b",
     "definitions": [],
     "imports": [
       {
