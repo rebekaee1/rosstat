@@ -107,7 +107,7 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
   );
 }
 
-export function RegionIndicatorRow({ item, to, title }) {
+export function RegionIndicatorRow({ item, to, title, compact = false, hidePeriod = false }) {
   const { locale, t } = useLocale();
   const empty = item.value == null;
   const old = Boolean(item.is_discontinued);
@@ -116,7 +116,7 @@ export function RegionIndicatorRow({ item, to, title }) {
   return (
     <Card
       {...(empty ? { 'aria-disabled': true } : { to })}
-      className={`${old ? 'z1p-row-old ' : ''}fe-press group flex min-w-0 flex-col gap-2 rounded-2xl px-3.5 py-3 transition-colors sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 fe-glass-lite fe-float`}
+      className={`${old ? 'z1p-row-old ' : ''}${compact ? 'r5b-row ' : ''}fe-press group flex min-w-0 flex-col gap-2 rounded-2xl px-3.5 py-3 transition-colors sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 fe-glass-lite fe-float`}
     >
       <div className="min-w-0 flex-1">
         <div className="text-[14px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
@@ -136,7 +136,7 @@ export function RegionIndicatorRow({ item, to, title }) {
         <div className="flex items-center gap-2">
           {old ? null : <TrendTick value={item.value} prevValue={item.prev_value} polarity={indicatorPolarity(item.name)} />}
           {old ? null : <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />}
-          <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>
+          {hidePeriod && !old ? null : <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>}
         </div>
       </div>
     </Card>

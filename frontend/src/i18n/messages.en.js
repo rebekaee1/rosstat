@@ -3883,4 +3883,13 @@ export default {
   'r4a.your.typical': 'About the same as a typical region.',
   'r4a.your.compare': 'Compare with the cheapest region',
   'r4a.rating.extremes': 'Compare living costs where it is dearest and cheapest: {a} and {b}',
+  'r5b.tabs.aria': 'Price sets',
+  'r5b.tab.main': 'Everyday',
+  'r5b.tab.kids': 'For kids',
+  'r5b.tab.home': 'Utilities',
+  'r5b.tab.pharm': 'Medicines',
+  'r5b.try.lead': 'For example:',
+  'r5b.try.words': 'kindergarten|milk|heating|ibuprofen',
+  'r5b.topics.aria': 'Popular topics',
+  'r5b.hub.jump': 'Full list of regions by district',
 };
