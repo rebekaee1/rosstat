@@ -2170,8 +2170,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "sha256": "2a41dc98680c49148f89462a2c77e2b8d096f9046e1f75aa287b8739a5adddf2",
-      "lines": 1216
+      "sha256": "03990db365dc0cc7fc2e9f58eb14bc36f48fda1c5af70db6ee6138aa26e1870b",
+      "lines": 1227
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
@@ -38855,8 +38855,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1048,
-      "end_line": 1048,
+      "line": 1059,
+      "end_line": 1059,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -38864,8 +38864,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1052,
-      "end_line": 1052,
+      "line": 1063,
+      "end_line": 1063,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "name": "analytics_allowed_counter_ids",
@@ -120871,8 +120871,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 424,
-      "end_line": 428,
+      "line": 435,
+      "end_line": 439,
       "owner": "<module>",
       "conditions": [],
       "name": "_PORTRAIT_FP_COLUMNS",
@@ -158484,8 +158484,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1063,
-      "end_line": 1063,
+      "line": 1074,
+      "end_line": 1074,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "operation": "set",
@@ -158498,8 +158498,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 218,
-      "end_line": 218,
+      "line": 229,
+      "end_line": 229,
       "owner": "_stage",
       "conditions": [],
       "operation": "execute",
@@ -158512,8 +158512,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 219,
-      "end_line": 219,
+      "line": 230,
+      "end_line": 230,
       "owner": "_stage",
       "conditions": [],
       "operation": "execute",
@@ -158526,8 +158526,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 833,
-      "end_line": 833,
+      "line": 844,
+      "end_line": 844,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "operation": "execute",
@@ -158540,8 +158540,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 844,
-      "end_line": 844,
+      "line": 855,
+      "end_line": 855,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "operation": "commit",
@@ -158554,8 +158554,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 873,
-      "end_line": 873,
+      "line": 884,
+      "end_line": 884,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "operation": "execute",
@@ -158568,8 +158568,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 884,
-      "end_line": 884,
+      "line": 895,
+      "end_line": 895,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "operation": "commit",
@@ -158582,8 +158582,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 954,
-      "end_line": 954,
+      "line": 965,
+      "end_line": 965,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "operation": "execute",
@@ -158596,8 +158596,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 962,
-      "end_line": 962,
+      "line": 973,
+      "end_line": 973,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "operation": "commit",
@@ -158610,8 +158610,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1015,
-      "end_line": 1015,
+      "line": 1026,
+      "end_line": 1026,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "execute",
@@ -158624,8 +158624,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1031,
-      "end_line": 1031,
+      "line": 1042,
+      "end_line": 1042,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "commit",
@@ -158638,8 +158638,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1069,
-      "end_line": 1069,
+      "line": 1080,
+      "end_line": 1080,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "operation": "add",
@@ -158652,8 +158652,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1100,
-      "end_line": 1100,
+      "line": 1111,
+      "end_line": 1111,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "operation": "commit",
@@ -158666,8 +158666,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 232,
+      "end_line": 232,
       "owner": "_stage",
       "conditions": [
         "index"
@@ -158682,8 +158682,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 223,
-      "end_line": 223,
+      "line": 234,
+      "end_line": 234,
       "owner": "_stage",
       "conditions": [
         "db.bind.dialect.name == 'postgresql'"
@@ -158698,8 +158698,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 506,
+      "end_line": 506,
       "owner": "sessionize",
       "conditions": [],
       "operation": "execute",
@@ -158712,8 +158712,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 563,
+      "end_line": 563,
       "owner": "sessionize",
       "conditions": [],
       "operation": "execute",
@@ -158726,8 +158726,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 564,
+      "end_line": 564,
       "owner": "sessionize",
       "conditions": [],
       "operation": "execute",
@@ -158740,8 +158740,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 555,
-      "end_line": 555,
+      "line": 566,
+      "end_line": 566,
       "owner": "sessionize",
       "conditions": [],
       "operation": "execute",
@@ -158754,8 +158754,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 565,
-      "end_line": 565,
+      "line": 576,
+      "end_line": 576,
       "owner": "sessionize",
       "conditions": [],
       "operation": "commit",
@@ -158768,8 +158768,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 843,
-      "end_line": 843,
+      "line": 854,
+      "end_line": 854,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "rows"
@@ -158784,8 +158784,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 883,
-      "end_line": 883,
+      "line": 894,
+      "end_line": 894,
       "owner": "rollup_daily_goals",
       "conditions": [
         "out"
@@ -158800,8 +158800,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 936,
-      "end_line": 936,
+      "line": 947,
+      "end_line": 947,
       "owner": "rollup_daily_goal_dims.bump",
       "conditions": [
         "sid"
@@ -158816,8 +158816,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 961,
-      "end_line": 961,
+      "line": 972,
+      "end_line": 972,
       "owner": "rollup_daily_goal_dims",
       "conditions": [
         "rows"
@@ -158832,8 +158832,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1030,
-      "end_line": 1030,
+      "line": 1041,
+      "end_line": 1041,
       "owner": "rollup_daily_pages",
       "conditions": [
         "out"
@@ -158848,8 +158848,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1090,
-      "end_line": 1090,
+      "line": 1101,
+      "end_line": 1101,
       "owner": "sync_metrika_goals",
       "conditions": [
         "not (existing)"
@@ -158864,8 +158864,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1095,
-      "end_line": 1099,
+      "line": 1106,
+      "end_line": 1110,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -158880,8 +158880,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 418,
-      "end_line": 418,
+      "line": 429,
+      "end_line": 429,
       "owner": "_SessionAccumulator.finish",
       "conditions": [],
       "operation": "set",
@@ -158894,8 +158894,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 445,
-      "end_line": 451,
+      "line": 456,
+      "end_line": 462,
       "owner": "_portrait_cluster_sizes",
       "conditions": [],
       "operation": "execute",
@@ -158908,8 +158908,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 498,
-      "end_line": 498,
+      "line": 509,
+      "end_line": 509,
       "owner": "sessionize",
       "conditions": [
         "track"
@@ -158924,8 +158924,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 568,
-      "end_line": 568,
+      "line": 579,
+      "end_line": 579,
       "owner": "sessionize",
       "conditions": [],
       "operation": "rollback",
@@ -158938,8 +158938,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 843,
-      "end_line": 843,
+      "line": 854,
+      "end_line": 854,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "rows"
@@ -158954,8 +158954,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 861,
-      "end_line": 871,
+      "line": 872,
+      "end_line": 882,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "operation": "execute",
@@ -158968,8 +158968,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 883,
-      "end_line": 883,
+      "line": 894,
+      "end_line": 894,
       "owner": "rollup_daily_goals",
       "conditions": [
         "out"
@@ -158984,8 +158984,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 933,
-      "end_line": 933,
+      "line": 944,
+      "end_line": 944,
       "owner": "rollup_daily_goal_dims.bump",
       "conditions": [],
       "operation": "set",
@@ -158998,8 +158998,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 961,
-      "end_line": 961,
+      "line": 972,
+      "end_line": 972,
       "owner": "rollup_daily_goal_dims",
       "conditions": [
         "rows"
@@ -159014,8 +159014,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 973,
-      "end_line": 983,
+      "line": 984,
+      "end_line": 994,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "execute",
@@ -159028,8 +159028,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1030,
-      "end_line": 1030,
+      "line": 1041,
+      "end_line": 1041,
       "owner": "rollup_daily_pages",
       "conditions": [
         "out"
@@ -159044,8 +159044,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1107,
-      "end_line": 1107,
+      "line": 1118,
+      "end_line": 1118,
       "owner": "sync_metrika_goals",
       "conditions": [
         "stray_events"
@@ -159060,8 +159060,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 219,
-      "end_line": 219,
+      "line": 230,
+      "end_line": 230,
       "owner": "_stage",
       "conditions": [],
       "operation": "insert",
@@ -159074,8 +159074,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 526,
-      "end_line": 526,
+      "line": 537,
+      "end_line": 537,
       "owner": "sessionize",
       "conditions": [],
       "operation": "add",
@@ -159088,8 +159088,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 545,
+      "end_line": 545,
       "owner": "sessionize",
       "conditions": [
         "output"
@@ -159104,8 +159104,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 564,
-      "end_line": 564,
+      "line": 575,
+      "end_line": 575,
       "owner": "sessionize",
       "conditions": [
         "db.bind.dialect.name == 'sqlite'"
@@ -159120,8 +159120,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 829,
-      "end_line": 829,
+      "line": 840,
+      "end_line": 840,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "client_id_hash"
@@ -159136,8 +159136,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 833,
-      "end_line": 833,
+      "line": 844,
+      "end_line": 844,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "operation": "delete",
@@ -159150,8 +159150,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 873,
-      "end_line": 873,
+      "line": 884,
+      "end_line": 884,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "operation": "delete",
@@ -159164,8 +159164,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 954,
-      "end_line": 954,
+      "line": 965,
+      "end_line": 965,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "operation": "delete",
@@ -159178,8 +159178,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1015,
-      "end_line": 1015,
+      "line": 1026,
+      "end_line": 1026,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "delete",
@@ -159192,8 +159192,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 545,
+      "end_line": 545,
       "owner": "sessionize",
       "conditions": [
         "output"
@@ -159208,8 +159208,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 563,
+      "end_line": 563,
       "owner": "sessionize",
       "conditions": [],
       "operation": "delete",
@@ -159222,8 +159222,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 564,
+      "end_line": 564,
       "owner": "sessionize",
       "conditions": [],
       "operation": "delete",
@@ -159236,8 +159236,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 555,
-      "end_line": 555,
+      "line": 566,
+      "end_line": 566,
       "owner": "sessionize",
       "conditions": [],
       "operation": "insert",
@@ -159250,8 +159250,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 575,
-      "end_line": 575,
+      "line": 586,
+      "end_line": 586,
       "owner": "sessionize",
       "conditions": [
         "db.bind.dialect.name == 'sqlite'"
@@ -159266,8 +159266,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 528,
-      "end_line": 528,
+      "line": 539,
+      "end_line": 539,
       "owner": "sessionize",
       "conditions": [
         "len(output) >= _STREAM_BATCH"
@@ -159282,8 +159282,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 585,
+      "end_line": 585,
       "owner": "sessionize",
       "conditions": [
         "db.bind.dialect.name == 'sqlite'"
@@ -159298,8 +159298,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 577,
-      "end_line": 577,
+      "line": 588,
+      "end_line": 588,
       "owner": "sessionize",
       "conditions": [
         "db.bind.dialect.name == 'sqlite'"
@@ -159314,8 +159314,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 985,
-      "end_line": 991,
+      "line": 996,
+      "end_line": 1002,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "execute",
@@ -159328,8 +159328,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 528,
-      "end_line": 528,
+      "line": 539,
+      "end_line": 539,
       "owner": "sessionize",
       "conditions": [
         "len(output) >= _STREAM_BATCH"
@@ -159344,8 +159344,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1096,
-      "end_line": 1096,
+      "line": 1107,
+      "end_line": 1107,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -159360,8 +159360,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 510,
-      "end_line": 518,
+      "line": 521,
+      "end_line": 529,
       "owner": "sessionize",
       "conditions": [],
       "operation": "execute",
@@ -260211,8 +260211,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 233,
-      "end_line": 233,
+      "line": 244,
+      "end_line": 244,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.visitor_id_hash.type",
@@ -260220,8 +260220,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 326,
+      "end_line": 326,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.visitor_id_hash.type",
@@ -260229,8 +260229,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 327,
+      "end_line": 327,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at.type",
@@ -260238,8 +260238,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 436,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.screen_w",
@@ -260247,8 +260247,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 436,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.screen_h",
@@ -260256,8 +260256,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 436,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.viewport_w",
@@ -260265,8 +260265,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 436,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.viewport_h",
@@ -260274,8 +260274,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 437,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.dpr",
@@ -260283,8 +260283,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 437,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.cpu_cores",
@@ -260292,8 +260292,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 437,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.device_memory",
@@ -260301,8 +260301,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 437,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.conn_type",
@@ -260310,8 +260310,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 438,
+      "end_line": 438,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.color_scheme",
@@ -260319,8 +260319,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 438,
+      "end_line": 438,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.language",
@@ -260328,8 +260328,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 438,
+      "end_line": 438,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.timezone",
@@ -260346,8 +260346,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 145,
-      "end_line": 145,
+      "line": 156,
+      "end_line": 156,
       "owner": "_session_raw_select",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -260355,8 +260355,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 145,
-      "end_line": 145,
+      "line": 156,
+      "end_line": 156,
       "owner": "_session_raw_select",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.id",
@@ -260364,8 +260364,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 171,
+      "end_line": 171,
       "owner": "_session_history_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -260373,8 +260373,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 171,
+      "end_line": 171,
       "owner": "_session_history_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.id",
@@ -260382,8 +260382,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 233,
-      "end_line": 233,
+      "line": 244,
+      "end_line": 244,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.visitor_id_hash",
@@ -260391,8 +260391,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 326,
+      "end_line": 326,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.visitor_id_hash",
@@ -260400,8 +260400,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 327,
+      "end_line": 327,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -260409,8 +260409,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 436,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260418,8 +260418,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 436,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260427,8 +260427,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 436,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260436,8 +260436,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 436,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260445,8 +260445,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 437,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260454,8 +260454,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 437,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260463,8 +260463,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 437,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260472,8 +260472,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 437,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260481,8 +260481,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 438,
+      "end_line": 438,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260490,8 +260490,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 438,
+      "end_line": 438,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260499,8 +260499,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 438,
+      "end_line": 438,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260508,8 +260508,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 454,
+      "end_line": 454,
       "owner": "_portrait_cluster_sizes",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.started_at",
@@ -260517,8 +260517,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 737,
-      "end_line": 737,
+      "line": 748,
+      "end_line": 748,
       "owner": "_visit_raw",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -260526,8 +260526,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 741,
-      "end_line": 741,
+      "line": 752,
+      "end_line": 752,
       "owner": "_metrika_device",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -260535,8 +260535,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 758,
+      "end_line": 758,
       "owner": "_metrika_channel",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -260544,8 +260544,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 768,
-      "end_line": 768,
+      "line": 779,
+      "end_line": 779,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.visit_date",
@@ -260553,8 +260553,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 769,
-      "end_line": 769,
+      "line": 780,
+      "end_line": 780,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.client_id_hash",
@@ -260562,8 +260562,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 770,
-      "end_line": 770,
+      "line": 781,
+      "end_line": 781,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.duration_seconds",
@@ -260571,8 +260571,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 771,
-      "end_line": 771,
+      "line": 782,
+      "end_line": 782,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.goals_json",
@@ -260580,8 +260580,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 772,
-      "end_line": 772,
+      "line": 783,
+      "end_line": 783,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.traffic_source",
@@ -260589,8 +260589,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 859,
-      "end_line": 859,
+      "line": 870,
+      "end_line": 870,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -260598,8 +260598,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 917,
-      "end_line": 917,
+      "line": 928,
+      "end_line": 928,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json['surface'].as_string",
@@ -260607,8 +260607,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 971,
-      "end_line": 971,
+      "line": 982,
+      "end_line": 982,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -260661,8 +260661,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 145,
-      "end_line": 145,
+      "line": 156,
+      "end_line": 156,
       "owner": "_session_raw_select",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260670,8 +260670,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 145,
-      "end_line": 145,
+      "line": 156,
+      "end_line": 156,
       "owner": "_session_raw_select",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260679,8 +260679,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 171,
+      "end_line": 171,
       "owner": "_session_history_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260688,8 +260688,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 171,
+      "end_line": 171,
       "owner": "_session_history_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260697,8 +260697,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 233,
-      "end_line": 233,
+      "line": 244,
+      "end_line": 244,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260706,8 +260706,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 259,
+      "end_line": 259,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at.type",
@@ -260715,8 +260715,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 326,
+      "end_line": 326,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260724,8 +260724,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 327,
+      "end_line": 327,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260733,8 +260733,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 343,
+      "end_line": 343,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash.type",
@@ -260742,8 +260742,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 354,
-      "end_line": 354,
+      "line": 365,
+      "end_line": 365,
       "owner": "_session_source_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -260751,8 +260751,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 354,
-      "end_line": 354,
+      "line": 365,
+      "end_line": 365,
       "owner": "_session_source_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.user_id",
@@ -260760,8 +260760,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 372,
+      "end_line": 372,
       "owner": "_session_source_query",
       "conditions": [
         "payload"
@@ -260771,8 +260771,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 454,
+      "end_line": 454,
       "owner": "_portrait_cluster_sizes",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -260780,8 +260780,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 768,
-      "end_line": 768,
+      "line": 779,
+      "end_line": 779,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -260789,35 +260789,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 769,
-      "end_line": 769,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 770,
-      "end_line": 770,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 771,
-      "end_line": 771,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 772,
-      "end_line": 772,
+      "line": 780,
+      "end_line": 780,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -260828,6 +260801,33 @@
       "line": 781,
       "end_line": 781,
       "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 782,
+      "end_line": 782,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 783,
+      "end_line": 783,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 792,
+      "end_line": 792,
+      "owner": "rollup_daily_traffic",
       "conditions": [
         "not (pg)"
       ],
@@ -260836,8 +260836,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 859,
-      "end_line": 859,
+      "line": 870,
+      "end_line": 870,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -260845,8 +260845,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 971,
-      "end_line": 971,
+      "line": 982,
+      "end_line": 982,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260890,8 +260890,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 190,
+      "end_line": 190,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -260901,8 +260901,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 180,
-      "end_line": 180,
+      "line": 191,
+      "end_line": 191,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -260912,8 +260912,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 259,
+      "end_line": 259,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -260921,8 +260921,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 295,
+      "end_line": 295,
       "owner": "_session_goals_select",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -260930,8 +260930,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 343,
+      "end_line": 343,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash",
@@ -260939,8 +260939,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 354,
-      "end_line": 354,
+      "line": 365,
+      "end_line": 365,
       "owner": "_session_source_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260948,8 +260948,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 354,
-      "end_line": 354,
+      "line": 365,
+      "end_line": 365,
       "owner": "_session_source_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -260957,8 +260957,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 372,
+      "end_line": 372,
       "owner": "_session_source_query",
       "conditions": [
         "payload"
@@ -260968,8 +260968,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 542,
-      "end_line": 542,
+      "line": 553,
+      "end_line": 553,
       "owner": "sessionize",
       "conditions": [],
       "symbol": "app.models.ServerSession.started_at",
@@ -260977,8 +260977,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 542,
-      "end_line": 542,
+      "line": 553,
+      "end_line": 553,
       "owner": "sessionize",
       "conditions": [],
       "symbol": "app.models.ServerSession.started_at",
@@ -260986,8 +260986,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 543,
-      "end_line": 543,
+      "line": 554,
+      "end_line": 554,
       "owner": "sessionize",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -260995,8 +260995,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 544,
-      "end_line": 544,
+      "line": 555,
+      "end_line": 555,
       "owner": "sessionize",
       "conditions": [],
       "symbol": "app.models.ServerSession.started_at",
@@ -261004,8 +261004,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 547,
-      "end_line": 547,
+      "line": 558,
+      "end_line": 558,
       "owner": "sessionize",
       "conditions": [],
       "symbol": "app.models.ServerSession.started_at",
@@ -261013,8 +261013,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 777,
-      "end_line": 777,
+      "line": 788,
+      "end_line": 788,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -261024,8 +261024,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 781,
-      "end_line": 781,
+      "line": 792,
+      "end_line": 792,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "not (pg)"
@@ -261035,8 +261035,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 917,
-      "end_line": 917,
+      "line": 928,
+      "end_line": 928,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -261044,8 +261044,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1078,
-      "end_line": 1078,
+      "line": 1089,
+      "end_line": 1089,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "symbol": "app.models.MetrikaGoal",
@@ -261062,8 +261062,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 174,
-      "end_line": 174,
+      "line": 185,
+      "end_line": 185,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -261073,8 +261073,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 174,
-      "end_line": 174,
+      "line": 185,
+      "end_line": 185,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -261084,8 +261084,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 175,
-      "end_line": 175,
+      "line": 186,
+      "end_line": 186,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -261095,8 +261095,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 175,
-      "end_line": 175,
+      "line": 186,
+      "end_line": 186,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -261106,8 +261106,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 175,
-      "end_line": 175,
+      "line": 186,
+      "end_line": 186,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -261117,8 +261117,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 176,
-      "end_line": 176,
+      "line": 187,
+      "end_line": 187,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -261128,8 +261128,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 190,
+      "end_line": 190,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -261139,8 +261139,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 180,
-      "end_line": 180,
+      "line": 191,
+      "end_line": 191,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -261150,8 +261150,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 253,
+      "end_line": 253,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.__table__.c[name].type",
@@ -261159,8 +261159,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 257,
+      "end_line": 257,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.__table__.c[name].type",
@@ -261168,8 +261168,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 259,
+      "end_line": 259,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -261177,8 +261177,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 300,
-      "end_line": 300,
+      "line": 311,
+      "end_line": 311,
       "owner": "_session_details_select",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -261186,8 +261186,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 300,
-      "end_line": 300,
+      "line": 311,
+      "end_line": 311,
       "owner": "_session_details_select",
       "conditions": [],
       "symbol": "app.models.ServerSession.started_at",
@@ -261195,8 +261195,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 334,
+      "end_line": 334,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash.type",
@@ -261204,8 +261204,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 343,
+      "end_line": 343,
       "owner": "_prepare_session_details",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -261213,8 +261213,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 372,
+      "end_line": 372,
       "owner": "_session_source_query",
       "conditions": [
         "payload"
@@ -261224,8 +261224,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 499,
+      "end_line": 499,
       "owner": "sessionize",
       "conditions": [],
       "symbol": "app.models.ServerSession.__table__.columns",
@@ -261233,632 +261233,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 542,
-      "end_line": 542,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 542,
-      "end_line": 542,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 543,
-      "end_line": 543,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 544,
-      "end_line": 544,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 547,
-      "end_line": 547,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 555,
-      "end_line": 555,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.__table__.insert().from_select",
-      "expression": "ServerSession.__table__.insert().from_select"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 802,
-      "end_line": 802,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 833,
-      "end_line": 833,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.DailyTraffic.day",
-      "expression": "DailyTraffic.day"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 843,
-      "end_line": 843,
-      "owner": "rollup_daily_traffic",
-      "conditions": [
-        "rows"
-      ],
-      "symbol": "app.models.DailyTraffic.__table__.insert",
-      "expression": "DailyTraffic.__table__.insert"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 873,
-      "end_line": 873,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.DailyGoal.day",
-      "expression": "DailyGoal.day"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 883,
-      "end_line": 883,
-      "owner": "rollup_daily_goals",
-      "conditions": [
-        "out"
-      ],
-      "symbol": "app.models.DailyGoal.__table__.insert",
-      "expression": "DailyGoal.__table__.insert"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 917,
-      "end_line": 917,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 954,
-      "end_line": 954,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.DailyGoalDim.day",
-      "expression": "DailyGoalDim.day"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 961,
-      "end_line": 961,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [
-        "rows"
-      ],
-      "symbol": "app.models.DailyGoalDim.__table__.insert",
-      "expression": "DailyGoalDim.__table__.insert"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1015,
-      "end_line": 1015,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.DailyPage.day",
-      "expression": "DailyPage.day"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1030,
-      "end_line": 1030,
-      "owner": "rollup_daily_pages",
-      "conditions": [
-        "out"
-      ],
-      "symbol": "app.models.DailyPage.__table__.insert",
-      "expression": "DailyPage.__table__.insert"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1090,
-      "end_line": 1090,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "not (existing)"
-      ],
-      "symbol": "app.models.MetrikaGoal",
-      "expression": "MetrikaGoal"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1096,
-      "end_line": 1098,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal.__table__.update().where(MetrikaGoal.goal_id.notin_(live_ids), MetrikaGoal.deleted.is_(False)).values",
-      "expression": "MetrikaGoal.__table__.update().where(MetrikaGoal.goal_id.notin_(live_ids), MetrikaGoal.deleted.is_(False)).values"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 144,
-      "end_line": 144,
-      "owner": "_session_raw_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 170,
-      "end_line": 170,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 170,
-      "end_line": 170,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 171,
-      "end_line": 171,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent.event_type.in_",
-      "expression": "BehaviorEvent.event_type.in_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 174,
-      "end_line": 174,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 174,
-      "end_line": 174,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 175,
-      "end_line": 175,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 175,
-      "end_line": 175,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 175,
-      "end_line": 175,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 176,
-      "end_line": 176,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 179,
-      "end_line": 179,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 284,
-      "end_line": 284,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.session_id_hash",
-      "expression": "FrontendEvent.session_id_hash"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 285,
-      "end_line": 285,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.occurred_at",
-      "expression": "FrontendEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 299,
-      "end_line": 299,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.id",
-      "expression": "ServerSession.id"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 300,
-      "end_line": 300,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 300,
-      "end_line": 300,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 323,
-      "end_line": 323,
-      "owner": "_prepare_session_details",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.session_id_hash",
-      "expression": "BehaviorEvent.session_id_hash"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 488,
-      "end_line": 488,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.__table__",
-      "expression": "ServerSession.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 777,
-      "end_line": 777,
-      "owner": "rollup_daily_traffic",
-      "conditions": [
-        "pg"
-      ],
-      "symbol": "app.models.RawMetrikaVisit.raw_json[key].as_string",
-      "expression": "RawMetrikaVisit.raw_json[key].as_string"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 833,
-      "end_line": 833,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.DailyTraffic",
-      "expression": "DailyTraffic"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 833,
-      "end_line": 833,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.DailyTraffic",
-      "expression": "DailyTraffic"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 843,
-      "end_line": 843,
-      "owner": "rollup_daily_traffic",
-      "conditions": [
-        "rows"
-      ],
-      "symbol": "app.models.DailyTraffic.__table__",
-      "expression": "DailyTraffic.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 870,
-      "end_line": 870,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 873,
-      "end_line": 873,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.DailyGoal",
-      "expression": "DailyGoal"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 873,
-      "end_line": 873,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.DailyGoal",
-      "expression": "DailyGoal"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 883,
-      "end_line": 883,
-      "owner": "rollup_daily_goals",
-      "conditions": [
-        "out"
-      ],
-      "symbol": "app.models.DailyGoal.__table__",
-      "expression": "DailyGoal.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 954,
-      "end_line": 954,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.DailyGoalDim",
-      "expression": "DailyGoalDim"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 954,
-      "end_line": 954,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.DailyGoalDim",
-      "expression": "DailyGoalDim"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 961,
-      "end_line": 961,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [
-        "rows"
-      ],
-      "symbol": "app.models.DailyGoalDim.__table__",
-      "expression": "DailyGoalDim.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 982,
-      "end_line": 982,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1015,
-      "end_line": 1015,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.DailyPage",
-      "expression": "DailyPage"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1015,
-      "end_line": 1015,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.DailyPage",
-      "expression": "DailyPage"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1030,
-      "end_line": 1030,
-      "owner": "rollup_daily_pages",
-      "conditions": [
-        "out"
-      ],
-      "symbol": "app.models.DailyPage.__table__",
-      "expression": "DailyPage.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 170,
-      "end_line": 170,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 170,
-      "end_line": 170,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 171,
-      "end_line": 171,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 238,
-      "end_line": 238,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 238,
-      "end_line": 238,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 239,
-      "end_line": 239,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type.in_",
-      "expression": "BehaviorEvent.event_type.in_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 242,
-      "end_line": 242,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.__table__.c",
-      "expression": "BehaviorEvent.__table__.c"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 246,
-      "end_line": 246,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.__table__.c",
-      "expression": "BehaviorEvent.__table__.c"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 284,
-      "end_line": 284,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 285,
-      "end_line": 285,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 299,
-      "end_line": 299,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 323,
-      "end_line": 323,
-      "owner": "_prepare_session_details",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 488,
-      "end_line": 488,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 553,
+      "end_line": 553,
       "owner": "sessionize",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -261875,390 +261251,12 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 555,
-      "end_line": 555,
+      "line": 554,
+      "end_line": 554,
       "owner": "sessionize",
       "conditions": [],
-      "symbol": "app.models.ServerSession.__table__.insert",
-      "expression": "ServerSession.__table__.insert"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 784,
-      "end_line": 784,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit.visit_date",
-      "expression": "RawMetrikaVisit.visit_date"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 843,
-      "end_line": 843,
-      "owner": "rollup_daily_traffic",
-      "conditions": [
-        "rows"
-      ],
-      "symbol": "app.models.DailyTraffic",
-      "expression": "DailyTraffic"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 870,
-      "end_line": 870,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 883,
-      "end_line": 883,
-      "owner": "rollup_daily_goals",
-      "conditions": [
-        "out"
-      ],
-      "symbol": "app.models.DailyGoal",
-      "expression": "DailyGoal"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 926,
-      "end_line": 926,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name.in_",
-      "expression": "FrontendEvent.event_name.in_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 927,
-      "end_line": 927,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.occurred_at",
-      "expression": "FrontendEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 961,
-      "end_line": 961,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [
-        "rows"
-      ],
-      "symbol": "app.models.DailyGoalDim",
-      "expression": "DailyGoalDim"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 982,
-      "end_line": 982,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 998,
-      "end_line": 998,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 998,
-      "end_line": 998,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 998,
-      "end_line": 998,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page.isnot",
-      "expression": "BehaviorEvent.page.isnot"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1030,
-      "end_line": 1030,
-      "owner": "rollup_daily_pages",
-      "conditions": [
-        "out"
-      ],
-      "symbol": "app.models.DailyPage",
-      "expression": "DailyPage"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1096,
-      "end_line": 1097,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal.__table__.update().where",
-      "expression": "MetrikaGoal.__table__.update().where"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 171,
-      "end_line": 171,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 238,
-      "end_line": 238,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 238,
-      "end_line": 238,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 239,
-      "end_line": 239,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 242,
-      "end_line": 242,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.__table__",
-      "expression": "BehaviorEvent.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 246,
-      "end_line": 246,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.__table__",
-      "expression": "BehaviorEvent.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 298,
-      "end_line": 298,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.session_id_hash",
-      "expression": "BehaviorSession.session_id_hash"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 555,
-      "end_line": 555,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.__table__",
-      "expression": "ServerSession.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 777,
-      "end_line": 777,
-      "owner": "rollup_daily_traffic",
-      "conditions": [
-        "pg"
-      ],
-      "symbol": "app.models.RawMetrikaVisit.raw_json",
-      "expression": "RawMetrikaVisit.raw_json"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 784,
-      "end_line": 784,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 925,
-      "end_line": 925,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 926,
-      "end_line": 926,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 927,
-      "end_line": 927,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 997,
-      "end_line": 997,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 997,
-      "end_line": 997,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 997,
-      "end_line": 997,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.params_json",
-      "expression": "BehaviorEvent.params_json"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 998,
-      "end_line": 998,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 998,
-      "end_line": 998,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 998,
-      "end_line": 998,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 999,
-      "end_line": 999,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page.like",
-      "expression": "BehaviorEvent.page.like"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1097,
-      "end_line": 1097,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal.goal_id.notin_",
-      "expression": "MetrikaGoal.goal_id.notin_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1097,
-      "end_line": 1097,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal.deleted.is_",
-      "expression": "MetrikaGoal.deleted.is_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 239,
-      "end_line": 239,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 242,
-      "end_line": 242,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 246,
-      "end_line": 246,
-      "owner": "_prepare_session_history",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 298,
-      "end_line": 298,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at.desc",
-      "expression": "BehaviorSession.started_at.desc"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 298,
-      "end_line": 298,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
@@ -262271,8 +261269,1010 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 777,
-      "end_line": 777,
+      "line": 558,
+      "end_line": 558,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 566,
+      "end_line": 566,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.__table__.insert().from_select",
+      "expression": "ServerSession.__table__.insert().from_select"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 813,
+      "end_line": 813,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 844,
+      "end_line": 844,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.DailyTraffic.day",
+      "expression": "DailyTraffic.day"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 854,
+      "end_line": 854,
+      "owner": "rollup_daily_traffic",
+      "conditions": [
+        "rows"
+      ],
+      "symbol": "app.models.DailyTraffic.__table__.insert",
+      "expression": "DailyTraffic.__table__.insert"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 884,
+      "end_line": 884,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.DailyGoal.day",
+      "expression": "DailyGoal.day"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 894,
+      "end_line": 894,
+      "owner": "rollup_daily_goals",
+      "conditions": [
+        "out"
+      ],
+      "symbol": "app.models.DailyGoal.__table__.insert",
+      "expression": "DailyGoal.__table__.insert"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 928,
+      "end_line": 928,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 965,
+      "end_line": 965,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.DailyGoalDim.day",
+      "expression": "DailyGoalDim.day"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 972,
+      "end_line": 972,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [
+        "rows"
+      ],
+      "symbol": "app.models.DailyGoalDim.__table__.insert",
+      "expression": "DailyGoalDim.__table__.insert"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1026,
+      "end_line": 1026,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.DailyPage.day",
+      "expression": "DailyPage.day"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1041,
+      "end_line": 1041,
+      "owner": "rollup_daily_pages",
+      "conditions": [
+        "out"
+      ],
+      "symbol": "app.models.DailyPage.__table__.insert",
+      "expression": "DailyPage.__table__.insert"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1101,
+      "end_line": 1101,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "not (existing)"
+      ],
+      "symbol": "app.models.MetrikaGoal",
+      "expression": "MetrikaGoal"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1107,
+      "end_line": 1109,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal.__table__.update().where(MetrikaGoal.goal_id.notin_(live_ids), MetrikaGoal.deleted.is_(False)).values",
+      "expression": "MetrikaGoal.__table__.update().where(MetrikaGoal.goal_id.notin_(live_ids), MetrikaGoal.deleted.is_(False)).values"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 155,
+      "end_line": 155,
+      "owner": "_session_raw_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 181,
+      "end_line": 181,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 181,
+      "end_line": 181,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 182,
+      "end_line": 182,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent.event_type.in_",
+      "expression": "BehaviorEvent.event_type.in_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 185,
+      "end_line": 185,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 185,
+      "end_line": 185,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 187,
+      "end_line": 187,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 190,
+      "end_line": 190,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 295,
+      "end_line": 295,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 310,
+      "end_line": 310,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.id",
+      "expression": "ServerSession.id"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 334,
+      "end_line": 334,
+      "owner": "_prepare_session_details",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.session_id_hash",
+      "expression": "BehaviorEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 499,
+      "end_line": 499,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.__table__",
+      "expression": "ServerSession.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 788,
+      "end_line": 788,
+      "owner": "rollup_daily_traffic",
+      "conditions": [
+        "pg"
+      ],
+      "symbol": "app.models.RawMetrikaVisit.raw_json[key].as_string",
+      "expression": "RawMetrikaVisit.raw_json[key].as_string"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 844,
+      "end_line": 844,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.DailyTraffic",
+      "expression": "DailyTraffic"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 844,
+      "end_line": 844,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.DailyTraffic",
+      "expression": "DailyTraffic"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 854,
+      "end_line": 854,
+      "owner": "rollup_daily_traffic",
+      "conditions": [
+        "rows"
+      ],
+      "symbol": "app.models.DailyTraffic.__table__",
+      "expression": "DailyTraffic.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 881,
+      "end_line": 881,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 884,
+      "end_line": 884,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.DailyGoal",
+      "expression": "DailyGoal"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 884,
+      "end_line": 884,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.DailyGoal",
+      "expression": "DailyGoal"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 894,
+      "end_line": 894,
+      "owner": "rollup_daily_goals",
+      "conditions": [
+        "out"
+      ],
+      "symbol": "app.models.DailyGoal.__table__",
+      "expression": "DailyGoal.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 965,
+      "end_line": 965,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.DailyGoalDim",
+      "expression": "DailyGoalDim"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 965,
+      "end_line": 965,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.DailyGoalDim",
+      "expression": "DailyGoalDim"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 972,
+      "end_line": 972,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [
+        "rows"
+      ],
+      "symbol": "app.models.DailyGoalDim.__table__",
+      "expression": "DailyGoalDim.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 993,
+      "end_line": 993,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1026,
+      "end_line": 1026,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.DailyPage",
+      "expression": "DailyPage"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1026,
+      "end_line": 1026,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.DailyPage",
+      "expression": "DailyPage"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1041,
+      "end_line": 1041,
+      "owner": "rollup_daily_pages",
+      "conditions": [
+        "out"
+      ],
+      "symbol": "app.models.DailyPage.__table__",
+      "expression": "DailyPage.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 181,
+      "end_line": 181,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 181,
+      "end_line": 181,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 182,
+      "end_line": 182,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 250,
+      "end_line": 250,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type.in_",
+      "expression": "BehaviorEvent.event_type.in_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 253,
+      "end_line": 253,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.__table__.c",
+      "expression": "BehaviorEvent.__table__.c"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 257,
+      "end_line": 257,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.__table__.c",
+      "expression": "BehaviorEvent.__table__.c"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 295,
+      "end_line": 295,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 310,
+      "end_line": 310,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 334,
+      "end_line": 334,
+      "owner": "_prepare_session_details",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 499,
+      "end_line": 499,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 563,
+      "end_line": 563,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 564,
+      "end_line": 564,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 566,
+      "end_line": 566,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.__table__.insert",
+      "expression": "ServerSession.__table__.insert"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 795,
+      "end_line": 795,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit.visit_date",
+      "expression": "RawMetrikaVisit.visit_date"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 854,
+      "end_line": 854,
+      "owner": "rollup_daily_traffic",
+      "conditions": [
+        "rows"
+      ],
+      "symbol": "app.models.DailyTraffic",
+      "expression": "DailyTraffic"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 881,
+      "end_line": 881,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 894,
+      "end_line": 894,
+      "owner": "rollup_daily_goals",
+      "conditions": [
+        "out"
+      ],
+      "symbol": "app.models.DailyGoal",
+      "expression": "DailyGoal"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 937,
+      "end_line": 937,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name.in_",
+      "expression": "FrontendEvent.event_name.in_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 938,
+      "end_line": 938,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 972,
+      "end_line": 972,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [
+        "rows"
+      ],
+      "symbol": "app.models.DailyGoalDim",
+      "expression": "DailyGoalDim"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 993,
+      "end_line": 993,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1009,
+      "end_line": 1009,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1009,
+      "end_line": 1009,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1009,
+      "end_line": 1009,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page.isnot",
+      "expression": "BehaviorEvent.page.isnot"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1041,
+      "end_line": 1041,
+      "owner": "rollup_daily_pages",
+      "conditions": [
+        "out"
+      ],
+      "symbol": "app.models.DailyPage",
+      "expression": "DailyPage"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1107,
+      "end_line": 1108,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal.__table__.update().where",
+      "expression": "MetrikaGoal.__table__.update().where"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 182,
+      "end_line": 182,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 250,
+      "end_line": 250,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 253,
+      "end_line": 253,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.__table__",
+      "expression": "BehaviorEvent.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 257,
+      "end_line": 257,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.__table__",
+      "expression": "BehaviorEvent.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 309,
+      "end_line": 309,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.session_id_hash",
+      "expression": "BehaviorSession.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 566,
+      "end_line": 566,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.__table__",
+      "expression": "ServerSession.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 788,
+      "end_line": 788,
+      "owner": "rollup_daily_traffic",
+      "conditions": [
+        "pg"
+      ],
+      "symbol": "app.models.RawMetrikaVisit.raw_json",
+      "expression": "RawMetrikaVisit.raw_json"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 795,
+      "end_line": 795,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 936,
+      "end_line": 936,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 937,
+      "end_line": 937,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 938,
+      "end_line": 938,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1008,
+      "end_line": 1008,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1008,
+      "end_line": 1008,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1008,
+      "end_line": 1008,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.params_json",
+      "expression": "BehaviorEvent.params_json"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1009,
+      "end_line": 1009,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1009,
+      "end_line": 1009,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1009,
+      "end_line": 1009,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1010,
+      "end_line": 1010,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page.like",
+      "expression": "BehaviorEvent.page.like"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1108,
+      "end_line": 1108,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal.goal_id.notin_",
+      "expression": "MetrikaGoal.goal_id.notin_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1108,
+      "end_line": 1108,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal.deleted.is_",
+      "expression": "MetrikaGoal.deleted.is_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 250,
+      "end_line": 250,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 253,
+      "end_line": 253,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 257,
+      "end_line": 257,
+      "owner": "_prepare_session_history",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 309,
+      "end_line": 309,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at.desc",
+      "expression": "BehaviorSession.started_at.desc"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 309,
+      "end_line": 309,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 566,
+      "end_line": 566,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 788,
+      "end_line": 788,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -262282,8 +262282,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 869,
-      "end_line": 869,
+      "line": 880,
+      "end_line": 880,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -262291,8 +262291,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 925,
-      "end_line": 925,
+      "line": 936,
+      "end_line": 936,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash",
@@ -262300,8 +262300,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 925,
-      "end_line": 925,
+      "line": 936,
+      "end_line": 936,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash",
@@ -262309,8 +262309,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 926,
-      "end_line": 926,
+      "line": 937,
+      "end_line": 937,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -262318,8 +262318,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 980,
-      "end_line": 980,
+      "line": 991,
+      "end_line": 991,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -262327,8 +262327,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 980,
-      "end_line": 980,
+      "line": 991,
+      "end_line": 991,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -262336,8 +262336,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 980,
-      "end_line": 980,
+      "line": 991,
+      "end_line": 991,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page.isnot",
@@ -262345,8 +262345,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 990,
-      "end_line": 990,
+      "line": 1001,
+      "end_line": 1001,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -262354,8 +262354,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 997,
-      "end_line": 997,
+      "line": 1008,
+      "end_line": 1008,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -262363,8 +262363,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 997,
-      "end_line": 997,
+      "line": 1008,
+      "end_line": 1008,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -262372,8 +262372,638 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1008,
+      "end_line": 1008,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1009,
+      "end_line": 1009,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1010,
+      "end_line": 1010,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1107,
+      "end_line": 1107,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal.__table__.update",
+      "expression": "MetrikaGoal.__table__.update"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1108,
+      "end_line": 1108,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal.goal_id",
+      "expression": "MetrikaGoal.goal_id"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1108,
+      "end_line": 1108,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal.deleted",
+      "expression": "MetrikaGoal.deleted"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 188,
+      "end_line": 188,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 309,
+      "end_line": 309,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 875,
+      "end_line": 875,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 880,
+      "end_line": 880,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 935,
+      "end_line": 935,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 936,
+      "end_line": 936,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 936,
+      "end_line": 936,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 987,
+      "end_line": 987,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 991,
+      "end_line": 991,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 991,
+      "end_line": 991,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 991,
+      "end_line": 991,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 992,
+      "end_line": 992,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page.like",
+      "expression": "BehaviorEvent.page.like"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1001,
+      "end_line": 1001,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1010,
+      "end_line": 1010,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1107,
+      "end_line": 1107,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal.__table__",
+      "expression": "MetrikaGoal.__table__"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1108,
+      "end_line": 1108,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal",
+      "expression": "MetrikaGoal"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1108,
+      "end_line": 1108,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal",
+      "expression": "MetrikaGoal"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 188,
+      "end_line": 188,
+      "owner": "_session_history_query",
+      "conditions": [
+        "not (raw is not None)"
+      ],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 303,
+      "end_line": 303,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.visitor_id_hash",
+      "expression": "BehaviorSession.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 309,
+      "end_line": 309,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 458,
+      "end_line": 458,
+      "owner": "_portrait_cluster_sizes",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 458,
+      "end_line": 458,
+      "owner": "_portrait_cluster_sizes",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 459,
+      "end_line": 459,
+      "owner": "_portrait_cluster_sizes",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.device_type",
+      "expression": "BehaviorSession.device_type"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 875,
+      "end_line": 875,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 987,
+      "end_line": 987,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 991,
+      "end_line": 991,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 992,
+      "end_line": 992,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1107,
+      "end_line": 1107,
+      "owner": "sync_metrika_goals",
+      "conditions": [
+        "live_ids"
+      ],
+      "symbol": "app.models.MetrikaGoal",
+      "expression": "MetrikaGoal"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 292,
+      "end_line": 292,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name.in_",
+      "expression": "FrontendEvent.event_name.in_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 293,
+      "end_line": 293,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name.in_",
+      "expression": "FrontendEvent.event_name.in_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.session_id_hash",
+      "expression": "BehaviorSession.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 303,
+      "end_line": 303,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 305,
+      "end_line": 305,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 458,
+      "end_line": 458,
+      "owner": "_portrait_cluster_sizes",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 458,
+      "end_line": 458,
+      "owner": "_portrait_cluster_sizes",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 459,
+      "end_line": 459,
+      "owner": "_portrait_cluster_sizes",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 931,
+      "end_line": 931,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 931,
+      "end_line": 931,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 931,
+      "end_line": 931,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 932,
+      "end_line": 932,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url",
+      "expression": "FrontendEvent.url"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 933,
+      "end_line": 933,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.device_type",
+      "expression": "BehaviorSession.device_type"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 933,
+      "end_line": 933,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.channel",
+      "expression": "BehaviorSession.channel"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 933,
+      "end_line": 933,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.country",
+      "expression": "BehaviorSession.country"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 992,
+      "end_line": 992,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 998,
+      "end_line": 998,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 998,
+      "end_line": 998,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 999,
+      "end_line": 999,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.is_dead.is_",
+      "expression": "BehaviorEvent.is_dead.is_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 999,
+      "end_line": 999,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page.isnot",
+      "expression": "BehaviorEvent.page.isnot"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 292,
+      "end_line": 292,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 293,
+      "end_line": 293,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 305,
+      "end_line": 305,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 307,
+      "end_line": 307,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 529,
+      "end_line": 529,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.session_id_hash.in_",
+      "expression": "BehaviorSession.session_id_hash.in_"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 931,
+      "end_line": 931,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 931,
+      "end_line": 931,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 931,
+      "end_line": 931,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 932,
+      "end_line": 932,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 933,
+      "end_line": 933,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 933,
+      "end_line": 933,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 933,
+      "end_line": 933,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
       "line": 997,
       "end_line": 997,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 998,
+      "end_line": 998,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -262394,111 +263024,13 @@
       "end_line": 999,
       "owner": "rollup_daily_pages",
       "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
+      "symbol": "app.models.BehaviorEvent.is_dead",
+      "expression": "BehaviorEvent.is_dead"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1096,
-      "end_line": 1096,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal.__table__.update",
-      "expression": "MetrikaGoal.__table__.update"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1097,
-      "end_line": 1097,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal.goal_id",
-      "expression": "MetrikaGoal.goal_id"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1097,
-      "end_line": 1097,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal.deleted",
-      "expression": "MetrikaGoal.deleted"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 177,
-      "end_line": 177,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 298,
-      "end_line": 298,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 864,
-      "end_line": 864,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 869,
-      "end_line": 869,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 924,
-      "end_line": 924,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 925,
-      "end_line": 925,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 925,
-      "end_line": 925,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 976,
-      "end_line": 976,
+      "line": 999,
+      "end_line": 999,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -262506,35 +263038,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 980,
-      "end_line": 980,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 980,
-      "end_line": 980,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 980,
-      "end_line": 980,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 981,
-      "end_line": 981,
+      "line": 1000,
+      "end_line": 1000,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page.like",
@@ -262542,8 +263047,269 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 990,
-      "end_line": 990,
+      "line": 292,
+      "end_line": 292,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 293,
+      "end_line": 293,
+      "owner": "_session_goals_select",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 306,
+      "end_line": 306,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 307,
+      "end_line": 307,
+      "owner": "_session_details_select",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 522,
+      "end_line": 522,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.session_id_hash",
+      "expression": "BehaviorSession.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 522,
+      "end_line": 522,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 522,
+      "end_line": 522,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.channel",
+      "expression": "BehaviorSession.channel"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 522,
+      "end_line": 522,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.referrer",
+      "expression": "BehaviorSession.referrer"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 523,
+      "end_line": 523,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.utm_source",
+      "expression": "BehaviorSession.utm_source"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 523,
+      "end_line": 523,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.utm_medium",
+      "expression": "BehaviorSession.utm_medium"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 523,
+      "end_line": 523,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.yclid",
+      "expression": "BehaviorSession.yclid"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 524,
+      "end_line": 524,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.device_type",
+      "expression": "BehaviorSession.device_type"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 524,
+      "end_line": 524,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.is_webdriver",
+      "expression": "BehaviorSession.is_webdriver"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 524,
+      "end_line": 524,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.ua_raw",
+      "expression": "BehaviorSession.ua_raw"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.touch",
+      "expression": "BehaviorSession.touch"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.screen_w",
+      "expression": "BehaviorSession.screen_w"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.screen_h",
+      "expression": "BehaviorSession.screen_h"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.cpu_cores",
+      "expression": "BehaviorSession.cpu_cores"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 526,
+      "end_line": 526,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.site_locale",
+      "expression": "BehaviorSession.site_locale"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 526,
+      "end_line": 526,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.viewport_w",
+      "expression": "BehaviorSession.viewport_w"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 526,
+      "end_line": 526,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.viewport_h",
+      "expression": "BehaviorSession.viewport_h"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 527,
+      "end_line": 527,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.dpr",
+      "expression": "BehaviorSession.dpr"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 527,
+      "end_line": 527,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.device_memory",
+      "expression": "BehaviorSession.device_memory"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 527,
+      "end_line": 527,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.conn_type",
+      "expression": "BehaviorSession.conn_type"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 528,
+      "end_line": 528,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.color_scheme",
+      "expression": "BehaviorSession.color_scheme"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 528,
+      "end_line": 528,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.language",
+      "expression": "BehaviorSession.language"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 528,
+      "end_line": 528,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.timezone",
+      "expression": "BehaviorSession.timezone"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 529,
+      "end_line": 529,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.session_id_hash",
+      "expression": "BehaviorSession.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 877,
+      "end_line": 877,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 997,
+      "end_line": 997,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -262560,61 +263326,26 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1096,
-      "end_line": 1096,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal.__table__",
-      "expression": "MetrikaGoal.__table__"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1097,
-      "end_line": 1097,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal",
-      "expression": "MetrikaGoal"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1097,
-      "end_line": 1097,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal",
-      "expression": "MetrikaGoal"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 177,
-      "end_line": 177,
-      "owner": "_session_history_query",
-      "conditions": [
-        "not (raw is not None)"
-      ],
+      "line": 999,
+      "end_line": 999,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
       "symbol": "app.models.BehaviorEvent",
       "expression": "BehaviorEvent"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 292,
-      "end_line": 292,
-      "owner": "_session_details_select",
+      "line": 1000,
+      "end_line": 1000,
+      "owner": "rollup_daily_pages",
       "conditions": [],
-      "symbol": "app.models.BehaviorSession.visitor_id_hash",
-      "expression": "BehaviorSession.visitor_id_hash"
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 306,
+      "end_line": 306,
       "owner": "_session_details_select",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -262622,964 +263353,233 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 447,
-      "end_line": 447,
-      "owner": "_portrait_cluster_sizes",
+      "line": 522,
+      "end_line": 522,
+      "owner": "sessionize",
       "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 447,
-      "end_line": 447,
-      "owner": "_portrait_cluster_sizes",
+      "line": 522,
+      "end_line": 522,
+      "owner": "sessionize",
       "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 448,
-      "end_line": 448,
-      "owner": "_portrait_cluster_sizes",
+      "line": 522,
+      "end_line": 522,
+      "owner": "sessionize",
       "conditions": [],
-      "symbol": "app.models.BehaviorSession.device_type",
-      "expression": "BehaviorSession.device_type"
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 864,
-      "end_line": 864,
+      "line": 522,
+      "end_line": 522,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 523,
+      "end_line": 523,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 523,
+      "end_line": 523,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 523,
+      "end_line": 523,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 524,
+      "end_line": 524,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 524,
+      "end_line": 524,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 524,
+      "end_line": 524,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 526,
+      "end_line": 526,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 526,
+      "end_line": 526,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 526,
+      "end_line": 526,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 527,
+      "end_line": 527,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 527,
+      "end_line": 527,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 527,
+      "end_line": 527,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 528,
+      "end_line": 528,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 528,
+      "end_line": 528,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 528,
+      "end_line": 528,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 529,
+      "end_line": 529,
+      "owner": "sessionize",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 877,
+      "end_line": 877,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
       "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 976,
-      "end_line": 976,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 980,
-      "end_line": 980,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 981,
-      "end_line": 981,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1096,
-      "end_line": 1096,
-      "owner": "sync_metrika_goals",
-      "conditions": [
-        "live_ids"
-      ],
-      "symbol": "app.models.MetrikaGoal",
-      "expression": "MetrikaGoal"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 281,
-      "end_line": 281,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name.in_",
-      "expression": "FrontendEvent.event_name.in_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 282,
-      "end_line": 282,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name.in_",
-      "expression": "FrontendEvent.event_name.in_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 291,
-      "end_line": 291,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.session_id_hash",
-      "expression": "BehaviorSession.session_id_hash"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 292,
-      "end_line": 292,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 294,
-      "end_line": 294,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 447,
-      "end_line": 447,
-      "owner": "_portrait_cluster_sizes",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 447,
-      "end_line": 447,
-      "owner": "_portrait_cluster_sizes",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 448,
-      "end_line": 448,
-      "owner": "_portrait_cluster_sizes",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 920,
-      "end_line": 920,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.occurred_at",
-      "expression": "FrontendEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 920,
-      "end_line": 920,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 920,
-      "end_line": 920,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.session_id_hash",
-      "expression": "FrontendEvent.session_id_hash"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 921,
-      "end_line": 921,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.url",
-      "expression": "FrontendEvent.url"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 922,
-      "end_line": 922,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.device_type",
-      "expression": "BehaviorSession.device_type"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 922,
-      "end_line": 922,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.channel",
-      "expression": "BehaviorSession.channel"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 922,
-      "end_line": 922,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.country",
-      "expression": "BehaviorSession.country"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 981,
-      "end_line": 981,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 987,
-      "end_line": 987,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 987,
-      "end_line": 987,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 988,
-      "end_line": 988,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.is_dead.is_",
-      "expression": "BehaviorEvent.is_dead.is_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 988,
-      "end_line": 988,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page.isnot",
-      "expression": "BehaviorEvent.page.isnot"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 281,
-      "end_line": 281,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 282,
-      "end_line": 282,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 291,
-      "end_line": 291,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 294,
-      "end_line": 294,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 296,
-      "end_line": 296,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 518,
-      "end_line": 518,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.session_id_hash.in_",
-      "expression": "BehaviorSession.session_id_hash.in_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 920,
-      "end_line": 920,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 920,
-      "end_line": 920,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 920,
-      "end_line": 920,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 921,
-      "end_line": 921,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 922,
-      "end_line": 922,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 922,
-      "end_line": 922,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 922,
-      "end_line": 922,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 986,
-      "end_line": 986,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 987,
-      "end_line": 987,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 987,
-      "end_line": 987,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 988,
-      "end_line": 988,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.is_dead",
-      "expression": "BehaviorEvent.is_dead"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 988,
-      "end_line": 988,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
       "line": 989,
       "end_line": 989,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page.like",
-      "expression": "BehaviorEvent.page.like"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 281,
-      "end_line": 281,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 282,
-      "end_line": 282,
-      "owner": "_session_goals_select",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 295,
-      "end_line": 295,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 296,
-      "end_line": 296,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 511,
-      "end_line": 511,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.session_id_hash",
-      "expression": "BehaviorSession.session_id_hash"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 511,
-      "end_line": 511,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 511,
-      "end_line": 511,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.channel",
-      "expression": "BehaviorSession.channel"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 511,
-      "end_line": 511,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.referrer",
-      "expression": "BehaviorSession.referrer"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 512,
-      "end_line": 512,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.utm_source",
-      "expression": "BehaviorSession.utm_source"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 512,
-      "end_line": 512,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.utm_medium",
-      "expression": "BehaviorSession.utm_medium"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 512,
-      "end_line": 512,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.yclid",
-      "expression": "BehaviorSession.yclid"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 513,
-      "end_line": 513,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.device_type",
-      "expression": "BehaviorSession.device_type"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 513,
-      "end_line": 513,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.is_webdriver",
-      "expression": "BehaviorSession.is_webdriver"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 513,
-      "end_line": 513,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.ua_raw",
-      "expression": "BehaviorSession.ua_raw"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 514,
-      "end_line": 514,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.touch",
-      "expression": "BehaviorSession.touch"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 514,
-      "end_line": 514,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.screen_w",
-      "expression": "BehaviorSession.screen_w"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 514,
-      "end_line": 514,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.screen_h",
-      "expression": "BehaviorSession.screen_h"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 514,
-      "end_line": 514,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.cpu_cores",
-      "expression": "BehaviorSession.cpu_cores"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 515,
-      "end_line": 515,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.site_locale",
-      "expression": "BehaviorSession.site_locale"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 515,
-      "end_line": 515,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.viewport_w",
-      "expression": "BehaviorSession.viewport_w"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 515,
-      "end_line": 515,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.viewport_h",
-      "expression": "BehaviorSession.viewport_h"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 516,
-      "end_line": 516,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.dpr",
-      "expression": "BehaviorSession.dpr"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 516,
-      "end_line": 516,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.device_memory",
-      "expression": "BehaviorSession.device_memory"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 516,
-      "end_line": 516,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.conn_type",
-      "expression": "BehaviorSession.conn_type"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 517,
-      "end_line": 517,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.color_scheme",
-      "expression": "BehaviorSession.color_scheme"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 517,
-      "end_line": 517,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.language",
-      "expression": "BehaviorSession.language"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 517,
-      "end_line": 517,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.timezone",
-      "expression": "BehaviorSession.timezone"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 518,
-      "end_line": 518,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.session_id_hash",
-      "expression": "BehaviorSession.session_id_hash"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 866,
-      "end_line": 866,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.session_id_hash",
-      "expression": "FrontendEvent.session_id_hash"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 986,
-      "end_line": 986,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 988,
-      "end_line": 988,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 988,
-      "end_line": 988,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 989,
-      "end_line": 989,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 295,
-      "end_line": 295,
-      "owner": "_session_details_select",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 511,
-      "end_line": 511,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 511,
-      "end_line": 511,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 511,
-      "end_line": 511,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 511,
-      "end_line": 511,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 512,
-      "end_line": 512,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 512,
-      "end_line": 512,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 512,
-      "end_line": 512,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 513,
-      "end_line": 513,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 513,
-      "end_line": 513,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 513,
-      "end_line": 513,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 514,
-      "end_line": 514,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 514,
-      "end_line": 514,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 514,
-      "end_line": 514,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 514,
-      "end_line": 514,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 515,
-      "end_line": 515,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 515,
-      "end_line": 515,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 515,
-      "end_line": 515,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 516,
-      "end_line": 516,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 516,
-      "end_line": 516,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 516,
-      "end_line": 516,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 517,
-      "end_line": 517,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 517,
-      "end_line": 517,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 517,
-      "end_line": 517,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 518,
-      "end_line": 518,
-      "owner": "sessionize",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 866,
-      "end_line": 866,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.visitor_id_hash",
@@ -263587,12 +263587,30 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
+      "line": 989,
+      "end_line": 989,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash",
       "expression": "BehaviorEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1000,
+      "end_line": 1000,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 878,
+      "end_line": 878,
+      "owner": "rollup_daily_goals",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.authed.is_",
+      "expression": "FrontendEvent.authed.is_"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
@@ -263605,17 +263623,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 867,
-      "end_line": 867,
-      "owner": "rollup_daily_goals",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.authed.is_",
-      "expression": "FrontendEvent.authed.is_"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
+      "line": 989,
+      "end_line": 989,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -263623,17 +263632,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 878,
+      "end_line": 878,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed",
@@ -263641,8 +263641,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 878,
+      "end_line": 878,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -274237,8 +274237,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 223,
-      "end_line": 223,
+      "line": 234,
+      "end_line": 234,
       "owner": "_stage",
       "conditions": [
         "db.bind.dialect.name == 'postgresql'"
@@ -316117,7 +316117,7 @@
     {
       "path": "backend/app/tasks/analytics_rollups.py",
       "line": 129,
-      "end_line": 145,
+      "end_line": 156,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_raw_select",
@@ -316125,8 +316125,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 148,
-      "end_line": 202,
+      "line": 159,
+      "end_line": 213,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_history_query",
@@ -316134,8 +316134,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 205,
-      "end_line": 207,
+      "line": 216,
+      "end_line": 218,
       "owner": "<module>",
       "conditions": [],
       "name": "_temp_table",
@@ -316143,8 +316143,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 210,
-      "end_line": 224,
+      "line": 221,
+      "end_line": 235,
       "owner": "<module>",
       "conditions": [],
       "name": "_stage",
@@ -316152,8 +316152,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 227,
-      "end_line": 250,
+      "line": 238,
+      "end_line": 261,
       "owner": "<module>",
       "conditions": [],
       "name": "_prepare_session_history",
@@ -316161,8 +316161,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 253,
-      "end_line": 265,
+      "line": 264,
+      "end_line": 276,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_bounds_select",
@@ -316170,8 +316170,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 268,
-      "end_line": 272,
+      "line": 279,
+      "end_line": 283,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_sids_select",
@@ -316179,8 +316179,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 275,
-      "end_line": 286,
+      "line": 286,
+      "end_line": 297,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_goals_select",
@@ -316188,8 +316188,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 289,
-      "end_line": 309,
+      "line": 300,
+      "end_line": 320,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_details_select",
@@ -316197,8 +316197,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 312,
-      "end_line": 335,
+      "line": 323,
+      "end_line": 346,
       "owner": "<module>",
       "conditions": [],
       "name": "_prepare_session_details",
@@ -316206,8 +316206,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 338,
-      "end_line": 362,
+      "line": 349,
+      "end_line": 373,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_source_query",
@@ -316215,8 +316215,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 365,
-      "end_line": 421,
+      "line": 376,
+      "end_line": 432,
       "owner": "<module>",
       "conditions": [],
       "name": "_SessionAccumulator",
@@ -316224,8 +316224,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 431,
-      "end_line": 458,
+      "line": 442,
+      "end_line": 469,
       "owner": "<module>",
       "conditions": [],
       "name": "_portrait_cluster_sizes",
@@ -316233,8 +316233,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 461,
-      "end_line": 468,
+      "line": 472,
+      "end_line": 479,
       "owner": "<module>",
       "conditions": [],
       "name": "_portrait_cluster_for",
@@ -316242,8 +316242,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 471,
-      "end_line": 578,
+      "line": 482,
+      "end_line": 589,
       "owner": "<module>",
       "conditions": [],
       "name": "sessionize",
@@ -316251,8 +316251,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 582,
-      "end_line": 610,
+      "line": 593,
+      "end_line": 621,
       "owner": "<module>",
       "conditions": [],
       "name": "_infer_from_pageviews",
@@ -316260,8 +316260,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 613,
-      "end_line": 730,
+      "line": 624,
+      "end_line": 741,
       "owner": "<module>",
       "conditions": [],
       "name": "_finalize_session",
@@ -316269,8 +316269,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 737,
-      "end_line": 738,
+      "line": 748,
+      "end_line": 749,
       "owner": "<module>",
       "conditions": [],
       "name": "_visit_raw",
@@ -316278,8 +316278,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 741,
-      "end_line": 744,
+      "line": 752,
+      "end_line": 755,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_device",
@@ -316287,8 +316287,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 747,
-      "end_line": 748,
+      "line": 758,
+      "end_line": 759,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_channel",
@@ -316296,8 +316296,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 751,
-      "end_line": 845,
+      "line": 762,
+      "end_line": 856,
       "owner": "<module>",
       "conditions": [],
       "name": "rollup_daily_traffic",
@@ -316305,8 +316305,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 848,
-      "end_line": 885,
+      "line": 859,
+      "end_line": 896,
       "owner": "<module>",
       "conditions": [],
       "name": "rollup_daily_goals",
@@ -316314,8 +316314,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 893,
-      "end_line": 899,
+      "line": 904,
+      "end_line": 910,
       "owner": "<module>",
       "conditions": [],
       "name": "_dim_event_names",
@@ -316323,8 +316323,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 902,
-      "end_line": 963,
+      "line": 913,
+      "end_line": 974,
       "owner": "<module>",
       "conditions": [],
       "name": "rollup_daily_goal_dims",
@@ -316332,8 +316332,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 966,
-      "end_line": 1032,
+      "line": 977,
+      "end_line": 1043,
       "owner": "<module>",
       "conditions": [],
       "name": "rollup_daily_pages",
@@ -316341,8 +316341,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1039,
-      "end_line": 1119,
+      "line": 1050,
+      "end_line": 1130,
       "owner": "<module>",
       "conditions": [],
       "name": "sync_metrika_goals",
@@ -316350,8 +316350,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1126,
-      "end_line": 1171,
+      "line": 1137,
+      "end_line": 1182,
       "owner": "<module>",
       "conditions": [],
       "name": "run_rollups",
@@ -316359,8 +316359,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1174,
-      "end_line": 1185,
+      "line": 1185,
+      "end_line": 1196,
       "owner": "<module>",
       "conditions": [],
       "name": "rollups_15min_job",
@@ -316368,8 +316368,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1188,
-      "end_line": 1216,
+      "line": 1199,
+      "end_line": 1227,
       "owner": "<module>",
       "conditions": [],
       "name": "rollups_daily_job",
@@ -316377,8 +316377,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 367,
-      "end_line": 380,
+      "line": 378,
+      "end_line": 391,
       "owner": "_SessionAccumulator",
       "conditions": [],
       "name": "__init__",
@@ -316386,8 +316386,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 382,
-      "end_line": 402,
+      "line": 393,
+      "end_line": 413,
       "owner": "_SessionAccumulator",
       "conditions": [],
       "name": "add",
@@ -316395,8 +316395,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 404,
-      "end_line": 421,
+      "line": 415,
+      "end_line": 432,
       "owner": "_SessionAccumulator",
       "conditions": [],
       "name": "finish",
@@ -316404,8 +316404,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 453,
-      "end_line": 454,
+      "line": 464,
+      "end_line": 465,
       "owner": "_portrait_cluster_sizes",
       "conditions": [],
       "name": "num",
@@ -316413,8 +316413,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 932,
-      "end_line": 936,
+      "line": 943,
+      "end_line": 947,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "name": "bump",
@@ -316422,8 +316422,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 406,
-      "end_line": 408,
+      "line": 417,
+      "end_line": 419,
       "owner": "_SessionAccumulator.finish",
       "conditions": [],
       "name": "event",
@@ -346445,24 +346445,24 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 744,
-      "end_line": 744,
+      "line": 755,
+      "end_line": 755,
       "owner": "_metrika_device",
       "conditions": [],
       "symbol": "app.services.analytics_marts.METRIKA_DEVICE"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 748,
-      "end_line": 748,
+      "line": 759,
+      "end_line": 759,
       "owner": "_metrika_channel",
       "conditions": [],
       "symbol": "app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 190,
+      "end_line": 190,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -346471,24 +346471,24 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 253,
+      "end_line": 253,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.tasks.analytics_rollups._RAW_COLUMNS"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 258,
+      "end_line": 258,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.tasks.analytics_rollups._RAW_COLUMNS"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 778,
-      "end_line": 778,
+      "line": 789,
+      "end_line": 789,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -346505,8 +346505,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 171,
-      "end_line": 171,
+      "line": 182,
+      "end_line": 182,
       "owner": "_session_history_query",
       "conditions": [
         "not (raw is not None)"
@@ -346515,16 +346515,16 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 250,
+      "end_line": 250,
       "owner": "_prepare_session_history",
       "conditions": [],
       "symbol": "app.tasks.analytics_rollups._SESSION_EVENT_TYPES"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 798,
-      "end_line": 798,
+      "line": 809,
+      "end_line": 809,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -346533,16 +346533,26 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 460,
+      "end_line": 460,
       "owner": "_portrait_cluster_sizes",
       "conditions": [],
       "symbol": "app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 151,
+      "end_line": 151,
+      "owner": "_session_raw_select",
+      "conditions": [
+        "db.bind.dialect.name == 'postgresql'"
+      ],
+      "symbol": "app.tasks.analytics_rollups._RAW_COLUMNS"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 457,
+      "end_line": 457,
       "owner": "_portrait_cluster_sizes",
       "conditions": [],
       "symbol": "app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS"

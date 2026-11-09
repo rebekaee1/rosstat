@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `c7d8df427e41d971934863872f3267869ea31c53`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `06d433d6ec0f915cd9316073e44f9e82994c1dfd`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2423 |
 | Код, шаблоны и стили | 1963 |
 | Актуальные рецензии без пропусков guard | 2423 |
-| Именованные определения Python/JS: с аннотацией / всего | 15629 / 15629 |
+| Именованные определения Python/JS: с аннотацией / всего | 15630 / 15630 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -892,7 +892,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_session_change_log_ch.py](../backend/tests/test_session_change_log_ch.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_session_change_log_pg.py](../backend/tests/test_session_change_log_pg.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_session_replay.py](../backend/tests/test_session_replay.py) | reviewed | 36/36 | актуально |
-| [backend/tests/test_sessionize_boundaries.py](../backend/tests/test_sessionize_boundaries.py) | reviewed | 30/30 | актуально |
+| [backend/tests/test_sessionize_boundaries.py](../backend/tests/test_sessionize_boundaries.py) | reviewed | 31/31 | актуально |
 | [backend/tests/test_sessionize_boundaries_pg.py](../backend/tests/test_sessionize_boundaries_pg.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_signup_attribution.py](../backend/tests/test_signup_attribution.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_site_path_collisions.py](../backend/tests/test_site_path_collisions.py) | reviewed | 6/6 | актуально |

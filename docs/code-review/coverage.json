@@ -29,8 +29,8 @@
       "data_schema_reviewed": 8,
       "reviewed": 2163
     },
-    "definitions": 15629,
-    "annotated_definitions": 15629,
+    "definitions": 15630,
+    "annotated_definitions": 15630,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -6394,9 +6394,9 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "sha256": "2a41dc98680c49148f89462a2c77e2b8d096f9046e1f75aa287b8739a5adddf2",
-      "bytes": 61569,
-      "lines": 1216,
+      "sha256": "03990db365dc0cc7fc2e9f58eb14bc36f48fda1c5af70db6ee6138aa26e1870b",
+      "bytes": 62402,
+      "lines": 1227,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -11139,15 +11139,15 @@
     },
     {
       "path": "backend/tests/test_sessionize_boundaries.py",
-      "sha256": "01c1425057308e9f3a183773332446653553d955a22e8b501cfa44d2ef317eb6",
-      "bytes": 15118,
-      "lines": 294,
+      "sha256": "ccf4d997e1850e1278c2219207e521b0e96b539b26c94e213ba7c2c74c064988",
+      "bytes": 15856,
+      "lines": 309,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 30,
-      "annotated_definitions": 30,
+      "definitions": 31,
+      "annotated_definitions": 31,
       "missing_definitions": []
     },
     {
@@ -12478,9 +12478,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "5653e005bbdbca8d1cb1e3f6281bc02af5fddba3c681223d3791562a0ffe1686",
-      "bytes": 26223,
-      "lines": 182,
+      "sha256": "19dacab9fa3bed2f9e8ff792764fcd18e12eeef69b5d38f6885ba842967c97ec",
+      "bytes": 26510,
+      "lines": 183,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13362,9 +13362,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "3cd7b05f7165763ba66c22591ebd3971a02e5517c0f7badff7d6f22c86b33699",
-      "bytes": 699560,
-      "lines": 3248,
+      "sha256": "895eedd2b497180dd8b325d7ec6c35d88cd3cbe3dafac3bb1e2188b442d3818e",
+      "bytes": 701167,
+      "lines": 3254,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13960,7 +13960,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "11b56548276db31650a12b8a6b5d1241f0c343740f37cd57b45730d5c86163e5",
+      "sha256": "b8ffe54f5f134efe830617d512bc2f597341c1cb99c05e3e206cb694bbbb2718",
       "bytes": 3834348,
       "lines": 135608,
       "code": false,
@@ -14012,9 +14012,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "6126c7590f8b1737f253282b36414dab54a4f1d4358517d79990c30a343c6560",
-      "bytes": 12054874,
-      "lines": 361476,
+      "sha256": "509ececb91d70a2181c15df34ee901f20bc4c39fc438d8aaae80292afaef40c9",
+      "bytes": 12055203,
+      "lines": 361486,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14025,7 +14025,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "ee2bbf85725700749f064484e74485360f027b0eb656e3e84cf6468c2b13e354",
+      "sha256": "f5f06d9f829acc1796a9fad025901d989a379da47c2d05353da316326131eb7b",
       "bytes": 619052,
       "lines": 3361,
       "code": false,
@@ -31536,12 +31536,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "4752fbb734d92048820abcc5f1beedd8e3d186beffc36649bc8e594e1acd1a93",
+  "ledger_sha256": "27044dbef96904f95e26d14de00f6e140640f180e1a09b401d65acdfa8198bfc",
   "javascript_inventory_sha256": "0aabb19f3a47c6547cedbe3faf5cf788caa58cb36490cab3493140a216980a3d",
-  "baseline_commit": "c7d8df427e41d971934863872f3267869ea31c53",
-  "branch": "circle-data/int",
+  "baseline_commit": "06d433d6ec0f915cd9316073e44f9e82994c1dfd",
+  "branch": "fix/rollups-lateral",
   "unstaged_at_capture": [
-    "docs/data-contracts.md",
     "docs/indicator-index.json",
     "docs/mechanism-inventory.json",
     "docs/mechanism-inventory.md"

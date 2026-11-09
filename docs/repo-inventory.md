@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2222  ·  **Строк:** 1 407 858  ·  **Токенов (≈):** 13 389 483
+**Файлов:** 2222  ·  **Строк:** 1 407 901  ·  **Токенов (≈):** 13 390 276
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 782 | 64 219 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 902 | 315 501 | 3 442 893 |
+| `backend` | 902 | 315 527 | 3 443 286 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 19 | 1 138 | 17 029 |
-| `docs` | 142 | 879 675 | 7 543 645 |
+| `deploy` | 19 | 1 139 | 17 075 |
+| `docs` | 142 | 879 691 | 7 543 999 |
 | `frontend` | 1007 | 183 560 | 2 009 054 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 652 | 307 147 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 361 476 | 2 959 544 |
+| `docs/mechanism-inventory.json` | 361 486 | 2 959 627 |
 | `docs/client-mechanism-inventory.json` | 254 124 | 1 795 402 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -41,7 +41,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
-| `docs/backlog.md` | 3 248 | 116 937 |
+| `docs/backlog.md` | 3 254 | 117 208 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `backend/seed_data.py` | 5 732 | 59 343 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
@@ -90,9 +90,9 @@
 | `docs/planet-view.md` | 594 | 15 198 |
 | `frontend/src/components/IndicatorSearch.jsx` | 1 141 | 15 102 |
 | `backend/app/data/view_model_families.py` | 1 238 | 14 854 |
+| `backend/app/tasks/analytics_rollups.py` | 1 227 | 14 653 |
 | `backend/app/data/world_national_core/us.yaml` | 1 498 | 14 637 |
 | `backend/app/services/search_intent.py` | 993 | 14 586 |
-| `backend/app/tasks/analytics_rollups.py` | 1 216 | 14 445 |
 | `frontend/src/components/PlanetView.jsx` | 843 | 14 421 |
 | `frontend/src/pages/CalculatorPage.jsx` | 1 263 | 13 946 |
 | `frontend/src/components/PlanetView.css` | 556 | 13 913 |
@@ -264,13 +264,13 @@
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `frontend/src/components/home/HomeWorkbench.component.test.jsx` | 461 | 5 302 |
 | `backend/tests/test_en_catalog.py` | 538 | 5 293 |
+| `deploy/approved-shas.txt` | 183 | 5 259 |
 | `scripts/dev/perf-mobile.mjs` | 390 | 5 258 |
 | `frontend/src/pages/RegionRatingPage.jsx` | 402 | 5 239 |
 | `backend/app/services/world_adapters/bcb_sgs.py` | 567 | 5 236 |
 | `backend/app/services/seo_regional_year.py` | 536 | 5 232 |
 | `frontend/src/lib/worldApi.js` | 587 | 5 228 |
 | `backend/tests/test_world_catalog_merge.py` | 478 | 5 223 |
-| `deploy/approved-shas.txt` | 182 | 5 213 |
 | `backend/app/services/world_adapters/fred_stlouis.py` | 596 | 5 211 |
 | `frontend/src/components/RegionAnnualChart.jsx` | 478 | 5 194 |
 | `scripts/project-terrain-template.html` | 112 | 5 193 |
@@ -389,6 +389,7 @@
 | `frontend/src/styles/w6d.css` | 222 | 4 031 |
 | `frontend/src/lib/planetLabels.test.js` | 272 | 4 016 |
 | `backend/app/services/telegram_calm.py` | 352 | 3 969 |
+| `backend/tests/test_sessionize_boundaries.py` | 309 | 3 964 |
 | `frontend/src/components/PwaInstall.component.test.jsx` | 351 | 3 961 |
 | `frontend/src/components/CurrencyPairChart.jsx` | 328 | 3 959 |
 | `backend/app/services/signup_attribution.py` | 390 | 3 933 |
@@ -410,7 +411,6 @@
 | `backend/tests/test_eurostat_rebase.py` | 347 | 3 804 |
 | `frontend/src/components/LiveTicker.component.test.jsx` | 302 | 3 799 |
 | `backend/tests/test_freshness_watchdog.py` | 273 | 3 792 |
-| `backend/tests/test_sessionize_boundaries.py` | 294 | 3 779 |
 | `backend/app/services/rosstat_demo_parser.py` | 439 | 3 776 |
 | `frontend/src/components/WorldChartSection.jsx` | 382 | 3 776 |
 | `backend/app/services/calendar_sources/rosstat_plan.py` | 397 | 3 775 |
