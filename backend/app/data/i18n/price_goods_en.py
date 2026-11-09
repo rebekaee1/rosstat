@@ -811,3 +811,29 @@ PRICE_GOODS_EN: dict[str, tuple[str, str]] = {
     'ceni-zhidkie-sredstva-dlya-stirki': ('Liquid laundry detergent', 'litre'),
     'ceni-zont': ('Umbrella', 'item'),
 }
+
+
+# R7-B: единицы, которые читались двусмысленно («10 items» у витаминов и прокладок,
+# «per rouble» у процентов по кредиту, скобки в «10 capsules (tablets)»).
+_UNIT_FIX: dict[str, str] = {
+    "ceni-askorbinovaya-kislota": "10 tablets",
+    "ceni-polivitaminy": "10 tablets",
+    "ceni-polivitaminy-bez-mineralov-otechestvennye": "10 tablets",
+    "ceni-polivitaminy-importnye": "10 tablets",
+    "ceni-polivitaminy-s-makro-i-mikroelementami": "10 tablets",
+    "ceni-podguzniki-detskie-bumazhnye": "10 nappies",
+    "ceni-prokladki-zhenskie-gigienicheskie": "10 pads",
+    "ceni-prokladki-zhenskie-gigienicheskie-ezhednevnye": "10 liners",
+    "ceni-bloki-stroitelnye": "1,000 pieces",
+    "ceni-kirpich": "1,000 pieces",
+    "ceni-kirpich-krasnyy": "1,000 pieces",
+    "ceni-kombinirovannye-kontraceptivy": "21 tablets",
+    "ceni-kolco-obruchalnoe-zolotoe": "gram",
+    "ceni-plata-za-polzovanie-potrebitelskim-kreditom-procentnaya-stav": "",
+}
+for _code, _unit in _UNIT_FIX.items():
+    if _code in PRICE_GOODS_EN:
+        PRICE_GOODS_EN[_code] = (PRICE_GOODS_EN[_code][0], _unit)
+for _code, (_name, _unit) in list(PRICE_GOODS_EN.items()):
+    if "(" in _unit:
+        PRICE_GOODS_EN[_code] = (_name, _unit.split("(")[0].strip())
