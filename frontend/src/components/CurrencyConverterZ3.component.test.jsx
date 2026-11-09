@@ -39,7 +39,7 @@ describe('CurrencyDesk: мелкие валюты', () => {
 
   it('поиск в списке находит сум по стране', () => {
     const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
-    fireEvent.change(screen.getAllByPlaceholderText('Найти валюту')[0], { target: { value: 'узбекистан' } });
+    fireEvent.change(screen.getAllByPlaceholderText('Валюта, страна, город или код')[0], { target: { value: 'узбекистан' } });
     const titles = [...container.querySelectorAll('.fe-trow__title')].map((n) => n.textContent);
     expect(titles).toEqual(['Узбекский сум к рублю']);
   });

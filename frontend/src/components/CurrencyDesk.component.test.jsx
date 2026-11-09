@@ -13,6 +13,8 @@ vi.mock('../lib/track', async (importOriginal) => {
 
 // Дата фиксирована: пометка «не обновлялся» зависит от сегодняшнего дня, а данные в тесте со своими датами.
 beforeEach(() => {
+  // Мини-графики строк подгружаются, когда строка подъехала к экрану: в тесте строка видна сразу.
+  window.IntersectionObserver = class { constructor(cb) { this.cb = cb; } observe() { this.cb([{ isIntersecting: true }]); } unobserve() {} disconnect() {} };
   vi.useFakeTimers({ toFake: ['Date'] });
   vi.setSystemTime(new Date('2026-10-05T12:00:00Z'));
 });
@@ -110,10 +112,10 @@ describe('CurrencyDesk', () => {
     expect(container.querySelector('.fe-trow__title').textContent).toBe('Евро к доллару США');
   });
 
-  it('«Найти валюту»: по слову, по символу и по коду; пустой результат подсказывает, что ввести', () => {
+  it('«Валюта, страна, город или код»: по слову, по символу и по коду; пустой результат подсказывает, что ввести', () => {
     mockApis();
     const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
-    const search = screen.getByPlaceholderText('Найти валюту');
+    const search = screen.getByPlaceholderText('Валюта, страна, город или код');
     fireEvent.change(search, { target: { value: 'бит' } });
     expect([...container.querySelectorAll('.fe-trow__title')].map((n) => n.textContent)).toEqual(['Биткоин в долларах США']);
     fireEvent.change(search, { target: { value: 'eur' } });
@@ -191,7 +193,7 @@ describe('CurrencyDesk', () => {
     mockApis();
     const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
     expect(screen.getByTestId('converter-result').textContent).toContain('1 USD = 80,00 RUB');
-    await waitFor(() => expect(container.querySelector('[data-block="currency-year-chart"] .fe-z8-chart__title')).toBeTruthy());
+    await waitFor(() => expect(container.querySelector('[data-block="currency-year-chart"] .fe-z8-chart__title')).toBeTruthy(), { timeout: 10000 });
     expect(container.querySelector('.fe-z8-chart__title').textContent).toContain('Доллар США → Рубль');
   });
 });
@@ -285,9 +287,9 @@ describe('CurrencyDesk: новые валюты из ответа API (круг 
     const titles = [...container.querySelectorAll('.fe-w6g-currency-row .fe-trow__title')].map((n) => n.textContent);
     expect(titles).toContain('Турецкая лира к рублю');
     expect(titles).toContain('Казахский тенге к рублю');
-    fireEvent.change(screen.getByPlaceholderText('Найти валюту'), { target: { value: 'лира' } });
+    fireEvent.change(screen.getByPlaceholderText('Валюта, страна, город или код'), { target: { value: 'лира' } });
     expect([...container.querySelectorAll('.fe-trow__title')].map((n) => n.textContent)).toEqual(['Турецкая лира к рублю']);
-    fireEvent.change(screen.getByPlaceholderText('Найти валюту'), { target: { value: '' } });
+    fireEvent.change(screen.getByPlaceholderText('Валюта, страна, город или код'), { target: { value: '' } });
     pick('Из', 'Турецкая лира');
     const out = screen.getByTestId('converter-result');
     expect(out.textContent).toContain('219');

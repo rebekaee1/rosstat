@@ -1,0 +1,24 @@
+/* Круг 8 (R8-D): курсы глазами путешественника со слабой связью. Без границ: только тень и фон. */
+
+/* Каркас раздела на время загрузки: те же высоты, что у готовых блоков. */
+.r8d-skel__conv { padding: 18px; min-height: 31rem; }
+.r8d-skel__field { height: 3.4rem; border-radius: 18px; }
+.r8d-skel__chips { display: flex; gap: 10px; margin: 14px 0 16px; }
+.r8d-skel__chips > * { height: 2.6rem; width: 4.5rem; border-radius: 999px; flex: none; }
+.r8d-skel__out { height: 9.5rem; border-radius: 22px; }
+.r8d-skel__row { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) 5rem; gap: 12px; align-items: center; padding: 14px 4px; }
+.r8d-skel__coin { width: 2.5rem; height: 2.5rem; border-radius: 999px; }
+.r8d-skel__line { height: 1rem; width: 60%; border-radius: 8px; }
+.r8d-skel__val { height: 1.25rem; border-radius: 8px; }
+
+/* Кнопки валют стоят сразу под заголовком конвертера: выбрал валюту, потом сумма. */
+.z3-conv > .z3-pop { margin: 0 0 14px; }
+
+/* Курсы из памяти телефона (нет связи). */
+.r8d-offline {
+  display: flex; align-items: flex-start; gap: 10px; margin: 0 0 16px; padding: 12px 14px;
+  border-radius: 18px; background: var(--fe-glass-l2, rgba(255, 255, 255, 0.6)); box-shadow: var(--fe-shadow-l2, none);
+  font-size: 14px; line-height: 1.4; color: var(--fe-text-secondary, #5b6475);
+}
+.r8d-offline__dot { flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 999px; background: var(--fe-gold, #b08a3e); }
+.r8d-offline__retry { margin-left: auto; flex: none; font-weight: 600; color: var(--fe-text, #1c2433); background: none; border: 0; padding: 4px 2px; }

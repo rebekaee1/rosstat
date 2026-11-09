@@ -4012,4 +4012,8 @@ export default {
   'r8c.natHigher': 'Russia: {pct} higher',
   'r8c.natLower': 'Russia: {pct} lower',
   'r8c.natSame': 'Russia: about the same',
+  'r8d.offline': 'No connection. Showing the rates saved on {date}: they may have changed.',
+  'r8d.retry': 'Refresh',
+  'r8d.search': 'Currency, country, city or code',
+  'r8d.nothing': 'Nothing found. Try a country (“Turkey”), a city (“Phuket”) or a code (TRY).',
 };

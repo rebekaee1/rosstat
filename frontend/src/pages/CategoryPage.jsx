@@ -16,10 +16,12 @@ import {
   getCategoryBySlug,
   isIndicatorListed,
 } from '../lib/categories';
+import { formatDate } from '../lib/format';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
-import CurrencyDesk from '../components/CurrencyDesk';
+import CurrencyDesk, { CurrencyDeskSkeleton } from '../components/CurrencyDesk';
+import { readSavedRates } from '../lib/currencySaved';
 import R7PricesBlock from '../components/R7PricesBlock';
 import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
@@ -145,6 +147,7 @@ export default function CategoryPage({ fixedSlug }) {
     && filtered.filter((ind) => ind.frequency === 'daily').length * 2 >= filtered.length;
   // Курсы валют и криптовалют: конвертер, вкладки и поиск валюты вместо общей ленты (волна 6, G).
   const isCurrencies = cat.slug === 'currencies';
+  const saved = isError && isCurrencies ? readSavedRates() : null;
 
   return (
     <div className={`fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24${isCurrencies ? ' fe-z8-cur-page' : ''}`}>
@@ -193,7 +196,7 @@ export default function CategoryPage({ fixedSlug }) {
             {compactRows ? t('z1.cat.ratesHeading') : t('category.indicatorsHeading')}
           </h2>
         )}
-        {isError && (
+        {isError && !(isCurrencies && saved) && (
           <ApiRetryBanner
             className="mb-6"
             onRetry={() => refetch()}
@@ -203,13 +206,22 @@ export default function CategoryPage({ fixedSlug }) {
             {t('category.retryHint')}
           </ApiRetryBanner>
         )}
-        {isLoading ? (
+        {isError && isCurrencies && saved && (
+          <p className="r8d-offline" role="status">
+            <span className="r8d-offline__dot" aria-hidden="true" />
+            <span>{t('r8d.offline', { date: formatDate(String(saved.at).slice(0, 10), 'day', locale) })}</span>
+            <button type="button" className="r8d-offline__retry fe-press" onClick={() => refetch()} disabled={isFetching}>{t('r8d.retry')}</button>
+          </p>
+        )}
+        {isLoading && isCurrencies ? (
+          <CurrencyDeskSkeleton label={t('common.loading')} />
+        ) : isLoading ? (
           <div className="fe-cat-grid" role="status" aria-busy="true" aria-label={t('common.loading')}>
             {[...Array(6)].map((_, i) => (
               <TileSkeleton key={i} />
             ))}
           </div>
-        ) : isError ? null : filtered.length === 0 ? (
+        ) : isError ? (isCurrencies && saved ? <CurrencyDesk indicators={saved.items} offline /> : null) : filtered.length === 0 ? (
           <p className="text-text-secondary">{t('category.empty')}</p>
         ) : isCurrencies ? (
           <CurrencyDesk indicators={filtered} />

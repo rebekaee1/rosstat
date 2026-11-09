@@ -151,9 +151,10 @@ export function rateBasis(code) {
  * единиц (иена, вона, сум), и ряд хранится так же: единица ряда «руб. за 10 000». Иначе — 1.
  */
 export function quoteUnitsOf(unit) {
-  const match = /за\s*([\d\s\u00a0]+)/.exec(String(unit || ''));
+  // Русская подпись «руб. за 10 000» и английская «RUB per 10,000»: без второй английская версия считала донг и рупию в 10 000 раз мимо.
+  const match = /(?:за|per)\s*(\d[\d\s\u00a0\u202f,]*)/i.exec(String(unit || ''));
   if (!match) return 1;
-  const n = Number(match[1].replace(/[\s\u00a0]/g, ''));
+  const n = Number(match[1].replace(/[\s\u00a0\u202f,]/g, ''));
   return Number.isFinite(n) && n > 0 ? n : 1;
 }
 
@@ -233,18 +234,20 @@ export function parseAmountInput(text, locale = 'ru') {
 
 /** Валюты «в дорогу»: сначала то, что берут с собой или переводят чаще всего. Показываются быстрыми кнопками в конвертере. */
 export const TRAVEL_UNITS = ['TJS', 'UZS', 'KGS', 'KZT', 'AMD', 'BYN', 'AED', 'TRY', 'GEL', 'THB'];
+/** Для раздела курсов: те же валюты «в дорогу» плюс те, что берут в отпуск (донг, египетский фунт). Главная остаётся на TRAVEL_UNITS. */
+export const TRIP_UNITS = [...TRAVEL_UNITS, 'VND', 'EGP'];
 
 // Страны и названия на двух языках: по ним валюта находится в поиске («узбекистан», «uzbek», «дубай», «dirham»).
 const SEARCH_ALIASES = {
-  KZT: 'казахстан kazakhstan тенге tenge',
+  KZT: 'казахстан kazakhstan тенге tenge алматы астана almaty astana',
   BYN: 'беларусь белоруссия belarus белорусский рубль',
-  UZS: 'узбекистан uzbekistan uzbek сум сумы som',
-  TRY: 'турция turkey turkiye turkish лира lira',
-  AMD: 'армения armenia драм dram',
+  UZS: 'узбекистан uzbekistan uzbek сум сумы som ташкент самарканд tashkent',
+  TRY: 'турция turkey turkiye turkish лира lira стамбул istanbul анталья antalya аланья бодрум мармарис кемер',
+  AMD: 'армения armenia драм dram ереван yerevan',
   KGS: 'киргизия кыргызстан kyrgyzstan kyrgyz сом som',
-  AED: 'оаэ эмираты дубай абу-даби dubai uae emirates дирхам dirham',
-  GEL: 'грузия georgia лари lari',
-  THB: 'таиланд тайланд thailand бат baht',
+  AED: 'оаэ эмираты дубай абу-даби абу даби шарджа dubai uae emirates дирхам dirham',
+  GEL: 'грузия georgia лари lari тбилиси батуми tbilisi batumi',
+  THB: 'таиланд тайланд thailand бат baht пхукет паттайя бангкок самуи phuket pattaya bangkok',
   AZN: 'азербайджан azerbaijan манат manat',
   TJS: 'таджикистан tajikistan сомони somoni',
   MDL: 'молдова moldova лей leu',
@@ -252,8 +255,8 @@ const SEARCH_ALIASES = {
   JPY: 'япония japan иена йена yen',
   KRW: 'корея korea вона won',
   INR: 'индия india рупия rupee',
-  VND: 'вьетнам vietnam донг dong',
-  EGP: 'египет egypt фунт pound',
+  VND: 'вьетнам vietnam донг dong нячанг фукуок хошимин nha trang phu quoc',
+  EGP: 'египет egypt фунт pound хургада шарм эль шейх каир hurghada sharm',
   RSD: 'сербия serbia динар dinar',
   CHF: 'швейцария switzerland франк franc',
   PLN: 'польша poland злотый zloty',
