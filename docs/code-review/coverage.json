@@ -13141,7 +13141,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "0f891fd2718b8c2c8273dbeb7b4d8adda22f476d3db197a55b0504050657a5b5",
+      "sha256": "9e46e8f7e7961235ca11b93603b8836a044fe4ee042b5e9e8f7db1d6c5bf7b63",
       "bytes": 7166509,
       "lines": 252200,
       "code": false,
@@ -20226,8 +20226,8 @@
     },
     {
       "path": "frontend/src/components/regions/RegionPricesSubgroups.jsx",
-      "sha256": "92b9e22190e0475d3888de9ef0cc2c147bae0067f253de06c284544d4a159946",
-      "bytes": 5510,
+      "sha256": "c6c9418d22b70c91aed662cc2036c87ebedf23490d70dfff94db9dbcf70d22d6",
+      "bytes": 5506,
       "lines": 57,
       "code": true,
       "status": "reviewed",
@@ -30587,19 +30587,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "0a63b3889e2d342c5e53d9728c7ba371e6172c1e8689a85e2c2b8c8610e44b86",
-  "javascript_inventory_sha256": "737784ce1f506d653236750148e21f0fbfb63da3446a82abf41be5cd91636bbd",
-  "baseline_commit": "d9c35876655027229e4b77b4cbd28cd2f2034174",
-  "branch": "worktree-agent-a1858529d6f73358f",
+  "ledger_sha256": "14ebd2358dc025e1fb57fc23bd53eed3160e46cff24191379609ce93111fbb82",
+  "javascript_inventory_sha256": "6ad472c4a0097b2beddf645aee51410cfaefaec1a85a5c500db0508f1a3d7670",
+  "baseline_commit": "05b0fad3ec4b9f84285f026ff53a23ef9045c2f8",
+  "branch": "circle-data/int",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/data-contracts.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/search.md"
+    "docs/client-mechanism-inventory.json"
   ]
 }

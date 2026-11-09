@@ -21085,7 +21085,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/components/regions/RegionPricesSubgroups.jsx": {
-    "sha256": "92b9e22190e0475d3888de9ef0cc2c147bae0067f253de06c284544d4a159946",
+    "sha256": "c6c9418d22b70c91aed662cc2036c87ebedf23490d70dfff94db9dbcf70d22d6",
     "definitions": [
       {
         "name": "goodsSubgroup",

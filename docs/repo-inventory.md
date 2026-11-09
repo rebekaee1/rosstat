@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2191  ·  **Строк:** 1 386 986  ·  **Токенов (≈):** 13 184 601
+**Файлов:** 2191  ·  **Строк:** 1 386 986  ·  **Токенов (≈):** 13 184 600
 
 ## По верхним папкам
 
@@ -20,7 +20,7 @@
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 122 | 16 382 |
 | `docs` | 141 | 865 471 | 7 426 273 |
-| `frontend` | 995 | 182 488 | 1 994 038 |
+| `frontend` | 995 | 182 488 | 1 994 037 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 652 | 307 147 |
 
@@ -1297,8 +1297,8 @@
 | `frontend/src/lib/r5cExport.js` | 88 | 959 |
 | `frontend/src/lib/compareTitle.js` | 94 | 958 |
 | `frontend/src/lib/forecastShowcase.js` | 104 | 955 |
-| `frontend/src/components/regions/RegionPricesSubgroups.jsx` | 57 | 954 |
 | `frontend/src/components/PageProgress.component.test.jsx` | 83 | 953 |
+| `frontend/src/components/regions/RegionPricesSubgroups.jsx` | 57 | 953 |
 | `backend/app/api/forecast_showcase.py` | 99 | 952 |
 | `backend/tests/test_cbr_currencies.py` | 86 | 952 |
 | `backend/app/services/search_r6a.py` | 59 | 950 |

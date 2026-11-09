@@ -1,23 +1,15 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "d9c35876655027229e4b77b4cbd28cd2f2034174",
+  "baseline_commit": "05b0fad3ec4b9f84285f026ff53a23ef9045c2f8",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
     "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
     "docs/code-review/javascript-symbols.json",
     "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/data-contracts.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/search.md"
+    "docs/code-review/reviews.jsonl"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -1747,7 +1739,7 @@
     {"path": "docs/architecture.md", "kind": "document", "bytes": 97723, "lines": 468, "sha256": "2ac4f63b944117233d2ee2bd629aefecf437d8cb370373f5aeeb722302998ec5", "symlink": false, "nodes": 32, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/backlog.md", "kind": "document", "bytes": 689809, "lines": 3216, "sha256": "e9ed2b71146ed329bb8f5785254790f78636ee3c9293c0f775301bc9a4808c35", "symlink": false, "nodes": 175, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/circle-playbook.md", "kind": "document", "bytes": 26180, "lines": 124, "sha256": "157a0677237f20afde22faf1bb85e95c88802c3a9bbb30742831a68485bc7daf", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7166509, "lines": 252200, "sha256": "0f891fd2718b8c2c8273dbeb7b4d8adda22f476d3db197a55b0504050657a5b5", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7166509, "lines": 252200, "sha256": "9e46e8f7e7961235ca11b93603b8836a044fe4ee042b5e9e8f7db1d6c5bf7b63", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 13325, "lines": 136, "sha256": "864cf97b8211163163e9d2e327bfd54b9b8200ff8fdc07537bca9da86fa8bb42", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 31882, "lines": 161, "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/data-contracts.md", "kind": "document", "bytes": 328082, "lines": 1107, "sha256": "4da272e979bda6427177c9ea0f3775aa8db5ff18869de67f99b97fd10caac15f", "symlink": false, "nodes": 92, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
@@ -2292,7 +2284,7 @@
     {"path": "frontend/src/components/regions/RegionParts.jsx", "kind": "code", "bytes": 9894, "lines": 186, "sha256": "da056d89a565ecbbf83295f6029bf24f5a99516ae6b118dddd5f6cf3f05c59d9", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/regions/RegionPrices.jsx", "kind": "code", "bytes": 15140, "lines": 277, "sha256": "7d0764c1800ca8b55471f524a62995010ca0b68810feac5544306e1e1984f808", "symlink": false, "nodes": 12, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/regions/RegionPrices.test.jsx", "kind": "code", "bytes": 1793, "lines": 32, "sha256": "ac09111284c19f73b1607e1c8ec64976920f7b99f19686e0c7770a36d5788a0c", "symlink": false, "nodes": 1, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
-    {"path": "frontend/src/components/regions/RegionPricesSubgroups.jsx", "kind": "code", "bytes": 5510, "lines": 57, "sha256": "92b9e22190e0475d3888de9ef0cc2c147bae0067f253de06c284544d4a159946", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
+    {"path": "frontend/src/components/regions/RegionPricesSubgroups.jsx", "kind": "code", "bytes": 5506, "lines": 57, "sha256": "c6c9418d22b70c91aed662cc2036c87ebedf23490d70dfff94db9dbcf70d22d6", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/regions/RegionRanking.jsx", "kind": "code", "bytes": 14067, "lines": 278, "sha256": "07a6666fa3046c19e3c905940dafea61d52783e72f879bc77cd869bff416fd22", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/russia/LaborIndicatorGroups.jsx", "kind": "code", "bytes": 3131, "lines": 52, "sha256": "571a0bbba31801547d5d0eedd1680366a54f21c768a36f4cc0a749e205a83def", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/russia/RussiaCategorySection.jsx", "kind": "code", "bytes": 5721, "lines": 126, "sha256": "c8b5c4ddd517815593eb6eed34134999d15f1c7842088b21255134ee7f9a9e5c", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
