@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "256c77ecc3c640b5b737419feb17c312374886532cbfa536b7a37294af589919",
-  "extraction_sha256": "ddebcd7f7d1f22d4321d7d3c92293d36a9ad5085adcac0b582cbb3889721051a",
-  "terrain_baseline_commit": "1a85770d5c209005681070d5278599e3db8e3995",
+  "terrain_sha256": "0867e187bced445d31d28f0c0ea18580d44c46503866ebe3782a65a4cc8233cf",
+  "extraction_sha256": "32d34194d59a4197223ce6688edd9f3c38491a5a78e4764a08c4c5e3262486bf",
+  "terrain_baseline_commit": "0196da6eed5fbea1f19ce45c4007159fc351aac3",
   "counts": {
     "external_or_unresolved_file": 2912,
     "missing_endpoint": 4295
@@ -196,7 +196,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "context",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_analytics_api_inventory_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_analytics_api_inventory_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "CONTEXT.md",
@@ -223,7 +223,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "context",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "CONTEXT.md",
@@ -522,7 +522,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "README.md",
@@ -168471,7 +168471,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_темы_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_темы_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168496,7 +168496,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_подписка_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_подписка_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168521,7 +168521,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_вопросы_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_вопросы_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168546,7 +168546,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_график_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_график_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168571,7 +168571,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_реакция_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_реакция_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168596,7 +168596,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_подписаться_тема_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_подписаться_тема_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168621,7 +168621,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_идея_суть_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_идея_суть_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168646,7 +168646,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_подписаться_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_подписаться_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168671,7 +168671,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_отписаться_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_отписаться_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168696,7 +168696,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_идея_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_идея_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168721,7 +168721,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0028_research_reports_section",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_0003_ssr_seo_strategy_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_0003_ssr_seo_strategy_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0028-research-reports-section.md",
@@ -168746,7 +168746,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_agent_orchestration",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_agent_briefs_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_agent_briefs_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/agent-orchestration.md",
@@ -169101,7 +169101,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_architecture_history",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/architecture-history.md",
@@ -169345,7 +169345,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_architecture",
-        "target": "users_iprofi_tradingeconomics_rosstat_caddyfile_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_caddyfile_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/architecture.md",
@@ -169810,7 +169810,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_circle_playbook",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_agent_briefs_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_agent_briefs_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/circle-playbook.md",
@@ -170134,7 +170134,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_data_contracts",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/data-contracts.md",
@@ -170215,7 +170215,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_data_contracts",
-        "target": "users_iprofi_tradingeconomics_rosstat_caddyfile_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_caddyfile_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/data-contracts.md",
@@ -170351,7 +170351,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_design_readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_design_art_prompts_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_design_art_prompts_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/design/README.md",
@@ -170378,7 +170378,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_design_readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_design_local_acceptance_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_design_local_acceptance_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/design/README.md",
@@ -171231,7 +171231,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_workflow",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/workflow.md",
@@ -196150,7 +196150,7 @@
       "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
       "edge": {
         "source": "scripts_e2e_asset_retention",
-        "target": "frontend_node_modules_vite_dist_node_index",
+        "target": "ext_rosstat_frontend_node_modules_vite_dist_node_index_js",
         "relation": "imports_from",
         "context": "import",
         "confidence": "EXTRACTED",
@@ -196178,7 +196178,7 @@
       "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
       "edge": {
         "source": "scripts_e2e_asset_retention",
-        "target": "frontend_node_modules_vite_dist_node_index_build",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_frontend_node_modules_vite_dist_node_index_build",
         "relation": "imports",
         "context": "import",
         "confidence": "EXTRACTED",
@@ -196206,7 +196206,7 @@
       "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
       "edge": {
         "source": "scripts_e2e_asset_retention",
-        "target": "frontend_node_modules_playwright_index",
+        "target": "ext_rosstat_frontend_node_modules_playwright_index_mjs",
         "relation": "imports_from",
         "context": "import",
         "confidence": "EXTRACTED",
@@ -196234,7 +196234,7 @@
       "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
       "edge": {
         "source": "scripts_e2e_asset_retention",
-        "target": "frontend_node_modules_playwright_index_chromium",
+        "target": "users_iprofi_tradingeconomics_rosstat_release_frontend_node_modules_playwright_index_chromium",
         "relation": "imports",
         "context": "import",
         "confidence": "EXTRACTED",
