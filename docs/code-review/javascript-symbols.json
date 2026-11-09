@@ -7348,96 +7348,96 @@
     "anonymous_functions": 48
   },
   "frontend/src/components/IndicatorSearch.jsx": {
-    "sha256": "659513cacabd2960e3c9f04b2fadf8b64ce60d8f0b1b6b6cf17611b566775931",
+    "sha256": "bc8f7f8ad2fa71aef050950dfb9bc49a0f2c11ea0795e4021c0975add2dd2b9c",
     "definitions": [
       {
         "name": "RotatingHint",
-        "line": 66,
-        "end_line": 98,
+        "line": 67,
+        "end_line": 99,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isKKey",
-        "line": 104,
-        "end_line": 108,
+        "line": 105,
+        "end_line": 109,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch",
-        "line": 110,
-        "end_line": 850,
+        "line": 111,
+        "end_line": 857,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch.shownTitle",
-        "line": 242,
-        "end_line": 242,
+        "line": 243,
+        "end_line": 243,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onKey",
-        "line": 356,
-        "end_line": 386,
+        "line": 357,
+        "end_line": 387,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.focusInput",
-        "line": 402,
-        "end_line": 402,
+        "line": 403,
+        "end_line": 403,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onQueryChange",
-        "line": 440,
-        "end_line": 445,
+        "line": 441,
+        "end_line": 446,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.handleListKey",
-        "line": 454,
-        "end_line": 466,
+        "line": 455,
+        "end_line": 467,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.renderRow",
-        "line": 484,
-        "end_line": 504,
+        "line": 485,
+        "end_line": 505,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "regionValueText",
-        "line": 855,
-        "end_line": 864,
+        "line": 862,
+        "end_line": 871,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionGroupChips",
-        "line": 867,
-        "end_line": 897,
+        "line": 874,
+        "end_line": 904,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "latestText",
-        "line": 900,
-        "end_line": 917,
+        "line": 907,
+        "end_line": 924,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchRow",
-        "line": 923,
-        "end_line": 1040,
+        "line": 930,
+        "end_line": 1047,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "filterValueLabel",
-        "line": 1045,
-        "end_line": 1050,
+        "line": 1052,
+        "end_line": 1057,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchFilters",
-        "line": 1056,
-        "end_line": 1103,
+        "line": 1063,
+        "end_line": 1110,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -7563,8 +7563,12 @@
         "line": 37
       },
       {
-        "source": "./searchLabourHints",
+        "source": "../styles/r7a-search.css",
         "line": 38
+      },
+      {
+        "source": "./searchLabourHints",
+        "line": 39
       }
     ],
     "exports": [
@@ -7572,10 +7576,10 @@
         "names": [
           "default"
         ],
-        "line": 110
+        "line": 111
       }
     ],
-    "anonymous_functions": 121
+    "anonymous_functions": 122
   },
   "frontend/src/components/IndicatorSearch.w6d.component.test.jsx": {
     "sha256": "3a774271b5d60ae0b4278b4f84a50e6ef7bf881063da12e3cbefecaed39dc7d4",
@@ -8994,7 +8998,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/components/MapTimeline.component.test.jsx": {
-    "sha256": "b06aff0eee568f5b27a740ede40220ff15e59192c12cb74035c0cc75c11fc833",
+    "sha256": "76fad399bea03c8b5d14d91f1f4f54a075614f0e10b34c2c4b8e8737c4a2a52d",
     "definitions": [],
     "imports": [
       {
@@ -11846,6 +11850,165 @@
       }
     ],
     "anonymous_functions": 8
+  },
+  "frontend/src/components/R7PricesBlock.component.test.jsx": {
+    "sha256": "24a28bac58517a6ec517e778e2ceefc9b928aeab0feeff75ada0574e74a0daa4",
+    "definitions": [
+      {
+        "name": "get",
+        "line": 7,
+        "end_line": 7,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 3
+      },
+      {
+        "source": "./R7PricesBlock",
+        "line": 4
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 11
+  },
+  "frontend/src/components/R7PricesBlock.jsx": {
+    "sha256": "61216d58fd79cb802d707b4a3025d1d863d1e4497e879a3b72ae5dce178a2989",
+    "definitions": [
+      {
+        "name": "loadSummary",
+        "line": 18,
+        "end_line": 32,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useRussiaPrices",
+        "line": 34,
+        "end_line": 40,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useRussiaPrices.queryFn",
+        "line": 37,
+        "end_line": 37,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "splitPriceUnit",
+        "line": 43,
+        "end_line": 52,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pctChange",
+        "line": 54,
+        "end_line": 57,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "signed",
+        "line": 59,
+        "end_line": 62,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Trend",
+        "line": 64,
+        "end_line": 75,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "readRegion",
+        "line": 77,
+        "end_line": 80,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R7PricesBlock",
+        "line": 82,
+        "end_line": 211,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R7PricesBlock.onRegion",
+        "line": 99,
+        "end_line": 104,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "react-router-dom",
+        "line": 2
+      },
+      {
+        "source": "@tanstack/react-query",
+        "line": 3
+      },
+      {
+        "source": "lucide-react",
+        "line": 4
+      },
+      {
+        "source": "../lib/api",
+        "line": 5
+      },
+      {
+        "source": "../lib/format",
+        "line": 6
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 7
+      },
+      {
+        "source": "../lib/regionsApi",
+        "line": 8
+      },
+      {
+        "source": "../i18n/locale",
+        "line": 9
+      },
+      {
+        "source": "../lib/track",
+        "line": 10
+      },
+      {
+        "source": "../i18n",
+        "line": 11
+      },
+      {
+        "source": "./Sparkline",
+        "line": 12
+      },
+      {
+        "source": "../styles/r7d-prices.css",
+        "line": 13
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 82
+      }
+    ],
+    "anonymous_functions": 13
   },
   "frontend/src/components/RatingExtras.jsx": {
     "sha256": "08cc99d3fa862b017dbbd0468a1a72bf41a091e68cbfad91e16c7614f789db66",
@@ -20789,24 +20952,42 @@
     "anonymous_functions": 11
   },
   "frontend/src/components/regions/RegionRanking.jsx": {
-    "sha256": "9ee02231fe47e668140583c3f3db34d143af5f14c1091874044f070474505687",
+    "sha256": "07a6666fa3046c19e3c905940dafea61d52783e72f879bc77cd869bff416fd22",
     "definitions": [
       {
-        "name": "MoreMetrics",
+        "name": "readMine",
         "line": 23,
-        "end_line": 91,
+        "end_line": 23,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "writeMine",
+        "line": 24,
+        "end_line": 24,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "MoreMetrics",
+        "line": 27,
+        "end_line": 95,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionRanking",
-        "line": 93,
-        "end_line": 230,
+        "line": 97,
+        "end_line": 278,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "RegionRanking.pickMine",
+        "line": 145,
+        "end_line": 145,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "RegionRanking.pick",
-        "line": 126,
-        "end_line": 130,
+        "line": 147,
+        "end_line": 151,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -20870,6 +21051,10 @@
       {
         "source": "../../styles/r3b-regions.css",
         "line": 18
+      },
+      {
+        "source": "../../styles/r7c-regions.css",
+        "line": 19
       }
     ],
     "exports": [
@@ -20877,10 +21062,10 @@
         "names": [
           "default"
         ],
-        "line": 93
+        "line": 97
       }
     ],
-    "anonymous_functions": 25
+    "anonymous_functions": 35
   },
   "frontend/src/components/russia/LaborIndicatorGroups.jsx": {
     "sha256": "571a0bbba31801547d5d0eedd1680366a54f21c768a36f4cc0a749e205a83def",
@@ -21123,7 +21308,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/components/searchLabourHints.js": {
-    "sha256": "2aeaee82bc47e68fbb9f51d1ec8d40388a05db216969cabc5566eb8d2df43617",
+    "sha256": "68ad11ac8fbede4921826e061b27f0ba3e0b056f924a3c8e46c06e5b324ebfeb",
     "definitions": [
       {
         "name": "isLabourQuery",
@@ -21138,9 +21323,27 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "isMrotQuery",
+        "line": 19,
+        "end_line": 21,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "localSuggestions",
+        "line": 25,
+        "end_line": 29,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "labourNoteKey",
+        "line": 31,
+        "end_line": 33,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "labourSuggestions",
-        "line": 17,
-        "end_line": 22,
+        "line": 35,
+        "end_line": 40,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -21160,20 +21363,44 @@
       },
       {
         "names": [
+          "isMrotQuery"
+        ],
+        "line": 19
+      },
+      {
+        "names": [
+          "localSuggestions"
+        ],
+        "line": 25
+      },
+      {
+        "names": [
+          "labourNoteKey"
+        ],
+        "line": 31
+      },
+      {
+        "names": [
           "labourSuggestions"
         ],
-        "line": 17
+        "line": 35
       }
     ],
-    "anonymous_functions": 2
+    "anonymous_functions": 4
   },
   "frontend/src/components/searchLabourHints.test.js": {
-    "sha256": "498f7edbcd98a2d91385c65fd5fd9567a73b512d5ad9a4c70d081f405e09896d",
+    "sha256": "a321b8361ff891e08137028dd2947d2d4924a7e9c4d7e492a8ea5ebfd4b47747",
     "definitions": [
       {
         "name": "t",
         "line": 4,
         "end_line": 4,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "tl",
+        "line": 28,
+        "end_line": 28,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -21188,7 +21415,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 4
+    "anonymous_functions": 6
   },
   "frontend/src/components/shellScrollOffset.component.test.jsx": {
     "sha256": "628239088b7633e8d39193131369d64ad819b46ab2519f85f7f3ae56e366c31f",
@@ -22744,7 +22971,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "32a940e432fd0d6eaab3827af9c0bc0343a51cce9ef0a6e83f3bd8bcdad5073b",
+    "sha256": "39275c8fb4dead27f65ff89b1830f162af8d3799708b11b6499f06b8f7aec0ec",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -22852,7 +23079,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "36a4c6674eb94cdb9b322fe665e90cce7988b8cb5e154c7945dc3ce8fa120a43",
+    "sha256": "a212c9b60813a410aeee66d8a2401b44ed88b14c114c454acdd6afdde8852b46",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -52971,12 +53198,12 @@
     "anonymous_functions": 7
   },
   "frontend/src/pages/CategoryPage.jsx": {
-    "sha256": "96f2f229cba704bbef3d59913ffe99647d889e75edf34a6a8979408ce4f8ae2d",
+    "sha256": "de5651a037455596f37255dbfa609e4a98c627134ebf2182754fbeafd1483edd",
     "definitions": [
       {
         "name": "CategoryPage",
-        "line": 50,
-        "end_line": 300,
+        "line": 51,
+        "end_line": 303,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -53046,48 +53273,52 @@
         "line": 22
       },
       {
-        "source": "../lib/track",
+        "source": "../components/R7PricesBlock",
         "line": 23
       },
       {
-        "source": "../styles/indicator-russia.css",
+        "source": "../lib/track",
         "line": 24
       },
       {
-        "source": "../styles/x2-indicator.css",
+        "source": "../styles/indicator-russia.css",
         "line": 25
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../styles/x2-indicator.css",
         "line": 26
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/z8-tools.css",
         "line": 27
       },
       {
-        "source": "../lib/useScrollDepth",
+        "source": "../styles/k6-country.css",
         "line": 28
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../lib/useScrollDepth",
         "line": 29
       },
       {
-        "source": "../lib/jsonLd",
-        "line": 33
+        "source": "../lib/breadcrumbs",
+        "line": 30
       },
       {
-        "source": "../lib/pageMeta",
+        "source": "../lib/jsonLd",
         "line": 34
       },
       {
-        "source": "../i18n",
+        "source": "../lib/pageMeta",
         "line": 35
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../i18n",
         "line": 36
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 37
       }
     ],
     "exports": [
@@ -53095,7 +53326,7 @@
         "names": [
           "default"
         ],
-        "line": 50
+        "line": 51
       }
     ],
     "anonymous_functions": 17
@@ -56367,6 +56598,30 @@
     ],
     "anonymous_functions": 1
   },
+  "frontend/src/pages/R7C.component.test.jsx": {
+    "sha256": "edb49c98194d2dd2a5350d1bb0f47317e1edc8215d99a3477c585d1e43a40d93",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "./RegionsHome",
+        "line": 4
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
+  },
   "frontend/src/pages/RegionComparePage.jsx": {
     "sha256": "7f9d4b17a749871d07d0b70efc635c478d0bf8270039305f335fd41634af7643",
     "definitions": [
@@ -57009,18 +57264,24 @@
     "anonymous_functions": 12
   },
   "frontend/src/pages/RegionRatingPage.jsx": {
-    "sha256": "9c4fe8491784a8c9e0bc9e8a89711d9f74737c3d867f3df3d4b09138f0915524",
+    "sha256": "54dd971bb65e80d0e2f7b550d185f0b0b38b577ad5ab7050c028484316b7b957",
     "definitions": [
       {
         "name": "RegionRatingPage",
-        "line": 28,
-        "end_line": 291,
+        "line": 29,
+        "end_line": 323,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionRatingPage.setSortOverride",
-        "line": 40,
-        "end_line": 40,
+        "line": 41,
+        "end_line": 41,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionRatingPage.pickMine",
+        "line": 56,
+        "end_line": 62,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -57104,6 +57365,10 @@
       {
         "source": "../styles/r3b-regions.css",
         "line": 26
+      },
+      {
+        "source": "../styles/r7c-regions.css",
+        "line": 27
       }
     ],
     "exports": [
@@ -57111,10 +57376,10 @@
         "names": [
           "default"
         ],
-        "line": 28
+        "line": 29
       }
     ],
-    "anonymous_functions": 15
+    "anonymous_functions": 22
   },
   "frontend/src/pages/RegionRatingsHub.component.test.jsx": {
     "sha256": "70b170c898f0637f4eb8baa98372e1495ba3faf65b350778670dc21996a3bac1",
@@ -57354,114 +57619,114 @@
     "anonymous_functions": 13
   },
   "frontend/src/pages/RegionsHome.jsx": {
-    "sha256": "16bd74b4edf609352bc9c721e07f185bab751c0e77b2bb6f95bf9e64ea2a8385",
+    "sha256": "d42266d6438f701e7cabcf5871949d80fc4570914b8ae24ee7289eb10349c3fc",
     "definitions": [
       {
         "name": "MapMetricSearch",
-        "line": 94,
-        "end_line": 181,
+        "line": 95,
+        "end_line": 182,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MapMetricSearch.openWith",
-        "line": 111,
-        "end_line": 111,
+        "line": 112,
+        "end_line": 112,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MapRegionSearch",
-        "line": 184,
-        "end_line": 236,
+        "line": 185,
+        "end_line": 237,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MapRegionSearch.getSearchItem",
-        "line": 195,
-        "end_line": 195,
+        "line": 196,
+        "end_line": 196,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MapRegionSearch.pick",
-        "line": 197,
-        "end_line": 201,
+        "line": 198,
+        "end_line": 202,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ContrastRow",
-        "line": 257,
-        "end_line": 303,
+        "line": 258,
+        "end_line": 304,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ContrastRow.side",
-        "line": 276,
-        "end_line": 286,
+        "line": 277,
+        "end_line": 287,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionCard",
-        "line": 305,
-        "end_line": 336,
+        "line": 306,
+        "end_line": 342,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionCard.mini",
-        "line": 310,
-        "end_line": 315,
+        "line": 311,
+        "end_line": 316,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome",
-        "line": 338,
-        "end_line": 1020,
+        "line": 344,
+        "end_line": 1031,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionsHome.setView",
-        "line": 455,
-        "end_line": 466,
+        "line": 461,
+        "end_line": 472,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.selectOverview",
-        "line": 468,
-        "end_line": 471,
+        "line": 474,
+        "end_line": 477,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.selectPreset",
-        "line": 473,
-        "end_line": 476,
+        "line": 479,
+        "end_line": 482,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.selectCustom",
-        "line": 478,
-        "end_line": 481,
+        "line": 484,
+        "end_line": 487,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.clearCustom",
-        "line": 483,
-        "end_line": 485,
+        "line": 489,
+        "end_line": 491,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.getSearchItem",
-        "line": 523,
-        "end_line": 523,
+        "line": 529,
+        "end_line": 529,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.handlePng",
-        "line": 533,
-        "end_line": 547,
+        "line": 544,
+        "end_line": 558,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.handleGif",
-        "line": 549,
-        "end_line": 569,
+        "line": 560,
+        "end_line": 580,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -57587,24 +57852,28 @@
         "line": 51
       },
       {
-        "source": "../i18n",
+        "source": "../styles/r7c-regions.css",
         "line": 52
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../i18n",
         "line": 53
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../styles/platform-pages.css",
         "line": 54
       },
       {
-        "source": "../styles/z5-country.css",
+        "source": "../styles/regions-w4.css",
         "line": 55
       },
       {
-        "source": "../styles/r5b-region.css",
+        "source": "../styles/z5-country.css",
         "line": 56
+      },
+      {
+        "source": "../styles/r5b-region.css",
+        "line": 57
       }
     ],
     "exports": [
@@ -57612,10 +57881,10 @@
         "names": [
           "default"
         ],
-        "line": 338
+        "line": 344
       }
     ],
-    "anonymous_functions": 79
+    "anonymous_functions": 82
   },
   "frontend/src/pages/RegionsHome.z5.component.test.jsx": {
     "sha256": "1f821c8f222018191049deb342b360a589d97ac2615eb6323ff3bdc58e92c7d2",
@@ -57922,42 +58191,42 @@
     "anonymous_functions": 21
   },
   "frontend/src/pages/RussiaHome.jsx": {
-    "sha256": "1dce3abe0789dbc7eb8d956ef3846df2b385b2425900e016f2cebe704c0aba3d",
+    "sha256": "5c316149393bb15e05b50b7c0c808b54288277f625d99c0a40b9950e66309aad",
     "definitions": [
       {
         "name": "RussiaMapSkeleton",
-        "line": 46,
-        "end_line": 52,
+        "line": 47,
+        "end_line": 53,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RussiaTerritoryCard",
-        "line": 59,
-        "end_line": 114,
+        "line": 60,
+        "end_line": 115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIsMobileViewport",
-        "line": 138,
-        "end_line": 150,
+        "line": 139,
+        "end_line": 151,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIsMobileViewport.get",
-        "line": 139,
-        "end_line": 141,
+        "line": 140,
+        "end_line": 142,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIsMobileViewport.onChange",
-        "line": 145,
-        "end_line": 145,
+        "line": 146,
+        "end_line": 146,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RussiaHome",
-        "line": 152,
-        "end_line": 363,
+        "line": 153,
+        "end_line": 366,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -58003,60 +58272,64 @@
         "line": 19
       },
       {
-        "source": "../components/russia/RussiaKeyFigures",
+        "source": "../components/R7PricesBlock",
         "line": 20
       },
       {
-        "source": "../components/russia/RussiaCategorySection",
+        "source": "../components/russia/RussiaKeyFigures",
         "line": 21
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../components/russia/RussiaCategorySection",
         "line": 22
       },
       {
-        "source": "../components/Breadcrumbs",
-        "line": 32
+        "source": "../lib/sitePaths",
+        "line": 23
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../components/Breadcrumbs",
         "line": 33
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/ApiRetryBanner",
         "line": 34
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/LoadingNote",
         "line": 35
       },
       {
-        "source": "../components/MobileNavSelect",
+        "source": "../components/Skeleton",
         "line": 36
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../components/MobileNavSelect",
         "line": 37
       },
       {
-        "source": "../lib/jsonLd",
+        "source": "../lib/breadcrumbs",
         "line": 38
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../lib/jsonLd",
         "line": 39
       },
       {
-        "source": "../styles/indicator-russia.css",
+        "source": "../styles/platform-pages.css",
         "line": 40
       },
       {
-        "source": "../styles/z5-country.css",
+        "source": "../styles/indicator-russia.css",
         "line": 41
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/z5-country.css",
         "line": 42
+      },
+      {
+        "source": "../styles/k6-country.css",
+        "line": 43
       }
     ],
     "exports": [
@@ -58064,7 +58337,7 @@
         "names": [
           "default"
         ],
-        "line": 152
+        "line": 153
       }
     ],
     "anonymous_functions": 24
