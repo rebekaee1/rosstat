@@ -135,7 +135,7 @@ PRICE_GOODS: tuple[PriceGood, ...] = (
     _g("1754708", "ceni-kolbasa-syrokopchenaya", "колбаса сырокопчёная", "кг", "Продукты", "Dry-cured sausage", "kg"),
     _g("1754719", "ceni-pelmeni", "пельмени, манты, равиоли", "кг", "Продукты", "Pelmeni and dumplings", "kg"),
     _g("1743472", "ceni-ryba-morozhenaya", "рыба мороженая неразделанная", "кг", "Продукты", "Frozen whole fish", "kg"),
-    _g("1754723", "ceni-ryba-lososevaya", "рыба лососёвых пород охлаждённая и мороженая", "кг", "Продукты", "Salmon fish, chilled and frozen", "kg"),
+    _g("1754723", "ceni-ryba-lososevaya", "рыба лососёвых пород охлаждённая и мороженая", "кг", "Продукты", "Salmon and trout, chilled and frozen", "kg"),
     _g("1709806", "ceni-ryba-solenaya", "рыба солёная, маринованная, копчёная", "кг", "Продукты", "Salted, pickled and smoked fish", "kg"),
     # Молочные продукты и яйца
     _g("1709745", "ceni-moloko", "молоко питьевое пастеризованное 2,5–3,2% жирности", "л", "Продукты", "Pasteurised milk 2.5–3.2% fat", "litre"),
@@ -167,7 +167,7 @@ PRICE_GOODS: tuple[PriceGood, ...] = (
     _g("1846562", "ceni-pivo", "пиво", "л", "Продукты", "Beer", "litre"),
     _g("1846523", "ceni-sigarety", "сигареты с фильтром", "пачка", "Продукты", "Filter cigarettes", "pack"),
     # Топливо (АИ-92, АИ-95 и дизель уже есть: ceni-ai92/ai95/dt)
-    _g("1755184", "ceni-ai98", "бензин АИ-98 и выше", "л", "Топливо", "AI-98+ gasoline", "litre"),
+    _g("1755184", "ceni-ai98", "бензин АИ-98 и выше", "л", "Топливо", "AI-98+ petrol", "litre"),
     # ЖКХ
     _g("1755085", "ceni-elektroenergiya", "электроэнергия в квартирах без электроплит (в пределах нормы)", "100 кВт·ч", "ЖКХ", "Electricity, flats without electric stoves (within norm)", "100 kWh"),
     _g("1755055", "ceni-elektroenergiya-elektroplity", "электроэнергия в квартирах с электроплитами (в пределах нормы)", "100 кВт·ч", "ЖКХ", "Electricity, flats with electric stoves (within norm)", "100 kWh"),
@@ -176,10 +176,10 @@ PRICE_GOODS: tuple[PriceGood, ...] = (
     _g("1755212", "ceni-vodootvedenie", "водоотведение", "м3", "ЖКХ", "Sewerage", "m³"),
     _g("1755197", "ceni-otoplenie", "отопление", "Гкал", "ЖКХ", "Heating", "Gcal"),
     _g("1755100", "ceni-gaz-setevoy", "газ сетевой", "м3", "ЖКХ", "Piped gas", "m³"),
-    _g("1785697", "ceni-vyvoz-musora", "обращение с твёрдыми коммунальными отходами", "с человека", "ЖКХ", "Municipal solid waste handling", "per person per month"),
+    _g("1785697", "ceni-vyvoz-musora", "обращение с твёрдыми коммунальными отходами", "с человека", "ЖКХ", "Municipal solid waste collection", "person per month"),
     _g("1755108", "ceni-soderzhanie-zhilya", "содержание и ремонт жилья для собственников", "м2", "ЖКХ", "Housing maintenance for owners", "m² of floor area"),
     # Связь
-    _g("1755188", "ceni-sotovaya-svyaz", "абонентская плата за пакет услуг сотовой связи", "месяц", "Связь", "Mobile service bundle fee", "month"),
+    _g("1755188", "ceni-sotovaya-svyaz", "абонентская плата за пакет услуг сотовой связи", "месяц", "Связь", "Mobile phone plan", "month"),
     _g("1755165", "ceni-internet", "абонентская плата за доступ в интернет", "месяц", "Связь", "Home internet subscription", "month"),
     _g("1755062", "ceni-telefon-domashniy", "абонентская плата за местную телефонную связь (безлимит)", "месяц", "Связь", "Unlimited landline subscription", "month"),
     # Транспорт
@@ -188,7 +188,7 @@ PRICE_GOODS: tuple[PriceGood, ...] = (
     _g("1755209", "ceni-proezd-trolleybus", "проезд в троллейбусе", "поездка", "Транспорт", "Trolleybus fare", "trip"),
     _g("1755200", "ceni-proezd-metro", "проезд в метро", "поездка", "Транспорт", "Metro fare", "trip"),
     _g("1755156", "ceni-proezd-marshrutka", "проезд в маршрутном такси", "поездка", "Транспорт", "Minibus fare", "trip"),
-    _g("1755125", "ceni-taksi", "проезд в такси", "1 км", "Транспорт", "Taxi fare", "1 km"),
+    _g("1755125", "ceni-taksi", "проезд в такси", "1 км", "Транспорт", "Taxi fare", "km"),
     _g("1755136", "ceni-elektrichka", "проезд в пригородном поезде", "поездка", "Транспорт", "Suburban train fare", "trip"),
     _g("1755018", "ceni-mezhdugorodniy-avtobus", "проезд в междугородном автобусе", "50 км", "Транспорт", "Intercity bus fare", "50 km"),
     _g("1755041", "ceni-poezd-plackart", "проезд в плацкартном вагоне скорого поезда", "100 км", "Транспорт", "Long-distance train, open-plan sleeper", "100 km"),
@@ -321,7 +321,7 @@ _SHORT_MANUAL: dict[str, str] = {
     "ceni-poezdka-chernomore": "Поездка на Чёрное море",
 }
 
-_FUEL_EN = {"ceni-ai92": "AI-92 gasoline, litre", "ceni-ai95": "AI-95 gasoline, litre", "ceni-dt": "Diesel, litre"}
+_FUEL_EN = {"ceni-ai92": "AI-92 petrol, litre", "ceni-ai95": "AI-95 petrol, litre", "ceni-dt": "Diesel, litre"}
 _FUEL_CODES = ("ceni-ai92", "ceni-ai95", "ceni-dt")
 
 # Ходовые позиции для блока «Цены в регионе» на первом экране: порядок показа.

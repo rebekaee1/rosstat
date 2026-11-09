@@ -4072,7 +4072,7 @@ export default {
   'r9a.facts.regions': 'regions',
   'r9a.facts.rates': 'central bank rates',
   'r9a.tiles.cap': 'Russia average, {period}',
-  'r9a.tiles.year': 'a year',
+  'r9a.tiles.year': 'year on year',
   'r9a.tiles.note': 'Tap a price to see its history in {name}.',
   'r9a.groups.aria': 'Goods and services groups',
   'r9a.prices.goName': 'All prices: {name}',

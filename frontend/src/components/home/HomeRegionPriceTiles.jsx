@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react';
 import { useHomePriceSummary } from '../../lib/homePriceSummary';
 import { formatValue } from '../../lib/format';
+import { enMoney, enPerLabel, enTileName } from '../../lib/r10aUnits';
 import { regionIndicatorPath, regionPath } from '../../lib/sitePaths';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
@@ -43,14 +44,6 @@ export default function HomeRegionPriceTiles({ region, regionName }) {
   const { data, isLoading } = useHomePriceSummary();
   const items = Array.isArray(data?.items) ? data.items.slice(0, SHOWN) : [];
   const groups = Array.isArray(data?.groups) ? data.groups.filter((g) => g?.count > 0).slice(0, 6) : [];
-  // Названия товаров API отдаёт только по-русски: в английской версии плитки не показываем (там остаётся прежний текст карточки).
-  if (locale === 'en') {
-    return (
-      <p className="fe-r3a-goods">
-        {['eggs', 'milk', 'fuel', 'bread', 'meds'].map((k, i) => { const w = t(`r3a.prices.g.${k}`); return i ? w.charAt(0).toLowerCase() + w.slice(1) : w; }).join(', ')} {t('r3a.prices.more')}
-      </p>
-    );
-  }
   if (isLoading) {
     return (
       <ul className="r9a-tiles" aria-hidden="true">
@@ -64,8 +57,11 @@ export default function HomeRegionPriceTiles({ region, regionName }) {
       <p className="r9a-prices__cap">{t('r9a.tiles.cap', { period: items[0].period_label || '' })}</p>
       <ul className="r9a-tiles">
         {items.map((it) => {
-          const { sign, per } = unitParts(it.unit);
+          const en = locale === 'en';
+          const { sign, per: perRu } = unitParts(it.unit);
+          const per = en ? enPerLabel(it.unit) : perRu;
           const digits = it.value >= 1000 ? 0 : 2;
+          const valText = formatValue(it.value, digits, locale);
           return (
             <li key={it.code}>
               <Link
@@ -73,8 +69,8 @@ export default function HomeRegionPriceTiles({ region, regionName }) {
                 className="r9a-tile fe-press"
                 onClick={() => track(events.HOME_CATEGORY_CLICK, { category: 'price-tile', surface: 'home-r9a', code: it.code, region })}
               >
-                <span className="r9a-tile__name">{it.short_name || it.name}</span>
-                <span className="r9a-tile__val">{formatValue(it.value, digits, locale)}{sign}</span>
+                <span className="r9a-tile__name">{en ? enTileName(it) : (it.short_name || it.name)}</span>
+                <span className="r9a-tile__val">{en ? enMoney(valText) : `${valText}${sign}`}</span>
                 <span className="r9a-tile__per">{per}</span>
                 <Trend pct={it.yoy_pct} locale={locale} label={t('r9a.tiles.year')} />
               </Link>
@@ -118,13 +114,16 @@ export function HomePriceStrip() {
     return () => window.removeEventListener('fe:home-region', on);
   }, []);
   const items = Array.isArray(data?.items) ? data.items.slice(0, 8) : [];
-  if (locale === 'en' || !items.length) return null;
+  if (!items.length) return null;
   return (
     <>
     <p className="r9a-strip__cap">{t('r9a.tiles.cap', { period: items[0].period_label || '' })}</p>
     <ul className="r9a-strip scrollbar-hide fe-fade-x" data-block="home-price-strip" aria-label={t('r9a.strip.aria')}>
       {items.map((it) => {
-        const { sign, per } = unitParts(it.unit);
+        const en = locale === 'en';
+        const { sign, per: perRu } = unitParts(it.unit);
+        const per = en ? enPerLabel(it.unit) : perRu;
+        const valText = formatValue(it.value, it.value >= 1000 ? 0 : 2, locale);
         return (
           <li key={it.code}>
             <Link
@@ -132,8 +131,8 @@ export function HomePriceStrip() {
               className="r9a-chip fe-press"
               onClick={() => track(events.HOME_CATEGORY_CLICK, { category: 'price-strip', surface: 'home-r9a', code: it.code, region })}
             >
-              <span className="r9a-chip__name">{it.short_name || it.name}</span>
-              <span className="r9a-chip__val">{formatValue(it.value, it.value >= 1000 ? 0 : 2, locale)}{sign}</span>
+              <span className="r9a-chip__name">{en ? enTileName(it) : (it.short_name || it.name)}</span>
+              <span className="r9a-chip__val">{en ? enMoney(valText) : `${valText}${sign}`}</span>
               <span className="r9a-chip__per">{per}</span>
             </Link>
           </li>

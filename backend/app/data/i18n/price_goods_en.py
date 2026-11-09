@@ -837,3 +837,75 @@ for _code, _unit in _UNIT_FIX.items():
 for _code, (_name, _unit) in list(PRICE_GOODS_EN.items()):
     if "(" in _unit:
         PRICE_GOODS_EN[_code] = (_name, _unit.split("(")[0].strip())
+
+
+# --- R10-A (2026-11-09): reader-facing clean-up for the English site -------------------------------------------------
+# Long departmental names are shortened (the detail that matters stays in brackets), ranges get an en dash, the
+# duplicated "(10 tablets)" in a unit is dropped. Keys are code suffixes after "ceni-".
+_R10A_NAMES: dict[str, str] = {
+    'bryuki-dlya-detey-doshkolnogo-vozrasta-rost-92-122-sm-iz-pol': "Preschool trousers, wool-blend (92–122 cm)",
+    'dopolnitelnye-zanyatiya-v-gosudarstvennyh-i-municipalnyh-obs': 'Extra classes at state schools',
+    'dzhemper-sviter-dlya-detey-doshkolnogo-vozrasta-rost-92-122': "Preschool children's jumper (92–122 cm)",
+    'elektroenergiya-v-kvartirah-bez-elektroplit-sverh-minimalnog': 'Electricity above the minimum, flats without electric stoves',
+    'elektroenergiya-v-kvartirah-s-elektroplitami-sverh-minimalno': 'Electricity above the minimum, flats with electric stoves',
+    'elektroutyug-moschnostyu-do-1800-vt-otechestvennyy-proizvods': 'Electric iron up to 1800 W (Russian or CIS made)',
+    'elektroutyug-s-avtomaticheskim-termoregulyatorom-parouvlazhn': 'Imported steam iron with thermostat',
+    'godovaya-stoimost-polisa-dobrovolnogo-strahovaniya-legkovogo': 'Comprehensive car insurance (CASCO), annual',
+    'godovaya-stoimost-polisa-obyazatelnogo-strahovaniya-grazhdan': 'Compulsory motor insurance (OSAGO), annual',
+    'golovnoy-ubor-muzhskoy-iz-ovchiny-meha-krolika-ili-kombiniro': "Men's winter hat, sheepskin or fur",
+    'golovnoy-ubor-zhenskiy-iz-ovchiny-meha-krolika-iskusstvennog': "Women's winter hat, sheepskin or fur",
+    'holodilnik-kompressionnyy-napolnyy-odnokamernyy-klass-emkost': 'Single-chamber fridge, up to 250 L (Russian or CIS made)',
+    'komissiya-banka-za-perevod-sredstv-s-karty-na-kartu-klientu': 'Card-to-card transfer fee, another bank',
+    'kurtka-dlya-detey-doshkolnogo-vozrasta-zimnyaya-iz-smesovyh': 'Preschool winter jacket, synthetic fill',
+    'moloko-celnoe-pasterizovannoe-sterilizovannoe-2-5-3-2-zhirno': 'Whole milk, pasteurised or sterilised, 2.5–3.2% fat',
+    'nabor-myagkoy-mebeli-divan-i-dva-kresla-obivka-iz-vorsovyh-t': 'Sofa and two armchairs, plush upholstery',
+    'palto-polupalto-dlya-detey-shkolnogo-vozrasta-demisezonnoe-s': 'School-age lightweight coat',
+    'palto-polupalto-zimnee-zhenskoe-s-verhom-iz-smesovyh-tkaney': "Women's winter coat, blended fabric",
+    'perevod-denezhnyh-sredstv-dlya-zachisleniya-na-schet-drugogo': "Transfer to another person's account",
+    'perevod-summy-so-vklada-v-predelah-sistemy-sberbanka-rossii': 'Sberbank deposit transfer within Sberbank, per 3,000 rubles',
+    'plata-za-polzovanie-potrebitelskim-kreditom-procentnaya-stav': 'Consumer loan interest cost',
+    'plate-dlya-devochek-doshkolnogo-vozrasta-rost-92-122-sm-iz-p': "Preschool girls' dress, wool-blend (92–122 cm)",
+    'plate-plate-kostyum-zhenskoe-iz-polusherstyanyh-smesovyh-tka': "Women's dress, wool-blend (series to 2013)",
+    'plate-sarafan-dlya-devochek-shkolnogo-vozrasta-iz-hlopchatob': "School-age girls' summer dress",
+    'polivitaminy-s-makro-i-mikroelementami': 'Multivitamins with minerals',
+    'proezd-v-kupeynom-vagone-skorogo-firmennogo-poezda-dalnego-s': 'Express train, compartment (kupe)',
+    'proezd-v-plackartnom-vagone-skorogo-firmennogo-poezda-dalneg': 'Express train, open-plan sleeper (platzkart)',
+    'proezd-v-sidyachih-vagonah-v-skorostnyh-poezdah-dalnego-sled': 'High-speed train, seated carriage',
+    'sapogi-botinki-zimnie-dlya-detey-shkolnogo-vozrasta-na-utepl': "School-age children's winter boots",
+    'sapogi-botinki-zimnie-valenki-dlya-detey-doshkolnogo-vozrast': "Preschool winter boots or valenki (size 26–29)",
+    'sapogi-muzhskie-na-uteplennoy-podkladke-krome-naturalnogo-me': "Men's insulated boots",
+    'sapogi-sapozhki-botinki-zhenskie-osennie-s-verhom-iz-iskusst': "Women's autumn faux leather boots",
+    'sapogi-zhenskie-osennie-vysokie-s-verhom-iz-naturalnoy-kozhi': "Women's tall autumn leather boots",
+    'sapogi-zhenskie-zimnie-na-uteplennoy-podkladke-krome-natural': "Women's insulated winter boots",
+    'sharf-iz-sherstyanoy-polusherstyanoy-sinteticheskoy-ili-smes': "Children's scarf, wool or synthetic",
+    'soderzhanie-i-remont-zhilya-v-gosudarstvennom-i-municipalnom': 'Maintenance and repair, state and municipal housing',
+    'uslugi-po-organizacii-i-vypolneniyu-rabot-po-ekspluatacii-do': 'Apartment building management',
+    'vodka-krepostyu-40-i-vyshe-obyknovennogo-kachestva-tipa-rasp': 'Standard vodka, 40% or stronger',
+    'vodka-krepostyu-40-ob-spirta-i-vyshe-povyshennogo-kachestva-1785701': 'Premium vodka, 40% or stronger (Posolskaya type)',
+    'vodka-krepostyu-40-ob-spirta-i-vyshe-povyshennogo-kachestva-1785754': 'Premium vodka, 40% or stronger (Smirnoff type)',
+}
+_R10A_UNITS: dict[str, str] = {
+    'azitromicin-500-mg': '10 capsules',
+    'benzin-avtomobilnyy': 'litre',
+}
+
+
+def _r10a_dash(text: str) -> str:
+    import re
+    return re.sub(r'(?<=\d)-(?=\d)', '–', text)
+
+
+def _r10a_apply() -> None:
+    for key, name in _R10A_NAMES.items():
+        code = 'ceni-' + key
+        if code in PRICE_GOODS_EN:
+            PRICE_GOODS_EN[code] = (name, PRICE_GOODS_EN[code][1])
+    for key, unit in _R10A_UNITS.items():
+        code = 'ceni-' + key
+        if code in PRICE_GOODS_EN:
+            PRICE_GOODS_EN[code] = (PRICE_GOODS_EN[code][0], unit)
+    for code, (name, unit) in list(PRICE_GOODS_EN.items()):
+        PRICE_GOODS_EN[code] = (_r10a_dash(name), unit)
+
+
+_r10a_apply()
