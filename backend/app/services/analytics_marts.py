@@ -797,17 +797,35 @@ async def mart_goal_reconciliation(db: AsyncSession, period: Period | int = 30) 
 # Витрина: надёжность (ошибки + vitals + api_timing + лаги)
 # ---------------------------------------------------------------------------
 
+# События, которые делает только живой человек (робот без интерфейса шлёт pageview/dwell/vital/ui_state).
+HUMAN_ACTION_EVENTS = ("click", "move", "interaction", "copy", "form")
+
+
 async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[str, Any]:
     p = as_period(period)
     rows = (await db.execute(
         select(BehaviorEvent.event_type, BehaviorEvent.page, BehaviorEvent.params_json,
-               BehaviorSession.device_type)
+               BehaviorSession.device_type, BehaviorEvent.session_id_hash)
         .select_from(BehaviorEvent)
         .outerjoin(BehaviorSession, BehaviorSession.session_id_hash == BehaviorEvent.session_id_hash)
         .where(BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end,
                BehaviorEvent.event_type.in_(("vital", "js_error", "api_timing")))
         .limit(20000)
     )).all()
+    # Сессии с живым действием (клик, движение, касание, копирование, форма). 08.11.2026 Пульс назвал «конкретным
+    # багом» 698 незагрузок footer-desktop.webp и emblem-f-phone.webp: все они были у 993 сессий без единого действия
+    # (десктопный Chrome из Испании, США, Франции; картинки и Метрика не грузятся в каждой). Файлы отдаются (200), это
+    # ферма с выключенными картинками. Незагрузка файла сайта считается проблемой, только если её видел человек.
+    error_sessions = {sid for etype, _p, _pr, _d, sid in rows if etype == "js_error" and sid}
+    acting_sessions: set[str] = set()
+    if error_sessions:
+        acting_sessions = set((await db.execute(
+            select(BehaviorEvent.session_id_hash).distinct()
+            .where(BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end,
+                   BehaviorEvent.event_type.in_(HUMAN_ACTION_EVENTS),
+                   BehaviorEvent.session_id_hash.in_(list(error_sessions)[:20000]))
+        )).scalars().all())
+    files_failed_inert = 0
 
     vitals: dict[str, list[float]] = defaultdict(list)
     errors: Counter = Counter()
@@ -835,7 +853,7 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
     lcp_by_cell: dict[tuple[str, str], list[float]] = defaultdict(list)
     errors_by_cell: Counter = Counter()
 
-    for etype, page, params, device in rows:
+    for etype, page, params, device, session_id in rows:
         pr = params if isinstance(params, dict) else {}
         cell = (surface_from_url(page) or "other", device or _UNKNOWN)
         if etype == "vital" and pr.get("m") is not None:
@@ -851,7 +869,10 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
             # Свои vs сторонние (этап 4б): 10/10 топ-ошибок прода — счётчики
             # Метрики и РСЯ; без разделения свои регрессии тонут в чужом шуме.
             host = _error_host(pr)
-            if not host or OWN_DOMAIN in host or host.startswith(("localhost", "127.")):
+            if pr.get("kind") == "resource" and session_id not in acting_sessions:
+                # Робот без картинок и сторонних скриптов: в общем счёте остаётся, в «наши» и в разрезы не идёт.
+                files_failed_inert += 1
+            elif not host or OWN_DOMAIN in host or host.startswith(("localhost", "127.")):
                 own_errors[label] += 1
                 if pr.get("kind") == "resource":
                     failed_files[str(pr.get("src") or "").split("?")[0].rsplit("/", 1)[-1][:60] or "файл"] += 1
@@ -900,6 +921,9 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
         "js_errors_real_own": [{"error": e, "count": c} for e, c in real_errors.most_common(12)],
         "js_files_failed_own": {"total": int(sum(failed_files.values())),
                                 "top": dict(failed_files.most_common(5))},
+        # Незагрузки файлов (своих и чужих) у сессий без единого действия: почти всегда роботы с выключенными
+        # картинками и сторонними скриптами. Не поломка сайта.
+        "js_files_failed_inert_sessions": files_failed_inert,
         "api_p75_ms": _pctl(api_all, 0.75),
         # Круг 11: страница-группа × устройство — LCP p75 (мс) и число СВОИХ JS-ошибок.
         "page_device": sorted(

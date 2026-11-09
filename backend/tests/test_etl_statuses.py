@@ -233,3 +233,38 @@ def test_fetch_issues_do_not_leak_between_runs(env):
     _run(_NetDownParser([]), _FakeDB(existing=243))
     fl = _run(_Parser([]), _FakeDB(existing=0))
     assert fl.status == "no_new_data"
+
+
+# --- Старая копия сайта Росстата (09.11.2026) ---------------------------------
+# Сайт вернулся после техработ из мартовской копии: файлы 404, nedel_sred_cen.xlsx от 2022 года.
+# Пустой результат парсера Росстата - недоступный источник, а не «смена layout».
+
+
+class _RosstatParser(_Parser):
+    parser_type = "rosstat_weekly_price"
+
+
+def test_rosstat_zero_points_on_stale_site_copy_is_unreachable(env, monkeypatch):
+    import app.services.rosstat_outage as rosstat_outage
+
+    monkeypatch.setattr(rosstat_outage, "_probe", lambda: "rosstat.gov.ru unreachable: сайт отдаёт старую копию без файлов")
+    fl = _run(_RosstatParser([]), _FakeDB(existing=277))
+    assert fl.status == "failed"
+    assert "unreachable" in fl.error_message and "старую копию" in fl.error_message
+    assert env["zero_alerts"] == []
+
+
+def test_rosstat_zero_points_on_current_site_stays_parsed_zero(env):
+    fl = _run(_RosstatParser([]), _FakeDB(existing=277))
+    assert fl.status == "parsed_zero"
+
+
+def test_other_sources_do_not_probe_rosstat(env, monkeypatch):
+    import app.services.rosstat_outage as rosstat_outage
+
+    def boom():
+        raise AssertionError("probe must not run for non-Rosstat parsers")
+
+    monkeypatch.setattr(rosstat_outage, "_probe", boom)
+    fl = _run(_Parser([]), _FakeDB(existing=277))
+    assert fl.status == "parsed_zero"

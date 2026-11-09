@@ -32,6 +32,18 @@ def _mute_telegram(monkeypatch: pytest.MonkeyPatch):
 
 
 @pytest.fixture(autouse=True)
+def _no_rosstat_outage_probe(monkeypatch: pytest.MonkeyPatch):
+    """Проверка «Росстат отдаёт старую копию» (`rosstat_outage`) в тестах не ходит в сеть: по умолчанию сайт в порядке.
+    Тесты самой проверки подменяют `_probe` своим."""
+    import app.services.rosstat_outage as rosstat_outage
+
+    rosstat_outage.reset_cache()
+    monkeypatch.setattr(rosstat_outage, "_probe", lambda: None)
+    yield
+    rosstat_outage.reset_cache()
+
+
+@pytest.fixture(autouse=True)
 def _no_ssr_cache(monkeypatch: pytest.MonkeyPatch):
     """SSR-кэш (П-14) в тестах отключён: иначе route-тесты читают/пишут
     реальный localhost-Redis и ответы «прилипают» между прогонами.

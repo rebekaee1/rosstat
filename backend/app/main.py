@@ -335,6 +335,12 @@ def _scheduler_event_listener(event) -> None:
         logger.error("Scheduler event: job=%s exc=%s", event.job_id,
                      getattr(event, "exception", None))
         exc = getattr(event, "exception", None)
+        from app.services.yandex_token_alert import is_token_expired, report_token_expired, service_for
+
+        if is_token_expired(exc):
+            # Истёкший токен Яндекса чинит только человек: одно понятное сообщение в сутки вместо «сбоя задачи».
+            asyncio.get_running_loop().create_task(report_token_expired(service_for(exc)))
+            return
         if _is_transient_infra_error(exc):
             streak = _scheduler_transient_streak.get(str(event.job_id), 0) + 1
             _scheduler_transient_streak[str(event.job_id)] = streak

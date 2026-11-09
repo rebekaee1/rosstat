@@ -47,7 +47,14 @@ HELD_KINDS = frozenset({
     "http_5xx_spike", "load_shed", "rate_limit_alert",
     "host_pressure", "host_memory",
     "acquisition_alert", "recrawl_alert", "analytics_anomaly", "audience_alert",
+    "token_expired",
 })
+# Отложенное, которое ждёт человека (09.11.2026): сводка с ним не может начинаться с «ничего делать не нужно».
+# Значение - что сказать в первой строке.
+ACTION_KINDS = {
+    "token_expired": "обновить доступ к Яндексу (напиши Claude «обнови токен»)",
+    "data_sanity": "почистить невозможные точки в базе (напиши Claude «почисти битые точки»)",
+}
 # Срочное: сразу в личку (перечислено для документации и тестов; всё не из HELD_KINDS и так идёт сразу).
 URGENT_KINDS = frozenset({"site_down", "site_up", "disk_space", "prod_config_alert"})
 
@@ -164,7 +171,8 @@ GROUPS = (
     ("data", "Данные", ("etl_summary", "etl_failure", "etl_alert", "world_ingest_summary", "zero_parse",
                         "staleness", "freshness_watchdog", "forecast_issue", "data_guard", "data_sanity")),
     ("jobs", "Фоновые задачи", ("scheduler_alert", "job_lease_lost", "ticker_stale")),
-    ("stats", "Статистика и поиск", ("acquisition_alert", "recrawl_alert", "analytics_anomaly", "audience_alert")),
+    ("stats", "Статистика и поиск", ("acquisition_alert", "recrawl_alert", "analytics_anomaly", "audience_alert",
+                                     "token_expired")),
 )
 _KIND_GROUP = {kind: key for key, _, kinds in GROUPS for kind in kinds}
 
@@ -192,6 +200,7 @@ KIND_LABELS = {
     "recrawl_alert": "заминки с переобходом Вебмастера",
     "analytics_anomaly": "необычные колебания в аналитике",
     "audience_alert": "необычные колебания аудитории",
+    "token_expired": "истёк доступ к Яндексу",
     "alert": "прочие технические заметки",
 }
 # «Хорошие» отложенные сообщения (всё вернулось в норму) не считаем проблемой.
@@ -245,7 +254,12 @@ def build_summary(rows: Iterable[tuple[str, str]], *, day: date, urgent_sent: in
             by_kind[kind].append(text or "")
 
     head = f"☀️ <b>Утренняя сводка, {day.day} {_MONTHS_GENITIVE[day.month - 1]}</b>"
-    if urgent_sent:
+    actions = [label for kind, label in ACTION_KINDS.items() if by_kind.get(kind)]
+    if actions:
+        todo = "Нужно от тебя: " + "; ".join(actions) + "."
+        if urgent_sent:
+            todo += f" Срочное за сутки: {urgent_sent} — я писал отдельно."
+    elif urgent_sent:
         todo = (f"Срочное за сутки: {urgent_sent} — я писал отдельно. "
                 "Если сайт уже снова работает, больше ничего делать не нужно.")
     else:

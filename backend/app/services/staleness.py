@@ -82,7 +82,17 @@ _MAX_GROUPS = 12
 _CODES_PER_GROUP = 3
 
 
-def sla_days(frequency: str | None) -> int:
+# Ряды, которые источник выпускает реже своей частоты (дневные точки пачкой раз в неделю). 08.11.2026 «новая
+# просрочка» `usd-index` 9 дн.: индекс доллара ФРС (DTWEXBGS, релиз H.10) выходит по понедельникам за прошлую
+# неделю, у самой ФРС последняя точка была 30.10 - ряд был свежим. Значение - SLA в днях вместо частотного.
+SLA_OVERRIDE_DAYS: dict[str, int] = {
+    "usd-index": 16,
+}
+
+
+def sla_days(frequency: str | None, code: str | None = None) -> int:
+    if code and code in SLA_OVERRIDE_DAYS:
+        return SLA_OVERRIDE_DAYS[code]
     return STALENESS_SLA_DAYS.get((frequency or "").lower(), STALENESS_DEFAULT_DAYS)
 
 
@@ -105,7 +115,7 @@ def find_stale(
         if max_date is None:
             continue
         age = (today - max_date).days
-        if age > sla_days(frequency):
+        if age > sla_days(frequency, code):
             stale.append((code, age))
     return stale
 
@@ -193,7 +203,7 @@ def build_report(
         if row.max_date is None:
             continue
         age = (today - row.max_date).days
-        if age > sla_days(row.frequency):
+        if age > sla_days(row.frequency, row.code):
             stale_rows.append((row, age))
     report.total_stale = len(stale_rows)
     stale_codes = {row.code for row, _ in stale_rows}
@@ -214,7 +224,7 @@ def build_report(
             report.attention.append(
                 StaleItem(row.code, age, family, KIND_SOURCE_PROBLEM, freq)
             )
-        elif age > sla_days(row.frequency) + period_days(row.frequency):
+        elif age > sla_days(row.frequency, row.code) + period_days(row.frequency):
             report.frozen.append(StaleItem(row.code, age, family, KIND_FROZEN, freq))
         else:
             report.within_lag += 1
