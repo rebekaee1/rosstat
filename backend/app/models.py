@@ -1862,6 +1862,30 @@ class PublicBotEvent(Base):
     topic: Mapped[str | None] = mapped_column(String(24))
 
 
+class PublicBotDialog(Base):
+    """Журнал переписки публичного бота (решение владельца 09.11.2026: «сохранять историю диалога… и что ему отправляла LLM»).
+
+    direction="in" — всё, что прислал человек (сообщение, нажатие кнопки, inline-запрос), с данными профиля Telegram
+    и сырым update; direction="llm" — запрос к модели и её ответ. Исходящие сообщения бота — в telegram_outbox.
+    /stop удаляет записи этого чата.
+    """
+    __tablename__ = "public_bot_dialog"
+    __table_args__ = (Index("ix_public_bot_dialog_chat_ts", "chat_id", "occurred_at"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive, index=True)
+    chat_id: Mapped[str | None] = mapped_column(String(32))
+    user_id: Mapped[str | None] = mapped_column(String(32))
+    username: Mapped[str | None] = mapped_column(String(64))
+    first_name: Mapped[str | None] = mapped_column(String(128))
+    last_name: Mapped[str | None] = mapped_column(String(128))
+    language_code: Mapped[str | None] = mapped_column(String(16))
+    direction: Mapped[str] = mapped_column(String(8), nullable=False)  # in / llm
+    kind: Mapped[str] = mapped_column(String(24), nullable=False)  # message / callback / inline / member / answer / week / ...
+    text: Mapped[str | None] = mapped_column(Text)
+    payload: Mapped[dict | None] = mapped_column(JSON)
+
+
 class PublicBotSubscription(Base):
     __tablename__ = "public_bot_subscriptions"
     __table_args__ = (UniqueConstraint("chat_id", "topic", name="uq_public_bot_sub_chat_topic"),)
