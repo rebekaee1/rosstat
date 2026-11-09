@@ -17,6 +17,7 @@ import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
 import { CATEGORIES, categoryLabel } from '../lib/categories';
 import { groupRussiaCategories } from '../lib/russiaHomeCards';
+import R7PricesBlock from '../components/R7PricesBlock';
 import RussiaKeyFigures from '../components/russia/RussiaKeyFigures';
 import RussiaCategorySection from '../components/russia/RussiaCategorySection';
 import {
@@ -227,6 +228,8 @@ export default function RussiaHome() {
           <RussiaKeyFigures indicators={indicators} isLoading={isLoading} />
         </div>
       </section>
+
+      <R7PricesBlock surface="hub" limit={8} />
 
       <section className="mb-8" aria-labelledby="russia-quick-title">
         <h2

@@ -58,6 +58,15 @@ export default function CurrencyTelemetry({ code, loading = false, fallback = nu
   const digits = Math.abs(windows.last.value) >= 1000 ? 0 : 2;
   const money = (value) => `${formatValue(value, digits, locale)}${NBSP}${symbol}`.trim();
 
+  // Для тех, кто отправляет рубли: если сомони в рублях подешевел, за те же рубли получается больше сомони.
+  const sendParts = pair && pair.quote === 'RUB' && !unitMeta(pair.base)?.crypto
+    ? [['week', windows.week], ['month', windows.month], ['year', windows.year]].filter(([, v]) => v != null).map(([id, v]) => {
+      const gain = ((1 / (1 + v / 100)) - 1) * 100;
+      const abs = Math.abs(gain);
+      const how = abs < 0.1 ? t('r2z3.tele.same') : t(gain > 0 ? 'r2z3.tele.more' : 'r2z3.tele.less', { pct: formatValue(abs, abs < 10 ? 1 : 0, locale) });
+      return `${t(`r2z3.tele.in.${id}`)} ${how}`;
+    })
+    : [];
   const periods = [
     { id: 'week', label: t('w6g.cur.tele.week'), value: windows.week },
     { id: 'month', label: t('w6g.cur.tele.month'), value: windows.month },
@@ -79,7 +88,7 @@ export default function CurrencyTelemetry({ code, loading = false, fallback = nu
             foot={(
               <p className="fe-tele__delta">
                 <DeltaBadge delta={Math.abs(item.value) < 0.005 ? 0 : item.value} polarity={indicatorPolarity(code)}>
-                  {t(Math.abs(item.value) < 0.005 ? 'w6g.cur.tele.flat' : item.value > 0 ? 'w6g.cur.tele.up' : 'w6g.cur.tele.down')}
+                  {t(Math.abs(item.value) < 0.005 ? 'w6g.cur.tele.flat' : item.value > 0 ? 'r2z3.tele.up' : 'r2z3.tele.down')}
                 </DeltaBadge>
               </p>
             )}
@@ -89,9 +98,14 @@ export default function CurrencyTelemetry({ code, loading = false, fallback = nu
           </Tile>
         ))}
       </div>
+      {sendParts.length > 0 && pair && (
+        <p className="fe-w6g-range z3-send" data-testid="currency-send">
+          {t('r2z3.tele.send', { parts: sendParts.join(', ') })}
+        </p>
+      )}
       {rateBasis(code) && (
         <p className="fe-w6g-range" data-testid="currency-basis">
-          {t(`w6g.cur.tele.basis.${rateBasis(code)}`, { date: formatDate(windows.last.date, 'day', locale) })}
+          {t(rateBasis(code) === 'cb' ? 'r2z3.tele.basis.cb' : `w6g.cur.tele.basis.${rateBasis(code)}`, { date: formatDate(windows.last.date, 'day', locale) })}
         </p>
       )}
       {windows.min && windows.max && windows.min.date !== windows.max.date && (

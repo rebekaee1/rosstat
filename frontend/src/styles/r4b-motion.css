@@ -1,0 +1,65 @@
+/* R4-B: движение и плавность новых блоков (цены в регионе, курсы рядом, нижняя панель, cookie, поиск).
+   Анимируются только transform и opacity. Всё гаснет при prefers-reduced-motion, html[data-fe-motion='off'] и html[data-fe-lite='on']. */
+:root { --r4b-ease: cubic-bezier(0.22, 0.8, 0.24, 1); }
+
+/* 1. Курсы «рядом с вами»: настоящие плитки появляются мягко и по порядку (раньше заменяли заглушки рывком). */
+@keyframes r4b-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.fe-r3a-rates > li > a.fe-r3a-rate { animation: r4b-in 0.32s var(--r4b-ease) both; }
+.fe-r3a-rates > li:nth-child(2) > a.fe-r3a-rate { animation-delay: 0.06s; }
+.fe-r3a-rates > li:nth-child(3) > a.fe-r3a-rate { animation-delay: 0.12s; }
+.fe-r3a-rates > li:nth-child(4) > a.fe-r3a-rate { animation-delay: 0.18s; }
+.fe-r3a-rates > li:nth-child(5) > a.fe-r3a-rate { animation-delay: 0.24s; }
+.fe-r3a-rates > li:nth-child(6) > a.fe-r3a-rate { animation-delay: 0.3s; }
+
+/* 2. Заглушки дышат плавнее и по очереди (волна слева направо вместо общего мигания). */
+@keyframes r4b-breathe { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.28; } }
+:root .fe-r3a-rate--ghost { animation: r4b-breathe 1.8s ease-in-out infinite; }
+:root .fe-r3a-rates > li:nth-child(2) > .fe-r3a-rate--ghost { animation-delay: 0.12s; }
+:root .fe-r3a-rates > li:nth-child(3) > .fe-r3a-rate--ghost { animation-delay: 0.24s; }
+:root .fe-r3a-rates > li:nth-child(4) > .fe-r3a-rate--ghost { animation-delay: 0.36s; }
+:root .fe-r3a-rates > li:nth-child(5) > .fe-r3a-rate--ghost { animation-delay: 0.48s; }
+:root .fe-r3a-rates > li:nth-child(6) > .fe-r3a-rate--ghost { animation-delay: 0.6s; }
+
+/* 3. Плитка курса: подъём только мышью (на касании «залипал»), на касании — лёгкое нажатие. */
+@media (hover: none) {
+  :root .fe-r3a-rate:hover { transform: none; box-shadow: 0 2px 10px rgba(20, 30, 60, 0.08); }
+}
+:root .fe-r3a-rate:active { transform: scale(0.98); transition-duration: 0.12s; }
+
+/* 4. Выбор региона: стрелка поворачивается при фокусе, кнопка-стрелка сдвигается при наведении и нажимается. */
+.fe-r3a-quick__chev { transition: transform 0.22s var(--r4b-ease); }
+.fe-r3a-quick__field:focus-within .fe-r3a-quick__chev { transform: rotate(180deg); }
+.fe-r3a-quick__go { transition: transform 0.18s var(--r4b-ease); }
+.fe-r3a-quick__go svg { transition: transform 0.2s var(--r4b-ease); }
+@media (hover: hover) { .fe-r3a-quick__go:hover svg { transform: translateX(3px); } }
+.fe-r3a-quick__go:active { transform: scale(0.94); }
+
+/* 5. Нижняя панель: слой заранее (прятание на прокрутке без рывка размытия), линия активного раздела вырастает из центра. */
+@keyframes r4b-line { from { transform: scaleX(0); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (max-width: 767px) { .fe-dock { will-change: transform; } }
+.fe-dock__item.is-active::before { animation: r4b-line 0.28s var(--r4b-ease) both; }
+.fe-dock__item { transition: color 0.2s ease; }
+
+/* 6. Cookie: содержимое плашки при раскрытии и сворачивании проявляется, а не меняется скачком вместе с шириной. */
+@keyframes r4b-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.fe-cookie-panel > * { animation: r4b-fade 0.24s var(--r4b-ease) both; }
+
+/* 7. Поиск и цены: нажатие на строку и чип регионов даёт отклик, а не мгновенную смену. */
+.z4s-region-chip, .z2p-row, .z3-card-conv__link { transition: transform 0.14s var(--r4b-ease), color 0.2s; }
+.z4s-region-chip:active, .z2p-row:active { transform: scale(0.985); }
+
+/* 8. Бесконечные декоративные циклы стоят, когда движение выключено или включён лёгкий режим. */
+html[data-fe-motion='off'] .fe-today__pulse::after,
+html[data-fe-lite='on'] .fe-today__pulse::after,
+html[data-fe-motion='off'] .z2-nf-planet, html[data-fe-motion='off'] .z2-nf-surface, html[data-fe-motion='off'] .z2-nf-orbit,
+html[data-fe-lite='on'] .z2-nf-planet, html[data-fe-lite='on'] .z2-nf-surface, html[data-fe-lite='on'] .z2-nf-orbit,
+html[data-fe-motion='off'] .fe-r3a-rate--ghost, html[data-fe-lite='on'] .fe-r3a-rate--ghost,
+html[data-fe-motion='off'] .fe-r3a-rates > li > a.fe-r3a-rate, html[data-fe-motion='off'] .fe-dock__item.is-active::before,
+html[data-fe-motion='off'] .fe-cookie-panel > * { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-r3a-rates > li > a.fe-r3a-rate, :root .fe-r3a-rate--ghost, .fe-dock__item.is-active::before, .fe-cookie-panel > * { animation: none; }
+  .fe-r3a-quick__chev, .fe-r3a-quick__go, .fe-r3a-quick__go svg, .fe-dock__item, .z4s-region-chip, .z2p-row, .z3-card-conv__link { transition: none; }
+  .fe-r3a-quick__field:focus-within .fe-r3a-quick__chev, .fe-r3a-quick__go:hover svg, .fe-r3a-quick__go:active, :root .fe-r3a-rate:active, .z4s-region-chip:active, .z2p-row:active { transform: none; }
+  .fe-dock { will-change: auto; }
+}

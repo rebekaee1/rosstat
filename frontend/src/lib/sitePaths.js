@@ -11,6 +11,15 @@ export const RUSSIA = 'russia';
 const CURRENCY_BASE_CODES = Object.freeze([
   'btc-usd', 'cny-eur', 'cny-rub', 'eth-usd', 'eur-rub', 'eur-usd',
   'gbp-eur', 'gbp-usd', 'kzt-rub', 'sol-usd', 'try-rub', 'usd-cny', 'usd-rub',
+  // Остальные валюты ведомости Банка России (08.11.2026): зеркало
+  // backend/app/data/cbr_currencies.py, сверяется тестом test_cbr_currencies.py.
+  'aed-rub', 'amd-rub', 'aud-rub', 'azn-rub', 'bdt-rub', 'bhd-rub', 'bob-rub', 'brl-rub',
+  'byn-rub', 'cad-rub', 'chf-rub', 'cup-rub', 'czk-rub', 'dkk-rub', 'dzd-rub', 'egp-rub',
+  'etb-rub', 'gbp-rub', 'gel-rub', 'hkd-rub', 'huf-rub', 'idr-rub', 'inr-rub', 'irr-rub',
+  'jpy-rub', 'kgs-rub', 'krw-rub', 'mdl-rub', 'mmk-rub', 'mnt-rub', 'ngn-rub', 'nok-rub',
+  'nzd-rub', 'omr-rub', 'pln-rub', 'qar-rub', 'ron-rub', 'rsd-rub', 'sar-rub', 'sek-rub',
+  'sgd-rub', 'thb-rub', 'tjs-rub', 'tmt-rub', 'uah-rub', 'uzs-rub', 'vnd-rub', 'xdr-rub',
+  'zar-rub',
 ]);
 
 export function isCurrencyIndicator(indicatorCode) {

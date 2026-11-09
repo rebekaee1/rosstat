@@ -114,3 +114,6 @@ docs/project-terrain.html
 
 # Ключ генерации изображений (OpenRouter): локальный файл владельца, не коммитить
 api_key.txt
+
+# Временная настройка dev-сервера агента круга правок (свой cacheDir на агента)
+frontend/vite.agent.config.mjs

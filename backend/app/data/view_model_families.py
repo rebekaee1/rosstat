@@ -39,6 +39,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from app.data.cbr_currencies import CBR_CURRENCIES
+
 # --- Гранулярности -----------------------------------------------------------
 
 GRAN_ORDER: tuple[str, ...] = ("day", "week", "month", "quarter", "year")
@@ -719,6 +721,7 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("cny-rub", "Курс юаня", "T1", "руб.", "Валюты", "daily"),
     FamilyDef("try-rub", "Курс турецкой лиры", "T1", "руб.", "Валюты", "daily"),
     FamilyDef("kzt-rub", "Курс тенге", "T1", "руб.", "Валюты", "daily"),
+    *(FamilyDef(_c.code, _c.name, "T1", _c.unit, "Валюты", "daily") for _c in CBR_CURRENCIES),
     FamilyDef("brent", "Нефть Brent", "T1", "USD/баррель", "Товарные рынки", "daily"),
     FamilyDef("gold-price", "Цена золота (ЦБ)", "T1", "руб./г", "Товарные рынки", "daily"),
     # Месячные бенчмарки Pink Sheet Всемирного банка (не дневные Yahoo-фьючерсы).

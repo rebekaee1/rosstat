@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "./styles/z1-tokens.css";
+@import "./styles/r3c-dark.css";
+@import "./styles/r4b-motion.css";
+@import "./styles/r4c-wide.css";
 
 @theme {
   /* Круг 6 (зона P): холодно-нейтральный светлый фон; золото `champagne` остаётся тонкой линией и точкой,

@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect, useMemo, useRef, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { regionVsPath } from '../lib/sitePaths';
 import {
   BarChart3, Briefcase, Building2, Calculator, Clock, Coins, Fuel, Gem, Globe2, History, Home, Landmark, MapPin, Percent, Search,
   SlidersHorizontal, Tag, TrendingUp, Users, X,
@@ -32,6 +33,10 @@ import '../styles/shell.css';
 import '../styles/w6d.css';
 import '../styles/z8-tools.css';
 import '../styles/k8-tools.css';
+import '../styles/z4s-search.css';
+import '../styles/r6a-search.css';
+import '../styles/r7a-search.css';
+import { labourNoteKey, labourSuggestions, localSuggestions } from './searchLabourHints';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
@@ -763,19 +768,44 @@ export default function IndicatorSearch({
                           : (
                             <div className="text-center" data-testid="search-nothing">
                               <EmptyState variant="no-results" size={80} title={t('search.nothingFound', { query: qTrim })} />
+                              {(() => {
+                                const regionName = globalSearch.data?.intent?.region_name;
+                                const labour = labourSuggestions(qTrim, t, regionName);
+                                const items = labour.length > 0 ? labour : localSuggestions(regionName, t);
+                                if (items.length === 0) return null;
+                                return (
+                                  <div className="r6a-labour r7a-local" data-testid="search-labour-hints">
+                                    <p className="r6a-labour__note">{labour.length > 0 ? t(labourNoteKey(qTrim)) : t('r7a.search.localNote', { region: regionName })}</p>
+                                    <ul className="r6a-labour__chips">
+                                      {items.map((example) => (
+                                        <li key={example}>
+                                          <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                );
+                              })()}
                               <ul className="mx-auto mt-3 max-w-sm space-y-1 text-left text-sm text-text-secondary">
                                 <li>{t('shell.search.tip.spelling')}</li>
                                 <li>{t('shell.search.tip.short')}</li>
                                 <li>{t('shell.search.tip.place')}</li>
                               </ul>
                               <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
+                              {/* R2-Z4: один ряд подсказок без повторов: курсы валют и домашние темы вместе, без второго заголовка. */}
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">
-                                {popular.slice(0, 4).map((example) => (
+                                {[...new Set([
+                                  ...['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => t(key)),
+                                  ...popular.slice(0, 6),
+                                ].map((text) => String(text)))].slice(0, 6).map((example) => (
                                   <li key={example}>
                                     <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
                                   </li>
                                 ))}
                               </ul>
+                              <button type="button" data-testid="search-nothing-compare" onClick={() => navigate(regionVsPath('moskva', 'sankt-peterburg'))} className={cn(FOCUS_RING, 'fe-press mt-4 min-h-11 rounded-xl px-4 text-sm font-medium text-champagne-ink')}>
+                                {t('r5d.search.compare')}
+                              </button>
                             </div>
                           )}
                 </div>
@@ -826,6 +856,53 @@ export default function IndicatorSearch({
   );
 }
 
+const REGION_CHIPS_VISIBLE = 4;
+
+/** Короткое значение региона в чипе: «104,3 ₽»; единица берётся из строки. */
+function regionValueText(entry, unit, locale) {
+  if (entry.value == null || !Number.isFinite(Number(entry.value))) return '';
+  const abs = Math.abs(Number(entry.value));
+  const rawUnit = String(unit || '').trim();
+  // Единица коротко и без повторов в каждой строке: «₽», «%»; длинное «рублей за литр» уже в заголовке строки.
+  const long = splitUnit(plainUnit(rawUnit, locale)).short;
+  const short = /руб|₽|rub/i.test(rawUnit) ? '₽' : rawUnit.includes('%') ? '%' : long && long.length <= 5 ? long : '';
+  const value = formatValue(entry.value, abs >= 1000 ? 0 : abs >= 100 ? 1 : 2, locale);
+  return short ? `${value}\u00A0${short}` : value;
+}
+
+/** Z4: регионы одного показателя под строкой «Россия»: первые видны, остальные раскрываются кнопкой «Ещё N регионов». */
+function RegionGroupChips({ group, unit, expanded, onToggle, onPick, t, locale }) {
+  const regions = group.regions;
+  const shown = expanded ? regions : regions.slice(0, REGION_CHIPS_VISIBLE);
+  // Разброс по регионам одной строкой: торопящемуся человеку это ответ быстрее, чем листать сорок регионов.
+  const valued = regions.filter((entry) => entry.value != null && Number.isFinite(Number(entry.value)));
+  const low = valued.length >= 5 ? valued.reduce((a, b) => (Number(b.value) < Number(a.value) ? b : a)) : null;
+  const high = valued.length >= 5 ? valued.reduce((a, b) => (Number(b.value) > Number(a.value) ? b : a)) : null;
+  return (
+    <div className="w6d-sr-chips z4s-region-chips" role="group" aria-label={t('z4s.regions.aria')}>
+      {low && high && Number(low.value) !== Number(high.value) ? (
+        <p className="z4s-region-range">
+          {t('r2z4.regions.range', { min: regionValueText(low, unit, locale), max: regionValueText(high, unit, locale) })}
+        </p>
+      ) : null}
+      {shown.map((entry) => {
+        const value = regionValueText(entry, unit, locale);
+        return (
+          <button key={entry.slug} type="button" className="w6d-sr-chip fe-press z4s-region-chip" onClick={() => onPick(entry)}>
+            <span>{String(entry.name || '').replace(/^г\.\s*/u, '')}</span>
+            {value ? <strong className="z4s-region-chip__value">{value}</strong> : null}
+          </button>
+        );
+      })}
+      {regions.length > REGION_CHIPS_VISIBLE ? (
+        <button type="button" className="w6d-sr-chip fe-press z4s-region-more" aria-expanded={expanded} onClick={onToggle}>
+          {expanded ? t('z4s.regions.less') : t('z4s.regions.more', { n: regions.length - REGION_CHIPS_VISIBLE })}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 /** Последнее значение строки: «4,0 %, август 2026» (число и месяц по языку страницы). */
 function latestText(item, locale, t) {
   const latest = item?.latest;
@@ -834,7 +911,9 @@ function latestText(item, locale, t) {
   const short = splitUnit(plainUnit(String(item.unit || '').trim(), locale)).short;
   // Годовой процент читается как «34,9 % за 2025» (один знак после запятой), остальное как «4,00 %, август 2026».
   const yearPercent = item.frequency === 'annual' && /%/.test(short);
-  const value = formatValue(latest.value, yearPercent ? 1 : abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
+  // Курс мелкой валюты (тенге, сум, вона): «0,18 руб.» теряет цифры, нужны четыре знака — «0,1818 руб.».
+  const smallRate = abs > 0 && abs < 1 && /руб|₽|rub/i.test(String(item.unit || ''));
+  const value = formatValue(latest.value, yearPercent ? 1 : smallRate ? 4 : abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
   const period = latest.date ? formatDate(latest.date, PERIOD_FORMAT[item.frequency] || 'full', locale) : '';
   const shown = short ? `${value}\u00A0${short}` : value;
   const hasPeriod = period && period !== '—';
@@ -911,12 +990,13 @@ function SearchRow({
         </span>
       </button>
       {row.type === 'family' ? (
-        <div className="w6d-sr-chips" role="group" aria-label={t('w6d.search.freqAria')}>
+        <div className="w6d-sr-chips z4s-freq" role="group" aria-label={t('w6d.search.freqAria')}
+          style={{ gridTemplateColumns: `repeat(${Math.min(row.chips.length, 5)}, minmax(0, 1fr))` }}>
           {row.chips.map((chip) => (
             <button
               key={chip.frequency}
               type="button"
-              className="w6d-sr-chip fe-press"
+              className="w6d-sr-chip fe-press z4s-freq__chip"
               aria-current={chip.item === row.item ? 'true' : undefined}
               onClick={() => onPick(row, index + 1, chip.item)}
             >
@@ -931,6 +1011,10 @@ function SearchRow({
             <button key={chip.id} type="button" className="w6d-sr-chip fe-press" onClick={() => onQuick?.(chip.query)}>{chip.label}</button>
           ))}
         </div>
+      ) : null}
+      {item.regional_group?.regions?.length ? (
+        <RegionGroupChips group={item.regional_group} unit={item.unit} expanded={expanded} onToggle={onToggle} t={t} locale={locale}
+          onPick={(entry) => onPick(row, index + 1, { key: `${item.key}:${entry.slug}`, kind: 'region_indicator', path: entry.path, navigation: entry.navigation || 'spa' })} />
       ) : null}
       {row.type === 'byCountry' ? (
         <div className="w6d-sr-chips">

@@ -1,0 +1,37 @@
+/* Круг 6, R6-B: полоса «изменение и связанные показатели» на телефоне. Без рамок: форму держит заливка. */
+.r6b-pulse { margin: 2px 0 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+@media (min-width: 768px) { .r6b-pulse { display: none; } }
+.r6b-pulse__delta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0; font-size: 15px; }
+.r6b-pulse__delta .fe-delta-badge { padding: 4px 12px; border-radius: 9999px; background: rgba(32, 42, 60, 0.06); font-size: 15px; }
+.r6b-pulse__delta .fe-tone--good { background: rgba(21, 128, 61, 0.1); }
+.r6b-pulse__delta .fe-tone--bad { background: rgba(185, 28, 28, 0.09); }
+.r6b-pulse__since { color: var(--color-text-tertiary); }
+.r6b-pulse__chips {
+  display: flex; gap: 8px; overflow-x: auto; margin-inline: -16px; padding: 2px 16px 6px;
+  scrollbar-width: none; scroll-snap-type: x proximity;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+}
+.r6b-pulse__chips::-webkit-scrollbar { display: none; }
+.r6b-pulse__chip {
+  flex: 0 0 auto; scroll-snap-align: start; max-width: 15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding: 9px 15px; border-radius: 9999px; font-size: 14px; font-weight: 600; text-decoration: none;
+  color: var(--color-text-primary); background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 1px 2px rgba(32, 46, 80, 0.08), 0 6px 14px -8px rgba(32, 46, 80, 0.18);
+}
+:root[data-theme='dark'] .r6b-pulse__chip { background: rgba(255, 255, 255, 0.08); box-shadow: none; }
+
+/* Тонкая строка с главным числом под шапкой, пока само число прокручено вверх. */
+.r6b-pulse__bar {
+  position: fixed; left: 16px; right: 16px; z-index: 40; display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 9px 18px; border-radius: 9999px; font-size: 15px; color: var(--color-text-primary);
+  background: rgba(250, 251, 254, 0.9); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: 0 8px 22px -10px rgba(32, 46, 80, 0.3);
+  animation: r6b-bar-in .28s ease-out both;
+  border: 0; font-family: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.r6b-pulse__bar strong { font-size: 17px; font-variant-numeric: tabular-nums; }
+.r6b-pulse__bar-when { color: var(--color-text-tertiary); font-size: 13px; }
+:root[data-theme='dark'] .r6b-pulse__bar { background: rgba(24, 30, 44, 0.9); }
+@keyframes r6b-bar-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .r6b-pulse__bar { animation: none; } }

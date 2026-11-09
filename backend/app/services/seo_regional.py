@@ -1284,6 +1284,17 @@ _MONTH_NAMES_GEN = (
 )
 
 
+_MONTH_NAMES_NOM = (
+    "январь", "февраль", "март", "апрель", "май", "июнь",
+    "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь",
+)
+
+
+def _month_label_nom(month_int: int) -> str:
+    """YYYYMM → «сентябрь 2026» (именительный: для заголовка в скобках)."""
+    return f"{_MONTH_NAMES_NOM[month_int % 100 - 1]} {month_int // 100}"
+
+
 def _month_label(month_int: int) -> str:
     """YYYYMM → «май 2012» (для осей, таблиц, alt)."""
     return f"{_MONTH_NAMES_GEN[month_int % 100 - 1]} {month_int // 100}"
@@ -1538,7 +1549,7 @@ async def _render_region_indicator_monthly(
 
     title = (
         f"{ind_name} — {region_name}: {_fmt(last_value)} "
-        f"{unit} ({last_label})"
+        f"{unit} ({_month_label_nom(last_period)})"
     ).strip()
     desc = (
         f"{ind_name} в регионе {region_name}: {_fmt(last_value)} {unit} "

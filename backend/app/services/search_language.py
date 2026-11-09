@@ -6,6 +6,8 @@ No external model, training, embeddings or analytics dependency.
 """
 from __future__ import annotations
 
+from app.data.cbr_currencies import measure_rules as _cbr_measure_rules
+
 import math
 import re
 from collections import Counter
@@ -236,6 +238,7 @@ MEASURE_RULES = {
     "cny-rub": ((r"cny|yuan|юан", r"rub|ruble|rouble|руб"), (r"effective exchange|эффективн.*курс",)),
     "try-rub": ((r"try|lira|лир", r"rub|ruble|rouble|руб"), (r"effective exchange|эффективн.*курс",)),
     "kzt-rub": ((r"kzt|tenge|тенге", r"rub|ruble|rouble|руб"), (r"effective exchange|эффективн.*курс",)),
+    **_cbr_measure_rules(),
     "eur-rub": ((r"eur|euro|евро", r"rub|ruble|rouble|руб"), (r"effective exchange|эффективн.*курс",)),
     "eur-usd": ((r"eur|euro|евро", r"usd|dollar|доллар"), (r"dollar index|индекс доллара|effective exchange|эффективн.*курс",)),
     "credit-stock-households": ((r"credit|loan|кредит|заем", r"consumer|household|individual|физическ|населен"),

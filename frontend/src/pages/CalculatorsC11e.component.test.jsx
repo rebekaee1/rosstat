@@ -202,10 +202,10 @@ describe('График курса: период и вторая пара (кру
     const spy = mockApiGet([['/auth/me', { user: null }], [/^\/indicators\/usd-rub\/data/, { data: rows(400, 80, (i, s) => s + i * 0.05) }]]);
     const { container } = renderPage(<CurrencyPairChart pair={PAIR} edges={EDGES} />);
     await waitFor(() => expect(container.querySelector('.fe-z8-chart__title')).toBeTruthy());
-    expect(container.querySelector('.fe-z8-chart__title').textContent).toMatch(/^За год/);
+    expect(container.querySelector('.fe-z8-chart__title').textContent).toMatch(/^Доллар США/);
     fireEvent.click(screen.getByRole('button', { name: 'Неделя' }));
-    expect(container.querySelector('.fe-z8-chart__title').textContent).toMatch(/^За неделю/);
-    fireEvent.click(screen.getByRole('button', { name: 'Всё время' }));
+    expect(container.querySelector('.fe-z8-chart__title').textContent).toMatch(/^Доллар США/);
+    fireEvent.click(screen.getByRole('button', { name: 'Всё' }));
     await waitFor(() => expect(JSON.stringify(spy.mock.calls)).toContain('"limit":10000'));
   });
 
@@ -217,6 +217,7 @@ describe('График курса: период и вторая пара (кру
     ]);
     const { container } = renderPage(<CurrencyPairChart pair={PAIR} edges={EDGES} />);
     await waitFor(() => expect(container.querySelector('.fe-z8-chart__title')).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: /Сравнить с другой парой/ }));
     fireEvent.click(screen.getByRole('combobox', { name: /^Вторая пара/ }));
     fireEvent.click(screen.getByRole('option', { name: /Евро к рублю/ }));
     await waitFor(() => expect(container.querySelector('.fe-c11e-chartnote')).toBeTruthy());

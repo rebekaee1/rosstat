@@ -1,0 +1,15 @@
+/* Z4: регионы одного показателя под строкой «Россия». Без рамок: тон и вес вместо линий. */
+/* R2-Z4: две колонки, название слева, число справа в одну строку; «Ещё N регионов» на всю ширину. */
+.z4s-region-chips { padding-top: 0.25rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.z4s-region-chip { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-width: 0; text-align: left; }
+.z4s-region-chip > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.z4s-region-chip__value { flex: none; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.z4s-region-chips > .z4s-region-more { grid-column: 1 / -1; justify-content: center; }
+/* R2-Z4: частоты курса («День · Неделя · Месяц · Квартал · Год») — одна строка равных кнопок на всю ширину, а не два рваных ряда. */
+.z4s-freq { display: grid; gap: 6px; padding-left: 16px; }
+.z4s-freq__chip { justify-content: center; min-width: 0; padding: 0 4px; white-space: nowrap; }
+/* R2-Z4: разброс «по регионам: от … до …» над списком регионов; тихая подпись без рамок. */
+.z4s-region-range { margin: 0; padding: 0 4px 2px; font-size: 13px; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+
+/* R5-D: правило w6d для телефона (3 строки) перебивалось базовым ниже по файлу; название показателя не обрезаем на второй строке */
+@media (max-width: 639px) { .w6d-sr-name.w6d-sr-name { -webkit-line-clamp: 3; line-clamp: 3; } }

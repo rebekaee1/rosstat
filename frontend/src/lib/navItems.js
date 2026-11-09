@@ -157,6 +157,10 @@ export function mobileNavGroups(locale) {
   const byId = Object.fromEntries(PRIMARY_NAV.map((item) => [item.id, item]));
   const main = [
     byId.countries,
+    {
+      id: 'region-prices', icon: 'basket', to: regionHubPath(), match: regionHubPath(),
+      labelKey: 'r3a.nav.prices', hintKey: 'r3a.nav.prices.hint',
+    },
     byId['world-rating'],
     byId.compare,
     byId.forecasts,
@@ -166,7 +170,7 @@ export function mobileNavGroups(locale) {
     },
     {
       id: 'currencies', icon: 'coins', to: russiaCategoryPath('currencies'), match: russiaCategoryPath('currencies'),
-      labelKey: 'z2.nav.rates', hintKey: 'w6b.nav.currencies.hint',
+      labelKey: 'z2.nav.rates', hintKey: 'r3a.nav.currencies.hint',
     },
     {
       id: 'methodology', icon: 'book', to: '/methodology', match: '/methodology',

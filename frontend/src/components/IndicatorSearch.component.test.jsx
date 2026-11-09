@@ -82,8 +82,8 @@ it.each([['ru', 'Инфляция в США'], ['en', 'Inflation in the US']])('
   fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
   expect(screen.getByText('shell.search.popular')).toBeTruthy();
   const options = screen.getAllByRole('option');
-  expect(options).toHaveLength(8);
-  expect(options[0].textContent).toBe(`shell.search.example.1`);
+  expect(options).toHaveLength(10);
+  expect(options[0].textContent).toBe(`z4s.example.1`);
   expect(first).toBeTruthy();
   // Ни кодов рядов, ни категорий базы: только понятные фразы.
   expect(options.map((row) => row.textContent).join(' ')).not.toMatch(/[a-z]+-[a-z]+_|\//);
@@ -92,8 +92,8 @@ it.each([['ru', 'Инфляция в США'], ['en', 'Inflation in the US']])('
 it('a popular example fills the field and keeps the dialog open instead of navigating away', () => {
   render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
   fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
-  fireEvent.click(screen.getAllByRole('option')[2]);
-  expect(screen.getByRole('combobox').value).toBe('shell.search.example.3');
+  fireEvent.click(screen.getAllByRole('option')[0]);
+  expect(screen.getByRole('combobox').value).toBe('z4s.example.1');
   expect(screen.getByRole('dialog')).toBeTruthy();
 });
 
@@ -152,8 +152,8 @@ it('nothing found: friendly empty state with tips and examples that refill the f
   const empty = screen.getByTestId('search-nothing');
   expect(empty.textContent).toContain('search.nothingFound');
   expect(empty.textContent).toContain('shell.search.tip.spelling');
-  fireEvent.click(within(empty).getByRole('button', { name: 'shell.search.example.2' }));
-  expect(screen.getByRole('combobox').value).toBe('shell.search.example.2');
+  fireEvent.click(within(empty).getByRole('button', { name: 'z4s.example.2' }));
+  expect(screen.getByRole('combobox').value).toBe('z4s.example.2');
 });
 
 it('the inline field offers example chips that open the dialog with the query already typed', () => {

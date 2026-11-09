@@ -1078,6 +1078,13 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
 }
 
 
+# Other currencies of the Bank of Russia daily list (2026-11-08).
+from app.data import cbr_currencies as _cbr_currencies  # noqa: E402
+
+for _cur in _cbr_currencies.CBR_CURRENCIES:
+    INDICATOR_COPY_EN.setdefault(_cur.code, _cbr_currencies.copy_en(_cur))  # type: ignore[arg-type]
+
+
 def get_indicator_copy_en(code: str) -> IndicatorCopyEn | None:
     """Return EN overlay for ``code``, or None if missing."""
     return INDICATOR_COPY_EN.get(code)

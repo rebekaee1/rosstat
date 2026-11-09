@@ -1,0 +1,4 @@
+/* R5-D: вторая ссылка карточки цен — сравнить свой регион с другим */
+.r5d-compare { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; margin-top: 4px; font-weight: 600; color: var(--z3-gold-ink, #8a6a1f); text-decoration: none; }
+.r5d-compare:focus-visible { outline: 2px solid var(--z3-gold-ink, #8a6a1f); outline-offset: 3px; }
+.fe-r3a-card .r5d-compare { margin-top: -6px; }

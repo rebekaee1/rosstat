@@ -7,20 +7,31 @@ import unicodedata
 from dataclasses import dataclass
 from functools import lru_cache
 
+from app.data.cbr_currencies import CBR_CURRENCIES as _CBR_CURRENCIES, search_concepts as _cbr_search_concepts
+from app.services.search_currency_aliases import currency_latin_concepts as _currency_latin_concepts
+from app.services.search_price_goods import has_price_goods, prepare_price_goods, price_goods_concepts as _price_goods_concepts
+from app.services.search_region_hint import region_prefix_keys
 from app.services.search_language import LANGUAGE_CONCEPTS, QUESTION_WORDS, prepare_language
 from app.services.search_vocabulary import VOCABULARY_CONCEPTS, GRAMMAR_WORDS, prepare_vocabulary, prepare_temporal_roles
+from app.services.search_r6a import CITY_REGION_ALIASES_R6A, R6A_CONCEPTS
+from app.services.search_r7a import R7A_CONCEPTS
 from app.services.search_units import UNIT_CONCEPTS
 from app.services.search_dimensions import DIMENSION_CONCEPTS, prepare_dimensions
 
 SEARCH_VERSION = "federated-v2"
 TOKEN_RE = re.compile(r"[a-zа-я0-9]+")
-STOP_WORDS = frozenset(("в", "во", "по", "за", "на", "из", "для", "и", "к", "the", "in", "of", "for", "and")) | QUESTION_WORDS | GRAMMAR_WORDS
+# Название банка в бытовом запросе («ипотека сбер») не отдельный показатель: ставка по ипотеке одна на всех.
+BANK_BRAND_WORDS = frozenset(("сбер", "сбербанк", "втб", "тинькофф", "альфабанк", "газпромбанк"))
+STOP_WORDS = BANK_BRAND_WORDS | frozenset(("в", "во", "по", "за", "на", "из", "для", "и", "к", "the", "in", "of", "for", "and")) | QUESTION_WORDS | GRAMMAR_WORDS
+
+CBR_SEARCH_CONCEPTS = _cbr_search_concepts() + _currency_latin_concepts()
+PRICE_GOODS_CONCEPTS = _price_goods_concepts()
 
 # Equivalent concepts only. Minimum wage deliberately does not alias average wages.
 CONCEPTS = (
     (("ввп на душу населения", "ввп на душу", "gdp per capita", "per capita gdp"), ("gdp-per-capita", "gdp per capita", "ввп на душу",
         "внутренний продукт на душу", "domestic product per capita")),
-    (("мрот", "minimum wage", "минимальная зарплата"), ("minimum-wage", "minimum wage", "минималь")),
+    (("мрот", "minimum wage", "минимальная зарплата"), ("minimum-wage", "minimum wage", "минимальная заработная плата", "минимальный размер оплаты труда")),
     (("ипц", "cpi", "инфляция", "инфляции", "inflation", "рост цен"), ("cpi", "inflation", "hicp", "потребительских цен", "consumer price")),
     (("ввп", "gdp", "валовой продукт"), ("gdp", "ввп", "валовой внутренний продукт", "gross domestic product")),
     # `policy-rate` — код ключевой ставки других стран (us-policy-rate, uk-policy-rate): «ключевая ставка США» находит ставку ФРС.
@@ -37,6 +48,11 @@ CONCEPTS = (
     (("ицп", "ppi", "цены производителей"), ("ppi", "producer price", "цен производителей")),
     (("нефть брент", "нефти брент", "нефть марки брент", "брент", "нефть", "нефти", "oil", "brent"), ("brent", "нефт", "crude oil")),
     (("золото", "золота", "gold"), ("gold", "золот")),
+    # Остальные валюты ведомости Банка России (08.11.2026): раньше доллара, чтобы
+    # «австралийский доллар» не уходил в курс доллара США.
+    *CBR_SEARCH_CONCEPTS,
+    # Ходовые товары и услуги средних цен Росстата: формы слов и разговорные названия («цена яиц», «коммуналка»).
+    *PRICE_GOODS_CONCEPTS,
     (("курс доллара к рублю", "курс доллара", "курса доллара", "курсе доллара", "курсом доллара", "доллар", "доллара", "доллару", "долларом",
         "usd rub", "usdrub"), ("usd-rub", "usd rub", "доллар")),
     (("курс юаня к рублю", "курс юаня", "юань", "юаня", "cny rub", "cnyrub"), ("cny-rub", "cny rub", "юан")),
@@ -89,7 +105,7 @@ CONCEPTS = (
     (("проценты", "процент", "percent", "percentage"), ("search-unit-percent",)),
 )
 
-CONCEPTS = CONCEPTS + LANGUAGE_CONCEPTS + VOCABULARY_CONCEPTS + UNIT_CONCEPTS + DIMENSION_CONCEPTS
+CONCEPTS = CONCEPTS + LANGUAGE_CONCEPTS + VOCABULARY_CONCEPTS + R6A_CONCEPTS + R7A_CONCEPTS + UNIT_CONCEPTS + DIMENSION_CONCEPTS
 
 _SINGLE_ALIASES = tuple((phrase_alias, alternatives) for aliases, alternatives in CONCEPTS
     for alias in aliases if " " not in (phrase_alias := " ".join(TOKEN_RE.findall(
@@ -101,7 +117,8 @@ _CONTROL_WORDS = frozenset(token for aliases, alternatives in CONCEPTS
         and not (alternatives[0] == "search-unit-chained-prices" and token in ("prices", "цены", "ценах")))
 _CURRENCY_KEYS = frozenset(("search-unit-usd", "search-unit-cad", "search-unit-aud", "search-unit-gbp",
     "search-unit-cny", "search-unit-eur", "search-unit-jpy", "search-unit-rub"))
-_FX_SUBJECT_KEYS = frozenset(("usd-index", "usd-rub", "cny-rub", "try-rub", "kzt-rub", "usd-jpy", "eur-usd", "eur-rub"))
+_FX_SUBJECT_KEYS = frozenset(("usd-index", "usd-rub", "cny-rub", "try-rub", "kzt-rub", "usd-jpy", "eur-usd", "eur-rub",
+    *(c.code for c in _CBR_CURRENCIES)))
 _DENOMINATOR_COUNTS = {"1000": 1000, "1 000": 1000, "thousand": 1000, "one thousand": 1000,
     "тысячу": 1000, "тысячи": 1000, "10000": 10000, "10 000": 10000, "ten thousand": 10000,
     "десять тысяч": 10000, "100000": 100000, "100 000": 100000, "hundred thousand": 100000,
@@ -139,8 +156,34 @@ REGION_ALIASES = {
     "sankt-peterburg": ("санкт петербург", "санкт петербурга", "петербург", "спб", "saint petersburg"),
     "respublika-tatarstan": ("татарстан", "татарстана", "татарстане", "tatarstan"),
     "respublika-bashkortostan": ("башкортостан", "башкортостана", "башкортостане", "bashkortostan"),
-    "krasnodarskiy-kray": ("краснодарский край", "краснодарского края", "краснодарском крае", "krasnodar krai"),
+    "krasnodarskiy-kray": ("краснодарский край", "краснодарского края", "краснодарском крае", "krasnodar krai",
+        "краснодар", "краснодара", "краснодаре"),
+    # Город, который люди пишут вместо области («квартплата казань», «молоко екб»): ведёт в свой субъект.
 }
+_CITY_REGION_ALIASES = {
+    "respublika-tatarstan": ("казань", "казани", "казанью"),
+    "sverdlovskaya-oblast": ("екатеринбург", "екатеринбурга", "екатеринбурге", "екб"),
+    "nizhegorodskaya-oblast": ("нижний новгород", "нижнего новгорода", "нижнем новгороде", "нижний"),
+    "samarskaya-oblast": ("самара", "самары", "самаре"),
+    "chelyabinskaya-oblast": ("челябинск", "челябинска", "челябинске"),
+    "rostovskaya-oblast": ("ростов на дону", "ростова на дону", "ростове на дону"),
+    "voronezhskaya-oblast": ("воронеж", "воронежа", "воронеже"),
+    "permskiy-kray": ("пермь", "перми"),
+    "volgogradskaya-oblast": ("волгоград", "волгограда", "волгограде"),
+    "omskaya-oblast": ("омск", "омска", "омске"),
+    "novosibirskaya-oblast": ("новосибирск", "новосибирска", "новосибирске"),
+    "krasnoyarskiy-kray": ("красноярск", "красноярска", "красноярске"),
+    "respublika-bashkortostan": ("уфа", "уфы", "уфе"),
+    "saratovskaya-oblast": ("саратов", "саратова", "саратове"),
+    "tyumenskaya-oblast": ("тюмень", "тюмени"),
+    "irkutskaya-oblast": ("иркутск", "иркутска", "иркутске"),
+    "primorskiy-kray": ("владивосток", "владивостока", "владивостоке"),
+    "habarovskiy-kray": ("хабаровск", "хабаровска", "хабаровске"),
+    "kaliningradskaya-oblast": ("калининград", "калининграда", "калининграде"),
+    "sankt-peterburg": ("питер", "питере", "питера"),
+}
+for _slug, _names in (*_CITY_REGION_ALIASES.items(), *CITY_REGION_ALIASES_R6A.items()):
+    REGION_ALIASES[_slug] = tuple(REGION_ALIASES.get(_slug, ())) + _names
 
 _EN_KEYS = "qwertyuiop[]asdfghjkl;'zxcvbnm,."
 _RU_KEYS = "йцукенгшщзхъфывапролджэячсмитьбю"
@@ -667,7 +710,8 @@ def _unmasked_query(query: str, text: str) -> str:
     return "".join(original)
 
 
-_RATE_QUOTE_CODES = frozenset(("usd-rub", "eur-rub", "cny-rub", "try-rub", "kzt-rub", "eur-usd", "usd-jpy", "btc-usd", "eth-usd"))
+_RATE_QUOTE_CODES = frozenset(("usd-rub", "eur-rub", "cny-rub", "try-rub", "kzt-rub", "eur-usd", "usd-jpy", "btc-usd", "eth-usd",
+    *(c.code for c in _CBR_CURRENCIES)))
 
 
 def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
@@ -707,6 +751,8 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
     # Project masked tokens to the original punctuation before rewriting an age
     # span. This keeps the outside ISO date aligned while numeric age members
     # become opaque nonnumeric aliases rather than observation-period words.
+    # «Средняя цена яиц» — про товар, а не про режим «среднее за период».
+    text = prepare_price_goods(text)
     text = prepare_dimensions(text)
     base_unit = re.search(r"(?<!\d)((?:1|2)\d{3})\s*=\s*100(?!\d)", period_query)
     unit_term = None
@@ -803,6 +849,7 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
         if alternatives not in terms:
             terms.append(alternatives)
     residual = "".join(" " if i in term_occupied else ch for i, ch in enumerate(content))
+    residual_terms = []
     for token in tokens(residual):
         if token in STOP_WORDS or token in ("год", "года", "году", "year"):
             continue
@@ -816,6 +863,16 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
             # the raw unknown word as the parser's mandatory public identity.
             alternatives = nominal_variants(token)
         terms.append(alternatives)
+        residual_terms.append(alternatives)
+    # Регион по началу слова или городу («яйца нов», «хлеб новосибирск»): остаток запроса, не понятие.
+    if residual_terms and not countries and not regions and len(terms) > len(residual_terms):
+        goods = has_price_goods(tuple(terms))
+        for alternatives in residual_terms:
+            hinted = region_prefix_keys(alternatives[0], geometry, goods=goods)
+            if hinted:
+                regions = set(hinted)
+                terms.remove(alternatives)
+                break
     # «Сколько стоит доллар / евро / биткоин»: цена курса — это сам курс; в названии его ряда слова «цена» нет,
     # и обязательная «цена» превращала такой вопрос в пустую выдачу.
     if any(term[0] in _RATE_QUOTE_CODES for term in terms):

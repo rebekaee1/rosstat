@@ -181,7 +181,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 | `business` | Бизнес | ИПП (default YoY), розница, ввод жилья, индекс доступности жилья, основные фонды |
 | `science` | Наука | Аспиранты, докторанты, организации НИР, инновационная активность, R&D |
 
-Source-индикаторы (144) извлекаются через 35 парсер-типа в `PARSER_REGISTRY` (`backend/app/services/*_parser.py`; 32 используются в seed, `cbr_dataservice_sum`/`cbr_monetary_html` зарегистрированы про запас); derived рассчитываются движком `calculation_engine` через `DERIVED_SPECS` (855 спеков: 44 ручных + 811 сгенерированных view-mode-семьями) + 28 чистых ops из `derived_ops.py` (см. ADR-0001 и ADR-0002). Дублирующие карточки в каталоге объединены через 111 generic view-mode family (ADR-0006); всего в seed 999 рядов.
+Source-индикаторы (193) извлекаются через 35 парсер-типа в `PARSER_REGISTRY` (`backend/app/services/*_parser.py`; 32 используются в seed, `cbr_dataservice_sum`/`cbr_monetary_html` зарегистрированы про запас); derived рассчитываются движком `calculation_engine` через `DERIVED_SPECS` (1492 спеков: 44 ручных + 1448 сгенерированных view-mode-семьями) + 28 чистых ops из `derived_ops.py` (см. ADR-0001 и ADR-0002). Дублирующие карточки в каталоге объединены через 160 generic view-mode family (ADR-0006); всего в seed 1685 рядов.
 
 ## Прогнозы
 
@@ -236,7 +236,7 @@ rosstat/
 │   ├── design-system.md    # дизайн-система «хрусталь без границ»
 │   ├── agent-orchestration.md  # круги критиков, оценщик, зоны, приёмка на iOS-симуляторах
 │   ├── analytics_api_inventory/  # инвентарь Yandex API (Metrika, Webmaster, …)
-│   ├── data_sources.md     # карта «индикатор → файл/endpoint» (144 source)
+│   ├── data_sources.md     # карта «индикатор → файл/endpoint» (193 source)
 │   ├── missed_data_audit.md  # reference: ещё не извлечённые поля в source-файлах
 │   ├── workflow.md         # dev процесс, smoke C, прод-деплой
 │   ├── enterprise_resilience.md  # rate limit / CSP / asset-hash trap / канарейка

@@ -20,6 +20,12 @@ from app.data.region_indicator_polarity import (
     region_rating_meta,
     region_rating_order_by,
 )
+from app.data.emiss_price_goods import (
+    HEADLINE_PRICE_CODES,
+    PRICE_GROUPS,
+    PRICE_GROUPS_EN,
+    price_meta,
+)
 from app.database import get_db
 from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
 from app.services.locale import get_locale
@@ -270,7 +276,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
 
     Роут объявлен до `/{slug}` — иначе «heatmap» перехватится как slug региона.
     """
-    cache_key = await versioned_key("regions", f"heatmap:v2:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"heatmap:v3:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -287,16 +293,33 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
         .where(RegionDataPoint.indicator_id == indicator.id,
                Region.kind == "region")
     )).scalar()
+    last_month = None
     if last_year is None:
-        raise HTTPException(404, "Нет данных по этому показателю")
-
-    rows = (await db.execute(
-        select(Region.slug, Region.name, RegionDataPoint.value)
-        .join(Region, Region.id == RegionDataPoint.region_id)
-        .where(RegionDataPoint.indicator_id == indicator.id,
-               RegionDataPoint.year == last_year,
-               Region.kind == "region")
-    )).all()
+        # Месячные ряды (цены ЕМИСС): рейтинг по последнему месяцу, где есть точки субъектов.
+        last_month = (await db.execute(
+            select(func.max(RegionMonthlyPoint.month))
+            .join(Region, Region.id == RegionMonthlyPoint.region_id)
+            .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                   Region.kind == "region")
+        )).scalar()
+        if last_month is None:
+            raise HTTPException(404, "Нет данных по этому показателю")
+        last_year = int(last_month) // 100
+        rows = (await db.execute(
+            select(Region.slug, Region.name, RegionMonthlyPoint.value)
+            .join(Region, Region.id == RegionMonthlyPoint.region_id)
+            .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                   RegionMonthlyPoint.month == last_month,
+                   Region.kind == "region")
+        )).all()
+    else:
+        rows = (await db.execute(
+            select(Region.slug, Region.name, RegionDataPoint.value)
+            .join(Region, Region.id == RegionDataPoint.region_id)
+            .where(RegionDataPoint.indicator_id == indicator.id,
+                   RegionDataPoint.year == last_year,
+                   Region.kind == "region")
+        )).all()
 
     polarity = region_rating_meta(indicator.code, indicator.table_code)
     copy = _icopy(indicator)
@@ -307,6 +330,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
             "unit": copy["unit"],
         },
         "year": last_year,
+        **({"month": int(last_month), "period_label": _month_label(int(last_month))} if last_month else {}),
         **polarity,
         "values": [
             {"slug": s, "name": _rname(s, n), "value": _fmt(float(v)), "raw": float(v)}
@@ -388,9 +412,122 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
     return payload
 
 
+@router.get("/vs/{slug_a}/{slug_b}/prices")
+async def regions_compare_prices(slug_a: str, slug_b: str, db: AsyncSession = Depends(get_db)):
+    """Цены двух регионов рядом, корзина и зарплата в корзинах (R4-A)."""
+    from app.services.r4a_price_compare import build_price_compare_payload
+
+    cache_key = await versioned_key("regions", f"vs-prices:v1:{slug_a}:{slug_b}:{get_locale()}")
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+    payload = await build_price_compare_payload(slug_a, slug_b, db)
+    if payload is None:
+        raise HTTPException(404, "Нет цен для сравнения")
+    await cache_set(cache_key, payload, settings.cache_ttl_data)
+    return payload
+
+
+_MONTHS_RU = ("январь", "февраль", "март", "апрель", "май", "июнь",
+              "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь")
+_MONTHS_EN = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def _price_fields(meta: dict) -> dict:
+    """short_name / price_group / is_discontinued / last_month для ряда цен (контракт Z1)."""
+    group = meta["price_group"]
+    return {
+        "short_name": (meta.get("short_name_en") or meta["short_name"]) if get_locale() == "en" else meta["short_name"],
+        "price_group": group,
+        "price_group_label": PRICE_GROUPS_EN.get(group, group) if get_locale() == "en" else group,
+        "is_discontinued": bool(meta["is_discontinued"]),
+        "last_month": meta["last_month"],
+        "last_month_label": _month_label(meta["last_month"]) if meta["last_month"] else None,
+    }
+
+
+def _month_label(month: int) -> str:
+    """YYYYMM → «сентябрь 2026» / «Sep 2026» по языку запроса."""
+    names = _MONTHS_EN if get_locale() == "en" else _MONTHS_RU
+    return f"{names[month % 100 - 1]} {month // 100}"
+
+
+@router.get("/russia/prices-summary")
+async def russia_prices_summary(db: AsyncSession = Depends(get_db)):
+    """Средние цены по России для национального каталога (R7-D).
+
+    Ходовые позиции (HEADLINE_PRICE_CODES) с последним месяцем, прошлым месяцем,
+    значением год назад и рядом за 13 месяцев для мини-графика, плюс число рядов
+    по группам. Лёгкая замена 1 МБ-профиля региона «russia».
+    """
+    cache_key = await versioned_key("regions", f"russia-prices:v1:{get_locale()}")
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+
+    region = (await db.execute(select(Region).where(Region.slug == "russia"))).scalar_one_or_none()
+    if region is None:
+        raise HTTPException(404, "Регион не найден")
+    inds = (await db.execute(
+        select(RegionIndicator).where(RegionIndicator.code.in_(list(HEADLINE_PRICE_CODES)))
+    )).scalars().all()
+    by_code = {i.code: i for i in inds}
+    rows = (await db.execute(
+        select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+        .where(RegionMonthlyPoint.region_id == region.id,
+               RegionMonthlyPoint.indicator_id.in_([i.id for i in inds]))
+        .order_by(RegionMonthlyPoint.month)
+    )).all()
+    series: dict[int, list[tuple[int, float]]] = {}
+    for iid, month, value in rows:
+        series.setdefault(iid, []).append((int(month), float(value)))
+
+    items = []
+    for code in HEADLINE_PRICE_CODES:
+        ind = by_code.get(code)
+        pts = series.get(ind.id) if ind else None
+        if not pts:
+            continue
+        month, value = pts[-1]
+        prev = pts[-2] if len(pts) > 1 else None
+        year_ago_month = month - 100
+        year_ago = next((v for m, v in pts if m == year_ago_month), None)
+        copy = _icopy(ind)
+        meta = price_meta(code)
+        item = {
+            "code": code, "name": copy["name"], "unit": copy["unit"],
+            "value": _fmt(value), "month": month, "period_label": _month_label(month),
+            "prev_value": _fmt(prev[1]) if prev else None,
+            "year_ago_value": _fmt(year_ago) if year_ago is not None else None,
+            "yoy_pct": round((value / year_ago - 1) * 100, 1) if year_ago else None,
+            "spark": [_fmt(v) for _m, v in pts[-13:]],
+        }
+        if meta:
+            item.update(_price_fields(meta))
+        items.append(item)
+
+    counts = (await db.execute(
+        select(RegionIndicator.code).where(RegionIndicator.code.like("ceni-%"))
+    )).scalars().all()
+    groups: dict[str, int] = {}
+    for c in counts:
+        meta = price_meta(c)
+        if meta and not meta["is_discontinued"]:
+            groups[meta["price_group"]] = groups.get(meta["price_group"], 0) + 1
+    en = get_locale() == "en"
+    group_list = [
+        {"group": g, "label": PRICE_GROUPS_EN.get(g, g) if en else g, "count": groups[g]}
+        for g in PRICE_GROUPS if g in groups
+    ]
+    payload = {"items": items, "groups": group_list, "total": sum(groups.values())}
+    if items:
+        await cache_set(cache_key, payload, settings.cache_ttl_data)
+    return payload
+
+
 @router.get("/{slug}")
 async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("regions", f"profile:search-v2:{slug}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"profile:prices-v4:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -435,6 +572,34 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         else:
             prev[iid] = (year, float(value))
 
+    # Месячный слой (цены ЕМИСС: топливо и товары, 08.11.2026): два последних
+    # месяца по каждому ряду региона. Годовая точка у показателя приоритетнее.
+    mrn = func.row_number().over(
+        partition_by=RegionMonthlyPoint.indicator_id,
+        order_by=RegionMonthlyPoint.month.desc(),
+    ).label("rn")
+    msub = (
+        select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month,
+               RegionMonthlyPoint.value, mrn)
+        .where(RegionMonthlyPoint.region_id == region.id)
+        .subquery()
+    )
+    month_of: dict[int, tuple[int, int | None]] = {}
+    mlatest: dict[int, tuple] = {}
+    mprev: dict[int, tuple] = {}
+    for iid, month, value, r_n in (await db.execute(
+        select(msub.c.indicator_id, msub.c.month, msub.c.value, msub.c.rn).where(msub.c.rn <= 2)
+    )).all():
+        (mlatest if r_n == 1 else mprev)[iid] = (int(month), float(value))
+    for iid, (month, value) in mlatest.items():
+        if iid in latest:
+            continue
+        latest[iid] = (month // 100, value)
+        p_month = mprev.get(iid)
+        if p_month:
+            prev[iid] = (p_month[0] // 100, p_month[1])
+        month_of[iid] = (month, p_month[0] if p_month else None)
+
     sections: dict[int, dict] = {}
     headline = {}
     growth_map = (
@@ -454,6 +619,13 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
             "prev_year": p[0] if p else None,
             "prev_value": _fmt(p[1]) if p else None,
         }
+        if i.id in month_of:
+            # YYYYMM последней и предыдущей точки: карточка месячного ряда.
+            item["month"], item["prev_month"] = month_of[i.id]
+            item["period_label"] = _month_label(item["month"])
+            meta = price_meta(i.code)
+            if meta:
+                item.update(_price_fields(meta))
         sec = sections.setdefault(i.section_num, {
             "num": i.section_num,
             "name": copy["section"] or i.section_name,
@@ -474,6 +646,15 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
                 card["note"] = period
             headline[i.table_code] = card
 
+    # Цены ЕМИСС (table_code 20.m{N}): после годовых рядов раздела, в порядке
+    # справочника — сначала ходовые товары и услуги (яйца, хлеб, ЖКХ, проезд).
+    price_order = {
+        i.code: int(i.table_code[4:]) for i in inds
+        if (i.table_code or "").startswith("20.m") and i.table_code[4:].isdigit()
+    }
+    for sec in sections.values():
+        sec["indicators"].sort(key=lambda it: (it["code"] in price_order, price_order.get(it["code"], 0)))
+
     result = {
         "region": {
             "slug": region.slug,
@@ -486,6 +667,8 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         "headline": headline,
         "sections": [sections[k] for k in sorted(sections)],
         # Полный каталог (все RegionIndicator) vs показатели с фактическими точками по региону (≈471 у Москвы).
+        "price_headline_codes": list(HEADLINE_PRICE_CODES),
+        "price_groups": list(PRICE_GROUPS),
         "catalog_total": len(inds),
         "available_total": sum(len(s["indicators"]) for s in sections.values()),
     }
@@ -493,9 +676,75 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
     return result
 
 
+async def _section_siblings(db: AsyncSession, region, indicator) -> list[dict]:
+    """Соседние показатели раздела для блока «Ещё в разделе» (годовой и месячный режим).
+
+    У позиций цен — та же группа и живые первыми, со значением и месяцем региона.
+    """
+    all_sib = (await db.execute(
+        select(RegionIndicator)
+        .where(RegionIndicator.section_num == indicator.section_num,
+               RegionIndicator.code != indicator.code,
+               RegionIndicator.is_listed.is_(True))
+        .order_by(RegionIndicator.table_code, RegionIndicator.code)
+    )).scalars().all()
+    own_meta = price_meta(indicator.code)
+    if own_meta:
+        # Соседи по цене: та же группа и живые позиции первыми, затем остальные.
+        def _sib_rank(ind):
+            m = price_meta(ind.code)
+            return (0 if m and m["price_group"] == own_meta["price_group"] else 1,
+                    1 if (m and m["is_discontinued"]) else 0)
+        # Только позиции цен: годовые индексы раздела (тарифы, ИПЦ) — другой смысл и
+        # частота, в списке «Ещё в разделе» у цены товара они путают (круг 5, R5-A).
+        all_sib = sorted((x for x in all_sib if price_meta(x.code)), key=_sib_rank)
+        siblings = all_sib[:24]
+    else:
+        siblings = sorted(all_sib, key=lambda x: x.code)[:12]
+    sib_latest: dict[int, tuple[int, float]] = {}
+    if siblings:
+        for iid, m, v in (await db.execute(
+            select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+            .where(RegionMonthlyPoint.region_id == region.id,
+                   RegionMonthlyPoint.indicator_id.in_([x.id for x in siblings]))
+            .order_by(RegionMonthlyPoint.month.desc())
+        )).all():
+            sib_latest.setdefault(iid, (int(m), float(v)))
+
+    def _sibling(x):
+        item = {"code": x.code, "name": _icopy(x)["name"], "unit": _icopy(x)["unit"]}
+        got = sib_latest.get(x.id)
+        if got:
+            item["last_month"], item["month"], item["value"] = got[0], got[0], _fmt(got[1])
+            item["period_label"] = _month_label(got[0])
+        meta = price_meta(x.code)
+        if meta:
+            fields = _price_fields(meta)
+            if got:
+                fields.pop("last_month", None)
+                fields.pop("last_month_label", None)
+            item.update(fields)
+        return item
+
+    return [_sibling(x) for x in siblings]
+
+
+def _rank_around(rank_rows, rank, span: int = 2) -> list[dict]:
+    """Соседи региона по рейтингу: span мест выше и ниже (с номерами мест)."""
+    if not rank:
+        return []
+    lo = max(1, rank - span)
+    hi = min(len(rank_rows), rank + span)
+    return [
+        {"position": pos, "slug": s, "name": _rname(s, n), "value": _fmt(float(v))}
+        for pos, (s, n, v) in enumerate(rank_rows, 1)
+        if lo <= pos <= hi
+    ]
+
+
 @router.get("/{slug}/i/{code}")
 async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("regions", f"detail:v2:{slug}:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"detail:v3:{slug}:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -551,16 +800,10 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
         if s == region.slug:
             rank = pos
             break
+    around = _rank_around(rank_rows, rank)
 
     # соседние показатели раздела (для блока «В этом разделе»)
-    siblings = (await db.execute(
-        select(RegionIndicator)
-        .where(RegionIndicator.section_num == indicator.section_num,
-               RegionIndicator.code != indicator.code,
-               RegionIndicator.is_listed.is_(True))
-        .order_by(RegionIndicator.code)
-        .limit(12)
-    )).scalars().all()
+    sibling_items = await _section_siblings(db, region, indicator)
 
     copy = _icopy(indicator)
     result = {
@@ -583,16 +826,9 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
         "russia_series": russia_series,
         "rank": {
             "position": rank, "total": total_ranked, "year": last_year,
-            "top": top, "bottom": bottom, **polarity,
+            "top": top, "bottom": bottom, "around": around, **polarity,
         } if rank else None,
-        "siblings": [
-            {
-                "code": s.code,
-                "name": _icopy(s)["name"],
-                "unit": _icopy(s)["unit"],
-            }
-            for s in siblings
-        ],
+        "siblings": sibling_items,
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result
@@ -604,6 +840,13 @@ MONTH_NAMES_RU = (
 )
 
 
+def _monthly_price_fields(code: str, region_last: int) -> dict:
+    meta = price_meta(code)
+    if not meta:
+        return {"short_name": None, "price_group": None, "is_discontinued": False, "last_month": region_last}
+    return _price_fields(meta)
+
+
 @router.get("/{slug}/i/{code}/monthly")
 async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     """Помесячный ряд показателя в регионе (пока — цены на топливо, ЕМИСС).
@@ -612,7 +855,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
     Сравнение с РФ строится, рейтинг — нет: цена зависит от структуры рынка
     и логистики региона, «место в рейтинге цен» вводило бы в заблуждение.
     """
-    cache_key = await versioned_key("regions", f"monthly:v1:{slug}:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"monthly:v2:{slug}:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -660,16 +903,27 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
                 for m, v in rf_rows
             ]
 
+    # значения РФ и Москвы на последний месяц региона — «где ваша цена»
+    last_m = rows[-1][0]
+    compare = {"russia": None, "moskva": None}
+    for key in ("russia", "moskva"):
+        if region.slug == key:
+            continue
+        peer = (await db.execute(select(Region).where(Region.slug == key))).scalar_one_or_none()
+        if peer is None:
+            continue
+        pv = (await db.execute(
+            select(RegionMonthlyPoint.value)
+            .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                   RegionMonthlyPoint.region_id == peer.id,
+                   RegionMonthlyPoint.month == last_m)
+        )).scalar_one_or_none()
+        if pv is not None:
+            compare[key] = {"value": _fmt(float(pv)), "month": int(last_m)}
+
     # соседние показатели раздела + мост в макроблок — та же семантика, что
     # у годового эндпоинта: карточка месяц-режима строит те же блоки.
-    siblings = (await db.execute(
-        select(RegionIndicator)
-        .where(RegionIndicator.section_num == indicator.section_num,
-               RegionIndicator.code != indicator.code,
-               RegionIndicator.is_listed.is_(True))
-        .order_by(RegionIndicator.code)
-        .limit(12)
-    )).scalars().all()
+    sibling_items = await _section_siblings(db, region, indicator)
 
     copy = _icopy(indicator)
     result = {
@@ -687,14 +941,13 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
             "section_name": copy["section"] or indicator.section_name,
             "table_code": indicator.table_code,
             "macro_code": MACRO_BY_TABLE.get(indicator.table_code or ""),
+            **_monthly_price_fields(indicator.code, int(last_m)),
         },
         "frequency": "monthly",
+        "compare": compare,
         "series": series,
         "russia_series": russia_series,
-        "siblings": [
-            {"code": s.code, "name": _icopy(s)["name"], "unit": _icopy(s)["unit"]}
-            for s in siblings
-        ],
+        "siblings": sibling_items,
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result

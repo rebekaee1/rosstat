@@ -6,6 +6,7 @@ import { getPageSeo } from '../lib/pageMeta';
 import HomeWorkbench from '../components/home/HomeWorkbench';
 import HomeContinue from '../components/home/HomeContinue';
 import HomeCountryList from '../components/home/HomeCountryList';
+import HomePricesRates from '../components/home/HomePricesRates';
 import HomeTools from '../components/home/HomeTools';
 import { useWorldRatingConcepts } from '../lib/worldApi';
 import { readHomeBootstrap } from '../lib/homeBootstrap';
@@ -46,6 +47,7 @@ export default function Dashboard() {
       </div>
       {/* Круг 11 (D): для вошедшего «Продолжить» и «Вы смотрели» (хранится в браузере; для гостя и без записей блока нет). */}
       <HomeContinue />
+      <HomePricesRates />
       <HomeTools />
       <HomeCountryList russiaSeriesCount={listedCount} />
     </div>

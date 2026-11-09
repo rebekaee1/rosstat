@@ -98,7 +98,8 @@ describe('Dashboard', () => {
     // Примеры запросов под полем: одно касание до выдачи.
     const examples = screen.getByRole('list', { name: 'Примеры запросов' });
     expect(examples.textContent).toContain('Инфляция в Турции');
-    expect(examples.textContent).toContain('ВВП Индии');
+    // Z4 (08.11.2026): домашние темы первыми — цены в регионе и курс сума.
+    expect(examples.textContent).toContain('Курс узбекского сума');
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
   });
 });

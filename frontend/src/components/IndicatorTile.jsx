@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useIndicatorData } from '../lib/hooks';
 import Sparkline from './Sparkline';
 import { ArrowRight } from 'lucide-react';
+import { formatTileValue } from '../lib/indicatorSummary';
 import { formatValue, resolveDateFormat, cn, isCpiIndex } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
@@ -60,6 +61,11 @@ export default function IndicatorTile({
         ? (indicator.current_value != null ? Number(indicator.current_value) - 100 : null)
         : indicator.current_value;
   const displayUnit = hasHero || displayOverride ? (indicator.hero_unit || '%') : indicator.unit;
+  // R6-B: «3 072,80 млрд руб.» читается как «3,1 трлн руб.»; изменение берётся в тех же единицах, что и число.
+  const big = displayVal != null && displayUnit !== '%' ? formatTileValue(displayVal, displayUnit, { locale }) : null;
+  const compact = big?.compacted ? big : null;
+  const shownText = compact ? compact.text : formatValue(displayVal, undefined, locale);
+  const shownUnit = compact ? compact.unit : displayUnit;
   const dateFmt = resolveDateFormat({ frequency: indicator.frequency });
   const polarity = indicatorPolarity(indicator.name, indicator.name_en, indicator.code);
   const title = locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name;
@@ -67,9 +73,9 @@ export default function IndicatorTile({
     ? findCategoryByApiLabel(indicator.category_ru || indicator.category)?.nameEn
     : null) || indicator.category || t('tile.metric');
 
-  // Единица стоит рядом с числом; в изменении её не повторяем («84,41 USD, +0,12 USD»). Для процентов вместо «п. п.» стоят слова: «процентного пункта».
+  // Единица стоит рядом с числом; в изменении её не повторяем («84,41 USD, +0,12 USD»). Для процентов — короткое «п. п.» / «pp» (круг 6, R6-B: длинные слова выталкивали плашку).
   const change = changeNum != null && Number.isFinite(changeNum)
-    ? formatDeltaWithUnit(changeNum, displayUnit === '%' ? displayUnit : '', { locale, plain: true })
+    ? formatDeltaWithUnit(compact ? changeNum / compact.div : changeNum, displayUnit === '%' ? displayUnit : '', { locale, plain: false })
     : null;
   const periodKey = hasHero ? 'year' : indicator.frequency;
   const perText = ['daily', 'weekly', 'monthly', 'quarterly', 'annual', 'year'].includes(periodKey)
@@ -91,7 +97,7 @@ export default function IndicatorTile({
 
   if (row) {
     // Компактная строка списка (курсы, котировки): название, изменение и мини-график слева направо в одну строку.
-    const valueText = formatValue(displayVal, undefined, locale);
+    const valueText = shownText;
     return (
       <Link
         to={isActive ? russiaIndicatorPath(indicator.code) : '#'}
@@ -121,7 +127,7 @@ export default function IndicatorTile({
         {isActive ? (
           <span className="fe-trow__val">
             <span className="fe-trow__num">{valueText}</span>
-            {displayUnit ? <span className="fe-trow__unit">{displayUnit}</span> : null}
+            {shownUnit ? <span className="fe-trow__unit">{shownUnit}</span> : null}
           </span>
         ) : (
           <span className="fe-tile__soon">{t('tile.pending')}</span>
@@ -159,10 +165,10 @@ export default function IndicatorTile({
       <div className={cn('fe-tile__body', spark && isActive && 'fe-tile__body--spark')}>
         <div className="fe-tile__main">
           <p className="fe-tile__value">
-            <span className={String(formatValue(displayVal, undefined, locale)).length > 12 ? 'fe-tile__num fe-tile__num--long' : 'fe-tile__num'}>
-              {formatValue(displayVal, undefined, locale)}
+            <span className={String(shownText).length > 12 ? 'fe-tile__num fe-tile__num--long' : 'fe-tile__num'}>
+              {shownText}
             </span>
-            {displayUnit ? <span className="fe-tile__unit">{displayUnit}</span> : null}
+            {shownUnit ? <span className="fe-tile__unit">{shownUnit}</span> : null}
           </p>
 
           <div className="fe-tile__foot">

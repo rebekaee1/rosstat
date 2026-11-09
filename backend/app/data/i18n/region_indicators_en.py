@@ -12,10 +12,10 @@ from __future__ import annotations
 REGION_INDICATORS_EN: dict[str, dict[str, str | None]] = {
     'ceni-dt': {"name": 'Consumer price of diesel fuel', "unit": 'roubles per litre', "note": None, "section": 'Prices'},
     'roznica-dt': {"name": 'Retail sales of diesel fuel', "unit": 'thousand roubles', "note": None, "section": 'Trade'},
-    'opt-benzin': {"name": 'Wholesale sales of motor gasoline', "unit": 'thousand tonnes', "note": None, "section": 'Trade'},
+    'opt-benzin': {"name": 'Wholesale sales of motor petrol', "unit": 'thousand tonnes', "note": None, "section": 'Trade'},
     'opt-dt': {"name": 'Wholesale sales of diesel fuel', "unit": 'thousand tonnes', "note": None, "section": 'Trade'},
-    'ceni-ai92': {"name": 'Consumer price of AI-92 gasoline', "unit": 'roubles per litre', "note": None, "section": 'Prices'},
-    'ceni-ai95': {"name": 'Consumer price of AI-95 gasoline', "unit": 'roubles per litre', "note": None, "section": 'Prices'},
+    'ceni-ai92': {"name": 'Consumer price of AI-92 petrol', "unit": 'roubles per litre', "note": None, "section": 'Prices'},
+    'ceni-ai95': {"name": 'Consumer price of AI-95 petrol', "unit": 'roubles per litre', "note": None, "section": 'Prices'},
     'chislennost-naseleniya': {
         "name": 'Population',
         "unit": 'thousand people',
@@ -2952,3 +2952,11 @@ REGION_INDICATORS_EN: dict[str, dict[str, str | None]] = {
     },
 }
 
+
+# Average consumer prices of goods and services, EMISS 31448 (2026-11-08).
+from app.data.emiss_price_goods import ALL_PRICE_GOODS as _PRICE_GOODS, copy_en as _price_copy_en  # noqa: E402
+
+# All items have English names (hand-picked ones in emiss_price_goods, the rest in price_goods_en).
+
+for _good in _PRICE_GOODS:
+    REGION_INDICATORS_EN.setdefault(_good.code, _price_copy_en(_good))

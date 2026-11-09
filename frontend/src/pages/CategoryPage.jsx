@@ -6,6 +6,7 @@ import { useIndicators, useInflation } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
 import { commonTilePhrase } from '../lib/tileDates';
+import '../styles/r6b-card.css';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { TileSkeleton } from '../components/Skeleton';
 import {
@@ -19,6 +20,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
 import CurrencyDesk from '../components/CurrencyDesk';
+import R7PricesBlock from '../components/R7PricesBlock';
 import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
@@ -148,7 +150,7 @@ export default function CategoryPage({ fixedSlug }) {
     <div className={`fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24${isCurrencies ? ' fe-z8-cur-page' : ''}`}>
       <Breadcrumbs items={crumbs} className="mb-8" />
 
-      <header className={isCurrencies ? 'mb-8 max-w-3xl' : 'mb-12 max-w-3xl'}>
+      <header className={isCurrencies ? 'r6b-cat-head mb-8 max-w-3xl' : 'r6b-cat-head mb-12 max-w-3xl'}>
         <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight mb-4">
           {catSeo?.h1 || categoryLabel(cat, locale)}
         </h1>
@@ -177,13 +179,15 @@ export default function CategoryPage({ fixedSlug }) {
         );
       })()}
 
+      {isPricesCategory && <R7PricesBlock surface="category" />}
+
       {!isCurrencies && (
-        <div className="mb-8">
+        <div className="r6b-cat-search mb-8">
           <IndicatorSearch variant="inline" inlinePlaceholder={t('w3.search.short')} />
         </div>
       )}
 
-      <section data-block="category-list" className="fe-cat-list">
+      <section id="category-list" data-block="category-list" className="fe-cat-list">
         {!isCurrencies && (
           <h2 className="fe-cat-list__title">
             {compactRows ? t('z1.cat.ratesHeading') : t('category.indicatorsHeading')}

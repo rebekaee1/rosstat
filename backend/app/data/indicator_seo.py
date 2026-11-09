@@ -8871,6 +8871,16 @@ for _code, _spec in _FX_RATE_BLOCK_SPECS.items():
     INDICATOR_SEO_BLOCKS[_code] = _build_fx_rate_blocks(_spec)
 
 
+# Остальные валюты ведомости Банка России (08.11.2026): ключевые слова, заголовки
+# и восемь блоков «О показателе» из справочника app.data.cbr_currencies.
+from app.data import cbr_currencies as _cbr_currencies  # noqa: E402
+
+for _cur in _cbr_currencies.CBR_CURRENCIES:
+    INDICATOR_SEO_KEYWORDS.setdefault(_cur.code, _cbr_currencies.seo_keywords(_cur))
+    INDICATOR_SEO.setdefault(_cur.code, _cbr_currencies.seo_meta(_cur))
+    INDICATOR_SEO_BLOCKS.setdefault(_cur.code, _cbr_currencies.seo_blocks(_cur))
+
+
 # ── «О показателе»: составляющие промышленного производства (ИПП) ───────────
 #
 # Четыре раздела ОКВЭД2 — добыча, обработка, энергетика, водоснабжение —

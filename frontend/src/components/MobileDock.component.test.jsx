@@ -34,13 +34,13 @@ afterEach(() => {
 });
 
 describe('MobileDock: нижняя док-панель телефона', () => {
-  it('пять пунктов: Страны, Рейтинг, Сравнение, Прогнозы, Ещё; ссылки ведут на свои разделы', () => {
+  it('пять пунктов: Страны, Цены, Валюты, Рейтинг, Ещё; ссылки ведут на свои разделы', () => {
     renderDock();
     const dock = screen.getByRole('navigation', { name: 'Основные разделы' });
     const labels = [...dock.querySelectorAll('.fe-dock__label')].map((n) => n.textContent);
-    expect(labels).toEqual(['Страны', 'Рейтинг', 'Сравнение', 'Прогнозы', 'Ещё']);
+    expect(labels).toEqual(['Страны', 'Цены', 'Валюты', 'Рейтинг', 'Ещё']);
     const hrefs = [...dock.querySelectorAll('a')].map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual(['/#countries', '/world/rating/gdp-usd', '/compare', '/forecasts']);
+    expect(hrefs).toEqual(['/#countries', '/russia/region', '/currencies', '/world/rating/gdp-usd']);
     expect(dock.querySelectorAll('button')).toHaveLength(1);
   });
 
@@ -48,7 +48,7 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     renderDock('/', 'en');
     const dock = screen.getByRole('navigation', { name: 'Main sections' });
     expect([...dock.querySelectorAll('.fe-dock__label')].map((n) => n.textContent)).toEqual([
-      'Countries', 'Rankings', 'Compare', 'Forecasts', 'More',
+      'Countries', 'Prices', 'Rates', 'Rankings', 'More',
     ]);
   });
 
@@ -83,7 +83,7 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     expect(dock.getAttribute('data-tone')).toBe('dark');
   });
 
-  it('круг 9, S1: короткая пауза (700 мс) панель не возвращает, долгая (2,5 с) возвращает', async () => {
+  it('R3-D: пауза любой длины панель не возвращает: она возвращается только при движении вверх', async () => {
     renderDock();
     const dock = screen.getByRole('navigation', { name: 'Основные разделы' });
     await scrollTo(400);
@@ -91,6 +91,8 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 900); }); });
     expect(dock.getAttribute('data-visible')).toBe('false');
     await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 1800); }); });
+    expect(dock.getAttribute('data-visible')).toBe('false');
+    await scrollTo(300);
     expect(dock.getAttribute('data-visible')).toBe('true');
   });
 
@@ -123,12 +125,12 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     expect(document.documentElement.dataset.feSticky).toBeUndefined();
   });
 
-  it('текущий раздел отмечен: на сравнении активно «Сравнение»', () => {
-    renderDock('/compare');
-    const active = screen.getByRole('link', { name: 'Сравнение' });
+  it('текущий раздел отмечен: на ценах регионов активно «Цены»', () => {
+    renderDock('/russia/region/moskva');
+    const active = screen.getByRole('link', { name: 'Цены' });
     expect(active.getAttribute('aria-current')).toBe('page');
     expect(active.className).toContain('is-active');
-    expect(screen.getByRole('link', { name: 'Прогнозы' }).getAttribute('aria-current')).toBeNull();
+    expect(screen.getByRole('link', { name: 'Валюты' }).getAttribute('aria-current')).toBeNull();
   });
 
   it('«Ещё» просит шапку открыть меню (событие), а не живёт своим состоянием', () => {

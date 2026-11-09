@@ -87,6 +87,13 @@ export default function CookieConsent() {
       setSnoozed(true);
     }
   }, [scrolled, visible, snoozed]);
+  // R3-D: плашка не висит над контентом, пока человек читает: через 8 секунд без действий она убирается так же, как после прокрутки
+  // (без записи согласия; «Настройки cookie» остаются в меню и подвале).
+  useEffect(() => {
+    if (!visible || snoozed || expanded) return undefined;
+    const timer = window.setTimeout(() => { writeSnooze(true); setSnoozed(true); }, 8000);
+    return () => window.clearTimeout(timer);
+  }, [visible, snoozed, expanded]);
   const committing = useRef(false);
   const overlayVisible = visible && !pathname.startsWith('/admin');
   // Подразумеваемое согласие: по умолчанию всё включено (трекеры уже загружены).

@@ -5,7 +5,7 @@
  * пока его нет, ссылка ведёт на страницу страны, так что чип работает с первого кадра.
  */
 import { mapSelectHref } from './homeWorkbench';
-import { countryPath, indicatorPath, russiaIndicatorPath } from './sitePaths';
+import { countryPath, indicatorPath, regionHubPath, russiaCategoryPath, russiaIndicatorPath } from './sitePaths';
 
 function snapshotHref(snapshot, code, slug, conceptSlug) {
   const item = (snapshot?.items || []).find((entry) => entry?.country_code === code);
@@ -28,6 +28,8 @@ export function buildQuickLinks({ locale = 'ru', gdp = null, inflation = null } 
   }
   return [
     { id: 'usd-rub', labelKey: 'z3.quick.usd', to: russiaIndicatorPath('usd-rub') },
+    { id: 'region-prices', labelKey: 'r3a.quick.prices', to: regionHubPath() },
+    { id: 'all-rates', labelKey: 'r3a.quick.rates', to: russiaCategoryPath('currencies') },
     { id: 'ru-inflation', labelKey: 'z3.quick.ruInflation', to: russiaIndicatorPath('cpi-yoy') },
     { id: 'key-rate', labelKey: 'z3.quick.keyRate', to: russiaIndicatorPath('key-rate') },
     india,

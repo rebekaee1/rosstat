@@ -45,6 +45,8 @@ COUNTRY_MARKET_INDICATOR_CODES: dict[str, tuple[str, ...]] = {
 }
 
 
+from app.data.cbr_currencies import country_currency_codes as _cbr_country_currency_codes  # noqa: E402
+
 # Страна → официальный курс её валюты к рублю (Банк России). Эти ряды НЕ мировые
 # рыночные (`GLOBAL_MARKET_INDICATOR_BASES` их не содержит: в крошках остаётся
 # «Россия»), но со страницы страны на них нужен прямой выход: человек, который
@@ -52,6 +54,8 @@ COUNTRY_MARKET_INDICATOR_CODES: dict[str, tuple[str, ...]] = {
 # курс тенге живёт только в разделе валют.
 COUNTRY_CURRENCY_RATE_CODES: dict[str, tuple[str, ...]] = {
     "turkey": ("try-rub",),
+    # Остальные страны каталога со своей валютой в ведомости ЦБ (08.11.2026).
+    **_cbr_country_currency_codes(),
 }
 
 

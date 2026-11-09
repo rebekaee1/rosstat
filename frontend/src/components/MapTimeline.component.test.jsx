@@ -33,15 +33,15 @@ describe('MapTimeline', () => {
     expect(onYearChange).toHaveBeenLastCalledWith(2019);
   });
 
-  it('в конце ряда кнопка остаётся «играть» (треугольник) и подписана «Играть заново», без круговой стрелки', () => {
+  it('в конце ряда кнопка остаётся «играть» (треугольник) и подписана «Смотреть сначала», без круговой стрелки', () => {
     const onYearChange = vi.fn();
     renderPage(
       <MapTimeline years={[2020, 2021, 2022]} year={2022} onYearChange={onYearChange} metric="wage" />,
       { path: '/', route: '/' },
     );
     const play = screen.getByTestId('map-timeline-play');
-    expect(play.textContent).toBe('Играть заново');
-    expect(play.getAttribute('aria-label')).toBe('Играть заново');
+    expect(play.textContent).toBe('Смотреть сначала');
+    expect(play.getAttribute('aria-label')).toBe('Смотреть сначала');
     expect(play.querySelector('svg.lucide-rotate-ccw')).toBeNull();
     expect(play.querySelector('svg.lucide-play')).not.toBeNull();
     fireEvent.click(play);

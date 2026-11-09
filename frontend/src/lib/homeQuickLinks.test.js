@@ -4,16 +4,18 @@ import { buildQuickLinks } from './homeQuickLinks';
 describe('homeQuickLinks', () => {
   it('русский набор: курс доллара, инфляция и ставка России ведут сразу на страницу показателя', () => {
     const links = buildQuickLinks({ locale: 'ru' });
-    expect(links.map((link) => link.id)).toEqual(['usd-rub', 'ru-inflation', 'key-rate', 'india-gdp', 'turkey-inflation']);
+    expect(links.map((link) => link.id)).toEqual(['usd-rub', 'region-prices', 'all-rates', 'ru-inflation', 'key-rate', 'india-gdp', 'turkey-inflation']);
     expect(links[0].to).toBe('/currencies/indicator/usd-rub');
-    expect(links[1].to).toBe('/russia/indicator/cpi-yoy');
-    expect(links[2].to).toBe('/russia/indicator/key-rate');
+    expect(links[1].to).toBe('/russia/region');
+    expect(links[2].to).toBe('/currencies');
+    expect(links[3].to).toBe('/russia/indicator/cpi-yoy');
+    expect(links[4].to).toBe('/russia/indicator/key-rate');
   });
 
   it('ВВП Индии до загрузки среза ведёт на страницу страны, после загрузки сразу на показатель', () => {
-    expect(buildQuickLinks({ locale: 'ru' })[3].to).toBe('/india');
+    expect(buildQuickLinks({ locale: 'ru' })[5].to).toBe('/india');
     const gdp = { items: [{ country_code: 'IN', country_slug: 'india', indicator_code: 'weo-gdp-usd', value: 1, unit: '' }] };
-    expect(buildQuickLinks({ locale: 'ru', gdp })[3].to).toBe('/india/indicator/weo-gdp-usd');
+    expect(buildQuickLinks({ locale: 'ru', gdp })[5].to).toBe('/india/indicator/weo-gdp-usd');
   });
 
   it('английский набор без российских ссылок', () => {

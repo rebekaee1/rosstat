@@ -76,6 +76,9 @@ export function unitMeta(code) {
 /** Порядок «по популярности»: сначала то, что ищут чаще всего. */
 export const POPULARITY = [
   'usd-rub', 'eur-rub', 'cny-rub',
+  // Рублёвые курсы, которые ищут чаще (08.11.2026): соседи и партнёры, затем мировые резервные.
+  'kzt-rub', 'byn-rub', 'try-rub', 'uzs-rub', 'kgs-rub', 'amd-rub', 'tjs-rub', 'gel-rub', 'azn-rub',
+  'aed-rub', 'gbp-rub', 'jpy-rub', 'chf-rub', 'inr-rub', 'thb-rub', 'vnd-rub', 'krw-rub', 'egp-rub',
   'btc-usd', 'eth-usd', 'sol-usd',
   'eur-usd', 'gbp-usd', 'usd-cny', 'gbp-eur', 'cny-eur',
 ];
@@ -143,13 +146,26 @@ export function rateBasis(code) {
  * Курсы из списка показателей раздела: [{ code, current_value, current_date, is_active }].
  * Возвращает рёбра графа: 1 base = rate quote.
  */
+/**
+ * Сколько единиц валюты в одной точке ряда. У мелких валют Банк России даёт курс за 100, 1 000, 10 000
+ * единиц (иена, вона, сум), и ряд хранится так же: единица ряда «руб. за 10 000». Иначе — 1.
+ */
+export function quoteUnitsOf(unit) {
+  const match = /за\s*([\d\s\u00a0]+)/.exec(String(unit || ''));
+  if (!match) return 1;
+  const n = Number(match[1].replace(/[\s\u00a0]/g, ''));
+  return Number.isFinite(n) && n > 0 ? n : 1;
+}
+
 export function buildEdges(indicators) {
   const edges = [];
   for (const item of indicators || []) {
     const pair = parsePair(item?.code);
-    const rate = Number(item?.current_value);
+    const rate = Number(item?.current_value) / quoteUnitsOf(item?.unit);
     if (!pair || !Number.isFinite(rate) || rate <= 0 || item.is_active === false) continue;
-    edges.push({ from: pair.base, to: pair.quote, rate, date: item.current_date || null, code: item.code });
+    edges.push({
+      from: pair.base, to: pair.quote, rate, date: item.current_date || null, code: item.code, units: quoteUnitsOf(item?.unit),
+    });
   }
   return edges;
 }
@@ -215,6 +231,124 @@ export function parseAmountInput(text, locale = 'ru') {
   return Number.isFinite(value) ? value : null;
 }
 
+/** Валюты «в дорогу»: сначала то, что берут с собой или переводят чаще всего. Показываются быстрыми кнопками в конвертере. */
+export const TRAVEL_UNITS = ['TJS', 'UZS', 'KGS', 'KZT', 'AMD', 'BYN', 'AED', 'TRY', 'GEL', 'THB'];
+
+// Страны и названия на двух языках: по ним валюта находится в поиске («узбекистан», «uzbek», «дубай», «dirham»).
+const SEARCH_ALIASES = {
+  KZT: 'казахстан kazakhstan тенге tenge',
+  BYN: 'беларусь белоруссия belarus белорусский рубль',
+  UZS: 'узбекистан uzbekistan uzbek сум сумы som',
+  TRY: 'турция turkey turkiye turkish лира lira',
+  AMD: 'армения armenia драм dram',
+  KGS: 'киргизия кыргызстан kyrgyzstan kyrgyz сом som',
+  AED: 'оаэ эмираты дубай абу-даби dubai uae emirates дирхам dirham',
+  GEL: 'грузия georgia лари lari',
+  THB: 'таиланд тайланд thailand бат baht',
+  AZN: 'азербайджан azerbaijan манат manat',
+  TJS: 'таджикистан tajikistan сомони somoni',
+  MDL: 'молдова moldova лей leu',
+  CNY: 'китай china юань yuan renminbi',
+  JPY: 'япония japan иена йена yen',
+  KRW: 'корея korea вона won',
+  INR: 'индия india рупия rupee',
+  VND: 'вьетнам vietnam донг dong',
+  EGP: 'египет egypt фунт pound',
+  RSD: 'сербия serbia динар dinar',
+  CHF: 'швейцария switzerland франк franc',
+  PLN: 'польша poland злотый zloty',
+  CZK: 'чехия czech крона koruna',
+  HKD: 'гонконг hong kong',
+  USD: 'сша америка usa america dollar',
+  EUR: 'европа евросоюз europe euro',
+  GBP: 'англия великобритания britain england pound стерлингов',
+};
+
+/** Строка поиска по валюте (нижний регистр): код, названия, знак, страна. */
+export function currencySearchText(unit) {
+  const meta = unitMeta(unit);
+  return [unit, meta?.ru, meta?.en, meta?.symbol, SEARCH_ALIASES[unit]].filter(Boolean).join(' ').toLowerCase().replace(/ё/g, 'е');
+}
+
+// Формы для «10 000 сумов»: одна, две–четыре, пять и больше. Нет в списке: код валюты.
+const RU_FORMS = {
+  RUB: ['₽', '₽', '₽'], USD: ['$', '$', '$'], EUR: ['€', '€', '€'], GBP: ['£', '£', '£'],
+  CNY: ['юань', 'юаня', 'юаней'], UZS: ['сум', 'сума', 'сумов'], KZT: ['тенге', 'тенге', 'тенге'],
+  AMD: ['драм', 'драма', 'драмов'], AED: ['дирхам', 'дирхама', 'дирхамов'], KGS: ['сом', 'сома', 'сомов'],
+  GEL: ['лари', 'лари', 'лари'], TRY: ['лира', 'лиры', 'лир'], BYN: ['бел. рубль', 'бел. рубля', 'бел. рублей'],
+  THB: ['бат', 'бата', 'бат'], JPY: ['иена', 'иены', 'иен'], KRW: ['вона', 'воны', 'вон'],
+  INR: ['рупия', 'рупии', 'рупий'], AZN: ['манат', 'маната', 'манатов'], MDL: ['лей', 'лея', 'леев'],
+  TJS: ['сомони', 'сомони', 'сомони'], VND: ['донг', 'донга', 'донгов'], CHF: ['франк', 'франка', 'франков'],
+  PLN: ['злотый', 'злотых', 'злотых'], CZK: ['крона', 'кроны', 'крон'], EGP: ['фунт', 'фунта', 'фунтов'],
+  RSD: ['динар', 'динара', 'динаров'],
+};
+
+/** Единица рядом с числом: «сумов», «сума», «₽». Английская версия: знак или код. */
+export function unitWord(count, unit, locale = 'ru') {
+  if (locale === 'en') return ['RUB', 'USD', 'EUR', 'GBP'].includes(unit) ? unitMeta(unit).symbol : unit;
+  const forms = RU_FORMS[unit];
+  if (!forms) return unit;
+  const n = Math.abs(Number(count));
+  if (!Number.isInteger(n)) return forms[1];
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return forms[0];
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return forms[1];
+  return forms[2];
+}
+
+const HEAD_UNITS = ['RUB', 'USD', 'EUR', 'CNY', 'GBP', 'BTC', 'ETH', 'SOL'];
+
+/**
+ * За сколько единиц показывать курс: у мелких валют, как у Банка России, за 100, 1 000, 10 000 (чтобы число было не меньше 10).
+ * У привычных валют (рубль, доллар, евро…) и у курса от одной единицы и выше: 1.
+ */
+export function nominalFor(unit, perOne) {
+  const r = Math.abs(Number(perOne));
+  if (HEAD_UNITS.includes(unit) || !(r > 0) || r >= 1) return 1;
+  let n = 1;
+  while (n * r < 10 && n < 1e9) n *= 10;
+  return n;
+}
+
+/** Пресеты суммы под валюту «Из»: у мелких валют (сум, тенге) круглые суммы на сотни и тысячи рублей, а не «1» и «100». */
+export function amountPresets(from, edges) {
+  const legacy = { list: [1, 100, 1000, 10000], initial: 100 };
+  // Рубли в руках: отправить семье или поменять в дорогу — тысячи, а не «100 ₽».
+  if (from === 'RUB') return { list: [1000, 5000, 10000, 50000], initial: 10000 };
+  if (!from || HEAD_UNITS.includes(from)) return legacy;
+  const rub = convert(1, from, 'RUB', edges)?.value;
+  if (!(rub > 0) || rub >= 0.3) return legacy;
+  const e = Math.max(2, Math.ceil(Math.log10(100 / rub) - 1e-9));
+  const list = [10 ** e, 10 ** (e + 1), 10 ** (e + 2)];
+  return { list, initial: list[1] };
+}
+
+/**
+ * Строки курса для конвертера. Привычные пары: «1 USD = 80,00 RUB». Мелкие валюты по-человечески:
+ * «10 000 сумов = 68,60 ₽» и «1 ₽ = 145,77 сума». Нет пути между валютами: null.
+ */
+export function describeRate(from, to, edges, locale = 'ru') {
+  const forward = convert(1, from, to, edges);
+  const back = convert(1, to, from, edges);
+  if (!forward || !back) return null;
+  const nA = nominalFor(from, forward.value);
+  const nB = nominalFor(to, back.value);
+  if (nA === 1 && nB === 1) {
+    return { lines: [`1 ${from} = ${formatRate(forward.value, locale)} ${to}`], nominal: 1 };
+  }
+  const tag = numberTag(locale);
+  const money = (v) => new Intl.NumberFormat(tag, {
+    minimumFractionDigits: v >= 1000 ? 0 : 2, maximumFractionDigits: v >= 1000 ? 0 : 2,
+  }).format(v);
+  const line = (a, b, n, rate) => {
+    const left = new Intl.NumberFormat(tag).format(n).replace(/\u202f/g, '\u00a0');
+    const value = rate * n;
+    return `${left}\u00a0${unitWord(n, a, locale)} = ${money(value)}\u00a0${unitWord(value, b, locale)}`;
+  };
+  return { lines: [line(from, to, nA, forward.value), line(to, from, nB, back.value)], nominal: Math.max(nA, nB) };
+}
+
 /** Курс в строке «1 USD = …»: знаков по величине (80,00; 0,0117; 0,000012), без «0,01169849». */
 export function formatRate(value, locale = 'ru') {
   const n = Number(value);
@@ -232,13 +366,13 @@ export function formatRate(value, locale = 'ru') {
 }
 
 /** Результат пересчёта по правилам языка: крупные суммы целыми, обычные с копейками, доли монеты с точностью. */
-export function formatConverted(value, locale = 'ru') {
+export function formatConverted(value, locale = 'ru', { money = false } = {}) {
   const n = Number(value);
   if (!Number.isFinite(n)) return '—';
   const abs = Math.abs(n);
   let min = 2;
   let max = 2;
-  if (abs >= 1000) { min = 0; max = 0; } else if (abs > 0 && abs < 1) { min = 2; max = 8; }
+  if (abs >= 1000) { min = 0; max = 0; } else if (abs > 0 && abs < 1) { min = 2; max = money ? (abs >= 0.01 ? 2 : 4) : 8; }
   return new Intl.NumberFormat(numberTag(locale), {
     minimumFractionDigits: min, maximumFractionDigits: max,
   }).format(n);

@@ -7,10 +7,11 @@
 // В этом случае обе линии пересчитываются в «Россия = 100» и рисуются на одной оси: две разные
 // шкалы в одном поле (волна 6) заставляли новичка сравнивать высоту линий, которая ничего не значит.
 // Старый вариант с правой осью остался только для графика с нашим прогнозом (у него нет ряда РФ).
+import '../styles/r6c-annual.css';
 import { useCallback, useMemo, useRef } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
-  Tooltip, CartesianGrid,
+  Tooltip, CartesianGrid, ReferenceDot,
 } from 'recharts';
 import { formatRegionValue, axisScaleFor, formatScaledTick } from '../lib/regionsApi';
 import { pickChartAxisTicks, chartAxisTickBudget } from '../lib/format';
@@ -19,9 +20,11 @@ import {
   CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, axisSampleValues, axisWidthForLabels,
 } from '../lib/chartTheme';
 import { useChartGlassIds, useElementWidth, useTouchTooltip } from '../lib/chartHooks';
+import { yearTickPeriods } from '../lib/z2Price';
 import ChartBrandCaption from './ChartBrandCaption';
 import ChartGlassDefs from './ChartGlassDefs';
 import '../styles/k4-charts.css';
+import '../styles/z2-price.css';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
 const DUAL_AXIS_RATIO = 3;
@@ -44,13 +47,14 @@ function monthTickLabel(p, locale) {
   return `${names[m]} ${p.year}`;
 }
 
-function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, tickLabel, indexNote }) {
+function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, tickLabel, indexNote, yoyLabel, yoyOf }) {
   if (!active || !payload?.length) return null;
   const region = payload.find(p => p.dataKey === 'value' && p.value != null);
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
   const russia = payload.find(p => p.dataKey === 'russia' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
-  const periodLabel = tickLabel ? tickLabel(label) : label;
+  const rawPeriod = tickLabel ? tickLabel(label) : label;
+  const periodLabel = typeof rawPeriod === 'string' && rawPeriod ? rawPeriod.charAt(0).toUpperCase() + rawPeriod.slice(1) : rawPeriod;
   // Короткая единица («₽», «%») стоит рядом с числом, а не отдельной строкой внизу: раньше «₽» оставался сам по себе на второй строке.
   const inlineUnit = !indexNote && unit && String(unit).length <= 6 ? `\u00A0${unit}` : '';
   const fmt = (v) => `${formatRegionValue(v)}${inlineUnit}`;
@@ -60,6 +64,11 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
       {region && (
         <div className="font-semibold tabular-nums text-champagne-ink">
           {regionName}: {fmt(region.value)}
+        </div>
+      )}
+      {region && yoyOf && yoyOf(label) != null && (
+        <div className="tabular-nums text-text-secondary mt-0.5">
+          {yoyLabel}: {yoyOf(label)}
         </div>
       )}
       {compare && (
@@ -97,6 +106,8 @@ export default function RegionAnnualChart({
   frequency = 'annual',
   nationalLabel = null,
   forecastSeries = null,
+  axisUnit = '',
+  yearTicks = false,
 }) {
   const { t, locale } = useLocale();
   const wrapRef = useRef(null);
@@ -118,7 +129,10 @@ export default function RegionAnnualChart({
   const data = useMemo(() => {
     const rfByPeriod = new Map((russiaSeries || []).map(p => [periodKey(p), p.value]));
     const cmpByPeriod = new Map((compareSeries || []).map(p => [periodKey(p), p.value]));
-    const observed = (series || []).map(p => ({
+    const observed = (series || []).map((p, i, arr) => ({
+      yoy: monthly && i >= 12 && arr[i - 12].value
+        && (p.year * 12 + p.month) - (arr[i - 12].year * 12 + arr[i - 12].month) === 12
+        ? ((p.value - arr[i - 12].value) / Math.abs(arr[i - 12].value)) * 100 : null,
       period: periodKey(p),
       year: p.year,
       label: monthly
@@ -208,6 +222,10 @@ export default function RegionAnnualChart({
     // визуально «прыгают» между плотными промежутками.
     if (isNarrow && dualAxis) budget = Math.min(budget, 4);
     else if (isNarrow) budget = Math.min(budget, 5);
+    if (yearTicks && monthly) {
+      // Месячный ряд: только годы, 4–6 отметок (без «янв 2003» и «дек 2021» по краям).
+      return yearTickPeriods(data, Math.max(3, Math.min(6, Math.floor(axisW / 48))));
+    }
     return pickChartAxisTicks(data, budget, {
       dateKey: 'period',
       cadence: dated ? null : 'annual',
@@ -217,7 +235,7 @@ export default function RegionAnnualChart({
         return d ? d.label : String(v);
       },
     });
-  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow, dated]);
+  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow, dated, yearTicks, monthly]);
 
   if (!data.length) return null;
 
@@ -229,9 +247,12 @@ export default function RegionAnnualChart({
   };
   const chartHeight = isNarrow ? Math.min(height, 260) : height;
   const russiaLabel = nationalLabel || t('regions.ind.russia');
+  const lastPoint = data[data.length - 1];
+  const fmtLegend = (v) => Number(v).toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 1 });
 
   return (
     <div>
+      {axisUnit && !indexMode && <div className="z2p-axis-unit" aria-hidden="true">{axisUnit}</div>}
       <div
         ref={setWrap}
         onPointerDownCapture={touchTip.onPointerDownCapture}
@@ -253,8 +274,12 @@ export default function RegionAnnualChart({
               dataKey="period"
               tick={({ x, y, payload }) => {
                 const key = String(payload.value);
-                const label = data.find((point) => String(point.period) === key)?.label || key;
+                const point = data.find((pt) => String(pt.period) === key);
+                const label = (yearTicks && monthly && point) ? String(point.year) : (point?.label || key);
+                const idx = data.findIndex((pt) => String(pt.period) === key);
+                const edge = yearTicks && monthly && data.length > 1 ? idx / (data.length - 1) : 0.5;
                 const anchor = xTicks.length < 2 ? 'middle'
+                  : (yearTicks && monthly) ? (edge > 0.965 ? 'end' : edge < 0.02 ? 'start' : 'middle')
                   : key === String(xTicks[0]) ? 'start'
                     : key === String(xTicks[xTicks.length - 1]) ? 'end' : 'middle';
                 return <text x={x} y={y} dy={12} textAnchor={anchor} {...tickStyle}>{label}</text>;
@@ -304,6 +329,13 @@ export default function RegionAnnualChart({
                   russiaLabel={russiaLabel}
                   forecastLabel={locale === 'en' ? 'Our forecast' : 'Наш прогноз'}
                   indexNote={indexMode ? t('w6f.reg.indexNote') : null}
+                  yoyLabel={t('r2z2.tipYoy')}
+                  yoyOf={monthly && !indexMode ? (v) => {
+                    const d = data.find((x) => String(x.period) === String(v));
+                    if (d?.yoy == null) return null;
+                    const a = Math.abs(d.yoy).toFixed(1).replace('.', locale === 'en' ? '.' : ',');
+                    return `${d.yoy > 0.04 ? '+' : d.yoy < -0.04 ? '\u2212' : ''}${a}\u00A0%`;
+                  } : null}
                   tickLabel={(v) => {
                     const d = data.find((x) => String(x.period) === String(v));
                     return d ? d.label : String(v);
@@ -322,11 +354,50 @@ export default function RegionAnnualChart({
               strokeLinejoin="round"
               fill={`url(#${glass.area})`}
               dot={false}
-              activeDot={{ r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
+              activeDot={(touchTip.coarse && !touchTip.open) ? false : { r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
               isAnimationActive={animate}
               animationDuration={900}
               animationEasing="ease-out"
             />
+            {!dated && !forecastSeries?.length && showRussia && !dualAxis && !indexMode && data.length > 0 && data[data.length - 1].russia != null && (
+              <ReferenceDot
+                yAxisId="region"
+                x={data[data.length - 1].period}
+                y={data[data.length - 1].russia}
+                r={3.5}
+                fill={CHART_THEME.axis}
+                stroke="#FFFFFF"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+                isFront
+              />
+            )}
+            {!dated && !forecastSeries?.length && data.length > 0 && (
+              <ReferenceDot
+                yAxisId="region"
+                x={data[data.length - 1].period}
+                y={plotData[plotData.length - 1].value}
+                r={4.5}
+                fill={CHART_THEME.gold}
+                stroke="#FFFFFF"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+                isFront
+              />
+            )}
+            {monthly && !forecastSeries?.length && data.length > 0 && (
+              <ReferenceDot
+                yAxisId="region"
+                x={data[data.length - 1].period}
+                y={data[data.length - 1].value}
+                r={4.5}
+                fill={CHART_THEME.gold}
+                stroke="#FFFFFF"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+                isFront
+              />
+            )}
             {compareSeries?.length > 0 && (
               <Line
                 className="k4-ribbon k4-ribbon--sapphire"
@@ -377,10 +448,12 @@ export default function RegionAnnualChart({
           <span className="inline-flex items-center gap-1.5">
             <span className="k4-swatch k4-swatch--ribbon" aria-hidden="true" />
             {regionName}
+            {!dated && !indexMode && lastPoint?.value != null && <span className="r6c-legend-val">{fmtLegend(lastPoint.value)}</span>}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="k4-swatch" style={{ background: CHART_THEME.axis, opacity: 0.7 }} aria-hidden="true" />
             {indexMode ? t('w6f.reg.russia100', { name: russiaLabel }) : russiaLabel}
+            {!dated && !indexMode && lastPoint?.russia != null && <span className="r6c-legend-val">{fmtLegend(lastPoint.russia)}</span>}
           </span>
           {indexMode && (
             <span className="basis-full text-xs" data-testid="index-note">{t('w6f.reg.indexExplain', { region: regionName })}</span>

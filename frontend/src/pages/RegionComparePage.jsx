@@ -1,14 +1,17 @@
-import { Link, useParams, Navigate } from 'react-router-dom';
-import { GitCompare, Trophy, ChevronRight } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Link, useParams, Navigate, useNavigate } from 'react-router-dom';
+import { GitCompare, ChevronRight, ArrowLeftRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import useDocumentMeta from '../lib/useMeta';
 import api from '../lib/api';
-import { formatRegionWithUnit } from '../lib/regionUi';
+import { formatRegionCompact } from '../lib/regionUi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import { SkeletonBox } from '../components/Skeleton';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
+import '../styles/r3b-regions.css';
+import { useRegionsHeatmap } from '../lib/regionsApi';
 import {
   regionHubPath,
   regionIndicatorPath,
@@ -16,6 +19,7 @@ import {
   regionRatingPath,
   regionVsPath,
 } from '../lib/sitePaths';
+import R4PriceCompare, { R4PriceSkeleton, useRegionPriceCompare } from '../components/regions/R4PriceCompare';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { regionVsTrail } from '../lib/breadcrumbs';
 import { useLocale } from '../i18n';
@@ -38,12 +42,72 @@ function useRegionCompare(slugA, slugB) {
   });
 }
 
+/** Выбор пары: два списка регионов и кнопка «поменять местами» — не надо возвращаться в хаб. */
+function PairPicker({ slugA, slugB }) {
+  const { t } = useLocale();
+  const navigate = useNavigate();
+  const { data } = useRegionsHeatmap('chislennost-naseleniya');
+  const options = useMemo(
+    () => [...(data?.values || [])].sort((x, y) => String(x.name).localeCompare(String(y.name), 'ru')),
+    [data],
+  );
+  if (options.length === 0) return null;
+  const go = (a, b) => { if (a && b && a !== b) navigate(regionVsPath(a, b)); };
+  const select = (value, other, label, onChange) => (
+    <label className="r3b-pair__field">
+      <span className="r3b-pair__label">{label}</span>
+      <select className="r3b-pair__select" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => (
+          <option key={o.slug} value={o.slug} disabled={o.slug === other}>{o.name}</option>
+        ))}
+      </select>
+    </label>
+  );
+  return (
+    <div className="r3b-pair" data-testid="region-pair-picker">
+      {select(slugA, slugB, t('r3b.cmp.first'), (v) => go(v, slugB))}
+      <button type="button" className="r3b-pair__swap fe-press" onClick={() => go(slugB, slugA)} aria-label={t('r3b.cmp.swap')} title={t('r3b.cmp.swap')}>
+        <ArrowLeftRight size={18} aria-hidden="true" />
+      </button>
+      {select(slugB, slugA, t('r3b.cmp.second'), (v) => go(slugA, v))}
+    </div>
+  );
+}
+
+const QUICK_SLUGS = ['krasnodarskiy-kray', 'respublika-tatarstan', 'novosibirskaya-oblast', 'sankt-peterburg', 'sverdlovskaya-oblast', 'rostovskaya-oblast'];
+
+/** Быстрый выбор: куда обычно переезжают — одно касание меняет второй регион. */
+function QuickPairs({ slugA, slugB }) {
+  const { t } = useLocale();
+  const navigate = useNavigate();
+  const { data } = useRegionsHeatmap('chislennost-naseleniya');
+  const names = useMemo(() => Object.fromEntries((data?.values || []).map((o) => [o.slug, o.name])), [data]);
+  const list = QUICK_SLUGS.filter((s) => names[s] && s !== slugA && s !== slugB);
+  if (list.length === 0) return null;
+  return (
+    <div className="r4a-quick" data-testid="r4a-quick-pairs">
+      <p className="r4a-quick__lead">{t('r4a.quick.lead', { a: names[slugA] || '' })}</p>
+      <div className="r4a-quick__row">
+        {list.map((s) => (
+          <button key={s} type="button" className="r4a-quick__chip fe-press" onClick={() => navigate(regionVsPath(slugA, s))}>
+            {names[s]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function RegionComparePage() {
   const { t, locale } = useLocale();
   const { pair } = useParams();
   const parsed = parsePair(pair);
   const [slugA, slugB] = parsed || [null, null];
   const { data, isLoading, isError, refetch, isFetching } = useRegionCompare(slugA, slugB);
+  const prices = useRegionPriceCompare(slugA, slugB);
+  const [view, setView] = useState('prices');
+  const hasPrices = !!prices.data?.items?.length;
+  const showFacts = view === 'facts' || !hasPrices;
 
   useDocumentMeta(data ? {
     title: t('regions.compareTitle', { a: data.region_a.name, b: data.region_b.name }),
@@ -54,6 +118,12 @@ export default function RegionComparePage() {
     }),
     path: data.canonical_path,
   } : null);
+
+  const tally = {
+    total: data?.rows?.length || 0,
+    a: (data?.rows || []).filter((r) => r.leader_slug === data.region_a.slug).length,
+    b: (data?.rows || []).filter((r) => r.leader_slug === data.region_b.slug).length,
+  };
 
   if (!parsed) return <Navigate to={regionHubPath()} replace />;
 
@@ -100,6 +170,28 @@ export default function RegionComparePage() {
             {t('regions.compareIntro')}
           </p>
 
+          <PairPicker slugA={slugA} slugB={slugB} />
+          <QuickPairs slugA={slugA} slugB={slugB} />
+
+          {prices.isLoading && <R4PriceSkeleton />}
+          {hasPrices && (
+            <div className="r4a-seg" role="tablist" data-testid="r4a-seg">
+              {['prices', 'facts'].map((v) => (
+                <button key={v} type="button" role="tab" aria-selected={view === v} className={`r4a-seg__btn fe-press${view === v ? ' is-on' : ''}`} onClick={() => setView(v)}>
+                  {t(`r4a.seg.${v}`)}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {tally.total > 0 && showFacts && (
+            <p className="r3b-tally" data-testid="region-compare-tally">
+              {t('r3b.cmp.tally', {
+                a: data.region_a.name, na: tally.a, b: data.region_b.name, nb: tally.b, n: tally.total,
+              })}
+            </p>
+          )}
+
           {data.rows.length === 0 && (
             <div className="mb-8 rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
               <GitCompare size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
@@ -107,26 +199,24 @@ export default function RegionComparePage() {
             </div>
           )}
 
-          <div className="mb-8 grid gap-3 md:grid-cols-2">
+          {hasPrices && view === 'prices' && <R4PriceCompare data={prices.data} />}
+
+          <div className="mb-8 grid gap-3 sm:grid-cols-2" hidden={!showFacts}>
             {data.rows.map((row, index) => {
+              const peak = Math.max(Math.abs(row.a.value ?? 0), Math.abs(row.b.value ?? 0), 1e-9);
               const side = (region, point) => {
                 const leader = row.leader_slug === region.slug;
+                const share = Math.max(3, (Math.abs(point.value ?? 0) / peak) * 100);
                 return (
                   <Link
                     to={regionIndicatorPath(region.slug, row.code)}
-                    className={`fe-press min-w-0 rounded-2xl p-3 transition-colors ${
-                      leader
-                        ? 'bg-champagne/[0.07] fe-shadow-2'
-                        : 'fe-glass-2'
-                    }`}
+                    className={`fe-press r3b-side min-w-0 rounded-2xl p-3 transition-colors ${leader ? 'is-more fe-shadow-2' : 'fe-glass-2'}`}
                   >
-                    <span className="flex items-center gap-1 text-[13px] leading-snug text-text-secondary">
-                      {leader && <Trophy size={13} className="shrink-0 text-champagne-ink" aria-hidden="true" />}
-                      <span className="min-w-0">{region.name}</span>
+                    <span className="block text-[13px] leading-snug text-text-secondary">{region.name}</span>
+                    <span className="fe-num mt-1 block whitespace-nowrap text-lg font-semibold text-text-primary">
+                      {formatRegionCompact(point.value, row.unit, locale)}
                     </span>
-                    <span className={`fe-num mt-1 block whitespace-nowrap text-lg font-semibold ${leader ? 'text-champagne-ink' : 'text-text-primary'}`}>
-                      {formatRegionWithUnit(point.value, row.unit, locale)}
-                    </span>
+                    <span className="r3b-side__bar" aria-hidden="true"><span style={{ width: `${share}%` }} /></span>
                   </Link>
                 );
               };

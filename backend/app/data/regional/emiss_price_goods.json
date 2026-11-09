@@ -1,0 +1,7211 @@
+[
+ {
+  "oid": "1785769",
+  "code": "ceni-cd-disk-s-zapisyu",
+  "label": "CD-диск с записью",
+  "per": "шт.",
+  "first": 200401,
+  "last": 201112,
+  "territories": 89
+ },
+ {
+  "oid": "1785672",
+  "code": "ceni-dvd-disk-s-zapisyu",
+  "label": "DVD-диск с записью",
+  "per": "шт.",
+  "first": 200701,
+  "last": 201712,
+  "territories": 92
+ },
+ {
+  "oid": "1755093",
+  "code": "ceni-abonentskaya-plata-za-mobilnyy-internet",
+  "label": "абонентская плата за мобильный Интернет",
+  "per": "месяц",
+  "first": 201401,
+  "last": 201912,
+  "territories": 94
+ },
+ {
+  "oid": "1785753",
+  "code": "ceni-abonentskaya-plata-za-polzovanie-uslugami-sotovoy-svyazi",
+  "label": "абонентская плата за пользование услугами сотовой связи",
+  "per": "месяц",
+  "first": 200201,
+  "last": 200612,
+  "territories": 84
+ },
+ {
+  "oid": "1755164",
+  "code": "ceni-abonentskaya-plata-za-radiotranslyacionnuyu-tochku",
+  "label": "абонентская плата за радиотрансляционную точку",
+  "per": "месяц",
+  "first": 200001,
+  "last": 202412,
+  "territories": 93
+ },
+ {
+  "oid": "1755099",
+  "code": "ceni-abonentskaya-plata-za-televizionnuyu-antennu",
+  "label": "абонентская плата за телевизионную антенну",
+  "per": "месяц",
+  "first": 201401,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755073",
+  "code": "ceni-abonentskaya-plata-pri-kombinirovannoy-sisteme-oplaty-uslug",
+  "label": "абонентская плата при комбинированной системе оплаты услуг местной телефонной связи",
+  "per": "месяц",
+  "first": 200701,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1754963",
+  "code": "ceni-avtoruchka-sharikovaya",
+  "label": "авторучка шариковая",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785752",
+  "code": "ceni-adelfan-ezidreks",
+  "label": "адельфан-Эзидрекс",
+  "per": "10 таблеток",
+  "first": 200906,
+  "last": 201201,
+  "territories": 89
+ },
+ {
+  "oid": "1836504",
+  "code": "ceni-azitromicin-500-mg",
+  "label": "азитромицин, 500 мг",
+  "per": "10 капсул (10 таблеток)",
+  "first": 202101,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1785685",
+  "code": "ceni-aktivirovannyy-ugol",
+  "label": "активированный уголь",
+  "per": "10 таблеток",
+  "first": 200906,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755074",
+  "code": "ceni-allohol",
+  "label": "аллохол",
+  "per": "50 таблеток",
+  "first": 201201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754983",
+  "code": "ceni-almagel-suspenziya",
+  "label": "алмагель, суспензия",
+  "per": "200 мл",
+  "first": 200906,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1856529",
+  "code": "ceni-alteya-lekarstvennogo-travy-ekstrakt",
+  "label": "алтея лекарственного травы экстракт",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754968",
+  "code": "ceni-albom-dlya-risovaniya",
+  "label": "альбом для рисования",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754975",
+  "code": "ceni-ambroksol",
+  "label": "амброксол",
+  "per": "10 таблеток",
+  "first": 200601,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836510",
+  "code": "ceni-amlodipin",
+  "label": "амлодипин",
+  "per": "10 таблеток",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836513",
+  "code": "ceni-amoksicillin-s-klavulanovoy-kislotoy-500-mg-125-mg",
+  "label": "амоксициллин с клавулановой кислотой, 500 мг + 125 мг",
+  "per": "10 таблеток",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709721",
+  "code": "ceni-amoksicillin-500-mg",
+  "label": "амоксициллин, 500 мг",
+  "per": "10 таблеток",
+  "first": 200601,
+  "last": 202012,
+  "territories": 94
+ },
+ {
+  "oid": "1785667",
+  "code": "ceni-ampicillin-250-mg",
+  "label": "ампициллин, 250 мг",
+  "per": "10 таблеток",
+  "first": 200001,
+  "last": 200812,
+  "territories": 87
+ },
+ {
+  "oid": "1836517",
+  "code": "ceni-antiseptik-dlya-ruk",
+  "label": "антисептик для рук",
+  "per": "100 мл",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836507",
+  "code": "ceni-apiksaban-elikvis-5-mg",
+  "label": "апиксабан (Эликвис), 5 мг",
+  "per": "10 таблеток",
+  "first": 202101,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1755096",
+  "code": "ceni-apparat-dlya-izmereniya-arterialnogo-davleniya-elektronnyy",
+  "label": "аппарат для измерения артериального давления электронный",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755129",
+  "code": "ceni-arenda-individualnogo-bankovskogo-seyfa",
+  "label": "аренда индивидуального банковского сейфа",
+  "per": "месяц",
+  "first": 201201,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1846566",
+  "code": "ceni-aseptolin-90",
+  "label": "асептолин, 90%",
+  "per": "100 мл",
+  "first": 202201,
+  "last": 202212,
+  "territories": 74
+ },
+ {
+  "oid": "1785709",
+  "code": "ceni-askorbinovaya-kislota",
+  "label": "аскорбиновая кислота",
+  "per": "10 шт.",
+  "first": 200001,
+  "last": 200512,
+  "territories": 87
+ },
+ {
+  "oid": "1846548",
+  "code": "ceni-askorbinovaya-kislota-1846548",
+  "label": "аскорбиновая кислота",
+  "per": "100 драже",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854830",
+  "code": "ceni-askofen-p",
+  "label": "аскофен-П",
+  "per": "10 таблеток",
+  "first": 202501,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1785677",
+  "code": "ceni-aspirin-upsa-po-500-mg",
+  "label": "аспирин UPSA по 500 мг",
+  "per": "10 таблеток",
+  "first": 200001,
+  "last": 201311,
+  "territories": 87
+ },
+ {
+  "oid": "1785666",
+  "code": "ceni-atenolol-50-mg",
+  "label": "атенолол, 50 мг",
+  "per": "10 таблеток",
+  "first": 200101,
+  "last": 201201,
+  "territories": 89
+ },
+ {
+  "oid": "1856519",
+  "code": "ceni-atorvastatin",
+  "label": "аторвастатин",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1846535",
+  "code": "ceni-afobazol-10-mg",
+  "label": "афобазол, 10 мг",
+  "per": "30 таблеток",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754954",
+  "code": "ceni-acetilsalicilovaya-kislota",
+  "label": "ацетилсалициловая кислота",
+  "per": "10 таблеток",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846571",
+  "code": "ceni-acetilcistein-acc-600-mg",
+  "label": "ацетилцистеин (АЦЦ), 600 мг",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1846557",
+  "code": "ceni-acipol",
+  "label": "аципол",
+  "per": "30 капсул",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1785761",
+  "code": "ceni-balansirovka-koles-legkovogo-avtomobilya",
+  "label": "балансировка колес легкового автомобиля",
+  "per": "2 колеса",
+  "first": 200001,
+  "last": 200312,
+  "territories": 86
+ },
+ {
+  "oid": "1755103",
+  "code": "ceni-baranina-krome-beskostnogo-myasa",
+  "label": "баранина (кроме бескостного мяса)",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754807",
+  "code": "ceni-baranochnye-izdeliya",
+  "label": "бараночные изделия",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755003",
+  "code": "ceni-batareyki-elektricheskie-tipa-aa",
+  "label": "батарейки электрические типа АА",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754702",
+  "code": "ceni-bele-dlya-novorozhdennyh-i-detey-yaselnogo-vozrasta",
+  "label": "белье для новорожденных и детей ясельного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755210",
+  "code": "ceni-benzin-avtomobilnyy",
+  "label": "бензин автомобильный",
+  "per": "",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709801",
+  "code": "ceni-benzin-avtomobilnyy-marki-a-76-ai-80",
+  "label": "бензин автомобильный марки А-76 (АИ-80)",
+  "per": "л",
+  "first": 200001,
+  "last": 201712,
+  "territories": 91
+ },
+ {
+  "oid": "1854829",
+  "code": "ceni-betalok-zok",
+  "label": "беталок ЗОК",
+  "per": "10 таблеток",
+  "first": 202501,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1755163",
+  "code": "ceni-bint",
+  "label": "бинт",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785680",
+  "code": "ceni-bisakodil-5-mg",
+  "label": "бисакодил, 5 мг",
+  "per": "10 таблеток",
+  "first": 200906,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1755005",
+  "code": "ceni-bisoprolol",
+  "label": "бисопролол",
+  "per": "10 таблеток",
+  "first": 201201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856503",
+  "code": "ceni-bloki-stroitelnye",
+  "label": "блоки строительные",
+  "per": "1000 шт.",
+  "first": 202601,
+  "last": 202609,
+  "territories": 91
+ },
+ {
+  "oid": "1754816",
+  "code": "ceni-bluzka-dlya-devochek-shkolnogo-vozrasta",
+  "label": "блузка для девочек школьного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755170",
+  "code": "ceni-bluzka-zhenskaya",
+  "label": "блузка женская",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709740",
+  "code": "ceni-botinki-polubotinki-dlya-detey-doshkolnogo-vozrasta",
+  "label": "ботинки, полуботинки для детей дошкольного возраста",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709802",
+  "code": "ceni-botinki-polubotinki-dlya-detey-shkolnogo-vozrasta",
+  "label": "ботинки, полуботинки для детей школьного возраста",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831427",
+  "code": "ceni-britvennye-stanki-odnorazovye",
+  "label": "бритвенные станки одноразовые",
+  "per": "шт.",
+  "first": 202001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755171",
+  "code": "ceni-bromgeksin-8-mg",
+  "label": "бромгексин, 8 мг",
+  "per": "10 драже",
+  "first": 201201,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1785786",
+  "code": "ceni-bryuki-dlya-detey-doshkolnogo-vozrasta-rost-92-122-sm-iz-pol",
+  "label": "брюки для детей дошкольного возраста (рост 92-122 см) из полушерстяных или смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1754798",
+  "code": "ceni-bryuki-dlya-detey-shkolnogo-vozrasta-iz-dzhinsovoy-tkani",
+  "label": "брюки для детей школьного возраста из джинсовой ткани",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754758",
+  "code": "ceni-bryuki-dlya-detey-shkolnogo-vozrasta-iz-polusherstyanyh-ili",
+  "label": "брюки для детей школьного возраста из полушерстяных или смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831425",
+  "code": "ceni-bryuki-zhenskie-iz-dzhinsovoy-tkani-dzhinsy",
+  "label": "брюки женские из джинсовой ткани (джинсы)",
+  "per": "шт.",
+  "first": 202001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754717",
+  "code": "ceni-bryuki-zhenskie-iz-polusherstyanyh-ili-smesovyh-tkaney",
+  "label": "брюки женские из полушерстяных или смесовых тканей",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1785792",
+  "code": "ceni-bryuki-iz-dzhinsovoy-tkani-dlya-detey-doshkolnogo-vozrasta-r",
+  "label": "брюки из джинсовой ткани для детей дошкольного возраста (рост 92-122 см)",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1743473",
+  "code": "ceni-bryuki-muzhskie-iz-dzhinsovoy-tkani-dzhinsy",
+  "label": "брюки мужские из джинсовой ткани (джинсы)",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709726",
+  "code": "ceni-bryuki-muzhskie-iz-polusherstyanyh-ili-smesovyh-tkaney",
+  "label": "брюки мужские из полушерстяных или смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754737",
+  "code": "ceni-bulochnye-izdeliya-sdobnye-iz-muki-vysshego-sorta-shtuchnye",
+  "label": "булочные изделия сдобные из муки высшего сорта штучные",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848532",
+  "code": "ceni-bumaga-ofisnaya",
+  "label": "бумага офисная",
+  "per": "упаковка 500 листов",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754919",
+  "code": "ceni-bumaga-tualetnaya",
+  "label": "бумага туалетная",
+  "per": "рулон",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836502",
+  "code": "ceni-bumazhnye-nosovye-platki",
+  "label": "бумажные носовые платки",
+  "per": "упаковка 10 шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836501",
+  "code": "ceni-bumazhnye-stolovye-salfetki",
+  "label": "бумажные столовые салфетки",
+  "per": "упаковка 100 шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848516",
+  "code": "ceni-butylochka-dlya-kormleniya",
+  "label": "бутылочка для кормления",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755019",
+  "code": "ceni-byustgalter",
+  "label": "бюстгальтер",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846568",
+  "code": "ceni-valeriany-ekstrakt",
+  "label": "валерианы экстракт",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754964",
+  "code": "ceni-validol",
+  "label": "валидол",
+  "per": "10 таблеток",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754988",
+  "code": "ceni-valokordin",
+  "label": "валокордин",
+  "per": "20 мл",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1854834",
+  "code": "ceni-valoserdin",
+  "label": "валосердин",
+  "per": "25 мл",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785656",
+  "code": "ceni-varezhki-perchatki-detskie",
+  "label": "варежки (перчатки) детские",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754805",
+  "code": "ceni-varene-dzhem-povidlo",
+  "label": "варенье, джем, повидло",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854841",
+  "code": "ceni-vata",
+  "label": "вата",
+  "per": "100 г",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754933",
+  "code": "ceni-vata-otechestvennaya",
+  "label": "вата отечественная",
+  "per": "100 г",
+  "first": 200001,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754949",
+  "code": "ceni-velosiped-dlya-doshkolnikov",
+  "label": "велосипед для дошкольников",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754892",
+  "code": "ceni-velosiped-dorozhnyy-dlya-vzroslyh",
+  "label": "велосипед дорожный для взрослых",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755172",
+  "code": "ceni-vermishel",
+  "label": "вермишель",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754915",
+  "code": "ceni-veroshpiron",
+  "label": "верошпирон",
+  "per": "10 капсул (таблеток)",
+  "first": 200906,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1755211",
+  "code": "ceni-vznosy-na-kapitalnyy-remont",
+  "label": "взносы на капитальный ремонт",
+  "per": "м2 общей площади",
+  "first": 201701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785703",
+  "code": "ceni-videokasseta-bez-zapisi",
+  "label": "видеокассета без записи",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200612,
+  "territories": 87
+ },
+ {
+  "oid": "1785758",
+  "code": "ceni-videomagnitofon",
+  "label": "видеомагнитофон",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1785714",
+  "code": "ceni-videopleer-pishuschiy-importnyy",
+  "label": "видеоплеер (пишущий) импортный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200312,
+  "territories": 86
+ },
+ {
+  "oid": "1848507",
+  "code": "ceni-vino-vinogradnoe-kreplenoe",
+  "label": "вино виноградное крепленое",
+  "per": "л",
+  "first": 202301,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1754809",
+  "code": "ceni-vino-vinogradnoe-kreplenoe-krepostyu-do-20-ob-spirta",
+  "label": "вино виноградное крепленое крепостью до 20% об.спирта",
+  "per": "л",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1848527",
+  "code": "ceni-vino-vinogradnoe-stolovoe",
+  "label": "вино виноградное столовое",
+  "per": "л",
+  "first": 202301,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1754773",
+  "code": "ceni-vino-vinogradnoe-stolovoe-suhoe-polusuhoe-polusladkoe-krepos",
+  "label": "вино виноградное столовое (сухое, полусухое, полусладкое) крепостью до 14% об.спирта и содержанием до 8% сахара",
+  "per": "л",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1785737",
+  "code": "ceni-vino-igristoe-importnoe",
+  "label": "вино игристое импортное",
+  "per": "л",
+  "first": 200001,
+  "last": 200612,
+  "territories": 62
+ },
+ {
+  "oid": "1754724",
+  "code": "ceni-vino-igristoe-otechestvennoe",
+  "label": "вино игристое отечественное",
+  "per": "л",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754787",
+  "code": "ceni-vinograd",
+  "label": "виноград",
+  "per": "кг",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754899",
+  "code": "ceni-vinpocetin-5-mg",
+  "label": "винпоцетин, 5 мг",
+  "per": "10 таблеток",
+  "first": 200601,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1856500",
+  "code": "ceni-voda-mineralnaya",
+  "label": "вода минеральная",
+  "per": "л",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754705",
+  "code": "ceni-voda-mineralnaya-i-pitevaya",
+  "label": "вода минеральная и питьевая",
+  "per": "л",
+  "first": 200001,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1856499",
+  "code": "ceni-voda-pitevaya",
+  "label": "вода питьевая",
+  "per": "л",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785728",
+  "code": "ceni-vodka-krepostyu-40-i-vyshe-obyknovennogo-kachestva-tipa-rasp",
+  "label": "водка крепостью 40% и выше, обыкновенного качества, типа \"RASPUTIN\",\"WHITE EAGLE\",\"KREMLYOVSKYA\" и т.п.",
+  "per": "литр",
+  "first": 200001,
+  "last": 200012,
+  "territories": 1
+ },
+ {
+  "oid": "1709752",
+  "code": "ceni-vodka-krepostyu-40-ob-spirta-i-vyshe",
+  "label": "водка крепостью 40% об. спирта и выше",
+  "per": "л",
+  "first": 201401,
+  "last": 202212,
+  "territories": 92
+ },
+ {
+  "oid": "1785791",
+  "code": "ceni-vodka-krepostyu-40-ob-spirta-i-vyshe-povyshennogo-kachestva",
+  "label": "водка крепостью 40% об. спирта и выше повышенного качества",
+  "per": "л",
+  "first": 200401,
+  "last": 201312,
+  "territories": 88
+ },
+ {
+  "oid": "1709799",
+  "code": "ceni-vodka-krepostyu-40-ob-spirta-i-vyshe-obyknovennogo-kachestva",
+  "label": "водка крепостью 40% об.спирта и выше обыкновенного качества",
+  "per": "л",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1785701",
+  "code": "ceni-vodka-krepostyu-40-ob-spirta-i-vyshe-povyshennogo-kachestva-1785701",
+  "label": "водка крепостью 40% об.спирта и выше, повышенного качества, типа \"Посольская\" , \"Пшеничная\" и т.п.",
+  "per": "л",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1785754",
+  "code": "ceni-vodka-krepostyu-40-ob-spirta-i-vyshe-povyshennogo-kachestva-1785754",
+  "label": "водка крепостью 40% об.спирта и выше, повышенного качества, типа SMIRNOFF, FINLAND, ABSOLUT",
+  "per": "л",
+  "first": 200001,
+  "last": 200312,
+  "territories": 75
+ },
+ {
+  "oid": "1785688",
+  "code": "ceni-vodootvedenie-1785688",
+  "label": "водоотведение",
+  "per": "месяц с человека",
+  "first": 201201,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1846569",
+  "code": "ceni-vodoroda-peroksid",
+  "label": "водорода пероксид",
+  "per": "100 мл",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1759576",
+  "code": "ceni-vodosnabzhenie-goryachee",
+  "label": "водоснабжение горячее",
+  "per": "месяц с человека",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1785695",
+  "code": "ceni-vodosnabzhenie-holodnoe",
+  "label": "водоснабжение холодное",
+  "per": "месяц с человека",
+  "first": 201201,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1755046",
+  "code": "ceni-vodosnabzhenie-holodnoe-i-vodootvedenie",
+  "label": "водоснабжение холодное и водоотведение",
+  "per": "м3",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1759589",
+  "code": "ceni-vodosnabzhenie-holodnoe-i-vodootvedenie-1759589",
+  "label": "водоснабжение холодное и водоотведение",
+  "per": "месяц с человека",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1853997",
+  "code": "ceni-vosstanovlenie-zuba-plomboy",
+  "label": "восстановление зуба пломбой",
+  "per": "услуга",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785765",
+  "code": "ceni-vypolnenie-malyarnyh-rabot",
+  "label": "выполнение малярных работ",
+  "per": "10 м2",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1755106",
+  "code": "ceni-vypolnenie-oboynyh-rabot",
+  "label": "выполнение обойных работ",
+  "per": "10 м2",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755124",
+  "code": "ceni-vypolnenie-rabot-po-oblicovke-kafelnoy-plitkoy",
+  "label": "выполнение работ по облицовке кафельной плиткой",
+  "per": "м2",
+  "first": 200401,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755094",
+  "code": "ceni-gaz-setevoy-1755094",
+  "label": "газ сетевой",
+  "per": "месяц с человека",
+  "first": 200001,
+  "last": 202609,
+  "territories": 83
+ },
+ {
+  "oid": "1755060",
+  "code": "ceni-gaz-szhizhennyy",
+  "label": "газ сжиженный",
+  "per": "месяц с человека",
+  "first": 200001,
+  "last": 202609,
+  "territories": 52
+ },
+ {
+  "oid": "1755070",
+  "code": "ceni-gaz-szhizhennyy-1755070",
+  "label": "газ сжиженный",
+  "per": "м3",
+  "first": 201401,
+  "last": 202609,
+  "territories": 40
+ },
+ {
+  "oid": "1785694",
+  "code": "ceni-gaz-szhizhennyy-v-ballonah",
+  "label": "газ сжиженный в баллонах",
+  "per": "50 л",
+  "first": 200001,
+  "last": 201712,
+  "territories": 87
+ },
+ {
+  "oid": "1846543",
+  "code": "ceni-gazeta-v-roznicu",
+  "label": "газета в розницу",
+  "per": "шт.",
+  "first": 202201,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755105",
+  "code": "ceni-gazovoe-motornoe-toplivo",
+  "label": "газовое моторное топливо",
+  "per": "л",
+  "first": 201401,
+  "last": 202609,
+  "territories": 89
+ },
+ {
+  "oid": "1836526",
+  "code": "ceni-gastroskopiya-fgds-egds",
+  "label": "гастроскопия (ФГДС, ЭГДС)",
+  "per": "услуга",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836495",
+  "code": "ceni-gel-dlya-dusha",
+  "label": "гель для душа",
+  "per": "250 мл",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755086",
+  "code": "ceni-geparin-natriya-1000-me-g-gel",
+  "label": "гепарин натрия 1000 МЕ/г, гель",
+  "per": "50 г",
+  "first": 200906,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1854832",
+  "code": "ceni-geparinovaya-maz",
+  "label": "гепариновая мазь",
+  "per": "25 г",
+  "first": 202501,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1754974",
+  "code": "ceni-gipotiazid-25-mg",
+  "label": "гипотиазид, 25 мг",
+  "per": "10 таблеток",
+  "first": 200906,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1848523",
+  "code": "ceni-gipsokarton",
+  "label": "гипсокартон",
+  "per": "м2",
+  "first": 202301,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1755151",
+  "code": "ceni-glicin-100-mg",
+  "label": "глицин, 100 мг",
+  "per": "50 таблеток",
+  "first": 201201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1755139",
+  "code": "ceni-godovaya-stoimost-polisa-dobrovolnogo-strahovaniya-zhilya-ot",
+  "label": "годовая стоимость полиса добровольного страхования жилья от стандартных рисков",
+  "per": "полис",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755079",
+  "code": "ceni-godovaya-stoimost-polisa-dobrovolnogo-strahovaniya-legkovogo",
+  "label": "годовая стоимость полиса добровольного страхования легкового автомобиля от стандартных рисков (КАСКО)",
+  "per": "полис",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831422",
+  "code": "ceni-godovaya-stoimost-polisa-obyazatelnogo-strahovaniya-grazhdan",
+  "label": "годовая стоимость полиса обязательного страхования гражданской ответственности владельцев транспортных средств (ОСАГО)",
+  "per": "полис",
+  "first": 202001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785780",
+  "code": "ceni-golovnoy-ubor-zhenskiy-iz-ovchiny-meha-krolika-iskusstvennog",
+  "label": "головной убор женский из овчины, меха кролика, искусственного меха, или комбинированный с кожей, замшей, утепленный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 86
+ },
+ {
+  "oid": "1785802",
+  "code": "ceni-golovnoy-ubor-muzhskoy-iz-ovchiny-meha-krolika-ili-kombiniro",
+  "label": "головной убор мужской из овчины, меха кролика или комбинированный с кожей, замшей, утепленный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754718",
+  "code": "ceni-goroh-i-fasol",
+  "label": "горох и фасоль",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854819",
+  "code": "ceni-goroshek-zelenyy-konservirovannyy",
+  "label": "горошек зеленый консервированный",
+  "per": "кг",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1854840",
+  "code": "ceni-grammidin",
+  "label": "граммидин",
+  "per": "10 таблеток",
+  "first": 202501,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1836491",
+  "code": "ceni-griby-svezhie",
+  "label": "грибы свежие",
+  "per": "кг",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846573",
+  "code": "ceni-grippferon",
+  "label": "гриппферон",
+  "per": "10 мл",
+  "first": 202201,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1754750",
+  "code": "ceni-grushi",
+  "label": "груши",
+  "per": "кг",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836494",
+  "code": "ceni-dezinficiruyuschee-sredstvo-dlya-poverhnostey",
+  "label": "дезинфицирующее средство для поверхностей",
+  "per": "л",
+  "first": 202101,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1836497",
+  "code": "ceni-dezodorant",
+  "label": "дезодорант",
+  "per": "50 мл",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785778",
+  "code": "ceni-dzhemper-sviter-dlya-detey-doshkolnogo-vozrasta-rost-92-122",
+  "label": "джемпер (свитер) для детей дошкольного возраста (рост 92-122 см)",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1754771",
+  "code": "ceni-dzhemper-dlya-detey-shkolnogo-vozrasta",
+  "label": "джемпер для детей школьного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709755",
+  "code": "ceni-dzhemper-zhenskiy",
+  "label": "джемпер женский",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754733",
+  "code": "ceni-dzhemper-muzhskoy",
+  "label": "джемпер мужской",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836525",
+  "code": "ceni-diagnostika-na-magnitno-rezonansnom-ili-kompyuternom-tomogra",
+  "label": "диагностика на магнитно-резонансном или компьютерном томографе",
+  "per": "услуга",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785678",
+  "code": "ceni-diazolin-100-mg",
+  "label": "диазолин, 100 мг",
+  "per": "10 драже",
+  "first": 201201,
+  "last": 201712,
+  "territories": 92
+ },
+ {
+  "oid": "1755015",
+  "code": "ceni-divan-krovat",
+  "label": "диван-кровать",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854835",
+  "code": "ceni-diklofenak",
+  "label": "диклофенак",
+  "per": "15 мл",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785681",
+  "code": "ceni-diklofenak-rastvor-dlya-inekciy-75-mg",
+  "label": "диклофенак, раствор для инъекций, 75 мг",
+  "per": "ампула 3 мл",
+  "first": 200601,
+  "last": 201201,
+  "territories": 89
+ },
+ {
+  "oid": "1755045",
+  "code": "ceni-dom-otdyha-pansionat",
+  "label": "дом отдыха, пансионат",
+  "per": "день",
+  "first": 200001,
+  "last": 202609,
+  "territories": 81
+ },
+ {
+  "oid": "1755118",
+  "code": "ceni-dopolnitelnye-zanyatiya-v-gosudarstvennyh-i-municipalnyh-obs",
+  "label": "дополнительные занятия в государственных и муниципальных общеобразовательных организациях очной формы обучения",
+  "per": "академический час",
+  "first": 200901,
+  "last": 202609,
+  "territories": 86
+ },
+ {
+  "oid": "1755202",
+  "code": "ceni-dopolnitelnye-zanyatiya-dlya-detey-doshkolnogo-vozrasta",
+  "label": "дополнительные занятия для детей дошкольного возраста",
+  "per": "академический час",
+  "first": 201701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754936",
+  "code": "ceni-doska-obreznaya",
+  "label": "доска обрезная",
+  "per": "м3",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755123",
+  "code": "ceni-drel-elektricheskaya",
+  "label": "дрель электрическая",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754977",
+  "code": "ceni-drova",
+  "label": "дрова",
+  "per": "м3",
+  "first": 200001,
+  "last": 202609,
+  "territories": 91
+ },
+ {
+  "oid": "1754894",
+  "code": "ceni-drotaverin",
+  "label": "дротаверин",
+  "per": "100 таблеток",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785770",
+  "code": "ceni-duhi-importnye",
+  "label": "духи импортные",
+  "per": "10 мл",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1785742",
+  "code": "ceni-duhi-otechestvennye",
+  "label": "духи отечественные",
+  "per": "10 мл",
+  "first": 200001,
+  "last": 200812,
+  "territories": 87
+ },
+ {
+  "oid": "1755192",
+  "code": "ceni-evroshifer",
+  "label": "еврошифер",
+  "per": "10 м2",
+  "first": 201701,
+  "last": 202609,
+  "territories": 90
+ },
+ {
+  "oid": "1755007",
+  "code": "ceni-ezhednevnaya-gazeta-v-roznicu",
+  "label": "ежедневная газета в розницу",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1754920",
+  "code": "ceni-ezhenedelnaya-gazeta-v-roznicu",
+  "label": "еженедельная газeта в розницу",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1754783",
+  "code": "ceni-zhevatelnaya-rezinka",
+  "label": "жевательная резинка",
+  "per": "упаковка",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856501",
+  "code": "ceni-zhidkie-sredstva-dlya-stirki",
+  "label": "жидкие средства для стирки",
+  "per": "л",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754726",
+  "code": "ceni-zhidkie-chistyaschie-i-moyuschie-sredstva",
+  "label": "жидкие чистящие и моющие средства",
+  "per": "л",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754966",
+  "code": "ceni-zamena-elementov-pitaniya-v-naruchnyh-chasah",
+  "label": "замена элементов питания в наручных часах",
+  "per": "услуга",
+  "first": 200401,
+  "last": 202512,
+  "territories": 93
+ },
+ {
+  "oid": "1755148",
+  "code": "ceni-zanyatiya-v-gruppah-obschey-fizicheskoy-podgotovki",
+  "label": "занятия в группах общей физической подготовки",
+  "per": "месяц",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1755056",
+  "code": "ceni-zanyatiya-v-plavatelnyh-basseynah",
+  "label": "занятия в плавательных бассейнах",
+  "per": "месяц",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755095",
+  "code": "ceni-zanyatiya-na-kursah-inostrannyh-yazykov",
+  "label": "занятия на курсах иностранных языков",
+  "per": "академический час",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755047",
+  "code": "ceni-zanyatiya-na-kursah-professionalnogo-obucheniya",
+  "label": "занятия на курсах профессионального обучения",
+  "per": "академический час",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836490",
+  "code": "ceni-zelen-svezhaya",
+  "label": "зелень свежая",
+  "per": "кг",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755140",
+  "code": "ceni-zemlya-dlya-rasteniy",
+  "label": "земля для растений",
+  "per": "л",
+  "first": 200601,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754972",
+  "code": "ceni-zerkalo-navesnoe-dlya-vannoy-komnaty",
+  "label": "зеркало навесное для ванной комнаты",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754764",
+  "code": "ceni-zefir-pastila",
+  "label": "зефир, пастила",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754951",
+  "code": "ceni-zont",
+  "label": "зонт",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836514",
+  "code": "ceni-ibuprofen",
+  "label": "ибупрофен",
+  "per": "10 таблеток",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755024",
+  "code": "ceni-igrushki-myagkie",
+  "label": "игрушки мягкие",
+  "per": "шт.",
+  "first": 200101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755029",
+  "code": "ceni-igrushki-plastmassovye-dlya-detey-yaselnogo-vozrasta",
+  "label": "игрушки пластмассовые для детей ясельного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755050",
+  "code": "ceni-izgotovlenie-groba",
+  "label": "изготовление гроба",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755115",
+  "code": "ceni-izgotovlenie-koronki",
+  "label": "изготовление коронки",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755174",
+  "code": "ceni-izgotovlenie-semnogo-zubnogo-proteza",
+  "label": "изготовление съёмного зубного протеза",
+  "per": "протез",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754916",
+  "code": "ceni-izgotovlenie-fotografiy-dlya-dokumentov",
+  "label": "изготовление фотографий для документов",
+  "per": "4 шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754811",
+  "code": "ceni-ikra-lososevyh-ryb-otechestvennaya",
+  "label": "икра лососевых рыб отечественная",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846536",
+  "code": "ceni-ingavirin",
+  "label": "ингавирин",
+  "per": "10 капсул",
+  "first": 202201,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1848517",
+  "code": "ceni-ingalipt-aerozol-dlya-mestnogo-primeneniya",
+  "label": "ингалипт, аэрозоль для местного применения",
+  "per": "30 мл",
+  "first": 202301,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1754989",
+  "code": "ceni-indapamid",
+  "label": "индапамид",
+  "per": "10 таблеток",
+  "first": 200601,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856526",
+  "code": "ceni-interferon-alfa-2v",
+  "label": "интерферон альфа-2В",
+  "per": "10 мл",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754715",
+  "code": "ceni-yogurt",
+  "label": "йогурт",
+  "per": "125 г",
+  "first": 200101,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846538",
+  "code": "ceni-yogurt-1846538",
+  "label": "йогурт",
+  "per": "кг",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754893",
+  "code": "ceni-yod",
+  "label": "йод",
+  "per": "10 мл",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755181",
+  "code": "ceni-kakao",
+  "label": "какао",
+  "per": "кг",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755180",
+  "code": "ceni-kalmary-morozhenye",
+  "label": "кальмары мороженые",
+  "per": "кг",
+  "first": 201801,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1846553",
+  "code": "ceni-kanefron-n",
+  "label": "канефрон Н",
+  "per": "60 таблеток",
+  "first": 202201,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1755158",
+  "code": "ceni-karamel",
+  "label": "карамель",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754986",
+  "code": "ceni-karandash-chernografitnyy",
+  "label": "карандаш чернографитный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854828",
+  "code": "ceni-kardiomagnil",
+  "label": "кардиомагнил",
+  "per": "100 таблеток",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785730",
+  "code": "ceni-kasseta-dlya-magnitofona-audiokasseta-importnaya-bez-zapisi",
+  "label": "кассета для магнитофона (аудиокассета) импортная, без записи, С90",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1848510",
+  "code": "ceni-kastryulya",
+  "label": "кастрюля",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754969",
+  "code": "ceni-kastryulya-iz-emalirovannoy-ili-nerzhaveyuschey-stali",
+  "label": "кастрюля из эмалированной или нержавеющей стали",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1754747",
+  "code": "ceni-keksy-rulety",
+  "label": "кексы, рулеты",
+  "per": "кг",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755113",
+  "code": "ceni-ketoprofen-2-5-gel",
+  "label": "кетопрофен, 2,5% гель",
+  "per": "30 г",
+  "first": 201201,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846561",
+  "code": "ceni-ketorol-ekspress",
+  "label": "кеторол Экспресс",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1856527",
+  "code": "ceni-ketorolak",
+  "label": "кеторолак",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754793",
+  "code": "ceni-ketchup",
+  "label": "кетчуп",
+  "per": "кг",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755128",
+  "code": "ceni-kinoteatry",
+  "label": "кинотеатры",
+  "per": "билет",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854826",
+  "code": "ceni-kirpich",
+  "label": "кирпич",
+  "per": "1000 шт.",
+  "first": 202501,
+  "last": 202609,
+  "territories": 90
+ },
+ {
+  "oid": "1754900",
+  "code": "ceni-kirpich-krasnyy",
+  "label": "кирпич красный",
+  "per": "1000 шт.",
+  "first": 200001,
+  "last": 202412,
+  "territories": 93
+ },
+ {
+  "oid": "1754768",
+  "code": "ceni-kislomolochnye-produkty",
+  "label": "кисломолочные продукты",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755090",
+  "code": "ceni-klinicheskiy-osmotr-zhivotnogo",
+  "label": "клинический осмотр животного",
+  "per": "посещение",
+  "first": 200101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846551",
+  "code": "ceni-klubnaya-karta-v-fitnes-centr",
+  "label": "клубная карта в фитнес-центр",
+  "per": "месяц",
+  "first": 202201,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1754981",
+  "code": "ceni-kniga-detektivno-priklyuchencheskogo-zhanra",
+  "label": "книга детективно-приключенческого жанра",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1848512",
+  "code": "ceni-kniga-hudozhestvennaya",
+  "label": "книга художественная",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755009",
+  "code": "ceni-kover-sherstyanoy-polusherstyanoy",
+  "label": "ковер шерстяной, полушерстяной",
+  "per": "м2",
+  "first": 200001,
+  "last": 202012,
+  "territories": 93
+ },
+ {
+  "oid": "1754962",
+  "code": "ceni-kover-kovrovoe-pokrytie-palas-sinteticheskiy",
+  "label": "ковер, ковровое покрытие (палас) синтетический",
+  "per": "м2",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785708",
+  "code": "ceni-kolbasa-varenaya-i-sorta",
+  "label": "колбаса вареная I сорта",
+  "per": "кг",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1709724",
+  "code": "ceni-kolbasa-varenaya-vysshego-sorta",
+  "label": "колбаса вареная высшего сорта",
+  "per": "кг",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1709757",
+  "code": "ceni-kolgotki-detskie",
+  "label": "колготки детские",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755206",
+  "code": "ceni-kolgotki-zhenskie-elastichnye",
+  "label": "колготки женские эластичные",
+  "per": "шт.",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785657",
+  "code": "ceni-kolgotki-zhenskie-elastichnye-plotnostyu-15-20-den",
+  "label": "колготки женские эластичные плотностью 15-20 DEN",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201712,
+  "territories": 92
+ },
+ {
+  "oid": "1709720",
+  "code": "ceni-kolgotki-zhenskie-elastichnye-plotnostyu-svyshe-20-den",
+  "label": "колготки женские эластичные плотностью свыше 20 DEN",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201712,
+  "territories": 92
+ },
+ {
+  "oid": "1785664",
+  "code": "ceni-koldreks-poroshok-5-g",
+  "label": "колдрекс, порошок 5 г",
+  "per": "10 пакетов",
+  "first": 200906,
+  "last": 201712,
+  "territories": 92
+ },
+ {
+  "oid": "1836508",
+  "code": "ceni-kolekalciferol-vitamin-d3",
+  "label": "колекальциферол (Витамин Д3)",
+  "per": "10 мл",
+  "first": 202101,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754982",
+  "code": "ceni-kolco-obruchalnoe-zolotoe",
+  "label": "кольцо обручальное золотое",
+  "per": "грамм",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755025",
+  "code": "ceni-kolyaska-dlya-novorozhdennogo",
+  "label": "коляска для новорожденного",
+  "per": "шт.",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785700",
+  "code": "ceni-kombinaciya-zhenskaya-trikotazhnaya",
+  "label": "комбинация женская трикотажная",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200912,
+  "territories": 87
+ },
+ {
+  "oid": "1754802",
+  "code": "ceni-kombinezon-kostyum-uteplennyy-dlya-detey-doshkolnogo-vozrast",
+  "label": "комбинезон (костюм) утепленный для детей дошкольного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754789",
+  "code": "ceni-kombinezon-uteplennyy-dlya-detey-do-odnogo-goda",
+  "label": "комбинезон утепленный для детей до одного года",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754956",
+  "code": "ceni-kombinirovannye-analgetiki",
+  "label": "комбинированные анальгетики",
+  "per": "10 таблеток",
+  "first": 200601,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1785676",
+  "code": "ceni-kombinirovannye-kontraceptivy",
+  "label": "комбинированные контрацептивы",
+  "per": "21 таблетка",
+  "first": 200601,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1755069",
+  "code": "ceni-kombinirovannyy-bilet-dlya-proezda-v-gorodskom-passazhirskom",
+  "label": "комбинированный билет для проезда в городском пассажирском транспорте в течение месяца",
+  "per": "билет",
+  "first": 200601,
+  "last": 202609,
+  "territories": 63
+ },
+ {
+  "oid": "1836527",
+  "code": "ceni-komissiya-banka-za-perevod-sredstv-s-karty-na-kartu-klientu",
+  "label": "комиссия банка за перевод средств с карты на карту клиенту другого банка на территории России",
+  "per": "услуга",
+  "first": 202101,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1785721",
+  "code": "ceni-kommutiruemyy-dostup-v-internet",
+  "label": "коммутируемый доступ в Интернет",
+  "per": "час",
+  "first": 200401,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1854821",
+  "code": "ceni-komplekt-postelnogo-belya-iz-hlopchatobumazhnoy-tkani",
+  "label": "комплект постельного белья из хлопчатобумажной ткани",
+  "per": "комплект",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754756",
+  "code": "ceni-komplekt-postelnogo-belya-polutoraspalnyy-iz-hlopchatobumazh",
+  "label": "комплект постельного белья полутораспальный из хлопчатобумажной ткани",
+  "per": "комплект",
+  "first": 200001,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1848529",
+  "code": "ceni-komplekt-stolovyh-priborov",
+  "label": "комплект столовых приборов",
+  "per": "комплект на 1 человека",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754958",
+  "code": "ceni-komplekt-stolovyh-priborov-iz-nerzhaveyuschey-stali",
+  "label": "комплект столовых приборов из нержавеющей стали",
+  "per": "комплект на 1 человека",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1856504",
+  "code": "ceni-komprimirovannyy-prirodnyy-gaz",
+  "label": "компримированный природный газ",
+  "per": "м3",
+  "first": 202601,
+  "last": 202609,
+  "territories": 75
+ },
+ {
+  "oid": "1754995",
+  "code": "ceni-kompyuter-personalnyy-perenosnoy-noutbuk",
+  "label": "компьютер персональный переносной (ноутбук)",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755076",
+  "code": "ceni-kompyuter-planshetnyy",
+  "label": "компьютер планшетный",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755075",
+  "code": "ceni-konservy-myasnye",
+  "label": "консервы мясные",
+  "per": "350 г",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846542",
+  "code": "ceni-konservy-myasnye-1846542",
+  "label": "консервы мясные",
+  "per": "кг",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755178",
+  "code": "ceni-konservy-myasnye-dlya-detskogo-pitaniya",
+  "label": "консервы мясные для детского питания",
+  "per": "кг",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754700",
+  "code": "ceni-konservy-ovoschnye-dlya-detskogo-pitaniya",
+  "label": "консервы овощные для детского питания",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785716",
+  "code": "ceni-konservy-ovoschnye-zakusochnye-obedennye",
+  "label": "консервы овощные закусочные, обеденные",
+  "per": "кг",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754740",
+  "code": "ceni-konservy-rybnye-v-tomatnom-souse",
+  "label": "консервы рыбные в томатном соусе",
+  "per": "350 г",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846574",
+  "code": "ceni-konservy-rybnye-v-tomatnom-souse-1846574",
+  "label": "консервы рыбные в томатном соусе",
+  "per": "кг",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754753",
+  "code": "ceni-konservy-rybnye-naturalnye-i-s-dobavleniem-masla",
+  "label": "консервы рыбные натуральные и с добавлением масла",
+  "per": "350 г",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846540",
+  "code": "ceni-konservy-rybnye-naturalnye-i-s-dobavleniem-masla-1846540",
+  "label": "консервы рыбные натуральные и с добавлением масла",
+  "per": "кг",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754746",
+  "code": "ceni-konservy-tomatnye",
+  "label": "консервы томатные",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754781",
+  "code": "ceni-konservy-fruktovo-yagodnye-dlya-detskogo-pitaniya",
+  "label": "консервы фруктово-ягодные для детского питания",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754943",
+  "code": "ceni-konstruktor-detskiy-plastmassovyy",
+  "label": "конструктор детский пластмассовый",
+  "per": "набор",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743465",
+  "code": "ceni-konfety-myagkie-glazirovannye-shokoladom",
+  "label": "конфеты мягкие, глазированные шоколадом",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848519",
+  "code": "ceni-konki",
+  "label": "коньки",
+  "per": "пара",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754926",
+  "code": "ceni-konki-rolikovye",
+  "label": "коньки роликовые",
+  "per": "пара",
+  "first": 200001,
+  "last": 202212,
+  "territories": 93
+ },
+ {
+  "oid": "1785759",
+  "code": "ceni-konyak-importnyy",
+  "label": "коньяк импортный",
+  "per": "л",
+  "first": 200001,
+  "last": 200812,
+  "territories": 87
+ },
+ {
+  "oid": "1754761",
+  "code": "ceni-konyak-ordinarnyy-otechestvennyy",
+  "label": "коньяк ординарный отечественный",
+  "per": "л",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709725",
+  "code": "ceni-korvalol",
+  "label": "корвалол",
+  "per": "25 мл",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755065",
+  "code": "ceni-korrigiruyuschie-ochki",
+  "label": "корригирующие очки",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743455",
+  "code": "ceni-kostyum-sportivnyy-dlya-vzroslyh",
+  "label": "костюм спортивный для взрослых",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754794",
+  "code": "ceni-kostyum-sportivnyy-dlya-detey-shkolnogo-vozrasta",
+  "label": "костюм спортивный для детей школьного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785660",
+  "code": "ceni-kostyum-trikotazhnyy-dlya-detey-doshkolnogo-vozrasta",
+  "label": "костюм трикотажный для детей дошкольного возраста",
+  "per": "комплект",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1743462",
+  "code": "ceni-kostyum-trikotazhnyy-dlya-detey-yaselnogo-vozrasta",
+  "label": "костюм трикотажный для детей ясельного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785772",
+  "code": "ceni-kostyum-dvoyka-zhenskiy-iz-trikotazhnogo-polotna",
+  "label": "костюм-двойка женский из трикотажного полотна",
+  "per": "шт.",
+  "first": 200401,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1785710",
+  "code": "ceni-kostyum-dvoyka-zhenskiy-iz-sherstyanyh-ili-polusherstyanyh-t",
+  "label": "костюм-двойка женский из шерстяных или полушерстяных тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1709744",
+  "code": "ceni-kostyum-dvoyka-muzhskoy-iz-sherstyanyh-polusherstyanyh-ili-s",
+  "label": "костюм-двойка мужской из шерстяных, полушерстяных или смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755199",
+  "code": "ceni-kraska-dlya-volos",
+  "label": "краска для волос",
+  "per": "шт.",
+  "first": 201701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754959",
+  "code": "ceni-kraski-maslyanye-emali",
+  "label": "краски масляные, эмали",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755179",
+  "code": "ceni-krevetki-morozhenye-nerazdelannye",
+  "label": "креветки мороженые, неразделанные",
+  "per": "кг",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848530",
+  "code": "ceni-krem-detskiy",
+  "label": "крем детский",
+  "per": "100 г (100 мл)",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754924",
+  "code": "ceni-krem-dlya-lica",
+  "label": "крем для лица",
+  "per": "100 г (100 мл)",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785750",
+  "code": "ceni-krem-dlya-lica-importnyy",
+  "label": "крем для лица импортный",
+  "per": "100 мл",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1785724",
+  "code": "ceni-krem-dlya-lica-otechestvennyy",
+  "label": "крем для лица отечественный",
+  "per": "100 г",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1785823",
+  "code": "ceni-krem-dlya-ruk",
+  "label": "крем для рук",
+  "per": "100 г (100 мл)",
+  "first": 202001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846552",
+  "code": "ceni-kremaciya",
+  "label": "кремация",
+  "per": "услуга",
+  "first": 202201,
+  "last": 202609,
+  "territories": 45
+ },
+ {
+  "oid": "1848513",
+  "code": "ceni-kreslo-detskoe-avtomobilnoe",
+  "label": "кресло детское автомобильное",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1836498",
+  "code": "ceni-kreslo-myagkoe",
+  "label": "кресло мягкое",
+  "per": "шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755183",
+  "code": "ceni-krovat-dlya-novorozhdennyh",
+  "label": "кровать для новорожденных",
+  "per": "шт.",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785744",
+  "code": "ceni-krossovye-tufli-detskie-s-verhom-iz-naturalnoy-kozhi-razmer",
+  "label": "кроссовые туфли детские с верхом из натуральной кожи (размер 16-22)",
+  "per": "пара",
+  "first": 200001,
+  "last": 200312,
+  "territories": 83
+ },
+ {
+  "oid": "1846522",
+  "code": "ceni-krossovye-tufli-dlya-vzroslyh",
+  "label": "кроссовые туфли для взрослых",
+  "per": "пара",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743464",
+  "code": "ceni-krossovye-tufli-dlya-vzroslyh-s-verhom-iz-iskusstvennoy-kozh",
+  "label": "кроссовые туфли для взрослых с верхом из искусственной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1754901",
+  "code": "ceni-krossovye-tufli-dlya-vzroslyh-s-verhom-iz-naturalnoy-kozhi",
+  "label": "кроссовые туфли для взрослых с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202112,
+  "territories": 93
+ },
+ {
+  "oid": "1754891",
+  "code": "ceni-krossovye-tufli-dlya-detey",
+  "label": "кроссовые туфли для детей",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755031",
+  "code": "ceni-kruzhka-chashka-chaynaya-s-blyudcem",
+  "label": "кружка, чашка чайная с блюдцем",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754808",
+  "code": "ceni-krupy-ovsyanaya-i-perlovaya",
+  "label": "крупы овсяная и перловая",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846555",
+  "code": "ceni-ksarelto-20-mg",
+  "label": "ксарелто, 20 мг",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1755067",
+  "code": "ceni-kserokopirovanie-dokumenta",
+  "label": "ксерокопирование документа",
+  "per": "лист",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754953",
+  "code": "ceni-ksilometazolin",
+  "label": "ксилометазолин",
+  "per": "10 мл",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754759",
+  "code": "ceni-kulinarnye-izdeliya-iz-pticy",
+  "label": "кулинарные изделия из птицы",
+  "per": "кг",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785798",
+  "code": "ceni-kurtka-dlya-detey-doshkolnogo-vozrasta-demisezonnaya-s-verho",
+  "label": "куртка для детей дошкольного возраста демисезонная с верхом из плащевых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1785782",
+  "code": "ceni-kurtka-dlya-detey-doshkolnogo-vozrasta-zimnyaya-iz-smesovyh",
+  "label": "куртка для детей дошкольного возраста зимняя из смесовых или синтетических тканей, утепленная искусственным мехом (пухо-пером, тройным синтепоном)",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754788",
+  "code": "ceni-kurtka-dlya-detey-doshkolnogo-vozrasta-s-verhom-iz-plaschevy",
+  "label": "куртка для детей дошкольного возраста с верхом из плащевых тканей утепленная",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1759583",
+  "code": "ceni-kurtka-dlya-detey-shkolnogo-vozrasta-demisezonnaya-s-verhom",
+  "label": "куртка для детей школьного возраста демисезонная, с верхом из плащевых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1709803",
+  "code": "ceni-kurtka-dlya-detey-shkolnogo-vozrasta-zimnyaya-s-verhom-iz-pl",
+  "label": "куртка для детей школьного возраста зимняя, с верхом из плащевых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1785795",
+  "code": "ceni-kurtka-dlya-detey-shkolnogo-vozrasta-s-verhom-iz-plaschevyh",
+  "label": "куртка для детей школьного возраста с верхом из плащевых тканей без утеплителя (ветровка)",
+  "per": "шт.",
+  "first": 200601,
+  "last": 201312,
+  "territories": 87
+ },
+ {
+  "oid": "1709717",
+  "code": "ceni-kurtka-dlya-detey-shkolnogo-vozrasta-s-verhom-iz-plaschevyh-1709717",
+  "label": "куртка для детей школьного возраста с верхом из плащевых тканей утепленная",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754731",
+  "code": "ceni-kurtka-zhenskaya-bez-uteplitelya-vetrovka",
+  "label": "куртка женская без утеплителя (ветровка)",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785801",
+  "code": "ceni-kurtka-zhenskaya-iz-naturalnoy-kozhi",
+  "label": "куртка женская из натуральной кожи",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1743467",
+  "code": "ceni-kurtka-muzhskaya-bez-uteplitelya-vetrovka",
+  "label": "куртка мужская без утеплителя (ветровка)",
+  "per": "шт.",
+  "first": 200601,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1759567",
+  "code": "ceni-kurtka-muzhskaya-demisezonnaya-s-verhom-iz-plaschevyh-tkaney",
+  "label": "куртка мужская демисезонная с верхом из плащевых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1709804",
+  "code": "ceni-kurtka-muzhskaya-zimnyaya-s-verhom-iz-plaschevyh-tkaney",
+  "label": "куртка мужская зимняя с верхом из плащевых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754728",
+  "code": "ceni-kurtka-muzhskaya-iz-naturalnoy-kozhi",
+  "label": "куртка мужская из натуральной кожи",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709738",
+  "code": "ceni-kurtka-muzhskaya-s-verhom-iz-plaschevyh-tkaney-uteplennaya",
+  "label": "куртка мужская с верхом из плащевых тканей утепленная",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856545",
+  "code": "ceni-kurerskaya-dostavka",
+  "label": "курьерская доставка",
+  "per": "услуга",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755082",
+  "code": "ceni-laminat",
+  "label": "ламинат",
+  "per": "м2",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831423",
+  "code": "ceni-lampa-svetodiodnaya",
+  "label": "лампа светодиодная",
+  "per": "шт.",
+  "first": 202001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754903",
+  "code": "ceni-lampa-elektricheskaya-osvetitelnaya",
+  "label": "лампа электрическая осветительная",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754918",
+  "code": "ceni-lampa-energosberegayuschaya",
+  "label": "лампа энергосберегающая",
+  "per": "шт.",
+  "first": 201101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755028",
+  "code": "ceni-levomekol-maz",
+  "label": "левомеколь, мазь",
+  "per": "40 г",
+  "first": 201201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785675",
+  "code": "ceni-legkovoy-avtomobil-importnyy-novyy",
+  "label": "легковой автомобиль импортный новый",
+  "per": "шт.",
+  "first": 200401,
+  "last": 201712,
+  "territories": 85
+ },
+ {
+  "oid": "1754939",
+  "code": "ceni-legkovoy-avtomobil-importnyy-poderzhannyy",
+  "label": "легковой автомобиль импортный подержанный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785651",
+  "code": "ceni-legkovoy-avtomobil-inostrannoy-marki-novyy",
+  "label": "легковой автомобиль иностранной марки новый",
+  "per": "шт.",
+  "first": 201801,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1755117",
+  "code": "ceni-legkovoy-avtomobil-inostrannoy-marki-sobrannyy-na-avtomobiln",
+  "label": "легковой автомобиль иностранной марки, собранный на автомобильном заводе на территории России",
+  "per": "шт.",
+  "first": 200701,
+  "last": 201712,
+  "territories": 84
+ },
+ {
+  "oid": "1755166",
+  "code": "ceni-legkovoy-avtomobil-otechestvennyy-novyy",
+  "label": "легковой автомобиль отечественный новый",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755058",
+  "code": "ceni-lechebnyy-massazh",
+  "label": "лечебный массаж",
+  "per": "сеанс",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755133",
+  "code": "ceni-lechenie-kariesa",
+  "label": "лечение кариеса",
+  "per": "пломба",
+  "first": 200001,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1853988",
+  "code": "ceni-lizobakt",
+  "label": "лизобакт",
+  "per": "10 таблеток",
+  "first": 202501,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1785741",
+  "code": "ceni-likery-desertnye-krepostyu-do-28-ob-spirta",
+  "label": "ликеры десертные крепостью до 28% об.спирта",
+  "per": "л",
+  "first": 200001,
+  "last": 200612,
+  "territories": 79
+ },
+ {
+  "oid": "1754730",
+  "code": "ceni-limony",
+  "label": "лимоны",
+  "per": "кг",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755135",
+  "code": "ceni-lineks",
+  "label": "линекс",
+  "per": "10 капсул",
+  "first": 201201,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1755030",
+  "code": "ceni-linoleum",
+  "label": "линолеум",
+  "per": "м2",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856517",
+  "code": "ceni-lozartan",
+  "label": "лозартан",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754911",
+  "code": "ceni-lopata-sadovaya",
+  "label": "лопата садовая",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755057",
+  "code": "ceni-loperamid",
+  "label": "лоперамид",
+  "per": "10 капсул (таблеток)",
+  "first": 200906,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755143",
+  "code": "ceni-loratadin-10-mg",
+  "label": "лоратадин, 10 мг",
+  "per": "10 таблеток",
+  "first": 200906,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846560",
+  "code": "ceni-magne-v6",
+  "label": "магне В6",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1785702",
+  "code": "ceni-magnitola-stereo",
+  "label": "магнитола стерео",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200612,
+  "territories": 87
+ },
+ {
+  "oid": "1785785",
+  "code": "ceni-mayka-detskaya",
+  "label": "майка детская",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1754757",
+  "code": "ceni-mayka-futbolka-zhenskaya-belevaya",
+  "label": "майка, футболка женская бельевая",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743456",
+  "code": "ceni-mayka-futbolka-muzhskaya-belevaya",
+  "label": "майка, футболка мужская бельевая",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754710",
+  "code": "ceni-mayonez",
+  "label": "майонез",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755186",
+  "code": "ceni-manikyur",
+  "label": "маникюр",
+  "per": "услуга",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755044",
+  "code": "ceni-margarin",
+  "label": "маргарин",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709737",
+  "code": "ceni-maslo-podsolnechnoe-1709737",
+  "label": "масло подсолнечное",
+  "per": "кг",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1755182",
+  "code": "ceni-matras-detskiy",
+  "label": "матрас детский",
+  "per": "шт.",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836499",
+  "code": "ceni-matras-dlya-vzroslyh",
+  "label": "матрас для взрослых",
+  "per": "шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754955",
+  "code": "ceni-mashina-stiralnaya-avtomaticheskaya",
+  "label": "машина стиральная автоматическая",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785771",
+  "code": "ceni-mashina-stiralnaya-avtomaticheskaya-importnaya",
+  "label": "машина стиральная автоматическая импортная",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1785749",
+  "code": "ceni-mashina-stiralnaya-avtomaticheskaya-otechestvennaya",
+  "label": "машина стиральная автоматическая отечественная",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200812,
+  "territories": 80
+ },
+ {
+  "oid": "1785658",
+  "code": "ceni-mashina-stiralnaya-malogabaritnaya",
+  "label": "машина стиральная малогабаритная",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1755014",
+  "code": "ceni-mashina-shveynaya",
+  "label": "машина швейная",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1856548",
+  "code": "ceni-mezhdugorodnaya-telefonnaya-svyaz",
+  "label": "междугородная телефонная связь",
+  "per": "минута",
+  "first": 202601,
+  "last": 202609,
+  "territories": 91
+ },
+ {
+  "oid": "1856521",
+  "code": "ceni-meloksikam",
+  "label": "мелоксикам",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1854839",
+  "code": "ceni-menovazin",
+  "label": "меновазин",
+  "per": "40 мл",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755000",
+  "code": "ceni-metallocherepica",
+  "label": "металлочерепица",
+  "per": "м2",
+  "first": 201201,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754906",
+  "code": "ceni-metamizol-natriya",
+  "label": "метамизол натрия",
+  "per": "10 таблеток",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846547",
+  "code": "ceni-metiluracil-10-maz",
+  "label": "метилурацил, 10% мазь",
+  "per": "25 г",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856522",
+  "code": "ceni-metoprolol",
+  "label": "метопролол",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785794",
+  "code": "ceni-mehovoy-golovnoy-ubor-detskiy",
+  "label": "меховой головной убор детский",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 88
+ },
+ {
+  "oid": "1754780",
+  "code": "ceni-mehovoy-golovnoy-ubor-zhenskiy-iz-naturalnogo-meha",
+  "label": "меховой головной убор женский из натурального меха",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202012,
+  "territories": 92
+ },
+ {
+  "oid": "1754767",
+  "code": "ceni-mehovoy-golovnoy-ubor-muzhskoy-iz-naturalnogo-meha",
+  "label": "меховой головной убор мужской из натурального меха",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202012,
+  "territories": 93
+ },
+ {
+  "oid": "1846564",
+  "code": "ceni-midokalm-150-mg",
+  "label": "мидокалм, 150 мг",
+  "per": "30 таблеток",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754917",
+  "code": "ceni-mikser-blender",
+  "label": "миксер, блендер",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743482",
+  "code": "ceni-mini-traktor-otechestvennyy",
+  "label": "мини-трактор отечественный",
+  "per": "шт.",
+  "first": 200301,
+  "last": 200812,
+  "territories": 35
+ },
+ {
+  "oid": "1846567",
+  "code": "ceni-miramistin-0-01",
+  "label": "мирамистин, 0,01%",
+  "per": "150 мл",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854827",
+  "code": "ceni-moyka-dlya-kuhni",
+  "label": "мойка для кухни",
+  "per": "шт.",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754937",
+  "code": "ceni-moyka-iz-nerzhaveyuschey-stali-dlya-kuhni",
+  "label": "мойка из нержавеющей стали для кухни",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1755201",
+  "code": "ceni-moyka-legkovogo-avtomobilya",
+  "label": "мойка легкового автомобиля",
+  "per": "услуга",
+  "first": 201701,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1848511",
+  "code": "ceni-moloko-dlya-detey",
+  "label": "молоко для детей",
+  "per": "л",
+  "first": 202301,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1848534",
+  "code": "ceni-moloko-pitevoe-celnoe-pasterizovannoe-bolee-3-2-zhirnosti",
+  "label": "молоко питьевое цельное пастеризованное более 3,2% жирности",
+  "per": "л",
+  "first": 202301,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1755039",
+  "code": "ceni-moloko-pitevoe-celnoe-sterilizovannoe-2-5-3-2-zhirnosti",
+  "label": "молоко питьевое цельное стерилизованное 2,5-3,2% жирности",
+  "per": "л",
+  "first": 200901,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754776",
+  "code": "ceni-moloko-sguschennoe-s-saharom",
+  "label": "молоко сгущенное с сахаром",
+  "per": "400 г",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846539",
+  "code": "ceni-moloko-sguschennoe-s-saharom-1846539",
+  "label": "молоко сгущенное с сахаром",
+  "per": "кг",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785773",
+  "code": "ceni-moloko-suhoe-celnoe",
+  "label": "молоко сухое цельное",
+  "per": "кг",
+  "first": 200901,
+  "last": 201612,
+  "territories": 89
+ },
+ {
+  "oid": "1759580",
+  "code": "ceni-moloko-celnoe-pasterizovannoe-sterilizovannoe-2-5-3-2-zhirno",
+  "label": "молоко цельное пастеризованное, стерилизованное 2,5-3,2% жирности",
+  "per": "л",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1759592",
+  "code": "ceni-moloko-celnoe-razlivnoe",
+  "label": "молоко цельное разливное",
+  "per": "л",
+  "first": 200001,
+  "last": 200912,
+  "territories": 88
+ },
+ {
+  "oid": "1759578",
+  "code": "ceni-molochnyy-napitok-pasterizovannyy-2-5-3-2-zhirnosti",
+  "label": "молочный напиток пастеризованный 2,5-3,2% жирности",
+  "per": "л",
+  "first": 200901,
+  "last": 201112,
+  "territories": 61
+ },
+ {
+  "oid": "1759587",
+  "code": "ceni-molochnyy-napitok-sterilizovannyy-2-5-3-2-zhirnosti",
+  "label": "молочный напиток стерилизованный 2,5-3,2% жирности",
+  "per": "л",
+  "first": 200901,
+  "last": 201112,
+  "territories": 52
+ },
+ {
+  "oid": "1754907",
+  "code": "ceni-monitor-dlya-nastolnogo-kompyutera",
+  "label": "монитор для настольного компьютера",
+  "per": "шт.",
+  "first": 200101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831429",
+  "code": "ceni-monoblok",
+  "label": "моноблок",
+  "per": "шт.",
+  "first": 202001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754721",
+  "code": "ceni-morozhenoe-slivochnoe",
+  "label": "мороженое сливочное",
+  "per": "кг",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785738",
+  "code": "ceni-morozhenoe-slivochnoe-importnoe",
+  "label": "мороженое сливочное импортное",
+  "per": "1000 мл",
+  "first": 200001,
+  "last": 200312,
+  "territories": 41
+ },
+ {
+  "oid": "1785766",
+  "code": "ceni-morozhenoe-slivochnoe-otechestvennoe",
+  "label": "мороженое сливочное отечественное",
+  "per": "кг",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1785725",
+  "code": "ceni-morozilnik-emkostyu-200-240-l-otechestvennyy",
+  "label": "морозильник, емкостью 200-240 л, отечественный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200612,
+  "territories": 86
+ },
+ {
+  "oid": "1754997",
+  "code": "ceni-motocikl-bez-kolyaski-skuter",
+  "label": "мотоцикл без коляски, скутер",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 88
+ },
+ {
+  "oid": "1743478",
+  "code": "ceni-motocikl-s-kolyaskoy-otechestvennyy",
+  "label": "мотоцикл с коляской отечественный",
+  "per": "шт.",
+  "first": 200301,
+  "last": 200812,
+  "territories": 26
+ },
+ {
+  "oid": "1755063",
+  "code": "ceni-muzei-i-vystavki",
+  "label": "музеи и выставки",
+  "per": "билет",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785726",
+  "code": "ceni-muzykalnyy-centr",
+  "label": "музыкальный центр",
+  "per": "шт.",
+  "first": 200701,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1854837",
+  "code": "ceni-mukaltin",
+  "label": "мукалтин",
+  "per": "10 таблеток",
+  "first": 202501,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1755080",
+  "code": "ceni-mylo-tualetnoe",
+  "label": "мыло туалетное",
+  "per": "100 г",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836496",
+  "code": "ceni-mylo-tualetnoe-zhidkoe",
+  "label": "мыло туалетное жидкое",
+  "per": "250 мл",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755051",
+  "code": "ceni-mylo-hozyaystvennoe",
+  "label": "мыло хозяйственное",
+  "per": "200 г",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755177",
+  "code": "ceni-myaso-indeyki",
+  "label": "мясо индейки",
+  "per": "кг",
+  "first": 201801,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754744",
+  "code": "ceni-myasokopchenosti",
+  "label": "мясокопчености",
+  "per": "кг",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854825",
+  "code": "ceni-myach-sportivnyy",
+  "label": "мяч спортивный",
+  "per": "шт.",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755012",
+  "code": "ceni-myach-futbolnyy",
+  "label": "мяч футбольный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754734",
+  "code": "ceni-med-pchelinyy-naturalnyy",
+  "label": "мёд пчелиный натуральный",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754928",
+  "code": "ceni-nabor-korpusnoy-mebeli",
+  "label": "набор корпусной мебели",
+  "per": "комплект",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785669",
+  "code": "ceni-nabor-kuhonnoy-mebeli",
+  "label": "набор кухонной мебели",
+  "per": "комплект",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1785727",
+  "code": "ceni-nabor-mebeli-dlya-spalni",
+  "label": "набор мебели для спальни",
+  "per": "комплект",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1754927",
+  "code": "ceni-nabor-myagkoy-mebeli",
+  "label": "набор мягкой мебели",
+  "per": "комплект",
+  "first": 200401,
+  "last": 202012,
+  "territories": 94
+ },
+ {
+  "oid": "1785745",
+  "code": "ceni-nabor-myagkoy-mebeli-divan-i-dva-kresla-obivka-iz-vorsovyh-t",
+  "label": "набор мягкой мебели: диван и два кресла, обивка из ворсовых тканей (плюш, велюр, бархат), диван и кресла с мягкими подлокотниками",
+  "per": "комплект",
+  "first": 200001,
+  "last": 200312,
+  "territories": 86
+ },
+ {
+  "oid": "1785699",
+  "code": "ceni-nabor-myagkoy-mebeli-divan-i-dva-kresla-obivka-iz-dekorativn",
+  "label": "набор мягкой мебели: диван и два кресла, обивка из декоративных гобеленовых тканей",
+  "per": "комплект",
+  "first": 200001,
+  "last": 200312,
+  "territories": 82
+ },
+ {
+  "oid": "1754929",
+  "code": "ceni-nabor-flomasterov",
+  "label": "набор фломастеров",
+  "per": "набор",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785788",
+  "code": "ceni-navolochka-iz-hlopchatobumazhnoy-tkani",
+  "label": "наволочка из хлопчатобумажной ткани",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754796",
+  "code": "ceni-napitki-gazirovannye",
+  "label": "напитки газированные",
+  "per": "л",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785674",
+  "code": "ceni-nastoyka-boyaryshnika",
+  "label": "настойка боярышника",
+  "per": "25 мл",
+  "first": 200601,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1754895",
+  "code": "ceni-nastoyka-pustyrnika",
+  "label": "настойка пустырника",
+  "per": "25 мл",
+  "first": 200906,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1785712",
+  "code": "ceni-nastoyki-gorkie-krepostyu-svyshe-28-ob-spirta",
+  "label": "настойки горькие крепостью свыше 28% об.спирта",
+  "per": "л",
+  "first": 200001,
+  "last": 200312,
+  "territories": 82
+ },
+ {
+  "oid": "1846565",
+  "code": "ceni-natriya-hlorid-0-9",
+  "label": "натрия хлорид, 0,9%",
+  "per": "100 мл",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836503",
+  "code": "ceni-naushniki-besprovodnye",
+  "label": "наушники беспроводные",
+  "per": "шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846558",
+  "code": "ceni-nafazolin-0-1",
+  "label": "нафазолин, 0,1%",
+  "per": "15 мл",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754790",
+  "code": "ceni-nacionalnye-syry-i-brynza",
+  "label": "национальные сыры и брынза",
+  "per": "кг",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755130",
+  "code": "ceni-nachalnyy-kurs-obucheniya-vozhdeniyu-legkovogo-avtomobilya",
+  "label": "начальный курс обучения вождению легкового автомобиля",
+  "per": "курс",
+  "first": 200601,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755122",
+  "code": "ceni-naem-zhilyh-pomescheniy-v-gosudarstvennom-i-municipalnom-zhi",
+  "label": "наём жилых помещений в государственном и муниципальном жилищных фондах",
+  "per": "м2 общей площади",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754957",
+  "code": "ceni-nimesulid",
+  "label": "нимесулид",
+  "per": "10 таблеток",
+  "first": 201201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755002",
+  "code": "ceni-nitki-shveynye",
+  "label": "нитки швейные",
+  "per": "катушка",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754940",
+  "code": "ceni-nitroglicerin-0-5-mg",
+  "label": "нитроглицерин, 0,5 мг",
+  "per": "10 таблеток",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1743468",
+  "code": "ceni-noski-muzhskie",
+  "label": "носки мужские",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754938",
+  "code": "ceni-noski-golfy-detskie",
+  "label": "носки, гольфы детские",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831432",
+  "code": "ceni-noski-golfy-zhenskie",
+  "label": "носки, гольфы женские",
+  "per": "пара",
+  "first": 202001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754760",
+  "code": "ceni-obed-v-restorane",
+  "label": "обед в ресторане",
+  "per": "на 1 человека",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785776",
+  "code": "ceni-obed-v-stolovoy-v-organizacii",
+  "label": "обед в столовой в организации",
+  "per": "на 1 человека",
+  "first": 200001,
+  "last": 201312,
+  "territories": 87
+ },
+ {
+  "oid": "1754777",
+  "code": "ceni-obed-v-stolovoy-kafe-zakusochnoy-krome-stolovoy-v-organizaci",
+  "label": "обед в столовой, кафе, закусочной (кроме столовой в организации)",
+  "per": "на 1 человека",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754979",
+  "code": "ceni-oboi-bumazhnye",
+  "label": "обои бумажные",
+  "per": "10 м",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1754973",
+  "code": "ceni-oboi-vinilovye",
+  "label": "обои виниловые",
+  "per": "10 м",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831431",
+  "code": "ceni-obraschenie-s-tverdymi-kommunalnymi-othodami",
+  "label": "обращение с твердыми коммунальными отходами",
+  "per": "м2 общей площади",
+  "first": 202001,
+  "last": 202609,
+  "territories": 24
+ },
+ {
+  "oid": "1755169",
+  "code": "ceni-obsluzhivanie-bankovskoy-karty-v-nacionalnoy-valyute",
+  "label": "обслуживание банковской карты в национальной валюте",
+  "per": "услуга",
+  "first": 200401,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1754799",
+  "code": "ceni-obuv-domashnyaya-s-tekstilnym-verhom-dlya-vzroslyh",
+  "label": "обувь домашняя с текстильным верхом для взрослых",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754961",
+  "code": "ceni-obuv-domashnyaya-s-tekstilnym-verhom-dlya-detey",
+  "label": "обувь домашняя с текстильным верхом для детей",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755061",
+  "code": "ceni-obuchenie-v-gosudarstvennyh-i-municipalnyh-obrazovatelnyh-or",
+  "label": "обучение в государственных и муниципальных образовательных организациях высшего профессионального образования",
+  "per": "семестр",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755111",
+  "code": "ceni-obuchenie-v-negosudarstvennyh-obrazovatelnyh-organizaciyah-v",
+  "label": "обучение в негосударственных образовательных организациях высшего профессионального образования",
+  "per": "семестр",
+  "first": 200001,
+  "last": 202609,
+  "territories": 89
+ },
+ {
+  "oid": "1755077",
+  "code": "ceni-obuchenie-v-negosudarstvennyh-obscheobrazovatelnyh-organizac",
+  "label": "обучение в негосударственных общеобразовательных организациях",
+  "per": "месяц",
+  "first": 200001,
+  "last": 202609,
+  "territories": 86
+ },
+ {
+  "oid": "1755176",
+  "code": "ceni-obuchenie-v-obrazovatelnyh-organizaciyah-srednego-profession",
+  "label": "обучение в образовательных организациях среднего профессионального образования",
+  "per": "семестр",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755119",
+  "code": "ceni-obschiy-analiz-krovi",
+  "label": "общий анализ крови",
+  "per": "анализ",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754716",
+  "code": "ceni-ovoschi-zamorozhennye",
+  "label": "овощи замороженные",
+  "per": "кг",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754782",
+  "code": "ceni-ovoschi-naturalnye-konservirovannye-marinovannye",
+  "label": "овощи натуральные консервированные, маринованные",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754738",
+  "code": "ceni-ovsyanye-hlopya-gerkules",
+  "label": "овсяные хлопья \"Геркулес\"",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785722",
+  "code": "ceni-odekolon",
+  "label": "одеколон",
+  "per": "100 мл",
+  "first": 200001,
+  "last": 200612,
+  "territories": 87
+ },
+ {
+  "oid": "1754707",
+  "code": "ceni-odeyalo-steganoe",
+  "label": "одеяло стеганое",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743466",
+  "code": "ceni-okorochka-kurinye",
+  "label": "окорочка куриные",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836511",
+  "code": "ceni-omeprazol",
+  "label": "омепразол",
+  "per": "10 капсул",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754766",
+  "code": "ceni-orehi",
+  "label": "орехи",
+  "per": "кг",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836506",
+  "code": "ceni-oseltamivir-nomides-75-mg",
+  "label": "осельтамивир (Номидес), 75 мг",
+  "per": "10 капсул",
+  "first": 202101,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1785679",
+  "code": "ceni-otinum-kapli-20",
+  "label": "отинум, капли 20%",
+  "per": "10 г",
+  "first": 200906,
+  "last": 201201,
+  "territories": 89
+ },
+ {
+  "oid": "1785748",
+  "code": "ceni-otoplenie-1785748",
+  "label": "отопление",
+  "per": "м2 общей площади",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1785686",
+  "code": "ceni-otpravka-telegrammy-obyknovennoy-vnutrenney",
+  "label": "отправка телеграммы обыкновенной внутренней",
+  "per": "15 слов",
+  "first": 200001,
+  "last": 201612,
+  "territories": 92
+ },
+ {
+  "oid": "1755190",
+  "code": "ceni-oformlenie-doverennosti-v-notarialnoy-kontore",
+  "label": "оформление доверенности в нотариальной конторе",
+  "per": "услуга",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755167",
+  "code": "ceni-oftan-katahrom",
+  "label": "офтан катахром",
+  "per": "10 мл",
+  "first": 200906,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1785789",
+  "code": "ceni-palto-polupalto-dlya-detey-shkolnogo-vozrasta-demisezonnoe-s",
+  "label": "пальто (полупальто) для детей школьного возраста демисезонное, с верхом из плащевых, смесовых или синтетических тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1743459",
+  "code": "ceni-palto-polupalto-zhenskoe-s-verhom-iz-plaschevyh-tkaney",
+  "label": "пальто (полупальто) женское с верхом из плащевых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785781",
+  "code": "ceni-palto-polupalto-zimnee-zhenskoe-s-verhom-iz-smesovyh-tkaney",
+  "label": "пальто (полупальто) зимнее женское с верхом из смесовых тканей, утепленное искусственным мехом (пухо-пером, двойным или тройным синтепоном)",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 88
+ },
+ {
+  "oid": "1785764",
+  "code": "ceni-palto-detskoe-mehovoe-ili-dublenka",
+  "label": "пальто детское меховое или дубленка",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1754804",
+  "code": "ceni-palto-zhenskoe-demisezonnoe-iz-sherstyanyh-ili-polusherstyan",
+  "label": "пальто женское демисезонное из шерстяных или полушерстяных тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848514",
+  "code": "ceni-palto-zhenskoe-zimnee",
+  "label": "пальто женское зимнее",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1754775",
+  "code": "ceni-palto-zhenskoe-zimnee-iz-sherstyanyh-ili-polusherstyanyh-tka",
+  "label": "пальто женское зимнее из шерстяных или полушерстяных тканей с меховым воротником",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 93
+ },
+ {
+  "oid": "1785762",
+  "code": "ceni-palto-zhenskoe-iz-karakulya",
+  "label": "пальто женское из каракуля",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200312,
+  "territories": 83
+ },
+ {
+  "oid": "1785734",
+  "code": "ceni-palto-zhenskoe-iz-nutrii",
+  "label": "пальто женское из нутрии",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1754774",
+  "code": "ceni-palto-zhenskoe-mehovoe-i-dublenka",
+  "label": "пальто женское меховое и дубленка",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754965",
+  "code": "ceni-pankreatin",
+  "label": "панкреатин",
+  "per": "10 таблеток",
+  "first": 200601,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785736",
+  "code": "ceni-papirosy",
+  "label": "папиросы",
+  "per": "пачка",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1846544",
+  "code": "ceni-paracetamol",
+  "label": "парацетамол",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755032",
+  "code": "ceni-pasta-zubnaya",
+  "label": "паста зубная",
+  "per": "100 г (100 мл)",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785735",
+  "code": "ceni-pasta-zubnaya-importnaya",
+  "label": "паста зубная импортная",
+  "per": "100 мл",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1785707",
+  "code": "ceni-pasta-zubnaya-otechestvennaya",
+  "label": "паста зубная отечественная",
+  "per": "100 г",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1754703",
+  "code": "ceni-pelenki-dlya-novorozhdennyh",
+  "label": "пеленки для новорожденных",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831426",
+  "code": "ceni-pena-dlya-britya",
+  "label": "пена для бритья",
+  "per": "200 мл",
+  "first": 202001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1853987",
+  "code": "ceni-pentalgin",
+  "label": "пенталгин",
+  "per": "24 таблетки",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755066",
+  "code": "ceni-pervichnyy-konsultativnyy-osmotr-bolnogo-u-stomatologa",
+  "label": "первичный консультативный осмотр больного у стоматолога",
+  "per": "посещение",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755138",
+  "code": "ceni-pervichnyy-konsultativnyy-priem-u-vracha-specialista",
+  "label": "первичный консультативный прием у врача специалиста",
+  "per": "посещение",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755048",
+  "code": "ceni-perevod-denezhnyh-sredstv-dlya-zachisleniya-na-schet-drugogo",
+  "label": "перевод денежных средств для зачисления на счет другого физического лица",
+  "per": "услуга",
+  "first": 201201,
+  "last": 202012,
+  "territories": 94
+ },
+ {
+  "oid": "1785740",
+  "code": "ceni-perevod-summy-so-vklada-v-predelah-sistemy-sberbanka-rossii",
+  "label": "перевод суммы со вклада в пределах системы Сбербанка России при условии хранения суммы менее двух предшествующих месяцев (в расчете на 3000 рублей)",
+  "per": "одна операция",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1755126",
+  "code": "ceni-peresylka-prostogo-pisma-vnutri-rossii-massoy-do-20-g",
+  "label": "пересылка простого письма внутри России, массой до 20 г",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854820",
+  "code": "ceni-perec-sladkiy-svezhiy",
+  "label": "перец сладкий свежий",
+  "per": "кг",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754727",
+  "code": "ceni-perec-chernyy-goroshek",
+  "label": "перец черный (горошек)",
+  "per": "кг",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1754984",
+  "code": "ceni-perchatki-iz-naturalnoy-kozhi",
+  "label": "перчатки из натуральной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754803",
+  "code": "ceni-perchatki-trikotazhnye-zhenskie",
+  "label": "перчатки трикотажные женские",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785654",
+  "code": "ceni-perchatki-trikotazhnye-muzhskie",
+  "label": "перчатки трикотажные мужские",
+  "per": "пара",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1755144",
+  "code": "ceni-pechat-cvetnyh-fotografiy",
+  "label": "печать цветных фотографий",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754735",
+  "code": "ceni-pechen-govyazhya",
+  "label": "печень говяжья",
+  "per": "кг",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1848508",
+  "code": "ceni-pechen-govyazhya-svinaya",
+  "label": "печень говяжья, свиная",
+  "per": "кг",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1856496",
+  "code": "ceni-pechen-pticy",
+  "label": "печень птицы",
+  "per": "кг",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755149",
+  "code": "ceni-pechene",
+  "label": "печенье",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743479",
+  "code": "ceni-pech-mikrovolnovaya",
+  "label": "печь микроволновая",
+  "per": "шт.",
+  "first": 200301,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754706",
+  "code": "ceni-pivo-zarubezhnyh-torgovyh-marok",
+  "label": "пиво зарубежных торговых марок",
+  "per": "л",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1754752",
+  "code": "ceni-pivo-otechestvennoe",
+  "label": "пиво отечественное",
+  "per": "л",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1754770",
+  "code": "ceni-pidzhak-zhaket-zhenskiy",
+  "label": "пиджак, жакет женский",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785800",
+  "code": "ceni-pizhama-detskaya",
+  "label": "пижама детская",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1785747",
+  "code": "ceni-pilomaterialy-neobreznye-hvoynyh-porod",
+  "label": "пиломатериалы необрезные хвойных пород",
+  "per": "м3",
+  "first": 200001,
+  "last": 200812,
+  "territories": 83
+ },
+ {
+  "oid": "1755198",
+  "code": "ceni-plata-za-zhile-v-domah-gosudarstvennogo-i-municipalnogo-zhil",
+  "label": "плата за жилье в домах государственного и муниципального жилищных фондов",
+  "per": "м2 общей площади",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755112",
+  "code": "ceni-plata-za-ishodyaschee-sms-soobschenie",
+  "label": "плата за исходящее SMS-сообщение",
+  "per": "шт.",
+  "first": 200701,
+  "last": 201912,
+  "territories": 94
+ },
+ {
+  "oid": "1755187",
+  "code": "ceni-plata-za-peresylku-prostoy-posylki-vnutri-rossii-massoy-1-2",
+  "label": "плата за пересылку простой посылки внутри России массой 1-2 кг",
+  "per": "шт.",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755072",
+  "code": "ceni-plata-za-polzovanie-potrebitelskim-kreditom-procentnaya-stav",
+  "label": "плата за пользование потребительским кредитом (процентная ставка в стоимостном выражении)",
+  "per": "руб.",
+  "first": 201201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785665",
+  "code": "ceni-platok-nosovoy",
+  "label": "платок носовой",
+  "per": "шт.",
+  "first": 200401,
+  "last": 201612,
+  "territories": 92
+ },
+ {
+  "oid": "1755137",
+  "code": "ceni-plate-plate-kostyum-zhenskoe-iz-polusherstyanyh-ili-smesovyh",
+  "label": "платье (платье-костюм) женское из полушерстяных или смесовых тканей",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785796",
+  "code": "ceni-plate-plate-kostyum-zhenskoe-iz-polusherstyanyh-smesovyh-tka",
+  "label": "платье (платье-костюм) женское из полушерстяных, смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754711",
+  "code": "ceni-plate-plate-kostyum-zhenskoe-iz-hlopchatobumazhnyh-ili-smeso",
+  "label": "платье (платье-костюм) женское из хлопчатобумажных или смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754779",
+  "code": "ceni-plate-plate-kostyum-sarafan-dlya-devochek-shkolnogo-vozrasta",
+  "label": "платье (платье-костюм, сарафан) для девочек школьного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785797",
+  "code": "ceni-plate-sarafan-dlya-devochek-shkolnogo-vozrasta-iz-hlopchatob",
+  "label": "платье (сарафан) для девочек школьного возраста из хлопчатобумажных или смесовых тканей летнее",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 88
+ },
+ {
+  "oid": "1754732",
+  "code": "ceni-plate-sarafan-letnee-dlya-devochek-doshkolnogo-vozrasta",
+  "label": "платье (сарафан) летнее для девочек дошкольного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785779",
+  "code": "ceni-plate-dlya-devochek-doshkolnogo-vozrasta-rost-92-122-sm-iz-p",
+  "label": "платье для девочек дошкольного возраста (рост 92-122 см) из полушерстяных или смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1785787",
+  "code": "ceni-plate-zhenskoe-iz-smesovyh-tkaney-ili-legkogo-trikotazhnogo",
+  "label": "платье женское из смесовых тканей или легкого трикотажного полотна",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1785746",
+  "code": "ceni-plasch-zhenskiy",
+  "label": "плащ женский",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200912,
+  "territories": 89
+ },
+ {
+  "oid": "1785760",
+  "code": "ceni-plasch-muzhskoy-iz-smesovyh-tkaney",
+  "label": "плащ мужской из смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200912,
+  "territories": 80
+ },
+ {
+  "oid": "1755023",
+  "code": "ceni-plita-bytovaya",
+  "label": "плита бытовая",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754914",
+  "code": "ceni-plitka-keramicheskaya-oblicovochnaya-dlya-vnutrennih-rabot",
+  "label": "плитка керамическая, облицовочная для внутренних работ",
+  "per": "м2",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754905",
+  "code": "ceni-plity-drevesnostruzhechnye-orientirovanno-struzhechnye",
+  "label": "плиты древесностружечные, ориентированно-стружечные",
+  "per": "м2",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755154",
+  "code": "ceni-povtornoe-poluchenie-gerbovogo-dokumenta-v-organah-zags",
+  "label": "повторное получение гербового документа в органах ЗАГС",
+  "per": "документ",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856544",
+  "code": "ceni-pogrebenie",
+  "label": "погребение",
+  "per": "услуга",
+  "first": 202601,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1785696",
+  "code": "ceni-podgotovka-yuristom-iskovogo-zayavleniya-v-sud-o-rastorzheni",
+  "label": "подготовка юристом искового заявления в суд о расторжении брака",
+  "per": "заявление",
+  "first": 201301,
+  "last": 201712,
+  "territories": 91
+ },
+ {
+  "oid": "1755026",
+  "code": "ceni-podguzniki-detskie-bumazhnye",
+  "label": "подгузники детские бумажные",
+  "per": "10 шт.",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785783",
+  "code": "ceni-pododeyalnik-iz-hlopchatobumazhnoy-tkani",
+  "label": "пододеяльник из хлопчатобумажной ткани",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1836521",
+  "code": "ceni-podpiska-na-onlayn-videoservisy",
+  "label": "подписка на онлайн-видеосервисы",
+  "per": "месяц",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754813",
+  "code": "ceni-podushka",
+  "label": "подушка",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846849",
+  "code": "ceni-poezdka-v-belarus",
+  "label": "поездка в Беларусь",
+  "per": "поездка",
+  "first": 202204,
+  "last": 202609,
+  "territories": 83
+ },
+ {
+  "oid": "1755053",
+  "code": "ceni-poezdka-v-greciyu",
+  "label": "поездка в Грецию",
+  "per": "поездка",
+  "first": 201601,
+  "last": 202203,
+  "territories": 86
+ },
+ {
+  "oid": "1755142",
+  "code": "ceni-poezdka-v-kitay",
+  "label": "поездка в Китай",
+  "per": "поездка",
+  "first": 200101,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1755052",
+  "code": "ceni-poezdka-na-otdyh-v-ispaniyu",
+  "label": "поездка на отдых в Испанию",
+  "per": "поездка",
+  "first": 200101,
+  "last": 202203,
+  "territories": 88
+ },
+ {
+  "oid": "1836523",
+  "code": "ceni-poezdka-na-otdyh-v-oae",
+  "label": "поездка на отдых в ОАЭ",
+  "per": "поездка",
+  "first": 202101,
+  "last": 202602,
+  "territories": 90
+ },
+ {
+  "oid": "1755207",
+  "code": "ceni-poezdka-na-otdyh-v-tailand",
+  "label": "поездка на отдых в Таиланд",
+  "per": "поездка",
+  "first": 201701,
+  "last": 202203,
+  "territories": 91
+ },
+ {
+  "oid": "1846848",
+  "code": "ceni-poezdki-v-otdelnye-strany-blizhnego-vostoka",
+  "label": "поездки в отдельные страны Ближнего Востока",
+  "per": "поездка",
+  "first": 202204,
+  "last": 202212,
+  "territories": 78
+ },
+ {
+  "oid": "1846847",
+  "code": "ceni-poezdki-v-otdelnye-strany-sredizemnomorya",
+  "label": "поездки в отдельные страны Средиземноморья",
+  "per": "поездка",
+  "first": 202204,
+  "last": 202212,
+  "territories": 80
+ },
+ {
+  "oid": "1846845",
+  "code": "ceni-poezdki-v-otdelnye-strany-sredney-azii",
+  "label": "поездки в отдельные страны Средней Азии",
+  "per": "поездка",
+  "first": 202204,
+  "last": 202609,
+  "territories": 84
+ },
+ {
+  "oid": "1846846",
+  "code": "ceni-poezdki-v-otdelnye-strany-yugo-vostochnoy-azii",
+  "label": "поездки в отдельные страны Юго-Восточной Азии",
+  "per": "поездка",
+  "first": 202204,
+  "last": 202609,
+  "territories": 91
+ },
+ {
+  "oid": "1846843",
+  "code": "ceni-poezdki-v-otdelnye-strany-yuzhnoy-azii",
+  "label": "поездки в отдельные страны Южной Азии",
+  "per": "поездка",
+  "first": 202204,
+  "last": 202212,
+  "territories": 69
+ },
+ {
+  "oid": "1846844",
+  "code": "ceni-poezdki-v-strany-zakavkazya",
+  "label": "поездки в страны Закавказья",
+  "per": "поездка",
+  "first": 202204,
+  "last": 202609,
+  "territories": 83
+ },
+ {
+  "oid": "1755161",
+  "code": "ceni-polet-v-salone-ekonomicheskogo-klassa-samoleta",
+  "label": "полет в салоне экономического класса самолета",
+  "per": "в расчете на 1000 км пути",
+  "first": 200001,
+  "last": 202410,
+  "territories": 95
+ },
+ {
+  "oid": "1754748",
+  "code": "ceni-polzunki-iz-hlopchatobumazhnogo-trikotazhnogo-polotna",
+  "label": "ползунки из хлопчатобумажного трикотажного полотна",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846526",
+  "code": "ceni-polivitaminy",
+  "label": "поливитамины",
+  "per": "10 шт.",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754970",
+  "code": "ceni-polivitaminy-bez-mineralov-otechestvennye",
+  "label": "поливитамины без минералов отечественные",
+  "per": "10 шт.",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1785751",
+  "code": "ceni-polivitaminy-importnye",
+  "label": "поливитамины импортные",
+  "per": "10 шт.",
+  "first": 200001,
+  "last": 200512,
+  "territories": 87
+ },
+ {
+  "oid": "1755071",
+  "code": "ceni-polivitaminy-s-makro-i-mikroelementami",
+  "label": "поливитамины с макро- и микроэлементами",
+  "per": "10 шт.",
+  "first": 200601,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1785774",
+  "code": "ceni-polotence-bannoe",
+  "label": "полотенце банное",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754762",
+  "code": "ceni-polotence-kuhonnoe",
+  "label": "полотенце кухонное",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754701",
+  "code": "ceni-polotence-lichnoe",
+  "label": "полотенце личное",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754763",
+  "code": "ceni-polubotinki-muzhskie-s-verhom-iz-iskusstvennoy-kozhi",
+  "label": "полуботинки мужские с верхом из искусственной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709754",
+  "code": "ceni-polubotinki-tufli-muzhskie-s-verhom-iz-naturalnoy-kozhi",
+  "label": "полуботинки, туфли мужские с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755120",
+  "code": "ceni-polzovanie-obschestvennym-tualetom",
+  "label": "пользование общественным туалетом",
+  "per": "посещение",
+  "first": 200401,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1856502",
+  "code": "ceni-pomada",
+  "label": "помада",
+  "per": "шт.",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755116",
+  "code": "ceni-pomyvka-v-bane-v-obschem-otdelenii",
+  "label": "помывка в бане в общем отделении",
+  "per": "билет",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785743",
+  "code": "ceni-poroshkoobraznye-chistyaschie-sredstva",
+  "label": "порошкообразные чистящие средства",
+  "per": "кг",
+  "first": 200401,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1755152",
+  "code": "ceni-poroshok-stiralnyy",
+  "label": "порошок стиральный",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755168",
+  "code": "ceni-postanovka-naboek",
+  "label": "постановка набоек",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785717",
+  "code": "ceni-poshiv-bryuk",
+  "label": "пошив брюк",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200612,
+  "territories": 87
+ },
+ {
+  "oid": "1785683",
+  "code": "ceni-poshiv-zhenskogo-platya",
+  "label": "пошив женского платья",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201612,
+  "territories": 91
+ },
+ {
+  "oid": "1755189",
+  "code": "ceni-prebyvanie-pacienta-v-kruglosutochnom-stacionare",
+  "label": "пребывание пациента в круглосуточном стационаре",
+  "per": "койко-день",
+  "first": 201801,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755173",
+  "code": "ceni-predostavlenie-abonentu-v-postoyannoe-polzovanie-abonentskoy",
+  "label": "предоставление абоненту в постоянное пользование абонентской линии независимо от ее типа",
+  "per": "месяц",
+  "first": 200101,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1755153",
+  "code": "ceni-predostavlenie-mezhdugorodnyh-telefonnyh-soedineniy-razgovor",
+  "label": "предоставление междугородных телефонных соединений (разговоров) автоматическим способом на расстояние 1201-3000 км",
+  "per": "минута",
+  "first": 200001,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1755097",
+  "code": "ceni-predostavlenie-mezhdugorodnyh-telefonnyh-soedineniy-razgovor-1755097",
+  "label": "предоставление междугородных телефонных соединений (разговоров) автоматическим способом на расстояние 601-1200 км",
+  "per": "минута",
+  "first": 200001,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1755059",
+  "code": "ceni-predostavlenie-mestnogo-soedineniya-razgovora-po-sotovoy-svy",
+  "label": "предоставление местного соединения (разговора) по сотовой связи",
+  "per": "минута",
+  "first": 200201,
+  "last": 201912,
+  "territories": 94
+ },
+ {
+  "oid": "1755114",
+  "code": "ceni-predostavlenie-mestnogo-telefonnogo-soedineniya-pri-povremen",
+  "label": "предоставление местного телефонного соединения при повременной системе оплаты услуг связи",
+  "per": "минута",
+  "first": 200001,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1785649",
+  "code": "ceni-preservy-rybnye",
+  "label": "пресервы рыбные",
+  "per": "350 г",
+  "first": 201201,
+  "last": 201712,
+  "territories": 89
+ },
+ {
+  "oid": "1755042",
+  "code": "ceni-privivka-zhivotnogo",
+  "label": "прививка животного",
+  "per": "шт.",
+  "first": 200101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755150",
+  "code": "ceni-produkciya-predpriyatiy-obschestvennogo-pitaniya-bystrogo-ob",
+  "label": "продукция предприятий общественного питания быстрого обслуживания",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785692",
+  "code": "ceni-proezd-v-gorodskom-kommercheskom-avtobuse",
+  "label": "проезд в городском коммерческом автобусе",
+  "per": "поездка",
+  "first": 200001,
+  "last": 201712,
+  "territories": 85
+ },
+ {
+  "oid": "1755205",
+  "code": "ceni-proezd-v-gorodskom-municipalnom-avtobuse",
+  "label": "проезд в городском муниципальном автобусе",
+  "per": "поездка",
+  "first": 200001,
+  "last": 201712,
+  "territories": 91
+ },
+ {
+  "oid": "1755089",
+  "code": "ceni-proezd-v-kupeynom-vagone-skorogo-firmennogo-poezda-dalnego-s",
+  "label": "проезд в купейном вагоне скорого фирменного поезда дальнего следования",
+  "per": "в расчете на 100 км пути",
+  "first": 200001,
+  "last": 202609,
+  "territories": 87
+ },
+ {
+  "oid": "1755127",
+  "code": "ceni-proezd-v-plackartnom-vagone-skorogo-firmennogo-poezda-dalneg",
+  "label": "проезд в плацкартном вагоне скорого фирменного поезда дальнего следования",
+  "per": "в расчете на 100 км пути",
+  "first": 200201,
+  "last": 202609,
+  "territories": 87
+ },
+ {
+  "oid": "1848509",
+  "code": "ceni-proezd-v-sidyachih-vagonah-v-skorostnyh-poezdah-dalnego-sled",
+  "label": "проезд в сидячих вагонах в скоростных поездах дальнего следования",
+  "per": "в расчете на 100 км пути",
+  "first": 202301,
+  "last": 202609,
+  "territories": 31
+ },
+ {
+  "oid": "1755146",
+  "code": "ceni-prozhivanie-v-gostinice",
+  "label": "проживание в гостинице",
+  "per": "сутки с человека",
+  "first": 200001,
+  "last": 202012,
+  "territories": 94
+ },
+ {
+  "oid": "1836582",
+  "code": "ceni-prozhivanie-v-gostinice-1-ili-v-motele",
+  "label": "проживание в гостинице 1* или в мотеле",
+  "per": "сутки с человека",
+  "first": 202101,
+  "last": 202609,
+  "territories": 86
+ },
+ {
+  "oid": "1836583",
+  "code": "ceni-prozhivanie-v-gostinice-2",
+  "label": "проживание в гостинице 2*",
+  "per": "сутки с человека",
+  "first": 202101,
+  "last": 202609,
+  "territories": 90
+ },
+ {
+  "oid": "1836584",
+  "code": "ceni-prozhivanie-v-gostinice-3",
+  "label": "проживание в гостинице 3*",
+  "per": "сутки с человека",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836585",
+  "code": "ceni-prozhivanie-v-gostinice-4-5",
+  "label": "проживание в гостинице 4*-5*",
+  "per": "сутки с человека",
+  "first": 202101,
+  "last": 202609,
+  "territories": 90
+ },
+ {
+  "oid": "1755084",
+  "code": "ceni-prozhivanie-v-studencheskom-obschezhitii",
+  "label": "проживание в студенческом общежитии",
+  "per": "месяц",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836586",
+  "code": "ceni-prozhivanie-v-hostele",
+  "label": "проживание в хостеле",
+  "per": "сутки с человека",
+  "first": 202101,
+  "last": 202609,
+  "territories": 88
+ },
+ {
+  "oid": "1785668",
+  "code": "ceni-proigryvatel-multimedia",
+  "label": "проигрыватель мультимедиа",
+  "per": "шт.",
+  "first": 200701,
+  "last": 201612,
+  "territories": 92
+ },
+ {
+  "oid": "1836581",
+  "code": "ceni-prokladki-zhenskie-gigienicheskie",
+  "label": "прокладки женские гигиенические",
+  "per": "10 шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754980",
+  "code": "ceni-prokladki-zhenskie-gigienicheskie-ezhednevnye",
+  "label": "прокладки женские гигиенические ежедневные",
+  "per": "10 шт.",
+  "first": 200701,
+  "last": 202012,
+  "territories": 94
+ },
+ {
+  "oid": "1785793",
+  "code": "ceni-prostynya-iz-hlopchatobumazhnoy-tkani",
+  "label": "простыня из хлопчатобумажной ткани",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754751",
+  "code": "ceni-pryaniki",
+  "label": "пряники",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755036",
+  "code": "ceni-psheno",
+  "label": "пшено",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754908",
+  "code": "ceni-ranec-ryukzak-dlya-shkolnikov",
+  "label": "ранец, рюкзак для школьников",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785731",
+  "code": "ceni-rascheska-plastmassovaya",
+  "label": "расческа пластмассовая",
+  "per": "штука",
+  "first": 200001,
+  "last": 200012,
+  "territories": 1
+ },
+ {
+  "oid": "1755102",
+  "code": "ceni-regulirovka-razvala-shozhdeniya-koles-legkovogo-avtomobilya",
+  "label": "регулировка развала-схождения колес легкового автомобиля",
+  "per": "услуга",
+  "first": 200401,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755204",
+  "code": "ceni-remen-muzhskoy",
+  "label": "ремень мужской",
+  "per": "шт.",
+  "first": 201701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754985",
+  "code": "ceni-remont-bryuk",
+  "label": "ремонт брюк",
+  "per": "услуга",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785732",
+  "code": "ceni-remont-importnyh-televizorov-cvetnogo-izobrazheniya",
+  "label": "ремонт импортных телевизоров цветного изображения",
+  "per": "один вид работы",
+  "first": 200001,
+  "last": 200612,
+  "territories": 86
+ },
+ {
+  "oid": "1785719",
+  "code": "ceni-remont-malyh-elektrobytovyh-priborov",
+  "label": "ремонт малых электробытовых приборов",
+  "per": "один вид работы",
+  "first": 200401,
+  "last": 200812,
+  "territories": 83
+ },
+ {
+  "oid": "1785705",
+  "code": "ceni-remont-otechestvennyh-televizorov-cvetnogo-izobrazheniya",
+  "label": "ремонт отечественных телевизоров цветного изображения",
+  "per": "один вид работы",
+  "first": 200001,
+  "last": 200612,
+  "territories": 87
+ },
+ {
+  "oid": "1848410",
+  "code": "ceni-remont-televizorov",
+  "label": "ремонт телевизоров",
+  "per": "услуга",
+  "first": 202301,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1755040",
+  "code": "ceni-remont-televizorov-cvetnogo-izobrazheniya",
+  "label": "ремонт телевизоров цветного изображения",
+  "per": "один вид работы",
+  "first": 200701,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1755131",
+  "code": "ceni-remont-holodilnikov",
+  "label": "ремонт холодильников",
+  "per": "услуга",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785723",
+  "code": "ceni-remont-chasov-naruchnyh-mehanicheskih",
+  "label": "ремонт часов наручных механических",
+  "per": "услуга",
+  "first": 200001,
+  "last": 200812,
+  "territories": 87
+ },
+ {
+  "oid": "1846524",
+  "code": "ceni-rengalin",
+  "label": "ренгалин",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1848407",
+  "code": "ceni-rengalin-1848407",
+  "label": "ренгалин",
+  "per": "20 таблеток",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755064",
+  "code": "ceni-renni",
+  "label": "ренни",
+  "per": "12 таблеток",
+  "first": 200906,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1848504",
+  "code": "ceni-rechnoy-kruiz-na-territorii-rossii",
+  "label": "речной круиз на территории России",
+  "per": "поездка",
+  "first": 202301,
+  "last": 202609,
+  "territories": 58
+ },
+ {
+  "oid": "1856406",
+  "code": "ceni-rimantadin",
+  "label": "римантадин",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1854824",
+  "code": "ceni-robot-pylesos",
+  "label": "робот-пылесос",
+  "per": "шт.",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1856520",
+  "code": "ceni-rozuvastatin",
+  "label": "розувастатин",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754765",
+  "code": "ceni-rubashka-verhnyaya-dlya-malchikov-doshkolnogo-vozrasta",
+  "label": "рубашка верхняя для мальчиков дошкольного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754991",
+  "code": "ceni-ruberoid",
+  "label": "рубероид",
+  "per": "10 м",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1709808",
+  "code": "ceni-ryba-zhivaya-i-ohlazhdennaya",
+  "label": "рыба живая и охлажденная",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 87
+ },
+ {
+  "oid": "1709732",
+  "code": "ceni-ryba-morozhenaya-razdelannaya-krome-lososevyh-porod",
+  "label": "рыба мороженая разделанная (кроме лососевых пород)",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755214",
+  "code": "ceni-ryte-mogily",
+  "label": "рытье могилы",
+  "per": "услуга",
+  "first": 201801,
+  "last": 202512,
+  "territories": 93
+ },
+ {
+  "oid": "1785689",
+  "code": "ceni-ryte-mogily-mehanicheskim-sposobom-na-novom-meste-zahoroneni",
+  "label": "рытье могилы механическим способом на новом месте захоронения",
+  "per": "услуга",
+  "first": 200001,
+  "last": 201712,
+  "territories": 64
+ },
+ {
+  "oid": "1785684",
+  "code": "ceni-ryte-mogily-ruchnym-sposobom-na-novom-meste-zahoroneniya",
+  "label": "рытье могилы ручным способом на новом месте захоронения",
+  "per": "услуга",
+  "first": 200001,
+  "last": 201712,
+  "territories": 84
+ },
+ {
+  "oid": "1785687",
+  "code": "ceni-ryte-mogily-ruchnym-sposobom-na-rodstvennom-meste-zahoroneni",
+  "label": "рытье могилы ручным способом на родственном месте захоронения",
+  "per": "услуга",
+  "first": 200001,
+  "last": 201712,
+  "territories": 85
+ },
+ {
+  "oid": "1831424",
+  "code": "ceni-ryukzak-dlya-vzroslyh",
+  "label": "рюкзак для взрослых",
+  "per": "шт.",
+  "first": 202001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754935",
+  "code": "ceni-ryumka-fuzher-iz-prostogo-stekla",
+  "label": "рюмка, фужер из простого стекла",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854833",
+  "code": "ceni-salicilovaya-kislota",
+  "label": "салициловая кислота",
+  "per": "40 мл",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1836500",
+  "code": "ceni-salfetki-vlazhnye",
+  "label": "салфетки влажные",
+  "per": "упаковка 20 шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755088",
+  "code": "ceni-sanatoriy",
+  "label": "санаторий",
+  "per": "день",
+  "first": 200001,
+  "last": 202609,
+  "territories": 92
+ },
+ {
+  "oid": "1836516",
+  "code": "ceni-sanitarno-gigienicheskaya-maska-medicinskaya",
+  "label": "санитарно-гигиеническая маска (медицинская)",
+  "per": "шт.",
+  "first": 202101,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1785655",
+  "code": "ceni-sapogi-sapozhki-botinki-zhenskie-osennie-s-verhom-iz-iskusst",
+  "label": "сапоги (сапожки, ботинки) женские осенние с верхом из искусственной кожи, на подошве из синтетического материала",
+  "per": "пара",
+  "first": 200001,
+  "last": 201312,
+  "territories": 88
+ },
+ {
+  "oid": "1854822",
+  "code": "ceni-sapogi-zhenskie-demisezonnye-s-verhom-iz-naturalnoy-kozhi",
+  "label": "сапоги женские демисезонные с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1709736",
+  "code": "ceni-sapogi-zhenskie-zimnie-s-verhom-iz-naturalnoy-kozhi",
+  "label": "сапоги женские зимние с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785784",
+  "code": "ceni-sapogi-zhenskie-zimnie-na-uteplennoy-podkladke-krome-natural",
+  "label": "сапоги женские зимние, на утепленной подкладке (кроме натурального меха), подошве из синтетического материала",
+  "per": "пара",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754902",
+  "code": "ceni-sapogi-zhenskie-osennie-s-verhom-iz-naturalnoy-kozhi",
+  "label": "сапоги женские осенние с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 200401,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1785739",
+  "code": "ceni-sapogi-zhenskie-osennie-vysokie-s-verhom-iz-naturalnoy-kozhi",
+  "label": "сапоги женские осенние, высокие с верхом из натуральной кожи, на подошве из синтетического материала",
+  "per": "пара",
+  "first": 200001,
+  "last": 200312,
+  "territories": 86
+ },
+ {
+  "oid": "1785652",
+  "code": "ceni-sapogi-muzhskie-na-uteplennoy-podkladke-krome-naturalnogo-me",
+  "label": "сапоги мужские на утепленной подкладке (кроме натурального меха), подошве из синтетического материала",
+  "per": "пара",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754992",
+  "code": "ceni-sapogi-celnorezinovye-dlya-vzroslyh",
+  "label": "сапоги цельнорезиновые для взрослых",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754743",
+  "code": "ceni-sapogi-celnorezinovye-dlya-detey",
+  "label": "сапоги цельнорезиновые для детей",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709715",
+  "code": "ceni-sapogi-botinki-dlya-detey-shkolnogo-vozrasta-zimnie-s-verhom",
+  "label": "сапоги, ботинки для детей школьного возраста зимние с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785777",
+  "code": "ceni-sapogi-botinki-zimnie-valenki-dlya-detey-doshkolnogo-vozrast",
+  "label": "сапоги, ботинки зимние (валенки) для детей дошкольного возраста (размер 26-29)",
+  "per": "пара",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1785790",
+  "code": "ceni-sapogi-botinki-zimnie-dlya-detey-shkolnogo-vozrasta-na-utepl",
+  "label": "сапоги, ботинки зимние для детей школьного возраста на утепленной подкладке (кроме натурального меха)",
+  "per": "пара",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1754729",
+  "code": "ceni-sapogi-botinki-muzhskie-zimnie-s-verhom-iz-naturalnoy-kozhi",
+  "label": "сапоги, ботинки мужские зимние с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785711",
+  "code": "ceni-sapozhki-zhenskie-korotkie-botinki-s-verhom-iz-naturalnoy-ko",
+  "label": "сапожки женские короткие, ботинки с верхом из натуральной кожи, на подошве из синтетического материала",
+  "per": "пара",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1754950",
+  "code": "ceni-svezhesrezannye-cvety",
+  "label": "свежесрезанные цветы",
+  "per": "шт.",
+  "first": 200601,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754941",
+  "code": "ceni-svetilnik-potolochnyy",
+  "label": "светильник потолочный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754741",
+  "code": "ceni-svekla-stolovaya",
+  "label": "свёкла столовая",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743461",
+  "code": "ceni-seld-solenaya",
+  "label": "сельдь соленая",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755083",
+  "code": "ceni-sennozidy-a-i-b",
+  "label": "сеннозиды А и B",
+  "per": "10 таблеток",
+  "first": 200906,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1785659",
+  "code": "ceni-sigarety-bez-filtra-otechestvennye",
+  "label": "сигареты без фильтра отечественные",
+  "per": "пачка",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754930",
+  "code": "ceni-sigarety-s-filtrom-zarubezhnyh-torgovyh-marok",
+  "label": "сигареты с фильтром зарубежных торговых марок",
+  "per": "пачка",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1755195",
+  "code": "ceni-sigarety-s-filtrom-otechestvennye",
+  "label": "сигареты с фильтром отечественные",
+  "per": "пачка",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846570",
+  "code": "ceni-sinupret",
+  "label": "синупрет",
+  "per": "25 таблеток",
+  "first": 202201,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1848524",
+  "code": "ceni-sinupret-1848524",
+  "label": "синупрет",
+  "per": "50 таблеток",
+  "first": 202301,
+  "last": 202412,
+  "territories": 94
+ },
+ {
+  "oid": "1785775",
+  "code": "ceni-sitec-nabivnoy-otechestvennyy",
+  "label": "ситец набивной отечественный",
+  "per": "м",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1848515",
+  "code": "ceni-skovoroda",
+  "label": "сковорода",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754922",
+  "code": "ceni-skovoroda-s-antiprigarnym-pokrytiem",
+  "label": "сковорода с антипригарным покрытием",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1836489",
+  "code": "ceni-slivki-pitevye",
+  "label": "сливки питьевые",
+  "per": "л",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848506",
+  "code": "ceni-smart-chasy",
+  "label": "смарт-часы",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755162",
+  "code": "ceni-smartfon",
+  "label": "смартфон",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754952",
+  "code": "ceni-smekta-poroshok-3-g",
+  "label": "смекта, порошок 3 г",
+  "per": "10 пакетов",
+  "first": 200906,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1755203",
+  "code": "ceni-smesi-suhie-molochnye-dlya-detskogo-pitaniya",
+  "label": "смеси сухие молочные для детского питания",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755038",
+  "code": "ceni-soderzhanie-i-remont-zhilya-v-gosudarstvennom-i-municipalnom",
+  "label": "содержание и ремонт жилья в государственном и муниципальном жилищных фондах",
+  "per": "м2 общей площади",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754814",
+  "code": "ceni-soki-fruktovye",
+  "label": "соки фруктовые",
+  "per": "л",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754801",
+  "code": "ceni-solenye-i-kopchenye-delikatesnye-produkty-iz-ryby",
+  "label": "соленые и копченые деликатесные продукты из рыбы",
+  "per": "кг",
+  "first": 200401,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1759582",
+  "code": "ceni-sol-yodirovannaya-pischevaya",
+  "label": "соль йодированная пищевая",
+  "per": "кг",
+  "first": 200301,
+  "last": 201612,
+  "territories": 92
+ },
+ {
+  "oid": "1754725",
+  "code": "ceni-sorochka-verhnyaya-dlya-malchikov-shkolnogo-vozrasta",
+  "label": "сорочка верхняя для мальчиков школьного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709741",
+  "code": "ceni-sorochka-verhnyaya-muzhskaya-iz-hlopchatobumazhnyh-ili-smeso",
+  "label": "сорочка верхняя мужская из хлопчатобумажных или смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754754",
+  "code": "ceni-sorochka-nochnaya-zhenskaya",
+  "label": "сорочка ночная женская",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743458",
+  "code": "ceni-sosiski-sardelki",
+  "label": "сосиски, сардельки",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848505",
+  "code": "ceni-soska-pustyshka-detskaya",
+  "label": "соска (пустышка) детская",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1854838",
+  "code": "ceni-spazmalgon",
+  "label": "спазмалгон",
+  "per": "10 таблеток",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1856523",
+  "code": "ceni-spironolakton",
+  "label": "спиронолактон",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755213",
+  "code": "ceni-spichki",
+  "label": "спички",
+  "per": "коробок",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755022",
+  "code": "ceni-steklo-okonnoe-listovoe",
+  "label": "стекло оконное листовое",
+  "per": "м2",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754909",
+  "code": "ceni-stirka-i-glazhenie-belya-pryamogo",
+  "label": "стирка и глажение белья прямого",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785698",
+  "code": "ceni-stoimost-startovogo-komplekta-za-podklyuchenie-k-operatoru-s",
+  "label": "стоимость стартового комплекта за подключение к оператору сотовой связи",
+  "per": "комплект",
+  "first": 200701,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1754994",
+  "code": "ceni-stol-obedennyy",
+  "label": "стол обеденный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785768",
+  "code": "ceni-stol-pismennyy",
+  "label": "стол письменный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1754999",
+  "code": "ceni-stol-rabochiy-kuhonnyy",
+  "label": "стол рабочий кухонный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785673",
+  "code": "ceni-strepsils-tabletki-dlya-rassasyvaniya",
+  "label": "стрепсилс, таблетки для рассасывания",
+  "per": "10 таблеток",
+  "first": 200906,
+  "last": 201712,
+  "territories": 92
+ },
+ {
+  "oid": "1754912",
+  "code": "ceni-stul-s-myagkim-sidenem",
+  "label": "стул с мягким сиденьем",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755013",
+  "code": "ceni-sulfacetamid-20",
+  "label": "сульфацетамид, 20%",
+  "per": "5 мл",
+  "first": 200906,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1846556",
+  "code": "ceni-sumka-zhenskaya",
+  "label": "сумка женская",
+  "per": "шт.",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754967",
+  "code": "ceni-sumka-zhenskaya-s-verhom-iz-iskusstvennoy-kozhi",
+  "label": "сумка женская с верхом из искусственной кожи",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1755011",
+  "code": "ceni-sumka-zhenskaya-s-verhom-iz-naturalnoy-kozhi",
+  "label": "сумка женская с верхом из натуральной кожи",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1755020",
+  "code": "ceni-suprastin",
+  "label": "супрастин",
+  "per": "10 таблеток",
+  "first": 200601,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1754932",
+  "code": "ceni-suhie-korma-dlya-domashnih-zhivotnyh",
+  "label": "сухие корма для домашних животных",
+  "per": "кг",
+  "first": 201201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848525",
+  "code": "ceni-suhie-pripravy-specii",
+  "label": "сухие приправы, специи",
+  "per": "кг",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754815",
+  "code": "ceni-suhie-supy-v-paketah",
+  "label": "сухие супы в пакетах",
+  "per": "100 г",
+  "first": 200401,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846550",
+  "code": "ceni-suhie-supy-v-paketah-1846550",
+  "label": "сухие супы в пакетах",
+  "per": "кг",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743454",
+  "code": "ceni-suhofrukty",
+  "label": "сухофрукты",
+  "per": "кг",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856497",
+  "code": "ceni-syrki-tvorozhnye-glazirovannye",
+  "label": "сырки творожные, глазированные",
+  "per": "кг",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754786",
+  "code": "ceni-syrki-tvorozhnye-glazirovannye-shokoladom",
+  "label": "сырки творожные, глазированные шоколадом",
+  "per": "50 г",
+  "first": 200401,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846554",
+  "code": "ceni-syrki-tvorozhnye-glazirovannye-shokoladom-1846554",
+  "label": "сырки творожные, глазированные шоколадом",
+  "per": "кг",
+  "first": 202201,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1754709",
+  "code": "ceni-syry-plavlenye",
+  "label": "сыры плавленые",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709735",
+  "code": "ceni-syry-sychuzhnye-tverdye-i-myagkie",
+  "label": "сыры сычужные твердые и мягкие",
+  "per": "кг",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1754913",
+  "code": "ceni-taburet-dlya-kuhni",
+  "label": "табурет для кухни",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848531",
+  "code": "ceni-tarelka-obedennaya",
+  "label": "тарелка обеденная",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754947",
+  "code": "ceni-tarelka-obedennaya-melkaya-ili-glubokaya",
+  "label": "тарелка обеденная мелкая или глубокая",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1754923",
+  "code": "ceni-taurin-4",
+  "label": "таурин, 4%",
+  "per": "5 мл",
+  "first": 201201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709714",
+  "code": "ceni-tvorog-zhirnyy",
+  "label": "творог жирный",
+  "per": "кг",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1709723",
+  "code": "ceni-tvorog-nezhirnyy",
+  "label": "творог нежирный",
+  "per": "кг",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1848522",
+  "code": "ceni-tvorozhok-detskiy",
+  "label": "творожок детский",
+  "per": "кг",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755087",
+  "code": "ceni-teatry",
+  "label": "театры",
+  "per": "билет",
+  "first": 200001,
+  "last": 202609,
+  "territories": 91
+ },
+ {
+  "oid": "1743480",
+  "code": "ceni-televizor-cvetnogo-izobrazheniya",
+  "label": "телевизор цветного изображения",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1759574",
+  "code": "ceni-televizor-cvetnogo-izobrazheniya-otechestvennyy-razmer-ekran",
+  "label": "телевизор цветного изображения отечественный, размер экрана по диагонали до 51-54 см",
+  "per": "шт.",
+  "first": 200301,
+  "last": 200812,
+  "territories": 84
+ },
+ {
+  "oid": "1759590",
+  "code": "ceni-televizor-cvetnogo-izobrazheniya-razmer-ekrana-po-diagonali",
+  "label": "телевизор цветного изображения, размер экрана по диагонали до 40 см",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 88
+ },
+ {
+  "oid": "1785718",
+  "code": "ceni-telefonnyy-apparat-otechestvennyy",
+  "label": "телефонный аппарат отечественный",
+  "per": "шт.",
+  "first": 200401,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1755017",
+  "code": "ceni-telefonnyy-apparat-sotovoy-svyazi-v-komplekte",
+  "label": "телефонный аппарат сотовой связи в комплекте",
+  "per": "шт.",
+  "first": 200201,
+  "last": 202012,
+  "territories": 94
+ },
+ {
+  "oid": "1754931",
+  "code": "ceni-telefonnyy-apparat-stacionarnyy",
+  "label": "телефонный аппарат стационарный",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202512,
+  "territories": 95
+ },
+ {
+  "oid": "1836518",
+  "code": "ceni-termometr-medicinskiy-bezrtutnyy-galinstanovyy",
+  "label": "термометр медицинский безртутный (галинстановый)",
+  "per": "шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1754904",
+  "code": "ceni-termometr-medicinskiy-rtutnyy",
+  "label": "термометр медицинский ртутный",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202012,
+  "territories": 94
+ },
+ {
+  "oid": "1755185",
+  "code": "ceni-termometr-medicinskiy-elektronnyy-standartnyy",
+  "label": "термометр медицинский электронный стандартный",
+  "per": "шт.",
+  "first": 201801,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755006",
+  "code": "ceni-tetrad-shkolnaya",
+  "label": "тетрадь школьная",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785720",
+  "code": "ceni-timolol-kapli-glaznye-0-25",
+  "label": "тимолол, капли глазные 0,25%",
+  "per": "5 мл",
+  "first": 200906,
+  "last": 201201,
+  "territories": 88
+ },
+ {
+  "oid": "1754769",
+  "code": "ceni-tkani-dekorativnye-dlya-izgotovleniya-shtor-i-zanavesey",
+  "label": "ткани декоративные для изготовления штор и занавесей",
+  "per": "м",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785706",
+  "code": "ceni-tkani-lnyanye-polulnyanye-prostynnye",
+  "label": "ткани льняные, полульняные простынные",
+  "per": "м",
+  "first": 200001,
+  "last": 200612,
+  "territories": 85
+ },
+ {
+  "oid": "1754736",
+  "code": "ceni-tkani-hlopchatobumazhnye-belevye",
+  "label": "ткани хлопчатобумажные бельевые",
+  "per": "м",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785756",
+  "code": "ceni-tkan-kostyumnaya-polusherstyanaya",
+  "label": "ткань костюмная полушерстяная",
+  "per": "м",
+  "first": 200001,
+  "last": 200612,
+  "territories": 87
+ },
+ {
+  "oid": "1785715",
+  "code": "ceni-tkan-kostyumnaya-sherstyanaya",
+  "label": "ткань костюмная шерстяная",
+  "per": "м",
+  "first": 200001,
+  "last": 200612,
+  "territories": 86
+ },
+ {
+  "oid": "1754778",
+  "code": "ceni-tkan-kostyumnaya-sherstyanaya-i-polusherstyanaya",
+  "label": "ткань костюмная шерстяная и полушерстяная",
+  "per": "м",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754806",
+  "code": "ceni-tkan-platevaya-iz-iskusstvennogo-ili-sinteticheskogo-shelka",
+  "label": "ткань платьевая из искусственного или синтетического шелка",
+  "per": "м",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754699",
+  "code": "ceni-torty",
+  "label": "торты",
+  "per": "кг",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785767",
+  "code": "ceni-torf",
+  "label": "торф",
+  "per": "т",
+  "first": 200001,
+  "last": 200312,
+  "territories": 15
+ },
+ {
+  "oid": "1853989",
+  "code": "ceni-trekrezan",
+  "label": "трекрезан",
+  "per": "10 таблеток",
+  "first": 202501,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1754785",
+  "code": "ceni-trikotazhnaya-shapochka-detskaya",
+  "label": "трикотажная шапочка детская",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848520",
+  "code": "ceni-trikotazhnyy-golovnoy-ubor-dlya-vzroslyh",
+  "label": "трикотажный головной убор для взрослых",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754704",
+  "code": "ceni-trikotazhnyy-golovnoy-ubor-zhenskiy",
+  "label": "трикотажный головной убор женский",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1754749",
+  "code": "ceni-trikotazhnyy-golovnoy-ubor-muzhskoy",
+  "label": "трикотажный головной убор мужской",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1755159",
+  "code": "ceni-trimmer",
+  "label": "триммер",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755101",
+  "code": "ceni-trokserutin-2-gel",
+  "label": "троксерутин, 2% гель",
+  "per": "40 г",
+  "first": 200906,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754934",
+  "code": "ceni-trusy-detskie",
+  "label": "трусы детские",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754810",
+  "code": "ceni-trusy-zhenskie",
+  "label": "трусы женские",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848528",
+  "code": "ceni-trusy-muzhskie",
+  "label": "трусы мужские",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754998",
+  "code": "ceni-trusy-muzhskie-iz-hlopchatobumazhnogo-trikotazhnogo-polotna",
+  "label": "трусы мужские из хлопчатобумажного трикотажного полотна",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1785799",
+  "code": "ceni-trusy-muzhskie-iz-hlopchatobumazhnoy-tkani",
+  "label": "трусы мужские из хлопчатобумажной ткани",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 88
+ },
+ {
+  "oid": "1754945",
+  "code": "ceni-tualetnaya-voda",
+  "label": "туалетная вода",
+  "per": "100 мл",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754948",
+  "code": "ceni-tufli-detskie-letnie-sandalety",
+  "label": "туфли детские летние (сандалеты)",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846563",
+  "code": "ceni-tufli-zhenskie-zakrytye",
+  "label": "туфли женские закрытые",
+  "per": "пара",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755001",
+  "code": "ceni-tufli-zhenskie-zakrytye-s-verhom-iz-iskusstvennoy-kozhi",
+  "label": "туфли женские закрытые с верхом из искусственной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1743460",
+  "code": "ceni-tufli-zhenskie-zakrytye-s-verhom-iz-naturalnoy-kozhi",
+  "label": "туфли женские закрытые с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1846546",
+  "code": "ceni-tufli-zhenskie-letnie-bosonozhki",
+  "label": "туфли женские летние, босоножки",
+  "per": "пара",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754755",
+  "code": "ceni-tufli-zhenskie-letnie-bosonozhki-s-verhom-iz-iskusstvennoy-k",
+  "label": "туфли женские летние, босоножки с верхом из искусственной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1754897",
+  "code": "ceni-tufli-zhenskie-modelnye-s-verhom-iz-naturalnoy-kozhi",
+  "label": "туфли женские модельные с верхом из натуральной кожи",
+  "per": "пара",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836493",
+  "code": "ceni-tufli-letnie-bosonozhki-zhenskie-iz-naturalnoy-kozhi",
+  "label": "туфли летние, босоножки женские из натуральной кожи",
+  "per": "пара",
+  "first": 202101,
+  "last": 202112,
+  "territories": 92
+ },
+ {
+  "oid": "1755155",
+  "code": "ceni-tush-dlya-resnic",
+  "label": "тушь для ресниц",
+  "per": "шт.",
+  "first": 201401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754890",
+  "code": "ceni-tyul-polotno-gardinnoe",
+  "label": "тюль, полотно гардинное",
+  "per": "м",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754942",
+  "code": "ceni-ugol",
+  "label": "уголь",
+  "per": "т",
+  "first": 200001,
+  "last": 202609,
+  "territories": 90
+ },
+ {
+  "oid": "1755098",
+  "code": "ceni-udalenie-zuba-pod-mestnym-obezbolivaniem",
+  "label": "удаление зуба под местным обезболиванием",
+  "per": "удаление",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755043",
+  "code": "ceni-udostoverenie-zaveschaniya-v-notarialnoy-kontore",
+  "label": "удостоверение завещания в нотариальной конторе",
+  "per": "услуга",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754722",
+  "code": "ceni-uzhin-v-restorane",
+  "label": "ужин в ресторане",
+  "per": "на 1 человека",
+  "first": 200301,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755078",
+  "code": "ceni-ultrazvukovoe-issledovanie-bryushnoy-polosti",
+  "label": "ультразвуковое исследование брюшной полости",
+  "per": "исследование",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836509",
+  "code": "ceni-umifenovir-arbidol-100-mg",
+  "label": "умифеновир (Арбидол), 100 мг",
+  "per": "10 капсул (таблеток)",
+  "first": 202101,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1836520",
+  "code": "ceni-uslugi-arendy-avtomobiley",
+  "label": "услуги аренды автомобилей",
+  "per": "час",
+  "first": 202101,
+  "last": 202609,
+  "territories": 76
+ },
+ {
+  "oid": "1755037",
+  "code": "ceni-uslugi-organizatora-provedeniya-torzhestv",
+  "label": "услуги организатора проведения торжеств",
+  "per": "услуга",
+  "first": 201401,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1755191",
+  "code": "ceni-uslugi-po-vospitaniyu-detey-predostavlyaemye-naemnym-persona",
+  "label": "услуги по воспитанию детей, предоставляемые наемным персоналом",
+  "per": "час",
+  "first": 201801,
+  "last": 202609,
+  "territories": 81
+ },
+ {
+  "oid": "1755054",
+  "code": "ceni-uslugi-po-organizacii-i-vypolneniyu-rabot-po-ekspluatacii-do",
+  "label": "услуги по организации и выполнению работ по эксплуатации домов ЖК, ЖСК, ТСЖ",
+  "per": "м2 общей площади",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1744148",
+  "code": "ceni-uslugi-po-snabzheniyu-elektroenergiey",
+  "label": "услуги по снабжению электроэнергией",
+  "per": "",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836524",
+  "code": "ceni-uslugi-sidelok",
+  "label": "услуги сиделок",
+  "per": "час",
+  "first": 202101,
+  "last": 202609,
+  "territories": 78
+ },
+ {
+  "oid": "1836519",
+  "code": "ceni-ustanovka-natyazhnogo-potolka",
+  "label": "установка натяжного потолка",
+  "per": "м2",
+  "first": 202101,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755160",
+  "code": "ceni-ustanovka-plastikovyh-okon",
+  "label": "установка пластиковых окон",
+  "per": "м2",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755091",
+  "code": "ceni-ustnaya-konsultaciya-yurista-po-semeynym-voprosam",
+  "label": "устная консультация юриста по семейным вопросам",
+  "per": "консультация",
+  "first": 201301,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755027",
+  "code": "ceni-uchebnik-uchebnoe-posobie-didakticheskiy-material-dlya-obsch",
+  "label": "учебник, учебное пособие, дидактический материал для общеобразовательной школы",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785690",
+  "code": "ceni-falimint-25-mg",
+  "label": "фалиминт, 25 мг",
+  "per": "10 драже",
+  "first": 200906,
+  "last": 201311,
+  "territories": 89
+ },
+ {
+  "oid": "1755175",
+  "code": "ceni-fizioterapevticheskoe-lechenie",
+  "label": "физиотерапевтическое лечение",
+  "per": "процедура",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754713",
+  "code": "ceni-file-rybnoe",
+  "label": "филе рыбное",
+  "per": "кг",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754739",
+  "code": "ceni-file-seldi-solenoe",
+  "label": "филе сельди соленое",
+  "per": "кг",
+  "first": 201201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754987",
+  "code": "ceni-flesh-nakopitel-usb",
+  "label": "флеш-накопитель USB",
+  "per": "шт.",
+  "first": 201201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785691",
+  "code": "ceni-flukonazol-150-mg",
+  "label": "флуконазол, 150 мг",
+  "per": "капсула",
+  "first": 200601,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1754910",
+  "code": "ceni-fluocinolona-acetonid-0-025-maz",
+  "label": "флуоцинолона ацетонид, 0,025% мазь",
+  "per": "15 г",
+  "first": 200906,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1846549",
+  "code": "ceni-fosfogliv",
+  "label": "фосфоглив",
+  "per": "10 капсул",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1755016",
+  "code": "ceni-fotoapparat",
+  "label": "фотоаппарат",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846537",
+  "code": "ceni-furosemid-40-mg",
+  "label": "фуросемид, 40 мг",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1709743",
+  "code": "ceni-futbolka-detskaya",
+  "label": "футболка детская",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1743469",
+  "code": "ceni-halat-zhenskiy",
+  "label": "халат женский",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785755",
+  "code": "ceni-himicheskaya-zavivka-volos",
+  "label": "химическая завивка волос",
+  "per": "услуга",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1754990",
+  "code": "ceni-himchistka-muzhskogo-kostyuma",
+  "label": "химчистка мужского костюма",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1709746",
+  "code": "ceni-hleb-i-bulochnye-izdeliya-iz-pshenichnoy-muki-1-i-2-sortov",
+  "label": "хлеб и булочные изделия из пшеничной муки 1 и 2 сортов",
+  "per": "кг",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1709716",
+  "code": "ceni-hleb-i-bulochnye-izdeliya-iz-pshenichnoy-muki-vysshego-sorta",
+  "label": "хлеб и булочные изделия из пшеничной муки высшего сорта",
+  "per": "кг",
+  "first": 200001,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1754772",
+  "code": "ceni-hlopya-iz-zlakov-suhie-zavtraki",
+  "label": "хлопья из злаков (сухие завтраки)",
+  "per": "кг",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836512",
+  "code": "ceni-hlorgeksidin",
+  "label": "хлоргексидин",
+  "per": "100 мл",
+  "first": 202101,
+  "last": 202112,
+  "territories": 94
+ },
+ {
+  "oid": "1854836",
+  "code": "ceni-hlorgeksidin-rastvor-dlya-naruzhnogo-primeneniya-0-05",
+  "label": "хлоргексидин, раствор для наружного применения, 0,05%",
+  "per": "100 мл",
+  "first": 202501,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1856524",
+  "code": "ceni-hloropiramin",
+  "label": "хлоропирамин",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1743477",
+  "code": "ceni-holodilnik-zil-trehkamernyy-analogi-stinol-nord",
+  "label": "холодильник \"ЗИЛ\" трехкамерный (аналоги \"Стинол\", \"Норд\")",
+  "per": "шт.",
+  "first": 200301,
+  "last": 200812,
+  "territories": 38
+ },
+ {
+  "oid": "1743484",
+  "code": "ceni-holodilnik-minsk-biryusa-dvuh-trehkamernyy",
+  "label": "холодильник (\"Минск\", \"Бирюса\") двух - трехкамерный",
+  "per": "шт.",
+  "first": 200301,
+  "last": 201401,
+  "territories": 84
+ },
+ {
+  "oid": "1785757",
+  "code": "ceni-holodilnik-dvuhkamernyy-emkostyu-250-350-l-importnyy",
+  "label": "холодильник двухкамерный, емкостью 250-350 л, импортный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1785713",
+  "code": "ceni-holodilnik-dvuhkamernyy-emkostyu-250-350-l-otechestvennyy",
+  "label": "холодильник двухкамерный, емкостью 250-350 л, отечественный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200812,
+  "territories": 88
+ },
+ {
+  "oid": "1754898",
+  "code": "ceni-holodilnik-dvuhkamernyy-emkostyu-250-360-l",
+  "label": "холодильник двухкамерный, емкостью 250-360 л",
+  "per": "шт.",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785671",
+  "code": "ceni-holodilnik-kompressionnyy-napolnyy-odnokamernyy-klass-emkost",
+  "label": "холодильник компрессионный, напольный, однокамерный, класс **, емкость холодильной камеры до 250 л, отечественного производства и производства стран СНГ",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 88
+ },
+ {
+  "oid": "1754978",
+  "code": "ceni-cement-tarirovannyy",
+  "label": "цемент тарированный",
+  "per": "50 кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1856525",
+  "code": "ceni-cetirizin",
+  "label": "цетиризин",
+  "per": "10 таблеток",
+  "first": 202601,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1854831",
+  "code": "ceni-cetrin",
+  "label": "цетрин",
+  "per": "10 таблеток",
+  "first": 202501,
+  "last": 202512,
+  "territories": 94
+ },
+ {
+  "oid": "1836505",
+  "code": "ceni-ceftriakson",
+  "label": "цефтриаксон",
+  "per": "1 г",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846572",
+  "code": "ceni-citramon",
+  "label": "цитрамон",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831430",
+  "code": "ceni-chay-zelenyy",
+  "label": "чай зеленый",
+  "per": "кг",
+  "first": 202001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754795",
+  "code": "ceni-chay-chernyy-bayhovyy-paketirovannyy",
+  "label": "чай черный байховый пакетированный",
+  "per": "25 пакетиков",
+  "first": 200901,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848533",
+  "code": "ceni-chaynik",
+  "label": "чайник",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755004",
+  "code": "ceni-chaynik-stalnoy-emalirovannyy",
+  "label": "чайник стальной эмалированный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1754993",
+  "code": "ceni-chasy-budilnik",
+  "label": "часы будильник",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1755010",
+  "code": "ceni-chasy-naruchnye",
+  "label": "часы наручные",
+  "per": "шт.",
+  "first": 200701,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785733",
+  "code": "ceni-chasy-naruchnye-kvarcevye",
+  "label": "часы наручные кварцевые",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200612,
+  "territories": 87
+ },
+ {
+  "oid": "1785704",
+  "code": "ceni-chasy-naruchnye-mehanicheskie",
+  "label": "часы наручные механические",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200612,
+  "territories": 87
+ },
+ {
+  "oid": "1848526",
+  "code": "ceni-chemodan",
+  "label": "чемодан",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1754742",
+  "code": "ceni-chesnok",
+  "label": "чеснок",
+  "per": "кг",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754714",
+  "code": "ceni-shampun",
+  "label": "шампунь",
+  "per": "250 мл",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1831428",
+  "code": "ceni-sharf-dlya-vzroslyh",
+  "label": "шарф для взрослых",
+  "per": "шт.",
+  "first": 202001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785670",
+  "code": "ceni-sharf-iz-sherstyanoy-polusherstyanoy-sinteticheskoy-ili-smes",
+  "label": "шарф из шерстяной, полушерстяной, синтетической или смесовой пряжи для детей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1785653",
+  "code": "ceni-sharf-sherstyanoy",
+  "label": "шарф шерстяной",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201401,
+  "territories": 89
+ },
+ {
+  "oid": "1754896",
+  "code": "ceni-shinomontazh-koles-legkovogo-avtomobilya",
+  "label": "шиномонтаж колес легкового автомобиля",
+  "per": "услуга",
+  "first": 200401,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1755008",
+  "code": "ceni-shiny-dlya-legkovogo-avtomobilya",
+  "label": "шины для легкового автомобиля",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1785682",
+  "code": "ceni-shifer",
+  "label": "шифер",
+  "per": "10 м2",
+  "first": 200001,
+  "last": 201612,
+  "territories": 89
+ },
+ {
+  "oid": "1754946",
+  "code": "ceni-shkaf-dlya-platya-i-belya",
+  "label": "шкаф для платья и белья",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1854823",
+  "code": "ceni-shkaf-navesnoy-kuhonnyy-polka",
+  "label": "шкаф навесной кухонный (полка)",
+  "per": "шт.",
+  "first": 202501,
+  "last": 202609,
+  "territories": 93
+ },
+ {
+  "oid": "1755021",
+  "code": "ceni-shkaf-navesnoy-kuhonnyy-polka-dvuhstvorchatyy",
+  "label": "шкаф навесной кухонный (полка), двухстворчатый",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754971",
+  "code": "ceni-shkaf-veshalka-dlya-prihozhey",
+  "label": "шкаф-вешалка для прихожей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836515",
+  "code": "ceni-shpricy-odnorazovye",
+  "label": "шприцы одноразовые",
+  "per": "шт.",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1754889",
+  "code": "ceni-schetka-zubnaya",
+  "label": "щетка зубная",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755081",
+  "code": "ceni-ekskursionnaya-poezdka-v-germaniyu",
+  "label": "экскурсионная поездка в Германию",
+  "per": "поездка",
+  "first": 200101,
+  "last": 202203,
+  "territories": 79
+ },
+ {
+  "oid": "1755141",
+  "code": "ceni-ekskursionnaya-poezdka-v-finlyandiyu",
+  "label": "экскурсионная поездка в Финляндию",
+  "per": "поездка",
+  "first": 200101,
+  "last": 202203,
+  "territories": 76
+ },
+ {
+  "oid": "1755121",
+  "code": "ceni-ekskursionnaya-poezdka-vo-franciyu",
+  "label": "экскурсионная поездка во Францию",
+  "per": "поездка",
+  "first": 200101,
+  "last": 202203,
+  "territories": 85
+ },
+ {
+  "oid": "1755034",
+  "code": "ceni-ekskursionnaya-poezdka-na-avtobuse-po-gorodam-evropy",
+  "label": "экскурсионная поездка на автобусе по городам Европы",
+  "per": "поездка",
+  "first": 200101,
+  "last": 202112,
+  "territories": 79
+ },
+ {
+  "oid": "1836522",
+  "code": "ceni-ekskursionnye-tury-po-rossii",
+  "label": "экскурсионные туры по России",
+  "per": "поездка",
+  "first": 202101,
+  "last": 202609,
+  "territories": 83
+ },
+ {
+  "oid": "1755132",
+  "code": "ceni-ekskursiya-avtobusnaya",
+  "label": "экскурсия автобусная",
+  "per": "час",
+  "first": 200001,
+  "last": 202609,
+  "territories": 86
+ },
+ {
+  "oid": "1754925",
+  "code": "ceni-elektropylesos-napolnyy",
+  "label": "электропылесос напольный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1848521",
+  "code": "ceni-elektroutyug",
+  "label": "электроутюг",
+  "per": "шт.",
+  "first": 202301,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1785661",
+  "code": "ceni-elektroutyug-moschnostyu-do-1800-vt-otechestvennyy-proizvods",
+  "label": "электроутюг мощностью до 1800 Вт, отечественный, производства стран СНГ или Юго-Восточной Азии",
+  "per": "шт.",
+  "first": 200001,
+  "last": 201312,
+  "territories": 89
+ },
+ {
+  "oid": "1785729",
+  "code": "ceni-elektroutyug-s-avtomaticheskim-termoregulyatorom-parouvlazhn",
+  "label": "электроутюг с автоматическим терморегулятором, пароувлажнителем, импортный",
+  "per": "шт.",
+  "first": 200001,
+  "last": 200312,
+  "territories": 87
+ },
+ {
+  "oid": "1754996",
+  "code": "ceni-elektroutyug-s-termoregulyatorom-parouvlazhnitelem",
+  "label": "электроутюг с терморегулятором, пароувлажнителем",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202212,
+  "territories": 94
+ },
+ {
+  "oid": "1754976",
+  "code": "ceni-elektrochaynik",
+  "label": "электрочайник",
+  "per": "шт.",
+  "first": 200401,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1755147",
+  "code": "ceni-elektroenergiya-v-kvartirah-bez-elektroplit-sverh-minimalnog",
+  "label": "электроэнергия в квартирах без электроплит сверх минимального объема потребления",
+  "per": "в расчете за 100 кВт.ч",
+  "first": 200001,
+  "last": 202609,
+  "territories": 90
+ },
+ {
+  "oid": "1755109",
+  "code": "ceni-elektroenergiya-v-kvartirah-s-elektroplitami-sverh-minimalno",
+  "label": "электроэнергия в квартирах с электроплитами сверх минимального объема потребления",
+  "per": "в расчете за 100 кВт.ч",
+  "first": 200001,
+  "last": 202609,
+  "territories": 94
+ },
+ {
+  "oid": "1709729",
+  "code": "ceni-enalapril",
+  "label": "эналаприл",
+  "per": "10 таблеток",
+  "first": 200101,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1846541",
+  "code": "ceni-enterosgel",
+  "label": "энтеросгель",
+  "per": "225 г",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1846525",
+  "code": "ceni-ergoferon",
+  "label": "эргоферон",
+  "per": "20 таблеток",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1785763",
+  "code": "ceni-eritromicin-otechestvennyy-po-0-25-g",
+  "label": "эритромицин отечественный по 0,25 г",
+  "per": "10 таблеток",
+  "first": 200001,
+  "last": 200512,
+  "territories": 87
+ },
+ {
+  "oid": "1754944",
+  "code": "ceni-essenciale-forte-n-300-mg",
+  "label": "эссенциале форте Н, 300 мг",
+  "per": "10 капсул",
+  "first": 201201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1846559",
+  "code": "ceni-eufillin-150-mg",
+  "label": "эуфиллин, 150 мг",
+  "per": "10 таблеток",
+  "first": 202201,
+  "last": 202412,
+  "territories": 95
+ },
+ {
+  "oid": "1754817",
+  "code": "ceni-yubka-dlya-devochek-shkolnogo-vozrasta",
+  "label": "юбка для девочек школьного возраста",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1709728",
+  "code": "ceni-yubka-zhenskaya-iz-polusherstyanyh-ili-smesovyh-tkaney",
+  "label": "юбка женская из полушерстяных или смесовых тканей",
+  "per": "шт.",
+  "first": 200001,
+  "last": 202609,
+  "territories": 95
+ },
+ {
+  "oid": "1836492",
+  "code": "ceni-yagody-zamorozhennye",
+  "label": "ягоды замороженные",
+  "per": "кг",
+  "first": 202101,
+  "last": 202609,
+  "territories": 95
+ }
+]

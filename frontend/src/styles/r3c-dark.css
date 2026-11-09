@@ -1,0 +1,105 @@
+/* R3-C: тёмная тема новых блоков цен, курсов и поиска (z1p-, z2p-, z3-, z4s-). Срабатывает там, где страница
+   в тёмном режиме (data-theme="dark" или класс dark на корне). Без рамок и обводок: форма держится заливкой и светом,
+   золото светлее и тонким акцентом, холодная палитра. Исходные css блоков не тронуты. */
+
+:root[data-theme='dark'],
+:root.dark {
+  --r3c-ink: #f2f5fa;
+  --r3c-muted: #b9c4d6;
+  --r3c-faint: #8fa0ba;
+  --r3c-card: rgba(255, 255, 255, 0.07);
+  --r3c-card-hover: rgba(255, 255, 255, 0.11);
+  --r3c-gold: #d8bd78;
+  --r3c-gold-wash: rgba(216, 189, 120, 0.14);
+  --r3c-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 14px 30px -18px rgba(4, 8, 20, 0.8);
+}
+
+/* Цены региона: карточки, группы, подписи */
+:root[data-theme='dark'] .z1p-card,
+:root.dark .z1p-card {
+  background: var(--r3c-card);
+  box-shadow: var(--r3c-shadow);
+}
+:root[data-theme='dark'] .z1p-card__name,
+:root[data-theme='dark'] .z1p-card__per,
+:root[data-theme='dark'] .z1p-card__month,
+:root[data-theme='dark'] .z1p-card__flat,
+:root[data-theme='dark'] .z1p-group__n,
+:root[data-theme='dark'] .z1p-flat,
+:root.dark .z1p-card__name,
+:root.dark .z1p-card__per,
+:root.dark .z1p-card__month,
+:root.dark .z1p-card__flat,
+:root.dark .z1p-group__n,
+:root.dark .z1p-flat { color: var(--r3c-muted); }
+:root[data-theme='dark'] .z1p-quiet,
+:root.dark .z1p-quiet { color: var(--r3c-faint); }
+:root[data-theme='dark'] .z1p-card__value,
+:root[data-theme='dark'] .z1p-group__title,
+:root[data-theme='dark'] .z1p-headline-title,
+:root[data-theme='dark'] .z1h-find__label,
+:root.dark .z1p-card__value,
+:root.dark .z1p-group__title,
+:root.dark .z1p-headline-title,
+:root.dark .z1h-find__label { color: var(--r3c-ink); }
+
+/* Страница цены: сравнение с Россией, пометка о снятом ряде, соседние цены */
+:root[data-theme='dark'] .z2p-compare,
+:root[data-theme='dark'] .z2p-caption,
+:root[data-theme='dark'] .z2p-source,
+:root[data-theme='dark'] .z2p-row__meta,
+:root[data-theme='dark'] .z2p-row__month,
+:root[data-theme='dark'] .z2p-per-unit,
+:root[data-theme='dark'] .z2p-hero-unit,
+:root.dark .z2p-compare,
+:root.dark .z2p-caption,
+:root.dark .z2p-source,
+:root.dark .z2p-row__meta,
+:root.dark .z2p-row__month,
+:root.dark .z2p-per-unit,
+:root.dark .z2p-hero-unit { color: var(--r3c-muted); }
+:root[data-theme='dark'] .z2p-compare__val,
+:root[data-theme='dark'] .z2p-row__name,
+:root[data-theme='dark'] .z2p-row__val,
+:root[data-theme='dark'] .z2p-group__title,
+:root.dark .z2p-compare__val,
+:root.dark .z2p-row__name,
+:root.dark .z2p-row__val,
+:root.dark .z2p-group__title { color: var(--r3c-ink); }
+:root[data-theme='dark'] .z2p-note,
+:root[data-theme='dark'] .z2p-russia-chip,
+:root.dark .z2p-note,
+:root.dark .z2p-russia-chip {
+  background: var(--r3c-gold-wash);
+  color: var(--r3c-ink);
+}
+
+/* Курсы: блок «Выгодно ли сейчас» и конвертер карточки */
+:root[data-theme='dark'] .z3-past__item,
+:root.dark .z3-past__item {
+  background: var(--r3c-card);
+  box-shadow: var(--r3c-shadow);
+}
+:root[data-theme='dark'] .z3-past__when,
+:root[data-theme='dark'] .z3-past__unit,
+:root[data-theme='dark'] .z3-past__date,
+:root.dark .z3-past__when,
+:root.dark .z3-past__unit,
+:root.dark .z3-past__date { color: var(--r3c-muted); }
+:root[data-theme='dark'] .z3-past__val,
+:root[data-theme='dark'] .z3-past__title,
+:root.dark .z3-past__val,
+:root.dark .z3-past__title { color: var(--r3c-ink); }
+:root[data-theme='dark'] .z3-past__diff,
+:root.dark .z3-past__diff { color: var(--r3c-gold); }
+
+/* Поиск: плитки регионов и разброс цен */
+:root[data-theme='dark'] .z4s-region-chip,
+:root.dark .z4s-region-chip {
+  background: var(--r3c-card);
+  color: var(--r3c-ink);
+}
+:root[data-theme='dark'] .z4s-region-chip:hover,
+:root.dark .z4s-region-chip:hover { background: var(--r3c-card-hover); }
+:root[data-theme='dark'] .z4s-region-range,
+:root.dark .z4s-region-range { color: var(--r3c-muted); }

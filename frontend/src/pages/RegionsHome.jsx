@@ -9,7 +9,7 @@ import { useMemo, useState, useRef, useDeferredValue, useCallback, useEffect, la
 import { Link, useNavigate, useSearchParams, useLocation, useParams } from 'react-router-dom';
 import {
   Search, MapPin, ChevronRight, List, Map as MapIcon, ChevronDown,
-  Image as ImageIcon, Film, X, RefreshCw,
+  Image as ImageIcon, Film, X, RefreshCw, GitCompare,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -46,11 +46,15 @@ import {
   regionHubPath,
   regionIndicatorPath,
   regionPath,
+  regionVsPath,
 } from '../lib/sitePaths';
+import '../styles/r3b-regions.css';
+import '../styles/r7c-regions.css';
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/z5-country.css';
+import '../styles/r5b-region.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -76,6 +80,17 @@ const MAP_METRICS = [
 ];
 
 const PRESET_CODES = new Set(MAP_METRICS.map((m) => m.code));
+
+// Рейтинг цен: месячные ряды Росстата, сервер отдаёт последний месяц (heatmap).
+const PRICE_RANK_METRICS = [
+  { code: 'ceni-hleb-pshenichnyy', labelKey: 'z1.prices.rank.bread' },
+  { code: 'ceni-moloko', labelKey: 'z1.prices.rank.milk' },
+  { code: 'ceni-ai95', labelKey: 'z1.prices.rank.fuel' },
+  { code: 'ceni-elektroenergiya', labelKey: 'z1.prices.rank.power' },
+  { code: 'ceni-proezd-avtobus', labelKey: 'z1.prices.rank.bus' },
+  { code: 'ceni-arenda-1k', labelKey: 'z1.prices.rank.rent' },
+];
+const RANKING_METRICS = [...MAP_METRICS, ...PRICE_RANK_METRICS];
 
 function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
   const { t, locale } = useLocale();
@@ -167,7 +182,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
 }
 
 /** Поиск региона над картой: выбранный регион подсвечивается на карте, под ней открывается его карточка. */
-function MapRegionSearch({ names, onPick }) {
+function MapRegionSearch({ names, onPick, placeholder }) {
   const { t } = useLocale();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -192,8 +207,8 @@ function MapRegionSearch({ names, onPick }) {
         <input
           type="text"
           value={query}
-          placeholder={t('w6f.map.findRegion')}
-          aria-label={t('w6f.map.findRegion')}
+          placeholder={placeholder || t('w6f.map.findRegion')}
+          aria-label={placeholder || t('w6f.map.findRegion')}
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onChange={(e) => { setOpen(true); setQuery(e.target.value); }}
@@ -280,11 +295,15 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false, neutral = false }
         {side(first, neutral ? 'text-text-primary' : 'fe-ink-pos')}
         {side(second, neutral ? 'text-text-primary' : 'fe-ink-neg')}
       </div>
+      <Link to={regionVsPath(first.slug, second.slug)} className="r3b-vs-link fe-tap-inline">
+        <GitCompare size={14} aria-hidden="true" />
+        {t('r3b.hub.compareTwo', { a: first.name, b: second.name })}
+      </Link>
     </div>
   );
 }
 
-function RegionCard({ region }) {
+function RegionCard({ region, maxWage = 0 }) {
   const { t, locale } = useLocale();
   const pop = region.stats['1.1'];
   const wage = region.stats['3.4'];
@@ -310,6 +329,11 @@ function RegionCard({ region }) {
             {mini(t('w4.regions.card.wage'), wage ? formatRegionWithUnit(wage.value, '₽', locale) : '\u2014')}
             {mini(t('w4.regions.card.unemp'), unemp ? formatRegionWithUnit(unemp.value, '%', locale) : '\u2014')}
           </div>
+        )}
+        {wage && maxWage > 0 && (
+          <span className="r7c-card-bar" aria-hidden="true" title={t('r7c.card.wageBar')}>
+            <span style={{ width: `${Math.max(3, Math.min(100, (Number(wage.value) / maxWage) * 100))}%` }} />
+          </span>
         )}
       </div>
       <ChevronRight size={16} className="hidden shrink-0 text-text-secondary transition-colors group-hover:text-champagne-ink sm:block" aria-hidden="true" />
@@ -508,6 +532,11 @@ export default function RegionsHome() {
       .filter((d) => d.regions.length > 0);
   }, [data, deferredQuery, activeDistrict]);
 
+  // Полоска под зарплатой на карточке региона: доля от самой высокой зарплаты среди регионов.
+  const maxWage = useMemo(
+    () => Math.max(0, ...(data?.districts || []).flatMap((d) => d.regions.map((r) => Number(r.stats?.['3.4']?.value) || 0))),
+    [data],
+  );
   const totalShown = filtered.reduce((n, d) => n + d.regions.length, 0);
 
   useSearchTracking('regions-list', deferredQuery, totalShown);
@@ -616,8 +645,21 @@ export default function RegionsHome() {
 
       {view === 'list' && (
         <>
+          <div className="z1h-find fe-reveal" data-testid="hub-find-region">
+            <div className="z1h-find__label">{t('r2z1.hub.find')}</div>
+            <MapRegionSearch names={namesBySlug} placeholder={t('r2z1.hub.findPlaceholder')} onPick={(slug) => navigate(regionPath(slug))} />
+            <button
+              type="button"
+              className="fe-chip fe-press r5b-jump"
+              data-testid="hub-jump-districts"
+              onClick={() => document.getElementById('r5b-districts')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            >
+              {t('r5b.hub.jump')}
+            </button>
+          </div>
+
           {/* Рейтинг: выбранный показатель, место, полоса и значение; «Ещё показатели» ищет по всему каталогу. */}
-          <RegionRanking metrics={MAP_METRICS} />
+          <RegionRanking metrics={RANKING_METRICS} />
 
           {contrastVisible.some((m) => m.heat.data) ? (
             <div data-block="contrasts" className="fe-reveal mb-4 space-y-4 rounded-3xl p-4 fe-glass-lite">
@@ -757,7 +799,7 @@ export default function RegionsHome() {
                     </aside>
                   )}
 
-                  <div className="min-w-0 space-y-8">
+                  <div id="r5b-districts" className="min-w-0 scroll-mt-28 space-y-8">
                     {filtered.map((d) => (
                       <section key={d.slug} aria-labelledby={`district-${d.slug}`}>
                         <RegionSectionHeading
@@ -767,7 +809,7 @@ export default function RegionsHome() {
                           count={d.regions.length}
                         />
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5">
-                          {d.regions.map((r) => <RegionCard key={r.slug} region={r} />)}
+                          {d.regions.map((r) => <RegionCard key={r.slug} region={r} maxWage={maxWage} />)}
                         </div>
                       </section>
                     ))}

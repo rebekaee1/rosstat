@@ -93,3 +93,14 @@ class TestRegionRatingCopy:
         )
         assert pop[0][0] == "b"
         assert next(i for i, (s, _) in enumerate(pop, 1) if s == "b") == 1
+
+
+def test_rank_around_gives_neighbours_with_positions():
+    from app.api.regions import _rank_around
+    rows = [(f"r{i}", f"Регион {i}", float(100 - i)) for i in range(1, 11)]
+    got = _rank_around(rows, 5)
+    assert [g["position"] for g in got] == [3, 4, 5, 6, 7]
+    assert got[2]["slug"] == "r5"
+    assert [g["position"] for g in _rank_around(rows, 1)] == [1, 2, 3]
+    assert [g["position"] for g in _rank_around(rows, 10)] == [8, 9, 10]
+    assert _rank_around(rows, None) == []

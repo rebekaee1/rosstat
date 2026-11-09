@@ -13,7 +13,7 @@ import '../../styles/regions-w4.css';
 
 /** Изменение к прошлому периоду: стрелка и цвет — по смыслу показателя (падение безработицы — хорошо). */
 export function RegionDelta({ value, prevValue, name, label, unit }) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   // Показатель в процентах (инфляция, безработица): честнее разница в пунктах, а не «+32,9 %».
   if (isPercentUnit(unit)) {
     const pts = formatPointsDelta(value, prevValue, locale);
@@ -32,6 +32,8 @@ export function RegionDelta({ value, prevValue, name, label, unit }) {
   const d = yearDelta(value, prevValue);
   if (!d) return null;
   const signed = d.pct < 0 ? -Math.abs(d.pct) : Math.abs(d.pct);
+  // Изменение меньше 0,05 % глазом не видно: «без перемен» понятнее, чем «− <0,1 %».
+  if (Math.abs(signed) < 0.05) return <span className="z1p-flat">{t('r2z1.prices.flat')}</span>;
   return (
     <DeltaBadge
       delta={d.up || d.down ? signed : 0}
@@ -97,7 +99,7 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
         <RegionValue value={item.value} unit={item.unit} locale={locale} />
       </div>
       <div className="mt-2 flex items-center justify-between gap-2">
-        <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>
+        <span className="text-[13px] font-medium text-text-secondary">{item.period_label || item.year}</span>
         <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} label={item.label} unit={item.unit} />
       </div>
       {empty && <span className="sr-only">{t('common.noData')}</span>}
@@ -105,30 +107,36 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
   );
 }
 
-export function RegionIndicatorRow({ item, to, title }) {
-  const { locale } = useLocale();
+export function RegionIndicatorRow({ item, to, title, compact = false, hidePeriod = false }) {
+  const { locale, t } = useLocale();
   const empty = item.value == null;
-  const explain = explainIndicator(item.name, item.unit, locale);
+  const old = Boolean(item.is_discontinued);
+  const explain = item.short_name ? null : explainIndicator(item.name, item.unit, locale);
   const Card = empty ? 'div' : Link;
   return (
     <Card
       {...(empty ? { 'aria-disabled': true } : { to })}
-      className="fe-press group flex min-w-0 flex-col gap-2 rounded-2xl px-3.5 py-3 transition-colors sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 fe-glass-lite fe-float"
+      className={`${old ? 'z1p-row-old ' : ''}${compact ? 'r5b-row ' : ''}fe-press group flex min-w-0 flex-col gap-2 rounded-2xl px-3.5 py-3 transition-colors sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 fe-glass-lite fe-float`}
     >
       <div className="min-w-0 flex-1">
         <div className="text-[14px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
           {title || plainIndicatorTitle(item.name, locale)}
         </div>
+        {old ? (
+          <div className="z1p-quiet" data-testid="row-discontinued">
+            {t('z1.prices.discontinued', { month: item.last_month_label || item.period_label || item.year })}
+          </div>
+        ) : null}
         {explain ? <div className="mt-1 text-xs leading-snug text-text-secondary" data-testid="row-explain">{explain}</div> : null}
       </div>
-      <div className="flex items-baseline justify-between gap-3 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
-        <div className="fe-num whitespace-nowrap text-[15px] font-semibold tabular-nums text-text-primary">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
+        <div className="fe-num min-w-0 text-[15px] font-semibold tabular-nums text-text-primary sm:whitespace-nowrap">
           <RegionValue value={item.value} unit={item.unit} locale={locale} />
         </div>
         <div className="flex items-center gap-2">
-          <TrendTick value={item.value} prevValue={item.prev_value} polarity={indicatorPolarity(item.name)} />
-          <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />
-          <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>
+          {old ? null : <TrendTick value={item.value} prevValue={item.prev_value} polarity={indicatorPolarity(item.name)} />}
+          {old ? null : <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />}
+          {hidePeriod && !old ? null : <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>}
         </div>
       </div>
     </Card>

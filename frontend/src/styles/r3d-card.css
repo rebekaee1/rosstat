@@ -1,0 +1,74 @@
+/* Круг 3, R3-D: карточка показателя для крупного шрифта и общая обвязка страницы.
+   Без рамок и обводок: форму держат заливка и тень. */
+
+/* 1. Подпись домена под графиком: тихая приписка, а не ссылка. Без золотой точки, без выхода к краю карточки. */
+.fe-chart-signature {
+  padding-right: 6px;
+  font-size: 11px;
+  letter-spacing: .02em;
+  opacity: .62;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+.fe-chart-signature::before { display: none; }
+
+/* 2. Дата не повторяется: у строки главного числа она уже есть, значок «Данные до …» для свежего ряда её дублировал.
+   Значок остаётся там, где ряд устарел или стареет: форма и цвет несут смысл. */
+.fe-hero-line .z4-fresh--line[data-level='fresh'] { display: none; }
+
+/* 3. Таблица истории на телефоне: нет горизонтальной прокрутки, колонка «Изменение» не уходит за край.
+   Дата может переноситься («31 октября / 2026»), заголовок значения тоже, отступы уже. */
+@media (max-width: 767px) {
+  :root:root .fe-histtable table { min-width: 0; width: 100%; table-layout: auto; }
+  :root:root .fe-histtable th,
+  :root:root .fe-histtable td { padding-inline: 6px; }
+  :root:root .fe-histtable th:first-child,
+  :root:root .fe-histtable td:first-child { padding-left: 14px; white-space: nowrap; }
+  :root:root .fe-histtable th:last-child,
+  :root:root .fe-histtable td:last-child { padding-right: 16px; }
+  :root:root .fe-histtable .fe-histtable__valhead { white-space: normal; min-width: 0; line-height: 1.25; }
+  :root:root .fe-histtable thead th { line-height: 1.25; vertical-align: bottom; }
+  :root:root .fe-histtable .fe-histtable__chg { white-space: normal; }
+}
+
+/* 4. Поля «От» и «До»: видны на любой ширине и при крупном шрифте, делят строку поровну, подписи крупнее. */
+.c11c-range__field { flex: 1 1 9rem; font-size: 13px; }
+.c11c-range__field input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  text-align: left;
+  min-height: 48px;
+  background: rgba(98, 116, 160, 0.12);
+  box-shadow: inset 0 1px 3px rgba(32, 46, 80, 0.16);
+  /* Пустое поле даты на iOS не показывает ничего: значок календаря справа говорит, что сюда вводят дату. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23697590' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15.5' rx='3'/%3E%3Cpath d='M8 3v4M16 3v4M3.5 10h17'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.c11c-range__actions { flex: 1 1 100%; margin-left: 0; }
+@media (min-width: 640px) {
+  .c11c-range__actions { flex: 0 1 auto; margin-left: auto; }
+}
+
+/* 6. Нижняя панель на телефоне: подписи в одну строку без наездов при крупном шрифте, ужимаются, а не обрезаются. */
+@media (max-width: 767px) {
+  :root:root .fe-dock__label { font-size: clamp(10px, 2.6vw, 12px); letter-spacing: -.01em; }
+  :root:root .fe-dock__item { padding-inline: 0; }
+}
+
+/* 8. Низ страницы и якоря: запас под плавающими слоями не меньше самого слоя. */
+@media (max-width: 767px) {
+  .z4-lower, .z4-stage { scroll-margin-bottom: 96px; }
+}
+
+/* 9. «Методология» на телефоне: между «Подробнее о расчёте» и «Источник» не остаётся пустой полосы (запас под высоту соседней карточки нужен только в две колонки). */
+@media (max-width: 1023px) {
+  :root:root .z4-lower .fe-info-card__foot { margin-top: 0; padding-top: 0; }
+  :root:root .z4-lower .fe-info-card__text > * + * { margin-top: 8px; }
+}

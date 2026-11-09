@@ -73,6 +73,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import publish_committed_regional_changes
 from app.database import async_session
+from app.data.emiss_price_goods import PRICE_GOODS_BY_OID
 from app.models import Region, RegionIndicator, RegionMonthlyPoint
 from app.services.http_client import create_session
 from app.services.regional_storage import acquire_regional_write_lock, update_regional_year_bounds
@@ -91,6 +92,13 @@ PRICE_FUELS = {
     "1709750": "ceni-ai95",
     "1755196": "ceni-dt",
 }
+
+# Средние цены на товары и услуги той же витрины (08.11.2026): справочник
+# app.data.emiss_price_goods. Один запрос «год × месяц» несёт и топливо, и товары.
+PRICE_SERIES: dict[str, str] = {**PRICE_FUELS, **PRICE_GOODS_BY_OID}
+
+# Пол истории витрины: по РФ товары есть с 2000 года, по субъектам и топливу — с 2003.
+FIRST_YEAR = 2000
 
 # 33560 «Период»: месяц-в-году → порядковый номер месяца.
 MONTH_OIDS = {
@@ -163,7 +171,7 @@ def parse_grid_response(
     year: int,
     month: int,
     dimnames: dict[str, str],
-    fuels: dict[str, str] = PRICE_FUELS,
+    fuels: dict[str, str] = PRICE_SERIES,
 ) -> list[tuple[str, str, int, float]]:
     """JSON-ответ dataGrid.do → [(indicator_code, region_slug, YYYYMM, value)].
 
@@ -202,6 +210,7 @@ async def fetch_month_points(
     dimnames: dict[str, str],
     *,
     post_grid: Callable | None = None,
+    series: dict[str, str] | None = None,
 ) -> list[tuple[str, str, int, float]]:
     """Точки одного месяца: запрос «год × месяц» → все территории × 3 топлива.
 
@@ -218,13 +227,15 @@ async def fetch_month_points(
         ("selectedFilterIds", "30611_950351"),
         ("selectedFilterIds", f"33560_{month_oid}"),
     ]
-    params += [("selectedFilterIds", f"58273_{f}") for f in PRICE_FUELS]
+    if series is None:
+        series = PRICE_SERIES
+    params += [("selectedFilterIds", f"58273_{f}") for f in series]
     params += [("selectedFilterIds", f"57831_{oid}") for oid in territory_ids]
     # Каноническая РФ пуста с 2023, но до 2022 — единственный источник ряда.
     if year <= 2022:
         params.append(("selectedFilterIds", f"57831_{_RUSSIA_LEGACY}"))
     payload = await post_grid(_INDICATOR_ID, params)
-    points = parse_grid_response(payload, year=year, month=month, dimnames=dimnames)
+    points = parse_grid_response(payload, year=year, month=month, dimnames=dimnames, fuels=series)
     rows = payload.get("results") or []
     if rows and not points:
         sample = str((rows[0] or {}).get("dim57831") or "")[:60]
@@ -282,7 +293,7 @@ def months_to_fetch(
     existing: set[int],
     *,
     today: date | None = None,
-    first_year: int = 2003,
+    first_year: int = FIRST_YEAR,
 ) -> list[tuple[int, int]]:
     """Какие (year, month) запросить: новые месяцы сверх БД + хвост на ревизию.
 
@@ -340,7 +351,7 @@ async def run_emiss_regional_update(
     if territory_ids is None:
         territory_ids = load_territory_ids()
 
-    codes = list(PRICE_FUELS.values())
+    codes = list(PRICE_SERIES.values())
     indicators = {
         ind.code: ind
         for ind in (
@@ -349,9 +360,15 @@ async def run_emiss_regional_update(
             )
         ).scalars()
     }
-    missing = [c for c in codes if c not in indicators]
+    # Топливо обязательно; позиции цен без метаданных (сид ещё не прошёл) этот
+    # прогон пропускает — топливо не должно падать из-за них.
+    missing = [c for c in PRICE_FUELS.values() if c not in indicators]
     if missing:
         raise RuntimeError(f"region_monthly: нет метаданных показателей {missing}")
+    skipped = [c for c in codes if c not in indicators]
+    if skipped:
+        logger.warning("emiss_regional: нет метаданных %d позиций цен, пропуск: %s", len(skipped), skipped[:5])
+    series = {oid: code for oid, code in PRICE_SERIES.items() if code in indicators}
 
     regions = {
         slug: rid
@@ -359,15 +376,21 @@ async def run_emiss_regional_update(
     }
 
     # Опорная серия russia: какие месяцы уже есть — по ней строим план фетча.
+    # Берётся самый короткий из рядов витрины: новый ряд без истории (товары,
+    # добавленные 08.11.2026) запускает полную догрузку с FIRST_YEAR, а
+    # «хвостовой» план у полных рядов от этого не меняется (повторы идемпотентны).
     rf = await db.get(Region, regions.get("russia")) if regions.get("russia") else None
     existing: set[int] = set()
     if rf is not None:
-        rf_code = next(iter(PRICE_FUELS.values()))
-        existing = set((await db.execute(
-            select(RegionMonthlyPoint.month)
-            .where(RegionMonthlyPoint.indicator_id == indicators[rf_code].id,
+        rows = (await db.execute(
+            select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month)
+            .where(RegionMonthlyPoint.indicator_id.in_([ind.id for ind in indicators.values()]),
                    RegionMonthlyPoint.region_id == rf.id)
-        )).scalars().all())
+        )).all()
+        by_indicator: dict[int, set[int]] = {ind.id: set() for ind in indicators.values()}
+        for ind_id, month in rows:
+            by_indicator[ind_id].add(month)
+        existing = min(by_indicator.values(), key=len) if by_indicator else set()
 
     plan = months_to_fetch(existing)
     if not plan:
@@ -378,7 +401,7 @@ async def run_emiss_regional_update(
     for year, month in plan:
         try:
             points = await fetch_month_points(
-                year, month, territory_ids, dimnames, post_grid=post_grid,
+                year, month, territory_ids, dimnames, post_grid=post_grid, series=series,
             )
         except EmissFormatError as exc:
             # Формат ответа сменился для этого месяца: остальные месяцы всё равно пробуем, итог — в статистике.
