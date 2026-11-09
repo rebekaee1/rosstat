@@ -21,7 +21,7 @@
   "counts": {
     "files": 2350,
     "code_files": 1934,
-    "current_reviews": 2349,
+    "current_reviews": 2350,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 120,
@@ -30,8 +30,8 @@
       "reviewed": 2132
     },
     "definitions": 15322,
-    "annotated_definitions": 15313,
-    "files_needing_attention": 1
+    "annotated_definitions": 15322,
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -24222,68 +24222,11 @@
       "lines": 213,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 15,
-      "annotated_definitions": 6,
-      "missing_definitions": [
-        {
-          "name": "formatPointsDelta",
-          "line": 75,
-          "end_line": 86,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "glueNumbers",
-          "line": 92,
-          "end_line": 96,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "plainIndicatorTitle",
-          "line": 104,
-          "end_line": 118,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "explainIndicator",
-          "line": 124,
-          "end_line": 153,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "plainName",
-          "line": 156,
-          "end_line": 158,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "compactParts",
-          "line": 176,
-          "end_line": 190,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "formatRegionCompact",
-          "line": 193,
-          "end_line": 196,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "prioritizeIndicators",
-          "line": 202,
-          "end_line": 213,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "prioritizeIndicators.score",
-          "line": 203,
-          "end_line": 208,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 15,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/regionUi.points.test.js",
@@ -30644,12 +30587,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "314880049819b2ee4d1bdfaa74d1a6bae341935250603246f11da380e47d82f9",
+  "ledger_sha256": "39cb784d44548d9db8abbeacb7c4c055ccae34beb155011ad4821a211694025d",
   "javascript_inventory_sha256": "b8d7e7839f0bc6b888629ca5fdbe044905ce0997062cec8a1f22f61b813e2924",
-  "baseline_commit": "e2a74f12cad5f25b3af600bd803b84374efd2689",
+  "baseline_commit": "9229ff9eaa9aa9a152eeff905156954267115218",
   "branch": "circle-data/int",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/indicator-index.json"
-  ]
+  "unstaged_at_capture": []
 }

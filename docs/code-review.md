@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `e2a74f12cad5f25b3af600bd803b84374efd2689`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `9229ff9eaa9aa9a152eeff905156954267115218`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -14,9 +14,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 |---|---:|
 | Файлы в явно определённом scope | 2350 |
 | Код, шаблоны и стили | 1934 |
-| Актуальные рецензии без пропусков guard | 2349 |
-| Именованные определения Python/JS: с аннотацией / всего | 15313 / 15322 |
-| Файлы, требующие внимания | 1 |
+| Актуальные рецензии без пропусков guard | 2350 |
+| Именованные определения Python/JS: с аннотацией / всего | 15322 / 15322 |
+| Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -1898,7 +1898,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/regionCompareTable.test.js](../frontend/src/lib/regionCompareTable.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/regionLeaders.js](../frontend/src/lib/regionLeaders.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/regionLeaders.test.js](../frontend/src/lib/regionLeaders.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/regionUi.js](../frontend/src/lib/regionUi.js) | reviewed | 6/15 | definitions_without_annotation |
+| [frontend/src/lib/regionUi.js](../frontend/src/lib/regionUi.js) | reviewed | 15/15 | актуально |
 | [frontend/src/lib/regionUi.points.test.js](../frontend/src/lib/regionUi.points.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/regionUi.test.js](../frontend/src/lib/regionUi.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/regionsApi.js](../frontend/src/lib/regionsApi.js) | reviewed | 27/27 | актуально |
