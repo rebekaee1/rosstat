@@ -41,3 +41,38 @@
   :root:root .fe-rank__bar { height: 4px; align-self: start; margin-top: 3px; }
   :root:root .fe-rank__list { gap: 4px; }
 }
+
+/* Карта на телефоне: название показателя в две строки (раньше «Среднемесячная номинальная…»),
+   подсказка «Нажмите на регион» не прячется, пока регион не выбран. */
+@media (max-width: 767px) {
+  :root:root .fe-map-capline__text > div[title]:first-child { -webkit-line-clamp: 2; line-clamp: 2; }
+  :root:root [data-block='regions-map'] .fe-map-pick--empty {
+    display: block; position: static; min-height: 0; margin-top: 8px; padding: 10px 14px; text-align: left; border-radius: 14px;
+  }
+  :root:root [data-block='regions-map'] .fe-map-pick--empty .fe-map-pick__prompt { margin: 0; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }
+}
+
+/* Страница рейтинга: «Мой регион» и строка выбранного региона в таблице. */
+.r7c-rate-mine { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: -12px 0 20px; }
+.r7c-rate-mine__sum { font-size: 14px; font-weight: 650; color: #1E3A6E; min-height: 44px; display: inline-flex; align-items: center; }
+:root:root .r3b-rate-box tbody tr.is-mine { background: linear-gradient(90deg, rgba(60, 84, 130, 0.16), rgba(60, 84, 130, 0.05)); }
+:root:root .r3b-rate-box tbody tr.is-mine td:nth-child(2) a { font-weight: 700; }
+
+/* Страница рейтинга на телефоне: заголовок и вступление компактнее, лучший и худший рядом, таблица без вложенной прокрутки. */
+@media (max-width: 639px) {
+  :root:root .r3b-rate-h1 { font-size: 1.45rem; line-height: 1.18; }
+  .r7c-rate-lead { font-size: 14px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+  :root:root .r7c-rate-tiles > div { padding: 12px 14px; }
+  :root:root .r7c-rate-tiles .font-semibold { font-size: 15px; line-height: 1.25; }
+  .r7c-rate-tiles__year { grid-column: 1 / -1; padding-block: 10px; }
+  .r7c-rate-tiles__year > div:last-child { display: inline; margin-left: 6px; }
+  .r7c-rate-tiles__year > div:first-child { display: inline; }
+  :root:root .r3b-rate-box { max-height: none; overflow: visible; }
+  :root:root .r3b-rate-box thead { position: static; }
+  /* Линии между строками убраны и на телефоне: ровная полосатая заливка, как на планшете. Узкая колонка места. */
+  :root:root .r3b-rate-box tbody tr { border: 0; border-top-width: 0; }
+  :root:root .r3b-rate-box tbody tr:nth-child(even) { background: rgba(60, 78, 110, 0.045); }
+  :root:root .r3b-rate-box th, :root:root .r3b-rate-box td { padding-left: 10px; padding-right: 10px; }
+  :root:root .r3b-rate-box th.w-16 { width: 44px; }
+}
+.r7c-map-hint { margin: 10px 4px 0; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }

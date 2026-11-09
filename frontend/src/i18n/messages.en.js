@@ -3290,7 +3290,7 @@ export default {
   'x8.planet.viewGlobe': 'Globe',
   // ===== Круг 8: Россия, регионы, календарь, страны (Z4) =====
   'c8y.ru.main.inflationMonth': 'Inflation, month over month',
-  'c8y.map.replay': 'Play again',
+  'c8y.map.replay': 'Watch again',
   // ===== Круг 8: главная (Z1) =====
   'c8h.today.sub': 'Figures for the latest year with data',
   // ===== Круг 8, волна 2: оболочка (W-A) =====
@@ -3967,4 +3967,5 @@ export default {
   'r7c.rank.mineSub': 'No. {rank} of {n}',
   'r7c.rank.mineClear': 'Clear my region',
   'r7c.rank.median': 'regional midpoint: {v}',
+  'r7c.rate.mapHint': 'Tap a region on the map to open this indicator for it.',
 };
