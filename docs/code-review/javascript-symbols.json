@@ -3309,7 +3309,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/CookieConsent.component.test.jsx": {
-    "sha256": "d5ad517e94efe932411dd29482b2297caf0217e2a4158f14bf80799ed8cfcd44",
+    "sha256": "e0e1c6b2e91bea98292c98958735967d3727eb44aff5a11a072e6faf58ac614a",
     "definitions": [
       {
         "name": "renderConsent",
@@ -3325,32 +3325,32 @@
       },
       {
         "name": "scrollTo",
-        "line": 274,
-        "end_line": 280,
+        "line": 276,
+        "end_line": 282,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "phone",
-        "line": 285,
-        "end_line": 289,
+        "line": 287,
+        "end_line": 291,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "phone.matchMedia",
-        "line": 286,
-        "end_line": 288,
+        "line": 288,
+        "end_line": 290,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "phone.matchMedia.addEventListener",
-        "line": 287,
-        "end_line": 287,
+        "line": 289,
+        "end_line": 289,
         "kind": "ObjectMethod"
       },
       {
         "name": "phone.matchMedia.removeEventListener",
-        "line": 287,
-        "end_line": 287,
+        "line": 289,
+        "end_line": 289,
         "kind": "ObjectMethod"
       }
     ],
@@ -3389,10 +3389,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 45
+    "anonymous_functions": 46
   },
   "frontend/src/components/CookieConsent.jsx": {
-    "sha256": "bdc023a5bbc61b88f35eda12ca12a093535bd5e30bb73c4ce582416a1dc5125d",
+    "sha256": "7ad32d7963fd0600042326e70b2f55dbdea9d9d375bff6949147068e0b78cf33",
     "definitions": [
       {
         "name": "readSnooze",
@@ -3415,31 +3415,31 @@
       {
         "name": "CookieConsent",
         "line": 73,
-        "end_line": 325,
+        "end_line": 332,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CookieConsent.reopen",
-        "line": 102,
-        "end_line": 113,
+        "line": 109,
+        "end_line": 120,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CookieConsent.apply",
-        "line": 133,
-        "end_line": 136,
+        "line": 140,
+        "end_line": 143,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CookieConsent.commit",
-        "line": 153,
-        "end_line": 172,
+        "line": 160,
+        "end_line": 179,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CookieConsent.dismiss",
-        "line": 174,
-        "end_line": 182,
+        "line": 181,
+        "end_line": 189,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -3505,7 +3505,7 @@
         "line": 73
       }
     ],
-    "anonymous_functions": 20
+    "anonymous_functions": 23
   },
   "frontend/src/components/CountryComparePicker.component.test.jsx": {
     "sha256": "d24bee88c96abdf6cfa1e8b14a738d5f1aaeffff7e2750ac365f19d67b8ecc76",
@@ -3792,8 +3792,204 @@
     ],
     "anonymous_functions": 10
   },
+  "frontend/src/components/CurrencyConverter.jsx": {
+    "sha256": "7b04024b6d5af9c5ffb37e67bc358cb3afe18a98a80c2ffc85070d83fbac693d",
+    "definitions": [
+      {
+        "name": "groupedAmount",
+        "line": 26,
+        "end_line": 30,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useAmount",
+        "line": 33,
+        "end_line": 38,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "shortUnit",
+        "line": 45,
+        "end_line": 58,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ConverterOut",
+        "line": 61,
+        "end_line": 90,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "AmountField",
+        "line": 92,
+        "end_line": 110,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "QuickAmounts",
+        "line": 112,
+        "end_line": 128,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "chipName",
+        "line": 131,
+        "end_line": 135,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Converter",
+        "line": 137,
+        "end_line": 246,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Converter.swap",
+        "line": 160,
+        "end_line": 165,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "Converter.optionOf",
+        "line": 166,
+        "end_line": 171,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "Converter.pickTravel",
+        "line": 177,
+        "end_line": 182,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "CurrencyCardConverter",
+        "line": 252,
+        "end_line": 310,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 3
+      },
+      {
+        "source": "react-router-dom",
+        "line": 4
+      },
+      {
+        "source": "lucide-react",
+        "line": 5
+      },
+      {
+        "source": "./CurrencySelect",
+        "line": 6
+      },
+      {
+        "source": "../lib/hooks",
+        "line": 7
+      },
+      {
+        "source": "../lib/format",
+        "line": 8
+      },
+      {
+        "source": "../lib/currencyRates",
+        "line": 9
+      },
+      {
+        "source": "../lib/currencyChart",
+        "line": 13
+      },
+      {
+        "source": "../lib/currencyMarket",
+        "line": 14
+      },
+      {
+        "source": "./Z3PastCompare",
+        "line": 15
+      },
+      {
+        "source": "./R5cTools",
+        "line": 16
+      },
+      {
+        "source": "../lib/track",
+        "line": 17
+      },
+      {
+        "source": "../lib/calcGlint",
+        "line": 18
+      },
+      {
+        "source": "../i18n",
+        "line": 19
+      },
+      {
+        "source": "../styles/z8-tools.css",
+        "line": 20
+      },
+      {
+        "source": "../styles/k8-tools.css",
+        "line": 21
+      },
+      {
+        "source": "../styles/c8-currency.css",
+        "line": 22
+      },
+      {
+        "source": "../styles/z3-cur.css",
+        "line": 23
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "Converter"
+        ],
+        "line": 137
+      },
+      {
+        "names": [
+          "CurrencyCardConverter"
+        ],
+        "line": 252
+      },
+      {
+        "names": [
+          "default"
+        ],
+        "line": 312
+      }
+    ],
+    "anonymous_functions": 26
+  },
+  "frontend/src/components/CurrencyConverterZ3.component.test.jsx": {
+    "sha256": "19ea5531c64e30220c8a74eff4626fb5f59ff8cc49e5c1ae04f965bf2508054a",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "./CurrencyDesk",
+        "line": 4
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 8
+  },
   "frontend/src/components/CurrencyDesk.component.test.jsx": {
-    "sha256": "2d6bdd6abec24d3aee5873056aa2067ab466d99d3a47ec7e11171fd2ea1b1631",
+    "sha256": "c53a52f2ca8025303c313298aa64217f26c263f339ade68447198afb3ce43ae5",
     "definitions": [
       {
         "name": "pick",
@@ -3856,96 +4052,66 @@
     "anonymous_functions": 49
   },
   "frontend/src/components/CurrencyDesk.jsx": {
-    "sha256": "49c81b3836fcfad384d112226168e876fd0821c9d2242f3105140cdaec011e6b",
+    "sha256": "d31869cf2f39565b4f453e99ef69f1e1703418f856d6bcab383839f7b26fd782",
     "definitions": [
       {
         "name": "shortDate",
-        "line": 42,
-        "end_line": 48,
+        "line": 43,
+        "end_line": 49,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ageInDays",
-        "line": 51,
-        "end_line": 55,
+        "line": 52,
+        "end_line": 56,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pctOf",
-        "line": 59,
-        "end_line": 62,
+        "line": 60,
+        "end_line": 63,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RowSpark",
-        "line": 65,
-        "end_line": 76,
+        "line": 66,
+        "end_line": 77,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RateTiles",
-        "line": 79,
-        "end_line": 128,
+        "line": 80,
+        "end_line": 129,
         "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "ConverterOut",
-        "line": 131,
-        "end_line": 160,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "groupedAmount",
-        "line": 163,
-        "end_line": 167,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "Converter",
-        "line": 169,
-        "end_line": 275,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "Converter.swap",
-        "line": 187,
-        "end_line": 192,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "Converter.optionOf",
-        "line": 193,
-        "end_line": 201,
-        "kind": "ArrowFunctionExpression"
       },
       {
         "name": "boardDate",
-        "line": 278,
-        "end_line": 281,
+        "line": 132,
+        "end_line": 135,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MarketBoard",
-        "line": 284,
-        "end_line": 324,
+        "line": 138,
+        "end_line": 178,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CurrencyRow",
-        "line": 326,
-        "end_line": 370,
+        "line": 180,
+        "end_line": 254,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "matchesQuery",
-        "line": 372,
-        "end_line": 383,
+        "line": 256,
+        "end_line": 264,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CurrencyDesk",
-        "line": 385,
-        "end_line": 483,
+        "line": 266,
+        "end_line": 367,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -3979,84 +4145,92 @@
         "line": 9
       },
       {
-        "source": "./CurrencyPairChart",
+        "source": "./CurrencyConverter",
         "line": 10
       },
       {
-        "source": "../lib/hooks",
+        "source": "./CurrencyPairChart",
         "line": 11
       },
       {
-        "source": "../lib/format",
+        "source": "./R5cTools",
         "line": 12
       },
       {
-        "source": "../lib/deltaText",
+        "source": "../lib/hooks",
         "line": 13
       },
       {
-        "source": "../lib/deltaTone",
+        "source": "../lib/format",
         "line": 14
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/deltaText",
         "line": 15
       },
       {
-        "source": "./brand/EmptyState",
+        "source": "../lib/deltaTone",
         "line": 16
       },
       {
-        "source": "../lib/currencyRates",
+        "source": "../lib/sitePaths",
         "line": 17
       },
       {
+        "source": "./brand/EmptyState",
+        "line": 18
+      },
+      {
+        "source": "../lib/currencyRates",
+        "line": 19
+      },
+      {
         "source": "../lib/currencyChart",
-        "line": 21
-      },
-      {
-        "source": "../lib/currencyMarket",
-        "line": 22
-      },
-      {
-        "source": "../lib/track",
         "line": 23
       },
       {
-        "source": "../lib/calcGlint",
+        "source": "../lib/currencyMarket",
         "line": 24
       },
       {
-        "source": "../i18n",
+        "source": "../lib/track",
         "line": 25
       },
       {
-        "source": "../styles/y2-indicator.css",
+        "source": "../i18n",
         "line": 26
       },
       {
-        "source": "../styles/w6-g.css",
+        "source": "../styles/y2-indicator.css",
         "line": 27
       },
       {
-        "source": "../lib/cabinetPrefs",
+        "source": "../styles/w6-g.css",
         "line": 28
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../lib/cabinetPrefs",
         "line": 29
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "../styles/z8-tools.css",
         "line": 30
       },
       {
-        "source": "../styles/k8-tools.css",
+        "source": "../styles/k4-charts.css",
         "line": 31
       },
       {
-        "source": "../styles/c8-currency.css",
+        "source": "../styles/k8-tools.css",
         "line": 32
+      },
+      {
+        "source": "../styles/c8-currency.css",
+        "line": 33
+      },
+      {
+        "source": "../styles/z3-cur.css",
+        "line": 34
       }
     ],
     "exports": [
@@ -4064,10 +4238,10 @@
         "names": [
           "default"
         ],
-        "line": 385
+        "line": 266
       }
     ],
-    "anonymous_functions": 35
+    "anonymous_functions": 25
   },
   "frontend/src/components/CurrencyNext.jsx": {
     "sha256": "150b08525a6045861faa46f017b80b7f82d1fb86d6bf9e8e48925ab5d2ef271a",
@@ -4120,42 +4294,48 @@
     "anonymous_functions": 5
   },
   "frontend/src/components/CurrencyPairChart.jsx": {
-    "sha256": "1f09612ac2e97ac91b777c7a0922fce306ddcbbab698b4e31f0e72e6635ce72e",
+    "sha256": "9b2685b8072427b338b26eb173d3ed2bc92c3ee9093e8199879b1070071fb82b",
     "definitions": [
       {
         "name": "ChartTip",
-        "line": 34,
-        "end_line": 53,
+        "line": 35,
+        "end_line": 55,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ChartTip.fmt",
-        "line": 38,
-        "end_line": 38,
+        "line": 39,
+        "end_line": 39,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "EndBead",
-        "line": 56,
-        "end_line": 64,
+        "line": 58,
+        "end_line": 66,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CurrencyPairChart",
-        "line": 67,
-        "end_line": 289,
+        "line": 69,
+        "end_line": 328,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CurrencyPairChart.monthOf",
-        "line": 182,
-        "end_line": 184,
+        "line": 202,
+        "end_line": 204,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CurrencyPairChart.tickLabel",
-        "line": 185,
-        "end_line": 191,
+        "line": 205,
+        "end_line": 211,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "CurrencyPairChart.fmt",
+        "line": 306,
+        "end_line": 306,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -4233,20 +4413,24 @@
         "line": 26
       },
       {
-        "source": "../i18n",
+        "source": "../styles/r5c-tools.css",
         "line": 27
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../i18n",
         "line": 28
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "../styles/z8-tools.css",
         "line": 29
       },
       {
-        "source": "../styles/c8-currency.css",
+        "source": "../styles/k4-charts.css",
         "line": 30
+      },
+      {
+        "source": "../styles/c8-currency.css",
+        "line": 31
       }
     ],
     "exports": [
@@ -4254,10 +4438,10 @@
         "names": [
           "default"
         ],
-        "line": 67
+        "line": 69
       }
     ],
-    "anonymous_functions": 21
+    "anonymous_functions": 28
   },
   "frontend/src/components/CurrencySelect.jsx": {
     "sha256": "477923b496aa58efea8fde98cf027f9eb9a858d3c0f8511bc0b26e4691b84617",
@@ -4334,7 +4518,7 @@
     "anonymous_functions": 13
   },
   "frontend/src/components/CurrencyTelemetry.jsx": {
-    "sha256": "058cebc2599ebcb77fb07f2959706a04007e8eb9a123b89516d66f9eda072b03",
+    "sha256": "42eb9a912a60bde11997d79dd62d4f025cdf0000b810ddab371cb2a672ab3a98",
     "definitions": [
       {
         "name": "signedPercent",
@@ -4351,7 +4535,7 @@
       {
         "name": "CurrencyTelemetry",
         "line": 39,
-        "end_line": 109,
+        "end_line": 123,
         "kind": "FunctionDeclaration"
       },
       {
@@ -4415,7 +4599,7 @@
         "line": 39
       }
     ],
-    "anonymous_functions": 4
+    "anonymous_functions": 6
   },
   "frontend/src/components/DataTable.component.test.jsx": {
     "sha256": "7eb48ae4a7f37a6b8d69774b2ecd48a7f044918563162099c03ea9e51aca46e0",
@@ -5564,18 +5748,18 @@
     "anonymous_functions": 0
   },
   "frontend/src/components/GenericIndicatorView.jsx": {
-    "sha256": "72f8af3fbc4d24ea92de99f8ff245bd867a9b7c471d697d270b37259f0d21579",
+    "sha256": "c6a8b6054be4f66b5fd57b8f72fadf9db888d6b44746d4cc69f74db0027e891f",
     "definitions": [
       {
         "name": "IDENTITY",
-        "line": 78,
-        "end_line": 78,
+        "line": 82,
+        "end_line": 82,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "GenericIndicatorView",
-        "line": 80,
-        "end_line": 341,
+        "line": 84,
+        "end_line": 372,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -5625,100 +5809,116 @@
         "line": 11
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "./CurrencyConverter",
         "line": 12
       },
       {
-        "source": "../lib/currencyRates",
+        "source": "../lib/sitePaths",
         "line": 13
       },
       {
-        "source": "./IndicatorChartSection",
+        "source": "../lib/currencyRates",
         "line": 14
       },
       {
-        "source": "./IndicatorMethodologyPanel",
+        "source": "./IndicatorChartSection",
         "line": 15
       },
       {
-        "source": "./IndicatorForecastSection",
+        "source": "./IndicatorMethodologyPanel",
         "line": 16
       },
       {
-        "source": "./IndicatorDataTableSection",
+        "source": "./IndicatorForecastSection",
         "line": 17
       },
       {
-        "source": "./IndicatorSeoBlocks",
+        "source": "./IndicatorDataTableSection",
         "line": 18
       },
       {
-        "source": "./RelatedIndicators",
+        "source": "./IndicatorSeoBlocks",
         "line": 19
       },
       {
-        "source": "../lib/excel",
+        "source": "./RelatedIndicators",
         "line": 20
       },
       {
-        "source": "../lib/indicatorSummary",
+        "source": "../lib/excel",
         "line": 21
       },
       {
-        "source": "../lib/format",
+        "source": "../lib/indicatorSummary",
         "line": 22
       },
       {
-        "source": "./WorldStatTiles",
+        "source": "../lib/format",
         "line": 23
       },
       {
-        "source": "../lib/tickerLive",
+        "source": "./WorldStatTiles",
         "line": 24
       },
       {
-        "source": "./IndicatorHeroValue",
+        "source": "../lib/tickerLive",
         "line": 25
       },
       {
-        "source": "./FreshnessNote",
+        "source": "./IndicatorHeroValue",
         "line": 26
       },
       {
-        "source": "./BrentLiveNote",
+        "source": "./R6bPulseStrip",
         "line": 27
       },
       {
-        "source": "../lib/cabinetSubjects",
+        "source": "./FreshnessNote",
         "line": 28
       },
       {
-        "source": "../lib/deltaTone",
+        "source": "./BrentLiveNote",
         "line": 29
       },
       {
-        "source": "../styles/z4-indicator.css",
+        "source": "../lib/cabinetSubjects",
         "line": 30
       },
       {
-        "source": "../styles/k5-pages.css",
+        "source": "../lib/deltaTone",
         "line": 31
       },
       {
-        "source": "../lib/track",
+        "source": "../styles/z4-indicator.css",
         "line": 32
       },
       {
-        "source": "../i18n",
+        "source": "../styles/k5-pages.css",
         "line": 33
       },
       {
-        "source": "./ApiRetryBanner",
+        "source": "../styles/r3d-card.css",
         "line": 34
       },
       {
-        "source": "./LoadingNote",
+        "source": "../styles/r6b-card.css",
         "line": 35
+      },
+      {
+        "source": "../lib/track",
+        "line": 36
+      },
+      {
+        "source": "../i18n",
+        "line": 37
+      },
+      {
+        "source": "./ApiRetryBanner",
+        "line": 38
+      },
+      {
+        "source": "./LoadingNote",
+        "line": 39
       }
     ],
     "exports": [
@@ -5726,10 +5926,10 @@
         "names": [
           "default"
         ],
-        "line": 80
+        "line": 84
       }
     ],
-    "anonymous_functions": 13
+    "anonymous_functions": 17
   },
   "frontend/src/components/GenericViewModePicker.jsx": {
     "sha256": "186067f591d7a956276ff74daaf5dc2da3f40f229adf16d0b8da2d11bcd7d30a",
@@ -6396,7 +6596,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/IndicatorDetailHeader.jsx": {
-    "sha256": "5f973bad3942106b09ba6b4851d6daa79efde3faa8cd497d7588ffb9de30b7ff",
+    "sha256": "bff568b63df8d4bcf9511c85a168135b82fc18518bbf333e05afc3d3afaa599d",
     "definitions": [
       {
         "name": "MobileTitle",
@@ -6413,7 +6613,7 @@
       {
         "name": "IndicatorDetailHeader",
         "line": 56,
-        "end_line": 145,
+        "end_line": 146,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -6603,12 +6803,12 @@
     "anonymous_functions": 5
   },
   "frontend/src/components/IndicatorHeroValue.jsx": {
-    "sha256": "662315c45f61f9a566690bc17341321fd37df88e3ff5eab014fcf861a6c73400",
+    "sha256": "da78823b78e5aacd9df9a2c68487e3ecef6264dcc2638b4dc301e659000c079f",
     "definitions": [
       {
         "name": "IndicatorHeroValue",
         "line": 26,
-        "end_line": 127,
+        "end_line": 128,
         "kind": "FunctionDeclaration"
       },
       {
@@ -7063,7 +7263,7 @@
     "anonymous_functions": 30
   },
   "frontend/src/components/IndicatorSearch.component.test.jsx": {
-    "sha256": "35f58895ad64cf0f2f69b2eb2a426b116bc5ca967ef9c4ac7e68f466bc601074",
+    "sha256": "871f42f83c6f8b9cf7b6573718cdcac3d956084e75fab213ab4b475dabc0921e",
     "definitions": [
       {
         "name": "useIndicators",
@@ -7148,84 +7348,96 @@
     "anonymous_functions": 48
   },
   "frontend/src/components/IndicatorSearch.jsx": {
-    "sha256": "0dad276c8fb798a849cc0128e2d67978119502f92f30bbf6f4f4b1659d59aad6",
+    "sha256": "bc8f7f8ad2fa71aef050950dfb9bc49a0f2c11ea0795e4021c0975add2dd2b9c",
     "definitions": [
       {
         "name": "RotatingHint",
-        "line": 62,
-        "end_line": 94,
+        "line": 67,
+        "end_line": 99,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isKKey",
-        "line": 100,
-        "end_line": 104,
+        "line": 105,
+        "end_line": 109,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch",
-        "line": 106,
-        "end_line": 827,
+        "line": 111,
+        "end_line": 857,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch.shownTitle",
-        "line": 238,
-        "end_line": 238,
+        "line": 243,
+        "end_line": 243,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onKey",
-        "line": 352,
-        "end_line": 382,
+        "line": 357,
+        "end_line": 387,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.focusInput",
-        "line": 398,
-        "end_line": 398,
+        "line": 403,
+        "end_line": 403,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onQueryChange",
-        "line": 436,
-        "end_line": 441,
+        "line": 441,
+        "end_line": 446,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.handleListKey",
-        "line": 450,
-        "end_line": 462,
+        "line": 455,
+        "end_line": 467,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.renderRow",
-        "line": 480,
-        "end_line": 500,
+        "line": 485,
+        "end_line": 505,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "regionValueText",
+        "line": 862,
+        "end_line": 871,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "RegionGroupChips",
+        "line": 874,
+        "end_line": 904,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "latestText",
-        "line": 830,
-        "end_line": 845,
+        "line": 907,
+        "end_line": 924,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchRow",
-        "line": 851,
-        "end_line": 963,
+        "line": 930,
+        "end_line": 1047,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "filterValueLabel",
-        "line": 968,
-        "end_line": 973,
+        "line": 1052,
+        "end_line": 1057,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchFilters",
-        "line": 979,
-        "end_line": 1026,
+        "line": 1063,
+        "end_line": 1110,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -7243,100 +7455,120 @@
         "line": 3
       },
       {
-        "source": "lucide-react",
+        "source": "../lib/sitePaths",
         "line": 4
       },
       {
-        "source": "../lib/format",
-        "line": 8
+        "source": "lucide-react",
+        "line": 5
       },
       {
-        "source": "../lib/uiTokens",
+        "source": "../lib/format",
         "line": 9
       },
       {
-        "source": "../lib/track",
+        "source": "../lib/uiTokens",
         "line": 10
       },
       {
-        "source": "../i18n",
+        "source": "../lib/track",
         "line": 11
       },
       {
-        "source": "../lib/useGlobalSearch",
+        "source": "../i18n",
         "line": 12
       },
       {
-        "source": "../lib/worldApi",
+        "source": "../lib/useGlobalSearch",
         "line": 13
       },
       {
-        "source": "../lib/searchExamples",
+        "source": "../lib/worldApi",
         "line": 14
       },
       {
-        "source": "../lib/searchGroups",
+        "source": "../lib/searchExamples",
         "line": 15
       },
       {
-        "source": "../lib/searchRecent",
+        "source": "../lib/searchGroups",
         "line": 16
       },
       {
-        "source": "../lib/homeContinue",
-        "line": 19
+        "source": "../lib/searchRecent",
+        "line": 17
       },
       {
-        "source": "../lib/searchFilters",
+        "source": "../lib/homeContinue",
         "line": 20
       },
       {
-        "source": "../lib/searchView",
-        "line": 23
+        "source": "../lib/searchFilters",
+        "line": 21
       },
       {
-        "source": "../lib/searchText",
+        "source": "../lib/searchView",
         "line": 24
       },
       {
-        "source": "../lib/homeWorkbench",
+        "source": "../lib/searchText",
         "line": 25
       },
       {
-        "source": "../lib/countryFlag",
+        "source": "../lib/homeWorkbench",
         "line": 26
       },
       {
-        "source": "./Chip",
+        "source": "../lib/countryFlag",
         "line": 27
       },
       {
-        "source": "./CountryFlag",
+        "source": "./Chip",
         "line": 28
       },
       {
-        "source": "./brand/EmptyState",
+        "source": "./CountryFlag",
         "line": 29
       },
       {
-        "source": "./RatingExtras",
+        "source": "./brand/EmptyState",
         "line": 30
       },
       {
-        "source": "../styles/shell.css",
+        "source": "./RatingExtras",
         "line": 31
       },
       {
-        "source": "../styles/w6d.css",
+        "source": "../styles/shell.css",
         "line": 32
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../styles/w6d.css",
         "line": 33
       },
       {
-        "source": "../styles/k8-tools.css",
+        "source": "../styles/z8-tools.css",
         "line": 34
+      },
+      {
+        "source": "../styles/k8-tools.css",
+        "line": 35
+      },
+      {
+        "source": "../styles/z4s-search.css",
+        "line": 36
+      },
+      {
+        "source": "../styles/r6a-search.css",
+        "line": 37
+      },
+      {
+        "source": "../styles/r7a-search.css",
+        "line": 38
+      },
+      {
+        "source": "./searchLabourHints",
+        "line": 39
       }
     ],
     "exports": [
@@ -7344,13 +7576,13 @@
         "names": [
           "default"
         ],
-        "line": 106
+        "line": 111
       }
     ],
-    "anonymous_functions": 110
+    "anonymous_functions": 122
   },
   "frontend/src/components/IndicatorSearch.w6d.component.test.jsx": {
-    "sha256": "241b0c7a18039835a4697974c75879d80cd47b3f47e78623c2fdb38d4d32df88",
+    "sha256": "3a774271b5d60ae0b4278b4f84a50e6ef7bf881063da12e3cbefecaed39dc7d4",
     "definitions": [
       {
         "name": "useWorldCountries",
@@ -7432,6 +7664,73 @@
     "exports": [],
     "anonymous_functions": 53
   },
+  "frontend/src/components/IndicatorSearch.z4s.component.test.jsx": {
+    "sha256": "72551d106bf66daa4682ff3ed1a7ca91ee258388b44762aeda5180848221b14b",
+    "definitions": [
+      {
+        "name": "useWorldCountries",
+        "line": 13,
+        "end_line": 13,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useWorldRatingConcepts",
+        "line": 14,
+        "end_line": 14,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useT",
+        "line": 18,
+        "end_line": 18,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useLocale",
+        "line": 19,
+        "end_line": 19,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "regions",
+        "line": 22,
+        "end_line": 24,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 3
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 4
+      },
+      {
+        "source": "react-router-dom",
+        "line": 5
+      },
+      {
+        "source": "@tanstack/react-query",
+        "line": 6
+      },
+      {
+        "source": "./IndicatorSearch",
+        "line": 7
+      },
+      {
+        "source": "../lib/api",
+        "line": 8
+      },
+      {
+        "source": "../i18n/messages",
+        "line": 9
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 14
+  },
   "frontend/src/components/IndicatorSeoBlocks.jsx": {
     "sha256": "f79506a641cb9889a41ca96b2a7dcf68187c78ede545c6153244cd17f5b94055",
     "definitions": [
@@ -7512,7 +7811,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/components/IndicatorTelemetryGrid.jsx": {
-    "sha256": "32b1b520dc54c7c387f6b632babf97ee2886f2d0b0f3944c654ab02380a740ac",
+    "sha256": "290faffc76b0d7f8bfec0c570e4a5cb7be5eb80c9a6e26ec89c6f0b805a49b01",
     "definitions": [
       {
         "name": "IndicatorTelemetryGrid",
@@ -7602,24 +7901,24 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/IndicatorTile.jsx": {
-    "sha256": "e643c3d199da180c1efad5fb3e3fa24e51bccc236a37afd8afb6dce8f226c441",
+    "sha256": "6e5df42288bb8546f7ba958d137cdf49c24614ae4d8b4fec3c5e86ee29e5dc16",
     "definitions": [
       {
         "name": "TileSpark",
-        "line": 23,
-        "end_line": 35,
+        "line": 24,
+        "end_line": 36,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorTile",
-        "line": 37,
-        "end_line": 186,
+        "line": 38,
+        "end_line": 192,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorTile.handleClick",
-        "line": 82,
-        "end_line": 90,
+        "line": 88,
+        "end_line": 96,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -7641,56 +7940,60 @@
         "line": 4
       },
       {
-        "source": "../lib/format",
+        "source": "../lib/indicatorSummary",
         "line": 5
       },
       {
-        "source": "../lib/uiTokens",
+        "source": "../lib/format",
         "line": 6
       },
       {
-        "source": "../lib/track",
+        "source": "../lib/uiTokens",
         "line": 7
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/track",
         "line": 8
       },
       {
-        "source": "../i18n",
+        "source": "../lib/sitePaths",
         "line": 9
       },
       {
-        "source": "../lib/categories",
+        "source": "../i18n",
         "line": 10
       },
       {
-        "source": "../lib/deltaTone",
+        "source": "../lib/categories",
         "line": 11
       },
       {
-        "source": "../lib/deltaText",
+        "source": "../lib/deltaTone",
         "line": 12
       },
       {
-        "source": "../lib/periodPhrase",
+        "source": "../lib/deltaText",
         "line": 13
       },
       {
-        "source": "./DeltaBadge",
+        "source": "../lib/periodPhrase",
         "line": 14
       },
       {
-        "source": "../styles/indicator-russia.css",
+        "source": "./DeltaBadge",
         "line": 15
       },
       {
-        "source": "../styles/x2-indicator.css",
+        "source": "../styles/indicator-russia.css",
         "line": 16
       },
       {
-        "source": "../styles/y2-indicator.css",
+        "source": "../styles/x2-indicator.css",
         "line": 17
+      },
+      {
+        "source": "../styles/y2-indicator.css",
+        "line": 18
       }
     ],
     "exports": [
@@ -7698,7 +8001,7 @@
         "names": [
           "default"
         ],
-        "line": 37
+        "line": 38
       }
     ],
     "anonymous_functions": 1
@@ -8695,7 +8998,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/components/MapTimeline.component.test.jsx": {
-    "sha256": "b06aff0eee568f5b27a740ede40220ff15e59192c12cb74035c0cc75c11fc833",
+    "sha256": "76fad399bea03c8b5d14d91f1f4f54a075614f0e10b34c2c4b8e8737c4a2a52d",
     "definitions": [],
     "imports": [
       {
@@ -8843,7 +9146,7 @@
     "anonymous_functions": 18
   },
   "frontend/src/components/MobileDock.component.test.jsx": {
-    "sha256": "08d62913d56222a7751a6b60a51052fab7459788c54cf5803e48737ff21e18ce",
+    "sha256": "a04066d5e487f34b114f54c2e226b4a2d4344faffb4f2a19c4e5631c576ced80",
     "definitions": [
       {
         "name": "scrollTo",
@@ -8871,14 +9174,14 @@
       },
       {
         "name": "getBoundingClientRect",
-        "line": 100,
-        "end_line": 100,
+        "line": 102,
+        "end_line": 102,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "onOpen",
-        "line": 137,
-        "end_line": 137,
+        "line": 139,
+        "end_line": 139,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -8916,12 +9219,12 @@
     "anonymous_functions": 27
   },
   "frontend/src/components/MobileDock.jsx": {
-    "sha256": "ccf2fc731f9b3bca80f11fee8da5c4bf0379dfe737fc2d157d04b99f47a3f68b",
+    "sha256": "5a73d7c512f64b9d2cfdc2d468f7e254aa5d98cc4b04fa088e45cad313c12821",
     "definitions": [
       {
         "name": "MobileDock",
-        "line": 32,
-        "end_line": 106,
+        "line": 33,
+        "end_line": 109,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -8984,7 +9287,7 @@
         "names": [
           "default"
         ],
-        "line": 32
+        "line": 33
       }
     ],
     "anonymous_functions": 6
@@ -9149,7 +9452,7 @@
     "anonymous_functions": 13
   },
   "frontend/src/components/Navbar.component.test.jsx": {
-    "sha256": "d43fdbe9dd3eff4d18689ae7870b193e4831b88c6db2812623488e2aa3c9583b",
+    "sha256": "5add361624c3eadbf019f3d6a1d1e396adf9767cd4ae890273e7523aaa73e247",
     "definitions": [
       {
         "name": "fromTo",
@@ -9220,7 +9523,7 @@
     "anonymous_functions": 28
   },
   "frontend/src/components/Navbar.jsx": {
-    "sha256": "09f090ec99f209c8f01d417aa35bb357da3ffb125667a0ac5ee50abd13cbf939",
+    "sha256": "a7ccf6ac0ee62cb14c8e4d259b41e2b29a5e51dc569eecd0a7075bf98f917935",
     "definitions": [
       {
         "name": "revealWhenRendered",
@@ -9242,80 +9545,80 @@
       },
       {
         "name": "CountriesMega",
-        "line": 146,
-        "end_line": 189,
+        "line": 147,
+        "end_line": 190,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Navbar",
-        "line": 191,
-        "end_line": 622,
+        "line": 192,
+        "end_line": 623,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Navbar.setMobileOpen",
-        "line": 230,
-        "end_line": 230,
+        "line": 231,
+        "end_line": 231,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.setCalcOpen",
-        "line": 231,
-        "end_line": 234,
+        "line": 232,
+        "end_line": 235,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.open",
-        "line": 243,
-        "end_line": 243,
+        "line": 244,
+        "end_line": 244,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.apply",
-        "line": 257,
-        "end_line": 261,
+        "line": 258,
+        "end_line": 262,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.onDoc",
-        "line": 280,
-        "end_line": 288,
+        "line": 281,
+        "end_line": 289,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.onKey",
-        "line": 289,
-        "end_line": 295,
+        "line": 290,
+        "end_line": 296,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.navItemClass",
-        "line": 317,
-        "end_line": 323,
+        "line": 318,
+        "end_line": 324,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.openMega",
-        "line": 334,
-        "end_line": 337,
+        "line": 335,
+        "end_line": 338,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.closeMega",
-        "line": 338,
-        "end_line": 341,
+        "line": 339,
+        "end_line": 342,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.renderPrimaryLink",
-        "line": 343,
-        "end_line": 380,
+        "line": 344,
+        "end_line": 381,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.renderLink",
-        "line": 529,
-        "end_line": 547,
+        "line": 530,
+        "end_line": 548,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -9430,7 +9733,7 @@
         "names": [
           "default"
         ],
-        "line": 191
+        "line": 192
       }
     ],
     "anonymous_functions": 40
@@ -11307,6 +11610,406 @@
     ],
     "anonymous_functions": 11
   },
+  "frontend/src/components/R5cTools.jsx": {
+    "sha256": "5491979c520eca6930e5bd89f6f87f0645b2638c707e001b5152a434a2e5d792",
+    "definitions": [
+      {
+        "name": "money",
+        "line": 17,
+        "end_line": 19,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "CopyResult",
+        "line": 22,
+        "end_line": 42,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "CopyResult.onCopy",
+        "line": 27,
+        "end_line": 35,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "DateRate",
+        "line": 45,
+        "end_line": 106,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "DocRates",
+        "line": 111,
+        "end_line": 152,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "DocRates.onDownload",
+        "line": 118,
+        "end_line": 121,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 2
+      },
+      {
+        "source": "react-router-dom",
+        "line": 3
+      },
+      {
+        "source": "lucide-react",
+        "line": 4
+      },
+      {
+        "source": "./CurrencySelect",
+        "line": 5
+      },
+      {
+        "source": "../lib/hooks",
+        "line": 6
+      },
+      {
+        "source": "../lib/format",
+        "line": 7
+      },
+      {
+        "source": "../lib/currencyRates",
+        "line": 8
+      },
+      {
+        "source": "../lib/currencyChart",
+        "line": 9
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 10
+      },
+      {
+        "source": "../lib/r5cExport",
+        "line": 11
+      },
+      {
+        "source": "../lib/track",
+        "line": 12
+      },
+      {
+        "source": "../i18n",
+        "line": 13
+      },
+      {
+        "source": "../styles/r5c-tools.css",
+        "line": 14
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "CopyResult"
+        ],
+        "line": 22
+      },
+      {
+        "names": [
+          "DateRate"
+        ],
+        "line": 45
+      },
+      {
+        "names": [
+          "DocRates"
+        ],
+        "line": 111
+      }
+    ],
+    "anonymous_functions": 16
+  },
+  "frontend/src/components/R6bPulseStrip.component.test.jsx": {
+    "sha256": "57f6e9a03525f0feafd25d513f659db14484eb62263e4024544029e4d4c05394",
+    "definitions": [
+      {
+        "name": "strip",
+        "line": 8,
+        "end_line": 13,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 3
+      },
+      {
+        "source": "../lib/indicatorSummary",
+        "line": 4
+      },
+      {
+        "source": "./R6bPulseStrip",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 3
+  },
+  "frontend/src/components/R6bPulseStrip.jsx": {
+    "sha256": "62b853a1832d4fecb36e116a6102e97ecd5467d621a1d16d3edc85d182ba6ec3",
+    "definitions": [
+      {
+        "name": "R6bPulseStrip",
+        "line": 21,
+        "end_line": 119,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R6bPulseStrip.update",
+        "line": 32,
+        "end_line": 43,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R6bPulseStrip.onScroll",
+        "line": 44,
+        "end_line": 44,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "react-dom",
+        "line": 2
+      },
+      {
+        "source": "react-router-dom",
+        "line": 3
+      },
+      {
+        "source": "../lib/format",
+        "line": 4
+      },
+      {
+        "source": "../lib/deltaText",
+        "line": 5
+      },
+      {
+        "source": "../lib/indicatorSummary",
+        "line": 6
+      },
+      {
+        "source": "../lib/countryFlag",
+        "line": 7
+      },
+      {
+        "source": "../lib/indicatorVariants",
+        "line": 8
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 9
+      },
+      {
+        "source": "../lib/track",
+        "line": 10
+      },
+      {
+        "source": "../i18n",
+        "line": 11
+      },
+      {
+        "source": "../lib/periodPhrase",
+        "line": 12
+      },
+      {
+        "source": "./DeltaBadge",
+        "line": 13
+      },
+      {
+        "source": "../styles/r6b-pulse.css",
+        "line": 14
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 21
+      }
+    ],
+    "anonymous_functions": 8
+  },
+  "frontend/src/components/R7PricesBlock.component.test.jsx": {
+    "sha256": "24a28bac58517a6ec517e778e2ceefc9b928aeab0feeff75ada0574e74a0daa4",
+    "definitions": [
+      {
+        "name": "get",
+        "line": 7,
+        "end_line": 7,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 3
+      },
+      {
+        "source": "./R7PricesBlock",
+        "line": 4
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 11
+  },
+  "frontend/src/components/R7PricesBlock.jsx": {
+    "sha256": "61216d58fd79cb802d707b4a3025d1d863d1e4497e879a3b72ae5dce178a2989",
+    "definitions": [
+      {
+        "name": "loadSummary",
+        "line": 18,
+        "end_line": 32,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useRussiaPrices",
+        "line": 34,
+        "end_line": 40,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useRussiaPrices.queryFn",
+        "line": 37,
+        "end_line": 37,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "splitPriceUnit",
+        "line": 43,
+        "end_line": 52,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pctChange",
+        "line": 54,
+        "end_line": 57,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "signed",
+        "line": 59,
+        "end_line": 62,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Trend",
+        "line": 64,
+        "end_line": 75,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "readRegion",
+        "line": 77,
+        "end_line": 80,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R7PricesBlock",
+        "line": 82,
+        "end_line": 211,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R7PricesBlock.onRegion",
+        "line": 99,
+        "end_line": 104,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "react-router-dom",
+        "line": 2
+      },
+      {
+        "source": "@tanstack/react-query",
+        "line": 3
+      },
+      {
+        "source": "lucide-react",
+        "line": 4
+      },
+      {
+        "source": "../lib/api",
+        "line": 5
+      },
+      {
+        "source": "../lib/format",
+        "line": 6
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 7
+      },
+      {
+        "source": "../lib/regionsApi",
+        "line": 8
+      },
+      {
+        "source": "../i18n/locale",
+        "line": 9
+      },
+      {
+        "source": "../lib/track",
+        "line": 10
+      },
+      {
+        "source": "../i18n",
+        "line": 11
+      },
+      {
+        "source": "./Sparkline",
+        "line": 12
+      },
+      {
+        "source": "../styles/r7d-prices.css",
+        "line": 13
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 82
+      }
+    ],
+    "anonymous_functions": 13
+  },
   "frontend/src/components/RatingExtras.jsx": {
     "sha256": "08cc99d3fa862b017dbbd0468a1a72bf41a091e68cbfad91e16c7614f789db66",
     "definitions": [
@@ -11578,97 +12281,115 @@
     "anonymous_functions": 2
   },
   "frontend/src/components/RegionAnnualChart.jsx": {
-    "sha256": "c296f5db1709a129993875be6c2555d889b32298115974e633eb57abad4f9162",
+    "sha256": "0bb102172adedab49b597f8050cc6b466c64369ad774c700075c3227d312977c",
     "definitions": [
       {
         "name": "chartMayAnimate",
-        "line": 32,
-        "end_line": 35,
+        "line": 35,
+        "end_line": 38,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "monthTickLabel",
-        "line": 38,
-        "end_line": 45,
+        "line": 41,
+        "end_line": 48,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionTooltip",
-        "line": 47,
-        "end_line": 85,
+        "line": 50,
+        "end_line": 94,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionTooltip.fmt",
-        "line": 56,
-        "end_line": 56,
+        "line": 60,
+        "end_line": 60,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart",
-        "line": 89,
-        "end_line": 405,
+        "line": 98,
+        "end_line": 478,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionAnnualChart.periodKey",
-        "line": 112,
-        "end_line": 116,
+        "line": 123,
+        "end_line": 127,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart.idx",
-        "line": 175,
-        "end_line": 175,
+        "line": 189,
+        "end_line": 189,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart.formatLabel",
-        "line": 215,
-        "end_line": 218,
+        "line": 233,
+        "end_line": 236,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionAnnualChart.fmtLegend",
+        "line": 251,
+        "end_line": 251,
         "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [
       {
-        "source": "react",
+        "source": "../styles/r6c-annual.css",
         "line": 10
       },
       {
-        "source": "recharts",
+        "source": "react",
         "line": 11
       },
       {
-        "source": "../lib/regionsApi",
-        "line": 15
+        "source": "recharts",
+        "line": 12
       },
       {
-        "source": "../lib/format",
+        "source": "../lib/regionsApi",
         "line": 16
       },
       {
-        "source": "../i18n",
+        "source": "../lib/format",
         "line": 17
       },
       {
-        "source": "../lib/chartTheme",
+        "source": "../i18n",
         "line": 18
       },
       {
-        "source": "../lib/chartHooks",
-        "line": 21
+        "source": "../lib/chartTheme",
+        "line": 19
       },
       {
-        "source": "./ChartBrandCaption",
+        "source": "../lib/chartHooks",
         "line": 22
       },
       {
-        "source": "./ChartGlassDefs",
+        "source": "../lib/z2Price",
         "line": 23
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "./ChartBrandCaption",
         "line": 24
+      },
+      {
+        "source": "./ChartGlassDefs",
+        "line": 25
+      },
+      {
+        "source": "../styles/k4-charts.css",
+        "line": 26
+      },
+      {
+        "source": "../styles/z2-price.css",
+        "line": 27
       }
     ],
     "exports": [
@@ -11676,10 +12397,10 @@
         "names": [
           "default"
         ],
-        "line": 89
+        "line": 98
       }
     ],
-    "anonymous_functions": 36
+    "anonymous_functions": 39
   },
   "frontend/src/components/RegionCrossLink.jsx": {
     "sha256": "7644e93bf28e86a050dcbe888f0d47d9a80f5c8b2a71b9db4184c535c97a61af",
@@ -11820,54 +12541,54 @@
     "anonymous_functions": 19
   },
   "frontend/src/components/RegionsMap.jsx": {
-    "sha256": "d01996f6c17735b35bf32b494c26bfd6e8b907d4cffaef07ecc1390f4418eb98",
+    "sha256": "33c11d77b0e5cccf29412e41d2b6dab6456b8e9d9a463d8fa30a4fa0aae2aa13",
     "definitions": [
       {
         "name": "paddedViewBox",
-        "line": 44,
-        "end_line": 48,
+        "line": 45,
+        "end_line": 49,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionsMap",
-        "line": 50,
-        "end_line": 624,
+        "line": 51,
+        "end_line": 625,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionsMap.colorFor",
-        "line": 121,
-        "end_line": 121,
+        "line": 122,
+        "end_line": 122,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsMap.dist",
-        "line": 184,
-        "end_line": 184,
+        "line": 185,
+        "end_line": 185,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsMap.onTouchStart",
-        "line": 185,
-        "end_line": 191,
+        "line": 186,
+        "end_line": 192,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsMap.onTouchMove",
-        "line": 192,
-        "end_line": 204,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "RegionsMap.onTouchEnd",
-        "line": 205,
+        "line": 193,
         "end_line": 205,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "RegionsMap.onWheel",
+        "name": "RegionsMap.onTouchEnd",
         "line": 206,
-        "end_line": 210,
+        "end_line": 206,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionsMap.onWheel",
+        "line": 207,
+        "end_line": 211,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -11927,6 +12648,10 @@
       {
         "source": "../styles/w6f-pages.css",
         "line": 25
+      },
+      {
+        "source": "../styles/r3b-regions.css",
+        "line": 26
       }
     ],
     "exports": [
@@ -11934,7 +12659,7 @@
         "names": [
           "default"
         ],
-        "line": 50
+        "line": 51
       }
     ],
     "anonymous_functions": 52
@@ -14881,6 +15606,62 @@
     ],
     "exports": [],
     "anonymous_functions": 18
+  },
+  "frontend/src/components/Z3PastCompare.jsx": {
+    "sha256": "045da1e840a30a7ef9aad544bb361bd0f04c42ce509580e5d69ff328ac6e908c",
+    "definitions": [
+      {
+        "name": "verdict",
+        "line": 11,
+        "end_line": 16,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Z3PastCompare",
+        "line": 19,
+        "end_line": 52,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 3
+      },
+      {
+        "source": "../lib/hooks",
+        "line": 4
+      },
+      {
+        "source": "../lib/currencyRates",
+        "line": 5
+      },
+      {
+        "source": "../lib/z3Past",
+        "line": 6
+      },
+      {
+        "source": "../lib/format",
+        "line": 7
+      },
+      {
+        "source": "../i18n",
+        "line": 8
+      },
+      {
+        "source": "../styles/z3-cur.css",
+        "line": 9
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 19
+      }
+    ],
+    "anonymous_functions": 3
   },
   "frontend/src/components/Z4Indicator.component.test.jsx": {
     "sha256": "79e097721bd08fa5c66f7f185faf14720f19e69f68acf3dda5c965f3a0b15898",
@@ -17996,12 +18777,12 @@
     "anonymous_functions": 2
   },
   "frontend/src/components/home/HomeHero.jsx": {
-    "sha256": "4e5767c68501545bd57e8a9ae6c5cfc0f03f55748ea6f325768765012c7e85bf",
+    "sha256": "fa5d856d6af315d115a34e25f596f6d90c0b0102363f521ae913ff57e6d884d2",
     "definitions": [
       {
         "name": "HomeHero",
-        "line": 28,
-        "end_line": 124,
+        "line": 29,
+        "end_line": 126,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -18027,52 +18808,56 @@
         "line": 5
       },
       {
-        "source": "../../lib/searchExamples",
+        "source": "./HomePricesRates",
         "line": 6
       },
       {
-        "source": "../../lib/homeQuickLinks",
+        "source": "../../lib/searchExamples",
         "line": 7
       },
       {
-        "source": "../../lib/worldApi",
+        "source": "../../lib/homeQuickLinks",
         "line": 8
       },
       {
-        "source": "../../lib/homeWorkbench",
+        "source": "../../lib/worldApi",
         "line": 9
       },
       {
-        "source": "../../lib/sitePaths",
+        "source": "../../lib/homeWorkbench",
         "line": 10
       },
       {
-        "source": "../../lib/cabinetPrefs",
+        "source": "../../lib/sitePaths",
         "line": 11
       },
       {
-        "source": "../../lib/track",
+        "source": "../../lib/cabinetPrefs",
         "line": 12
       },
       {
-        "source": "../../i18n",
+        "source": "../../lib/track",
         "line": 13
       },
       {
-        "source": "../../styles/shell.css",
+        "source": "../../i18n",
         "line": 14
       },
       {
-        "source": "../../styles/planet-hero.css",
+        "source": "../../styles/shell.css",
         "line": 15
       },
       {
-        "source": "../../styles/z3-home.css",
+        "source": "../../styles/planet-hero.css",
         "line": 16
       },
       {
-        "source": "../../styles/k7-home.css",
+        "source": "../../styles/z3-home.css",
         "line": 17
+      },
+      {
+        "source": "../../styles/k7-home.css",
+        "line": 18
       }
     ],
     "exports": [
@@ -18080,7 +18865,7 @@
         "names": [
           "default"
         ],
-        "line": 28
+        "line": 29
       }
     ],
     "anonymous_functions": 11
@@ -18181,6 +18966,122 @@
       }
     ],
     "anonymous_functions": 7
+  },
+  "frontend/src/components/home/HomePricesRates.jsx": {
+    "sha256": "5c3746868833e70f9544d4ab2f521f050b0f1f0fcf58298d140bce0d7c3bd0d8",
+    "definitions": [
+      {
+        "name": "readSaved",
+        "line": 19,
+        "end_line": 21,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useRegionChoice",
+        "line": 23,
+        "end_line": 41,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useRegionChoice.onPick",
+        "line": 36,
+        "end_line": 39,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "HomeRegionQuick",
+        "line": 44,
+        "end_line": 72,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "RegionPrices",
+        "line": 74,
+        "end_line": 117,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "RateTiles",
+        "line": 119,
+        "end_line": 169,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "HomePricesRates",
+        "line": 171,
+        "end_line": 186,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 3
+      },
+      {
+        "source": "react-router-dom",
+        "line": 4
+      },
+      {
+        "source": "lucide-react",
+        "line": 5
+      },
+      {
+        "source": "../../lib/hooks",
+        "line": 6
+      },
+      {
+        "source": "../../lib/regionsApi",
+        "line": 7
+      },
+      {
+        "source": "../../lib/currencyRates",
+        "line": 8
+      },
+      {
+        "source": "../../lib/sitePaths",
+        "line": 9
+      },
+      {
+        "source": "../../lib/navItems",
+        "line": 10
+      },
+      {
+        "source": "../../lib/track",
+        "line": 11
+      },
+      {
+        "source": "../../i18n",
+        "line": 12
+      },
+      {
+        "source": "../../styles/z3-home.css",
+        "line": 13
+      },
+      {
+        "source": "../../styles/r3a-home.css",
+        "line": 14
+      },
+      {
+        "source": "../../styles/r5d-home.css",
+        "line": 15
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "HomeRegionQuick"
+        ],
+        "line": 44
+      },
+      {
+        "names": [
+          "default"
+        ],
+        "line": 171
+      }
+    ],
+    "anonymous_functions": 22
   },
   "frontend/src/components/home/HomeToday.component.test.jsx": {
     "sha256": "26d5c7555ab1b491d9f0443a311b156facdc44fcfb5985382bc9133cac292670",
@@ -18375,54 +19276,54 @@
     "anonymous_functions": 7
   },
   "frontend/src/components/home/HomeTools.jsx": {
-    "sha256": "a9ccf7a9dd4263cd4b47a9f65d620e0815b294405084f0ca0fd497cebfa48f8d",
+    "sha256": "9f2f8656800c93c9b83205a2b75a3c36eb68621bd93eae34a3c88bbc19cadd93",
     "definitions": [
       {
         "name": "parseAmount",
-        "line": 24,
-        "end_line": 29,
+        "line": 25,
+        "end_line": 30,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ToolShell",
-        "line": 31,
-        "end_line": 52,
+        "line": 32,
+        "end_line": 53,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ConverterTool",
-        "line": 55,
-        "end_line": 138,
+        "line": 56,
+        "end_line": 139,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "InflationTool",
-        "line": 141,
-        "end_line": 206,
+        "line": 142,
+        "end_line": 207,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "InflationTool.money",
-        "line": 156,
-        "end_line": 158,
+        "line": 157,
+        "end_line": 159,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CompareTool",
-        "line": 215,
-        "end_line": 292,
+        "line": 216,
+        "end_line": 293,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CompareTool.has",
-        "line": 231,
-        "end_line": 231,
+        "line": 232,
+        "end_line": 232,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "HomeTools",
-        "line": 294,
-        "end_line": 312,
+        "line": 295,
+        "end_line": 313,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -18485,13 +19386,13 @@
         "names": [
           "default"
         ],
-        "line": 294
+        "line": 295
       }
     ],
     "anonymous_functions": 30
   },
   "frontend/src/components/home/HomeWorkbench.component.test.jsx": {
-    "sha256": "625540686187c74f1acb84232ad8c62ce0c66234af4e9a2566b3c80603905f77",
+    "sha256": "98fb76a4854978ca7b9a36b996f917a28128b23e799ecfa8f1d2ba703d02cdb8",
     "definitions": [
       {
         "name": "default",
@@ -18874,6 +19775,620 @@
     ],
     "anonymous_functions": 22
   },
+  "frontend/src/components/regions/MonthlyPriceParts.component.test.jsx": {
+    "sha256": "b6f3f143ae2f7276bf677097a45fd196a5249b15bab845b2d96c20ed997e8c64",
+    "definitions": [
+      {
+        "name": "wrap",
+        "line": 7,
+        "end_line": 7,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "react-router-dom",
+        "line": 3
+      },
+      {
+        "source": "./MonthlyPriceParts",
+        "line": 4
+      },
+      {
+        "source": "../../i18n",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 6
+  },
+  "frontend/src/components/regions/MonthlyPriceParts.jsx": {
+    "sha256": "9df75dad911b0cabd4097e3364c2907550586f36c7b4d1f717cd2a56f165bc53",
+    "definitions": [
+      {
+        "name": "DiscontinuedNote",
+        "line": 31,
+        "end_line": 38,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "CompareLines",
+        "line": 41,
+        "end_line": 60,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "SiblingRow",
+        "line": 62,
+        "end_line": 84,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Group",
+        "line": 86,
+        "end_line": 103,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "GroupedSiblings",
+        "line": 106,
+        "end_line": 136,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PairSwitch",
+        "line": 139,
+        "end_line": 168,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PairSwitch.num",
+        "line": 143,
+        "end_line": 143,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "CopyForClient",
+        "line": 171,
+        "end_line": 194,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "CopyForClient.copy",
+        "line": 174,
+        "end_line": 187,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RangeChips",
+        "line": 197,
+        "end_line": 210,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "AreaCalc",
+        "line": 215,
+        "end_line": 233,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 3
+      },
+      {
+        "source": "lucide-react",
+        "line": 4
+      },
+      {
+        "source": "../../lib/regionUi",
+        "line": 5
+      },
+      {
+        "source": "react-router-dom",
+        "line": 6
+      },
+      {
+        "source": "lucide-react",
+        "line": 7
+      },
+      {
+        "source": "../../i18n",
+        "line": 8
+      },
+      {
+        "source": "../../lib/regionUi",
+        "line": 9
+      },
+      {
+        "source": "../../lib/sitePaths",
+        "line": 10
+      },
+      {
+        "source": "../../lib/z2Price",
+        "line": 11
+      },
+      {
+        "source": "../../styles/z2-price.css",
+        "line": 12
+      },
+      {
+        "source": "../../styles/r5a-price.css",
+        "line": 13
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "DiscontinuedNote"
+        ],
+        "line": 31
+      },
+      {
+        "names": [
+          "CompareLines"
+        ],
+        "line": 41
+      },
+      {
+        "names": [
+          "default"
+        ],
+        "line": 106
+      },
+      {
+        "names": [
+          "PairSwitch"
+        ],
+        "line": 139
+      },
+      {
+        "names": [
+          "CopyForClient"
+        ],
+        "line": 171
+      },
+      {
+        "names": [
+          "RangeChips"
+        ],
+        "line": 197
+      },
+      {
+        "names": [
+          "AreaCalc"
+        ],
+        "line": 215
+      }
+    ],
+    "anonymous_functions": 14
+  },
+  "frontend/src/components/regions/R4PriceCompare.jsx": {
+    "sha256": "ff2a7d536a0cdb032cf48ea42014889fa4ddc373940ce041a5c47a5d13222607",
+    "definitions": [
+      {
+        "name": "useRegionPriceCompare",
+        "line": 16,
+        "end_line": 25,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useRegionPriceCompare.queryFn",
+        "line": 19,
+        "end_line": 20,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "groupPriceItems",
+        "line": 28,
+        "end_line": 36,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "formatRub",
+        "line": 38,
+        "end_line": 41,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Duel",
+        "line": 43,
+        "end_line": 53,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Duel.cell",
+        "line": 45,
+        "end_line": 51,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "BasketCard",
+        "line": 55,
+        "end_line": 114,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "BasketCard.nameOf",
+        "line": 59,
+        "end_line": 59,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "BasketCard.fmtTimes",
+        "line": 60,
+        "end_line": 60,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "GroupTable",
+        "line": 116,
+        "end_line": 159,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "compareAsText",
+        "line": 162,
+        "end_line": 168,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "CopyNumbers",
+        "line": 170,
+        "end_line": 185,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "CopyNumbers.copy",
+        "line": 172,
+        "end_line": 178,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R4PriceVerdict",
+        "line": 187,
+        "end_line": 199,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R4PriceVerdict.nameOf",
+        "line": 190,
+        "end_line": 190,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R4PriceSkeleton",
+        "line": 201,
+        "end_line": 208,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R4PriceCompare",
+        "line": 210,
+        "end_line": 237,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 5
+      },
+      {
+        "source": "react-router-dom",
+        "line": 6
+      },
+      {
+        "source": "@tanstack/react-query",
+        "line": 7
+      },
+      {
+        "source": "lucide-react",
+        "line": 8
+      },
+      {
+        "source": "../../lib/api",
+        "line": 9
+      },
+      {
+        "source": "../../lib/sitePaths",
+        "line": 10
+      },
+      {
+        "source": "./RegionPrices",
+        "line": 11
+      },
+      {
+        "source": "../../i18n",
+        "line": 12
+      },
+      {
+        "source": "../../i18n/locale",
+        "line": 13
+      },
+      {
+        "source": "../../styles/r4a-compare-prices.css",
+        "line": 14
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "useRegionPriceCompare"
+        ],
+        "line": 16
+      },
+      {
+        "names": [
+          "groupPriceItems"
+        ],
+        "line": 28
+      },
+      {
+        "names": [
+          "formatRub"
+        ],
+        "line": 38
+      },
+      {
+        "names": [
+          "compareAsText"
+        ],
+        "line": 162
+      },
+      {
+        "names": [
+          "R4PriceVerdict"
+        ],
+        "line": 187
+      },
+      {
+        "names": [
+          "R4PriceSkeleton"
+        ],
+        "line": 201
+      },
+      {
+        "names": [
+          "default"
+        ],
+        "line": 210
+      }
+    ],
+    "anonymous_functions": 19
+  },
+  "frontend/src/components/regions/R4PriceCompare.test.jsx": {
+    "sha256": "3f08721a16f03bab09598344f0f1ccf49a18d07f104e470bd3e2274c23d7599a",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "./R4PriceCompare",
+        "line": 3
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 5
+  },
+  "frontend/src/components/regions/R4YourRegion.jsx": {
+    "sha256": "3017d74b3a052f52d3a6014aea4fd48c3ddc39ee1dbd0fd31397ef2d9120a351",
+    "definitions": [
+      {
+        "name": "readSaved",
+        "line": 14,
+        "end_line": 16,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "medianOf",
+        "line": 19,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R4YourRegion",
+        "line": 26,
+        "end_line": 67,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R4YourRegion.val",
+        "line": 31,
+        "end_line": 31,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R4YourRegion.pick",
+        "line": 34,
+        "end_line": 37,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 4
+      },
+      {
+        "source": "react-router-dom",
+        "line": 5
+      },
+      {
+        "source": "lucide-react",
+        "line": 6
+      },
+      {
+        "source": "../../lib/regionUi",
+        "line": 7
+      },
+      {
+        "source": "../../lib/sitePaths",
+        "line": 8
+      },
+      {
+        "source": "../../i18n",
+        "line": 9
+      },
+      {
+        "source": "../../styles/r4a-compare-prices.css",
+        "line": 10
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "medianOf"
+        ],
+        "line": 19
+      },
+      {
+        "names": [
+          "default"
+        ],
+        "line": 26
+      }
+    ],
+    "anonymous_functions": 7
+  },
+  "frontend/src/components/regions/R6Annual.component.test.jsx": {
+    "sha256": "f54e1cca1c5e2b63ec203ed749a398bd90bd6faa096088f73948c1adf54c3683",
+    "definitions": [
+      {
+        "name": "t",
+        "line": 6,
+        "end_line": 6,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "react-router-dom",
+        "line": 3
+      },
+      {
+        "source": "./R6Annual",
+        "line": 4
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 7
+  },
+  "frontend/src/components/regions/R6Annual.jsx": {
+    "sha256": "a84dc0b9e3e700a58c8424e645b1956044536bd8cf7e57ef2a33c3d1fba097f3",
+    "definitions": [
+      {
+        "name": "R6RussiaLine",
+        "line": 10,
+        "end_line": 23,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R6RankCaption",
+        "line": 26,
+        "end_line": 31,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R6SinceStart",
+        "line": 34,
+        "end_line": 44,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "RankRow",
+        "line": 46,
+        "end_line": 62,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R6RatingExtras",
+        "line": 65,
+        "end_line": 102,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R6StaleNote",
+        "line": 105,
+        "end_line": 108,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react-router-dom",
+        "line": 3
+      },
+      {
+        "source": "../../lib/regionUi",
+        "line": 4
+      },
+      {
+        "source": "../../lib/r6Annual",
+        "line": 5
+      },
+      {
+        "source": "../../lib/sitePaths",
+        "line": 6
+      },
+      {
+        "source": "../../styles/r6c-annual.css",
+        "line": 7
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "R6RussiaLine"
+        ],
+        "line": 10
+      },
+      {
+        "names": [
+          "R6RankCaption"
+        ],
+        "line": 26
+      },
+      {
+        "names": [
+          "R6SinceStart"
+        ],
+        "line": 34
+      },
+      {
+        "names": [
+          "R6RatingExtras"
+        ],
+        "line": 65
+      },
+      {
+        "names": [
+          "R6StaleNote"
+        ],
+        "line": 105
+      }
+    ],
+    "anonymous_functions": 7
+  },
   "frontend/src/components/regions/RegionComparePick.jsx": {
     "sha256": "ac515206828b29e4101e7e60c3f2c30f43d9ab9ed4167632609f847a273076aa",
     "definitions": [
@@ -19119,54 +20634,54 @@
     "anonymous_functions": 5
   },
   "frontend/src/components/regions/RegionParts.jsx": {
-    "sha256": "430014f3ee74538adf6c1c6865a631e149753db096d0e680def47f92a5dee0eb",
+    "sha256": "f37a02bcad93319f11ae3707b2f468247562e76d0e27c91231f52e7dbfeb7cc7",
     "definitions": [
       {
         "name": "RegionDelta",
         "line": 15,
-        "end_line": 44,
+        "end_line": 46,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TrendTick",
-        "line": 50,
-        "end_line": 71,
+        "line": 52,
+        "end_line": 73,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionValue",
-        "line": 74,
-        "end_line": 82,
+        "line": 76,
+        "end_line": 84,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionHeadlineCard",
-        "line": 84,
-        "end_line": 106,
+        "line": 86,
+        "end_line": 108,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorRow",
-        "line": 108,
-        "end_line": 136,
+        "line": 110,
+        "end_line": 144,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionSectionHeading",
-        "line": 139,
-        "end_line": 149,
+        "line": 147,
+        "end_line": 157,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionSearchField",
-        "line": 151,
-        "end_line": 165,
+        "line": 159,
+        "end_line": 173,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionMetricLine",
-        "line": 168,
-        "end_line": 178,
+        "line": 176,
+        "end_line": 186,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -19215,66 +20730,264 @@
         "names": [
           "TrendTick"
         ],
-        "line": 50
+        "line": 52
       },
       {
         "names": [
           "RegionValue"
         ],
-        "line": 74
+        "line": 76
       },
       {
         "names": [
           "RegionHeadlineCard"
         ],
-        "line": 84
+        "line": 86
       },
       {
         "names": [
           "RegionIndicatorRow"
         ],
-        "line": 108
+        "line": 110
       },
       {
         "names": [
           "RegionSectionHeading"
         ],
-        "line": 139
+        "line": 147
       },
       {
         "names": [
           "RegionSearchField"
         ],
-        "line": 151
+        "line": 159
       },
       {
         "names": [
           "RegionMetricLine"
         ],
-        "line": 168
+        "line": 176
       }
     ],
     "anonymous_functions": 0
   },
-  "frontend/src/components/regions/RegionRanking.jsx": {
-    "sha256": "efd73ac30048f1b1bafdbd0e7ba8f26d08af4b4e4fa1e13148c01fb42a29e124",
+  "frontend/src/components/regions/RegionPrices.jsx": {
+    "sha256": "3dd8e1c546b74f1efd1b539ed3794416418586ea232c50844c563b8009abb8c6",
     "definitions": [
       {
+        "name": "collectPriceItems",
+        "line": 20,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "splitShortName",
+        "line": 27,
+        "end_line": 34,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "formatPrice",
+        "line": 36,
+        "end_line": 41,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "commonPeriod",
+        "line": 44,
+        "end_line": 51,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PriceCard",
+        "line": 53,
+        "end_line": 82,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "familyPicks",
+        "line": 93,
+        "end_line": 97,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "RegionPricesBlock",
+        "line": 100,
+        "end_line": 147,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PriceRow",
+        "line": 149,
+        "end_line": 151,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "RegionPriceSection",
+        "line": 154,
+        "end_line": 263,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "RegionPriceSection.rank",
+        "line": 170,
+        "end_line": 170,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionPriceSection.toggle",
+        "line": 184,
+        "end_line": 188,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 4
+      },
+      {
+        "source": "react-router-dom",
+        "line": 5
+      },
+      {
+        "source": "lucide-react",
+        "line": 6
+      },
+      {
+        "source": "../DeltaBadge",
+        "line": 7
+      },
+      {
+        "source": "../../lib/regionsApi",
+        "line": 8
+      },
+      {
+        "source": "../../lib/regionUi",
+        "line": 9
+      },
+      {
+        "source": "./RegionParts",
+        "line": 10
+      },
+      {
+        "source": "../../i18n",
+        "line": 11
+      },
+      {
+        "source": "../../styles/z1-prices.css",
+        "line": 12
+      },
+      {
+        "source": "../../styles/r5b-region.css",
+        "line": 13
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "collectPriceItems"
+        ],
+        "line": 20
+      },
+      {
+        "names": [
+          "splitShortName"
+        ],
+        "line": 27
+      },
+      {
+        "names": [
+          "formatPrice"
+        ],
+        "line": 36
+      },
+      {
+        "names": [
+          "commonPeriod"
+        ],
+        "line": 44
+      },
+      {
+        "names": [
+          "FAMILY_TABS"
+        ],
+        "line": 85
+      },
+      {
+        "names": [
+          "familyPicks"
+        ],
+        "line": 93
+      },
+      {
+        "names": [
+          "RegionPricesBlock"
+        ],
+        "line": 100
+      },
+      {
+        "names": [
+          "RegionPriceSection"
+        ],
+        "line": 154
+      }
+    ],
+    "anonymous_functions": 42
+  },
+  "frontend/src/components/regions/RegionPrices.test.jsx": {
+    "sha256": "ac09111284c19f73b1607e1c8ec64976920f7b99f19686e0c7770a36d5788a0c",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./RegionPrices",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 11
+  },
+  "frontend/src/components/regions/RegionRanking.jsx": {
+    "sha256": "07a6666fa3046c19e3c905940dafea61d52783e72f879bc77cd869bff416fd22",
+    "definitions": [
+      {
+        "name": "readMine",
+        "line": 23,
+        "end_line": 23,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "writeMine",
+        "line": 24,
+        "end_line": 24,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "MoreMetrics",
-        "line": 22,
-        "end_line": 90,
+        "line": 27,
+        "end_line": 95,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionRanking",
-        "line": 92,
-        "end_line": 226,
+        "line": 97,
+        "end_line": 278,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "RegionRanking.pickMine",
+        "line": 145,
+        "end_line": 145,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "RegionRanking.pick",
-        "line": 123,
-        "end_line": 127,
+        "line": 147,
+        "end_line": 151,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -19334,6 +21047,14 @@
       {
         "source": "../../styles/k6-country.css",
         "line": 17
+      },
+      {
+        "source": "../../styles/r3b-regions.css",
+        "line": 18
+      },
+      {
+        "source": "../../styles/r7c-regions.css",
+        "line": 19
       }
     ],
     "exports": [
@@ -19341,10 +21062,10 @@
         "names": [
           "default"
         ],
-        "line": 92
+        "line": 97
       }
     ],
-    "anonymous_functions": 25
+    "anonymous_functions": 35
   },
   "frontend/src/components/russia/LaborIndicatorGroups.jsx": {
     "sha256": "571a0bbba31801547d5d0eedd1680366a54f21c768a36f4cc0a749e205a83def",
@@ -19585,6 +21306,116 @@
       }
     ],
     "anonymous_functions": 9
+  },
+  "frontend/src/components/searchLabourHints.js": {
+    "sha256": "68ad11ac8fbede4921826e061b27f0ba3e0b056f924a3c8e46c06e5b324ebfeb",
+    "definitions": [
+      {
+        "name": "isLabourQuery",
+        "line": 5,
+        "end_line": 7,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "placeFromQuery",
+        "line": 10,
+        "end_line": 15,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "isMrotQuery",
+        "line": 19,
+        "end_line": 21,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "localSuggestions",
+        "line": 25,
+        "end_line": 29,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "labourNoteKey",
+        "line": 31,
+        "end_line": 33,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "labourSuggestions",
+        "line": 35,
+        "end_line": 40,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "isLabourQuery"
+        ],
+        "line": 5
+      },
+      {
+        "names": [
+          "placeFromQuery"
+        ],
+        "line": 10
+      },
+      {
+        "names": [
+          "isMrotQuery"
+        ],
+        "line": 19
+      },
+      {
+        "names": [
+          "localSuggestions"
+        ],
+        "line": 25
+      },
+      {
+        "names": [
+          "labourNoteKey"
+        ],
+        "line": 31
+      },
+      {
+        "names": [
+          "labourSuggestions"
+        ],
+        "line": 35
+      }
+    ],
+    "anonymous_functions": 4
+  },
+  "frontend/src/components/searchLabourHints.test.js": {
+    "sha256": "a321b8361ff891e08137028dd2947d2d4924a7e9c4d7e492a8ea5ebfd4b47747",
+    "definitions": [
+      {
+        "name": "t",
+        "line": 4,
+        "end_line": 4,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "tl",
+        "line": 28,
+        "end_line": 28,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./searchLabourHints",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 6
   },
   "frontend/src/components/shellScrollOffset.component.test.jsx": {
     "sha256": "628239088b7633e8d39193131369d64ad819b46ab2519f85f7f3ae56e366c31f",
@@ -21140,7 +22971,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "516610b470e1277d20451624b02ec596ed7eeec6d774405f77e6c0845c1b31f6",
+    "sha256": "8b6389706e987a3e16c31e03d397144da9d6e51b5121f73cec5073d60d2ec62e",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -21248,7 +23079,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "c434df62b3824326307b10905d23e70108403901a71311d51532abbe3253097f",
+    "sha256": "1f1eb93b2f7195d2487418a6c78e172efdcb5eba987ddf5a00625458057cd7dd",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -30819,7 +32650,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/lib/currencyChart.js": {
-    "sha256": "9ef6d5f240ec0b433da9b915e5800f8a7ba50b111bc19d2db4301a37c3e5c34d",
+    "sha256": "f0daf02a63f863235318dd0c8649f7e5be1f6c2392df79170fde60d441b7422b",
     "definitions": [
       {
         "name": "limitForPeriod",
@@ -31010,7 +32841,7 @@
     "anonymous_functions": 21
   },
   "frontend/src/lib/currencyMarket.js": {
-    "sha256": "446bf0d04af7ca80b662bbc19f61d60d2683088d5226e8b5486a1b62e364683c",
+    "sha256": "457a44498ff1e52f16a913ce86b78a55ebddc31eae8ac17706a4bee465407651",
     "definitions": [
       {
         "name": "fetchMarket",
@@ -31083,8 +32914,24 @@
     ],
     "anonymous_functions": 8
   },
+  "frontend/src/lib/currencyQuoteUnits.test.js": {
+    "sha256": "cc17fdbb4a3f32a6be885034197b00e031f2b08b30bf08b1499d566cee494f08",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./currencyRates",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
+  },
   "frontend/src/lib/currencyRates.js": {
-    "sha256": "01cf321cabe3d77f6c6cd50b4750d0788f1439766c39ccabc8fdd205ed663c93",
+    "sha256": "82127a0427d03490bbe28b627ba4fbb1194f28d83b63e61599e026e32a77c734",
     "definitions": [
       {
         "name": "currencyNames",
@@ -31118,98 +32965,146 @@
       },
       {
         "name": "parsePair",
-        "line": 86,
-        "end_line": 92,
+        "line": 89,
+        "end_line": 95,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pairTitle",
-        "line": 95,
-        "end_line": 110,
+        "line": 98,
+        "end_line": 113,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pairTab",
-        "line": 113,
-        "end_line": 118,
+        "line": 116,
+        "end_line": 121,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "sortByPopularity",
-        "line": 123,
-        "end_line": 132,
+        "line": 126,
+        "end_line": 135,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "sortByPopularity.rank",
-        "line": 124,
-        "end_line": 127,
+        "line": 127,
+        "end_line": 130,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "rateBasis",
-        "line": 135,
-        "end_line": 140,
+        "line": 138,
+        "end_line": 143,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "quoteUnitsOf",
+        "line": 153,
+        "end_line": 158,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "buildEdges",
-        "line": 146,
-        "end_line": 155,
+        "line": 160,
+        "end_line": 171,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "convertibleUnits",
-        "line": 161,
-        "end_line": 173,
+        "line": 177,
+        "end_line": 189,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "convert",
-        "line": 179,
-        "end_line": 204,
+        "line": 195,
+        "end_line": 220,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "parseAmountInput",
-        "line": 210,
-        "end_line": 216,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "formatRate",
-        "line": 219,
+        "line": 226,
         "end_line": 232,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "currencySearchText",
+        "line": 268,
+        "end_line": 271,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "unitWord",
+        "line": 287,
+        "end_line": 298,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "nominalFor",
+        "line": 306,
+        "end_line": 312,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "amountPresets",
+        "line": 315,
+        "end_line": 325,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "describeRate",
+        "line": 331,
+        "end_line": 350,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "describeRate.money",
+        "line": 341,
+        "end_line": 343,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "describeRate.line",
+        "line": 344,
+        "end_line": 348,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "formatRate",
+        "line": 353,
+        "end_line": 366,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "formatConverted",
-        "line": 235,
-        "end_line": 245,
+        "line": 369,
+        "end_line": 379,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pointAtOrBefore",
-        "line": 249,
-        "end_line": 258,
+        "line": 383,
+        "end_line": 392,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "currencyWindows",
-        "line": 264,
-        "end_line": 293,
+        "line": 398,
+        "end_line": 427,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "currencyWindows.change",
-        "line": 272,
-        "end_line": 276,
+        "line": 406,
+        "end_line": 410,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "normalizeRateNameEn",
-        "line": 296,
-        "end_line": 300,
+        "line": 430,
+        "end_line": 434,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -31242,85 +33137,127 @@
         "names": [
           "parsePair"
         ],
-        "line": 86
+        "line": 89
       },
       {
         "names": [
           "pairTitle"
         ],
-        "line": 95
+        "line": 98
       },
       {
         "names": [
           "pairTab"
         ],
-        "line": 113
+        "line": 116
       },
       {
         "names": [
           "CURRENCY_TABS"
         ],
-        "line": 120
+        "line": 123
       },
       {
         "names": [
           "sortByPopularity"
         ],
-        "line": 123
+        "line": 126
       },
       {
         "names": [
           "rateBasis"
         ],
-        "line": 135
+        "line": 138
+      },
+      {
+        "names": [
+          "quoteUnitsOf"
+        ],
+        "line": 153
       },
       {
         "names": [
           "buildEdges"
         ],
-        "line": 146
+        "line": 160
       },
       {
         "names": [
           "convertibleUnits"
         ],
-        "line": 161
+        "line": 177
       },
       {
         "names": [
           "convert"
         ],
-        "line": 179
+        "line": 195
       },
       {
         "names": [
           "parseAmountInput"
         ],
-        "line": 210
+        "line": 226
       },
       {
         "names": [
-          "formatRate"
-        ],
-        "line": 219
-      },
-      {
-        "names": [
-          "formatConverted"
+          "TRAVEL_UNITS"
         ],
         "line": 235
       },
       {
         "names": [
+          "currencySearchText"
+        ],
+        "line": 268
+      },
+      {
+        "names": [
+          "unitWord"
+        ],
+        "line": 287
+      },
+      {
+        "names": [
+          "nominalFor"
+        ],
+        "line": 306
+      },
+      {
+        "names": [
+          "amountPresets"
+        ],
+        "line": 315
+      },
+      {
+        "names": [
+          "describeRate"
+        ],
+        "line": 331
+      },
+      {
+        "names": [
+          "formatRate"
+        ],
+        "line": 353
+      },
+      {
+        "names": [
+          "formatConverted"
+        ],
+        "line": 369
+      },
+      {
+        "names": [
           "currencyWindows"
         ],
-        "line": 264
+        "line": 398
       },
       {
         "names": [
           "normalizeRateNameEn"
         ],
-        "line": 296
+        "line": 430
       }
     ],
     "anonymous_functions": 14
@@ -33313,7 +35250,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/lib/homeQuickLinks.js": {
-    "sha256": "e4a77eea23d0666e5c034da07d3d2c300670d03e3de30d992ffea5c9a44baa7e",
+    "sha256": "8e059943dd183161691aacc67df3fc5526b74e670cc17dbcdb2e97630e256ac8",
     "definitions": [
       {
         "name": "snapshotHref",
@@ -33324,7 +35261,7 @@
       {
         "name": "buildQuickLinks",
         "line": 17,
-        "end_line": 36,
+        "end_line": 38,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -33349,7 +35286,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/lib/homeQuickLinks.test.js": {
-    "sha256": "2381ddd666632ea872384e8996fe71eef807c53b2b5d2d01a1ffacaa3aa90a61",
+    "sha256": "90d491225dfd562b2b8c3463ab794c922b94a35cf0f275ae42c3fc6d7f1a7533",
     "definitions": [],
     "imports": [
       {
@@ -34665,7 +36602,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/indicatorSummary.js": {
-    "sha256": "61a0394ece2042c15ca1f9e2284fee4af306f7c74bab9e4b4e66d745898cf10d",
+    "sha256": "b2b98242215ea22e0b52740f300d3ca148cc02dbdbe370fd84cf8c37f745b041",
     "definitions": [
       {
         "name": "isPercentChangeUnit",
@@ -34741,62 +36678,62 @@
       },
       {
         "name": "compactDigits",
-        "line": 168,
-        "end_line": 173,
+        "line": 170,
+        "end_line": 175,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "dataDigitsOf",
-        "line": 176,
-        "end_line": 185,
+        "line": 178,
+        "end_line": 187,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyDigits",
-        "line": 191,
-        "end_line": 195,
+        "line": 193,
+        "end_line": 197,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatTileValue",
-        "line": 201,
-        "end_line": 223,
+        "line": 203,
+        "end_line": 226,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatPercentChange",
-        "line": 226,
-        "end_line": 232,
+        "line": 229,
+        "end_line": 235,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatPercentChangeFine",
-        "line": 239,
-        "end_line": 248,
+        "line": 242,
+        "end_line": 251,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "growthDigits",
-        "line": 251,
-        "end_line": 253,
+        "line": 254,
+        "end_line": 256,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "rankAmongCountries",
-        "line": 260,
-        "end_line": 271,
+        "line": 263,
+        "end_line": 274,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "buildIndicatorSummary",
-        "line": 285,
-        "end_line": 323,
+        "line": 288,
+        "end_line": 326,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "buildIndicatorSummary.fmt",
-        "line": 304,
-        "end_line": 304,
+        "line": 307,
+        "end_line": 307,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -34865,49 +36802,49 @@
         "names": [
           "dataDigitsOf"
         ],
-        "line": 176
+        "line": 178
       },
       {
         "names": [
           "tidyDigits"
         ],
-        "line": 191
+        "line": 193
       },
       {
         "names": [
           "formatTileValue"
         ],
-        "line": 201
+        "line": 203
       },
       {
         "names": [
           "formatPercentChange"
         ],
-        "line": 226
+        "line": 229
       },
       {
         "names": [
           "formatPercentChangeFine"
         ],
-        "line": 239
+        "line": 242
       },
       {
         "names": [
           "growthDigits"
         ],
-        "line": 251
+        "line": 254
       },
       {
         "names": [
           "rankAmongCountries"
         ],
-        "line": 260
+        "line": 263
       },
       {
         "names": [
           "buildIndicatorSummary"
         ],
-        "line": 285
+        "line": 288
       }
     ],
     "anonymous_functions": 5
@@ -35743,7 +37680,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/navItems.js": {
-    "sha256": "af56ad81ab676bc7883e70118c548075c1fe004ff35efbb91af7ed2833dfaa33",
+    "sha256": "c5212d19a3f1392a007ca7471a82a760210fd51c5a3bf75524fc6ba1fa5b79d7",
     "definitions": [
       {
         "name": "primaryNav",
@@ -35772,7 +37709,7 @@
       {
         "name": "mobileNavGroups",
         "line": 156,
-        "end_line": 192,
+        "end_line": 196,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -38473,6 +40410,196 @@
     "exports": [],
     "anonymous_functions": 20
   },
+  "frontend/src/lib/r5cExport.js": {
+    "sha256": "5af8fa7ab450550e8e90fd79973cc7fc24fb0d31740eb394586aa7bde1cd1aca",
+    "definitions": [
+      {
+        "name": "ms",
+        "line": 6,
+        "end_line": 6,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "rateOnDate",
+        "line": 9,
+        "end_line": 22,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "dateShortcuts",
+        "line": 25,
+        "end_line": 36,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "dateShortcuts.iso",
+        "line": 28,
+        "end_line": 28,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "rateTableRows",
+        "line": 39,
+        "end_line": 48,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ratesCsv",
+        "line": 51,
+        "end_line": 56,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ratesCsv.num",
+        "line": 53,
+        "end_line": 53,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "downloadText",
+        "line": 58,
+        "end_line": 67,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "copyText",
+        "line": 69,
+        "end_line": 88,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "./currencyRates",
+        "line": 2
+      },
+      {
+        "source": "./currencyChart",
+        "line": 3
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "rateOnDate"
+        ],
+        "line": 9
+      },
+      {
+        "names": [
+          "dateShortcuts"
+        ],
+        "line": 25
+      },
+      {
+        "names": [
+          "rateTableRows"
+        ],
+        "line": 39
+      },
+      {
+        "names": [
+          "ratesCsv"
+        ],
+        "line": 51
+      },
+      {
+        "names": [
+          "downloadText"
+        ],
+        "line": 58
+      },
+      {
+        "names": [
+          "copyText"
+        ],
+        "line": 69
+      }
+    ],
+    "anonymous_functions": 7
+  },
+  "frontend/src/lib/r5cExport.test.js": {
+    "sha256": "f4a308a65a4e0d4dab361087df5a4f907a6eb74fed0fa0e6dba42708cf00514b",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./r5cExport",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 8
+  },
+  "frontend/src/lib/r6Annual.js": {
+    "sha256": "83023560f6d15888b512fe22ca63a27733a0da6bb9621540b15561b26b3f359a",
+    "definitions": [
+      {
+        "name": "isYearsUnit",
+        "line": 5,
+        "end_line": 7,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "dec",
+        "line": 9,
+        "end_line": 9,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "yearsWord",
+        "line": 11,
+        "end_line": 20,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "gapText",
+        "line": 23,
+        "end_line": 45,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "./regionUi",
+        "line": 1
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "isYearsUnit"
+        ],
+        "line": 5
+      },
+      {
+        "names": [
+          "gapText"
+        ],
+        "line": 23
+      }
+    ],
+    "anonymous_functions": 0
+  },
+  "frontend/src/lib/r6Annual.test.js": {
+    "sha256": "ff1eab83092a57ed8746207723d004167d4ed5de156c9d1341c03533600ebf41",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./r6Annual",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 5
+  },
   "frontend/src/lib/rangeStats.js": {
     "sha256": "7f5b0d9dce1aed3c61d42ca0d1bb0c2646f99ed957b1adcffc60680eb5c4aaa5",
     "definitions": [
@@ -39270,7 +41397,7 @@
     "anonymous_functions": 14
   },
   "frontend/src/lib/regionUi.js": {
-    "sha256": "cd910da6d669307ff588d43736396deac9f627c77c144acee32ed39ccc7a8b53",
+    "sha256": "eb53836481db5e259562a55835d0a5d84cc2ec87defa0d22271040a60b86ecf0",
     "definitions": [
       {
         "name": "numberLocale",
@@ -39281,85 +41408,85 @@
       {
         "name": "unitLabel",
         "line": 13,
-        "end_line": 29,
+        "end_line": 30,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isPercentUnit",
-        "line": 31,
-        "end_line": 33,
+        "line": 32,
+        "end_line": 34,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatRegionNumber",
-        "line": 36,
-        "end_line": 50,
+        "line": 37,
+        "end_line": 51,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatRegionWithUnit",
-        "line": 53,
-        "end_line": 58,
+        "line": 54,
+        "end_line": 59,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatDeltaPercent",
-        "line": 61,
-        "end_line": 67,
+        "line": 62,
+        "end_line": 68,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatPointsDelta",
-        "line": 73,
-        "end_line": 84,
+        "line": 74,
+        "end_line": 85,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "glueNumbers",
-        "line": 90,
-        "end_line": 94,
+        "line": 91,
+        "end_line": 95,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "plainIndicatorTitle",
-        "line": 102,
-        "end_line": 116,
+        "line": 103,
+        "end_line": 117,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "explainIndicator",
-        "line": 122,
-        "end_line": 151,
+        "line": 123,
+        "end_line": 152,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "plainName",
-        "line": 154,
-        "end_line": 156,
+        "line": 155,
+        "end_line": 157,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compactParts",
-        "line": 174,
-        "end_line": 188,
+        "line": 175,
+        "end_line": 189,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatRegionCompact",
-        "line": 191,
-        "end_line": 194,
+        "line": 192,
+        "end_line": 195,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "prioritizeIndicators",
-        "line": 200,
-        "end_line": 211,
+        "line": 201,
+        "end_line": 212,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "prioritizeIndicators.score",
-        "line": 201,
-        "end_line": 206,
+        "line": 202,
+        "end_line": 207,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -39390,73 +41517,73 @@
         "names": [
           "isPercentUnit"
         ],
-        "line": 31
+        "line": 32
       },
       {
         "names": [
           "formatRegionNumber"
         ],
-        "line": 36
+        "line": 37
       },
       {
         "names": [
           "formatRegionWithUnit"
         ],
-        "line": 53
+        "line": 54
       },
       {
         "names": [
           "formatDeltaPercent"
         ],
-        "line": 61
+        "line": 62
       },
       {
         "names": [
           "formatPointsDelta"
         ],
-        "line": 73
+        "line": 74
       },
       {
         "names": [
           "glueNumbers"
         ],
-        "line": 90
+        "line": 91
       },
       {
         "names": [
           "plainIndicatorTitle"
         ],
-        "line": 102
+        "line": 103
       },
       {
         "names": [
           "explainIndicator"
         ],
-        "line": 122
+        "line": 123
       },
       {
         "names": [
           "plainName"
         ],
-        "line": 154
+        "line": 155
       },
       {
         "names": [
           "compactParts"
         ],
-        "line": 174
+        "line": 175
       },
       {
         "names": [
           "formatRegionCompact"
         ],
-        "line": 191
+        "line": 192
       },
       {
         "names": [
           "prioritizeIndicators"
         ],
-        "line": 200
+        "line": 201
       }
     ],
     "anonymous_functions": 4
@@ -40851,66 +42978,72 @@
     "anonymous_functions": 18
   },
   "frontend/src/lib/searchExamples.js": {
-    "sha256": "e63232796136389586a323df4ad416c9eac3293d516c932febefc1eef17f01bf",
+    "sha256": "23fe5a7785b0851e5e9769642d14fa8192d7c6082a466e05a5d167f9059bd822",
     "definitions": [
       {
-        "name": "shell.search.example.4",
-        "line": 26,
-        "end_line": 26,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "shell.search.example.5",
-        "line": 27,
-        "end_line": 27,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "shell.search.example.6",
-        "line": 28,
-        "end_line": 28,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "w6d.search.example.7",
+        "name": "z4s.example.2",
         "line": 29,
         "end_line": 29,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "w6d.search.example.8",
+        "name": "shell.search.example.4",
         "line": 30,
         "end_line": 30,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "searchSuggestions",
+        "name": "shell.search.example.5",
+        "line": 31,
+        "end_line": 31,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "shell.search.example.6",
+        "line": 32,
+        "end_line": 32,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "w6d.search.example.7",
+        "line": 33,
+        "end_line": 33,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "w6d.search.example.8",
         "line": 34,
-        "end_line": 40,
+        "end_line": 34,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "searchSuggestions",
+        "line": 38,
+        "end_line": 44,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "searchExamples",
-        "line": 44,
-        "end_line": 46,
+        "line": 48,
+        "end_line": 50,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "describeSearchResult",
-        "line": 54,
-        "end_line": 71,
+        "line": 58,
+        "end_line": 75,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "dedupeSearchRows",
-        "line": 74,
-        "end_line": 84,
+        "line": 78,
+        "end_line": 88,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "separateVisibleTwins",
-        "line": 98,
-        "end_line": 122,
+        "line": 102,
+        "end_line": 126,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -40935,37 +43068,37 @@
         "names": [
           "searchSuggestions"
         ],
-        "line": 34
+        "line": 38
       },
       {
         "names": [
           "HOME_EXAMPLE_COUNT"
         ],
-        "line": 42
+        "line": 46
       },
       {
         "names": [
           "searchExamples"
         ],
-        "line": 44
+        "line": 48
       },
       {
         "names": [
           "describeSearchResult"
         ],
-        "line": 54
+        "line": 58
       },
       {
         "names": [
           "dedupeSearchRows"
         ],
-        "line": 74
+        "line": 78
       },
       {
         "names": [
           "separateVisibleTwins"
         ],
-        "line": 98
+        "line": 102
       }
     ],
     "anonymous_functions": 5
@@ -42539,234 +44672,234 @@
     "anonymous_functions": 9
   },
   "frontend/src/lib/sitePaths.js": {
-    "sha256": "927587e93820845f496d6923f2155e9efc2199448dd61e6a2cb54d188926b124",
+    "sha256": "bead6615cbfdf6e732d8105206079ede8b191171a9bd2b76c2215fbb13ceac1c",
     "definitions": [
       {
         "name": "isCurrencyIndicator",
-        "line": 16,
-        "end_line": 20,
+        "line": 25,
+        "end_line": 29,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isReservedFirstSegment",
-        "line": 63,
-        "end_line": 69,
+        "line": 72,
+        "end_line": 78,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "slug",
-        "line": 71,
-        "end_line": 75,
+        "line": 80,
+        "end_line": 84,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "code",
-        "line": 77,
-        "end_line": 81,
+        "line": 86,
+        "end_line": 90,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "homePath",
-        "line": 83,
-        "end_line": 85,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "comparePath",
-        "line": 87,
-        "end_line": 89,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "forecastsPath",
         "line": 92,
         "end_line": 94,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "countryPath",
+        "name": "comparePath",
         "line": 96,
         "end_line": 98,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "forecastsPath",
+        "line": 101,
+        "end_line": 103,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "countryPath",
+        "line": 105,
+        "end_line": 107,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "indicatorPath",
-        "line": 100,
-        "end_line": 102,
+        "line": 109,
+        "end_line": 111,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "indicatorYearPath",
-        "line": 104,
-        "end_line": 106,
+        "line": 113,
+        "end_line": 115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "categoryPath",
-        "line": 108,
-        "end_line": 110,
+        "line": 117,
+        "end_line": 119,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "russiaHomePath",
-        "line": 112,
-        "end_line": 114,
+        "line": 121,
+        "end_line": 123,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isRussiaSectionPath",
-        "line": 117,
-        "end_line": 122,
+        "line": 126,
+        "end_line": 131,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "russiaIndicatorPath",
-        "line": 124,
-        "end_line": 127,
+        "line": 133,
+        "end_line": 136,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "russiaIndicatorYearPath",
-        "line": 129,
-        "end_line": 132,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "russiaCategoryPath",
-        "line": 134,
-        "end_line": 137,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "russiaCategoriesPath",
-        "line": 139,
+        "line": 138,
         "end_line": 141,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "regionHubPath",
+        "name": "russiaCategoryPath",
         "line": 143,
-        "end_line": 145,
+        "end_line": 146,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "russiaCategoriesPath",
+        "line": 148,
+        "end_line": 150,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "regionHubPath",
+        "line": 152,
+        "end_line": 154,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionsPath",
-        "line": 147,
-        "end_line": 149,
+        "line": 156,
+        "end_line": 158,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionPath",
-        "line": 151,
-        "end_line": 153,
+        "line": 160,
+        "end_line": 162,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionIndicatorPath",
-        "line": 155,
-        "end_line": 157,
+        "line": 164,
+        "end_line": 166,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionIndicatorYearPath",
-        "line": 159,
-        "end_line": 161,
+        "line": 168,
+        "end_line": 170,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionMapPath",
-        "line": 163,
-        "end_line": 165,
+        "line": 172,
+        "end_line": 174,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionVsPath",
-        "line": 167,
-        "end_line": 171,
+        "line": 176,
+        "end_line": 180,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionRatingHubPath",
-        "line": 173,
-        "end_line": 175,
+        "line": 182,
+        "end_line": 184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionPath",
-        "line": 177,
-        "end_line": 179,
+        "line": 186,
+        "end_line": 188,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionIndicatorPath",
-        "line": 181,
-        "end_line": 183,
+        "line": 190,
+        "end_line": 192,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionMapPath",
-        "line": 185,
-        "end_line": 187,
+        "line": 194,
+        "end_line": 196,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionRatingPath",
-        "line": 189,
-        "end_line": 191,
+        "line": 198,
+        "end_line": 200,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionVsPath",
-        "line": 193,
-        "end_line": 195,
+        "line": 202,
+        "end_line": 204,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "todayPath",
-        "line": 197,
-        "end_line": 199,
+        "line": 206,
+        "end_line": 208,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "calendarPath",
-        "line": 201,
-        "end_line": 205,
+        "line": 210,
+        "end_line": 214,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "demographicsPath",
-        "line": 207,
-        "end_line": 209,
+        "line": 216,
+        "end_line": 218,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldHubPath",
-        "line": 215,
-        "end_line": 217,
+        "line": 224,
+        "end_line": 226,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldRatingPath",
-        "line": 222,
-        "end_line": 224,
+        "line": 231,
+        "end_line": 233,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldRatingYearPath",
-        "line": 227,
-        "end_line": 232,
+        "line": 236,
+        "end_line": 241,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldCountryPath",
-        "line": 235,
-        "end_line": 237,
+        "line": 244,
+        "end_line": 246,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldIndicatorPath",
-        "line": 240,
-        "end_line": 242,
+        "line": 249,
+        "end_line": 251,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -42782,229 +44915,229 @@
         "names": [
           "isCurrencyIndicator"
         ],
-        "line": 16
+        "line": 25
       },
       {
         "names": [
           "RESERVED_FIRST_SEGMENTS"
         ],
-        "line": 23
+        "line": 32
       },
       {
         "names": [
           "isReservedFirstSegment"
         ],
-        "line": 63
+        "line": 72
       },
       {
         "names": [
           "homePath"
         ],
-        "line": 83
+        "line": 92
       },
       {
         "names": [
           "comparePath"
         ],
-        "line": 87
+        "line": 96
       },
       {
         "names": [
           "forecastsPath"
         ],
-        "line": 92
+        "line": 101
       },
       {
         "names": [
           "countryPath"
         ],
-        "line": 96
+        "line": 105
       },
       {
         "names": [
           "indicatorPath"
         ],
-        "line": 100
+        "line": 109
       },
       {
         "names": [
           "indicatorYearPath"
         ],
-        "line": 104
+        "line": 113
       },
       {
         "names": [
           "categoryPath"
         ],
-        "line": 108
+        "line": 117
       },
       {
         "names": [
           "russiaHomePath"
         ],
-        "line": 112
+        "line": 121
       },
       {
         "names": [
           "isRussiaSectionPath"
         ],
-        "line": 117
+        "line": 126
       },
       {
         "names": [
           "russiaIndicatorPath"
         ],
-        "line": 124
+        "line": 133
       },
       {
         "names": [
           "russiaIndicatorYearPath"
         ],
-        "line": 129
+        "line": 138
       },
       {
         "names": [
           "russiaCategoryPath"
         ],
-        "line": 134
+        "line": 143
       },
       {
         "names": [
           "russiaCategoriesPath"
         ],
-        "line": 139
+        "line": 148
       },
       {
         "names": [
           "regionHubPath"
         ],
-        "line": 143
+        "line": 152
       },
       {
         "names": [
           "countryRegionsPath"
         ],
-        "line": 147
+        "line": 156
       },
       {
         "names": [
           "countryRegionPath"
         ],
-        "line": 151
+        "line": 160
       },
       {
         "names": [
           "countryRegionIndicatorPath"
         ],
-        "line": 155
+        "line": 164
       },
       {
         "names": [
           "countryRegionIndicatorYearPath"
         ],
-        "line": 159
+        "line": 168
       },
       {
         "names": [
           "countryRegionMapPath"
         ],
-        "line": 163
+        "line": 172
       },
       {
         "names": [
           "countryRegionVsPath"
         ],
-        "line": 167
+        "line": 176
       },
       {
         "names": [
           "regionRatingHubPath"
         ],
-        "line": 173
+        "line": 182
       },
       {
         "names": [
           "regionPath"
         ],
-        "line": 177
+        "line": 186
       },
       {
         "names": [
           "regionIndicatorPath"
         ],
-        "line": 181
+        "line": 190
       },
       {
         "names": [
           "regionMapPath"
         ],
-        "line": 185
+        "line": 194
       },
       {
         "names": [
           "regionRatingPath"
         ],
-        "line": 189
+        "line": 198
       },
       {
         "names": [
           "regionVsPath"
         ],
-        "line": 193
+        "line": 202
       },
       {
         "names": [
           "todayPath"
         ],
-        "line": 197
+        "line": 206
       },
       {
         "names": [
           "calendarPath"
         ],
-        "line": 201
+        "line": 210
       },
       {
         "names": [
           "demographicsPath"
         ],
-        "line": 207
+        "line": 216
       },
       {
         "names": [
           "worldHubPath"
         ],
-        "line": 215
+        "line": 224
       },
       {
         "names": [
           "WORLD_RATING_DEFAULT_CONCEPT"
         ],
-        "line": 220
+        "line": 229
       },
       {
         "names": [
           "worldRatingPath"
         ],
-        "line": 222
+        "line": 231
       },
       {
         "names": [
           "worldRatingYearPath"
         ],
-        "line": 227
+        "line": 236
       },
       {
         "names": [
           "worldCountryPath"
         ],
-        "line": 235
+        "line": 244
       },
       {
         "names": [
           "worldIndicatorPath"
         ],
-        "line": 240
+        "line": 249
       }
     ],
     "anonymous_functions": 1
@@ -48663,6 +50796,392 @@
     "exports": [],
     "anonymous_functions": 8
   },
+  "frontend/src/lib/z2Price.js": {
+    "sha256": "b4d1566d3c48f375c137f4413aab04f204788e67ec8fb1872efc45e135a4c563",
+    "definitions": [
+      {
+        "name": "parseYm",
+        "line": 11,
+        "end_line": 19,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ymLabel",
+        "line": 21,
+        "end_line": 27,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ymLabelFrom",
+        "line": 30,
+        "end_line": 36,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pickField",
+        "line": 39,
+        "end_line": 42,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "changeOverMonths",
+        "line": 45,
+        "end_line": 52,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "signedPct",
+        "line": 54,
+        "end_line": 61,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "compareRows",
+        "line": 64,
+        "end_line": 79,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "groupSiblings",
+        "line": 82,
+        "end_line": 104,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "groupSiblings.rank",
+        "line": 91,
+        "end_line": 95,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "yearTickPeriods",
+        "line": 107,
+        "end_line": 124,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "upFirst",
+        "line": 126,
+        "end_line": 126,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "shortPriceName",
+        "line": 129,
+        "end_line": 135,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "unitSuffix",
+        "line": 138,
+        "end_line": 141,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "isRubPerUnit",
+        "line": 144,
+        "end_line": 146,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "priceText",
+        "line": 149,
+        "end_line": 153,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "perUnitPrice",
+        "line": 157,
+        "end_line": 164,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "guessPriceGroup",
+        "line": 179,
+        "end_line": 183,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pairKey",
+        "line": 186,
+        "end_line": 189,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pairLabel",
+        "line": 192,
+        "end_line": 198,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pairSiblings",
+        "line": 201,
+        "end_line": 205,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pairsFirst",
+        "line": 208,
+        "end_line": 213,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pairsFirst.hit",
+        "line": 211,
+        "end_line": 211,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "yearlyCost",
+        "line": 216,
+        "end_line": 219,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "sliceMonths",
+        "line": 222,
+        "end_line": 225,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "compareFill",
+        "line": 228,
+        "end_line": 231,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "roundBig",
+        "line": 234,
+        "end_line": 236,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "bigRub",
+        "line": 239,
+        "end_line": 243,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "perAreaUnit",
+        "line": 246,
+        "end_line": 248,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "./regionUi",
+        "line": 2
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "PRICE_GROUP_ORDER"
+        ],
+        "line": 5
+      },
+      {
+        "names": [
+          "parseYm"
+        ],
+        "line": 11
+      },
+      {
+        "names": [
+          "ymLabel"
+        ],
+        "line": 21
+      },
+      {
+        "names": [
+          "ymLabelFrom"
+        ],
+        "line": 30
+      },
+      {
+        "names": [
+          "pickField"
+        ],
+        "line": 39
+      },
+      {
+        "names": [
+          "changeOverMonths"
+        ],
+        "line": 45
+      },
+      {
+        "names": [
+          "signedPct"
+        ],
+        "line": 54
+      },
+      {
+        "names": [
+          "compareRows"
+        ],
+        "line": 64
+      },
+      {
+        "names": [
+          "groupSiblings"
+        ],
+        "line": 82
+      },
+      {
+        "names": [
+          "yearTickPeriods"
+        ],
+        "line": 107
+      },
+      {
+        "names": [
+          "shortPriceName"
+        ],
+        "line": 129
+      },
+      {
+        "names": [
+          "unitSuffix"
+        ],
+        "line": 138
+      },
+      {
+        "names": [
+          "isRubPerUnit"
+        ],
+        "line": 144
+      },
+      {
+        "names": [
+          "priceText"
+        ],
+        "line": 149
+      },
+      {
+        "names": [
+          "perUnitPrice"
+        ],
+        "line": 157
+      },
+      {
+        "names": [
+          "guessPriceGroup"
+        ],
+        "line": 179
+      },
+      {
+        "names": [
+          "pairKey"
+        ],
+        "line": 186
+      },
+      {
+        "names": [
+          "pairLabel"
+        ],
+        "line": 192
+      },
+      {
+        "names": [
+          "pairSiblings"
+        ],
+        "line": 201
+      },
+      {
+        "names": [
+          "pairsFirst"
+        ],
+        "line": 208
+      },
+      {
+        "names": [
+          "yearlyCost"
+        ],
+        "line": 216
+      },
+      {
+        "names": [
+          "sliceMonths"
+        ],
+        "line": 222
+      },
+      {
+        "names": [
+          "compareFill"
+        ],
+        "line": 228
+      },
+      {
+        "names": [
+          "roundBig"
+        ],
+        "line": 234
+      },
+      {
+        "names": [
+          "bigRub"
+        ],
+        "line": 239
+      },
+      {
+        "names": [
+          "perAreaUnit"
+        ],
+        "line": 246
+      }
+    ],
+    "anonymous_functions": 10
+  },
+  "frontend/src/lib/z2Price.test.js": {
+    "sha256": "27e959229f88d654c24c6f58d2d542132415f03d7ae4ae536ab616117c5a03a8",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./z2Price",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 11
+  },
+  "frontend/src/lib/z2PriceR2.test.js": {
+    "sha256": "6755140834a18e5e684168dbadad06f1fb4c0bca544e9d1dd7fc4759623d5afe",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./z2Price",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 3
+  },
+  "frontend/src/lib/z2PriceR5a.test.js": {
+    "sha256": "4fb6d7f37ebe1b73f8dce7def155ff62dc556f7c2ce2658a08e877790f707c58",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./z2Price",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
+  },
   "frontend/src/lib/z2Shell.test.js": {
     "sha256": "efaa4574ff870b694f2f15868d56ce9a4fcf41e2a8099aadd5cc7215f2e76b6b",
     "definitions": [],
@@ -48690,6 +51209,61 @@
     ],
     "exports": [],
     "anonymous_functions": 24
+  },
+  "frontend/src/lib/z3Currency.test.js": {
+    "sha256": "cb51c5e19089676fe7524a74170f92faaade5b59e69afc854c9dcdb256b39b0f",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "./currencyRates",
+        "line": 3
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 6
+  },
+  "frontend/src/lib/z3Past.js": {
+    "sha256": "fe85bf950698d09d3420762225697b7499886d694d33620f28f822732e6e9274",
+    "definitions": [
+      {
+        "name": "ms",
+        "line": 4,
+        "end_line": 6,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "rateDaysAgo",
+        "line": 9,
+        "end_line": 23,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "comparePast",
+        "line": 26,
+        "end_line": 31,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "rateDaysAgo"
+        ],
+        "line": 9
+      },
+      {
+        "names": [
+          "comparePast"
+        ],
+        "line": 26
+      }
+    ],
+    "anonymous_functions": 3
   },
   "frontend/src/lib/z4ChartTitle.js": {
     "sha256": "6d933dc27276065396f8e1c40de7171b7eabffc8d6182674babe83146e8af310",
@@ -50204,7 +52778,7 @@
     "anonymous_functions": 24
   },
   "frontend/src/pages/CalculatorsC11e.component.test.jsx": {
-    "sha256": "a1d201d4199322c74a34b1c8ae96ffa12d95a6e4c5f25e723840971bbe313b84",
+    "sha256": "97c641567ce9a3be8e9c3110a0e05df8be81e623372347d6d5d3e5df81f15311",
     "definitions": [
       {
         "name": "fromTo",
@@ -50648,12 +53222,12 @@
     "anonymous_functions": 7
   },
   "frontend/src/pages/CategoryPage.jsx": {
-    "sha256": "f35511be1d7cd48b1d2d34a054ef2872361936bdfd3f8452ce65a840db619ece",
+    "sha256": "de5651a037455596f37255dbfa609e4a98c627134ebf2182754fbeafd1483edd",
     "definitions": [
       {
         "name": "CategoryPage",
-        "line": 49,
-        "end_line": 299,
+        "line": 51,
+        "end_line": 303,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -50691,76 +53265,84 @@
         "line": 8
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../styles/r6b-card.css",
         "line": 9
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/Breadcrumbs",
         "line": 10
       },
       {
-        "source": "../lib/categories",
+        "source": "../components/Skeleton",
         "line": 11
       },
       {
-        "source": "../components/ApiRetryBanner",
-        "line": 18
+        "source": "../lib/categories",
+        "line": 12
       },
       {
-        "source": "../components/Button",
+        "source": "../components/ApiRetryBanner",
         "line": 19
       },
       {
-        "source": "../components/IndicatorSearch",
+        "source": "../components/Button",
         "line": 20
       },
       {
-        "source": "../components/CurrencyDesk",
+        "source": "../components/IndicatorSearch",
         "line": 21
       },
       {
-        "source": "../lib/track",
+        "source": "../components/CurrencyDesk",
         "line": 22
       },
       {
-        "source": "../styles/indicator-russia.css",
+        "source": "../components/R7PricesBlock",
         "line": 23
       },
       {
-        "source": "../styles/x2-indicator.css",
+        "source": "../lib/track",
         "line": 24
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../styles/indicator-russia.css",
         "line": 25
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/x2-indicator.css",
         "line": 26
       },
       {
-        "source": "../lib/useScrollDepth",
+        "source": "../styles/z8-tools.css",
         "line": 27
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../styles/k6-country.css",
         "line": 28
       },
       {
+        "source": "../lib/useScrollDepth",
+        "line": 29
+      },
+      {
+        "source": "../lib/breadcrumbs",
+        "line": 30
+      },
+      {
         "source": "../lib/jsonLd",
-        "line": 32
-      },
-      {
-        "source": "../lib/pageMeta",
-        "line": 33
-      },
-      {
-        "source": "../i18n",
         "line": 34
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/pageMeta",
         "line": 35
+      },
+      {
+        "source": "../i18n",
+        "line": 36
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 37
       }
     ],
     "exports": [
@@ -50768,7 +53350,7 @@
         "names": [
           "default"
         ],
-        "line": 49
+        "line": 51
       }
     ],
     "anonymous_functions": 17
@@ -52120,7 +54702,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/Dashboard.component.test.jsx": {
-    "sha256": "5b497b195f8fe75c66a2a96f5785e6835bee0c62c3b17d696d88aceb51af5e8b",
+    "sha256": "80e5a0956795b2853b3f8d95521ffb1064d3a3b2c7241be6dd69a768f11a9bc5",
     "definitions": [],
     "imports": [
       {
@@ -52148,12 +54730,12 @@
     "anonymous_functions": 6
   },
   "frontend/src/pages/Dashboard.jsx": {
-    "sha256": "885b606aa4a299f41146af78cb26ed667e378cfb60f1bf2880f1eacde834aa09",
+    "sha256": "17a54a19a1a73c0c047295ee73a0f85c6c5fa13c104383e2da107375039ce575",
     "definitions": [
       {
         "name": "Dashboard",
-        "line": 14,
-        "end_line": 53,
+        "line": 15,
+        "end_line": 55,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -52191,20 +54773,24 @@
         "line": 8
       },
       {
-        "source": "../components/home/HomeTools",
+        "source": "../components/home/HomePricesRates",
         "line": 9
       },
       {
-        "source": "../lib/worldApi",
+        "source": "../components/home/HomeTools",
         "line": 10
       },
       {
-        "source": "../lib/homeBootstrap",
+        "source": "../lib/worldApi",
         "line": 11
       },
       {
-        "source": "../i18n",
+        "source": "../lib/homeBootstrap",
         "line": 12
+      },
+      {
+        "source": "../i18n",
+        "line": 13
       }
     ],
     "exports": [
@@ -52212,7 +54798,7 @@
         "names": [
           "default"
         ],
-        "line": 14
+        "line": 15
       }
     ],
     "anonymous_functions": 3
@@ -52991,24 +55577,24 @@
     "anonymous_functions": 4
   },
   "frontend/src/pages/IndicatorDetail.jsx": {
-    "sha256": "de456be2b55f02fb7533b9a63776da45bd0ed65557be9d02f61df39634c66b52",
+    "sha256": "5c3f61d073c273ecece8c64b275b232e92c4c71094a4b1e1e72c50a367f326cb",
     "definitions": [
       {
         "name": "readSavedViewMode",
-        "line": 84,
-        "end_line": 91,
+        "line": 86,
+        "end_line": 93,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "writeSavedViewMode",
-        "line": 92,
-        "end_line": 99,
+        "line": 94,
+        "end_line": 101,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorDetail",
-        "line": 107,
-        "end_line": 871,
+        "line": 109,
+        "end_line": 888,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -53050,172 +55636,180 @@
         "line": 11
       },
       {
-        "source": "../components/FreshnessNote",
+        "source": "../components/R6bPulseStrip",
         "line": 12
       },
       {
-        "source": "../lib/cabinetSubjects",
+        "source": "../components/WorldStatTiles",
         "line": 13
       },
       {
-        "source": "../components/VariantGroupPicker",
+        "source": "../components/FreshnessNote",
         "line": 14
       },
       {
-        "source": "../components/CpiIndicatorControls",
+        "source": "../lib/cabinetSubjects",
         "line": 15
       },
       {
-        "source": "../components/HousingIndicatorControls",
+        "source": "../components/VariantGroupPicker",
         "line": 16
       },
       {
-        "source": "../components/PpiIndicatorControls",
+        "source": "../components/CpiIndicatorControls",
         "line": 17
       },
       {
-        "source": "../components/CbrTermSliceRateIndicatorControls",
+        "source": "../components/HousingIndicatorControls",
         "line": 18
       },
       {
-        "source": "../components/UnemploymentIndicatorControls",
+        "source": "../components/PpiIndicatorControls",
         "line": 19
       },
       {
-        "source": "../components/ViewModePicker",
+        "source": "../components/CbrTermSliceRateIndicatorControls",
         "line": 20
       },
       {
-        "source": "../components/ViewModesPanel",
+        "source": "../components/UnemploymentIndicatorControls",
         "line": 21
       },
       {
-        "source": "../components/IndicatorTelemetryGrid",
+        "source": "../components/ViewModePicker",
         "line": 22
       },
       {
-        "source": "../components/IndicatorChartSection",
+        "source": "../components/ViewModesPanel",
         "line": 23
       },
       {
-        "source": "../components/IndicatorMethodologyPanel",
+        "source": "../components/IndicatorTelemetryGrid",
         "line": 24
       },
       {
-        "source": "../components/IndicatorForecastSection",
+        "source": "../components/IndicatorChartSection",
         "line": 25
       },
       {
-        "source": "../components/IndicatorDataTableSection",
+        "source": "../components/IndicatorMethodologyPanel",
         "line": 26
       },
       {
-        "source": "../components/IndicatorSeoBlocks",
+        "source": "../components/IndicatorForecastSection",
         "line": 27
       },
       {
-        "source": "../components/RegionCrossLink",
+        "source": "../components/IndicatorDataTableSection",
         "line": 28
       },
       {
-        "source": "../components/RelatedIndicators",
+        "source": "../components/IndicatorSeoBlocks",
         "line": 29
       },
       {
-        "source": "../lib/indicatorVariants",
+        "source": "../components/RegionCrossLink",
         "line": 30
       },
       {
-        "source": "../lib/chartSeriesForViewMode",
+        "source": "../components/RelatedIndicators",
         "line": 31
       },
       {
-        "source": "../lib/indicatorSummary",
+        "source": "../lib/indicatorVariants",
         "line": 32
       },
       {
-        "source": "../lib/deltaTone",
+        "source": "../lib/chartSeriesForViewMode",
         "line": 33
       },
       {
-        "source": "../lib/format",
+        "source": "../lib/indicatorSummary",
         "line": 34
       },
       {
-        "source": "../lib/useIndicatorViewModeData",
+        "source": "../lib/deltaTone",
         "line": 35
       },
       {
-        "source": "../lib/viewModeFamilies",
+        "source": "../lib/format",
         "line": 36
       },
       {
+        "source": "../lib/useIndicatorViewModeData",
+        "line": 37
+      },
+      {
+        "source": "../lib/viewModeFamilies",
+        "line": 38
+      },
+      {
         "source": "../lib/viewModeEngine",
-        "line": 43
+        "line": 45
       },
       {
         "source": "../components/GenericIndicatorView",
-        "line": 48
-      },
-      {
-        "source": "../i18n",
-        "line": 49
-      },
-      {
-        "source": "../i18n/viewModeLabels",
         "line": 50
       },
       {
-        "source": "../i18n/resolveViewModeCopy",
+        "source": "../i18n",
         "line": 51
       },
       {
-        "source": "../lib/cpiViewModeResolve",
+        "source": "../i18n/viewModeLabels",
         "line": 52
       },
       {
-        "source": "../lib/housingViewModeResolve",
+        "source": "../i18n/resolveViewModeCopy",
         "line": 53
       },
       {
-        "source": "../lib/ppiViewModeResolve",
+        "source": "../lib/cpiViewModeResolve",
         "line": 54
       },
       {
-        "source": "../lib/cbrTermSliceRateResolve",
+        "source": "../lib/housingViewModeResolve",
         "line": 55
       },
       {
-        "source": "../lib/unemploymentViewModeResolve",
+        "source": "../lib/ppiViewModeResolve",
         "line": 56
       },
       {
+        "source": "../lib/cbrTermSliceRateResolve",
+        "line": 57
+      },
+      {
+        "source": "../lib/unemploymentViewModeResolve",
+        "line": 58
+      },
+      {
         "source": "../lib/excel",
-        "line": 63
-      },
-      {
-        "source": "../lib/track",
-        "line": 64
-      },
-      {
-        "source": "../lib/useScrollDepth",
         "line": 65
       },
       {
-        "source": "../lib/categories",
+        "source": "../lib/track",
         "line": 66
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/useScrollDepth",
         "line": 67
       },
       {
+        "source": "../lib/categories",
+        "line": 68
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 69
+      },
+      {
         "source": "../styles/z4-indicator.css",
-        "line": 70
+        "line": 72
       },
       {
         "source": "../styles/k5-pages.css",
-        "line": 71
+        "line": 73
       }
     ],
     "exports": [
@@ -53223,7 +55817,7 @@
         "names": [
           "default"
         ],
-        "line": 107
+        "line": 109
       }
     ],
     "anonymous_functions": 31
@@ -54028,104 +56622,168 @@
     ],
     "anonymous_functions": 1
   },
+  "frontend/src/pages/R7C.component.test.jsx": {
+    "sha256": "edb49c98194d2dd2a5350d1bb0f47317e1edc8215d99a3477c585d1e43a40d93",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "./RegionsHome",
+        "line": 4
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
+  },
   "frontend/src/pages/RegionComparePage.jsx": {
-    "sha256": "e7aa5c01ff829f1d53ec2c27cc4813a7ba9ac5ee384fdb4853b5ece903ccb9de",
+    "sha256": "7f9d4b17a749871d07d0b70efc635c478d0bf8270039305f335fd41634af7643",
     "definitions": [
       {
         "name": "parsePair",
-        "line": 24,
-        "end_line": 29,
+        "line": 28,
+        "end_line": 33,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRegionCompare",
-        "line": 31,
-        "end_line": 39,
+        "line": 35,
+        "end_line": 43,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRegionCompare.queryFn",
-        "line": 34,
-        "end_line": 35,
+        "line": 38,
+        "end_line": 39,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "PairPicker",
+        "line": 46,
+        "end_line": 75,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PairPicker.go",
+        "line": 55,
+        "end_line": 55,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "PairPicker.select",
+        "line": 56,
+        "end_line": 65,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "QuickPairs",
+        "line": 80,
+        "end_line": 99,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "RegionComparePage",
-        "line": 41,
-        "end_line": 176,
+        "line": 101,
+        "end_line": 266,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionComparePage.side",
-        "line": 112,
-        "end_line": 132,
+        "line": 207,
+        "end_line": 222,
         "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [
       {
-        "source": "react-router-dom",
+        "source": "react",
         "line": 1
       },
       {
-        "source": "lucide-react",
+        "source": "react-router-dom",
         "line": 2
       },
       {
-        "source": "@tanstack/react-query",
+        "source": "lucide-react",
         "line": 3
       },
       {
-        "source": "../lib/useMeta",
+        "source": "@tanstack/react-query",
         "line": 4
       },
       {
-        "source": "../lib/api",
+        "source": "../lib/useMeta",
         "line": 5
       },
       {
-        "source": "../lib/regionUi",
+        "source": "../lib/api",
         "line": 6
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../lib/regionUi",
         "line": 7
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/ApiRetryBanner",
         "line": 8
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/LoadingNote",
         "line": 9
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../components/Skeleton",
         "line": 10
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../styles/platform-pages.css",
         "line": 11
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../styles/regions-w4.css",
         "line": 12
       },
       {
+        "source": "../styles/r3b-regions.css",
+        "line": 13
+      },
+      {
+        "source": "../lib/regionsApi",
+        "line": 14
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 15
+      },
+      {
+        "source": "../components/regions/R4PriceCompare",
+        "line": 22
+      },
+      {
         "source": "../components/Breadcrumbs",
-        "line": 19
+        "line": 23
       },
       {
         "source": "../lib/breadcrumbs",
-        "line": 20
+        "line": 24
       },
       {
         "source": "../i18n",
-        "line": 21
+        "line": 25
       },
       {
         "source": "../i18n/locale",
-        "line": 22
+        "line": 26
       }
     ],
     "exports": [
@@ -54133,10 +56791,10 @@
         "names": [
           "default"
         ],
-        "line": 41
+        "line": 101
       }
     ],
-    "anonymous_functions": 3
+    "anonymous_functions": 19
   },
   "frontend/src/pages/RegionIndicatorPage.component.test.jsx": {
     "sha256": "b0c510a72b5302ae3c798f03c1e1e1ee735382d633457bfc3bdef987ffb021b8",
@@ -54180,78 +56838,78 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/RegionIndicatorPage.jsx": {
-    "sha256": "69acf741f67e32c06b28a1a95a1eb0a9cbadad121dcea5cc01277853e8384b7b",
+    "sha256": "2288540feba4e5071ebcbdeca1ab786b943c954d030efa260ba9b2667f5452bb",
     "definitions": [
       {
         "name": "toYoYSeries",
-        "line": 47,
-        "end_line": 59,
+        "line": 55,
+        "end_line": 67,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isNegativeCapable",
-        "line": 64,
-        "end_line": 66,
+        "line": 72,
+        "end_line": 74,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "StatCell",
-        "line": 68,
-        "end_line": 77,
+        "line": 76,
+        "end_line": 85,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "statValue",
-        "line": 80,
-        "end_line": 82,
+        "line": 88,
+        "end_line": 90,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "monthName",
-        "line": 85,
-        "end_line": 87,
+        "line": 93,
+        "end_line": 95,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorPage",
-        "line": 100,
-        "end_line": 665,
+        "line": 108,
+        "end_line": 854,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorPage.requireAuth",
-        "line": 133,
-        "end_line": 138,
+        "line": 147,
+        "end_line": 152,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.handleExportTable",
-        "line": 140,
-        "end_line": 170,
+        "line": 154,
+        "end_line": 184,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.handleExportPng",
-        "line": 172,
-        "end_line": 181,
+        "line": 186,
+        "end_line": 195,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.at",
-        "line": 268,
-        "end_line": 271,
+        "line": 288,
+        "end_line": 291,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
-        "line": 424,
-        "end_line": 424,
+        "line": 563,
+        "end_line": 563,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
-        "line": 425,
-        "end_line": 425,
+        "line": 564,
+        "end_line": 564,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -54305,76 +56963,92 @@
         "line": 22
       },
       {
-        "source": "../components/regions/DownloadMenu",
+        "source": "../components/regions/MonthlyPriceParts",
         "line": 23
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../lib/z2Price",
         "line": 24
       },
       {
-        "source": "../components/LoadingNote",
-        "line": 25
-      },
-      {
-        "source": "../components/Breadcrumbs",
-        "line": 26
-      },
-      {
-        "source": "../components/CabinetActionsSlot",
+        "source": "../components/regions/R6Annual",
         "line": 27
       },
       {
-        "source": "../lib/cabinetSubjects",
+        "source": "../lib/r6Annual",
         "line": 28
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/regions/DownloadMenu",
         "line": 29
       },
       {
-        "source": "../components/Chip",
+        "source": "../components/ApiRetryBanner",
         "line": 30
       },
       {
-        "source": "../context/authContext",
+        "source": "../components/LoadingNote",
         "line": 31
       },
       {
-        "source": "../lib/api",
+        "source": "../components/Breadcrumbs",
         "line": 32
       },
       {
-        "source": "../lib/chartImage",
+        "source": "../components/CabinetActionsSlot",
         "line": 33
       },
       {
-        "source": "../lib/track",
+        "source": "../lib/cabinetSubjects",
         "line": 34
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../components/Skeleton",
         "line": 35
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../components/Chip",
         "line": 36
       },
       {
-        "source": "../i18n",
+        "source": "../context/authContext",
+        "line": 37
+      },
+      {
+        "source": "../lib/api",
+        "line": 38
+      },
+      {
+        "source": "../lib/chartImage",
+        "line": 39
+      },
+      {
+        "source": "../lib/track",
+        "line": 40
+      },
+      {
+        "source": "../lib/breadcrumbs",
         "line": 41
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../lib/sitePaths",
         "line": 42
       },
       {
+        "source": "../i18n",
+        "line": 47
+      },
+      {
+        "source": "../styles/platform-pages.css",
+        "line": 48
+      },
+      {
         "source": "../styles/regions-w4.css",
-        "line": 43
+        "line": 49
       },
       {
         "source": "../styles/k6-country.css",
-        "line": 44
+        "line": 50
       }
     ],
     "exports": [
@@ -54382,10 +57056,10 @@
         "names": [
           "default"
         ],
-        "line": 100
+        "line": 108
       }
     ],
-    "anonymous_functions": 35
+    "anonymous_functions": 46
   },
   "frontend/src/pages/RegionProfile.component.test.jsx": {
     "sha256": "82ef813f0ea48cccc7657099828c8fddfb0ff3fae0d8f128fbe2d35db5535887",
@@ -54419,24 +57093,36 @@
     "anonymous_functions": 6
   },
   "frontend/src/pages/RegionProfile.jsx": {
-    "sha256": "2ee44345f9397c7d74c7f7b34dc482d410b600ea991a486d7fdf5995b68f0923",
+    "sha256": "d872a27ec2538d7e071659d15a18ec98cbb7209378103b8ac9f4867a0a578d5d",
     "definitions": [
       {
         "name": "normalize",
-        "line": 34,
-        "end_line": 36,
+        "line": 37,
+        "end_line": 39,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionProfile",
-        "line": 39,
-        "end_line": 250,
+        "line": 42,
+        "end_line": 332,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionProfile.getSearchItem",
-        "line": 73,
-        "end_line": 73,
+        "line": 79,
+        "end_line": 79,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionProfile.openAllPrices",
+        "line": 97,
+        "end_line": 101,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionProfile.openSection",
+        "line": 107,
+        "end_line": 111,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -54502,44 +57188,56 @@
         "line": 17
       },
       {
-        "source": "../lib/regionUi",
+        "source": "../components/regions/RegionPrices",
         "line": 20
       },
       {
-        "source": "../lib/useSearchTracking",
+        "source": "../lib/regionUi",
         "line": 21
       },
       {
-        "source": "../lib/searchSynonyms",
+        "source": "../lib/useSearchTracking",
         "line": 22
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../lib/searchSynonyms",
         "line": 23
       },
       {
-        "source": "../lib/jsonLd",
+        "source": "../lib/breadcrumbs",
         "line": 24
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/jsonLd",
         "line": 25
       },
       {
-        "source": "../i18n",
-        "line": 29
+        "source": "../lib/sitePaths",
+        "line": 26
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../i18n",
         "line": 30
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../styles/platform-pages.css",
         "line": 31
       },
       {
-        "source": "../styles/z5-country.css",
+        "source": "../styles/regions-w4.css",
         "line": 32
+      },
+      {
+        "source": "../styles/z5-country.css",
+        "line": 33
+      },
+      {
+        "source": "../styles/z1-prices.css",
+        "line": 34
+      },
+      {
+        "source": "../styles/r5b-region.css",
+        "line": 35
       }
     ],
     "exports": [
@@ -54547,10 +57245,10 @@
         "names": [
           "default"
         ],
-        "line": 39
+        "line": 42
       }
     ],
-    "anonymous_functions": 24
+    "anonymous_functions": 41
   },
   "frontend/src/pages/RegionRatingPage.component.test.jsx": {
     "sha256": "eddea75cbaf543cc09543f378bd542cc02fc8c04f042479134ef032a3edfab2b",
@@ -54590,18 +57288,24 @@
     "anonymous_functions": 12
   },
   "frontend/src/pages/RegionRatingPage.jsx": {
-    "sha256": "2b4cdee9f94c337ef5c3ab37b7c78ca2f8c7ee909299308e0e1491d4605c473e",
+    "sha256": "54dd971bb65e80d0e2f7b550d185f0b0b38b577ad5ab7050c028484316b7b957",
     "definitions": [
       {
         "name": "RegionRatingPage",
-        "line": 25,
-        "end_line": 265,
+        "line": 29,
+        "end_line": 323,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionRatingPage.setSortOverride",
-        "line": 37,
-        "end_line": 37,
+        "line": 41,
+        "end_line": 41,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionRatingPage.pickMine",
+        "line": 56,
+        "end_line": 62,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -54631,52 +57335,64 @@
         "line": 6
       },
       {
-        "source": "../components/RegionsMap",
+        "source": "../components/regions/R4YourRegion",
         "line": 7
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../components/RegionsMap",
         "line": 8
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/ApiRetryBanner",
         "line": 9
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../components/LoadingNote",
         "line": 10
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/Breadcrumbs",
         "line": 11
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../components/Skeleton",
         "line": 12
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/breadcrumbs",
         "line": 13
       },
       {
+        "source": "../lib/sitePaths",
+        "line": 14
+      },
+      {
         "source": "../components/Chip",
-        "line": 19
-      },
-      {
-        "source": "../i18n",
-        "line": 20
-      },
-      {
-        "source": "../styles/platform-pages.css",
         "line": 21
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../i18n",
         "line": 22
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/platform-pages.css",
         "line": 23
+      },
+      {
+        "source": "../styles/regions-w4.css",
+        "line": 24
+      },
+      {
+        "source": "../styles/k6-country.css",
+        "line": 25
+      },
+      {
+        "source": "../styles/r3b-regions.css",
+        "line": 26
+      },
+      {
+        "source": "../styles/r7c-regions.css",
+        "line": 27
       }
     ],
     "exports": [
@@ -54684,10 +57400,10 @@
         "names": [
           "default"
         ],
-        "line": 25
+        "line": 29
       }
     ],
-    "anonymous_functions": 13
+    "anonymous_functions": 22
   },
   "frontend/src/pages/RegionRatingsHub.component.test.jsx": {
     "sha256": "70b170c898f0637f4eb8baa98372e1495ba3faf65b350778670dc21996a3bac1",
@@ -54927,114 +57643,114 @@
     "anonymous_functions": 13
   },
   "frontend/src/pages/RegionsHome.jsx": {
-    "sha256": "5b967565cd9b8d37f4eb2fb4e0b3435868874cbb4c3b1253816c54ef40cbdad8",
+    "sha256": "d42266d6438f701e7cabcf5871949d80fc4570914b8ae24ee7289eb10349c3fc",
     "definitions": [
       {
         "name": "MapMetricSearch",
-        "line": 80,
-        "end_line": 167,
+        "line": 95,
+        "end_line": 182,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MapMetricSearch.openWith",
-        "line": 97,
-        "end_line": 97,
+        "line": 112,
+        "end_line": 112,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MapRegionSearch",
-        "line": 170,
-        "end_line": 222,
+        "line": 185,
+        "end_line": 237,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MapRegionSearch.getSearchItem",
-        "line": 181,
-        "end_line": 181,
+        "line": 196,
+        "end_line": 196,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MapRegionSearch.pick",
-        "line": 183,
-        "end_line": 187,
+        "line": 198,
+        "end_line": 202,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ContrastRow",
-        "line": 243,
-        "end_line": 285,
+        "line": 258,
+        "end_line": 304,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ContrastRow.side",
-        "line": 262,
-        "end_line": 272,
+        "line": 277,
+        "end_line": 287,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionCard",
-        "line": 287,
-        "end_line": 318,
+        "line": 306,
+        "end_line": 342,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionCard.mini",
-        "line": 292,
-        "end_line": 297,
+        "line": 311,
+        "end_line": 316,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome",
-        "line": 320,
-        "end_line": 989,
+        "line": 344,
+        "end_line": 1031,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionsHome.setView",
-        "line": 437,
-        "end_line": 448,
+        "line": 461,
+        "end_line": 472,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.selectOverview",
-        "line": 450,
-        "end_line": 453,
+        "line": 474,
+        "end_line": 477,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.selectPreset",
-        "line": 455,
-        "end_line": 458,
+        "line": 479,
+        "end_line": 482,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.selectCustom",
-        "line": 460,
-        "end_line": 463,
+        "line": 484,
+        "end_line": 487,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.clearCustom",
-        "line": 465,
-        "end_line": 467,
+        "line": 489,
+        "end_line": 491,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsHome.getSearchItem",
-        "line": 505,
-        "end_line": 505,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "RegionsHome.handlePng",
-        "line": 515,
+        "line": 529,
         "end_line": 529,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "RegionsHome.handlePng",
+        "line": 544,
+        "end_line": 558,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "RegionsHome.handleGif",
-        "line": 531,
-        "end_line": 551,
+        "line": 560,
+        "end_line": 580,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -55156,20 +57872,32 @@
         "line": 45
       },
       {
-        "source": "../i18n",
-        "line": 50
-      },
-      {
-        "source": "../styles/platform-pages.css",
+        "source": "../styles/r3b-regions.css",
         "line": 51
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../styles/r7c-regions.css",
         "line": 52
       },
       {
-        "source": "../styles/z5-country.css",
+        "source": "../i18n",
         "line": 53
+      },
+      {
+        "source": "../styles/platform-pages.css",
+        "line": 54
+      },
+      {
+        "source": "../styles/regions-w4.css",
+        "line": 55
+      },
+      {
+        "source": "../styles/z5-country.css",
+        "line": 56
+      },
+      {
+        "source": "../styles/r5b-region.css",
+        "line": 57
       }
     ],
     "exports": [
@@ -55177,10 +57905,10 @@
         "names": [
           "default"
         ],
-        "line": 320
+        "line": 344
       }
     ],
-    "anonymous_functions": 77
+    "anonymous_functions": 82
   },
   "frontend/src/pages/RegionsHome.z5.component.test.jsx": {
     "sha256": "1f821c8f222018191049deb342b360a589d97ac2615eb6323ff3bdc58e92c7d2",
@@ -55581,42 +58309,42 @@
     "anonymous_functions": 21
   },
   "frontend/src/pages/RussiaHome.jsx": {
-    "sha256": "1dce3abe0789dbc7eb8d956ef3846df2b385b2425900e016f2cebe704c0aba3d",
+    "sha256": "5c316149393bb15e05b50b7c0c808b54288277f625d99c0a40b9950e66309aad",
     "definitions": [
       {
         "name": "RussiaMapSkeleton",
-        "line": 46,
-        "end_line": 52,
+        "line": 47,
+        "end_line": 53,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RussiaTerritoryCard",
-        "line": 59,
-        "end_line": 114,
+        "line": 60,
+        "end_line": 115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIsMobileViewport",
-        "line": 138,
-        "end_line": 150,
+        "line": 139,
+        "end_line": 151,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIsMobileViewport.get",
-        "line": 139,
-        "end_line": 141,
+        "line": 140,
+        "end_line": 142,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIsMobileViewport.onChange",
-        "line": 145,
-        "end_line": 145,
+        "line": 146,
+        "end_line": 146,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RussiaHome",
-        "line": 152,
-        "end_line": 363,
+        "line": 153,
+        "end_line": 366,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -55662,60 +58390,64 @@
         "line": 19
       },
       {
-        "source": "../components/russia/RussiaKeyFigures",
+        "source": "../components/R7PricesBlock",
         "line": 20
       },
       {
-        "source": "../components/russia/RussiaCategorySection",
+        "source": "../components/russia/RussiaKeyFigures",
         "line": 21
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../components/russia/RussiaCategorySection",
         "line": 22
       },
       {
-        "source": "../components/Breadcrumbs",
-        "line": 32
+        "source": "../lib/sitePaths",
+        "line": 23
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../components/Breadcrumbs",
         "line": 33
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/ApiRetryBanner",
         "line": 34
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/LoadingNote",
         "line": 35
       },
       {
-        "source": "../components/MobileNavSelect",
+        "source": "../components/Skeleton",
         "line": 36
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../components/MobileNavSelect",
         "line": 37
       },
       {
-        "source": "../lib/jsonLd",
+        "source": "../lib/breadcrumbs",
         "line": 38
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../lib/jsonLd",
         "line": 39
       },
       {
-        "source": "../styles/indicator-russia.css",
+        "source": "../styles/platform-pages.css",
         "line": 40
       },
       {
-        "source": "../styles/z5-country.css",
+        "source": "../styles/indicator-russia.css",
         "line": 41
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/z5-country.css",
         "line": 42
+      },
+      {
+        "source": "../styles/k6-country.css",
+        "line": 43
       }
     ],
     "exports": [
@@ -55723,7 +58455,7 @@
         "names": [
           "default"
         ],
-        "line": 152
+        "line": 153
       }
     ],
     "anonymous_functions": 24
@@ -55764,7 +58496,7 @@
     "anonymous_functions": 22
   },
   "frontend/src/pages/RussiaPages.w3.component.test.jsx": {
-    "sha256": "0f8d7d3b5c1495a4dddd8cec4ccd00d2878b3c64a287635edc459bbbd8a9a27e",
+    "sha256": "826c71475781f9dce99921c2d63bfcdc2cbfb93db7e451df6e4caa300bc2a08e",
     "definitions": [
       {
         "name": "seriesRoute",
@@ -56177,7 +58909,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/W6F.component.test.jsx": {
-    "sha256": "1e32c02389db2b607ba745264c28b3ab81f9a7e0cd0d6131ef840a8314d94f93",
+    "sha256": "aea6eb4795fb2603fd188d395fef054983e93aaf36b391cef9f9443cb4bb4947",
     "definitions": [
       {
         "name": "default",

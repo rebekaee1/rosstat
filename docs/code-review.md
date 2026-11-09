@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `a5a28cf89252501cfda850a0bdbd410446041fb4`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `04607b79d90b0a542587783bd6d5048c91f81654`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2309 |
-| Код, шаблоны и стили | 1855 |
-| Актуальные рецензии без пропусков guard | 2309 |
-| Именованные определения Python/JS: с аннотацией / всего | 15206 / 15206 |
+| Файлы в явно определённом scope | 2398 |
+| Код, шаблоны и стили | 1938 |
+| Актуальные рецензии без пропусков guard | 2398 |
+| Именованные определения Python/JS: с аннотацией / всего | 15551 / 15551 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -133,7 +133,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/api/oauth.py](../backend/app/api/oauth.py) | reviewed | 22/22 | актуально |
 | [backend/app/api/push.py](../backend/app/api/push.py) | reviewed | 13/13 | актуально |
 | [backend/app/api/pwa.py](../backend/app/api/pwa.py) | reviewed | 7/7 | актуально |
-| [backend/app/api/regions.py](../backend/app/api/regions.py) | reviewed | 17/17 | актуально |
+| [backend/app/api/regions.py](../backend/app/api/regions.py) | reviewed | 26/26 | актуально |
 | [backend/app/api/research.py](../backend/app/api/research.py) | reviewed | 10/10 | актуально |
 | [backend/app/api/router.py](../backend/app/api/router.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/search.py](../backend/app/api/search.py) | reviewed | 2/2 | актуально |
@@ -172,8 +172,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/core/deps.py](../backend/app/core/deps.py) | reviewed | 0/0 | актуально |
 | [backend/app/data/__init__.py](../backend/app/data/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/data/bi_targets.py](../backend/app/data/bi_targets.py) | reviewed | 2/2 | актуально |
+| [backend/app/data/cbr_currencies.py](../backend/app/data/cbr_currencies.py) | reviewed | 19/19 | актуально |
 | [backend/app/data/cpi_provenance.py](../backend/app/data/cpi_provenance.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/emiss_labor.py](../backend/app/data/emiss_labor.py) | body_reviewed | 4/4 | актуально |
+| [backend/app/data/emiss_price_goods.py](../backend/app/data/emiss_price_goods.py) | reviewed | 18/18 | актуально |
 | [backend/app/data/eurostat_country_visibility.py](../backend/app/data/eurostat_country_visibility.py) | reviewed | 5/5 | актуально |
 | [backend/app/data/eurostat_deep_expand.py](../backend/app/data/eurostat_deep_expand.py) | reviewed | 9/9 | актуально |
 | [backend/app/data/eurostat_dim_labels_en.py](../backend/app/data/eurostat_dim_labels_en.py) | reviewed | 4/4 | актуально |
@@ -192,6 +194,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/i18n/en_catalog.py](../backend/app/data/i18n/en_catalog.py) | reviewed | 2/2 | актуально |
 | [backend/app/data/i18n/glossary_en.py](../backend/app/data/i18n/glossary_en.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/i18n/indicator_copy_en.py](../backend/app/data/i18n/indicator_copy_en.py) | reviewed | 2/2 | актуально |
+| [backend/app/data/i18n/price_goods_en.py](../backend/app/data/i18n/price_goods_en.py) | reviewed | 0/0 | актуально |
 | [backend/app/data/i18n/region_indicators_en.py](../backend/app/data/i18n/region_indicators_en.py) | reviewed | 0/0 | актуально |
 | [backend/app/data/i18n/regions_en.py](../backend/app/data/i18n/regions_en.py) | reviewed | 0/0 | актуально |
 | [backend/app/data/i18n/seo_en.py](../backend/app/data/i18n/seo_en.py) | reviewed | 0/0 | актуально |
@@ -202,6 +205,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/regional/data.csv.gz](../backend/app/data/regional/data.csv.gz) | reviewed | 0/0 | актуально |
 | [backend/app/data/regional/emiss_dimnames.json](../backend/app/data/regional/emiss_dimnames.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/regional/emiss_okato_31448.json](../backend/app/data/regional/emiss_okato_31448.json) | reviewed | 0/0 | актуально |
+| [backend/app/data/regional/emiss_price_goods.json](../backend/app/data/regional/emiss_price_goods.json) | data_schema_reviewed | 0/0 | актуально |
 | [backend/app/data/regional/fuel_points.csv](../backend/app/data/regional/fuel_points.csv) | reviewed | 0/0 | актуально |
 | [backend/app/data/regional/indicators.json](../backend/app/data/regional/indicators.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/regional/parse_report.json](../backend/app/data/regional/parse_report.json) | reviewed | 0/0 | актуально |
@@ -377,6 +381,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/public_bot_dialog.py](../backend/app/services/public_bot_dialog.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/pulse.py](../backend/app/services/pulse.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/pulse_report.py](../backend/app/services/pulse_report.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/r4a_price_compare.py](../backend/app/services/r4a_price_compare.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/region_compare_data.py](../backend/app/services/region_compare_data.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/regional_storage.py](../backend/app/services/regional_storage.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/rosstat_cpi_parser.py](../backend/app/services/rosstat_cpi_parser.py) | reviewed | 4/4 | актуально |
@@ -396,12 +401,18 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/rosstat_weekly_price_parser.py](../backend/app/services/rosstat_weekly_price_parser.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/scrape_guard.py](../backend/app/services/scrape_guard.py) | reviewed | 20/20 | актуально |
 | [backend/app/services/search.py](../backend/app/services/search.py) | reviewed | 46/46 | актуально |
+| [backend/app/services/search_currency_aliases.py](../backend/app/services/search_currency_aliases.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/search_dimensions.py](../backend/app/services/search_dimensions.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/search_intent.py](../backend/app/services/search_intent.py) | reviewed | 30/30 | актуально |
 | [backend/app/services/search_language.py](../backend/app/services/search_language.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/search_language_sql.py](../backend/app/services/search_language_sql.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/search_latest.py](../backend/app/services/search_latest.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/search_paths.py](../backend/app/services/search_paths.py) | reviewed | 10/10 | актуально |
+| [backend/app/services/search_price_goods.py](../backend/app/services/search_price_goods.py) | reviewed | 7/7 | актуально |
+| [backend/app/services/search_r6a.py](../backend/app/services/search_r6a.py) | reviewed | 1/1 | актуально |
+| [backend/app/services/search_r7a.py](../backend/app/services/search_r7a.py) | reviewed | 1/1 | актуально |
+| [backend/app/services/search_region_hint.py](../backend/app/services/search_region_hint.py) | reviewed | 3/3 | актуально |
+| [backend/app/services/search_regional_groups.py](../backend/app/services/search_regional_groups.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/search_units.py](../backend/app/services/search_units.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/search_variants.py](../backend/app/services/search_variants.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/search_vocabulary.py](../backend/app/services/search_vocabulary.py) | reviewed | 7/7 | актуально |
@@ -416,7 +427,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/seo_index_control.py](../backend/app/services/seo_index_control.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/seo_indicator_month.py](../backend/app/services/seo_indicator_month.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/seo_region_compare.py](../backend/app/services/seo_region_compare.py) | reviewed | 5/5 | актуально |
-| [backend/app/services/seo_regional.py](../backend/app/services/seo_regional.py) | reviewed | 20/20 | актуально |
+| [backend/app/services/seo_regional.py](../backend/app/services/seo_regional.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/seo_regional_year.py](../backend/app/services/seo_regional_year.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 99/99 | актуально |
 | [backend/app/services/seo_research.py](../backend/app/services/seo_research.py) | reviewed | 2/2 | актуально |
@@ -526,6 +537,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/certs/russiantrustedca2024.pem](../backend/certs/russiantrustedca2024.pem) | asset_metadata_reviewed | 0/0 | актуально |
 | [backend/constraints.txt](../backend/constraints.txt) | reviewed | 0/0 | актуально |
 | [backend/entrypoint.sh](../backend/entrypoint.sh) | reviewed | 0/0 | актуально |
+| [backend/load_regional_monthly.py](../backend/load_regional_monthly.py) | reviewed | 2/2 | актуально |
 | [backend/pytest.ini](../backend/pytest.ini) | reviewed | 0/0 | актуально |
 | [backend/requirements-dev.txt](../backend/requirements-dev.txt) | reviewed | 0/0 | актуально |
 | [backend/requirements.txt](../backend/requirements.txt) | reviewed | 0/0 | актуально |
@@ -649,6 +661,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_calendar_seed.py](../backend/tests/test_calendar_seed.py) | reviewed | 26/26 | актуально |
 | [backend/tests/test_calendar_truth.py](../backend/tests/test_calendar_truth.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_cbr_bop.py](../backend/tests/test_cbr_bop.py) | reviewed | 11/11 | актуально |
+| [backend/tests/test_cbr_currencies.py](../backend/tests/test_cbr_currencies.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_cbr_dataservice.py](../backend/tests/test_cbr_dataservice.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_cbr_dataservice_sum.py](../backend/tests/test_cbr_dataservice_sum.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_cbr_debt.py](../backend/tests/test_cbr_debt.py) | reviewed | 4/4 | актуально |
@@ -684,6 +697,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_ecb_fx_parser.py](../backend/tests/test_ecb_fx_parser.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_embed_tracking.py](../backend/tests/test_embed_tracking.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_emiss_labor_parser.py](../backend/tests/test_emiss_labor_parser.py) | body_reviewed | 2/2 | актуально |
+| [backend/tests/test_emiss_price_goods.py](../backend/tests/test_emiss_price_goods.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_emiss_regional_live_c27.py](../backend/tests/test_emiss_regional_live_c27.py) | reviewed | 35/35 | актуально |
 | [backend/tests/test_emiss_regional_parser.py](../backend/tests/test_emiss_regional_parser.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_en_catalog.py](../backend/tests/test_en_catalog.py) | reviewed | 19/19 | актуально |
@@ -774,6 +788,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_path_cut_redirects.py](../backend/tests/test_path_cut_redirects.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_perf_batch2.py](../backend/tests/test_perf_batch2.py) | reviewed | 30/30 | актуально |
 | [backend/tests/test_pg_backup_offsite.py](../backend/tests/test_pg_backup_offsite.py) | reviewed | 8/8 | актуально |
+| [backend/tests/test_price_goods_en.py](../backend/tests/test_price_goods_en.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_project_terrain.py](../backend/tests/test_project_terrain.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_public_bot.py](../backend/tests/test_public_bot.py) | reviewed | 103/103 | актуально |
 | [backend/tests/test_public_year_contract.py](../backend/tests/test_public_year_contract.py) | reviewed | 9/9 | актуально |
@@ -783,9 +798,14 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_pulse_telegram_html.py](../backend/tests/test_pulse_telegram_html.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_push.py](../backend/tests/test_push.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_pwa.py](../backend/tests/test_pwa.py) | reviewed | 13/13 | актуально |
+| [backend/tests/test_r4a_price_compare.py](../backend/tests/test_r4a_price_compare.py) | reviewed | 4/4 | актуально |
+| [backend/tests/test_r7b_price_quality.py](../backend/tests/test_r7b_price_quality.py) | reviewed | 7/7 | актуально |
+| [backend/tests/test_r7d_prices_summary.py](../backend/tests/test_r7d_prices_summary.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_rate_limit.py](../backend/tests/test_rate_limit.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_rebase_probe.py](../backend/tests/test_rebase_probe.py) | reviewed | 12/12 | актуально |
-| [backend/tests/test_region_polarity.py](../backend/tests/test_region_polarity.py) | reviewed | 9/9 | актуально |
+| [backend/tests/test_region_polarity.py](../backend/tests/test_region_polarity.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_region_prices_api.py](../backend/tests/test_region_prices_api.py) | reviewed | 4/4 | актуально |
+| [backend/tests/test_region_prices_meta.py](../backend/tests/test_region_prices_meta.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_region_units.py](../backend/tests/test_region_units.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_regional.py](../backend/tests/test_regional.py) | reviewed | 21/21 | актуально |
 | [backend/tests/test_regional_publication.py](../backend/tests/test_regional_publication.py) | reviewed | 40/40 | актуально |
@@ -831,12 +851,17 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_search_native_facets.py](../backend/tests/test_search_native_facets.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_search_native_titles.py](../backend/tests/test_search_native_titles.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_search_quantity_facets.py](../backend/tests/test_search_quantity_facets.py) | reviewed | 7/7 | актуально |
+| [backend/tests/test_search_r2z4_city_rent.py](../backend/tests/test_search_r2z4_city_rent.py) | reviewed | 6/6 | актуально |
+| [backend/tests/test_search_r5d_scope_words.py](../backend/tests/test_search_r5d_scope_words.py) | reviewed | 1/1 | актуально |
+| [backend/tests/test_search_r6a_labour.py](../backend/tests/test_search_r6a_labour.py) | reviewed | 4/4 | актуально |
+| [backend/tests/test_search_r7a_local.py](../backend/tests/test_search_r7a_local.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_search_registered_semantics.py](../backend/tests/test_search_registered_semantics.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_search_relationship_roles.py](../backend/tests/test_search_relationship_roles.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_search_single_letter.py](../backend/tests/test_search_single_letter.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_search_subject_roles.py](../backend/tests/test_search_subject_roles.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_search_variants.py](../backend/tests/test_search_variants.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_search_vocabulary_roles.py](../backend/tests/test_search_vocabulary_roles.py) | reviewed | 16/16 | актуально |
+| [backend/tests/test_search_z4_prices_currencies.py](../backend/tests/test_search_z4_prices_currencies.py) | reviewed | 13/13 | актуально |
 | [backend/tests/test_seed_hash.py](../backend/tests/test_seed_hash.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_seed_integrity.py](../backend/tests/test_seed_integrity.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_seed_seo_override.py](../backend/tests/test_seed_seo_override.py) | reviewed | 16/16 | актуально |
@@ -1109,6 +1134,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/competitor-tradingeconomics-2026-10-04.md](../docs/research/competitor-tradingeconomics-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/research/data-comparison-2026-10-05.md](../docs/research/data-comparison-2026-10-05.md) | reviewed | 0/0 | актуально |
 | [docs/research/de-intl-api-probes.json](../docs/research/de-intl-api-probes.json) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/research/emiss-opendata-placement-2026-11-09.md](../docs/research/emiss-opendata-placement-2026-11-09.md) | reviewed | 0/0 | актуально |
 | [docs/research/france-official-sources.xlsx](../docs/research/france-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/germany-official-sources.xlsx](../docs/research/germany-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/india-official-sources.xlsx](../docs/research/india-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
@@ -1375,10 +1401,12 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/CountryFlag.jsx](../frontend/src/components/CountryFlag.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/CpiIndicatorControls.jsx](../frontend/src/components/CpiIndicatorControls.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/CpiViewModePicker.jsx](../frontend/src/components/CpiViewModePicker.jsx) | reviewed | 3/3 | актуально |
+| [frontend/src/components/CurrencyConverter.jsx](../frontend/src/components/CurrencyConverter.jsx) | reviewed | 12/12 | актуально |
+| [frontend/src/components/CurrencyConverterZ3.component.test.jsx](../frontend/src/components/CurrencyConverterZ3.component.test.jsx) | reviewed | 0/0 | актуально |
 | [frontend/src/components/CurrencyDesk.component.test.jsx](../frontend/src/components/CurrencyDesk.component.test.jsx) | reviewed | 5/5 | актуально |
-| [frontend/src/components/CurrencyDesk.jsx](../frontend/src/components/CurrencyDesk.jsx) | reviewed | 15/15 | актуально |
+| [frontend/src/components/CurrencyDesk.jsx](../frontend/src/components/CurrencyDesk.jsx) | reviewed | 10/10 | актуально |
 | [frontend/src/components/CurrencyNext.jsx](../frontend/src/components/CurrencyNext.jsx) | reviewed | 1/1 | актуально |
-| [frontend/src/components/CurrencyPairChart.jsx](../frontend/src/components/CurrencyPairChart.jsx) | reviewed | 6/6 | актуально |
+| [frontend/src/components/CurrencyPairChart.jsx](../frontend/src/components/CurrencyPairChart.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/components/CurrencySelect.jsx](../frontend/src/components/CurrencySelect.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/CurrencyTelemetry.jsx](../frontend/src/components/CurrencyTelemetry.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/DataTable.component.test.jsx](../frontend/src/components/DataTable.component.test.jsx) | reviewed | 1/1 | актуально |
@@ -1423,8 +1451,9 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/IndicatorSearch.c10s.component.test.jsx](../frontend/src/components/IndicatorSearch.c10s.component.test.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/IndicatorSearch.c11d.component.test.jsx](../frontend/src/components/IndicatorSearch.c11d.component.test.jsx) | reviewed | 8/8 | актуально |
 | [frontend/src/components/IndicatorSearch.component.test.jsx](../frontend/src/components/IndicatorSearch.component.test.jsx) | reviewed | 10/10 | актуально |
-| [frontend/src/components/IndicatorSearch.jsx](../frontend/src/components/IndicatorSearch.jsx) | reviewed | 13/13 | актуально |
+| [frontend/src/components/IndicatorSearch.jsx](../frontend/src/components/IndicatorSearch.jsx) | reviewed | 15/15 | актуально |
 | [frontend/src/components/IndicatorSearch.w6d.component.test.jsx](../frontend/src/components/IndicatorSearch.w6d.component.test.jsx) | reviewed | 9/9 | актуально |
+| [frontend/src/components/IndicatorSearch.z4s.component.test.jsx](../frontend/src/components/IndicatorSearch.z4s.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/IndicatorSeoBlocks.jsx](../frontend/src/components/IndicatorSeoBlocks.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/IndicatorTelemetryGrid.component.test.jsx](../frontend/src/components/IndicatorTelemetryGrid.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/IndicatorTelemetryGrid.jsx](../frontend/src/components/IndicatorTelemetryGrid.jsx) | reviewed | 3/3 | актуально |
@@ -1478,10 +1507,15 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/PwaInstallCard.jsx](../frontend/src/components/PwaInstallCard.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/PwaInstallEntry.jsx](../frontend/src/components/PwaInstallEntry.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/PwaInstallPrompt.jsx](../frontend/src/components/PwaInstallPrompt.jsx) | reviewed | 3/3 | актуально |
+| [frontend/src/components/R5cTools.jsx](../frontend/src/components/R5cTools.jsx) | reviewed | 6/6 | актуально |
+| [frontend/src/components/R6bPulseStrip.component.test.jsx](../frontend/src/components/R6bPulseStrip.component.test.jsx) | reviewed | 1/1 | актуально |
+| [frontend/src/components/R6bPulseStrip.jsx](../frontend/src/components/R6bPulseStrip.jsx) | reviewed | 3/3 | актуально |
+| [frontend/src/components/R7PricesBlock.component.test.jsx](../frontend/src/components/R7PricesBlock.component.test.jsx) | reviewed | 1/1 | актуально |
+| [frontend/src/components/R7PricesBlock.jsx](../frontend/src/components/R7PricesBlock.jsx) | reviewed | 10/10 | актуально |
 | [frontend/src/components/RatingExtras.jsx](../frontend/src/components/RatingExtras.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/RatingMetricPicker.jsx](../frontend/src/components/RatingMetricPicker.jsx) | reviewed | 9/9 | актуально |
 | [frontend/src/components/RecentPagesTracker.jsx](../frontend/src/components/RecentPagesTracker.jsx) | reviewed | 2/2 | актуально |
-| [frontend/src/components/RegionAnnualChart.jsx](../frontend/src/components/RegionAnnualChart.jsx) | reviewed | 8/8 | актуально |
+| [frontend/src/components/RegionAnnualChart.jsx](../frontend/src/components/RegionAnnualChart.jsx) | reviewed | 9/9 | актуально |
 | [frontend/src/components/RegionCrossLink.jsx](../frontend/src/components/RegionCrossLink.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/RegionsMap.c11f.component.test.jsx](../frontend/src/components/RegionsMap.c11f.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/RegionsMap.component.test.jsx](../frontend/src/components/RegionsMap.component.test.jsx) | reviewed | 3/3 | актуально |
@@ -1535,6 +1569,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/YearPicker.component.test.jsx](../frontend/src/components/YearPicker.component.test.jsx) | reviewed | 0/0 | актуально |
 | [frontend/src/components/YearPicker.jsx](../frontend/src/components/YearPicker.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/Z1.component.test.jsx](../frontend/src/components/Z1.component.test.jsx) | reviewed | 8/8 | актуально |
+| [frontend/src/components/Z3PastCompare.jsx](../frontend/src/components/Z3PastCompare.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/Z4Indicator.component.test.jsx](../frontend/src/components/Z4Indicator.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/brand/Emblem.jsx](../frontend/src/components/brand/Emblem.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/brand/EmptyState.jsx](../frontend/src/components/brand/EmptyState.jsx) | reviewed | 2/2 | актуально |
@@ -1587,6 +1622,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/home/HomeHero.jsx](../frontend/src/components/home/HomeHero.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/home/HomePopularCountries.component.test.jsx](../frontend/src/components/home/HomePopularCountries.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/home/HomePopularCountries.jsx](../frontend/src/components/home/HomePopularCountries.jsx) | reviewed | 1/1 | актуально |
+| [frontend/src/components/home/HomePricesRates.jsx](../frontend/src/components/home/HomePricesRates.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/components/home/HomeToday.component.test.jsx](../frontend/src/components/home/HomeToday.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/home/HomeToday.jsx](../frontend/src/components/home/HomeToday.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/home/HomeTools.c10m.component.test.jsx](../frontend/src/components/home/HomeTools.c10m.component.test.jsx) | reviewed | 2/2 | актуально |
@@ -1597,14 +1633,25 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/regions/DownloadMenu.jsx](../frontend/src/components/regions/DownloadMenu.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/regions/MapMetricTopics.component.test.jsx](../frontend/src/components/regions/MapMetricTopics.component.test.jsx) | reviewed | 0/0 | актуально |
 | [frontend/src/components/regions/MapMetricTopics.jsx](../frontend/src/components/regions/MapMetricTopics.jsx) | reviewed | 4/4 | актуально |
+| [frontend/src/components/regions/MonthlyPriceParts.component.test.jsx](../frontend/src/components/regions/MonthlyPriceParts.component.test.jsx) | reviewed | 1/1 | актуально |
+| [frontend/src/components/regions/MonthlyPriceParts.jsx](../frontend/src/components/regions/MonthlyPriceParts.jsx) | reviewed | 11/11 | актуально |
+| [frontend/src/components/regions/R4PriceCompare.jsx](../frontend/src/components/regions/R4PriceCompare.jsx) | reviewed | 17/17 | актуально |
+| [frontend/src/components/regions/R4PriceCompare.test.jsx](../frontend/src/components/regions/R4PriceCompare.test.jsx) | reviewed | 0/0 | актуально |
+| [frontend/src/components/regions/R4YourRegion.jsx](../frontend/src/components/regions/R4YourRegion.jsx) | reviewed | 5/5 | актуально |
+| [frontend/src/components/regions/R6Annual.component.test.jsx](../frontend/src/components/regions/R6Annual.component.test.jsx) | reviewed | 1/1 | актуально |
+| [frontend/src/components/regions/R6Annual.jsx](../frontend/src/components/regions/R6Annual.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/regions/RegionComparePick.jsx](../frontend/src/components/regions/RegionComparePick.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/regions/RegionCompareTray.jsx](../frontend/src/components/regions/RegionCompareTray.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/regions/RegionLeaders.jsx](../frontend/src/components/regions/RegionLeaders.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/regions/RegionParts.jsx](../frontend/src/components/regions/RegionParts.jsx) | reviewed | 8/8 | актуально |
-| [frontend/src/components/regions/RegionRanking.jsx](../frontend/src/components/regions/RegionRanking.jsx) | reviewed | 3/3 | актуально |
+| [frontend/src/components/regions/RegionPrices.jsx](../frontend/src/components/regions/RegionPrices.jsx) | reviewed | 11/11 | актуально |
+| [frontend/src/components/regions/RegionPrices.test.jsx](../frontend/src/components/regions/RegionPrices.test.jsx) | reviewed | 0/0 | актуально |
+| [frontend/src/components/regions/RegionRanking.jsx](../frontend/src/components/regions/RegionRanking.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/russia/LaborIndicatorGroups.jsx](../frontend/src/components/russia/LaborIndicatorGroups.jsx) | body_reviewed | 1/1 | актуально |
 | [frontend/src/components/russia/RussiaCategorySection.jsx](../frontend/src/components/russia/RussiaCategorySection.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/russia/RussiaKeyFigures.jsx](../frontend/src/components/russia/RussiaKeyFigures.jsx) | reviewed | 4/4 | актуально |
+| [frontend/src/components/searchLabourHints.js](../frontend/src/components/searchLabourHints.js) | reviewed | 6/6 | актуально |
+| [frontend/src/components/searchLabourHints.test.js](../frontend/src/components/searchLabourHints.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/components/shellScrollOffset.component.test.jsx](../frontend/src/components/shellScrollOffset.component.test.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/viewModesContext.js](../frontend/src/components/viewModesContext.js) | reviewed | 2/2 | актуально |
 | [frontend/src/context/AuthProvider.analytics.component.test.jsx](../frontend/src/context/AuthProvider.analytics.component.test.jsx) | reviewed | 2/2 | актуально |
@@ -1764,7 +1811,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/currencyChart.js](../frontend/src/lib/currencyChart.js) | reviewed | 13/13 | актуально |
 | [frontend/src/lib/currencyChart.test.js](../frontend/src/lib/currencyChart.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/currencyMarket.js](../frontend/src/lib/currencyMarket.js) | reviewed | 5/5 | актуально |
-| [frontend/src/lib/currencyRates.js](../frontend/src/lib/currencyRates.js) | reviewed | 21/21 | актуально |
+| [frontend/src/lib/currencyQuoteUnits.test.js](../frontend/src/lib/currencyQuoteUnits.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/currencyRates.js](../frontend/src/lib/currencyRates.js) | reviewed | 29/29 | актуально |
 | [frontend/src/lib/dataFreshness.js](../frontend/src/lib/dataFreshness.js) | reviewed | 4/4 | актуально |
 | [frontend/src/lib/dataFreshness.test.js](../frontend/src/lib/dataFreshness.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/datasetJsonLd.js](../frontend/src/lib/datasetJsonLd.js) | reviewed | 1/1 | актуально |
@@ -1883,6 +1931,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/pwa.js](../frontend/src/lib/pwa.js) | reviewed | 23/23 | актуально |
 | [frontend/src/lib/pwaPolicy.js](../frontend/src/lib/pwaPolicy.js) | reviewed | 10/10 | актуально |
 | [frontend/src/lib/pwaPolicy.test.js](../frontend/src/lib/pwaPolicy.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/r5cExport.js](../frontend/src/lib/r5cExport.js) | reviewed | 9/9 | актуально |
+| [frontend/src/lib/r5cExport.test.js](../frontend/src/lib/r5cExport.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/r6Annual.js](../frontend/src/lib/r6Annual.js) | reviewed | 4/4 | актуально |
+| [frontend/src/lib/r6Annual.test.js](../frontend/src/lib/r6Annual.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/rangeStats.js](../frontend/src/lib/rangeStats.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/rangeStats.test.js](../frontend/src/lib/rangeStats.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/ratingConcepts.js](../frontend/src/lib/ratingConcepts.js) | reviewed | 4/4 | актуально |
@@ -1917,7 +1969,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/russiaHomeCards.test.js](../frontend/src/lib/russiaHomeCards.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/sceneBudget.js](../frontend/src/lib/sceneBudget.js) | reviewed | 8/8 | актуально |
 | [frontend/src/lib/sceneBudget.test.js](../frontend/src/lib/sceneBudget.test.js) | reviewed | 7/7 | актуально |
-| [frontend/src/lib/searchExamples.js](../frontend/src/lib/searchExamples.js) | reviewed | 10/10 | актуально |
+| [frontend/src/lib/searchExamples.js](../frontend/src/lib/searchExamples.js) | reviewed | 11/11 | актуально |
 | [frontend/src/lib/searchExamples.twins.test.js](../frontend/src/lib/searchExamples.twins.test.js) | reviewed | 5/5 | актуально |
 | [frontend/src/lib/searchFilters.js](../frontend/src/lib/searchFilters.js) | reviewed | 9/9 | актуально |
 | [frontend/src/lib/searchFilters.test.js](../frontend/src/lib/searchFilters.test.js) | reviewed | 1/1 | актуально |
@@ -2035,7 +2087,13 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/worldViewModes.test.js](../frontend/src/lib/worldViewModes.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/x2Format.test.js](../frontend/src/lib/x2Format.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/z1-plain-language.test.js](../frontend/src/lib/z1-plain-language.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/z2Price.js](../frontend/src/lib/z2Price.js) | reviewed | 28/28 | актуально |
+| [frontend/src/lib/z2Price.test.js](../frontend/src/lib/z2Price.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/z2PriceR2.test.js](../frontend/src/lib/z2PriceR2.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/z2PriceR5a.test.js](../frontend/src/lib/z2PriceR5a.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/z2Shell.test.js](../frontend/src/lib/z2Shell.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/z3Currency.test.js](../frontend/src/lib/z3Currency.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/z3Past.js](../frontend/src/lib/z3Past.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/z4ChartTitle.js](../frontend/src/lib/z4ChartTitle.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/z4ChartTitle.test.js](../frontend/src/lib/z4ChartTitle.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/main.jsx](../frontend/src/main.jsx) | reviewed | 1/1 | актуально |
@@ -2093,13 +2151,14 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/NotFound.jsx](../frontend/src/pages/NotFound.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/PageStates.component.test.jsx](../frontend/src/pages/PageStates.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/pages/Privacy.jsx](../frontend/src/pages/Privacy.jsx) | reviewed | 2/2 | актуально |
-| [frontend/src/pages/RegionComparePage.jsx](../frontend/src/pages/RegionComparePage.jsx) | reviewed | 5/5 | актуально |
+| [frontend/src/pages/R7C.component.test.jsx](../frontend/src/pages/R7C.component.test.jsx) | reviewed | 0/0 | актуально |
+| [frontend/src/pages/RegionComparePage.jsx](../frontend/src/pages/RegionComparePage.jsx) | reviewed | 9/9 | актуально |
 | [frontend/src/pages/RegionIndicatorPage.component.test.jsx](../frontend/src/pages/RegionIndicatorPage.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/pages/RegionIndicatorPage.jsx](../frontend/src/pages/RegionIndicatorPage.jsx) | reviewed | 12/12 | актуально |
 | [frontend/src/pages/RegionProfile.component.test.jsx](../frontend/src/pages/RegionProfile.component.test.jsx) | reviewed | 1/1 | актуально |
-| [frontend/src/pages/RegionProfile.jsx](../frontend/src/pages/RegionProfile.jsx) | reviewed | 3/3 | актуально |
+| [frontend/src/pages/RegionProfile.jsx](../frontend/src/pages/RegionProfile.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/pages/RegionRatingPage.component.test.jsx](../frontend/src/pages/RegionRatingPage.component.test.jsx) | reviewed | 2/2 | актуально |
-| [frontend/src/pages/RegionRatingPage.jsx](../frontend/src/pages/RegionRatingPage.jsx) | reviewed | 2/2 | актуально |
+| [frontend/src/pages/RegionRatingPage.jsx](../frontend/src/pages/RegionRatingPage.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/RegionRatingsHub.component.test.jsx](../frontend/src/pages/RegionRatingsHub.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/pages/RegionRatingsHub.jsx](../frontend/src/pages/RegionRatingsHub.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/RegionsHome.c11f.component.test.jsx](../frontend/src/pages/RegionsHome.c11f.component.test.jsx) | reviewed | 4/4 | актуально |
@@ -2180,6 +2239,24 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/styles/planet-hero.css](../frontend/src/styles/planet-hero.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/planet-map-default.test.js](../frontend/src/styles/planet-map-default.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/styles/platform-pages.css](../frontend/src/styles/platform-pages.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r3a-home.css](../frontend/src/styles/r3a-home.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r3b-regions.css](../frontend/src/styles/r3b-regions.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r3c-dark.css](../frontend/src/styles/r3c-dark.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r3d-card.css](../frontend/src/styles/r3d-card.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r4a-compare-prices.css](../frontend/src/styles/r4a-compare-prices.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r4b-motion.css](../frontend/src/styles/r4b-motion.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r4c-wide.css](../frontend/src/styles/r4c-wide.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r5a-price.css](../frontend/src/styles/r5a-price.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r5b-region.css](../frontend/src/styles/r5b-region.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r5c-tools.css](../frontend/src/styles/r5c-tools.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r5d-home.css](../frontend/src/styles/r5d-home.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r6a-search.css](../frontend/src/styles/r6a-search.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r6b-card.css](../frontend/src/styles/r6b-card.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r6b-pulse.css](../frontend/src/styles/r6b-pulse.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r6c-annual.css](../frontend/src/styles/r6c-annual.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r7a-search.css](../frontend/src/styles/r7a-search.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r7c-regions.css](../frontend/src/styles/r7c-regions.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r7d-prices.css](../frontend/src/styles/r7d-prices.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/regions-w4.css](../frontend/src/styles/regions-w4.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/research.css](../frontend/src/styles/research.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/s6-shell.test.js](../frontend/src/styles/s6-shell.test.js) | reviewed | 2/2 | актуально |
@@ -2195,12 +2272,16 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/styles/x2-indicator.css](../frontend/src/styles/x2-indicator.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/y2-indicator.css](../frontend/src/styles/y2-indicator.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z1-polish.css](../frontend/src/styles/z1-polish.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/z1-prices.css](../frontend/src/styles/z1-prices.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z1-tokens.css](../frontend/src/styles/z1-tokens.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z1-tokens.test.js](../frontend/src/styles/z1-tokens.test.js) | reviewed | 2/2 | актуально |
+| [frontend/src/styles/z2-price.css](../frontend/src/styles/z2-price.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z2-shell.css](../frontend/src/styles/z2-shell.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/z3-cur.css](../frontend/src/styles/z3-cur.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z3-home.css](../frontend/src/styles/z3-home.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z3-polish.css](../frontend/src/styles/z3-polish.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z4-indicator.css](../frontend/src/styles/z4-indicator.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/z4s-search.css](../frontend/src/styles/z4s-search.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z5-country.css](../frontend/src/styles/z5-country.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z6-rating.css](../frontend/src/styles/z6-rating.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/z7-compare.css](../frontend/src/styles/z7-compare.css) | reviewed | 0/0 | актуально |
@@ -2290,6 +2371,13 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/e2e/liquid-glass-us-images.mjs](../scripts/e2e/liquid-glass-us-images.mjs) | reviewed | 0/0 | актуально |
 | [scripts/e2e/navbar-overlap.mjs](../scripts/e2e/navbar-overlap.mjs) | reviewed | 2/2 | актуально |
 | [scripts/e2e/smoke.mjs](../scripts/e2e/smoke.mjs) | reviewed | 5/5 | актуально |
+| [scripts/emiss/classify_collected.py](../scripts/emiss/classify_collected.py) | reviewed | 9/9 | актуально |
+| [scripts/emiss/fixtures/30925.json](../scripts/emiss/fixtures/30925.json) | reviewed | 0/0 | актуально |
+| [scripts/emiss/fixtures/31517.json](../scripts/emiss/fixtures/31517.json) | reviewed | 0/0 | актуально |
+| [scripts/emiss/fixtures/31548.json](../scripts/emiss/fixtures/31548.json) | reviewed | 0/0 | актуально |
+| [scripts/emiss/fixtures/57824.json](../scripts/emiss/fixtures/57824.json) | reviewed | 0/0 | актуально |
+| [scripts/emiss/grid_to_series.py](../scripts/emiss/grid_to_series.py) | reviewed | 11/11 | актуально |
+| [scripts/emiss/test_grid_to_series.py](../scripts/emiss/test_grid_to_series.py) | reviewed | 8/8 | актуально |
 | [scripts/etl-key-rate.sh](../scripts/etl-key-rate.sh) | reviewed | 0/0 | актуально |
 | [scripts/export-page-meta.py](../scripts/export-page-meta.py) | reviewed | 2/2 | актуально |
 | [scripts/export-view-models.py](../scripts/export-view-models.py) | reviewed | 1/1 | актуально |
@@ -2317,6 +2405,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/regional/backfill_pril_2022_2023.py](../scripts/regional/backfill_pril_2022_2023.py) | reviewed | 2/2 | актуально |
 | [scripts/regional/backfill_word.py](../scripts/regional/backfill_word.py) | reviewed | 5/5 | актуально |
 | [scripts/regional/build_map_paths.py](../scripts/regional/build_map_paths.py) | reviewed | 6/6 | актуально |
+| [scripts/regional/build_price_goods.py](../scripts/regional/build_price_goods.py) | reviewed | 5/5 | актуально |
 | [scripts/regional/build_us_states_map_paths.mjs](../scripts/regional/build_us_states_map_paths.mjs) | reviewed | 6/6 | актуально |
 | [scripts/regional/emiss_dimnames.json](../scripts/regional/emiss_dimnames.json) | reviewed | 0/0 | актуально |
 | [scripts/regional/emiss_okato_31448.json](../scripts/regional/emiss_okato_31448.json) | reviewed | 0/0 | актуально |
