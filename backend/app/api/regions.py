@@ -622,7 +622,9 @@ async def _section_siblings(db: AsyncSession, region, indicator) -> list[dict]:
             m = price_meta(ind.code)
             return (0 if m and m["price_group"] == own_meta["price_group"] else 1,
                     1 if (m and m["is_discontinued"]) else 0)
-        all_sib = sorted(all_sib, key=_sib_rank)
+        # Только позиции цен: годовые индексы раздела (тарифы, ИПЦ) — другой смысл и
+        # частота, в списке «Ещё в разделе» у цены товара они путают (круг 5, R5-A).
+        all_sib = sorted((x for x in all_sib if price_meta(x.code)), key=_sib_rank)
         siblings = all_sib[:24]
     else:
         siblings = sorted(all_sib, key=lambda x: x.code)[:12]
