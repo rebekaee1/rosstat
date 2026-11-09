@@ -11,7 +11,7 @@ import '../styles/r6c-annual.css';
 import { useCallback, useMemo, useRef } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
-  Tooltip, CartesianGrid, ReferenceDot,
+  Tooltip, CartesianGrid, ReferenceDot, ReferenceLine,
 } from 'recharts';
 import { formatRegionValue, axisScaleFor, formatScaledTick } from '../lib/regionsApi';
 import { pickChartAxisTicks, chartAxisTickBudget } from '../lib/format';
@@ -47,12 +47,13 @@ function monthTickLabel(p, locale) {
   return `${names[m]} ${p.year}`;
 }
 
-function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, tickLabel, indexNote, yoyLabel, yoyOf }) {
+function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, realLabel, tickLabel, indexNote, yoyLabel, yoyOf }) {
   if (!active || !payload?.length) return null;
   const region = payload.find(p => p.dataKey === 'value' && p.value != null);
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
   const russia = payload.find(p => p.dataKey === 'russia' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
+  const real = payload.find(p => p.dataKey === 'real' && p.value != null);
   const rawPeriod = tickLabel ? tickLabel(label) : label;
   const periodLabel = typeof rawPeriod === 'string' && rawPeriod ? rawPeriod.charAt(0).toUpperCase() + rawPeriod.slice(1) : rawPeriod;
   // Короткая единица («₽», «%») стоит рядом с числом, а не отдельной строкой внизу: раньше «₽» оставался сам по себе на второй строке.
@@ -79,6 +80,11 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
       {russia && (
         <div className="tabular-nums text-text-secondary mt-0.5">
           {russiaLabel}: {fmt(russia.value)}
+        </div>
+      )}
+      {real && (
+        <div className="tabular-nums text-text-secondary mt-0.5">
+          {realLabel}: {fmt(real.value)}
         </div>
       )}
       {forecast && (
@@ -108,6 +114,9 @@ export default function RegionAnnualChart({
   forecastSeries = null,
   axisUnit = '',
   yearTicks = false,
+  realSeries = null,
+  realLabel = '',
+  eventYears = null,
 }) {
   const { t, locale } = useLocale();
   const wrapRef = useRef(null);
@@ -129,6 +138,7 @@ export default function RegionAnnualChart({
   const data = useMemo(() => {
     const rfByPeriod = new Map((russiaSeries || []).map(p => [periodKey(p), p.value]));
     const cmpByPeriod = new Map((compareSeries || []).map(p => [periodKey(p), p.value]));
+    const realByPeriod = new Map((realSeries || []).map(p => [periodKey(p), p.value]));
     const observed = (series || []).map((p, i, arr) => ({
       yoy: monthly && i >= 12 && arr[i - 12].value
         && (p.year * 12 + p.month) - (arr[i - 12].year * 12 + arr[i - 12].month) === 12
@@ -143,6 +153,7 @@ export default function RegionAnnualChart({
       value: p.value,
       compare: cmpByPeriod.get(periodKey(p)) ?? null,
       russia: rfByPeriod.get(periodKey(p)) ?? null,
+      real: realByPeriod.get(periodKey(p)) ?? null,
       forecast: null,
     }));
     if (forecastSeries?.length && observed.length) {
@@ -153,13 +164,13 @@ export default function RegionAnnualChart({
           label: monthly ? monthTickLabel(p, locale)
             : quarterly ? (locale === 'en' ? `${p.year} Q${p.quarter || 1}` : `${p.quarter || 1} кв. ${p.year}`)
               : String(p.year),
-          value: null, compare: null, russia: null, forecast: p.value,
+          value: null, compare: null, russia: null, real: null, forecast: p.value,
         });
       }
     }
     return observed;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [series, russiaSeries, compareSeries, forecastSeries, monthly, quarterly, locale]);
+  }, [series, russiaSeries, compareSeries, realSeries, forecastSeries, monthly, quarterly, locale]);
 
   const showRussia = useMemo(
     () => data.some(d => d.russia != null),
@@ -199,7 +210,7 @@ export default function RegionAnnualChart({
 
   // Ширина осей — по самой длинной подписи; на узком экране жёстче клэмп,
   // иначе dual-axis съедает половину plot-area (скрин Белгород/Россия).
-  const leftValues = useMemo(() => plotData.flatMap(d => [d.value, d.compare, d.forecast]), [plotData]);
+  const leftValues = useMemo(() => plotData.flatMap(d => [d.value, d.compare, d.forecast, d.real]), [plotData]);
   const rightValues = useMemo(() => (dualAxis ? data.map(d => d.russia) : []), [data, dualAxis]);
   const leftScale = useMemo(() => axisScaleFor(leftValues), [leftValues]);
   const rightScale = useMemo(() => axisScaleFor(rightValues), [rightValues]);
@@ -328,6 +339,7 @@ export default function RegionAnnualChart({
                   compareName={compareName}
                   russiaLabel={russiaLabel}
                   forecastLabel={locale === 'en' ? 'Our forecast' : 'Наш прогноз'}
+                  realLabel={realLabel}
                   indexNote={indexMode ? t('w6f.reg.indexNote') : null}
                   yoyLabel={t('r2z2.tipYoy')}
                   yoyOf={monthly && !indexMode ? (v) => {
@@ -426,6 +438,33 @@ export default function RegionAnnualChart({
                 isAnimationActive={false}
               />
             )}
+            {realSeries?.length > 0 && (
+              <Line
+                className="k4-ribbon k4-ribbon--plain"
+                yAxisId="region"
+                type="linear"
+                dataKey="real"
+                stroke={CHART_THEME.gold}
+                strokeOpacity={0.75}
+                strokeWidth={1.8}
+                strokeDasharray="5 4"
+                strokeLinecap="round"
+                dot={false}
+                activeDot={false}
+                isAnimationActive={false}
+              />
+            )}
+            {monthly && Array.isArray(eventYears) && eventYears.map((ev) => (
+              <ReferenceLine
+                key={ev.year}
+                yAxisId="region"
+                x={ev.period}
+                stroke={CHART_THEME.axis}
+                strokeOpacity={0.35}
+                strokeDasharray="2 4"
+                label={{ value: String(ev.year), position: 'insideTopRight', fill: CHART_THEME.axis, fontSize: 10 }}
+              />
+            ))}
             {forecastSeries?.length > 0 && (
               <Line
                 className="k4-forecast"

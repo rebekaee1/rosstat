@@ -217,7 +217,7 @@ export function CopyForClient({ text }) {
 /** Окно графика: 2 года / 5 лет / 10 лет / всё. */
 export function RangeChips({ value, onChange, total }) {
   const { t } = useLocale();
-  const opts = [[24, 'r5a.r2'], [60, 'r5a.r5'], [120, 'r5a.r10'], [0, 'r5a.rAll']].filter(([m]) => m === 0 || total > m);
+  const opts = [[24, 'r5a.r2'], [60, 'r5a.r5'], [120, 'r5a.r10'], [240, 'r10c.r20'], [0, 'r5a.rAll']].filter(([m]) => m === 0 || total > m);
   if (opts.length < 3) return null;
   return (
     <div className="r5a-range" role="group" aria-label={t('r5a.rangeAria')} data-no-export="true">

@@ -971,6 +971,52 @@ def _monthly_price_fields(code: str, region_last: int) -> dict:
     return _price_fields(meta)
 
 
+def _cpi_chain(rows, start_ym: int, max_points: int = 400) -> list:
+    """Накопленный индекс потребительских цен России: месячные ИПЦ (к предыдущему месяцу, %) в цепочку.
+
+    rows: [(год, месяц, значение ИПЦ м/м)] по порядку. Индекс = 100 в месяце start_ym.
+    Пропуск месяца обрывает цепочку (дальше честно не считаем). Возвращает [[YYYYMM, индекс], ...].
+    """
+    out = []
+    cum = None
+    prev = None
+    for y, m, v in rows:
+        ym = y * 100 + m
+        if ym < start_ym or v is None or float(v) <= 0:
+            continue
+        idx = y * 12 + m
+        if cum is None:
+            if ym != start_ym:
+                continue
+            cum = 100.0
+        else:
+            if prev is None or idx - prev != 1:
+                break
+            cum *= float(v) / 100.0
+        prev = idx
+        out.append([ym, round(cum, 3)])
+        if len(out) >= max_points:
+            break
+    return out
+
+
+async def _russia_cpi_chain(db: AsyncSession, start_ym: int) -> list:
+    """Один ряд ИПЦ России (код cpi) для сравнения роста цены с общей инфляцией. Нет ряда: пусто."""
+    try:
+        from app.models import Indicator, IndicatorData
+        ind = (await db.execute(select(Indicator).where(Indicator.code == "cpi"))).scalar_one_or_none()
+        if ind is None:
+            return []
+        data = (await db.execute(
+            select(IndicatorData.date, IndicatorData.value)
+            .where(IndicatorData.indicator_id == ind.id)
+            .order_by(IndicatorData.date)
+        )).all()
+        return _cpi_chain([(d.year, d.month, v) for d, v in data], start_ym)
+    except Exception:  # инфляция дополняет страницу, ошибка не должна ронять цену
+        return []
+
+
 @router.get("/{slug}/i/{code}/monthly")
 async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     """Помесячный ряд показателя в регионе (пока — цены на топливо, ЕМИСС).
@@ -979,7 +1025,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
     Сравнение с РФ строится, рейтинг — нет: цена зависит от структуры рынка
     и логистики региона, «место в рейтинге цен» вводило бы в заблуждение.
     """
-    cache_key = await versioned_key("regions", f"monthly:v2:{slug}:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"monthly:v3:{slug}:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1050,6 +1096,8 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
     sibling_items = await _section_siblings(db, region, indicator)
 
     copy = _icopy(indicator)
+    first_ym = min([rows[0][0]] + ([russia_series[0]["year"] * 100 + russia_series[0]["month"]] if russia_series else []))
+    cpi_chain = await _russia_cpi_chain(db, int(first_ym))
     result = {
         "region": {
             "slug": region.slug,
@@ -1068,6 +1116,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
             **_monthly_price_fields(indicator.code, int(last_m)),
         },
         "frequency": "monthly",
+        "cpi_russia": cpi_chain,
         "compare": compare,
         "series": series,
         "russia_series": russia_series,
