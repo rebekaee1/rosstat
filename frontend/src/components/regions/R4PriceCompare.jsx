@@ -11,6 +11,7 @@ import { regionIndicatorPath } from '../../lib/sitePaths';
 import { formatPrice, splitShortName } from './RegionPrices';
 import { useLocale } from '../../i18n';
 import { resolveBrowserLocale } from '../../i18n/locale';
+import { R10bCategories, R10bGaps, rub, lessPct } from './R10bCompare';
 import '../../styles/r4a-compare-prices.css';
 import '../../styles/r8c-compare.css';
 
@@ -69,7 +70,7 @@ function BasketCard({ data, locale, t }) {
       />
       <p className="r4a-card__verdict">
         {basket.cheaper_slug && basket.diff_pct != null
-          ? t('r4a.basket.verdict', { name: nameOf(basket.cheaper_slug), pct: String(basket.diff_pct).replace('.', locale === 'en' ? '.' : ',') })
+          ? t('r4a.basket.verdict', { name: nameOf(basket.cheaper_slug), pct: String(lessPct(basket.total_a, basket.total_b, 1)).replace('.', locale === 'en' ? '.' : ',') })
           : t('r4a.basket.same')}
         {basket.cheaper_slug && Math.abs(basket.total_a - basket.total_b) >= 1 && (
           <> {t('r5d.diffRub', { sum: formatRub(Math.abs(basket.total_a - basket.total_b), locale) })}</>
@@ -82,6 +83,9 @@ function BasketCard({ data, locale, t }) {
             a={a} b={b} valueA={wage.baskets_a} valueB={wage.baskets_b}
             cheaperSlug={wage.better_slug} format={fmtTimes} testId="r4a-wage-duel"
           />
+          <p className="r10b-wage-rub" data-testid="r10b-wage-rub">
+            {t('r10b.wage.rub', { year: wage.year, a: a.name, va: rub(wage.a, locale), b: b.name, vb: rub(wage.b, locale) })}
+          </p>
           <p className="r4a-card__verdict">
             {wage.better_slug
               ? t('r4a.wage.verdict', { name: nameOf(wage.better_slug), year: wage.year })
@@ -114,15 +118,13 @@ function BasketCard({ data, locale, t }) {
   );
 }
 
-function GroupTable({ group, data, locale, t, forceOpen, defaultOpen }) {
-  const [own, setOwn] = useState(!!defaultOpen);
-  const open = own || forceOpen;
+function GroupTable({ group, data, locale, t, open, onToggle, anchor }) {
   const { region_a: a, region_b: b } = data;
   const cheaperA = group.items.filter((i) => i.cheaper_slug === a.slug).length;
   const cheaperB = group.items.filter((i) => i.cheaper_slug === b.slug).length;
   return (
-    <section className="r4a-group">
-      <button type="button" className="r4a-group__head fe-press" aria-expanded={open} onClick={() => setOwn((v) => !v)}>
+    <section className="r4a-group" id={anchor}>
+      <button type="button" className="r4a-group__head fe-press" aria-expanded={open} onClick={onToggle}>
         <span className="r4a-group__label">{group.label}</span>
         <span className="r4a-group__tally r8c-tally">{t('r8c.group.tally', { a: a.name, na: cheaperA, b: b.name, nb: cheaperB })}</span>
         <ChevronDown size={16} aria-hidden="true" className={open ? 'is-open' : ''} />
@@ -134,7 +136,7 @@ function GroupTable({ group, data, locale, t, forceOpen, defaultOpen }) {
             <span role="columnheader" className="r4a-table__val">{a.name}</span>
             <span role="columnheader" className="r4a-table__val">{b.name}</span>
           </div>
-          {group.items.map((it) => {
+          {[...group.items].sort((x, y) => (y.diff_pct || 0) - (x.diff_pct || 0)).map((it) => {
             const { title, per } = splitShortName(it.name);
             return (
               <div className="r4a-table__row" role="row" key={it.code}>
@@ -145,8 +147,8 @@ function GroupTable({ group, data, locale, t, forceOpen, defaultOpen }) {
                 {[a, b].map((r, k) => (
                   <span role="cell" key={r.slug} className={`fe-num r4a-table__val${it.cheaper_slug === r.slug ? ' is-better' : ''}`}>
                     {formatPrice(k === 0 ? it.a : it.b, locale)}
-                    {it.cheaper_slug === r.slug && it.diff_pct != null && it.diff_pct >= 1 && (
-                      <span className="r4a-table__diff">{`−${Math.round(it.diff_pct)}${locale === 'en' ? '' : '\u00a0'}%`}</span>
+                    {it.cheaper_slug === r.slug && it.diff_pct != null && lessPct(it.a, it.b) >= 1 && (
+                      <span className="r4a-table__diff">{`−${Math.round(lessPct(it.a, it.b))}${locale === 'en' ? '' : '\u00a0'}%`}</span>
                     )}
                   </span>
                 ))}
@@ -211,18 +213,30 @@ export function R4PriceSkeleton() {
 export default function R4PriceCompare({ data }) {
   const { t, locale } = useLocale();
   const [all, setAll] = useState(false);
+  const [openSet, setOpenSet] = useState(() => new Set([0]));
   if (!data || !data.items?.length) return null;
   const groups = groupPriceItems(data.items);
   const { cheaper_count: c, region_a: a, region_b: b } = data;
+  const toggle = (i) => setOpenSet((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; });
+  const pick = (group) => {
+    const i = groups.findIndex((g) => g.group === group);
+    if (i < 0) return;
+    setOpenSet((prev) => new Set(prev).add(i));
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.getElementById(`r10b-group-${i}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+  };
   return (
     <div className="r4a-prices" data-testid="r4a-prices">
-      <R4PriceVerdict data={data} locale={locale} t={t} />
+      <R10bCategories data={data} locale={locale} t={t} onPick={pick} />
+      <R10bGaps data={data} locale={locale} t={t} />
+      <BasketCard data={data} locale={locale} t={t} />
       <p className="r4a-tally" data-testid="r4a-cheaper-tally">
         {t('r4a.tally', { a: a.name, na: c.a, b: b.name, nb: c.b, n: c.total })}
       </p>
-      <BasketCard data={data} locale={locale} t={t} />
       <div className="r4a-h2row">
         <h2 className="r4a-h2">{t('r4a.table.title', { month: data.period_label })}</h2>
+        <p className="r10b-sort">{t('r10b.sort')}</p>
         <CopyNumbers data={data} locale={locale} t={t} />
         <button type="button" className="r4a-more fe-press" onClick={() => setAll((v) => !v)} data-testid="r4a-expand-all">
           {all ? t('r4a.group.collapse') : t('r4a.group.expand')}
@@ -230,7 +244,10 @@ export default function R4PriceCompare({ data }) {
       </div>
       <div className="r4a-groups">
         {groups.map((g, i) => (
-          <GroupTable key={g.group} group={g} data={data} locale={locale} t={t} forceOpen={all} defaultOpen={i === 0} />
+          <GroupTable
+            key={g.group} group={g} data={data} locale={locale} t={t}
+            open={all || openSet.has(i)} onToggle={() => { if (all) setAll(false); toggle(i); }} anchor={`r10b-group-${i}`}
+          />
         ))}
       </div>
     </div>
