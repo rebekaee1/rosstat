@@ -3901,4 +3901,6 @@ export default {
   'r5a.pairHigher': '{pct} higher',
   'r5a.pairLower': '{pct} lower',
   'r5a.flatMonth': 'no change in a month',
+  'r5a.areaSum': 'Flat of {area}: ≈ {sum} a month',
+  'r5a.areaAria': 'Flat size',
 };

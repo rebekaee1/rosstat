@@ -3906,4 +3906,6 @@ export default {
   'r5a.pairHigher': 'на {pct} дороже',
   'r5a.pairLower': 'на {pct} дешевле',
   'r5a.flatMonth': 'без перемен за месяц',
+  'r5a.areaSum': 'Квартира {area}: ≈ {sum} в месяц',
+  'r5a.areaAria': 'Площадь квартиры',
 };

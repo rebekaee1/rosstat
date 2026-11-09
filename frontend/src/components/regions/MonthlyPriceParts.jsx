@@ -2,12 +2,13 @@
 // Поля short_name / price_group / is_discontinued / last_month / compare приходят от API; если их нет — блоки не рисуются.
 import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
+import { NBSP } from '../../lib/regionUi';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
 import { useLocale } from '../../i18n';
 import { glueNumbers } from '../../lib/regionUi';
 import { regionIndicatorPath, regionPath } from '../../lib/sitePaths';
-import { compareFill, groupSiblings, pairLabel, pairSiblings, priceText, roundBig, signedPct, ymLabel } from '../../lib/z2Price';
+import { compareFill, groupSiblings, pairLabel, pairSiblings, perAreaUnit, priceText, roundBig, signedPct, ymLabel } from '../../lib/z2Price';
 import '../../styles/z2-price.css';
 import '../../styles/r5a-price.css';
 
@@ -204,6 +205,29 @@ export function RangeChips({ value, onChange, total }) {
           {t(key)}
         </button>
       ))}
+    </div>
+  );
+}
+
+const AREAS = [30, 45, 60, 80];
+
+/** «Квартира 45 м²: ≈ 1 450 ₽ в месяц»: для цен «за м²» — сумма на типовую площадь (простое умножение). */
+export function AreaCalc({ value, unit }) {
+  const { t, locale } = useLocale();
+  const [area, setArea] = useState(45);
+  if (!perAreaUnit(unit) || !(value > 0)) return null;
+  return (
+    <div className="r5a-area" data-no-export="true">
+      <p className="r5a-area__sum fe-num">
+        {t('r5a.areaSum', { area: `${area}${NBSP}м²`, sum: `${Math.round(value * area).toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU').replace(/[\u00a0\u202f]/g, NBSP)}${NBSP}₽` })}
+      </p>
+      <div className="r5a-range" role="group" aria-label={t('r5a.areaAria')}>
+        {AREAS.map((a) => (
+          <button key={a} type="button" className={`r5a-range__b fe-tap-inline${area === a ? ' is-on' : ''}`} aria-pressed={area === a} onClick={() => setArea(a)}>
+            {a}{NBSP}м²
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

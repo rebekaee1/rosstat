@@ -20,7 +20,7 @@ import DeltaBadge from '../components/DeltaBadge';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { formatRegionNumber, isPercentUnit, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
-import GroupedSiblings, { CompareLines, CopyForClient, DiscontinuedNote, PairSwitch, RangeChips } from '../components/regions/MonthlyPriceParts';
+import GroupedSiblings, { CompareLines, AreaCalc, CopyForClient, DiscontinuedNote, PairSwitch, RangeChips } from '../components/regions/MonthlyPriceParts';
 import {
   bigRub, changeOverMonths, compareRows, guessPriceGroup, pairsFirst, roundBig, sliceMonths, yearlyCost, isRubPerUnit, perUnitPrice, pickField, priceText, shortPriceName, signedPct, unitSuffix, ymLabel, ymLabelFrom,
 } from '../lib/z2Price';
@@ -470,6 +470,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 {t('z2.perUnit', { price: `${formatRegionNumber(perUnit.value, active.indicator.unit, locale)}${NBSP}₽`, word: perUnit.word })}
               </p>
             )}
+            {isPrice && !discontinued && <AreaCalc value={last.value} unit={active.indicator.unit} />}
             {isPrice && <p className="r5a-hero-month">{t('r5a.dataFor', { month: lastLabel })}</p>}
             {yearSum && !discontinued && <p className="r5a-year fe-num">{t('r5a.perYear', { sum: bigRub(yearSum, locale) })}</p>}
             {discontinued && <DiscontinuedNote />}

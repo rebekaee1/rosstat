@@ -240,3 +240,8 @@ export function bigRub(v, locale = 'ru') {
   if (v >= 1e6) return `${(v / 1e6).toFixed(2).replace(/\.?0+$/, '').replace('.', dec)}${NBSP}${locale === 'en' ? 'M' : 'млн'}${NBSP}₽`;
   return `${Math.round(v / 1000)}${NBSP}${locale === 'en' ? 'k' : 'тыс.'}${NBSP}₽`;
 }
+
+/** Цена «за м²» (в месяц): единица содержит «за м²» / «per sq m». */
+export function perAreaUnit(unit) {
+  return /за\s*м[²2]|per\s+(?:sq\.?\s*m|m[²2]|square)/i.test(String(unit || ''));
+}
