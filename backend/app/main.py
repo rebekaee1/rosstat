@@ -1444,6 +1444,20 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # R10-B: снимки цен популярных регионов для сравнения пар (/regions/vs/*/prices).
+        # Снимок живёт 6 часов и сбрасывается публикацией региональных данных; задача досчитывает
+        # только отсутствующие, поэтому в обычный прогон почти ничего не делает.
+        from app.api.regions import price_compare_warm_job
+        scheduler.add_job(
+            locked_job(price_compare_warm_job, "price_compare_warm", ttl_seconds=900),
+            trigger=IntervalTrigger(minutes=15),
+            id="price_compare_warm",
+            name="Price-compare region snapshots warm-up (every 15 min, only when missing)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # Витрина прогнозов: ключ живёт 30 минут и сбрасывается загрузкой данных,
         # поэтому пересобираем каждые 20 минут в фоне, а не на глазах у посетителя.
         from app.api.forecast_showcase import forecast_showcase_warm_job
