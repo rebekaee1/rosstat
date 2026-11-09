@@ -44097,7 +44097,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/MobileDock.jsx": {
-      "sha256": "5a73d7c512f64b9d2cfdc2d468f7e254aa5d98cc4b04fa088e45cad313c12821",
+      "sha256": "ae7b0a1e61ca244d0ba6609a3789f6d5c78145b116af411919713a802bb7e36b",
       "imports": [
         {
           "line": 1,
@@ -44273,56 +44273,56 @@
       "routes": [],
       "functions": [
         {
-          "line": 33,
-          "end_line": 109,
+          "line": 34,
+          "end_line": 110,
           "owner": "<module>",
           "name": "MobileDock",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 50,
+          "line": 51,
+          "end_line": 56,
+          "owner": "MobileDock",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 55,
           "end_line": 55,
+          "owner": "MobileDock.<callback@51>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 57,
+          "end_line": 67,
           "owner": "MobileDock",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 54,
-          "end_line": 54,
-          "owner": "MobileDock.<callback@50>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 56,
+          "line": 63,
           "end_line": 66,
-          "owner": "MobileDock",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 62,
-          "end_line": 65,
-          "owner": "MobileDock.<callback@56>",
+          "owner": "MobileDock.<callback@57>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 78,
-          "end_line": 93,
+          "line": 79,
+          "end_line": 94,
           "owner": "MobileDock",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ITEMS.map"
         },
         {
-          "line": 100,
-          "end_line": 100,
+          "line": 101,
+          "end_line": 101,
           "owner": "MobileDock",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -44331,50 +44331,50 @@
       ],
       "hooks": [
         {
-          "line": 34,
-          "end_line": 34,
-          "owner": "MobileDock",
-          "callee": "useT",
-          "arguments": []
-        },
-        {
           "line": 35,
           "end_line": 35,
           "owner": "MobileDock",
-          "callee": "useLocation",
+          "callee": "useT",
           "arguments": []
         },
         {
           "line": 36,
           "end_line": 36,
           "owner": "MobileDock",
-          "callee": "useScrollDirection",
+          "callee": "useLocation",
           "arguments": []
         },
         {
           "line": 37,
           "end_line": 37,
           "owner": "MobileDock",
-          "callee": "useStickyActive",
+          "callee": "useScrollDirection",
           "arguments": []
         },
         {
-          "line": 39,
-          "end_line": 39,
+          "line": 38,
+          "end_line": 38,
           "owner": "MobileDock",
-          "callee": "useFooterTone",
+          "callee": "useStickyActive",
           "arguments": []
         },
         {
           "line": 40,
           "end_line": 40,
           "owner": "MobileDock",
+          "callee": "useFooterTone",
+          "arguments": []
+        },
+        {
+          "line": 41,
+          "end_line": 41,
+          "owner": "MobileDock",
           "callee": "useDockSuppressed",
           "arguments": []
         },
         {
-          "line": 43,
-          "end_line": 43,
+          "line": 44,
+          "end_line": 44,
           "owner": "MobileDock",
           "callee": "useAnchorInView",
           "arguments": [
@@ -44383,8 +44383,8 @@
           ]
         },
         {
-          "line": 50,
-          "end_line": 55,
+          "line": 51,
+          "end_line": 56,
           "owner": "MobileDock",
           "callee": "useEffect",
           "arguments": [
@@ -44393,8 +44393,8 @@
           ]
         },
         {
-          "line": 56,
-          "end_line": 66,
+          "line": 57,
+          "end_line": 67,
           "owner": "MobileDock",
           "callee": "useEffect",
           "arguments": [
@@ -44407,9 +44407,9 @@
       "storage": [],
       "events": [
         {
-          "line": 100,
-          "end_line": 100,
-          "owner": "MobileDock.<callback@100>",
+          "line": 101,
+          "end_line": 101,
+          "owner": "MobileDock.<callback@101>",
           "callee": "window.dispatchEvent",
           "arguments": [
             "new CustomEvent(OPEN_NAV_MENU_EVENT)"
@@ -44418,8 +44418,8 @@
       ],
       "jsx_handlers": [
         {
-          "line": 95,
-          "end_line": 101,
+          "line": 96,
+          "end_line": 102,
           "owner": "MobileDock",
           "component": "button",
           "event": "onClick",
@@ -44429,14 +44429,14 @@
       "registries": [
         {
           "line": 15,
-          "end_line": 21,
+          "end_line": 22,
           "owner": "<module>",
           "name": "ITEMS",
           "kind": "ArrayExpression",
           "entries": [
-            "{ id: 'countries', to: '/#countries', labelKey: 'w6b.nav.countriesShort', icon: Globe2 }",
             "{ id: 'region-prices', to: regionHubPath(), labelKey: 'r3a.dock.prices', icon: ShoppingBasket }",
             "{ id: 'currencies', to: RATES_TO, labelKey: 'z2.nav.ratesShort', icon: Coins }",
+            "{ id: 'countries', to: '/#countries', labelKey: 'w6b.nav.countriesShort', icon: Globe2 }",
             "{ id: 'world-rating', to: WORLD_RATING_TO, labelKey: 'w6b.nav.ratingShort', icon: BarChart3 }"
           ],
           "initializer": null
@@ -61027,7 +61027,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/R7PricesBlock.jsx": {
-      "sha256": "61216d58fd79cb802d707b4a3025d1d863d1e4497e879a3b72ae5dce178a2989",
+      "sha256": "2f5f84ea2cea595d82498f5b7d05335f3d3c1cdb163fe477a11dbb703347d564",
       "imports": [
         {
           "line": 1,
@@ -61189,6 +61189,34 @@
           "line": 13,
           "end_line": 13,
           "owner": "<module>",
+          "specifier": "./R9PriceMovers",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/R9PriceMovers.jsx"
+          ],
+          "bindings": [
+            "R9PriceMovers"
+          ]
+        },
+        {
+          "line": 14,
+          "end_line": 14,
+          "owner": "<module>",
+          "specifier": "../lib/r9bPrice",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/r9bPrice.js"
+          ],
+          "bindings": [
+            "splitPriceUnit",
+            "signed",
+            "money"
+          ]
+        },
+        {
+          "line": 15,
+          "end_line": 15,
+          "owner": "<module>",
           "specifier": "../styles/r7d-prices.css",
           "category": "owned_source",
           "targets": [
@@ -61200,184 +61228,208 @@
       "routes": [],
       "functions": [
         {
-          "line": 18,
-          "end_line": 32,
+          "line": 20,
+          "end_line": 34,
           "owner": "<module>",
           "name": "loadSummary",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 29,
-          "end_line": 29,
+          "line": 31,
+          "end_line": 31,
           "owner": "loadSummary",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.map"
         },
         {
-          "line": 29,
-          "end_line": 29,
+          "line": 31,
+          "end_line": 31,
           "owner": "loadSummary",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.map((c) => byCode[c]).filter(Boolean).map"
         },
         {
-          "line": 34,
-          "end_line": 40,
+          "line": 36,
+          "end_line": 42,
           "owner": "<module>",
           "name": "useRussiaPrices",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 37,
-          "end_line": 37,
+          "line": 39,
+          "end_line": 39,
           "owner": "useRussiaPrices",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 43,
-          "end_line": 52,
-          "owner": "<module>",
-          "name": "splitPriceUnit",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
-          "line": 54,
-          "end_line": 57,
+          "line": 44,
+          "end_line": 47,
           "owner": "<module>",
           "name": "pctChange",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 59,
-          "end_line": 62,
-          "owner": "<module>",
-          "name": "signed",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
-          "line": 64,
-          "end_line": 75,
+          "line": 49,
+          "end_line": 60,
           "owner": "<module>",
           "name": "Trend",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 77,
-          "end_line": 80,
+          "line": 63,
+          "end_line": 73,
+          "owner": "<module>",
+          "name": "deriveMovers",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 64,
+          "end_line": 64,
+          "owner": "deriveMovers",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(items || []).filter"
+        },
+        {
+          "line": 66,
+          "end_line": 66,
+          "owner": "deriveMovers",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[...rows].sort"
+        },
+        {
+          "line": 68,
+          "end_line": 68,
+          "owner": "deriveMovers",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "sorted.filter"
+        },
+        {
+          "line": 69,
+          "end_line": 69,
+          "owner": "deriveMovers",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "sorted.filter"
+        },
+        {
+          "line": 75,
+          "end_line": 78,
           "owner": "<module>",
           "name": "readRegion",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 82,
-          "end_line": 211,
+          "line": 80,
+          "end_line": 215,
           "owner": "<module>",
           "name": "R7PricesBlock",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 90,
-          "end_line": 96,
+          "line": 88,
+          "end_line": 94,
           "owner": "R7PricesBlock",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 95,
-          "end_line": 95,
-          "owner": "R7PricesBlock.<callback@90>",
+          "line": 93,
+          "end_line": 93,
+          "owner": "R7PricesBlock.<callback@88>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "out.sort"
         },
         {
-          "line": 97,
-          "end_line": 97,
+          "line": 95,
+          "end_line": 95,
           "owner": "R7PricesBlock",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regions.find"
         },
         {
-          "line": 99,
-          "end_line": 104,
+          "line": 97,
+          "end_line": 102,
           "owner": "R7PricesBlock",
           "name": "onRegion",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 131,
-          "end_line": 131,
+          "line": 130,
+          "end_line": 130,
           "owner": "R7PricesBlock",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regions.map"
         },
         {
-          "line": 138,
-          "end_line": 140,
+          "line": 139,
+          "end_line": 141,
           "owner": "R7PricesBlock",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from({ length: 6 }).map"
         },
         {
-          "line": 141,
-          "end_line": 183,
+          "line": 142,
+          "end_line": 187,
           "owner": "R7PricesBlock",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items.map"
         },
         {
-          "line": 153,
-          "end_line": 153,
-          "owner": "R7PricesBlock.<callback@141>",
+          "line": 154,
+          "end_line": 154,
+          "owner": "R7PricesBlock.<callback@142>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 175,
-          "end_line": 175,
-          "owner": "R7PricesBlock.<callback@141>",
+          "line": 179,
+          "end_line": 179,
+          "owner": "R7PricesBlock.<callback@142>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 187,
-          "end_line": 187,
+          "line": 191,
+          "end_line": 191,
           "owner": "R7PricesBlock",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 187,
-          "end_line": 187,
-          "owner": "R7PricesBlock.<callback@187>",
+          "line": 191,
+          "end_line": 191,
+          "owner": "R7PricesBlock.<callback@191>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setExpanded"
         },
         {
-          "line": 195,
-          "end_line": 201,
+          "line": 199,
+          "end_line": 205,
           "owner": "R7PricesBlock",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -61386,8 +61438,8 @@
       ],
       "hooks": [
         {
-          "line": 35,
-          "end_line": 39,
+          "line": 37,
+          "end_line": 41,
           "owner": "useRussiaPrices",
           "callee": "useQuery",
           "arguments": [
@@ -61395,36 +61447,36 @@
           ]
         },
         {
+          "line": 81,
+          "end_line": 81,
+          "owner": "R7PricesBlock",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 82,
+          "end_line": 82,
+          "owner": "R7PricesBlock",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
           "line": 83,
           "end_line": 83,
           "owner": "R7PricesBlock",
-          "callee": "useT",
+          "callee": "useRussiaPrices",
           "arguments": []
         },
         {
           "line": 84,
           "end_line": 84,
           "owner": "R7PricesBlock",
-          "callee": "useLocale",
+          "callee": "useRegionsLanding",
           "arguments": []
         },
         {
           "line": 85,
           "end_line": 85,
-          "owner": "R7PricesBlock",
-          "callee": "useRussiaPrices",
-          "arguments": []
-        },
-        {
-          "line": 86,
-          "end_line": 86,
-          "owner": "R7PricesBlock",
-          "callee": "useRegionsLanding",
-          "arguments": []
-        },
-        {
-          "line": 87,
-          "end_line": 87,
           "owner": "R7PricesBlock",
           "callee": "useState",
           "arguments": [
@@ -61432,8 +61484,8 @@
           ]
         },
         {
-          "line": 88,
-          "end_line": 88,
+          "line": 86,
+          "end_line": 86,
           "owner": "R7PricesBlock",
           "callee": "useState",
           "arguments": [
@@ -61441,8 +61493,8 @@
           ]
         },
         {
-          "line": 90,
-          "end_line": 96,
+          "line": 88,
+          "end_line": 94,
           "owner": "R7PricesBlock",
           "callee": "useMemo",
           "arguments": [
@@ -61453,8 +61505,8 @@
       ],
       "http": [
         {
-          "line": 20,
-          "end_line": 20,
+          "line": 22,
+          "end_line": 22,
           "owner": "loadSummary",
           "callee": "api.get",
           "arguments": [
@@ -61463,8 +61515,8 @@
           ]
         },
         {
-          "line": 23,
-          "end_line": 23,
+          "line": 25,
+          "end_line": 25,
           "owner": "loadSummary",
           "callee": "api.get",
           "arguments": [
@@ -61475,8 +61527,8 @@
       ],
       "storage": [
         {
-          "line": 79,
-          "end_line": 79,
+          "line": 77,
+          "end_line": 77,
           "owner": "readRegion",
           "callee": "window.localStorage.getItem",
           "arguments": [
@@ -61484,8 +61536,8 @@
           ]
         },
         {
-          "line": 102,
-          "end_line": 102,
+          "line": 100,
+          "end_line": 100,
           "owner": "R7PricesBlock.onRegion",
           "callee": "window.localStorage.setItem",
           "arguments": [
@@ -61497,36 +61549,397 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 129,
-          "end_line": 129,
+          "line": 128,
+          "end_line": 128,
           "owner": "R7PricesBlock",
           "component": "select",
           "event": "onChange",
           "expression": "{onRegion}"
         },
         {
-          "line": 150,
-          "end_line": 154,
-          "owner": "R7PricesBlock.<callback@141>",
+          "line": 151,
+          "end_line": 155,
+          "owner": "R7PricesBlock.<callback@142>",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.RELATED_LINK_CLICK, { from: 'r7d-prices', to: it.code, surface })}"
         },
         {
-          "line": 172,
-          "end_line": 176,
-          "owner": "R7PricesBlock.<callback@141>",
+          "line": 176,
+          "end_line": 180,
+          "owner": "R7PricesBlock.<callback@142>",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.RELATED_LINK_CLICK, { from: 'r7d-prices-region', to: region, surface })}"
         },
         {
-          "line": 187,
-          "end_line": 187,
+          "line": 191,
+          "end_line": 191,
           "owner": "R7PricesBlock",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setExpanded((v) => !v)}"
+        }
+      ],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/components/R9PriceMovers.jsx": {
+      "sha256": "281e785710901492975598d8dfc7bdbb9d30dd58602b567de7fc91e221e14080",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "react",
+          "category": "external_package",
+          "target": "react",
+          "bindings": [
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "react-router-dom",
+          "category": "external_package",
+          "target": "react-router-dom",
+          "bindings": [
+            "Link"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "lucide-react",
+          "category": "external_package",
+          "target": "lucide-react",
+          "bindings": [
+            "Copy",
+            "Check",
+            "Share2"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "../lib/format",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/format.js"
+          ],
+          "bindings": [
+            "formatValue"
+          ]
+        },
+        {
+          "line": 5,
+          "end_line": 5,
+          "owner": "<module>",
+          "specifier": "../lib/r9bPrice",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/r9bPrice.js"
+          ],
+          "bindings": [
+            "splitPriceUnit",
+            "signed",
+            "money",
+            "quoteLine",
+            "copyToClipboard"
+          ]
+        },
+        {
+          "line": 6,
+          "end_line": 6,
+          "owner": "<module>",
+          "specifier": "../lib/sitePaths",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/sitePaths.js"
+          ],
+          "bindings": [
+            "regionIndicatorPath"
+          ]
+        },
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<module>",
+          "specifier": "../lib/track",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/track.js"
+          ],
+          "bindings": [
+            "track",
+            "events"
+          ]
+        },
+        {
+          "line": 8,
+          "end_line": 8,
+          "owner": "<module>",
+          "specifier": "../i18n",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/index.js"
+          ],
+          "bindings": [
+            "useLocale",
+            "useT"
+          ]
+        },
+        {
+          "line": 9,
+          "end_line": 9,
+          "owner": "<module>",
+          "specifier": "../styles/r9b-movers.css",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/styles/r9b-movers.css"
+          ],
+          "bindings": []
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 11,
+          "end_line": 130,
+          "owner": "<module>",
+          "name": "R9PriceMovers",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 26,
+          "end_line": 26,
+          "owner": "R9PriceMovers",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "list.map"
+        },
+        {
+          "line": 30,
+          "end_line": 34,
+          "owner": "R9PriceMovers",
+          "name": "flash",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 33,
+          "end_line": 33,
+          "owner": "R9PriceMovers.flash",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setTimeout"
+        },
+        {
+          "line": 35,
+          "end_line": 38,
+          "owner": "R9PriceMovers",
+          "name": "copyOne",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 40,
+          "end_line": 40,
+          "owner": "R9PriceMovers",
+          "name": "allText",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 40,
+          "end_line": 40,
+          "owner": "R9PriceMovers.allText",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "list.map"
+        },
+        {
+          "line": 41,
+          "end_line": 44,
+          "owner": "R9PriceMovers",
+          "name": "copyAll",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 46,
+          "end_line": 51,
+          "owner": "R9PriceMovers",
+          "name": "share",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 58,
+          "end_line": 68,
+          "owner": "R9PriceMovers",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[['up', t('r9b.up'), up.length], ['down', t('r9b.down'), down.length]].map"
+        },
+        {
+          "line": 66,
+          "end_line": 66,
+          "owner": "R9PriceMovers.<callback@58>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 73,
+          "end_line": 102,
+          "owner": "R9PriceMovers",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "rows.map"
+        },
+        {
+          "line": 82,
+          "end_line": 82,
+          "owner": "R9PriceMovers.<callback@73>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 96,
+          "end_line": 96,
+          "owner": "R9PriceMovers.<callback@73>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 105,
+          "end_line": 105,
+          "owner": "R9PriceMovers",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 105,
+          "end_line": 105,
+          "owner": "R9PriceMovers.<callback@105>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setOpen"
+        }
+      ],
+      "hooks": [
+        {
+          "line": 12,
+          "end_line": 12,
+          "owner": "R9PriceMovers",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 13,
+          "end_line": 13,
+          "owner": "R9PriceMovers",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
+          "line": 14,
+          "end_line": 14,
+          "owner": "R9PriceMovers",
+          "callee": "useState",
+          "arguments": [
+            "'up'"
+          ]
+        },
+        {
+          "line": 15,
+          "end_line": 15,
+          "owner": "R9PriceMovers",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 16,
+          "end_line": 16,
+          "owner": "R9PriceMovers",
+          "callee": "useState",
+          "arguments": [
+            "''"
+          ]
+        },
+        {
+          "line": 17,
+          "end_line": 17,
+          "owner": "R9PriceMovers",
+          "callee": "useRef",
+          "arguments": [
+            "null"
+          ]
+        }
+      ],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [
+        {
+          "line": 59,
+          "end_line": 67,
+          "owner": "R9PriceMovers.<callback@58>",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{() => { setTab(k); setOpen(false); }}"
+        },
+        {
+          "line": 79,
+          "end_line": 83,
+          "owner": "R9PriceMovers.<callback@73>",
+          "component": "Link",
+          "event": "onClick",
+          "expression": "{() => track(events.RELATED_LINK_CLICK, { from: 'r9b-mover', to: it.code, surface })}"
+        },
+        {
+          "line": 92,
+          "end_line": 97,
+          "owner": "R9PriceMovers.<callback@73>",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{() => copyOne(it)}"
+        },
+        {
+          "line": 105,
+          "end_line": 105,
+          "owner": "R9PriceMovers",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{() => setOpen((v) => !v)}"
+        },
+        {
+          "line": 116,
+          "end_line": 116,
+          "owner": "R9PriceMovers",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{copyAll}"
+        },
+        {
+          "line": 121,
+          "end_line": 121,
+          "owner": "R9PriceMovers",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{share}"
         }
       ],
       "registries": [],
@@ -64052,7 +64465,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/RegionsMap.jsx": {
-      "sha256": "33c11d77b0e5cccf29412e41d2b6dab6456b8e9d9a463d8fa30a4fa0aae2aa13",
+      "sha256": "4c5aa5b064cf7003a54f7f4ff9203536fec985bc21d03cdd4d00910905611084",
       "imports": [
         {
           "line": 9,
@@ -64140,6 +64553,19 @@
           "line": 15,
           "end_line": 15,
           "owner": "<module>",
+          "specifier": "../lib/r9cPriceUnit",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/r9cPriceUnit.js"
+          ],
+          "bindings": [
+            "priceUnitLabel"
+          ]
+        },
+        {
+          "line": 16,
+          "end_line": 16,
+          "owner": "<module>",
           "specifier": "../lib/regionsMapColors",
           "category": "owned_source",
           "targets": [
@@ -64153,8 +64579,8 @@
           ]
         },
         {
-          "line": 16,
-          "end_line": 16,
+          "line": 17,
+          "end_line": 17,
           "owner": "<module>",
           "specifier": "../lib/regionsBubbles",
           "category": "owned_source",
@@ -64166,8 +64592,8 @@
           ]
         },
         {
-          "line": 17,
-          "end_line": 20,
+          "line": 18,
+          "end_line": 21,
           "owner": "<module>",
           "specifier": "../lib/sitePaths",
           "category": "owned_source",
@@ -64180,8 +64606,8 @@
           ]
         },
         {
-          "line": 21,
-          "end_line": 21,
+          "line": 22,
+          "end_line": 22,
           "owner": "<module>",
           "specifier": "../i18n",
           "category": "owned_source",
@@ -64193,8 +64619,8 @@
           ]
         },
         {
-          "line": 22,
-          "end_line": 22,
+          "line": 23,
+          "end_line": 23,
           "owner": "<module>",
           "specifier": "./regions/RegionComparePick",
           "category": "owned_source",
@@ -64206,8 +64632,8 @@
           ]
         },
         {
-          "line": 23,
-          "end_line": 23,
+          "line": 24,
+          "end_line": 24,
           "owner": "<module>",
           "specifier": "../lib/chartTheme",
           "category": "owned_source",
@@ -64219,8 +64645,8 @@
           ]
         },
         {
-          "line": 24,
-          "end_line": 24,
+          "line": 25,
+          "end_line": 25,
           "owner": "<module>",
           "specifier": "../styles/regions-w4.css",
           "category": "owned_source",
@@ -64230,8 +64656,8 @@
           "bindings": []
         },
         {
-          "line": 25,
-          "end_line": 25,
+          "line": 26,
+          "end_line": 26,
           "owner": "<module>",
           "specifier": "../styles/w6f-pages.css",
           "category": "owned_source",
@@ -64241,8 +64667,8 @@
           "bindings": []
         },
         {
-          "line": 26,
-          "end_line": 26,
+          "line": 27,
+          "end_line": 27,
           "owner": "<module>",
           "specifier": "../styles/r3b-regions.css",
           "category": "owned_source",
@@ -64255,112 +64681,104 @@
       "routes": [],
       "functions": [
         {
-          "line": 45,
-          "end_line": 49,
+          "line": 46,
+          "end_line": 50,
           "owner": "<module>",
           "name": "paddedViewBox",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 51,
-          "end_line": 625,
+          "line": 52,
+          "end_line": 626,
           "owner": "<module>",
           "name": "RegionsMap",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 83,
-          "end_line": 86,
+          "line": 84,
+          "end_line": 87,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 92,
-          "end_line": 92,
+          "line": 93,
+          "end_line": 93,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 103,
-          "end_line": 103,
+          "line": 104,
+          "end_line": 104,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 115,
-          "end_line": 115,
+          "line": 116,
+          "end_line": 116,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 118,
-          "end_line": 118,
+          "line": 119,
+          "end_line": 119,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 122,
-          "end_line": 122,
+          "line": 123,
+          "end_line": 123,
           "owner": "RegionsMap",
           "name": "colorFor",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 132,
-          "end_line": 132,
+          "line": 133,
+          "end_line": 133,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 132,
-          "end_line": 132,
-          "owner": "RegionsMap.<callback@132>",
+          "line": 133,
+          "end_line": 133,
+          "owner": "RegionsMap.<callback@133>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "geometry.regions.find"
         },
         {
-          "line": 136,
-          "end_line": 136,
+          "line": 137,
+          "end_line": 137,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 136,
-          "end_line": 136,
-          "owner": "RegionsMap.<callback@136>",
+          "line": 137,
+          "end_line": 137,
+          "owner": "RegionsMap.<callback@137>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(geometry.markers || []).find"
         },
         {
-          "line": 140,
-          "end_line": 146,
-          "owner": "RegionsMap",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useCallback"
-        },
-        {
-          "line": 148,
-          "end_line": 159,
+          "line": 141,
+          "end_line": 147,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -64368,232 +64786,232 @@
         },
         {
           "line": 149,
-          "end_line": 158,
-          "owner": "RegionsMap.<callback@148>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "setView"
-        },
-        {
-          "line": 163,
-          "end_line": 179,
+          "end_line": 160,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 171,
-          "end_line": 178,
-          "owner": "RegionsMap.<callback@163>",
+          "line": 150,
+          "end_line": 159,
+          "owner": "RegionsMap.<callback@149>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setView"
         },
         {
-          "line": 181,
-          "end_line": 224,
+          "line": 164,
+          "end_line": 180,
+          "owner": "RegionsMap",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useCallback"
+        },
+        {
+          "line": 172,
+          "end_line": 179,
+          "owner": "RegionsMap.<callback@164>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setView"
+        },
+        {
+          "line": 182,
+          "end_line": 225,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 185,
-          "end_line": 185,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 186,
+          "end_line": 186,
+          "owner": "RegionsMap.<callback@182>",
           "name": "dist",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 186,
-          "end_line": 192,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 187,
+          "end_line": 193,
+          "owner": "RegionsMap.<callback@182>",
           "name": "onTouchStart",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 193,
-          "end_line": 205,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 194,
+          "end_line": 206,
+          "owner": "RegionsMap.<callback@182>",
           "name": "onTouchMove",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 206,
-          "end_line": 206,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 207,
+          "end_line": 207,
+          "owner": "RegionsMap.<callback@182>",
           "name": "onTouchEnd",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 207,
-          "end_line": 211,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 208,
+          "end_line": 212,
+          "owner": "RegionsMap.<callback@182>",
           "name": "onWheel",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 217,
-          "end_line": 223,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 218,
+          "end_line": 224,
+          "owner": "RegionsMap.<callback@182>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 226,
-          "end_line": 229,
+          "line": 227,
+          "end_line": 230,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 231,
-          "end_line": 240,
+          "line": 232,
+          "end_line": 241,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 242,
-          "end_line": 249,
+          "line": 243,
+          "end_line": 250,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 251,
-          "end_line": 254,
+          "line": 252,
+          "end_line": 255,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 256,
+          "line": 257,
+          "end_line": 271,
+          "owner": "RegionsMap",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useCallback"
+        },
+        {
+          "line": 270,
           "end_line": 270,
-          "owner": "RegionsMap",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useCallback"
-        },
-        {
-          "line": 269,
-          "end_line": 269,
-          "owner": "RegionsMap.<callback@256>",
+          "owner": "RegionsMap.<callback@257>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setView"
         },
         {
-          "line": 272,
-          "end_line": 274,
+          "line": 273,
+          "end_line": 275,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 273,
-          "end_line": 273,
-          "owner": "RegionsMap.<callback@272>",
+          "line": 274,
+          "end_line": 274,
+          "owner": "RegionsMap.<callback@273>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 278,
-          "end_line": 285,
+          "line": 279,
+          "end_line": 286,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 288,
-          "end_line": 294,
+          "line": 289,
+          "end_line": 295,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 292,
-          "end_line": 292,
-          "owner": "RegionsMap.<callback@288>",
+          "line": 293,
+          "end_line": 293,
+          "owner": "RegionsMap.<callback@289>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...valuesBySlug.values()].filter"
         },
         {
-          "line": 293,
-          "end_line": 293,
-          "owner": "RegionsMap.<callback@288>",
+          "line": 294,
+          "end_line": 294,
+          "owner": "RegionsMap.<callback@289>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "all.filter"
         },
         {
-          "line": 313,
-          "end_line": 313,
+          "line": 314,
+          "end_line": 314,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 327,
-          "end_line": 327,
+          "line": 328,
+          "end_line": 328,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 333,
-          "end_line": 344,
+          "line": 334,
+          "end_line": 345,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "geometry.regions.map"
         },
         {
-          "line": 347,
-          "end_line": 358,
+          "line": 348,
+          "end_line": 359,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "geometry.regions.map"
         },
         {
-          "line": 359,
-          "end_line": 384,
+          "line": 360,
+          "end_line": 385,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "geometry.regions.map"
-        },
-        {
-          "line": 374,
-          "end_line": 374,
-          "owner": "RegionsMap.<callback@359>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
         },
         {
           "line": 375,
           "end_line": 375,
-          "owner": "RegionsMap.<callback@359>",
+          "owner": "RegionsMap.<callback@360>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -64601,31 +65019,31 @@
         {
           "line": 376,
           "end_line": 376,
-          "owner": "RegionsMap.<callback@359>",
+          "owner": "RegionsMap.<callback@360>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 385,
-          "end_line": 403,
+          "line": 377,
+          "end_line": 377,
+          "owner": "RegionsMap.<callback@360>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 386,
+          "end_line": 404,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "geometry.regions.map"
         },
         {
-          "line": 395,
-          "end_line": 395,
-          "owner": "RegionsMap.<callback@385>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
           "line": 396,
           "end_line": 396,
-          "owner": "RegionsMap.<callback@385>",
+          "owner": "RegionsMap.<callback@386>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -64633,31 +65051,31 @@
         {
           "line": 397,
           "end_line": 397,
-          "owner": "RegionsMap.<callback@385>",
+          "owner": "RegionsMap.<callback@386>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 404,
-          "end_line": 429,
+          "line": 398,
+          "end_line": 398,
+          "owner": "RegionsMap.<callback@386>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 405,
+          "end_line": 430,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(geometry.markers || []).map"
         },
         {
-          "line": 408,
-          "end_line": 408,
-          "owner": "RegionsMap.<callback@404>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
           "line": 409,
           "end_line": 409,
-          "owner": "RegionsMap.<callback@404>",
+          "owner": "RegionsMap.<callback@405>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -64665,70 +65083,78 @@
         {
           "line": 410,
           "end_line": 410,
-          "owner": "RegionsMap.<callback@404>",
+          "owner": "RegionsMap.<callback@405>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 485,
-          "end_line": 485,
+          "line": 411,
+          "end_line": 411,
+          "owner": "RegionsMap.<callback@405>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 486,
+          "end_line": 486,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 495,
-          "end_line": 495,
+          "line": 496,
+          "end_line": 496,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 506,
-          "end_line": 506,
+          "line": 507,
+          "end_line": 507,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 575,
-          "end_line": 575,
+          "line": 576,
+          "end_line": 576,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 590,
-          "end_line": 590,
+          "line": 591,
+          "end_line": 591,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 596,
-          "end_line": 596,
+          "line": 597,
+          "end_line": 597,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 602,
-          "end_line": 602,
+          "line": 603,
+          "end_line": 603,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 614,
-          "end_line": 616,
+          "line": 615,
+          "end_line": 617,
           "owner": "RegionsMap",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -64737,31 +65163,22 @@
       ],
       "hooks": [
         {
-          "line": 76,
-          "end_line": 76,
-          "owner": "RegionsMap",
-          "callee": "useLocale",
-          "arguments": []
-        },
-        {
           "line": 77,
           "end_line": 77,
           "owner": "RegionsMap",
-          "callee": "useNavigate",
+          "callee": "useLocale",
           "arguments": []
         },
         {
           "line": 78,
           "end_line": 78,
           "owner": "RegionsMap",
-          "callee": "useState",
-          "arguments": [
-            "null"
-          ]
+          "callee": "useNavigate",
+          "arguments": []
         },
         {
-          "line": 81,
-          "end_line": 81,
+          "line": 79,
+          "end_line": 79,
           "owner": "RegionsMap",
           "callee": "useState",
           "arguments": [
@@ -64769,8 +65186,17 @@
           ]
         },
         {
-          "line": 83,
-          "end_line": 86,
+          "line": 82,
+          "end_line": 82,
+          "owner": "RegionsMap",
+          "callee": "useState",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 84,
+          "end_line": 87,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64779,8 +65205,8 @@
           ]
         },
         {
-          "line": 88,
-          "end_line": 88,
+          "line": 89,
+          "end_line": 89,
           "owner": "RegionsMap",
           "callee": "useState",
           "arguments": [
@@ -64788,8 +65214,8 @@
           ]
         },
         {
-          "line": 89,
-          "end_line": 89,
+          "line": 90,
+          "end_line": 90,
           "owner": "RegionsMap",
           "callee": "useRef",
           "arguments": [
@@ -64797,8 +65223,8 @@
           ]
         },
         {
-          "line": 92,
-          "end_line": 92,
+          "line": 93,
+          "end_line": 93,
           "owner": "RegionsMap",
           "callee": "useMemo",
           "arguments": [
@@ -64807,21 +65233,12 @@
           ]
         },
         {
-          "line": 95,
-          "end_line": 95,
+          "line": 96,
+          "end_line": 96,
           "owner": "RegionsMap",
           "callee": "useState",
           "arguments": [
             "{ k: 1, tx: 0, ty: 0 }"
-          ]
-        },
-        {
-          "line": 96,
-          "end_line": 96,
-          "owner": "RegionsMap",
-          "callee": "useRef",
-          "arguments": [
-            "null"
           ]
         },
         {
@@ -64843,8 +65260,17 @@
           ]
         },
         {
-          "line": 102,
-          "end_line": 105,
+          "line": 99,
+          "end_line": 99,
+          "owner": "RegionsMap",
+          "callee": "useRef",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 103,
+          "end_line": 106,
           "owner": "RegionsMap",
           "callee": "useMemo",
           "arguments": [
@@ -64853,8 +65279,8 @@
           ]
         },
         {
-          "line": 114,
-          "end_line": 117,
+          "line": 115,
+          "end_line": 118,
           "owner": "RegionsMap",
           "callee": "useMemo",
           "arguments": [
@@ -64863,8 +65289,8 @@
           ]
         },
         {
-          "line": 118,
-          "end_line": 118,
+          "line": 119,
+          "end_line": 119,
           "owner": "RegionsMap",
           "callee": "useMemo",
           "arguments": [
@@ -64873,8 +65299,8 @@
           ]
         },
         {
-          "line": 131,
-          "end_line": 134,
+          "line": 132,
+          "end_line": 135,
           "owner": "RegionsMap",
           "callee": "useMemo",
           "arguments": [
@@ -64883,8 +65309,8 @@
           ]
         },
         {
-          "line": 135,
-          "end_line": 138,
+          "line": 136,
+          "end_line": 139,
           "owner": "RegionsMap",
           "callee": "useMemo",
           "arguments": [
@@ -64893,8 +65319,8 @@
           ]
         },
         {
-          "line": 140,
-          "end_line": 146,
+          "line": 141,
+          "end_line": 147,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64903,8 +65329,8 @@
           ]
         },
         {
-          "line": 148,
-          "end_line": 159,
+          "line": 149,
+          "end_line": 160,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64913,8 +65339,8 @@
           ]
         },
         {
-          "line": 163,
-          "end_line": 179,
+          "line": 164,
+          "end_line": 180,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64923,8 +65349,8 @@
           ]
         },
         {
-          "line": 181,
-          "end_line": 224,
+          "line": 182,
+          "end_line": 225,
           "owner": "RegionsMap",
           "callee": "useEffect",
           "arguments": [
@@ -64933,8 +65359,8 @@
           ]
         },
         {
-          "line": 226,
-          "end_line": 229,
+          "line": 227,
+          "end_line": 230,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64943,8 +65369,8 @@
           ]
         },
         {
-          "line": 231,
-          "end_line": 240,
+          "line": 232,
+          "end_line": 241,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64953,8 +65379,8 @@
           ]
         },
         {
-          "line": 242,
-          "end_line": 249,
+          "line": 243,
+          "end_line": 250,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64963,8 +65389,8 @@
           ]
         },
         {
-          "line": 251,
-          "end_line": 254,
+          "line": 252,
+          "end_line": 255,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64973,8 +65399,8 @@
           ]
         },
         {
-          "line": 256,
-          "end_line": 270,
+          "line": 257,
+          "end_line": 271,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64983,8 +65409,8 @@
           ]
         },
         {
-          "line": 272,
-          "end_line": 274,
+          "line": 273,
+          "end_line": 275,
           "owner": "RegionsMap",
           "callee": "useCallback",
           "arguments": [
@@ -64993,8 +65419,8 @@
           ]
         },
         {
-          "line": 278,
-          "end_line": 285,
+          "line": 279,
+          "end_line": 286,
           "owner": "RegionsMap",
           "callee": "useEffect",
           "arguments": [
@@ -65003,8 +65429,8 @@
           ]
         },
         {
-          "line": 288,
-          "end_line": 294,
+          "line": 289,
+          "end_line": 295,
           "owner": "RegionsMap",
           "callee": "useMemo",
           "arguments": [
@@ -65017,9 +65443,9 @@
       "storage": [],
       "events": [
         {
-          "line": 212,
-          "end_line": 212,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 213,
+          "end_line": 213,
+          "owner": "RegionsMap.<callback@182>",
           "callee": "svg.addEventListener",
           "arguments": [
             "'touchstart'",
@@ -65028,9 +65454,9 @@
           ]
         },
         {
-          "line": 213,
-          "end_line": 213,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 214,
+          "end_line": 214,
+          "owner": "RegionsMap.<callback@182>",
           "callee": "svg.addEventListener",
           "arguments": [
             "'touchmove'",
@@ -65039,9 +65465,9 @@
           ]
         },
         {
-          "line": 214,
-          "end_line": 214,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 215,
+          "end_line": 215,
+          "owner": "RegionsMap.<callback@182>",
           "callee": "svg.addEventListener",
           "arguments": [
             "'touchend'",
@@ -65049,9 +65475,9 @@
           ]
         },
         {
-          "line": 215,
-          "end_line": 215,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 216,
+          "end_line": 216,
+          "owner": "RegionsMap.<callback@182>",
           "callee": "svg.addEventListener",
           "arguments": [
             "'touchcancel'",
@@ -65059,9 +65485,9 @@
           ]
         },
         {
-          "line": 216,
-          "end_line": 216,
-          "owner": "RegionsMap.<callback@181>",
+          "line": 217,
+          "end_line": 217,
+          "owner": "RegionsMap.<callback@182>",
           "callee": "svg.addEventListener",
           "arguments": [
             "'wheel'",
@@ -65070,9 +65496,9 @@
           ]
         },
         {
-          "line": 218,
-          "end_line": 218,
-          "owner": "RegionsMap.<callback@181>.<callback@217>",
+          "line": 219,
+          "end_line": 219,
+          "owner": "RegionsMap.<callback@182>.<callback@218>",
           "callee": "svg.removeEventListener",
           "arguments": [
             "'touchstart'",
@@ -65080,9 +65506,9 @@
           ]
         },
         {
-          "line": 219,
-          "end_line": 219,
-          "owner": "RegionsMap.<callback@181>.<callback@217>",
+          "line": 220,
+          "end_line": 220,
+          "owner": "RegionsMap.<callback@182>.<callback@218>",
           "callee": "svg.removeEventListener",
           "arguments": [
             "'touchmove'",
@@ -65090,9 +65516,9 @@
           ]
         },
         {
-          "line": 220,
-          "end_line": 220,
-          "owner": "RegionsMap.<callback@181>.<callback@217>",
+          "line": 221,
+          "end_line": 221,
+          "owner": "RegionsMap.<callback@182>.<callback@218>",
           "callee": "svg.removeEventListener",
           "arguments": [
             "'touchend'",
@@ -65100,9 +65526,9 @@
           ]
         },
         {
-          "line": 221,
-          "end_line": 221,
-          "owner": "RegionsMap.<callback@181>.<callback@217>",
+          "line": 222,
+          "end_line": 222,
+          "owner": "RegionsMap.<callback@182>.<callback@218>",
           "callee": "svg.removeEventListener",
           "arguments": [
             "'touchcancel'",
@@ -65110,9 +65536,9 @@
           ]
         },
         {
-          "line": 222,
-          "end_line": 222,
-          "owner": "RegionsMap.<callback@181>.<callback@217>",
+          "line": 223,
+          "end_line": 223,
+          "owner": "RegionsMap.<callback@182>.<callback@218>",
           "callee": "svg.removeEventListener",
           "arguments": [
             "'wheel'",
@@ -65122,176 +65548,176 @@
       ],
       "jsx_handlers": [
         {
-          "line": 311,
-          "end_line": 314,
+          "line": 312,
+          "end_line": 315,
           "owner": "RegionsMap",
           "component": "div",
           "event": "onPointerDownCapture",
           "expression": "{(e) => { pointerTypeRef.current = e.pointerType || 'mouse'; }}"
         },
         {
-          "line": 317,
-          "end_line": 329,
+          "line": 318,
+          "end_line": 330,
           "owner": "RegionsMap",
           "component": "svg",
           "event": "onPointerDown",
           "expression": "{compact ? undefined : onPointerDown}"
         },
         {
-          "line": 317,
-          "end_line": 329,
+          "line": 318,
+          "end_line": 330,
           "owner": "RegionsMap",
           "component": "svg",
           "event": "onPointerMove",
           "expression": "{compact ? undefined : onPointerMove}"
         },
         {
-          "line": 317,
-          "end_line": 329,
+          "line": 318,
+          "end_line": 330,
           "owner": "RegionsMap",
           "component": "svg",
           "event": "onPointerUp",
           "expression": "{compact ? undefined : onPointerUp}"
         },
         {
-          "line": 317,
-          "end_line": 329,
+          "line": 318,
+          "end_line": 330,
           "owner": "RegionsMap",
           "component": "svg",
           "event": "onPointerCancel",
           "expression": "{compact ? undefined : onPointerUp}"
         },
         {
-          "line": 317,
-          "end_line": 329,
+          "line": 318,
+          "end_line": 330,
           "owner": "RegionsMap",
           "component": "svg",
           "event": "onClick",
           "expression": "{(e) => { if (e.target === e.currentTarget) setPicked(null); }}"
         },
         {
-          "line": 363,
-          "end_line": 382,
-          "owner": "RegionsMap.<callback@359>",
+          "line": 364,
+          "end_line": 383,
+          "owner": "RegionsMap.<callback@360>",
           "component": "circle",
           "event": "onClick",
           "expression": "{() => handleSelect(r.slug)}"
         },
         {
-          "line": 363,
-          "end_line": 382,
-          "owner": "RegionsMap.<callback@359>",
+          "line": 364,
+          "end_line": 383,
+          "owner": "RegionsMap.<callback@360>",
           "component": "circle",
           "event": "onMouseMove",
           "expression": "{(e) => handleMove(e, r.slug)}"
         },
         {
-          "line": 363,
-          "end_line": 382,
-          "owner": "RegionsMap.<callback@359>",
+          "line": 364,
+          "end_line": 383,
+          "owner": "RegionsMap.<callback@360>",
           "component": "circle",
           "event": "onMouseLeave",
           "expression": "{() => setHover(null)}"
         },
         {
-          "line": 386,
-          "end_line": 402,
-          "owner": "RegionsMap.<callback@385>",
+          "line": 387,
+          "end_line": 403,
+          "owner": "RegionsMap.<callback@386>",
           "component": "path",
           "event": "onClick",
           "expression": "{() => handleSelect(r.slug)}"
         },
         {
-          "line": 386,
-          "end_line": 402,
-          "owner": "RegionsMap.<callback@385>",
+          "line": 387,
+          "end_line": 403,
+          "owner": "RegionsMap.<callback@386>",
           "component": "path",
           "event": "onMouseMove",
           "expression": "{(e) => handleMove(e, r.slug)}"
         },
         {
-          "line": 386,
-          "end_line": 402,
-          "owner": "RegionsMap.<callback@385>",
+          "line": 387,
+          "end_line": 403,
+          "owner": "RegionsMap.<callback@386>",
           "component": "path",
           "event": "onMouseLeave",
           "expression": "{() => setHover(null)}"
         },
         {
-          "line": 405,
-          "end_line": 415,
-          "owner": "RegionsMap.<callback@404>",
+          "line": 406,
+          "end_line": 416,
+          "owner": "RegionsMap.<callback@405>",
           "component": "g",
           "event": "onClick",
           "expression": "{() => handleSelect(m.slug)}"
         },
         {
-          "line": 405,
-          "end_line": 415,
-          "owner": "RegionsMap.<callback@404>",
+          "line": 406,
+          "end_line": 416,
+          "owner": "RegionsMap.<callback@405>",
           "component": "g",
           "event": "onMouseMove",
           "expression": "{(e) => handleMove(e, m.slug)}"
         },
         {
-          "line": 405,
-          "end_line": 415,
-          "owner": "RegionsMap.<callback@404>",
+          "line": 406,
+          "end_line": 416,
+          "owner": "RegionsMap.<callback@405>",
           "component": "g",
           "event": "onMouseLeave",
           "expression": "{() => setHover(null)}"
         },
         {
-          "line": 483,
-          "end_line": 490,
+          "line": 484,
+          "end_line": 491,
           "owner": "RegionsMap",
           "component": "button",
           "event": "onClick",
           "expression": "{() => zoomBy(ZOOM_STEP)}"
         },
         {
-          "line": 493,
-          "end_line": 500,
+          "line": 494,
+          "end_line": 501,
           "owner": "RegionsMap",
           "component": "button",
           "event": "onClick",
           "expression": "{() => zoomBy(1 / ZOOM_STEP)}"
         },
         {
-          "line": 504,
-          "end_line": 510,
+          "line": 505,
+          "end_line": 511,
           "owner": "RegionsMap",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setView({ k: 1, tx: 0, ty: 0 })}"
         },
         {
-          "line": 570,
-          "end_line": 576,
+          "line": 571,
+          "end_line": 577,
           "owner": "RegionsMap",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onCompareToggle(picked)}"
         },
         {
-          "line": 586,
-          "end_line": 591,
+          "line": 587,
+          "end_line": 592,
           "owner": "RegionsMap",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setCompareSlug(compareSlug === picked ? null : picked)}"
         },
         {
-          "line": 596,
-          "end_line": 596,
+          "line": 597,
+          "end_line": 597,
           "owner": "RegionsMap",
           "component": "button",
           "event": "onClick",
           "expression": "{() => openRegion(picked)}"
         },
         {
-          "line": 602,
-          "end_line": 602,
+          "line": 603,
+          "end_line": 603,
           "owner": "RegionsMap",
           "component": "button",
           "event": "onClick",
@@ -93076,7 +93502,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/home/HomeDataScope.jsx": {
-      "sha256": "271712c021e70946cbcc93114c1446f0f13431d8a700eecaa702107c26593a24",
+      "sha256": "8253280f8efd001188a4933c2939ca90dbde6132cd28016f81121c4f3ce1397d",
       "imports": [
         {
           "line": 1,
@@ -93123,12 +93549,26 @@
           "bindings": [
             "BarChart3",
             "Globe2",
-            "History"
+            "History",
+            "ShoppingBasket"
           ]
         },
         {
           "line": 5,
           "end_line": 5,
+          "owner": "<module>",
+          "specifier": "../../lib/homePriceSummary",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/homePriceSummary.js"
+          ],
+          "bindings": [
+            "useHomePriceSummary"
+          ]
+        },
+        {
+          "line": 6,
+          "end_line": 6,
           "owner": "<module>",
           "specifier": "../../lib/homeWorkbench",
           "category": "owned_source",
@@ -93140,8 +93580,8 @@
           ]
         },
         {
-          "line": 6,
-          "end_line": 6,
+          "line": 7,
+          "end_line": 7,
           "owner": "<module>",
           "specifier": "../../lib/homeStats",
           "category": "owned_source",
@@ -93155,8 +93595,8 @@
           ]
         },
         {
-          "line": 7,
-          "end_line": 7,
+          "line": 8,
+          "end_line": 8,
           "owner": "<module>",
           "specifier": "../../lib/worldApi",
           "category": "owned_source",
@@ -93169,8 +93609,8 @@
           ]
         },
         {
-          "line": 8,
-          "end_line": 8,
+          "line": 9,
+          "end_line": 9,
           "owner": "<module>",
           "specifier": "../../lib/sitePaths",
           "category": "owned_source",
@@ -93178,14 +93618,15 @@
             "frontend/src/lib/sitePaths.js"
           ],
           "bindings": [
+            "regionHubPath",
             "russiaCategoriesPath",
             "worldRatingPath",
             "WORLD_RATING_DEFAULT_CONCEPT"
           ]
         },
         {
-          "line": 9,
-          "end_line": 9,
+          "line": 10,
+          "end_line": 10,
           "owner": "<module>",
           "specifier": "../../i18n",
           "category": "owned_source",
@@ -93198,8 +93639,8 @@
           ]
         },
         {
-          "line": 10,
-          "end_line": 10,
+          "line": 11,
+          "end_line": 11,
           "owner": "<module>",
           "specifier": "./CountUp",
           "category": "owned_source",
@@ -93211,8 +93652,8 @@
           ]
         },
         {
-          "line": 11,
-          "end_line": 11,
+          "line": 12,
+          "end_line": 12,
           "owner": "<module>",
           "specifier": "../../styles/shell.css",
           "category": "owned_source",
@@ -93222,8 +93663,8 @@
           "bindings": []
         },
         {
-          "line": 12,
-          "end_line": 12,
+          "line": 13,
+          "end_line": 13,
           "owner": "<module>",
           "specifier": "../../styles/z3-home.css",
           "category": "owned_source",
@@ -93231,45 +93672,56 @@
             "frontend/src/styles/z3-home.css"
           ],
           "bindings": []
+        },
+        {
+          "line": 14,
+          "end_line": 14,
+          "owner": "<module>",
+          "specifier": "../../styles/r9a-home.css",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/styles/r9a-home.css"
+          ],
+          "bindings": []
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 14,
-          "end_line": 17,
+          "line": 16,
+          "end_line": 19,
           "owner": "<module>",
           "name": "groupDigits",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 16,
-          "end_line": 16,
+          "line": 18,
+          "end_line": 18,
           "owner": "groupDigits",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 23,
-          "end_line": 34,
+          "line": 25,
+          "end_line": 36,
           "owner": "<module>",
           "name": "Stat",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 42,
-          "end_line": 108,
+          "line": 44,
+          "end_line": 117,
           "owner": "<module>",
           "name": "HomeDataScope",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 47,
-          "end_line": 47,
+          "line": 51,
+          "end_line": 51,
           "owner": "HomeDataScope",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -93278,29 +93730,36 @@
       ],
       "hooks": [
         {
-          "line": 43,
-          "end_line": 43,
+          "line": 45,
+          "end_line": 45,
           "owner": "HomeDataScope",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 44,
-          "end_line": 44,
+          "line": 46,
+          "end_line": 46,
           "owner": "HomeDataScope",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 45,
-          "end_line": 45,
+          "line": 47,
+          "end_line": 47,
           "owner": "HomeDataScope",
           "callee": "useWorldCountries",
           "arguments": []
         },
         {
-          "line": 47,
-          "end_line": 47,
+          "line": 49,
+          "end_line": 49,
+          "owner": "HomeDataScope",
+          "callee": "useHomePriceSummary",
+          "arguments": []
+        },
+        {
+          "line": 51,
+          "end_line": 51,
           "owner": "HomeDataScope",
           "callee": "useMemo",
           "arguments": [
@@ -93317,7 +93776,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/home/HomeHero.jsx": {
-      "sha256": "fa5d856d6af315d115a34e25f596f6d90c0b0102363f521ae913ff57e6d884d2",
+      "sha256": "1128aaa46385a993d079243e393a61c67a7765a1619cfe873dc0f5ca51bf7e3e",
       "imports": [
         {
           "line": 1,
@@ -93393,7 +93852,9 @@
             "frontend/src/components/home/HomePricesRates.jsx"
           ],
           "bindings": [
-            "HomeRegionQuick"
+            "HomeRegionQuick",
+            "HomeFactsStrip",
+            "HomePriceStrip"
           ]
         },
         {
@@ -93554,7 +94015,7 @@
       "functions": [
         {
           "line": 29,
-          "end_line": 126,
+          "end_line": 128,
           "owner": "<module>",
           "name": "HomeHero",
           "kind": "FunctionDeclaration",
@@ -94203,7 +94664,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/home/HomePricesRates.jsx": {
-      "sha256": "5c3746868833e70f9544d4ab2f521f050b0f1f0fcf58298d140bce0d7c3bd0d8",
+      "sha256": "835df2dadcfa4f9a802332623b8ff4a095fa74827611a8f6685ba0e24fe5e395",
       "imports": [
         {
           "line": 3,
@@ -94374,77 +94835,117 @@
             "frontend/src/styles/r5d-home.css"
           ],
           "bindings": []
+        },
+        {
+          "line": 16,
+          "end_line": 16,
+          "owner": "<module>",
+          "specifier": "./HomeRegionPriceTiles",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/home/HomeRegionPriceTiles.jsx"
+          ],
+          "bindings": [
+            "HomeRegionPriceTiles",
+            "HomePriceStrip"
+          ]
+        },
+        {
+          "line": 17,
+          "end_line": 17,
+          "owner": "<module>",
+          "specifier": "../../lib/homePriceSummary",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/homePriceSummary.js"
+          ],
+          "bindings": [
+            "useHomePriceSummary"
+          ]
+        },
+        {
+          "line": 18,
+          "end_line": 18,
+          "owner": "<module>",
+          "specifier": "../../lib/sitePaths",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/sitePaths.js"
+          ],
+          "bindings": [
+            "regionHubPath"
+          ]
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 19,
-          "end_line": 21,
+          "line": 22,
+          "end_line": 24,
           "owner": "<module>",
           "name": "readSaved",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 23,
-          "end_line": 41,
+          "line": 26,
+          "end_line": 46,
           "owner": "<module>",
           "name": "useRegionChoice",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 26,
-          "end_line": 32,
+          "line": 29,
+          "end_line": 35,
           "owner": "useRegionChoice",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 28,
-          "end_line": 28,
-          "owner": "useRegionChoice.<callback@26>",
+          "line": 31,
+          "end_line": 31,
+          "owner": "useRegionChoice.<callback@29>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(landing.data?.districts || []).flatMap"
         },
         {
-          "line": 30,
-          "end_line": 30,
-          "owner": "useRegionChoice.<callback@26>",
+          "line": 33,
+          "end_line": 33,
+          "owner": "useRegionChoice.<callback@29>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "list\n      .map"
         },
         {
-          "line": 31,
-          "end_line": 31,
-          "owner": "useRegionChoice.<callback@26>",
+          "line": 34,
+          "end_line": 34,
+          "owner": "useRegionChoice.<callback@29>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "list\n      .map((r) => ({ slug: r.slug, name: String((locale === 'en' ? r.name_en : r.name_ru) || r.name).replace(/^г\\.\\s*/, '') }))\n      .sort"
         },
         {
-          "line": 34,
-          "end_line": 34,
+          "line": 37,
+          "end_line": 37,
           "owner": "useRegionChoice",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regions.some"
         },
         {
-          "line": 34,
-          "end_line": 34,
+          "line": 37,
+          "end_line": 37,
           "owner": "useRegionChoice",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regions.find"
         },
         {
-          "line": 36,
-          "end_line": 39,
+          "line": 39,
+          "end_line": 43,
           "owner": "useRegionChoice",
           "name": "onPick",
           "kind": "ArrowFunctionExpression",
@@ -94452,159 +94953,183 @@
         },
         {
           "line": 44,
-          "end_line": 72,
+          "end_line": 44,
+          "owner": "useRegionChoice",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "regions.find"
+        },
+        {
+          "line": 49,
+          "end_line": 77,
           "owner": "<module>",
           "name": "HomeRegionQuick",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 54,
-          "end_line": 54,
+          "line": 59,
+          "end_line": 59,
           "owner": "HomeRegionQuick",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 55,
-          "end_line": 55,
+          "line": 60,
+          "end_line": 60,
           "owner": "HomeRegionQuick",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regions.map"
         },
         {
-          "line": 63,
-          "end_line": 63,
+          "line": 68,
+          "end_line": 68,
           "owner": "HomeRegionQuick",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 74,
-          "end_line": 117,
+          "line": 81,
+          "end_line": 96,
+          "owner": "<module>",
+          "name": "HomeFactsStrip",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 86,
+          "end_line": 86,
+          "owner": "HomeFactsStrip",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 98,
+          "end_line": 142,
           "owner": "<module>",
           "name": "RegionPrices",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 90,
-          "end_line": 90,
+          "line": 102,
+          "end_line": 102,
+          "owner": "RegionPrices",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "regions.find"
+        },
+        {
+          "line": 115,
+          "end_line": 115,
           "owner": "RegionPrices",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 91,
-          "end_line": 91,
+          "line": 116,
+          "end_line": 116,
           "owner": "RegionPrices",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regions.map"
         },
         {
-          "line": 94,
-          "end_line": 94,
-          "owner": "RegionPrices",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "['eggs', 'milk', 'fuel', 'bread', 'meds'].map"
-        },
-        {
-          "line": 99,
-          "end_line": 99,
+          "line": 124,
+          "end_line": 124,
           "owner": "RegionPrices",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 109,
-          "end_line": 109,
+          "line": 134,
+          "end_line": 134,
           "owner": "RegionPrices",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 119,
-          "end_line": 169,
+          "line": 144,
+          "end_line": 194,
           "owner": "<module>",
           "name": "RateTiles",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 123,
-          "end_line": 123,
+          "line": 148,
+          "end_line": 148,
           "owner": "RateTiles",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 124,
-          "end_line": 130,
+          "line": 149,
+          "end_line": 155,
           "owner": "RateTiles",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 124,
-          "end_line": 130,
-          "owner": "RateTiles.<callback@124>",
+          "line": 149,
+          "end_line": 155,
+          "owner": "RateTiles.<callback@149>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TRAVEL_UNITS.map"
         },
         {
-          "line": 125,
-          "end_line": 125,
-          "owner": "RateTiles.<callback@124>.<callback@124>",
+          "line": 150,
+          "end_line": 150,
+          "owner": "RateTiles.<callback@149>.<callback@149>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "edges.find"
         },
         {
-          "line": 131,
-          "end_line": 131,
+          "line": 156,
+          "end_line": 156,
           "owner": "RateTiles",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "tiles.find"
         },
         {
-          "line": 147,
-          "end_line": 155,
+          "line": 172,
+          "end_line": 180,
           "owner": "RateTiles",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "tiles.map"
         },
         {
-          "line": 149,
-          "end_line": 149,
-          "owner": "RateTiles.<callback@147>",
+          "line": 174,
+          "end_line": 174,
+          "owner": "RateTiles.<callback@172>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 159,
-          "end_line": 159,
+          "line": 184,
+          "end_line": 184,
           "owner": "RateTiles",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TRAVEL_UNITS.slice(0, 6).map"
         },
         {
-          "line": 171,
-          "end_line": 186,
+          "line": 196,
+          "end_line": 211,
           "owner": "<module>",
           "name": "HomePricesRates",
           "kind": "FunctionDeclaration",
@@ -94613,22 +95138,22 @@
       ],
       "hooks": [
         {
-          "line": 24,
-          "end_line": 24,
+          "line": 27,
+          "end_line": 27,
           "owner": "useRegionChoice",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 25,
-          "end_line": 25,
+          "line": 28,
+          "end_line": 28,
           "owner": "useRegionChoice",
           "callee": "useRegionsLanding",
           "arguments": []
         },
         {
-          "line": 26,
-          "end_line": 32,
+          "line": 29,
+          "end_line": 35,
           "owner": "useRegionChoice",
           "callee": "useMemo",
           "arguments": [
@@ -94637,8 +95162,8 @@
           ]
         },
         {
-          "line": 33,
-          "end_line": 33,
+          "line": 36,
+          "end_line": 36,
           "owner": "useRegionChoice",
           "callee": "useState",
           "arguments": [
@@ -94646,71 +95171,109 @@
           ]
         },
         {
-          "line": 45,
-          "end_line": 45,
+          "line": 50,
+          "end_line": 50,
           "owner": "HomeRegionQuick",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 46,
-          "end_line": 46,
+          "line": 51,
+          "end_line": 51,
           "owner": "HomeRegionQuick",
           "callee": "useId",
           "arguments": []
         },
         {
-          "line": 47,
-          "end_line": 47,
+          "line": 52,
+          "end_line": 52,
           "owner": "HomeRegionQuick",
           "callee": "useRegionChoice",
           "arguments": []
         },
         {
-          "line": 75,
-          "end_line": 75,
+          "line": 82,
+          "end_line": 82,
+          "owner": "HomeFactsStrip",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 83,
+          "end_line": 83,
+          "owner": "HomeFactsStrip",
+          "callee": "useRegionChoice",
+          "arguments": []
+        },
+        {
+          "line": 84,
+          "end_line": 84,
+          "owner": "HomeFactsStrip",
+          "callee": "useHomePriceSummary",
+          "arguments": []
+        },
+        {
+          "line": 85,
+          "end_line": 85,
+          "owner": "HomeFactsStrip",
+          "callee": "useIndicators",
+          "arguments": []
+        },
+        {
+          "line": 86,
+          "end_line": 86,
+          "owner": "HomeFactsStrip",
+          "callee": "useMemo",
+          "arguments": [
+            "() => buildEdges(indicators.data || [])",
+            "[indicators.data]"
+          ]
+        },
+        {
+          "line": 99,
+          "end_line": 99,
           "owner": "RegionPrices",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 76,
-          "end_line": 76,
+          "line": 100,
+          "end_line": 100,
           "owner": "RegionPrices",
           "callee": "useId",
           "arguments": []
         },
         {
-          "line": 77,
-          "end_line": 77,
+          "line": 101,
+          "end_line": 101,
           "owner": "RegionPrices",
           "callee": "useRegionChoice",
           "arguments": []
         },
         {
-          "line": 120,
-          "end_line": 120,
+          "line": 145,
+          "end_line": 145,
           "owner": "RateTiles",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 121,
-          "end_line": 121,
+          "line": 146,
+          "end_line": 146,
           "owner": "RateTiles",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 122,
-          "end_line": 122,
+          "line": 147,
+          "end_line": 147,
           "owner": "RateTiles",
           "callee": "useIndicators",
           "arguments": []
         },
         {
-          "line": 123,
-          "end_line": 123,
+          "line": 148,
+          "end_line": 148,
           "owner": "RateTiles",
           "callee": "useMemo",
           "arguments": [
@@ -94719,8 +95282,8 @@
           ]
         },
         {
-          "line": 124,
-          "end_line": 130,
+          "line": 149,
+          "end_line": 155,
           "owner": "RateTiles",
           "callee": "useMemo",
           "arguments": [
@@ -94729,15 +95292,15 @@
           ]
         },
         {
-          "line": 172,
-          "end_line": 172,
+          "line": 197,
+          "end_line": 197,
           "owner": "HomePricesRates",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 173,
-          "end_line": 173,
+          "line": 198,
+          "end_line": 198,
           "owner": "HomePricesRates",
           "callee": "useLocale",
           "arguments": []
@@ -94746,8 +95309,8 @@
       "http": [],
       "storage": [
         {
-          "line": 20,
-          "end_line": 20,
+          "line": 23,
+          "end_line": 23,
           "owner": "readSaved",
           "callee": "window.localStorage.getItem",
           "arguments": [
@@ -94755,8 +95318,8 @@
           ]
         },
         {
-          "line": 38,
-          "end_line": 38,
+          "line": 41,
+          "end_line": 41,
           "owner": "useRegionChoice.onPick",
           "callee": "window.localStorage.setItem",
           "arguments": [
@@ -94765,55 +95328,433 @@
           ]
         }
       ],
-      "events": [],
+      "events": [
+        {
+          "line": 42,
+          "end_line": 42,
+          "owner": "useRegionChoice.onPick",
+          "callee": "window.dispatchEvent",
+          "arguments": [
+            "new CustomEvent('fe:home-region', { detail: slug })"
+          ]
+        }
+      ],
       "jsx_handlers": [
         {
-          "line": 54,
-          "end_line": 54,
+          "line": 59,
+          "end_line": 59,
           "owner": "HomeRegionQuick",
           "component": "select",
           "event": "onChange",
           "expression": "{(e) => onPick(e.target.value)}"
         },
         {
-          "line": 61,
-          "end_line": 66,
+          "line": 66,
+          "end_line": 71,
           "owner": "HomeRegionQuick",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.HOME_CATEGORY_CLICK, { category: 'region-prices', surface: 'home-hero-quick' })}"
         },
         {
-          "line": 90,
-          "end_line": 90,
+          "line": 115,
+          "end_line": 115,
           "owner": "RegionPrices",
           "component": "select",
           "event": "onChange",
           "expression": "{(e) => onPick(e.target.value)}"
         },
         {
-          "line": 97,
-          "end_line": 101,
+          "line": 122,
+          "end_line": 126,
           "owner": "RegionPrices",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.HOME_CATEGORY_CLICK, { category: 'region-prices', surface: 'home-r3a' })}"
         },
         {
-          "line": 107,
-          "end_line": 111,
+          "line": 132,
+          "end_line": 136,
           "owner": "RegionPrices",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.HOME_CATEGORY_CLICK, { category: 'region-compare', surface: 'home-r5d' })}"
         },
         {
-          "line": 149,
-          "end_line": 149,
-          "owner": "RateTiles.<callback@147>",
+          "line": 174,
+          "end_line": 174,
+          "owner": "RateTiles.<callback@172>",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.HOME_CATEGORY_CLICK, { category: 'rate-tile', surface: 'home-r3a', unit: tile.unit })}"
+        }
+      ],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/components/home/HomeRegionPriceTiles.jsx": {
+      "sha256": "44e8b6b9fa12a6a1510064279ea8cacff86380323be586a45b45b120bdc0dc48",
+      "imports": [
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "react",
+          "category": "external_package",
+          "target": "react",
+          "bindings": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "line": 5,
+          "end_line": 5,
+          "owner": "<module>",
+          "specifier": "react-router-dom",
+          "category": "external_package",
+          "target": "react-router-dom",
+          "bindings": [
+            "Link"
+          ]
+        },
+        {
+          "line": 6,
+          "end_line": 6,
+          "owner": "<module>",
+          "specifier": "lucide-react",
+          "category": "external_package",
+          "target": "lucide-react",
+          "bindings": [
+            "Minus",
+            "TrendingDown",
+            "TrendingUp"
+          ]
+        },
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<module>",
+          "specifier": "../../lib/homePriceSummary",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/homePriceSummary.js"
+          ],
+          "bindings": [
+            "useHomePriceSummary"
+          ]
+        },
+        {
+          "line": 8,
+          "end_line": 8,
+          "owner": "<module>",
+          "specifier": "../../lib/format",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/format.js"
+          ],
+          "bindings": [
+            "formatValue"
+          ]
+        },
+        {
+          "line": 9,
+          "end_line": 9,
+          "owner": "<module>",
+          "specifier": "../../lib/sitePaths",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/sitePaths.js"
+          ],
+          "bindings": [
+            "regionIndicatorPath",
+            "regionPath"
+          ]
+        },
+        {
+          "line": 10,
+          "end_line": 10,
+          "owner": "<module>",
+          "specifier": "../../lib/track",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/track.js"
+          ],
+          "bindings": [
+            "track",
+            "events"
+          ]
+        },
+        {
+          "line": 11,
+          "end_line": 11,
+          "owner": "<module>",
+          "specifier": "../../i18n",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/index.js"
+          ],
+          "bindings": [
+            "useLocale",
+            "useT"
+          ]
+        },
+        {
+          "line": 12,
+          "end_line": 12,
+          "owner": "<module>",
+          "specifier": "../../styles/r9a-home.css",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/styles/r9a-home.css"
+          ],
+          "bindings": []
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 16,
+          "end_line": 24,
+          "owner": "<module>",
+          "name": "unitParts",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 26,
+          "end_line": 38,
+          "owner": "<module>",
+          "name": "Trend",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 40,
+          "end_line": 100,
+          "owner": "<module>",
+          "name": "HomeRegionPriceTiles",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 45,
+          "end_line": 45,
+          "owner": "HomeRegionPriceTiles",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "data.groups.filter"
+        },
+        {
+          "line": 50,
+          "end_line": 50,
+          "owner": "HomeRegionPriceTiles",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "['eggs', 'milk', 'fuel', 'bread', 'meds'].map"
+        },
+        {
+          "line": 57,
+          "end_line": 57,
+          "owner": "HomeRegionPriceTiles",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Array.from({ length: SHOWN }).map"
+        },
+        {
+          "line": 66,
+          "end_line": 83,
+          "owner": "HomeRegionPriceTiles",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "items.map"
+        },
+        {
+          "line": 74,
+          "end_line": 74,
+          "owner": "HomeRegionPriceTiles.<callback@66>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 88,
+          "end_line": 95,
+          "owner": "HomeRegionPriceTiles",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "groups.map"
+        },
+        {
+          "line": 102,
+          "end_line": 104,
+          "owner": "<module>",
+          "name": "savedRegion",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 110,
+          "end_line": 142,
+          "owner": "<module>",
+          "name": "HomePriceStrip",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 115,
+          "end_line": 119,
+          "owner": "HomePriceStrip",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 116,
+          "end_line": 116,
+          "owner": "HomePriceStrip.<callback@115>",
+          "name": "on",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 118,
+          "end_line": 118,
+          "owner": "HomePriceStrip.<callback@115>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 124,
+          "end_line": 139,
+          "owner": "HomePriceStrip",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "items.map"
+        },
+        {
+          "line": 131,
+          "end_line": 131,
+          "owner": "HomePriceStrip.<callback@124>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        }
+      ],
+      "hooks": [
+        {
+          "line": 41,
+          "end_line": 41,
+          "owner": "HomeRegionPriceTiles",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 42,
+          "end_line": 42,
+          "owner": "HomeRegionPriceTiles",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
+          "line": 43,
+          "end_line": 43,
+          "owner": "HomeRegionPriceTiles",
+          "callee": "useHomePriceSummary",
+          "arguments": []
+        },
+        {
+          "line": 111,
+          "end_line": 111,
+          "owner": "HomePriceStrip",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 112,
+          "end_line": 112,
+          "owner": "HomePriceStrip",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
+          "line": 113,
+          "end_line": 113,
+          "owner": "HomePriceStrip",
+          "callee": "useHomePriceSummary",
+          "arguments": []
+        },
+        {
+          "line": 114,
+          "end_line": 114,
+          "owner": "HomePriceStrip",
+          "callee": "useState",
+          "arguments": [
+            "savedRegion"
+          ]
+        },
+        {
+          "line": 115,
+          "end_line": 119,
+          "owner": "HomePriceStrip",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    const on = (e) => setRegion(e?.detail || savedRegion());\n    window.addEventListener('fe:home-region', on);\n    return () => window.removeEventListener('fe:home-region', on);\n  }",
+            "[]"
+          ]
+        }
+      ],
+      "http": [],
+      "storage": [
+        {
+          "line": 103,
+          "end_line": 103,
+          "owner": "savedRegion",
+          "callee": "window.localStorage.getItem",
+          "arguments": [
+            "'fe-home-region'"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "line": 117,
+          "end_line": 117,
+          "owner": "HomePriceStrip.<callback@115>",
+          "callee": "window.addEventListener",
+          "arguments": [
+            "'fe:home-region'",
+            "on"
+          ]
+        },
+        {
+          "line": 118,
+          "end_line": 118,
+          "owner": "HomePriceStrip.<callback@115>.<callback@118>",
+          "callee": "window.removeEventListener",
+          "arguments": [
+            "'fe:home-region'",
+            "on"
+          ]
+        }
+      ],
+      "jsx_handlers": [
+        {
+          "line": 71,
+          "end_line": 75,
+          "owner": "HomeRegionPriceTiles.<callback@66>",
+          "component": "Link",
+          "event": "onClick",
+          "expression": "{() => track(events.HOME_CATEGORY_CLICK, { category: 'price-tile', surface: 'home-r9a', code: it.code, region })}"
+        },
+        {
+          "line": 128,
+          "end_line": 132,
+          "owner": "HomePriceStrip.<callback@124>",
+          "component": "Link",
+          "event": "onClick",
+          "expression": "{() => track(events.HOME_CATEGORY_CLICK, { category: 'price-strip', surface: 'home-r9a', code: it.code, region })}"
         }
       ],
       "registries": [],
@@ -104639,7 +105580,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/russia/RussiaKeyFigures.jsx": {
-      "sha256": "1931f10ab279f58516d5ede688096337a9845b52ce5f0724f1c8a8ad0de1b73a",
+      "sha256": "ac4dda8ab7df28fab4a1391b9e0b78afc721e96e2917937ee0c5b05c3724f649",
       "imports": [
         {
           "line": 2,
@@ -104649,12 +105590,26 @@
           "category": "external_package",
           "target": "react",
           "bindings": [
-            "useMemo"
+            "useMemo",
+            "useRef",
+            "useState"
           ]
         },
         {
           "line": 3,
           "end_line": 3,
+          "owner": "<module>",
+          "specifier": "lucide-react",
+          "category": "external_package",
+          "target": "lucide-react",
+          "bindings": [
+            "Check",
+            "Copy"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 4,
           "owner": "<module>",
           "specifier": "react-router-dom",
           "category": "external_package",
@@ -104664,8 +105619,8 @@
           ]
         },
         {
-          "line": 4,
-          "end_line": 4,
+          "line": 5,
+          "end_line": 5,
           "owner": "<module>",
           "specifier": "../../lib/hooks",
           "category": "owned_source",
@@ -104677,8 +105632,8 @@
           ]
         },
         {
-          "line": 5,
-          "end_line": 5,
+          "line": 6,
+          "end_line": 6,
           "owner": "<module>",
           "specifier": "../../lib/format",
           "category": "owned_source",
@@ -104691,8 +105646,8 @@
           ]
         },
         {
-          "line": 6,
-          "end_line": 6,
+          "line": 7,
+          "end_line": 7,
           "owner": "<module>",
           "specifier": "../../lib/deltaTone",
           "category": "owned_source",
@@ -104705,8 +105660,8 @@
           ]
         },
         {
-          "line": 7,
-          "end_line": 7,
+          "line": 8,
+          "end_line": 8,
           "owner": "<module>",
           "specifier": "../../lib/periodPhrase",
           "category": "owned_source",
@@ -104718,8 +105673,8 @@
           ]
         },
         {
-          "line": 8,
-          "end_line": 8,
+          "line": 9,
+          "end_line": 9,
           "owner": "<module>",
           "specifier": "../../lib/russiaHomeCards",
           "category": "owned_source",
@@ -104731,8 +105686,8 @@
           ]
         },
         {
-          "line": 9,
-          "end_line": 11,
+          "line": 10,
+          "end_line": 12,
           "owner": "<module>",
           "specifier": "../../lib/countryKeyFigures",
           "category": "owned_source",
@@ -104747,8 +105702,8 @@
           ]
         },
         {
-          "line": 12,
-          "end_line": 12,
+          "line": 13,
+          "end_line": 13,
           "owner": "<module>",
           "specifier": "../../lib/sitePaths",
           "category": "owned_source",
@@ -104760,8 +105715,8 @@
           ]
         },
         {
-          "line": 13,
-          "end_line": 13,
+          "line": 14,
+          "end_line": 14,
           "owner": "<module>",
           "specifier": "../../i18n",
           "category": "owned_source",
@@ -104774,8 +105729,8 @@
           ]
         },
         {
-          "line": 14,
-          "end_line": 14,
+          "line": 15,
+          "end_line": 15,
           "owner": "<module>",
           "specifier": "../DeltaBadge",
           "category": "owned_source",
@@ -104787,8 +105742,8 @@
           ]
         },
         {
-          "line": 15,
-          "end_line": 15,
+          "line": 16,
+          "end_line": 16,
           "owner": "<module>",
           "specifier": "../Sparkline",
           "category": "owned_source",
@@ -104800,8 +105755,8 @@
           ]
         },
         {
-          "line": 16,
-          "end_line": 16,
+          "line": 17,
+          "end_line": 17,
           "owner": "<module>",
           "specifier": "../Skeleton",
           "category": "owned_source",
@@ -104813,8 +105768,8 @@
           ]
         },
         {
-          "line": 17,
-          "end_line": 17,
+          "line": 18,
+          "end_line": 18,
           "owner": "<module>",
           "specifier": "../country/useSparkHeight",
           "category": "owned_source",
@@ -104826,8 +105781,32 @@
           ]
         },
         {
-          "line": 18,
-          "end_line": 18,
+          "line": 19,
+          "end_line": 19,
+          "owner": "<module>",
+          "specifier": "../../lib/r9bPrice",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/r9bPrice.js"
+          ],
+          "bindings": [
+            "copyToClipboard"
+          ]
+        },
+        {
+          "line": 20,
+          "end_line": 20,
+          "owner": "<module>",
+          "specifier": "../../styles/r9b-movers.css",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/styles/r9b-movers.css"
+          ],
+          "bindings": []
+        },
+        {
+          "line": 21,
+          "end_line": 21,
           "owner": "<module>",
           "specifier": "../../styles/z5-country.css",
           "category": "owned_source",
@@ -104837,8 +105816,8 @@
           "bindings": []
         },
         {
-          "line": 19,
-          "end_line": 19,
+          "line": 22,
+          "end_line": 22,
           "owner": "<module>",
           "specifier": "../../styles/k6-country.css",
           "category": "owned_source",
@@ -104851,52 +105830,36 @@
       "routes": [],
       "functions": [
         {
-          "line": 25,
-          "end_line": 34,
+          "line": 28,
+          "end_line": 37,
           "owner": "<module>",
           "name": "formatFigure",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 37,
-          "end_line": 41,
+          "line": 40,
+          "end_line": 44,
           "owner": "<module>",
           "name": "thinForSpark",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 40,
-          "end_line": 40,
+          "line": 43,
+          "end_line": 43,
           "owner": "thinForSpark",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from"
         },
         {
-          "line": 43,
-          "end_line": 99,
+          "line": 46,
+          "end_line": 102,
           "owner": "<module>",
           "name": "MainCard",
           "kind": "FunctionDeclaration",
           "callback_context": null
-        },
-        {
-          "line": 54,
-          "end_line": 54,
-          "owner": "MainCard",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 54,
-          "end_line": 54,
-          "owner": "MainCard.<callback@54>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "(seriesQ.data?.data || []).filter"
         },
         {
           "line": 57,
@@ -104912,43 +105875,99 @@
           "owner": "MainCard.<callback@57>",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "rows.map"
+          "callback_context": "(seriesQ.data?.data || []).filter"
         },
         {
-          "line": 58,
-          "end_line": 58,
+          "line": 60,
+          "end_line": 60,
           "owner": "MainCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 101,
-          "end_line": 111,
-          "owner": "<module>",
-          "name": "RussiaKeyFigures",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
+          "line": 60,
+          "end_line": 60,
+          "owner": "MainCard.<callback@60>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "rows.map"
         },
         {
-          "line": 102,
-          "end_line": 102,
-          "owner": "RussiaKeyFigures",
+          "line": 61,
+          "end_line": 61,
+          "owner": "MainCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
           "line": 105,
-          "end_line": 105,
+          "end_line": 135,
+          "owner": "<module>",
+          "name": "CiteStrip",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 111,
+          "end_line": 118,
+          "owner": "CiteStrip",
+          "name": "text",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 112,
+          "end_line": 116,
+          "owner": "CiteStrip.text",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "cards.map"
+        },
+        {
+          "line": 119,
+          "end_line": 125,
+          "owner": "CiteStrip",
+          "name": "copy",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 123,
+          "end_line": 123,
+          "owner": "CiteStrip.copy",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setTimeout"
+        },
+        {
+          "line": 137,
+          "end_line": 150,
+          "owner": "<module>",
+          "name": "RussiaKeyFigures",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 138,
+          "end_line": 138,
+          "owner": "RussiaKeyFigures",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 142,
+          "end_line": 142,
           "owner": "RussiaKeyFigures",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "cards.map"
         },
         {
-          "line": 106,
-          "end_line": 108,
+          "line": 143,
+          "end_line": 145,
           "owner": "RussiaKeyFigures",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -104957,22 +105976,22 @@
       ],
       "hooks": [
         {
-          "line": 44,
-          "end_line": 44,
+          "line": 47,
+          "end_line": 47,
           "owner": "MainCard",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 45,
-          "end_line": 45,
+          "line": 48,
+          "end_line": 48,
           "owner": "MainCard",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 46,
-          "end_line": 46,
+          "line": 49,
+          "end_line": 49,
           "owner": "MainCard",
           "callee": "useSparkHeight",
           "arguments": [
@@ -104981,8 +106000,8 @@
           ]
         },
         {
-          "line": 50,
-          "end_line": 52,
+          "line": 53,
+          "end_line": 55,
           "owner": "MainCard",
           "callee": "useIndicatorData",
           "arguments": [
@@ -104991,8 +106010,8 @@
           ]
         },
         {
-          "line": 53,
-          "end_line": 56,
+          "line": 56,
+          "end_line": 59,
           "owner": "MainCard",
           "callee": "useMemo",
           "arguments": [
@@ -105001,8 +106020,8 @@
           ]
         },
         {
-          "line": 57,
-          "end_line": 57,
+          "line": 60,
+          "end_line": 60,
           "owner": "MainCard",
           "callee": "useMemo",
           "arguments": [
@@ -105011,8 +106030,8 @@
           ]
         },
         {
-          "line": 58,
-          "end_line": 58,
+          "line": 61,
+          "end_line": 61,
           "owner": "MainCard",
           "callee": "useMemo",
           "arguments": [
@@ -105021,8 +106040,40 @@
           ]
         },
         {
-          "line": 102,
-          "end_line": 102,
+          "line": 106,
+          "end_line": 106,
+          "owner": "CiteStrip",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 107,
+          "end_line": 107,
+          "owner": "CiteStrip",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
+          "line": 108,
+          "end_line": 108,
+          "owner": "CiteStrip",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 109,
+          "end_line": 109,
+          "owner": "CiteStrip",
+          "callee": "useRef",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 138,
+          "end_line": 138,
           "owner": "RussiaKeyFigures",
           "callee": "useMemo",
           "arguments": [
@@ -105034,7 +106085,16 @@
       "http": [],
       "storage": [],
       "events": [],
-      "jsx_handlers": [],
+      "jsx_handlers": [
+        {
+          "line": 129,
+          "end_line": 129,
+          "owner": "CiteStrip",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{copy}"
+        }
+      ],
       "registries": [],
       "mcp_tools": []
     },
@@ -109632,7 +110692,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "bbd5b5192ade3986186476b798b833d26d316309a5ec915b63f96ecc7c8eb6aa",
+      "sha256": "1fa028809b4855ad65aead79ffbbfeb5aeb92c71f0739ffe2c5d0b2046650613",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -110055,7 +111115,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "98e671ba110cdd39193527012e3de24ce0e84775ce727f1d7a8067272974fb11",
+      "sha256": "cac4c6160f0c7f8a06f8a7a5a7bd23acc9b43ab70096f9491a2a61050593576d",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -141513,6 +142573,95 @@
       "registries": [],
       "mcp_tools": []
     },
+    "frontend/src/lib/homePriceSummary.js": {
+      "sha256": "d56203ab238fcb08efd2f9c8f876ea5195223a20295ee87904488ec6dc1dc874",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "@tanstack/react-query",
+          "category": "external_package",
+          "target": "@tanstack/react-query",
+          "bindings": [
+            "useQuery"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "./api",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/api.js"
+          ],
+          "bindings": [
+            "api"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "../i18n/locale",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/locale.js"
+          ],
+          "bindings": [
+            "resolveBrowserLocale"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 6,
+          "end_line": 13,
+          "owner": "<module>",
+          "name": "useHomePriceSummary",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 9,
+          "end_line": 9,
+          "owner": "useHomePriceSummary",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        }
+      ],
+      "hooks": [
+        {
+          "line": 7,
+          "end_line": 12,
+          "owner": "useHomePriceSummary",
+          "callee": "useQuery",
+          "arguments": [
+            "{\n    queryKey: ['r9a-home-prices', resolveBrowserLocale()],\n    queryFn: async ({ signal }) => (await api.get('/regions/russia/prices-summary', { signal })).data,\n    staleTime: 10 * 60 * 1000,\n    retry: 1,\n  }"
+          ]
+        }
+      ],
+      "http": [
+        {
+          "line": 9,
+          "end_line": 9,
+          "owner": "useHomePriceSummary.<callback@9>",
+          "callee": "api.get",
+          "arguments": [
+            "'/regions/russia/prices-summary'",
+            "{ signal }"
+          ]
+        }
+      ],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/lib/homeQuickLinks.js": {
       "sha256": "8e059943dd183161691aacc67df3fc5526b74e670cc17dbcdb2e97630e256ac8",
       "imports": [
@@ -147147,7 +148296,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/navItems.js": {
-      "sha256": "c5212d19a3f1392a007ca7471a82a760210fd51c5a3bf75524fc6ba1fa5b79d7",
+      "sha256": "93975a78493f28af219b7b409b1f8388cdc4b75aa13e59d9ee6368928da33d19",
       "imports": [
         {
           "line": 8,
@@ -147218,7 +148367,7 @@
         },
         {
           "line": 156,
-          "end_line": 196,
+          "end_line": 197,
           "owner": "<module>",
           "name": "mobileNavGroups",
           "kind": "FunctionDeclaration",
@@ -154983,6 +156132,261 @@
         {
           "line": 18,
           "end_line": 21,
+          "owner": "<callback@4>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/lib/r9bPrice.js": {
+      "sha256": "60f5225780ac9c47391888280386e7aee08d6ecd833a1d90dab52b720369f34c",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "./format",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/format.js"
+          ],
+          "bindings": [
+            "formatValue"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 4,
+          "end_line": 13,
+          "owner": "<module>",
+          "name": "splitPriceUnit",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 15,
+          "end_line": 18,
+          "owner": "<module>",
+          "name": "signed",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 20,
+          "end_line": 24,
+          "owner": "<module>",
+          "name": "money",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 27,
+          "end_line": 37,
+          "owner": "<module>",
+          "name": "quoteLine",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 39,
+          "end_line": 59,
+          "owner": "<module>",
+          "name": "copyToClipboard",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/lib/r9bPrice.test.js": {
+      "sha256": "15dc5f9ab16968f4c5caf3ffac7ee60a91aa65003bf41cb277efcd9c39d9d790",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "it",
+            "expect"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "./r9bPrice",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/r9bPrice.js"
+          ],
+          "bindings": [
+            "splitPriceUnit",
+            "signed",
+            "money",
+            "quoteLine"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "name": "t",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 6,
+          "end_line": 25,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 7,
+          "end_line": 10,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 11,
+          "end_line": 15,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 16,
+          "end_line": 19,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 20,
+          "end_line": 24,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/lib/r9cPriceUnit.js": {
+      "sha256": "cb6ef480e8022b054ac03fcced9cee6c74ff21d79e2c4a99184bb620e49eb5ab",
+      "imports": [],
+      "routes": [],
+      "functions": [
+        {
+          "line": 3,
+          "end_line": 10,
+          "owner": "<module>",
+          "name": "priceUnitLabel",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/lib/r9cPriceUnit.test.js": {
+      "sha256": "7b5e34257bee11c72806e337537e318fdede752b1d5c1c6fc5ab8cbb7348592d",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "./r9cPriceUnit",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/r9cPriceUnit.js"
+          ],
+          "bindings": [
+            "priceUnitLabel"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 4,
+          "end_line": 18,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 5,
+          "end_line": 9,
+          "owner": "<callback@4>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 10,
+          "end_line": 12,
+          "owner": "<callback@4>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 13,
+          "end_line": 17,
           "owner": "<callback@4>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -223440,7 +224844,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/RegionRatingPage.jsx": {
-      "sha256": "54dd971bb65e80d0e2f7b550d185f0b0b38b577ad5ab7050c028484316b7b957",
+      "sha256": "86432ac4a4e5334eec9c85668f77009cc87a587dc1395d5f269800fab3f9edcd",
       "imports": [
         {
           "line": 1,
@@ -223527,18 +224931,31 @@
           "line": 7,
           "end_line": 7,
           "owner": "<module>",
+          "specifier": "../lib/r9cPriceUnit",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/r9cPriceUnit.js"
+          ],
+          "bindings": [
+            "priceUnitLabel"
+          ]
+        },
+        {
+          "line": 8,
+          "end_line": 8,
+          "owner": "<module>",
           "specifier": "../components/regions/R4YourRegion",
           "category": "owned_source",
           "targets": [
             "frontend/src/components/regions/R4YourRegion.jsx"
           ],
           "bindings": [
-            "R4YourRegion"
+            "medianOf"
           ]
         },
         {
-          "line": 8,
-          "end_line": 8,
+          "line": 9,
+          "end_line": 9,
           "owner": "<module>",
           "specifier": "../components/RegionsMap",
           "category": "owned_source",
@@ -223550,8 +224967,8 @@
           ]
         },
         {
-          "line": 9,
-          "end_line": 9,
+          "line": 10,
+          "end_line": 10,
           "owner": "<module>",
           "specifier": "../components/ApiRetryBanner",
           "category": "owned_source",
@@ -223563,8 +224980,8 @@
           ]
         },
         {
-          "line": 10,
-          "end_line": 10,
+          "line": 11,
+          "end_line": 11,
           "owner": "<module>",
           "specifier": "../components/LoadingNote",
           "category": "owned_source",
@@ -223576,8 +224993,8 @@
           ]
         },
         {
-          "line": 11,
-          "end_line": 11,
+          "line": 12,
+          "end_line": 12,
           "owner": "<module>",
           "specifier": "../components/Breadcrumbs",
           "category": "owned_source",
@@ -223589,8 +225006,8 @@
           ]
         },
         {
-          "line": 12,
-          "end_line": 12,
+          "line": 13,
+          "end_line": 13,
           "owner": "<module>",
           "specifier": "../components/Skeleton",
           "category": "owned_source",
@@ -223602,8 +225019,8 @@
           ]
         },
         {
-          "line": 13,
-          "end_line": 13,
+          "line": 14,
+          "end_line": 14,
           "owner": "<module>",
           "specifier": "../lib/breadcrumbs",
           "category": "owned_source",
@@ -223615,8 +225032,8 @@
           ]
         },
         {
-          "line": 14,
-          "end_line": 20,
+          "line": 15,
+          "end_line": 21,
           "owner": "<module>",
           "specifier": "../lib/sitePaths",
           "category": "owned_source",
@@ -223632,8 +225049,8 @@
           ]
         },
         {
-          "line": 21,
-          "end_line": 21,
+          "line": 22,
+          "end_line": 22,
           "owner": "<module>",
           "specifier": "../components/Chip",
           "category": "owned_source",
@@ -223645,8 +225062,8 @@
           ]
         },
         {
-          "line": 22,
-          "end_line": 22,
+          "line": 23,
+          "end_line": 23,
           "owner": "<module>",
           "specifier": "../i18n",
           "category": "owned_source",
@@ -223659,8 +225076,8 @@
           ]
         },
         {
-          "line": 23,
-          "end_line": 23,
+          "line": 24,
+          "end_line": 24,
           "owner": "<module>",
           "specifier": "../styles/platform-pages.css",
           "category": "owned_source",
@@ -223670,8 +225087,8 @@
           "bindings": []
         },
         {
-          "line": 24,
-          "end_line": 24,
+          "line": 25,
+          "end_line": 25,
           "owner": "<module>",
           "specifier": "../styles/regions-w4.css",
           "category": "owned_source",
@@ -223681,8 +225098,8 @@
           "bindings": []
         },
         {
-          "line": 25,
-          "end_line": 25,
+          "line": 26,
+          "end_line": 26,
           "owner": "<module>",
           "specifier": "../styles/k6-country.css",
           "category": "owned_source",
@@ -223692,8 +225109,8 @@
           "bindings": []
         },
         {
-          "line": 26,
-          "end_line": 26,
+          "line": 27,
+          "end_line": 27,
           "owner": "<module>",
           "specifier": "../styles/r3b-regions.css",
           "category": "owned_source",
@@ -223703,8 +225120,8 @@
           "bindings": []
         },
         {
-          "line": 27,
-          "end_line": 27,
+          "line": 28,
+          "end_line": 28,
           "owner": "<module>",
           "specifier": "../styles/r7c-regions.css",
           "category": "owned_source",
@@ -223712,177 +225129,244 @@
             "frontend/src/styles/r7c-regions.css"
           ],
           "bindings": []
+        },
+        {
+          "line": 29,
+          "end_line": 29,
+          "owner": "<module>",
+          "specifier": "../styles/r9c-price-rating.css",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/styles/r9c-price-rating.css"
+          ],
+          "bindings": []
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 29,
-          "end_line": 323,
+          "line": 32,
+          "end_line": 39,
+          "owner": "<module>",
+          "name": "cleanPriceName",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 41,
+          "end_line": 402,
           "owner": "<module>",
           "name": "RegionRatingPage",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 41,
-          "end_line": 41,
+          "line": 55,
+          "end_line": 55,
           "owner": "RegionRatingPage",
           "name": "setSortOverride",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 44,
-          "end_line": 52,
+          "line": 58,
+          "end_line": 66,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 46,
-          "end_line": 50,
-          "owner": "RegionRatingPage.<callback@44>",
+          "line": 60,
+          "end_line": 64,
+          "owner": "RegionRatingPage.<callback@58>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...data.values].sort"
         },
         {
-          "line": 51,
-          "end_line": 51,
-          "owner": "RegionRatingPage.<callback@44>",
+          "line": 65,
+          "end_line": 65,
+          "owner": "RegionRatingPage.<callback@58>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rows.map"
         },
         {
-          "line": 55,
-          "end_line": 55,
+          "line": 69,
+          "end_line": 69,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useState"
         },
         {
-          "line": 56,
-          "end_line": 62,
+          "line": 70,
+          "end_line": 76,
           "owner": "RegionRatingPage",
           "name": "pickMine",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 60,
-          "end_line": 60,
+          "line": 74,
+          "end_line": 74,
           "owner": "RegionRatingPage.pickMine",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "window.requestAnimationFrame"
         },
         {
-          "line": 63,
-          "end_line": 63,
+          "line": 77,
+          "end_line": 77,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ranked.find"
         },
         {
-          "line": 67,
-          "end_line": 67,
+          "line": 83,
+          "end_line": 83,
+          "owner": "RegionRatingPage",
+          "name": "val",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 84,
+          "end_line": 91,
+          "owner": "RegionRatingPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 88,
+          "end_line": 88,
+          "owner": "RegionRatingPage.<callback@84>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "ranked.reduce"
+        },
+        {
+          "line": 89,
+          "end_line": 89,
+          "owner": "RegionRatingPage.<callback@84>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "ranked.reduce"
+        },
+        {
+          "line": 93,
+          "end_line": 93,
+          "owner": "RegionRatingPage",
+          "name": "fmtU",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 94,
+          "end_line": 94,
+          "owner": "RegionRatingPage",
+          "name": "num1",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 95,
+          "end_line": 95,
+          "owner": "RegionRatingPage",
+          "name": "signed",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 96,
+          "end_line": 96,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ranked.map"
         },
         {
-          "line": 70,
-          "end_line": 73,
+          "line": 99,
+          "end_line": 102,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 72,
-          "end_line": 72,
-          "owner": "RegionRatingPage.<callback@70>",
+          "line": 101,
+          "end_line": 101,
+          "owner": "RegionRatingPage.<callback@99>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "data.values.map"
         },
         {
-          "line": 74,
-          "end_line": 77,
+          "line": 103,
+          "end_line": 106,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 76,
-          "end_line": 76,
-          "owner": "RegionRatingPage.<callback@74>",
+          "line": 105,
+          "end_line": 105,
+          "owner": "RegionRatingPage.<callback@103>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "data.values.map"
         },
         {
-          "line": 114,
-          "end_line": 114,
+          "line": 145,
+          "end_line": 145,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 159,
-          "end_line": 159,
+          "line": 195,
+          "end_line": 195,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 162,
-          "end_line": 162,
+          "line": 198,
+          "end_line": 198,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 171,
-          "end_line": 171,
+          "line": 207,
+          "end_line": 207,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 173,
-          "end_line": 173,
+          "line": 209,
+          "end_line": 209,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...ranked].sort"
         },
         {
-          "line": 173,
-          "end_line": 173,
+          "line": 209,
+          "end_line": 209,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...ranked].sort((a, b) => a.name.localeCompare(b.name, locale)).map"
-        },
-        {
-          "line": 177,
-          "end_line": 177,
-          "owner": "RegionRatingPage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
         },
         {
           "line": 214,
@@ -223890,65 +225374,97 @@
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "[...ranked].sort"
+          "callback_context": null
         },
         {
-          "line": 231,
-          "end_line": 231,
+          "line": 218,
+          "end_line": 222,
+          "owner": "RegionRatingPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "() => {\n                      const diff = stats.med ? ((val(mineRow) - stats.med) / stats.med) * 100 : 0;\n                      if (Math.abs(diff) < 0.5) return t('r4a.your.typical');\n                      return t(diff > 0 ? 'r9c.price.more' : 'r9c.price.less', { pct: num1(Math.abs(diff)), typical: fmtU(stats.med) });\n                    }"
+        },
+        {
+          "line": 225,
+          "end_line": 225,
+          "owner": "RegionRatingPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "ranked.filter"
+        },
+        {
+          "line": 233,
+          "end_line": 233,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 252,
-          "end_line": 252,
+          "line": 293,
+          "end_line": 293,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 267,
-          "end_line": 297,
+          "line": 314,
+          "end_line": 314,
+          "owner": "RegionRatingPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 329,
+          "end_line": 370,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ranked.map"
+        },
+        {
+          "line": 378,
+          "end_line": 378,
+          "owner": "RegionRatingPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "data.missing.map"
         }
       ],
       "hooks": [
         {
-          "line": 30,
-          "end_line": 30,
+          "line": 42,
+          "end_line": 42,
           "owner": "RegionRatingPage",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 31,
-          "end_line": 31,
+          "line": 43,
+          "end_line": 43,
           "owner": "RegionRatingPage",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 32,
-          "end_line": 32,
+          "line": 44,
+          "end_line": 44,
           "owner": "RegionRatingPage",
           "callee": "useParams",
           "arguments": []
         },
         {
-          "line": 33,
-          "end_line": 33,
+          "line": 45,
+          "end_line": 45,
           "owner": "RegionRatingPage",
           "callee": "useNavigate",
           "arguments": []
         },
         {
-          "line": 34,
-          "end_line": 34,
+          "line": 46,
+          "end_line": 46,
           "owner": "RegionRatingPage",
           "callee": "useRegionsHeatmap",
           "arguments": [
@@ -223956,8 +225472,8 @@
           ]
         },
         {
-          "line": 39,
-          "end_line": 39,
+          "line": 53,
+          "end_line": 53,
           "owner": "RegionRatingPage",
           "callee": "useState",
           "arguments": [
@@ -223965,8 +225481,8 @@
           ]
         },
         {
-          "line": 44,
-          "end_line": 52,
+          "line": 58,
+          "end_line": 66,
           "owner": "RegionRatingPage",
           "callee": "useMemo",
           "arguments": [
@@ -223975,17 +225491,27 @@
           ]
         },
         {
-          "line": 55,
-          "end_line": 55,
+          "line": 69,
+          "end_line": 69,
           "owner": "RegionRatingPage",
           "callee": "useState",
           "arguments": [
-            "() => { try { return localStorage.getItem('fe-my-region') || ''; } catch { return ''; } }"
+            "() => { try { return localStorage.getItem('fe-my-region') || localStorage.getItem('r4a-my-region') || ''; } catch { return ''; } }"
           ]
         },
         {
-          "line": 70,
-          "end_line": 73,
+          "line": 84,
+          "end_line": 91,
+          "owner": "RegionRatingPage",
+          "callee": "useMemo",
+          "arguments": [
+            "() => {\n    if (!isPrice || !ranked.length) return null;\n    const nums = ranked.map(val);\n    const med = medianOf(nums);\n    const lo = ranked.reduce((a, b) => (val(b) < val(a) ? b : a));\n    const hi = ranked.reduce((a, b) => (val(b) > val(a) ? b : a));\n    return { med, lo, hi, ratio: val(lo) > 0 ? val(hi) / val(lo) : null };\n  }",
+            "[ranked, isPrice]"
+          ]
+        },
+        {
+          "line": 99,
+          "end_line": 102,
           "owner": "RegionRatingPage",
           "callee": "useMemo",
           "arguments": [
@@ -223994,8 +225520,8 @@
           ]
         },
         {
-          "line": 74,
-          "end_line": 77,
+          "line": 103,
+          "end_line": 106,
           "owner": "RegionRatingPage",
           "callee": "useMemo",
           "arguments": [
@@ -224004,29 +225530,38 @@
           ]
         },
         {
-          "line": 86,
-          "end_line": 95,
+          "line": 115,
+          "end_line": 126,
           "owner": "RegionRatingPage",
           "callee": "useDocumentMeta",
           "arguments": [
-            "data ? {\n    title: achievement\n      ? t('regions.rating.titleAchievement', { name: data.indicator.name, year: data.year })\n      : t('regions.rating.titleNeutral', { name: data.indicator.name, year: data.year }),\n    description:\n      `${data.indicator.name} (${data.year}): `\n      + `${ranked.length}.`\n      + (top ? ` ${bestLabel} — ${top.name}.` : ''),\n    path: regionRatingPath(code),\n  } : null"
+            "data ? {\n    title: isPrice\n      ? t('r9c.price.title', { name: shortName, period })\n      : achievement\n      ? t('regions.rating.titleAchievement', { name: data.indicator.name, year: data.year })\n      : t('regions.rating.titleNeutral', { name: data.indicator.name, year: data.year }),\n    description:\n      `${shortName} (${period || data.year}): `\n      + `${ranked.length}.`\n      + (top ? ` ${bestLabel} — ${top.name}.` : ''),\n    path: regionRatingPath(code),\n  } : null"
           ]
         }
       ],
       "http": [],
       "storage": [
         {
-          "line": 55,
-          "end_line": 55,
-          "owner": "RegionRatingPage.<callback@55>",
+          "line": 69,
+          "end_line": 69,
+          "owner": "RegionRatingPage.<callback@69>",
           "callee": "localStorage.getItem",
           "arguments": [
             "'fe-my-region'"
           ]
         },
         {
-          "line": 58,
-          "end_line": 58,
+          "line": 69,
+          "end_line": 69,
+          "owner": "RegionRatingPage.<callback@69>",
+          "callee": "localStorage.getItem",
+          "arguments": [
+            "'r4a-my-region'"
+          ]
+        },
+        {
+          "line": 72,
+          "end_line": 72,
           "owner": "RegionRatingPage.pickMine",
           "callee": "localStorage.setItem",
           "arguments": [
@@ -224035,76 +225570,103 @@
           ]
         },
         {
-          "line": 58,
-          "end_line": 58,
+          "line": 72,
+          "end_line": 72,
+          "owner": "RegionRatingPage.pickMine",
+          "callee": "localStorage.setItem",
+          "arguments": [
+            "'r4a-my-region'",
+            "slug"
+          ]
+        },
+        {
+          "line": 72,
+          "end_line": 72,
           "owner": "RegionRatingPage.pickMine",
           "callee": "localStorage.removeItem",
           "arguments": [
             "'fe-my-region'"
+          ]
+        },
+        {
+          "line": 72,
+          "end_line": 72,
+          "owner": "RegionRatingPage.pickMine",
+          "callee": "localStorage.removeItem",
+          "arguments": [
+            "'r4a-my-region'"
           ]
         }
       ],
       "events": [],
       "jsx_handlers": [
         {
-          "line": 107,
-          "end_line": 107,
+          "line": 138,
+          "end_line": 138,
           "owner": "RegionRatingPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{refetch}"
         },
         {
-          "line": 114,
-          "end_line": 114,
+          "line": 145,
+          "end_line": 145,
           "owner": "RegionRatingPage",
           "component": "LoadingNote",
           "event": "onRefresh",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 159,
-          "end_line": 159,
+          "line": 195,
+          "end_line": 195,
           "owner": "RegionRatingPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setSortOverride('desc')}"
         },
         {
-          "line": 162,
-          "end_line": 162,
+          "line": 198,
+          "end_line": 198,
           "owner": "RegionRatingPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setSortOverride('asc')}"
         },
         {
-          "line": 171,
-          "end_line": 171,
+          "line": 207,
+          "end_line": 207,
           "owner": "RegionRatingPage",
           "component": "select",
           "event": "onChange",
           "expression": "{(e) => pickMine(e.target.value)}"
         },
         {
-          "line": 177,
-          "end_line": 177,
+          "line": 214,
+          "end_line": 214,
           "owner": "RegionRatingPage",
           "component": "a",
           "event": "onClick",
           "expression": "{(e) => { e.preventDefault(); document.getElementById(`r7c-row-${mineRow.slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
         },
         {
-          "line": 226,
-          "end_line": 232,
+          "line": 233,
+          "end_line": 233,
+          "owner": "RegionRatingPage",
+          "component": "a",
+          "event": "onClick",
+          "expression": "{(e) => { e.preventDefault(); document.getElementById(`r7c-row-${mineRow.slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
+        },
+        {
+          "line": 288,
+          "end_line": 294,
           "owner": "RegionRatingPage",
           "component": "RegionsMap",
           "event": "onSelect",
           "expression": "{(slug) => navigate(regionIndicatorPath(slug, code))}"
         },
         {
-          "line": 250,
-          "end_line": 257,
+          "line": 312,
+          "end_line": 319,
           "owner": "RegionRatingPage",
           "component": "button",
           "event": "onClick",
@@ -252546,17 +254108,17 @@
     }
   },
   "totals": {
-    "imports": 4728,
+    "imports": 4767,
     "routes": 95,
-    "functions": 15131,
-    "hooks": 2798,
-    "http": 118,
-    "storage": 240,
-    "events": 452,
-    "jsx_handlers": 1232,
+    "functions": 15203,
+    "hooks": 2824,
+    "http": 119,
+    "storage": 244,
+    "events": 455,
+    "jsx_handlers": 1242,
     "registries": 708,
     "mcp_tools": 7,
-    "files": 891,
+    "files": 898,
     "parse_errors": 0
   }
 }

@@ -16,7 +16,7 @@
 - Registry declarations: **1324**
 - Registry references: **2505**
 - Migration operations: **464**
-- Candidate effects: **2778**
+- Candidate effects: **2780**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -84,14 +84,14 @@
 | POST | /api/v1/export/grid | app.api.export.export_grid_file | [backend/app/api/export.py:561](../backend/app/api/export.py#L561) |
 | GET | /api/v1/regions | app.api.regions.regions_landing | [backend/app/api/regions.py:160](../backend/app/api/regions.py#L160) |
 | GET | /api/v1/regions/catalog | app.api.regions.regions_catalog | [backend/app/api/regions.py:236](../backend/app/api/regions.py#L236) |
-| GET | /api/v1/regions/heatmap/{code} | app.api.regions.regions_heatmap | [backend/app/api/regions.py:273](../backend/app/api/regions.py#L273) |
-| GET | /api/v1/regions/heatmap-series/{code} | app.api.regions.regions_heatmap_series | [backend/app/api/regions.py:344](../backend/app/api/regions.py#L344) |
-| GET | /api/v1/regions/vs/{slug_a}/{slug_b} | app.api.regions.regions_compare | [backend/app/api/regions.py:397](../backend/app/api/regions.py#L397) |
-| GET | /api/v1/regions/vs/{slug_a}/{slug_b}/prices | app.api.regions.regions_compare_prices | [backend/app/api/regions.py:415](../backend/app/api/regions.py#L415) |
-| GET | /api/v1/regions/russia/prices-summary | app.api.regions.russia_prices_summary | [backend/app/api/regions.py:455](../backend/app/api/regions.py#L455) |
-| GET | /api/v1/regions/{slug} | app.api.regions.region_profile | [backend/app/api/regions.py:528](../backend/app/api/regions.py#L528) |
-| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:737](../backend/app/api/regions.py#L737) |
-| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:842](../backend/app/api/regions.py#L842) |
+| GET | /api/v1/regions/heatmap/{code} | app.api.regions.regions_heatmap | [backend/app/api/regions.py:275](../backend/app/api/regions.py#L275) |
+| GET | /api/v1/regions/heatmap-series/{code} | app.api.regions.regions_heatmap_series | [backend/app/api/regions.py:372](../backend/app/api/regions.py#L372) |
+| GET | /api/v1/regions/vs/{slug_a}/{slug_b} | app.api.regions.regions_compare | [backend/app/api/regions.py:425](../backend/app/api/regions.py#L425) |
+| GET | /api/v1/regions/vs/{slug_a}/{slug_b}/prices | app.api.regions.regions_compare_prices | [backend/app/api/regions.py:443](../backend/app/api/regions.py#L443) |
+| GET | /api/v1/regions/russia/prices-summary | app.api.regions.russia_prices_summary | [backend/app/api/regions.py:488](../backend/app/api/regions.py#L488) |
+| GET | /api/v1/regions/{slug} | app.api.regions.region_profile | [backend/app/api/regions.py:610](../backend/app/api/regions.py#L610) |
+| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:819](../backend/app/api/regions.py#L819) |
+| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:924](../backend/app/api/regions.py#L924) |
 | GET | /api/v1/admin/bi/dashboard | app.api.admin_bi.bi_dashboard | [backend/app/api/admin_bi.py:216](../backend/app/api/admin_bi.py#L216) |
 | GET | /api/v1/admin/bi/slices/meta | app.api.admin_bi.slices_meta | [backend/app/api/admin_bi.py:275](../backend/app/api/admin_bi.py#L275) |
 | GET | /api/v1/admin/bi/slices | app.api.admin_bi.slices_query | [backend/app/api/admin_bi.py:299](../backend/app/api/admin_bi.py#L299) |
@@ -2044,9 +2044,9 @@ Relationships: `[]`
 | app.api.regions.HEADLINE_INDEX_TO_GROWTH | Dict | '20.1' | [backend/app/api/regions.py:64](../backend/app/api/regions.py#L64) |
 | app.api.regions.HEADLINE_INDEX_TO_GROWTH_EN | Dict | '20.1' | [backend/app/api/regions.py:68](../backend/app/api/regions.py#L68) |
 | app.api.regions.LANDING_TABLES | Tuple | sequence/source expression | [backend/app/api/regions.py:73](../backend/app/api/regions.py#L73) |
-| app.api.regions._MONTHS_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:431](../backend/app/api/regions.py#L431) |
-| app.api.regions._MONTHS_EN | Tuple | sequence/source expression | [backend/app/api/regions.py:433](../backend/app/api/regions.py#L433) |
-| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:829](../backend/app/api/regions.py#L829) |
+| app.api.regions._MONTHS_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:459](../backend/app/api/regions.py#L459) |
+| app.api.regions._MONTHS_EN | Tuple | sequence/source expression | [backend/app/api/regions.py:461](../backend/app/api/regions.py#L461) |
+| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:911](../backend/app/api/regions.py#L911) |
 | app.api.research.SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:32](../backend/app/api/research.py#L32) |
 | app.api.research.PUBLIC_SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:33](../backend/app/api/research.py#L33) |
 | app.api.research._LINK_SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:34](../backend/app/api/research.py#L34) |
