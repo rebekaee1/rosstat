@@ -1,0 +1,24 @@
+/* R6-A: пустая выдача про работу и доходы — ближайшие ряды первым блоком, без рамок. */
+.r6a-labour {
+  margin: 14px auto 0;
+  max-width: 24rem;
+  padding: 12px 14px 14px;
+  border-radius: 16px;
+  background: var(--fe-glass-2-bg, rgba(150, 165, 185, 0.08));
+  text-align: center;
+}
+.r6a-labour__note {
+  margin: 0 0 10px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+.r6a-labour__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

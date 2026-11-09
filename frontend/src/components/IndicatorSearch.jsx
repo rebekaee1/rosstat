@@ -34,6 +34,8 @@ import '../styles/w6d.css';
 import '../styles/z8-tools.css';
 import '../styles/k8-tools.css';
 import '../styles/z4s-search.css';
+import '../styles/r6a-search.css';
+import { labourSuggestions } from './searchLabourHints';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
@@ -770,6 +772,18 @@ export default function IndicatorSearch({
                                 <li>{t('shell.search.tip.short')}</li>
                                 <li>{t('shell.search.tip.place')}</li>
                               </ul>
+                              {labourSuggestions(qTrim, t).length > 0 && (
+                                <div className="r6a-labour" data-testid="search-labour-hints">
+                                  <p className="r6a-labour__note">{t('r6a.search.labourNote')}</p>
+                                  <ul className="r6a-labour__chips">
+                                    {labourSuggestions(qTrim, t).map((example) => (
+                                      <li key={example}>
+                                        <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
                               <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
                               {/* R2-Z4: один ряд подсказок без повторов: курсы валют и домашние темы вместе, без второго заголовка. */}
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">

@@ -56,6 +56,8 @@ _INTENT_CONCEPTS = {
 _INFLATION_WORD = re.compile(r"инфляц|inflation")
 # Запас над индексом цен (у индекса +20 за точное совпадение кода): годовая инфляция первая.
 _ANNUAL_INFLATION_LEAD = 50
+from app.services.search_r6a import REGION_HEADLINES_R6A, arrears_demotion
+
 _REGION_HEADLINES = {
     "wage": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
 }
@@ -899,8 +901,10 @@ async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict],
         en = region_indicator_copy(row.code, name_ru=row.name, unit_ru=row.unit, section_ru=row.section_name, locale="en")
         score = match_score(definition_intent, code=row.code, names=(row.name, en["name"] or ""), metadata=f"{row.unit} {en['unit']} {row.section_name} search-mode-level {_native_price_metadata(row.name, en['name'])} {_unit_metadata(row.unit, en['unit'])} {denominator_metadata(row.name, en['name'], row.unit, en['unit'])}")
         if score is not None and measure_matches(intent.terms, code=row.code, names=(row.name, en["name"]), unit_names=(row.unit, en["unit"])):
-            if len(intent.terms) == 1 and row.code == _REGION_HEADLINES.get(intent.terms[0][0]):
+            if len(intent.terms) == 1 and row.code == {**_REGION_HEADLINES, **REGION_HEADLINES_R6A}.get(intent.terms[0][0]):
                 score += 160
+            elif len(intent.terms) == 1 and intent.terms[0][0] == "wage":
+                score -= arrears_demotion(row.name, intent.query)
             candidates[row.id], copies[row.id] = score, en
     if not candidates:
         return [], False
