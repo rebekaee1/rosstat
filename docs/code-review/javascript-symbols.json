@@ -12439,7 +12439,7 @@
     "anonymous_functions": 2
   },
   "frontend/src/components/RegionAnnualChart.jsx": {
-    "sha256": "0bb102172adedab49b597f8050cc6b466c64369ad774c700075c3227d312977c",
+    "sha256": "609ab499a244160e35b226bba8124543b7b6fba575a0c39212c96fe413632ac1",
     "definitions": [
       {
         "name": "chartMayAnimate",
@@ -12456,43 +12456,43 @@
       {
         "name": "RegionTooltip",
         "line": 50,
-        "end_line": 94,
+        "end_line": 100,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionTooltip.fmt",
-        "line": 60,
-        "end_line": 60,
+        "line": 61,
+        "end_line": 61,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart",
-        "line": 98,
-        "end_line": 478,
+        "line": 104,
+        "end_line": 517,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionAnnualChart.periodKey",
-        "line": 123,
-        "end_line": 127,
+        "line": 132,
+        "end_line": 136,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart.idx",
-        "line": 189,
-        "end_line": 189,
+        "line": 200,
+        "end_line": 200,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart.formatLabel",
-        "line": 233,
-        "end_line": 236,
+        "line": 244,
+        "end_line": 247,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart.fmtLegend",
-        "line": 251,
-        "end_line": 251,
+        "line": 262,
+        "end_line": 262,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -12555,10 +12555,10 @@
         "names": [
           "default"
         ],
-        "line": 98
+        "line": 104
       }
     ],
-    "anonymous_functions": 39
+    "anonymous_functions": 42
   },
   "frontend/src/components/RegionCrossLink.jsx": {
     "sha256": "7644e93bf28e86a050dcbe888f0d47d9a80f5c8b2a71b9db4184c535c97a61af",
@@ -19284,42 +19284,42 @@
     "anonymous_functions": 24
   },
   "frontend/src/components/home/HomeRegionPriceTiles.jsx": {
-    "sha256": "f471fcd18d401c34aa9ba8e37a8125ebce98f3a40217423874168a9d5b3210bd",
+    "sha256": "651ca613d811236f8b6968d5341c939689f1efde239ac97885c6c33bb14b3c35",
     "definitions": [
       {
         "name": "unitParts",
-        "line": 16,
-        "end_line": 24,
+        "line": 17,
+        "end_line": 25,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Trend",
-        "line": 26,
-        "end_line": 38,
+        "line": 27,
+        "end_line": 39,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomeRegionPriceTiles",
-        "line": 40,
-        "end_line": 100,
+        "line": 41,
+        "end_line": 96,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "savedRegion",
-        "line": 102,
-        "end_line": 104,
+        "line": 98,
+        "end_line": 100,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomePriceStrip",
-        "line": 110,
-        "end_line": 145,
+        "line": 106,
+        "end_line": 144,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomePriceStrip.on",
-        "line": 116,
-        "end_line": 116,
+        "line": 112,
+        "end_line": 112,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -19345,20 +19345,24 @@
         "line": 8
       },
       {
-        "source": "../../lib/sitePaths",
+        "source": "../../lib/r10aUnits",
         "line": 9
       },
       {
-        "source": "../../lib/track",
+        "source": "../../lib/sitePaths",
         "line": 10
       },
       {
-        "source": "../../i18n",
+        "source": "../../lib/track",
         "line": 11
       },
       {
-        "source": "../../styles/r9a-home.css",
+        "source": "../../i18n",
         "line": 12
+      },
+      {
+        "source": "../../styles/r9a-home.css",
+        "line": 13
       }
     ],
     "exports": [
@@ -19366,16 +19370,16 @@
         "names": [
           "default"
         ],
-        "line": 40
+        "line": 41
       },
       {
         "names": [
           "HomePriceStrip"
         ],
-        "line": 110
+        "line": 106
       }
     ],
-    "anonymous_functions": 10
+    "anonymous_functions": 9
   },
   "frontend/src/components/home/HomeToday.component.test.jsx": {
     "sha256": "26d5c7555ab1b491d9f0443a311b156facdc44fcfb5985382bc9133cac292670",
@@ -20105,7 +20109,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/regions/MonthlyPriceParts.jsx": {
-    "sha256": "544b20fb6a0c22327b4186e47d07195fafe44d086310ab155477556f02dddb1b",
+    "sha256": "af7d663b2f376a1c1addc90a1eb2e80353aac3a2bc06f3e789ddad004854bdb3",
     "definitions": [
       {
         "name": "DiscontinuedNote",
@@ -20280,110 +20284,380 @@
     ],
     "anonymous_functions": 16
   },
+  "frontend/src/components/regions/MonthlyPricePartsHistory.jsx": {
+    "sha256": "8dc36fec9c8e335ced496e33229542f825e3e866648f67cee40c212eb890d55a",
+    "definitions": [
+      {
+        "name": "money",
+        "line": 9,
+        "end_line": 9,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "realText",
+        "line": 11,
+        "end_line": 16,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Headline",
+        "line": 19,
+        "end_line": 31,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Row",
+        "line": 33,
+        "end_line": 59,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "HistoryKeyYears",
+        "line": 61,
+        "end_line": 103,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "HistoryCoverage",
+        "line": 106,
+        "end_line": 124,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 2
+      },
+      {
+        "source": "lucide-react",
+        "line": 3
+      },
+      {
+        "source": "../../i18n",
+        "line": 4
+      },
+      {
+        "source": "../../lib/z2Price",
+        "line": 5
+      },
+      {
+        "source": "../../lib/z2PriceHistory",
+        "line": 6
+      },
+      {
+        "source": "../../styles/r10c-history.css",
+        "line": 7
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "HistoryKeyYears"
+        ],
+        "line": 61
+      },
+      {
+        "names": [
+          "HistoryCoverage"
+        ],
+        "line": 106
+      }
+    ],
+    "anonymous_functions": 8
+  },
+  "frontend/src/components/regions/R10bCompare.jsx": {
+    "sha256": "d517a9930cd219ffaed54159c7ab5d2f4f25b2ee07bd84de1dcbec7e7f9e12fa",
+    "definitions": [
+      {
+        "name": "loc",
+        "line": 12,
+        "end_line": 12,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "pctText",
+        "line": 13,
+        "end_line": 13,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "rub",
+        "line": 15,
+        "end_line": 18,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "lessPct",
+        "line": 21,
+        "end_line": 27,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "moveSummary",
+        "line": 30,
+        "end_line": 40,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "median",
+        "line": 42,
+        "end_line": 46,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "categorySummary",
+        "line": 49,
+        "end_line": 58,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "biggestGaps",
+        "line": 61,
+        "end_line": 66,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R10bAnswer",
+        "line": 68,
+        "end_line": 102,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R10bAnswer.num",
+        "line": 76,
+        "end_line": 76,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R10bCategories",
+        "line": 104,
+        "end_line": 129,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R10bGaps",
+        "line": 131,
+        "end_line": 155,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R10bWait",
+        "line": 158,
+        "end_line": 165,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R10bError",
+        "line": 167,
+        "end_line": 174,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 5
+      },
+      {
+        "source": "lucide-react",
+        "line": 6
+      },
+      {
+        "source": "./RegionPrices",
+        "line": 7
+      },
+      {
+        "source": "../../styles/r10b-compare.css",
+        "line": 8
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "KEY_GROUPS"
+        ],
+        "line": 10
+      },
+      {
+        "names": [
+          "rub"
+        ],
+        "line": 15
+      },
+      {
+        "names": [
+          "lessPct"
+        ],
+        "line": 21
+      },
+      {
+        "names": [
+          "moveSummary"
+        ],
+        "line": 30
+      },
+      {
+        "names": [
+          "categorySummary"
+        ],
+        "line": 49
+      },
+      {
+        "names": [
+          "biggestGaps"
+        ],
+        "line": 61
+      },
+      {
+        "names": [
+          "R10bAnswer"
+        ],
+        "line": 68
+      },
+      {
+        "names": [
+          "R10bCategories"
+        ],
+        "line": 104
+      },
+      {
+        "names": [
+          "R10bGaps"
+        ],
+        "line": 131
+      },
+      {
+        "names": [
+          "R10bWait"
+        ],
+        "line": 158
+      },
+      {
+        "names": [
+          "R10bError"
+        ],
+        "line": 167
+      }
+    ],
+    "anonymous_functions": 13
+  },
   "frontend/src/components/regions/R4PriceCompare.jsx": {
-    "sha256": "c86b97050508e8ff29045cfabfe00b9f47d18f74d363e62f409944f91fc6b17d",
+    "sha256": "7c95d2999dc661bbe1b5ef067a0ce1fe6a597cc031b42caecdcf11e703b62c65",
     "definitions": [
       {
         "name": "useRegionPriceCompare",
-        "line": 17,
-        "end_line": 26,
+        "line": 18,
+        "end_line": 27,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRegionPriceCompare.queryFn",
-        "line": 20,
-        "end_line": 21,
+        "line": 21,
+        "end_line": 22,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "groupPriceItems",
-        "line": 29,
-        "end_line": 37,
+        "line": 30,
+        "end_line": 38,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatRub",
-        "line": 39,
-        "end_line": 42,
+        "line": 40,
+        "end_line": 43,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Duel",
-        "line": 44,
-        "end_line": 54,
+        "line": 45,
+        "end_line": 55,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Duel.cell",
-        "line": 46,
-        "end_line": 52,
+        "line": 47,
+        "end_line": 53,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BasketCard",
-        "line": 56,
-        "end_line": 115,
+        "line": 57,
+        "end_line": 119,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BasketCard.nameOf",
-        "line": 60,
-        "end_line": 60,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "BasketCard.fmtTimes",
         "line": 61,
         "end_line": 61,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "BasketCard.fmtTimes",
+        "line": 62,
+        "end_line": 62,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "GroupTable",
-        "line": 117,
-        "end_line": 160,
+        "line": 121,
+        "end_line": 162,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compareAsText",
-        "line": 163,
-        "end_line": 169,
+        "line": 165,
+        "end_line": 171,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CopyNumbers",
-        "line": 171,
-        "end_line": 186,
+        "line": 173,
+        "end_line": 188,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CopyNumbers.copy",
-        "line": 173,
-        "end_line": 179,
+        "line": 175,
+        "end_line": 181,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "R4PriceVerdict",
-        "line": 188,
-        "end_line": 200,
+        "line": 190,
+        "end_line": 202,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "R4PriceVerdict.nameOf",
-        "line": 191,
-        "end_line": 191,
+        "line": 193,
+        "end_line": 193,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "R4PriceSkeleton",
-        "line": 202,
-        "end_line": 209,
+        "line": 204,
+        "end_line": 211,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "R4PriceCompare",
-        "line": 211,
-        "end_line": 238,
+        "line": 213,
+        "end_line": 255,
         "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R4PriceCompare.toggle",
+        "line": 220,
+        "end_line": 220,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R4PriceCompare.pick",
+        "line": 221,
+        "end_line": 228,
+        "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [
@@ -20424,12 +20698,16 @@
         "line": 13
       },
       {
-        "source": "../../styles/r4a-compare-prices.css",
+        "source": "./R10bCompare",
         "line": 14
       },
       {
-        "source": "../../styles/r8c-compare.css",
+        "source": "../../styles/r4a-compare-prices.css",
         "line": 15
+      },
+      {
+        "source": "../../styles/r8c-compare.css",
+        "line": 16
       }
     ],
     "exports": [
@@ -20437,46 +20715,46 @@
         "names": [
           "useRegionPriceCompare"
         ],
-        "line": 17
+        "line": 18
       },
       {
         "names": [
           "groupPriceItems"
         ],
-        "line": 29
+        "line": 30
       },
       {
         "names": [
           "formatRub"
         ],
-        "line": 39
+        "line": 40
       },
       {
         "names": [
           "compareAsText"
         ],
-        "line": 163
+        "line": 165
       },
       {
         "names": [
           "R4PriceVerdict"
         ],
-        "line": 188
+        "line": 190
       },
       {
         "names": [
           "R4PriceSkeleton"
         ],
-        "line": 202
+        "line": 204
       },
       {
         "names": [
           "default"
         ],
-        "line": 211
+        "line": 213
       }
     ],
-    "anonymous_functions": 19
+    "anonymous_functions": 25
   },
   "frontend/src/components/regions/R4PriceCompare.test.jsx": {
     "sha256": "3f08721a16f03bab09598344f0f1ccf49a18d07f104e470bd3e2274c23d7599a",
@@ -23422,7 +23700,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "1fa028809b4855ad65aead79ffbbfeb5aeb92c71f0739ffe2c5d0b2046650613",
+    "sha256": "102134c154539f5148016e9066a3a7eeaec6739672d744fd1215adadacff8704",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23530,7 +23808,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "cac4c6160f0c7f8a06f8a7a5a7bd23acc9b43ab70096f9491a2a61050593576d",
+    "sha256": "198381ea5169ed52c67667a83c1cbbe467b4cc7d7d06eff4d06481b51e3d8f81",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -40972,6 +41250,63 @@
     "exports": [],
     "anonymous_functions": 20
   },
+  "frontend/src/lib/r10aUnits.js": {
+    "sha256": "b3e62d98e9789a6ca2505d823d44e066a4905566c59b95f8f02a82d1f3a30678",
+    "definitions": [
+      {
+        "name": "enPer",
+        "line": 21,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "enPerLabel",
+        "line": 27,
+        "end_line": 31,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "enTileName",
+        "line": 34,
+        "end_line": 40,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "enMoney",
+        "line": 43,
+        "end_line": 45,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "enPer"
+        ],
+        "line": 21
+      },
+      {
+        "names": [
+          "enPerLabel"
+        ],
+        "line": 27
+      },
+      {
+        "names": [
+          "enTileName"
+        ],
+        "line": 34
+      },
+      {
+        "names": [
+          "enMoney"
+        ],
+        "line": 43
+      }
+    ],
+    "anonymous_functions": 0
+  },
   "frontend/src/lib/r5cExport.js": {
     "sha256": "5af8fa7ab450550e8e90fd79973cc7fc24fb0d31740eb394586aa7bde1cd1aca",
     "definitions": [
@@ -51846,6 +52181,170 @@
     "exports": [],
     "anonymous_functions": 11
   },
+  "frontend/src/lib/z2PriceHistory.js": {
+    "sha256": "84a7cffc3d866594b1e9903a4e570f9fdad05141f2f21184ae9bb7284c4dcee7",
+    "definitions": [
+      {
+        "name": "ymOf",
+        "line": 5,
+        "end_line": 5,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "pointNearMonth",
+        "line": 8,
+        "end_line": 18,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "cpiMap",
+        "line": 21,
+        "end_line": 25,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "keyYearRows",
+        "line": 31,
+        "end_line": 57,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "timesText",
+        "line": 60,
+        "end_line": 72,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "timesShort",
+        "line": 75,
+        "end_line": 79,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "deflateSeries",
+        "line": 82,
+        "end_line": 93,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "monthGaps",
+        "line": 96,
+        "end_line": 106,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "fillMonthGaps",
+        "line": 109,
+        "end_line": 129,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "eventPeriods",
+        "line": 132,
+        "end_line": 142,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "yearlyRows",
+        "line": 145,
+        "end_line": 160,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "KEY_YEARS"
+        ],
+        "line": 3
+      },
+      {
+        "names": [
+          "pointNearMonth"
+        ],
+        "line": 8
+      },
+      {
+        "names": [
+          "cpiMap"
+        ],
+        "line": 21
+      },
+      {
+        "names": [
+          "keyYearRows"
+        ],
+        "line": 31
+      },
+      {
+        "names": [
+          "timesText"
+        ],
+        "line": 60
+      },
+      {
+        "names": [
+          "timesShort"
+        ],
+        "line": 75
+      },
+      {
+        "names": [
+          "deflateSeries"
+        ],
+        "line": 82
+      },
+      {
+        "names": [
+          "monthGaps"
+        ],
+        "line": 96
+      },
+      {
+        "names": [
+          "fillMonthGaps"
+        ],
+        "line": 109
+      },
+      {
+        "names": [
+          "eventPeriods"
+        ],
+        "line": 132
+      },
+      {
+        "names": [
+          "yearlyRows"
+        ],
+        "line": 145
+      }
+    ],
+    "anonymous_functions": 3
+  },
+  "frontend/src/lib/z2PriceHistory.test.js": {
+    "sha256": "1852030b4ae1a6a82e7da8465fb63014103dbb56a8d49272cd39f08490e81173",
+    "definitions": [
+      {
+        "name": "mk",
+        "line": 6,
+        "end_line": 6,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./z2PriceHistory",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 12
+  },
   "frontend/src/lib/z2PriceR2.test.js": {
     "sha256": "6755140834a18e5e684168dbadad06f1fb4c0bca544e9d1dd7fc4759623d5afe",
     "definitions": [],
@@ -57351,66 +57850,66 @@
     "anonymous_functions": 4
   },
   "frontend/src/pages/RegionComparePage.jsx": {
-    "sha256": "6766ea7a4879b5fb42f0ceedd099e2c02504c3e3e1fb8ea035463782c3b99843",
+    "sha256": "a98dee2cd957d09a3651677bd225b278149c16a565971aa91757cae3f57d355b",
     "definitions": [
       {
         "name": "parsePair",
-        "line": 28,
-        "end_line": 33,
+        "line": 29,
+        "end_line": 34,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRegionCompare",
-        "line": 35,
-        "end_line": 43,
+        "line": 36,
+        "end_line": 44,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRegionCompare.queryFn",
-        "line": 38,
-        "end_line": 39,
+        "line": 39,
+        "end_line": 40,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PairPicker",
-        "line": 46,
-        "end_line": 75,
+        "line": 47,
+        "end_line": 76,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PairPicker.go",
-        "line": 55,
-        "end_line": 55,
+        "line": 56,
+        "end_line": 56,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PairPicker.select",
-        "line": 56,
-        "end_line": 65,
+        "line": 57,
+        "end_line": 66,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "QuickPairs",
-        "line": 80,
-        "end_line": 99,
+        "line": 81,
+        "end_line": 100,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionComparePage",
-        "line": 101,
-        "end_line": 270,
+        "line": 102,
+        "end_line": 278,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionComparePage.nameOf",
-        "line": 111,
-        "end_line": 111,
+        "line": 112,
+        "end_line": 112,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionComparePage.side",
-        "line": 211,
-        "end_line": 226,
+        "line": 219,
+        "end_line": 234,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -57480,20 +57979,24 @@
         "line": 22
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../components/regions/R10bCompare",
         "line": 23
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../components/Breadcrumbs",
         "line": 24
       },
       {
-        "source": "../i18n",
+        "source": "../lib/breadcrumbs",
         "line": 25
       },
       {
-        "source": "../i18n/locale",
+        "source": "../i18n",
         "line": 26
+      },
+      {
+        "source": "../i18n/locale",
+        "line": 27
       }
     ],
     "exports": [
@@ -57501,10 +58004,10 @@
         "names": [
           "default"
         ],
-        "line": 101
+        "line": 102
       }
     ],
-    "anonymous_functions": 19
+    "anonymous_functions": 20
   },
   "frontend/src/pages/RegionIndicatorPage.component.test.jsx": {
     "sha256": "b0c510a72b5302ae3c798f03c1e1e1ee735382d633457bfc3bdef987ffb021b8",
@@ -57548,78 +58051,84 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/RegionIndicatorPage.jsx": {
-    "sha256": "0149ea87a158df9644f7565f413bd1a86247f063af144877ce56727b4835007d",
+    "sha256": "c5bfffeea12fb68a509c46e8671bf5cdfb8113297ec5ac5a93604530589ad654",
     "definitions": [
       {
         "name": "toYoYSeries",
-        "line": 55,
-        "end_line": 67,
+        "line": 57,
+        "end_line": 69,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isNegativeCapable",
-        "line": 72,
-        "end_line": 74,
+        "line": 74,
+        "end_line": 76,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "StatCell",
-        "line": 76,
-        "end_line": 85,
+        "line": 78,
+        "end_line": 87,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "statValue",
-        "line": 88,
-        "end_line": 90,
+        "line": 90,
+        "end_line": 92,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "monthName",
-        "line": 93,
-        "end_line": 95,
+        "line": 95,
+        "end_line": 97,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorPage",
-        "line": 108,
-        "end_line": 856,
+        "line": 110,
+        "end_line": 888,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorPage.requireAuth",
-        "line": 147,
-        "end_line": 152,
+        "line": 153,
+        "end_line": 158,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.handleExportTable",
-        "line": 154,
-        "end_line": 184,
+        "line": 160,
+        "end_line": 190,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.handleExportPng",
-        "line": 186,
-        "end_line": 195,
+        "line": 192,
+        "end_line": 201,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.at",
-        "line": 288,
-        "end_line": 291,
+        "line": 294,
+        "end_line": 297,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionIndicatorPage.trimUnitTail",
+        "line": 331,
+        "end_line": 331,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
-        "line": 563,
-        "end_line": 563,
+        "line": 584,
+        "end_line": 584,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
-        "line": 564,
-        "end_line": 564,
+        "line": 585,
+        "end_line": 585,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -57673,92 +58182,100 @@
         "line": 22
       },
       {
-        "source": "../components/regions/MonthlyPriceParts",
+        "source": "../components/regions/MonthlyPricePartsHistory",
         "line": 23
       },
       {
-        "source": "../lib/z2Price",
+        "source": "../lib/z2PriceHistory",
         "line": 24
       },
       {
+        "source": "../components/regions/MonthlyPriceParts",
+        "line": 25
+      },
+      {
+        "source": "../lib/z2Price",
+        "line": 26
+      },
+      {
         "source": "../components/regions/R6Annual",
-        "line": 27
-      },
-      {
-        "source": "../lib/r6Annual",
-        "line": 28
-      },
-      {
-        "source": "../components/regions/DownloadMenu",
         "line": 29
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../lib/r6Annual",
         "line": 30
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/regions/DownloadMenu",
         "line": 31
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../components/ApiRetryBanner",
         "line": 32
       },
       {
-        "source": "../components/CabinetActionsSlot",
+        "source": "../components/LoadingNote",
         "line": 33
       },
       {
-        "source": "../lib/cabinetSubjects",
+        "source": "../components/Breadcrumbs",
         "line": 34
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/CabinetActionsSlot",
         "line": 35
       },
       {
-        "source": "../components/Chip",
+        "source": "../lib/cabinetSubjects",
         "line": 36
       },
       {
-        "source": "../context/authContext",
+        "source": "../components/Skeleton",
         "line": 37
       },
       {
-        "source": "../lib/api",
+        "source": "../components/Chip",
         "line": 38
       },
       {
-        "source": "../lib/chartImage",
+        "source": "../context/authContext",
         "line": 39
       },
       {
-        "source": "../lib/track",
+        "source": "../lib/api",
         "line": 40
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../lib/chartImage",
         "line": 41
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/track",
         "line": 42
       },
       {
+        "source": "../lib/breadcrumbs",
+        "line": 43
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 44
+      },
+      {
         "source": "../i18n",
-        "line": 47
-      },
-      {
-        "source": "../styles/platform-pages.css",
-        "line": 48
-      },
-      {
-        "source": "../styles/regions-w4.css",
         "line": 49
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/platform-pages.css",
         "line": 50
+      },
+      {
+        "source": "../styles/regions-w4.css",
+        "line": 51
+      },
+      {
+        "source": "../styles/k6-country.css",
+        "line": 52
       }
     ],
     "exports": [
@@ -57766,10 +58283,10 @@
         "names": [
           "default"
         ],
-        "line": 108
+        "line": 110
       }
     ],
-    "anonymous_functions": 46
+    "anonymous_functions": 48
   },
   "frontend/src/pages/RegionProfile.component.test.jsx": {
     "sha256": "82ef813f0ea48cccc7657099828c8fddfb0ff3fae0d8f128fbe2d35db5535887",
