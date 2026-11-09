@@ -95393,7 +95393,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/home/HomeRegionPriceTiles.jsx": {
-      "sha256": "44e8b6b9fa12a6a1510064279ea8cacff86380323be586a45b45b120bdc0dc48",
+      "sha256": "f471fcd18d401c34aa9ba8e37a8125ebce98f3a40217423874168a9d5b3210bd",
       "imports": [
         {
           "line": 4,
@@ -95595,7 +95595,7 @@
         },
         {
           "line": 110,
-          "end_line": 142,
+          "end_line": 145,
           "owner": "<module>",
           "name": "HomePriceStrip",
           "kind": "FunctionDeclaration",
@@ -95626,17 +95626,17 @@
           "callback_context": null
         },
         {
-          "line": 124,
-          "end_line": 139,
+          "line": 126,
+          "end_line": 141,
           "owner": "HomePriceStrip",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items.map"
         },
         {
-          "line": 131,
-          "end_line": 131,
-          "owner": "HomePriceStrip.<callback@124>",
+          "line": 133,
+          "end_line": 133,
+          "owner": "HomePriceStrip.<callback@126>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -95749,9 +95749,9 @@
           "expression": "{() => track(events.HOME_CATEGORY_CLICK, { category: 'price-tile', surface: 'home-r9a', code: it.code, region })}"
         },
         {
-          "line": 128,
-          "end_line": 132,
-          "owner": "HomePriceStrip.<callback@124>",
+          "line": 130,
+          "end_line": 134,
+          "owner": "HomePriceStrip.<callback@126>",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.HOME_CATEGORY_CLICK, { category: 'price-strip', surface: 'home-r9a', code: it.code, region })}"

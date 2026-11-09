@@ -19284,7 +19284,7 @@
     "anonymous_functions": 24
   },
   "frontend/src/components/home/HomeRegionPriceTiles.jsx": {
-    "sha256": "44e8b6b9fa12a6a1510064279ea8cacff86380323be586a45b45b120bdc0dc48",
+    "sha256": "f471fcd18d401c34aa9ba8e37a8125ebce98f3a40217423874168a9d5b3210bd",
     "definitions": [
       {
         "name": "unitParts",
@@ -19313,7 +19313,7 @@
       {
         "name": "HomePriceStrip",
         "line": 110,
-        "end_line": 142,
+        "end_line": 145,
         "kind": "FunctionDeclaration"
       },
       {

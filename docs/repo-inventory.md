@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2222  ·  **Строк:** 1 407 632  ·  **Токенов (≈):** 13 387 101
+**Файлов:** 2222  ·  **Строк:** 1 407 636  ·  **Токенов (≈):** 13 387 163
 
 ## По верхним папкам
 
@@ -20,7 +20,7 @@
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 137 | 16 989 |
 | `docs` | 142 | 879 580 | 7 542 669 |
-| `frontend` | 1007 | 183 556 | 2 008 992 |
+| `frontend` | 1007 | 183 560 | 2 009 054 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 652 | 307 147 |
 
@@ -909,6 +909,7 @@
 | `backend/app/services/search_r8a.py` | 102 | 1 604 |
 | `backend/tests/test_og_context.py` | 175 | 1 603 |
 | `frontend/src/pages/Login.jsx` | 153 | 1 603 |
+| `frontend/src/components/home/HomeRegionPriceTiles.jsx` | 145 | 1 601 |
 | `frontend/src/lib/ratingInsights.js` | 152 | 1 601 |
 | `frontend/src/pages/Register.component.test.jsx` | 138 | 1 595 |
 | `backend/app/services/world_bank_pink_sheet_parser.py` | 194 | 1 591 |
@@ -921,7 +922,6 @@
 | `frontend/src/lib/indicatorSummary.test.js` | 173 | 1 579 |
 | `frontend/src/lib/planetView.test.js` | 132 | 1 577 |
 | `backend/tests/test_sessionize_boundaries_pg.py` | 127 | 1 573 |
-| `frontend/src/components/home/HomeRegionPriceTiles.jsx` | 142 | 1 572 |
 | `frontend/src/lib/russiaHomeCards.test.js` | 148 | 1 571 |
 | `backend/app/tasks/session_analysis.py` | 126 | 1 569 |
 | `frontend/src/lib/housingViewModeContent.jsx` | 152 | 1 566 |
@@ -1030,6 +1030,7 @@
 | `frontend/src/components/russia/RussiaCategorySection.jsx` | 126 | 1 366 |
 | `backend/tests/test_world_fred_adapter.py` | 180 | 1 364 |
 | `frontend/src/components/MapTimeline.jsx` | 130 | 1 364 |
+| `frontend/src/styles/r9a-home.css` | 63 | 1 361 |
 | `backend/tests/test_eurostat_structure_stale_c27.py` | 102 | 1 359 |
 | `frontend/src/styles/w6e-indicator.css` | 141 | 1 358 |
 | `frontend/src/styles/calc-ui.css` | 127 | 1 356 |
@@ -1046,7 +1047,6 @@
 | `backend/app/data/seo_static/llms.txt` | 74 | 1 333 |
 | `frontend/public/llms.txt` | 74 | 1 333 |
 | `frontend/src/components/home/HomeDataScope.jsx` | 117 | 1 331 |
-| `frontend/src/styles/r9a-home.css` | 62 | 1 328 |
 | `backend/app/data/eurostat_substance.py` | 157 | 1 324 |
 | `backend/app/services/cbr_keyrate_parser.py` | 152 | 1 321 |
 | `docs/adr/0025-oil-quote-source-legality.md` | 29 | 1 321 |

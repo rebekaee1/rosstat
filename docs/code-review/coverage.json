@@ -13388,7 +13388,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "16e4c90365211d450f6d47980c9b6a1ebb67f3459a0877b26a4b10500220ff02",
+      "sha256": "d2a6e7a9fbd557ff757ff1a936f668c3d0009f5e2806ea7de97bf41a50515cdb",
       "bytes": 7217485,
       "lines": 254124,
       "code": false,
@@ -20720,9 +20720,9 @@
     },
     {
       "path": "frontend/src/components/home/HomeRegionPriceTiles.jsx",
-      "sha256": "44e8b6b9fa12a6a1510064279ea8cacff86380323be586a45b45b120bdc0dc48",
-      "bytes": 6910,
-      "lines": 142,
+      "sha256": "f471fcd18d401c34aa9ba8e37a8125ebce98f3a40217423874168a9d5b3210bd",
+      "bytes": 7025,
+      "lines": 145,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29170,9 +29170,9 @@
     },
     {
       "path": "frontend/src/styles/r9a-home.css",
-      "sha256": "1d96b67657dab31d667a5f51c82ccbb62925183897388c074753dd4e78804ca3",
-      "bytes": 5669,
-      "lines": 62,
+      "sha256": "eef58414a275582389d7f00532f3834a5108893821b5ca3b4a4acc214d8e8cc2",
+      "bytes": 5799,
+      "lines": 63,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -31536,9 +31536,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "ba8b5314004a7cda76d006994f25c2ce04d84adda7e37cf0f2b05bdacc85e7e2",
-  "javascript_inventory_sha256": "16a5da8d66d5a061ab7c3c98ed0eed6b4da5021735abd412923c5fe4336a1c61",
-  "baseline_commit": "0e296ffdfe514180ebb9b3605ce22683ca5fa3ae",
+  "ledger_sha256": "01a6787f5e2c3e80fc8e91f5f5ac88ee3aaa36f19f75d0ca900a4558cad2085e",
+  "javascript_inventory_sha256": "0aabb19f3a47c6547cedbe3faf5cf788caa58cb36490cab3493140a216980a3d",
+  "baseline_commit": "f66231e2a870ec83ac5e4793f43d6f93940a457b",
   "branch": "circle-data/int",
   "unstaged_at_capture": [
     "docs/client-mechanism-inventory.json"
