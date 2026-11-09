@@ -13388,7 +13388,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "187fb4d823289d98e600c5c716d639d1310da0949dee9202848cf833f5e368b8",
+      "sha256": "16e4c90365211d450f6d47980c9b6a1ebb67f3459a0877b26a4b10500220ff02",
       "bytes": 7217485,
       "lines": 254124,
       "code": false,
@@ -18796,8 +18796,8 @@
     },
     {
       "path": "frontend/src/components/MobileDock.component.test.jsx",
-      "sha256": "a04066d5e487f34b114f54c2e226b4a2d4344faffb4f2a19c4e5631c576ced80",
-      "bytes": 7933,
+      "sha256": "a753abf52d9a680bc213ef9b9be923bc8775b991a86771326a9517ce77af4eb5",
+      "bytes": 7965,
       "lines": 153,
       "code": true,
       "status": "reviewed",
@@ -18861,7 +18861,7 @@
     },
     {
       "path": "frontend/src/components/Navbar.component.test.jsx",
-      "sha256": "5add361624c3eadbf019f3d6a1d1e396adf9767cd4ae890273e7523aaa73e247",
+      "sha256": "41b74b110902aa9bb3e09efa6e76c4893d426ba17b2a2e1a5c953a80d9ac6cd1",
       "bytes": 17108,
       "lines": 315,
       "code": true,
@@ -31536,18 +31536,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "2adb5c4b0135e63e6b0644dc58f02280485cc3be9cbc38b9792ffbdc4b911519",
-  "javascript_inventory_sha256": "dee1c922b176cb6739a2ef1a246de955aa6a0d60d41db2de63d9d6a9af27bf4d",
-  "baseline_commit": "8069acb10eed72ad5248c9534bf01ba761f1ab67",
-  "branch": "worktree-agent-acb0bbbf0ac74cf6a",
+  "ledger_sha256": "ba8b5314004a7cda76d006994f25c2ce04d84adda7e37cf0f2b05bdacc85e7e2",
+  "javascript_inventory_sha256": "16a5da8d66d5a061ab7c3c98ed0eed6b4da5021735abd412923c5fe4336a1c61",
+  "baseline_commit": "0e296ffdfe514180ebb9b3605ce22683ca5fa3ae",
+  "branch": "circle-data/int",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/data-contracts.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/client-mechanism-inventory.json"
   ]
 }

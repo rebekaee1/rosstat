@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2222  ·  **Строк:** 1 407 632  ·  **Токенов (≈):** 13 387 096
+**Файлов:** 2222  ·  **Строк:** 1 407 632  ·  **Токенов (≈):** 13 387 101
 
 ## По верхним папкам
 
@@ -20,7 +20,7 @@
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 137 | 16 989 |
 | `docs` | 142 | 879 580 | 7 542 669 |
-| `frontend` | 1007 | 183 556 | 2 008 987 |
+| `frontend` | 1007 | 183 556 | 2 008 992 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 652 | 307 147 |
 
@@ -847,10 +847,10 @@
 | `frontend/src/lib/cabinetItems.js` | 152 | 1 761 |
 | `docs/verification/us-eu-source-audit-2026-09-24.md` | 114 | 1 760 |
 | `scripts/regional/unit_fallbacks.py` | 115 | 1 760 |
+| `frontend/src/components/MobileDock.component.test.jsx` | 153 | 1 759 |
 | `backend/app/data/i18n/regions_en.py` | 145 | 1 758 |
 | `backend/tests/test_emiss_regional_live_c27.py` | 191 | 1 755 |
 | `backend/scripts/seo-index-experiment.py` | 184 | 1 754 |
-| `frontend/src/components/MobileDock.component.test.jsx` | 153 | 1 754 |
 | `scripts/host-tor-bridge-f10.sh` | 139 | 1 753 |
 | `backend/app/api/research.py` | 160 | 1 752 |
 | `backend/scripts/metrika-goals-redesign.py` | 182 | 1 744 |

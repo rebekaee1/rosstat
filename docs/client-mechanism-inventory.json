@@ -43697,7 +43697,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/MobileDock.component.test.jsx": {
-      "sha256": "a04066d5e487f34b114f54c2e226b4a2d4344faffb4f2a19c4e5631c576ced80",
+      "sha256": "a753abf52d9a680bc213ef9b9be923bc8775b991a86771326a9517ce77af4eb5",
       "imports": [
         {
           "line": 1,
@@ -45206,7 +45206,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/Navbar.component.test.jsx": {
-      "sha256": "5add361624c3eadbf019f3d6a1d1e396adf9767cd4ae890273e7523aaa73e247",
+      "sha256": "41b74b110902aa9bb3e09efa6e76c4893d426ba17b2a2e1a5c953a80d9ac6cd1",
       "imports": [
         {
           "line": 1,
