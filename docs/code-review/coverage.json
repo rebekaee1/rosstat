@@ -29,8 +29,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 2040
     },
-    "definitions": 15001,
-    "annotated_definitions": 15001,
+    "definitions": 15005,
+    "annotated_definitions": 15005,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -180,8 +180,8 @@
     },
     {
       "path": ".env.example",
-      "sha256": "39973d508e43845c029559ac358b02e04e7f4c1bf834f047ce51419a8d894458",
-      "bytes": 25898,
+      "sha256": "aa061662859dc87beb1ffb37ed806430c5111ecc798f66b47caaea60df987e66",
+      "bytes": 25900,
       "lines": 363,
       "code": false,
       "status": "reviewed",
@@ -1662,8 +1662,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "70d2778f57032e31882794ab6f32cc32609b23cbf4be5a758470eb1534a0e8d9",
-      "bytes": 45865,
+      "sha256": "ab7b45aadece4501d67bbad12c79ea5e72c47d8f72587cc4f72aea90537b19cb",
+      "bytes": 45867,
       "lines": 593,
       "code": true,
       "status": "reviewed",
@@ -4340,8 +4340,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "ed5881618babfe489081eeba2bb742b2597fcae990b9fadb782cee09789f7dd3",
-      "bytes": 33068,
+      "sha256": "f933102ff3f72cc65caf68e7352a1d1550b1cca51ec92acb19b04e2340414587",
+      "bytes": 33149,
       "lines": 523,
       "code": true,
       "status": "reviewed",
@@ -5198,8 +5198,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "47e14a8913f78259379b953c6befc33b6a915ed0faa4edd7cd1234e679aa7ab7",
-      "bytes": 19814,
+      "sha256": "3e747a60b31aa9565c8328e0330684e0990a106329a30a89896feeee28f292fe",
+      "bytes": 19879,
       "lines": 352,
       "code": true,
       "status": "reviewed",
@@ -6069,15 +6069,15 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "sha256": "92cd2454e40c73397b0ebabf264eef7c8a52fadc5fa8cb73bd66823fd53f6bd9",
-      "bytes": 3654,
-      "lines": 67,
+      "sha256": "5465ff320a7c687f12b29a475b61ecb86b5f43deb54a690c3c420aa53827d599",
+      "bytes": 4600,
+      "lines": 82,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 4,
-      "annotated_definitions": 4,
+      "definitions": 5,
+      "annotated_definitions": 5,
       "missing_definitions": []
     },
     {
@@ -10905,9 +10905,9 @@
     },
     {
       "path": "backend/tests/test_telegram_calm.py",
-      "sha256": "23f9971d8202ffbfaf764c029ac9c5ead549a828fd54cc5b41bcdf41fcb92145",
-      "bytes": 9619,
-      "lines": 221,
+      "sha256": "b7296f36f1f5264ce58f1c8df07dadc201ecf6bc441a98869b76fd678fdbadf9",
+      "bytes": 9780,
+      "lines": 223,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -11906,15 +11906,15 @@
     },
     {
       "path": "backend/tests/test_yandex_token_alert.py",
-      "sha256": "0b98fcd3f180183cec60a371b1e49621ccbbdc5f0e430e1d459ca3725601738d",
-      "bytes": 3072,
-      "lines": 81,
+      "sha256": "bd5490d5def6c142e7eade2490cedca478950538a542bfd8aad8da4e5bdb93f5",
+      "bytes": 3806,
+      "lines": 102,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 11,
-      "annotated_definitions": 11,
+      "definitions": 14,
+      "annotated_definitions": 14,
       "missing_definitions": []
     },
     {
@@ -12218,8 +12218,8 @@
     },
     {
       "path": "docker-compose.yml",
-      "sha256": "d2468c43f8778f515f8e7c52483fc1fad36721c7f391bd1de803bd1a504b661f",
-      "bytes": 38238,
+      "sha256": "e07944303c4755adbe434ca4851a07f4081b2c89dec22a3ac1e4fd5e9247b1a5",
+      "bytes": 38240,
       "lines": 558,
       "code": false,
       "status": "reviewed",
@@ -12790,8 +12790,8 @@
     },
     {
       "path": "docs/analytics_api_inventory/yandex_webmaster.md",
-      "sha256": "70b5ec498e8d1581d2afde43b8dc7d0274ce054d1a5a9537742d122b6ea9773c",
-      "bytes": 11393,
+      "sha256": "69032905a407de994f5225bb74645ab90976689ce2fd4fd049fa8a68c3c8317c",
+      "bytes": 11787,
       "lines": 72,
       "code": false,
       "status": "reviewed",
@@ -12842,9 +12842,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "a233bb79ac23e289ec3e8005d6ab1cdfab28b43e6ff85d26f411cf44a4de012f",
-      "bytes": 695040,
-      "lines": 3218,
+      "sha256": "0f4d2bac502966150944659a9edf2e566d5c9b0920f3d54e27727067a9fdfef4",
+      "bytes": 696635,
+      "lines": 3222,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13440,7 +13440,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "080b7c1011ff9e9f0936243193fec55eb06afa8afa13341165663184aafdb23d",
+      "sha256": "51d0d85aff589ae2060d2e6924c09042b895888130a7f7b5e10d9f281e20bc89",
       "bytes": 3003243,
       "lines": 108731,
       "code": false,
@@ -13492,9 +13492,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "cabf08e36f1a92659a4e96577f892339399819d06b031c52c153dca06ff2daf2",
-      "bytes": 11149132,
-      "lines": 336792,
+      "sha256": "85838ad393f63e3addd8cedfebf3ba903c6a314694f694e6e12aecc51b08c0b3",
+      "bytes": 11149488,
+      "lines": 336813,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13505,8 +13505,8 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "ee433cdf3e76f147e02234300eda6fff0678b6dd52a08eeb62629b954a92c96c",
-      "bytes": 555665,
+      "sha256": "3895df92a96cf6a13269e9f783177d387b1ea14fa6224d8b2fb0ec55d9b25360",
+      "bytes": 555650,
       "lines": 3185,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -14129,9 +14129,9 @@
     },
     {
       "path": "docs/runtime-inventory.json",
-      "sha256": "11ff8393463ce73487e4954761588d05591b63f197c300252aa148fdbd7d6b5c",
-      "bytes": 247784,
-      "lines": 7342,
+      "sha256": "53fbc68ec8abec4c469a0077cd0f35b82078981ba2c1a079c52b2403ce3c2241",
+      "bytes": 248779,
+      "lines": 7349,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -29352,15 +29352,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "0facf48df8726fcbbe50b60b70bc81e4073eb63ed833827d7e89bead01e5d503",
+  "ledger_sha256": "d3a7701a3af1153b0f525eb7493ba2677b82858ef3be1058c8781a1439d41b16",
   "javascript_inventory_sha256": "63be132be579f0c80281780ed24c653d494c0c5d0bd52f1e05df4dd3ae70cca3",
-  "baseline_commit": "51651975d1ad8ab9fcf5ffcf10beadf39ea643b0",
+  "baseline_commit": "c9fea738ae877e04cc6cfb712bdc355891210d70",
   "branch": "fix/pulse-signals",
-  "unstaged_at_capture": [
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }

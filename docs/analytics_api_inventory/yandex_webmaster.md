@@ -65,7 +65,7 @@ python scripts/analytics-smoke.py webmaster --host forecasteconomy.com
 
 ## 2026-11-09 — токен истёк
 
-С 06.11.2026 `RUSTATS_YANDEX_WEBMASTER_TOKEN` недействителен: `login.yandex.ru/info` — 401 `expired_token`, `GET /v4/user/` — 403 `INVALID_OAUTH_TOKEN`. Токен Метрики (`RUSTATS_YANDEX_METRIKA_READ_TOKEN`, аккаунт rebeka.ee) жив, но его приложение без прав Вебмастера (403 `ACCESS_FORBIDDEN`, «application scopes: []»). Обновления токена без человека в проекте нет: новый выдаётся входом владельца в Яндекс. Пока токен не обновлён, задачи `webmaster_queries_daily`, переобход и SEO-срез Пульса пишут одно сообщение `token_expired` в сутки (`backend/app/services/yandex_token_alert.py`) вместо сбоя задачи и двух `recrawl_alert`.
+С 06.11.2026 `RUSTATS_YANDEX_WEBMASTER_TOKEN` недействителен: `login.yandex.ru/info` — 401 `expired_token`, `GET /v4/user/` — 403 `INVALID_OAUTH_TOKEN`. Токен Метрики (`RUSTATS_YANDEX_METRIKA_READ_TOKEN`, аккаунт rebeka.ee) жив, но его приложение без прав Вебмастера (403 `ACCESS_FORBIDDEN`, «application scopes: []»). Обновления токена без человека в проекте нет: новый выдаётся входом владельца в Яндекс. Пока токен не обновлён, задачи `webmaster_queries_daily`, переобход и SEO-срез Пульса пишут одно сообщение `token_expired` в сутки (`backend/app/services/yandex_token_alert.py`) вместо сбоя задачи и двух `recrawl_alert`. Владелец 09.11.2026 обновить токен не может («они больше не показывают ничего нормально»): сообщение приходит один раз на истёкший токен, данные Вебмастера (запросы, индексация, переобход) до нового токена не собираются.
 
 ## 2026-10-12 — доступность API и след сбоя (круг 13)
 

@@ -385,7 +385,7 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "70d2778f57032e31882794ab6f32cc32609b23cbf4be5a758470eb1534a0e8d9",
+      "sha256": "ab7b45aadece4501d67bbad12c79ea5e72c47d8f72587cc4f72aea90537b19cb",
       "lines": 593
     },
     {
@@ -1380,7 +1380,7 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "ed5881618babfe489081eeba2bb742b2597fcae990b9fadb782cee09789f7dd3",
+      "sha256": "f933102ff3f72cc65caf68e7352a1d1550b1cca51ec92acb19b04e2340414587",
       "lines": 523
     },
     {
@@ -1710,7 +1710,7 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "47e14a8913f78259379b953c6befc33b6a915ed0faa4edd7cd1234e679aa7ab7",
+      "sha256": "3e747a60b31aa9565c8328e0330684e0990a106329a30a89896feeee28f292fe",
       "lines": 352
     },
     {
@@ -2045,8 +2045,8 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "sha256": "92cd2454e40c73397b0ebabf264eef7c8a52fadc5fa8cb73bd66823fd53f6bd9",
-      "lines": 67
+      "sha256": "5465ff320a7c687f12b29a475b61ecb86b5f43deb54a690c3c420aa53827d599",
+      "lines": 82
     },
     {
       "path": "backend/app/services/yandex_webmaster_client.py",
@@ -32152,7 +32152,7 @@
       "name": "openrouter_model",
       "env_name": "RUSTATS_OPENROUTER_MODEL",
       "annotation": "str",
-      "default": "'anthropic/claude-sonnet-5'"
+      "default": "'anthropic/claude-sonnet-5.5'"
     },
     {
       "path": "backend/app/config.py",
@@ -37759,6 +37759,26 @@
       "conditions": [],
       "name": "direct_api_token",
       "expression": "settings.direct_api_token"
+    },
+    {
+      "path": "backend/app/services/yandex_token_alert.py",
+      "line": 68,
+      "end_line": 68,
+      "owner": "_token_fingerprint",
+      "conditions": [],
+      "name": "yandex_webmaster_token",
+      "expression": "getattr(settings, 'yandex_webmaster_token', '')",
+      "dynamic": false
+    },
+    {
+      "path": "backend/app/services/yandex_token_alert.py",
+      "line": 69,
+      "end_line": 69,
+      "owner": "_token_fingerprint",
+      "conditions": [],
+      "name": "yandex_metrika_read_token",
+      "expression": "getattr(settings, 'yandex_metrika_read_token', '')",
+      "dynamic": false
     },
     {
       "path": "backend/app/services/yandex_webmaster_client.py",
@@ -100761,7 +100781,7 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 54,
+      "line": 55,
       "end_line": 57,
       "owner": "<module>",
       "conditions": [],
@@ -100769,17 +100789,9 @@
       "symbol": "app.services.telegram_calm.ACTION_KINDS",
       "kind": "Dict",
       "literal_keys": [
-        "'token_expired'",
         "'data_sanity'"
       ],
       "entries": [
-        {
-          "key": "'token_expired'",
-          "expression": "'обновить доступ к Яндексу (напиши Claude «обнови токен»)'",
-          "expression_truncated": false,
-          "expression_chars": 58,
-          "ast_sha256": "8726b9277c1bff8cc7915e44c2a9a3eb9bb501a3b9d3996f687b2538ae68e2a1"
-        },
         {
           "key": "'data_sanity'",
           "expression": "'почистить невозможные точки в базе (напиши Claude «почисти битые точки»)'",
@@ -100788,10 +100800,10 @@
           "ast_sha256": "fd388c7919b8daf391a91a9bae01cc5037cddaa8b74dcf80e8a41ac416e1fcf3"
         }
       ],
-      "expression": "{'token_expired': 'обновить доступ к Яндексу (напиши Claude «обнови токен»)', 'data_sanity': 'почистить невозможные точки в базе (напиши Claude «почисти битые точки»)'}",
+      "expression": "{'data_sanity': 'почистить невозможные точки в базе (напиши Claude «почисти битые точки»)'}",
       "expression_truncated": false,
-      "expression_chars": 168,
-      "ast_sha256": "60db222775af127051f4b7e3ea03c6c132bd9d696ef89d5ff5a93ca57810c316",
+      "expression_chars": 91,
+      "ast_sha256": "727edb614a0343ee0df558a59fa02fdb4b98411e63f2ed3cfdec769fdf04580d",
       "runtime_expansion": false
     },
     {
@@ -108263,8 +108275,8 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 19,
-      "end_line": 19,
+      "line": 22,
+      "end_line": 22,
       "owner": "<module>",
       "conditions": [],
       "name": "_EXPIRED_CODES",
@@ -108280,8 +108292,8 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 21,
-      "end_line": 24,
+      "line": 24,
+      "end_line": 27,
       "owner": "<module>",
       "conditions": [],
       "name": "SERVICE_LABELS",
@@ -108315,8 +108327,8 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 25,
-      "end_line": 28,
+      "line": 28,
+      "end_line": 31,
       "owner": "<module>",
       "conditions": [],
       "name": "SERVICE_EFFECTS",
@@ -293653,8 +293665,8 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 31,
-      "end_line": 41,
+      "line": 34,
+      "end_line": 44,
       "owner": "<module>",
       "conditions": [],
       "name": "is_token_expired",
@@ -293662,8 +293674,8 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 44,
-      "end_line": 46,
+      "line": 47,
+      "end_line": 49,
       "owner": "<module>",
       "conditions": [],
       "name": "service_for",
@@ -293671,8 +293683,8 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 49,
-      "end_line": 56,
+      "line": 52,
+      "end_line": 59,
       "owner": "<module>",
       "conditions": [],
       "name": "expired_text",
@@ -293680,8 +293692,17 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 59,
-      "end_line": 67,
+      "line": 62,
+      "end_line": 71,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_token_fingerprint",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/yandex_token_alert.py",
+      "line": 74,
+      "end_line": 82,
       "owner": "<module>",
       "conditions": [],
       "name": "report_token_expired",
@@ -321964,24 +321985,24 @@
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 50,
-      "end_line": 50,
+      "line": 53,
+      "end_line": 53,
       "owner": "expired_text",
       "conditions": [],
       "symbol": "app.services.yandex_token_alert.SERVICE_LABELS"
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 51,
-      "end_line": 51,
+      "line": 54,
+      "end_line": 54,
       "owner": "expired_text",
       "conditions": [],
       "symbol": "app.services.yandex_token_alert.SERVICE_EFFECTS"
     },
     {
       "path": "backend/app/services/yandex_token_alert.py",
-      "line": 41,
-      "end_line": 41,
+      "line": 44,
+      "end_line": 44,
       "owner": "is_token_expired",
       "conditions": [],
       "symbol": "app.services.yandex_token_alert._EXPIRED_CODES"

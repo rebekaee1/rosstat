@@ -5,8 +5,10 @@ API Вебмастера — 403 `INVALID_OAUTH_TOKEN`. Каждый день э
 два «Webmaster recrawl: квота/пользователь недоступны» и в Пульсе «SEO-отчёт недоступен (fetch failed)». Причина одна,
 и чинит её только человек: токен выдаётся входом в аккаунт Яндекса в браузере.
 
-`is_token_expired` узнаёт такой отказ, `report_token_expired` пишет одно сообщение `token_expired` не чаще раза в
-сутки на сервис. В спокойном режиме оно идёт в утреннюю сводку строкой «нужно от тебя» (`telegram_calm.ACTION_KINDS`).
+`is_token_expired` узнаёт такой отказ, `report_token_expired` пишет одно сообщение `token_expired` на каждый
+истёкший токен: владелец 09.11.2026 — «токен вебмастера я не смогу, они больше не показывают ничего нормально».
+Повторять напоминание каждый день бессмысленно; новое сообщение придёт, только если в настройках появится другой
+токен и он тоже истечёт. Ключ — отпечаток токена (sha256, не сам токен).
 """
 from __future__ import annotations
 
@@ -15,7 +17,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 KIND = "token_expired"
-REPEAT_SECONDS = 20 * 3600
+# Год: фактически «один раз на токен» (state-Redis не вечен, через год напомнить не лишне).
+REPEAT_SECONDS = 365 * 24 * 3600
 _EXPIRED_CODES = ("INVALID_OAUTH_TOKEN", "EXPIRED_TOKEN")
 
 SERVICE_LABELS = {
@@ -51,16 +54,28 @@ def expired_text(service: str) -> str:
     effect = SERVICE_EFFECTS.get(service, "данные этого сервиса не обновляются")
     return (
         f"🟠 <b>Истёк доступ к {label}</b>\n"
-        f"Пока токен не обновлён, {effect}. Сайт работает как обычно.\n"
-        f"Что сделать: напиши Claude «обнови токен» — он пришлёт ссылку, по ней одно нажатие «Разрешить»."
+        f"Пока токен не обновлён, {effect}. Сайт работает как обычно, остальная статистика собирается.\n"
+        f"Это сообщение больше не повторится. Если появится новый токен — напиши Claude, он его подключит."
     )
 
 
+def _token_fingerprint(service: str) -> str:
+    import hashlib
+
+    from app.config import settings
+
+    token = {
+        "webmaster": getattr(settings, "yandex_webmaster_token", ""),
+        "metrika": getattr(settings, "yandex_metrika_read_token", ""),
+    }.get(service, "") or ""
+    return hashlib.sha256(token.encode()).hexdigest()[:16]
+
+
 async def report_token_expired(service: str = "webmaster") -> bool:
-    """Одно сообщение в сутки на сервис. True — отправлено сейчас."""
+    """Одно сообщение на истёкший токен сервиса. True — отправлено сейчас."""
     from app.services.alerting import alert_muted, send_telegram
 
-    if await alert_muted(f"{KIND}:{service}", REPEAT_SECONDS):
+    if await alert_muted(f"{KIND}:{service}:{_token_fingerprint(service)}", REPEAT_SECONDS):
         return False
     logger.error("Yandex %s token expired", service)
     await send_telegram(expired_text(service), kind=KIND)

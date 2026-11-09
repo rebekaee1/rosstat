@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `51651975d1ad8ab9fcf5ffcf10beadf39ea643b0`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `c9fea738ae877e04cc6cfb712bdc355891210d70`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2255 |
 | Код, шаблоны и стили | 1845 |
 | Актуальные рецензии без пропусков guard | 2255 |
-| Именованные определения Python/JS: с аннотацией / всего | 15001 / 15001 |
+| Именованные определения Python/JS: с аннотацией / всего | 15005 / 15005 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -502,7 +502,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/yandex_metrika_management.py](../backend/app/services/yandex_metrika_management.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/yandex_metrika_reporting.py](../backend/app/services/yandex_metrika_reporting.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/yandex_partner_stats.py](../backend/app/services/yandex_partner_stats.py) | reviewed | 6/6 | актуально |
-| [backend/app/services/yandex_token_alert.py](../backend/app/services/yandex_token_alert.py) | reviewed | 4/4 | актуально |
+| [backend/app/services/yandex_token_alert.py](../backend/app/services/yandex_token_alert.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/yandex_webmaster_client.py](../backend/app/services/yandex_webmaster_client.py) | reviewed | 19/19 | актуально |
 | [backend/app/session_analysis_schema.py](../backend/app/session_analysis_schema.py) | reviewed | 10/10 | актуально |
 | [backend/app/tasks/__init__.py](../backend/app/tasks/__init__.py) | reviewed | 0/0 | актуально |
@@ -951,7 +951,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_us_bls_bea_adapters.py](../backend/tests/test_world_us_bls_bea_adapters.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_yandex_clean_param.py](../backend/tests/test_yandex_clean_param.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_yandex_partner_stats.py](../backend/tests/test_yandex_partner_stats.py) | reviewed | 16/16 | актуально |
-| [backend/tests/test_yandex_token_alert.py](../backend/tests/test_yandex_token_alert.py) | reviewed | 11/11 | актуально |
+| [backend/tests/test_yandex_token_alert.py](../backend/tests/test_yandex_token_alert.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_year_mode_crawl_policy.py](../backend/tests/test_year_mode_crawl_policy.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_year_range_note.py](../backend/tests/test_year_range_note.py) | reviewed | 5/5 | актуально |
 | [clickhouse/low-memory-users.xml](../clickhouse/low-memory-users.xml) | reviewed | 0/0 | актуально |

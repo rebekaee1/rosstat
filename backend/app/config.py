@@ -489,7 +489,7 @@ class Settings(BaseSettings):
     session_replay_enabled: bool = False
     session_replay_retention_days: int = 14
     session_replay_max_recording_bytes: int = 8_000_000
-    openrouter_model: str = "anthropic/claude-sonnet-5"
+    openrouter_model: str = "anthropic/claude-sonnet-5.5"
     # 2026-07-08: прод-IP российский, OpenRouter/Anthropic режут его на границе
     # Cloudflare (гео/санкционный комплаенс, не репутация конкретного IP —
     # подтверждено: тот же блок на api.openai.com/api.anthropic.com напрямую,

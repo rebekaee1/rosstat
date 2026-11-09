@@ -30,12 +30,12 @@ def test_service_is_taken_from_api_path():
 
 def test_text_says_what_to_do_without_jargon():
     text = tok.expired_text("webmaster")
-    assert "Вебмастер" in text and "обнови токен" in text
+    assert "Вебмастер" in text and "не повторится" in text
     for jargon in ("403", "OAuth", "API", "INVALID"):
         assert jargon not in text
 
 
-def test_report_once_per_day(monkeypatch):
+def test_report_once_per_token(monkeypatch):
     sent, muted = [], set()
 
     async def fake_muted(key, ttl):
@@ -79,3 +79,24 @@ def test_recrawl_job_reports_token_instead_of_recrawl_alert(monkeypatch):
     result = asyncio.run(webmaster_recrawl.recrawl_daily_job())
     assert result.get("blocked") == "token_expired"
     assert reported == ["webmaster"] and alerts == []
+
+
+def test_new_token_gets_its_own_message(monkeypatch):
+    from app.config import settings
+
+    keys = []
+
+    async def fake_muted(key, ttl):
+        keys.append(key)
+        return False
+
+    async def fake_send(*a, **k):
+        return True
+
+    monkeypatch.setattr(alerting, "alert_muted", fake_muted)
+    monkeypatch.setattr(alerting, "send_telegram", fake_send)
+    monkeypatch.setattr(settings, "yandex_webmaster_token", "old", raising=False)
+    asyncio.run(tok.report_token_expired("webmaster"))
+    monkeypatch.setattr(settings, "yandex_webmaster_token", "new", raising=False)
+    asyncio.run(tok.report_token_expired("webmaster"))
+    assert keys[0] != keys[1] and all("old" not in k and "new" not in k for k in keys)

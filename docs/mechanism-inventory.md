@@ -9,7 +9,7 @@
 - ORM tables: **72**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **252**
-- Settings reads: **598**
+- Settings reads: **600**
 - Direct environment reads: **35**
 - Jobs: **56**
 - Middleware: **6**
@@ -1864,9 +1864,9 @@ Relationships: `[]`
 | RUSTATS_ANALYTICS_BACKFILL_DAYS | int = 30 | 0 | [backend/app/config.py:368](../backend/app/config.py#L368) |
 | RUSTATS_ANALYTICS_REQUEST_TIMEOUT | int = 30 | 1 | [backend/app/config.py:369](../backend/app/config.py#L369) |
 | RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED | bool = False | 2 | [backend/app/config.py:370](../backend/app/config.py#L370) |
-| RUSTATS_YANDEX_METRIKA_READ_TOKEN | str = '' | 10 | [backend/app/config.py:372](../backend/app/config.py#L372) |
+| RUSTATS_YANDEX_METRIKA_READ_TOKEN | str = '' | 11 | [backend/app/config.py:372](../backend/app/config.py#L372) |
 | RUSTATS_YANDEX_METRIKA_WRITE_TOKEN | str = '' | 3 | [backend/app/config.py:373](../backend/app/config.py#L373) |
-| RUSTATS_YANDEX_WEBMASTER_TOKEN | str = '' | 10 | [backend/app/config.py:374](../backend/app/config.py#L374) |
+| RUSTATS_YANDEX_WEBMASTER_TOKEN | str = '' | 11 | [backend/app/config.py:374](../backend/app/config.py#L374) |
 | RUSTATS_AUTH_SESSION_TTL_SECONDS | int = 60 * 60 * 24 * 30 | 3 | [backend/app/config.py:377](../backend/app/config.py#L377) |
 | RUSTATS_AUTH_COOKIE_SECURE | bool = False | 7 | [backend/app/config.py:378](../backend/app/config.py#L378) |
 | RUSTATS_AUTH_COOKIE_DOMAIN | str = '' | 4 | [backend/app/config.py:379](../backend/app/config.py#L379) |
@@ -1930,7 +1930,7 @@ Relationships: `[]`
 | RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:489](../backend/app/config.py#L489) |
 | RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:490](../backend/app/config.py#L490) |
 | RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:491](../backend/app/config.py#L491) |
-| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5' | 3 | [backend/app/config.py:492](../backend/app/config.py#L492) |
+| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5.5' | 3 | [backend/app/config.py:492](../backend/app/config.py#L492) |
 | RUSTATS_OPENROUTER_PROXY_URL | str = '' | 3 | [backend/app/config.py:498](../backend/app/config.py#L498) |
 | RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:502](../backend/app/config.py#L502) |
 | RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:505](../backend/app/config.py#L505) |
@@ -2791,7 +2791,7 @@ Relationships: `[]`
 | app.services.telegram_bot._RETRY_METHODS | Call | computed source expression | [backend/app/services/telegram_bot.py:99](../backend/app/services/telegram_bot.py#L99) |
 | app.services.telegram_calm.MSK | Call | computed source expression | [backend/app/services/telegram_calm.py:35](../backend/app/services/telegram_calm.py#L35) |
 | app.services.telegram_calm.HELD_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:42](../backend/app/services/telegram_calm.py#L42) |
-| app.services.telegram_calm.ACTION_KINDS | Dict | 'token_expired', 'data_sanity' | [backend/app/services/telegram_calm.py:54](../backend/app/services/telegram_calm.py#L54) |
+| app.services.telegram_calm.ACTION_KINDS | Dict | 'data_sanity' | [backend/app/services/telegram_calm.py:55](../backend/app/services/telegram_calm.py#L55) |
 | app.services.telegram_calm.URGENT_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:59](../backend/app/services/telegram_calm.py#L59) |
 | app.services.telegram_calm._MONTHS_GENITIVE | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:163](../backend/app/services/telegram_calm.py#L163) |
 | app.services.telegram_calm._TAG_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:165](../backend/app/services/telegram_calm.py#L165) |
@@ -2979,9 +2979,9 @@ Relationships: `[]`
 | app.services.yandex_clean_param.CLEAN_PARAM_RULES | Tuple | sequence/source expression | [backend/app/services/yandex_clean_param.py:14](../backend/app/services/yandex_clean_param.py#L14) |
 | app.services.yandex_clean_param.CONTENT_PARAMS | Call | computed source expression | [backend/app/services/yandex_clean_param.py:25](../backend/app/services/yandex_clean_param.py#L25) |
 | app.services.yandex_client._CONNECT_BACKOFF_S | Tuple | sequence/source expression | [backend/app/services/yandex_client.py:16](../backend/app/services/yandex_client.py#L16) |
-| app.services.yandex_token_alert._EXPIRED_CODES | Tuple | sequence/source expression | [backend/app/services/yandex_token_alert.py:19](../backend/app/services/yandex_token_alert.py#L19) |
-| app.services.yandex_token_alert.SERVICE_LABELS | Dict | 'webmaster', 'metrika' | [backend/app/services/yandex_token_alert.py:21](../backend/app/services/yandex_token_alert.py#L21) |
-| app.services.yandex_token_alert.SERVICE_EFFECTS | Dict | 'webmaster', 'metrika' | [backend/app/services/yandex_token_alert.py:25](../backend/app/services/yandex_token_alert.py#L25) |
+| app.services.yandex_token_alert._EXPIRED_CODES | Tuple | sequence/source expression | [backend/app/services/yandex_token_alert.py:22](../backend/app/services/yandex_token_alert.py#L22) |
+| app.services.yandex_token_alert.SERVICE_LABELS | Dict | 'webmaster', 'metrika' | [backend/app/services/yandex_token_alert.py:24](../backend/app/services/yandex_token_alert.py#L24) |
+| app.services.yandex_token_alert.SERVICE_EFFECTS | Dict | 'webmaster', 'metrika' | [backend/app/services/yandex_token_alert.py:28](../backend/app/services/yandex_token_alert.py#L28) |
 | app.tasks.analytics_rollups._SESSION_EVENT_TYPES | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:54](../backend/app/tasks/analytics_rollups.py#L54) |
 | app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:58](../backend/app/tasks/analytics_rollups.py#L58) |
 | app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:65](../backend/app/tasks/analytics_rollups.py#L65) |

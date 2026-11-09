@@ -214,7 +214,9 @@ def test_summary_does_not_say_nothing_to_do_when_action_is_waiting():
     ]
     text = calm.build_summary(rows, day=date(2026, 11, 9))
     assert "ничего делать не нужно" not in text
-    assert "Нужно от тебя:" in text and "обнови токен" in text and "почисти битые точки" in text
+    assert "Нужно от тебя:" in text and "почисти битые точки" in text
+    # токен Вебмастера владелец обновить не может (09.11.2026): в «нужно от тебя» его нет
+    assert "токен" not in text.split("\n")[1]
 
 
 def test_action_kinds_are_held():
