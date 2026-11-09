@@ -3999,4 +3999,7 @@ export default {
   'r8c.peak': 'Peak',
   'r8c.low': 'Low',
   'r8c.group.tally': 'Cheaper: {a} {na}, {b} {nb}',
+  'r8c.natHigher': 'Russia: {pct} higher',
+  'r8c.natLower': 'Russia: {pct} lower',
+  'r8c.natSame': 'Russia: about the same',
 };

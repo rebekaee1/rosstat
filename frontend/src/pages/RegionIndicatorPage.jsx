@@ -500,7 +500,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <R6RussiaLine value={last.value} year={last.year} series={active.russia_series} unit={active.indicator.unit} locale={locale} t={t} />
             )}
             {discontinued && <DiscontinuedNote />}
-            <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} />
+            <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} nation={slug === 'russia'} />
             {isPrice && !discontinued && <CopyForClient text={shareText} />}
           </div>
 
@@ -651,7 +651,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             {isMonthly && periodChanges.map(({ key, ch }) => (
               <StatCell key={key} label={isPrice ? t(key === 'z2.yearAgo' ? 'r8c.yearShort' : 'r8c.fiveShort') : t(key, { month: ymLabelFrom(ch.from.year * 100 + ch.from.month, locale) })}>
                 {signedPct(ch.pct, locale)}
-                {isPrice && <span className="r5a-stat-was"><span className="whitespace-nowrap">{t('r5a.was', { value: priceText(roundBig(ch.from.value), active.indicator.unit, locale) })}</span>{' · '}<span className="whitespace-nowrap">{ymLabel(ch.from.year * 100 + ch.from.month, locale)}</span></span>}
+                {isPrice && <span className="r5a-stat-was"><span className="whitespace-nowrap">{t('r5a.was', { value: priceText(roundBig(ch.from.value), active.indicator.unit, locale) })}</span><span className="block whitespace-nowrap">{ymLabel(ch.from.year * 100 + ch.from.month, locale)}</span></span>}
               </StatCell>
             ))}
             {stats && !isMonthly && (

@@ -39,7 +39,7 @@ export function DiscontinuedNote() {
 }
 
 /** «Россия: 98,1 ₽ (здесь +6,3 %)» — цифрой под главной ценой. */
-export function CompareLines({ rows, unit, lastMonth }) {
+export function CompareLines({ rows, unit, lastMonth, nation = false }) {
   const { t, locale } = useLocale();
   if (!rows.length) return null;
   return (
@@ -50,7 +50,7 @@ export function CompareLines({ rows, unit, lastMonth }) {
           <li key={r.key}>
             <span className="z2p-compare__name">{t(r.key === 'russia' ? 'z2.russia' : 'z2.moskva')}</span>
             <span className="fe-num z2p-compare__val">{priceText(roundBig(r.value), unit, locale)}</span>
-            <span className="fe-num z2p-compare__pct">{Math.abs(r.pct) < 0.05 ? t('r2z2.hereSame') : t(r.pct > 0 ? 'r2z2.hereHigher' : 'r2z2.hereLower', { pct: signedPct(Math.abs(r.pct), locale).replace(/^[+−]/, '') })}</span>
+            <span className="fe-num z2p-compare__pct">{Math.abs(r.pct) < 0.05 ? t(nation ? 'r8c.natSame' : 'r2z2.hereSame') : t(r.pct > 0 ? (nation ? 'r8c.natHigher' : 'r2z2.hereHigher') : (nation ? 'r8c.natLower' : 'r2z2.hereLower'), { pct: signedPct(Math.abs(r.pct), locale).replace(/^[+−]/, '') })}</span>
             {!sameMonth && <span className="z2p-compare__month">{ymLabel(r.month, locale)}</span>}
             <span className="r5a-bar r8c-bar" aria-hidden="true">
               <i style={{ width: `${Math.round(compareFill(r.pct) * 100)}%` }} />

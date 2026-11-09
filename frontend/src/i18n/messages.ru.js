@@ -4004,4 +4004,7 @@ export default {
   'r8c.peak': 'Максимум',
   'r8c.low': 'Минимум',
   'r8c.group.tally': 'Дешевле: {a} — {na}, {b} — {nb}',
+  'r8c.natHigher': 'в России выше на {pct}',
+  'r8c.natLower': 'в России ниже на {pct}',
+  'r8c.natSame': 'в России так же',
 };
