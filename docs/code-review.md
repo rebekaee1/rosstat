@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `f66231e2a870ec83ac5e4793f43d6f93940a457b`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `c7d8df427e41d971934863872f3267869ea31c53`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2423 |
 | Код, шаблоны и стили | 1963 |
 | Актуальные рецензии без пропусков guard | 2423 |
-| Именованные определения Python/JS: с аннотацией / всего | 15619 / 15619 |
+| Именованные определения Python/JS: с аннотацией / всего | 15629 / 15629 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -133,7 +133,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/api/oauth.py](../backend/app/api/oauth.py) | reviewed | 22/22 | актуально |
 | [backend/app/api/push.py](../backend/app/api/push.py) | reviewed | 13/13 | актуально |
 | [backend/app/api/pwa.py](../backend/app/api/pwa.py) | reviewed | 7/7 | актуально |
-| [backend/app/api/regions.py](../backend/app/api/regions.py) | reviewed | 28/28 | актуально |
+| [backend/app/api/regions.py](../backend/app/api/regions.py) | reviewed | 31/31 | актуально |
 | [backend/app/api/research.py](../backend/app/api/research.py) | reviewed | 10/10 | актуально |
 | [backend/app/api/router.py](../backend/app/api/router.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/search.py](../backend/app/api/search.py) | reviewed | 2/2 | актуально |
@@ -241,7 +241,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/world_subnational/us.yaml](../backend/app/data/world_subnational/us.yaml) | reviewed | 0/0 | актуально |
 | [backend/app/data/world_superseded.py](../backend/app/data/world_superseded.py) | reviewed | 7/7 | актуально |
 | [backend/app/database.py](../backend/app/database.py) | reviewed | 6/6 | актуально |
-| [backend/app/main.py](../backend/app/main.py) | reviewed | 45/45 | актуально |
+| [backend/app/main.py](../backend/app/main.py) | reviewed | 46/46 | актуально |
 | [backend/app/models.py](../backend/app/models.py) | reviewed | 76/76 | актуально |
 | [backend/app/schemas.py](../backend/app/schemas.py) | reviewed | 14/14 | актуально |
 | [backend/app/security/__init__.py](../backend/app/security/__init__.py) | reviewed | 0/0 | актуально |
@@ -803,7 +803,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_r4a_price_compare.py](../backend/tests/test_r4a_price_compare.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_r7b_price_quality.py](../backend/tests/test_r7b_price_quality.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_r7d_prices_summary.py](../backend/tests/test_r7d_prices_summary.py) | reviewed | 4/4 | актуально |
-| [backend/tests/test_r9b_movers.py](../backend/tests/test_r9b_movers.py) | reviewed | 3/3 | актуально |
+| [backend/tests/test_r9b_movers.py](../backend/tests/test_r9b_movers.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_r9c_heatmap_prev.py](../backend/tests/test_r9c_heatmap_prev.py) | reviewed | 1/1 | актуально |
 | [backend/tests/test_rate_limit.py](../backend/tests/test_rate_limit.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_rebase_probe.py](../backend/tests/test_rebase_probe.py) | reviewed | 12/12 | актуально |
