@@ -3856,7 +3856,7 @@ export default {
   // Round 4 (R4-A)
   'r4a.tally': 'Cheaper in {a}: {na} of {n} goods and services; cheaper in {b}: {nb}.',
   'r4a.basket.title': 'Monthly family basket',
-  'r4a.basket.lead': 'Bread, milk, meat, fuel, fares and {n} items in all, at average prices for {month}.',
+  'r4a.basket.lead': 'Bread, milk, meat, fuel, fares: {n} items in all, at average prices for {month}.',
   'r4a.basket.verdict': 'This basket is cheaper in {name} by {pct}%.',
   'r4a.basket.same': 'The basket costs the same.',
   'r4a.basket.what': 'What is in the basket',
@@ -3883,4 +3883,9 @@ export default {
   'r4a.your.typical': 'About the same as a typical region.',
   'r4a.your.compare': 'Compare with the cheapest region',
   'r4a.rating.extremes': 'Compare living costs where it is dearest and cheapest: {a} and {b}',
+  'r5d.src': 'Source: Rosstat, average consumer prices for {month}; wage for {year}. Based on {n} items.',
+  'r5d.src.noWage': 'Source: Rosstat, average consumer prices for {month}. Based on {n} items.',
+  'r5d.diffRub': 'The difference is {sum} a month.',
+  'r5d.copy': 'Copy the numbers',
+  'r5d.copied': 'Copied',
 };

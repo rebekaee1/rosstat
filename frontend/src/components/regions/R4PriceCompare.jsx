@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, Wallet, ShoppingBasket } from 'lucide-react';
+import { ChevronDown, Wallet, ShoppingBasket, Copy, Check } from 'lucide-react';
 import api from '../../lib/api';
 import { regionIndicatorPath } from '../../lib/sitePaths';
 import { formatPrice, splitShortName } from './RegionPrices';
@@ -70,6 +70,9 @@ function BasketCard({ data, locale, t }) {
         {basket.cheaper_slug && basket.diff_pct != null
           ? t('r4a.basket.verdict', { name: nameOf(basket.cheaper_slug), pct: String(basket.diff_pct).replace('.', locale === 'en' ? '.' : ',') })
           : t('r4a.basket.same')}
+        {basket.cheaper_slug && Math.abs(basket.total_a - basket.total_b) >= 1 && (
+          <> {t('r5d.diffRub', { sum: formatRub(Math.abs(basket.total_a - basket.total_b), locale) })}</>
+        )}
       </p>
       {wage && (
         <div className="r4a-wage" data-testid="r4a-wage">
@@ -101,6 +104,11 @@ function BasketCard({ data, locale, t }) {
         </ul>
       )}
       <p className="r4a-card__note">{t('r4a.basket.note')}</p>
+      <p className="r4a-card__note r5d-source" data-testid="r5d-source">
+        {wage
+          ? t('r5d.src', { month: data.period_label, year: wage.year, n: basket.items.length })
+          : t('r5d.src.noWage', { month: data.period_label, n: basket.items.length })}
+      </p>
     </section>
   );
 }
@@ -150,6 +158,32 @@ function GroupTable({ group, data, locale, t, forceOpen, defaultOpen }) {
   );
 }
 
+/** Текст для вставки в таблицу курсовой: товар, цена в первом и втором регионе. */
+export function compareAsText(data, locale) {
+  const { region_a: a, region_b: b, basket } = data;
+  const rows = [['', a.name, b.name]];
+  if (basket) rows.push([`${data.period_label}: basket`, formatRub(basket.total_a, locale), formatRub(basket.total_b, locale)]);
+  (data.items || []).forEach((it) => rows.push([it.name, String(it.a), String(it.b)]));
+  return rows.map((r) => r.join('\t')).join('\n');
+}
+
+function CopyNumbers({ data, locale, t }) {
+  const [done, setDone] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(compareAsText(data, locale));
+      setDone(true);
+      setTimeout(() => setDone(false), 2000);
+    } catch { /* буфер недоступен — молча */ }
+  };
+  return (
+    <button type="button" className="r4a-more fe-press r5d-copy" onClick={copy} data-testid="r5d-copy">
+      {done ? <Check size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}
+      {done ? t('r5d.copied') : t('r5d.copy')}
+    </button>
+  );
+}
+
 export function R4PriceVerdict({ data, locale, t }) {
   const { basket, wage, region_a: a, region_b: b } = data;
   if (!basket?.cheaper_slug) return null;
@@ -188,6 +222,7 @@ export default function R4PriceCompare({ data }) {
       <BasketCard data={data} locale={locale} t={t} />
       <div className="r4a-h2row">
         <h2 className="r4a-h2">{t('r4a.table.title', { month: data.period_label })}</h2>
+        <CopyNumbers data={data} locale={locale} t={t} />
         <button type="button" className="r4a-more fe-press" onClick={() => setAll((v) => !v)} data-testid="r4a-expand-all">
           {all ? t('r4a.group.collapse') : t('r4a.group.expand')}
         </button>

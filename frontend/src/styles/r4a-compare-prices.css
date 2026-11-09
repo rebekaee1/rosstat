@@ -84,3 +84,10 @@
 .r4a-your__field { display: block; }
 .r4a-your__label { display: block; margin: 0 0 4px 4px; font-size: 12px; color: var(--color-text-secondary); }
 .r4a-your__text { margin: 10px 0 0; font-size: 15px; line-height: 1.45; color: var(--color-text-primary); }
+
+/* R5-D: источник под корзиной и кнопка «Скопировать цифры» */
+.r5d-source { margin-top: 6px; opacity: 0.85; }
+.r5d-copy { display: inline-flex; align-items: center; gap: 6px; }
+.r4a-h2row { flex-wrap: wrap; justify-content: flex-start; }
+.r4a-h2row .r4a-h2 { flex: 1 0 100%; }
+.r4a-h2row .r4a-more:last-child { margin-left: auto; }
