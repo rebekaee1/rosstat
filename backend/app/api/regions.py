@@ -276,7 +276,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
 
     Роут объявлен до `/{slug}` — иначе «heatmap» перехватится как slug региона.
     """
-    cache_key = await versioned_key("regions", f"heatmap:v3:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"heatmap:v4:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -294,6 +294,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
                Region.kind == "region")
     )).scalar()
     last_month = None
+    prev_by_slug: dict[str, float] = {}
     if last_year is None:
         # Месячные ряды (цены ЕМИСС): рейтинг по последнему месяцу, где есть точки субъектов.
         last_month = (await db.execute(
@@ -305,6 +306,15 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
         if last_month is None:
             raise HTTPException(404, "Нет данных по этому показателю")
         last_year = int(last_month) // 100
+        # R9-C: тот же месяц год назад — для «за год» в строках рейтинга цен.
+        prev_rows = (await db.execute(
+            select(Region.slug, RegionMonthlyPoint.value)
+            .join(Region, Region.id == RegionMonthlyPoint.region_id)
+            .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                   RegionMonthlyPoint.month == prev_year_month(int(last_month)),
+                   Region.kind == "region")
+        )).all()
+        prev_by_slug = {s_: float(v_) for s_, v_ in prev_rows if v_ is not None}
         rows = (await db.execute(
             select(Region.slug, Region.name, RegionMonthlyPoint.value)
             .join(Region, Region.id == RegionMonthlyPoint.region_id)
@@ -321,6 +331,18 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
                    Region.kind == "region")
         )).all()
 
+    missing: list[dict] = []
+    if last_month:
+        # R9-C: субъекты без цены в этом месяце — показываем, чтобы пустота не выглядела потерей.
+        have = {r[0] for r in rows}
+        all_regions = (await db.execute(
+            select(Region.slug, Region.name).where(Region.kind == "region")
+        )).all()
+        missing = sorted(
+            ({"slug": s_, "name": _rname(s_, n_)} for s_, n_ in all_regions if s_ not in have),
+            key=lambda x: x["name"],
+        )
+
     polarity = region_rating_meta(indicator.code, indicator.table_code)
     copy = _icopy(indicator)
     result = {
@@ -332,8 +354,10 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
         "year": last_year,
         **({"month": int(last_month), "period_label": _month_label(int(last_month))} if last_month else {}),
         **polarity,
+        **({"missing": missing} if missing else {}),
         "values": [
-            {"slug": s, "name": _rname(s, n), "value": _fmt(float(v)), "raw": float(v)}
+            {"slug": s, "name": _rname(s, n), "value": _fmt(float(v)), "raw": float(v),
+             **({"prev": prev_by_slug[s]} if s in prev_by_slug else {})}
             for s, n, v in rows
         ],
     }
@@ -444,6 +468,11 @@ def _price_fields(meta: dict) -> dict:
         "last_month": meta["last_month"],
         "last_month_label": _month_label(meta["last_month"]) if meta["last_month"] else None,
     }
+
+
+def prev_year_month(month: int) -> int:
+    """YYYYMM → тот же месяц годом раньше (R9-C: сравнение цены «за год»)."""
+    return int(month) - 100
 
 
 def _month_label(month: int) -> str:
