@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import hashlib
 import hmac
 import io
@@ -977,6 +978,9 @@ async def report_text(days: int = 7) -> str:
         lat = [float(c) for (c,) in (await db.execute(
             select(PublicBotEvent.code).where(PublicBotEvent.occurred_at >= since, PublicBotEvent.kind == "llm_time")
         )).all() if c]
+        costs = [c.split("|") for (c,) in (await db.execute(
+            select(PublicBotEvent.code).where(PublicBotEvent.occurred_at >= since, PublicBotEvent.kind == "llm_cost")
+        )).all() if c and c.count("|") == 2]
         ideas = (await db.execute(
             select(PublicBotEvent.code, func.count())
             .where(PublicBotEvent.occurred_at >= since, PublicBotEvent.kind == "idea")
@@ -1014,6 +1018,10 @@ async def report_text(days: int = 7) -> str:
         + (f"\nИдеи людей: {_line(ideas)}" if ideas else "")
         + (f"\nВремя ответа модели: в среднем {fmt_num(sum(lat) / len(lat), 1)} с, медленнее всего {fmt_num(max(lat), 1)} с"
            if lat else "")
+        + (f"\nЦена ответа: в среднем ${sum(float(c[0]) for c in costs) / len(costs):.4f}, "
+           f"всего ${sum(float(c[0]) for c in costs):.2f} за {len(costs)}; шагов модели в среднем "
+           f"{fmt_num(sum(int(c[1]) for c in costs) / len(costs), 1)}; вход из кэша {sum(int(c[2]) for c in costs) // len(costs)} %"
+           if costs else "")
     )
 
 
@@ -1065,7 +1073,9 @@ def chart_mismatch(text: str, key: str) -> bool:
 
 LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседник в Telegram, который разбирается в экономике России и умеет объяснять её по-человечески: просто, с теплом и уместным юмором, без канцелярита и воды. Подстраивайся под тон человека: по умолчанию на «вы», на «ты» — только если он сам так пишет. Можешь задать встречный вопрос, если он поможет.
 
-Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда и называй месяц цифры. Чего там нет — честно скажи и предложи близкое. ДАННЫЕ всегда свежее твоих прошлых реплик: если цифра там есть, используй её, даже если раньше говорил, что её нет. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
+Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда или из ответов инструментов и называй месяц цифры.
+
+Инструменты — наша база целиком: 1000+ рядов России, 495 показателей по 96 регионам (зарплаты, цены на топливо по месяцам, население…), ряды 55 стран, календарь выхода данных. Если нужного нет в ДАННЫХ (регион, страна, другой ряд, история за годы, рейтинг регионов) — сначала find_series, потом get_series или rank_regions; «нет данных» говори, только если поиск не нашёл. Любую арифметику, кроме совсем простой, — через calculate. Обычно хватает 1–3 вызовов; на простой вопрос по ДАННЫМ отвечай сразу. ДАННЫЕ всегда свежее твоих прошлых реплик: если цифра там есть, используй её, даже если раньше говорил, что её нет. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
 
 О себе — без рода («готово, отписка оформлена»). Имя человека называй, только если он сам представился в чате. О хранении правду: храню номер чата, подписки и память разговора на 30 минут, тексты вопросов не сохраняю; подробности — /privacy. Перед «выше/ниже/подорожало» сравни два числа и проверь знак; разные ряды одним словом не обобщай (доллар вырос, евро упал — так и скажи).
 
@@ -1073,7 +1083,7 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 
 Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков, без сокращений вроде «п.п.» (пиши «пункта»). Обычно 1–3 коротких абзаца, до 500 знаков; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника — то есть последнего сообщения человека (написал по-английски — по-английски, даже если раньше шла речь по-русски). В играх и загадках сверяй каждую подсказку арифметикой и не пиши «ровно», если не ровно.
 
-Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами и только на наш сайт: адреса из ДАННЫХ или из списка ниже, своих не строй; источник цифры называй словами (Росстат, Банк России). Не додумывай историю, которой нет в ДАННЫХ, и не предлагай того, чего там нет. Причины — как общие механизмы («обычно на это влияет…»), а не факт про этот месяц. Налоги, законы и льготы по памяти не пересказывай и суммы налога не считай — законы меняются (про налог на вклады: «точную сумму посмотрите у налоговой»); на «куда обратиться» отвечай общими словами, без названий ведомств и сайтов. На «будет ли дефолт/крах» — факты и честное «предсказать не могу». Слово «ДАННЫЕ» человеку не пиши («в моих цифрах»). Сверь цифру до того, как писать, не поправляйся вслух. Расчёты (кредит, вклад) — по последней официальной цифре, «наш расчёт» — вторым, одной фразой. Ты — ИИ-бот; какая именно модель — не знаешь. Не заканчивай каждый ответ предложением подписки. Просит перестать, а подписки нет — так и скажи; просит присылать — сразу [[подписаться]]. Сравнивая вклад, золото, валюту, не подводи к выбору: цифры как факт, вывод — человеку. Для тем без ключей (юань, нефть, ВВП, зарплата, биткоин) кнопок тем не ставь.
+Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами и только на наш сайт: адреса из ДАННЫХ, из ответов инструментов или из списка ниже, своих не строй; источник цифры называй словами (Росстат, Банк России). Не додумывай историю, которой нет в ДАННЫХ, и не предлагай того, чего там нет. Причины — как общие механизмы («обычно на это влияет…»), а не факт про этот месяц. Налоги, законы и льготы по памяти не пересказывай и суммы налога не считай — законы меняются (про налог на вклады: «точную сумму посмотрите у налоговой»); на «куда обратиться» отвечай общими словами, без названий ведомств и сайтов. На «будет ли дефолт/крах» — факты и честное «предсказать не могу». Слово «ДАННЫЕ» человеку не пиши («в моих цифрах»). Сверь цифру до того, как писать, не поправляйся вслух. Расчёты (кредит, вклад) — по последней официальной цифре, «наш расчёт» — вторым, одной фразой. Ты — ИИ-бот; какая именно модель — не знаешь. Не заканчивай каждый ответ предложением подписки. Просит перестать, а подписки нет — так и скажи; просит присылать — сразу [[подписаться]]. Сравнивая вклад, золото, валюту, не подводи к выбору: цифры как факт, вывод — человеку. Для тем без ключей (юань, нефть, ВВП, зарплата, биткоин) кнопок тем не ставь.
 
 Подписки приходят так: курсы и золото — раз в неделю, ставка — когда меняется, остальное — когда выходит новая цифра; с 9 до 21 по Москве. Обещай только это.
 Если спрашивают, что ты умеешь, — 3–5 строк своими словами: отвечаешь по свежим цифрам, присылаешь графики, присылаешь то, что попросят («присылай инфляцию»), сводка /week, карточка в любом чате через @ForecastEconomyBot, и самоулучшаешься — пожелания передаёшь команде.
@@ -1254,44 +1264,94 @@ async def _llm_complete(context: str, question: str, history: list[dict] | None 
 
 
 
+_AGENT_STEPS = 5          # шагов с инструментами на один ответ; последний — без инструментов
+_AGENT_TOOL_CALLS = 4     # вызовов инструментов за шаг
+# Ответы инструментов текущего вопроса: список создаёт answer_question, задача модели дописывает
+# (ContextVar с изменяемым списком — изменения из фоновой задачи видны вызывающему).
+_TOOL_TEXT: "contextvars.ContextVar[list[str] | None]" = contextvars.ContextVar("pb_tool_text", default=None)
+# Цена ответа в $ и прочитанные из кэша токены по шагам (usage OpenRouter) — для отчёта «сколько стоит диалог».
+_LLM_USAGE: "contextvars.ContextVar[list[tuple[float, int, int]] | None]" = contextvars.ContextVar("pb_llm_usage", default=None)
+
+
+async def _llm_post(client, payload: dict):
+    """Один запрос в OpenRouter; разовые 429/5xx — один повтор, 402 (нет баланса) — нет (тестеры 09.11)."""
+    for attempt in (0, 1):
+        resp = await client.post(
+            _OPENROUTER_URL, json=payload,
+            headers={"Authorization": f"Bearer {settings.openrouter_api_key}", "X-Title": "Forecast Economy bot"},
+        )
+        if resp.status_code in (429, 500, 502, 503, 504) and attempt == 0:
+            await asyncio.sleep(2.5)
+            continue
+        return resp
+    return resp
+
+
 async def _llm_call(model: str, context: str, question: str, history: list[dict] | None) -> str | None:
+    """Ответ модели-агента: правила и ДАННЫЕ в кэше, инструменты по нашей базе (bot_agent_tools), до 5 шагов.
+
+    Владелец 09.11: «чтобы агент сам заходил в нашу базу, доставал — максимально автономного агента».
+    Системная часть (правила + ДАННЫЕ) помечена cache_control: повторное чтение — 10 % цены входа
+    (OpenRouter, Anthropic: от 512 токенов у Sonnet 5.5). Тексты ответов инструментов складываются в
+    _TOOL_TEXT — по ним safe_links пропускает адреса страниц, которые агент нашёл сам.
+    """
     import httpx
 
-    payload = {
-        "model": model,
-        # Тестер №6, 09.11: при нескольких одновременных вопросах OpenRouter отвечал 402 «in_flight_budget_exhausted»
-        # (резерв считается от max_tokens); ответы короткие, 900 токенов хватает с запасом.
-        "max_tokens": 900,
-        "messages": [
-            {"role": "system", "content": LLM_SYSTEM_PROMPT + "\n\nДАННЫЕ:\n" + context},
-            *(history or []),
-            {"role": "user", "content": question[:_MAX_QUESTION]
-             + (" …(сообщение обрезано)" if len(question) > _MAX_QUESTION else "")},
-        ],
-    }
+    from app.services.bot_agent_tools import TOOLS, run_tool
+
+    messages: list[dict] = [
+        {"role": "system", "content": [{"type": "text", "text": LLM_SYSTEM_PROMPT + "\n\nДАННЫЕ:\n" + context,
+                                        "cache_control": {"type": "ephemeral"}}]},
+        *(history or []),
+        {"role": "user", "content": question[:_MAX_QUESTION]
+         + (" …(сообщение обрезано)" if len(question) > _MAX_QUESTION else "")},
+    ]
+    tool_text: list[str] = []
     try:
         async with httpx.AsyncClient(timeout=60, proxy=settings.openrouter_proxy_url or None) as client:
-            for attempt in (0, 1):
-                resp = await client.post(
-                    _OPENROUTER_URL, json=payload,
-                    headers={"Authorization": f"Bearer {settings.openrouter_api_key}",
-                             "X-Title": "Forecast Economy bot"},
-                )
-                # Тестеры №1, 3, 4, 7, 9 (09.11): разовые 429/5xx — один повтор; 402 (нет баланса) не повторяем.
-                if resp.status_code in (429, 500, 502, 503, 504) and attempt == 0:
-                    await asyncio.sleep(2.5)
+            for step in range(_AGENT_STEPS):
+                last = step == _AGENT_STEPS - 1
+                payload = {
+                    "model": model,
+                    # Тестер №6, 09.11: резерв бюджета OpenRouter считается от max_tokens — держим 900.
+                    "max_tokens": 900,
+                    "messages": messages,
+                    "tools": TOOLS,
+                    "tool_choice": "none" if last else "auto",
+                    "usage": {"include": True},
+                }
+                resp = await _llm_post(client, payload)
+                if resp.status_code != 200:
+                    logger.warning("Public bot LLM: HTTP %s", resp.status_code)
+                    return None
+                data = resp.json()
+                usage = data.get("usage") or {}
+                ubuf = _LLM_USAGE.get()
+                if ubuf is not None:
+                    ubuf.append((float(usage.get("cost") or 0), int(usage.get("prompt_tokens") or 0),
+                                 int((usage.get("prompt_tokens_details") or {}).get("cached_tokens") or 0)))
+                choice = (data.get("choices") or [{}])[0]
+                msg = choice.get("message") or {}
+                calls = msg.get("tool_calls") or []
+                if calls and not last:
+                    messages.append({"role": "assistant", "content": msg.get("content") or "", "tool_calls": calls})
+                    for call in calls:
+                        fn = call.get("function") or {}
+                        out = (await run_tool(fn.get("name", ""), fn.get("arguments"))
+                               if len(tool_text) < _AGENT_TOOL_CALLS * _AGENT_STEPS else "Лимит вызовов исчерпан — отвечай.")
+                        tool_text.append(out)
+                        messages.append({"role": "tool", "tool_call_id": call.get("id", ""), "content": out})
                     continue
-                break
-        if resp.status_code != 200:
-            logger.warning("Public bot LLM: HTTP %s", resp.status_code)
-            return None
-        choice = (resp.json().get("choices") or [{}])[0]
-        content = choice.get("message", {}).get("content")
-        if not isinstance(content, str) or not content.strip():
-            return None
-        if choice.get("finish_reason") == "length":
-            content = trim_to_paragraph(content)
-        return content.strip()
+                content = msg.get("content")
+                if not isinstance(content, str) or not content.strip():
+                    return None
+                if choice.get("finish_reason") == "length":
+                    content = trim_to_paragraph(content)
+                buf = _TOOL_TEXT.get()
+                if buf is not None:
+                    buf.extend(tool_text)
+                return content.strip()
+        return None
     except Exception:  # noqa: BLE001
         logger.warning("Public bot LLM failed", exc_info=True)
         return None
@@ -1718,11 +1778,21 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
     history = _history(chat_id)
     import time
     started = time.monotonic()
+    tool_buf: list[str] = []
+    _TOOL_TEXT.set(tool_buf)
+    usage_buf: list[tuple[float, int, int]] = []
+    _LLM_USAGE.set(usage_buf)
     answer = await _with_typing(chat_id, _llm_complete(context, text, history))
     elapsed = time.monotonic() - started
     try:
         async with async_session() as db:
             _event(db, chat_id, "llm_time", code=f"{elapsed:.1f}")
+            if usage_buf:
+                # Цена ответа и доля входа из кэша — строка «Цена ответа» в отчёте (владелец 09.11: «сколько стоит диалог»).
+                cost = sum(u[0] for u in usage_buf)
+                prompt = sum(u[1] for u in usage_buf) or 1
+                cached = sum(u[2] for u in usage_buf)
+                _event(db, chat_id, "llm_cost", code=f"{cost:.5f}|{len(usage_buf)}|{cached * 100 // prompt}")
             await db.commit()
     except Exception:  # noqa: BLE001 — замер не должен мешать ответу
         logger.debug("llm_time not stored", exc_info=True)
@@ -1765,7 +1835,7 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
     _remember(chat_id, "assistant", clean)
     en = is_english(text)
     subs = [k for k in subs if not chart_mismatch(text, k)]
-    clean = safe_links(clean, context)
+    clean = safe_links(clean, context + "\n" + "\n".join(tool_buf))
     if any(w in _norm(text) for w in _NO_CHART):
         # Тестер №6, 09.11: «что с юанем?» приходил с графиком доллара — такого графика у темы нет.
         charts = []

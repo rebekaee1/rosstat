@@ -782,3 +782,59 @@ def test_telegram_html_fixes_latin_letter_inside_russian_word():
     from app.services.public_bot import telegram_html
     assert telegram_html("регулятор кранa и доллar") == "регулятор крана и доллар"
     assert telegram_html("the USD rate") == "the USD rate"
+
+
+def test_agent_tools_calculate_is_safe_and_exact():
+    from app.services.bot_agent_tools import calculate
+    assert calculate("1000000/(1+0.0635)").endswith("940 291,49")
+    assert calculate("round(12*8748, 0)").endswith("104 976")
+    assert calculate("__import__('os').system('x')").startswith("Не посчитал")
+    assert calculate("9**99999").startswith("Не посчитал")
+
+
+def test_agent_tools_helpers():
+    from datetime import date as d
+    from app.services import bot_agent_tools as t
+    assert t._stems("медианная зарплата в России") == ["медианн", "зарпла"]
+    assert "потребительских цен" in t._alts("инфля")
+    pts = [(d(2024, 1, i), 16.0) for i in range(1, 20)] + [(d(2024, 2, 1), 18.0), (d(2024, 2, 2), 18.0)]
+    assert t._runs(pts) == [(d(2024, 1, 1), 16.0), (d(2024, 2, 1), 18.0), (d(2024, 2, 2), 18.0)]
+
+
+def test_agent_loop_calls_tool_then_answers(env, monkeypatch):
+    """Модель просит инструмент → бот исполняет → второй шаг даёт текст; адрес из ответа инструмента не вырезается."""
+    _, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+    from app.services import bot_agent_tools as t
+    url = "https://ru.forecasteconomy.com/russia/region/respublika-tatarstan/ceni-ai92"
+
+    async def fake_tool(name, args):
+        return f"АИ-92 в Татарстане 68,79 за 2026-09 | {url}"
+    monkeypatch.setattr(t, "run_tool", fake_tool)
+    steps = iter([
+        {"choices": [{"message": {"content": "", "tool_calls": [
+            {"id": "c1", "type": "function", "function": {"name": "find_series", "arguments": '{"query":"бензин","place":"Татарстан"}'}}]}}],
+         "usage": {"cost": 0.01, "prompt_tokens": 8000, "prompt_tokens_details": {"cached_tokens": 0}}},
+        {"choices": [{"message": {"content": f'В Татарстане 68,79 ₽. <a href="{url}">Страница</a>'}, "finish_reason": "stop"}],
+         "usage": {"cost": 0.002, "prompt_tokens": 8200, "prompt_tokens_details": {"cached_tokens": 8000}}},
+    ])
+    seen = []
+
+    class R:
+        status_code = 200
+
+        def __init__(self, data):
+            self._d = data
+
+        def json(self):
+            return self._d
+
+    async def fake_post(client, payload):
+        seen.append(payload)
+        return R(next(steps))
+    monkeypatch.setattr(pb, "_llm_post", fake_post)
+    asyncio.run(pb.handle_message(_msg("бензин в Казани сколько?")))
+    assert seen[0]["tools"] and seen[0]["messages"][0]["content"][0]["cache_control"] == {"type": "ephemeral"}
+    assert seen[1]["messages"][-1]["role"] == "tool" and "68,79" in seen[1]["messages"][-1]["content"]
+    assert f'<a href="{url}">' in sent[-1]["text"]

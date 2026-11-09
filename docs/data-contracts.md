@@ -1037,3 +1037,5 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 В каталоге «Рынок труда» и на странице «Россия» общий уровень безработицы
 идёт первым. Разрезы ЕМИСС собраны в семь раскрываемых групп, остальные
 показатели остаются в обзорном списке. Контракты и адреса рядов сохранены.
+
+**Публичный бот: чтение базы ИИ-агентом, 2026-11-09.** Агент @ForecastEconomyBot читает `indicators`/`indicator_data`/текущие `forecasts`, `region_indicators`/`region_data`/`region_monthly_data`/`regions`, `world_indicators` (только `is_listed`)/`world_data_points`/`world_countries` и `economic_events` через инструменты `bot_agent_tools.py`: только SELECT, `statement_timeout` 3 с на вызов, ответ до 3500 знаков, прогноз одним значением без границ, адреса страниц через `site_paths`. Запись не выполняется. [Инструменты](../backend/app/services/bot_agent_tools.py), [ADR-0027](adr/0027-public-telegram-bot.md).
