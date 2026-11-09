@@ -53941,7 +53941,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/Privacy.jsx": {
-    "sha256": "680759cf271a1ff98a7908854bb8aaf7686555531e5706429edc855ebd8e5995",
+    "sha256": "a57af798a3eddd17691d4421501fd8744dcaf2fd754f80f8863c6b166b07b50c",
     "definitions": [
       {
         "name": "CookieRow",
@@ -53952,7 +53952,7 @@
       {
         "name": "Privacy",
         "line": 44,
-        "end_line": 301,
+        "end_line": 303,
         "kind": "FunctionDeclaration"
       }
     ],

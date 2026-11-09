@@ -209532,7 +209532,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Privacy.jsx": {
-      "sha256": "680759cf271a1ff98a7908854bb8aaf7686555531e5706429edc855ebd8e5995",
+      "sha256": "a57af798a3eddd17691d4421501fd8744dcaf2fd754f80f8863c6b166b07b50c",
       "imports": [
         {
           "line": 1,
@@ -209735,15 +209735,15 @@
         },
         {
           "line": 44,
-          "end_line": 301,
+          "end_line": 303,
           "owner": "<module>",
           "name": "Privacy",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 286,
-          "end_line": 286,
+          "line": 288,
+          "end_line": 288,
           "owner": "Privacy",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -209790,8 +209790,8 @@
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 283,
-          "end_line": 287,
+          "line": 285,
+          "end_line": 289,
           "owner": "Privacy",
           "component": "a",
           "event": "onClick",
