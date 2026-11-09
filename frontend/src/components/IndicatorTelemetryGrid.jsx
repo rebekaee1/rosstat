@@ -3,7 +3,7 @@ import { cpiInflationGranularity, dataModeForUrlMode } from '../lib/cpiViewModeR
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
 import { indicatorPolarity } from '../lib/deltaTone';
-import { periodPhrase, sincePhrase } from '../lib/periodPhrase';
+import { glueDate, periodPhrase, sincePhrase } from '../lib/periodPhrase';
 import {
   bestGrowth, growthOverYears, unitKind, windowStats,
 } from '../lib/indicatorSummary';
@@ -222,7 +222,7 @@ export default function IndicatorTelemetryGrid({
             unit={displayUnit}
             valueDigits={valueDigits}
             meta={periodPhrase(t, windowed ? windowed.highest.date : (s?.highest?.date ?? stats?.highest?.date), dateFmt, locale)
-              ? t('w3.tele.peakOn', { date: formatDate(windowed ? windowed.highest.date : (s?.highest?.date ?? stats?.highest?.date), dateFmt, locale) })
+              ? t('w3.tele.peakOn', { date: glueDate(formatDate(windowed ? windowed.highest.date : (s?.highest?.date ?? stats?.highest?.date), dateFmt, locale)) })
               : undefined}
             delay={2}
           />

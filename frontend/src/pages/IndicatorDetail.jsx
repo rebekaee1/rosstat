@@ -9,6 +9,8 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
 import IndicatorHeroValue from '../components/IndicatorHeroValue';
+import R6bPulseStrip from '../components/R6bPulseStrip';
+import { WorldHeroLine } from '../components/WorldStatTiles';
 import FreshnessNote from '../components/FreshnessNote';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import VariantGroupPicker from '../components/VariantGroupPicker';
@@ -633,7 +635,22 @@ export default function IndicatorDetail() {
             loading={loadingInd || Boolean(chartLoading)}
           />
         ) : null}
-      />
+      >
+        {!loadingInd && heroSummary ? (
+          <>
+            <WorldHeroLine summary={heroSummary} place="" dateFormat={heroDateFormat} frequency={heroFreq} />
+            <R6bPulseStrip
+              summary={heroSummary}
+              polarity={heroPolarity}
+              deltaSuffix={heroDeltaSuffix}
+              dateFormat={heroDateFormat}
+              related={relatedIndicators}
+              code={code}
+              category={indicator?.category}
+            />
+          </>
+        ) : null}
+      </IndicatorDetailHeader>
 
       {provenance && <p role="note" className="mb-4 text-sm text-text-secondary">{provenance}</p>}
 

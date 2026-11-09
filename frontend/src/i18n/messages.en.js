@@ -3936,4 +3936,7 @@ export default {
   'r5c.range.min': 'Low',
   'r5c.range.max': 'High',
   'r5c.range.avg': 'Average',
+  'r6b.flatSince': 'since {date}',
+  'r6b.related': 'Related indicators',
+  'r6b.toTop': 'Back to the top of the indicator',
 };

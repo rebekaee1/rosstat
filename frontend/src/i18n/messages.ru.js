@@ -3941,4 +3941,7 @@ export default {
   'r5c.range.min': 'Минимум',
   'r5c.range.max': 'Максимум',
   'r5c.range.avg': 'Среднее',
+  'r6b.flatSince': 'с {date}',
+  'r6b.related': 'Связанные показатели',
+  'r6b.toTop': 'Наверх, к показателю',
 };
