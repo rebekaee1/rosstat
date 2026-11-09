@@ -3960,4 +3960,12 @@ export default {
   'r6b.flatSince': 'since {date}',
   'r6b.related': 'Related indicators',
   'r6b.toTop': 'Back to the top of the indicator',
+  'r7a.search.mrotNote': 'The minimum wage is one figure for the whole country, with no regional series. Nearby measures for your region:',
+  'r7a.search.localNote': 'We have no such series for {region}. Others we do have:',
+  'r7a.local.cpi': 'Inflation',
+  'r7a.local.wage': 'Wages',
+  'r7a.local.unemployment': 'Unemployment',
+  'r7a.local.population': 'Population',
+  'r7a.local.prices': 'Food prices',
+  'r7a.local.housing': 'Housing prices',
 };
