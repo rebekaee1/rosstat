@@ -452,6 +452,79 @@ def _month_label(month: int) -> str:
     return f"{names[month % 100 - 1]} {month // 100}"
 
 
+@router.get("/russia/prices-summary")
+async def russia_prices_summary(db: AsyncSession = Depends(get_db)):
+    """Средние цены по России для национального каталога (R7-D).
+
+    Ходовые позиции (HEADLINE_PRICE_CODES) с последним месяцем, прошлым месяцем,
+    значением год назад и рядом за 13 месяцев для мини-графика, плюс число рядов
+    по группам. Лёгкая замена 1 МБ-профиля региона «russia».
+    """
+    cache_key = await versioned_key("regions", f"russia-prices:v1:{get_locale()}")
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+
+    region = (await db.execute(select(Region).where(Region.slug == "russia"))).scalar_one_or_none()
+    if region is None:
+        raise HTTPException(404, "Регион не найден")
+    inds = (await db.execute(
+        select(RegionIndicator).where(RegionIndicator.code.in_(list(HEADLINE_PRICE_CODES)))
+    )).scalars().all()
+    by_code = {i.code: i for i in inds}
+    rows = (await db.execute(
+        select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+        .where(RegionMonthlyPoint.region_id == region.id,
+               RegionMonthlyPoint.indicator_id.in_([i.id for i in inds]))
+        .order_by(RegionMonthlyPoint.month)
+    )).all()
+    series: dict[int, list[tuple[int, float]]] = {}
+    for iid, month, value in rows:
+        series.setdefault(iid, []).append((int(month), float(value)))
+
+    items = []
+    for code in HEADLINE_PRICE_CODES:
+        ind = by_code.get(code)
+        pts = series.get(ind.id) if ind else None
+        if not pts:
+            continue
+        month, value = pts[-1]
+        prev = pts[-2] if len(pts) > 1 else None
+        year_ago_month = month - 100
+        year_ago = next((v for m, v in pts if m == year_ago_month), None)
+        copy = _icopy(ind)
+        meta = price_meta(code)
+        item = {
+            "code": code, "name": copy["name"], "unit": copy["unit"],
+            "value": _fmt(value), "month": month, "period_label": _month_label(month),
+            "prev_value": _fmt(prev[1]) if prev else None,
+            "year_ago_value": _fmt(year_ago) if year_ago is not None else None,
+            "yoy_pct": round((value / year_ago - 1) * 100, 1) if year_ago else None,
+            "spark": [_fmt(v) for _m, v in pts[-13:]],
+        }
+        if meta:
+            item.update(_price_fields(meta))
+        items.append(item)
+
+    counts = (await db.execute(
+        select(RegionIndicator.code).where(RegionIndicator.code.like("ceni-%"))
+    )).scalars().all()
+    groups: dict[str, int] = {}
+    for c in counts:
+        meta = price_meta(c)
+        if meta and not meta["is_discontinued"]:
+            groups[meta["price_group"]] = groups.get(meta["price_group"], 0) + 1
+    en = get_locale() == "en"
+    group_list = [
+        {"group": g, "label": PRICE_GROUPS_EN.get(g, g) if en else g, "count": groups[g]}
+        for g in PRICE_GROUPS if g in groups
+    ]
+    payload = {"items": items, "groups": group_list, "total": sum(groups.values())}
+    if items:
+        await cache_set(cache_key, payload, settings.cache_ttl_data)
+    return payload
+
+
 @router.get("/{slug}")
 async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key("regions", f"profile:prices-v4:{slug}:{get_locale()}")

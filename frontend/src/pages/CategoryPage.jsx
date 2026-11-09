@@ -20,6 +20,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
 import CurrencyDesk from '../components/CurrencyDesk';
+import R7PricesBlock from '../components/R7PricesBlock';
 import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
@@ -178,13 +179,15 @@ export default function CategoryPage({ fixedSlug }) {
         );
       })()}
 
+      {isPricesCategory && <R7PricesBlock surface="category" />}
+
       {!isCurrencies && (
         <div className="r6b-cat-search mb-8">
           <IndicatorSearch variant="inline" inlinePlaceholder={t('w3.search.short')} />
         </div>
       )}
 
-      <section data-block="category-list" className="fe-cat-list">
+      <section id="category-list" data-block="category-list" className="fe-cat-list">
         {!isCurrencies && (
           <h2 className="fe-cat-list__title">
             {compactRows ? t('z1.cat.ratesHeading') : t('category.indicatorsHeading')}
