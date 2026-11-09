@@ -378,7 +378,7 @@ services:
       RUSTATS_PUBLIC_BOT_ENABLED: ${RUSTATS_PUBLIC_BOT_ENABLED:-false}
       RUSTATS_PUBLIC_BOT_TOKEN: ${RUSTATS_PUBLIC_BOT_TOKEN:-}
       RUSTATS_PUBLIC_BOT_LLM_ENABLED: ${RUSTATS_PUBLIC_BOT_LLM_ENABLED:-false}
-      RUSTATS_PUBLIC_BOT_LLM_MODEL: ${RUSTATS_PUBLIC_BOT_LLM_MODEL:-}
+      RUSTATS_PUBLIC_BOT_LLM_MODEL: ${RUSTATS_PUBLIC_BOT_LLM_MODEL:-anthropic/claude-sonnet-5.5}
       # Состояние (сессии/квоты) — отдельный Redis DB /1: FLUSHDB кэша не трогает.
       # Переезд на выделенный redis-state (О-8) — переопределением в .env.
       RUSTATS_STATE_REDIS_URL: ${RUSTATS_STATE_REDIS_URL:-redis://:${REDIS_PASSWORD:?задайте REDIS_PASSWORD в .env (шаблон .env.example)}@redis:6379/1}
