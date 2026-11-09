@@ -3936,4 +3936,10 @@ export default {
   'r5c.range.min': 'Low',
   'r5c.range.max': 'High',
   'r5c.range.avg': 'Average',
+  'r6a.search.labourNote': 'We have no pay by profession. By region we have average and median pay, and arrears.',
+  'r6a.labour.wage': 'Wages',
+  'r6a.labour.unemployment': 'Unemployment',
+  'r6a.labour.living': 'Subsistence minimum',
+  'r6a.labour.pension': 'Pension',
+  'r6a.labour.income': 'Household income',
 };

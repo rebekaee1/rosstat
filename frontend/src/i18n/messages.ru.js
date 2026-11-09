@@ -3941,4 +3941,10 @@ export default {
   'r5c.range.min': 'Минимум',
   'r5c.range.max': 'Максимум',
   'r5c.range.avg': 'Среднее',
+  'r6a.search.labourNote': 'Зарплат по профессиям у нас нет. Есть по региону: средняя, медианная и долги.',
+  'r6a.labour.wage': 'Зарплата',
+  'r6a.labour.unemployment': 'Безработица',
+  'r6a.labour.living': 'Прожиточный минимум',
+  'r6a.labour.pension': 'Пенсия',
+  'r6a.labour.income': 'Доходы населения',
 };

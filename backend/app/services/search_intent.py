@@ -13,6 +13,7 @@ from app.services.search_price_goods import has_price_goods, prepare_price_goods
 from app.services.search_region_hint import region_prefix_keys
 from app.services.search_language import LANGUAGE_CONCEPTS, QUESTION_WORDS, prepare_language
 from app.services.search_vocabulary import VOCABULARY_CONCEPTS, GRAMMAR_WORDS, prepare_vocabulary, prepare_temporal_roles
+from app.services.search_r6a import CITY_REGION_ALIASES_R6A, R6A_CONCEPTS
 from app.services.search_units import UNIT_CONCEPTS
 from app.services.search_dimensions import DIMENSION_CONCEPTS, prepare_dimensions
 
@@ -29,7 +30,7 @@ PRICE_GOODS_CONCEPTS = _price_goods_concepts()
 CONCEPTS = (
     (("ввп на душу населения", "ввп на душу", "gdp per capita", "per capita gdp"), ("gdp-per-capita", "gdp per capita", "ввп на душу",
         "внутренний продукт на душу", "domestic product per capita")),
-    (("мрот", "minimum wage", "минимальная зарплата"), ("minimum-wage", "minimum wage", "минималь")),
+    (("мрот", "minimum wage", "минимальная зарплата"), ("minimum-wage", "minimum wage", "минимальная заработная плата", "минимальный размер оплаты труда")),
     (("ипц", "cpi", "инфляция", "инфляции", "inflation", "рост цен"), ("cpi", "inflation", "hicp", "потребительских цен", "consumer price")),
     (("ввп", "gdp", "валовой продукт"), ("gdp", "ввп", "валовой внутренний продукт", "gross domestic product")),
     # `policy-rate` — код ключевой ставки других стран (us-policy-rate, uk-policy-rate): «ключевая ставка США» находит ставку ФРС.
@@ -103,7 +104,7 @@ CONCEPTS = (
     (("проценты", "процент", "percent", "percentage"), ("search-unit-percent",)),
 )
 
-CONCEPTS = CONCEPTS + LANGUAGE_CONCEPTS + VOCABULARY_CONCEPTS + UNIT_CONCEPTS + DIMENSION_CONCEPTS
+CONCEPTS = CONCEPTS + LANGUAGE_CONCEPTS + VOCABULARY_CONCEPTS + R6A_CONCEPTS + UNIT_CONCEPTS + DIMENSION_CONCEPTS
 
 _SINGLE_ALIASES = tuple((phrase_alias, alternatives) for aliases, alternatives in CONCEPTS
     for alias in aliases if " " not in (phrase_alias := " ".join(TOKEN_RE.findall(
@@ -180,7 +181,7 @@ _CITY_REGION_ALIASES = {
     "kaliningradskaya-oblast": ("калининград", "калининграда", "калининграде"),
     "sankt-peterburg": ("питер", "питере", "питера"),
 }
-for _slug, _names in _CITY_REGION_ALIASES.items():
+for _slug, _names in (*_CITY_REGION_ALIASES.items(), *CITY_REGION_ALIASES_R6A.items()):
     REGION_ALIASES[_slug] = tuple(REGION_ALIASES.get(_slug, ())) + _names
 
 _EN_KEYS = "qwertyuiop[]asdfghjkl;'zxcvbnm,."
