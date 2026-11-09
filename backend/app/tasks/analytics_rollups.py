@@ -140,6 +140,17 @@ def _session_raw_select(db, until: datetime, visitors):
              BehaviorEvent.event_type.in_(tuple(literal_column("'" + kind + "'")
                                                 for kind in _SESSION_EVENT_TYPES)),
              BehaviorEvent.occurred_at < until)
+    if db.bind.dialect.name == "postgresql":
+        # 09.11.2026: a plain join was planned as a Merge Join over the whole
+        # covering index (1,43 M rows, 495 k buffers, 70 s on a cold disk after
+        # the 13 M-row price load) for 2 309 window visitors with 30 k history
+        # rows, and hit the 60 s analytics statement_timeout on every run.
+        # LATERAL + OFFSET 0 (no pull-up) forces one index range per visitor:
+        # 20 k buffers, ~4 s cold on the same data.
+        history = select(*columns).where(*where).offset(0).lateral("visitor_history")
+        return select(visitors.c.visitor.label("visitor"), *(history.c[name] for name in _RAW_COLUMNS)).select_from(
+            visitors).join(history, literal_column("true")).order_by(
+                visitors.c.visitor, history.c.occurred_at, history.c.id)
     return select(visitors.c.visitor.label("visitor"), *columns).select_from(
         visitors).join(BehaviorEvent, where[0]).where(*where[1:]).order_by(
             visitors.c.visitor, BehaviorEvent.occurred_at, BehaviorEvent.id)

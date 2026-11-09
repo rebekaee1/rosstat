@@ -292,3 +292,18 @@ def test_indexed_raw_history_keeps_fallback_keys_disjoint_and_literal(monkeypatc
             assert len({r['id'] for r in rows}) == 3
             await db.rollback()
     _run_with_db(scenario)
+
+
+def test_postgres_raw_history_reads_one_index_range_per_visitor():
+    """PostgreSQL form is LATERAL with an OFFSET 0 fence, not a whole-index merge join."""
+    from types import SimpleNamespace
+
+    from sqlalchemy import Column, MetaData, Table
+    from sqlalchemy.dialects import postgresql
+
+    visitors = Table('fixture_visitors', MetaData(), Column('visitor', BehaviorEvent.visitor_id_hash.type, primary_key=True))
+    db = SimpleNamespace(bind=SimpleNamespace(dialect=SimpleNamespace(name='postgresql')))
+    sql = str(rollups._session_raw_select(db, NOW, visitors).compile(dialect=postgresql.dialect()))
+    assert 'LATERAL' in sql
+    assert 'OFFSET' in sql
+    assert 'fixture_visitors.visitor' in sql.split('LATERAL', 1)[1]
