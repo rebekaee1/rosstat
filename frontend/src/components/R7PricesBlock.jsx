@@ -10,6 +10,8 @@ import { resolveBrowserLocale } from '../i18n/locale';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import Sparkline from './Sparkline';
+import R9PriceMovers from './R9PriceMovers';
+import { splitPriceUnit, signed, money } from '../lib/r9bPrice';
 import '../styles/r7d-prices.css';
 
 const STORE_KEY = 'fe_r7d_region';
@@ -39,26 +41,9 @@ function useRussiaPrices() {
   });
 }
 
-/** «рублей за литр» -> { sign: '₽', per: 'за литр' } */
-function splitPriceUnit(unit) {
-  const u = String(unit || '');
-  const m = u.match(/^(?:рублей|рубля|рубль|roubles|rubles)\s*(.*)$/i);
-  if (!m) return { sign: '', per: u };
-  const per = m[1]
-    .replace(/килограмм(?![\p{L}])/iu, 'кг')
-    .replace(/штук(?![\p{L}])/iu, 'шт.')
-    .replace(/литр(?![\p{L}])/iu, 'л');
-  return { sign: '₽', per };
-}
-
 function pctChange(a, b) {
   if (a == null || b == null || !b) return null;
   return (a / b - 1) * 100;
-}
-
-function signed(p, locale) {
-  const s = formatValue(Math.abs(p), Math.abs(p) < 10 ? 1 : 0, locale);
-  return `${p > 0 ? '+' : p < 0 ? '−' : ''}${s}\u00a0%`;
 }
 
 function Trend({ pct, locale, label }) {
@@ -72,6 +57,19 @@ function Trend({ pct, locale, label }) {
       <span className="r7d-trend__l">{label}</span>
     </span>
   );
+}
+
+/** Запасной топ, если бэкенд ещё без movers: берём ходовые позиции с годовым изменением. */
+function deriveMovers(items) {
+  const rows = (items || []).filter((i) => i.yoy_pct != null && i.year_ago_value != null);
+  if (rows.length < 3) return null;
+  const sorted = [...rows].sort((a, b) => b.yoy_pct - a.yoy_pct);
+  return {
+    up: sorted.filter((i) => i.yoy_pct > 0),
+    down: sorted.filter((i) => i.yoy_pct < 0).reverse(),
+    count: rows.length,
+    period_label: rows[0].period_label || '',
+  };
 }
 
 function readRegion() {
@@ -110,6 +108,7 @@ export default function R7PricesBlock({ limit = 12, surface = 'category', headin
   const items = expanded ? all : all.slice(0, FOLD);
   const H = `h${headingLevel}`;
   const month = all[0]?.period_label || '';
+  const movers = data?.movers || deriveMovers(data?.items);
 
   return (
     <section data-block="russia-prices" className="r7d-prices" aria-labelledby={`r7d-title-${surface}`}>
@@ -133,6 +132,8 @@ export default function R7PricesBlock({ limit = 12, surface = 'category', headin
           </label>
         )}
       </div>
+
+ <R9PriceMovers movers={movers} surface={surface} headingLevel={headingLevel + 1} />
 
       <ul className="r7d-grid" aria-busy={isLoading || undefined}>
         {isLoading && Array.from({ length: 6 }).map((_, i) => (
@@ -158,6 +159,9 @@ export default function R7PricesBlock({ limit = 12, surface = 'category', headin
                   {sign && <span className="r7d-card__sign">{'\u00a0'}{sign}</span>}
                 </span>
                 {per && <span className="r7d-card__per">{per}</span>}
+                {it.year_ago_value != null && (
+                  <span className="r9b-card__was">{t('r9b.agoCard', { then: money(it.year_ago_value, it.unit, locale) })}</span>
+                )}
                 <span className="r7d-card__trends">
                   <Trend pct={it.yoy_pct} locale={locale} label={t('r7d.yoy')} />
                   <Trend pct={it.yoy_pct == null ? mom : null} locale={locale} label={t('r7d.mom')} />

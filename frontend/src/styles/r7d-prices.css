@@ -62,4 +62,4 @@
 .r7d-jump { font-weight: 600; white-space: nowrap; text-decoration: none; color: var(--color-champagne-ink, #2f4c7e); }
 .r7d-card__main { padding-bottom: 14px; }
 .r7d-region__s { max-width: min(100%, 22rem); }
-.r7d-jump { display: inline-block; margin-top: 6px; }
+.r7d-jump { display: flex; align-items: center; width: fit-content; min-height: 36px; margin-top: 2px; }

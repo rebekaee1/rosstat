@@ -1,5 +1,6 @@
 // «Главная пятёрка» России: инфляция за год, ставка, курс доллара, ВВП, безработица. Крупно, со спарклайном и «год назад».
-import { useMemo } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import { Check, Copy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useIndicatorData } from '../../lib/hooks';
 import { formatValue, resolveDateFormat } from '../../lib/format';
@@ -15,6 +16,8 @@ import DeltaBadge from '../DeltaBadge';
 import Sparkline from '../Sparkline';
 import { SkeletonBox } from '../Skeleton';
 import useSparkHeight from '../country/useSparkHeight';
+import { copyToClipboard } from '../../lib/r9bPrice';
+import '../../styles/r9b-movers.css';
 import '../../styles/z5-country.css';
 import '../../styles/k6-country.css';
 
@@ -98,14 +101,50 @@ function MainCard({ card, index }) {
   );
 }
 
+/** Строка для журналиста: источники и кнопка «скопировать главные цифры» с датами. */
+function CiteStrip({ cards }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const [done, setDone] = useState(false);
+  const timer = useRef(null);
+  if (!cards.length) return null;
+  const text = () => {
+    const lines = cards.map((card) => {
+      const f = formatFigure(card.value, card.unit, locale);
+      const date = periodPhrase(t, card.date, resolveDateFormat({ frequency: card.indicator.frequency || 'monthly' }), locale) || '';
+      return `• ${t(card.titleKey || `z5.ru.main.${card.id}`)}: ${f.text}${f.unit ? `\u00a0${f.unit}` : ''}${date ? ` (${date})` : ''}`;
+    });
+    return `${t('r9b.hub.copyHead')}\n${lines.join('\n')}\n${t('r9b.hub.copySrc')}`;
+  };
+  const copy = async () => {
+    if (await copyToClipboard(text())) {
+      setDone(true);
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => setDone(false), 2200);
+    }
+  };
+  return (
+    <div className="r9b-cite">
+      <p className="r9b-cite__src">{t('r9b.hub.sources')}</p>
+      <button type="button" className="r9b-act fe-press" onClick={copy}>
+        {done ? <Check size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}
+        {done ? t('r9b.copied') : t('r9b.hub.copy')}
+      </button>
+    </div>
+  );
+}
+
 export default function RussiaKeyFigures({ indicators, isLoading }) {
   const cards = useMemo(() => russiaMainFive(indicators), [indicators]);
   return (
-    <div className="z5-ru-main" data-testid="russia-overview-chips">
-      {cards.map((card, index) => <MainCard key={card.id} card={card} index={index} />)}
-      {isLoading && [0, 1, 2, 3, 4].map((i) => (
-        <SkeletonBox key={i} className="z5-key z5-key--skel h-[170px] rounded-[22px]" />
-      ))}
-    </div>
+    <>
+      <div className="z5-ru-main" data-testid="russia-overview-chips">
+        {cards.map((card, index) => <MainCard key={card.id} card={card} index={index} />)}
+        {isLoading && [0, 1, 2, 3, 4].map((i) => (
+          <SkeletonBox key={i} className="z5-key z5-key--skel h-[170px] rounded-[22px]" />
+        ))}
+      </div>
+      <CiteStrip cards={cards} />
+    </>
   );
 }
