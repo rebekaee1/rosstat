@@ -84,7 +84,7 @@ export default function R9PriceMovers({ movers, surface = 'category', headingLev
                 <span className="r9b-row__name">{it.short_name || it.name}</span>
                 <span className="r9b-row__was">
                   {t('r9b.was', { then: formatValue(it.year_ago_value, it.year_ago_value >= 1000 ? 0 : 2, locale), now: money(it.value, it.unit, locale) })}
-                  {per ? <span className="r9b-row__per">{` · ${per}`}</span> : null}
+                  {per ? <span className="r9b-row__per">{`, ${per}`}</span> : null}
                 </span>
                 <span className="r9b-row__bar" aria-hidden="true"><i style={{ width: `${w}%` }} /></span>
               </Link>
