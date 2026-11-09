@@ -1,0 +1,18 @@
+/* R8-E: шапка региона компактнее на узком экране, чтобы цены начинались на первом экране
+   даже при крупном шрифте. Кнопки сравнения в один ряд, пояснение в две строки. */
+@media (max-width: 639px) {
+  .z1p-header .z1p-header-actions { flex-direction: row; flex-wrap: nowrap; align-items: stretch; gap: 6px; margin-top: 8px; }
+  .z1p-header .z1p-header-actions > * { flex: 1 1 0; min-width: 0; width: auto; min-height: 40px; padding-inline: 10px; font-size: 13px; line-height: 1.2; }
+  .z1p-header .z1p-header-actions .fe-reg-pick { min-height: 40px; }
+  .z1p-header .z1p-header-actions .fe-reg-pick__select { font-size: 13px; min-height: 40px; padding-inline: 30px 26px; text-overflow: ellipsis; }
+  .fe-data-header.z1p-header { margin-bottom: 12px; padding-bottom: 12px; }
+  .z1p-header > p { margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+}
+
+/* R8-E: курсы валют. Колонка значения у всех строк одной ширины, а подпись «за 100 …» не растягивает её:
+   иначе у таких строк мини-график уезжал влево относительно остальных. */
+.fe-z8-cur .fe-trow.fe-w6g-currency-row .fe-trow__val { min-width: 7.75rem; align-items: flex-end; }
+.fe-z8-cur .fe-trow.fe-w6g-currency-row .z3-val__per { width: 0; min-width: 100%; box-sizing: border-box; white-space: normal; text-align: right; border-radius: 12px; }
+
+/* R8-E: «1 000 ₽ = …» под заголовком курса мелкой валюты. */
+.r8e-send-line { margin: 4px 0 0; font-size: 15px; font-weight: 600; line-height: 1.35; color: var(--color-champagne-ink); font-variant-numeric: tabular-nums; }

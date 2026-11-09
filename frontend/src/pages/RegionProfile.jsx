@@ -12,6 +12,7 @@ import CabinetActionsSlot from '../components/CabinetActionsSlot';
 import { regionSubject } from '../lib/cabinetSubjects';
 import Button from '../components/Button';
 import RegionComparePick from '../components/regions/RegionComparePick';
+import '../styles/r8e-fixes.css';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
 import {

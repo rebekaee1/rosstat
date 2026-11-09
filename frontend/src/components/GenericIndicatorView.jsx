@@ -11,7 +11,8 @@ import CurrencyTelemetry from './CurrencyTelemetry';
 import CurrencyNext from './CurrencyNext';
 import { CurrencyCardConverter } from './CurrencyConverter';
 import { isCurrencyIndicator } from '../lib/sitePaths';
-import { normalizeRateNameEn } from '../lib/currencyRates';
+import { TRIP_UNITS, formatConverted, normalizeRateNameEn, parsePair, quoteUnitsOf, unitWord } from '../lib/currencyRates';
+import '../styles/r8e-fixes.css';
 import IndicatorChartSection from './IndicatorChartSection';
 import IndicatorMethodologyPanel from './IndicatorMethodologyPanel';
 import IndicatorForecastSection from './IndicatorForecastSection';
@@ -201,6 +202,17 @@ export default function GenericIndicatorView({
     ? { ...indicator, name: normalizeRateNameEn(indicator.name) }
     : indicator;
 
+  // R8-E: у мелких валют «в дорогу» под заголовком стоит «1 000 ₽ = 112 сомони», как в разделе курсов.
+  const sendLine = useMemo(() => {
+    const pair = isCurrency ? parsePair(code) : null;
+    const value = Number(heroSummary?.last?.value);
+    if (!pair || pair.quote !== 'RUB' || !TRIP_UNITS.includes(pair.base) || !(value > 0)) return '';
+    const perOneRub = value / quoteUnitsOf(effectiveIndicator?.unit);
+    if (!(perOneRub > 0)) return '';
+    const got = 1000 / perOneRub;
+    return `1\u00a0000\u00a0₽ = ${formatConverted(got, locale, { money: true })}\u00a0${unitWord(got, pair.base, locale)}`;
+  }, [isCurrency, code, heroSummary, effectiveIndicator?.unit, locale]);
+
   // При сбое подсказка под пустым графиком ссылается на кнопку «Повторить» выше, а не рассказывает про «загрузку с сервера».
   const chartEmptyHint = !isLoading && (dataPoints?.length ?? 0) === 0
     ? t(isError ? 'indicator.empty.seriesFetch' : 'indicator.empty.recalc')
@@ -229,6 +241,7 @@ export default function GenericIndicatorView({
           />
         ) : null}
       >
+        {!loadingInd && sendLine ? <p className="r8e-send-line" data-testid="currency-send-line">{sendLine}</p> : null}
         {!loadingInd && heroSummary ? (
           <WorldHeroLine summary={heroSummary} place="" dateFormat={heroDateFormat} frequency={heroFreq} />
         ) : null}

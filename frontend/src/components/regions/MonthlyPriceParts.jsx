@@ -9,6 +9,7 @@ import { useLocale } from '../../i18n';
 import { glueNumbers } from '../../lib/regionUi';
 import { regionIndicatorPath, regionPath } from '../../lib/sitePaths';
 import { compareFill, groupSiblings, pairLabel, pairSiblings, perAreaUnit, priceText, roundBig, signedPct, ymLabel } from '../../lib/z2Price';
+import { GOODS_GROUP, splitGoods } from './RegionPricesSubgroups';
 import '../../styles/z2-price.css';
 import '../../styles/r5a-price.css';
 import '../../styles/r8c-price.css';
@@ -114,6 +115,10 @@ export default function GroupedSiblings({ siblings, currentGroup, slug, section,
   const [openGroups, setOpenGroups] = useState({});
   const groups = groupSiblings(siblings, currentGroup);
   if (!groups) return null;
+  // R8-E: самая длинная группа «Одежда и товары» делится на подгруппы (дом, техника, одежда…), как на странице региона.
+  const parts = groups.flatMap((g) => (g.group === GOODS_GROUP && g.items.length > PER_GROUP * 2
+    ? splitGoods(g.items).map((p) => ({ group: `${g.group}:${p.key}`, items: p.items, label: t(`r8b.sub.${p.key}`) }))
+    : [g]));
   return (
     <div className="z2p-siblings">
       <div className="z2p-siblings__head">
@@ -123,10 +128,10 @@ export default function GroupedSiblings({ siblings, currentGroup, slug, section,
           <ArrowUpRight size={13} aria-hidden="true" />
         </Link>
       </div>
-      {groups.map((g) => (
+      {parts.map((g) => (
         <Group
           key={g.group}
-          label={GROUP_KEYS[g.group] ? t(GROUP_KEYS[g.group]) : g.group}
+          label={g.label || (GROUP_KEYS[g.group] ? t(GROUP_KEYS[g.group]) : g.group)}
           items={g.items}
           slug={slug}
           pageMonth={pageMonth}
@@ -142,6 +147,15 @@ export default function GroupedSiblings({ siblings, currentGroup, slug, section,
   );
 }
 
+/** R8-E: голое «92» ничего не говорит, поэтому перед числом стоит первое слово названия: «Бензин 92». Комнаты остаются «1 комн.». */
+function variantLabel(name, locale) {
+  const label = pairLabel(name, locale);
+  if (/комн|room/i.test(label)) return label;
+  const first = String(name || '').trim().split(/\s+/)[0] || '';
+  if (!first || /\d/.test(first) || label.startsWith(first)) return label;
+  return `${first}\u00a0${label}`;
+}
+
 /** Варианты одной цены (1 и 2 комнаты): переключатель с ценами рядом, чтобы показать клиенту обе сразу. */
 export function PairSwitch({ siblings, currentName, currentValue, unit, slug }) {
   const { t, locale } = useLocale();
@@ -149,8 +163,8 @@ export function PairSwitch({ siblings, currentName, currentValue, unit, slug }) 
   if (!pairs.length) return null;
   const num = (name) => parseInt(/\d+/.exec(name || '')?.[0], 10) || 0;
   const items = [
-    { code: null, label: pairLabel(currentName, locale), value: currentValue, unit, n: num(currentName) },
-    ...pairs.map((s) => ({ code: s.code, label: pairLabel(s.short_name || s.name, locale), value: s.value ?? s.last_value, unit: s.unit, n: num(s.short_name || s.name) })),
+    { code: null, label: variantLabel(currentName, locale), value: currentValue, unit, n: num(currentName) },
+    ...pairs.map((s) => ({ code: s.code, label: variantLabel(s.short_name || s.name, locale), value: s.value ?? s.last_value, unit: s.unit, n: num(s.short_name || s.name) })),
   ].sort((a, b) => a.n - b.n);
   return (
     <nav className="r5a-pair" aria-label={t('r5a.pairAria')}>

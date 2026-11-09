@@ -34,6 +34,7 @@ import '../styles/k8-tools.css';
 import '../styles/c8-currency.css';
 import '../styles/z3-cur.css';
 import '../styles/r8d-currency.css';
+import '../styles/r8e-fixes.css';
 
 // График пары тянет за собой всю библиотеку графиков (около 120 КБ в сжатом виде): на слабой связи сначала приходят курсы и конвертер,
 // график догружается следом, а место под него занято с самого начала.
