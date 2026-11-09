@@ -1,0 +1,51 @@
+/* R5-B (круг 5): страница региона глазами молодой мамы. Только светлота слоя и тень, без рамок и колец. */
+
+/* Быстрые наборы цен: детям, коммуналка, лекарства. */
+.r5b-tabs { margin: 0 0 14px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.r5b-tabs::-webkit-scrollbar { display: none; }
+.r5b-tabs .fe-chip { flex: none; min-height: 44px; }
+
+/* Ряд наборов уходит за край: мягкое затухание справа подсказывает, что его можно листать. */
+@media (max-width: 639px) {
+  .r5b-tabs { -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); padding-right: 24px; }
+}
+
+/* Подсказки поиска и частые темы: один ряд, листается пальцем. */
+.r5b-try { margin: 0 0 8px; align-items: center; flex-wrap: nowrap; overflow-x: auto; gap: 8px; scrollbar-width: none; }
+.r5b-try::-webkit-scrollbar { display: none; }
+.r5b-try > * { flex: none; }
+.r5b-try__lead { font-size: 13px; color: var(--color-text-secondary); }
+.r5b-try .fe-chip { min-height: 44px; }
+.r5b-topics { margin: 0 0 20px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.r5b-topics::-webkit-scrollbar { display: none; }
+.r5b-topics .fe-chip { flex: none; min-height: 44px; }
+@media (min-width: 1024px) { .r5b-topics { display: none; } }
+@media (max-width: 639px) {
+  .r5b-topics { -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); padding-right: 24px; }
+  /* Стрелка тренда повторяет знак изменения и гуляет по строке: на телефоне оставляем один знак. */
+  .fe-trend-tick { display: none; }
+}
+
+/* Группы цен: один ряд вместо четырёх строк кнопок, остальное — свайпом. */
+@media (max-width: 639px) {
+  .z1p-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-bottom: 14px; padding-right: 24px; -webkit-mask-image: linear-gradient(90deg, #000 90%, transparent); mask-image: linear-gradient(90deg, #000 90%, transparent); }
+  .z1p-chips::-webkit-scrollbar { display: none; }
+  .z1p-chips .fe-chip { flex: none; min-height: 44px; }
+}
+
+/* Строка цены на телефоне: название слева, цена и изменение справа, одна строка; месяц сказан один раз над группами. */
+.r5b-month { margin: -4px 0 12px; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }
+@media (max-width: 639px) {
+  .r5b-row { flex-direction: row; align-items: center; gap: 12px; padding-top: 12px; padding-bottom: 12px; }
+  .r5b-row > div:last-child { flex: none; flex-direction: column; align-items: flex-end; gap: 4px; padding-top: 0; max-width: 46%; }
+}
+
+/* Хаб регионов, рейтинги: метрики одним рядом со свайпом, а не пять строк кнопок перед списком регионов. */
+@media (max-width: 639px) {
+  .fe-rank .fe-chip-row--grid { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; scrollbar-width: none; padding-right: 24px; -webkit-mask-image: linear-gradient(90deg, #000 90%, transparent); mask-image: linear-gradient(90deg, #000 90%, transparent); }
+  .fe-rank .fe-chip-row--grid::-webkit-scrollbar { display: none; }
+  .fe-rank .fe-chip-row--grid .fe-chip { flex: 0 0 auto; width: auto; min-width: max-content; white-space: nowrap; padding-inline: 18px; min-height: 44px; }
+}
+
+/* Хаб: быстрый переход к полному списку регионов, минуя рейтинг. */
+.r5b-jump { margin-top: 10px; min-height: 44px; }

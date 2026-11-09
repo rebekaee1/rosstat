@@ -3908,4 +3908,13 @@ export default {
   'r5a.flatMonth': 'без перемен за месяц',
   'r5a.areaSum': 'Квартира {area}: ≈ {sum} в месяц',
   'r5a.areaAria': 'Площадь квартиры',
+  'r5b.tabs.aria': 'Наборы цен',
+  'r5b.tab.main': 'Ходовые',
+  'r5b.tab.kids': 'Детям',
+  'r5b.tab.home': 'Коммуналка',
+  'r5b.tab.pharm': 'Лекарства',
+  'r5b.try.lead': 'Например:',
+  'r5b.try.words': 'детский сад|молоко|отопление|ибупрофен',
+  'r5b.topics.aria': 'Частые темы',
+  'r5b.hub.jump': 'Весь список регионов по округам',
 };

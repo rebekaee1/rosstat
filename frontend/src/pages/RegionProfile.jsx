@@ -32,6 +32,7 @@ import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/z5-country.css';
 import '../styles/z1-prices.css';
+import '../styles/r5b-region.css';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -84,17 +85,31 @@ export default function RegionProfile({ renderActions = null } = {}) {
   const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
   useSearchTracking('region-profile', deferredQuery, foundIndicators);
 
-  const priceTotal = useMemo(() => collectPriceItems(data?.sections).length, [data]);
   // Несколько цен (бензин, проезд) лежат и в других темах; «Все цены» ведёт в тему, где их больше всего.
   const priceSection = (data?.sections || []).reduce((best, s) => {
     const n = s.indicators.filter((i) => i.price_group).length;
     return n > (best?.n || 0) ? { n, section: s } : best;
   }, null)?.section;
+  // Число на кнопке «Все цены» совпадает с числом «Все» в разделе, куда она ведёт (раньше 873 и 870).
+  const priceTotal = priceSection
+    ? priceSection.indicators.filter((i) => i.price_group).length
+    : collectPriceItems(data?.sections).length;
   const openAllPrices = () => {
     setQuery('');
     if (priceSection) setActiveSection(priceSection.num);
     requestAnimationFrame(() => document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   };
+
+  // Частые темы семьи: одно касание вместо списка из двадцати тем.
+  const quickSections = useMemo(() => (
+    [20, 3, 4, 5, 2, 6].map((n) => sections.find((s) => Number(s.num) === n)).filter(Boolean)
+  ), [sections]);
+  const openSection = (num) => {
+    setQuery('');
+    setActiveSection(num);
+    requestAnimationFrame(() => document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  };
+  const tryWords = String(t('r5b.try.words')).split('|').filter(Boolean);
 
   const headlineOrder = ['1.1', '3.4', '2.10.1', '8.2', '10.1', '20.1', '3.12', '8.1'];
   const headline = data
@@ -187,12 +202,41 @@ export default function RegionProfile({ renderActions = null } = {}) {
           )}
 
           <RegionSearchField
-            className="mb-6"
+            className="mb-3"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('regions.profileSearchPlaceholder')}
             ariaLabel={t('regions.profileSearchAria')}
           />
+
+          {!searching && (
+            <div className="r5b-try fe-chip-row" data-testid="region-search-try">
+              <span className="r5b-try__lead">{t('r5b.try.lead')}</span>
+              {tryWords.map((w) => (
+                <button key={w} type="button" className="fe-chip fe-press" onClick={() => {
+                  setQuery(w);
+                  // Блок цен при поиске скрывается и страница укорачивается: возвращаем глаз к результатам.
+                  requestAnimationFrame(() => document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+                }}>{w}</button>
+              ))}
+            </div>
+          )}
+
+          {!searching && quickSections.length > 1 && (
+            <div className="r5b-topics fe-chip-row" role="group" aria-label={t('r5b.topics.aria')} data-testid="region-quick-topics">
+              {quickSections.map((sec) => (
+                <button
+                  key={sec.num}
+                  type="button"
+                  aria-pressed={String(resolvedActive) === String(sec.num)}
+                  className={`fe-chip fe-press ${String(resolvedActive) === String(sec.num) ? 'is-active' : ''}`}
+                  onClick={() => openSection(sec.num)}
+                >
+                  {sec.name}
+                </button>
+              ))}
+            </div>
+          )}
 
           {!searching && filteredSections.length === 0 && (
             <div className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">

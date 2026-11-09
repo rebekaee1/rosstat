@@ -53,6 +53,7 @@ import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/z5-country.css';
+import '../styles/r5b-region.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -636,6 +637,14 @@ export default function RegionsHome() {
           <div className="z1h-find fe-reveal" data-testid="hub-find-region">
             <div className="z1h-find__label">{t('r2z1.hub.find')}</div>
             <MapRegionSearch names={namesBySlug} placeholder={t('r2z1.hub.findPlaceholder')} onPick={(slug) => navigate(regionPath(slug))} />
+            <button
+              type="button"
+              className="fe-chip fe-press r5b-jump"
+              data-testid="hub-jump-districts"
+              onClick={() => document.getElementById('r5b-districts')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            >
+              {t('r5b.hub.jump')}
+            </button>
           </div>
 
           {/* Рейтинг: выбранный показатель, место, полоса и значение; «Ещё показатели» ищет по всему каталогу. */}
@@ -779,7 +788,7 @@ export default function RegionsHome() {
                     </aside>
                   )}
 
-                  <div className="min-w-0 space-y-8">
+                  <div id="r5b-districts" className="min-w-0 scroll-mt-28 space-y-8">
                     {filtered.map((d) => (
                       <section key={d.slug} aria-labelledby={`district-${d.slug}`}>
                         <RegionSectionHeading

@@ -3903,4 +3903,13 @@ export default {
   'r5a.flatMonth': 'no change in a month',
   'r5a.areaSum': 'Flat of {area}: ≈ {sum} a month',
   'r5a.areaAria': 'Flat size',
+  'r5b.tabs.aria': 'Price sets',
+  'r5b.tab.main': 'Everyday',
+  'r5b.tab.kids': 'For kids',
+  'r5b.tab.home': 'Utilities',
+  'r5b.tab.pharm': 'Medicines',
+  'r5b.try.lead': 'For example:',
+  'r5b.try.words': 'kindergarten|milk|heating|ibuprofen',
+  'r5b.topics.aria': 'Popular topics',
+  'r5b.hub.jump': 'Full list of regions by district',
 };

@@ -10,6 +10,7 @@ import { formatDeltaPercent } from '../../lib/regionUi';
 import { RegionIndicatorRow, RegionSectionHeading } from './RegionParts';
 import { useLocale } from '../../i18n';
 import '../../styles/z1-prices.css';
+import '../../styles/r5b-region.css';
 
 const FIRST_ROWS = 10;
 const PAGE = 30;
@@ -80,15 +81,34 @@ function PriceCard({ item, to, locale, common, index = 0 }) {
   );
 }
 
+/** Быстрые наборы цен для семьи: нажал — увидел своё. Коды из справочника цен, порядок важен. */
+export const FAMILY_TABS = [
+  { key: 'main', codes: null },
+  { key: 'kids', codes: ['ceni-detskiy-sad', 'ceni-podguzniki-detskie-bumazhnye', 'ceni-smesi-suhie-molochnye-dlya-detskogo-pitaniya', 'ceni-moloko-dlya-detey', 'ceni-dopolnitelnye-zanyatiya-dlya-detey-doshkolnogo-vozrasta', 'ceni-botinki-polubotinki-dlya-detey-doshkolnogo-vozrasta', 'ceni-kombinezon-uteplennyy-dlya-detey-doshkolnogo-vozrast', 'ceni-kolyaska-dlya-novorozhdennogo'] },
+  { key: 'home', codes: ['ceni-elektroenergiya', 'ceni-voda-holodnaya', 'ceni-voda-goryachaya', 'ceni-otoplenie', 'ceni-gaz-setevoy', 'ceni-soderzhanie-zhilya', 'ceni-vyvoz-musora', 'ceni-vznosy-na-kapitalnyy-remont'] },
+  { key: 'pharm', codes: ['ceni-paracetamol', 'ceni-ibuprofen', 'ceni-aktivirovannyy-ugol', 'ceni-citramon', 'ceni-validol', 'ceni-yod', 'ceni-miramistin-0-01', 'ceni-termometr-medicinskiy-elektronnyy-standartnyy'] },
+];
+
+/** Позиции вкладки: только живые и только те, что есть в этом регионе. */
+export function familyPicks(tab, all, headlineCodes) {
+  const byCode = new Map(all.map((i) => [i.code, i]));
+  const codes = tab.codes || headlineCodes || [];
+  return codes.map((c) => byCode.get(c)).filter((i) => i && !i.is_discontinued).slice(0, tab.codes ? 8 : 12);
+}
+
 /** Первый экран: ходовые цены региона и вход во все цены. */
 export function RegionPricesBlock({ slug, sections, headlineCodes, total, onOpenAll, pathFor }) {
   const { t, locale } = useLocale();
-  const picks = useMemo(() => {
-    const byCode = new Map(collectPriceItems(sections).map((i) => [i.code, i]));
-    return (headlineCodes || []).map((c) => byCode.get(c)).filter((i) => i && !i.is_discontinued).slice(0, 12);
-  }, [sections, headlineCodes]);
+  const [tabKey, setTabKey] = useState('main');
+  const all = useMemo(() => collectPriceItems(sections), [sections]);
+  const tabs = useMemo(
+    () => FAMILY_TABS.filter((tb) => familyPicks(tb, all, headlineCodes).length >= (tb.codes ? 3 : 1)),
+    [all, headlineCodes],
+  );
+  const tab = tabs.find((tb) => tb.key === tabKey) || tabs[0];
+  const picks = useMemo(() => (tab ? familyPicks(tab, all, headlineCodes) : []), [tab, all, headlineCodes]);
   const common = useMemo(() => commonPeriod(picks), [picks]);
-  if (picks.length === 0) return null;
+  if (picks.length === 0 || !tab) return null;
   return (
     <section className="z1p-block fe-reveal" data-testid="region-prices-block" aria-labelledby={`z1p-title-${slug}`}>
       <div className="z1p-block__head">
@@ -103,15 +123,31 @@ export function RegionPricesBlock({ slug, sections, headlineCodes, total, onOpen
         </div>
         <p className="mt-1 text-sm text-text-secondary">{common ? t('r2z1.prices.leadMonth', { month: common }) : t('z1.prices.lead')}</p>
       </div>
-      <div className="z1p-grid">
+      {tabs.length > 1 && (
+        <div className="r5b-tabs fe-chip-row" role="tablist" aria-label={t('r5b.tabs.aria')} data-testid="region-price-tabs">
+          {tabs.map((tb) => (
+            <button
+              key={tb.key}
+              type="button"
+              role="tab"
+              aria-selected={tb.key === tab.key}
+              className={`fe-chip fe-press ${tb.key === tab.key ? 'is-active' : ''}`}
+              onClick={() => setTabKey(tb.key)}
+            >
+              {t(`r5b.tab.${tb.key}`)}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="z1p-grid" key={tab.key}>
         {picks.map((item, i) => <PriceCard key={item.code} item={item} to={pathFor(item.code)} locale={locale} common={common} index={i} />)}
       </div>
     </section>
   );
 }
 
-function PriceRow({ item, to }) {
-  return <RegionIndicatorRow item={item} to={to} title={item.short_name} />;
+function PriceRow({ item, to, hidePeriod }) {
+  return <RegionIndicatorRow item={item} to={to} title={item.short_name} compact hidePeriod={hidePeriod} />;
 }
 
 /** Раздел «Цены и тарифы»: годовые ряды раздела (если есть) сверху, затем цены по группам. */
@@ -140,6 +176,7 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
     return { plain: plainRows, groups: list };
   }, [section.indicators, groupOrder]);
 
+  const common = useMemo(() => commonPeriod(section.indicators.filter((i) => i.price_group && !i.is_discontinued)), [section.indicators]);
   const totalPrices = groups.reduce((n, g) => n + g.items.length, 0);
   const activeGroup = groups.some((g) => g.key === group) ? group : '';
   const shownGroups = activeGroup ? groups.filter((g) => g.key === activeGroup) : groups;
@@ -153,6 +190,7 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
   return (
     <section data-block={`region-section-${section.num}`} className="z1p-section">
       <RegionSectionHeading eyebrow={eyebrow} title={section.name} count={section.indicators.length} />
+      {common && !searching && groups.length > 0 && <p className="r5b-month">{t('r2z1.prices.leadMonth', { month: common })}</p>}
       {groups.length > 0 && !searching && (
         <div className="z1p-chips fe-chip-row" role="group" aria-label={t('z1.prices.groupsAria')}>
           <button type="button" aria-pressed={!activeGroup} className={`fe-chip fe-press ${!activeGroup ? 'is-active' : ''}`} onClick={() => setGroup('')}>
@@ -182,7 +220,7 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
               </h3>
             )}
             <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
-              {rows.map((item) => <PriceRow key={item.code} item={item} to={pathFor(item.code)} />)}
+              {rows.map((item) => <PriceRow key={item.code} item={item} to={pathFor(item.code)} hidePeriod={!!common && item.period_label === common} />)}
             </div>
             {rest > 0 && (
               <button type="button" className="fe-chip fe-press z1p-more" onClick={() => setPages((p) => ({ ...p, [g.key]: (p[g.key] || 0) + 1 }))}>
