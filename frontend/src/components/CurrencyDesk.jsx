@@ -9,6 +9,7 @@ import Sparkline from './Sparkline';
 import { CoinBadge } from './CurrencySelect';
 import { Converter } from './CurrencyConverter';
 import CurrencyPairChart from './CurrencyPairChart';
+import { DocRates } from './R5cTools';
 import { useIndicatorData } from '../lib/hooks';
 import { cn, formatValue } from '../lib/format';
 import { formatDeltaWithUnit } from '../lib/deltaText';
@@ -296,7 +297,10 @@ export default function CurrencyDesk({ indicators }) {
 
   return (
     <div className={cn('fe-z8-cur', hasBoard && 'has-board')}>
-      <div className="fe-z8-cur__rates"><RateTiles edges={edges} market={market} pending={marketPending} /></div>
+      <div className="fe-z8-cur__rates">
+        <RateTiles edges={edges} market={market} pending={marketPending} />
+        <DocRates edges={edges} />
+      </div>
       <div className="fe-z8-cur__conv"><Converter edges={edges} from={from} to={to} onFrom={setFrom} onTo={setTo} /></div>
       <div className="fe-z8-cur__chart"><CurrencyPairChart pair={pair} edges={edges} /></div>
 

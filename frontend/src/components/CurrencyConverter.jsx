@@ -13,6 +13,7 @@ import {
 import { coinOf, unitName } from '../lib/currencyChart';
 import { chartPairFor } from '../lib/currencyMarket';
 import Z3PastCompare from './Z3PastCompare';
+import { CopyResult, DateRate } from './R5cTools';
 import { track, events } from '../lib/track';
 import { useGlintOnChange } from '../lib/calcGlint';
 import { useLocale, useT } from '../i18n';
@@ -37,14 +38,27 @@ function useAmount(from, edges, locale) {
 }
 
 /** Единица рядом с цифрой результата: «1 121 сомони», «1 457 726 сумов»; без готового слова — полное название. */
+const RU_MAIN_FORMS = {
+  RUB: ['рубль', 'рубля', 'рублей'], USD: ['доллар США', 'доллара США', 'долларов США'], EUR: ['евро', 'евро', 'евро'],
+  GBP: ['фунт', 'фунта', 'фунтов'], CNY: ['юань', 'юаня', 'юаней'],
+};
 function shortUnit(unit, value, locale) {
-  if (locale === 'en' || ['RUB', 'USD', 'EUR', 'CNY', 'GBP'].includes(unit)) return unitName(unit, locale);
+  if (locale !== 'en' && RU_MAIN_FORMS[unit]) {
+    const f = RU_MAIN_FORMS[unit];
+    if (Math.abs(value) < 1000 && Math.abs(value % 1) > 0.004) return f[1];
+    const n = Math.round(Math.abs(value)) || 1;
+    const m10 = n % 10;
+    const m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return f[0];
+    return m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? f[1] : f[2];
+  }
+  if (locale === 'en') return unitName(unit, locale);
   const word = unitWord(Math.floor(Math.abs(value)) || 1, unit, 'ru');
   return word === unit ? unitName(unit, locale) : word;
 }
 
 /** Результат конвертера: «камень» с золотой цифрой; блик проходит заново, когда число изменилось. */
-function ConverterOut({ result, rate, safeTo, basisKey }) {
+function ConverterOut({ result, rate, safeTo, basisKey, from, amount }) {
   const t = useT();
   const { locale } = useLocale();
   const ref = useRef(null);
@@ -66,6 +80,7 @@ function ConverterOut({ result, rate, safeTo, basisKey }) {
               {t(basisKey, { date: formatDate(result.date, 'day', locale) })}
             </p>
           )}
+          {from && <CopyResult from={from} to={safeTo} amount={amount} value={result.value} date={result.date} />}
         </>
       ) : (
         <p className="fe-z8-conv__note">{t('w6g.cur.badAmount')}</p>
@@ -156,7 +171,9 @@ export function Converter({ edges, from, to, onFrom, onTo }) {
   });
   const fromOptions = ordered.map(optionOf);
   const toOptions = ordered.filter((unit) => unit !== safeFrom).map(optionOf);
-  const travel = TRAVEL_UNITS.filter((u) => units.includes(u));
+  // Для закупок: юань, лира, дирхам идут первыми, дальше валюты поездок.
+  const BUSINESS = ['CNY', 'TRY', 'AED'];
+  const travel = [...BUSINESS, ...TRAVEL_UNITS.filter((u) => !BUSINESS.includes(u))].filter((u) => units.includes(u));
   const pickTravel = (unit) => {
     track(events.COMPARE_CHANGE, { converter: 'travel-chip', unit });
     // Рубли в руках у всех: нажатие на валюту всегда считает «рубли → эта валюта» (отправить семье, поменять в дорогу).
@@ -169,8 +186,9 @@ export function Converter({ edges, from, to, onFrom, onTo }) {
       <h2 className="fe-z8-conv__title">{t('w6g.cur.converterTitle')}</h2>
       <AmountField id={`${id}-amount`} amount={amount} text={text} setText={setText} locale={locale} label={t('w6g.cur.amount')} suffix={unitMeta(safeFrom)?.symbol || safeFrom} />
       <QuickAmounts presets={presets} amount={amount} setText={setText} locale={locale} />
-      <ConverterOut result={result} rate={rate} safeTo={safeTo} basisKey={basisKey} />
+      <ConverterOut result={result} rate={rate} safeTo={safeTo} basisKey={basisKey} from={safeFrom} amount={amount} />
       <Z3PastCompare pair={pastPair} from={safeFrom} to={safeTo} amount={amount} nowRate={amount > 0 && result ? result.value / amount : 0} />
+      <DateRate pair={pastPair} from={safeFrom} to={safeTo} amount={amount} nowRate={amount > 0 && result ? result.value / amount : 0} />
       <div className="fe-z8-conv__row z3-pair">
         <CurrencySelect
           label={t('w6g.cur.from')}
@@ -203,8 +221,8 @@ export function Converter({ edges, from, to, onFrom, onTo }) {
       </div>
       {travel.length > 0 && (
         <div className="z3-pop">
-          <p className="z3-pop__label">{t('z3.cur.popular')}</p>
-          <div className="z3-pop__row" role="group" aria-label={t('z3.cur.popular')}>
+          <p className="z3-pop__label">{t('r5c.pop.title')}</p>
+          <div className="z3-pop__row" role="group" aria-label={t('r5c.pop.title')}>
             {travel.map((unit) => {
               const meta = coinOf(unit);
               return (
@@ -281,8 +299,9 @@ export function CurrencyCardConverter({ code }) {
       <p className="z3-card-conv__dir">{`${unitName(from, locale)} → ${unitName(to, locale)}`}</p>
       <AmountField id={`${id}-amount`} amount={amount} text={text} setText={setText} locale={locale} label={t('w6g.cur.amount')} suffix={unitMeta(from)?.symbol || from} />
       <QuickAmounts presets={presets} amount={amount} setText={setText} locale={locale} />
-      <ConverterOut result={result} rate={rate} safeTo={to} basisKey={basis ? `w6g.cur.basis.${basis}` : 'w6g.cur.basis.mix'} />
+      <ConverterOut result={result} rate={rate} safeTo={to} basisKey={basis ? `w6g.cur.basis.${basis}` : 'w6g.cur.basis.mix'} from={from} amount={amount} />
       <Z3PastCompare pair={pastPair} from={from} to={to} amount={amount} nowRate={amount > 0 && result ? result.value / amount : 0} />
+      <DateRate pair={pastPair} from={from} to={to} amount={amount} nowRate={amount > 0 && result ? result.value / amount : 0} />
       <p className="z3-card-conv__more">
         <Link to="/currencies" className="z3-card-conv__link">{t('z3.cur.otherPair')}</Link>
       </p>
