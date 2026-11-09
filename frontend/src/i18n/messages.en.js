@@ -3960,4 +3960,11 @@ export default {
   'r6b.flatSince': 'since {date}',
   'r6b.related': 'Related indicators',
   'r6b.toTop': 'Back to the top of the indicator',
+  'r7c.rank.of': '{n} regions in the ranking',
+  'r7c.rank.mineLabel': 'My region',
+  'r7c.rank.mineAria': 'Choose your region to see where it stands',
+  'r7c.rank.minePlaceholder': 'Choose…',
+  'r7c.rank.mineSub': 'No. {rank} of {n}',
+  'r7c.rank.mineClear': 'Clear my region',
+  'r7c.rank.median': 'regional midpoint: {v}',
 };

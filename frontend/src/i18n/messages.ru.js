@@ -3965,4 +3965,11 @@ export default {
   'r6b.flatSince': 'с {date}',
   'r6b.related': 'Связанные показатели',
   'r6b.toTop': 'Наверх, к показателю',
+  'r7c.rank.of': 'регионов в рейтинге: {n}',
+  'r7c.rank.mineLabel': 'Мой регион',
+  'r7c.rank.mineAria': 'Выберите свой регион, чтобы увидеть его место',
+  'r7c.rank.minePlaceholder': 'Выбрать…',
+  'r7c.rank.mineSub': '{rank}-е место из {n}',
+  'r7c.rank.mineClear': 'Убрать мой регион',
+  'r7c.rank.median': 'середина по регионам: {v}',
 };
