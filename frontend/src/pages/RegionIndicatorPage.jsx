@@ -20,9 +20,9 @@ import DeltaBadge from '../components/DeltaBadge';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { formatRegionNumber, isPercentUnit, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
-import GroupedSiblings, { CompareLines, DiscontinuedNote } from '../components/regions/MonthlyPriceParts';
+import GroupedSiblings, { CompareLines, CopyForClient, DiscontinuedNote, PairSwitch, RangeChips } from '../components/regions/MonthlyPriceParts';
 import {
-  changeOverMonths, compareRows, guessPriceGroup, isRubPerUnit, perUnitPrice, pickField, priceText, shortPriceName, signedPct, unitSuffix, ymLabel, ymLabelFrom,
+  bigRub, changeOverMonths, compareRows, guessPriceGroup, pairsFirst, roundBig, sliceMonths, yearlyCost, isRubPerUnit, perUnitPrice, pickField, priceText, shortPriceName, signedPct, unitSuffix, ymLabel, ymLabelFrom,
 } from '../lib/z2Price';
 import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -115,6 +115,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   // В-20: для знакопеременных рядов режим «% г/г» недоступен.
   const showYoY = showYoYRaw && !isNegativeCapable(data?.series);
   const [exporting, setExporting] = useState(false);
+  const [rangeM, setRangeM] = useState(60);
   const { isAuthed } = useAuth();
   const chartRef = useRef(null);
 
@@ -322,11 +323,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const rubCaption = isPrice && priceSuffix && locale === 'ru' ? `₽ ${priceSuffix}` : '';
   const perUnit = isPrice && last ? perUnitPrice(active.indicator.unit, last.value) : null;
   const siblingsView = isMonthly && isPrice
-    ? (active?.siblings || []).map(sb => ({
+    ? pairsFirst((active?.siblings || []).map(sb => ({
       ...sb,
       short_name: sb.short_name || shortPriceName(sb.name, sb.unit),
       price_group: sb.price_group || guessPriceGroup(sb.name, sb.unit),
-    }))
+    })), displayName)
     : (active?.siblings || []);
   const rfLast = active?.russia_series?.[active.russia_series.length - 1];
   const mskSeries = moskvaMonthly.data?.series;
@@ -369,6 +370,17 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
       { key: 'z2.fiveYearsAgo', ch: changeOverMonths(activeSeries, 60) },
     ].filter((x) => x.ch)
     : [];
+
+  const yearSum = isPrice && last ? yearlyCost(last.value, active.indicator.unit) : null;
+  const shareText = isPrice && last
+    ? [
+      t('r5a.share', { name: displayName, region: regionName, price: priceText(last.value, active.indicator.unit, locale), unit: priceSuffix, month: lastLabel }).replace(/\s+\./, '.'),
+      compareList.length ? t('r5a.shareCmp', { russia: compareData?.russia ? priceText(compareData.russia.value, active.indicator.unit, locale) : '—', moskva: compareData?.moskva ? priceText(compareData.moskva.value, active.indicator.unit, locale) : '—' }) : '',
+      t('r5a.shareSrc'),
+      typeof window !== 'undefined' ? window.location.href.split('#')[0] : '',
+    ].filter(Boolean).join(' ')
+    : '';
+  const chartMonths = isMonthly ? rangeM : 0;
 
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
@@ -440,14 +452,14 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 {isPrice && priceSuffix ? priceText(last.value, active.indicator.unit, locale) : formatRegionWithUnit(last.value, active.indicator.unit, locale)}
               </span>
               {priceSuffix && <span className="z2p-hero-unit">{priceSuffix}</span>}
-              <span className="text-sm text-text-secondary">{lastLabel}</span>
+              {!isPrice && <span className="text-sm text-text-secondary">{lastLabel}</span>}
               {delta && !discontinued && (
                 <DeltaBadge
                   delta={delta.up || delta.down ? delta.pct : 0}
                   polarity={indicatorPolarity(indName)}
                   className="text-sm"
                 >
-                  {t(isMonthly ? 'regions.ind.deltaMoM' : 'regions.ind.deltaYoY', {
+                  {isMonthly && Math.abs(delta.pct) < 0.05 ? t('r5a.flatMonth') : t(isMonthly ? 'regions.ind.deltaMoM' : 'regions.ind.deltaYoY', {
                     pct: `${delta.up ? '+' : delta.down ? '\u2212' : ''}${Math.abs(delta.pct).toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
                   }).replace('%', `${NBSP}%`)}
                 </DeltaBadge>
@@ -458,18 +470,26 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 {t('z2.perUnit', { price: `${formatRegionNumber(perUnit.value, active.indicator.unit, locale)}${NBSP}₽`, word: perUnit.word })}
               </p>
             )}
+            {isPrice && <p className="r5a-hero-month">{t('r5a.dataFor', { month: lastLabel })}</p>}
+            {yearSum && !discontinued && <p className="r5a-year fe-num">{t('r5a.perYear', { sum: bigRub(yearSum, locale) })}</p>}
             {discontinued && <DiscontinuedNote />}
             <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} />
+            {isPrice && !discontinued && <CopyForClient text={shareText} />}
           </div>
+
+          {isPrice && !discontinued && (
+            <PairSwitch siblings={siblingsView} currentName={displayName} currentValue={last.value} unit={active.indicator.unit} slug={slug} />
+          )}
 
           <div id="chart" data-block="region-chart" className="fe-panel mb-4 w-full min-w-0 max-w-full scroll-mt-24 rounded-3xl p-3 sm:p-4" ref={chartRef}>
             <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="text-sm text-text-secondary">
                 {isMonthly
-                  ? t('w4.ind.rangeMonthly', { from: first.year, to: last.year, unit: rubCaption || unitLabel(active.indicator.unit, locale) || active.indicator.unit })
+                  ? t('w4.ind.rangeMonthly', { from: (sliceMonths(activeSeries, chartMonths)[0] || first).year, to: last.year, unit: rubCaption || unitLabel(active.indicator.unit, locale) || active.indicator.unit })
                   : `${first.year}–${last.year}, ${showYoY ? t('w4.ind.yoyUnit') : (unitLabel(active.indicator.unit, locale) || active.indicator.unit)}`}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
+                {isMonthly && <RangeChips value={rangeM} onChange={setRangeM} total={activeSeries.length} />}
                 <label
                   className={`fe-tap inline-flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-xl fe-glass-2 px-3 py-1 text-sm transition-colors sm:w-auto ${
                     compareSlug
@@ -522,15 +542,15 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             </div>
             <RegionAnnualChart
               frequency={isMonthly ? 'monthly' : 'annual'}
-              series={isMonthly ? activeSeries : (showYoY ? toYoYSeries(data.series) : data.series)}
+              series={isMonthly ? sliceMonths(activeSeries, chartMonths) : (showYoY ? toYoYSeries(data.series) : data.series)}
               russiaSeries={showRussia
                 ? (isMonthly
-                  ? active.russia_series
+                  ? sliceMonths(active.russia_series, chartMonths)
                   : (showYoY ? toYoYSeries(data.russia_series) : data.russia_series))
                 : null}
               compareSeries={compareSlug
                 ? (isMonthly
-                  ? (compareMonthly.data?.series || null)
+                  ? (sliceMonths(compareMonthly.data?.series, chartMonths) || null)
                   : (showYoY ? toYoYSeries(compare.data?.series) : (compare.data?.series || null)))
                 : null}
               compareName={compareSlug ? (compare.data?.region?.name || '') : ''}
@@ -602,6 +622,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             {isMonthly && periodChanges.map(({ key, ch }) => (
               <StatCell key={key} label={t(key, { month: ymLabelFrom(ch.from.year * 100 + ch.from.month, locale) })}>
                 {signedPct(ch.pct, locale)}
+                {isPrice && <span className="r5a-stat-was">{t('r5a.was', { value: priceText(roundBig(ch.from.value), active.indicator.unit, locale) })}</span>}
               </StatCell>
             ))}
             {stats && !isMonthly && (
@@ -616,11 +637,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             )}
             {monthlyExtremes && (
               <>
-                <StatCell label={t('r2z2.statMax', { month: ymLabel(monthlyExtremes.mx.year * 100 + monthlyExtremes.mx.month, locale) })}>
-                  {isPrice ? priceText(monthlyExtremes.mx.value, active.indicator.unit, locale) : formatRegionWithUnit(monthlyExtremes.mx.value, active.indicator.unit, locale)}
+                <StatCell label={t(monthlyExtremes.mx === last || (monthlyExtremes.mx.year === last.year && monthlyExtremes.mx.month === last.month) ? 'r5a.record' : 'r2z2.statMax', { month: ymLabel(monthlyExtremes.mx.year * 100 + monthlyExtremes.mx.month, locale) })}>
+                  {isPrice ? priceText(roundBig(monthlyExtremes.mx.value), active.indicator.unit, locale) : formatRegionWithUnit(monthlyExtremes.mx.value, active.indicator.unit, locale)}
                 </StatCell>
                 <StatCell label={t('r2z2.statMin', { month: ymLabel(monthlyExtremes.mn.year * 100 + monthlyExtremes.mn.month, locale) })}>
-                  {isPrice ? priceText(monthlyExtremes.mn.value, active.indicator.unit, locale) : formatRegionWithUnit(monthlyExtremes.mn.value, active.indicator.unit, locale)}
+                  {isPrice ? priceText(roundBig(monthlyExtremes.mn.value), active.indicator.unit, locale) : formatRegionWithUnit(monthlyExtremes.mn.value, active.indicator.unit, locale)}
                 </StatCell>
               </>
             )}

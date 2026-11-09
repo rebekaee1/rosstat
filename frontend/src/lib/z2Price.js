@@ -180,3 +180,63 @@ export function guessPriceGroup(name, unit) {
   for (const [g, re] of GROUP_RULES) if (re.test(text)) return g;
   return 'Прочее';
 }
+
+/** Ключ «пары»: название без цифр («Аренда 1-комнатной…» и «Аренда 2-комнатной…» → один ключ). '' — если цифр нет. */
+export function pairKey(name) {
+  const s = String(name || '');
+  return /\d/.test(s) ? s.replace(/\d+/g, '#') : '';
+}
+
+/** Короткая подпись варианта: «1-комнатной квартиры» → «1 комн.»; иначе первое слово с цифрой. */
+export function pairLabel(name, locale = 'ru') {
+  const s = String(name || '');
+  const room = /(\d+)[-\s]*(?:комнатн|room|bed)/i.exec(s);
+  if (room) return locale === 'en' ? `${room[1]}-room` : `${room[1]}${NBSP}комн.`;
+  const m = /\d+[-\s]?[^\s,]*/.exec(s);
+  return m ? m[0] : s;
+}
+
+/** Соседи-«пары» текущей цены (отличаются только числом). */
+export function pairSiblings(siblings, currentName) {
+  const key = pairKey(currentName);
+  if (!key || !Array.isArray(siblings)) return [];
+  return siblings.filter((s) => !s.is_discontinued && pairKey(s.short_name || s.name) === key && (s.value ?? s.last_value) != null);
+}
+
+/** Пары — первыми в списке «Ещё в разделе» (остальной порядок сохраняется). */
+export function pairsFirst(siblings, currentName) {
+  const key = pairKey(currentName);
+  if (!key || !Array.isArray(siblings)) return siblings;
+  const hit = (s) => pairKey(s.short_name || s.name) === key;
+  return [...siblings.filter(hit), ...siblings.filter((s) => !hit(s))];
+}
+
+/** Годовая сумма для платежей «в месяц»; null для прочих единиц. */
+export function yearlyCost(value, unit) {
+  if (!(value > 0) || !/(в месяц|per month|a month)$/i.test(String(unit || '').trim())) return null;
+  return value * 12;
+}
+
+/** Хвост ряда за последние `months` месяцев (months=0 — весь ряд). */
+export function sliceMonths(series, months) {
+  if (!Array.isArray(series) || !months || series.length <= months) return series;
+  return series.slice(-months);
+}
+
+/** Доля значения региона от сравниваемого, 0..1 (для тонкой полоски). */
+export function compareFill(pct) {
+  const ratio = 1 + pct / 100;
+  return Math.max(0.04, Math.min(1, ratio));
+}
+
+/** Крупные суммы без копеек: 5 894,9 → 5 895 (от 1000). */
+export function roundBig(v) {
+  return Math.abs(v) >= 1000 ? Math.round(v) : v;
+}
+
+/** Сумма словами: 298 272 → «298 тыс. ₽», 1 250 000 → «1,25 млн ₽». */
+export function bigRub(v, locale = 'ru') {
+  const dec = locale === 'en' ? '.' : ',';
+  if (v >= 1e6) return `${(v / 1e6).toFixed(2).replace(/\.?0+$/, '').replace('.', dec)}${NBSP}${locale === 'en' ? 'M' : 'млн'}${NBSP}₽`;
+  return `${Math.round(v / 1000)}${NBSP}${locale === 'en' ? 'k' : 'тыс.'}${NBSP}₽`;
+}

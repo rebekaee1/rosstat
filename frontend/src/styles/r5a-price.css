@@ -1,0 +1,32 @@
+/* R5-A: страница цены региона глазами риелтора. Без рамок: форма — заливкой и светом, золото тонко. */
+
+.r5a-bar { flex: 0 0 100%; height: 3px; margin: 0.25rem 0 0.15rem; border-radius: 2px; background: color-mix(in srgb, var(--color-text-secondary, #5d6578) 14%, transparent); overflow: hidden; }
+.r5a-bar i { display: block; height: 100%; border-radius: 2px; background: color-mix(in srgb, var(--fe-gold, #ad8a48) 65%, transparent); transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+
+.r5a-hero-month { margin: 0.35rem 0 0; font-size: 0.8125rem; color: var(--color-text-secondary, #5d6578); }
+.r5a-year { margin: 0.35rem 0 0; font-size: 0.875rem; color: var(--color-text-secondary, #5d6578); }
+
+.r5a-pair { display: flex; gap: 0.5rem; margin: 0 0 1rem; }
+.r5a-pair__item {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem;
+  padding: 0.6rem 0.85rem; border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-text-secondary, #5d6578) 8%, transparent);
+  color: var(--color-text-primary, #1e2638); transition: background 0.25s, color 0.25s;
+}
+.r5a-pair__item.is-current { background: color-mix(in srgb, var(--fe-gold, #ad8a48) 14%, transparent); }
+.r5a-pair__label { font-size: 0.75rem; color: var(--color-text-secondary, #5d6578); }
+.r5a-pair__diff { font-size: 0.75rem; color: var(--color-text-secondary, #5d6578); }
+.r5a-pair__val { font-size: 1rem; font-weight: 600; white-space: nowrap; }
+a.r5a-pair__item:hover { color: var(--fe-gold-ink, #80642f); }
+
+.r5a-copy {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.85rem;
+  padding: 0.5rem 0.9rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 500;
+  background: color-mix(in srgb, var(--fe-gold, #ad8a48) 11%, transparent); color: var(--fe-gold-ink, #80642f);
+}
+
+.r5a-range { display: inline-flex; gap: 0.15rem; padding: 0.15rem; border-radius: 999px; background: color-mix(in srgb, var(--color-text-secondary, #5d6578) 9%, transparent); }
+.r5a-range__b { padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.8125rem; color: var(--color-text-secondary, #5d6578); transition: background 0.25s, color 0.25s; }
+.r5a-range__b.is-on { background: var(--color-surface, #fff); color: var(--color-text-primary, #1e2638); box-shadow: 0 1px 6px rgba(30, 38, 56, 0.12); }
+
+.r5a-stat-was { display: block; margin-top: 0.15rem; font-size: 0.75rem; font-weight: 400; color: var(--color-text-secondary, #5d6578); }
