@@ -89,8 +89,8 @@
 | GET | /api/v1/regions/vs/{slug_a}/{slug_b} | app.api.regions.regions_compare | [backend/app/api/regions.py:397](../backend/app/api/regions.py#L397) |
 | GET | /api/v1/regions/vs/{slug_a}/{slug_b}/prices | app.api.regions.regions_compare_prices | [backend/app/api/regions.py:415](../backend/app/api/regions.py#L415) |
 | GET | /api/v1/regions/{slug} | app.api.regions.region_profile | [backend/app/api/regions.py:455](../backend/app/api/regions.py#L455) |
-| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:657](../backend/app/api/regions.py#L657) |
-| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:761](../backend/app/api/regions.py#L761) |
+| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:659](../backend/app/api/regions.py#L659) |
+| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:763](../backend/app/api/regions.py#L763) |
 | GET | /api/v1/admin/bi/dashboard | app.api.admin_bi.bi_dashboard | [backend/app/api/admin_bi.py:216](../backend/app/api/admin_bi.py#L216) |
 | GET | /api/v1/admin/bi/slices/meta | app.api.admin_bi.slices_meta | [backend/app/api/admin_bi.py:275](../backend/app/api/admin_bi.py#L275) |
 | GET | /api/v1/admin/bi/slices | app.api.admin_bi.slices_query | [backend/app/api/admin_bi.py:299](../backend/app/api/admin_bi.py#L299) |
@@ -2001,7 +2001,7 @@ Relationships: `[]`
 | app.api.regions.LANDING_TABLES | Tuple | sequence/source expression | [backend/app/api/regions.py:73](../backend/app/api/regions.py#L73) |
 | app.api.regions._MONTHS_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:431](../backend/app/api/regions.py#L431) |
 | app.api.regions._MONTHS_EN | Tuple | sequence/source expression | [backend/app/api/regions.py:433](../backend/app/api/regions.py#L433) |
-| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:748](../backend/app/api/regions.py#L748) |
+| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:750](../backend/app/api/regions.py#L750) |
 | app.api.seo_pages._RENDER_SEM | Call | computed source expression | [backend/app/api/seo_pages.py:165](../backend/app/api/seo_pages.py#L165) |
 | app.api.sitemap._ANNUAL_SUMMARY_EN | Dict | 'Рост цен за год', 'Итог за год (сумма)', 'Значение на конец года', 'Среднее за год' | [backend/app/api/sitemap.py:90](../backend/app/api/sitemap.py#L90) |
 | app.api.sitemap._OG_INDICATOR_ALIASES | Dict | 'inflation', 'gdp' | [backend/app/api/sitemap.py:632](../backend/app/api/sitemap.py#L632) |
