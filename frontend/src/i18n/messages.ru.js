@@ -4067,4 +4067,8 @@ export default {
   'r9b.copyHeadUp': 'Что подорожало за год, Россия, {month}:',
   'r9b.copyHeadDown': 'Что подешевело за год, Россия, {month}:',
   'r9b.agoCard': 'год назад {then}',
+  'r9b.hub.sources': 'Источники: Росстат, Банк России. Дата у каждой цифры.',
+  'r9b.hub.copy': 'Скопировать цифры',
+  'r9b.hub.copyHead': 'Главные цифры экономики России:',
+  'r9b.hub.copySrc': 'Источники: Росстат, Банк России (forecasteconomy).',
 };

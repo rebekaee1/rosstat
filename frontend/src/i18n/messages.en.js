@@ -4062,4 +4062,8 @@ export default {
   'r9b.copyHeadUp': 'Prices that rose over the year, Russia, {month}:',
   'r9b.copyHeadDown': 'Prices that fell over the year, Russia, {month}:',
   'r9b.agoCard': 'a year ago {then}',
+  'r9b.hub.sources': 'Sources: Rosstat, Bank of Russia. Each figure carries its date.',
+  'r9b.hub.copy': 'Copy the figures',
+  'r9b.hub.copyHead': 'Key figures of the Russian economy:',
+  'r9b.hub.copySrc': 'Sources: Rosstat, Bank of Russia (forecasteconomy).',
 };

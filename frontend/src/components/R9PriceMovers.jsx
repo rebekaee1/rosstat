@@ -2,33 +2,11 @@ import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Copy, Check, Share2 } from 'lucide-react';
 import { formatValue } from '../lib/format';
-import { splitPriceUnit, signed, money, quoteLine } from '../lib/r9bPrice';
+import { splitPriceUnit, signed, money, quoteLine, copyToClipboard } from '../lib/r9bPrice';
 import { regionIndicatorPath } from '../lib/sitePaths';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import '../styles/r9b-movers.css';
-
-async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      const ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      return ok;
-    } catch {
-      return false;
-    }
-  }
-}
 
 export default function R9PriceMovers({ movers, surface = 'category', headingLevel = 3 }) {
   const t = useT();
@@ -56,13 +34,13 @@ export default function R9PriceMovers({ movers, surface = 'category', headingLev
   };
   const copyOne = async (it) => {
     track(events.RELATED_LINK_CLICK, { from: 'r9b-copy', to: it.code, surface });
-    if (await copyText(quoteLine(it, t, locale))) flash(it.code);
+    if (await copyToClipboard(quoteLine(it, t, locale))) flash(it.code);
   };
   const header = t(active === 'up' ? 'r9b.copyHeadUp' : 'r9b.copyHeadDown', { month });
   const allText = () => `${header}\n${list.map((it) => `• ${quoteLine(it, t, locale)}`).join('\n')}\n${t('r9b.source')}`;
   const copyAll = async () => {
     track(events.RELATED_LINK_CLICK, { from: 'r9b-copy-all', to: active, surface });
-    if (await copyText(allText())) flash('all');
+    if (await copyToClipboard(allText())) flash('all');
   };
   const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
   const share = async () => {

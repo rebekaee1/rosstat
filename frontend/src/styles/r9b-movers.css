@@ -55,3 +55,7 @@
   .r9b-foot { flex-direction: row; align-items: center; justify-content: space-between; }
   .r9b-foot__src { max-width: 60ch; }
 }
+
+.r9b-cite { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.r9b-cite__src { margin: 0; font-size: 12px; line-height: 1.45; color: var(--color-text-tertiary); }
+@media (min-width: 720px) { .r9b-cite { flex-direction: row; align-items: center; justify-content: space-between; } }
