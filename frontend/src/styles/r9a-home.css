@@ -44,7 +44,8 @@
 @media (prefers-reduced-motion: reduce) { .r9a-tile, .r9a-tile--ghost { transition: none; animation: none; } }
 
 /* Лента цен под выбором региона (телефон) */
-.r9a-strip { display: flex; gap: 10px; margin: 12px -16px 0; padding: 4px 16px 8px; list-style: none; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: 16px; }
+.r9a-strip__cap { margin: 14px 0 0; font-size: 12px; letter-spacing: .02em; color: var(--color-text-secondary); }
+.r9a-strip { display: flex; gap: 10px; margin: 6px -16px 0; padding: 4px 16px 8px; list-style: none; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: 16px; }
 .r9a-strip > li { flex: 0 0 auto; scroll-snap-align: start; }
 .r9a-chip {
   display: flex; flex-direction: column; justify-content: center; gap: 1px; min-width: 150px; min-height: 84px; padding: 10px 14px; border-radius: 16px;
@@ -54,7 +55,7 @@
 .r9a-chip__name { font-size: 12.5px; line-height: 1.25; color: var(--text-secondary, #5b6477); max-width: 12.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .r9a-chip__val { font-size: 21px; font-weight: 650; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--text-primary, #14213d); white-space: nowrap; }
 .r9a-chip__per { font-size: 12px; color: var(--text-secondary, #5b6477); }
-@media (min-width: 768px) { .r9a-strip { display: none; } }
+@media (min-width: 768px) { .r9a-strip, .r9a-strip__cap { display: none; } }
 
 /* «Платформа в цифрах»: четыре числа, на телефоне 2 x 2 */
 .fe-dashboard .fe-scope-stats--four { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 6px; }

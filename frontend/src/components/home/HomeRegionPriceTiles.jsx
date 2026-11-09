@@ -120,6 +120,8 @@ export function HomePriceStrip() {
   const items = Array.isArray(data?.items) ? data.items.slice(0, 8) : [];
   if (locale === 'en' || !items.length) return null;
   return (
+    <>
+    <p className="r9a-strip__cap">{t('r9a.tiles.cap', { period: items[0].period_label || '' })}</p>
     <ul className="r9a-strip scrollbar-hide fe-fade-x" data-block="home-price-strip" aria-label={t('r9a.strip.aria')}>
       {items.map((it) => {
         const { sign, per } = unitParts(it.unit);
@@ -138,5 +140,6 @@ export function HomePriceStrip() {
         );
       })}
     </ul>
+    </>
   );
 }
