@@ -460,7 +460,7 @@ async def russia_prices_summary(db: AsyncSession = Depends(get_db)):
     значением год назад и рядом за 13 месяцев для мини-графика, плюс число рядов
     по группам. Лёгкая замена 1 МБ-профиля региона «russia».
     """
-    cache_key = await versioned_key("regions", f"russia-prices:v1:{get_locale()}")
+    cache_key = await versioned_key("regions", f"russia-prices:v2:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -520,9 +520,63 @@ async def russia_prices_summary(db: AsyncSession = Depends(get_db)):
         for g in PRICE_GROUPS if g in groups
     ]
     payload = {"items": items, "groups": group_list, "total": sum(groups.values())}
+    movers = await _russia_price_movers(db, region.id)
+    if movers:
+        payload["movers"] = movers
     if items:
         await cache_set(cache_key, payload, settings.cache_ttl_data)
     return payload
+
+
+async def _russia_price_movers(db: AsyncSession, region_id: int, top: int = 10) -> dict | None:
+    """R9-B: топ подорожавших и подешевевших позиций за год среди всех рядов цен России."""
+    inds = (await db.execute(
+        select(RegionIndicator).where(RegionIndicator.code.like("ceni-%"))
+    )).scalars().all()
+    by_id = {i.id: i for i in inds}
+    if not by_id:
+        return None
+    last_month = (await db.execute(
+        select(func.max(RegionMonthlyPoint.month)).where(
+            RegionMonthlyPoint.region_id == region_id,
+            RegionMonthlyPoint.indicator_id.in_(list(by_id)),
+        )
+    )).scalar_one_or_none()
+    if not last_month:
+        return None
+    rows = (await db.execute(
+        select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+        .where(RegionMonthlyPoint.region_id == region_id,
+               RegionMonthlyPoint.indicator_id.in_(list(by_id)),
+               RegionMonthlyPoint.month.in_([int(last_month), int(last_month) - 100]))
+    )).all()
+    cur: dict[int, float] = {}
+    old: dict[int, float] = {}
+    for iid, month, value in rows:
+        (cur if int(month) == int(last_month) else old)[iid] = float(value)
+    cand = []
+    for iid, v in cur.items():
+        base = old.get(iid)
+        ind = by_id[iid]
+        meta = price_meta(ind.code)
+        if not base or base <= 0 or not meta or meta["is_discontinued"]:
+            continue
+        pct = (v / base - 1) * 100
+        if abs(pct) > 400:  # смена единицы или методики, не цена
+            continue
+        copy = _icopy(ind)
+        cand.append({
+            "code": ind.code, "name": copy["name"], "unit": copy["unit"],
+            "short_name": (meta.get("short_name_en") or meta["short_name"]) if get_locale() == "en" else meta["short_name"],
+            "value": _fmt(v), "year_ago_value": _fmt(base), "yoy_pct": round(pct, 1),
+            "period_label": _month_label(int(last_month)),
+        })
+    if len(cand) < 2:
+        return None
+    cand.sort(key=lambda x: x["yoy_pct"])
+    up = [c for c in reversed(cand) if c["yoy_pct"] > 0][:top]
+    down = [c for c in cand if c["yoy_pct"] < 0][:top]
+    return {"up": up, "down": down, "count": len(cand), "period_label": _month_label(int(last_month))}
 
 
 @router.get("/{slug}")
