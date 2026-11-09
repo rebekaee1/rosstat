@@ -210,7 +210,7 @@ export default function GenericIndicatorView({
     const perOneRub = value / quoteUnitsOf(effectiveIndicator?.unit);
     if (!(perOneRub > 0)) return '';
     const got = 1000 / perOneRub;
-    return `1\u00a0000\u00a0₽ = ${formatConverted(got, locale, { money: true })}\u00a0${unitWord(got, pair.base, locale)}`;
+    return `${locale === 'en' ? '1,000' : '1\u00a0000'}\u00a0₽ = ${formatConverted(got, locale, { money: true })}\u00a0${unitWord(got, pair.base, locale)}`;
   }, [isCurrency, code, heroSummary, effectiveIndicator?.unit, locale]);
 
   // При сбое подсказка под пустым графиком ссылается на кнопку «Повторить» выше, а не рассказывает про «загрузку с сервера».

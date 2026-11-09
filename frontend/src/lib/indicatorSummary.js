@@ -231,7 +231,7 @@ export function formatPercentChange(pct, locale = 'ru', digits = 1) {
   if (pct == null || !Number.isFinite(n)) return null;
   if (Number(n.toFixed(digits)) === 0) return null;
   const body = formatValue(Math.abs(n), digits, locale);
-  return `${n > 0 ? '+' : MINUS}${body}${NBSP}%`;
+  return `${n > 0 ? "+" : MINUS}${body}${locale === "en" ? "" : NBSP}%`;
 }
 
 /**
