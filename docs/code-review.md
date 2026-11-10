@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `74499f773eff3ba67a0376fdfdfb31316fbed3e8`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `b6b16bdd942e8328ca126fd00bd2be37e23d115f`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2432 |
+| Файлы в явно определённом scope | 2442 |
 | Код, шаблоны и стили | 1972 |
-| Актуальные рецензии без пропусков guard | 2432 |
+| Актуальные рецензии без пропусков guard | 2442 |
 | Именованные определения Python/JS: с аннотацией / всего | 15687 / 15687 |
 | Файлы, требующие внимания | 0 |
 
@@ -1311,6 +1311,11 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/public/research/covers/forecasteconomy-research-19.webp](../frontend/public/research/covers/forecasteconomy-research-19.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/covers/forecasteconomy-research-20.webp](../frontend/public/research/covers/forecasteconomy-research-20.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/covers/forecasteconomy-research-21.webp](../frontend/public/research/covers/forecasteconomy-research-21.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-22.webp](../frontend/public/research/covers/forecasteconomy-research-22.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-23.webp](../frontend/public/research/covers/forecasteconomy-research-23.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-24.webp](../frontend/public/research/covers/forecasteconomy-research-24.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-25.webp](../frontend/public/research/covers/forecasteconomy-research-25.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-26.webp](../frontend/public/research/covers/forecasteconomy-research-26.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-01-lipstick-index.pdf](../frontend/public/research/files/forecasteconomy-research-01-lipstick-index.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-02-engel-law.pdf](../frontend/public/research/files/forecasteconomy-research-02-engel-law.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-03-okun-law.pdf](../frontend/public/research/files/forecasteconomy-research-03-okun-law.pdf) | asset_metadata_reviewed | 0/0 | актуально |
@@ -1332,6 +1337,11 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/public/research/files/forecasteconomy-research-19-fat-tails.pdf](../frontend/public/research/files/forecasteconomy-research-19-fat-tails.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-20-fooled-by-randomness.pdf](../frontend/public/research/files/forecasteconomy-research-20-fooled-by-randomness.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-21-ergodicity.pdf](../frontend/public/research/files/forecasteconomy-research-21-ergodicity.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-22-baumol-effect.pdf](../frontend/public/research/files/forecasteconomy-research-22-baumol-effect.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-23-subsidized-mortgage.pdf](../frontend/public/research/files/forecasteconomy-research-23-subsidized-mortgage.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-24-shrinkflation.pdf](../frontend/public/research/files/forecasteconomy-research-24-shrinkflation.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-25-taxi-surge-pricing.pdf](../frontend/public/research/files/forecasteconomy-research-25-taxi-surge-pricing.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-26-bank-license-revoked.pdf](../frontend/public/research/files/forecasteconomy-research-26-bank-license-revoked.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/robots.txt](../frontend/public/robots.txt) | reviewed | 0/0 | актуально |
 | [frontend/public/seo-ticker.js](../frontend/public/seo-ticker.js) | reviewed | 5/5 | актуально |
 | [frontend/public/sw.js](../frontend/public/sw.js) | reviewed | 1/1 | актуально |

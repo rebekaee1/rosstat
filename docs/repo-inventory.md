@@ -2,12 +2,12 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-11-09
+**Сгенерировано:** 2026-11-10
 
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2231  ·  **Строк:** 1 411 119  ·  **Токенов (≈):** 13 423 754
+**Файлов:** 2231  ·  **Строк:** 1 411 361  ·  **Токенов (≈):** 13 427 054
 
 ## По верхним папкам
 
@@ -16,9 +16,9 @@
 | `(root)` | 8 | 2 782 | 64 219 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 904 | 315 831 | 3 446 892 |
+| `backend` | 904 | 316 071 | 3 450 108 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 19 | 1 140 | 17 121 |
+| `deploy` | 19 | 1 142 | 17 205 |
 | `docs` | 142 | 881 752 | 7 562 786 |
 | `frontend` | 1014 | 184 412 | 2 020 093 |
 | `mcp` | 3 | 158 | 1 120 |
@@ -87,6 +87,7 @@
 | `frontend/src/pages/WorldRatingPage.jsx` | 1 401 | 16 504 |
 | `backend/tests/test_i18n_parity.py` | 1 833 | 16 334 |
 | `docs/design/local-acceptance/final-narrow/browser.json` | 2 181 | 16 120 |
+| `backend/app/data/research_catalog.json` | 1 221 | 15 986 |
 | `docs/planet-view.md` | 594 | 15 198 |
 | `frontend/src/components/IndicatorSearch.jsx` | 1 141 | 15 102 |
 | `backend/app/data/view_model_families.py` | 1 238 | 14 854 |
@@ -100,7 +101,6 @@
 | `backend/app/services/world_national_ingest.py` | 1 457 | 13 238 |
 | `backend/app/services/admin_bi.py` | 1 335 | 13 106 |
 | `docs/research/our-state-2026-10-05.md` | 431 | 12 982 |
-| `backend/app/data/research_catalog.json` | 981 | 12 770 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
 | `backend/app/api/seo_pages.py` | 1 107 | 12 337 |
 | `docs/knowledge-unknowns.md` | 191 | 12 145 |
@@ -257,13 +257,13 @@
 | `backend/app/api/export.py` | 598 | 5 470 |
 | `backend/tests/test_world_search_compare_national.py` | 572 | 5 461 |
 | `frontend/src/lib/format.test.js` | 545 | 5 425 |
+| `deploy/approved-shas.txt` | 186 | 5 389 |
 | `backend/app/services/seo_world_year.py` | 563 | 5 380 |
 | `backend/app/services/cabinet.py` | 550 | 5 362 |
 | `backend/app/data/eurostat_units_ru.py` | 567 | 5 361 |
 | `frontend/src/components/IndicatorSearch.component.test.jsx` | 354 | 5 361 |
 | `docs/code-review-findings.md` | 161 | 5 342 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
-| `deploy/approved-shas.txt` | 184 | 5 305 |
 | `frontend/src/components/home/HomeWorkbench.component.test.jsx` | 461 | 5 302 |
 | `backend/tests/test_en_catalog.py` | 538 | 5 293 |
 | `scripts/dev/perf-mobile.mjs` | 390 | 5 258 |

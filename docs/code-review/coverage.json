@@ -19,12 +19,12 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2432,
+    "files": 2442,
     "code_files": 1972,
-    "current_reviews": 2432,
+    "current_reviews": 2442,
     "statuses": {
       "artifact_schema_reviewed": 86,
-      "asset_metadata_reviewed": 162,
+      "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
       "reviewed": 2172
@@ -2273,9 +2273,9 @@
     },
     {
       "path": "backend/app/data/research_catalog.json",
-      "sha256": "dade5c2e840c8a5b2c10dc24a18a30d442fdf7594d9249cb41b9af98572fdd0a",
-      "bytes": 77523,
-      "lines": 981,
+      "sha256": "b4e78510d1c87f3c8c57eac35bbaa0e41e66471ea34220994695980d768e0714",
+      "bytes": 97032,
+      "lines": 1221,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12504,9 +12504,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "112946b50949efa6a0e7ed017c1b90f1149c8b2a4a5097c71a72326ba610c2c3",
-      "bytes": 26782,
-      "lines": 184,
+      "sha256": "a0ca8667e597dfe14d32eb4123d7e9825662d7a7c36f37b7f442c67690e97247",
+      "bytes": 27286,
+      "lines": 186,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13479,7 +13479,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "575656b39772c14d0d8db05c3283c313f9c56787e6e9be7c3d191d5c46c6db44",
+      "sha256": "b1e28f57238f66bff0707aa1447b4e0effd467fbdff9bfb15f6a78e707d60324",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -13986,7 +13986,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "c27828cf53e4dcec944612c1b60c6fc1da5e605ff49a1bd744a124e662985c91",
+      "sha256": "0747e45bb64e4e3677be267f74a07d690cfb11ffe253a40d6f7b8039475aeed2",
       "bytes": 3837473,
       "lines": 135728,
       "code": false,
@@ -13999,7 +13999,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "4dd0c45ab6107a60497562b1cf411668d3dac7e0fdd89eeabf1ac4610d94565b",
+      "sha256": "d1ecf68a40f90bcc77080fd228ccefdc91243afa748c4a8bb0e200ca5ec23035",
       "bytes": 160576,
       "lines": 1824,
       "code": false,
@@ -14038,8 +14038,8 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "88bf4171bca63bbba6e78833b7051e5b50ea02e4dc541db7d76862d339955fb2",
-      "bytes": 12090517,
+      "sha256": "6a5fd741963fcb85fda010afbf5d4d1b1b7b557364e7e6cb0da633a53ff56058",
+      "bytes": 12090518,
       "lines": 362361,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -16585,6 +16585,71 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/public/research/covers/forecasteconomy-research-22.webp",
+      "sha256": "64be839c8559342cce829b25c1600c21ee1b236d90690536647ec46d1616e4ae",
+      "bytes": 20914,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-23.webp",
+      "sha256": "77f750d012af5be7ea4c61574ba244846bbe2f4f8432824e8add237ab09f2de0",
+      "bytes": 21266,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-24.webp",
+      "sha256": "cdb8f1574db538a3b30590b3ef08b60ef1d4a116a34c7c0d79f1e762ecae1a79",
+      "bytes": 19552,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-25.webp",
+      "sha256": "cdc7babe071450851ba4882fe7cda0a0b6b57573e4b42ea9d634a302a0d64a3e",
+      "bytes": 24028,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-26.webp",
+      "sha256": "bb6f6bda3532483eb4af8015c0785ff996a4703db6628248013eb1233ef008fa",
+      "bytes": 23106,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "frontend/public/research/files/forecasteconomy-research-01-lipstick-index.pdf",
       "sha256": "cfe489d3268df90337a33e430e150177187001430fb886b4f4486be23f2a3654",
       "bytes": 2267060,
@@ -16848,6 +16913,71 @@
       "path": "frontend/public/research/files/forecasteconomy-research-21-ergodicity.pdf",
       "sha256": "dfff8773b082ec7e439dd494903f5d8e4c5f78ba64b7c5d6340ad78c79e2bf74",
       "bytes": 2361058,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-22-baumol-effect.pdf",
+      "sha256": "e85d515a6f18e40c9ce07db4a2d5da48365f330cd6863cc87e91b58e9e47c6e6",
+      "bytes": 2234601,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-23-subsidized-mortgage.pdf",
+      "sha256": "4c8553b424a0bc1e5e25bfba804a9896bcc0c3cc9e16c111cca7e265614db87a",
+      "bytes": 2233592,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-24-shrinkflation.pdf",
+      "sha256": "9ca508eb6e7f884f916012698986b315fcb6f829b5a55a50198224e72e50ef5b",
+      "bytes": 2104289,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-25-taxi-surge-pricing.pdf",
+      "sha256": "562ce306f8ef883dd4dd322b2896c62e982189030d366904869bb9437c76c8fb",
+      "bytes": 2077088,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-26-bank-license-revoked.pdf",
+      "sha256": "c1aa932106cfe68eff396beb79bc10721187c1525245a90fcc72c58d43b01896",
+      "bytes": 2060735,
       "lines": null,
       "code": false,
       "status": "asset_metadata_reviewed",
@@ -31653,12 +31783,14 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "63f6fa320c231e286fa61f62c02168f972284a9d989d47145c061d4b4e8a3870",
+  "ledger_sha256": "387bc8b08ce5e13636830d9059f296d4b2dd8d1a897103e1ffd68b925b051f1c",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
-  "branch": "circle-data/int",
+  "baseline_commit": "b6b16bdd942e8328ca126fd00bd2be37e23d115f",
+  "branch": "feat/research-22-26",
   "unstaged_at_capture": [
+    "docs/dead-code-report.md",
     "docs/indicator-index.json",
-    "docs/mechanism-inventory.md"
+    "docs/indicator-index.md",
+    "docs/mechanism-inventory.json"
   ]
 }

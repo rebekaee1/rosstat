@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "f4869279cc7b267c70925f5a936f3fb977e625464dbdda525d53546af7eacfd4",
-  "extraction_sha256": "87e37c7a78ef3b5bb007a46784dcd49631824623032367125165ba20a8edbe60",
-  "terrain_baseline_commit": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
+  "terrain_sha256": "7436244c2587c046f281c0d134b323c05584a6ff02bd8031ebfedc6e868bca78",
+  "extraction_sha256": "1e482a38297a926cf8787b54e94ad7ebab7e845131847092d539a3e77b88e584",
+  "terrain_baseline_commit": "b6b16bdd942e8328ca126fd00bd2be37e23d115f",
   "counts": {
     "external_or_unresolved_file": 2918,
-    "missing_endpoint": 4312
+    "missing_endpoint": 4310
   },
   "categories": {
     "ambiguous_owned_target": 28,
-    "client_local_import_without_symbol_endpoint": 8,
+    "client_local_import_without_symbol_endpoint": 6,
     "directory_or_extensionless_reference_encoding": 12,
     "document_reference_without_endpoint": 11,
     "dynamic_import_endpoint": 16,
@@ -196,7 +196,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "context",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_analytics_api_inventory_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_analytics_api_inventory_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "CONTEXT.md",
@@ -223,7 +223,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "context",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "CONTEXT.md",
@@ -522,7 +522,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "README.md",
@@ -168903,7 +168903,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_темы_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_темы_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168928,7 +168928,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_подписка_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_подписка_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168953,7 +168953,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_вопросы_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_вопросы_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -168978,7 +168978,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_график_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_график_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -169003,7 +169003,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_реакция_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_реакция_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -169028,7 +169028,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_подписаться_тема_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_подписаться_тема_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -169053,7 +169053,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_идея_суть_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_идея_суть_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -169078,7 +169078,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_подписаться_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_подписаться_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -169103,7 +169103,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_отписаться_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_отписаться_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -169128,7 +169128,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0027_public_telegram_bot",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_идея_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_идея_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0027-public-telegram-bot.md",
@@ -169153,7 +169153,7 @@
       "explanation": "Historical, external or unmatched document reference; original id and source anchor retained for inspection.",
       "edge": {
         "source": "docs_adr_0028_research_reports_section",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_0003_ssr_seo_strategy_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_0003_ssr_seo_strategy_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/adr/0028-research-reports-section.md",
@@ -169178,7 +169178,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_agent_orchestration",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_agent_briefs_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_agent_briefs_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/agent-orchestration.md",
@@ -169533,7 +169533,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_architecture_history",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/architecture-history.md",
@@ -169777,7 +169777,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_architecture",
-        "target": "users_iprofi_tradingeconomics_rosstat_caddyfile_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_caddyfile_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/architecture.md",
@@ -170242,7 +170242,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_circle_playbook",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_agent_briefs_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_agent_briefs_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/circle-playbook.md",
@@ -170566,7 +170566,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_data_contracts",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/data-contracts.md",
@@ -170647,7 +170647,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_data_contracts",
-        "target": "users_iprofi_tradingeconomics_rosstat_caddyfile_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_caddyfile_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/data-contracts.md",
@@ -170783,7 +170783,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_design_readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_design_art_prompts_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_design_art_prompts_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/design/README.md",
@@ -170810,7 +170810,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_design_readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_design_local_acceptance_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_design_local_acceptance_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/design/README.md",
@@ -171663,7 +171663,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_workflow",
-        "target": "users_iprofi_tradingeconomics_rosstat_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_research_2226_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/workflow.md",
@@ -196806,7 +196806,7 @@
       "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
       "edge": {
         "source": "scripts_e2e_asset_retention",
-        "target": "frontend_node_modules_vite_dist_node_index",
+        "target": "ref_frontend_node_modules_vite_dist_node_index_js",
         "relation": "imports_from",
         "context": "import",
         "confidence": "EXTRACTED",
@@ -196834,35 +196834,7 @@
       "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
       "edge": {
         "source": "scripts_e2e_asset_retention",
-        "target": "frontend_node_modules_vite_dist_node_index_build",
-        "relation": "imports",
-        "context": "import",
-        "confidence": "EXTRACTED",
-        "source_file": "scripts/e2e/asset-retention.mjs",
-        "source_location": "L10",
-        "weight": 1.0,
-        "_origin": "ast"
-      },
-      "source_endpoint": {
-        "label": "asset-retention.mjs",
-        "source_file": "scripts/e2e/asset-retention.mjs",
-        "source_location": "L1"
-      },
-      "target_endpoint": null,
-      "owned_target_candidates": [],
-      "import_modules_at_anchor": [
-        "../../frontend/node_modules/vite/dist/node/index.js"
-      ],
-      "current_anchor_excerpt": "import { build } from '../../frontend/node_modules/vite/dist/node/index.js';"
-    },
-    {
-      "edge_index": 51451,
-      "projection_reason": "missing_endpoint",
-      "category": "client_local_import_without_symbol_endpoint",
-      "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
-      "edge": {
-        "source": "scripts_e2e_asset_retention",
-        "target": "frontend_node_modules_playwright_index",
+        "target": "ref_frontend_node_modules_playwright_index_mjs",
         "relation": "imports_from",
         "context": "import",
         "confidence": "EXTRACTED",
@@ -196884,35 +196856,7 @@
       "current_anchor_excerpt": "import { chromium } from '../../frontend/node_modules/playwright/index.mjs';"
     },
     {
-      "edge_index": 51452,
-      "projection_reason": "missing_endpoint",
-      "category": "client_local_import_without_symbol_endpoint",
-      "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
-      "edge": {
-        "source": "scripts_e2e_asset_retention",
-        "target": "frontend_node_modules_playwright_index_chromium",
-        "relation": "imports",
-        "context": "import",
-        "confidence": "EXTRACTED",
-        "source_file": "scripts/e2e/asset-retention.mjs",
-        "source_location": "L11",
-        "weight": 1.0,
-        "_origin": "ast"
-      },
-      "source_endpoint": {
-        "label": "asset-retention.mjs",
-        "source_file": "scripts/e2e/asset-retention.mjs",
-        "source_location": "L1"
-      },
-      "target_endpoint": null,
-      "owned_target_candidates": [],
-      "import_modules_at_anchor": [
-        "../../frontend/node_modules/playwright/index.mjs"
-      ],
-      "current_anchor_excerpt": "import { chromium } from '../../frontend/node_modules/playwright/index.mjs';"
-    },
-    {
-      "edge_index": 51458,
+      "edge_index": 51456,
       "projection_reason": "external_or_unresolved_file",
       "category": "dynamic_import_endpoint",
       "explanation": "Dynamic module/fixture import is retained; source endpoint is external or generated at execution. No callee is invented.",
@@ -196939,7 +196883,7 @@
       "current_anchor_excerpt": null
     },
     {
-      "edge_index": 51459,
+      "edge_index": 51457,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -196967,7 +196911,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 51460,
+      "edge_index": 51458,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -196995,7 +196939,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 51461,
+      "edge_index": 51459,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197023,7 +196967,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 51467,
+      "edge_index": 51465,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197051,7 +196995,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 51468,
+      "edge_index": 51466,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197079,7 +197023,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 51469,
+      "edge_index": 51467,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197107,7 +197051,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 51477,
+      "edge_index": 51475,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197135,7 +197079,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 51478,
+      "edge_index": 51476,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197163,7 +197107,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 51479,
+      "edge_index": 51477,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197191,7 +197135,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 51480,
+      "edge_index": 51478,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197219,7 +197163,7 @@
       "current_anchor_excerpt": "import fs from 'node:fs';"
     },
     {
-      "edge_index": 51481,
+      "edge_index": 51479,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197247,7 +197191,7 @@
       "current_anchor_excerpt": "import { execFileSync } from 'node:child_process';"
     },
     {
-      "edge_index": 51482,
+      "edge_index": 51480,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197275,7 +197219,7 @@
       "current_anchor_excerpt": "import { createHash } from 'node:crypto';"
     },
     {
-      "edge_index": 51515,
+      "edge_index": 51513,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197303,7 +197247,7 @@
       "current_anchor_excerpt": "import { execFileSync } from 'node:child_process';"
     },
     {
-      "edge_index": 51516,
+      "edge_index": 51514,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197331,7 +197275,7 @@
       "current_anchor_excerpt": "import fs from 'node:fs';"
     },
     {
-      "edge_index": 51517,
+      "edge_index": 51515,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197359,7 +197303,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 51518,
+      "edge_index": 51516,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197387,7 +197331,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 51524,
+      "edge_index": 51522,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197415,7 +197359,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 51525,
+      "edge_index": 51523,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197443,7 +197387,7 @@
       "current_anchor_excerpt": "import fs from 'node:fs';"
     },
     {
-      "edge_index": 51531,
+      "edge_index": 51529,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197471,7 +197415,7 @@
       "current_anchor_excerpt": "import fs from 'node:fs';"
     },
     {
-      "edge_index": 51532,
+      "edge_index": 51530,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197499,7 +197443,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 51533,
+      "edge_index": 51531,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197527,7 +197471,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 51534,
+      "edge_index": 51532,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197555,7 +197499,7 @@
       "current_anchor_excerpt": "import { execFileSync } from 'node:child_process';"
     },
     {
-      "edge_index": 51542,
+      "edge_index": 51540,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197583,7 +197527,7 @@
       "current_anchor_excerpt": "import fs from 'node:fs';"
     },
     {
-      "edge_index": 51543,
+      "edge_index": 51541,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197611,7 +197555,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 51544,
+      "edge_index": 51542,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197639,7 +197583,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 51545,
+      "edge_index": 51543,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197667,7 +197611,7 @@
       "current_anchor_excerpt": "import { createHash } from 'node:crypto';"
     },
     {
-      "edge_index": 51546,
+      "edge_index": 51544,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197695,7 +197639,7 @@
       "current_anchor_excerpt": "import { setTimeout as delay } from 'node:timers/promises';"
     },
     {
-      "edge_index": 51553,
+      "edge_index": 51551,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197723,7 +197667,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 51554,
+      "edge_index": 51552,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197751,7 +197695,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 51555,
+      "edge_index": 51553,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197779,7 +197723,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 51563,
+      "edge_index": 51561,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197807,7 +197751,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 51564,
+      "edge_index": 51562,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197835,7 +197779,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 51565,
+      "edge_index": 51563,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -197863,7 +197807,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 51585,
+      "edge_index": 51583,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -197891,7 +197835,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 51586,
+      "edge_index": 51584,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -197919,7 +197863,7 @@
       "current_anchor_excerpt": "import collections"
     },
     {
-      "edge_index": 51587,
+      "edge_index": 51585,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -197947,7 +197891,7 @@
       "current_anchor_excerpt": "import csv"
     },
     {
-      "edge_index": 51588,
+      "edge_index": 51586,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -197975,7 +197919,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51589,
+      "edge_index": 51587,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198003,7 +197947,7 @@
       "current_anchor_excerpt": "import math"
     },
     {
-      "edge_index": 51590,
+      "edge_index": 51588,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198031,7 +197975,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 51591,
+      "edge_index": 51589,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198059,7 +198003,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51592,
+      "edge_index": 51590,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198087,7 +198031,7 @@
       "current_anchor_excerpt": "from datetime import date"
     },
     {
-      "edge_index": 51593,
+      "edge_index": 51591,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198115,7 +198059,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51600,
+      "edge_index": 51598,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -198145,7 +198089,7 @@
       "current_anchor_excerpt": "def scan_grid(grid_path: Path, page_path: Path):"
     },
     {
-      "edge_index": 51604,
+      "edge_index": 51602,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -198175,7 +198119,7 @@
       "current_anchor_excerpt": "def write_md(path: Path, rows):"
     },
     {
-      "edge_index": 51615,
+      "edge_index": 51613,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198203,7 +198147,7 @@
       "current_anchor_excerpt": "import gzip"
     },
     {
-      "edge_index": 51616,
+      "edge_index": 51614,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198231,7 +198175,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51617,
+      "edge_index": 51615,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198259,7 +198203,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 51618,
+      "edge_index": 51616,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198287,7 +198231,7 @@
       "current_anchor_excerpt": "import zlib"
     },
     {
-      "edge_index": 51619,
+      "edge_index": 51617,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198315,7 +198259,7 @@
       "current_anchor_excerpt": "from dataclasses import dataclass, field"
     },
     {
-      "edge_index": 51620,
+      "edge_index": 51618,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198343,7 +198287,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51649,
+      "edge_index": 51647,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198371,7 +198315,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51650,
+      "edge_index": 51648,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198399,7 +198343,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51651,
+      "edge_index": 51649,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198427,7 +198371,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51668,
+      "edge_index": 51666,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198455,7 +198399,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 51669,
+      "edge_index": 51667,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198483,7 +198427,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51670,
+      "edge_index": 51668,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198511,7 +198455,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51671,
+      "edge_index": 51669,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198539,7 +198483,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51677,
+      "edge_index": 51675,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198567,7 +198511,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51678,
+      "edge_index": 51676,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198595,7 +198539,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51679,
+      "edge_index": 51677,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198623,7 +198567,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51683,
+      "edge_index": 51681,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198651,7 +198595,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 51684,
+      "edge_index": 51682,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198679,7 +198623,7 @@
       "current_anchor_excerpt": "import fcntl"
     },
     {
-      "edge_index": 51685,
+      "edge_index": 51683,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198707,7 +198651,7 @@
       "current_anchor_excerpt": "import hashlib"
     },
     {
-      "edge_index": 51686,
+      "edge_index": 51684,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198735,7 +198679,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51687,
+      "edge_index": 51685,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198763,7 +198707,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 51688,
+      "edge_index": 51686,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198791,7 +198735,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51689,
+      "edge_index": 51687,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198819,7 +198763,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 51690,
+      "edge_index": 51688,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198847,7 +198791,7 @@
       "current_anchor_excerpt": "import tempfile"
     },
     {
-      "edge_index": 51692,
+      "edge_index": 51690,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -198877,7 +198821,7 @@
       "current_anchor_excerpt": "def atomic_write(path: Path, content: bytes) -> None:"
     },
     {
-      "edge_index": 51694,
+      "edge_index": 51692,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -198907,7 +198851,7 @@
       "current_anchor_excerpt": "def publish(source: Path, archive: Path) -> str:"
     },
     {
-      "edge_index": 51696,
+      "edge_index": 51694,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -198937,7 +198881,7 @@
       "current_anchor_excerpt": "def prune(archive: Path, keep: int) -> None:"
     },
     {
-      "edge_index": 51702,
+      "edge_index": 51700,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198965,7 +198909,7 @@
       "current_anchor_excerpt": "import base64"
     },
     {
-      "edge_index": 51703,
+      "edge_index": 51701,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -198993,7 +198937,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51743,
+      "edge_index": 51741,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199021,7 +198965,7 @@
       "current_anchor_excerpt": "import asyncio"
     },
     {
-      "edge_index": 51744,
+      "edge_index": 51742,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199049,7 +198993,7 @@
       "current_anchor_excerpt": "from datetime import date"
     },
     {
-      "edge_index": 51745,
+      "edge_index": 51743,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -199077,7 +199021,7 @@
       "current_anchor_excerpt": "from sqlalchemy import select"
     },
     {
-      "edge_index": 51755,
+      "edge_index": 51753,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199105,7 +199049,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51756,
+      "edge_index": 51754,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199133,7 +199077,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 51757,
+      "edge_index": 51755,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199161,7 +199105,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 51758,
+      "edge_index": 51756,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199189,7 +199133,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51759,
+      "edge_index": 51757,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199217,7 +199161,7 @@
       "current_anchor_excerpt": "from collections import defaultdict"
     },
     {
-      "edge_index": 51760,
+      "edge_index": 51758,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199245,7 +199189,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51763,
+      "edge_index": 51761,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199275,7 +199219,7 @@
       "current_anchor_excerpt": "def _git_tracked() -> list[Path] | None:"
     },
     {
-      "edge_index": 51765,
+      "edge_index": 51763,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199305,7 +199249,7 @@
       "current_anchor_excerpt": "def _text_files() -> list[Path]:"
     },
     {
-      "edge_index": 51785,
+      "edge_index": 51783,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199333,7 +199277,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 51786,
+      "edge_index": 51784,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199361,7 +199305,7 @@
       "current_anchor_excerpt": "import csv"
     },
     {
-      "edge_index": 51787,
+      "edge_index": 51785,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199389,7 +199333,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51788,
+      "edge_index": 51786,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199417,7 +199361,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 51789,
+      "edge_index": 51787,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199445,7 +199389,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51790,
+      "edge_index": 51788,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199473,7 +199417,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 51792,
+      "edge_index": 51790,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199501,7 +199445,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51793,
+      "edge_index": 51791,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -199529,7 +199473,7 @@
       "current_anchor_excerpt": "import matplotlib.dates as mdates"
     },
     {
-      "edge_index": 51794,
+      "edge_index": 51792,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -199557,7 +199501,7 @@
       "current_anchor_excerpt": "import matplotlib.pyplot as plt"
     },
     {
-      "edge_index": 51795,
+      "edge_index": 51793,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -199585,7 +199529,7 @@
       "current_anchor_excerpt": "import numpy as np"
     },
     {
-      "edge_index": 51799,
+      "edge_index": 51797,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199615,7 +199559,7 @@
       "current_anchor_excerpt": "def fetch_daily(end: date) -> list[tuple[date, int, int]]:"
     },
     {
-      "edge_index": 51800,
+      "edge_index": 51798,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199645,7 +199589,7 @@
       "current_anchor_excerpt": "def fetch_daily(end: date) -> list[tuple[date, int, int]]:"
     },
     {
-      "edge_index": 51802,
+      "edge_index": 51800,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199675,7 +199619,7 @@
       "current_anchor_excerpt": "def fetch_cumulative_users(end: date) -> int:"
     },
     {
-      "edge_index": 51804,
+      "edge_index": 51802,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199705,7 +199649,7 @@
       "current_anchor_excerpt": "def fetch_by_minute(day: date) -> list[tuple[datetime, float, float]]:"
     },
     {
-      "edge_index": 51807,
+      "edge_index": 51805,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199735,7 +199679,7 @@
       "current_anchor_excerpt": "def plot_growth(rows: list[tuple[date, int, int]], out_png: Path) -> dict:"
     },
     {
-      "edge_index": 51808,
+      "edge_index": 51806,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199765,7 +199709,7 @@
       "current_anchor_excerpt": "def plot_growth(rows: list[tuple[date, int, int]], out_png: Path) -> dict:"
     },
     {
-      "edge_index": 51811,
+      "edge_index": 51809,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199795,7 +199739,7 @@
       "current_anchor_excerpt": "def plot_intraday(minute_rows: list[tuple[datetime, float, float]], day: date, out_png: Path) -> None:"
     },
     {
-      "edge_index": 51812,
+      "edge_index": 51810,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -199825,7 +199769,7 @@
       "current_anchor_excerpt": "def plot_intraday(minute_rows: list[tuple[datetime, float, float]], day: date, out_png: Path) -> None:"
     },
     {
-      "edge_index": 51824,
+      "edge_index": 51822,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199853,7 +199797,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 51825,
+      "edge_index": 51823,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199881,7 +199825,7 @@
       "current_anchor_excerpt": "import asyncio"
     },
     {
-      "edge_index": 51826,
+      "edge_index": 51824,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199909,7 +199853,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 51827,
+      "edge_index": 51825,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199937,7 +199881,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51828,
+      "edge_index": 51826,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199965,7 +199909,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51834,
+      "edge_index": 51832,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -199993,7 +199937,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 51835,
+      "edge_index": 51833,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200021,7 +199965,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 51836,
+      "edge_index": 51834,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200049,7 +199993,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 51837,
+      "edge_index": 51835,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200077,7 +200021,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 51838,
+      "edge_index": 51836,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200105,7 +200049,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 51839,
+      "edge_index": 51837,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200133,7 +200077,7 @@
       "current_anchor_excerpt": "import textwrap"
     },
     {
-      "edge_index": 51840,
+      "edge_index": 51838,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200161,7 +200105,7 @@
       "current_anchor_excerpt": "import urllib.parse"
     },
     {
-      "edge_index": 51841,
+      "edge_index": 51839,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200189,7 +200133,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 51843,
+      "edge_index": 51841,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200217,7 +200161,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 51844,
+      "edge_index": 51842,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -200245,7 +200189,7 @@
       "current_anchor_excerpt": "from typing import Any"
     },
     {
-      "edge_index": 51845,
+      "edge_index": 51843,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -200273,7 +200217,7 @@
       "current_anchor_excerpt": "import matplotlib.dates as mdates"
     },
     {
-      "edge_index": 51846,
+      "edge_index": 51844,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -200301,7 +200245,7 @@
       "current_anchor_excerpt": "import matplotlib.pyplot as plt"
     },
     {
-      "edge_index": 51847,
+      "edge_index": 51845,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -200329,7 +200273,7 @@
       "current_anchor_excerpt": "import numpy as np"
     },
     {
-      "edge_index": 51848,
+      "edge_index": 51846,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -200357,7 +200301,7 @@
       "current_anchor_excerpt": "from matplotlib.backends.backend_pdf import PdfPages"
     },
     {
-      "edge_index": 51849,
+      "edge_index": 51847,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -200385,7 +200329,7 @@
       "current_anchor_excerpt": "from matplotlib.patches import FancyBboxPatch"
     },
     {
-      "edge_index": 51853,
+      "edge_index": 51851,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200415,7 +200359,7 @@
       "current_anchor_excerpt": "def _pdf_add(pdf: PdfPages, fig: plt.Figure | list[plt.Figure]) -> None:"
     },
     {
-      "edge_index": 51858,
+      "edge_index": 51856,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200445,7 +200389,7 @@
       "current_anchor_excerpt": "def api_get(path: str, params: dict[str, Any]) -> dict:"
     },
     {
-      "edge_index": 51860,
+      "edge_index": 51858,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200475,7 +200419,7 @@
       "current_anchor_excerpt": "def fetch_totals(d1: date, d2: date) -> tuple[int, int, int]:"
     },
     {
-      "edge_index": 51862,
+      "edge_index": 51860,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200505,7 +200449,7 @@
       "current_anchor_excerpt": "def fetch_cumulative_users(end: date) -> int:"
     },
     {
-      "edge_index": 51864,
+      "edge_index": 51862,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200535,7 +200479,7 @@
       "current_anchor_excerpt": "def fetch_dimension_rows_all("
     },
     {
-      "edge_index": 51865,
+      "edge_index": 51863,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200565,7 +200509,7 @@
       "current_anchor_excerpt": "def fetch_dimension_rows_all("
     },
     {
-      "edge_index": 51867,
+      "edge_index": 51865,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200595,7 +200539,7 @@
       "current_anchor_excerpt": "def fetch_dimension_rows("
     },
     {
-      "edge_index": 51869,
+      "edge_index": 51867,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200625,7 +200569,7 @@
       "current_anchor_excerpt": "def fetch_channels(d1: date, d2: date) -> tuple[int, list[dict]]:"
     },
     {
-      "edge_index": 51871,
+      "edge_index": 51869,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200655,7 +200599,7 @@
       "current_anchor_excerpt": "def fetch_channels_detailed(d1: date, d2: date) -> tuple[int, list[dict]]:"
     },
     {
-      "edge_index": 51873,
+      "edge_index": 51871,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200685,7 +200629,7 @@
       "current_anchor_excerpt": "def fetch_search_channel_visits(d: date) -> int:"
     },
     {
-      "edge_index": 51875,
+      "edge_index": 51873,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200715,7 +200659,7 @@
       "current_anchor_excerpt": "def fetch_search_phrases_reporting(d1: date, d2: date) -> tuple[list[dict], dict[str, Any]]:"
     },
     {
-      "edge_index": 51876,
+      "edge_index": 51874,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200745,7 +200689,7 @@
       "current_anchor_excerpt": "def fetch_search_phrases_reporting(d1: date, d2: date) -> tuple[list[dict], dict[str, Any]]:"
     },
     {
-      "edge_index": 51878,
+      "edge_index": 51876,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200775,7 +200719,7 @@
       "current_anchor_excerpt": "def fetch_phrases_warehouse(d: date) -> list[dict]:"
     },
     {
-      "edge_index": 51881,
+      "edge_index": 51879,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200805,7 +200749,7 @@
       "current_anchor_excerpt": "def fetch_phrases(d1: date, d2: date, limit: int | None = None) -> list[dict]:"
     },
     {
-      "edge_index": 51883,
+      "edge_index": 51881,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200835,7 +200779,7 @@
       "current_anchor_excerpt": "def fetch_pages(d1: date, d2: date, limit: int | None = None) -> list[dict]:"
     },
     {
-      "edge_index": 51885,
+      "edge_index": 51883,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200865,7 +200809,7 @@
       "current_anchor_excerpt": "def fetch_devices(d1: date, d2: date) -> list[dict]:"
     },
     {
-      "edge_index": 51887,
+      "edge_index": 51885,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200895,7 +200839,7 @@
       "current_anchor_excerpt": "def fetch_search_engines(d1: date, d2: date) -> list[dict]:"
     },
     {
-      "edge_index": 51889,
+      "edge_index": 51887,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200925,7 +200869,7 @@
       "current_anchor_excerpt": "def fetch_referrers(d1: date, d2: date) -> list[dict]:"
     },
     {
-      "edge_index": 51891,
+      "edge_index": 51889,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -200947,6 +200891,36 @@
       },
       "target_endpoint": {
         "label": "date",
+        "source_file": "",
+        "source_location": ""
+      },
+      "owned_target_candidates": [],
+      "import_modules_at_anchor": [],
+      "current_anchor_excerpt": "def fetch_webmaster_queries(d1: date, d2: date) -> dict[str, Any]:"
+    },
+    {
+      "edge_index": 51890,
+      "projection_reason": "external_or_unresolved_file",
+      "category": "external_type_or_symbol_reference",
+      "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
+      "edge": {
+        "source": "scripts_metrika_daily_report_fetch_webmaster_queries",
+        "target": "scripts_metrika_daily_report_py_any",
+        "relation": "references",
+        "context": "generic_arg",
+        "confidence": "EXTRACTED",
+        "source_file": "scripts/metrika_daily_report.py",
+        "source_location": "L392",
+        "weight": 1.0,
+        "_origin": "ast"
+      },
+      "source_endpoint": {
+        "label": "fetch_webmaster_queries()",
+        "source_file": "scripts/metrika_daily_report.py",
+        "source_location": "L392"
+      },
+      "target_endpoint": {
+        "label": "Any",
         "source_file": "",
         "source_location": ""
       },
@@ -200960,36 +200934,6 @@
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
       "edge": {
-        "source": "scripts_metrika_daily_report_fetch_webmaster_queries",
-        "target": "scripts_metrika_daily_report_py_any",
-        "relation": "references",
-        "context": "generic_arg",
-        "confidence": "EXTRACTED",
-        "source_file": "scripts/metrika_daily_report.py",
-        "source_location": "L392",
-        "weight": 1.0,
-        "_origin": "ast"
-      },
-      "source_endpoint": {
-        "label": "fetch_webmaster_queries()",
-        "source_file": "scripts/metrika_daily_report.py",
-        "source_location": "L392"
-      },
-      "target_endpoint": {
-        "label": "Any",
-        "source_file": "",
-        "source_location": ""
-      },
-      "owned_target_candidates": [],
-      "import_modules_at_anchor": [],
-      "current_anchor_excerpt": "def fetch_webmaster_queries(d1: date, d2: date) -> dict[str, Any]:"
-    },
-    {
-      "edge_index": 51894,
-      "projection_reason": "external_or_unresolved_file",
-      "category": "external_type_or_symbol_reference",
-      "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
-      "edge": {
         "source": "scripts_metrika_daily_report_fetch_first_party_bundle",
         "target": "scripts_metrika_daily_report_py_date",
         "relation": "references",
@@ -201015,7 +200959,7 @@
       "current_anchor_excerpt": "def fetch_first_party_bundle(day: date, period_start: date | None = None) -> dict[str, Any]:"
     },
     {
-      "edge_index": 51895,
+      "edge_index": 51893,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201045,7 +200989,7 @@
       "current_anchor_excerpt": "def fetch_first_party_bundle(day: date, period_start: date | None = None) -> dict[str, Any]:"
     },
     {
-      "edge_index": 51899,
+      "edge_index": 51897,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201075,7 +201019,7 @@
       "current_anchor_excerpt": "def compare_phrase_layers("
     },
     {
-      "edge_index": 51901,
+      "edge_index": 51899,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201105,7 +201049,7 @@
       "current_anchor_excerpt": "def fetch_daily_engagement(d1: date, d2: date) -> list[dict]:"
     },
     {
-      "edge_index": 51903,
+      "edge_index": 51901,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201135,7 +201079,7 @@
       "current_anchor_excerpt": "def fetch_by_minute(day: date) -> list[tuple[datetime, float, float]]:"
     },
     {
-      "edge_index": 51906,
+      "edge_index": 51904,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201165,7 +201109,7 @@
       "current_anchor_excerpt": "def fetch_daily_series(d1: date, d2: date) -> list[tuple[date, int, int]]:"
     },
     {
-      "edge_index": 51907,
+      "edge_index": 51905,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201195,7 +201139,7 @@
       "current_anchor_excerpt": "def fetch_daily_series(d1: date, d2: date) -> list[tuple[date, int, int]]:"
     },
     {
-      "edge_index": 51909,
+      "edge_index": 51907,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201225,7 +201169,7 @@
       "current_anchor_excerpt": "def fetch_daily_channels(d1: date, d2: date) -> dict[str, dict[str, int]]:"
     },
     {
-      "edge_index": 51913,
+      "edge_index": 51911,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201255,7 +201199,7 @@
       "current_anchor_excerpt": "def _fig_title_page("
     },
     {
-      "edge_index": 51914,
+      "edge_index": 51912,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201285,7 +201229,7 @@
       "current_anchor_excerpt": "def _fig_title_page("
     },
     {
-      "edge_index": 51918,
+      "edge_index": 51916,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201315,7 +201259,7 @@
       "current_anchor_excerpt": "def _fig_intraday("
     },
     {
-      "edge_index": 51919,
+      "edge_index": 51917,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201345,7 +201289,7 @@
       "current_anchor_excerpt": "def _fig_intraday("
     },
     {
-      "edge_index": 51925,
+      "edge_index": 51923,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201375,7 +201319,7 @@
       "current_anchor_excerpt": "def _fig_data_table_pages("
     },
     {
-      "edge_index": 51933,
+      "edge_index": 51931,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201405,7 +201349,7 @@
       "current_anchor_excerpt": "def _fig_hourly(minute_rows: list[tuple[datetime, float, float]], day: date, launch_time: time | None) -> plt.Figure:"
     },
     {
-      "edge_index": 51934,
+      "edge_index": 51932,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201435,7 +201379,7 @@
       "current_anchor_excerpt": "def _fig_hourly(minute_rows: list[tuple[datetime, float, float]], day: date, launch_time: time | None) -> plt.Figure:"
     },
     {
-      "edge_index": 51939,
+      "edge_index": 51937,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201465,7 +201409,7 @@
       "current_anchor_excerpt": "def _fig_growth(rows: list[tuple[date, int, int]], highlight: date, daily_engagement: list[dict]) -> list[plt.Figure]:"
     },
     {
-      "edge_index": 51940,
+      "edge_index": 51938,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201495,7 +201439,7 @@
       "current_anchor_excerpt": "def _fig_growth(rows: list[tuple[date, int, int]], highlight: date, daily_engagement: list[dict]) -> list[plt.Figure]:"
     },
     {
-      "edge_index": 51943,
+      "edge_index": 51941,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201525,7 +201469,7 @@
       "current_anchor_excerpt": "def _fig_phrases_coverage("
     },
     {
-      "edge_index": 51946,
+      "edge_index": 51944,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201555,7 +201499,7 @@
       "current_anchor_excerpt": "def _fig_report_index(day: date, sections: list[str]) -> plt.Figure:"
     },
     {
-      "edge_index": 51951,
+      "edge_index": 51949,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201585,7 +201529,7 @@
       "current_anchor_excerpt": "def _fig_inventory_summary(inv: dict[str, Any]) -> plt.Figure:"
     },
     {
-      "edge_index": 51954,
+      "edge_index": 51952,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201615,7 +201559,7 @@
       "current_anchor_excerpt": "def _fig_first_party_summary(fp: dict[str, Any], day: date) -> plt.Figure:"
     },
     {
-      "edge_index": 51955,
+      "edge_index": 51953,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201645,7 +201589,7 @@
       "current_anchor_excerpt": "def _fig_first_party_summary(fp: dict[str, Any], day: date) -> plt.Figure:"
     },
     {
-      "edge_index": 51958,
+      "edge_index": 51956,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201675,7 +201619,7 @@
       "current_anchor_excerpt": "def _fig_warehouse_summary(wh: dict[str, Any], day: date) -> plt.Figure:"
     },
     {
-      "edge_index": 51959,
+      "edge_index": 51957,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201705,7 +201649,7 @@
       "current_anchor_excerpt": "def _fig_warehouse_summary(wh: dict[str, Any], day: date) -> plt.Figure:"
     },
     {
-      "edge_index": 51966,
+      "edge_index": 51964,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201735,7 +201679,7 @@
       "current_anchor_excerpt": "def _fig_webmaster_summary("
     },
     {
-      "edge_index": 51967,
+      "edge_index": 51965,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201765,7 +201709,7 @@
       "current_anchor_excerpt": "def _fig_webmaster_summary("
     },
     {
-      "edge_index": 51970,
+      "edge_index": 51968,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201795,7 +201739,7 @@
       "current_anchor_excerpt": "def _fig_layer_compare_summary(compare: dict[str, Any], period_label: str) -> plt.Figure:"
     },
     {
-      "edge_index": 51973,
+      "edge_index": 51971,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201825,7 +201769,7 @@
       "current_anchor_excerpt": "def _fig_fetch_completeness_audit(audit: dict[str, Any], day: date) -> plt.Figure:"
     },
     {
-      "edge_index": 51974,
+      "edge_index": 51972,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201855,7 +201799,7 @@
       "current_anchor_excerpt": "def _fig_fetch_completeness_audit(audit: dict[str, Any], day: date) -> plt.Figure:"
     },
     {
-      "edge_index": 51981,
+      "edge_index": 51979,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201885,7 +201829,7 @@
       "current_anchor_excerpt": "def sitemap_note_for(day: date) -> str:"
     },
     {
-      "edge_index": 51983,
+      "edge_index": 51981,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201915,7 +201859,7 @@
       "current_anchor_excerpt": "def build_report(day: date, launch: time | None, out_dir: Path) -> Path:"
     },
     {
-      "edge_index": 51984,
+      "edge_index": 51982,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201945,7 +201889,7 @@
       "current_anchor_excerpt": "def build_report(day: date, launch: time | None, out_dir: Path) -> Path:"
     },
     {
-      "edge_index": 51985,
+      "edge_index": 51983,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -201975,7 +201919,7 @@
       "current_anchor_excerpt": "def build_report(day: date, launch: time | None, out_dir: Path) -> Path:"
     },
     {
-      "edge_index": 51986,
+      "edge_index": 51984,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -202005,7 +201949,7 @@
       "current_anchor_excerpt": "def build_report(day: date, launch: time | None, out_dir: Path) -> Path:"
     },
     {
-      "edge_index": 52086,
+      "edge_index": 52084,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202033,7 +201977,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 52087,
+      "edge_index": 52085,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202061,7 +202005,7 @@
       "current_anchor_excerpt": "import hashlib"
     },
     {
-      "edge_index": 52088,
+      "edge_index": 52086,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202089,7 +202033,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52089,
+      "edge_index": 52087,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202117,7 +202061,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52090,
+      "edge_index": 52088,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202145,7 +202089,7 @@
       "current_anchor_excerpt": "import posixpath"
     },
     {
-      "edge_index": 52091,
+      "edge_index": 52089,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202173,7 +202117,7 @@
       "current_anchor_excerpt": "from xml.etree import ElementTree as ET"
     },
     {
-      "edge_index": 52092,
+      "edge_index": 52090,
       "projection_reason": "external_or_unresolved_file",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202205,7 +202149,7 @@
       "current_anchor_excerpt": "from zipfile import ZipFile"
     },
     {
-      "edge_index": 52095,
+      "edge_index": 52093,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -202235,7 +202179,7 @@
       "current_anchor_excerpt": "def text(element: ET.Element | None) -> str:"
     },
     {
-      "edge_index": 52098,
+      "edge_index": 52096,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -202265,7 +202209,7 @@
       "current_anchor_excerpt": "def relations(archive: ZipFile, part: str) -> dict:"
     },
     {
-      "edge_index": 52100,
+      "edge_index": 52098,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -202295,7 +202239,7 @@
       "current_anchor_excerpt": "def extract(path: Path) -> dict:"
     },
     {
-      "edge_index": 52110,
+      "edge_index": 52108,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202323,7 +202267,7 @@
       "current_anchor_excerpt": "import asyncio"
     },
     {
-      "edge_index": 52111,
+      "edge_index": 52109,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202351,7 +202295,7 @@
       "current_anchor_excerpt": "import logging"
     },
     {
-      "edge_index": 52112,
+      "edge_index": 52110,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202379,7 +202323,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52113,
+      "edge_index": 52111,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202407,7 +202351,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52119,
+      "edge_index": 52117,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202435,7 +202379,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 52120,
+      "edge_index": 52118,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202463,7 +202407,7 @@
       "current_anchor_excerpt": "import ipaddress"
     },
     {
-      "edge_index": 52121,
+      "edge_index": 52119,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202491,7 +202435,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52122,
+      "edge_index": 52120,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202519,7 +202463,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52123,
+      "edge_index": 52121,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202547,7 +202491,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 52124,
+      "edge_index": 52122,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202575,7 +202519,7 @@
       "current_anchor_excerpt": "from datetime import datetime, timezone"
     },
     {
-      "edge_index": 52125,
+      "edge_index": 52123,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202603,7 +202547,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52138,
+      "edge_index": 52136,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202631,7 +202575,7 @@
       "current_anchor_excerpt": "import csv"
     },
     {
-      "edge_index": 52139,
+      "edge_index": 52137,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202659,7 +202603,7 @@
       "current_anchor_excerpt": "import gzip"
     },
     {
-      "edge_index": 52140,
+      "edge_index": 52138,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202687,7 +202631,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52141,
+      "edge_index": 52139,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202715,7 +202659,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 52142,
+      "edge_index": 52140,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202743,7 +202687,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52147,
+      "edge_index": 52145,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202771,7 +202715,7 @@
       "current_anchor_excerpt": "import csv"
     },
     {
-      "edge_index": 52148,
+      "edge_index": 52146,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202799,7 +202743,7 @@
       "current_anchor_excerpt": "import glob"
     },
     {
-      "edge_index": 52149,
+      "edge_index": 52147,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202827,7 +202771,7 @@
       "current_anchor_excerpt": "import gzip"
     },
     {
-      "edge_index": 52150,
+      "edge_index": 52148,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202855,7 +202799,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52151,
+      "edge_index": 52149,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202883,7 +202827,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 52152,
+      "edge_index": 52150,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202911,7 +202855,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 52153,
+      "edge_index": 52151,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202939,7 +202883,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52154,
+      "edge_index": 52152,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -202967,7 +202911,7 @@
       "current_anchor_excerpt": "from openpyxl import load_workbook"
     },
     {
-      "edge_index": 52161,
+      "edge_index": 52159,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -202995,7 +202939,7 @@
       "current_anchor_excerpt": "import csv"
     },
     {
-      "edge_index": 52162,
+      "edge_index": 52160,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203023,7 +202967,7 @@
       "current_anchor_excerpt": "import gzip"
     },
     {
-      "edge_index": 52163,
+      "edge_index": 52161,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203051,7 +202995,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52164,
+      "edge_index": 52162,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203079,7 +203023,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 52165,
+      "edge_index": 52163,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203107,7 +203051,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 52166,
+      "edge_index": 52164,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203135,7 +203079,7 @@
       "current_anchor_excerpt": "import statistics"
     },
     {
-      "edge_index": 52167,
+      "edge_index": 52165,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203163,7 +203107,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 52168,
+      "edge_index": 52166,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203191,7 +203135,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52169,
+      "edge_index": 52167,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -203219,7 +203163,7 @@
       "current_anchor_excerpt": "import docx"
     },
     {
-      "edge_index": 52170,
+      "edge_index": 52168,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -203247,7 +203191,7 @@
       "current_anchor_excerpt": "from docx.table import Table"
     },
     {
-      "edge_index": 52171,
+      "edge_index": 52169,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -203275,7 +203219,7 @@
       "current_anchor_excerpt": "from docx.text.paragraph import Paragraph"
     },
     {
-      "edge_index": 52187,
+      "edge_index": 52185,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203303,7 +203247,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52188,
+      "edge_index": 52186,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203331,7 +203275,7 @@
       "current_anchor_excerpt": "import math"
     },
     {
-      "edge_index": 52189,
+      "edge_index": 52187,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203359,7 +203303,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52190,
+      "edge_index": 52188,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203387,7 +203331,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 52191,
+      "edge_index": 52189,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203415,7 +203359,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52206,
+      "edge_index": 52204,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203443,7 +203387,7 @@
       "current_anchor_excerpt": "import gzip"
     },
     {
-      "edge_index": 52207,
+      "edge_index": 52205,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203471,7 +203415,7 @@
       "current_anchor_excerpt": "import html"
     },
     {
-      "edge_index": 52208,
+      "edge_index": 52206,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203499,7 +203443,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52209,
+      "edge_index": 52207,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203527,7 +203471,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 52210,
+      "edge_index": 52208,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203555,7 +203499,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52211,
+      "edge_index": 52209,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203583,7 +203527,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52216,
+      "edge_index": 52214,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -203613,7 +203557,7 @@
       "current_anchor_excerpt": "def main(scan_dir: Path, goods_path: Path) -> None:"
     },
     {
-      "edge_index": 52219,
+      "edge_index": 52217,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -203643,7 +203587,7 @@
       "current_anchor_excerpt": "def write_points(scan_dir: Path, out: Path) -> None:"
     },
     {
-      "edge_index": 52225,
+      "edge_index": 52223,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -203671,7 +203615,7 @@
       "current_anchor_excerpt": "import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';"
     },
     {
-      "edge_index": 52226,
+      "edge_index": 52224,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -203699,7 +203643,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 52227,
+      "edge_index": 52225,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -203727,7 +203671,7 @@
       "current_anchor_excerpt": "import { dirname, resolve } from 'node:path';"
     },
     {
-      "edge_index": 52228,
+      "edge_index": 52226,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -203755,7 +203699,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 52247,
+      "edge_index": 52245,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203783,7 +203727,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 52248,
+      "edge_index": 52246,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203811,7 +203755,7 @@
       "current_anchor_excerpt": "import csv"
     },
     {
-      "edge_index": 52249,
+      "edge_index": 52247,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203839,7 +203783,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52250,
+      "edge_index": 52248,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203867,7 +203811,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 52251,
+      "edge_index": 52249,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203895,7 +203839,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52252,
+      "edge_index": 52250,
       "projection_reason": "external_or_unresolved_file",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203927,7 +203871,7 @@
       "current_anchor_excerpt": "import time"
     },
     {
-      "edge_index": 52253,
+      "edge_index": 52251,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203955,7 +203899,7 @@
       "current_anchor_excerpt": "import urllib.parse"
     },
     {
-      "edge_index": 52254,
+      "edge_index": 52252,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -203983,7 +203927,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 52281,
+      "edge_index": 52279,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204011,7 +203955,7 @@
       "current_anchor_excerpt": "import csv"
     },
     {
-      "edge_index": 52282,
+      "edge_index": 52280,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204039,7 +203983,7 @@
       "current_anchor_excerpt": "import glob"
     },
     {
-      "edge_index": 52283,
+      "edge_index": 52281,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204067,7 +204011,7 @@
       "current_anchor_excerpt": "import gzip"
     },
     {
-      "edge_index": 52284,
+      "edge_index": 52282,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204095,7 +204039,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52285,
+      "edge_index": 52283,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204123,7 +204067,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 52286,
+      "edge_index": 52284,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204151,7 +204095,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 52287,
+      "edge_index": 52285,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204179,7 +204123,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52288,
+      "edge_index": 52286,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204207,7 +204151,7 @@
       "current_anchor_excerpt": "import unicodedata"
     },
     {
-      "edge_index": 52289,
+      "edge_index": 52287,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204235,7 +204179,7 @@
       "current_anchor_excerpt": "from collections import defaultdict"
     },
     {
-      "edge_index": 52290,
+      "edge_index": 52288,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -204263,7 +204207,7 @@
       "current_anchor_excerpt": "from openpyxl import load_workbook"
     },
     {
-      "edge_index": 52316,
+      "edge_index": 52314,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204291,7 +204235,7 @@
       "current_anchor_excerpt": "import re as _re"
     },
     {
-      "edge_index": 52324,
+      "edge_index": 52322,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204319,7 +204263,7 @@
       "current_anchor_excerpt": "    import json"
     },
     {
-      "edge_index": 52325,
+      "edge_index": 52323,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204347,7 +204291,7 @@
       "current_anchor_excerpt": "    import sys"
     },
     {
-      "edge_index": 52326,
+      "edge_index": 52324,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204375,7 +204319,7 @@
       "current_anchor_excerpt": "    from pathlib import Path"
     },
     {
-      "edge_index": 52329,
+      "edge_index": 52327,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204403,7 +204347,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 52337,
+      "edge_index": 52335,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204431,7 +204375,7 @@
       "current_anchor_excerpt": "    import json"
     },
     {
-      "edge_index": 52338,
+      "edge_index": 52336,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204459,7 +204403,7 @@
       "current_anchor_excerpt": "    import sys"
     },
     {
-      "edge_index": 52339,
+      "edge_index": 52337,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204487,7 +204431,7 @@
       "current_anchor_excerpt": "    from pathlib import Path"
     },
     {
-      "edge_index": 52349,
+      "edge_index": 52347,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -204515,7 +204459,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 52350,
+      "edge_index": 52348,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -204543,7 +204487,7 @@
       "current_anchor_excerpt": "import { readFileSync } from 'node:fs';"
     },
     {
-      "edge_index": 52351,
+      "edge_index": 52349,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -204571,7 +204515,7 @@
       "current_anchor_excerpt": "import { dirname, resolve } from 'node:path';"
     },
     {
-      "edge_index": 52352,
+      "edge_index": 52350,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -204599,7 +204543,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 52361,
+      "edge_index": 52359,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204627,7 +204571,7 @@
       "current_anchor_excerpt": "import datetime as _dt"
     },
     {
-      "edge_index": 52362,
+      "edge_index": 52360,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204655,7 +204599,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 52363,
+      "edge_index": 52361,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204683,7 +204627,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52364,
+      "edge_index": 52362,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204711,7 +204655,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52366,
+      "edge_index": 52364,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -204741,7 +204685,7 @@
       "current_anchor_excerpt": "def _git_tracked(include_untracked: bool = False) -> list[Path] | None:"
     },
     {
-      "edge_index": 52369,
+      "edge_index": 52367,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -204771,7 +204715,7 @@
       "current_anchor_excerpt": "def iter_files(include_untracked: bool = False) -> list[Path]:"
     },
     {
-      "edge_index": 52381,
+      "edge_index": 52379,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204799,7 +204743,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 52382,
+      "edge_index": 52380,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204827,7 +204771,7 @@
       "current_anchor_excerpt": "from collections import Counter, defaultdict"
     },
     {
-      "edge_index": 52383,
+      "edge_index": 52381,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204855,7 +204799,7 @@
       "current_anchor_excerpt": "import csv"
     },
     {
-      "edge_index": 52384,
+      "edge_index": 52382,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204883,7 +204827,7 @@
       "current_anchor_excerpt": "from datetime import datetime, timedelta"
     },
     {
-      "edge_index": 52385,
+      "edge_index": 52383,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204911,7 +204855,7 @@
       "current_anchor_excerpt": "import gzip"
     },
     {
-      "edge_index": 52386,
+      "edge_index": 52384,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204939,7 +204883,7 @@
       "current_anchor_excerpt": "import hashlib"
     },
     {
-      "edge_index": 52387,
+      "edge_index": 52385,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204967,7 +204911,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52388,
+      "edge_index": 52386,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -204995,7 +204939,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 52389,
+      "edge_index": 52387,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205023,7 +204967,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52390,
+      "edge_index": 52388,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205051,7 +204995,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 52392,
+      "edge_index": 52390,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -205081,7 +205025,7 @@
       "current_anchor_excerpt": "def read_rows(folder: Path, name: str):"
     },
     {
-      "edge_index": 52398,
+      "edge_index": 52396,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -205111,7 +205055,7 @@
       "current_anchor_excerpt": "def analyze(folder: Path, minimum: int = 150):"
     },
     {
-      "edge_index": 52405,
+      "edge_index": 52403,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205139,7 +205083,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 52406,
+      "edge_index": 52404,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205167,7 +205111,7 @@
       "current_anchor_excerpt": "from collections import Counter"
     },
     {
-      "edge_index": 52407,
+      "edge_index": 52405,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205195,7 +205139,7 @@
       "current_anchor_excerpt": "import gzip"
     },
     {
-      "edge_index": 52408,
+      "edge_index": 52406,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205223,7 +205167,7 @@
       "current_anchor_excerpt": "import hashlib"
     },
     {
-      "edge_index": 52409,
+      "edge_index": 52407,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205251,7 +205195,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52410,
+      "edge_index": 52408,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205279,7 +205223,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 52411,
+      "edge_index": 52409,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205307,7 +205251,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52412,
+      "edge_index": 52410,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205335,7 +205279,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 52413,
+      "edge_index": 52411,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205363,7 +205307,7 @@
       "current_anchor_excerpt": "import shlex"
     },
     {
-      "edge_index": 52414,
+      "edge_index": 52412,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205391,7 +205335,7 @@
       "current_anchor_excerpt": "from datetime import datetime, timezone"
     },
     {
-      "edge_index": 52417,
+      "edge_index": 52415,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -205421,7 +205365,7 @@
       "current_anchor_excerpt": "def export(out: Path) -> None:"
     },
     {
-      "edge_index": 52419,
+      "edge_index": 52417,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -205451,7 +205395,7 @@
       "current_anchor_excerpt": "def export_clickhouse_copy(out: Path) -> None:"
     },
     {
-      "edge_index": 52421,
+      "edge_index": 52419,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -205481,7 +205425,7 @@
       "current_anchor_excerpt": "def export_nginx_search_requests(out: Path) -> None:"
     },
     {
-      "edge_index": 52431,
+      "edge_index": 52429,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205509,7 +205453,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 52432,
+      "edge_index": 52430,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205537,7 +205481,7 @@
       "current_anchor_excerpt": "import html"
     },
     {
-      "edge_index": 52433,
+      "edge_index": 52431,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205565,7 +205509,7 @@
       "current_anchor_excerpt": "import re"
     },
     {
-      "edge_index": 52434,
+      "edge_index": 52432,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205593,7 +205537,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52435,
+      "edge_index": 52433,
       "projection_reason": "external_or_unresolved_file",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205625,7 +205569,7 @@
       "current_anchor_excerpt": "import time"
     },
     {
-      "edge_index": 52436,
+      "edge_index": 52434,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205653,7 +205597,7 @@
       "current_anchor_excerpt": "import urllib.error"
     },
     {
-      "edge_index": 52437,
+      "edge_index": 52435,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205681,7 +205625,7 @@
       "current_anchor_excerpt": "import urllib.parse"
     },
     {
-      "edge_index": 52438,
+      "edge_index": 52436,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205709,7 +205653,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 52439,
+      "edge_index": 52437,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205737,7 +205681,7 @@
       "current_anchor_excerpt": "import xml.etree.ElementTree as ET"
     },
     {
-      "edge_index": 52440,
+      "edge_index": 52438,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205765,7 +205709,7 @@
       "current_anchor_excerpt": "from html.parser import HTMLParser"
     },
     {
-      "edge_index": 52442,
+      "edge_index": 52440,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -205794,7 +205738,7 @@
       "current_anchor_excerpt": "class SeoParser(HTMLParser):"
     },
     {
-      "edge_index": 52469,
+      "edge_index": 52467,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205822,7 +205766,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 52470,
+      "edge_index": 52468,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205850,7 +205794,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52471,
+      "edge_index": 52469,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205878,7 +205822,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52472,
+      "edge_index": 52470,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205906,7 +205850,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 52473,
+      "edge_index": 52471,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205934,7 +205878,7 @@
       "current_anchor_excerpt": "from datetime import date"
     },
     {
-      "edge_index": 52474,
+      "edge_index": 52472,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205962,7 +205906,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52477,
+      "edge_index": 52475,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -205990,7 +205934,7 @@
       "current_anchor_excerpt": "import asyncio"
     },
     {
-      "edge_index": 52478,
+      "edge_index": 52476,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206018,7 +205962,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52479,
+      "edge_index": 52477,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206046,7 +205990,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52480,
+      "edge_index": 52478,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206074,7 +206018,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 52481,
+      "edge_index": 52479,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206102,7 +206046,7 @@
       "current_anchor_excerpt": "from concurrent.futures import ThreadPoolExecutor"
     },
     {
-      "edge_index": 52482,
+      "edge_index": 52480,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206130,7 +206074,7 @@
       "current_anchor_excerpt": "from datetime import date"
     },
     {
-      "edge_index": 52483,
+      "edge_index": 52481,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206158,7 +206102,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52484,
+      "edge_index": 52482,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -206186,7 +206130,7 @@
       "current_anchor_excerpt": "from sqlalchemy import select"
     },
     {
-      "edge_index": 52485,
+      "edge_index": 52483,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -206214,7 +206158,7 @@
       "current_anchor_excerpt": "from sqlalchemy.dialects.postgresql import insert as pg_insert"
     },
     {
-      "edge_index": 52500,
+      "edge_index": 52498,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206242,7 +206186,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52501,
+      "edge_index": 52499,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206270,7 +206214,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52502,
+      "edge_index": 52500,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206298,7 +206242,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 52503,
+      "edge_index": 52501,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206326,7 +206270,7 @@
       "current_anchor_excerpt": "import tempfile"
     },
     {
-      "edge_index": 52504,
+      "edge_index": 52502,
       "projection_reason": "external_or_unresolved_file",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206358,7 +206302,7 @@
       "current_anchor_excerpt": "import time"
     },
     {
-      "edge_index": 52505,
+      "edge_index": 52503,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206386,7 +206330,7 @@
       "current_anchor_excerpt": "import urllib.error"
     },
     {
-      "edge_index": 52506,
+      "edge_index": 52504,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206414,7 +206358,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 52507,
+      "edge_index": 52505,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206442,7 +206386,7 @@
       "current_anchor_excerpt": "import uuid"
     },
     {
-      "edge_index": 52522,
+      "edge_index": 52520,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206470,7 +206414,7 @@
       "current_anchor_excerpt": "import argparse"
     },
     {
-      "edge_index": 52523,
+      "edge_index": 52521,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206498,7 +206442,7 @@
       "current_anchor_excerpt": "import itertools"
     },
     {
-      "edge_index": 52524,
+      "edge_index": 52522,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206526,7 +206470,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52525,
+      "edge_index": 52523,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206554,7 +206498,7 @@
       "current_anchor_excerpt": "import random"
     },
     {
-      "edge_index": 52526,
+      "edge_index": 52524,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206582,7 +206526,7 @@
       "current_anchor_excerpt": "import statistics"
     },
     {
-      "edge_index": 52527,
+      "edge_index": 52525,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206610,7 +206554,7 @@
       "current_anchor_excerpt": "import threading"
     },
     {
-      "edge_index": 52528,
+      "edge_index": 52526,
       "projection_reason": "external_or_unresolved_file",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206642,7 +206586,7 @@
       "current_anchor_excerpt": "import time"
     },
     {
-      "edge_index": 52529,
+      "edge_index": 52527,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206670,7 +206614,7 @@
       "current_anchor_excerpt": "import urllib.error"
     },
     {
-      "edge_index": 52530,
+      "edge_index": 52528,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206698,7 +206642,7 @@
       "current_anchor_excerpt": "import urllib.request"
     },
     {
-      "edge_index": 52541,
+      "edge_index": 52539,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206726,7 +206670,7 @@
       "current_anchor_excerpt": "import hashlib"
     },
     {
-      "edge_index": 52542,
+      "edge_index": 52540,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206754,7 +206698,7 @@
       "current_anchor_excerpt": "import importlib.util"
     },
     {
-      "edge_index": 52543,
+      "edge_index": 52541,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206782,7 +206726,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52544,
+      "edge_index": 52542,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206810,7 +206754,7 @@
       "current_anchor_excerpt": "import unittest"
     },
     {
-      "edge_index": 52545,
+      "edge_index": 52543,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206838,7 +206782,7 @@
       "current_anchor_excerpt": "from tempfile import TemporaryDirectory"
     },
     {
-      "edge_index": 52546,
+      "edge_index": 52544,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206866,7 +206810,7 @@
       "current_anchor_excerpt": "from unittest.mock import patch"
     },
     {
-      "edge_index": 52573,
+      "edge_index": 52571,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206894,7 +206838,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52574,
+      "edge_index": 52572,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206922,7 +206866,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 52575,
+      "edge_index": 52573,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206950,7 +206894,7 @@
       "current_anchor_excerpt": "import tempfile"
     },
     {
-      "edge_index": 52576,
+      "edge_index": 52574,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -206978,7 +206922,7 @@
       "current_anchor_excerpt": "import unittest"
     },
     {
-      "edge_index": 52612,
+      "edge_index": 52610,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207006,7 +206950,7 @@
       "current_anchor_excerpt": "import importlib.util"
     },
     {
-      "edge_index": 52613,
+      "edge_index": 52611,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207034,7 +206978,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52614,
+      "edge_index": 52612,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207062,7 +207006,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52615,
+      "edge_index": 52613,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207090,7 +207034,7 @@
       "current_anchor_excerpt": "import tempfile"
     },
     {
-      "edge_index": 52616,
+      "edge_index": 52614,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207118,7 +207062,7 @@
       "current_anchor_excerpt": "import unittest"
     },
     {
-      "edge_index": 52626,
+      "edge_index": 52624,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207146,7 +207090,7 @@
       "current_anchor_excerpt": "import copy"
     },
     {
-      "edge_index": 52627,
+      "edge_index": 52625,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207174,7 +207118,7 @@
       "current_anchor_excerpt": "import importlib.util"
     },
     {
-      "edge_index": 52628,
+      "edge_index": 52626,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207202,7 +207146,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52629,
+      "edge_index": 52627,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207230,7 +207174,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52630,
+      "edge_index": 52628,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207258,7 +207202,7 @@
       "current_anchor_excerpt": "from tempfile import TemporaryDirectory"
     },
     {
-      "edge_index": 52631,
+      "edge_index": 52629,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207286,7 +207230,7 @@
       "current_anchor_excerpt": "import unittest"
     },
     {
-      "edge_index": 52632,
+      "edge_index": 52630,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207314,7 +207258,7 @@
       "current_anchor_excerpt": "from unittest.mock import patch"
     },
     {
-      "edge_index": 52648,
+      "edge_index": 52646,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -207342,7 +207286,7 @@
       "current_anchor_excerpt": "import assert from 'node:assert/strict';"
     },
     {
-      "edge_index": 52649,
+      "edge_index": 52647,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -207370,7 +207314,7 @@
       "current_anchor_excerpt": "import fs from 'node:fs';"
     },
     {
-      "edge_index": 52650,
+      "edge_index": 52648,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -207398,7 +207342,7 @@
       "current_anchor_excerpt": "import path from 'node:path';"
     },
     {
-      "edge_index": 52651,
+      "edge_index": 52649,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -207426,7 +207370,7 @@
       "current_anchor_excerpt": "import { fileURLToPath } from 'node:url';"
     },
     {
-      "edge_index": 52652,
+      "edge_index": 52650,
       "projection_reason": "missing_endpoint",
       "category": "node_standard_library",
       "explanation": "Node built-in module, not an owned project source.",
@@ -207454,7 +207398,7 @@
       "current_anchor_excerpt": "import { createRequire } from 'node:module';"
     },
     {
-      "edge_index": 52663,
+      "edge_index": 52661,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207482,7 +207426,7 @@
       "current_anchor_excerpt": "import os"
     },
     {
-      "edge_index": 52664,
+      "edge_index": 52662,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207510,7 +207454,7 @@
       "current_anchor_excerpt": "import stat"
     },
     {
-      "edge_index": 52665,
+      "edge_index": 52663,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207538,7 +207482,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 52666,
+      "edge_index": 52664,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207566,7 +207510,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52668,
+      "edge_index": 52666,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -207596,7 +207540,7 @@
       "current_anchor_excerpt": "def _stub_bin(tmp_path: Path, extra: dict[str, str] | None = None) -> Path:"
     },
     {
-      "edge_index": 52669,
+      "edge_index": 52667,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -207626,7 +207570,7 @@
       "current_anchor_excerpt": "def _stub_bin(tmp_path: Path, extra: dict[str, str] | None = None) -> Path:"
     },
     {
-      "edge_index": 52671,
+      "edge_index": 52669,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -207656,7 +207600,7 @@
       "current_anchor_excerpt": "def _run(script: str, arg: str, bin_dir: Path, env_extra: dict[str, str] | None = None):"
     },
     {
-      "edge_index": 52692,
+      "edge_index": 52690,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207684,7 +207628,7 @@
       "current_anchor_excerpt": "import importlib.util"
     },
     {
-      "edge_index": 52693,
+      "edge_index": 52691,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207712,7 +207656,7 @@
       "current_anchor_excerpt": "import json"
     },
     {
-      "edge_index": 52694,
+      "edge_index": 52692,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207740,7 +207684,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52695,
+      "edge_index": 52693,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207768,7 +207712,7 @@
       "current_anchor_excerpt": "import shutil"
     },
     {
-      "edge_index": 52696,
+      "edge_index": 52694,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207796,7 +207740,7 @@
       "current_anchor_excerpt": "import subprocess"
     },
     {
-      "edge_index": 52697,
+      "edge_index": 52695,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207824,7 +207768,7 @@
       "current_anchor_excerpt": "import tempfile"
     },
     {
-      "edge_index": 52698,
+      "edge_index": 52696,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207852,7 +207796,7 @@
       "current_anchor_excerpt": "import unittest"
     },
     {
-      "edge_index": 52706,
+      "edge_index": 52704,
       "projection_reason": "external_or_unresolved_file",
       "category": "external_type_or_symbol_reference",
       "explanation": "Type/base/symbol endpoint is outside owned files; imported or dynamic identity remains at the source anchor.",
@@ -207882,7 +207826,7 @@
       "current_anchor_excerpt": "    @unittest.skipUnless(shutil.which(\"node\") and (ROOT / \"frontend/node_modules/@babel/parser\").exists(),"
     },
     {
-      "edge_index": 52717,
+      "edge_index": 52715,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207910,7 +207854,7 @@
       "current_anchor_excerpt": "import asyncio"
     },
     {
-      "edge_index": 52718,
+      "edge_index": 52716,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207938,7 +207882,7 @@
       "current_anchor_excerpt": "import base64"
     },
     {
-      "edge_index": 52719,
+      "edge_index": 52717,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207966,7 +207910,7 @@
       "current_anchor_excerpt": "import importlib.util"
     },
     {
-      "edge_index": 52720,
+      "edge_index": 52718,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -207994,7 +207938,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52721,
+      "edge_index": 52719,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -208022,7 +207966,7 @@
       "current_anchor_excerpt": "import pytest"
     },
     {
-      "edge_index": 52741,
+      "edge_index": 52739,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -208050,7 +207994,7 @@
       "current_anchor_excerpt": "import asyncio"
     },
     {
-      "edge_index": 52742,
+      "edge_index": 52740,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -208078,7 +208022,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52743,
+      "edge_index": 52741,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -208106,7 +208050,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52744,
+      "edge_index": 52742,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -208134,7 +208078,7 @@
       "current_anchor_excerpt": "from sqlalchemy import func, select  # noqa: E402"
     },
     {
-      "edge_index": 52750,
+      "edge_index": 52748,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -208162,7 +208106,7 @@
       "current_anchor_excerpt": "import asyncio"
     },
     {
-      "edge_index": 52751,
+      "edge_index": 52749,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -208190,7 +208134,7 @@
       "current_anchor_excerpt": "import hashlib"
     },
     {
-      "edge_index": 52752,
+      "edge_index": 52750,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -208218,7 +208162,7 @@
       "current_anchor_excerpt": "import sys"
     },
     {
-      "edge_index": 52753,
+      "edge_index": 52751,
       "projection_reason": "missing_endpoint",
       "category": "python_standard_library",
       "explanation": "Import is outside the project source inventory.",
@@ -208246,7 +208190,7 @@
       "current_anchor_excerpt": "from pathlib import Path"
     },
     {
-      "edge_index": 52754,
+      "edge_index": 52752,
       "projection_reason": "missing_endpoint",
       "category": "python_package_import",
       "explanation": "Import refers to a dependency; installation/version is governed by requirements/constraints, not a repository function node.",
@@ -208274,7 +208218,7 @@
       "current_anchor_excerpt": "from sqlalchemy import select  # noqa: E402"
     },
     {
-      "edge_index": 52780,
+      "edge_index": 52778,
       "projection_reason": "missing_endpoint",
       "category": "owned_target_excluded_or_not_extracted",
       "explanation": "Owned path exists in Git; generated/evidence/data documents may be excluded from the graph. No synthetic edge is added.",
@@ -208302,7 +208246,7 @@
       "current_anchor_excerpt": "export default pageMeta;"
     },
     {
-      "edge_index": 52786,
+      "edge_index": 52784,
       "projection_reason": "missing_endpoint",
       "category": "owned_target_excluded_or_not_extracted",
       "explanation": "Owned path exists in Git; generated/evidence/data documents may be excluded from the graph. No synthetic edge is added.",

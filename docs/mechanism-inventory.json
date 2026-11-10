@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/app/data/research_catalog.json",
-      "sha256": "dade5c2e840c8a5b2c10dc24a18a30d442fdf7594d9249cb41b9af98572fdd0a",
-      "lines": 981
+      "sha256": "b4e78510d1c87f3c8c57eac35bbaa0e41e66471ea34220994695980d768e0714",
+      "lines": 1221
     },
     {
       "path": "backend/app/data/view_model_families.py",
