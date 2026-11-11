@@ -1871,14 +1871,16 @@ def compose_document(
     `window.__feNotFound`: приложение показывает свою страницу 404 в общей оболочке.
     """
     from app.services.locale import get_locale, html_lang, is_preview_locale, og_locale
-    from app.services.index_policy import robots_for_path, strip_mode_query
+    from app.services.index_policy import googlebot_meta_for_path, robots_for_path, strip_mode_query
 
     if not preserve_mode_query:
         canonical_path = strip_mode_query(canonical_path)
+    googlebot_meta = ""
     if is_preview_locale() or not_found:
         robots_content = "noindex, follow"
     else:
         robots_content = robots_for_path(canonical_path)
+        googlebot_meta = googlebot_meta_for_path(canonical_path, get_locale())
 
     url = _absolute(canonical_path, canonical=True)
     safe_title = escape(title)
@@ -1964,6 +1966,7 @@ def compose_document(
 <meta name="keywords" content="{safe_keywords}">
 <meta name="author" content="Forecast Economy">
 <meta name="robots" content="{robots_content}">
+{googlebot_meta}
 <meta name="theme-color" content="#F4F5F7">
 <meta name="color-scheme" content="light">
 {PWA_HEAD_META}

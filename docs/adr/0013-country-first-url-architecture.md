@@ -3,6 +3,7 @@
 - **Status:** Proposed (проектирование 2026-08-16; реализация отдельным заходом)
 - **Date:** 2026-08-16
 - **Last verified:** 2026-09-03 (apex = EN, `ru.` = RU; geo людям из РФ, ботов не редиректим)
+- **Update 2026-11-11:** старые адреса path-cut на apex теперь ведут 301 на `ru.` (они были русскими до сплита), а не на английскую копию — [ADR-0029](0029-ru-google-recovery.md).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md), [`ADR-0008`](0008-regional-bounded-context.md), [`ADR-0011`](0011-world-eurostat-data-plane.md)
 - **Backlog:** [`docs/backlog.md`](../backlog.md) — раздел «Карта миграции URL (ADR-0013)» + решения звонка 14 (Р-1…Р-3)
 

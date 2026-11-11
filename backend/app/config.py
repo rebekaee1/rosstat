@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     apex_locale_en: bool = False
     # Людей с IP RU/СНГ с английского apex уводим на ru. Ботов не редиректим.
     geo_locale_redirect_enabled: bool = False
+    # 11.11.2026: на ru. годовые страницы стран мира и их регионов — noindex только для Google
+    # (meta googlebot, Яндекс не читает). Откат — false. См. index_policy.googlebot_meta_for_path.
+    ru_google_noindex_world_years: bool = True
     # Кто географически считается русской аудиторией для geo-редиректа.
     geo_ru_country_codes: str = (
         "RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD"

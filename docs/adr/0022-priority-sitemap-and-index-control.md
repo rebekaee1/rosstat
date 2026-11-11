@@ -2,6 +2,7 @@
 
 **Status:** Accepted для кода ветки `circle13/int` (коммиты SEO `3653dddd`, `e6d74900`, SEO2 `e0589e5c`, `14394fb8`, `9f1f13f4`) по заданию владельца 12.10.2026 («нам надо сразу проактивно улучшать и исправлять seo»); **не выпущено**. Приоритетный шард включён кодом сразу (размер `RUSTATS_SITEMAP_PRIORITY_MAX_URLS`, `0` — не публиковать), недельный отчёт за флагом `RUSTATS_SEO_WEEKLY_REPORT_ENABLED` (по умолчанию `false`).
 **Date:** 2026-10-12.
+**Update 2026-11-11:** вариант C (noindex малоценных лет) принят в узкой форме — только для Google и только на `ru.` (`meta googlebot`), см. [ADR-0029](0029-ru-google-recovery.md).
 **Part of:** [`../data-contracts.md`](../data-contracts.md#c13-2026-10-12), [`../workflow.md`](../workflow.md#circle13-2026-10-12), [`../knowledge-unknowns.md`](../knowledge-unknowns.md).
 **Related:** [ADR-0003](0003-seo-single-source-server-rendered.md) (SSR как единственный источник HTML), [ADR-0013](0013-country-first-url-architecture.md) (язык задаёт хост, canonical и hreflang), [ADR-0017](0017-platform-growth-boundaries.md). Решение 20.09 «все действующие публичные canonical входят в sitemap» **не меняется**.
 **Code anchors:** `backend/app/services/sitemap_priority.py`, `sitemap_static.py` (сборка, порядок, дедупликация при переобходе Вебмастера), `seo_weekly_report.py`, `seo_index_control.py`, `seo_dynamics.py`, `seo_year_ui.py`, `backend/scripts/seo-index-experiment.py`, `seo-register-hypotheses.py`, `deploy/crawler-status.sh`, `frontend/nginx.conf` (зоны `ogbot`, `ogbotconn`).

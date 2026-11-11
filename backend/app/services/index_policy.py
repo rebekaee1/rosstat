@@ -14,6 +14,7 @@ robots.txt (`*` и Googlebot) и склеиваются Clean-param у Янде�
 """
 from __future__ import annotations
 
+import re
 from datetime import date
 from typing import Literal
 
@@ -54,6 +55,38 @@ def is_noindex_path(path: str, *, today: date | None = None) -> bool:
     # Возраст не определяет полезность истории. Наличие данных и канон
     # проверяют маршруты и sitemap, а не календарный cutoff по URL.
     return False
+
+
+# --- Google-only noindex на ru. (решение владельца 11.11.2026) ----------------
+# Google выбросил ru. из индекса 02–05.10: новый хост, 23 внешние ссылки, 10 млн
+# почти одинаковых годовых страниц. Годовые страницы стран мира и их регионов
+# (8,6 млн из 10 млн адресов ru.) получают `<meta name="googlebot" content="noindex,
+# follow">`: Google их не индексирует и оценивает ru. по России, регионам РФ,
+# карточкам, рейтингам и сравнениям. Яндекс и люди видят всё как раньше (Яндекс
+# meta googlebot не читает). Apex (EN) не трогается — контроль. Это не меняет
+# состав sitemap: робот должен прочесть метку. Откат — флаг
+# RUSTATS_RU_GOOGLE_NOINDEX_WORLD_YEARS=false. Основание —
+# .artifacts/google-drop-2026-11-11/консультация.md.
+_RU_GOOGLE_NOINDEX = re.compile(
+    r"^/(?!(?:russia|currencies|world)/)[a-z0-9-]+/"
+    r"(?:indicator/[a-z0-9_.-]+|region/[a-z0-9-]+/[a-z0-9_.-]+)/[0-9]{4}$"
+)
+GOOGLEBOT_NOINDEX_META = '<meta name="googlebot" content="noindex, follow">'
+
+
+def is_ru_google_noindex_path(path: str) -> bool:
+    """Годовая страница страны мира или её региона (не России, не валют, не /world/)."""
+    raw = (path or "").split("?", 1)[0].rstrip("/")
+    return bool(_RU_GOOGLE_NOINDEX.match(raw))
+
+
+def googlebot_meta_for_path(path: str, locale: str) -> str:
+    """Тег только для Google на русской версии; пусто для EN и остальных страниц."""
+    from app.config import settings
+
+    if locale != "ru" or not settings.ru_google_noindex_world_years:
+        return ""
+    return GOOGLEBOT_NOINDEX_META if is_ru_google_noindex_path(path) else ""
 
 
 def strip_mode_query(path: str) -> str:

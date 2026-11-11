@@ -405,10 +405,34 @@ async def _cached_html(
         return status, html
 
 
+def legacy_redirect_origin(request: Request | None) -> str:
+    """Origin для 301 со старого адреса: ``https://ru.…`` на английском apex, иначе пусто.
+
+    Решение владельца 11.11.2026: адреса до языкового сплита (``/indicator/…``,
+    ``/world/{slug}/…`` — nginx ставит ``X-Path-Cut-Legacy: 1``) были русскими, и их
+    история в поиске — история русских страниц. С apex они ведут на ту же страницу
+    ``ru.``, а не на английскую копию; на ``ru.``, localhost и стенде — относительный
+    Location, как раньше. Пара для nginx-корней (``/region/…``, ``/today`` …) —
+    ``map $host $legacy_ru_origin`` в ``frontend/nginx.conf``.
+    """
+    if request is None or request.headers.get("x-path-cut-legacy") != "1":
+        return ""
+    if not settings.apex_locale_en:
+        return ""
+    from app.services.locale import apex_host, normalize_host, ru_public_origin
+
+    host = normalize_host(request.headers.get("x-forwarded-host") or request.headers.get("host"))
+    apex = apex_host()
+    if host in {apex, f"www.{apex}"}:
+        return ru_public_origin()
+    return ""
+
+
 def _permanent_redirect(path: str, request: Request | None = None) -> Response:
     """301 на канонический публичный путь (А-2/А-3 + path-cut).
 
-    Location — относительный (`/russia/indicator/cpi`), без хоста и схемы:
+    Location — относительный (`/russia/indicator/cpi`), без хоста и схемы,
+    кроме старого адреса на английском apex (`legacy_redirect_origin`, ADR-0029):
     браузер и робот резолвят против текущего запроса (localhost:3000 и
     https://forecasteconomy.com одинаково; нет потери порта и даунгрейда HTTPS).
     Абсолютный канон живёт в `<link rel="canonical">` целевой страницы.
@@ -418,6 +442,7 @@ def _permanent_redirect(path: str, request: Request | None = None) -> Response:
     if not path.startswith("/"):
         path = f"/{path}"
     path = merge_attribution_query(path, request)
+    path = f"{legacy_redirect_origin(request)}{path}"
     return Response(
         status_code=301,
         headers={"Location": path, "Cache-Control": "no-cache"},

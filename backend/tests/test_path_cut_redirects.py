@@ -3,7 +3,9 @@
 Покрывает слои:
 1. `legacy_redirects` (semantic) — цели уже финальные (`/russia/…`, `/{slug}/indicator/…`);
 2. SSR Location — относительный путь без хоста (nginx `absolute_redirect off`
-   + backend `_permanent_redirect`); абсолютный канон только в HTML.
+   + backend `_permanent_redirect`); абсолютный канон только в HTML. Исключение
+   с 11.11.2026 — старый адрес на английском apex ведёт на `ru.` (ADR-0029,
+   tests/test_ru_google_recovery.py).
 """
 
 from __future__ import annotations
