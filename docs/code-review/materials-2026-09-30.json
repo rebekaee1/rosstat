@@ -14213,14 +14213,14 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "18e24e5755070a728927ef06eeb0c68032006b56859ced70eaf92fbaa691374c",
+        "sha256": "14dd8f3b44155fb591e0feffac2bcd4be939baf64dea58e9c9f8937ea264153f",
         "bytes": 926421
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "18e24e5755070a728927ef06eeb0c68032006b56859ced70eaf92fbaa691374c",
+        "sha256": "14dd8f3b44155fb591e0feffac2bcd4be939baf64dea58e9c9f8937ea264153f",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -16497,7 +16497,7 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "eeb51ae1d560f6cd05917416510a347f9d5e4254922ce6a847186b3a1650ff39",
+        "sha256": "25d95733a06c803470894c0029c7aeea9f7c5d6470272447a382e504e93267b1",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
@@ -16505,7 +16505,7 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "eeb51ae1d560f6cd05917416510a347f9d5e4254922ce6a847186b3a1650ff39",
+        "sha256": "25d95733a06c803470894c0029c7aeea9f7c5d6470272447a382e504e93267b1",
         "bytes": 7597208
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -20936,14 +20936,14 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "7ecfdca2606e55b7da7e01f8f08585fe5b386e3d2b0d4a46d30d59440849f433",
+        "sha256": "9efd316191b1803499065cca0c770066162969b4d0a1dedb36b01ebf3d46bc1b",
         "bytes": 22800021
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "7ecfdca2606e55b7da7e01f8f08585fe5b386e3d2b0d4a46d30d59440849f433",
+        "sha256": "9efd316191b1803499065cca0c770066162969b4d0a1dedb36b01ebf3d46bc1b",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -28496,14 +28496,14 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "c3cb96beb583c76648938fd4c3afc2278913bdb9a6c65b108b29160adf4c5b44",
+        "sha256": "0238c0976f2d43e0bfa22fa9aaf5a63301193b121f3ae124ea6d84f5fb8e1d0f",
         "bytes": 3837473
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "c3cb96beb583c76648938fd4c3afc2278913bdb9a6c65b108b29160adf4c5b44",
+        "sha256": "0238c0976f2d43e0bfa22fa9aaf5a63301193b121f3ae124ea6d84f5fb8e1d0f",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -38452,7 +38452,7 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "abda601fb40d1cfe490acaef52b99c21d276282255c260e46edff3b274dab0dd",
+        "sha256": "2c8cbfea54fea2562af25b4f7f99de7b37ce59eca082fc9b95f8d2196aee5786",
         "canonical_source": "docs/mechanism-inventory.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
@@ -38460,7 +38460,7 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "abda601fb40d1cfe490acaef52b99c21d276282255c260e46edff3b274dab0dd",
+        "sha256": "2c8cbfea54fea2562af25b4f7f99de7b37ce59eca082fc9b95f8d2196aee5786",
         "bytes": 12090517
       },
       "current_delta_reviewed_in_this_pass": false,
