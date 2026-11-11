@@ -30,12 +30,15 @@ export PATH="${FE_PATH_PREPEND:+$FE_PATH_PREPEND:}/opt/homebrew/bin:/usr/local/b
 HOST="${FE_HOST:-fe-prod}"
 REMOTE_DIR="${FE_REMOTE_DIR:-/opt/rosstat/backups}"
 DEST="${FE_BACKUP_DEST:-$HOME/Backups/forecasteconomy}"
-KEEP="${FE_BACKUP_KEEP:-14}"
+# 11.11.2026, решение владельца: копия на Mac раз в месяц и одна. Запуск по-прежнему каждые
+# 30 мин (ноутбук спит), но пока проверенной копии меньше PULL_EVERY_DAYS дней, выход без SSH.
+PULL_EVERY_DAYS="${FE_PULL_EVERY_DAYS:-30}"
+KEEP="${FE_BACKUP_KEEP:-1}"
 MIN_AGE_MIN="${FE_MIN_AGE_MIN:-10}"
 SSH_TRIES="${FE_SSH_TRIES:-4}"
 RSYNC_TRIES="${FE_RSYNC_TRIES:-8}"
 RETRY_SLEEP="${FE_RETRY_SLEEP:-20}"
-STALE_HOURS="${FE_STALE_HOURS:-36}"
+STALE_HOURS="${FE_STALE_HOURS:-$(( PULL_EVERY_DAYS * 24 + 48 ))}"
 NOTIFY_EVERY_HOURS="${FE_NOTIFY_EVERY_HOURS:-12}"
 LOG_MAX_BYTES="${FE_LOG_MAX_BYTES:-1048576}"
 LOG="$DEST/pull.log"
@@ -77,6 +80,11 @@ fail() {
   notify_if_stale "$*"
   exit 1
 }
+
+# Monthly: a verified copy younger than PULL_EVERY_DAYS is enough — no SSH, no log noise.
+if [ "${FE_FORCE:-0}" != "1" ] && [ "$(verified_age_hours)" -lt $(( PULL_EVERY_DAYS * 24 )) ]; then
+  exit 0
+fi
 
 # Expected newest daily dump date (UTC): the 04:00 UTC cron plus 10 min to finish.
 EXPECT_DATE=$(date -u -v-4H -v-10M +%Y%m%d)

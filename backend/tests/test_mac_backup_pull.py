@@ -110,12 +110,17 @@ def test_resumes_after_dropped_connection_and_cleans_old_partials(env):
 
 
 def test_ssh_failure_is_quiet_while_copy_is_fresh_and_loud_once_when_stale(env):
+    """Копия раз в месяц (11.11.2026): свежая копия — выход без SSH; баннер только после 32 суток."""
     (env["tmp"] / "ssh_down").write_text("")
     fresh = env["dest"] / "rustats_20200101_040001.verified"
     fresh.write_text("ok")
-    assert _run(env).returncode == 1
+    assert _run(env).returncode == 0
+    assert not any(c.startswith("ssh ") for c in _calls(env))
+    due = time.time() - 31 * 24 * 3600
+    os.utime(fresh, (due, due))
+    assert _run(env).returncode == 1  # месяц прошёл: идёт за копией, сервер недоступен
     assert not any(c.startswith("osascript") for c in _calls(env))
-    old = time.time() - 50 * 3600
+    old = time.time() - 33 * 24 * 3600
     os.utime(fresh, (old, old))
     assert _run(env).returncode == 1
     assert len([c for c in _calls(env) if c.startswith("osascript")]) == 1

@@ -26,7 +26,9 @@
 set -euo pipefail
 
 BACKUP_DIR="${BACKUP_DIR:-/opt/rosstat/backups}"
-KEEP_DAYS="${KEEP_DAYS:-14}"
+# Хранится одна копия (решение владельца 11.11.2026: 51 дамп по ~720 МБ заполнил диск).
+# Копия на Mac — раз в месяц (scripts/mac/fe-backup-pull.sh).
+KEEP_COPIES="${KEEP_COPIES:-1}"
 DB_NAME="rustats"
 DB_USER="rustats"
 COMPOSE_DIR="${COMPOSE_DIR:-/opt/rosstat}"
@@ -62,11 +64,15 @@ tg_notify() {
     --data-urlencode text="$1" || true
 }
 
-# Ротация: чистим всё старше KEEP_DAYS. Только после успешного дампа: при череде сбоев
-# ротация стёрла бы последние рабочие копии, а новых бы не появилось.
+# Ротация: оставляем KEEP_COPIES новейших пар (.dump + .identity.sql.gz), остальные удаляем.
+# Только после успешного дампа: при череде сбоев ротация стёрла бы последние рабочие копии,
+# а новых бы не появилось.
 rotate_old() {
-  find "$BACKUP_DIR" -name "*.dump" -mtime +"$KEEP_DAYS" -delete
-  find "$BACKUP_DIR" -name "*.sql.gz" -mtime +"$KEEP_DAYS" -delete
+  local old base
+  ls -1t "$BACKUP_DIR"/${DB_NAME}_*.dump 2>/dev/null | tail -n +$((KEEP_COPIES + 1)) | while read -r old; do
+    base="${old%.dump}"
+    rm -f -- "$old" "$base.identity.sql.gz"
+  done
 }
 
 on_error() {
@@ -147,7 +153,7 @@ if [ -n "${OFFSITE_S3_BUCKET:-}" ]; then
 fi
 
 rotate_old
-echo "[$(date)] Cleaned backups older than $KEEP_DAYS days"
+echo "[$(date)] Rotation: kept newest $KEEP_COPIES backup(s)"
 
 # Heartbeat: успех виден в Telegram, а не только в логе на сервере.
 case "$OFFSITE_NOTE" in
