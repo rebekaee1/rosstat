@@ -1150,7 +1150,7 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 
 ## Возврат русской аудитории в Google — 2026-11-11
 
-Решение владельца 11.11.2026 «оба шага сделай»; основания и замер — [ADR-0029](adr/0029-ru-google-recovery.md). Код в репозитории, на боевой — по отдельной команде.
+Решение владельца 11.11.2026 «оба шага сделай»; основания и замер — [ADR-0029](adr/0029-ru-google-recovery.md). Выпущено 11.11.2026, прод `4f8fa681`.
 
 - **Старые адреса до сплита.** Запрос с `X-Path-Cut-Legacy: 1` (nginx: `/indicator/…`, `/indicator/…/{год}`, `/world/{slug}/…`) на apex или `www` при `apex_locale_en=true` получает 301 с абсолютным `Location: https://ru.forecasteconomy.com/<канон>` (`seo_pages.legacy_redirect_origin`). Старые корни, которые nginx отвечает сам (`/region/…`, `/regions…`, `/today…`, `/calendar…`, `/demographics`, `/region-rating/…`, `/region-vs/…`, `/category/…`), — тот же origin через `map $host $legacy_ru_origin`. На `ru.`, localhost и стенде Location относительный. Переименование кода на живом адресе и «угаданные» адреса (`/rankings`, `/search`, `/countries`, `/calculators`) остаются на своём хосте.
 - **noindex только для Google на `ru.`.** `index_policy.googlebot_meta_for_path(path, locale)`: при `locale == "ru"` и флаге `ru_google_noindex_world_years` (env `RUSTATS_RU_GOOGLE_NOINDEX_WORLD_YEARS`, по умолчанию `true`) годовые страницы `/{страна}/indicator/{код}/{год}` и `/{страна}/region/{регион}/{код}/{год}` (страна не `russia`, `currencies`, `world`) получают в `<head>` после `meta robots` строку `<meta name="googlebot" content="noindex, follow">`. `meta robots` не меняется (`index, follow`), sitemap не меняется. Preview и 404 — без этой строки (у них свой `noindex`). Кэш SSR ключуется локалью, поэтому EN и RU не смешиваются.

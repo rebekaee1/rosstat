@@ -1,6 +1,6 @@
 # ADR-0029: Вернуть русскую аудиторию в Google — старые адреса на `ru.` и noindex только для Google
 
-**Status:** Accepted 11.11.2026 по слову владельца («оба шага сделай»; «нам надо чтобы иностранцы видели английские страницы и в поиске им выдавалось а русские — русские»). Код в репозитории; выпуск на боевой — по отдельной команде владельца.
+**Status:** Accepted 11.11.2026 по слову владельца («оба шага сделай»; «нам надо чтобы иностранцы видели английские страницы и в поиске им выдавалось а русские — русские»). Выпущено 11.11.2026 по слову «Да, выпусти» (прод = GitHub main = `4f8fa681`, одобрен `86289e56`). Живая проверка 11.11: `forecasteconomy.com/indicator/key-rate/2025`, `/region/moskva`, `/today` → 301 на `ru.`; `ru.…/latvia/indicator/…/2001` и `ru.…/united-states/region/colorado/…/2008` — `meta googlebot noindex` при `robots index`; apex-версия и `ru.…/russia/indicator/key-rate/2025` — без метки.
 **Date:** 2026-11-11.
 **Part of:** [`../data-contracts.md`](../data-contracts.md#возврат-русской-аудитории-в-google--2026-11-11).
 **Related:** [ADR-0013](0013-country-first-url-architecture.md) (язык = хост, path-cut), [ADR-0022](0022-priority-sitemap-and-index-control.md) (приоритетный sitemap; вариант C «noindex» был отклонён 12.10 как преждевременный), решение 20.09 «все canonical в sitemap» (CONTEXT, «История и индекс»).

@@ -13010,7 +13010,7 @@
         "main": "f8919adff0c09ed8571fc58e906ae57aa7a13b55",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "3aa69ea21b40f12bcc79283e838d8843c7b86bae8b02e9799042cdeecf66cab4",
+        "sha256": "160820e058e772e59b03efc6a3778f160823dd93f3ae8988fd34b84382b9753f",
         "bytes": 301214
       },
       "review_status": "unreviewed_content",
@@ -14213,14 +14213,14 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "14dd8f3b44155fb591e0feffac2bcd4be939baf64dea58e9c9f8937ea264153f",
+        "sha256": "712fae705bababcf085d284b6c926de72fcc4a193ec42db6440ab7cf12531daf",
         "bytes": 926421
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "14dd8f3b44155fb591e0feffac2bcd4be939baf64dea58e9c9f8937ea264153f",
+        "sha256": "712fae705bababcf085d284b6c926de72fcc4a193ec42db6440ab7cf12531daf",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -16497,7 +16497,7 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "25d95733a06c803470894c0029c7aeea9f7c5d6470272447a382e504e93267b1",
+        "sha256": "c6b349debff67260217de113824a6339947f6ab544dce649b06ef5c3078ff6f4",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
@@ -16505,7 +16505,7 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "25d95733a06c803470894c0029c7aeea9f7c5d6470272447a382e504e93267b1",
+        "sha256": "c6b349debff67260217de113824a6339947f6ab544dce649b06ef5c3078ff6f4",
         "bytes": 7597208
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -20936,14 +20936,14 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "9efd316191b1803499065cca0c770066162969b4d0a1dedb36b01ebf3d46bc1b",
+        "sha256": "1e081715e52ab446dd4f33f5cec672ad94498f6c0e46855b48632083ae03c0f6",
         "bytes": 22800021
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "9efd316191b1803499065cca0c770066162969b4d0a1dedb36b01ebf3d46bc1b",
+        "sha256": "1e081715e52ab446dd4f33f5cec672ad94498f6c0e46855b48632083ae03c0f6",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -23180,7 +23180,7 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "5de6872d77ead6273aeb3114ca25b1b43f5336d57fb32f3e9abb3f2ec1ad3e22",
+        "sha256": "e35e24a9bdc6419425e50fe142063763b3231dbb846491f83fed2f0c45487814",
         "bytes": 342782
       },
       "review_status": "exact_version_review_in_ledger",
@@ -23198,7 +23198,7 @@
           "branch": "integration/all-20261002"
         },
         "status_in_review": "reviewed",
-        "sha256": "5de6872d77ead6273aeb3114ca25b1b43f5336d57fb32f3e9abb3f2ec1ad3e22"
+        "sha256": "e35e24a9bdc6419425e50fe142063763b3231dbb846491f83fed2f0c45487814"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -40844,7 +40844,7 @@
         "main": "f8919adff0c09ed8571fc58e906ae57aa7a13b55",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "5b4d5e353e4b3a4e7596460f44c8a28a179d955ed6142d6ec74ffec07cc0af17",
+        "sha256": "46f6769801f080d00f19ff12844a8048362bdf9a52c6a2d60930f43d00d8ea24",
         "bytes": 6040539
       },
       "review_status": "unreviewed_content",
@@ -40865,7 +40865,7 @@
         "main": "f8919adff0c09ed8571fc58e906ae57aa7a13b55",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e012c29a324a727455eccdf7eb08682304bede87d2a6b12baa29ab8c154ec105",
+        "sha256": "a6566a19d0b5f642415da04511d0fbffaafd42e0aaaa4a8de63100007d5aaeeb",
         "bytes": 20919
       },
       "review_status": "unreviewed_content",
@@ -40886,7 +40886,7 @@
         "main": "f8919adff0c09ed8571fc58e906ae57aa7a13b55",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "9f8073444ca84d72bc9371d8771829b6e0e63f24021627b79dea146b06bc344e",
+        "sha256": "930b72fceede17fed5b2ee7ad1a368634b1d5de3b44dea7c5d4af3d95caddcb3",
         "bytes": 125405
       },
       "review_status": "unreviewed_content",
@@ -45590,7 +45590,7 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "ce7380b7b84ff54cd03640dd1784fc3645e25e8193ef17665ffc7de2abaad8bd",
+        "sha256": "fa7b6ec1f5e456ff38abb111487c46ad9af3392abbe9ae0a56ffe5816febe20b",
         "bytes": 136599
       },
       "review_status": "exact_version_review_in_ledger",
@@ -45608,7 +45608,7 @@
           "branch": "integration/all-20261002"
         },
         "status_in_review": "reviewed",
-        "sha256": "ce7380b7b84ff54cd03640dd1784fc3645e25e8193ef17665ffc7de2abaad8bd"
+        "sha256": "fa7b6ec1f5e456ff38abb111487c46ad9af3392abbe9ae0a56ffe5816febe20b"
       },
       "canonical_source": "docs/workflow.md",
       "linked_mechanisms": "dev/release procedures",
@@ -54700,14 +54700,14 @@
           "mode": "полное чтение нового файла"
         },
         "status_in_review": "reviewed",
-        "sha256": "4e15b678f9914cf1d7d3b096cb2c890526ecb14ff4e17a494e536654bf45da33"
+        "sha256": "7c8a705ea101029aee5e659425fef9b4fc7c1ebbce1d215cdec7fa065a489618"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "9ab733af",
         "scope": "tracked/index",
         "date": "2026-11-11",
-        "sha256": "4e15b678f9914cf1d7d3b096cb2c890526ecb14ff4e17a494e536654bf45da33",
+        "sha256": "7c8a705ea101029aee5e659425fef9b4fc7c1ebbce1d215cdec7fa065a489618",
         "bytes": 8411
       },
       "current_delta_reviewed_in_this_pass": true

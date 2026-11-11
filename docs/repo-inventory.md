@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2233  ·  **Строк:** 1 411 730  ·  **Токенов (≈):** 13 432 726
+**Файлов:** 2233  ·  **Строк:** 1 411 731  ·  **Токенов (≈):** 13 432 867
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 905 | 316 274 | 3 452 449 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 19 | 1 142 | 17 205 |
-| `docs` | 143 | 881 892 | 7 565 579 |
+| `deploy` | 19 | 1 143 | 17 255 |
+| `docs` | 143 | 881 892 | 7 565 670 |
 | `frontend` | 1014 | 184 423 | 2 020 294 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -45,7 +45,7 @@
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `backend/seed_data.py` | 5 732 | 59 343 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
-| `docs/data-contracts.md` | 1 157 | 58 799 |
+| `docs/data-contracts.md` | 1 157 | 58 796 |
 | `frontend/src/i18n/messages.ru.js` | 4 162 | 58 516 |
 | `frontend/src/i18n/messages.en.js` | 4 157 | 57 653 |
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
@@ -65,7 +65,7 @@
 | `backend/app/api/sitemap.py` | 2 573 | 26 887 |
 | `backend/app/services/analytics_marts.py` | 2 385 | 26 692 |
 | `backend/app/models.py` | 1 920 | 25 109 |
-| `docs/workflow.md` | 670 | 24 099 |
+| `docs/workflow.md` | 670 | 24 111 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
 | `backend/app/services/site_urls.py` | 2 253 | 22 009 |
 | `backend/app/main.py` | 2 063 | 21 877 |
@@ -256,8 +256,8 @@
 | `backend/tests/test_indicator_year_landing.py` | 537 | 5 494 |
 | `backend/app/api/export.py` | 598 | 5 470 |
 | `backend/tests/test_world_search_compare_national.py` | 572 | 5 461 |
+| `deploy/approved-shas.txt` | 187 | 5 439 |
 | `frontend/src/lib/format.test.js` | 545 | 5 425 |
-| `deploy/approved-shas.txt` | 186 | 5 389 |
 | `backend/app/services/seo_world_year.py` | 563 | 5 380 |
 | `backend/app/services/cabinet.py` | 550 | 5 362 |
 | `backend/app/data/eurostat_units_ru.py` | 567 | 5 361 |
@@ -963,6 +963,7 @@
 | `backend/tests/test_world_bcb_sgs_adapter.py` | 203 | 1 500 |
 | `frontend/src/components/RatingExtras.jsx` | 133 | 1 499 |
 | `scripts/locate-indicator.py` | 167 | 1 498 |
+| `docs/adr/0029-ru-google-recovery.md` | 47 | 1 497 |
 | `backend/tests/test_world_national_core_job.py` | 155 | 1 496 |
 | `deploy/tor-http-bridge/tor_http_bridge.py` | 160 | 1 494 |
 | `frontend/src/lib/worldApi.test.js` | 143 | 1 493 |
@@ -1004,7 +1005,6 @@
 | `backend/tests/test_market_history_backfill.py` | 163 | 1 417 |
 | `frontend/src/styles/c11c-charts.css` | 130 | 1 416 |
 | `backend/tests/test_search_country_concept_headline.py` | 106 | 1 415 |
-| `docs/adr/0029-ru-google-recovery.md` | 47 | 1 415 |
 | `docs/design/local-acceptance/performance-lab.json` | 214 | 1 410 |
 | `frontend/src/lib/recentPages.component.test.jsx` | 104 | 1 409 |
 | `backend/tests/test_dataset_inventory.py` | 128 | 1 408 |

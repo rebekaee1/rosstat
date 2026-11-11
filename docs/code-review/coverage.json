@@ -12517,9 +12517,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "a0ca8667e597dfe14d32eb4123d7e9825662d7a7c36f37b7f442c67690e97247",
-      "bytes": 27286,
-      "lines": 186,
+      "sha256": "181b32f95dd8f78b63d878944da9df7476f66d8bcd112b7bb750cb67e849dab5",
+      "bytes": 27561,
+      "lines": 187,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13141,8 +13141,8 @@
     },
     {
       "path": "docs/adr/0029-ru-google-recovery.md",
-      "sha256": "4e15b678f9914cf1d7d3b096cb2c890526ecb14ff4e17a494e536654bf45da33",
-      "bytes": 8411,
+      "sha256": "7c8a705ea101029aee5e659425fef9b4fc7c1ebbce1d215cdec7fa065a489618",
+      "bytes": 8769,
       "lines": 47,
       "code": false,
       "status": "reviewed",
@@ -13479,8 +13479,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "5de6872d77ead6273aeb3114ca25b1b43f5336d57fb32f3e9abb3f2ec1ad3e22",
-      "bytes": 344856,
+      "sha256": "e35e24a9bdc6419425e50fe142063763b3231dbb846491f83fed2f0c45487814",
+      "bytes": 344810,
       "lines": 1157,
       "code": false,
       "status": "reviewed",
@@ -14831,8 +14831,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "ce7380b7b84ff54cd03640dd1784fc3645e25e8193ef17665ffc7de2abaad8bd",
-      "bytes": 137540,
+      "sha256": "fa7b6ec1f5e456ff38abb111487c46ad9af3392abbe9ae0a56ffe5816febe20b",
+      "bytes": 137590,
       "lines": 670,
       "code": false,
       "status": "reviewed",
@@ -31809,9 +31809,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "9efd316191b1803499065cca0c770066162969b4d0a1dedb36b01ebf3d46bc1b",
+  "ledger_sha256": "1e081715e52ab446dd4f33f5cec672ad94498f6c0e46855b48632083ae03c0f6",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "ce8dcf342363d2991e3d79877eedbc8c00fe8ced",
+  "baseline_commit": "4f8fa681c4b743d7199ce4b60abfb802257e971a",
   "branch": "release/2026-11-11",
   "unstaged_at_capture": []
 }
