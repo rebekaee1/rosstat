@@ -3252,3 +3252,21 @@ acceptance09.10; actual auto-vacuum timing не обещан.
 Telegram delivery 09.10: реализован dedicated proxy route в двух sender paths и bounded досылка технических алертов; production9bc0c014 (wrapper0a4d0966) принят после34 страниц,15min watch и двух Telegram receipts. Выявлены24 группы без подтверждения доставки за48h; историческая досылка ожидает выбора владельца. Сегодняшние digest/Pulse доставлены.
 
 Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).
+
+## 2026-11-13 — короткий sitemap для Google на `ru.` (ADR-0030)
+
+Статус: код и тесты в ветке `feat/google-short-sitemap`, не выпущено. Затронуто:
+`index_policy.py`, `api/sitemap.py`, `config.py`, `tests/test_ru_google_short_sitemap.py`,
+[ADR-0030](adr/0030-ru-google-short-sitemap.md), [контракт](data-contracts.md#короткий-sitemap-для-google-на-ru--2026-11-13).
+
+Остаток после выпуска:
+
+- Живая проверка: `ru.…/sitemap.xml` с `User-Agent` Googlebot отдаёт ~70 дочерних
+  файлов без `world-years`, `world-region-years`, `regional-years`; с любым другим
+  `User-Agent` и на apex — полный индекс (~1 044); `robots.txt` прежний.
+- Замеры 25.11 и 23.12 по таблице ADR-0030 (доля обхода, визит робота на
+  `ru.…/russia/indicator/key-rate`, клики из России, клики `ru.`, контроль apex, Яндекс).
+- 23.12 — решение владельца по английскому хосту.
+- Яндекс Вебмастер 13.11: инструмент «Файлы Sitemap» только для чтения, sitemap `ru.`
+  известен только из `robots.txt`, последняя загрузка индекса 09.10. Когда запись
+  вернётся — добавить `sitemap.xml` обоих хостов в кабинет вручную.

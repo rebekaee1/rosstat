@@ -5,6 +5,8 @@
 Priority задаёт очередность обхода, а не исключение страниц.
 Служебные поверхности, preview, редиректы и несуществующие страницы
 не являются дополнительными публичными canonical-страницами.
+Уточнения только для Google на ru.: метка `googlebot` (11.11.2026) и
+короткий индекс sitemap (13.11.2026) — оба блока ниже; реестр не меняется.
 
 noindex здесь не инструмент бюджета обхода: робот всё равно скачивает URL,
 чтобы прочитать тег. На каталоге ~5 млн URL на хост эта политика ставит
@@ -87,6 +89,52 @@ def googlebot_meta_for_path(path: str, locale: str) -> str:
     if locale != "ru" or not settings.ru_google_noindex_world_years:
         return ""
     return GOOGLEBOT_NOINDEX_META if is_ru_google_noindex_path(path) else ""
+
+
+# --- Короткий sitemap для Google на ru. (решение владельца 13.11.2026) --------
+# Замер 13.11: три семейства годовых шардов — 9,57 млн из 10,1 млн адресов хоста
+# (94,7%); входы из поиска за 28 дней получили около 400 таких страниц. Googlebot
+# тратил на них 63% обхода, на показатели России и их годы — 0,5%, хотя они дают
+# 68% входов из Яндекса. Роботу Google на ru. индекс `/sitemap.xml` перечисляет
+# всё, кроме этих трёх семейств: хабы, показатели России с годами и месяцами,
+# сравнения, рейтинги, карточки стран и регионов, приоритетный шард (в нём
+# остаются годовые страницы с доказанным спросом).
+#
+# Это уточняет решение 20.09 только для одного читателя: реестр, файлы шардов,
+# robots.txt и ответ всем остальным роботам прежние. Отдельный адрес в robots.txt
+# не подошёл: Яндекс знает sitemap только из robots.txt, а его инструмент «Файлы
+# Sitemap» 13.11 работал только на чтение. Apex (EN) не трогается — контроль.
+# Откат — RUSTATS_RU_GOOGLE_SHORT_SITEMAP=false.
+_GOOGLE_SHORT_SITEMAP_EXCLUDED = re.compile(
+    r"^(?:world-years|world-region-years|regional-years)(?:-[0-9]+)?$"
+)
+# Googlebot (все его виды читают sitemap под этим именем) и живая проверка URL в
+# Search Console. Подделка под Googlebot получит подмножество того же реестра.
+_GOOGLE_SITEMAP_AGENTS = ("googlebot", "google-inspectiontool")
+
+
+def is_google_sitemap_agent(user_agent: str | None) -> bool:
+    """User-Agent робота Google, который читает sitemap для поиска."""
+    agent = (user_agent or "").lower()
+    return any(token in agent for token in _GOOGLE_SITEMAP_AGENTS)
+
+
+def ru_google_short_sitemap_enabled(*, ru_host: bool) -> bool:
+    """На этом хосте индекс sitemap зависит от робота (нужен ``Vary: User-Agent``)."""
+    from app.config import settings
+
+    return bool(ru_host and settings.apex_locale_en and settings.ru_google_short_sitemap)
+
+
+def is_google_short_sitemap_excluded(section: str) -> bool:
+    """Шард массовых годовых страниц: мир, регионы мира, регионы России."""
+    return bool(_GOOGLE_SHORT_SITEMAP_EXCLUDED.match(section or ""))
+
+
+def google_short_sitemap_names(names: list[str]) -> list[str]:
+    """Имена шардов для Google в прежнем порядке; пустой индекс не отдаём."""
+    kept = [name for name in names if not is_google_short_sitemap_excluded(name)]
+    return kept or list(names)
 
 
 def strip_mode_query(path: str) -> str:

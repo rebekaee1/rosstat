@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     # 11.11.2026: на ru. годовые страницы стран мира и их регионов — noindex только для Google
     # (meta googlebot, Яндекс не читает). Откат — false. См. index_policy.googlebot_meta_for_path.
     ru_google_noindex_world_years: bool = True
+    # 13.11.2026: роботу Google на ru. `/sitemap.xml` отдаёт короткий индекс — без трёх
+    # семейств массовых годовых шардов (9,57 млн из 10,1 млн адресов). Яндекс, Bing и
+    # остальные получают полный индекс по тому же адресу; robots.txt и файлы шардов не
+    # меняются. Откат — false. См. index_policy.google_short_sitemap_names, ADR-0030.
+    ru_google_short_sitemap: bool = True
     # Кто географически считается русской аудиторией для geo-редиректа.
     geo_ru_country_codes: str = (
         "RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD"

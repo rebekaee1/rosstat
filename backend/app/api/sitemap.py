@@ -270,8 +270,18 @@ def _is_ru_origin(origin: str) -> bool:
 
 @router.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
 async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
-    """Sitemap-индекс. До cutover ru. отдаёт пустой индекс (один канон — apex)."""
+    """Sitemap-индекс. До cutover ru. отдаёт пустой индекс (один канон — apex).
+
+    На ``ru.`` робот Google получает короткий индекс без массовых годовых шардов
+    (решение 13.11.2026, ``index_policy.google_short_sitemap_names``); остальные
+    читатели и apex — полный. Адрес, robots.txt и файлы шардов одни для всех.
+    """
     from app.core.cache import cache_get, cache_set
+    from app.services.index_policy import (
+        google_short_sitemap_names,
+        is_google_sitemap_agent,
+        ru_google_short_sitemap_enabled,
+    )
     from app.services.locale import apex_locale_en_enabled
     from app.services.site_urls import section_names
 
@@ -279,12 +289,17 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
     if _is_ru_origin(origin) and not apex_locale_en_enabled():
         return _index_304_or_full(_render_sitemap_index([], origin, {}), request)
 
+    # Ответ хоста зависит от робота: оба варианта несут Vary: User-Agent.
+    by_agent = ru_google_short_sitemap_enabled(ru_host=_is_ru_origin(origin))
+    short = by_agent and is_google_sitemap_agent(request.headers.get("user-agent"))
+
     from app.services.sitemap_static import read_stats, section_lastmods
     generation = read_stats().get("generation", "dynamic")
-    cache_key = _sitemap_cache_key(f"index:lastmod-v1:{generation}", origin)
+    variant = ":google-short" if short else ""
+    cache_key = _sitemap_cache_key(f"index:lastmod-v1:{generation}{variant}", origin)
     cached = await cache_get(cache_key)
     if cached:
-        return _index_304_or_full(cached, request)
+        return _index_304_or_full(cached, request, vary_agent=by_agent)
 
     from app.services.sitemap_static import published_sections
     names = published_sections(origin)
@@ -309,14 +324,18 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
             names = [name for name in names if name != "world-regions"]
             if not any(name.startswith("world-regions-") for name in names):
                 names.extend(await world_regions_section_names(db))
+    if short:
+        names = google_short_sitemap_names(names)
     xml = _render_sitemap_index(names, origin, lastmods)
     await cache_set(cache_key, xml, _SITEMAP_TTL)
-    return _index_304_or_full(xml, request)
+    return _index_304_or_full(xml, request, vary_agent=by_agent)
 
 
-def _index_304_or_full(xml: str, request: Request) -> Response:
+def _index_304_or_full(xml: str, request: Request, *, vary_agent: bool = False) -> Response:
     etag = _xml_etag(xml)
     headers = {"ETag": etag, "Cache-Control": "public, max-age=600"}
+    if vary_agent:
+        headers["Vary"] = "User-Agent"
     if request.headers.get("if-none-match") == etag:
         return Response(status_code=304, headers=headers)
     return Response(content=xml, media_type="application/xml", headers=headers)
