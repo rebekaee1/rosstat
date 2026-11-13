@@ -145,6 +145,7 @@ from app.services.world_cards import (
     pick_primary,
     resolve_series_for_mode,
 )
+from app.services.world_country_rows import card_country_indicators, compare_country_indicators
 from app.services.world_subnational_queries import latest_world_point_series
 
 
@@ -617,6 +618,12 @@ async def _load_current_world_forecast(
 
 
 async def _country_indicators(db: AsyncSession, country_id: int) -> list[WorldIndicator]:
+    """Все ряды страны целиком. Остался один потребитель — страна без единого listed-ряда.
+
+    Карточка ряда и сравнение стран читают узкий набор (`app.services.world_country_rows`): полный запрос у
+    Испании — 10 831 строка на 10 581 странице основной таблицы на каждый вызов (замер 2026-11-13). Здесь сузить
+    нельзя: странице страны без listed-рядов нужны первичные ряды всех карточек страны.
+    """
     return list(
         (
             await db.execute(
@@ -1424,8 +1431,9 @@ async def world_compare_series(
         return payload
 
     country = await _country_by_slug(db, country_slug)
-    indicators = await _country_indicators(db, country.id)
     national_codes = national_codes_for_concept(concept.slug)
+    # Только ряды из наборов понятия и национальные ряды по коду: остальные ряды страны выбор не меняют.
+    indicators = await compare_country_indicators(db, country.id, concept, national_codes)
     indicator = _choose_compare_indicator(indicators, concept, national_codes)
     if indicator is None:
         raise HTTPException(
@@ -2239,8 +2247,12 @@ async def _country_detail_payload(slug: str, db: AsyncSession) -> dict:
 async def _card_context(
     db: AsyncSession, country: WorldCountry, ind: WorldIndicator,
 ) -> tuple[WorldIndicator, dict[str, WorldIndicator], list[WorldIndicator]]:
-    """(primary, by_freq, all_country_inds)."""
-    all_inds = await _country_indicators(db, country.id)
+    """(primary, by_freq, card_inds).
+
+    `card_inds` — ряды страны из наборов, которые могут войти в карточку и её переключатель срезов
+    (`card_dataset_pairs`), а не вся страна: остальные ряды на `primary`, `by_freq` и варианты не влияют.
+    """
+    all_inds = await card_country_indicators(db, ind)
     groups = _card_members_map(all_inds)
     key = indicator_card_key(ind)
     members = groups.get(key) or [ind]

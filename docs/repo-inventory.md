@@ -7,19 +7,19 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2235  ·  **Строк:** 1 413 833  ·  **Токенов (≈):** 13 457 519
+**Файлов:** 2237  ·  **Строк:** 1 414 891  ·  **Токенов (≈):** 13 470 861
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 783 | 64 370 |
+| `(root)` | 8 | 2 796 | 64 563 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 907 | 317 261 | 3 465 305 |
+| `backend` | 909 | 317 812 | 3 471 821 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 143 | 17 255 |
-| `docs` | 143 | 883 007 | 7 577 466 |
+| `docs` | 143 | 883 501 | 7 584 099 |
 | `frontend` | 1014 | 184 423 | 2 020 294 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 363 453 | 2 976 584 |
+| `docs/mechanism-inventory.json` | 363 813 | 2 979 413 |
 | `docs/client-mechanism-inventory.json` | 255 286 | 1 803 159 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -40,7 +40,7 @@
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
-| `docs/backlog.md` | 3 291 | 119 015 |
+| `docs/backlog.md` | 3 316 | 119 828 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `backend/seed_data.py` | 5 732 | 59 343 |
@@ -51,8 +51,8 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `backend/app/services/seo_renderer.py` | 4 280 | 51 612 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
+| `CONTEXT.md` | 1 330 | 43 388 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
-| `CONTEXT.md` | 1 317 | 43 195 |
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `docs/design-system.md` | 499 | 40 473 |
@@ -60,7 +60,7 @@
 | `frontend/src/pages/ComparePage.jsx` | 3 324 | 36 832 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 962 | 32 847 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 104 |
-| `backend/app/api/world.py` | 2 893 | 28 640 |
+| `backend/app/api/world.py` | 2 905 | 28 850 |
 | `backend/app/services/public_bot.py` | 2 063 | 27 394 |
 | `backend/app/api/sitemap.py` | 2 573 | 26 887 |
 | `backend/app/services/analytics_marts.py` | 2 386 | 26 705 |
@@ -111,6 +111,7 @@
 | `frontend/src/components/WorldMap.jsx` | 1 128 | 11 713 |
 | `backend/tests/test_seo_og.py` | 1 221 | 11 689 |
 | `backend/app/data/eurostat_unit_codelist_en.json` | 760 | 11 604 |
+| `docs/enterprise_resilience.md` | 310 | 11 559 |
 | `frontend/src/pages/RegionsHome.jsx` | 1 031 | 11 548 |
 | `frontend/src/components/IndicatorChart.jsx` | 1 087 | 11 462 |
 | `backend/tests/test_public_bot.py` | 928 | 11 443 |
@@ -151,7 +152,6 @@
 | `scripts/build-mechanism-inventory.py` | 492 | 8 645 |
 | `frontend/src/styles/k3-shell.css` | 746 | 8 629 |
 | `scripts/deploy.sh` | 710 | 8 577 |
-| `docs/enterprise_resilience.md` | 201 | 8 568 |
 | `backend/app/services/search_vocabulary.py` | 367 | 8 543 |
 | `frontend/src/pages/WorldRatingPage.component.test.jsx` | 824 | 8 520 |
 | `frontend/src/styles/k7-home.css` | 712 | 8 492 |
@@ -334,6 +334,7 @@
 | `backend/app/services/world_adapters/rba_stats.py` | 551 | 4 618 |
 | `frontend/src/styles/w5-pages.css` | 475 | 4 588 |
 | `backend/app/services/world_adapters/cfets_chinamoney.py` | 527 | 4 546 |
+| `backend/tests/test_world_country_rows.py` | 379 | 4 533 |
 | `docs/adr/0011-world-eurostat-data-plane.md` | 317 | 4 525 |
 | `backend/app/services/world_adapters/boe_iadb.py` | 539 | 4 515 |
 | `backend/tests/test_signup_attribution.py` | 364 | 4 494 |
@@ -390,6 +391,7 @@
 | `frontend/src/styles/w6d.css` | 222 | 4 031 |
 | `frontend/src/lib/planetLabels.test.js` | 272 | 4 016 |
 | `backend/app/services/telegram_calm.py` | 352 | 3 969 |
+| `backend/app/data/world_concepts.py` | 386 | 3 964 |
 | `backend/tests/test_sessionize_boundaries.py` | 309 | 3 964 |
 | `frontend/src/components/PwaInstall.component.test.jsx` | 351 | 3 961 |
 | `frontend/src/components/CurrencyPairChart.jsx` | 328 | 3 959 |
@@ -399,7 +401,6 @@
 | `backend/app/services/world_adapters/bea_api.py` | 440 | 3 876 |
 | `backend/tests/test_push.py` | 330 | 3 864 |
 | `frontend/src/lib/biLabels.js` | 366 | 3 850 |
-| `backend/app/data/world_concepts.py` | 377 | 3 841 |
 | `frontend/src/components/cabinet/ProfilePanel.jsx` | 379 | 3 839 |
 | `frontend/src/pages/WorldRegionProfile.jsx` | 335 | 3 825 |
 | `scripts/audit-code-documentation.py` | 288 | 3 825 |
@@ -890,6 +891,7 @@
 | `frontend/src/lib/calendarGrouping.test.js` | 182 | 1 655 |
 | `frontend/src/components/home/HomeHero.jsx` | 128 | 1 654 |
 | `deploy/test-fail2ban-filters.py` | 172 | 1 651 |
+| `backend/app/services/world_country_rows.py` | 151 | 1 650 |
 | `frontend/src/components/CalcMoneyField.component.test.jsx` | 158 | 1 650 |
 | `scripts/host-firewall-ufw.sh` | 150 | 1 650 |
 | `scripts/audit-knowledge-materials.py` | 159 | 1 643 |
