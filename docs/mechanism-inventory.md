@@ -8,15 +8,15 @@
 - HTTP reachable paths: **192**
 - ORM tables: **74**
 - DTO schemas (own fields + resolved inherited bases): **49**
-- Settings fields: **259**
-- Settings reads: **645**
+- Settings fields: **261**
+- Settings reads: **649**
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1340**
-- Registry references: **2532**
+- Registry declarations: **1348**
+- Registry references: **2543**
 - Migration operations: **464**
-- Candidate effects: **2804**
+- Candidate effects: **2808**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -153,34 +153,34 @@
 | GET | /api/auth/{provider}/start | app.api.oauth.oauth_start | [backend/app/api/oauth.py:494](../backend/app/api/oauth.py#L494) |
 | GET | /api/auth/{provider}/callback | app.api.oauth.oauth_callback | [backend/app/api/oauth.py:495](../backend/app/api/oauth.py#L495) |
 | GET/HEAD | /sitemap.xml | app.api.sitemap.sitemap_index | [backend/app/api/sitemap.py:271](../backend/app/api/sitemap.py#L271) |
-| GET/HEAD | /sitemap-{section}.xml | app.api.sitemap.sitemap_section | [backend/app/api/sitemap.py:325](../backend/app/api/sitemap.py#L325) |
-| GET/HEAD | /sitemap-stats.json | app.api.sitemap.sitemap_stats | [backend/app/api/sitemap.py:476](../backend/app/api/sitemap.py#L476) |
-| GET/HEAD | /robots.txt | app.api.sitemap.robots_txt | [backend/app/api/sitemap.py:496](../backend/app/api/sitemap.py#L496) |
-| GET/HEAD | /llms.txt | app.api.sitemap.llms_txt | [backend/app/api/sitemap.py:511](../backend/app/api/sitemap.py#L511) |
-| GET/HEAD | /feed.xml | app.api.sitemap.rss_feed | [backend/app/api/sitemap.py:526](../backend/app/api/sitemap.py#L526) |
-| GET | /api/v1/og-image/indicator/{code}.png | app.api.sitemap.og_image_indicator | [backend/app/api/sitemap.py:639](../backend/app/api/sitemap.py#L639) |
-| GET | /api/v1/og-image/indicator/{code}/{period}.png | app.api.sitemap.og_image_indicator_month | [backend/app/api/sitemap.py:724](../backend/app/api/sitemap.py#L724) |
-| GET | /api/v1/og-image/indicator/{code}/{year}.png | app.api.sitemap.og_image_indicator_year | [backend/app/api/sitemap.py:843](../backend/app/api/sitemap.py#L843) |
-| GET | /api/v1/og-image/region/{slug}/{code}.png | app.api.sitemap.og_image_region_indicator | [backend/app/api/sitemap.py:984](../backend/app/api/sitemap.py#L984) |
-| GET | /api/v1/og-image/region/{slug}/{code}/{year}.png | app.api.sitemap.og_image_region_indicator_year | [backend/app/api/sitemap.py:1093](../backend/app/api/sitemap.py#L1093) |
-| GET | /api/v1/og-image/region-rating/{code}.png | app.api.sitemap.og_image_region_rating | [backend/app/api/sitemap.py:1199](../backend/app/api/sitemap.py#L1199) |
-| GET | /api/v1/og-image/today.png | app.api.sitemap.og_image_today_hub | [backend/app/api/sitemap.py:1277](../backend/app/api/sitemap.py#L1277) |
-| GET | /api/v1/og-image/region-vs/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_region_vs | [backend/app/api/sitemap.py:1320](../backend/app/api/sitemap.py#L1320) |
-| GET | /api/v1/og-image/world-vs/{slug_a}-vs-{slug_b}/{concept_slug}.png | app.api.sitemap.og_image_world_vs | [backend/app/api/sitemap.py:1394](../backend/app/api/sitemap.py#L1394) |
-| GET | /api/v1/og-image/world/{slug}.png | app.api.sitemap.og_image_world_country | [backend/app/api/sitemap.py:1542](../backend/app/api/sitemap.py#L1542) |
-| GET | /api/v1/og-image/world-rating/{concept_slug}.png | app.api.sitemap.og_image_world_rating | [backend/app/api/sitemap.py:1674](../backend/app/api/sitemap.py#L1674) |
-| GET | /api/v1/og-image/world-rating/{concept_slug}/{year}.png | app.api.sitemap.og_image_world_rating_year | [backend/app/api/sitemap.py:1729](../backend/app/api/sitemap.py#L1729) |
-| GET | /api/v1/og-image/world/{slug}/{code}.png | app.api.sitemap.og_image_world_indicator | [backend/app/api/sitemap.py:1796](../backend/app/api/sitemap.py#L1796) |
-| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1889](../backend/app/api/sitemap.py#L1889) |
-| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2047](../backend/app/api/sitemap.py#L2047) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2119](../backend/app/api/sitemap.py#L2119) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2199](../backend/app/api/sitemap.py#L2199) |
-| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2285](../backend/app/api/sitemap.py#L2285) |
-| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2421](../backend/app/api/sitemap.py#L2421) |
-| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2527](../backend/app/api/sitemap.py#L2527) |
-| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2534](../backend/app/api/sitemap.py#L2534) |
-| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2541](../backend/app/api/sitemap.py#L2541) |
-| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2550](../backend/app/api/sitemap.py#L2550) |
+| GET/HEAD | /sitemap-{section}.xml | app.api.sitemap.sitemap_section | [backend/app/api/sitemap.py:356](../backend/app/api/sitemap.py#L356) |
+| GET/HEAD | /sitemap-stats.json | app.api.sitemap.sitemap_stats | [backend/app/api/sitemap.py:537](../backend/app/api/sitemap.py#L537) |
+| GET/HEAD | /robots.txt | app.api.sitemap.robots_txt | [backend/app/api/sitemap.py:557](../backend/app/api/sitemap.py#L557) |
+| GET/HEAD | /llms.txt | app.api.sitemap.llms_txt | [backend/app/api/sitemap.py:578](../backend/app/api/sitemap.py#L578) |
+| GET/HEAD | /feed.xml | app.api.sitemap.rss_feed | [backend/app/api/sitemap.py:593](../backend/app/api/sitemap.py#L593) |
+| GET | /api/v1/og-image/indicator/{code}.png | app.api.sitemap.og_image_indicator | [backend/app/api/sitemap.py:706](../backend/app/api/sitemap.py#L706) |
+| GET | /api/v1/og-image/indicator/{code}/{period}.png | app.api.sitemap.og_image_indicator_month | [backend/app/api/sitemap.py:791](../backend/app/api/sitemap.py#L791) |
+| GET | /api/v1/og-image/indicator/{code}/{year}.png | app.api.sitemap.og_image_indicator_year | [backend/app/api/sitemap.py:910](../backend/app/api/sitemap.py#L910) |
+| GET | /api/v1/og-image/region/{slug}/{code}.png | app.api.sitemap.og_image_region_indicator | [backend/app/api/sitemap.py:1051](../backend/app/api/sitemap.py#L1051) |
+| GET | /api/v1/og-image/region/{slug}/{code}/{year}.png | app.api.sitemap.og_image_region_indicator_year | [backend/app/api/sitemap.py:1160](../backend/app/api/sitemap.py#L1160) |
+| GET | /api/v1/og-image/region-rating/{code}.png | app.api.sitemap.og_image_region_rating | [backend/app/api/sitemap.py:1266](../backend/app/api/sitemap.py#L1266) |
+| GET | /api/v1/og-image/today.png | app.api.sitemap.og_image_today_hub | [backend/app/api/sitemap.py:1344](../backend/app/api/sitemap.py#L1344) |
+| GET | /api/v1/og-image/region-vs/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_region_vs | [backend/app/api/sitemap.py:1387](../backend/app/api/sitemap.py#L1387) |
+| GET | /api/v1/og-image/world-vs/{slug_a}-vs-{slug_b}/{concept_slug}.png | app.api.sitemap.og_image_world_vs | [backend/app/api/sitemap.py:1461](../backend/app/api/sitemap.py#L1461) |
+| GET | /api/v1/og-image/world/{slug}.png | app.api.sitemap.og_image_world_country | [backend/app/api/sitemap.py:1610](../backend/app/api/sitemap.py#L1610) |
+| GET | /api/v1/og-image/world-rating/{concept_slug}.png | app.api.sitemap.og_image_world_rating | [backend/app/api/sitemap.py:1742](../backend/app/api/sitemap.py#L1742) |
+| GET | /api/v1/og-image/world-rating/{concept_slug}/{year}.png | app.api.sitemap.og_image_world_rating_year | [backend/app/api/sitemap.py:1797](../backend/app/api/sitemap.py#L1797) |
+| GET | /api/v1/og-image/world/{slug}/{code}.png | app.api.sitemap.og_image_world_indicator | [backend/app/api/sitemap.py:1864](../backend/app/api/sitemap.py#L1864) |
+| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1957](../backend/app/api/sitemap.py#L1957) |
+| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2115](../backend/app/api/sitemap.py#L2115) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2187](../backend/app/api/sitemap.py#L2187) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2267](../backend/app/api/sitemap.py#L2267) |
+| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2353](../backend/app/api/sitemap.py#L2353) |
+| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2489](../backend/app/api/sitemap.py#L2489) |
+| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2595](../backend/app/api/sitemap.py#L2595) |
+| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2602](../backend/app/api/sitemap.py#L2602) |
+| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2609](../backend/app/api/sitemap.py#L2609) |
+| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2618](../backend/app/api/sitemap.py#L2618) |
 | GET/HEAD | /manifest.webmanifest | app.api.pwa.manifest | [backend/app/api/pwa.py:87](../backend/app/api/pwa.py#L87) |
 | GET/HEAD | /offline.html | app.api.pwa.offline_page | [backend/app/api/pwa.py:133](../backend/app/api/pwa.py#L133) |
 | GET/HEAD | /seo/not-found | app.api.seo_pages.seo_not_found | [backend/app/api/seo_pages.py:497](../backend/app/api/seo_pages.py#L497) |
@@ -1747,262 +1747,264 @@ Relationships: `[]`
 | RUSTATS_APP_NAME | str = 'Forecast Economy API' | 2 | [backend/app/config.py:7](../backend/app/config.py#L7) |
 | RUSTATS_DEBUG | bool = False | 9 | [backend/app/config.py:8](../backend/app/config.py#L8) |
 | RUSTATS_PUBLIC_BASE_URL | str = 'https://forecasteconomy.com' | 3 | [backend/app/config.py:12](../backend/app/config.py#L12) |
-| RUSTATS_APEX_LOCALE_EN | bool = False | 12 | [backend/app/config.py:14](../backend/app/config.py#L14) |
+| RUSTATS_APEX_LOCALE_EN | bool = False | 14 | [backend/app/config.py:14](../backend/app/config.py#L14) |
 | RUSTATS_GEO_LOCALE_REDIRECT_ENABLED | bool = False | 1 | [backend/app/config.py:16](../backend/app/config.py#L16) |
 | RUSTATS_RU_GOOGLE_NOINDEX_WORLD_YEARS | bool = True | 1 | [backend/app/config.py:19](../backend/app/config.py#L19) |
-| RUSTATS_GEO_RU_COUNTRY_CODES | str = 'RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD' | 1 | [backend/app/config.py:21](../backend/app/config.py#L21) |
-| RUSTATS_BROWSER_LANG_REDIRECT_ENABLED | bool = False | 0 | [backend/app/config.py:25](../backend/app/config.py#L25) |
-| RUSTATS_BROWSER_LANG_MIN_QUALITY | float = 0.6 | 0 | [backend/app/config.py:26](../backend/app/config.py#L26) |
-| RUSTATS_LOCALE_PREFERENCE_COOKIE | str = 'fe_locale_pref' | 2 | [backend/app/config.py:27](../backend/app/config.py#L27) |
-| RUSTATS_DATABASE_URL | str = 'postgresql+asyncpg://rustats:rustats@localhost:5432/rustats' | 7 | [backend/app/config.py:30](../backend/app/config.py#L30) |
-| RUSTATS_MIGRATION_DATABASE_URL | str \| None = None | 1 | [backend/app/config.py:34](../backend/app/config.py#L34) |
-| RUSTATS_DATABASE_ECHO | bool = False | 2 | [backend/app/config.py:35](../backend/app/config.py#L35) |
-| RUSTATS_DB_POOL_SIZE | int = 10 | 1 | [backend/app/config.py:45](../backend/app/config.py#L45) |
-| RUSTATS_DB_MAX_OVERFLOW | int = 15 | 2 | [backend/app/config.py:46](../backend/app/config.py#L46) |
-| RUSTATS_DB_POOL_TIMEOUT | int = 3 | 1 | [backend/app/config.py:47](../backend/app/config.py#L47) |
-| RUSTATS_DB_STATEMENT_TIMEOUT_MS | int = 30000 | 1 | [backend/app/config.py:48](../backend/app/config.py#L48) |
-| RUSTATS_DB_IDLE_IN_TRANSACTION_TIMEOUT_MS | int = 120000 | 1 | [backend/app/config.py:49](../backend/app/config.py#L49) |
-| RUSTATS_ANALYTICS_DB_POOL_SIZE | int = 2 | 1 | [backend/app/config.py:52](../backend/app/config.py#L52) |
-| RUSTATS_ANALYTICS_DB_MAX_OVERFLOW | int = 2 | 2 | [backend/app/config.py:53](../backend/app/config.py#L53) |
-| RUSTATS_ANALYTICS_DB_POOL_TIMEOUT | int = 15 | 1 | [backend/app/config.py:54](../backend/app/config.py#L54) |
-| RUSTATS_ANALYTICS_DB_STATEMENT_TIMEOUT_MS | int = 60000 | 1 | [backend/app/config.py:55](../backend/app/config.py#L55) |
-| RUSTATS_ANALYTICS_DB_IDLE_IN_TRANSACTION_TIMEOUT_MS | int = 120000 | 1 | [backend/app/config.py:56](../backend/app/config.py#L56) |
-| RUSTATS_SITEMAP_DIR | str = '/var/www/sitemaps' | 1 | [backend/app/config.py:58](../backend/app/config.py#L58) |
-| RUSTATS_SITEMAP_PRIORITY_MAX_URLS | int = 20000 | 2 | [backend/app/config.py:62](../backend/app/config.py#L62) |
-| RUSTATS_GOOGLE_SITE_VERIFICATION | str = '' | 2 | [backend/app/config.py:64](../backend/app/config.py#L64) |
-| RUSTATS_BING_SITE_VERIFICATION | str = '' | 2 | [backend/app/config.py:66](../backend/app/config.py#L66) |
-| RUSTATS_GSC_ACCESS_TOKEN | str = '' | 4 | [backend/app/config.py:68](../backend/app/config.py#L68) |
-| RUSTATS_GSC_CREDENTIALS_FILE | str = '' | 4 | [backend/app/config.py:70](../backend/app/config.py#L70) |
-| RUSTATS_GSC_SITE_URL | str = '' | 1 | [backend/app/config.py:72](../backend/app/config.py#L72) |
-| RUSTATS_SCRAPE_BLOCK_COUNTRIES | str = '' | 1 | [backend/app/config.py:76](../backend/app/config.py#L76) |
-| RUSTATS_SCRAPE_BIND_ENABLED | bool = True | 1 | [backend/app/config.py:79](../backend/app/config.py#L79) |
-| RUSTATS_SCRAPE_BIND_SECRET | str = '' | 2 | [backend/app/config.py:80](../backend/app/config.py#L80) |
-| RUSTATS_SCRAPE_BLOCK_HOSTING | bool = False | 0 | [backend/app/config.py:83](../backend/app/config.py#L83) |
-| RUSTATS_SCRAPE_CHALLENGE_ENABLED | bool = True | 1 | [backend/app/config.py:85](../backend/app/config.py#L85) |
-| RUSTATS_SCRAPE_CHALLENGE_MIN_CORES | int = 48 | 1 | [backend/app/config.py:86](../backend/app/config.py#L86) |
-| RUSTATS_REDIS_URL | str = 'redis://localhost:6379/0' | 4 | [backend/app/config.py:89](../backend/app/config.py#L89) |
-| RUSTATS_STATE_REDIS_URL | str = '' | 2 | [backend/app/config.py:93](../backend/app/config.py#L93) |
-| RUSTATS_CACHE_TTL_DATA | int = 3600 | 17 | [backend/app/config.py:94](../backend/app/config.py#L94) |
-| RUSTATS_CACHE_TTL_META | int = 300 | 2 | [backend/app/config.py:95](../backend/app/config.py#L95) |
-| RUSTATS_CBR_BASE_URL | str = 'https://www.cbr.ru' | 7 | [backend/app/config.py:98](../backend/app/config.py#L98) |
-| RUSTATS_CBR_REQUEST_TIMEOUT | int = 90 | 7 | [backend/app/config.py:99](../backend/app/config.py#L99) |
-| RUSTATS_MINFIN_BASE_URL | str = 'https://minfin.gov.ru' | 0 | [backend/app/config.py:100](../backend/app/config.py#L100) |
-| RUSTATS_ROSSTAT_BASE_URL | str = 'https://rosstat.gov.ru/storage/mediabank' | 1 | [backend/app/config.py:103](../backend/app/config.py#L103) |
-| RUSTATS_ROSSTAT_CPI_TEMPLATE | str = 'ipc_mes_{mm}-{yyyy}.xlsx' | 1 | [backend/app/config.py:104](../backend/app/config.py#L104) |
-| RUSTATS_ROSSTAT_CA_CERT | str = str(Path(__file__).parent.parent / 'certs' / 'russiantrustedca2024.pem') | 9 | [backend/app/config.py:105](../backend/app/config.py#L105) |
-| RUSTATS_ROSSTAT_MAX_MONTHS_BACK | int = 6 | 2 | [backend/app/config.py:106](../backend/app/config.py#L106) |
-| RUSTATS_ROSSTAT_REQUEST_TIMEOUT | int = 30 | 10 | [backend/app/config.py:107](../backend/app/config.py#L107) |
-| RUSTATS_SCHEDULER_ENABLED | bool = True | 3 | [backend/app/config.py:110](../backend/app/config.py#L110) |
-| RUSTATS_WORKER_RECYCLE_MB | int = 0 | 2 | [backend/app/config.py:113](../backend/app/config.py#L113) |
-| RUSTATS_WORKER_RECYCLE_MIN_GAP_SECONDS | int = 300 | 1 | [backend/app/config.py:115](../backend/app/config.py#L115) |
-| RUSTATS_SCHEDULER_CRON_HOUR | int = 6 | 2 | [backend/app/config.py:116](../backend/app/config.py#L116) |
-| RUSTATS_SCHEDULER_CRON_MINUTE | int = 0 | 2 | [backend/app/config.py:117](../backend/app/config.py#L117) |
-| RUSTATS_SCHEDULER_EVENING_HOUR | int = 20 | 2 | [backend/app/config.py:120](../backend/app/config.py#L120) |
-| RUSTATS_SCHEDULER_EVENING_MINUTE | int = 0 | 2 | [backend/app/config.py:121](../backend/app/config.py#L121) |
-| RUSTATS_SCHEDULER_LATE_FRED_HOUR | int = 23 | 1 | [backend/app/config.py:126](../backend/app/config.py#L126) |
-| RUSTATS_SCHEDULER_LATE_FRED_MINUTE | int = 30 | 1 | [backend/app/config.py:127](../backend/app/config.py#L127) |
-| RUSTATS_TICKER_PULL_INTERVAL_SECONDS | int = 8 | 2 | [backend/app/config.py:128](../backend/app/config.py#L128) |
-| RUSTATS_MOEX_BRENT_LIVE_ENABLED | bool = False | 1 | [backend/app/config.py:133](../backend/app/config.py#L133) |
-| RUSTATS_MOEX_BRENT_DELAY_MINUTES | int = 15 | 1 | [backend/app/config.py:136](../backend/app/config.py#L136) |
-| RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:141](../backend/app/config.py#L141) |
-| RUSTATS_WORLD_EUROSTAT_INGEST_SHADOW | bool = False | 1 | [backend/app/config.py:144](../backend/app/config.py#L144) |
-| RUSTATS_EUROSTAT_REBASE_ENABLED | bool = False | 2 | [backend/app/config.py:147](../backend/app/config.py#L147) |
-| RUSTATS_WORLD_EUROSTAT_INGEST_HOUR | int = 2 | 2 | [backend/app/config.py:148](../backend/app/config.py#L148) |
-| RUSTATS_WORLD_EUROSTAT_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:149](../backend/app/config.py#L149) |
-| RUSTATS_WORLD_FORECAST_ENABLED | bool = False | 4 | [backend/app/config.py:152](../backend/app/config.py#L152) |
-| RUSTATS_US_WORLD_FORECAST_ENABLED | bool = True | 1 | [backend/app/config.py:155](../backend/app/config.py#L155) |
-| RUSTATS_EUROPE_WORLD_FORECAST_ENABLED | bool = True | 1 | [backend/app/config.py:156](../backend/app/config.py#L156) |
-| RUSTATS_US_WORLD_FORECAST_DAILY_LIMIT | int = 500 | 1 | [backend/app/config.py:157](../backend/app/config.py#L157) |
-| RUSTATS_EUROPE_WORLD_FORECAST_DAILY_LIMIT | int = 3000 | 1 | [backend/app/config.py:158](../backend/app/config.py#L158) |
-| RUSTATS_EUROPE_WORLD_FORECAST_HOUR | int = 23 | 1 | [backend/app/config.py:163](../backend/app/config.py#L163) |
-| RUSTATS_EUROPE_WORLD_FORECAST_MINUTE | int = 10 | 1 | [backend/app/config.py:164](../backend/app/config.py#L164) |
-| RUSTATS_EUROPE_WORLD_FORECAST_MAX_RUN_SECONDS | int = 0 | 1 | [backend/app/config.py:170](../backend/app/config.py#L170) |
-| RUSTATS_US_WORLD_FORECAST_HOUR | int = 5 | 1 | [backend/app/config.py:171](../backend/app/config.py#L171) |
-| RUSTATS_US_WORLD_FORECAST_MINUTE | int = 20 | 1 | [backend/app/config.py:172](../backend/app/config.py#L172) |
-| RUSTATS_REST_WORLD_FORECAST_HOUR | int = 4 | 1 | [backend/app/config.py:173](../backend/app/config.py#L173) |
-| RUSTATS_REST_WORLD_FORECAST_MINUTE | int = 50 | 1 | [backend/app/config.py:174](../backend/app/config.py#L174) |
-| RUSTATS_WORLD_FORECAST_HOUR | int = 4 | 1 | [backend/app/config.py:175](../backend/app/config.py#L175) |
-| RUSTATS_WORLD_FORECAST_MINUTE | int = 20 | 1 | [backend/app/config.py:176](../backend/app/config.py#L176) |
-| RUSTATS_REST_WORLD_FORECAST_ENABLED | bool = False | 1 | [backend/app/config.py:180](../backend/app/config.py#L180) |
-| RUSTATS_REST_WORLD_FORECAST_DAILY_LIMIT | int = 400 | 1 | [backend/app/config.py:181](../backend/app/config.py#L181) |
-| RUSTATS_WORLD_FORECAST_CANDIDATES_ENABLED | bool = False | 2 | [backend/app/config.py:185](../backend/app/config.py#L185) |
-| RUSTATS_WORLD_FORECAST_PUBLISH_ALL | bool = True | 3 | [backend/app/config.py:191](../backend/app/config.py#L191) |
-| RUSTATS_WORLD_IMF_OFFICIAL_FORECAST_ENABLED | bool = False | 1 | [backend/app/config.py:194](../backend/app/config.py#L194) |
-| RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS | int = 2400 | 3 | [backend/app/config.py:198](../backend/app/config.py#L198) |
-| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS | int = 30 | 2 | [backend/app/config.py:201](../backend/app/config.py#L201) |
-| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL | int = 0 | 1 | [backend/app/config.py:206](../backend/app/config.py#L206) |
-| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_QUARTERLY | int = 0 | 1 | [backend/app/config.py:207](../backend/app/config.py#L207) |
-| RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY | int = 200 | 1 | [backend/app/config.py:209](../backend/app/config.py#L209) |
-| RUSTATS_WORLD_FORECAST_PRIORITY_COUNTRIES | str = 'united-states,china,japan,germany,france,united-kingdom,india,brazil,turkey,italy,spain,austria,canada,mexico,australia,south-korea,netherlands,poland' | 1 | [backend/app/config.py:212](../backend/app/config.py#L212) |
-| RUSTATS_WORLD_SUBNATIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:217](../backend/app/config.py#L217) |
-| RUSTATS_WORLD_SUBNATIONAL_INGEST_HOUR | int = 3 | 1 | [backend/app/config.py:218](../backend/app/config.py#L218) |
-| RUSTATS_WORLD_SUBNATIONAL_INGEST_MINUTE | int = 40 | 1 | [backend/app/config.py:219](../backend/app/config.py#L219) |
-| RUSTATS_WORLD_BEA_REGIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:220](../backend/app/config.py#L220) |
-| RUSTATS_WORLD_BEA_REGIONAL_INGEST_HOUR | int = 4 | 1 | [backend/app/config.py:221](../backend/app/config.py#L221) |
-| RUSTATS_WORLD_BEA_REGIONAL_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:222](../backend/app/config.py#L222) |
-| RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED | bool = True | 1 | [backend/app/config.py:227](../backend/app/config.py#L227) |
-| RUSTATS_TELEGRAM_BOT_TOKEN | str = '' | 19 | [backend/app/config.py:230](../backend/app/config.py#L230) |
-| RUSTATS_TELEGRAM_CHAT_ID | str = '' | 16 | [backend/app/config.py:231](../backend/app/config.py#L231) |
-| RUSTATS_FORECAST_STEPS | int = 12 | 2 | [backend/app/config.py:234](../backend/app/config.py#L234) |
-| RUSTATS_SEO_APP_SHELL_URL | str = 'http://frontend/__spa-index.html' | 2 | [backend/app/config.py:237](../backend/app/config.py#L237) |
-| RUSTATS_SSR_WARM_ENABLED | bool = False | 2 | [backend/app/config.py:240](../backend/app/config.py#L240) |
-| RUSTATS_SSR_WARM_BASE_URL | str = 'http://frontend' | 2 | [backend/app/config.py:241](../backend/app/config.py#L241) |
-| RUSTATS_SSR_WARM_TOP_N | int = 50 | 2 | [backend/app/config.py:244](../backend/app/config.py#L244) |
-| RUSTATS_SSR_SWR_ENABLED | bool = False | 1 | [backend/app/config.py:248](../backend/app/config.py#L248) |
-| RUSTATS_SSR_SWR_STALE_SECONDS | int = 6 * 3600 | 1 | [backend/app/config.py:249](../backend/app/config.py#L249) |
-| RUSTATS_SSR_RENDER_QUEUE_TIMEOUT_SECONDS | float = 22.0 | 2 | [backend/app/config.py:253](../backend/app/config.py#L253) |
-| RUSTATS_SSR_LOW_PRIORITY_RENDER_SLOTS | int = 2 | 2 | [backend/app/config.py:257](../backend/app/config.py#L257) |
-| RUSTATS_SSR_LOW_PRIORITY_QUEUE_TIMEOUT_SECONDS | float = 4.0 | 1 | [backend/app/config.py:258](../backend/app/config.py#L258) |
-| RUSTATS_SSR_GOODBOT_RENDER_SLOTS | int = 2 | 2 | [backend/app/config.py:261](../backend/app/config.py#L261) |
-| RUSTATS_FE_HUMAN_PASS_SECRET | str = '' | 1 | [backend/app/config.py:264](../backend/app/config.py#L264) |
-| RUSTATS_FE_HUMAN_PASS_DAYS | int = 30 | 2 | [backend/app/config.py:265](../backend/app/config.py#L265) |
-| RUSTATS_BOT_TRAFFIC_LOG_PATH | str = '/var/log/rosstat-nginx/security.log' | 1 | [backend/app/config.py:267](../backend/app/config.py#L267) |
-| RUSTATS_HOST_BROWNOUT_IO_FULL_PCT | float = 40.0 | 2 | [backend/app/config.py:270](../backend/app/config.py#L270) |
-| RUSTATS_HOST_ALERT_IO_FULL_PCT | float = 25.0 | 1 | [backend/app/config.py:273](../backend/app/config.py#L273) |
-| RUSTATS_HOST_ALERT_DISK_FREE_PCT | float = 10.0 | 1 | [backend/app/config.py:274](../backend/app/config.py#L274) |
-| RUSTATS_HOST_ALERT_MEM_FULL_PCT | float = 10.0 | 1 | [backend/app/config.py:276](../backend/app/config.py#L276) |
-| RUSTATS_SSR_ADMIT_ON_REPEAT_ENABLED | bool = True | 1 | [backend/app/config.py:283](../backend/app/config.py#L283) |
-| RUSTATS_SSR_ADMIT_WINDOW_SECONDS | int = 3 * 3600 | 1 | [backend/app/config.py:284](../backend/app/config.py#L284) |
-| RUSTATS_SSR_SWR_BASE_URL | str = '' | 1 | [backend/app/config.py:285](../backend/app/config.py#L285) |
-| RUSTATS_SSR_SWR_TOKEN | str = '' | 1 | [backend/app/config.py:286](../backend/app/config.py#L286) |
-| RUSTATS_WORLD_LISTED_COUNTS_ENABLED | bool = False | 4 | [backend/app/config.py:292](../backend/app/config.py#L292) |
-| RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS | int = 6 * 3600 | 1 | [backend/app/config.py:293](../backend/app/config.py#L293) |
-| RUSTATS_INDEXNOW_ENABLED | bool = True | 7 | [backend/app/config.py:297](../backend/app/config.py#L297) |
-| RUSTATS_INDEXNOW_KEY | str = 'a7c41d92e85f4b06b3d8f17c29e6a504' | 11 | [backend/app/config.py:298](../backend/app/config.py#L298) |
-| RUSTATS_INDEXNOW_ENDPOINT | str = 'https://yandex.com/indexnow' | 2 | [backend/app/config.py:299](../backend/app/config.py#L299) |
-| RUSTATS_INDEXNOW_DAILY_SEND_CAP | int = 30000 | 1 | [backend/app/config.py:301](../backend/app/config.py#L301) |
-| RUSTATS_INDEXNOW_HISTORY_DAILY_CAP | int = 30000 | 1 | [backend/app/config.py:304](../backend/app/config.py#L304) |
-| RUSTATS_INDEXNOW_HISTORY_YEAR_MIN | int = 2018 | 1 | [backend/app/config.py:305](../backend/app/config.py#L305) |
-| RUSTATS_WEBMASTER_RECRAWL_ENABLED | bool = True | 1 | [backend/app/config.py:309](../backend/app/config.py#L309) |
-| RUSTATS_METRICS_TOKEN | str = '' | 1 | [backend/app/config.py:312](../backend/app/config.py#L312) |
-| RUSTATS_FRONTEND_EVENTS_ENABLED | bool = True | 1 | [backend/app/config.py:319](../backend/app/config.py#L319) |
-| RUSTATS_BEHAVIOR_EVENTS_ENABLED | bool = True | 5 | [backend/app/config.py:325](../backend/app/config.py#L325) |
-| RUSTATS_BEHAVIOR_BATCH_MAX_EVENTS | int = 500 | 1 | [backend/app/config.py:326](../backend/app/config.py#L326) |
-| RUSTATS_BEHAVIOR_RAW_RETENTION_DAYS | int = 0 | 1 | [backend/app/config.py:327](../backend/app/config.py#L327) |
-| RUSTATS_GEOIP_DB_PATH | str = '/app/geoip/dbip-city-lite.mmdb' | 3 | [backend/app/config.py:332](../backend/app/config.py#L332) |
-| RUSTATS_GEOIP_DOWNLOAD_URL_TEMPLATE | str = 'https://download.db-ip.com/free/dbip-city-lite-{yyyy}-{mm}.mmdb.gz' | 1 | [backend/app/config.py:333](../backend/app/config.py#L333) |
-| RUSTATS_GEOIP_ASN_DB_PATH | str = '/app/geoip/dbip-asn-lite.mmdb' | 2 | [backend/app/config.py:336](../backend/app/config.py#L336) |
-| RUSTATS_GEOIP_ASN_DOWNLOAD_URL_TEMPLATE | str = 'https://download.db-ip.com/free/dbip-asn-lite-{yyyy}-{mm}.mmdb.gz' | 1 | [backend/app/config.py:337](../backend/app/config.py#L337) |
-| RUSTATS_GEOIP_AUTO_DOWNLOAD | bool = True | 1 | [backend/app/config.py:340](../backend/app/config.py#L340) |
-| RUSTATS_CLICKHOUSE_ENABLED | bool = False | 7 | [backend/app/config.py:344](../backend/app/config.py#L344) |
-| RUSTATS_CLICKHOUSE_HOST | str = 'clickhouse' | 1 | [backend/app/config.py:345](../backend/app/config.py#L345) |
-| RUSTATS_CLICKHOUSE_PORT | int = 8123 | 1 | [backend/app/config.py:346](../backend/app/config.py#L346) |
-| RUSTATS_CLICKHOUSE_DB | str = 'analytics' | 1 | [backend/app/config.py:347](../backend/app/config.py#L347) |
-| RUSTATS_CLICKHOUSE_USER | str = 'default' | 1 | [backend/app/config.py:348](../backend/app/config.py#L348) |
-| RUSTATS_CLICKHOUSE_PASSWORD | str = '' | 1 | [backend/app/config.py:349](../backend/app/config.py#L349) |
-| RUSTATS_DIRECT_API_TOKEN | str = '' | 1 | [backend/app/config.py:352](../backend/app/config.py#L352) |
-| RUSTATS_YANDEX_PARTNER_CLIENT_ID | str = '' | 0 | [backend/app/config.py:354](../backend/app/config.py#L354) |
-| RUSTATS_YANDEX_PARTNER_CLIENT_SECRET | str = '' | 0 | [backend/app/config.py:355](../backend/app/config.py#L355) |
-| RUSTATS_YANDEX_PARTNER_TOKEN | str = '' | 1 | [backend/app/config.py:356](../backend/app/config.py#L356) |
-| RUSTATS_ANALYTICS_ENABLED | bool = False | 7 | [backend/app/config.py:359](../backend/app/config.py#L359) |
-| RUSTATS_ANALYTICS_SCHEDULER_ENABLED | bool = False | 2 | [backend/app/config.py:360](../backend/app/config.py#L360) |
-| RUSTATS_ANALYTICS_SCHEDULER_CRON_HOUR | int = 7 | 2 | [backend/app/config.py:361](../backend/app/config.py#L361) |
-| RUSTATS_ANALYTICS_SCHEDULER_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:362](../backend/app/config.py#L362) |
-| RUSTATS_ANALYTICS_API_TOKEN | str = '' | 3 | [backend/app/config.py:363](../backend/app/config.py#L363) |
-| RUSTATS_ANALYTICS_BASE_URL | str = 'https://forecasteconomy.com' | 2 | [backend/app/config.py:366](../backend/app/config.py#L366) |
-| RUSTATS_ANALYTICS_ALLOWED_COUNTER_IDS | str = '107136069' | 9 | [backend/app/config.py:367](../backend/app/config.py#L367) |
-| RUSTATS_ANALYTICS_ALLOWED_HOSTS | str = 'forecasteconomy.com,ru.forecasteconomy.com' | 2 | [backend/app/config.py:368](../backend/app/config.py#L368) |
-| RUSTATS_ANALYTICS_DEFAULT_RETENTION_DAYS | int = 180 | 0 | [backend/app/config.py:369](../backend/app/config.py#L369) |
-| RUSTATS_ANALYTICS_RAW_LOG_RETENTION_DAYS | int = 90 | 0 | [backend/app/config.py:370](../backend/app/config.py#L370) |
-| RUSTATS_ANALYTICS_BACKFILL_DAYS | int = 30 | 0 | [backend/app/config.py:371](../backend/app/config.py#L371) |
-| RUSTATS_ANALYTICS_REQUEST_TIMEOUT | int = 30 | 1 | [backend/app/config.py:372](../backend/app/config.py#L372) |
-| RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED | bool = False | 2 | [backend/app/config.py:373](../backend/app/config.py#L373) |
-| RUSTATS_YANDEX_METRIKA_READ_TOKEN | str = '' | 11 | [backend/app/config.py:375](../backend/app/config.py#L375) |
-| RUSTATS_YANDEX_METRIKA_WRITE_TOKEN | str = '' | 3 | [backend/app/config.py:376](../backend/app/config.py#L376) |
-| RUSTATS_YANDEX_WEBMASTER_TOKEN | str = '' | 11 | [backend/app/config.py:377](../backend/app/config.py#L377) |
-| RUSTATS_AUTH_SESSION_TTL_SECONDS | int = 60 * 60 * 24 * 30 | 3 | [backend/app/config.py:380](../backend/app/config.py#L380) |
-| RUSTATS_AUTH_COOKIE_SECURE | bool = False | 7 | [backend/app/config.py:381](../backend/app/config.py#L381) |
-| RUSTATS_AUTH_COOKIE_DOMAIN | str = '' | 4 | [backend/app/config.py:382](../backend/app/config.py#L382) |
-| RUSTATS_AUTH_OAUTH_STATE_TTL_SECONDS | int = 600 | 2 | [backend/app/config.py:383](../backend/app/config.py#L383) |
-| RUSTATS_AUTH_LOGIN_MAX_FAILS | int = 8 | 1 | [backend/app/config.py:384](../backend/app/config.py#L384) |
-| RUSTATS_AUTH_LOGIN_LOCKOUT_SECONDS | int = 900 | 1 | [backend/app/config.py:385](../backend/app/config.py#L385) |
-| RUSTATS_AUTH_FAKE_PROVIDER_ENABLED | bool = False | 3 | [backend/app/config.py:387](../backend/app/config.py#L387) |
-| RUSTATS_AUTH_PUBLIC_BASE_URL | str = 'http://localhost:5173' | 4 | [backend/app/config.py:389](../backend/app/config.py#L389) |
-| RUSTATS_OAUTH_GOOGLE_CLIENT_ID | str = '' | 2 | [backend/app/config.py:392](../backend/app/config.py#L392) |
-| RUSTATS_OAUTH_GOOGLE_CLIENT_SECRET | str = '' | 2 | [backend/app/config.py:393](../backend/app/config.py#L393) |
-| RUSTATS_OAUTH_GOOGLE_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:394](../backend/app/config.py#L394) |
-| RUSTATS_OAUTH_YANDEX_CLIENT_ID | str = '' | 2 | [backend/app/config.py:397](../backend/app/config.py#L397) |
-| RUSTATS_OAUTH_YANDEX_CLIENT_SECRET | str = '' | 2 | [backend/app/config.py:398](../backend/app/config.py#L398) |
-| RUSTATS_OAUTH_YANDEX_SCOPE | str = '' | 1 | [backend/app/config.py:399](../backend/app/config.py#L399) |
-| RUSTATS_OAUTH_VK_CLIENT_ID | str = '' | 2 | [backend/app/config.py:401](../backend/app/config.py#L401) |
-| RUSTATS_OAUTH_VK_CLIENT_SECRET | str = '' | 0 | [backend/app/config.py:402](../backend/app/config.py#L402) |
-| RUSTATS_OAUTH_VK_SERVICE_KEY | str = '' | 0 | [backend/app/config.py:403](../backend/app/config.py#L403) |
-| RUSTATS_OAUTH_VK_SCOPE | str = '' | 1 | [backend/app/config.py:404](../backend/app/config.py#L404) |
-| RUSTATS_OAUTH_YANDEX_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:407](../backend/app/config.py#L407) |
-| RUSTATS_OAUTH_VK_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:408](../backend/app/config.py#L408) |
-| RUSTATS_DOWNLOAD_ANON_LIMIT | int = 0 | 4 | [backend/app/config.py:411](../backend/app/config.py#L411) |
-| RUSTATS_DOWNLOAD_ANON_WINDOW_SECONDS | int = 60 * 60 * 24 | 2 | [backend/app/config.py:412](../backend/app/config.py#L412) |
-| RUSTATS_DOWNLOAD_ANON_HISTORY_YEARS | int = 3 | 3 | [backend/app/config.py:416](../backend/app/config.py#L416) |
-| RUSTATS_TELEGRAM_DIGEST_ENABLED | bool = False | 2 | [backend/app/config.py:419](../backend/app/config.py#L419) |
-| RUSTATS_TELEGRAM_DIGEST_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:420](../backend/app/config.py#L420) |
-| RUSTATS_TELEGRAM_DIGEST_CRON_MINUTE | int = 0 | 2 | [backend/app/config.py:421](../backend/app/config.py#L421) |
-| RUSTATS_TELEGRAM_DIGEST_CHAT_IDS | str = '' | 1 | [backend/app/config.py:425](../backend/app/config.py#L425) |
-| RUSTATS_TELEGRAM_PROXY_URL | str = '' | 2 | [backend/app/config.py:428](../backend/app/config.py#L428) |
-| RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED | bool = True | 4 | [backend/app/config.py:431](../backend/app/config.py#L431) |
-| RUSTATS_TELEGRAM_CALM_MODE | bool = True | 5 | [backend/app/config.py:436](../backend/app/config.py#L436) |
-| RUSTATS_TELEGRAM_CALM_SUMMARY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:437](../backend/app/config.py#L437) |
-| RUSTATS_TELEGRAM_CALM_SUMMARY_CRON_MINUTE | int = 10 | 2 | [backend/app/config.py:438](../backend/app/config.py#L438) |
-| RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 4 | [backend/app/config.py:443](../backend/app/config.py#L443) |
-| RUSTATS_TELEGRAM_REPORTS_CHAT_IDS | str = '' | 1 | [backend/app/config.py:447](../backend/app/config.py#L447) |
-| RUSTATS_TELEGRAM_WEEKLY_ENABLED | bool = False | 1 | [backend/app/config.py:449](../backend/app/config.py#L449) |
-| RUSTATS_TELEGRAM_WEEKLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:450](../backend/app/config.py#L450) |
-| RUSTATS_TELEGRAM_WEEKLY_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:451](../backend/app/config.py#L451) |
-| RUSTATS_SEO_WEEKLY_REPORT_ENABLED | bool = False | 4 | [backend/app/config.py:454](../backend/app/config.py#L454) |
-| RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:455](../backend/app/config.py#L455) |
-| RUSTATS_SEO_WEEKLY_REPORT_CRON_MINUTE | int = 40 | 2 | [backend/app/config.py:456](../backend/app/config.py#L456) |
-| RUSTATS_TELEGRAM_MONTHLY_ENABLED | bool = False | 1 | [backend/app/config.py:457](../backend/app/config.py#L457) |
-| RUSTATS_TELEGRAM_MONTHLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:458](../backend/app/config.py#L458) |
-| RUSTATS_TELEGRAM_MONTHLY_CRON_MINUTE | int = 45 | 2 | [backend/app/config.py:459](../backend/app/config.py#L459) |
-| RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED | bool = False | 2 | [backend/app/config.py:462](../backend/app/config.py#L462) |
-| RUSTATS_TELEGRAM_SEND_MAX_ATTEMPTS | int = 3 | 1 | [backend/app/config.py:466](../backend/app/config.py#L466) |
-| RUSTATS_TELEGRAM_SEND_RETRY_BASE_SECONDS | float = 1.0 | 1 | [backend/app/config.py:467](../backend/app/config.py#L467) |
-| RUSTATS_TELEGRAM_SEND_RETRY_BUDGET_SECONDS | float = 45.0 | 1 | [backend/app/config.py:468](../backend/app/config.py#L468) |
-| RUSTATS_TELEGRAM_RESEND_ENABLED | bool = True | 1 | [backend/app/config.py:472](../backend/app/config.py#L472) |
-| RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES | int = 10 | 1 | [backend/app/config.py:473](../backend/app/config.py#L473) |
-| RUSTATS_TELEGRAM_RESEND_WINDOW_HOURS | int = 6 | 1 | [backend/app/config.py:474](../backend/app/config.py#L474) |
-| RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:475](../backend/app/config.py#L475) |
-| RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:476](../backend/app/config.py#L476) |
-| RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:480](../backend/app/config.py#L480) |
-| RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:481](../backend/app/config.py#L481) |
-| RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:482](../backend/app/config.py#L482) |
-| RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:483](../backend/app/config.py#L483) |
-| RUSTATS_OPENROUTER_API_KEY | str = '' | 15 | [backend/app/config.py:485](../backend/app/config.py#L485) |
-| RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:489](../backend/app/config.py#L489) |
-| RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:490](../backend/app/config.py#L490) |
-| RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:491](../backend/app/config.py#L491) |
-| RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:492](../backend/app/config.py#L492) |
-| RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:493](../backend/app/config.py#L493) |
-| RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:494](../backend/app/config.py#L494) |
-| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5.5' | 7 | [backend/app/config.py:495](../backend/app/config.py#L495) |
-| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 4 | [backend/app/config.py:501](../backend/app/config.py#L501) |
-| RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:505](../backend/app/config.py#L505) |
-| RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:508](../backend/app/config.py#L508) |
-| RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 2 | [backend/app/config.py:512](../backend/app/config.py#L512) |
-| RUSTATS_FRESHNESS_WATCHDOG_ENABLED | bool = False | 2 | [backend/app/config.py:517](../backend/app/config.py#L517) |
-| RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE | int = 25 | 1 | [backend/app/config.py:518](../backend/app/config.py#L518) |
-| RUSTATS_FRESHNESS_WATCHDOG_CRON_HOUR | int = 10 | 1 | [backend/app/config.py:519](../backend/app/config.py#L519) |
-| RUSTATS_FRESHNESS_WATCHDOG_CRON_MINUTE | int = 30 | 1 | [backend/app/config.py:520](../backend/app/config.py#L520) |
-| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:522](../backend/app/config.py#L522) |
-| RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 7 | [backend/app/config.py:526](../backend/app/config.py#L526) |
-| RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:529](../backend/app/config.py#L529) |
-| RUSTATS_PUBLIC_BOT_USERNAME | str = 'ForecastEconomyBot' | 1 | [backend/app/config.py:531](../backend/app/config.py#L531) |
-| RUSTATS_PUBLIC_BOT_GROUP_URL | str = '' | 3 | [backend/app/config.py:534](../backend/app/config.py#L534) |
-| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 10 | [backend/app/config.py:537](../backend/app/config.py#L537) |
-| RUSTATS_PUBLIC_BOT_LLM_MODEL | str = 'anthropic/claude-sonnet-5.5' | 3 | [backend/app/config.py:540](../backend/app/config.py#L540) |
-| RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:541](../backend/app/config.py#L541) |
-| RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:543](../backend/app/config.py#L543) |
-| RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:544](../backend/app/config.py#L544) |
-| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:550](../backend/app/config.py#L550) |
-| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:558](../backend/app/config.py#L558) |
-| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:565](../backend/app/config.py#L565) |
-| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:566](../backend/app/config.py#L566) |
-| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:577](../backend/app/config.py#L577) |
-| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:578](../backend/app/config.py#L578) |
-| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:579](../backend/app/config.py#L579) |
-| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:580](../backend/app/config.py#L580) |
-| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:581](../backend/app/config.py#L581) |
-| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:582](../backend/app/config.py#L582) |
-| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:586](../backend/app/config.py#L586) |
+| RUSTATS_RU_GOOGLE_SHORT_SITEMAP | bool = True | 1 | [backend/app/config.py:24](../backend/app/config.py#L24) |
+| RUSTATS_RU_GOOGLE_DISALLOW_WORLD_YEARS | bool = True | 1 | [backend/app/config.py:29](../backend/app/config.py#L29) |
+| RUSTATS_GEO_RU_COUNTRY_CODES | str = 'RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD' | 1 | [backend/app/config.py:31](../backend/app/config.py#L31) |
+| RUSTATS_BROWSER_LANG_REDIRECT_ENABLED | bool = False | 0 | [backend/app/config.py:35](../backend/app/config.py#L35) |
+| RUSTATS_BROWSER_LANG_MIN_QUALITY | float = 0.6 | 0 | [backend/app/config.py:36](../backend/app/config.py#L36) |
+| RUSTATS_LOCALE_PREFERENCE_COOKIE | str = 'fe_locale_pref' | 2 | [backend/app/config.py:37](../backend/app/config.py#L37) |
+| RUSTATS_DATABASE_URL | str = 'postgresql+asyncpg://rustats:rustats@localhost:5432/rustats' | 7 | [backend/app/config.py:40](../backend/app/config.py#L40) |
+| RUSTATS_MIGRATION_DATABASE_URL | str \| None = None | 1 | [backend/app/config.py:44](../backend/app/config.py#L44) |
+| RUSTATS_DATABASE_ECHO | bool = False | 2 | [backend/app/config.py:45](../backend/app/config.py#L45) |
+| RUSTATS_DB_POOL_SIZE | int = 10 | 1 | [backend/app/config.py:55](../backend/app/config.py#L55) |
+| RUSTATS_DB_MAX_OVERFLOW | int = 15 | 2 | [backend/app/config.py:56](../backend/app/config.py#L56) |
+| RUSTATS_DB_POOL_TIMEOUT | int = 3 | 1 | [backend/app/config.py:57](../backend/app/config.py#L57) |
+| RUSTATS_DB_STATEMENT_TIMEOUT_MS | int = 30000 | 1 | [backend/app/config.py:58](../backend/app/config.py#L58) |
+| RUSTATS_DB_IDLE_IN_TRANSACTION_TIMEOUT_MS | int = 120000 | 1 | [backend/app/config.py:59](../backend/app/config.py#L59) |
+| RUSTATS_ANALYTICS_DB_POOL_SIZE | int = 2 | 1 | [backend/app/config.py:62](../backend/app/config.py#L62) |
+| RUSTATS_ANALYTICS_DB_MAX_OVERFLOW | int = 2 | 2 | [backend/app/config.py:63](../backend/app/config.py#L63) |
+| RUSTATS_ANALYTICS_DB_POOL_TIMEOUT | int = 15 | 1 | [backend/app/config.py:64](../backend/app/config.py#L64) |
+| RUSTATS_ANALYTICS_DB_STATEMENT_TIMEOUT_MS | int = 60000 | 1 | [backend/app/config.py:65](../backend/app/config.py#L65) |
+| RUSTATS_ANALYTICS_DB_IDLE_IN_TRANSACTION_TIMEOUT_MS | int = 120000 | 1 | [backend/app/config.py:66](../backend/app/config.py#L66) |
+| RUSTATS_SITEMAP_DIR | str = '/var/www/sitemaps' | 1 | [backend/app/config.py:68](../backend/app/config.py#L68) |
+| RUSTATS_SITEMAP_PRIORITY_MAX_URLS | int = 20000 | 2 | [backend/app/config.py:72](../backend/app/config.py#L72) |
+| RUSTATS_GOOGLE_SITE_VERIFICATION | str = '' | 2 | [backend/app/config.py:74](../backend/app/config.py#L74) |
+| RUSTATS_BING_SITE_VERIFICATION | str = '' | 2 | [backend/app/config.py:76](../backend/app/config.py#L76) |
+| RUSTATS_GSC_ACCESS_TOKEN | str = '' | 4 | [backend/app/config.py:78](../backend/app/config.py#L78) |
+| RUSTATS_GSC_CREDENTIALS_FILE | str = '' | 4 | [backend/app/config.py:80](../backend/app/config.py#L80) |
+| RUSTATS_GSC_SITE_URL | str = '' | 1 | [backend/app/config.py:82](../backend/app/config.py#L82) |
+| RUSTATS_SCRAPE_BLOCK_COUNTRIES | str = '' | 1 | [backend/app/config.py:86](../backend/app/config.py#L86) |
+| RUSTATS_SCRAPE_BIND_ENABLED | bool = True | 1 | [backend/app/config.py:89](../backend/app/config.py#L89) |
+| RUSTATS_SCRAPE_BIND_SECRET | str = '' | 2 | [backend/app/config.py:90](../backend/app/config.py#L90) |
+| RUSTATS_SCRAPE_BLOCK_HOSTING | bool = False | 0 | [backend/app/config.py:93](../backend/app/config.py#L93) |
+| RUSTATS_SCRAPE_CHALLENGE_ENABLED | bool = True | 1 | [backend/app/config.py:95](../backend/app/config.py#L95) |
+| RUSTATS_SCRAPE_CHALLENGE_MIN_CORES | int = 48 | 1 | [backend/app/config.py:96](../backend/app/config.py#L96) |
+| RUSTATS_REDIS_URL | str = 'redis://localhost:6379/0' | 4 | [backend/app/config.py:99](../backend/app/config.py#L99) |
+| RUSTATS_STATE_REDIS_URL | str = '' | 2 | [backend/app/config.py:103](../backend/app/config.py#L103) |
+| RUSTATS_CACHE_TTL_DATA | int = 3600 | 17 | [backend/app/config.py:104](../backend/app/config.py#L104) |
+| RUSTATS_CACHE_TTL_META | int = 300 | 2 | [backend/app/config.py:105](../backend/app/config.py#L105) |
+| RUSTATS_CBR_BASE_URL | str = 'https://www.cbr.ru' | 7 | [backend/app/config.py:108](../backend/app/config.py#L108) |
+| RUSTATS_CBR_REQUEST_TIMEOUT | int = 90 | 7 | [backend/app/config.py:109](../backend/app/config.py#L109) |
+| RUSTATS_MINFIN_BASE_URL | str = 'https://minfin.gov.ru' | 0 | [backend/app/config.py:110](../backend/app/config.py#L110) |
+| RUSTATS_ROSSTAT_BASE_URL | str = 'https://rosstat.gov.ru/storage/mediabank' | 1 | [backend/app/config.py:113](../backend/app/config.py#L113) |
+| RUSTATS_ROSSTAT_CPI_TEMPLATE | str = 'ipc_mes_{mm}-{yyyy}.xlsx' | 1 | [backend/app/config.py:114](../backend/app/config.py#L114) |
+| RUSTATS_ROSSTAT_CA_CERT | str = str(Path(__file__).parent.parent / 'certs' / 'russiantrustedca2024.pem') | 9 | [backend/app/config.py:115](../backend/app/config.py#L115) |
+| RUSTATS_ROSSTAT_MAX_MONTHS_BACK | int = 6 | 2 | [backend/app/config.py:116](../backend/app/config.py#L116) |
+| RUSTATS_ROSSTAT_REQUEST_TIMEOUT | int = 30 | 10 | [backend/app/config.py:117](../backend/app/config.py#L117) |
+| RUSTATS_SCHEDULER_ENABLED | bool = True | 3 | [backend/app/config.py:120](../backend/app/config.py#L120) |
+| RUSTATS_WORKER_RECYCLE_MB | int = 0 | 2 | [backend/app/config.py:123](../backend/app/config.py#L123) |
+| RUSTATS_WORKER_RECYCLE_MIN_GAP_SECONDS | int = 300 | 1 | [backend/app/config.py:125](../backend/app/config.py#L125) |
+| RUSTATS_SCHEDULER_CRON_HOUR | int = 6 | 2 | [backend/app/config.py:126](../backend/app/config.py#L126) |
+| RUSTATS_SCHEDULER_CRON_MINUTE | int = 0 | 2 | [backend/app/config.py:127](../backend/app/config.py#L127) |
+| RUSTATS_SCHEDULER_EVENING_HOUR | int = 20 | 2 | [backend/app/config.py:130](../backend/app/config.py#L130) |
+| RUSTATS_SCHEDULER_EVENING_MINUTE | int = 0 | 2 | [backend/app/config.py:131](../backend/app/config.py#L131) |
+| RUSTATS_SCHEDULER_LATE_FRED_HOUR | int = 23 | 1 | [backend/app/config.py:136](../backend/app/config.py#L136) |
+| RUSTATS_SCHEDULER_LATE_FRED_MINUTE | int = 30 | 1 | [backend/app/config.py:137](../backend/app/config.py#L137) |
+| RUSTATS_TICKER_PULL_INTERVAL_SECONDS | int = 8 | 2 | [backend/app/config.py:138](../backend/app/config.py#L138) |
+| RUSTATS_MOEX_BRENT_LIVE_ENABLED | bool = False | 1 | [backend/app/config.py:143](../backend/app/config.py#L143) |
+| RUSTATS_MOEX_BRENT_DELAY_MINUTES | int = 15 | 1 | [backend/app/config.py:146](../backend/app/config.py#L146) |
+| RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:151](../backend/app/config.py#L151) |
+| RUSTATS_WORLD_EUROSTAT_INGEST_SHADOW | bool = False | 1 | [backend/app/config.py:154](../backend/app/config.py#L154) |
+| RUSTATS_EUROSTAT_REBASE_ENABLED | bool = False | 2 | [backend/app/config.py:157](../backend/app/config.py#L157) |
+| RUSTATS_WORLD_EUROSTAT_INGEST_HOUR | int = 2 | 2 | [backend/app/config.py:158](../backend/app/config.py#L158) |
+| RUSTATS_WORLD_EUROSTAT_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:159](../backend/app/config.py#L159) |
+| RUSTATS_WORLD_FORECAST_ENABLED | bool = False | 4 | [backend/app/config.py:162](../backend/app/config.py#L162) |
+| RUSTATS_US_WORLD_FORECAST_ENABLED | bool = True | 1 | [backend/app/config.py:165](../backend/app/config.py#L165) |
+| RUSTATS_EUROPE_WORLD_FORECAST_ENABLED | bool = True | 1 | [backend/app/config.py:166](../backend/app/config.py#L166) |
+| RUSTATS_US_WORLD_FORECAST_DAILY_LIMIT | int = 500 | 1 | [backend/app/config.py:167](../backend/app/config.py#L167) |
+| RUSTATS_EUROPE_WORLD_FORECAST_DAILY_LIMIT | int = 3000 | 1 | [backend/app/config.py:168](../backend/app/config.py#L168) |
+| RUSTATS_EUROPE_WORLD_FORECAST_HOUR | int = 23 | 1 | [backend/app/config.py:173](../backend/app/config.py#L173) |
+| RUSTATS_EUROPE_WORLD_FORECAST_MINUTE | int = 10 | 1 | [backend/app/config.py:174](../backend/app/config.py#L174) |
+| RUSTATS_EUROPE_WORLD_FORECAST_MAX_RUN_SECONDS | int = 0 | 1 | [backend/app/config.py:180](../backend/app/config.py#L180) |
+| RUSTATS_US_WORLD_FORECAST_HOUR | int = 5 | 1 | [backend/app/config.py:181](../backend/app/config.py#L181) |
+| RUSTATS_US_WORLD_FORECAST_MINUTE | int = 20 | 1 | [backend/app/config.py:182](../backend/app/config.py#L182) |
+| RUSTATS_REST_WORLD_FORECAST_HOUR | int = 4 | 1 | [backend/app/config.py:183](../backend/app/config.py#L183) |
+| RUSTATS_REST_WORLD_FORECAST_MINUTE | int = 50 | 1 | [backend/app/config.py:184](../backend/app/config.py#L184) |
+| RUSTATS_WORLD_FORECAST_HOUR | int = 4 | 1 | [backend/app/config.py:185](../backend/app/config.py#L185) |
+| RUSTATS_WORLD_FORECAST_MINUTE | int = 20 | 1 | [backend/app/config.py:186](../backend/app/config.py#L186) |
+| RUSTATS_REST_WORLD_FORECAST_ENABLED | bool = False | 1 | [backend/app/config.py:190](../backend/app/config.py#L190) |
+| RUSTATS_REST_WORLD_FORECAST_DAILY_LIMIT | int = 400 | 1 | [backend/app/config.py:191](../backend/app/config.py#L191) |
+| RUSTATS_WORLD_FORECAST_CANDIDATES_ENABLED | bool = False | 2 | [backend/app/config.py:195](../backend/app/config.py#L195) |
+| RUSTATS_WORLD_FORECAST_PUBLISH_ALL | bool = True | 3 | [backend/app/config.py:201](../backend/app/config.py#L201) |
+| RUSTATS_WORLD_IMF_OFFICIAL_FORECAST_ENABLED | bool = False | 1 | [backend/app/config.py:204](../backend/app/config.py#L204) |
+| RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS | int = 2400 | 3 | [backend/app/config.py:208](../backend/app/config.py#L208) |
+| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS | int = 30 | 2 | [backend/app/config.py:211](../backend/app/config.py#L211) |
+| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL | int = 0 | 1 | [backend/app/config.py:216](../backend/app/config.py#L216) |
+| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_QUARTERLY | int = 0 | 1 | [backend/app/config.py:217](../backend/app/config.py#L217) |
+| RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY | int = 200 | 1 | [backend/app/config.py:219](../backend/app/config.py#L219) |
+| RUSTATS_WORLD_FORECAST_PRIORITY_COUNTRIES | str = 'united-states,china,japan,germany,france,united-kingdom,india,brazil,turkey,italy,spain,austria,canada,mexico,australia,south-korea,netherlands,poland' | 1 | [backend/app/config.py:222](../backend/app/config.py#L222) |
+| RUSTATS_WORLD_SUBNATIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:227](../backend/app/config.py#L227) |
+| RUSTATS_WORLD_SUBNATIONAL_INGEST_HOUR | int = 3 | 1 | [backend/app/config.py:228](../backend/app/config.py#L228) |
+| RUSTATS_WORLD_SUBNATIONAL_INGEST_MINUTE | int = 40 | 1 | [backend/app/config.py:229](../backend/app/config.py#L229) |
+| RUSTATS_WORLD_BEA_REGIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:230](../backend/app/config.py#L230) |
+| RUSTATS_WORLD_BEA_REGIONAL_INGEST_HOUR | int = 4 | 1 | [backend/app/config.py:231](../backend/app/config.py#L231) |
+| RUSTATS_WORLD_BEA_REGIONAL_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:232](../backend/app/config.py#L232) |
+| RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED | bool = True | 1 | [backend/app/config.py:237](../backend/app/config.py#L237) |
+| RUSTATS_TELEGRAM_BOT_TOKEN | str = '' | 19 | [backend/app/config.py:240](../backend/app/config.py#L240) |
+| RUSTATS_TELEGRAM_CHAT_ID | str = '' | 16 | [backend/app/config.py:241](../backend/app/config.py#L241) |
+| RUSTATS_FORECAST_STEPS | int = 12 | 2 | [backend/app/config.py:244](../backend/app/config.py#L244) |
+| RUSTATS_SEO_APP_SHELL_URL | str = 'http://frontend/__spa-index.html' | 2 | [backend/app/config.py:247](../backend/app/config.py#L247) |
+| RUSTATS_SSR_WARM_ENABLED | bool = False | 2 | [backend/app/config.py:250](../backend/app/config.py#L250) |
+| RUSTATS_SSR_WARM_BASE_URL | str = 'http://frontend' | 2 | [backend/app/config.py:251](../backend/app/config.py#L251) |
+| RUSTATS_SSR_WARM_TOP_N | int = 50 | 2 | [backend/app/config.py:254](../backend/app/config.py#L254) |
+| RUSTATS_SSR_SWR_ENABLED | bool = False | 1 | [backend/app/config.py:258](../backend/app/config.py#L258) |
+| RUSTATS_SSR_SWR_STALE_SECONDS | int = 6 * 3600 | 1 | [backend/app/config.py:259](../backend/app/config.py#L259) |
+| RUSTATS_SSR_RENDER_QUEUE_TIMEOUT_SECONDS | float = 22.0 | 2 | [backend/app/config.py:263](../backend/app/config.py#L263) |
+| RUSTATS_SSR_LOW_PRIORITY_RENDER_SLOTS | int = 2 | 2 | [backend/app/config.py:267](../backend/app/config.py#L267) |
+| RUSTATS_SSR_LOW_PRIORITY_QUEUE_TIMEOUT_SECONDS | float = 4.0 | 1 | [backend/app/config.py:268](../backend/app/config.py#L268) |
+| RUSTATS_SSR_GOODBOT_RENDER_SLOTS | int = 2 | 2 | [backend/app/config.py:271](../backend/app/config.py#L271) |
+| RUSTATS_FE_HUMAN_PASS_SECRET | str = '' | 1 | [backend/app/config.py:274](../backend/app/config.py#L274) |
+| RUSTATS_FE_HUMAN_PASS_DAYS | int = 30 | 2 | [backend/app/config.py:275](../backend/app/config.py#L275) |
+| RUSTATS_BOT_TRAFFIC_LOG_PATH | str = '/var/log/rosstat-nginx/security.log' | 1 | [backend/app/config.py:277](../backend/app/config.py#L277) |
+| RUSTATS_HOST_BROWNOUT_IO_FULL_PCT | float = 40.0 | 2 | [backend/app/config.py:280](../backend/app/config.py#L280) |
+| RUSTATS_HOST_ALERT_IO_FULL_PCT | float = 25.0 | 1 | [backend/app/config.py:283](../backend/app/config.py#L283) |
+| RUSTATS_HOST_ALERT_DISK_FREE_PCT | float = 10.0 | 1 | [backend/app/config.py:284](../backend/app/config.py#L284) |
+| RUSTATS_HOST_ALERT_MEM_FULL_PCT | float = 10.0 | 1 | [backend/app/config.py:286](../backend/app/config.py#L286) |
+| RUSTATS_SSR_ADMIT_ON_REPEAT_ENABLED | bool = True | 1 | [backend/app/config.py:293](../backend/app/config.py#L293) |
+| RUSTATS_SSR_ADMIT_WINDOW_SECONDS | int = 3 * 3600 | 1 | [backend/app/config.py:294](../backend/app/config.py#L294) |
+| RUSTATS_SSR_SWR_BASE_URL | str = '' | 1 | [backend/app/config.py:295](../backend/app/config.py#L295) |
+| RUSTATS_SSR_SWR_TOKEN | str = '' | 1 | [backend/app/config.py:296](../backend/app/config.py#L296) |
+| RUSTATS_WORLD_LISTED_COUNTS_ENABLED | bool = False | 4 | [backend/app/config.py:302](../backend/app/config.py#L302) |
+| RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS | int = 6 * 3600 | 1 | [backend/app/config.py:303](../backend/app/config.py#L303) |
+| RUSTATS_INDEXNOW_ENABLED | bool = True | 7 | [backend/app/config.py:307](../backend/app/config.py#L307) |
+| RUSTATS_INDEXNOW_KEY | str = 'a7c41d92e85f4b06b3d8f17c29e6a504' | 11 | [backend/app/config.py:308](../backend/app/config.py#L308) |
+| RUSTATS_INDEXNOW_ENDPOINT | str = 'https://yandex.com/indexnow' | 2 | [backend/app/config.py:309](../backend/app/config.py#L309) |
+| RUSTATS_INDEXNOW_DAILY_SEND_CAP | int = 30000 | 1 | [backend/app/config.py:311](../backend/app/config.py#L311) |
+| RUSTATS_INDEXNOW_HISTORY_DAILY_CAP | int = 30000 | 1 | [backend/app/config.py:314](../backend/app/config.py#L314) |
+| RUSTATS_INDEXNOW_HISTORY_YEAR_MIN | int = 2018 | 1 | [backend/app/config.py:315](../backend/app/config.py#L315) |
+| RUSTATS_WEBMASTER_RECRAWL_ENABLED | bool = True | 1 | [backend/app/config.py:319](../backend/app/config.py#L319) |
+| RUSTATS_METRICS_TOKEN | str = '' | 1 | [backend/app/config.py:322](../backend/app/config.py#L322) |
+| RUSTATS_FRONTEND_EVENTS_ENABLED | bool = True | 1 | [backend/app/config.py:329](../backend/app/config.py#L329) |
+| RUSTATS_BEHAVIOR_EVENTS_ENABLED | bool = True | 5 | [backend/app/config.py:335](../backend/app/config.py#L335) |
+| RUSTATS_BEHAVIOR_BATCH_MAX_EVENTS | int = 500 | 1 | [backend/app/config.py:336](../backend/app/config.py#L336) |
+| RUSTATS_BEHAVIOR_RAW_RETENTION_DAYS | int = 0 | 1 | [backend/app/config.py:337](../backend/app/config.py#L337) |
+| RUSTATS_GEOIP_DB_PATH | str = '/app/geoip/dbip-city-lite.mmdb' | 3 | [backend/app/config.py:342](../backend/app/config.py#L342) |
+| RUSTATS_GEOIP_DOWNLOAD_URL_TEMPLATE | str = 'https://download.db-ip.com/free/dbip-city-lite-{yyyy}-{mm}.mmdb.gz' | 1 | [backend/app/config.py:343](../backend/app/config.py#L343) |
+| RUSTATS_GEOIP_ASN_DB_PATH | str = '/app/geoip/dbip-asn-lite.mmdb' | 2 | [backend/app/config.py:346](../backend/app/config.py#L346) |
+| RUSTATS_GEOIP_ASN_DOWNLOAD_URL_TEMPLATE | str = 'https://download.db-ip.com/free/dbip-asn-lite-{yyyy}-{mm}.mmdb.gz' | 1 | [backend/app/config.py:347](../backend/app/config.py#L347) |
+| RUSTATS_GEOIP_AUTO_DOWNLOAD | bool = True | 1 | [backend/app/config.py:350](../backend/app/config.py#L350) |
+| RUSTATS_CLICKHOUSE_ENABLED | bool = False | 7 | [backend/app/config.py:354](../backend/app/config.py#L354) |
+| RUSTATS_CLICKHOUSE_HOST | str = 'clickhouse' | 1 | [backend/app/config.py:355](../backend/app/config.py#L355) |
+| RUSTATS_CLICKHOUSE_PORT | int = 8123 | 1 | [backend/app/config.py:356](../backend/app/config.py#L356) |
+| RUSTATS_CLICKHOUSE_DB | str = 'analytics' | 1 | [backend/app/config.py:357](../backend/app/config.py#L357) |
+| RUSTATS_CLICKHOUSE_USER | str = 'default' | 1 | [backend/app/config.py:358](../backend/app/config.py#L358) |
+| RUSTATS_CLICKHOUSE_PASSWORD | str = '' | 1 | [backend/app/config.py:359](../backend/app/config.py#L359) |
+| RUSTATS_DIRECT_API_TOKEN | str = '' | 1 | [backend/app/config.py:362](../backend/app/config.py#L362) |
+| RUSTATS_YANDEX_PARTNER_CLIENT_ID | str = '' | 0 | [backend/app/config.py:364](../backend/app/config.py#L364) |
+| RUSTATS_YANDEX_PARTNER_CLIENT_SECRET | str = '' | 0 | [backend/app/config.py:365](../backend/app/config.py#L365) |
+| RUSTATS_YANDEX_PARTNER_TOKEN | str = '' | 1 | [backend/app/config.py:366](../backend/app/config.py#L366) |
+| RUSTATS_ANALYTICS_ENABLED | bool = False | 7 | [backend/app/config.py:369](../backend/app/config.py#L369) |
+| RUSTATS_ANALYTICS_SCHEDULER_ENABLED | bool = False | 2 | [backend/app/config.py:370](../backend/app/config.py#L370) |
+| RUSTATS_ANALYTICS_SCHEDULER_CRON_HOUR | int = 7 | 2 | [backend/app/config.py:371](../backend/app/config.py#L371) |
+| RUSTATS_ANALYTICS_SCHEDULER_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:372](../backend/app/config.py#L372) |
+| RUSTATS_ANALYTICS_API_TOKEN | str = '' | 3 | [backend/app/config.py:373](../backend/app/config.py#L373) |
+| RUSTATS_ANALYTICS_BASE_URL | str = 'https://forecasteconomy.com' | 2 | [backend/app/config.py:376](../backend/app/config.py#L376) |
+| RUSTATS_ANALYTICS_ALLOWED_COUNTER_IDS | str = '107136069' | 9 | [backend/app/config.py:377](../backend/app/config.py#L377) |
+| RUSTATS_ANALYTICS_ALLOWED_HOSTS | str = 'forecasteconomy.com,ru.forecasteconomy.com' | 2 | [backend/app/config.py:378](../backend/app/config.py#L378) |
+| RUSTATS_ANALYTICS_DEFAULT_RETENTION_DAYS | int = 180 | 0 | [backend/app/config.py:379](../backend/app/config.py#L379) |
+| RUSTATS_ANALYTICS_RAW_LOG_RETENTION_DAYS | int = 90 | 0 | [backend/app/config.py:380](../backend/app/config.py#L380) |
+| RUSTATS_ANALYTICS_BACKFILL_DAYS | int = 30 | 0 | [backend/app/config.py:381](../backend/app/config.py#L381) |
+| RUSTATS_ANALYTICS_REQUEST_TIMEOUT | int = 30 | 1 | [backend/app/config.py:382](../backend/app/config.py#L382) |
+| RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED | bool = False | 2 | [backend/app/config.py:383](../backend/app/config.py#L383) |
+| RUSTATS_YANDEX_METRIKA_READ_TOKEN | str = '' | 11 | [backend/app/config.py:385](../backend/app/config.py#L385) |
+| RUSTATS_YANDEX_METRIKA_WRITE_TOKEN | str = '' | 3 | [backend/app/config.py:386](../backend/app/config.py#L386) |
+| RUSTATS_YANDEX_WEBMASTER_TOKEN | str = '' | 11 | [backend/app/config.py:387](../backend/app/config.py#L387) |
+| RUSTATS_AUTH_SESSION_TTL_SECONDS | int = 60 * 60 * 24 * 30 | 3 | [backend/app/config.py:390](../backend/app/config.py#L390) |
+| RUSTATS_AUTH_COOKIE_SECURE | bool = False | 7 | [backend/app/config.py:391](../backend/app/config.py#L391) |
+| RUSTATS_AUTH_COOKIE_DOMAIN | str = '' | 4 | [backend/app/config.py:392](../backend/app/config.py#L392) |
+| RUSTATS_AUTH_OAUTH_STATE_TTL_SECONDS | int = 600 | 2 | [backend/app/config.py:393](../backend/app/config.py#L393) |
+| RUSTATS_AUTH_LOGIN_MAX_FAILS | int = 8 | 1 | [backend/app/config.py:394](../backend/app/config.py#L394) |
+| RUSTATS_AUTH_LOGIN_LOCKOUT_SECONDS | int = 900 | 1 | [backend/app/config.py:395](../backend/app/config.py#L395) |
+| RUSTATS_AUTH_FAKE_PROVIDER_ENABLED | bool = False | 3 | [backend/app/config.py:397](../backend/app/config.py#L397) |
+| RUSTATS_AUTH_PUBLIC_BASE_URL | str = 'http://localhost:5173' | 4 | [backend/app/config.py:399](../backend/app/config.py#L399) |
+| RUSTATS_OAUTH_GOOGLE_CLIENT_ID | str = '' | 2 | [backend/app/config.py:402](../backend/app/config.py#L402) |
+| RUSTATS_OAUTH_GOOGLE_CLIENT_SECRET | str = '' | 2 | [backend/app/config.py:403](../backend/app/config.py#L403) |
+| RUSTATS_OAUTH_GOOGLE_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:404](../backend/app/config.py#L404) |
+| RUSTATS_OAUTH_YANDEX_CLIENT_ID | str = '' | 2 | [backend/app/config.py:407](../backend/app/config.py#L407) |
+| RUSTATS_OAUTH_YANDEX_CLIENT_SECRET | str = '' | 2 | [backend/app/config.py:408](../backend/app/config.py#L408) |
+| RUSTATS_OAUTH_YANDEX_SCOPE | str = '' | 1 | [backend/app/config.py:409](../backend/app/config.py#L409) |
+| RUSTATS_OAUTH_VK_CLIENT_ID | str = '' | 2 | [backend/app/config.py:411](../backend/app/config.py#L411) |
+| RUSTATS_OAUTH_VK_CLIENT_SECRET | str = '' | 0 | [backend/app/config.py:412](../backend/app/config.py#L412) |
+| RUSTATS_OAUTH_VK_SERVICE_KEY | str = '' | 0 | [backend/app/config.py:413](../backend/app/config.py#L413) |
+| RUSTATS_OAUTH_VK_SCOPE | str = '' | 1 | [backend/app/config.py:414](../backend/app/config.py#L414) |
+| RUSTATS_OAUTH_YANDEX_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:417](../backend/app/config.py#L417) |
+| RUSTATS_OAUTH_VK_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:418](../backend/app/config.py#L418) |
+| RUSTATS_DOWNLOAD_ANON_LIMIT | int = 0 | 4 | [backend/app/config.py:421](../backend/app/config.py#L421) |
+| RUSTATS_DOWNLOAD_ANON_WINDOW_SECONDS | int = 60 * 60 * 24 | 2 | [backend/app/config.py:422](../backend/app/config.py#L422) |
+| RUSTATS_DOWNLOAD_ANON_HISTORY_YEARS | int = 3 | 3 | [backend/app/config.py:426](../backend/app/config.py#L426) |
+| RUSTATS_TELEGRAM_DIGEST_ENABLED | bool = False | 2 | [backend/app/config.py:429](../backend/app/config.py#L429) |
+| RUSTATS_TELEGRAM_DIGEST_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:430](../backend/app/config.py#L430) |
+| RUSTATS_TELEGRAM_DIGEST_CRON_MINUTE | int = 0 | 2 | [backend/app/config.py:431](../backend/app/config.py#L431) |
+| RUSTATS_TELEGRAM_DIGEST_CHAT_IDS | str = '' | 1 | [backend/app/config.py:435](../backend/app/config.py#L435) |
+| RUSTATS_TELEGRAM_PROXY_URL | str = '' | 2 | [backend/app/config.py:438](../backend/app/config.py#L438) |
+| RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED | bool = True | 4 | [backend/app/config.py:441](../backend/app/config.py#L441) |
+| RUSTATS_TELEGRAM_CALM_MODE | bool = True | 5 | [backend/app/config.py:446](../backend/app/config.py#L446) |
+| RUSTATS_TELEGRAM_CALM_SUMMARY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:447](../backend/app/config.py#L447) |
+| RUSTATS_TELEGRAM_CALM_SUMMARY_CRON_MINUTE | int = 10 | 2 | [backend/app/config.py:448](../backend/app/config.py#L448) |
+| RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 4 | [backend/app/config.py:453](../backend/app/config.py#L453) |
+| RUSTATS_TELEGRAM_REPORTS_CHAT_IDS | str = '' | 1 | [backend/app/config.py:457](../backend/app/config.py#L457) |
+| RUSTATS_TELEGRAM_WEEKLY_ENABLED | bool = False | 1 | [backend/app/config.py:459](../backend/app/config.py#L459) |
+| RUSTATS_TELEGRAM_WEEKLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:460](../backend/app/config.py#L460) |
+| RUSTATS_TELEGRAM_WEEKLY_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:461](../backend/app/config.py#L461) |
+| RUSTATS_SEO_WEEKLY_REPORT_ENABLED | bool = False | 4 | [backend/app/config.py:464](../backend/app/config.py#L464) |
+| RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:465](../backend/app/config.py#L465) |
+| RUSTATS_SEO_WEEKLY_REPORT_CRON_MINUTE | int = 40 | 2 | [backend/app/config.py:466](../backend/app/config.py#L466) |
+| RUSTATS_TELEGRAM_MONTHLY_ENABLED | bool = False | 1 | [backend/app/config.py:467](../backend/app/config.py#L467) |
+| RUSTATS_TELEGRAM_MONTHLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:468](../backend/app/config.py#L468) |
+| RUSTATS_TELEGRAM_MONTHLY_CRON_MINUTE | int = 45 | 2 | [backend/app/config.py:469](../backend/app/config.py#L469) |
+| RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED | bool = False | 2 | [backend/app/config.py:472](../backend/app/config.py#L472) |
+| RUSTATS_TELEGRAM_SEND_MAX_ATTEMPTS | int = 3 | 1 | [backend/app/config.py:476](../backend/app/config.py#L476) |
+| RUSTATS_TELEGRAM_SEND_RETRY_BASE_SECONDS | float = 1.0 | 1 | [backend/app/config.py:477](../backend/app/config.py#L477) |
+| RUSTATS_TELEGRAM_SEND_RETRY_BUDGET_SECONDS | float = 45.0 | 1 | [backend/app/config.py:478](../backend/app/config.py#L478) |
+| RUSTATS_TELEGRAM_RESEND_ENABLED | bool = True | 1 | [backend/app/config.py:482](../backend/app/config.py#L482) |
+| RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES | int = 10 | 1 | [backend/app/config.py:483](../backend/app/config.py#L483) |
+| RUSTATS_TELEGRAM_RESEND_WINDOW_HOURS | int = 6 | 1 | [backend/app/config.py:484](../backend/app/config.py#L484) |
+| RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:485](../backend/app/config.py#L485) |
+| RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:486](../backend/app/config.py#L486) |
+| RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:490](../backend/app/config.py#L490) |
+| RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:491](../backend/app/config.py#L491) |
+| RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:492](../backend/app/config.py#L492) |
+| RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:493](../backend/app/config.py#L493) |
+| RUSTATS_OPENROUTER_API_KEY | str = '' | 15 | [backend/app/config.py:495](../backend/app/config.py#L495) |
+| RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:499](../backend/app/config.py#L499) |
+| RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:500](../backend/app/config.py#L500) |
+| RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:501](../backend/app/config.py#L501) |
+| RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:502](../backend/app/config.py#L502) |
+| RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:503](../backend/app/config.py#L503) |
+| RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:504](../backend/app/config.py#L504) |
+| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5.5' | 7 | [backend/app/config.py:505](../backend/app/config.py#L505) |
+| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 4 | [backend/app/config.py:511](../backend/app/config.py#L511) |
+| RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:515](../backend/app/config.py#L515) |
+| RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:518](../backend/app/config.py#L518) |
+| RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 2 | [backend/app/config.py:522](../backend/app/config.py#L522) |
+| RUSTATS_FRESHNESS_WATCHDOG_ENABLED | bool = False | 2 | [backend/app/config.py:527](../backend/app/config.py#L527) |
+| RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE | int = 25 | 1 | [backend/app/config.py:528](../backend/app/config.py#L528) |
+| RUSTATS_FRESHNESS_WATCHDOG_CRON_HOUR | int = 10 | 1 | [backend/app/config.py:529](../backend/app/config.py#L529) |
+| RUSTATS_FRESHNESS_WATCHDOG_CRON_MINUTE | int = 30 | 1 | [backend/app/config.py:530](../backend/app/config.py#L530) |
+| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:532](../backend/app/config.py#L532) |
+| RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 7 | [backend/app/config.py:536](../backend/app/config.py#L536) |
+| RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:539](../backend/app/config.py#L539) |
+| RUSTATS_PUBLIC_BOT_USERNAME | str = 'ForecastEconomyBot' | 1 | [backend/app/config.py:541](../backend/app/config.py#L541) |
+| RUSTATS_PUBLIC_BOT_GROUP_URL | str = '' | 3 | [backend/app/config.py:544](../backend/app/config.py#L544) |
+| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 10 | [backend/app/config.py:547](../backend/app/config.py#L547) |
+| RUSTATS_PUBLIC_BOT_LLM_MODEL | str = 'anthropic/claude-sonnet-5.5' | 3 | [backend/app/config.py:550](../backend/app/config.py#L550) |
+| RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:551](../backend/app/config.py#L551) |
+| RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:553](../backend/app/config.py#L553) |
+| RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:554](../backend/app/config.py#L554) |
+| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:560](../backend/app/config.py#L560) |
+| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:568](../backend/app/config.py#L568) |
+| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:575](../backend/app/config.py#L575) |
+| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:576](../backend/app/config.py#L576) |
+| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:587](../backend/app/config.py#L587) |
+| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:588](../backend/app/config.py#L588) |
+| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:589](../backend/app/config.py#L589) |
+| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:590](../backend/app/config.py#L590) |
+| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:591](../backend/app/config.py#L591) |
+| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:592](../backend/app/config.py#L592) |
+| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:596](../backend/app/config.py#L596) |
 
 ## Registries and declarations
 
@@ -2057,7 +2059,7 @@ Relationships: `[]`
 | app.api.search._DATABASE_FAILURES | Tuple | sequence/source expression | [backend/app/api/search.py:33](../backend/app/api/search.py#L33) |
 | app.api.seo_pages._RENDER_SEM | Call | computed source expression | [backend/app/api/seo_pages.py:165](../backend/app/api/seo_pages.py#L165) |
 | app.api.sitemap._ANNUAL_SUMMARY_EN | Dict | 'Рост цен за год', 'Итог за год (сумма)', 'Значение на конец года', 'Среднее за год' | [backend/app/api/sitemap.py:90](../backend/app/api/sitemap.py#L90) |
-| app.api.sitemap._OG_INDICATOR_ALIASES | Dict | 'inflation', 'gdp' | [backend/app/api/sitemap.py:632](../backend/app/api/sitemap.py#L632) |
+| app.api.sitemap._OG_INDICATOR_ALIASES | Dict | 'inflation', 'gdp' | [backend/app/api/sitemap.py:699](../backend/app/api/sitemap.py#L699) |
 | app.api.system._START_TIME | Call | computed source expression | [backend/app/api/system.py:20](../backend/app/api/system.py#L20) |
 | app.api.ticker.TICKER_SET_RUSSIA | Tuple | sequence/source expression | [backend/app/api/ticker.py:70](../backend/app/api/ticker.py#L70) |
 | app.api.ticker.TICKER_SET_WORLD | Tuple | sequence/source expression | [backend/app/api/ticker.py:78](../backend/app/api/ticker.py#L78) |
@@ -2249,15 +2251,15 @@ Relationships: `[]`
 | app.data.i18n.regions_en.CONTESTED_REGION_NAMES_EN | List | sequence/source expression | [backend/app/data/i18n/regions_en.py:128](../backend/app/data/i18n/regions_en.py#L128) |
 | app.data.i18n.seo_en.CATEGORY_META_EN | Dict | 'prices', 'rates', 'currencies', 'indices', 'finance', 'commodities', 'labor', 'gdp', 'population', 'trade', 'business', 'science' | [backend/app/data/i18n/seo_en.py:27](../backend/app/data/i18n/seo_en.py#L27) |
 | app.data.i18n.seo_en.PAGE_META_EN | Dict | 'home', 'about', 'research', 'methodology', 'privacy', 'terms', 'compare', 'forecasts', 'calculator', 'calculator-mortgage', 'calculator-compound', 'calendar', 'demographics', 'widgets', 'russia', 'russia-categories' | [backend/app/data/i18n/seo_en.py:268](../backend/app/data/i18n/seo_en.py#L268) |
-| app.data.i18n.seo_en.HOME_TEMPLATES_EN | Dict | 'eyebrow', 'h2_countries', 'h2_flagships', 'h2_tools', 'itemlist_countries', 'itemlist_flagships' | [backend/app/data/i18n/seo_en.py:745](../backend/app/data/i18n/seo_en.py#L745) |
-| app.data.i18n.seo_en.PAGE_TEMPLATES_EN | Dict | 'h2_related', 'h2_categories', 'h2_section_indicators' | [backend/app/data/i18n/seo_en.py:759](../backend/app/data/i18n/seo_en.py#L759) |
-| app.data.i18n.seo_en.WORLD_TEMPLATES_EN | Dict | 'country_title', 'country_h1', 'country_desc_national', 'country_desc_eurostat', 'indicator_title', 'indicator_desc', 'indicator_h1', 'rating_title', 'rating_title_year', 'rating_title_for_year', 'rating_desc', 'rating_intro', 'n_indicators_one', 'n_indicators_many', 'keywords_rating', 'keywords_country', 'keywords_indicator', 'rating_eyebrow', 'rating_th_rank', 'rating_th_country', 'rating_th_value', 'rating_th_unit', 'rating_th_period', 'rating_h2_full', 'rating_h2_missing', 'rating_missing_p', 'rating_h2_other', 'rating_h2_years', 'rating_h2_source', 'rating_source_p', 'rating_tile_first', 'rating_tile_last', 'rating_tile_with_data', 'rating_tile_last_date', 'rating_no_data', 'rating_unit_fallback', 'rating_of_total', 'rating_money_guard', 'rating_index_guard', 'rating_with_data', 'rating_without_data', 'country_eyebrow_national', 'country_eyebrow_eurostat', 'country_lead_national', 'country_lead_eurostat', 'country_h2_key', 'country_h2_main', 'country_figure_year_ago', 'country_figure_real', 'country_figure_yoy', 'country_h2_source', 'country_source_national', 'country_source_eurostat', 'country_figcaption', 'country_h2_neighbors', 'country_image_name', 'country_section_total', 'country_h2_russia', 'country_russia_p', 'th_indicator', 'th_value', 'th_period', 'indicator_tile_last', 'indicator_tile_date', 'indicator_tile_period', 'indicator_tile_source', 'indicator_table_h2', 'indicator_h2_source', 'indicator_source_p', 'indicator_h2_russia', 'indicator_russia_p', 'indicator_lead', 'indicator_desc_fallback', 'indicator_unit_clause', 'indicator_period_line', 'indicator_period_line_freq', 'indicator_h2_peers', 'indicator_h2_siblings', 'indicator_open_source', 'indicator_unit_fallback', 'indicator_alt', 'indicator_figcaption', 'indicator_dataset_desc', 'period_year', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'freq_daily', 'freq_weekly' | [backend/app/data/i18n/seo_en.py:773](../backend/app/data/i18n/seo_en.py#L773) |
-| app.data.i18n.seo_en.TODAY_SPECS_EN | Dict | 'usd-rub', 'eur-rub', 'cny-rub', 'key-rate', 'cpi', 'gold-price', 'fuel-ai92', 'fuel-ai95', 'fuel-diesel', 'imoex' | [backend/app/data/i18n/seo_en.py:964](../backend/app/data/i18n/seo_en.py#L964) |
-| app.data.i18n.seo_en.TODAY_TEMPLATES_EN | Dict | 'title_fresh', 'title_stale', 'desc', 'stale_clause', 'fresh_clause', 'h1_fresh', 'h1_stale', 'keywords', 'change_flat', 'change_up_pp', 'change_down_pp', 'change_up', 'change_down', 'badge_flat', 'faq_h2', 'faq_answer_last', 'faq_answer_change', 'faq_freq_q', 'faq_freq_a', 'eyebrow_fresh', 'eyebrow_stale', 'stale_note', 'tile_prev', 'tile_min', 'tile_max', 'tile_updated', 'on_date', 'source_meta', 'body_lead', 'chart_alt', 'chart_caption', 'cta_chart', 'table_h2', 'th_date', 'th_value', 'range_note', 'history_h2', 'history_p', 'hub_eyebrow', 'hub_lead', 'hub_h2', 'hub_more_h2', 'hub_more_p', 'hub_item_today', 'hub_keywords', 'hub_alt', 'hub_caption' | [backend/app/data/i18n/seo_en.py:1007](../backend/app/data/i18n/seo_en.py#L1007) |
-| app.data.i18n.seo_en.CALENDAR_TEMPLATES_EN | Dict | 'title', 'desc_future', 'desc_past', 'h1', 'intro', 'keywords', 'eyebrow', 'tile_publications', 'tile_rosstat', 'tile_cbr', 'tile_other', 'h2_month', 'h2_neighbors', 'th_date', 'th_publication', 'th_agency', 'th_status', 'status_expected', 'status_dash', 'actual_prefix', 'interactive', 'source_rosstat', 'source_cbr', 'source_minfin', 'months' | [backend/app/data/i18n/seo_en.py:1099](../backend/app/data/i18n/seo_en.py#L1099) |
-| app.data.i18n.seo_en.REGIONAL_TEMPLATES_EN | Dict | 'regions_hub.title', 'regions_hub.description', 'regions_hub.h1', 'regions_hub.eyebrow', 'regions_hub.lead', 'regions_hub.ratings_h2', 'regions_hub.ratings_p', 'regions_hub.ratings_h3', 'regions_hub.map_h3', 'regions_hub.keywords', 'region_profile.title', 'region_profile.description', 'region_profile.h1', 'region_profile.eyebrow', 'region_profile.lead', 'region_profile.catalog_partial', 'region_profile.catalog_full', 'region_profile.see_also', 'region_profile.all_regions', 'region_profile.russia_summary', 'region_profile.top_demand', 'region_profile.keywords', 'region_indicator.title', 'region_indicator.description', 'region_indicator.h1', 'region_indicator.p1', 'region_indicator.p1_change', 'region_indicator.p2_5y', 'region_indicator.p2_full', 'region_indicator.p3', 'region_indicator.p3_rf', 'region_indicator.rel_above', 'region_indicator.rel_below', 'region_indicator.rel_level', 'region_indicator.rating_full', 'region_indicator.rating_table', 'region_indicator.p4', 'region_indicator.checkpoints_h2', 'region_indicator.checkpoint_item', 'region_indicator.faq_h2', 'region_indicator.faq_value_q', 'region_indicator.faq_value_a', 'region_indicator.faq_rank_q', 'region_indicator.faq_rank_a', 'region_indicator.faq_list_q', 'region_indicator.faq_list_a', 'region_indicator.faq_change_q', 'region_indicator.faq_change_a', 'region_indicator.faq_source_q', 'region_indicator.faq_source_a', 'region_indicator.macro_h2', 'region_indicator.macro_p', 'region_indicator.neighbors_h2', 'region_indicator.table_h2', 'region_indicator.th_year', 'region_indicator.th_value', 'region_indicator.alt', 'region_indicator.caption', 'region_indicator.siblings_h2', 'region_indicator.rank_bit_achievement', 'region_indicator.rank_bit_list', 'region_indicator.rank_bit_none', 'region_indicator.keywords', 'region_indicator.pct_flat', 'region_indicator.pct_up', 'region_indicator.pct_down', 'region_indicator.pct_by', 'region_indicator.pct_times', 'region_indicator.times_word', 'region_indicator.rank_top3', 'region_indicator.rank_top10', 'region_indicator.rank_bottom', 'region_indicator.rank_place', 'region_indicator.list_top3', 'region_indicator.list_top10', 'region_indicator.list_bottom', 'region_indicator.list_place', 'region_rating_hub.title', 'region_rating_hub.description', 'region_rating_hub.h1', 'region_rating_hub.eyebrow', 'region_rating_hub.lead', 'region_rating_hub.keywords', 'region_rating.title', 'region_rating.description', 'region_rating.h1', 'region_vs.title', 'region_vs.description', 'region_vs.h1', 'region_vs.intro', 'region_vs.eyebrow', 'region_vs.alt', 'region_vs.caption', 'region_vs.table_h2', 'region_vs.th_indicator', 'region_vs.th_year', 'region_vs.section_dynamics', 'region_vs.rating_link', 'region_vs.profiles_h2', 'region_vs.profiles_p', 'region_vs.keywords', 'region_vs.jsonld_name', 'region_vs.image_name', 'region_rating.alt', 'region_rating.russia_tile', 'region_rating.data_for', 'region_rating.year_suffix', 'region_rating.regions_n', 'region_rating.th_region', 'region_rating.faq_h2', 'region_rating.faq_year_q', 'region_rating.faq_year_a', 'region_rating.map_h2', 'region_rating.map_p', 'region_rating.macro_h2', 'region_rating.macro_p', 'region_rating.source_h2', 'region_rating.source_p', 'region_rating.keywords', 'region_rating.image_name', 'region_rating.siblings_rankings', 'region_rating.siblings_indicators', 'region_rating.source_label', 'region_map.title', 'region_map.description', 'region_map.h1', 'region_map.eyebrow', 'region_map.lead', 'region_map.year_note', 'region_map.year_note_stale', 'region_map.tile_year', 'region_map.tile_regions', 'region_map.leaders_h2', 'region_map.rating_h2', 'region_map.rating_p', 'region_map.rating_label_achievement', 'region_map.rating_label_list', 'region_map.years_h2', 'region_map.source_h2', 'region_map.source_p', 'region_map.caption', 'region_map.alt', 'region_map.crumb', 'region_map.overview_title', 'region_map.overview_desc', 'region_map.overview_h1', 'region_map.overview_eyebrow', 'region_map.overview_lead', 'region_map.overview_popular_h2', 'region_map.overview_rankings_h2', 'region_map.overview_rankings_p', 'region_map.overview_keywords', 'region_map.keywords' | [backend/app/data/i18n/seo_en.py:1161](../backend/app/data/i18n/seo_en.py#L1161) |
-| app.data.i18n.seo_en.YEAR_TEMPLATES_EN | Dict | 'title_annual_current', 'title_annual', 'title_ytd', 'title_single', 'title_quarterly', 'title_weekly', 'title_daily', 'title_monthly', 'desc_single', 'desc_multi', 'period_note_ytd', 'summary_as_of', 'summary_annual_value', 'summary_value', 'summary_chain', 'summary_sum', 'summary_last', 'summary_avg', 'h2_single', 'h2_single_as_of', 'h2_ytd', 'h2_totals', 'h2_neighbors', 'h2_all_values', 'h2_chart', 'h2_other_years', 'chart_p', 'year_link', 'chart_alt_single', 'chart_alt_multi', 'chart_caption_single', 'chart_caption_multi', 'image_caption_single', 'image_caption_multi', 'jsonld_name', 'keywords', 'th_year', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'li_value_date', 'li_source', 'li_summary', 'li_year_start', 'li_year_end', 'li_latest', 'li_range', 'li_obs', 'range_minmax', 'range_cpi', 'change_value', 'change_no_prev', 'change_no_data', 'change_vs', 'change_zero_base', 'hist_insufficient', 'hist_no_data', 'hist_above', 'hist_below', 'hist_at', 'hist_position', 'hist_max_sole', 'hist_max_tie', 'hist_max_other', 'hist_min_sole', 'hist_min_tie', 'hist_min_other', 'gap_ago' | [backend/app/data/i18n/seo_en.py:1461](../backend/app/data/i18n/seo_en.py#L1461) |
-| app.data.i18n.seo_en.INDICATOR_TEMPLATES_EN | Dict | 'title', 'description_fallback', 'intro_fallback', 'chart_caption', 'chart_alt', 'image_name', 'forecast_image_name', 'methodology_fallback', 'block_what', 'block_why', 'block_read', 'block_freq', 'block_method', 'block_source', 'block_why_body', 'block_read_body', 'block_freq_body', 'block_source_body', 'freq_daily', 'freq_weekly', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'section_current', 'section_methodology', 'section_latest', 'section_related', 'section_years', 'year_link', 'li_latest', 'li_date', 'li_frequency', 'li_source', 'li_points', 'li_period', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'keywords', 'forecast_desc_tail', 'forecast_chart_note', 'forecast_link' | [backend/app/data/i18n/seo_en.py:1558](../backend/app/data/i18n/seo_en.py#L1558) |
+| app.data.i18n.seo_en.HOME_TEMPLATES_EN | Dict | 'eyebrow', 'h2_countries', 'h2_flagships', 'h2_tools', 'itemlist_countries', 'itemlist_flagships' | [backend/app/data/i18n/seo_en.py:791](../backend/app/data/i18n/seo_en.py#L791) |
+| app.data.i18n.seo_en.PAGE_TEMPLATES_EN | Dict | 'h2_related', 'h2_categories', 'h2_section_indicators' | [backend/app/data/i18n/seo_en.py:805](../backend/app/data/i18n/seo_en.py#L805) |
+| app.data.i18n.seo_en.WORLD_TEMPLATES_EN | Dict | 'country_title', 'country_h1', 'country_desc_national', 'country_desc_eurostat', 'indicator_title', 'indicator_desc', 'indicator_h1', 'rating_title', 'rating_title_year', 'rating_title_for_year', 'rating_desc', 'rating_intro', 'n_indicators_one', 'n_indicators_many', 'keywords_rating', 'keywords_country', 'keywords_indicator', 'rating_eyebrow', 'rating_th_rank', 'rating_th_country', 'rating_th_value', 'rating_th_unit', 'rating_th_period', 'rating_h2_full', 'rating_h2_missing', 'rating_missing_p', 'rating_h2_other', 'rating_h2_years', 'rating_h2_source', 'rating_source_p', 'rating_tile_first', 'rating_tile_last', 'rating_tile_with_data', 'rating_tile_last_date', 'rating_no_data', 'rating_unit_fallback', 'rating_of_total', 'rating_money_guard', 'rating_index_guard', 'rating_with_data', 'rating_without_data', 'country_eyebrow_national', 'country_eyebrow_eurostat', 'country_lead_national', 'country_lead_eurostat', 'country_h2_key', 'country_h2_main', 'country_figure_year_ago', 'country_figure_real', 'country_figure_yoy', 'country_h2_source', 'country_source_national', 'country_source_eurostat', 'country_figcaption', 'country_h2_neighbors', 'country_image_name', 'country_section_total', 'country_h2_russia', 'country_russia_p', 'th_indicator', 'th_value', 'th_period', 'indicator_tile_last', 'indicator_tile_date', 'indicator_tile_period', 'indicator_tile_source', 'indicator_table_h2', 'indicator_h2_source', 'indicator_source_p', 'indicator_h2_russia', 'indicator_russia_p', 'indicator_lead', 'indicator_desc_fallback', 'indicator_unit_clause', 'indicator_period_line', 'indicator_period_line_freq', 'indicator_h2_peers', 'indicator_h2_siblings', 'indicator_open_source', 'indicator_unit_fallback', 'indicator_alt', 'indicator_figcaption', 'indicator_dataset_desc', 'period_year', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'freq_daily', 'freq_weekly' | [backend/app/data/i18n/seo_en.py:819](../backend/app/data/i18n/seo_en.py#L819) |
+| app.data.i18n.seo_en.TODAY_SPECS_EN | Dict | 'usd-rub', 'eur-rub', 'cny-rub', 'key-rate', 'cpi', 'gold-price', 'fuel-ai92', 'fuel-ai95', 'fuel-diesel', 'imoex' | [backend/app/data/i18n/seo_en.py:1010](../backend/app/data/i18n/seo_en.py#L1010) |
+| app.data.i18n.seo_en.TODAY_TEMPLATES_EN | Dict | 'title_fresh', 'title_stale', 'desc', 'stale_clause', 'fresh_clause', 'h1_fresh', 'h1_stale', 'keywords', 'change_flat', 'change_up_pp', 'change_down_pp', 'change_up', 'change_down', 'badge_flat', 'faq_h2', 'faq_answer_last', 'faq_answer_change', 'faq_freq_q', 'faq_freq_a', 'eyebrow_fresh', 'eyebrow_stale', 'stale_note', 'tile_prev', 'tile_min', 'tile_max', 'tile_updated', 'on_date', 'source_meta', 'body_lead', 'chart_alt', 'chart_caption', 'cta_chart', 'table_h2', 'th_date', 'th_value', 'range_note', 'history_h2', 'history_p', 'hub_eyebrow', 'hub_lead', 'hub_h2', 'hub_more_h2', 'hub_more_p', 'hub_item_today', 'hub_keywords', 'hub_alt', 'hub_caption' | [backend/app/data/i18n/seo_en.py:1053](../backend/app/data/i18n/seo_en.py#L1053) |
+| app.data.i18n.seo_en.CALENDAR_TEMPLATES_EN | Dict | 'title', 'desc_future', 'desc_past', 'h1', 'intro', 'keywords', 'eyebrow', 'tile_publications', 'tile_rosstat', 'tile_cbr', 'tile_other', 'h2_month', 'h2_neighbors', 'th_date', 'th_publication', 'th_agency', 'th_status', 'status_expected', 'status_dash', 'actual_prefix', 'interactive', 'source_rosstat', 'source_cbr', 'source_minfin', 'months' | [backend/app/data/i18n/seo_en.py:1145](../backend/app/data/i18n/seo_en.py#L1145) |
+| app.data.i18n.seo_en.REGIONAL_TEMPLATES_EN | Dict | 'regions_hub.title', 'regions_hub.description', 'regions_hub.h1', 'regions_hub.eyebrow', 'regions_hub.lead', 'regions_hub.ratings_h2', 'regions_hub.ratings_p', 'regions_hub.ratings_h3', 'regions_hub.map_h3', 'regions_hub.keywords', 'region_profile.title', 'region_profile.description', 'region_profile.h1', 'region_profile.eyebrow', 'region_profile.lead', 'region_profile.catalog_partial', 'region_profile.catalog_full', 'region_profile.see_also', 'region_profile.all_regions', 'region_profile.russia_summary', 'region_profile.top_demand', 'region_profile.keywords', 'region_indicator.title', 'region_indicator.description', 'region_indicator.h1', 'region_indicator.p1', 'region_indicator.p1_change', 'region_indicator.p2_5y', 'region_indicator.p2_full', 'region_indicator.p3', 'region_indicator.p3_rf', 'region_indicator.rel_above', 'region_indicator.rel_below', 'region_indicator.rel_level', 'region_indicator.rating_full', 'region_indicator.rating_table', 'region_indicator.p4', 'region_indicator.checkpoints_h2', 'region_indicator.checkpoint_item', 'region_indicator.faq_h2', 'region_indicator.faq_value_q', 'region_indicator.faq_value_a', 'region_indicator.faq_rank_q', 'region_indicator.faq_rank_a', 'region_indicator.faq_list_q', 'region_indicator.faq_list_a', 'region_indicator.faq_change_q', 'region_indicator.faq_change_a', 'region_indicator.faq_source_q', 'region_indicator.faq_source_a', 'region_indicator.macro_h2', 'region_indicator.macro_p', 'region_indicator.neighbors_h2', 'region_indicator.table_h2', 'region_indicator.th_year', 'region_indicator.th_value', 'region_indicator.alt', 'region_indicator.caption', 'region_indicator.siblings_h2', 'region_indicator.rank_bit_achievement', 'region_indicator.rank_bit_list', 'region_indicator.rank_bit_none', 'region_indicator.keywords', 'region_indicator.pct_flat', 'region_indicator.pct_up', 'region_indicator.pct_down', 'region_indicator.pct_by', 'region_indicator.pct_times', 'region_indicator.times_word', 'region_indicator.rank_top3', 'region_indicator.rank_top10', 'region_indicator.rank_bottom', 'region_indicator.rank_place', 'region_indicator.list_top3', 'region_indicator.list_top10', 'region_indicator.list_bottom', 'region_indicator.list_place', 'region_rating_hub.title', 'region_rating_hub.description', 'region_rating_hub.h1', 'region_rating_hub.eyebrow', 'region_rating_hub.lead', 'region_rating_hub.keywords', 'region_rating.title', 'region_rating.description', 'region_rating.h1', 'region_vs.title', 'region_vs.description', 'region_vs.h1', 'region_vs.intro', 'region_vs.eyebrow', 'region_vs.alt', 'region_vs.caption', 'region_vs.table_h2', 'region_vs.th_indicator', 'region_vs.th_year', 'region_vs.section_dynamics', 'region_vs.rating_link', 'region_vs.profiles_h2', 'region_vs.profiles_p', 'region_vs.keywords', 'region_vs.jsonld_name', 'region_vs.image_name', 'region_rating.alt', 'region_rating.russia_tile', 'region_rating.data_for', 'region_rating.year_suffix', 'region_rating.regions_n', 'region_rating.th_region', 'region_rating.faq_h2', 'region_rating.faq_year_q', 'region_rating.faq_year_a', 'region_rating.map_h2', 'region_rating.map_p', 'region_rating.macro_h2', 'region_rating.macro_p', 'region_rating.source_h2', 'region_rating.source_p', 'region_rating.keywords', 'region_rating.image_name', 'region_rating.siblings_rankings', 'region_rating.siblings_indicators', 'region_rating.source_label', 'region_map.title', 'region_map.description', 'region_map.h1', 'region_map.eyebrow', 'region_map.lead', 'region_map.year_note', 'region_map.year_note_stale', 'region_map.tile_year', 'region_map.tile_regions', 'region_map.leaders_h2', 'region_map.rating_h2', 'region_map.rating_p', 'region_map.rating_label_achievement', 'region_map.rating_label_list', 'region_map.years_h2', 'region_map.source_h2', 'region_map.source_p', 'region_map.caption', 'region_map.alt', 'region_map.crumb', 'region_map.overview_title', 'region_map.overview_desc', 'region_map.overview_h1', 'region_map.overview_eyebrow', 'region_map.overview_lead', 'region_map.overview_popular_h2', 'region_map.overview_rankings_h2', 'region_map.overview_rankings_p', 'region_map.overview_keywords', 'region_map.keywords' | [backend/app/data/i18n/seo_en.py:1207](../backend/app/data/i18n/seo_en.py#L1207) |
+| app.data.i18n.seo_en.YEAR_TEMPLATES_EN | Dict | 'title_annual_current', 'title_annual', 'title_ytd', 'title_single', 'title_quarterly', 'title_weekly', 'title_daily', 'title_monthly', 'desc_single', 'desc_multi', 'period_note_ytd', 'summary_as_of', 'summary_annual_value', 'summary_value', 'summary_chain', 'summary_sum', 'summary_last', 'summary_avg', 'h2_single', 'h2_single_as_of', 'h2_ytd', 'h2_totals', 'h2_neighbors', 'h2_all_values', 'h2_chart', 'h2_other_years', 'chart_p', 'year_link', 'chart_alt_single', 'chart_alt_multi', 'chart_caption_single', 'chart_caption_multi', 'image_caption_single', 'image_caption_multi', 'jsonld_name', 'keywords', 'th_year', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'li_value_date', 'li_source', 'li_summary', 'li_year_start', 'li_year_end', 'li_latest', 'li_range', 'li_obs', 'range_minmax', 'range_cpi', 'change_value', 'change_no_prev', 'change_no_data', 'change_vs', 'change_zero_base', 'hist_insufficient', 'hist_no_data', 'hist_above', 'hist_below', 'hist_at', 'hist_position', 'hist_max_sole', 'hist_max_tie', 'hist_max_other', 'hist_min_sole', 'hist_min_tie', 'hist_min_other', 'gap_ago' | [backend/app/data/i18n/seo_en.py:1507](../backend/app/data/i18n/seo_en.py#L1507) |
+| app.data.i18n.seo_en.INDICATOR_TEMPLATES_EN | Dict | 'title', 'description_fallback', 'intro_fallback', 'chart_caption', 'chart_alt', 'image_name', 'forecast_image_name', 'methodology_fallback', 'block_what', 'block_why', 'block_read', 'block_freq', 'block_method', 'block_source', 'block_why_body', 'block_read_body', 'block_freq_body', 'block_source_body', 'freq_daily', 'freq_weekly', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'section_current', 'section_methodology', 'section_latest', 'section_related', 'section_years', 'year_link', 'li_latest', 'li_date', 'li_frequency', 'li_source', 'li_points', 'li_period', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'keywords', 'forecast_desc_tail', 'forecast_chart_note', 'forecast_link' | [backend/app/data/i18n/seo_en.py:1604](../backend/app/data/i18n/seo_en.py#L1604) |
 | app.data.indicator_seo.CATEGORY_KEYWORDS_RU | Dict | 'Цены', 'Ставки', 'Финансы', 'ВВП', 'Рынок труда', 'Население', 'Торговля', 'Бизнес', 'Наука' | [backend/app/data/indicator_seo.py:16](../backend/app/data/indicator_seo.py#L16) |
 | app.data.indicator_seo.FORECAST_SSR_PILOT_CODES | Call | computed source expression | [backend/app/data/indicator_seo.py:33](../backend/app/data/indicator_seo.py#L33) |
 | app.data.indicator_seo.INDICATOR_SEO_KEYWORDS | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'inflation-quarterly', 'inflation-annual', 'cpi-food-annual', 'cpi-nonfood-annual', 'cpi-services-annual', 'inflation-weekly', 'inflation-weekly-food', 'inflation-weekly-nonfood', 'inflation-weekly-services', 'ppi', 'ppi-yoy', 'ppi-mom', 'ppi-annual', 'key-rate', 'usd-rub', 'eur-rub', 'cny-rub', 'try-rub', 'kzt-rub', 'ruonia', 'm0', 'm2', 'mortgage-rate', 'auto-loan-rate', 'credit-rate-corp-short', 'credit-rate-corp-1to3y', 'credit-rate-corp-over3y', 'credit-rate-ind-short', 'credit-rate-ind-1to3y', 'credit-rate-ind-over3y', 'deposit-rate-medium', 'deposit-rate-long', 'deposit-rate', 'budget-deficit', 'budget-revenue', 'budget-expenditure', 'consumer-credit', 'deposits-individual', 'external-debt', 'business-credit', 'ipi-mining', 'ipi-manufacturing', 'ipi-energy', 'ipi-water', 'fuel-ai92', 'fuel-ai95', 'fuel-diesel', 'gold-price', 'btc-usd', 'eth-usd', 'sol-usd', 'imoex', 'mcftr', 'rtsi', 'rgbi', 'corp-bond-index', 'usd-index', 'ust-10y', 'eur-usd', 'gbp-usd', 'usd-cny', 'weo-gdp-usd', 'weo-gdp-per-capita-usd', 'weo-budget-balance-gdp', 'weo-government-debt-gdp', 'brent', 'copper', 'silver', 'natural-gas', 'wheat', 'soybean', 'coal', 'steel', 'gdp-nominal', 'gdp-nominal-annual', 'gdp-real', 'gdp-real-annual', 'gdp-yoy', 'gdp-qoq', 'gdp-real-yoy', 'gdp-real-qoq', 'gdp-consumption', 'gdp-government', 'housing-price-primary', 'housing-price-secondary', 'housing-yoy-primary', 'housing-yoy-secondary', 'housing-annual-primary', 'housing-annual-secondary', 'unemployment', 'labor-force', 'employment', 'wages', 'wages-real', 'population', 'births', 'deaths', 'retail-trade', 'construction-work', 'capital-investment', 'ipi', 'depreciation-rate', 'housing-commissioned', 'gdp-investment', 'birth-rate', 'death-rate', 'pensioners', 'pop-over-working-age', 'pop-under-working-age', 'working-age-population', 'population-migration', 'population-natural-growth', 'population-total-growth', 'doctoral-students', 'grad-students', 'innovation-activity', 'rd-organizations', 'rd-personnel', 'small-business-innovation', 'tech-innovation-share', 'wages-nominal', 'current-account', 'exports', 'imports', 'services-exports', 'services-imports', 'trade-balance', 'fdi-net', 'deposits-business', 'international-reserves', 'm1', 'housing-affordability' | [backend/app/data/indicator_seo.py:102](../backend/app/data/indicator_seo.py#L102) |
@@ -2509,8 +2511,8 @@ Relationships: `[]`
 | app.services.display._CHAIN_LINKED_YEAR_RE | Call | computed source expression | [backend/app/services/display.py:302](../backend/app/services/display.py#L302) |
 | app.services.display._CHAIN_LINKED_RE | Call | computed source expression | [backend/app/services/display.py:305](../backend/app/services/display.py#L305) |
 | app.services.display._CYRILLIC_RE | Call | computed source expression | [backend/app/services/display.py:349](../backend/app/services/display.py#L349) |
-| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:470](../backend/app/services/display.py#L470) |
-| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:572](../backend/app/services/display.py#L572) |
+| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:479](../backend/app/services/display.py#L479) |
+| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:581](../backend/app/services/display.py#L581) |
 | app.services.emiss_labor_parser._PERIODS | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/emiss_labor_parser.py:21](../backend/app/services/emiss_labor_parser.py#L21) |
 | app.services.emiss_labor_parser._TERRITORIES | Dict | '1688487', '1849012' | [backend/app/services/emiss_labor_parser.py:26](../backend/app/services/emiss_labor_parser.py#L26) |
 | app.services.emiss_regional_parser.PRICE_FUELS | Dict | '1709730', '1709750', '1755196' | [backend/app/services/emiss_regional_parser.py:90](../backend/app/services/emiss_regional_parser.py#L90) |
@@ -2586,7 +2588,12 @@ Relationships: `[]`
 | app.services.imf_weo_adapter.WEO_YEAR_POLICY_BY_CODE | Dict | WEO_NGDPD, WEO_NGDPDPC, WEO_GGXCNL_NGDP, WEO_GGXWDG_NGDP, WEO_LP, WEO_LUR, WEO_PCPIPCH, WEO_NGDP_RPCH, WEO_BCA_NGDPD | [backend/app/services/imf_weo_adapter.py:427](../backend/app/services/imf_weo_adapter.py#L427) |
 | app.services.imf_weo_adapter._RETRY_STATUSES | Call | computed source expression | [backend/app/services/imf_weo_adapter.py:787](../backend/app/services/imf_weo_adapter.py#L787) |
 | app.services.imf_weo_adapter._RETRY_DELAYS_S | Tuple | sequence/source expression | [backend/app/services/imf_weo_adapter.py:788](../backend/app/services/imf_weo_adapter.py#L788) |
-| app.services.index_policy._RU_GOOGLE_NOINDEX | Call | computed source expression | [backend/app/services/index_policy.py:70](../backend/app/services/index_policy.py#L70) |
+| app.services.index_policy._RU_GOOGLE_NOINDEX | Call | computed source expression | [backend/app/services/index_policy.py:73](../backend/app/services/index_policy.py#L73) |
+| app.services.index_policy._GOOGLE_SHORT_SITEMAP_EXCLUDED | Call | computed source expression | [backend/app/services/index_policy.py:109](../backend/app/services/index_policy.py#L109) |
+| app.services.index_policy._GOOGLE_SITEMAP_AGENTS | Tuple | sequence/source expression | [backend/app/services/index_policy.py:114](../backend/app/services/index_policy.py#L114) |
+| app.services.index_policy.RU_GOOGLE_CRAWL_BLOCK_RULES | Tuple | sequence/source expression | [backend/app/services/index_policy.py:152](../backend/app/services/index_policy.py#L152) |
+| app.services.index_policy._URL_BLOCK | Call | computed source expression | [backend/app/services/index_policy.py:195](../backend/app/services/index_policy.py#L195) |
+| app.services.index_policy._URL_LOC | Call | computed source expression | [backend/app/services/index_policy.py:196](../backend/app/services/index_policy.py#L196) |
 | app.services.job_lease.JOB_LOCK_GROUPS | Dict | 'daily_etl', 'evening_etl', 'late_minfin_etl', 'late_fred_etl', 'rosstat_recovery' | [backend/app/services/job_lease.py:45](../backend/app/services/job_lease.py#L45) |
 | app.services.load_priority._KNOWN | Call | computed source expression | [backend/app/services/load_priority.py:36](../backend/app/services/load_priority.py#L36) |
 | app.services.load_priority.LOW_PRIORITY | Call | computed source expression | [backend/app/services/load_priority.py:37](../backend/app/services/load_priority.py#L37) |
@@ -2765,22 +2772,22 @@ Relationships: `[]`
 | app.services.scrape_guard._TELEMETRY_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:112](../backend/app/services/scrape_guard.py#L112) |
 | app.services.scrape_guard._AUTH_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:121](../backend/app/services/scrape_guard.py#L121) |
 | app.services.scrape_guard._HEADLESS_GL_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:127](../backend/app/services/scrape_guard.py#L127) |
-| app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:50](../backend/app/services/search.py#L50) |
-| app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:52](../backend/app/services/search.py#L52) |
-| app.services.search._INFLATION_WORD | Call | computed source expression | [backend/app/services/search.py:56](../backend/app/services/search.py#L56) |
-| app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:63](../backend/app/services/search.py#L63) |
-| app.services.search._RUSSIA_HEADLINES | Dict | 'housing', 'birth-count', 'cpi', 'gdp', 'wage', 'unemployment', 'key-rate', 'fuel', 'fuel-ai95', 'fuel-ai92', 'fuel-diesel', 'pensioners', 'exports', 'imports', 'gas-price', 'natural-gas', 'газ', 'trade-balance', 'wages-real', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'mortgage-rate', 'credit-rate', 'cpi-food', 'government-debt', 'budget-balance', 'reserves', 'mortality', 'births', 'copper', 'silver', 'budget-expenditure', 'budget-revenue' | [backend/app/services/search.py:66](../backend/app/services/search.py#L66) |
-| app.services.search._NATIVE_PRICE_WORDS | Tuple | sequence/source expression | [backend/app/services/search.py:129](../backend/app/services/search.py#L129) |
-| app.services.search._PRICE_VALUATION_PHRASES | Tuple | sequence/source expression | [backend/app/services/search.py:130](../backend/app/services/search.py#L130) |
-| app.services.search._COUNTRY_HEADLINE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search.py:198](../backend/app/services/search.py#L198) |
-| app.services.search._COUNTRY_HEADLINE_CODE_PATTERNS | Tuple | sequence/source expression | [backend/app/services/search.py:199](../backend/app/services/search.py#L199) |
-| app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:214](../backend/app/services/search.py#L214) |
-| app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:225](../backend/app/services/search.py#L225) |
-| app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:233](../backend/app/services/search.py#L233) |
-| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1109](../backend/app/services/search.py#L1109) |
-| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1110](../backend/app/services/search.py#L1110) |
-| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1111](../backend/app/services/search.py#L1111) |
-| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1136](../backend/app/services/search.py#L1136) |
+| app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:53](../backend/app/services/search.py#L53) |
+| app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:55](../backend/app/services/search.py#L55) |
+| app.services.search._INFLATION_WORD | Call | computed source expression | [backend/app/services/search.py:59](../backend/app/services/search.py#L59) |
+| app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:66](../backend/app/services/search.py#L66) |
+| app.services.search._RUSSIA_HEADLINES | Dict | 'housing', 'birth-count', 'cpi', 'gdp', 'wage', 'unemployment', 'key-rate', 'fuel', 'fuel-ai95', 'fuel-ai92', 'fuel-diesel', 'pensioners', 'exports', 'imports', 'gas-price', 'natural-gas', 'газ', 'trade-balance', 'wages-real', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'mortgage-rate', 'credit-rate', 'cpi-food', 'government-debt', 'budget-balance', 'reserves', 'mortality', 'births', 'copper', 'silver', 'budget-expenditure', 'budget-revenue', 'государство' | [backend/app/services/search.py:69](../backend/app/services/search.py#L69) |
+| app.services.search._NATIVE_PRICE_WORDS | Tuple | sequence/source expression | [backend/app/services/search.py:135](../backend/app/services/search.py#L135) |
+| app.services.search._PRICE_VALUATION_PHRASES | Tuple | sequence/source expression | [backend/app/services/search.py:136](../backend/app/services/search.py#L136) |
+| app.services.search._COUNTRY_HEADLINE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search.py:204](../backend/app/services/search.py#L204) |
+| app.services.search._COUNTRY_HEADLINE_CODE_PATTERNS | Tuple | sequence/source expression | [backend/app/services/search.py:205](../backend/app/services/search.py#L205) |
+| app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:220](../backend/app/services/search.py#L220) |
+| app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:231](../backend/app/services/search.py#L231) |
+| app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:239](../backend/app/services/search.py#L239) |
+| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1193](../backend/app/services/search.py#L1193) |
+| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1194](../backend/app/services/search.py#L1194) |
+| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1195](../backend/app/services/search.py#L1195) |
+| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1220](../backend/app/services/search.py#L1220) |
 | app.services.search_currency_aliases._SHARED_LAST_WORDS | Call | computed source expression | [backend/app/services/search_currency_aliases.py:15](../backend/app/services/search_currency_aliases.py#L15) |
 | app.services.search_currency_aliases._ROOT_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/search_currency_aliases.py:18](../backend/app/services/search_currency_aliases.py#L18) |
 | app.services.search_currency_aliases._GENERIC_FIRST | Call | computed source expression | [backend/app/services/search_currency_aliases.py:20](../backend/app/services/search_currency_aliases.py#L20) |
@@ -2806,28 +2813,31 @@ Relationships: `[]`
 | app.services.search_intent.BANK_BRAND_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:25](../backend/app/services/search_intent.py#L25) |
 | app.services.search_intent.PRICE_GOODS_CONCEPTS | Call | computed source expression | [backend/app/services/search_intent.py:29](../backend/app/services/search_intent.py#L29) |
 | app.services.search_intent.CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:32](../backend/app/services/search_intent.py#L32) |
-| app.services.search_intent._SINGLE_ALIASES | Call | computed source expression | [backend/app/services/search_intent.py:118](../backend/app/services/search_intent.py#L118) |
-| app.services.search_intent._CONTROL_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:121](../backend/app/services/search_intent.py#L121) |
-| app.services.search_intent._CURRENCY_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:126](../backend/app/services/search_intent.py#L126) |
-| app.services.search_intent._FX_SUBJECT_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:128](../backend/app/services/search_intent.py#L128) |
-| app.services.search_intent._DENOMINATOR_COUNTS | Dict | '1000', '1 000', 'thousand', 'one thousand', 'тысячу', 'тысячи', '10000', '10 000', 'ten thousand', 'десять тысяч', '100000', '100 000', 'hundred thousand', 'сто тысяч' | [backend/app/services/search_intent.py:130](../backend/app/services/search_intent.py#L130) |
-| app.services.search_intent._DENOMINATOR_RE | Call | computed source expression | [backend/app/services/search_intent.py:134](../backend/app/services/search_intent.py#L134) |
-| app.services.search_intent._AMBIGUOUS_ISO | Call | computed source expression | [backend/app/services/search_intent.py:141](../backend/app/services/search_intent.py#L141) |
-| app.services.search_intent._CODE_RE | Call | computed source expression | [backend/app/services/search_intent.py:142](../backend/app/services/search_intent.py#L142) |
-| app.services.search_intent.COUNTRY_ALIASES | Dict | 'russia', 'germany', 'united-states', 'canada', 'australia', 'mexico', 'united-kingdom', 'china', 'japan', 'france', 'india', 'brazil', 'south-korea', 'turkey' | [backend/app/services/search_intent.py:144](../backend/app/services/search_intent.py#L144) |
-| app.services.search_intent.REGION_ALIASES | Dict | 'moskva', 'moscow', 'moskovskaya-oblast', 'sankt-peterburg', 'respublika-tatarstan', 'respublika-bashkortostan', 'krasnodarskiy-kray' | [backend/app/services/search_intent.py:160](../backend/app/services/search_intent.py#L160) |
-| app.services.search_intent._CITY_REGION_ALIASES | Dict | 'respublika-tatarstan', 'sverdlovskaya-oblast', 'nizhegorodskaya-oblast', 'samarskaya-oblast', 'chelyabinskaya-oblast', 'rostovskaya-oblast', 'voronezhskaya-oblast', 'permskiy-kray', 'volgogradskaya-oblast', 'omskaya-oblast', 'novosibirskaya-oblast', 'krasnoyarskiy-kray', 'respublika-bashkortostan', 'saratovskaya-oblast', 'tyumenskaya-oblast', 'irkutskaya-oblast', 'primorskiy-kray', 'habarovskiy-kray', 'kaliningradskaya-oblast', 'sankt-peterburg' | [backend/app/services/search_intent.py:171](../backend/app/services/search_intent.py#L171) |
-| app.services.search_intent._LAYOUT_EN_RU | Call | computed source expression | [backend/app/services/search_intent.py:198](../backend/app/services/search_intent.py#L198) |
-| app.services.search_intent._LAYOUT_RU_EN | Call | computed source expression | [backend/app/services/search_intent.py:199](../backend/app/services/search_intent.py#L199) |
-| app.services.search_intent.MONTHS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:200](../backend/app/services/search_intent.py#L200) |
-| app.services.search_intent.CONCEPT_MATCHERS | Call | computed source expression | [backend/app/services/search_intent.py:429](../backend/app/services/search_intent.py#L429) |
-| app.services.search_intent._RATE_QUOTE_CODES | Call | computed source expression | [backend/app/services/search_intent.py:721](../backend/app/services/search_intent.py#L721) |
-| app.services.search_intent.CONCEPTS_ALTERNATIVES | Call | computed source expression | [backend/app/services/search_intent.py:912](../backend/app/services/search_intent.py#L912) |
+| app.services.search_intent._SINGLE_ALIASES | Call | computed source expression | [backend/app/services/search_intent.py:135](../backend/app/services/search_intent.py#L135) |
+| app.services.search_intent._CONTROL_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:138](../backend/app/services/search_intent.py#L138) |
+| app.services.search_intent._CURRENCY_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:143](../backend/app/services/search_intent.py#L143) |
+| app.services.search_intent._FX_SUBJECT_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:145](../backend/app/services/search_intent.py#L145) |
+| app.services.search_intent._DENOMINATOR_COUNTS | Dict | '1000', '1 000', 'thousand', 'one thousand', 'тысячу', 'тысячи', '10000', '10 000', 'ten thousand', 'десять тысяч', '100000', '100 000', 'hundred thousand', 'сто тысяч' | [backend/app/services/search_intent.py:147](../backend/app/services/search_intent.py#L147) |
+| app.services.search_intent._DENOMINATOR_RE | Call | computed source expression | [backend/app/services/search_intent.py:151](../backend/app/services/search_intent.py#L151) |
+| app.services.search_intent._AMBIGUOUS_ISO | Call | computed source expression | [backend/app/services/search_intent.py:158](../backend/app/services/search_intent.py#L158) |
+| app.services.search_intent._CODE_RE | Call | computed source expression | [backend/app/services/search_intent.py:159](../backend/app/services/search_intent.py#L159) |
+| app.services.search_intent.COUNTRY_ALIASES | Dict | 'russia', 'germany', 'united-states', 'canada', 'australia', 'mexico', 'united-kingdom', 'china', 'japan', 'france', 'india', 'brazil', 'south-korea', 'turkey' | [backend/app/services/search_intent.py:161](../backend/app/services/search_intent.py#L161) |
+| app.services.search_intent.REGION_ALIASES | Dict | 'moskva', 'moscow', 'moskovskaya-oblast', 'sankt-peterburg', 'respublika-tatarstan', 'respublika-bashkortostan', 'krasnodarskiy-kray' | [backend/app/services/search_intent.py:177](../backend/app/services/search_intent.py#L177) |
+| app.services.search_intent._CITY_REGION_ALIASES | Dict | 'respublika-tatarstan', 'sverdlovskaya-oblast', 'nizhegorodskaya-oblast', 'samarskaya-oblast', 'chelyabinskaya-oblast', 'rostovskaya-oblast', 'voronezhskaya-oblast', 'permskiy-kray', 'volgogradskaya-oblast', 'omskaya-oblast', 'novosibirskaya-oblast', 'krasnoyarskiy-kray', 'respublika-bashkortostan', 'saratovskaya-oblast', 'tyumenskaya-oblast', 'irkutskaya-oblast', 'primorskiy-kray', 'habarovskiy-kray', 'kaliningradskaya-oblast', 'sankt-peterburg' | [backend/app/services/search_intent.py:188](../backend/app/services/search_intent.py#L188) |
+| app.services.search_intent._COLLOQUIAL_REGION_ALIASES | Dict | 'udmurtskaya-respublika', 'chuvashskaya-respublika', 'chechenskaya-respublika', 'respublika-bashkortostan', 'respublika-tyva', 'kabardino-balkarskaya-respublika', 'karachaevo-cherkesskaya-respublika', 'hanty-mansiyskiy-ao', 'yamalo-nenetskiy-ao', 'chukotskiy-ao', 'kamchatskiy-kray', 'primorskiy-kray', 'zabaykalskiy-kray', 'stavropolskiy-kray', 'krasnodarskiy-kray' | [backend/app/services/search_intent.py:212](../backend/app/services/search_intent.py#L212) |
+| app.services.search_intent.SECOND_READING_REGION_ALIASES | Dict | 'kemerovskaya-oblast', 'hanty-mansiyskiy-ao', 'yamalo-nenetskiy-ao', 'respublika-saha', 'respublika-severnaya-osetiya', 'respublika-krym' | [backend/app/services/search_intent.py:233](../backend/app/services/search_intent.py#L233) |
+| app.services.search_intent._LAYOUT_EN_RU | Call | computed source expression | [backend/app/services/search_intent.py:247](../backend/app/services/search_intent.py#L247) |
+| app.services.search_intent._LAYOUT_RU_EN | Call | computed source expression | [backend/app/services/search_intent.py:248](../backend/app/services/search_intent.py#L248) |
+| app.services.search_intent.MONTHS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:249](../backend/app/services/search_intent.py#L249) |
+| app.services.search_intent.CONCEPT_MATCHERS | Call | computed source expression | [backend/app/services/search_intent.py:478](../backend/app/services/search_intent.py#L478) |
+| app.services.search_intent._RATE_QUOTE_CODES | Call | computed source expression | [backend/app/services/search_intent.py:771](../backend/app/services/search_intent.py#L771) |
+| app.services.search_intent.CONCEPTS_ALTERNATIVES | Call | computed source expression | [backend/app/services/search_intent.py:962](../backend/app/services/search_intent.py#L962) |
+| app.services.search_intent.EXACT_ONLY_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:1021](../backend/app/services/search_intent.py#L1021) |
 | app.services.search_language.QUESTION_WORDS | Call | computed source expression | [backend/app/services/search_language.py:17](../backend/app/services/search_language.py#L17) |
 | app.services.search_language.LANGUAGE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_language.py:46](../backend/app/services/search_language.py#L46) |
-| app.services.search_language.MEASURE_RULES | Dict | 'search-subject-price', 'food-industry', 'current-prices', 'constant-prices', 'earnings-income-contribution', 'consumption-change-contribution', 'farm-earnings', 'internet-daily-use', 'deprivation-weekly-spending', 'usd-rub', 'usd-jpy', 'cny-rub', 'try-rub', 'kzt-rub', **unpack, 'eur-rub', 'eur-usd', 'credit-stock-households', 'credit-stock-business', 'research-personnel', 'research-organizations', 'wage-salary-employment', 'net-earnings', 'employee-compensation', 'benefits-workers-compensation', 'monetary-base', 'dividend-interest-rent-income', 'budget-spending', 'budget-revenue', 'birth-count', 'birth-rate', 'death-rate', 'employment-count', 'unemployment-count', 'employment-rate', 'median-household-income', 'road-paved-share', 'road-density', 'grain-area', 'grain-yield', 'population', 'saving-rate', 'university-students', 'vocational-students', 'rent-index', 'pension-real', 'pension', 'auto-loan-rate', 'gas-price', 'housing-price', 'housing-completions', 'building-permits', 'external-debt', 'rent', 'births', 'mortality', 'labour-productivity', 'household-consumption', 'capital-investment', 'capital-formation', 'wages-nominal', 'grain-harvest', 'household-deposits', 'tourism', 'wages-real', 'median-wage', 'gdp-nominal', 'gdp-real', 'consumer-credit', 'gdp-ppp', 'gdp-deflator', 'government-debt', 'mortgage-rate', 'mortgage-volume', 'credit-rate', 'electricity-generation', 'electricity-price', 'car-production', 'car-sales' | [backend/app/services/search_language.py:218](../backend/app/services/search_language.py#L218) |
-| app.services.search_language._VALUATION_CURRENCIES | Tuple | sequence/source expression | [backend/app/services/search_language.py:320](../backend/app/services/search_language.py#L320) |
-| app.services.search_language.VALUATION_UNIT_RULES | Dict | sequence/source expression | [backend/app/services/search_language.py:322](../backend/app/services/search_language.py#L322) |
+| app.services.search_language.MEASURE_RULES | Dict | 'search-subject-price', 'steel', 'food-industry', 'current-prices', 'constant-prices', 'earnings-income-contribution', 'consumption-change-contribution', 'farm-earnings', 'internet-daily-use', 'deprivation-weekly-spending', 'usd-rub', 'usd-jpy', 'cny-rub', 'try-rub', 'kzt-rub', **unpack, 'eur-rub', 'eur-usd', 'credit-stock-households', 'credit-stock-business', 'research-personnel', 'research-organizations', 'wage-salary-employment', 'net-earnings', 'employee-compensation', 'benefits-workers-compensation', 'monetary-base', 'dividend-interest-rent-income', 'budget-spending', 'budget-revenue', 'birth-count', 'birth-rate', 'death-rate', 'employment-count', 'unemployment-count', 'employment-rate', 'median-household-income', 'road-paved-share', 'road-density', 'grain-area', 'grain-yield', 'population', 'saving-rate', 'university-students', 'vocational-students', 'rent-index', 'pension-real', 'pension', 'auto-loan-rate', 'gas-price', 'housing-price', 'housing-completions', 'building-permits', 'external-debt', 'rent', 'births', 'mortality', 'labour-productivity', 'household-consumption', 'capital-investment', 'capital-formation', 'wages-nominal', 'grain-harvest', 'household-deposits', 'tourism', 'wages-real', 'median-wage', 'gdp-nominal', 'gdp-real', 'consumer-credit', 'gdp-ppp', 'gdp-deflator', 'government-debt', 'mortgage-rate', 'mortgage-volume', 'credit-rate', 'electricity-generation', 'electricity-price', 'car-production', 'car-sales' | [backend/app/services/search_language.py:220](../backend/app/services/search_language.py#L220) |
+| app.services.search_language._VALUATION_CURRENCIES | Tuple | sequence/source expression | [backend/app/services/search_language.py:325](../backend/app/services/search_language.py#L325) |
+| app.services.search_language.VALUATION_UNIT_RULES | Dict | sequence/source expression | [backend/app/services/search_language.py:327](../backend/app/services/search_language.py#L327) |
 | app.services.search_latest._FEDERAL_HEADLINE_YOY | DictComp | computed source expression | [backend/app/services/search_latest.py:61](../backend/app/services/search_latest.py#L61) |
 | app.services.search_price_goods._GOODS | Tuple | sequence/source expression | [backend/app/services/search_price_goods.py:21](../backend/app/services/search_price_goods.py#L21) |
 | app.services.search_price_goods._ALTERNATIVES | Call | computed source expression | [backend/app/services/search_price_goods.py:168](../backend/app/services/search_price_goods.py#L168) |
@@ -2866,7 +2876,7 @@ Relationships: `[]`
 | app.services.search_variants._SLICE_AXES | Tuple | sequence/source expression | [backend/app/services/search_variants.py:37](../backend/app/services/search_variants.py#L37) |
 | app.services.search_vocabulary.TEMPORAL_ROLE_REWRITES | Tuple | sequence/source expression | [backend/app/services/search_vocabulary.py:12](../backend/app/services/search_vocabulary.py#L12) |
 | app.services.search_vocabulary.VOCABULARY_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_vocabulary.py:60](../backend/app/services/search_vocabulary.py#L60) |
-| app.services.search_vocabulary.GRAMMAR_WORDS | Call | computed source expression | [backend/app/services/search_vocabulary.py:150](../backend/app/services/search_vocabulary.py#L150) |
+| app.services.search_vocabulary.GRAMMAR_WORDS | Call | computed source expression | [backend/app/services/search_vocabulary.py:154](../backend/app/services/search_vocabulary.py#L154) |
 | app.services.seo_calendar._MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/seo_calendar.py:30](../backend/app/services/seo_calendar.py#L30) |
 | app.services.seo_calendar._MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/seo_calendar.py:34](../backend/app/services/seo_calendar.py#L34) |
 | app.services.seo_calendar._MONTHS_PREP | Tuple | sequence/source expression | [backend/app/services/seo_calendar.py:39](../backend/app/services/seo_calendar.py#L39) |
@@ -2875,7 +2885,7 @@ Relationships: `[]`
 | app.services.seo_content.CATEGORIES | Call | computed source expression | [backend/app/services/seo_content.py:242](../backend/app/services/seo_content.py#L242) |
 | app.services.seo_content.STATIC_PAGES | List | sequence/source expression | [backend/app/services/seo_content.py:244](../backend/app/services/seo_content.py#L244) |
 | app.services.seo_content.PAGE_META | Dict | 'home', 'about', 'research', 'methodology', 'privacy', 'terms', 'compare', 'forecasts', 'calculator', 'calculator-mortgage', 'calculator-compound', 'calendar', 'demographics', 'widgets', 'russia', 'russia-categories' | [backend/app/services/seo_content.py:261](../backend/app/services/seo_content.py#L261) |
-| app.services.seo_content.GLOBAL_INDICATOR_BLOCKS | Tuple | sequence/source expression | [backend/app/services/seo_content.py:665](../backend/app/services/seo_content.py#L665) |
+| app.services.seo_content.GLOBAL_INDICATOR_BLOCKS | Tuple | sequence/source expression | [backend/app/services/seo_content.py:711](../backend/app/services/seo_content.py#L711) |
 | app.services.seo_country_figures._SPARK_POINTS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/seo_country_figures.py:38](../backend/app/services/seo_country_figures.py#L38) |
 | app.services.seo_country_figures._TOLERANCE_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/seo_country_figures.py:43](../backend/app/services/seo_country_figures.py#L43) |
 | app.services.seo_country_figures._LABELS_RU | Dict | 'hicp-index', 'unemployment-rate', 'gdp-volume-quarterly', 'gdp-volume-annual', 'gdp-usd', 'gdp-per-capita-usd', 'population', 'budget-balance-gdp', 'government-debt-gdp', 'long-term-interest-rate', 'activity-rate', 'gdp-per-capita-eu' | [backend/app/services/seo_country_figures.py:46](../backend/app/services/seo_country_figures.py#L46) |

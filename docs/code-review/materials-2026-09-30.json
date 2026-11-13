@@ -822,8 +822,8 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "79360ebeb28f400c2216319ed5fc6e029001abeb5f14b0412ce3f2dd45643944",
-        "bytes": 246848
+        "sha256": "9672bb23791ac9c3621c8ffce52f828ec01f661cec9e356f3e1e7d581830e1df",
+        "bytes": 250223
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -840,7 +840,7 @@
           "branch": "integration/all-20261002"
         },
         "status_in_review": "reviewed",
-        "sha256": "79360ebeb28f400c2216319ed5fc6e029001abeb5f14b0412ce3f2dd45643944"
+        "sha256": "9672bb23791ac9c3621c8ffce52f828ec01f661cec9e356f3e1e7d581830e1df"
       },
       "canonical_source": "CONTEXT.md",
       "linked_mechanisms": "domain glossary and dated invariants",
@@ -2974,8 +2974,8 @@
         "main": "b6b16bdd942e8328ca126fd00bd2be37e23d115f",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "2ca9d7bf7979c4551f9db14718c1cb7bef2802c9bfcdf520c60f32e8a52066cc",
-        "bytes": 73652
+        "sha256": "e8fa8d093c91a795fb54cf94ebab0779e68f29a7345387955165d2e0bd5fe99b",
+        "bytes": 75810
       },
       "review_status": "прежнее полное чтение + содержательная дельта: файл прочитан целиком, дифф от старой версии прочитан, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению тел",
       "body_reviewed_in_this_pass": false,
@@ -2994,7 +2994,7 @@
           "reanchored_definitions": 0
         },
         "status_in_review": "reviewed",
-        "sha256": "2ca9d7bf7979c4551f9db14718c1cb7bef2802c9bfcdf520c60f32e8a52066cc"
+        "sha256": "e8fa8d093c91a795fb54cf94ebab0779e68f29a7345387955165d2e0bd5fe99b"
       },
       "canonical_source": "backend/app/data/i18n/seo_en.py",
       "linked_mechanisms": null,
@@ -3421,8 +3421,8 @@
         "main": "b6b16bdd942e8328ca126fd00bd2be37e23d115f",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "8cd595bf5894d5ed6db4990d65fc0a819c3eee7ad88bdb07ef2f8e5f9f8f7322",
-        "bytes": 46940
+        "sha256": "be8603217ced1b6334f25ab6791f628f9585c7f5c3a69def5212f679fbc78b95",
+        "bytes": 50234
       },
       "review_status": "прежнее полное чтение + содержательная дельта: diff коммита 9f7d5fc4 прочитан целиком, строки в месте, номера строк не сместились",
       "body_reviewed_in_this_pass": false,
@@ -3442,7 +3442,7 @@
           "reanchored_nondefinition_blocks": 0
         },
         "status_in_review": "reviewed",
-        "sha256": "8cd595bf5894d5ed6db4990d65fc0a819c3eee7ad88bdb07ef2f8e5f9f8f7322"
+        "sha256": "be8603217ced1b6334f25ab6791f628f9585c7f5c3a69def5212f679fbc78b95"
       },
       "canonical_source": "backend/app/services/seo_content.py",
       "linked_mechanisms": null,
@@ -5368,8 +5368,8 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "d79d82bc3cb31a48f9b2d17f76799882c4d25e1775c88f34970bbb9a9b82afeb",
-        "bytes": 22889
+        "sha256": "88efdd5b949746df1bb6804d7313db83b7d151b22bb90fbaddf0cc05840a0d07",
+        "bytes": 24248
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -5377,7 +5377,7 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": null,
         "status_in_review": "reviewed",
-        "sha256": "d79d82bc3cb31a48f9b2d17f76799882c4d25e1775c88f34970bbb9a9b82afeb"
+        "sha256": "88efdd5b949746df1bb6804d7313db83b7d151b22bb90fbaddf0cc05840a0d07"
       },
       "canonical_source": "docs/adr/0013-country-first-url-architecture.md",
       "linked_mechanisms": null,
@@ -5388,7 +5388,7 @@
             "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
             "scope": "tracked/index",
             "date": "2026-09-30",
-            "sha256": "d79d82bc3cb31a48f9b2d17f76799882c4d25e1775c88f34970bbb9a9b82afeb",
+            "sha256": "88efdd5b949746df1bb6804d7313db83b7d151b22bb90fbaddf0cc05840a0d07",
             "bytes": 22889
           },
           "review_status": "prior_ledger_current_hash",
@@ -5396,7 +5396,7 @@
           "current_delta_reviewed_in_this_pass": null,
           "review_basis": {
             "ledger": "docs/code-review/reviews.jsonl",
-            "sha256": "d79d82bc3cb31a48f9b2d17f76799882c4d25e1775c88f34970bbb9a9b82afeb",
+            "sha256": "88efdd5b949746df1bb6804d7313db83b7d151b22bb90fbaddf0cc05840a0d07",
             "status": "reviewed",
             "limitation": "Ledger content is prior review evidence; not a new full content read by this agent."
           }
@@ -5594,14 +5594,14 @@
           "delta": "Dated V6 addition records V5 failures as basis for general raw-prefix and native SQL-shape repair while preserving native identity, storage,8s budget and independent acceptance."
         },
         "status_in_review": "reviewed",
-        "sha256": "5c4f3a40c8021b19d1a16342231ee15ead3ce09e021e42a1d872c663cacbde1b"
+        "sha256": "e26d9df2d2566876dfa14d571bfd0c79b24d2ab3302474e9c84eb7f86a428132"
       },
       "source_version": {
         "main": "b6b16bdd942e8328ca126fd00bd2be37e23d115f",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "5c4f3a40c8021b19d1a16342231ee15ead3ce09e021e42a1d872c663cacbde1b",
-        "bytes": 13149
+        "sha256": "e26d9df2d2566876dfa14d571bfd0c79b24d2ab3302474e9c84eb7f86a428132",
+        "bytes": 15236
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "prior_version_evidence": [
@@ -5843,7 +5843,7 @@
             "main": "c1fa4bf51e94b9513e17570f55c4b46552ce4bde",
             "scope": "tracked/index",
             "date": "2026-09-30",
-            "sha256": "5c4f3a40c8021b19d1a16342231ee15ead3ce09e021e42a1d872c663cacbde1b",
+            "sha256": "e26d9df2d2566876dfa14d571bfd0c79b24d2ab3302474e9c84eb7f86a428132",
             "bytes": 13149
           },
           "review_status": "prior_review_plus_dated_semantic_delta",
@@ -6518,15 +6518,15 @@
           "reanchored_nondefinition_blocks": 0
         },
         "status_in_review": "reviewed",
-        "sha256": "719ec65e32a9cead2b21babdea8c16744bfbc975d198a9ce4fb07b453af0ed9b"
+        "sha256": "ad7df5d7662ecaede4de8fc89f63e283a35d83aaf74cb16285dcbc18fc474bde"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "719ec65e32a9cead2b21babdea8c16744bfbc975d198a9ce4fb07b453af0ed9b",
-        "bytes": 8246
+        "sha256": "ad7df5d7662ecaede4de8fc89f63e283a35d83aaf74cb16285dcbc18fc474bde",
+        "bytes": 9135
       },
       "current_delta_reviewed_in_this_pass": false
     },
@@ -9794,8 +9794,8 @@
         "main": "ca47249b87240fc4807957bf225b5350bbef2c14",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "1067c96ec6f04636e4035964c162086b5d1e90c5bd5708f1c4be3b3e8e4459e5",
-        "bytes": 713716
+        "sha256": "bbd567993a42cad5aa42feba16f6905297dd7261739dc1c5aebffb21929dcef5",
+        "bytes": 730870
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -14213,8 +14213,8 @@
         "main": "ca47249b87240fc4807957bf225b5350bbef2c14",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "849fd5d8ab1598fad68fe3f1033718564e595742b72d04006c0bd841ad8a2f90",
-        "bytes": 932154
+        "sha256": "1dab78641f53fac94908bc55d0eebce70d0bbcf1a962939025ac43765940d6bd",
+        "bytes": 935561
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -16505,8 +16505,8 @@
         "main": "ca47249b87240fc4807957bf225b5350bbef2c14",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "a4c13aaf345920be76c98efdeb39a4cec707c05b95ddd008f5b56d54eac7b7b2",
-        "bytes": 7627082
+        "sha256": "609151916fc5fa42c1787a4a62ef06e4c42a77905e3ac5f09f1054cc80d067b8",
+        "bytes": 7708748
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -20937,8 +20937,8 @@
         "main": "ca47249b87240fc4807957bf225b5350bbef2c14",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "9e5b63ab4b90b7ea10e3e2dc6ea218b577387ca30f3b73bf8f54d7d1377fd596",
-        "bytes": 23023661
+        "sha256": "ee7af5fb170e7d17889a9c733077cd511284d587b45110de847f289188b91375",
+        "bytes": 23110318
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -23181,8 +23181,8 @@
         "main": "74499f773eff3ba67a0376fdfdfb31316fbed3e8",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e35e24a9bdc6419425e50fe142063763b3231dbb846491f83fed2f0c45487814",
-        "bytes": 342782
+        "sha256": "0eaeaffa448ac34040e93cef0b2033cda44ff5ad581b46047f3ddb98047462c3",
+        "bytes": 354946
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -23199,7 +23199,7 @@
           "branch": "integration/all-20261002"
         },
         "status_in_review": "reviewed",
-        "sha256": "e35e24a9bdc6419425e50fe142063763b3231dbb846491f83fed2f0c45487814"
+        "sha256": "0eaeaffa448ac34040e93cef0b2033cda44ff5ad581b46047f3ddb98047462c3"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -27953,8 +27953,8 @@
         "main": "07a01619e5f864a2e0a67a9c5384254fba6f22d9",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "6ce0a169aeabeccbe968ad898fd1e6eaf42d4d34df697c0bcce00fa85321dac4",
-        "bytes": 50018
+        "sha256": "1862e024353f8b06ec671f0130fcc0329a19930d9126c0c5f0132de391504d4f",
+        "bytes": 70745
       },
       "review_status": "прежнее полное чтение + содержательная дельта: git diff по файлу прочитан целиком",
       "body_reviewed_in_this_pass": false,
@@ -28497,8 +28497,8 @@
         "main": "07a01619e5f864a2e0a67a9c5384254fba6f22d9",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "76c3a76265de2cd0a88590a746570735c8d6c2df952ab0996e18aca1c9702349",
-        "bytes": 3841473
+        "sha256": "e132e75f4da96640de5db9fddef31881bda1b49e8ad290321b3434b10eb18d3b",
+        "bytes": 3849484
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -37370,15 +37370,15 @@
           "branch": "integration/all-20261002"
         },
         "status_in_review": "reviewed",
-        "sha256": "f6bda5be47878996980cb33d5878e4d22b728112e70f861f9a8daef04803caa5"
+        "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "b6b16bdd942e8328ca126fd00bd2be37e23d115f",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "f6bda5be47878996980cb33d5878e4d22b728112e70f861f9a8daef04803caa5",
-        "bytes": 77162
+        "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30",
+        "bytes": 78988
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -38461,8 +38461,8 @@
         "main": "07a01619e5f864a2e0a67a9c5384254fba6f22d9",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "c92a6a464542f871336fef1320df4ef6654c19de25f20f46e507772638f2ea87",
-        "bytes": 12123120
+        "sha256": "3806cb8ed6d7efccddb508c5ebedc22fb49a698c5d932921f00e1257846f24fb",
+        "bytes": 12163842
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -39419,8 +39419,8 @@
         "main": "07a01619e5f864a2e0a67a9c5384254fba6f22d9",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "832392a26ec8c5be30eb095602e9266ee391ff27709e628e45601d8321c0a4d8",
-        "bytes": 625123
+        "sha256": "b7ce68174799421cd4524750564189f8c1d31f4b422224638a6314ac678896fe",
+        "bytes": 627301
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -44323,8 +44323,8 @@
         "main": "07a01619e5f864a2e0a67a9c5384254fba6f22d9",
         "scope": "tracked/index",
         "date": "2026-11-13",
-        "sha256": "2fda9a0937afbaf8ab8ae7b80c4ef52bab3c795514c27a1469991515ecc6d733",
-        "bytes": 116630
+        "sha256": "4254f43d43833c2cc3004bfa551bb659ef132623a000fa5e8a81d920fb20d375",
+        "bytes": 135058
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "prior_version_evidence": [
@@ -54701,15 +54701,48 @@
           "mode": "полное чтение нового файла"
         },
         "status_in_review": "reviewed",
-        "sha256": "7c8a705ea101029aee5e659425fef9b4fc7c1ebbce1d215cdec7fa065a489618"
+        "sha256": "a487f1031d2ac2a8b2ebbcf8c920c1017332d4a99ce4da057d08efaaca416d5f"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "9ab733af",
         "scope": "tracked/index",
         "date": "2026-11-11",
-        "sha256": "7c8a705ea101029aee5e659425fef9b4fc7c1ebbce1d215cdec7fa065a489618",
-        "bytes": 8411
+        "sha256": "a487f1031d2ac2a8b2ebbcf8c920c1017332d4a99ce4da057d08efaaca416d5f",
+        "bytes": 10863
+      },
+      "current_delta_reviewed_in_this_pass": true
+    },
+    {
+      "id": "docs/adr/0030-ru-google-short-sitemap.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/adr/0030-ru-google-short-sitemap.md",
+      "repository_path": "docs/adr/0030-ru-google-short-sitemap.md",
+      "format": ".md",
+      "role": "project material",
+      "classification": "current",
+      "canonical_source": "docs/adr/0030-ru-google-short-sitemap.md",
+      "linked_mechanisms": null,
+      "review_status": "полное чтение нового файла",
+      "body_reviewed_in_this_pass": true,
+      "review_basis": {
+        "proposal": "docs/code-review/reviews.jsonl",
+        "review_provenance": {
+          "date": "2026-11-13",
+          "reviewer": "Claude Fable 5.2 (короткий sitemap для Google 13.11.2026)",
+          "head": "07a01619",
+          "branch": "feat/google-short-sitemap",
+          "mode": "полное чтение нового файла"
+        },
+        "status_in_review": "reviewed",
+        "sha256": "a9d3b54d9dcb120ba8a18e6ba9e0b147f7b2ec6228a1f84dcf9347bda2b58dd0"
+      },
+      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "source_version": {
+        "main": "07a01619",
+        "scope": "tracked/index",
+        "date": "2026-11-13",
+        "sha256": "a9d3b54d9dcb120ba8a18e6ba9e0b147f7b2ec6228a1f84dcf9347bda2b58dd0",
+        "bytes": 11993
       },
       "current_delta_reviewed_in_this_pass": true
     }
