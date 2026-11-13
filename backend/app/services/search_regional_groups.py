@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 from datetime import date
 
-from sqlalchemy import and_, func, literal_column, select
+from sqlalchemy import and_, literal_column, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
@@ -78,23 +78,24 @@ def _finite(column):
 async def _latest_by_region(db: AsyncSession, code: str, *, monthly: bool,
         slugs: tuple[str, ...] | None = None) -> dict[str, tuple[float, str]]:
     """Последнее значение показателя по каждому субъекту и по России: slug → (значение, дата)."""
-    if monthly:
-        point, order = RegionMonthlyPoint, RegionMonthlyPoint.month.desc()
-    else:
-        point, order = RegionDataPoint, RegionDataPoint.year.desc()
-    ranked = select(
-        point.region_id.label("region_id"),
-        (point.month if monthly else point.year).label("period"),
-        point.value.label("value"),
-        func.row_number().over(partition_by=point.region_id, order_by=order).label("rn"),
-    ).join(RegionIndicator, RegionIndicator.id == point.indicator_id).where(
-        RegionIndicator.code == code, _finite(point.value)).subquery()
-    query = select(Region.slug, ranked.c.period, ranked.c.value).join(ranked, ranked.c.region_id == Region.id).where(ranked.c.rn == 1)
+    point = RegionMonthlyPoint if monthly else RegionDataPoint
+    period_column = point.month if monthly else point.year
+    indicator = select(RegionIndicator.id).where(RegionIndicator.code == code).scalar_subquery()
+
+    def last(column):
+        # Последняя конечная точка региона: одно чтение по индексу (показатель, регион, период).
+        # Оконная функция читала все точки показателя ради одного значения на регион.
+        return select(column).where(point.indicator_id == indicator, point.region_id == Region.id,
+            _finite(point.value)).order_by(period_column.desc()).limit(1).scalar_subquery()
+
+    query = select(Region.slug, last(period_column), last(point.value))
     if slugs:
         query = query.where(Region.slug.in_(slugs))
     rows = (await db.execute(query)).all()
     out = {}
     for slug, period, value in rows:
+        if period is None:
+            continue
         period = int(period)
         day = date(period // 100, period % 100, 1) if monthly else date(period, 1, 1)
         out[slug] = (float(value), day.isoformat())

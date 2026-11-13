@@ -336,6 +336,31 @@ def test_search_query_count_is_bounded(search_client, auth_env):
     finally:
         event.remove(engine, 'before_cursor_execute', record)
 
+def test_territory_existence_does_not_read_every_row(search_client, auth_env):
+    """13.11.2026: «есть ли данные у территории» — EXISTS с остановкой на первой строке.
+
+    Прежние запросы выбирали region_id всех строк территории (до 165 тыс. у региона
+    России) и на боевой базе шли 12–30 секунд.
+    """
+    from sqlalchemy import event
+    engine = auth_env['session_maker'].kw['bind'].sync_engine
+    statements = []
+    def record(_connection, _cursor, statement, _parameters, _context, _executemany):
+        statements.append(' '.join(statement.split()))
+    event.listen(engine, 'before_cursor_execute', record)
+    try:
+        kinds = set()
+        for q in ('Moscow', 'Germany', 'California'):
+            kinds |= {row['kind'] for row in get(search_client, q)['results']}
+        assert {'region', 'country', 'subnational_region'} <= kinds
+        full_reads = ('SELECT region_data.region_id', 'SELECT region_monthly_data.region_id',
+            'SELECT DISTINCT subnational_data_points.region_id', 'SELECT DISTINCT world_indicators.country_id')
+        assert not [statement for statement in statements if statement.startswith(full_reads)]
+        for table in ('regions', 'subnational_regions', 'world_countries'):
+            assert any(statement.startswith(f'SELECT {table}.id FROM {table} WHERE') and 'EXISTS' in statement for statement in statements), table
+    finally:
+        event.remove(engine, 'before_cursor_execute', record)
+
 def test_empty_literal_metachars(search_client):
     for q in (' ', '%', '_', '100%', 'cpi % magical'):
         assert not get(search_client, q)['results']
