@@ -206,31 +206,42 @@ async def _rosstat_outage_codes(codes: list[str]) -> list[str]:
 
     Такая ошибка — недоступность источника, а не поломка ряда: причина дописывается в последнюю запись `fetch_log`
     (со словом «unreachable»), ряд уходит в «источник недоступен» и в догрузку `rosstat_recovery_job`.
-    Без признака старой копии ошибки остаются ошибками.
+    Без признака старой копии ошибки остаются ошибками. При частичном восстановлении (13.11.2026: цены вернулись,
+    промышленность, счета и демография нет) недоступными считаются только ряды с ошибкой «файл не найден».
     """
     if not codes:
         return []
-    from app.services.rosstat_outage import stale_copy_reason
+    from app.services.rosstat_outage import is_partial, stale_copy_reason
 
     reason = await asyncio.to_thread(stale_copy_reason)
     if not reason:
         return []
-    await _annotate_outage(codes, reason)
-    logger.warning("Daily ETL: %d Rosstat series moved to «source unavailable»: %s", len(codes), reason)
-    return list(codes)
+    moved = await _annotate_outage(codes, reason, only_missing_file=is_partial(reason))
+    logger.warning("Daily ETL: %d Rosstat series moved to «source unavailable»: %s", len(moved), reason)
+    return moved
 
 
-async def _annotate_outage(codes: list[str], reason: str) -> None:
-    """Дописать причину недоступности в последнюю запись `fetch_log` каждого ряда (её читает `rosstat_recovery_job`)."""
+async def _annotate_outage(codes: list[str], reason: str, *, only_missing_file: bool = False) -> list[str]:
+    """Дописать причину недоступности в последнюю запись `fetch_log` каждого ряда (её читает `rosstat_recovery_job`).
+
+    Возвращает ряды, отнесённые к недоступному источнику. `only_missing_file` оставляет ошибкой всё, что не
+    «файл не найден»: при частичном восстановлении сайта остальные разделы работают.
+    """
+    from app.services.rosstat_outage import is_missing_file_error
+
+    moved: list[str] = []
     async with async_session() as db:
         rows = (await db.execute(
-            select(Indicator.id).where(Indicator.code.in_(codes))
-        )).scalars().all()
-        for indicator_id in rows:
+            select(Indicator.id, Indicator.code).where(Indicator.code.in_(codes))
+        )).all()
+        for indicator_id, code in rows:
             last = (await db.execute(
                 select(FetchLog).where(FetchLog.indicator_id == indicator_id)
                 .order_by(FetchLog.started_at.desc(), FetchLog.id.desc()).limit(1)
             )).scalar_one_or_none()
+            if last is not None and only_missing_file and not is_missing_file_error(last.error_message):
+                continue
+            moved.append(code)
             if last is None or last.status != "failed" or "unreachable" in (last.error_message or "").lower():
                 continue
             await db.execute(
@@ -238,6 +249,7 @@ async def _annotate_outage(codes: list[str], reason: str) -> None:
                 .values(error_message=f"{reason} | {last.error_message or ''}"[:500])
             )
         await db.commit()
+    return [c for c in codes if c in moved]
 
 
 # Повтор после остывания предохранителя хоста (2026-10-27): вечерний ETL 16.10, 22.10 и 27.10 терял 17-25 рядов

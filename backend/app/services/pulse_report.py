@@ -168,6 +168,10 @@ users.new_list): имён и почт новых людей в данных не
 и добавляй новые проверяемые гипотезы, когда данные их подсказывают. Гипотеза —
 конкретное проверяемое утверждение («фразы про X дают визиты, но раздела X
 нет — трафик уходит»), не банальность.
+Перед тем как добавить новую, найди в блоке гипотезу о том же (та же страница,
+тот же элемент, тот же показатель или та же причина) и обнови её по id: повтор
+темы новой записью запрещён. Если тема повторяется много дней подряд и данных
+достаточно, закрой её вердиктом, а не переписывай заново.
 
 Цифры — только из данных, ничего не выдумывай и не округляй заметно.
 
@@ -184,15 +188,62 @@ users.new_list): имён и почт новых людей в данных не
 _HYP_SEPARATOR = "---HYPOTHESES---"
 
 
+# Сколько открытых гипотез видит модель и сколько знаков каждой. До 13.11.2026 в контекст шли 30 самых старых
+# открытых гипотез: всё, что записано после августа, модель не видела, не могла пересмотреть и записывала заново.
+# За четыре месяца набралось 266 открытых при примерно 60 темах («нет цены на сталь» двенадцать раз, «ошибки
+# загрузки файлов после выкладки» двадцать пять раз). Теперь модель видит свежие гипотезы, а новая запись,
+# почти дословно повторяющая открытую, обновляет её (`similar_open_hypothesis`).
+OPEN_HYPOTHESES_IN_CONTEXT = 120
+OPEN_HYPOTHESIS_CONTEXT_CHARS = 200
+# Косинус по основам слов с весом редкости: 0,6 ловит перефразировку с теми же ключевыми словами и не склеивает
+# разные темы одного шаблона («нет показателя X» и «нет показателя Y»). Подобрано на 266 гипотезах боевого.
+SIMILAR_HYPOTHESIS_THRESHOLD = 0.6
+_HYP_WORD_RE = re.compile(r"[a-zа-я0-9]+")
+
+
+def _hypothesis_stems(text: str) -> set[str]:
+    words = _HYP_WORD_RE.findall(text.lower().replace("ё", "е"))
+    return {w[:5] if len(w) > 5 else w for w in words if len(w) >= 3 or w.isdigit()}
+
+
+def similar_open_hypothesis(statement: str, open_statements: dict[int, str]) -> int | None:
+    """id открытой гипотезы, которую новая формулировка повторяет, либо None."""
+    import math
+
+    docs = {hid: _hypothesis_stems(text) for hid, text in open_statements.items()}
+    new = _hypothesis_stems(statement)
+    if not new or not docs:
+        return None
+    total = len(docs) + 1
+    seen: dict[str, int] = {}
+    for stems in list(docs.values()) + [new]:
+        for stem in stems:
+            seen[stem] = seen.get(stem, 0) + 1
+
+    def weights(stems: set[str]) -> dict[str, float]:
+        raw = {stem: math.log((total + 1) / (seen.get(stem, 0) + 1)) for stem in stems}
+        norm = math.sqrt(sum(value * value for value in raw.values())) or 1.0
+        return {stem: value / norm for stem, value in raw.items()}
+
+    new_vec = weights(new)
+    best_id, best = None, 0.0
+    for hid, stems in docs.items():
+        vec = weights(stems)
+        score = sum(value * vec.get(stem, 0.0) for stem, value in new_vec.items())
+        if score > best:
+            best_id, best = hid, score
+    return best_id if best >= SIMILAR_HYPOTHESIS_THRESHOLD else None
+
+
 async def _open_hypotheses() -> list[dict]:
-    """Открытые гипотезы для контекста модели (id нужен для пересмотра)."""
+    """Открытые гипотезы для контекста модели, свежие первыми (id нужен для пересмотра)."""
     async with analytics_session() as db:
         rows = (await db.execute(
             select(Hypothesis).where(Hypothesis.verdict.is_(None))
-            .order_by(Hypothesis.created_at).limit(30)
+            .order_by(Hypothesis.updated_at.desc(), Hypothesis.id.desc()).limit(OPEN_HYPOTHESES_IN_CONTEXT)
         )).scalars().all()
     return [
-        {"id": h.id, "statement": h.statement, "rationale": h.rationale}
+        {"id": h.id, "statement": (h.statement or "")[:OPEN_HYPOTHESIS_CONTEXT_CHARS]}
         for h in rows
     ]
 
@@ -201,6 +252,7 @@ async def _apply_hypothesis_updates(updates: list[dict]) -> int:
     """Изменения гипотез от LLM → таблица hypotheses. Возвращает число применённых."""
     applied = 0
     now = datetime.now(timezone.utc).replace(tzinfo=None)
+    open_statements: dict[int, str] | None = None
     async with analytics_session() as db:
         for upd in updates[:5]:
             if not isinstance(upd, dict) or not str(upd.get("statement") or "").strip():
@@ -219,6 +271,17 @@ async def _apply_hypothesis_updates(updates: list[dict]) -> int:
                     h = await db.get(Hypothesis, int(upd["id"]))
                 except (TypeError, ValueError):
                     h = None
+            if h is None:
+                # Новая запись, повторяющая открытую, обновляет её: слой знаний не должен расти повторами.
+                if open_statements is None:
+                    open_statements = {
+                        row.id: row.statement
+                        for row in (await db.execute(
+                            select(Hypothesis).where(Hypothesis.verdict.is_(None))
+                        )).scalars()
+                    }
+                same = similar_open_hypothesis(str(upd["statement"]), open_statements)
+                h = await db.get(Hypothesis, same) if same is not None else None
             if h is None:
                 h = Hypothesis(created_at=now)
                 db.add(h)

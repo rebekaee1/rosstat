@@ -1238,6 +1238,14 @@ async def lifespan(app: FastAPI):
         # ночью — пересчёт хвоста истории.
         from app.tasks.analytics_rollups import rollups_15min_job, rollups_daily_job
         _analytics_start = datetime.now(dt_timezone.utc) + timedelta(minutes=10)
+        # Разнос по времени (13.11.2026). Сессионизация с rollup'ами и синк ClickHouse стартовали в одну секунду
+        # (общий `_analytics_start`), а раз в 30 минут к ним присоединялся счётчик роботов и все 5-минутные задачи,
+        # привязанные к запуску планировщика. Все они читают Postgres, который живёт под потолком памяти 3 ГБ при
+        # базе 12 ГБ; по архиву Telegram 12–13.11 тринадцать из восемнадцати «сервер сбрасывает нагрузку» пришлись
+        # ровно на эти совпадения (:00 и :30). Синк ClickHouse теперь идёт посередине между запусками rollup'ов,
+        # счётчик роботов — в стороне от обоих (сетка 7,5 мин, период 10 мин: ближе 75 с они не сходятся).
+        _clickhouse_start = _analytics_start + timedelta(minutes=7, seconds=30)
+        _bot_traffic_start = _analytics_start + timedelta(minutes=1, seconds=15)
         scheduler.add_job(
             locked_job(rollups_15min_job, "analytics_rollups_15min", ttl_seconds=14 * 60),
             trigger=IntervalTrigger(minutes=15, start_date=_analytics_start),
@@ -1274,7 +1282,7 @@ async def lifespan(app: FastAPI):
             from app.services.clickhouse_sync import clickhouse_sync_job
             scheduler.add_job(
                 locked_job(clickhouse_sync_job, "clickhouse_sync", ttl_seconds=14 * 60),
-                trigger=IntervalTrigger(minutes=15, start_date=_analytics_start),
+                trigger=IntervalTrigger(minutes=15, start_date=_clickhouse_start),
                 id="clickhouse_sync",
                 name="ClickHouse OLAP sync (derived copy of PG, cursor batches)",
                 replace_existing=True,
@@ -1391,7 +1399,7 @@ async def lifespan(app: FastAPI):
         from app.services.bot_traffic import collect_job as bot_traffic_collect_job
         scheduler.add_job(
             bot_traffic_collect_job,
-            trigger=IntervalTrigger(minutes=10),
+            trigger=IntervalTrigger(minutes=10, start_date=_bot_traffic_start),
             id="bot_traffic_collect",
             name="Bot/farm traffic counters from nginx security.log",
             replace_existing=True,

@@ -32,6 +32,7 @@ from sqlalchemy import func, or_, select
 from app.config import settings
 from app.database import analytics_session
 from app.models import BehaviorEvent, RawMetrikaVisit, ServerSession
+from app.services.ingest_freshness import latest_metrika_visit_ingest
 
 logger = logging.getLogger(__name__)
 
@@ -407,7 +408,7 @@ async def check_anomalies() -> None:
             )
 
         # 4. Лаг повизитного сырья Метрики.
-        last_visit = await db.scalar(select(func.max(RawMetrikaVisit.ingested_at)))
+        last_visit = await latest_metrika_visit_ingest(db)
         if last_visit and (now - last_visit) > timedelta(hours=36):
             await _alert(
                 "metrika_lag",

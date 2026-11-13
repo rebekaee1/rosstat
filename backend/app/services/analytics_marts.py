@@ -39,6 +39,7 @@ from app.models import (
     ServerSession,
     User,
 )
+from app.services.ingest_freshness import latest_behavior_event_ingest, latest_metrika_visit_ingest
 from app.services.goal_taxonomy import (
     SCORE_EVENT_CAP,
     TIER_MACRO,
@@ -900,7 +901,7 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
                 api_5xx_by_group[server_error_group(u)] += 1
 
     # Лаг Метрики: свежесть последнего повизитного сырья.
-    last_visit_ingest = await db.scalar(select(func.max(RawMetrikaVisit.ingested_at)))
+    last_visit_ingest = await latest_metrika_visit_ingest(db)
     metrika_lag_h = (
         round((datetime.utcnow() - last_visit_ingest).total_seconds() / 3600, 1)
         if last_visit_ingest else None
@@ -1117,7 +1118,7 @@ async def mart_collection_quality(db: AsyncSession, period: Period | int = 7) ->
         )
     ) or 0
 
-    last_event = await db.scalar(select(func.max(BehaviorEvent.ingested_at)))
+    last_event = await latest_behavior_event_ingest(db)
     silence_min = (
         round((datetime.utcnow() - last_event).total_seconds() / 60)
         if last_event else None

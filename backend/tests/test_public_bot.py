@@ -334,9 +334,10 @@ def test_stale_note_and_rate_wording():
     text = pb.figure_text(fig, cpi=cpi, today=date(2026, 11, 8))
     assert "За месяц: +0,03 пункта. За год: −2,73 пункта." in text and "п.п." not in text
     assert "Это выше инфляции (6,35 %) на 6,49 пункта" in text
-    assert "Новее данных пока нет" in text  # август на 8 ноября: 99 дней > 75
+    assert "Новее данных у нас пока нет" in text  # август на 8 ноября: 99 дней > 75
+    assert "последние опубликованные" not in text  # не утверждаем того, чего не знаем об источнике
     fresh = pb.figure_text(fig, cpi=cpi, today=date(2026, 9, 20))
-    assert "Новее данных пока нет" not in fresh
+    assert "Новее данных у нас пока нет" not in fresh
 
 
 def test_separate_token_poller_and_admin_bot_back_to_owner_only(env, monkeypatch):

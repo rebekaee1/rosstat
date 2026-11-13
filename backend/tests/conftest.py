@@ -69,6 +69,12 @@ def _no_ssr_cache(monkeypatch: pytest.MonkeyPatch):
     # версия фиксированная, чтобы не трогать реальный localhost-Redis.
     monkeypatch.setattr(seo_pages, "versioned_key", _plain_key)
     seo_pages._render_locks.clear()
+    # Блок «Ещё в разделе» мировых страниц (13.11.2026) хранит список id в кэше: в тестах он считается заново.
+    import app.services.seo_world as seo_world
+
+    monkeypatch.setattr(seo_world, "cache_get", _miss)
+    monkeypatch.setattr(seo_world, "cache_set", _skip)
+    monkeypatch.setattr(seo_world, "versioned_key", _plain_key)
 
 
 @pytest.fixture

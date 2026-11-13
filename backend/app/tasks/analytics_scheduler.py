@@ -256,6 +256,35 @@ async def _metrika_goal_lines(report_date: date) -> list[str]:
     return lines
 
 
+# 12 и 13.11.2026 в 09:00:04 Метрика ответила 503 на первый же запрос дайджеста, и блок визитов и целей выпал
+# целиком («Статистика Метрики недоступна»), хотя через минуту API работал. Временный отказ повторяем.
+_METRIKA_DIGEST_RETRY_PAUSES_S = (20, 60)
+
+
+def _metrika_temporary_failure(exc: BaseException) -> bool:
+    """Отказ Яндекса, который проходит сам: 5xx и 429. Отказ по токену или правам повторять бессмысленно."""
+    from app.services.yandex_client import YandexApiError
+
+    if isinstance(exc, YandexApiError):
+        return exc.status_code == 429 or (exc.status_code or 0) >= 500
+    import httpx
+
+    return isinstance(exc, httpx.TransportError)
+
+
+async def _metrika_goal_lines_with_retry(report_date: date, *, pauses: tuple[int, ...] | None = None) -> list[str]:
+    pauses = _METRIKA_DIGEST_RETRY_PAUSES_S if pauses is None else pauses
+    for attempt in range(len(pauses) + 1):
+        try:
+            return await _metrika_goal_lines(report_date)
+        except Exception as exc:  # noqa: BLE001 - решаем по виду отказа
+            if attempt >= len(pauses) or not _metrika_temporary_failure(exc):
+                raise
+            logger.info("Telegram digest: Metrika temporary failure (%s), retry in %s s", exc, pauses[attempt])
+            await asyncio.sleep(pauses[attempt])
+    raise AssertionError("unreachable")
+
+
 async def acquisition_daily_job() -> None:
     """Ежедневный сбор привлечения за вчера (08:20 МСК): агрегаты Reporting API
     (источники/поисковики/рефереры/кампании/фразы/страницы) + повизитная
@@ -360,7 +389,7 @@ async def telegram_daily_digest_job() -> None:
         logger.warning("Telegram digest: research downloads failed", exc_info=True)
     if settings.analytics_enabled and settings.yandex_metrika_read_token:
         try:
-            parts += await _metrika_goal_lines(yesterday)
+            parts += await _metrika_goal_lines_with_retry(yesterday)
         except Exception:
             logger.warning("Telegram digest: Metrika part failed", exc_info=True)
             parts.append("⚠️ Статистика Метрики недоступна")

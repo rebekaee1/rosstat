@@ -336,7 +336,9 @@ def figure_text(f: Figure, header: str | None = None, cpi: "Figure | None" = Non
                      "(прогноз Forecast Economy)")
     today = today or _now().date()
     if not header and (today - f.last_date).days > _FRESH_DAYS.get(f.frequency, 400):
-        lines.append("Новее данных пока нет: это последние опубликованные.")
+        # 08–09.11.2026 Росстат лежал, цены на топливо стояли на 26.10, а карточка говорила «это последние
+        # опубликованные», и модель пересказывала: «свежее цифр не существует». Мы знаем только то, что есть у нас.
+        lines.append("Новее данных у нас пока нет: покажем, как только они выйдут у источника.")
     if f.next_release and f.next_release >= today:
         when = f"{f.next_release.day} {_MONTHS[f.next_release.month - 1]}"
         lines.append(f"Следующие данные: {'ориентировочно ' if f.next_release_estimated else ''}{when}.")
@@ -1152,7 +1154,7 @@ async def build_llm_context(db, today: date | None = None) -> str:
         line = _context_line(topic.title, topic.unit, f)
         # Круг 2, тестер №4: адрес страницы темы — в общем списке «Страницы с полной историей ряда» ниже.
         if (today - f.last_date).days > _FRESH_DAYS.get(f.frequency, 400):
-            line += " (новее данных источник пока не публиковал)"
+            line += " (новее у нас пока нет; вышли ли новые данные у источника — неизвестно, не утверждай обратного)"
         lines.append(line)
         wallet = _wallet_line(f, cpi if key != "inflation" else None)
         if wallet:

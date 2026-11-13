@@ -63,15 +63,27 @@ def _table_columns(model) -> int:
     return len(model.__table__.columns)
 
 
+# Оценка `pg_class.reltuples` обновляется только при ANALYZE: 06–13.11.2026 дайджест неделю показывал
+# «Бизнес-события 419 789» и «Ядро: пользователей 155» при 189 пользователях. Теперь маленькая таблица считается
+# точно, а для остальных берётся большее из `reltuples` и живого счётчика `n_live_tup` (он растёт с каждой
+# вставкой и не требует чтения таблицы). Точный COUNT по сотням мегабайт здесь не нужен: Postgres живёт под
+# потолком памяти, и каждое такое чтение вытесняет кэш публичных страниц.
+EXACT_COUNT_MAX_ROWS = 50_000
+
+
 async def _row_count(db: AsyncSession, model) -> int:
-    """Точный COUNT на sqlite; на Postgres — оценка pg_class, иначе COUNT."""
+    """Число строк: точное для небольших таблиц и sqlite, оценка Postgres для больших."""
     dialect = db.bind.dialect.name if db.bind is not None else ""
     if dialect == "postgresql":
         est = await db.scalar(
-            text("SELECT reltuples::bigint FROM pg_class WHERE relname = :n"),
+            text(
+                "SELECT GREATEST(c.reltuples::bigint, COALESCE(s.n_live_tup, 0)) "
+                "FROM pg_class c LEFT JOIN pg_stat_user_tables s ON s.relid = c.oid "
+                "WHERE c.relname = :n AND c.relkind = 'r'"
+            ),
             {"n": model.__tablename__},
         )
-        if est is not None and int(est) > 0:
+        if est is not None and int(est) >= EXACT_COUNT_MAX_ROWS:
             return int(est)
     return int(await db.scalar(select(func.count()).select_from(model)) or 0)
 

@@ -2,14 +2,18 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from typing import Any
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import EconomicEvent, Indicator
+
+logger = logging.getLogger(__name__)
 
 
 OFFICIAL_CONFIDENCES = ("official_explicit", "official_rule")
@@ -92,112 +96,138 @@ def append_reschedule_audit(metadata: dict, old_date: date, new_date: date, fetc
 
 
 async def upsert_calendar_candidates(db: AsyncSession, candidates: list[CalendarCandidate]) -> int:
-    """Upsert official calendar events by stable event_key, auditing date moves."""
+    """Upsert official calendar events by stable event_key, auditing date moves.
+
+    Каждое событие пишется в своей точке сохранения. 13.11.2026 одно событие встало на дату, где у того же
+    показателя уже стояло другое (`uq_event_natural_key`: источник, тип, дата, показатель), и ошибка одной строки
+    отменила обновление всего календаря на сутки. Теперь такое событие пропускается с записью в журнал, остальные
+    сохраняются.
+    """
     code_to_id = await resolve_indicator_ids(db)
     fetched_at = now_naive_utc()
     changed = 0
+    skipped: list[str] = []
 
     for candidate in candidates:
         if candidate.date_confidence not in (*OFFICIAL_CONFIDENCES, "estimated"):
             raise ValueError(f"Unsupported calendar confidence: {candidate.date_confidence}")
-
-        indicator_id = code_to_id.get(candidate.indicator_code) if candidate.indicator_code else None
-        existing = await _find_existing_event(db, candidate, indicator_id)
-        # A temporary plan-fetch failure must never erase a previously verified
-        # date through the natural-key fallback or a lower-confidence refresh.
-        if (existing is not None and existing.date_confidence == "official_explicit"
-                and candidate.date_confidence != "official_explicit"):
-            continue
-        metadata = merge_metadata(
-            existing.metadata_json if existing else None,
-            candidate,
-            fetched_at,
-        )
-        if existing and existing.scheduled_date != candidate.scheduled_date:
-            metadata = append_reschedule_audit(
-                metadata,
-                existing.scheduled_date,
-                candidate.scheduled_date,
-                fetched_at,
+        try:
+            async with db.begin_nested():
+                delta = await _apply_candidate(db, candidate, code_to_id, fetched_at)
+                await db.flush()
+            changed += delta
+        except IntegrityError as exc:
+            skipped.append(f"{candidate.source}/{candidate.event_key}@{candidate.scheduled_date}")
+            logger.warning(
+                "Calendar: event %s/%s on %s skipped, it collides with a stored event: %s",
+                candidate.source, candidate.event_key, candidate.scheduled_date, str(exc.orig)[:200],
             )
 
-        # Preserve early-release enrichment: if IndicatorData already filled
-        # actual_value, do not downgrade status back to scheduled on sync.
-        if existing is not None and (existing.actual_value is not None and existing.actual_value != ""):
-            status = "released"
-        else:
-            status = "scheduled"
-
-        if existing is None:
-            db.add(EconomicEvent(
-                title=candidate.title,
-                title_en=candidate.title_en,
-                event_type=candidate.event_type,
-                source=candidate.source,
-                indicator_id=indicator_id,
-                scheduled_date=candidate.scheduled_date,
-                scheduled_time=candidate.scheduled_time,
-                is_estimated=candidate.date_confidence == "estimated",
-                reference_period=candidate.reference_period,
-                importance=candidate.importance,
-                status=status,
-                description=candidate.description,
-                source_url=candidate.source_url,
-                event_key=candidate.event_key,
-                date_confidence=candidate.date_confidence,
-                source_event_uid=candidate.source_event_uid,
-                source_hash=candidate.source_hash(),
-                last_seen_at=fetched_at,
-                metadata_json=metadata,
-                created_at=fetched_at,
-                updated_at=fetched_at,
-            ))
-            changed += 1
-            continue
-
-        before = (
-            existing.scheduled_date,
-            existing.scheduled_time,
-            existing.title,
-            existing.source_hash,
-            existing.event_key,
-            existing.status,
-            existing.source_url,
-        )
-        existing.title = candidate.title
-        existing.title_en = candidate.title_en
-        existing.event_type = candidate.event_type
-        existing.source = candidate.source
-        existing.indicator_id = indicator_id
-        existing.scheduled_date = candidate.scheduled_date
-        existing.scheduled_time = candidate.scheduled_time
-        existing.is_estimated = candidate.date_confidence == "estimated"
-        existing.reference_period = candidate.reference_period
-        existing.importance = candidate.importance
-        existing.status = status
-        existing.description = candidate.description
-        existing.source_url = candidate.source_url
-        existing.event_key = candidate.event_key
-        existing.date_confidence = candidate.date_confidence
-        existing.source_event_uid = candidate.source_event_uid
-        existing.source_hash = candidate.source_hash()
-        existing.last_seen_at = fetched_at
-        existing.metadata_json = metadata
-        existing.updated_at = fetched_at
-        after = (
-            existing.scheduled_date,
-            existing.scheduled_time,
-            existing.title,
-            existing.source_hash,
-            existing.event_key,
-            existing.status,
-            existing.source_url,
-        )
-        if before != after:
-            changed += 1
-
     await db.commit()
+    if skipped:
+        logger.warning("Calendar: %d colliding event(s) skipped: %s", len(skipped), ", ".join(skipped[:10]))
     return changed
+
+
+async def _apply_candidate(
+    db: AsyncSession,
+    candidate: CalendarCandidate,
+    code_to_id: dict[str, int],
+    fetched_at: datetime,
+) -> int:
+    """Записать одно событие; 1, если оно создано или изменено."""
+    indicator_id = code_to_id.get(candidate.indicator_code) if candidate.indicator_code else None
+    existing = await _find_existing_event(db, candidate, indicator_id)
+    # A temporary plan-fetch failure must never erase a previously verified
+    # date through the natural-key fallback or a lower-confidence refresh.
+    if (existing is not None and existing.date_confidence == "official_explicit"
+            and candidate.date_confidence != "official_explicit"):
+        return 0
+    metadata = merge_metadata(
+        existing.metadata_json if existing else None,
+        candidate,
+        fetched_at,
+    )
+    if existing and existing.scheduled_date != candidate.scheduled_date:
+        metadata = append_reschedule_audit(
+            metadata,
+            existing.scheduled_date,
+            candidate.scheduled_date,
+            fetched_at,
+        )
+
+    # Preserve early-release enrichment: if IndicatorData already filled
+    # actual_value, do not downgrade status back to scheduled on sync.
+    if existing is not None and (existing.actual_value is not None and existing.actual_value != ""):
+        status = "released"
+    else:
+        status = "scheduled"
+
+    if existing is None:
+        db.add(EconomicEvent(
+            title=candidate.title,
+            title_en=candidate.title_en,
+            event_type=candidate.event_type,
+            source=candidate.source,
+            indicator_id=indicator_id,
+            scheduled_date=candidate.scheduled_date,
+            scheduled_time=candidate.scheduled_time,
+            is_estimated=candidate.date_confidence == "estimated",
+            reference_period=candidate.reference_period,
+            importance=candidate.importance,
+            status=status,
+            description=candidate.description,
+            source_url=candidate.source_url,
+            event_key=candidate.event_key,
+            date_confidence=candidate.date_confidence,
+            source_event_uid=candidate.source_event_uid,
+            source_hash=candidate.source_hash(),
+            last_seen_at=fetched_at,
+            metadata_json=metadata,
+            created_at=fetched_at,
+            updated_at=fetched_at,
+        ))
+        return 1
+
+    before = (
+        existing.scheduled_date,
+        existing.scheduled_time,
+        existing.title,
+        existing.source_hash,
+        existing.event_key,
+        existing.status,
+        existing.source_url,
+    )
+    existing.title = candidate.title
+    existing.title_en = candidate.title_en
+    existing.event_type = candidate.event_type
+    existing.source = candidate.source
+    existing.indicator_id = indicator_id
+    existing.scheduled_date = candidate.scheduled_date
+    existing.scheduled_time = candidate.scheduled_time
+    existing.is_estimated = candidate.date_confidence == "estimated"
+    existing.reference_period = candidate.reference_period
+    existing.importance = candidate.importance
+    existing.status = status
+    existing.description = candidate.description
+    existing.source_url = candidate.source_url
+    existing.event_key = candidate.event_key
+    existing.date_confidence = candidate.date_confidence
+    existing.source_event_uid = candidate.source_event_uid
+    existing.source_hash = candidate.source_hash()
+    existing.last_seen_at = fetched_at
+    existing.metadata_json = metadata
+    existing.updated_at = fetched_at
+    after = (
+        existing.scheduled_date,
+        existing.scheduled_time,
+        existing.title,
+        existing.source_hash,
+        existing.event_key,
+        existing.status,
+        existing.source_url,
+    )
+    return int(before != after)
 
 
 async def _find_existing_event(

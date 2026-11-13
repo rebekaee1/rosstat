@@ -353,3 +353,92 @@ class TestFuelBulletinParse:
         merged.update({p.date: p.value for p in bulletin})
         assert merged[date(2026, 6, 22)] == 67.54
         assert merged[date(2026, 6, 29)] == 68.76
+
+
+# --- 13.11.2026: бюллетени в PDF, произвольные имена файлов, абсолютные ссылки -------------------------------
+
+PDF_ERA_NEWS_PAGE = """
+<div class="news-card__title">
+  <a href="/storage/mediabank/173_11-11-2026.pdf">О потребительских ценах на нефтепродукты с 3 по 9 ноября 2026 года</a>
+</div>
+<div class="news-card__title">
+  <a href="/storage/mediabank/172_11-11-2026.pdf">Об оценке индекса потребительских цен с 3 по 9 ноября 2026 года</a>
+</div>
+<div class="news-card__title">
+  <a href="/storage/mediabank/ipc11_02.pdf">Об оценке индекса потребительских цен с 27 октября по 2 ноября 2026 года</a>
+</div>
+<div class="news-card__title">
+  <a href="https://rosstat.gov.ru/storage/mediabank/162_21-10-2026.pdf">Об оценке индекса потребительских цен с 13 по 19 октября 2026 года</a>
+</div>
+<div class="news-card__title">
+  <a href="/storage/mediabank/35_13-03-2025.html">Об оценке индекса потребительских цен с 4 по 10 марта 2025 года</a>
+</div>
+"""
+
+PDF_BULLETIN_TEXT = (
+    "Срочная информация 11 ноября 2026 года № 172 ОБ ОЦЕНКЕ ИНДЕКСА ПОТРЕБИТЕЛЬСКИХ ЦЕН С 3 ПО 9 НОЯБРЯ 2026 ГОДА1 "
+    "За период с 3 по 9 ноября 2026 г. индекс потребительских цен2, по оценке Росстата, составил 100,12%, "
+    "с начала месяца – 100,11%, с начала года – 106,33%"
+)
+
+
+def test_central_news_finds_pdf_bulletins_by_title():
+    """Бюллетень узнаётся по заголовку: PDF, абсолютная ссылка и произвольное имя файла тоже находятся."""
+    session = _build_session_mock({1: PDF_ERA_NEWS_PAGE})
+    urls = _find_bulletin_urls_central_news(session, 2026, max_pages=1)
+    assert urls == [
+        "https://rosstat.gov.ru/storage/mediabank/162_21-10-2026.pdf",
+        "https://rosstat.gov.ru/storage/mediabank/172_11-11-2026.pdf",
+        "https://rosstat.gov.ru/storage/mediabank/ipc11_02.pdf",
+    ]
+
+
+def test_bulletin_text_from_pdf_is_parsed():
+    from app.services.rosstat_weekly_inflation_parser import _parse_bulletin_text
+
+    assert _parse_bulletin_text(PDF_BULLETIN_TEXT) == WeeklyPoint(date=date(2026, 11, 9), value=100.12)
+
+
+def test_bulletin_text_with_words_broken_by_pypdf():
+    """pypdf рвёт слова пробелами — разбор по тексту без пробелов даёт то же значение."""
+    from app.services.rosstat_weekly_inflation_parser import _parse_bulletin_text
+
+    broken = (
+        "За пер иод с 27 октя бря по 2 но ября 2026 г. инд екс потреби тельских цен, "
+        "по оценке Росстата, сост авил 100,09 %, с начала месяца"
+    )
+    assert _parse_bulletin_text(broken) == WeeklyPoint(date=date(2026, 11, 2), value=100.09)
+
+
+def test_bulletin_content_dispatches_pdf_and_html():
+    from app.services import rosstat_weekly_inflation_parser as mod
+
+    with patch.object(mod, "_pdf_text", return_value=PDF_BULLETIN_TEXT) as pdf_text:
+        pt = mod._parse_bulletin_content(b"%PDF-1.5 ...", "https://rosstat.gov.ru/storage/mediabank/172_11-11-2026.pdf")
+    pdf_text.assert_called_once()
+    assert pt == WeeklyPoint(date=date(2026, 11, 9), value=100.12)
+
+    html = "<p>За период с 21 по 27 апреля 2026 г. индекс потребительских цен составил 100,05%</p>".encode()
+    assert mod._parse_bulletin_content(html, "x.html") == WeeklyPoint(date=date(2026, 4, 27), value=100.05)
+
+
+def test_unreadable_pdf_does_not_raise():
+    from app.services.rosstat_weekly_inflation_parser import _parse_bulletin_content
+
+    assert _parse_bulletin_content(b"%PDF-1.5 broken", "x.pdf") is None
+
+
+def test_headline_lag_reason():
+    from app.services.rosstat_weekly_inflation_parser import _headline_lag_reason
+
+    segments = {"food": {date(2026, 11, 2), date(2026, 11, 9)}, "nonfood": {date(2026, 11, 9)}, "services": set()}
+    primary = {date(2026, 10, 19), date(2026, 10, 26)}
+    # Инцидент 13.11.2026: общий ряд на 26.10, сегменты на 09.11.
+    reason = _headline_lag_reason(primary, segments, today=date(2026, 11, 13))
+    assert reason and "26.10.2026" in reason and "09.11.2026" in reason
+    # День публикации: бюллетень может выйти на несколько часов позже XLSX — не тревожим.
+    assert _headline_lag_reason(primary, segments, today=date(2026, 11, 11)) is None
+    # Общий ряд догнал сегменты.
+    assert _headline_lag_reason(primary | {date(2026, 11, 9)}, segments, today=date(2026, 11, 13)) is None
+    # Сегментов нет — сравнивать не с чем.
+    assert _headline_lag_reason(primary, {"food": set()}, today=date(2026, 11, 13)) is None

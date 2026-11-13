@@ -2,10 +2,18 @@
 
 Источники (по приоритету):
 
-1. HTML-бюллетени «Об оценке индекса потребительских цен с N по M месяца YYYY г»
+1. Бюллетени «Об оценке индекса потребительских цен с N по M месяца YYYY г»
    на `rosstat.gov.ru/storage/mediabank/<num>_<DD-MM-YYYY>.html`.
    Публикуются каждую неделю (обычно в среду) и содержат официальный
    агрегированный недельный ИПЦ. Это основной источник.
+
+   **С октября 2026 бюллетень выходит в PDF** (`172_11-11-2026.pdf`), а после
+   восстановления сайта в ноябре 2026 часть файлов названа произвольно
+   (`168ozen28.pdf`, `ipc11_02.pdf`) и ссылки в ленте бывают абсолютными.
+   Поэтому бюллетень узнаётся по заголовку ссылки в ленте, а не по имени файла;
+   текст PDF читает pypdf. До 13.11.2026 парсер ждал только `.html`: общий ряд
+   встал на 26.10.2026, сегменты из XLSX шли дальше, а прогон считался успешным.
+   `_headline_lag_reason` теперь поднимает такой разрыв как zero-parse.
 
    **Важно**: Росстат начал публиковать **отдельные** еженедельные bulletin'ы
    только в 2023 году. До 2023 публиковались monthly «Об индексе
@@ -54,6 +62,7 @@ from app.core.cache import cache_invalidate_indicator, publish_committed_indicat
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import (
     STATUS_FAILED,
+    STATUS_PARSED_ZERO,
     BaseParser,
     _utcnow_naive,
     expected_empty_reason,
@@ -70,7 +79,7 @@ NEDEL_IPC_URL_FALLBACK = "https://rosstat.gov.ru/storage/mediabank/Nedel_ipc.xls
 IPC_SPR_URL = "https://rosstat.gov.ru/storage/mediabank/ipc_spr_{mm}-{yyyy}.xlsx"
 
 ROSSTAT_SEARCH_URL = "https://rosstat.gov.ru/search"
-BULLETIN_URL_RE = re.compile(r"/storage/mediabank/\d+_\d{2}-\d{2}-\d{4}\.html?")
+BULLETIN_URL_RE = re.compile(r"/storage/mediabank/\d+_\d{2}-\d{2}-\d{4}\.(?:html?|pdf)")
 
 _MONTH_MAP = {
     "января": 1, "февраля": 2, "марта": 3, "апреля": 4,
@@ -86,6 +95,13 @@ _BULLETIN_RANGE_RE = re.compile(
     re.IGNORECASE,
 )
 _BULLETIN_VALUE_RE = re.compile(r"составил\s+(\d+[,.]?\d*)\s*%")
+# Те же два признака по тексту без пробелов: pypdf рвёт слова («сост авил», «но ября»).
+_MONTH_ALT = "|".join(_MONTH_MAP.keys())
+_BULLETIN_RANGE_COMPACT_RE = re.compile(
+    rf"со?\d{{1,2}}(?:{_MONTH_ALT})?по(\d{{1,2}})({_MONTH_ALT})(\d{{4}})г",
+    re.IGNORECASE,
+)
+_BULLETIN_VALUE_COMPACT_RE = re.compile(r"составил(\d{2,3}(?:[,.]\d{1,2})?)%", re.IGNORECASE)
 
 _HEADER_RE = re.compile(
     r"на\s+(\d{1,2})\s+("
@@ -334,29 +350,62 @@ def _strip_html(html: str) -> str:
     return re.sub(r"\s+", " ", text)
 
 
-def _parse_bulletin_html(html: str) -> WeeklyPoint | None:
-    """Extract (end_date, value) from a weekly CPI bulletin HTML."""
-    text = _strip_html(html)
-    m_range = _BULLETIN_RANGE_RE.search(text)
-    m_val = _BULLETIN_VALUE_RE.search(text)
-    if not m_range or not m_val:
-        return None
-    end_day = int(m_range.group(1))
-    month = _MONTH_MAP.get(m_range.group(2).lower())
-    year = int(m_range.group(3))
+def _point_from_match(end_day: str, month_name: str, year: str, value: str) -> WeeklyPoint | None:
+    month = _MONTH_MAP.get(month_name.lower())
     if month is None:
         return None
     try:
-        d = date(year, month, end_day)
-    except ValueError:
-        return None
-    try:
-        v = float(m_val.group(1).replace(",", "."))
+        d = date(int(year), month, int(end_day))
+        v = float(value.replace(",", "."))
     except ValueError:
         return None
     if not (95 < v < 110):
         return None
     return WeeklyPoint(date=d, value=round(v, 2))
+
+
+def _parse_bulletin_text(text: str) -> WeeklyPoint | None:
+    """(конец недели, значение) из текста бюллетеня: обычный разбор, затем по тексту без пробелов."""
+    text = re.sub(r"\s+", " ", text)
+    m_range = _BULLETIN_RANGE_RE.search(text)
+    m_val = _BULLETIN_VALUE_RE.search(text)
+    if m_range and m_val:
+        pt = _point_from_match(m_range.group(1), m_range.group(2), m_range.group(3), m_val.group(1))
+        if pt:
+            return pt
+    compact = re.sub(r"\s+", "", text)
+    c_range = _BULLETIN_RANGE_COMPACT_RE.search(compact)
+    c_val = _BULLETIN_VALUE_COMPACT_RE.search(compact)
+    if not c_range or not c_val:
+        return None
+    return _point_from_match(c_range.group(1), c_range.group(2), c_range.group(3), c_val.group(1))
+
+
+def _parse_bulletin_html(html: str) -> WeeklyPoint | None:
+    """Extract (end_date, value) from a weekly CPI bulletin HTML."""
+    return _parse_bulletin_text(_strip_html(html))
+
+
+_PDF_BULLETIN_MAX_PAGES = 2
+
+
+def _pdf_text(content: bytes) -> str:
+    """Текст первых страниц PDF-бюллетеня (значение и период стоят в первом абзаце)."""
+    from pypdf import PdfReader
+
+    reader = PdfReader(BytesIO(content))
+    return " ".join((page.extract_text() or "") for page in reader.pages[:_PDF_BULLETIN_MAX_PAGES])
+
+
+def _parse_bulletin_content(content: bytes, url: str = "") -> WeeklyPoint | None:
+    """Бюллетень в любом из двух видов: PDF (с октября 2026) или HTML."""
+    if content[:5] == b"%PDF-" or url.lower().endswith(".pdf"):
+        try:
+            return _parse_bulletin_text(_pdf_text(content))
+        except Exception:  # noqa: BLE001 - битый PDF не должен ронять весь прогон
+            logger.warning("Weekly CPI: PDF bulletin unreadable: %s", url, exc_info=True)
+            return None
+    return _parse_bulletin_html(content.decode("utf-8", errors="replace"))
 
 
 CENTRAL_NEWS_URL = "https://rosstat.gov.ru/central-news"
@@ -370,6 +419,24 @@ WEEKLY_REFRESH_WINDOW_DAYS = 120
 _CPI_BULLETIN_TITLE_RE = re.compile(
     r"оценке\s+индекса\s+потребительских\s+цен", re.IGNORECASE,
 )
+
+
+# Ссылка ленты на файл медиабанка: относительная или абсолютная, HTML или PDF, имя файла любое.
+_NEWS_LINK_RE = re.compile(
+    r'href="(?:https?://rosstat\.gov\.ru)?(/storage/mediabank/[^"\s]+\.(?:html?|pdf))"\s*[^>]*>\s*([^<]{15,300})',
+    re.IGNORECASE,
+)
+_NEWS_HREF_YEAR_RE = re.compile(r"-(\d{4})\.(?:html?|pdf)$", re.IGNORECASE)
+_NEWS_TITLE_YEAR_RE = re.compile(r"\b(20\d{2})\s*г")
+
+
+def _news_item_year(href: str, title: str) -> int | None:
+    """Год публикации: из имени файла `NNN_DD-MM-YYYY`, иначе из заголовка («… 2026 года»)."""
+    m = _NEWS_HREF_YEAR_RE.search(href)
+    if m:
+        return int(m.group(1))
+    years = _NEWS_TITLE_YEAR_RE.findall(title)
+    return int(years[-1]) if years else None
 
 
 def _find_bulletin_urls_central_news(
@@ -403,10 +470,7 @@ def _find_bulletin_urls_central_news(
                 )
                 continue
             text = r.text
-            items = re.findall(
-                r'href="(/storage/mediabank/\d+_\d{2}-\d{2}-\d{4}\.html)"\s*[^>]*>\s*([^<]{15,300})',
-                text,
-            )
+            items = _NEWS_LINK_RE.findall(text)
             if not items:
                 logger.info("central-news page=%d empty — stopping", page)
                 break
@@ -414,10 +478,9 @@ def _find_bulletin_urls_central_news(
             page_year_max = 0
             page_added = 0
             for href, title in items:
-                ym = re.search(r"-(\d{4})\.html$", href)
-                if not ym:
+                bul_year = _news_item_year(href, title)
+                if bul_year is None:
                     continue
-                bul_year = int(ym.group(1))
                 page_year_min = min(page_year_min, bul_year)
                 page_year_max = max(page_year_max, bul_year)
                 if bul_year != year:
@@ -512,7 +575,7 @@ def _find_bulletin_urls(
     return sorted(set(via_central) | via_search)
 
 
-_BULLETIN_PUB_DATE_RE = re.compile(r"/(\d+)_(\d{2})-(\d{2})-(\d{4})\.html$")
+_BULLETIN_PUB_DATE_RE = re.compile(r"/(\d+)_(\d{2})-(\d{2})-(\d{4})\.(?:html?|pdf)$", re.IGNORECASE)
 
 
 def _bulletin_pub_date(url: str) -> date | None:
@@ -539,7 +602,7 @@ def fetch_bulletin_points(
     *,
     steady_state: bool = False,
 ) -> list[WeeklyPoint]:
-    """Fetch weekly CPI from Rosstat HTML bulletins for the given years.
+    """Fetch weekly CPI from Rosstat bulletins (HTML or PDF) for the given years.
 
     `existing_dates`: если задано, GET'ы для bulletin'ов с publication-датой
     `>= 14 days ранее max(existing_dates)` будут пропущены — их week-end
@@ -570,8 +633,7 @@ def fetch_bulletin_points(
                 r = session.get(url, timeout=30, verify=False)
                 if r.status_code != 200:
                     continue
-                html = r.content.decode("utf-8", errors="replace")
-                pt = _parse_bulletin_html(html)
+                pt = _parse_bulletin_content(r.content, url)
                 if pt and pt.date not in seen_dates:
                     seen_dates.add(pt.date)
                     points.append(pt)
@@ -650,7 +712,7 @@ def fetch_weekly_cpi_multi(
         bulletin_points = fetch_bulletin_points(
             session, bulletin_years, existing_dates, steady_state=steady_state,
         )
-        logger.info("Weekly CPI: parsed %d points from HTML bulletins", len(bulletin_points))
+        logger.info("Weekly CPI: parsed %d points from bulletins", len(bulletin_points))
 
         xlsx_by_segment: dict[str, list[WeeklyPoint]] = {
             "all": [], "food": [], "nonfood": [], "services": [],
@@ -725,6 +787,37 @@ def fetch_weekly_cpi_multi(
         return result
     finally:
         session.close()
+
+
+# Бюллетень и XLSX выходят в один день (среда) за неделю, кончившуюся в понедельник. Четыре дня — запас
+# на перенос публикации; дольше общий ряд от сегментов отставать не должен.
+HEADLINE_LAG_GRACE_DAYS = 4
+
+
+def _headline_lag_reason(
+    primary_dates: set[date],
+    segment_dates: dict[str, set[date]],
+    *,
+    today: date | None = None,
+) -> str | None:
+    """Причина, если общий недельный ИПЦ отстал от сегментов (бюллетень не найден или не разобран).
+
+    Сегменты считаются из XLSX, общий ряд в steady-state — только из бюллетеней. Когда Росстат меняет вид
+    бюллетеня, сегменты продолжают расти, прогон выглядит успешным, а общий ряд молча стоит (26.10–13.11.2026).
+    """
+    seg_max = max((max(dates) for dates in segment_dates.values() if dates), default=None)
+    if seg_max is None:
+        return None
+    prim_max = max(primary_dates) if primary_dates else None
+    if prim_max is not None and prim_max >= seg_max:
+        return None
+    if ((today or date.today()) - seg_max).days < HEADLINE_LAG_GRACE_DAYS:
+        return None
+    known = f"{prim_max:%d.%m.%Y}" if prim_max else "нет точек"
+    return (
+        f"Headline weekly CPI lags segments: общий ряд по {known}, сегменты по {seg_max:%d.%m.%Y} — "
+        "бюллетень Росстата не найден или не разобран"
+    )
 
 
 def fetch_weekly_cpi(
@@ -824,9 +917,16 @@ class RosstatWeeklyCpiParser(BaseParser):
                 publication_codes.append(code)
             publication_codes.extend(self._changed_segment_codes)
 
-            fetch_log.status = (
-                "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            )
+            changed = records_added > 0 or records_updated > 0
+            fetch_log.status = "success" if changed else "no_new_data"
+            lag = _headline_lag_reason(*(await self._load_existing_dates(db, indicator.id)))
+            if lag:
+                # Сегменты записаны, каскад производных не трогаем (status=success при изменениях), но разрыв
+                # общего ряда не прячем: алерт zero-parse и текст причины в журнале.
+                logger.warning("ETL %s: %s", code, lag)
+                fetch_log.error_message = lag[:500]
+                if await self._alert_zero_parse_if_regression(db, indicator) and not changed:
+                    fetch_log.status = STATUS_PARSED_ZERO
             fetch_log.completed_at = _utcnow_naive()
             await db.commit()
             mark_storage_committed(fetch_log)

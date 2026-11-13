@@ -161,8 +161,10 @@ def search_client(auth_env, monkeypatch):
             secondary_housing = RegionIndicator(code='srednie-tseny-na-vtorichnom-rynke-zhilya', name='Средние цены на вторичном рынке жилья', table_code='1.6', section_num=1, section_name='Housing', unit='рублей за квадратный метр общей площади')
             state = SubnationalRegion(country_code='US', slug='california', name_ru='Калифорния', name_en='California')
             sub = SubnationalIndicator(country_code='US', code='state-population', name_ru='Население', name_en='Population', series_template='fixture', frequency='annual', unit='people')
-            db.add_all((moscow, primorye, ghost, pop, monthly, fuel, students, primary_housing, secondary_housing, state, sub))
+            grp = RegionIndicator(code='valovoy-regionalnyy-produkt', name='Валовой региональный продукт', table_code='1.7', section_num=1, section_name='Accounts', unit='млн рублей')
+            db.add_all((moscow, primorye, ghost, pop, monthly, fuel, students, primary_housing, secondary_housing, grp, state, sub))
             await db.flush()
+            db.add(RegionDataPoint(indicator_id=grp.id, region_id=moscow.id, year=2024, value=30000000))
             for row, value in zip(rows, (110, 120, 10, 0, None, 150, 4, 5, 3, 110, 120, 110, 5, 140, 5)):
                 if value is not None:
                     db.add(WorldDataPoint(indicator_id=row.id, date=date(2024, 5, 1), value=value))
@@ -429,7 +431,50 @@ def test_search_endpoint_caches_by_normalized_query_and_locale(monkeypatch):
     run = lambda q, limit=50: asyncio.run(api.search(q=q, limit=limit, db=None))
     run("Дизель"); run("  дизель "); run("дизель", limit=20)
     assert calls == ["Дизель", "дизель"]   # same normalized query/limit is one computation
-    assert len(store) == 2
+    # each computation keeps a fresh entry and a day-long "last good" copy
+    assert len(store) == 4 and sum(key.endswith(":last") for key in store) == 2
+
+
+def test_search_endpoint_serves_last_good_answer_when_database_fails(monkeypatch):
+    """13.11.2026: a stalled database gives a repeated query its earlier answer and a new query 503, never 500."""
+    import asyncio
+    import pytest
+    from fastapi import HTTPException
+    from sqlalchemy.exc import DBAPIError
+    from app.api import search as api
+
+    store, state = {}, {"down": False}
+
+    async def fake_get(key):
+        return store.get(key)
+
+    async def fake_set(key, value, ttl=None):
+        store[key] = value
+
+    async def fake_search(db, q, *, limit):
+        if state["down"]:
+            raise DBAPIError("SELECT 1", {}, Exception("canceling statement due to statement timeout"))
+        return {"results": [{"key": q}], "total": 1, "has_more": False, "version": "x"}
+
+    monkeypatch.setattr(api, "cache_get", fake_get)
+    monkeypatch.setattr(api, "cache_set", fake_set)
+    monkeypatch.setattr(api, "federated_search", fake_search)
+    run = lambda q: asyncio.run(api.search(q=q, limit=50, db=None))
+    good = run("врп")
+    # the fresh entry expired, the database is stalled
+    for key in [k for k in store if not k.endswith(":last")]:
+        del store[key]
+    state["down"] = True
+    assert run("врп") == good
+    with pytest.raises(HTTPException) as failure:
+        run("новый запрос")
+    assert failure.value.status_code == 503 and failure.value.headers["Retry-After"] == "15"
+    # a defect in search itself is not hidden behind 503
+    async def broken(db, q, *, limit):
+        raise KeyError("bug")
+    monkeypatch.setattr(api, "federated_search", broken)
+    with pytest.raises(KeyError):
+        run("ещё запрос")
 
 
 def test_latest_value_is_attached_to_series_rows_without_changing_order(search_client):
@@ -462,3 +507,15 @@ def test_latest_trend_needs_three_points():
 def test_dollar_requests_find_the_exchange_rate_first(search_client, q):
     rows = get(search_client, q)['results']
     assert rows and rows[0]['code'] == 'usd-rub'
+
+
+@pytest.mark.parametrize('q', ['врп', 'ВРП', 'валовый региональный продукт', 'врп москва', 'grp moscow'])
+def test_grp_abbreviation_finds_gross_regional_product(search_client, q):
+    """13.11.2026: «врп» и «врп москва» давали пустую выдачу на боевом, хотя ряд есть у каждого региона."""
+    body = get(search_client, q)
+    assert any(item.get('code') == 'valovoy-regionalnyy-produkt' for item in body['results']), body
+
+
+def test_grp_does_not_hijack_gdp(search_client):
+    codes = [item.get('code') for item in get(search_client, 'ввп')['results']]
+    assert 'valovoy-regionalnyy-produkt' not in codes

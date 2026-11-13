@@ -672,16 +672,21 @@ async def _entities(db: AsyncSession, geometry: list[dict], intent: SearchIntent
             allowed.add(("country", None))
     region_ids = [item["id"] for item, _score in candidates if item["kind"] == "region"]
     if region_ids:
-        annual = select(RegionDataPoint.region_id).where(RegionDataPoint.region_id.in_(region_ids), _finite(RegionDataPoint.value))
-        monthly = select(RegionMonthlyPoint.region_id).where(RegionMonthlyPoint.region_id.in_(region_ids), _finite(RegionMonthlyPoint.value))
-        rows = await db.execute(annual.union(monthly))
+        # «Есть ли у региона хоть одна точка» — проверка существования, а не чтение всех точек региона.
+        # После заливки 13,1 млн месячных цен (09.11.2026) прежний UNION читал около 160 тыс. строк на регион
+        # и упирался в statement_timeout: запрос с названием региона («саратовская область») отвечал 500
+        # через 31 с при каждом вызове (сверено на боевом 13.11.2026). Индексы по region_id есть у обеих таблиц.
+        has_annual = exists(select(1).where(RegionDataPoint.region_id == Region.id, _finite(RegionDataPoint.value)))
+        has_monthly = exists(select(1).where(RegionMonthlyPoint.region_id == Region.id, _finite(RegionMonthlyPoint.value)))
+        rows = await db.execute(select(Region.id).where(Region.id.in_(region_ids), or_(has_annual, has_monthly)))
         allowed.update(("region", item) for item in rows.scalars())
     subnational_ids = [item["id"] for item, _score in candidates if item["kind"] == "subnational_region"]
     if subnational_ids:
-        rows = await db.execute(select(SubnationalDataPoint.region_id).join(SubnationalIndicator,
+        has_listed_fact = exists(select(1).select_from(SubnationalDataPoint).join(SubnationalIndicator,
             SubnationalIndicator.id == SubnationalDataPoint.indicator_id).where(
-            SubnationalDataPoint.region_id.in_(subnational_ids), SubnationalIndicator.is_listed.is_(True),
-            _finite(SubnationalDataPoint.value)).distinct())
+            SubnationalDataPoint.region_id == SubnationalRegion.id, SubnationalIndicator.is_listed.is_(True),
+            _finite(SubnationalDataPoint.value)))
+        rows = await db.execute(select(SubnationalRegion.id).where(SubnationalRegion.id.in_(subnational_ids), has_listed_fact))
         allowed.update(("subnational_region", item) for item in rows.scalars())
     country_names = {item["country_slug"]: item["name_en"] if locale == "en" else item["name_ru"]
         for item in geometry if item["kind"] == "country"}

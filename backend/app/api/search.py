@@ -1,9 +1,11 @@
 """Public federated discovery; read-only, bounded and locale-aware."""
 
+import asyncio
 import hashlib
 import logging
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set
@@ -21,6 +23,15 @@ router = APIRouter(tags=["search"])
 # may lag by this much, never more.
 _RESULT_TTL_SECONDS = 600
 
+# Последний удачный ответ на тот же запрос. 11–12.11.2026 поиск шесть раз давал всплеск 5xx: база стояла на чтении
+# с диска, и каждый запрос, даже повторный («врп», «инфляция»), упирался в statement_timeout и отвечал 500.
+# Теперь при отказе базы повторный запрос получает вчерашний ответ, а новый — честное 503 «повторите» вместо 500.
+# Срок сутки: состав каталога меняется реже, а устаревший ответ отдаётся только вместо ошибки.
+_LAST_GOOD_TTL_SECONDS = 24 * 3600
+_RETRY_AFTER_SECONDS = 15
+# Отказ базы или её ожидания. Ошибка в самом поиске сюда не входит и остаётся 500: её нельзя прятать.
+_DATABASE_FAILURES = (DBAPIError, asyncio.TimeoutError, OSError)
+
 
 # Ревизия кэша меняется, когда меняется порядок или состав выдачи при том же публичном
 # `version` ответа (клиент сверяет `version`, поэтому его не трогаем): без этого после выкладки
@@ -36,6 +47,10 @@ def _cache_key(q: str, limit: int) -> str:
     return f"fe:search:{SEARCH_VERSION}:{_CACHE_REVISION}:{get_locale()}:{limit}:{digest}"
 
 
+def _last_good_key(key: str) -> str:
+    return f"{key}:last"
+
+
 @router.get("/search")
 async def search(
     q: str = Query(..., min_length=1, max_length=256),
@@ -47,11 +62,24 @@ async def search(
     cached = await cache_get(key)
     if cached is not None:
         return cached
-    result = await federated_search(db, q, limit=limit)
+    try:
+        result = await federated_search(db, q, limit=limit)
+    except _DATABASE_FAILURES as exc:
+        last_good = await cache_get(_last_good_key(key))
+        if last_good is not None:
+            logger.warning("search: database failed (%s), served the last good answer", type(exc).__name__)
+            return last_good
+        logger.warning("search: database failed (%s), no earlier answer for this query", type(exc).__name__)
+        raise HTTPException(
+            status_code=503,
+            detail="Search is temporarily unavailable",
+            headers={"Retry-After": str(_RETRY_AFTER_SECONDS)},
+        ) from exc
     try:
         # Latest value and a short trend for the first rows; presentation only, never reorders.
         await attach_latest(db, result.get("results") or [])
     except Exception:
         logger.warning("search latest-value enrichment skipped", exc_info=True)
     await cache_set(key, result, ttl=_RESULT_TTL_SECONDS)
+    await cache_set(_last_good_key(key), result, ttl=_LAST_GOOD_TTL_SECONDS)
     return result

@@ -379,6 +379,15 @@ def test_weekly_primary_publishes_changed_siblings_after_commit(tmp_path, monkey
                 await bump(*namespaces)
 
             monkeypatch.setattr(cache, "bump_namespaces", bump_and_read)
+            # 13.11.2026: сегменты ушли вперёд, а общий ряд нет — это отставание общего ряда, о нём идёт алерт.
+            from app.services import alerting
+
+            lag_alerts = []
+
+            async def record_zero_parse(code, existing_points):
+                lag_alerts.append(code)
+
+            monkeypatch.setattr(alerting, "alert_zero_parse", record_zero_parse)
 
             class FixtureWeekly(weekly.RosstatWeeklyCpiParser):
                 async def _fetch_and_parse(self, db, indicator, cfg, fetch_log):
@@ -393,6 +402,9 @@ def test_weekly_primary_publishes_changed_siblings_after_commit(tmp_path, monkey
                 await writer.commit()
                 await FixtureWeekly().run(writer, indicator, log)
                 assert log.status == "success"
+                # Сегмент записан, каскад не тронут; разрыв общего ряда назван в журнале и поднят алертом.
+                assert lag_alerts == ([] if primary_has_points else ["inflation-weekly"])
+                assert ("lags segments" in (log.error_message or "")) is (not primary_has_points)
             # Sibling changes also trigger the primary forecast hook, whose
             # generation must be published even when the primary fact is empty.
             expected_codes = {"inflation-weekly", "inflation-weekly-food"}

@@ -7,7 +7,9 @@ from app.services.search_intent import parse_intent
 @pytest.mark.parametrize("query,expected", [
     ("цены по регионам", (("цены",),)),
     ("яйца по регионам", (("яйца",),)),
-    ("ВРП по регионам", (("врп",),)),
+    # 13.11.2026: «врп» стало понятием (раньше оставалось буквальным словом и ничего не находило).
+    ("ВРП по регионам", (("valovoy-regionalnyy-produkt", "валовой региональный продукт",
+                          "валового регионального продукта", "gross regional product"),)),
     ("безработица в регионах", None),
 ])
 def test_scope_words_dropped(query, expected):

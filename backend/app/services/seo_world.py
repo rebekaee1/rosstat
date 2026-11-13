@@ -12,11 +12,14 @@ from __future__ import annotations
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
 
+import hashlib
 from datetime import date
 from html import escape
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.cache import cache_get, cache_set, versioned_key
 
 from app.data.eurostat_titles_ru import country_in, country_prepositional, listing_category_ru
 from app.data.eurostat_units_ru import unit_suffix
@@ -254,6 +257,61 @@ def _category_label(category_ru: str | None, *, fallback: str | None = None) -> 
     from app.services.seo_i18n import localize_category_name
 
     return localize_category_name(category_ru, fallback=fallback)
+
+
+_CATEGORY_SIBLINGS_SHOWN = 12
+_CATEGORY_SIBLINGS_TTL_SECONDS = 6 * 3600
+
+
+async def _category_siblings(db: AsyncSession, country_id: int, indicator: WorldIndicator) -> list[WorldIndicator]:
+    """Ссылки «Ещё в разделе»: до 12 главных карточек той же категории страны, кроме самого ряда.
+
+    Выбор главных карточек требует всех листинговых рядов категории. До 13.11.2026 они читались на каждом
+    рендере страницы ряда: в среднем 1766 строк и 1,4 МБ с диска ради двенадцати ссылок. По `pg_stat_statements`
+    боевого это 13,6 % всех чтений базы с 26.09 и 36,8 % в замере 13.11 — главный вклад в «диск тормозит».
+    Состав блока зависит только от страны и категории, поэтому первые тринадцать главных карточек считаются один
+    раз на версию каталога и хранятся в кэше как список id; страница достаёт их по первичному ключу.
+    Отличия от прежнего расчёта. Ряд, который сам является главной карточкой, больше не получает ссылку на
+    другую частоту той же карточки (раньше она попадала в список как «сосед»). В категориях около половины рядов
+    носят одинаковые названия; при равном названии порядок теперь задаёт id, поэтому из одноимённых вариантов
+    выбирается один и тот же. Сверка на 24 рядах боевого 13.11.2026: тексты ссылок совпали во всех случаях,
+    у десяти рядов ссылка ведёт на другой одноимённый вариант (прежний порядок одноимённых зависел от плана запроса).
+    """
+    category = indicator.category_ru
+    key = None
+    try:
+        digest = hashlib.sha1((category or "").encode("utf-8")).hexdigest()[:16]
+        key = await versioned_key("world", f"category-siblings:v1:{country_id}:{digest}")
+        ids = await cache_get(key)
+    except Exception:  # noqa: BLE001 - кэш не обязателен: без него блок считается по-старому
+        ids = None
+    if ids:
+        rows = (
+            await db.execute(
+                select(WorldIndicator)
+                .options(*world_listing_light_options())
+                .where(WorldIndicator.id.in_(ids), WorldIndicator.is_listed.is_(True))
+            )
+        ).scalars().all()
+        by_id = {row.id: row for row in rows}
+        primaries = [by_id[i] for i in ids if i in by_id]
+    else:
+        listed = (
+            await db.execute(
+                select(WorldIndicator)
+                .options(*world_listing_light_options())
+                .where(
+                    WorldIndicator.country_id == country_id,
+                    WorldIndicator.category_ru == category,
+                    WorldIndicator.is_listed.is_(True),
+                )
+                .order_by(WorldIndicator.name_ru, WorldIndicator.id)
+            )
+        ).scalars().all()
+        primaries = _pick_card_primaries(list(listed))[: _CATEGORY_SIBLINGS_SHOWN + 1]
+        if key is not None and primaries:
+            await cache_set(key, [row.id for row in primaries], ttl=_CATEGORY_SIBLINGS_TTL_SECONDS)
+    return [row for row in primaries if row.code != indicator.code][:_CATEGORY_SIBLINGS_SHOWN]
 
 
 def _pick_card_primaries(inds: list[WorldIndicator]) -> list[WorldIndicator]:
@@ -1965,25 +2023,7 @@ async def render_world_indicator_html(
             f"<ul>{items}</ul></section>"
         )
 
-    # Все листинговые ряды раздела нужны целиком по составу (выбор primary
-    # по card/merge-ключу), но без тяжёлых SEO-текстов.
-    cat_siblings = (
-        await db.execute(
-            select(WorldIndicator)
-            .options(*world_listing_light_options())
-            .where(
-                WorldIndicator.country_id == country.id,
-                WorldIndicator.category_ru == indicator.category_ru,
-                WorldIndicator.code != indicator.code,
-                WorldIndicator.is_listed.is_(True),
-            )
-            .order_by(WorldIndicator.name_ru)
-        )
-    ).scalars().all()
-    cat_siblings = [
-        s for s in _pick_card_primaries(list(cat_siblings))
-        if s.code != indicator.code
-    ][:12]
+    cat_siblings = await _category_siblings(db, country.id, indicator)
     siblings_html = ""
     if cat_siblings:
         items = "".join(
