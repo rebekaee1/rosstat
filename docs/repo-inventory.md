@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2244  ·  **Строк:** 1 417 953  ·  **Токенов (≈):** 13 513 933
+**Файлов:** 2244  ·  **Строк:** 1 417 964  ·  **Токенов (≈):** 13 514 308
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 915 | 319 627 | 3 495 768 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 19 | 1 144 | 17 324 |
-| `docs` | 144 | 884 746 | 7 602 930 |
+| `deploy` | 19 | 1 145 | 17 373 |
+| `docs` | 144 | 884 756 | 7 603 256 |
 | `frontend` | 1014 | 184 423 | 2 020 294 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -40,7 +40,7 @@
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
-| `docs/backlog.md` | 3 421 | 122 326 |
+| `docs/backlog.md` | 3 431 | 122 652 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `docs/data-contracts.md` | 1 193 | 60 505 |
@@ -250,9 +250,9 @@
 | `frontend/src/components/RegionAnnualChart.jsx` | 517 | 5 575 |
 | `backend/tests/test_derived_ops.py` | 633 | 5 574 |
 | `docs/research/_fpsr_raw/agent05.json` | 541 | 5 566 |
+| `deploy/approved-shas.txt` | 189 | 5 557 |
 | `frontend/src/styles/z3-home.css` | 411 | 5 522 |
 | `backend/app/services/emiss_regional_parser.py` | 535 | 5 515 |
-| `deploy/approved-shas.txt` | 188 | 5 508 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
 | `backend/tests/test_indicator_year_landing.py` | 537 | 5 494 |
 | `backend/app/api/export.py` | 598 | 5 470 |
