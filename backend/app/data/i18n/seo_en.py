@@ -333,7 +333,53 @@ PAGE_META_EN: dict[str, PageSeo] = {
             "Forecast Economy, about, country economic data, "
             "macroeconomic analytics, official statistics, economic forecasts"
         ),
-        links=(("/privacy", "Privacy policy"), ("/", "Home")),
+        links=(
+            ("/methodology", "How we calculate forecasts"),
+            ("/privacy", "Privacy policy"),
+            ("/", "Home"),
+        ),
+        # 2026-11-13: same texts as the About cards in the app (`x4.about.*` in
+        # messages.en.js); the server page carried the intro only.
+        blocks=(
+            SeoBlock(
+                "Where the data comes from",
+                "Official sources only. News and expert opinions never enter the numbers. "
+                "Sources: Eurostat, the IMF, the U.S. Bureau of Labor Statistics, the Bureau of "
+                "Economic Analysis, the Federal Reserve, and national statistical offices and "
+                "central banks.",
+            ),
+            SeoBlock(
+                "What is inside",
+                "Data for countries, Russian regions and every US state. Russia is covered in the "
+                "greatest depth: prices and inflation, the key rate, GDP, jobs, trade, the budget "
+                "and markets.",
+            ),
+            SeoBlock(
+                "Forecasts",
+                "A forecast is a calculation from the indicator's own history, not an editorial "
+                "opinion. A chart always shows what is fact and what is an estimate.",
+            ),
+            SeoBlock(
+                "Who it is for",
+                "Analysts and investors, business owners, journalists and students, and anyone who "
+                "wants official figures rather than just news headlines.",
+            ),
+            SeoBlock(
+                "Free",
+                "Charts, tables and forecasts are open to everyone. Downloading data and chart "
+                "images needs a free account.",
+            ),
+            SeoBlock(
+                "What we do not do",
+                "We do not give investment, financial or legal advice. A forecast is a statistical "
+                "estimate from past data and may not come true.",
+            ),
+            SeoBlock(
+                "Found a mistake or have a question?",
+                "Write to us: we answer questions about cooperation and remarks on the data. "
+                "Email: info@forecasteconomy.com.",
+            ),
+        ),
     ),
     "research": PageSeo(
         slug="research",

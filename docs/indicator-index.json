@@ -9758,12 +9758,12 @@
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 145,
+          "line": 147,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 146,
+          "line": 148,
           "kind": "tests"
         },
         {
@@ -12902,7 +12902,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 973,
+          "line": 1019,
           "kind": "other"
         },
         {
@@ -16953,27 +16953,27 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 504,
+          "line": 550,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 530,
+          "line": 576,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 569,
+          "line": 615,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 679,
+          "line": 725,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 981,
+          "line": 1027,
           "kind": "other"
         },
         {
@@ -17358,27 +17358,27 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 360,
+          "line": 406,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 476,
+          "line": 522,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 499,
+          "line": 545,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 531,
+          "line": 577,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 607,
+          "line": 653,
           "kind": "seo"
         },
         {
@@ -17848,47 +17848,47 @@
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 24,
+          "line": 26,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 25,
+          "line": 27,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 36,
+          "line": 38,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 39,
+          "line": 41,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 46,
+          "line": 48,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 62,
+          "line": 64,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 67,
+          "line": 69,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 141,
+          "line": 143,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 142,
+          "line": 144,
           "kind": "tests"
         },
         {
@@ -40174,7 +40174,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1168,
+          "line": 1214,
           "kind": "other"
         },
         {
@@ -42367,7 +42367,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 969,
+          "line": 1015,
           "kind": "other"
         },
         {
@@ -44697,7 +44697,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 410,
+          "line": 456,
           "kind": "other"
         },
         {
@@ -45537,47 +45537,47 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358224,
+          "line": 358233,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358225,
+          "line": 358234,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358250,
+          "line": 358259,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358284,
+          "line": 358293,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358285,
+          "line": 358294,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358312,
+          "line": 358321,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358346,
+          "line": 358355,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358347,
+          "line": 358356,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358369,
+          "line": 358378,
           "kind": "other"
         },
         {
@@ -47777,7 +47777,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 989,
+          "line": 1035,
           "kind": "other"
         },
         {
@@ -48609,7 +48609,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 993,
+          "line": 1039,
           "kind": "other"
         },
         {
@@ -49491,7 +49491,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 997,
+          "line": 1043,
           "kind": "other"
         },
         {
@@ -52965,22 +52965,22 @@
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 30,
+          "line": 32,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 43,
+          "line": 45,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 57,
+          "line": 59,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 60,
+          "line": 62,
           "kind": "tests"
         },
         {
@@ -54454,7 +54454,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 531,
+          "line": 577,
           "kind": "other"
         },
         {
@@ -54619,7 +54619,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 500,
+          "line": 546,
           "kind": "seo"
         },
         {
@@ -56562,7 +56562,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 985,
+          "line": 1031,
           "kind": "other"
         },
         {
@@ -60248,7 +60248,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 593,
+          "line": 639,
           "kind": "other"
         },
         {
@@ -60323,7 +60323,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 547,
+          "line": 593,
           "kind": "seo"
         },
         {
@@ -62799,7 +62799,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1001,
+          "line": 1047,
           "kind": "other"
         },
         {
@@ -63733,7 +63733,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 410,
+          "line": 456,
           "kind": "other"
         },
         {
@@ -70499,12 +70499,12 @@
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 26,
+          "line": 28,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 37,
+          "line": 39,
           "kind": "tests"
         },
         {
@@ -70699,7 +70699,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 347677,
+          "line": 347686,
           "kind": "other"
         },
         {
@@ -72331,12 +72331,12 @@
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 147,
+          "line": 149,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 148,
+          "line": 150,
           "kind": "tests"
         },
         {
@@ -77033,22 +77033,22 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 505,
+          "line": 551,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 592,
+          "line": 638,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 616,
+          "line": 662,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 977,
+          "line": 1023,
           "kind": "other"
         },
         {
@@ -77233,22 +77233,22 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 361,
+          "line": 407,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 476,
+          "line": 522,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 546,
+          "line": 592,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 564,
+          "line": 610,
           "kind": "seo"
         },
         {
@@ -77378,22 +77378,22 @@
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 31,
+          "line": 33,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 69,
+          "line": 71,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 70,
+          "line": 72,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_display_adapter.py",
-          "line": 150,
+          "line": 152,
           "kind": "tests"
         },
         {
@@ -78193,7 +78193,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 352245,
+          "line": 352254,
           "kind": "other"
         },
         {
@@ -89514,7 +89514,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 657,
+          "line": 703,
           "kind": "other"
         },
         {
@@ -91190,7 +91190,7 @@
         },
         {
           "file": "backend/app/api/sitemap.py",
-          "line": 2094,
+          "line": 2095,
           "kind": "other"
         },
         {
@@ -92075,92 +92075,92 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 646,
+          "line": 692,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 650,
+          "line": 696,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 652,
+          "line": 698,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 656,
+          "line": 702,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 657,
+          "line": 703,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 658,
+          "line": 704,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 661,
+          "line": 707,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 662,
+          "line": 708,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1163,
+          "line": 1209,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1168,
+          "line": 1214,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1183,
+          "line": 1229,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1184,
+          "line": 1230,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1189,
+          "line": 1235,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1202,
+          "line": 1248,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1327,
+          "line": 1373,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1328,
+          "line": 1374,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1331,
+          "line": 1377,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1337,
+          "line": 1383,
           "kind": "other"
         },
         {
@@ -92590,7 +92590,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 594,
+          "line": 640,
           "kind": "seo"
         },
         {
@@ -97465,7 +97465,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 348723,
+          "line": 348732,
           "kind": "other"
         },
         {
@@ -102419,7 +102419,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 617,
+          "line": 663,
           "kind": "other"
         },
         {
@@ -102514,7 +102514,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 565,
+          "line": 611,
           "kind": "seo"
         },
         {
@@ -113141,42 +113141,42 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 512,
+          "line": 558,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 515,
+          "line": 561,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 525,
+          "line": 571,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 810,
+          "line": 856,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1163,
+          "line": 1209,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1328,
+          "line": 1374,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1331,
+          "line": 1377,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1337,
+          "line": 1383,
           "kind": "other"
         },
         {
@@ -118119,7 +118119,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 965,
+          "line": 1011,
           "kind": "other"
         },
         {

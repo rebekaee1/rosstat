@@ -5,6 +5,8 @@
 и даты. Плюс синхронность списка CPI-кодов с frontend/src/lib/format.js.
 """
 import re
+
+import pytest
 from datetime import date
 from pathlib import Path
 
@@ -243,3 +245,36 @@ def test_bea_catalog_unit_ru_all_map_to_latin_en():
         assert en, row["code"]
         assert not contains_cyrillic(en), (row["code"], row["unit_ru"], en)
         assert not contains_cyrillic(public_unit_en(row["unit_ru"])), row["code"]
+
+
+@pytest.mark.parametrize("storage, unit_ru, expected", [
+    ("PC", "%", "%"),
+    ("PC", "изменение за год, %", "annual change, %"),
+    ("HR", "часов в неделю", "hours per week"),
+    ("GWH", "ГВт·ч", "GWh"),
+    ("KTOE", "тыс. т н. э.", "thousand tonnes of oil equivalent"),
+    ("BAL", "сальдо", "balance"),
+    ("YR", "лет", "years"),
+    ("CAD", "тыс. канадских долларов", "thousand CAD"),
+    # Коды валют переводятся в самих себя.
+    ("EUR", "евро", "EUR"),
+    ("USD", "долларов США", "USD"),
+    ("JPY", "иены", "JPY"),
+    # Нет русской единицы или перевода — прежнее поведение.
+    ("NR", "", "NR"),
+    ("PC", None, "PC"),
+    ("USD", "неизвестная единица", "USD"),
+])
+def test_short_uppercase_measure_code_uses_curated_unit(storage, unit_ru, expected):
+    """13.11.2026: «5 PC» на английских страницах — код меры Евростата вместо «%»."""
+    from app.services.display import public_unit_en
+
+    assert public_unit_en(unit_ru, unit_storage=storage) == expected
+
+
+def test_english_prose_storage_is_still_preferred():
+    from app.services.display import public_unit_en
+
+    assert public_unit_en("млн долл.", unit_storage="Millions of current dollars") == "Millions of current dollars"
+    assert public_unit_en("занятых", unit_storage="Jobs") == "Jobs"
+

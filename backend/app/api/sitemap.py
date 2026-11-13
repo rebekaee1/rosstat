@@ -1436,7 +1436,7 @@ async def og_image_world_vs(
         _match_concept_pair,
     )
     from app.services.world_rank_values import (
-        apply_rank_series,
+        apply_rank_series_for,
         ranking_display_name,
         ranking_public_unit,
         ranking_value_mode,
@@ -1445,7 +1445,8 @@ async def og_image_world_vs(
     loc = get_locale()
     en = loc == "en"
     canon_a, canon_b = sorted((slug_a, slug_b))
-    cache_key = f"vs:{loc}:{canon_a}:{canon_b}:{concept_slug}" + (":portrait" if portrait else ":landscape")
+    # v2 (13.11.2026): прежние картинки могли нести «темп от темпа» у рядов МВФ, Китая и Бразилии.
+    cache_key = f"vs:v2:{loc}:{canon_a}:{canon_b}:{concept_slug}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         concept = CONCEPT_BY_SLUG.get(concept_slug)
@@ -1473,8 +1474,8 @@ async def og_image_world_vs(
             mode = ranking_value_mode(
                 concept.slug, ((country_a, ind_a), (country_b, ind_b))
             )
-            series_a = apply_rank_series(raw_a, mode)
-            series_b = apply_rank_series(raw_b, mode)
+            series_a = apply_rank_series_for(ind_a, raw_a, mode)
+            series_b = apply_rank_series_for(ind_b, raw_b, mode)
             if len(series_a) < 2 or len(series_b) < 2:
                 return Response(status_code=404)
 
