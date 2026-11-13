@@ -34,7 +34,7 @@ from app.models import (
 from app.services import site_paths as paths
 from app.services.locale import get_locale
 from app.services.search_intent import (
-    SEARCH_VERSION, SearchIntent, complete_nominal_alternative, geo_aliases, literal_identifier, match_score, matching_alternatives, normalize, parse_intent, phrase, strip_geography,
+    CONCEPTS, SEARCH_VERSION, SearchIntent, complete_nominal_alternative, geo_aliases, literal_identifier, match_score, matching_alternatives, normalize, parse_intent, phrase, region_reading, strip_geography,
 )
 from app.services.search_language import measure_matches, relevance_bonus, title_frequencies
 from app.services.search_language_sql import measure_constraints, _pattern_clause
@@ -74,6 +74,9 @@ _RUSSIA_HEADLINES = {
     "reserves": "international-reserves", "mortality": "death-rate", "births": "birth-rate",
     "copper": "copper", "silver": "silver",
     "budget-expenditure": "budget-expenditure", "budget-revenue": "budget-revenue",
+    # «государство» (13.11.2026): государственное потребление выше рядов, где слово стоит в хвосте названия
+    # («…корпорациями и государством»). Состав выдачи прежний, меняется только первая строка.
+    "государство": "gdp-government",
 }
 
 
@@ -1167,16 +1170,64 @@ def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
     return key
 
 
-async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _nearest: bool = True) -> dict:
+_MAX_SECOND_READINGS = 3
+
+
+async def _title_concept(db: AsyncSession, title: str) -> tuple[str, ...] | None:
+    """Понятие словаря для точного названия национального ряда: «Цена дизельного топлива» → дизельное топливо."""
+    codes = set((await db.execute(select(Indicator.code).where(Indicator.is_active.is_(True),
+        or_(Indicator.name == title, Indicator.name_en == title)).limit(8))).scalars())
+    return next((alternatives for _aliases, alternatives in CONCEPTS if alternatives[0] in codes), None) if codes else None
+
+
+async def _second_readings(db: AsyncSession, raw: str, geometry: list[dict], intent: SearchIntent,
+        literal_title: str | None) -> list[SearchIntent]:
+    """Другие чтения тех же слов. Пробуются только после пустой выдачи обычного чтения, не больше трёх.
+
+    1. Точное название ряда занимает весь свой отрезок запроса. Сначала запрос читается без защиты названия:
+       «индекс цен производителей промышленность» — полное название ИЦП, а не два разных показателя.
+    2. Затем название заменяется понятием своего ряда (код ряда — первая замена понятия в словаре), остальные
+       слова остаются как были: «цена дизельного топлива калужская область» — название национального ряда
+       вместе с регионом не находит ничего, понятие «дизельное топливо» ведёт к региональному ряду.
+    3. Второе чтение географии, см. ``region_reading``.
+    Запрос с результатами сюда не попадает, поэтому работающие запросы отвечают как раньше.
+    """
+    readings: list[SearchIntent] = []
+    literal = literal_title if literal_title and intent.literal else None
+    if literal:
+        relaxed = parse_intent(raw, geometry)
+        if not relaxed.error and relaxed.literal is None:
+            readings.append(relaxed)
+        concept = await _title_concept(db, literal)
+        if concept:
+            terms = tuple(dict.fromkeys(concept if term == (intent.literal,) else term for term in intent.terms))
+            readings.append(replace(intent, terms=terms, literal=None))
+    regional = region_reading(raw, intent, geometry, literal_content=literal)
+    if regional is not None:
+        readings.append(regional)
+    unique: list[SearchIntent] = []
+    for reading in readings:
+        if (reading.terms or reading.regions) and reading != intent and reading not in unique:
+            unique.append(reading)
+    return unique[:_MAX_SECOND_READINGS]
+
+
+async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _nearest: bool = True,
+        _reading: tuple[SearchIntent, list[dict], dict[str, WorldCountry]] | None = None) -> dict:
     """One query contract with bounded SQL and truthful availability states."""
     empty = {"results": [], "total": 0, "has_more": False, "version": SEARCH_VERSION}
     if not phrase(raw):
         return empty
     if not re.search(r"[a-zа-я]", normalize(raw)):
         return {**empty, "reason": "unsupported_query"}
-    geometry, countries = await _geometry(db)
-    literal_title = await _literal_title(db, raw, geometry)
-    intent = parse_intent(raw, geometry, literal_content=literal_title)
+    if _reading is None:
+        geometry, countries = await _geometry(db)
+        literal_title = await _literal_title(db, raw, geometry)
+        intent = parse_intent(raw, geometry, literal_content=literal_title)
+    else:
+        # Второе чтение того же запроса: намерение уже разобрано, география прочитана первым проходом.
+        literal_title = None
+        intent, geometry, countries = _reading
     fx_quoted_countries = {
         "usd-jpy": (frozenset(("united-states", "japan")), "japan"),
         "usd-rub": (frozenset(("united-states", "russia")), "russia"),
@@ -1258,6 +1309,12 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
     if intent.corrected:
         response["corrected_query"] = intent.corrected
     if not final:
+        if _reading is None:
+            # Обычное чтение ничего не нашло: пробуем другие чтения тех же слов (не больше трёх), первое с результатом — ответ.
+            for reading in await _second_readings(db, raw, geometry, intent, literal_title):
+                second = await federated_search(db, raw, limit=limit, _nearest=False, _reading=(reading, geometry, countries))
+                if second["results"]:
+                    return second
         response["reason"] = "no_coverage"
         plan = nearest_plan(raw) if _nearest else None
         if plan:

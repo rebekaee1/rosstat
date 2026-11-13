@@ -106,7 +106,11 @@ VOCABULARY_CONCEPTS = (
     (("наличные в обращении", "cash in circulation", "наличных денег в обращении"), ("currency-circulation", "m0", "currency in circulation", "cash in circulation", "наличн")),
     (("строительные работы", "объем строительных работ", "construction work", "construction work volume"), ("construction-work", "construction work", "construction volume", "объем работ", "строительства")),
     (("сальдо текущего счета", "текущий счет", "current account balance", "current account"), ("current-account", "current account", "текущего счета", "текущий счет")),
-    (("естественный прирост населения", "natural population change", "natural increase"), ("natural-change", "natural increase", "natural population", "естественный прирост")),
+    # «Естественная убыль населения» (13.11.2026) — тот же ряд с обратным знаком; иначе слово «население» требовало
+    # численность населения и запрос оставался пустым.
+    (("естественный прирост населения", "естественная убыль населения", "естественной убыли населения", "убыль населения",
+        "убыли населения", "natural population change", "natural increase", "natural decrease", "natural population decline"),
+        ("natural-change", "natural increase", "natural population", "естественный прирост")),
     (("государственное потребление", "government consumption"), ("government-consumption", "government consumption", "государственное потребление", "потребление государственного управления")),
     (("расходы бюджета", "бюджетные расходы", "budget expenditure", "government budget spending"), ("budget-spending", "budget expenditure", "расходы", "budget spending")),
     (("к предыдущему году", "к прошлому году"), ("search-mode-yoy",)),

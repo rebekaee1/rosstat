@@ -53,7 +53,11 @@ CONCEPTS = (
     (("импорт товаров", "imports of goods", "goods imports"), ("imports", "импорт товаров", "imports of goods")),
     (("население", "населения", "population"), ("population", "населен", "resident population")),
     (("промпроизводство", "ипп", "industrial production"), ("ipi", "industrial production", "промышленного производства")),
-    (("ицп", "ppi", "цены производителей"), ("ppi", "producer price", "цен производителей")),
+    # 13.11.2026: полное название ИЦП у Росстата — «индекс цен производителей промышленных товаров». Слово
+    # «промышленность» рядом с ценами производителей — часть этого названия, а не индекс промышленного производства.
+    (("ицп", "ppi", "цены производителей", "индекс цен производителей промышленность", "индекс цен производителей в промышленности",
+        "индекс цен производителей промышленных товаров", "индекс цен производителей промышленной продукции",
+        "цены производителей промышленность", "ицп промышленность"), ("ppi", "producer price", "цен производителей")),
     (("нефть брент", "нефти брент", "нефть марки брент", "брент", "нефть", "нефти", "oil", "brent"), ("brent", "нефт", "crude oil")),
     (("золото", "золота", "gold"), ("gold", "золот")),
     # Остальные валюты ведомости Банка России (08.11.2026): раньше доллара, чтобы
@@ -79,7 +83,8 @@ CONCEPTS = (
     (("биткоин", "биткойн", "биткоина", "биткойна", "bitcoin", "btc"), ("btc-usd", "bitcoin", "биткоин")),
     (("ипотека", "ипотеки", "mortgage"), ("mortgage", "ипотеч")),
     (("розница", "retail trade"), ("retail", "рознич")),
-    (("бензин", "gasoline", "petrol"), ("fuel", "gasoline", "petrol", "бензин")),
+    # Падежи «бензина/бензину/бензине» раньше принимались за опечатку и давали строку «Ищем также: цена бензин»; выдача та же.
+    (("бензин", "бензина", "бензину", "бензине", "gasoline", "petrol"), ("fuel", "gasoline", "petrol", "бензин")),
     (("аи95", "аи 95", "ai95", "ai 95", "бензин 95"), ("fuel-ai95", "аи95", "аи 95", "ai95", "ceni-ai95")),
     (("аи92", "аи 92", "ai92", "ai 92", "бензин 92"), ("fuel-ai92", "аи92", "аи 92", "ai92", "ceni-ai92")),
     (("дизельное топливо", "дизель", "diesel"), ("fuel-diesel", "diesel", "дизель", "ceni-dt")),
@@ -101,6 +106,18 @@ CONCEPTS = (
     (("уголь", "coal"), ("coal", "угол")),
     (("количество студентов", "число студентов", "численность студентов"), ("численность студентов", "student enrollment", "students enrolled")),
     (("сталь", "steel"), ("steel", "сталь")),
+    # 13.11.2026: «икт» и «цифровизация» не знал ни один словарь, хотя у регионов есть раздел об использовании
+    # цифровых технологий и интернета. Замены — словосочетания из названий этих рядов: цена доступа в интернет
+    # («Средняя цена: абонентская плата за доступ в интернет») сюда не попадает.
+    (("икт", "цифровизация", "цифровизации", "цифровизацию", "цифровая трансформация", "цифровой трансформации",
+        "digitalization", "digitalisation"),
+        ("digital-technologies", "цифровых технологий", "сети интернет", "сеть интернет", "широкополосного доступа",
+        "персональных компьютеров", "электронного документооборота", "мобильного и фиксированного интернета",
+        "digital technologies")),
+    # «Стоимость грузоперевозок» — индекс тарифов на грузовые перевозки; объём перевозок («грузоперевозки») не меняется.
+    (("стоимость грузоперевозок", "стоимость грузовых перевозок", "стоимость перевозок грузов", "цена грузоперевозок",
+        "цены на грузоперевозки", "тарифы на грузоперевозки", "freight rates"),
+        ("indeksy-tarifov-na-gruzovye-perevozki", "тарифов на грузовые перевозки", "freight transport tariff", "freight tariff")),
     (("год к году", "year on year", "annual rate of change", "yoy"), ("search-mode-yoy",)),
     (("к прошлому периоду", "к предыдущему периоду", "period on period"), ("search-mode-pop",)),
     (("уровень", "level"), ("search-mode-level",)),
@@ -190,7 +207,39 @@ _CITY_REGION_ALIASES = {
     "kaliningradskaya-oblast": ("калининград", "калининграда", "калининграде"),
     "sankt-peterburg": ("питер", "питере", "питера"),
 }
-for _slug, _names in (*_CITY_REGION_ALIASES.items(), *CITY_REGION_ALIASES_R6A.items()):
+# Разговорные и краткие названия субъектов (13.11.2026): «цена бензина удмуртия» не находила Удмуртскую Республику.
+# Здесь только названия, которые до правки не находили ничего (сверено на каталоге 13.11.2026).
+_COLLOQUIAL_REGION_ALIASES = {
+    "udmurtskaya-respublika": ("удмуртия", "удмуртии", "удмуртию", "удмуртией", "udmurtia"),
+    "chuvashskaya-respublika": ("чувашия", "чувашии", "чувашию", "чувашией", "chuvashia"),
+    "chechenskaya-respublika": ("чечня", "чечни", "чечне", "чечню", "чечней", "chechnya"),
+    "respublika-bashkortostan": ("башкирия", "башкирии", "башкирию", "башкирией"),
+    "respublika-tyva": ("тува", "тувы", "туве", "туву", "tuva"),
+    "kabardino-balkarskaya-respublika": ("кабардино балкария", "кабардино балкарии", "кабардино балкарию"),
+    "karachaevo-cherkesskaya-respublika": ("карачаево черкесия", "карачаево черкесии", "карачаево черкесию"),
+    "hanty-mansiyskiy-ao": ("хмао",),
+    "yamalo-nenetskiy-ao": ("янао",),
+    "chukotskiy-ao": ("чукотка", "чукотки", "чукотке", "чукотку"),
+    "kamchatskiy-kray": ("камчатка", "камчатки", "камчатке", "камчатку"),
+    "primorskiy-kray": ("приморье", "приморья"),
+    "zabaykalskiy-kray": ("забайкалье", "забайкалья"),
+    "stavropolskiy-kray": ("ставрополье", "ставрополья"),
+    "krasnodarskiy-kray": ("кубань", "кубани"),
+}
+# Названия, по которым субъект уже находится одной строкой (слово стоит в официальном названии: «Кемеровская
+# область — Кузбасс», «…автономный округ — Югра»). Вместе с показателем они не разбирались («зарплата югра»,
+# «зарплата кемеровская область» — пусто). Как география читаются только во втором чтении (``region_reading``),
+# чтобы одиночный запрос «кузбасс» отвечал как раньше.
+SECOND_READING_REGION_ALIASES = {
+    "kemerovskaya-oblast": ("кемеровская область", "кемеровской области", "кемеровскую область", "кузбасс", "кузбасса", "кузбассе"),
+    "hanty-mansiyskiy-ao": ("югра", "югры", "югре", "югру", "ханты мансийский автономный округ",
+        "ханты мансийского автономного округа", "ханты мансийском автономном округе"),
+    "yamalo-nenetskiy-ao": ("ямал", "ямала", "ямале"),
+    "respublika-saha": ("якутия", "якутии", "якутию", "якутией", "yakutia"),
+    "respublika-severnaya-osetiya": ("северная осетия", "северной осетии", "северную осетию", "north ossetia"),
+    "respublika-krym": ("крыма", "крыму", "крымом"),
+}
+for _slug, _names in (*_CITY_REGION_ALIASES.items(), *CITY_REGION_ALIASES_R6A.items(), *_COLLOQUIAL_REGION_ALIASES.items()):
     REGION_ALIASES[_slug] = tuple(REGION_ALIASES.get(_slug, ())) + _names
 
 _EN_KEYS = "qwertyuiop[]asdfghjkl;'zxcvbnm,."
@@ -517,6 +566,7 @@ def geo_aliases(item: dict) -> tuple[str, ...]:
         values.extend(COUNTRY_ALIASES.get(item["slug"], ()))
     else:
         values.extend(REGION_ALIASES.get(item["slug"], ()))
+        values.extend(item.get("second_reading_aliases", ()))
         ru_name, en_name = phrase(item.get("name_ru")), phrase(item.get("name_en"))
         for prefix in ("республика ", "г "):
             if ru_name.startswith(prefix):
@@ -912,6 +962,35 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
 CONCEPTS_ALTERNATIVES = frozenset(alternatives for _aliases, alternatives in CONCEPTS)
 
 
+def region_reading(raw: str, intent: SearchIntent, geometry: list[dict], *,
+        literal_content: str | None = None) -> SearchIntent | None:
+    """Второе чтение географии; вызывающая сторона берёт его только когда обычное чтение ничего не нашло.
+
+    1. Названия из ``SECOND_READING_REGION_ALIASES`` («югра», «кемеровская область») читаются как субъект тем же
+       разбором, что и обычные названия: с падежами и самым длинным отрезком.
+    2. Неизвестное слово — начало названия ровно одного субъекта («калининградская степень износа»). Прилагательное
+       без слова «область» не псевдоним региона: иначе «московская биржа» стала бы Московской областью.
+    Состав и порядок выдачи работающих запросов этим не меняются: у них есть результат уже в первом чтении.
+    """
+    if intent.error:
+        return None
+    extended = [dict(item, second_reading_aliases=SECOND_READING_REGION_ALIASES[item["slug"]])
+        if item.get("kind") == "region" and item.get("slug") in SECOND_READING_REGION_ALIASES else item for item in geometry]
+    wider = parse_intent(raw, extended, allow_layout=False, literal_content=literal_content)
+    if not wider.error and wider.regions and (wider.regions, wider.terms) != (intent.regions, intent.terms):
+        return wider
+    if intent.countries or intent.regions or intent.literal:
+        return None
+    for term in intent.terms:
+        if term in CONCEPTS_ALTERNATIVES or term[0].startswith("search-") or " " in term[0]:
+            continue
+        hinted = region_prefix_keys(term[0], geometry, goods=False)
+        if len(hinted) == 1:
+            return SearchIntent(intent.query, intent.content, tuple(other for other in intent.terms if other is not term),
+                frozenset(("russia",)), frozenset(hinted), intent.year, intent.month, None, intent.corrected, None)
+    return None
+
+
 @lru_cache(maxsize=4096)
 def matching_alternatives(group: tuple[str, ...], *, literal: str | None = None) -> tuple[str, ...]:
     """Expand one unresolved nominal group identically for native SQL/scoring.
@@ -936,6 +1015,12 @@ def complete_nominal_alternative(source_group: tuple[str, ...], alternatives: tu
         and (len(source_group) > 1 or alternative != source_group[0]))
 
 
+# Настоящие слова, которые отличаются одной буквой от другого частого слова каталога. «Акциз» — не описка в
+# «акции»: без этого списка запрос «акциз» выдавал индекс МосБиржи (13.11.2026). Точное слово и его формы
+# («акцизы», «акцизов») находятся как обычно; закрыт только допуск одной опечатки.
+EXACT_ONLY_WORDS = frozenset(("акциз",))
+
+
 @lru_cache(maxsize=4096)
 def _alternative_plan(source_group: tuple[str, ...], literal: str | None):
     """Per-term data that depends on the query only, never on the scored row."""
@@ -948,7 +1033,7 @@ def _alternative_plan(source_group: tuple[str, ...], literal: str | None):
         unresolved = alternatives not in CONCEPTS_ALTERNATIVES and literal != alt
         control_neighbour = unresolved and " " not in p and _control_neighbour(p)
         bounded = re.compile(r"(?<![a-zа-я0-9])" + re.escape(p) + r"(?![a-zа-я0-9])")
-        plan.append((alt, p, nominal_group, unresolved, control_neighbour, bounded))
+        plan.append((alt, p, nominal_group, unresolved, control_neighbour, bounded, p not in EXACT_ONLY_WORDS))
     return tuple(plan)
 
 
@@ -966,7 +1051,7 @@ def match_score(intent: SearchIntent, *, code: str = "", names: tuple[str, ...] 
     score = 0
     for source_group in intent.terms:
         best = None
-        for alt, p, nominal_group, unresolved, control_neighbour, bounded in _alternative_plan(source_group, intent.literal):
+        for alt, p, nominal_group, unresolved, control_neighbour, bounded, typo_allowed in _alternative_plan(source_group, intent.literal):
             if len(p) < 3 and len(intent.terms) == 1 and not intent.literal and (phrase(code).startswith(p) or any(phrase(name).startswith(p) for name in name_norms)):
                 # A short autocomplete prefix is anchored to a real identity or
                 # title; it never matches an interior syllable/SEO keyword.
@@ -987,7 +1072,7 @@ def match_score(intent: SearchIntent, *, code: str = "", names: tuple[str, ...] 
                 value = 20
             elif not nominal_group and not control_neighbour and len(p) >= 3 and " " not in p and any(t.startswith(p) for t in hay_tokens):
                 value = 15
-            elif not nominal_group and not control_neighbour and len(p) >= (5 if unresolved else 4) and " " not in p and any(len(t) >= 4 and edit_distance_one(p, t) for t in hay_tokens):
+            elif typo_allowed and not nominal_group and not control_neighbour and len(p) >= (5 if unresolved else 4) and " " not in p and any(len(t) >= 4 and edit_distance_one(p, t) for t in hay_tokens):
                 value = 5
             else:
                 continue

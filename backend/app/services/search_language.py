@@ -181,7 +181,9 @@ def prepare_language(text: str) -> str:
             return "eur rub"
         if any(re.fullmatch(r"yuan|cny", word) for word in words) and not any(re.fullmatch(r"dollars?|доллар.*|usd|euros?|eur|евро|юан.*", word) for word in words):
             return "cny rub"
-    if has(r"завод.*|промышленност.*|factories|industry") and has(r"выпуска.*|производ.*|producing|produce|output"):
+    # «Цены производителей» рядом с промышленностью — индекс цен производителей (ИЦП), а не выпуск заводов.
+    producer_prices = has(r"производител.*") and has(r"цен.*|ицп")
+    if not producer_prices and has(r"завод.*|промышленност.*|factories|industry") and has(r"выпуска.*|производ.*|producing|produce|output"):
         return consume((r"завод.*|промышленност.*|factories|industry", r"выпуска.*|производ.*|producing|produce|output", r"продукц.*"), "industrial production")
     if not food_sector and has(r"продукт.*|food|grocery") and has(r"подорож.*|дороже|expensive|price.*"):
         return consume((r"продукт.*|food|grocery", r"подорож.*|дороже|expensive|price.*", r"магазин.*|shopping|become"), "food inflation")
@@ -217,6 +219,9 @@ def prepare_language(text: str) -> str:
 # selecting a neighbouring monetary measure.
 MEASURE_RULES = {
     "search-subject-price": ((r"price|цен",), ()),
+    # Сталь как товар рынка. Изделие из стали («чайник стальной», «кастрюля из нержавеющей стали») — другой предмет:
+    # без этого запрос «цены на сталь» выдавал посуду из средних потребительских цен (13.11.2026).
+    "steel": ((r"steel|стал",), (r"стальн|нержавеющ|stainless| из .*стали",)),
     "food-industry": ((r"food|пищев|продукт.*питани",),
         (r"consumer price|food price|food inflation|cpi|потребительск.*цен|продовольственн.*инфляц",)),
     "current-prices": ((r"current prices|current dollars|nominal|текущ.*цен|текущ.*доллар",),
