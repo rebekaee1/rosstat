@@ -278,10 +278,14 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
     """
     from app.core.cache import cache_get, cache_set
     from app.services.index_policy import (
+        GOOGLE_PRIORITY_SECTION,
+        google_priority_swap,
         google_short_sitemap_names,
         is_google_sitemap_agent,
+        ru_google_crawl_block_rules,
         ru_google_short_sitemap_enabled,
     )
+    from app.services.sitemap_priority import PRIORITY_SECTION
     from app.services.locale import apex_locale_en_enabled
     from app.services.site_urls import section_names
 
@@ -295,7 +299,9 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
 
     from app.services.sitemap_static import read_stats, section_lastmods
     generation = read_stats().get("generation", "dynamic")
-    variant = ":google-short" if short else ""
+    # Запрет обхода годовых страниц мира меняет состав короткого индекса — свой ключ кэша.
+    swap_priority = short and bool(ru_google_crawl_block_rules(ru_host=True))
+    variant = (":google-short" + (":pg" if swap_priority else "")) if short else ""
     cache_key = _sitemap_cache_key(f"index:lastmod-v1:{generation}{variant}", origin)
     cached = await cache_get(cache_key)
     if cached:
@@ -326,6 +332,12 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
                 names.extend(await world_regions_section_names(db))
     if short:
         names = google_short_sitemap_names(names)
+        if swap_priority:
+            # Годовые страницы мира закрыты роботу в robots.txt: в его индексе приоритетный
+            # шард заменён вариантом без этих адресов.
+            names = google_priority_swap(names, priority=PRIORITY_SECTION)
+            if PRIORITY_SECTION in lastmods:
+                lastmods = {**lastmods, GOOGLE_PRIORITY_SECTION: lastmods[PRIORITY_SECTION]}
     xml = _render_sitemap_index(names, origin, lastmods)
     await cache_set(cache_key, xml, _SITEMAP_TTL)
     return _index_304_or_full(xml, request, vary_agent=by_agent)
@@ -368,6 +380,9 @@ async def sitemap_section(
     from app.services.site_urls import SITEMAP_MAX_BYTES, SITEMAP_MAX_URLS, is_world_regions_section
     if _is_ru_origin(origin) and not apex_locale_en_enabled():
         return Response(status_code=404)
+    from app.services.index_policy import GOOGLE_PRIORITY_SECTION
+    if section == GOOGLE_PRIORITY_SECTION:
+        return await _google_priority_section(request, origin)
     disk = section_file(section, origin)
     # Legacy generations may still have a monolith over the protocol limit on
     # disk (nginx try_files). Refuse it here when the request reaches the app;
@@ -448,6 +463,33 @@ async def sitemap_section(
     return _xml_304_or_full(xml, etag, request)
 
 
+async def _google_priority_section(request: Request, origin: str) -> Response:
+    """Приоритетный шард для Google на ``ru.``: без адресов, закрытых ему в robots.txt.
+
+    Существует только там, где действует запрет обхода (``ru.`` при включённой настройке);
+    на остальных хостах — 404. Собирается из опубликованного ``sitemap-priority.xml``,
+    поэтому ``lastmod`` и порядок записей те же.
+    """
+    from app.core.cache import cache_get, cache_set
+    from app.services.index_policy import drop_blocked_urls, ru_google_crawl_block_rules
+    from app.services.sitemap_priority import PRIORITY_SECTION
+    from app.services.sitemap_static import read_stats, section_file
+
+    if not ru_google_crawl_block_rules(ru_host=_is_ru_origin(origin)):
+        return Response(status_code=404)
+    disk = section_file(PRIORITY_SECTION, origin)
+    if disk is None or not disk.is_file():
+        return Response(status_code=404)
+    generation = read_stats().get("generation", "dynamic")
+    cache_key = _sitemap_cache_key(f"priority-google:{generation}", origin)
+    xml = await cache_get(cache_key)
+    if not xml:
+        source = await asyncio.to_thread(disk.read_text, encoding="utf-8")
+        xml = await asyncio.to_thread(drop_blocked_urls, source)
+        await cache_set(cache_key, xml, _SITEMAP_TTL)
+    return _xml_304_or_full(xml, _xml_etag(xml), request)
+
+
 def _xml_etag(xml: str) -> str:
     return f'W/"{hashlib.md5(xml.encode()).hexdigest()}"'
 
@@ -515,8 +557,14 @@ async def sitemap_stats():
 @router.api_route("/robots.txt", methods=["GET", "HEAD"], include_in_schema=False)
 async def robots_txt(request: Request):
     """Host-aware robots.txt (Host + Sitemap on request origin)."""
+    from app.services.index_policy import add_rules_to_agent_group, ru_google_crawl_block_rules
+
     origin = _request_sitemap_origin(request)
     body = _render_seo_static("robots.txt", origin=origin)
+    # 13.11.2026: на ru. группа Googlebot получает запрет обхода годовых страниц стран мира.
+    body = add_rules_to_agent_group(
+        body, "Googlebot", ru_google_crawl_block_rules(ru_host=_is_ru_origin(origin)),
+    )
     return Response(
         content=body,
         media_type="text/plain; charset=utf-8",

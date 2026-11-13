@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `8780e423b3135cb0cb1c69c1df179c8952cfd672`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `03f349bc1fc704d1dd485a9c5622a78fb9a4568b`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2448 |
-| Код, шаблоны и стили | 1976 |
-| Актуальные рецензии без пропусков guard | 2448 |
-| Именованные определения Python/JS: с аннотацией / всего | 15749 / 15749 |
+| Файлы в явно определённом scope | 2449 |
+| Код, шаблоны и стили | 1977 |
+| Актуальные рецензии без пропусков guard | 2449 |
+| Именованные определения Python/JS: с аннотацией / всего | 15782 / 15782 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -139,7 +139,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/api/search.py](../backend/app/api/search.py) | reviewed | 2/2 | актуально |
 | [backend/app/api/seo_pages.py](../backend/app/api/seo_pages.py) | reviewed | 52/52 | актуально |
 | [backend/app/api/session_replay.py](../backend/app/api/session_replay.py) | reviewed | 10/10 | актуально |
-| [backend/app/api/sitemap.py](../backend/app/api/sitemap.py) | reviewed | 57/57 | актуально |
+| [backend/app/api/sitemap.py](../backend/app/api/sitemap.py) | reviewed | 58/58 | актуально |
 | [backend/app/api/system.py](../backend/app/api/system.py) | reviewed | 7/7 | актуально |
 | [backend/app/api/ticker.py](../backend/app/api/ticker.py) | reviewed | 5/5 | актуально |
 | [backend/app/api/world.py](../backend/app/api/world.py) | reviewed | 62/62 | актуально |
@@ -353,7 +353,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/identity/service.py](../backend/app/services/identity/service.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/imf_weo_adapter.py](../backend/app/services/imf_weo_adapter.py) | reviewed | 32/32 | актуально |
 | [backend/app/services/imf_weo_parser.py](../backend/app/services/imf_weo_parser.py) | reviewed | 2/2 | актуально |
-| [backend/app/services/index_policy.py](../backend/app/services/index_policy.py) | reviewed | 10/10 | актуально |
+| [backend/app/services/index_policy.py](../backend/app/services/index_policy.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/indexnow.py](../backend/app/services/indexnow.py) | reviewed | 34/34 | актуально |
 | [backend/app/services/job_lease.py](../backend/app/services/job_lease.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/load_priority.py](../backend/app/services/load_priority.py) | reviewed | 6/6 | актуально |
@@ -835,6 +835,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_rosstat_wages_backfill.py](../backend/tests/test_rosstat_wages_backfill.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_rosstat_weekly_inflation.py](../backend/tests/test_rosstat_weekly_inflation.py) | reviewed | 26/26 | актуально |
 | [backend/tests/test_route_smoke.py](../backend/tests/test_route_smoke.py) | reviewed | 22/22 | актуально |
+| [backend/tests/test_ru_google_crawl_block.py](../backend/tests/test_ru_google_crawl_block.py) | reviewed | 27/27 | актуально |
 | [backend/tests/test_ru_google_recovery.py](../backend/tests/test_ru_google_recovery.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_ru_google_short_sitemap.py](../backend/tests/test_ru_google_short_sitemap.py) | reviewed | 24/24 | актуально |
 | [backend/tests/test_ruonia_seo.py](../backend/tests/test_ruonia_seo.py) | reviewed | 3/3 | актуально |

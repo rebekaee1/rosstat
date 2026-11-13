@@ -1165,6 +1165,17 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 - **Кэш и заголовки.** Ключ Redis короткого варианта — `fe:sitemap:images-v1:index:lastmod-v1:{generation}:google-short:{host}`, полного — прежний. Пока политика действует на хосте, оба варианта ответа несут `Vary: User-Agent` (nginx добавляет свой `Vary: Host`). ETag считается по телу, поэтому у вариантов разный; `If-None-Match` чужого варианта даёт 200.
 - **Откат.** `RUSTATS_RU_GOOGLE_SHORT_SITEMAP=false` и пересоздание backend; кэш индекса живёт 6 часов и ключуется вариантом, поэтому после отката робот сразу получает полный индекс.
 
+## Запрет обхода годовых страниц мира роботу Google на `ru.` — 2026-11-13
+
+Решение владельца 13.11.2026; основания — [ADR-0029](adr/0029-ru-google-recovery.md) (обновление 13.11) и [ADR-0030](adr/0030-ru-google-short-sitemap.md) (дополнение). Не выпущено.
+
+- **Где действует.** `GET|HEAD /robots.txt` на хосте `ru.` при `apex_locale_en=true` и настройке `ru_google_disallow_world_years` (env `RUSTATS_RU_GOOGLE_DISALLOW_WORLD_YEARS`, по умолчанию `true`). Шаблоны `robots.txt` (RU, EN, `frontend/public`) не менялись: строки дописываются в конец группы `User-agent: Googlebot` при ответе (`index_policy.add_rules_to_agent_group`). Группы нет — текст отдаётся как есть.
+- **Правила** (`index_policy.RU_GOOGLE_CRAWL_BLOCK_RULES`): запреты `/*/indicator/*/1`, `/*/indicator/*/2`, `/*/region/*/*/1`, `/*/region/*/*/2`; разрешения той же формы для `/russia/…`, `/currencies/indicator/…` и `/og/*/region/…`. Разрешение длиннее запрета, поэтому по правилам Google побеждает оно. `robots.txt` не умеет «четыре цифры»: закрыт любой хвост на 1 или 2 после кода показателя; других таких публичных адресов у стран мира нет. Каждый адрес, для которого `is_ru_google_noindex_path` истинен, закрыт (тест).
+- **Кого не касается.** Яндекс, Bing и любая группа, кроме `Googlebot`; apex; Россия (`/russia/indicator/{код}/{год}`, месяцы, регионы), валюты, рейтинги мира, карточки, сравнения, карты, OG-картинки, файлы sitemap.
+- **Метка `googlebot`** (ADR-0029) остаётся в HTML. Закрытую для обхода страницу робот не скачивает и метку не видит; адрес, уже попавший в индекс, может остаться там без описания.
+- **Приоритетный шард для Google.** При действующем запрете короткий индекс (`/sitemap.xml` для Googlebot на `ru.`) вместо `priority` перечисляет `priority-google`. `GET|HEAD /sitemap-priority-google.xml` на `ru.` отдаёт опубликованный `sitemap-priority.xml` без записей `<url>`, чей путь закрыт (`index_policy.drop_blocked_urls`); `lastmod` в индексе — как у `priority`. Кэш Redis `…:priority-google:{generation}:{host}`, ETag по телу. На apex, при выключенном запрете и без опубликованного приоритетного шарда — 404. Ключ кэша короткого индекса при запрете — `…:google-short:pg:{host}`.
+- **Откат.** `RUSTATS_RU_GOOGLE_DISALLOW_WORLD_YEARS=false` и пересоздание backend: правила исчезают из `robots.txt`, индекс снова указывает на общий `priority`. `robots.txt` отдаётся с `max-age=86400`: робот увидит откат в течение суток.
+
 ## Точность и доверие по руководствам Google — 2026-11-13
 
 Сверка сайта с документацией Google Search Central (редакция ноября 2026) — `.artifacts/google-guidance-2026-11-13/свод.md`. Три исправления, не выпущено.
