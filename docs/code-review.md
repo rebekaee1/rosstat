@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `ca47249b87240fc4807957bf225b5350bbef2c14`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `e51abc0ccfebf08f5daac015f7463318291d3c9e`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2446 |
-| Код, шаблоны и стили | 1975 |
-| Актуальные рецензии без пропусков guard | 2446 |
-| Именованные определения Python/JS: с аннотацией / всего | 15773 / 15773 |
+| Файлы в явно определённом scope | 2448 |
+| Код, шаблоны и стили | 1977 |
+| Актуальные рецензии без пропусков guard | 2448 |
+| Именованные определения Python/JS: с аннотацией / всего | 15819 / 15819 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -222,7 +222,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/world_bea_regional/us.json](../backend/app/data/world_bea_regional/us.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/world_concept_national.py](../backend/app/data/world_concept_national.py) | reviewed | 4/4 | актуально |
 | [backend/app/data/world_concept_russia.py](../backend/app/data/world_concept_russia.py) | reviewed | 5/5 | актуально |
-| [backend/app/data/world_concepts.py](../backend/app/data/world_concepts.py) | reviewed | 10/10 | актуально |
+| [backend/app/data/world_concepts.py](../backend/app/data/world_concepts.py) | reviewed | 11/11 | актуально |
 | [backend/app/data/world_country_area.py](../backend/app/data/world_country_area.py) | reviewed | 3/3 | актуально |
 | [backend/app/data/world_country_population.py](../backend/app/data/world_country_population.py) | reviewed | 3/3 | актуально |
 | [backend/app/data/world_forecast_policy.py](../backend/app/data/world_forecast_policy.py) | reviewed | 5/5 | актуально |
@@ -500,6 +500,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_bea_regional.py](../backend/app/services/world_bea_regional.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/world_cards.py](../backend/app/services/world_cards.py) | reviewed | 29/29 | актуально |
 | [backend/app/services/world_compare.py](../backend/app/services/world_compare.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/world_country_rows.py](../backend/app/services/world_country_rows.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/world_eurostat_ingest.py](../backend/app/services/world_eurostat_ingest.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/world_forecast_candidates.py](../backend/app/services/world_forecast_candidates.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/world_forecast_gate.py](../backend/app/services/world_forecast_gate.py) | reviewed | 4/4 | актуально |
@@ -959,6 +960,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_concept_national.py](../backend/tests/test_world_concept_national.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_world_concepts.py](../backend/tests/test_world_concepts.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_world_country_markets.py](../backend/tests/test_world_country_markets.py) | reviewed | 5/5 | актуально |
+| [backend/tests/test_world_country_rows.py](../backend/tests/test_world_country_rows.py) | reviewed | 38/38 | актуально |
 | [backend/tests/test_world_country_slim.py](../backend/tests/test_world_country_slim.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_world_duplicates_c13.py](../backend/tests/test_world_duplicates_c13.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_world_ecos_adapter.py](../backend/tests/test_world_ecos_adapter.py) | reviewed | 8/8 | актуально |
