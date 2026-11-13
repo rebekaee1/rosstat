@@ -13,10 +13,10 @@
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1328**
-- Registry references: **2518**
+- Registry declarations: **1340**
+- Registry references: **2532**
 - Migration operations: **464**
-- Candidate effects: **2790**
+- Candidate effects: **2799**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -119,7 +119,7 @@
 | GET | /api/v1/world/{country_slug}/regions/region/{slug} | app.api.world_subnational.region_profile | [backend/app/api/world_subnational.py:368](../backend/app/api/world_subnational.py#L368) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug}/{code} | app.api.world_subnational.region_indicator | [backend/app/api/world_subnational.py:481](../backend/app/api/world_subnational.py#L481) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug}/{code}/forecast | app.api.world_subnational.region_indicator_forecast | [backend/app/api/world_subnational.py:618](../backend/app/api/world_subnational.py#L618) |
-| GET | /api/v1/search | app.api.search.search | [backend/app/api/search.py:39](../backend/app/api/search.py#L39) |
+| GET | /api/v1/search | app.api.search.search | [backend/app/api/search.py:54](../backend/app/api/search.py#L54) |
 | GET | /api/v1/api-interest/config | app.api.api_interest.api_interest_config | [backend/app/api/api_interest.py:102](../backend/app/api/api_interest.py#L102) |
 | POST | /api/v1/api-interest | app.api.api_interest.submit_api_interest | [backend/app/api/api_interest.py:109](../backend/app/api/api_interest.py#L109) |
 | GET | /api/v1/pwa/config | app.api.pwa.pwa_config | [backend/app/api/pwa.py:144](../backend/app/api/pwa.py#L144) |
@@ -221,12 +221,12 @@
 
 | Order | Class | Source |
 | --- | --- | --- |
-| 1 | app.services.og_webp.OgWebpMiddleware | [backend/app/main.py:2028](../backend/app/main.py#L2028) |
-| 2 | app.main.RateLimitMiddleware | [backend/app/main.py:2029](../backend/app/main.py#L2029) |
-| 3 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:2030](../backend/app/main.py#L2030) |
-| 4 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:2031](../backend/app/main.py#L2031) |
-| 5 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:2032](../backend/app/main.py#L2032) |
-| 6 | app.main.LocaleMiddleware | [backend/app/main.py:2048](../backend/app/main.py#L2048) |
+| 1 | app.services.og_webp.OgWebpMiddleware | [backend/app/main.py:2036](../backend/app/main.py#L2036) |
+| 2 | app.main.RateLimitMiddleware | [backend/app/main.py:2037](../backend/app/main.py#L2037) |
+| 3 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:2038](../backend/app/main.py#L2038) |
+| 4 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:2039](../backend/app/main.py#L2039) |
+| 5 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:2040](../backend/app/main.py#L2040) |
+| 6 | app.main.LocaleMiddleware | [backend/app/main.py:2056](../backend/app/main.py#L2056) |
 
 ## Table `session_replay_chunks`
 
@@ -1690,18 +1690,18 @@ Relationships: `[]`
 | world_national_core | app.services.world_national_ingest.run_national_core_ingest | CronTrigger(hour=settings.world_eurostat_ingest_hour, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'world_national_core'", 'ttl_expression': '3 * 3600'} | [backend/app/main.py:673](../backend/app/main.py#L673) |
 | staleness_check | app.tasks.scheduler.staleness_check_job | CronTrigger(hour=10, minute=0, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:912](../backend/app/main.py#L912) |
 | ticker_live_pull | app.tasks.ticker_worker.ticker_pull_job | IntervalTrigger(seconds=settings.ticker_pull_interval_seconds) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:921](../backend/app/main.py#L921) |
-| analytics_rollups_15min | app.tasks.analytics_rollups.rollups_15min_job | IntervalTrigger(minutes=15, start_date=_analytics_start) ['settings.scheduler_enabled'] | {'id_expression': "'analytics_rollups_15min'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1241](../backend/app/main.py#L1241) |
-| analytics_rollups_daily | app.tasks.analytics_rollups.rollups_daily_job | CronTrigger(hour=4, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1250](../backend/app/main.py#L1250) |
-| data_sanity | app.services.data_sanity.data_sanity_job | CronTrigger(hour=8, minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1349](../backend/app/main.py#L1349) |
-| host_health | app.services.host_pressure.host_health_job | IntervalTrigger(minutes=1) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1380](../backend/app/main.py#L1380) |
-| bot_traffic_collect | app.services.bot_traffic.collect_job | IntervalTrigger(minutes=10) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1392](../backend/app/main.py#L1392) |
-| sitemap_build | app.services.sitemap_static.sitemap_build_job | CronTrigger(hour=3, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'sitemap_build'", 'ttl_expression': '3 * 3600'} | [backend/app/main.py:1403](../backend/app/main.py#L1403) |
-| webmaster_indexing_daily | app.services.webmaster_indexing_daily.webmaster_indexing_daily_job | CronTrigger(hour=8, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'webmaster_indexing_daily'", 'ttl_expression': '1800'} | [backend/app/main.py:1414](../backend/app/main.py#L1414) |
-| gsc_search_queries | app.services.gsc_client.gsc_search_queries_job | CronTrigger(hour=9, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'gsc_search_queries'", 'ttl_expression': '1800'} | [backend/app/main.py:1425](../backend/app/main.py#L1425) |
-| russia_prices_warm | app.api.regions.russia_prices_warm_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled'] | {'id_expression': "'russia_prices_warm'", 'ttl_expression': '600'} | [backend/app/main.py:1437](../backend/app/main.py#L1437) |
-| price_compare_warm | app.api.regions.price_compare_warm_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled'] | {'id_expression': "'price_compare_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1451](../backend/app/main.py#L1451) |
-| forecast_showcase_warm | app.api.forecast_showcase.forecast_showcase_warm_job | IntervalTrigger(minutes=20) ['settings.scheduler_enabled'] | {'id_expression': "'forecast_showcase_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1464](../backend/app/main.py#L1464) |
-| ssr_warm | app.services.ssr_warm.ssr_warm_job | IntervalTrigger(seconds=45) ['settings.scheduler_enabled'] | {'id_expression': "'ssr_warm'", 'ttl_expression': '420'} | [backend/app/main.py:1491](../backend/app/main.py#L1491) |
+| analytics_rollups_15min | app.tasks.analytics_rollups.rollups_15min_job | IntervalTrigger(minutes=15, start_date=_analytics_start) ['settings.scheduler_enabled'] | {'id_expression': "'analytics_rollups_15min'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1249](../backend/app/main.py#L1249) |
+| analytics_rollups_daily | app.tasks.analytics_rollups.rollups_daily_job | CronTrigger(hour=4, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1258](../backend/app/main.py#L1258) |
+| data_sanity | app.services.data_sanity.data_sanity_job | CronTrigger(hour=8, minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1357](../backend/app/main.py#L1357) |
+| host_health | app.services.host_pressure.host_health_job | IntervalTrigger(minutes=1) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1388](../backend/app/main.py#L1388) |
+| bot_traffic_collect | app.services.bot_traffic.collect_job | IntervalTrigger(minutes=10, start_date=_bot_traffic_start) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1400](../backend/app/main.py#L1400) |
+| sitemap_build | app.services.sitemap_static.sitemap_build_job | CronTrigger(hour=3, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'sitemap_build'", 'ttl_expression': '3 * 3600'} | [backend/app/main.py:1411](../backend/app/main.py#L1411) |
+| webmaster_indexing_daily | app.services.webmaster_indexing_daily.webmaster_indexing_daily_job | CronTrigger(hour=8, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'webmaster_indexing_daily'", 'ttl_expression': '1800'} | [backend/app/main.py:1422](../backend/app/main.py#L1422) |
+| gsc_search_queries | app.services.gsc_client.gsc_search_queries_job | CronTrigger(hour=9, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'gsc_search_queries'", 'ttl_expression': '1800'} | [backend/app/main.py:1433](../backend/app/main.py#L1433) |
+| russia_prices_warm | app.api.regions.russia_prices_warm_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled'] | {'id_expression': "'russia_prices_warm'", 'ttl_expression': '600'} | [backend/app/main.py:1445](../backend/app/main.py#L1445) |
+| price_compare_warm | app.api.regions.price_compare_warm_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled'] | {'id_expression': "'price_compare_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1459](../backend/app/main.py#L1459) |
+| forecast_showcase_warm | app.api.forecast_showcase.forecast_showcase_warm_job | IntervalTrigger(minutes=20) ['settings.scheduler_enabled'] | {'id_expression': "'forecast_showcase_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1472](../backend/app/main.py#L1472) |
+| ssr_warm | app.services.ssr_warm.ssr_warm_job | IntervalTrigger(seconds=45) ['settings.scheduler_enabled'] | {'id_expression': "'ssr_warm'", 'ttl_expression': '420'} | [backend/app/main.py:1499](../backend/app/main.py#L1499) |
 | world_eurostat_ingest | app.services.world_eurostat_ingest.world_eurostat_ingest_job | CronTrigger(hour=settings.world_eurostat_ingest_hour, minute=settings.world_eurostat_ingest_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_eurostat_ingest_enabled'] | {'id_expression': "'world_eurostat_ingest'", 'ttl_expression': '6 * 3600'} | [backend/app/main.py:696](../backend/app/main.py#L696) |
 | world_eurostat_ingest_afternoon | app.main.afternoon_eurostat_ingest | CronTrigger(hour=14, minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_eurostat_ingest_enabled'] | {'id_expression': "'world_eurostat_ingest'", 'ttl_expression': '6 * 3600'} | [backend/app/main.py:717](../backend/app/main.py#L717) |
 | world_forecast | app.services.world_forecast_pipeline.scheduled_world_forecast_job | CronTrigger(hour=settings.world_forecast_hour, minute=settings.world_forecast_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_forecast_enabled'] | {'id_expression': "'world_forecast'", 'ttl_expression': 'WORLD_FORECAST_JOB_LOCK_TTL_SECONDS'} | [backend/app/main.py:737](../backend/app/main.py#L737) |
@@ -1729,16 +1729,16 @@ Relationships: `[]`
 | behavior_retention | app.tasks.analytics_scheduler.behavior_retention_job | CronTrigger(hour=4, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.behavior_events_enabled'] | unresolved | [backend/app/main.py:1206](../backend/app/main.py#L1206) |
 | session_analysis | app.tasks.session_analysis.session_analysis_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.behavior_events_enabled and settings.session_analysis_enabled'] | {'id_expression': "'session_analysis'", 'ttl_expression': '4 * 60'} | [backend/app/main.py:1218](../backend/app/main.py#L1218) |
 | session_replay_retention | app.api.session_replay.replay_retention_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.session_replay_enabled'] | {'id_expression': "'session_replay_retention'", 'ttl_expression': '4 * 60'} | [backend/app/main.py:1227](../backend/app/main.py#L1227) |
-| geoip_monthly_update | app.services.geoip.download_geoip_db | CronTrigger(day=3, hour=5, minute=0, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.geoip_auto_download'] | unresolved | [backend/app/main.py:1263](../backend/app/main.py#L1263) |
-| clickhouse_sync | app.services.clickhouse_sync.clickhouse_sync_job | IntervalTrigger(minutes=15, start_date=_analytics_start) ['settings.scheduler_enabled', 'settings.clickhouse_enabled'] | {'id_expression': "'clickhouse_sync'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1275](../backend/app/main.py#L1275) |
-| telegram_poll | app.services.telegram_bot.telegram_poll_job | IntervalTrigger(seconds=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled'] | unresolved | [backend/app/main.py:1288](../backend/app/main.py#L1288) |
-| telegram_resend | app.services.telegram_resend.telegram_resend_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.telegram_resend_enabled and settings.telegram_bot_token and settings.telegram_chat_id and (settings.telegram_digest_enabled or settings.telegram_realtime_alerts_enabled)'] | unresolved | [backend/app/main.py:1336](../backend/app/main.py#L1336) |
-| telegram_calm_summary | app.services.telegram_calm.calm_morning_summary_job | CronTrigger(hour=settings.telegram_calm_summary_cron_hour, minute=settings.telegram_calm_summary_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_calm_mode and settings.telegram_bot_token and settings.telegram_chat_id'] | unresolved | [backend/app/main.py:1362](../backend/app/main.py#L1362) |
-| freshness_watchdog | app.tasks.freshness_watchdog.freshness_watchdog_job | CronTrigger(hour=settings.freshness_watchdog_cron_hour, minute=settings.freshness_watchdog_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.freshness_watchdog_enabled'] | {'id_expression': "'freshness_watchdog'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1476](../backend/app/main.py#L1476) |
-| world_listed_counts | app.services.world_listed_counts.world_listed_counts_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled', 'settings.world_listed_counts_enabled'] | {'id_expression': "'world_listed_counts'", 'ttl_expression': '600'} | [backend/app/main.py:1505](../backend/app/main.py#L1505) |
+| geoip_monthly_update | app.services.geoip.download_geoip_db | CronTrigger(day=3, hour=5, minute=0, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.geoip_auto_download'] | unresolved | [backend/app/main.py:1271](../backend/app/main.py#L1271) |
+| clickhouse_sync | app.services.clickhouse_sync.clickhouse_sync_job | IntervalTrigger(minutes=15, start_date=_clickhouse_start) ['settings.scheduler_enabled', 'settings.clickhouse_enabled'] | {'id_expression': "'clickhouse_sync'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1283](../backend/app/main.py#L1283) |
+| telegram_poll | app.services.telegram_bot.telegram_poll_job | IntervalTrigger(seconds=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled'] | unresolved | [backend/app/main.py:1296](../backend/app/main.py#L1296) |
+| telegram_resend | app.services.telegram_resend.telegram_resend_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.telegram_resend_enabled and settings.telegram_bot_token and settings.telegram_chat_id and (settings.telegram_digest_enabled or settings.telegram_realtime_alerts_enabled)'] | unresolved | [backend/app/main.py:1344](../backend/app/main.py#L1344) |
+| telegram_calm_summary | app.services.telegram_calm.calm_morning_summary_job | CronTrigger(hour=settings.telegram_calm_summary_cron_hour, minute=settings.telegram_calm_summary_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_calm_mode and settings.telegram_bot_token and settings.telegram_chat_id'] | unresolved | [backend/app/main.py:1370](../backend/app/main.py#L1370) |
+| freshness_watchdog | app.tasks.freshness_watchdog.freshness_watchdog_job | CronTrigger(hour=settings.freshness_watchdog_cron_hour, minute=settings.freshness_watchdog_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.freshness_watchdog_enabled'] | {'id_expression': "'freshness_watchdog'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1484](../backend/app/main.py#L1484) |
+| world_listed_counts | app.services.world_listed_counts.world_listed_counts_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled', 'settings.world_listed_counts_enabled'] | {'id_expression': "'world_listed_counts'", 'ttl_expression': '600'} | [backend/app/main.py:1513](../backend/app/main.py#L1513) |
 | webmaster_recrawl_ru | app.services.webmaster_recrawl.recrawl_daily_job | CronTrigger(hour=9, minute=15, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.webmaster_recrawl_enabled and settings.yandex_webmaster_token', 'settings.apex_locale_en'] | unresolved | [backend/app/main.py:1005](../backend/app/main.py#L1005) |
-| public_bot_poll | app.services.public_bot.public_bot_poll_job | IntervalTrigger(seconds=60) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled', 'settings.public_bot_enabled and settings.public_bot_token'] | unresolved | [backend/app/main.py:1303](../backend/app/main.py#L1303) |
-| public_bot_notify | app.services.public_bot.public_bot_notify_job | IntervalTrigger(minutes=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled', 'settings.public_bot_enabled'] | unresolved | [backend/app/main.py:1316](../backend/app/main.py#L1316) |
+| public_bot_poll | app.services.public_bot.public_bot_poll_job | IntervalTrigger(seconds=60) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled', 'settings.public_bot_enabled and settings.public_bot_token'] | unresolved | [backend/app/main.py:1311](../backend/app/main.py#L1311) |
+| public_bot_notify | app.services.public_bot.public_bot_notify_job | IntervalTrigger(minutes=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled', 'settings.public_bot_enabled'] | unresolved | [backend/app/main.py:1324](../backend/app/main.py#L1324) |
 
 ## Settings declarations
 
@@ -2054,6 +2054,7 @@ Relationships: `[]`
 | app.api.research.SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:32](../backend/app/api/research.py#L32) |
 | app.api.research.PUBLIC_SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:33](../backend/app/api/research.py#L33) |
 | app.api.research._LINK_SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:34](../backend/app/api/research.py#L34) |
+| app.api.search._DATABASE_FAILURES | Tuple | sequence/source expression | [backend/app/api/search.py:33](../backend/app/api/search.py#L33) |
 | app.api.seo_pages._RENDER_SEM | Call | computed source expression | [backend/app/api/seo_pages.py:165](../backend/app/api/seo_pages.py#L165) |
 | app.api.sitemap._ANNUAL_SUMMARY_EN | Dict | 'Рост цен за год', 'Итог за год (сумма)', 'Значение на конец года', 'Среднее за год' | [backend/app/api/sitemap.py:90](../backend/app/api/sitemap.py#L90) |
 | app.api.sitemap._OG_INDICATOR_ALIASES | Dict | 'inflation', 'gdp' | [backend/app/api/sitemap.py:632](../backend/app/api/sitemap.py#L632) |
@@ -2345,8 +2346,8 @@ Relationships: `[]`
 | app.database._PUBLIC_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:25](../backend/app/database.py#L25) |
 | app.database._ANALYTICS_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:48](../backend/app/database.py#L48) |
 | app.main._TRUSTED_PROXY_NETS | Call | computed source expression | [backend/app/main.py:45](../backend/app/main.py#L45) |
-| app.main._GEO_EXCLUDED_PREFIXES | Tuple | sequence/source expression | [backend/app/main.py:1662](../backend/app/main.py#L1662) |
-| app.main._GEO_EXCLUDED_EXACT | Call | computed source expression | [backend/app/main.py:1665](../backend/app/main.py#L1665) |
+| app.main._GEO_EXCLUDED_PREFIXES | Tuple | sequence/source expression | [backend/app/main.py:1670](../backend/app/main.py#L1670) |
+| app.main._GEO_EXCLUDED_EXACT | Call | computed source expression | [backend/app/main.py:1673](../backend/app/main.py#L1673) |
 | app.services.account_erasure.TIME_WINDOW | Call | computed source expression | [backend/app/services/account_erasure.py:46](../backend/app/services/account_erasure.py#L46) |
 | app.services.action_policy.DENIED_ACTIONS | Set | sequence/source expression | [backend/app/services/action_policy.py:22](../backend/app/services/action_policy.py#L22) |
 | app.services.action_policy.HIGH_RISK_ACTIONS | Set | sequence/source expression | [backend/app/services/action_policy.py:33](../backend/app/services/action_policy.py#L33) |
@@ -2359,29 +2360,29 @@ Relationships: `[]`
 | app.services.alerting.API_INTEREST_USE_CASES | Dict | 'analytics_treasury', 'planning_contracts', 'consulting', 'research', 'study', 'journalism', 'other' | [backend/app/services/alerting.py:373](../backend/app/services/alerting.py#L373) |
 | app.services.alerting._API_INTEREST_SOURCES | Dict | 'indicator', 'limit_modal' | [backend/app/services/alerting.py:382](../backend/app/services/alerting.py#L382) |
 | app.services.alerting._DEGRADED_LABELS | Dict | 'parsed_zero', 'fallback_used', 'deadline_skipped' | [backend/app/services/alerting.py:466](../backend/app/services/alerting.py#L466) |
-| app.services.analytics_alerts._ALERT_COOLDOWN | Dict | 'signup_drop', 'auth_error_spike', 'js_error_spike', 'memory_pressure', 'webmaster_sitemap_errors', 'webmaster_crawl_drop', 'webmaster_in_search_drop', 'webmaster_data_missing', 'metrika_goals_stray' | [backend/app/services/analytics_alerts.py:40](../backend/app/services/analytics_alerts.py#L40) |
-| app.services.analytics_alerts._NIGHT_MSK_HOURS | Call | computed source expression | [backend/app/services/analytics_alerts.py:58](../backend/app/services/analytics_alerts.py#L58) |
-| app.services.analytics_alerts._MSK_OFFSET | Call | computed source expression | [backend/app/services/analytics_alerts.py:59](../backend/app/services/analytics_alerts.py#L59) |
-| app.services.analytics_alerts.COLLECTION_SILENCE_AFTER | Call | computed source expression | [backend/app/services/analytics_alerts.py:60](../backend/app/services/analytics_alerts.py#L60) |
-| app.services.analytics_alerts._COLLECTION_PROBE_WINDOW | Call | computed source expression | [backend/app/services/analytics_alerts.py:61](../backend/app/services/analytics_alerts.py#L61) |
-| app.services.analytics_alerts._THIRD_PARTY_HOST_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/analytics_alerts.py:74](../backend/app/services/analytics_alerts.py#L74) |
-| app.services.analytics_alerts._JS_URL_RE | Call | computed source expression | [backend/app/services/analytics_alerts.py:77](../backend/app/services/analytics_alerts.py#L77) |
-| app.services.analytics_alerts._STALE_TAB_RE | Call | computed source expression | [backend/app/services/analytics_alerts.py:79](../backend/app/services/analytics_alerts.py#L79) |
-| app.services.analytics_alerts.SIGNUP_DROP_AFTER | Call | computed source expression | [backend/app/services/analytics_alerts.py:87](../backend/app/services/analytics_alerts.py#L87) |
-| app.services.analytics_alerts.AUTH_ERROR_BENIGN_CODES | Tuple | sequence/source expression | [backend/app/services/analytics_alerts.py:91](../backend/app/services/analytics_alerts.py#L91) |
-| app.services.analytics_marts.METRIKA_DEVICE | Dict | '1', '2', '3', '4' | [backend/app/services/analytics_marts.py:57](../backend/app/services/analytics_marts.py#L57) |
-| app.services.analytics_marts.METRIKA_BROWSER | Dict | 'yandex_browser', 'yandexsearch', 'yandexbrowsercorp', 'chrome', 'chromemobile', 'safari', 'safari_mobile', 'mobile_safari', 'firefox', 'firefox_mobile', 'edge', 'edgin', 'opera', 'opera_mobile', 'samsung_internet', 'android_browser', 'mi_browser', 'huawei_browser' | [backend/app/services/analytics_marts.py:61](../backend/app/services/analytics_marts.py#L61) |
-| app.services.analytics_marts.METRIKA_OS | Dict | 'windows', 'android', 'ios', 'ios_double', 'mac_os', 'macos', 'gnu_linux', 'linux' | [backend/app/services/analytics_marts.py:81](../backend/app/services/analytics_marts.py#L81) |
-| app.services.analytics_marts.SECTION_RULES | List | sequence/source expression | [backend/app/services/analytics_marts.py:93](../backend/app/services/analytics_marts.py#L93) |
-| app.services.analytics_marts.CALIBRATION_EXCLUDED_CHANNELS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:174](../backend/app/services/analytics_marts.py#L174) |
-| app.services.analytics_marts.CALIBRATION_CORRIDOR_PCT | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:175](../backend/app/services/analytics_marts.py#L175) |
-| app.services.analytics_marts.HUMAN_ACTION_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:801](../backend/app/services/analytics_marts.py#L801) |
-| app.services.analytics_marts._SPIKE_PATH_RE | Call | computed source expression | [backend/app/services/analytics_marts.py:965](../backend/app/services/analytics_marts.py#L965) |
-| app.services.analytics_marts.PWA_INSTALL_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1517](../backend/app/services/analytics_marts.py#L1517) |
-| app.services.analytics_marts.PWA_DISMISS_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1518](../backend/app/services/analytics_marts.py#L1518) |
-| app.services.analytics_marts._PWA_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1520](../backend/app/services/analytics_marts.py#L1520) |
-| app.services.analytics_marts.FUNNEL_STEPS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:2119](../backend/app/services/analytics_marts.py#L2119) |
-| app.services.analytics_marts._FUNNEL_REGISTRATION_STEPS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:2129](../backend/app/services/analytics_marts.py#L2129) |
+| app.services.analytics_alerts._ALERT_COOLDOWN | Dict | 'signup_drop', 'auth_error_spike', 'js_error_spike', 'memory_pressure', 'webmaster_sitemap_errors', 'webmaster_crawl_drop', 'webmaster_in_search_drop', 'webmaster_data_missing', 'metrika_goals_stray' | [backend/app/services/analytics_alerts.py:41](../backend/app/services/analytics_alerts.py#L41) |
+| app.services.analytics_alerts._NIGHT_MSK_HOURS | Call | computed source expression | [backend/app/services/analytics_alerts.py:59](../backend/app/services/analytics_alerts.py#L59) |
+| app.services.analytics_alerts._MSK_OFFSET | Call | computed source expression | [backend/app/services/analytics_alerts.py:60](../backend/app/services/analytics_alerts.py#L60) |
+| app.services.analytics_alerts.COLLECTION_SILENCE_AFTER | Call | computed source expression | [backend/app/services/analytics_alerts.py:61](../backend/app/services/analytics_alerts.py#L61) |
+| app.services.analytics_alerts._COLLECTION_PROBE_WINDOW | Call | computed source expression | [backend/app/services/analytics_alerts.py:62](../backend/app/services/analytics_alerts.py#L62) |
+| app.services.analytics_alerts._THIRD_PARTY_HOST_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/analytics_alerts.py:75](../backend/app/services/analytics_alerts.py#L75) |
+| app.services.analytics_alerts._JS_URL_RE | Call | computed source expression | [backend/app/services/analytics_alerts.py:78](../backend/app/services/analytics_alerts.py#L78) |
+| app.services.analytics_alerts._STALE_TAB_RE | Call | computed source expression | [backend/app/services/analytics_alerts.py:80](../backend/app/services/analytics_alerts.py#L80) |
+| app.services.analytics_alerts.SIGNUP_DROP_AFTER | Call | computed source expression | [backend/app/services/analytics_alerts.py:88](../backend/app/services/analytics_alerts.py#L88) |
+| app.services.analytics_alerts.AUTH_ERROR_BENIGN_CODES | Tuple | sequence/source expression | [backend/app/services/analytics_alerts.py:92](../backend/app/services/analytics_alerts.py#L92) |
+| app.services.analytics_marts.METRIKA_DEVICE | Dict | '1', '2', '3', '4' | [backend/app/services/analytics_marts.py:58](../backend/app/services/analytics_marts.py#L58) |
+| app.services.analytics_marts.METRIKA_BROWSER | Dict | 'yandex_browser', 'yandexsearch', 'yandexbrowsercorp', 'chrome', 'chromemobile', 'safari', 'safari_mobile', 'mobile_safari', 'firefox', 'firefox_mobile', 'edge', 'edgin', 'opera', 'opera_mobile', 'samsung_internet', 'android_browser', 'mi_browser', 'huawei_browser' | [backend/app/services/analytics_marts.py:62](../backend/app/services/analytics_marts.py#L62) |
+| app.services.analytics_marts.METRIKA_OS | Dict | 'windows', 'android', 'ios', 'ios_double', 'mac_os', 'macos', 'gnu_linux', 'linux' | [backend/app/services/analytics_marts.py:82](../backend/app/services/analytics_marts.py#L82) |
+| app.services.analytics_marts.SECTION_RULES | List | sequence/source expression | [backend/app/services/analytics_marts.py:94](../backend/app/services/analytics_marts.py#L94) |
+| app.services.analytics_marts.CALIBRATION_EXCLUDED_CHANNELS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:175](../backend/app/services/analytics_marts.py#L175) |
+| app.services.analytics_marts.CALIBRATION_CORRIDOR_PCT | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:176](../backend/app/services/analytics_marts.py#L176) |
+| app.services.analytics_marts.HUMAN_ACTION_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:802](../backend/app/services/analytics_marts.py#L802) |
+| app.services.analytics_marts._SPIKE_PATH_RE | Call | computed source expression | [backend/app/services/analytics_marts.py:966](../backend/app/services/analytics_marts.py#L966) |
+| app.services.analytics_marts.PWA_INSTALL_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1518](../backend/app/services/analytics_marts.py#L1518) |
+| app.services.analytics_marts.PWA_DISMISS_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1519](../backend/app/services/analytics_marts.py#L1519) |
+| app.services.analytics_marts._PWA_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1521](../backend/app/services/analytics_marts.py#L1521) |
+| app.services.analytics_marts.FUNNEL_STEPS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:2120](../backend/app/services/analytics_marts.py#L2120) |
+| app.services.analytics_marts._FUNNEL_REGISTRATION_STEPS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:2130](../backend/app/services/analytics_marts.py#L2130) |
 | app.services.analytics_period.MSK | Call | computed source expression | [backend/app/services/analytics_period.py:20](../backend/app/services/analytics_period.py#L20) |
 | app.services.analytics_period.MSK_OFFSET | Call | computed source expression | [backend/app/services/analytics_period.py:21](../backend/app/services/analytics_period.py#L21) |
 | app.services.analytics_period.PRESETS | Tuple | sequence/source expression | [backend/app/services/analytics_period.py:23](../backend/app/services/analytics_period.py#L23) |
@@ -2429,7 +2430,7 @@ Relationships: `[]`
 | app.services.calendar_seed.WEEKLY_SPECS | List | sequence/source expression | [backend/app/services/calendar_seed.py:210](../backend/app/services/calendar_seed.py#L210) |
 | app.services.calendar_seed.MONTH_NAMES_RU | List | sequence/source expression | [backend/app/services/calendar_seed.py:256](../backend/app/services/calendar_seed.py#L256) |
 | app.services.calendar_seed.MONTH_NAMES_EN | List | sequence/source expression | [backend/app/services/calendar_seed.py:261](../backend/app/services/calendar_seed.py#L261) |
-| app.services.calendar_sources.common.OFFICIAL_CONFIDENCES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/common.py:15](../backend/app/services/calendar_sources/common.py#L15) |
+| app.services.calendar_sources.common.OFFICIAL_CONFIDENCES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/common.py:19](../backend/app/services/calendar_sources/common.py#L19) |
 | app.services.calendar_sources.enrichment.MONTH_NAMES_RU | List | sequence/source expression | [backend/app/services/calendar_sources/enrichment.py:21](../backend/app/services/calendar_sources/enrichment.py#L21) |
 | app.services.calendar_sources.enrichment._MONTH_REF_RE | Call | computed source expression | [backend/app/services/calendar_sources/enrichment.py:26](../backend/app/services/calendar_sources/enrichment.py#L26) |
 | app.services.calendar_sources.enrichment._QUARTER_REF_RE | Call | computed source expression | [backend/app/services/calendar_sources/enrichment.py:31](../backend/app/services/calendar_sources/enrichment.py#L31) |
@@ -2661,35 +2662,35 @@ Relationships: `[]`
 | app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:272](../backend/app/services/public_bot.py#L272) |
 | app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:273](../backend/app/services/public_bot.py#L273) |
 | app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:274](../backend/app/services/public_bot.py#L274) |
-| app.services.public_bot.WELCOME_EXAMPLES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:375](../backend/app/services/public_bot.py#L375) |
-| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:446](../backend/app/services/public_bot.py#L446) |
-| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:448](../backend/app/services/public_bot.py#L448) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1066](../backend/app/services/public_bot.py#L1066) |
-| app.services.public_bot._YEAR_END_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1085](../backend/app/services/public_bot.py#L1085) |
-| app.services.public_bot._NO_CHART_ROWS | Call | computed source expression | [backend/app/services/public_bot.py:1094](../backend/app/services/public_bot.py#L1094) |
-| app.services.public_bot._CHART_FOR_ROW | Dict | 'usd', 'eur', 'gold' | [backend/app/services/public_bot.py:1095](../backend/app/services/public_bot.py#L1095) |
-| app.services.public_bot._TOOL_TEXT | Call | computed source expression | [backend/app/services/public_bot.py:1302](../backend/app/services/public_bot.py#L1302) |
-| app.services.public_bot._LLM_USAGE | Call | computed source expression | [backend/app/services/public_bot.py:1304](../backend/app/services/public_bot.py#L1304) |
-| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1413](../backend/app/services/public_bot.py#L1413) |
-| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1415](../backend/app/services/public_bot.py#L1415) |
-| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1435](../backend/app/services/public_bot.py#L1435) |
-| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1440](../backend/app/services/public_bot.py#L1440) |
-| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1442](../backend/app/services/public_bot.py#L1442) |
-| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1444](../backend/app/services/public_bot.py#L1444) |
-| app.services.public_bot._LAT2CYR | Dict | 'a', 'c', 'e', 'o', 'p', 'x', 'y', 'r', 'k', 'm', 't' | [backend/app/services/public_bot.py:1447](../backend/app/services/public_bot.py#L1447) |
-| app.services.public_bot._LAT_IN_CYR | Call | computed source expression | [backend/app/services/public_bot.py:1449](../backend/app/services/public_bot.py#L1449) |
-| app.services.public_bot._LINK | Call | computed source expression | [backend/app/services/public_bot.py:1480](../backend/app/services/public_bot.py#L1480) |
-| app.services.public_bot._OK_PATHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1481](../backend/app/services/public_bot.py#L1481) |
-| app.services.public_bot._NO_CHART | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1482](../backend/app/services/public_bot.py#L1482) |
-| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1542](../backend/app/services/public_bot.py#L1542) |
-| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1544](../backend/app/services/public_bot.py#L1544) |
-| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1546](../backend/app/services/public_bot.py#L1546) |
-| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1570](../backend/app/services/public_bot.py#L1570) |
-| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1678](../backend/app/services/public_bot.py#L1678) |
-| app.services.public_bot._PHONE | Call | computed source expression | [backend/app/services/public_bot.py:1728](../backend/app/services/public_bot.py#L1728) |
-| app.services.public_bot._PASSPORT | Call | computed source expression | [backend/app/services/public_bot.py:1729](../backend/app/services/public_bot.py#L1729) |
-| app.services.public_bot._PLACES | List | sequence/source expression | [backend/app/services/public_bot.py:1737](../backend/app/services/public_bot.py#L1737) |
-| app.services.public_bot._PLACE_SKIP | Set | sequence/source expression | [backend/app/services/public_bot.py:1738](../backend/app/services/public_bot.py#L1738) |
+| app.services.public_bot.WELCOME_EXAMPLES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:377](../backend/app/services/public_bot.py#L377) |
+| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:448](../backend/app/services/public_bot.py#L448) |
+| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:450](../backend/app/services/public_bot.py#L450) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1068](../backend/app/services/public_bot.py#L1068) |
+| app.services.public_bot._YEAR_END_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1087](../backend/app/services/public_bot.py#L1087) |
+| app.services.public_bot._NO_CHART_ROWS | Call | computed source expression | [backend/app/services/public_bot.py:1096](../backend/app/services/public_bot.py#L1096) |
+| app.services.public_bot._CHART_FOR_ROW | Dict | 'usd', 'eur', 'gold' | [backend/app/services/public_bot.py:1097](../backend/app/services/public_bot.py#L1097) |
+| app.services.public_bot._TOOL_TEXT | Call | computed source expression | [backend/app/services/public_bot.py:1304](../backend/app/services/public_bot.py#L1304) |
+| app.services.public_bot._LLM_USAGE | Call | computed source expression | [backend/app/services/public_bot.py:1306](../backend/app/services/public_bot.py#L1306) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1415](../backend/app/services/public_bot.py#L1415) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1417](../backend/app/services/public_bot.py#L1417) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1437](../backend/app/services/public_bot.py#L1437) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1442](../backend/app/services/public_bot.py#L1442) |
+| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1444](../backend/app/services/public_bot.py#L1444) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1446](../backend/app/services/public_bot.py#L1446) |
+| app.services.public_bot._LAT2CYR | Dict | 'a', 'c', 'e', 'o', 'p', 'x', 'y', 'r', 'k', 'm', 't' | [backend/app/services/public_bot.py:1449](../backend/app/services/public_bot.py#L1449) |
+| app.services.public_bot._LAT_IN_CYR | Call | computed source expression | [backend/app/services/public_bot.py:1451](../backend/app/services/public_bot.py#L1451) |
+| app.services.public_bot._LINK | Call | computed source expression | [backend/app/services/public_bot.py:1482](../backend/app/services/public_bot.py#L1482) |
+| app.services.public_bot._OK_PATHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1483](../backend/app/services/public_bot.py#L1483) |
+| app.services.public_bot._NO_CHART | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1484](../backend/app/services/public_bot.py#L1484) |
+| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1544](../backend/app/services/public_bot.py#L1544) |
+| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1546](../backend/app/services/public_bot.py#L1546) |
+| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1548](../backend/app/services/public_bot.py#L1548) |
+| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1572](../backend/app/services/public_bot.py#L1572) |
+| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1680](../backend/app/services/public_bot.py#L1680) |
+| app.services.public_bot._PHONE | Call | computed source expression | [backend/app/services/public_bot.py:1730](../backend/app/services/public_bot.py#L1730) |
+| app.services.public_bot._PASSPORT | Call | computed source expression | [backend/app/services/public_bot.py:1731](../backend/app/services/public_bot.py#L1731) |
+| app.services.public_bot._PLACES | List | sequence/source expression | [backend/app/services/public_bot.py:1739](../backend/app/services/public_bot.py#L1739) |
+| app.services.public_bot._PLACE_SKIP | Set | sequence/source expression | [backend/app/services/public_bot.py:1740](../backend/app/services/public_bot.py#L1740) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |
@@ -2697,6 +2698,7 @@ Relationships: `[]`
 | app.services.pulse._REGION_MARKERS | Tuple | sequence/source expression | [backend/app/services/pulse.py:451](../backend/app/services/pulse.py#L451) |
 | app.services.pulse_report._TG_ALLOWED_TAG_RE | Call | computed source expression | [backend/app/services/pulse_report.py:44](../backend/app/services/pulse_report.py#L44) |
 | app.services.pulse_report._HTML_ENTITY_RE | Call | computed source expression | [backend/app/services/pulse_report.py:48](../backend/app/services/pulse_report.py#L48) |
+| app.services.pulse_report._HYP_WORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:201](../backend/app/services/pulse_report.py#L201) |
 | app.services.r4a_price_compare.BASKET | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:21](../backend/app/services/r4a_price_compare.py#L21) |
 | app.services.r4a_price_compare._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:35](../backend/app/services/r4a_price_compare.py#L35) |
 | app.services.r4a_price_compare._MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:37](../backend/app/services/r4a_price_compare.py#L37) |
@@ -2724,7 +2726,10 @@ Relationships: `[]`
 | app.services.rosstat_labor_parser._AGG_ROW_RE | Call | computed source expression | [backend/app/services/rosstat_labor_parser.py:204](../backend/app/services/rosstat_labor_parser.py#L204) |
 | app.services.rosstat_labor_parser._MONTH_ROW_RE | Call | computed source expression | [backend/app/services/rosstat_labor_parser.py:205](../backend/app/services/rosstat_labor_parser.py#L205) |
 | app.services.rosstat_labor_parser.INDICATOR_SERIES_MAP | Dict | 'unemployment', 'wages-nominal', 'labor-force', 'employment' | [backend/app/services/rosstat_labor_parser.py:300](../backend/app/services/rosstat_labor_parser.py#L300) |
-| app.services.rosstat_outage._BULLETIN_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:32](../backend/app/services/rosstat_outage.py#L32) |
+| app.services.rosstat_outage._BULLETIN_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:42](../backend/app/services/rosstat_outage.py#L42) |
+| app.services.rosstat_outage.SECTION_PAGES | Tuple | sequence/source expression | [backend/app/services/rosstat_outage.py:45](../backend/app/services/rosstat_outage.py#L45) |
+| app.services.rosstat_outage._SECTION_FILE_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:54](../backend/app/services/rosstat_outage.py#L54) |
+| app.services.rosstat_outage._MISSING_FILE_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:55](../backend/app/services/rosstat_outage.py#L55) |
 | app.services.rosstat_population_parser._YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_population_parser.py:48](../backend/app/services/rosstat_population_parser.py#L48) |
 | app.services.rosstat_population_parser.INDICATOR_SOURCE_MAP | Dict | 'population', 'population-total-growth', 'population-natural-growth', 'population-migration' | [backend/app/services/rosstat_population_parser.py:245](../backend/app/services/rosstat_population_parser.py#L245) |
 | app.services.rosstat_population_parser.COMPONENT_SERIES_MAP | Dict | 'population-total-growth', 'population-natural-growth', 'population-migration' | [backend/app/services/rosstat_population_parser.py:252](../backend/app/services/rosstat_population_parser.py#L252) |
@@ -2734,14 +2739,20 @@ Relationships: `[]`
 | app.services.rosstat_sdds_fetcher._MEDIA_HREF_RE | Call | computed source expression | [backend/app/services/rosstat_sdds_fetcher.py:40](../backend/app/services/rosstat_sdds_fetcher.py#L40) |
 | app.services.rosstat_sdds_fetcher._YEAR_IN_NAME_RE | Call | computed source expression | [backend/app/services/rosstat_sdds_fetcher.py:44](../backend/app/services/rosstat_sdds_fetcher.py#L44) |
 | app.services.rosstat_sdds_fetcher.ROSSTAT_STATIC_URLS | Dict | 'popul_components', 'population_history', 'gdp_quarterly', 'gdp_use_quarterly', 'ipi_historical_2018', 'age_groups' | [backend/app/services/rosstat_sdds_fetcher.py:46](../backend/app/services/rosstat_sdds_fetcher.py#L46) |
-| app.services.rosstat_weekly_inflation_parser.BULLETIN_URL_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:73](../backend/app/services/rosstat_weekly_inflation_parser.py#L73) |
-| app.services.rosstat_weekly_inflation_parser._MONTH_MAP | Dict | 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' | [backend/app/services/rosstat_weekly_inflation_parser.py:75](../backend/app/services/rosstat_weekly_inflation_parser.py#L75) |
-| app.services.rosstat_weekly_inflation_parser._BULLETIN_RANGE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:84](../backend/app/services/rosstat_weekly_inflation_parser.py#L84) |
-| app.services.rosstat_weekly_inflation_parser._BULLETIN_VALUE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:88](../backend/app/services/rosstat_weekly_inflation_parser.py#L88) |
-| app.services.rosstat_weekly_inflation_parser._HEADER_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:90](../backend/app/services/rosstat_weekly_inflation_parser.py#L90) |
-| app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES | Dict | 'food', 'nonfood', 'services' | [backend/app/services/rosstat_weekly_inflation_parser.py:104](../backend/app/services/rosstat_weekly_inflation_parser.py#L104) |
-| app.services.rosstat_weekly_inflation_parser._CPI_BULLETIN_TITLE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:370](../backend/app/services/rosstat_weekly_inflation_parser.py#L370) |
-| app.services.rosstat_weekly_inflation_parser._BULLETIN_PUB_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:515](../backend/app/services/rosstat_weekly_inflation_parser.py#L515) |
+| app.services.rosstat_weekly_inflation_parser.BULLETIN_URL_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:82](../backend/app/services/rosstat_weekly_inflation_parser.py#L82) |
+| app.services.rosstat_weekly_inflation_parser._MONTH_MAP | Dict | 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' | [backend/app/services/rosstat_weekly_inflation_parser.py:84](../backend/app/services/rosstat_weekly_inflation_parser.py#L84) |
+| app.services.rosstat_weekly_inflation_parser._BULLETIN_RANGE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:93](../backend/app/services/rosstat_weekly_inflation_parser.py#L93) |
+| app.services.rosstat_weekly_inflation_parser._BULLETIN_VALUE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:97](../backend/app/services/rosstat_weekly_inflation_parser.py#L97) |
+| app.services.rosstat_weekly_inflation_parser._MONTH_ALT | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:99](../backend/app/services/rosstat_weekly_inflation_parser.py#L99) |
+| app.services.rosstat_weekly_inflation_parser._BULLETIN_RANGE_COMPACT_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:100](../backend/app/services/rosstat_weekly_inflation_parser.py#L100) |
+| app.services.rosstat_weekly_inflation_parser._BULLETIN_VALUE_COMPACT_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:104](../backend/app/services/rosstat_weekly_inflation_parser.py#L104) |
+| app.services.rosstat_weekly_inflation_parser._HEADER_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:106](../backend/app/services/rosstat_weekly_inflation_parser.py#L106) |
+| app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES | Dict | 'food', 'nonfood', 'services' | [backend/app/services/rosstat_weekly_inflation_parser.py:120](../backend/app/services/rosstat_weekly_inflation_parser.py#L120) |
+| app.services.rosstat_weekly_inflation_parser._CPI_BULLETIN_TITLE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:419](../backend/app/services/rosstat_weekly_inflation_parser.py#L419) |
+| app.services.rosstat_weekly_inflation_parser._NEWS_LINK_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:425](../backend/app/services/rosstat_weekly_inflation_parser.py#L425) |
+| app.services.rosstat_weekly_inflation_parser._NEWS_HREF_YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:429](../backend/app/services/rosstat_weekly_inflation_parser.py#L429) |
+| app.services.rosstat_weekly_inflation_parser._NEWS_TITLE_YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:430](../backend/app/services/rosstat_weekly_inflation_parser.py#L430) |
+| app.services.rosstat_weekly_inflation_parser._BULLETIN_PUB_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:578](../backend/app/services/rosstat_weekly_inflation_parser.py#L578) |
 | app.services.rosstat_weekly_price_parser._FUEL_BULLETIN_TITLE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_price_parser.py:72](../backend/app/services/rosstat_weekly_price_parser.py#L72) |
 | app.services.rosstat_weekly_price_parser._BULLETIN_HREF_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_price_parser.py:75](../backend/app/services/rosstat_weekly_price_parser.py#L75) |
 | app.services.rosstat_weekly_price_parser._REG_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_price_parser.py:78](../backend/app/services/rosstat_weekly_price_parser.py#L78) |
@@ -2766,10 +2777,10 @@ Relationships: `[]`
 | app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:214](../backend/app/services/search.py#L214) |
 | app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:225](../backend/app/services/search.py#L225) |
 | app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:233](../backend/app/services/search.py#L233) |
-| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1104](../backend/app/services/search.py#L1104) |
-| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1105](../backend/app/services/search.py#L1105) |
-| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1106](../backend/app/services/search.py#L1106) |
-| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1131](../backend/app/services/search.py#L1131) |
+| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1109](../backend/app/services/search.py#L1109) |
+| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1110](../backend/app/services/search.py#L1110) |
+| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1111](../backend/app/services/search.py#L1111) |
+| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1136](../backend/app/services/search.py#L1136) |
 | app.services.search_currency_aliases._SHARED_LAST_WORDS | Call | computed source expression | [backend/app/services/search_currency_aliases.py:15](../backend/app/services/search_currency_aliases.py#L15) |
 | app.services.search_currency_aliases._ROOT_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/search_currency_aliases.py:18](../backend/app/services/search_currency_aliases.py#L18) |
 | app.services.search_currency_aliases._GENERIC_FIRST | Call | computed source expression | [backend/app/services/search_currency_aliases.py:20](../backend/app/services/search_currency_aliases.py#L20) |
@@ -2795,23 +2806,23 @@ Relationships: `[]`
 | app.services.search_intent.BANK_BRAND_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:25](../backend/app/services/search_intent.py#L25) |
 | app.services.search_intent.PRICE_GOODS_CONCEPTS | Call | computed source expression | [backend/app/services/search_intent.py:29](../backend/app/services/search_intent.py#L29) |
 | app.services.search_intent.CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:32](../backend/app/services/search_intent.py#L32) |
-| app.services.search_intent._SINGLE_ALIASES | Call | computed source expression | [backend/app/services/search_intent.py:111](../backend/app/services/search_intent.py#L111) |
-| app.services.search_intent._CONTROL_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:114](../backend/app/services/search_intent.py#L114) |
-| app.services.search_intent._CURRENCY_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:119](../backend/app/services/search_intent.py#L119) |
-| app.services.search_intent._FX_SUBJECT_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:121](../backend/app/services/search_intent.py#L121) |
-| app.services.search_intent._DENOMINATOR_COUNTS | Dict | '1000', '1 000', 'thousand', 'one thousand', 'тысячу', 'тысячи', '10000', '10 000', 'ten thousand', 'десять тысяч', '100000', '100 000', 'hundred thousand', 'сто тысяч' | [backend/app/services/search_intent.py:123](../backend/app/services/search_intent.py#L123) |
-| app.services.search_intent._DENOMINATOR_RE | Call | computed source expression | [backend/app/services/search_intent.py:127](../backend/app/services/search_intent.py#L127) |
-| app.services.search_intent._AMBIGUOUS_ISO | Call | computed source expression | [backend/app/services/search_intent.py:134](../backend/app/services/search_intent.py#L134) |
-| app.services.search_intent._CODE_RE | Call | computed source expression | [backend/app/services/search_intent.py:135](../backend/app/services/search_intent.py#L135) |
-| app.services.search_intent.COUNTRY_ALIASES | Dict | 'russia', 'germany', 'united-states', 'canada', 'australia', 'mexico', 'united-kingdom', 'china', 'japan', 'france', 'india', 'brazil', 'south-korea', 'turkey' | [backend/app/services/search_intent.py:137](../backend/app/services/search_intent.py#L137) |
-| app.services.search_intent.REGION_ALIASES | Dict | 'moskva', 'moscow', 'moskovskaya-oblast', 'sankt-peterburg', 'respublika-tatarstan', 'respublika-bashkortostan', 'krasnodarskiy-kray' | [backend/app/services/search_intent.py:153](../backend/app/services/search_intent.py#L153) |
-| app.services.search_intent._CITY_REGION_ALIASES | Dict | 'respublika-tatarstan', 'sverdlovskaya-oblast', 'nizhegorodskaya-oblast', 'samarskaya-oblast', 'chelyabinskaya-oblast', 'rostovskaya-oblast', 'voronezhskaya-oblast', 'permskiy-kray', 'volgogradskaya-oblast', 'omskaya-oblast', 'novosibirskaya-oblast', 'krasnoyarskiy-kray', 'respublika-bashkortostan', 'saratovskaya-oblast', 'tyumenskaya-oblast', 'irkutskaya-oblast', 'primorskiy-kray', 'habarovskiy-kray', 'kaliningradskaya-oblast', 'sankt-peterburg' | [backend/app/services/search_intent.py:164](../backend/app/services/search_intent.py#L164) |
-| app.services.search_intent._LAYOUT_EN_RU | Call | computed source expression | [backend/app/services/search_intent.py:191](../backend/app/services/search_intent.py#L191) |
-| app.services.search_intent._LAYOUT_RU_EN | Call | computed source expression | [backend/app/services/search_intent.py:192](../backend/app/services/search_intent.py#L192) |
-| app.services.search_intent.MONTHS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:193](../backend/app/services/search_intent.py#L193) |
-| app.services.search_intent.CONCEPT_MATCHERS | Call | computed source expression | [backend/app/services/search_intent.py:422](../backend/app/services/search_intent.py#L422) |
-| app.services.search_intent._RATE_QUOTE_CODES | Call | computed source expression | [backend/app/services/search_intent.py:714](../backend/app/services/search_intent.py#L714) |
-| app.services.search_intent.CONCEPTS_ALTERNATIVES | Call | computed source expression | [backend/app/services/search_intent.py:905](../backend/app/services/search_intent.py#L905) |
+| app.services.search_intent._SINGLE_ALIASES | Call | computed source expression | [backend/app/services/search_intent.py:118](../backend/app/services/search_intent.py#L118) |
+| app.services.search_intent._CONTROL_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:121](../backend/app/services/search_intent.py#L121) |
+| app.services.search_intent._CURRENCY_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:126](../backend/app/services/search_intent.py#L126) |
+| app.services.search_intent._FX_SUBJECT_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:128](../backend/app/services/search_intent.py#L128) |
+| app.services.search_intent._DENOMINATOR_COUNTS | Dict | '1000', '1 000', 'thousand', 'one thousand', 'тысячу', 'тысячи', '10000', '10 000', 'ten thousand', 'десять тысяч', '100000', '100 000', 'hundred thousand', 'сто тысяч' | [backend/app/services/search_intent.py:130](../backend/app/services/search_intent.py#L130) |
+| app.services.search_intent._DENOMINATOR_RE | Call | computed source expression | [backend/app/services/search_intent.py:134](../backend/app/services/search_intent.py#L134) |
+| app.services.search_intent._AMBIGUOUS_ISO | Call | computed source expression | [backend/app/services/search_intent.py:141](../backend/app/services/search_intent.py#L141) |
+| app.services.search_intent._CODE_RE | Call | computed source expression | [backend/app/services/search_intent.py:142](../backend/app/services/search_intent.py#L142) |
+| app.services.search_intent.COUNTRY_ALIASES | Dict | 'russia', 'germany', 'united-states', 'canada', 'australia', 'mexico', 'united-kingdom', 'china', 'japan', 'france', 'india', 'brazil', 'south-korea', 'turkey' | [backend/app/services/search_intent.py:144](../backend/app/services/search_intent.py#L144) |
+| app.services.search_intent.REGION_ALIASES | Dict | 'moskva', 'moscow', 'moskovskaya-oblast', 'sankt-peterburg', 'respublika-tatarstan', 'respublika-bashkortostan', 'krasnodarskiy-kray' | [backend/app/services/search_intent.py:160](../backend/app/services/search_intent.py#L160) |
+| app.services.search_intent._CITY_REGION_ALIASES | Dict | 'respublika-tatarstan', 'sverdlovskaya-oblast', 'nizhegorodskaya-oblast', 'samarskaya-oblast', 'chelyabinskaya-oblast', 'rostovskaya-oblast', 'voronezhskaya-oblast', 'permskiy-kray', 'volgogradskaya-oblast', 'omskaya-oblast', 'novosibirskaya-oblast', 'krasnoyarskiy-kray', 'respublika-bashkortostan', 'saratovskaya-oblast', 'tyumenskaya-oblast', 'irkutskaya-oblast', 'primorskiy-kray', 'habarovskiy-kray', 'kaliningradskaya-oblast', 'sankt-peterburg' | [backend/app/services/search_intent.py:171](../backend/app/services/search_intent.py#L171) |
+| app.services.search_intent._LAYOUT_EN_RU | Call | computed source expression | [backend/app/services/search_intent.py:198](../backend/app/services/search_intent.py#L198) |
+| app.services.search_intent._LAYOUT_RU_EN | Call | computed source expression | [backend/app/services/search_intent.py:199](../backend/app/services/search_intent.py#L199) |
+| app.services.search_intent.MONTHS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:200](../backend/app/services/search_intent.py#L200) |
+| app.services.search_intent.CONCEPT_MATCHERS | Call | computed source expression | [backend/app/services/search_intent.py:429](../backend/app/services/search_intent.py#L429) |
+| app.services.search_intent._RATE_QUOTE_CODES | Call | computed source expression | [backend/app/services/search_intent.py:721](../backend/app/services/search_intent.py#L721) |
+| app.services.search_intent.CONCEPTS_ALTERNATIVES | Call | computed source expression | [backend/app/services/search_intent.py:912](../backend/app/services/search_intent.py#L912) |
 | app.services.search_language.QUESTION_WORDS | Call | computed source expression | [backend/app/services/search_language.py:17](../backend/app/services/search_language.py#L17) |
 | app.services.search_language.LANGUAGE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_language.py:46](../backend/app/services/search_language.py#L46) |
 | app.services.search_language.MEASURE_RULES | Dict | 'search-subject-price', 'food-industry', 'current-prices', 'constant-prices', 'earnings-income-contribution', 'consumption-change-contribution', 'farm-earnings', 'internet-daily-use', 'deprivation-weekly-spending', 'usd-rub', 'usd-jpy', 'cny-rub', 'try-rub', 'kzt-rub', **unpack, 'eur-rub', 'eur-usd', 'credit-stock-households', 'credit-stock-business', 'research-personnel', 'research-organizations', 'wage-salary-employment', 'net-earnings', 'employee-compensation', 'benefits-workers-compensation', 'monetary-base', 'dividend-interest-rent-income', 'budget-spending', 'budget-revenue', 'birth-count', 'birth-rate', 'death-rate', 'employment-count', 'unemployment-count', 'employment-rate', 'median-household-income', 'road-paved-share', 'road-density', 'grain-area', 'grain-yield', 'population', 'saving-rate', 'university-students', 'vocational-students', 'rent-index', 'pension-real', 'pension', 'auto-loan-rate', 'gas-price', 'housing-price', 'housing-completions', 'building-permits', 'external-debt', 'rent', 'births', 'mortality', 'labour-productivity', 'household-consumption', 'capital-investment', 'capital-formation', 'wages-nominal', 'grain-harvest', 'household-deposits', 'tourism', 'wages-real', 'median-wage', 'gdp-nominal', 'gdp-real', 'consumer-credit', 'gdp-ppp', 'gdp-deflator', 'government-debt', 'mortgage-rate', 'mortgage-volume', 'credit-rate', 'electricity-generation', 'electricity-price', 'car-production', 'car-sales' | [backend/app/services/search_language.py:218](../backend/app/services/search_language.py#L218) |
@@ -2907,17 +2918,17 @@ Relationships: `[]`
 | app.services.seo_today.TODAY_SPECS | DictComp | computed source expression | [backend/app/services/seo_today.py:127](../backend/app/services/seo_today.py#L127) |
 | app.services.seo_today.TODAY_CODES | Call | computed source expression | [backend/app/services/seo_today.py:141](../backend/app/services/seo_today.py#L141) |
 | app.services.seo_weekly_report._BOT_RE | Tuple | sequence/source expression | [backend/app/services/seo_weekly_report.py:30](../backend/app/services/seo_weekly_report.py#L30) |
-| app.services.seo_world._WORLD_HEAVY_TEXT_COLUMNS | Tuple | sequence/source expression | [backend/app/services/seo_world.py:74](../backend/app/services/seo_world.py#L74) |
-| app.services.seo_world._WORLD_RATING_LOW_FIRST | Call | computed source expression | [backend/app/services/seo_world.py:91](../backend/app/services/seo_world.py#L91) |
-| app.services.seo_world._WORLD_RATING_MONEY_CONCEPTS | Call | computed source expression | [backend/app/services/seo_world.py:92](../backend/app/services/seo_world.py#L92) |
-| app.services.seo_world.COUNTRY_GENITIVE | Dict | 'austria', 'belgium', 'bulgaria', 'croatia', 'cyprus', 'czechia', 'denmark', 'estonia', 'finland', 'france', 'germany', 'greece', 'hungary', 'ireland', 'italy', 'latvia', 'lithuania', 'luxembourg', 'malta', 'netherlands', 'poland', 'portugal', 'romania', 'slovakia', 'slovenia', 'spain', 'sweden', 'iceland', 'norway', 'switzerland', 'united-kingdom', 'turkey', 'serbia', 'montenegro', 'north-macedonia', 'albania', 'bosnia', 'kosovo', 'ukraine', 'moldova', 'georgia', 'armenia', 'azerbaijan', 'united-states', 'canada', 'japan', 'south-korea', 'china', 'india', 'brazil', 'mexico', 'australia', 'new-zealand', 'south-africa', 'israel' | [backend/app/services/seo_world.py:103](../backend/app/services/seo_world.py#L103) |
-| app.services.seo_world._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:203](../backend/app/services/seo_world.py#L203) |
-| app.services.seo_world._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:211](../backend/app/services/seo_world.py#L211) |
-| app.services.seo_world._KEY_CATEGORY_ORDER | Tuple | sequence/source expression | [backend/app/services/seo_world.py:220](../backend/app/services/seo_world.py#L220) |
-| app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:307](../backend/app/services/seo_world.py#L307) |
-| app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:315](../backend/app/services/seo_world.py#L315) |
-| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:442](../backend/app/services/seo_world.py#L442) |
-| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:536](../backend/app/services/seo_world.py#L536) |
+| app.services.seo_world._WORLD_HEAVY_TEXT_COLUMNS | Tuple | sequence/source expression | [backend/app/services/seo_world.py:77](../backend/app/services/seo_world.py#L77) |
+| app.services.seo_world._WORLD_RATING_LOW_FIRST | Call | computed source expression | [backend/app/services/seo_world.py:94](../backend/app/services/seo_world.py#L94) |
+| app.services.seo_world._WORLD_RATING_MONEY_CONCEPTS | Call | computed source expression | [backend/app/services/seo_world.py:95](../backend/app/services/seo_world.py#L95) |
+| app.services.seo_world.COUNTRY_GENITIVE | Dict | 'austria', 'belgium', 'bulgaria', 'croatia', 'cyprus', 'czechia', 'denmark', 'estonia', 'finland', 'france', 'germany', 'greece', 'hungary', 'ireland', 'italy', 'latvia', 'lithuania', 'luxembourg', 'malta', 'netherlands', 'poland', 'portugal', 'romania', 'slovakia', 'slovenia', 'spain', 'sweden', 'iceland', 'norway', 'switzerland', 'united-kingdom', 'turkey', 'serbia', 'montenegro', 'north-macedonia', 'albania', 'bosnia', 'kosovo', 'ukraine', 'moldova', 'georgia', 'armenia', 'azerbaijan', 'united-states', 'canada', 'japan', 'south-korea', 'china', 'india', 'brazil', 'mexico', 'australia', 'new-zealand', 'south-africa', 'israel' | [backend/app/services/seo_world.py:106](../backend/app/services/seo_world.py#L106) |
+| app.services.seo_world._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:206](../backend/app/services/seo_world.py#L206) |
+| app.services.seo_world._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:214](../backend/app/services/seo_world.py#L214) |
+| app.services.seo_world._KEY_CATEGORY_ORDER | Tuple | sequence/source expression | [backend/app/services/seo_world.py:223](../backend/app/services/seo_world.py#L223) |
+| app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:365](../backend/app/services/seo_world.py#L365) |
+| app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:373](../backend/app/services/seo_world.py#L373) |
+| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:500](../backend/app/services/seo_world.py#L500) |
+| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:594](../backend/app/services/seo_world.py#L594) |
 | app.services.seo_world_subnational._NOT_FOUND | Tuple | sequence/source expression | [backend/app/services/seo_world_subnational.py:37](../backend/app/services/seo_world_subnational.py#L37) |
 | app.services.seo_year_ui._SHORT_CELL_UNITS | Call | computed source expression | [backend/app/services/seo_year_ui.py:24](../backend/app/services/seo_year_ui.py#L24) |
 | app.services.session_analysis._PARAM_KEYS | Call | computed source expression | [backend/app/services/session_analysis.py:33](../backend/app/services/session_analysis.py#L33) |
@@ -3169,6 +3180,7 @@ Relationships: `[]`
 | app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:65](../backend/app/tasks/analytics_rollups.py#L65) |
 | app.tasks.analytics_rollups._RAW_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:104](../backend/app/tasks/analytics_rollups.py#L104) |
 | app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:435](../backend/app/tasks/analytics_rollups.py#L435) |
+| app.tasks.analytics_scheduler._METRIKA_DIGEST_RETRY_PAUSES_S | Tuple | sequence/source expression | [backend/app/tasks/analytics_scheduler.py:261](../backend/app/tasks/analytics_scheduler.py#L261) |
 | app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:43](../backend/app/tasks/scheduler.py#L43) |
 | app.tasks.session_analysis._INACTIVE | Call | computed source expression | [backend/app/tasks/session_analysis.py:27](../backend/app/tasks/session_analysis.py#L27) |
 | app.tasks.ticker_worker._SERIES_TICKER_SPECS | Tuple | sequence/source expression | [backend/app/tasks/ticker_worker.py:47](../backend/app/tasks/ticker_worker.py#L47) |
