@@ -21,7 +21,7 @@
   "counts": {
     "files": 2455,
     "code_files": 1983,
-    "current_reviews": 2454,
+    "current_reviews": 2455,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
@@ -31,7 +31,7 @@
     },
     "definitions": 15947,
     "annotated_definitions": 15947,
-    "files_needing_attention": 1
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -12652,11 +12652,8 @@
       "lines": 188,
       "code": false,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -31955,9 +31952,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "0ea6714a032d028b6198caa52f27b260286a27850a783848050ef8ac8a1b4811",
+  "ledger_sha256": "63ae895259333e97239b0d69e318e2854b9f175f71fc7857d1f6536361d6a4dc",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "57b4ecf0314481664d9b569739d74c26ac1810dc",
+  "baseline_commit": "25744c2d969cca8d0686ae2f1a7e62536d170864",
   "branch": "int/2026-11-13",
   "unstaged_at_capture": []
 }
