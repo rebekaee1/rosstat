@@ -364,6 +364,15 @@ def _concepts_for_dataset(provider: str, dataset: str) -> tuple[WorldConcept, ..
     return hit
 
 
+def concept_dataset_allowed(concept: WorldConcept, provider: str | None, dataset_id: str | None) -> bool:
+    """Набор данных входит в список наборов понятия у провайдера — первый шаг `concept_matches_indicator`.
+
+    Провайдер и набор приводятся так же, как в `concept_for_indicator`: ряд из набора, для которого здесь False,
+    понятию не соответствует при любых единицах и срезах.
+    """
+    return (dataset_id or "").lower() in _allowed_datasets(concept, str(provider or "").lower())
+
+
 def concept_for_indicator(indicator) -> WorldConcept | None:
     """Возвращает единственный контракт или None; пересечение — ошибка реестра."""
     provider = str(getattr(indicator, "provider", "eurostat") or "").lower()
