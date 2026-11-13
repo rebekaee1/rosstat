@@ -1309,7 +1309,7 @@ async def _world_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     from app.data.world_concepts import WORLD_CONCEPTS
     from app.services.seo_world import _concept_allowed_datasets
     from app.services.seo_world_compare import _match_concept_pair, world_vs_path
-    from app.services.world_rank_values import apply_rank_series, ranking_value_mode
+    from app.services.world_rank_values import apply_rank_series_for, ranking_value_mode
 
     concepts = [c for c in WORLD_CONCEPTS if "compare" in c.enabled_surfaces]
     allowed = set().union(*(_concept_allowed_datasets(c) for c in concepts))
@@ -1363,7 +1363,7 @@ async def _world_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             for ind in (ind_a, ind_b):
                 key = (ind.id, mode)
                 if key not in transformed:
-                    transformed[key] = apply_rank_series(raw_by_id[ind.id], mode)
+                    transformed[key] = apply_rank_series_for(ind, raw_by_id[ind.id], mode)
             a, b = transformed[(ind_a.id, mode)], transformed[(ind_b.id, mode)]
             if len(a) < 2 or len(b) < 2 or (mode == "level" and (a[-1][1] == 0 or b[-1][1] == 0)):
                 continue

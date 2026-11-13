@@ -363,6 +363,17 @@ def apply_rank_series(
     return transform_yoy(series)
 
 
+def apply_rank_series_for(indicator: object, series: Series, mode: RankMode) -> Series:
+    """Ряд страны в режиме рейтинга с учётом природы ряда (``rank_yoy_kind``).
+
+    Одна точка входа для страниц сравнения, их картинок и sitemap: ряд, который
+    уже является изменением за год (МВФ PCPIPCH, IPCA-12m Бразилии), и китайский
+    индекс «тот же месяц = 100» нельзя пропускать через ``transform_yoy`` второй
+    раз — получается «темп от темпа» (13.11.2026: Япония 16,19 % вместо 3,19 %).
+    """
+    return apply_rank_series(series, mode, yoy_kind=rank_yoy_kind(indicator))
+
+
 def yearly_last_points(
     series: Series,
     mode: RankMode,

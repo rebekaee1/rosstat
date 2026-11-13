@@ -86,7 +86,7 @@ from app.services.seo_world import (
     _unit_of,
 )
 from app.services.world_rank_values import (
-    apply_rank_series,
+    apply_rank_series_for,
     ranking_display_name,
     ranking_period_method,
     ranking_public_unit,
@@ -254,8 +254,8 @@ async def render_world_vs_html(
     mode = ranking_value_mode(
         concept.slug, ((country_a, ind_a), (country_b, ind_b))
     )
-    series_a = apply_rank_series(raw_a, mode)
-    series_b = apply_rank_series(raw_b, mode)
+    series_a = apply_rank_series_for(ind_a, raw_a, mode)
+    series_b = apply_rank_series_for(ind_b, raw_b, mode)
     if len(series_a) < 2 or len(series_b) < 2 or (
         mode == "level" and (series_a[-1][1] == 0 or series_b[-1][1] == 0)
     ):

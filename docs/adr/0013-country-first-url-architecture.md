@@ -4,6 +4,7 @@
 - **Date:** 2026-08-16
 - **Last verified:** 2026-09-03 (apex = EN, `ru.` = RU; geo людям из РФ, ботов не редиректим)
 - **Update 2026-11-11:** старые адреса path-cut на apex теперь ведут 301 на `ru.` (они были русскими до сплита), а не на английскую копию — [ADR-0029](0029-ru-google-recovery.md).
+- **Update 2026-11-13 (сверка с руководством Google о языковых версиях):** Google советует не переадресовывать людей по языку и IP, потому что так люди и роботы могут не увидеть все версии. Гео-переадресация людей из РФ и СНГ с apex на `ru.` оставлена: проверено вживую 13.11 — робот Google не переадресуется (200), человек, выбравший English, остаётся на apex (кука `fe_locale_pref=en`, 200), выбор запоминается, ответ 307 с `Vary: Cookie, User-Agent`. Обе названные Google причины закрыты. Отключение (`RUSTATS_GEO_LOCALE_REDIRECT_ENABLED=false`) увело бы русских людей с Telegram и из Google на английскую страницу, пока `ru.` не в индексе Google; пересмотр — когда клики на `ru.` в Search Console превысят 10 в неделю.
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md), [`ADR-0008`](0008-regional-bounded-context.md), [`ADR-0011`](0011-world-eurostat-data-plane.md)
 - **Backlog:** [`docs/backlog.md`](../backlog.md) — раздел «Карта миграции URL (ADR-0013)» + решения звонка 14 (Р-1…Р-3)
 

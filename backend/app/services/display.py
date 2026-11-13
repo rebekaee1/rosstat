@@ -382,6 +382,15 @@ def public_unit_en(
     """
     raw = (unit_storage or "").strip()
     if is_english_unit_prose(raw):
+        # Короткий код из заглавных букв (Евростат ``PC``, ``HR``, ``GWH``, ``KTOE``) выглядит
+        # как текст, но это код меры: 13.11.2026 английские страницы показывали «5 PC» вместо
+        # «5 %» у 143 тыс. рядов. Если у ряда есть русская единица с чистым переводом, она
+        # точнее; настоящие коды валют (``EUR``, ``USD``) переводятся в самих себя.
+        curated = (unit_ru or "").strip()
+        if curated and curated != raw and re.fullmatch(r"[A-Z]{2,4}", raw):
+            localized = localize_unit(curated, locale="en")
+            if localized and not contains_cyrillic(localized):
+                return localized
         return raw
     ru = (unit_ru or raw or "").strip()
     localized = localize_unit(ru, locale="en") if ru else ""
