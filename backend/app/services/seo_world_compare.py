@@ -221,6 +221,58 @@ def _value_as_of(series: list[tuple[date, float]], day: date) -> float | None:
     return value
 
 
+def _pair_history(series_a: list[tuple[date, float]], series_b: list[tuple[date, float]], *, en: bool,
+        table_freq: str | None, freq_a: str | None, freq_b: str | None, label_a_name: str, label_b_name: str,
+        gen_a: str, gen_b: str, vsfx_a: str, vsfx_b: str, diff_sfx: str) -> str:
+    """История пары словами (13.11.2026): кто был выше, как менялся разрыв, максимум и минимум каждой страны.
+
+    Отвечает на вопрос «кто выше и давно ли» текстом, а не только таблицей последних лет. Считается по всем
+    общим датам публикации. Счёт периодов и разрыв по краям выводятся только при одной частоте рядов; у пары
+    «месяц против года» остаются максимум и минимум каждой страны со своей подписью периода.
+    """
+    def _label(day: date, freq: str | None) -> str:
+        # Год без слова «год»: «за 2022–2025», «максимум (2022)».
+        return str(day.year) if freq == "annual" else _period_label(day, freq)
+
+    start = max(series_a[0][0], series_b[0][0])
+    merged = sorted({d for d, _ in series_a} | {d for d, _ in series_b})
+    pairs = [(d, _value_as_of(series_a, d), _value_as_of(series_b, d)) for d in merged if d >= start]
+    pairs = [(d, a, b) for d, a, b in pairs if a is not None and b is not None]
+    if len(pairs) < 3:
+        return ""
+    first_label, last_label = _label(pairs[0][0], table_freq), _label(pairs[-1][0], table_freq)
+    a_higher = sum(1 for _d, a, b in pairs if a > b)
+    b_higher = sum(1 for _d, a, b in pairs if b > a)
+    leader_a = a_higher >= b_higher
+    leader_count = a_higher if leader_a else b_higher
+
+    def _extreme(series: list[tuple[date, float]], freq: str | None, pick) -> tuple[str, str]:
+        day, value = pick((item for item in series if item[0] >= start), key=lambda item: item[1])
+        return _fmt(value), _label(day, freq)
+
+    (max_a, max_a_at), (min_a, min_a_at) = _extreme(series_a, freq_a, max), _extreme(series_a, freq_a, min)
+    (max_b, max_b_at), (min_b, min_b_at) = _extreme(series_b, freq_b, max), _extreme(series_b, freq_b, min)
+    comparable = table_freq is not None
+    gap_first = _fmt(round(abs(pairs[0][1] - pairs[0][2]), 4))
+    gap_last = _fmt(round(abs(pairs[-1][1] - pairs[-1][2]), 4))
+    if en:
+        parts = [f"From {first_label} to {last_label}, {label_a_name if leader_a else label_b_name} was higher "
+            f"in {leader_count} of {len(pairs)} periods."] if comparable else []
+        if diff_sfx and comparable:
+            parts.append(f"The gap was {gap_first}{diff_sfx} in {first_label} and {gap_last}{diff_sfx} in {last_label}.")
+        parts.append(f"{label_a_name}: highest {max_a}{vsfx_a} ({max_a_at}), lowest {min_a}{vsfx_a} ({min_a_at}).")
+        parts.append(f"{label_b_name}: highest {max_b}{vsfx_b} ({max_b_at}), lowest {min_b}{vsfx_b} ({min_b_at}).")
+    else:
+        parts = [f"За {first_label}–{last_label} значение у {gen_a if leader_a else gen_b} было выше "
+            f"в {leader_count} из {len(pairs)} периодов."] if comparable else []
+        if diff_sfx and comparable:
+            parts.append(f"Разница: {gap_first}{diff_sfx} в начале периода ({first_label}), "
+                f"{gap_last}{diff_sfx} в конце ({last_label}).")
+        parts.append(f"{label_a_name}: максимум — {max_a}{vsfx_a} ({max_a_at}), минимум — {min_a}{vsfx_a} ({min_a_at}).")
+        parts.append(f"{label_b_name}: максимум — {max_b}{vsfx_b} ({max_b_at}), минимум — {min_b}{vsfx_b} ({min_b_at}).")
+    return " ".join(parts)
+
+
 async def render_world_vs_html(
     slug_a: str, slug_b: str, concept_slug: str, db: AsyncSession
 ) -> tuple[int, str]:
@@ -393,6 +445,10 @@ async def render_world_vs_html(
         v = _value_as_of(series, day)
         return "—" if v is None else _fmt(v)
 
+    history = _pair_history(series_a, series_b, en=en, table_freq=table_freq, freq_a=freq_a, freq_b=freq_b,
+        label_a_name=label_a_name, label_b_name=label_b_name, gen_a=gen_a, gen_b=gen_b,
+        vsfx_a=vsfx_a, vsfx_b=vsfx_b, diff_sfx=diff_sfx)
+
     body_rows = "".join(
         f"<tr><td>{escape(_period_label(d, table_freq))}</td>"
         f"<td>{_cell(series_a, d)}</td><td>{_cell(series_b, d)}</td></tr>"
@@ -435,7 +491,8 @@ async def render_world_vs_html(
 
     if en:
         h1_text = f"{name}: {label_a_name} vs {label_b_name}"
-        title = f"{h1_text} — data comparison"
+        # Так спрашивают в Google: «netherlands vs germany gdp per capita» — пара стран впереди, год в конце.
+        title = f"{label_a_name} vs {label_b_name}: {name}, {max(last_a_date, last_b_date).year}"
         desc = (
             f"{name}: {label_a_name} — {_fmt(value_a)}{vsfx_a}, {label_b_name} — "
             f"{_fmt(value_b)}{vsfx_b} by the latest published data. "
@@ -591,11 +648,13 @@ async def render_world_vs_html(
     })
 
     table_note_html = f"<p>{escape(table_note)}</p>" if table_note else ""
+    history_html = f"<p>{escape(history)}</p>" if history else ""
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(trail)}
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(h1_text)}</h1>
 <p>{escape(lead)} {escape(verdict)}</p>
+{history_html}
 {figure_html}
 <section class="seo-section"><h2>{escape(h2_table)}</h2>
 <p>{escape(units_line)}</p>

@@ -95,3 +95,49 @@ def test_no_caller_skips_the_series_kind():
             if "yoy_kind" not in match.group(1):
                 offenders.append(f"{path.relative_to(root)}: {match.group(0)[:70]}")
     assert offenders == []
+
+
+def test_vs_page_answers_in_words_and_titles_the_pair_first(frequency_client):  # noqa: F811
+    """Заголовок английской страницы начинается с пары стран; под лидом — история пары словами (13.11.2026)."""
+    en = frequency_client.get("/seo/world-vs/germany-vs-japan/hicp-index",
+        headers={"Host": "forecasteconomy.com", "X-FE-Locale": "en"}).text
+    title = re.search(r"<title>(.*?)</title>", en, re.S).group(1)
+    assert title.startswith("Germany vs Japan: ") and title.endswith(", 2025") and "data comparison" not in title
+    # Германия здесь месячная, Япония годовая: счёт периодов не выводится, у каждой страны своя подпись периода.
+    assert "was higher in" not in en
+    assert "Germany: highest 12 % (January 2024), lowest 10.62 % (February 2025)." in en
+    assert "Japan: highest 2.8 % (2024), lowest 2.5 % (2025)." in en
+    ru = frequency_client.get("/seo/world-vs/germany-vs-japan/hicp-index",
+        headers={"Host": "ru.forecasteconomy.com", "X-FE-Locale": "ru"}).text
+    assert "Германия: максимум — 12 % (январь 2024), минимум — 10,62 % (февраль 2025)." in ru
+    assert "сравнение данных" in re.search(r"<title>(.*?)</title>", ru, re.S).group(1)
+
+
+def test_vs_history_counts_periods_for_one_frequency():
+    """Одна частота: счёт «выше в N из M периодов» и разрыв по краям; настоящие значения Евростата (доля от среднего ЕС)."""
+    from app.services.locale import _locale_var
+    from app.services.seo_world_compare import _pair_history
+
+    germany = [(date(2022, 1, 1), 134.3), (date(2023, 1, 1), 132.8), (date(2024, 1, 1), 130.7), (date(2025, 1, 1), 129.8)]
+    netherlands = [(date(2022, 1, 1), 155.1), (date(2023, 1, 1), 152.7), (date(2024, 1, 1), 154.2), (date(2025, 1, 1), 154.9)]
+    common = dict(table_freq="annual", freq_a="annual", freq_b="annual", label_a_name="Germany", label_b_name="Netherlands",
+        gen_a="Германии", gen_b="Нидерландов", vsfx_a=" %", vsfx_b=" %", diff_sfx=" pp")
+    token = _locale_var.set("en")
+    try:
+        english = _pair_history(germany, netherlands, en=True, **common)
+        short = _pair_history(germany[:2], netherlands[:2], en=True, **common)
+        mixed = _pair_history(germany, netherlands, en=True, **{**common, "table_freq": None})
+    finally:
+        _locale_var.reset(token)
+    assert english == (
+        "From 2022 to 2025, Netherlands was higher in 4 of 4 periods. The gap was 20.8 pp in 2022 and 25.1 pp in 2025. "
+        "Germany: highest 134.3 % (2022), lowest 129.8 % (2025). Netherlands: highest 155.1 % (2022), lowest 152.7 % (2023).")
+    token = _locale_var.set("ru")
+    try:
+        ru = _pair_history(germany, netherlands, en=False, **{**common, "label_a_name": "Германия", "label_b_name": "Нидерланды", "diff_sfx": " п.п."})
+    finally:
+        _locale_var.reset(token)
+    assert ru.startswith("За 2022–2025 значение у Нидерландов было выше в 4 из 4 периодов. Разница: 20,8 п.п. в начале периода (2022), 25,1 п.п. в конце (2025).")
+    # Короткая история и разные частоты.
+    assert short == ""
+    assert "was higher in" not in mixed and "The gap was" not in mixed and mixed.startswith("Germany: highest")

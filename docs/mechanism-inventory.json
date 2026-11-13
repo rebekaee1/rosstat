@@ -1720,8 +1720,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "sha256": "c094b86058d6d7a43cac579a28968d022895cfd967a1389c2de80320c5e660b7",
-      "lines": 624
+      "sha256": "f8d7eea308cb00a8bb594c6c796f0609d08d57832f669ba496953d31c6bb5aec",
+      "lines": 683
     },
     {
       "path": "backend/app/services/seo_world_subnational.py",
@@ -240338,8 +240338,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 349,
+      "end_line": 349,
       "owner": "render_world_vs_html._row_unit",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -307046,7 +307046,16 @@
     {
       "path": "backend/app/services/seo_world_compare.py",
       "line": 224,
-      "end_line": 624,
+      "end_line": 273,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_pair_history",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world_compare.py",
+      "line": 276,
+      "end_line": 683,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_vs_html",
@@ -307063,8 +307072,26 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 278,
-      "end_line": 286,
+      "line": 233,
+      "end_line": 235,
+      "owner": "_pair_history",
+      "conditions": [],
+      "name": "_label",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world_compare.py",
+      "line": 249,
+      "end_line": 251,
+      "owner": "_pair_history",
+      "conditions": [],
+      "name": "_extreme",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world_compare.py",
+      "line": 330,
+      "end_line": 338,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_unit_tail",
@@ -307072,8 +307099,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 297,
-      "end_line": 303,
+      "line": 349,
+      "end_line": 355,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_row_unit",
@@ -307081,8 +307108,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 309,
-      "end_line": 312,
+      "line": 361,
+      "end_line": 364,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_value_sfx",
@@ -307090,8 +307117,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 314,
-      "end_line": 315,
+      "line": 366,
+      "end_line": 367,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_dot",
@@ -307099,8 +307126,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 392,
-      "end_line": 394,
+      "line": 444,
+      "end_line": 446,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_cell",
@@ -346135,16 +346162,16 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 515,
-      "end_line": 515,
+      "line": 572,
+      "end_line": 572,
       "owner": "render_world_vs_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 232,
-      "end_line": 232,
+      "line": 284,
+      "end_line": 284,
       "owner": "render_world_vs_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
