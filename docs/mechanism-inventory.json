@@ -1560,13 +1560,13 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "sha256": "6e872746fe3df16638a8aec99e2b9609a416ceb62abb346484786ef0bd915de2",
-      "lines": 1085
+      "sha256": "5af445d1aa4ddab27424d3ab18c1c9f499a609cae3758be57ff8097d64f1af50",
+      "lines": 1087
     },
     {
       "path": "backend/app/services/search_language.py",
-      "sha256": "bb8182a94ff1011fffd48b8b62093b8bf917de57d3ab09119a082704b15397a3",
-      "lines": 412
+      "sha256": "a7fed45e3d7e99767e5e94ec2c02d819b62d659ec5c537984503856ad3b4b6c9",
+      "lines": 413
     },
     {
       "path": "backend/app/services/search_language_sql.py",
@@ -107311,8 +107311,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1021,
-      "end_line": 1021,
+      "line": 1023,
+      "end_line": 1023,
       "owner": "<module>",
       "conditions": [],
       "name": "EXACT_ONLY_WORDS",
@@ -107320,10 +107320,10 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "frozenset(('акциз',))",
+      "expression": "frozenset(('акциз', 'fuel'))",
       "expression_truncated": false,
-      "expression_chars": 21,
-      "ast_sha256": "e0adc4e7c630947b637dd28cd4610519b5e6b65aa9d9fd0901a422133ceb5844",
+      "expression_chars": 28,
+      "ast_sha256": "0fbd81c991fa6a87de97fdb281ea577a2a8f1d9ec9ad5923aa17de530fc3e111",
       "runtime_expansion": true
     },
     {
@@ -108055,8 +108055,8 @@
     },
     {
       "path": "backend/app/services/search_language.py",
-      "line": 384,
-      "end_line": 384,
+      "line": 385,
+      "end_line": 385,
       "owner": "<module>",
       "conditions": [],
       "name": "NEIGHBOUR_DEMOTIONS",
@@ -108068,16 +108068,16 @@
       "entries": [
         {
           "key": "'fuel'",
-          "expression": "('дизел|diesel', 'бензин|gasoline|petrol')",
+          "expression": "('топлив|fuel|дизел|diesel', 'бензин|gasoline|petrol')",
           "expression_truncated": false,
-          "expression_chars": 42,
-          "ast_sha256": "3b7d6ecd4d8a5b683f1bd88d4ffc48663d849b891a8b6ce52e19e7000b79899f"
+          "expression_chars": 54,
+          "ast_sha256": "6ecfae424fe9ef2360b8ced66661e69710aafe67295cb4d842caaf0e08662326"
         }
       ],
-      "expression": "{'fuel': ('дизел|diesel', 'бензин|gasoline|petrol')}",
+      "expression": "{'fuel': ('топлив|fuel|дизел|diesel', 'бензин|gasoline|petrol')}",
       "expression_truncated": false,
-      "expression_chars": 52,
-      "ast_sha256": "2920d2648ffc8c6a24ee10019babd077c62597adcd4bf186fd620b4b935fbdf6",
+      "expression_chars": 64,
+      "ast_sha256": "049eee874c543448044bd4ce372658802b81d0fcd5ae3f9e61c0252e39690808",
       "runtime_expansion": false
     },
     {
@@ -303567,8 +303567,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1025,
-      "end_line": 1037,
+      "line": 1027,
+      "end_line": 1039,
       "owner": "<module>",
       "conditions": [],
       "name": "_alternative_plan",
@@ -303576,8 +303576,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1040,
-      "end_line": 1085,
+      "line": 1042,
+      "end_line": 1087,
       "owner": "<module>",
       "conditions": [],
       "name": "match_score",
@@ -303630,8 +303630,8 @@
     },
     {
       "path": "backend/app/services/search_language.py",
-      "line": 387,
-      "end_line": 412,
+      "line": 388,
+      "end_line": 413,
       "owner": "<module>",
       "conditions": [],
       "name": "relevance_bonus",
@@ -344460,8 +344460,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1033,
-      "end_line": 1033,
+      "line": 1035,
+      "end_line": 1035,
       "owner": "_alternative_plan",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
@@ -344592,8 +344592,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1036,
-      "end_line": 1036,
+      "line": 1038,
+      "end_line": 1038,
       "owner": "_alternative_plan",
       "conditions": [],
       "symbol": "app.services.search_intent.EXACT_ONLY_WORDS"
@@ -344707,8 +344707,8 @@
     },
     {
       "path": "backend/app/services/search_language.py",
-      "line": 409,
-      "end_line": 409,
+      "line": 410,
+      "end_line": 410,
       "owner": "relevance_bonus",
       "conditions": [],
       "symbol": "app.services.search_language.NEIGHBOUR_DEMOTIONS"

@@ -88,6 +88,8 @@ def gaps_client(auth_env):
                 'ceni-ai92': definition('ceni-ai92', 'Потребительские цены на бензин АИ-92, рублей за литр', '20.m1', 'рубль за литр', PRICES),
                 'ceni-dt': definition('ceni-dt', 'Потребительские цены на дизельное топливо, рублей за литр', '20.m3', 'рубль за литр', PRICES),
                 'ceni-internet': definition('ceni-internet', 'Средняя цена: абонентская плата за доступ в интернет, рублей в месяц', '20.m40', 'рублей в месяц', PRICES),
+                'ceni-gazovoe-motornoe-toplivo': definition('ceni-gazovoe-motornoe-toplivo', 'Средняя цена: газовое моторное топливо, рублей за литр', '20.m4', 'рублей за литр', PRICES),
+                'ceni-tvorog-zhirnyy': definition('ceni-tvorog-zhirnyy', 'Средняя цена: творог жирный, рублей за кг', '20.m60', 'рублей за кг', PRICES),
                 KETTLE: definition(KETTLE, 'Средняя цена: чайник стальной эмалированный, рублей за шт.', '20.m50', 'рублей за шт.', PRICES),
                 PAN: definition(PAN, 'Средняя цена: кастрюля из эмалированной или нержавеющей стали, рублей за шт.', '20.m51', 'рублей за шт.', PRICES),
             }
@@ -153,6 +155,10 @@ def test_gasoline_price_in_region_puts_gasoline_before_diesel(gaps_client):
     found = codes(get(gaps_client, 'цена бензина удмуртия'))
     assert found[0] == 'ceni-ai92', found
     assert 'ceni-dt' in found and found.index('ceni-dt') > found.index('ceni-ai92')
+    # Газовое моторное топливо — тоже сосед, а не бензин; «творог жирный» (Full-fat) — не описка в «fuel».
+    assert 'ceni-gazovoe-motornoe-toplivo' in found and found.index('ceni-gazovoe-motornoe-toplivo') > found.index('ceni-ai92')
+    assert 'ceni-tvorog-zhirnyy' not in found
+    assert 'ceni-tvorog-zhirnyy' in codes(get(gaps_client, 'творог удмуртия'))
     # Запрос о дизеле по-прежнему ставит первым дизель.
     assert codes(get(gaps_client, 'цена дизеля удмуртия'))[0] == 'ceni-dt'
 

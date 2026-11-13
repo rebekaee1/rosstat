@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `5d71dc7d728dcb4d27ac7293bd7c7f221848fada`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `57b4ecf0314481664d9b569739d74c26ac1810dc`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -14,9 +14,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 |---|---:|
 | Файлы в явно определённом scope | 2455 |
 | Код, шаблоны и стили | 1983 |
-| Актуальные рецензии без пропусков guard | 2455 |
+| Актуальные рецензии без пропусков guard | 2454 |
 | Именованные определения Python/JS: с аннотацией / всего | 15947 / 15947 |
-| Файлы, требующие внимания | 0 |
+| Файлы, требующие внимания | 1 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -1008,7 +1008,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_year_range_note.py](../backend/tests/test_year_range_note.py) | reviewed | 5/5 | актуально |
 | [clickhouse/low-memory-users.xml](../clickhouse/low-memory-users.xml) | reviewed | 0/0 | актуально |
 | [clickhouse/low-memory.xml](../clickhouse/low-memory.xml) | reviewed | 0/0 | актуально |
-| [deploy/approved-shas.txt](../deploy/approved-shas.txt) | reviewed | 0/0 | актуально |
+| [deploy/approved-shas.txt](../deploy/approved-shas.txt) | reviewed | 0/0 | source_changed, read_range_gap |
 | [deploy/crawler-status.sh](../deploy/crawler-status.sh) | reviewed | 0/0 | актуально |
 | [deploy/fail2ban-install.sh](../deploy/fail2ban-install.sh) | reviewed | 0/0 | актуально |
 | [deploy/fail2ban/fail2ban.local](../deploy/fail2ban/fail2ban.local) | reviewed | 0/0 | актуально |

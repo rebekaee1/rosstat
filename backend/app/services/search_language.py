@@ -381,7 +381,8 @@ def title_frequencies(terms: tuple[tuple[str, ...], ...], candidates: list[dict]
 
 
 # Понятие (первая замена) → (признак соседнего товара, признак своего товара) в названии ряда.
-NEIGHBOUR_DEMOTIONS = {"fuel": (r"дизел|diesel", r"бензин|gasoline|petrol")}
+# Сосед — любое другое топливо (дизель, газовое моторное): оно попадает в выдачу только через общее слово «fuel».
+NEIGHBOUR_DEMOTIONS = {"fuel": (r"топлив|fuel|дизел|diesel", r"бензин|gasoline|petrol")}
 
 
 def relevance_bonus(terms: tuple[tuple[str, ...], ...], *, names: tuple[str, ...],

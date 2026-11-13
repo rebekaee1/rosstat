@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2244  ·  **Строк:** 1 417 941  ·  **Токенов (≈):** 13 513 498
+**Файлов:** 2244  ·  **Строк:** 1 417 953  ·  **Токенов (≈):** 13 513 933
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 797 | 64 788 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 915 | 319 618 | 3 495 526 |
+| `backend` | 915 | 319 627 | 3 495 768 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 19 | 1 143 | 17 255 |
-| `docs` | 144 | 884 744 | 7 602 806 |
+| `deploy` | 19 | 1 144 | 17 324 |
+| `docs` | 144 | 884 746 | 7 602 930 |
 | `frontend` | 1014 | 184 423 | 2 020 294 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 364 676 | 2 986 914 |
+| `docs/mechanism-inventory.json` | 364 676 | 2 986 922 |
 | `docs/client-mechanism-inventory.json` | 255 286 | 1 803 159 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -70,7 +70,7 @@
 | `backend/app/main.py` | 2 071 | 22 094 |
 | `backend/app/services/site_urls.py` | 2 253 | 22 012 |
 | `backend/app/services/search.py` | 1 421 | 21 850 |
-| `docs/search.md` | 859 | 21 428 |
+| `docs/search.md` | 861 | 21 544 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
 | `backend/app/services/seo_world.py` | 2 227 | 21 146 |
 | `backend/app/services/seo_regional.py` | 2 122 | 21 014 |
@@ -85,7 +85,7 @@
 | `backend/app/data/eurostat_titles_ru.py` | 1 902 | 17 591 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 1 401 | 16 504 |
-| `backend/app/services/search_intent.py` | 1 085 | 16 374 |
+| `backend/app/services/search_intent.py` | 1 087 | 16 410 |
 | `backend/tests/test_i18n_parity.py` | 1 833 | 16 334 |
 | `docs/design/local-acceptance/final-narrow/browser.json` | 2 181 | 16 120 |
 | `backend/app/data/research_catalog.json` | 1 221 | 15 986 |
@@ -131,7 +131,7 @@
 | `backend/app/services/pulse.py` | 891 | 9 888 |
 | `backend/app/services/eurostat_parser.py` | 1 009 | 9 773 |
 | `backend/app/tasks/scheduler.py` | 893 | 9 694 |
-| `backend/app/services/search_language.py` | 412 | 9 610 |
+| `backend/app/services/search_language.py` | 413 | 9 641 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 888 | 9 566 |
 | `frontend/src/styles/z8-tools.css` | 905 | 9 371 |
 | `backend/tests/test_world.py` | 963 | 9 310 |
@@ -252,11 +252,11 @@
 | `docs/research/_fpsr_raw/agent05.json` | 541 | 5 566 |
 | `frontend/src/styles/z3-home.css` | 411 | 5 522 |
 | `backend/app/services/emiss_regional_parser.py` | 535 | 5 515 |
+| `deploy/approved-shas.txt` | 188 | 5 508 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
 | `backend/tests/test_indicator_year_landing.py` | 537 | 5 494 |
 | `backend/app/api/export.py` | 598 | 5 470 |
 | `backend/tests/test_world_search_compare_national.py` | 572 | 5 461 |
-| `deploy/approved-shas.txt` | 187 | 5 439 |
 | `frontend/src/lib/format.test.js` | 545 | 5 425 |
 | `backend/app/services/seo_world_year.py` | 563 | 5 380 |
 | `backend/app/services/cabinet.py` | 550 | 5 362 |
@@ -285,6 +285,7 @@
 | `scripts/audit-world-plausibility.py` | 480 | 5 091 |
 | `docs/research/_fpsr_raw/agent10.json` | 336 | 5 087 |
 | `frontend/src/pages/CalendarPage.jsx` | 469 | 5 067 |
+| `backend/tests/test_search_pulse_gaps.py` | 344 | 5 066 |
 | `scripts/catalog-harvest.py` | 523 | 5 054 |
 | `frontend/src/lib/searchSynonyms.js` | 417 | 5 047 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 247 | 5 034 |
@@ -300,7 +301,6 @@
 | `backend/tests/forecast_strategies/test_derived.py` | 554 | 4 953 |
 | `backend/tests/test_regional_publication.py` | 412 | 4 953 |
 | `.env.example` | 363 | 4 904 |
-| `backend/tests/test_search_pulse_gaps.py` | 338 | 4 891 |
 | `backend/app/services/forecast_strategies/derived_from_source.py` | 453 | 4 871 |
 | `backend/app/services/world_adapters/ons_timeseries.py` | 573 | 4 845 |
 | `backend/app/services/world_adapters/ecos_bok.py` | 551 | 4 839 |

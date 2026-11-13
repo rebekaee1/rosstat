@@ -49641,12 +49641,12 @@
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 165,
+          "line": 171,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 175,
+          "line": 181,
           "kind": "tests"
         },
         {
@@ -52055,7 +52055,7 @@
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 270,
+          "line": 276,
           "kind": "tests"
         },
         {
@@ -52200,7 +52200,7 @@
         },
         {
           "file": "docs/search.md",
-          "line": 815,
+          "line": 817,
           "kind": "other"
         },
         {
@@ -63024,17 +63024,17 @@
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 138,
+          "line": 140,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 248,
+          "line": 254,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 251,
+          "line": 257,
           "kind": "tests"
         },
         {
@@ -73288,12 +73288,12 @@
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 228,
+          "line": 234,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 234,
+          "line": 240,
           "kind": "tests"
         },
         {
@@ -93550,7 +93550,7 @@
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 221,
+          "line": 227,
           "kind": "tests"
         },
         {
@@ -96603,7 +96603,7 @@
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 220,
+          "line": 226,
           "kind": "tests"
         },
         {
@@ -97360,17 +97360,17 @@
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 227,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 231,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_search_pulse_gaps.py",
           "line": 233,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_pulse_gaps.py",
+          "line": 237,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_pulse_gaps.py",
+          "line": 239,
           "kind": "tests"
         },
         {
@@ -108659,7 +108659,7 @@
         },
         {
           "file": "backend/tests/test_search_pulse_gaps.py",
-          "line": 254,
+          "line": 260,
           "kind": "tests"
         },
         {
