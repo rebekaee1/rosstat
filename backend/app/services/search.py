@@ -12,9 +12,11 @@ from dataclasses import replace
 from functools import lru_cache
 import re
 import string
+import time
 from urllib.parse import urlsplit, urlunsplit
 
-from sqlalchemy import and_, case, exists, literal, literal_column, or_, select, true, union_all, func
+from sqlalchemy import Integer, and_, bindparam, case, exists, literal, literal_column, or_, select, text, true, union_all, func
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import load_only
 from sqlalchemy.sql.elements import False_
@@ -47,9 +49,12 @@ from app.services.seo_i18n import localize_category_name, public_indicator_field
 from app.services.world_subnational_ingest import country_has_subnational
 
 _MAX_CANDIDATES = 500
-# Сколько пар «показатель × территория» проверяет первый запрос фактов; каждый
-# следующий берёт вчетверо больше, поэтому запросов немного и при редких фактах.
-_FACT_BLOCK_PAIRS = 400
+# Наименьший кусок пар «показатель × территория» в одном запросе фактов. Первый кусок — нужное число строк
+# плюс четверть. Следующий считается по доле найденных в предыдущем (с запасом в полтора раза), но не больше
+# чем вчетверо от прежнего; при пустом куске и после `_FACT_BLOCK_ADAPTIVE_TAKES` запросов — ровно вчетверо,
+# поэтому запросов немного и при редких фактах.
+_FACT_BLOCK_PAIRS = 64
+_FACT_BLOCK_ADAPTIVE_TAKES = 4
 _PERCENT_UNITS = ("PC", "PCT", "PERCENT", "RCH_A", "RCH_M", "RCH_MV12MAVR", "RCH_A_AVG", "RT1", "RT1-SCA",
     "PCH_SM", "PCH_PRE", "PCH_SAME", "PCH_M1", "PCPIPCH", "PCPIEPCH", "NGDP_RPCH", "NGDP_RPC")
 _INTENT_CONCEPTS = {
@@ -137,7 +142,7 @@ _PRICE_VALUATION_PHRASES = ("current prices", "constant prices", "chained prices
 _PRICE_SEPARATORS = string.punctuation + "—–≤≥‰€£¥№\t\n\r\v\f\u00a0\u202f"
 
 
-@lru_cache(maxsize=2048)
+@lru_cache(maxsize=6144)
 def _native_price_metadata(*names: str | None) -> str:
     """A native price subject, distinct from GDP valuation at current prices."""
     text = phrase(" ".join(name or "" for name in names))
@@ -394,13 +399,13 @@ def _escape_like(value: str) -> str:
     return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
-def _world_lexical(intent: SearchIntent, *, postgres: bool):
+def _world_lexical(intent: SearchIntent, *, postgres: bool, indexed: bool = False):
     """One combined predicate per required term (lexical OR native dimension)."""
     return [or_(lexical, dimension) if dimension is not None else lexical
-            for lexical, dimension in _world_lexical_terms(intent, postgres=postgres)]
+            for lexical, dimension in _world_lexical_terms(intent, postgres=postgres, indexed=indexed)]
 
 
-def _world_lexical_terms(intent: SearchIntent, *, postgres: bool):
+def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool = False):
     """Per required term: (lexical predicate, native-dimension predicate or None).
 
     The lexical part is trigram-indexable (code/name/SEO ILIKE). The dimension
@@ -578,7 +583,7 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool):
                 for column in (WorldIndicator.name_ru, WorldIndicator.name_en):
                     term_clauses.append(literal(needle).op("<%")(column))
         dimension = native_dimension_match_clause(WorldIndicator.provider, WorldIndicator.slice_json,
-            tuple(native_alternatives))
+            tuple(native_alternatives), indexed=indexed)
         lexical = or_(*term_clauses) if term_clauses else literal(False)
         clauses.append((lexical, None if isinstance(dimension, False_) else dimension))
     return clauses
@@ -816,6 +821,71 @@ async def _russia(db: AsyncSession, intent: SearchIntent, locale: str) -> list[d
     return output
 
 
+# Индекс срезов мирового каталога (миграция 20261113_world_slice_idx). Код работает и без него: наличие
+# проверяется раз в минуту на процесс, поэтому порядок «код раньше миграции» и откат индекса безопасны.
+_SLICE_INDEX_NAME = "ix_world_indicators_slice_members"
+_SLICE_INDEX_RECHECK_SECONDS = 60.0
+_slice_index_state: dict[str, float | bool] = {"checked": float("-inf"), "available": False}
+
+
+async def _slice_index_available(db: AsyncSession) -> bool:
+    """Построен ли и годен ли индекс срезов. Без него условие среза читает весь каталог, как раньше."""
+    now = time.monotonic()
+    if now - _slice_index_state["checked"] >= _SLICE_INDEX_RECHECK_SECONDS:
+        valid = (await db.execute(text(
+            "SELECT i.indisvalid AND i.indisready FROM pg_catalog.pg_index i WHERE i.indexrelid = to_regclass(:name)"
+        ), {"name": _SLICE_INDEX_NAME})).scalar()
+        _slice_index_state["available"] = bool(valid)
+        _slice_index_state["checked"] = now
+    return bool(_slice_index_state["available"])
+
+
+# Первый запрос кандидатов берёт вчетверо больше, чем нужно строк; если фактов не хватило, а кандидаты
+# не кончились, предел растёт в восемь раз. Факт проверяется кусками: первый — нужное число плюс четверть.
+_WORLD_CANDIDATE_FACTOR = 4
+_WORLD_CANDIDATE_GROWTH = 8
+_WORLD_FACT_CHUNK_MAX = 20000
+
+
+async def _world_top_with_facts(db: AsyncSession, statement, intent: SearchIntent, columns, need: int,
+        facts: dict[int, WorldIndicator | None], *, postgres: bool) -> list[tuple[int, WorldIndicator]]:
+    """Первые `need` кандидатов запроса, у которых есть факт, в порядке самого запроса.
+
+    Раньше `EXISTS` по точкам стоял в одном запросе с отбором и сортировкой. На частом слове («население»:
+    49,5 тыс. совпавших рядов) планировщик проверял факт у каждого ряда — 198 тыс. страниц `world_data_points`
+    ради 201 строки (замер на боевом 13.11.2026). Здесь порядок кандидатов задаёт база тем же `ORDER BY`,
+    а факт и полная строка читаются только у первых по порядку, пока выдача не набрана. Итог тот же, что у
+    `WHERE факт … ORDER BY … LIMIT need`: отбор по факту и порядок не зависят друг от друга, код ряда уникален.
+    `facts` общий для всех запросов одного поиска: ряд проверяется один раз.
+    """
+    limit = _WORLD_CANDIDATE_FACTOR * need
+    while True:
+        pairs = (await db.execute(statement.limit(limit))).all()
+        picked: list[tuple[int, WorldIndicator]] = []
+        position, size = 0, need + need // 4 + 8
+        while position < len(pairs) and len(picked) < need:
+            block = pairs[position:position + size]
+            position += len(block)
+            size = min(size * 4, _WORLD_FACT_CHUNK_MAX)
+            unknown = [row_id for row_id, _rank in block if row_id not in facts]
+            if unknown:
+                belongs = (WorldIndicator.id == func.any(bindparam("fe_ids", unknown, type_=ARRAY(Integer)))
+                    if postgres else WorldIndicator.id.in_(unknown))
+                found = {row.id: row for row in (await db.execute(select(WorldIndicator).options(
+                    load_only(*columns)).where(belongs, _world_fact(intent)))).scalars()}
+                for row_id in unknown:
+                    facts[row_id] = found.get(row_id)
+            for row_id, row_rank in block:
+                row = facts[row_id]
+                if row is not None:
+                    picked.append((row_rank, row))
+                    if len(picked) == need:
+                        break
+        if len(picked) >= need or len(pairs) < limit:
+            return picked
+        limit *= _WORLD_CANDIDATE_GROWTH
+
+
 async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, WorldCountry], locale: str, budget: int) -> tuple[list[dict], bool]:
     if intent.regions or intent.countries == frozenset(("russia",)):
         return [], False
@@ -837,22 +907,25 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
         (WorldIndicator.name_en.ilike(needle, escape="\\"), 1),
         (_world_preference(intent), 2), else_=3)
 
+    indexed = postgres and await _slice_index_available(db)
+
     def candidates(term_clauses):
-        # All explicit geography and fact constraints precede candidate LIMIT.
-        return select(WorldIndicator, rank.label("fe_rank")).options(load_only(*columns)).where(
-            WorldIndicator.country_id.in_(selected), _world_fact(intent), *term_clauses,
+        # Кандидаты в порядке выдачи, только id и ранг. Все ограничения географии, слов, срезов и меры стоят
+        # до LIMIT, как раньше; проверка факта идёт следом по этому же порядку (`_world_top_with_facts`).
+        return select(WorldIndicator.id, rank.label("fe_rank")).where(
+            WorldIndicator.country_id.in_(selected), *term_clauses,
             # Остановленные источником дубли ведут на канон (301), в выдаче их нет.
             WorldIndicator.dataset_id.notin_(superseded_dataset_ids()),
-            *dimension_constraints(intent.terms, WorldIndicator.provider, WorldIndicator.slice_json),
+            *dimension_constraints(intent.terms, WorldIndicator.provider, WorldIndicator.slice_json, indexed=indexed),
             *measure_constraints(intent.terms, WorldIndicator.code, (WorldIndicator.name_ru, WorldIndicator.name_en,
                 native_dimension_text(WorldIndicator.provider, WorldIndicator.slice_json, intent.terms)), postgres=postgres,
                 unit_columns=(WorldIndicator.unit, WorldIndicator.unit_ru))
-        ).order_by(rank, WorldIndicator.is_listed.desc(), WorldIndicator.code).limit(budget + 1)
+        ).order_by(rank, WorldIndicator.is_listed.desc(), WorldIndicator.code)
 
-    terms = _world_lexical_terms(intent, postgres=postgres)
+    terms = _world_lexical_terms(intent, postgres=postgres, indexed=indexed)
     dimension_terms = [index for index, (_lexical, dimension) in enumerate(terms) if dimension is not None]
     if not postgres or not dimension_terms or len(dimension_terms) > _MAX_DIMENSION_TERMS:
-        statements = [candidates(_world_lexical(intent, postgres=postgres))]
+        statements = [candidates(_world_lexical(intent, postgres=postgres, indexed=indexed))]
     else:
         # A term holds through its lexical or its dimension predicate. Every
         # combination is its own AND query, so each can use the trigram index;
@@ -863,8 +936,9 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
             statements.append(candidates([dimension if index in use_dimension else lexical
                 for index, (lexical, dimension) in enumerate(terms)]))
     merged: dict[int, tuple[int, WorldIndicator]] = {}
+    facts: dict[int, WorldIndicator | None] = {}
     for statement in statements:
-        for row, row_rank in (await db.execute(statement)).all():
+        for row_rank, row in await _world_top_with_facts(db, statement, intent, columns, budget + 1, facts, postgres=postgres):
             merged.setdefault(row.id, (row_rank, row))
     ordered = sorted(merged.values(), key=lambda item: (item[0], 0 if item[1].is_listed else 1, item[1].code))
     rows = [row for _rank, row in ordered[:budget + 1]]
@@ -914,6 +988,13 @@ async def _ordered_fact_rows(run, scores: dict[int, int], ranked_ids: list[int],
     выдача набрана. `run(indicator_ids, territory_ids, limit)` упорядочивает
     свой прямоугольник тем же ключом; `ranked_ids` — показатели в порядке кода
     из базы, чтобы граница куска не зависела от правил сортировки строк.
+
+    Размер куска на состав выдачи не влияет: куски идут подряд в порядке выдачи
+    при любом размере. Он определяет только число проверенных пар. До 13.11.2026
+    первый кусок был вчетверо больше нужного, а каждый следующий — вчетверо больше
+    предыдущего: «инфляция» на боевом проверяла вторым запросом 2 643 пары ради
+    108 недостающих строк (15,9 с на холодном диске). Теперь следующий кусок
+    считается по доле пар с фактом в предыдущем.
     """
     by_score: dict[int, list[int]] = {}
     for indicator_id in ranked_ids:
@@ -926,13 +1007,23 @@ async def _ordered_fact_rows(run, scores: dict[int, int], ranked_ids: list[int],
     units = [by_order[order] for order in sorted(by_order)]
     everywhere = [territory_id for unit in units for territory_id in unit]
     rows: list = []
-    target = max(_FACT_BLOCK_PAIRS, 4 * need)
+    target = max(_FACT_BLOCK_PAIRS, need + need // 4)
+    takes = 0
 
     async def take(indicator_ids: list[int], territory_ids: list[int]) -> bool:
-        nonlocal target
-        rows.extend(await run(indicator_ids, territory_ids, need - len(rows)))
-        target *= 4
-        return len(rows) >= need
+        nonlocal target, takes
+        found = await run(indicator_ids, territory_ids, need - len(rows))
+        rows.extend(found)
+        takes += 1
+        missing = need - len(rows)
+        if found and takes < _FACT_BLOCK_ADAPTIVE_TAKES:
+            # Сколько пар нужно при той же доле фактов, с запасом в полтора раза (округление вверх).
+            pairs = len(indicator_ids) * len(territory_ids)
+            estimate = -(-missing * pairs * 3 // (len(found) * 2))
+            target = min(max(_FACT_BLOCK_PAIRS, estimate), target * 4)
+        else:
+            target *= 4
+        return missing <= 0
 
     position = 0
     while position < len(groups):

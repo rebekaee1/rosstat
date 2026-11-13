@@ -14,9 +14,9 @@
 - Jobs: **59**
 - Middleware: **6**
 - Registry declarations: **1349**
-- Registry references: **2544**
-- Migration operations: **464**
-- Candidate effects: **2808**
+- Registry references: **2545**
+- Migration operations: **480**
+- Candidate effects: **2818**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2772,43 +2772,43 @@ Relationships: `[]`
 | app.services.scrape_guard._TELEMETRY_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:112](../backend/app/services/scrape_guard.py#L112) |
 | app.services.scrape_guard._AUTH_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:121](../backend/app/services/scrape_guard.py#L121) |
 | app.services.scrape_guard._HEADLESS_GL_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:127](../backend/app/services/scrape_guard.py#L127) |
-| app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:53](../backend/app/services/search.py#L53) |
-| app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:55](../backend/app/services/search.py#L55) |
-| app.services.search._INFLATION_WORD | Call | computed source expression | [backend/app/services/search.py:59](../backend/app/services/search.py#L59) |
-| app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:66](../backend/app/services/search.py#L66) |
-| app.services.search._RUSSIA_HEADLINES | Dict | 'housing', 'birth-count', 'cpi', 'gdp', 'wage', 'unemployment', 'key-rate', 'fuel', 'fuel-ai95', 'fuel-ai92', 'fuel-diesel', 'pensioners', 'exports', 'imports', 'gas-price', 'natural-gas', 'газ', 'trade-balance', 'wages-real', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'mortgage-rate', 'credit-rate', 'cpi-food', 'government-debt', 'budget-balance', 'reserves', 'mortality', 'births', 'copper', 'silver', 'budget-expenditure', 'budget-revenue', 'государство' | [backend/app/services/search.py:69](../backend/app/services/search.py#L69) |
-| app.services.search._NATIVE_PRICE_WORDS | Tuple | sequence/source expression | [backend/app/services/search.py:135](../backend/app/services/search.py#L135) |
-| app.services.search._PRICE_VALUATION_PHRASES | Tuple | sequence/source expression | [backend/app/services/search.py:136](../backend/app/services/search.py#L136) |
-| app.services.search._COUNTRY_HEADLINE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search.py:204](../backend/app/services/search.py#L204) |
-| app.services.search._COUNTRY_HEADLINE_CODE_PATTERNS | Tuple | sequence/source expression | [backend/app/services/search.py:205](../backend/app/services/search.py#L205) |
-| app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:220](../backend/app/services/search.py#L220) |
-| app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:231](../backend/app/services/search.py#L231) |
-| app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:239](../backend/app/services/search.py#L239) |
-| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1193](../backend/app/services/search.py#L1193) |
-| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1194](../backend/app/services/search.py#L1194) |
-| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1195](../backend/app/services/search.py#L1195) |
-| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1220](../backend/app/services/search.py#L1220) |
+| app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:58](../backend/app/services/search.py#L58) |
+| app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:60](../backend/app/services/search.py#L60) |
+| app.services.search._INFLATION_WORD | Call | computed source expression | [backend/app/services/search.py:64](../backend/app/services/search.py#L64) |
+| app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:71](../backend/app/services/search.py#L71) |
+| app.services.search._RUSSIA_HEADLINES | Dict | 'housing', 'birth-count', 'cpi', 'gdp', 'wage', 'unemployment', 'key-rate', 'fuel', 'fuel-ai95', 'fuel-ai92', 'fuel-diesel', 'pensioners', 'exports', 'imports', 'gas-price', 'natural-gas', 'газ', 'trade-balance', 'wages-real', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'mortgage-rate', 'credit-rate', 'cpi-food', 'government-debt', 'budget-balance', 'reserves', 'mortality', 'births', 'copper', 'silver', 'budget-expenditure', 'budget-revenue', 'государство' | [backend/app/services/search.py:74](../backend/app/services/search.py#L74) |
+| app.services.search._NATIVE_PRICE_WORDS | Tuple | sequence/source expression | [backend/app/services/search.py:140](../backend/app/services/search.py#L140) |
+| app.services.search._PRICE_VALUATION_PHRASES | Tuple | sequence/source expression | [backend/app/services/search.py:141](../backend/app/services/search.py#L141) |
+| app.services.search._COUNTRY_HEADLINE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search.py:209](../backend/app/services/search.py#L209) |
+| app.services.search._COUNTRY_HEADLINE_CODE_PATTERNS | Tuple | sequence/source expression | [backend/app/services/search.py:210](../backend/app/services/search.py#L210) |
+| app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:225](../backend/app/services/search.py#L225) |
+| app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:236](../backend/app/services/search.py#L236) |
+| app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:244](../backend/app/services/search.py#L244) |
+| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1284](../backend/app/services/search.py#L1284) |
+| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1285](../backend/app/services/search.py#L1285) |
+| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1286](../backend/app/services/search.py#L1286) |
+| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1311](../backend/app/services/search.py#L1311) |
 | app.services.search_currency_aliases._SHARED_LAST_WORDS | Call | computed source expression | [backend/app/services/search_currency_aliases.py:15](../backend/app/services/search_currency_aliases.py#L15) |
 | app.services.search_currency_aliases._ROOT_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/search_currency_aliases.py:18](../backend/app/services/search_currency_aliases.py#L18) |
 | app.services.search_currency_aliases._GENERIC_FIRST | Call | computed source expression | [backend/app/services/search_currency_aliases.py:20](../backend/app/services/search_currency_aliases.py#L20) |
-| app.services.search_dimensions._SUPPLEMENTAL_LABELS | Dict | 'sex', 'citizen', 'partner', 'hhcomp', 'quant_inc', 'rskpovth', 'nace_r2', 'nace_r1', 'isced11', 'wstatus', 'med_spec', 'indic_is', 'ind_type', 'stk_flow', 'siec' | [backend/app/services/search_dimensions.py:24](../backend/app/services/search_dimensions.py#L24) |
-| app.services.search_dimensions._VERIFIED_MEMBER_LABELS | Dict | 'age', 'c_birth', 'duration', 'hhcomp', 'indic_bt', 'indic_em', 'isced11', 'iscedf13', 'lev_limit', 'mgstatus', 'na_item', 'nace_r2', 'reason', 's_adj', 'sector', 'statinfo', 'worktime' | [backend/app/services/search_dimensions.py:55](../backend/app/services/search_dimensions.py#L55) |
-| app.services.search_dimensions._KNOWN_AXES | Call | computed source expression | [backend/app/services/search_dimensions.py:102](../backend/app/services/search_dimensions.py#L102) |
-| app.services.search_dimensions._AGGREGATE_MEMBERS | Dict | 'sex', 'citizen', 'partner', 'hhcomp', 'quant_inc', 'rskpovth', 'nace_r2', 'nace_r1', 'ind_type', 'age', 'isced11', 'iscedf13', 'mgstatus', 'c_birth', 'worktime', 'sector' | [backend/app/services/search_dimensions.py:106](../backend/app/services/search_dimensions.py#L106) |
-| app.services.search_dimensions._MEMBER_CODES | DictComp | computed source expression | [backend/app/services/search_dimensions.py:111](../backend/app/services/search_dimensions.py#L111) |
-| app.services.search_dimensions.DIMENSION_RULES | Dict | 'search-dim-sex-total', 'search-dim-sex-male', 'search-dim-sex-female', 'search-dim-citizen-total', 'search-dim-partner-total', 'search-dim-household-type-total', 'search-dim-income-quintiles-total', 'search-dim-income-threshold-groups-total', 'search-dim-education-below-upper-secondary', 'search-dim-status-employed', 'search-dim-clinical-practising', 'search-dim-clinical-active', 'search-dim-clinical-licensed', 'search-dim-medical-physicians', 'search-dim-internet-daily', 'search-dim-individuals-total', 'search-dim-oil-opening-stock' | [backend/app/services/search_dimensions.py:114](../backend/app/services/search_dimensions.py#L114) |
-| app.services.search_dimensions._NATIVE_FACETS | Tuple | sequence/source expression | [backend/app/services/search_dimensions.py:135](../backend/app/services/search_dimensions.py#L135) |
-| app.services.search_dimensions.DIMENSION_ANY_RULES | Dict | 'search-dim-income-groups-total', 'search-dim-activities-total' | [backend/app/services/search_dimensions.py:186](../backend/app/services/search_dimensions.py#L186) |
-| app.services.search_dimensions._EXPLICIT_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_dimensions.py:191](../backend/app/services/search_dimensions.py#L191) |
-| app.services.search_dimensions._MEDICAL_CONCEPTS | List | sequence/source expression | [backend/app/services/search_dimensions.py:213](../backend/app/services/search_dimensions.py#L213) |
-| app.services.search_dimensions._NATIVE_REPLACEMENTS | DictComp | computed source expression | [backend/app/services/search_dimensions.py:277](../backend/app/services/search_dimensions.py#L277) |
-| app.services.search_dimensions._NATIVE_PATTERN | Call | computed source expression | [backend/app/services/search_dimensions.py:279](../backend/app/services/search_dimensions.py#L279) |
-| app.services.search_dimensions._NATIVE_CONCEPTS | Call | computed source expression | [backend/app/services/search_dimensions.py:281](../backend/app/services/search_dimensions.py#L281) |
-| app.services.search_dimensions._AGE_CONCEPTS | Call | computed source expression | [backend/app/services/search_dimensions.py:284](../backend/app/services/search_dimensions.py#L284) |
-| app.services.search_dimensions._AGE_REPLACEMENTS | DictComp | computed source expression | [backend/app/services/search_dimensions.py:290](../backend/app/services/search_dimensions.py#L290) |
-| app.services.search_dimensions._AGE_PATTERN | Call | computed source expression | [backend/app/services/search_dimensions.py:291](../backend/app/services/search_dimensions.py#L291) |
-| app.services.search_dimensions._CLINICAL_REPLACEMENTS | Dict | sequence/source expression | [backend/app/services/search_dimensions.py:293](../backend/app/services/search_dimensions.py#L293) |
-| app.services.search_dimensions._CLINICAL_PATTERN | Call | computed source expression | [backend/app/services/search_dimensions.py:300](../backend/app/services/search_dimensions.py#L300) |
+| app.services.search_dimensions._SUPPLEMENTAL_LABELS | Dict | 'sex', 'citizen', 'partner', 'hhcomp', 'quant_inc', 'rskpovth', 'nace_r2', 'nace_r1', 'isced11', 'wstatus', 'med_spec', 'indic_is', 'ind_type', 'stk_flow', 'siec' | [backend/app/services/search_dimensions.py:25](../backend/app/services/search_dimensions.py#L25) |
+| app.services.search_dimensions._VERIFIED_MEMBER_LABELS | Dict | 'age', 'c_birth', 'duration', 'hhcomp', 'indic_bt', 'indic_em', 'isced11', 'iscedf13', 'lev_limit', 'mgstatus', 'na_item', 'nace_r2', 'reason', 's_adj', 'sector', 'statinfo', 'worktime' | [backend/app/services/search_dimensions.py:56](../backend/app/services/search_dimensions.py#L56) |
+| app.services.search_dimensions._KNOWN_AXES | Call | computed source expression | [backend/app/services/search_dimensions.py:103](../backend/app/services/search_dimensions.py#L103) |
+| app.services.search_dimensions._AGGREGATE_MEMBERS | Dict | 'sex', 'citizen', 'partner', 'hhcomp', 'quant_inc', 'rskpovth', 'nace_r2', 'nace_r1', 'ind_type', 'age', 'isced11', 'iscedf13', 'mgstatus', 'c_birth', 'worktime', 'sector' | [backend/app/services/search_dimensions.py:107](../backend/app/services/search_dimensions.py#L107) |
+| app.services.search_dimensions._MEMBER_CODES | DictComp | computed source expression | [backend/app/services/search_dimensions.py:112](../backend/app/services/search_dimensions.py#L112) |
+| app.services.search_dimensions.DIMENSION_RULES | Dict | 'search-dim-sex-total', 'search-dim-sex-male', 'search-dim-sex-female', 'search-dim-citizen-total', 'search-dim-partner-total', 'search-dim-household-type-total', 'search-dim-income-quintiles-total', 'search-dim-income-threshold-groups-total', 'search-dim-education-below-upper-secondary', 'search-dim-status-employed', 'search-dim-clinical-practising', 'search-dim-clinical-active', 'search-dim-clinical-licensed', 'search-dim-medical-physicians', 'search-dim-internet-daily', 'search-dim-individuals-total', 'search-dim-oil-opening-stock' | [backend/app/services/search_dimensions.py:115](../backend/app/services/search_dimensions.py#L115) |
+| app.services.search_dimensions._NATIVE_FACETS | Tuple | sequence/source expression | [backend/app/services/search_dimensions.py:136](../backend/app/services/search_dimensions.py#L136) |
+| app.services.search_dimensions.DIMENSION_ANY_RULES | Dict | 'search-dim-income-groups-total', 'search-dim-activities-total' | [backend/app/services/search_dimensions.py:187](../backend/app/services/search_dimensions.py#L187) |
+| app.services.search_dimensions._EXPLICIT_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_dimensions.py:192](../backend/app/services/search_dimensions.py#L192) |
+| app.services.search_dimensions._MEDICAL_CONCEPTS | List | sequence/source expression | [backend/app/services/search_dimensions.py:214](../backend/app/services/search_dimensions.py#L214) |
+| app.services.search_dimensions._NATIVE_REPLACEMENTS | DictComp | computed source expression | [backend/app/services/search_dimensions.py:278](../backend/app/services/search_dimensions.py#L278) |
+| app.services.search_dimensions._NATIVE_PATTERN | Call | computed source expression | [backend/app/services/search_dimensions.py:280](../backend/app/services/search_dimensions.py#L280) |
+| app.services.search_dimensions._NATIVE_CONCEPTS | Call | computed source expression | [backend/app/services/search_dimensions.py:282](../backend/app/services/search_dimensions.py#L282) |
+| app.services.search_dimensions._AGE_CONCEPTS | Call | computed source expression | [backend/app/services/search_dimensions.py:285](../backend/app/services/search_dimensions.py#L285) |
+| app.services.search_dimensions._AGE_REPLACEMENTS | DictComp | computed source expression | [backend/app/services/search_dimensions.py:291](../backend/app/services/search_dimensions.py#L291) |
+| app.services.search_dimensions._AGE_PATTERN | Call | computed source expression | [backend/app/services/search_dimensions.py:292](../backend/app/services/search_dimensions.py#L292) |
+| app.services.search_dimensions._CLINICAL_REPLACEMENTS | Dict | sequence/source expression | [backend/app/services/search_dimensions.py:294](../backend/app/services/search_dimensions.py#L294) |
+| app.services.search_dimensions._CLINICAL_PATTERN | Call | computed source expression | [backend/app/services/search_dimensions.py:301](../backend/app/services/search_dimensions.py#L301) |
 | app.services.search_intent.TOKEN_RE | Call | computed source expression | [backend/app/services/search_intent.py:23](../backend/app/services/search_intent.py#L23) |
 | app.services.search_intent.BANK_BRAND_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:25](../backend/app/services/search_intent.py#L25) |
 | app.services.search_intent.PRICE_GOODS_CONCEPTS | Call | computed source expression | [backend/app/services/search_intent.py:29](../backend/app/services/search_intent.py#L29) |
@@ -2829,10 +2829,10 @@ Relationships: `[]`
 | app.services.search_intent._LAYOUT_EN_RU | Call | computed source expression | [backend/app/services/search_intent.py:247](../backend/app/services/search_intent.py#L247) |
 | app.services.search_intent._LAYOUT_RU_EN | Call | computed source expression | [backend/app/services/search_intent.py:248](../backend/app/services/search_intent.py#L248) |
 | app.services.search_intent.MONTHS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:249](../backend/app/services/search_intent.py#L249) |
-| app.services.search_intent.CONCEPT_MATCHERS | Call | computed source expression | [backend/app/services/search_intent.py:478](../backend/app/services/search_intent.py#L478) |
-| app.services.search_intent._RATE_QUOTE_CODES | Call | computed source expression | [backend/app/services/search_intent.py:771](../backend/app/services/search_intent.py#L771) |
-| app.services.search_intent.CONCEPTS_ALTERNATIVES | Call | computed source expression | [backend/app/services/search_intent.py:962](../backend/app/services/search_intent.py#L962) |
-| app.services.search_intent.EXACT_ONLY_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:1023](../backend/app/services/search_intent.py#L1023) |
+| app.services.search_intent.CONCEPT_MATCHERS | Call | computed source expression | [backend/app/services/search_intent.py:487](../backend/app/services/search_intent.py#L487) |
+| app.services.search_intent._RATE_QUOTE_CODES | Call | computed source expression | [backend/app/services/search_intent.py:780](../backend/app/services/search_intent.py#L780) |
+| app.services.search_intent.CONCEPTS_ALTERNATIVES | Call | computed source expression | [backend/app/services/search_intent.py:971](../backend/app/services/search_intent.py#L971) |
+| app.services.search_intent.EXACT_ONLY_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:1032](../backend/app/services/search_intent.py#L1032) |
 | app.services.search_language.QUESTION_WORDS | Call | computed source expression | [backend/app/services/search_language.py:17](../backend/app/services/search_language.py#L17) |
 | app.services.search_language.LANGUAGE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_language.py:46](../backend/app/services/search_language.py#L46) |
 | app.services.search_language.MEASURE_RULES | Dict | 'search-subject-price', 'steel', 'food-industry', 'current-prices', 'constant-prices', 'earnings-income-contribution', 'consumption-change-contribution', 'farm-earnings', 'internet-daily-use', 'deprivation-weekly-spending', 'usd-rub', 'usd-jpy', 'cny-rub', 'try-rub', 'kzt-rub', **unpack, 'eur-rub', 'eur-usd', 'credit-stock-households', 'credit-stock-business', 'research-personnel', 'research-organizations', 'wage-salary-employment', 'net-earnings', 'employee-compensation', 'benefits-workers-compensation', 'monetary-base', 'dividend-interest-rent-income', 'budget-spending', 'budget-revenue', 'birth-count', 'birth-rate', 'death-rate', 'employment-count', 'unemployment-count', 'employment-rate', 'median-household-income', 'road-paved-share', 'road-density', 'grain-area', 'grain-yield', 'population', 'saving-rate', 'university-students', 'vocational-students', 'rent-index', 'pension-real', 'pension', 'auto-loan-rate', 'gas-price', 'housing-price', 'housing-completions', 'building-permits', 'external-debt', 'rent', 'births', 'mortality', 'labour-productivity', 'household-consumption', 'capital-investment', 'capital-formation', 'wages-nominal', 'grain-harvest', 'household-deposits', 'tourism', 'wages-real', 'median-wage', 'gdp-nominal', 'gdp-real', 'consumer-credit', 'gdp-ppp', 'gdp-deflator', 'government-debt', 'mortgage-rate', 'mortgage-volume', 'credit-rate', 'electricity-generation', 'electricity-price', 'car-production', 'car-sales' | [backend/app/services/search_language.py:230](../backend/app/services/search_language.py#L230) |

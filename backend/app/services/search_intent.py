@@ -453,12 +453,21 @@ def _percent_word_spans(text: str) -> set[int]:
         for position in range(match.start(), match.end())}
 
 
+@lru_cache(maxsize=1024)
+def _alias_pattern(normalized: str) -> "re.Pattern[str]":
+    return re.compile(r"(?<!\w)" + re.escape(normalized) + r"(?!\w)")
+
+
 def _alias_occurrences(text: str, aliases: tuple[str, ...]):
     for alias in aliases:
         normalized = phrase(alias)
-        if not normalized:
+        # The expression is the literal alias between word boundaries, so it can
+        # match only where the alias occurs as a substring. Thousands of place
+        # aliases are tested against every query; almost none occur in it, and
+        # compiling an expression for each one cost more than the search itself.
+        if not normalized or normalized not in text:
             continue
-        for match in re.finditer(r"(?<!\w)" + re.escape(normalized) + r"(?!\w)", text):
+        for match in _alias_pattern(normalized).finditer(text):
             yield match.start(), match.end(), normalized
 
 
@@ -1023,6 +1032,35 @@ def complete_nominal_alternative(source_group: tuple[str, ...], alternatives: tu
 EXACT_ONLY_WORDS = frozenset(("акциз", "fuel"))
 
 
+def _typo_pattern(word: str) -> "re.Pattern[str]":
+    """One compiled expression for «a whole token within one edit of `word`».
+
+    Mirrors ``edit_distance_one`` for tokens of four or more characters: equal,
+    one substitution, one adjacent transposition, one inserted or one missing
+    character. It is searched in a space-padded phrase, so the row's tokens are
+    not walked in Python. A token one character shorter than a four-letter word
+    has three characters and is not evidence, as before.
+    """
+    any_char = "[^ ]"
+    shorter_allowed = len(word) - 1 >= 4
+    rest = "(?:" + any_char + ")?"                        # extra character after the last one
+    for index in range(len(word) - 1, -1, -1):
+        tail = re.escape(word[index + 1:])
+        branches = [re.escape(word[index]) + rest,        # this character is intact, the edit is later
+            any_char + tail,                              # substitution
+            any_char + re.escape(word[index:])]           # extra character in the token
+        if shorter_allowed:
+            branches.append(tail)                         # character missing in the token
+        if index + 1 < len(word):
+            branches.append(re.escape(word[index + 1]) + re.escape(word[index]) + re.escape(word[index + 2:]))
+        rest = "(?:" + "|".join(branches) + ")"
+    return re.compile(" " + rest + " ")
+
+
+# Longer single words keep the plain token walk: the nested expression grows with the word.
+_TYPO_PATTERN_MAX_WORD = 40
+
+
 @lru_cache(maxsize=4096)
 def _alternative_plan(source_group: tuple[str, ...], literal: str | None):
     """Per-term data that depends on the query only, never on the scored row."""
@@ -1033,48 +1071,77 @@ def _alternative_plan(source_group: tuple[str, ...], literal: str | None):
         alt = normalize(alternative)
         p = phrase(alt)
         unresolved = alternatives not in CONCEPTS_ALTERNATIVES and literal != alt
+        single_word = len(p) >= 3 and " " not in p
         control_neighbour = unresolved and " " not in p and _control_neighbour(p)
-        bounded = re.compile(r"(?<![a-zа-я0-9])" + re.escape(p) + r"(?![a-zа-я0-9])")
-        plan.append((alt, p, nominal_group, unresolved, control_neighbour, bounded, p not in EXACT_ONLY_WORDS))
+        # A phrase holds only [a-zа-я0-9] words and single spaces, so a whole-word
+        # match is a substring of the space-padded phrase. An empty phrase keeps
+        # the original expression.
+        bounded = None if p else re.compile(r"(?<![a-zа-я0-9])" + re.escape(p) + r"(?![a-zа-я0-9])")
+        typo = (p not in EXACT_ONLY_WORDS and not nominal_group and not control_neighbour
+            and len(p) >= (5 if unresolved else 4) and " " not in p)
+        plan.append((alt, p, " " + p + " ", " " + p, bounded,
+            single_word and not nominal_group, single_word and not nominal_group and not control_neighbour,
+            p if typo else None, _typo_pattern(p) if typo and len(p) <= _TYPO_PATTERN_MAX_WORD else None))
     return tuple(plan)
+
+
+# Catalogue rows are the same on every query: ~1 700 national, ~1 400 regional and
+# ~1 900 subnational definitions plus a few hundred world candidates. Their
+# normalised forms were rebuilt on every search (about 5 000 rows), which cost
+# most of the scoring time. One bounded record per row keeps them; world rows
+# rotate through the tail of the cache. See _TEXT_CACHE_SIZE for the memory rule.
+_ROW_CACHE_SIZE = 6144
+
+
+@lru_cache(maxsize=_ROW_CACHE_SIZE)
+def _row_evidence(code: str, names: tuple[str, ...], metadata: str):
+    """Query-independent normal forms of one scored row."""
+    code_norm, name_norms = normalize(code), tuple(normalize(n) for n in names if n)
+    name_phrases = tuple(phrase(n) for n in name_norms)
+    code_phrase = phrase(code)
+    hay = phrase(" ".join((code, *names, metadata)))
+    identity = phrase(" ".join((code, *names)))
+    return (code_norm, frozenset(name_norms), frozenset(name_phrases), code_phrase, name_phrases,
+        " " + code_phrase + " ", tuple(" " + name + " " for name in name_phrases),
+        " " + identity, " " + hay + " ")
 
 
 def match_score(intent: SearchIntent, *, code: str = "", names: tuple[str, ...] = (), metadata: str = "") -> int | None:
     """Every content term is required; names/code outrank metadata and edits."""
     if not intent.terms:
         return 20
-    code_norm, name_norms = normalize(code), tuple(normalize(n) for n in names if n)
+    (code_norm, name_norms, name_phrase_set, code_phrase, name_phrases, code_pad, name_pads, identity_pad,
+        hay_pad) = _row_evidence(code, names if isinstance(names, tuple) else tuple(names), metadata)
     exact_code = intent.literal == code_norm or intent.content == code_norm or intent.query == code_norm
-    exact_name = phrase(intent.literal) in tuple(phrase(n) for n in name_norms) if intent.literal else False
-    exact = 1000 if exact_code else 900 if exact_name or intent.content in name_norms or intent.content in tuple(phrase(n) for n in name_norms) else 0
-    hay = phrase(" ".join((code, *names, metadata)))
-    hay_tokens = tokens(hay)
-    identity_tokens = tokens(" ".join((code, *names)))
+    exact_name = phrase(intent.literal) in name_phrase_set if intent.literal else False
+    exact = 1000 if exact_code else 900 if exact_name or intent.content in name_norms or intent.content in name_phrase_set else 0
+    single_term = len(intent.terms) == 1 and not intent.literal
     score = 0
     for source_group in intent.terms:
         best = None
-        for alt, p, nominal_group, unresolved, control_neighbour, bounded, typo_allowed in _alternative_plan(source_group, intent.literal):
-            if len(p) < 3 and len(intent.terms) == 1 and not intent.literal and (phrase(code).startswith(p) or any(phrase(name).startswith(p) for name in name_norms)):
+        for alt, p, padded, prefixed, bounded, identity_prefix, hay_prefix, typo_word, typo in _alternative_plan(source_group, intent.literal):
+            if len(p) < 3 and single_term and (code_phrase.startswith(p) or any(name.startswith(p) for name in name_phrases)):
                 # A short autocomplete prefix is anchored to a real identity or
                 # title; it never matches an interior syllable/SEO keyword.
                 value = 35
-            elif intent.literal == alt and len(p) >= 24 and len(p.split()) >= 4 and any(phrase(name).startswith(p) for name in name_norms):
+            elif intent.literal == alt and len(p) >= 24 and len(p.split()) >= 4 and any(name.startswith(p) for name in name_phrases):
                 value = 70
-            elif bounded.search(phrase(code)):
+            elif (padded in code_pad) if bounded is None else bounded.search(code_phrase):
                 # Whole-token identity only: sport cannot match transport.
                 value = 100 if code_norm == alt else 80
-            elif any(bounded.search(phrase(name)) for name in name_norms):
+            elif any(padded in name for name in name_pads) if bounded is None else any(bounded.search(name) for name in name_phrases):
                 value = 70
-            elif not nominal_group and len(p) >= 3 and " " not in p and any(t.startswith(p) for t in identity_tokens):
+            elif identity_prefix and prefixed in identity_pad:
                 # A real title/code token is evidence for an autocomplete prefix,
                 # even if that unfinished token resembles a control word. Unit
                 # markers and fuzzy metadata matches do not establish identity.
                 value = 15
-            elif bounded.search(hay):
+            elif (padded in hay_pad) if bounded is None else bounded.search(hay_pad[1:-1]):
                 value = 20
-            elif not nominal_group and not control_neighbour and len(p) >= 3 and " " not in p and any(t.startswith(p) for t in hay_tokens):
+            elif hay_prefix and prefixed in hay_pad:
                 value = 15
-            elif typo_allowed and not nominal_group and not control_neighbour and len(p) >= (5 if unresolved else 4) and " " not in p and any(len(t) >= 4 and edit_distance_one(p, t) for t in hay_tokens):
+            elif typo_word is not None and (typo.search(hay_pad) if typo is not None
+                    else any(len(t) >= 4 and edit_distance_one(typo_word, t) for t in hay_pad.split())):
                 value = 5
             else:
                 continue

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `6e94aca7396fe779fba220306f0bf8cf90d3eaf6`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `f4c93f2069a1d44f90ef27226e9b6d649a926bbc`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2455 |
-| Код, шаблоны и стили | 1983 |
-| Актуальные рецензии без пропусков guard | 2455 |
-| Именованные определения Python/JS: с аннотацией / всего | 15947 / 15947 |
+| Файлы в явно определённом scope | 2457 |
+| Код, шаблоны и стили | 1985 |
+| Актуальные рецензии без пропусков guard | 2457 |
+| Именованные определения Python/JS: с аннотацией / всего | 15975 / 15975 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -112,6 +112,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/alembic/versions/20261108b_gsc_page_daily.py](../backend/alembic/versions/20261108b_gsc_page_daily.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/20261109_public_bot_dialog.py](../backend/alembic/versions/20261109_public_bot_dialog.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/20261109_research_downloads.py](../backend/alembic/versions/20261109_research_downloads.py) | reviewed | 2/2 | актуально |
+| [backend/alembic/versions/20261113_world_slice_idx.py](../backend/alembic/versions/20261113_world_slice_idx.py) | reviewed | 3/3 | актуально |
 | [backend/alembic/versions/8524e35ba1ee_init_schema.py](../backend/alembic/versions/8524e35ba1ee_init_schema.py) | reviewed | 2/2 | актуально |
 | [backend/app/__init__.py](../backend/app/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/__init__.py](../backend/app/api/__init__.py) | reviewed | 0/0 | актуально |
@@ -402,10 +403,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/rosstat_weekly_inflation_parser.py](../backend/app/services/rosstat_weekly_inflation_parser.py) | reviewed | 32/32 | актуально |
 | [backend/app/services/rosstat_weekly_price_parser.py](../backend/app/services/rosstat_weekly_price_parser.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/scrape_guard.py](../backend/app/services/scrape_guard.py) | reviewed | 20/20 | актуально |
-| [backend/app/services/search.py](../backend/app/services/search.py) | reviewed | 52/52 | актуально |
+| [backend/app/services/search.py](../backend/app/services/search.py) | reviewed | 54/54 | актуально |
 | [backend/app/services/search_currency_aliases.py](../backend/app/services/search_currency_aliases.py) | reviewed | 3/3 | актуально |
-| [backend/app/services/search_dimensions.py](../backend/app/services/search_dimensions.py) | reviewed | 21/21 | актуально |
-| [backend/app/services/search_intent.py](../backend/app/services/search_intent.py) | reviewed | 31/31 | актуально |
+| [backend/app/services/search_dimensions.py](../backend/app/services/search_dimensions.py) | reviewed | 22/22 | актуально |
+| [backend/app/services/search_intent.py](../backend/app/services/search_intent.py) | reviewed | 34/34 | актуально |
 | [backend/app/services/search_language.py](../backend/app/services/search_language.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/search_language_sql.py](../backend/app/services/search_language_sql.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/search_latest.py](../backend/app/services/search_latest.py) | reviewed | 7/7 | актуально |
@@ -851,7 +852,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_search_country_concept_headline.py](../backend/tests/test_search_country_concept_headline.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_search_dimension_roles.py](../backend/tests/test_search_dimension_roles.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_search_dimensions.py](../backend/tests/test_search_dimensions.py) | reviewed | 11/11 | актуально |
-| [backend/tests/test_search_fact_blocks.py](../backend/tests/test_search_fact_blocks.py) | reviewed | 7/7 | актуально |
+| [backend/tests/test_search_fact_blocks.py](../backend/tests/test_search_fact_blocks.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_search_federated.py](../backend/tests/test_search_federated.py) | reviewed | 64/64 | актуально |
 | [backend/tests/test_search_geo_morphology.py](../backend/tests/test_search_geo_morphology.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_search_headline.py](../backend/tests/test_search_headline.py) | reviewed | 10/10 | актуально |
@@ -874,6 +875,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_search_registered_semantics.py](../backend/tests/test_search_registered_semantics.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_search_relationship_roles.py](../backend/tests/test_search_relationship_roles.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_search_single_letter.py](../backend/tests/test_search_single_letter.py) | reviewed | 9/9 | актуально |
+| [backend/tests/test_search_speed.py](../backend/tests/test_search_speed.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_search_subject_roles.py](../backend/tests/test_search_subject_roles.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_search_variants.py](../backend/tests/test_search_variants.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_search_vocabulary_roles.py](../backend/tests/test_search_vocabulary_roles.py) | reviewed | 16/16 | актуально |

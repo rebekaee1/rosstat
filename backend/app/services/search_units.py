@@ -131,7 +131,9 @@ def unit_metadata(*units: str | None, native_currency: str | None = None) -> str
     return " ".join(sorted(facets))
 
 
-@lru_cache(maxsize=2048)
+# Вызывается на каждую строку каталога в каждом поиске (около 5 000 разных наборов подписей); при 2048 записях
+# половина каталога пересчитывалась заново. Значение — короткая строка меток.
+@lru_cache(maxsize=6144)
 def denominator_metadata(*labels: str | None) -> str:
     """Only actual title/unit wording establishes a population denominator."""
     text = " ".join(" ".join(label or "" for label in labels).casefold().replace("ё", "е").replace("-", " ").split())

@@ -10,7 +10,8 @@ import re
 from collections.abc import Mapping
 from functools import lru_cache
 
-from sqlalchemy import and_, case, false, func, literal, or_
+from sqlalchemy import Text, and_, case, cast, false, func, literal, or_
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, array
 from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.sql.functions import FunctionElement
 from sqlalchemy.ext.compiler import compiles
@@ -406,13 +407,32 @@ def _member_column(slice_column: ColumnElement, axis: str) -> ColumnElement:
     return case((_JsonMemberIsString(slice_column, literal(axis)), normalised), else_="")
 
 
+# Функция и индекс базы из миграции 20261113_world_slice_idx: метки «ось=ЧЛЕН» строковых членов среза Евростата.
+SLICE_MEMBERS_FUNCTION = "fe_world_slice_members"
+
+
+def _indexed_members(provider_column: ColumnElement, slice_column: ColumnElement, groups) -> ColumnElement:
+    """Условие, которое база выполняет по индексу срезов, поверх прежнего точного условия.
+
+    Прежнее условие («поставщик — Евростат, строковый член оси входит в набор») вычисляется из JSON строки и
+    индексом не ускоряется: запрос с таким условием читал весь каталог (110 920 страниц на боевом 13.11.2026).
+    Каждая строка, прошедшая прежнее условие, имеет метку «ось=ЧЛЕН» в `fe_world_slice_members`, поэтому
+    пересечение с набором меток — необходимое условие. Точное условие остаётся рядом, так что состав строк
+    определяет по-прежнему оно, а индекс только находит кандидатов.
+    """
+    labels = sorted({f"{axis}={member}" for axis, members in groups for member in members})
+    return getattr(func, SLICE_MEMBERS_FUNCTION)(provider_column, cast(slice_column, JSONB)).op("&&")(
+        cast(array(labels), ARRAY(Text)))
+
+
 def dimension_constraints(terms: tuple[tuple[str, ...], ...], provider_column: ColumnElement,
-        slice_column: ColumnElement) -> list[ColumnElement]:
+        slice_column: ColumnElement, *, indexed: bool = False) -> list[ColumnElement]:
     """Require each explicit axis before candidate limits, never a flat TOTAL."""
     clauses = []
     for alternatives in terms:
         key = alternatives[0] if alternatives else ""
         rule = DIMENSION_RULES.get(key)
+        rules = (rule,) if rule else DIMENSION_ANY_RULES.get(key, ())
         if rule:
             axis, accepted = rule
             clauses.append(and_(_provider_clause(provider_column), _member_column(slice_column, axis).in_(accepted)))
@@ -421,6 +441,8 @@ def dimension_constraints(terms: tuple[tuple[str, ...], ...], provider_column: C
                 _member_column(slice_column, axis).in_(accepted) for axis, accepted in DIMENSION_ANY_RULES[key]))))
         elif key.startswith("search-dim-"):
             clauses.append(false())
+        if indexed and rules:
+            clauses.append(_indexed_members(provider_column, slice_column, rules))
     return clauses
 
 
@@ -443,7 +465,7 @@ def _lexical_member_groups(alternatives: tuple[tuple[str, bool], ...]) -> tuple[
 
 
 def native_dimension_match_clause(provider_column: ColumnElement, slice_column: ColumnElement,
-        alternatives: tuple[tuple[str, bool], ...]) -> ColumnElement:
+        alternatives: tuple[tuple[str, bool], ...], *, indexed: bool = False) -> ColumnElement:
     """One grouped native provider/axis/member predicate per required term.
 
     Static labels decide which exact members can witness the term. SQL checks
@@ -453,8 +475,9 @@ def native_dimension_match_clause(provider_column: ColumnElement, slice_column: 
     groups = _lexical_member_groups(alternatives)
     if not groups:
         return false()
-    return and_(_provider_clause(provider_column), or_(*(
+    exact = and_(_provider_clause(provider_column), or_(*(
         _member_column(slice_column, axis).in_(members) for axis, members in groups)))
+    return and_(_indexed_members(provider_column, slice_column, groups), exact) if indexed else exact
 
 
 def native_dimension_text(provider_column: ColumnElement, slice_column: ColumnElement,

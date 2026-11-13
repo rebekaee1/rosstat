@@ -61,7 +61,7 @@ def test_dense_facts_stop_after_the_first_block():
     facts = {(item, territory) for item in scores for territory in selected}
     rows, calls = _collect(scores, ranked_ids, code_rank, selected, facts, 101)
     assert len(rows) == 101
-    assert calls == [max(_FACT_BLOCK_PAIRS, 4 * 101)]
+    assert calls == [max(_FACT_BLOCK_PAIRS, 101 + 101 // 4)]
 
 
 def test_sparse_facts_need_few_statements():
@@ -73,3 +73,30 @@ def test_sparse_facts_need_few_statements():
     assert rows == []
     assert sum(calls) == 900 * 96
     assert len(calls) <= 8
+
+
+def test_second_block_follows_the_share_of_facts_found():
+    """13.11.2026, «инфляция» на боевом: главный ряд дал 93 строки, следующая группа — 881 цена с одним счётом.
+
+    Прежний второй запрос проверял 2 643 пары (три территории целиком) ради 108 строк. Доля пар с фактом в первом
+    куске известна, поэтому второй кусок берёт столько пар, сколько нужно при этой доле, с запасом в полтора раза.
+    """
+    scores = {1: 500, **{item: 100 for item in range(2, 883)}}
+    ranked_ids = list(range(1, 883))
+    code_rank = {item: item for item in ranked_ids}
+    selected = {territory: {"sort_order": territory} for territory in range(1, 94)}
+    facts = {(item, territory) for item in scores for territory in selected}
+    rows, calls = _collect(scores, ranked_ids, code_rank, selected, facts, 201)
+    assert rows == sorted(facts, key=_key(scores, code_rank, selected))[:201]
+    assert calls == [93, 162]
+
+
+def test_half_empty_facts_do_not_restart_from_a_fourfold_block():
+    scores = {item: 100 for item in range(1, 1001)}
+    ranked_ids = list(range(1, 1001))
+    code_rank = {item: item for item in ranked_ids}
+    selected = {territory: {"sort_order": territory} for territory in range(1, 11)}
+    facts = {(item, territory) for item in scores for territory in selected if item % 2}
+    rows, calls = _collect(scores, ranked_ids, code_rank, selected, facts, 201)
+    assert rows == sorted(facts, key=_key(scores, code_rank, selected))[:201]
+    assert len(calls) <= 3 and sum(calls) <= 3 * 201
