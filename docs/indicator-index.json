@@ -86,7 +86,7 @@
       "files": [
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
@@ -3667,7 +3667,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 74,
+          "line": 77,
           "kind": "other"
         },
         {
@@ -4117,12 +4117,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 67,
+          "line": 70,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 74,
+          "line": 77,
           "kind": "other"
         },
         {
@@ -5417,7 +5417,7 @@
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 383,
+          "line": 408,
           "kind": "tests"
         },
         {
@@ -7373,7 +7373,7 @@
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 384,
+          "line": 409,
           "kind": "tests"
         },
         {
@@ -9051,7 +9051,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 76,
+          "line": 79,
           "kind": "other"
         },
         {
@@ -9673,7 +9673,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 76,
+          "line": 79,
           "kind": "other"
         },
         {
@@ -10935,7 +10935,7 @@
       "files": [
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
@@ -12962,12 +12962,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1178,
+          "line": 1260,
           "kind": "other"
         },
         {
@@ -15791,7 +15791,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 75,
+          "line": 78,
           "kind": "other"
         },
         {
@@ -17268,27 +17268,27 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 53,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 67,
+          "line": 70,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 219,
+          "line": 222,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 763,
+          "line": 771,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1118,
+          "line": 1200,
           "kind": "other"
         },
         {
@@ -18963,22 +18963,22 @@
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 338,
+          "line": 363,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 342,
+          "line": 367,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 346,
+          "line": 371,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 437,
+          "line": 462,
           "kind": "tests"
         },
         {
@@ -23714,7 +23714,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 72,
+          "line": 75,
           "kind": "other"
         },
         {
@@ -28218,12 +28218,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 763,
+          "line": 771,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1133,
+          "line": 1215,
           "kind": "other"
         },
         {
@@ -34334,7 +34334,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 74,
+          "line": 77,
           "kind": "other"
         },
         {
@@ -40324,7 +40324,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 512,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -42427,7 +42427,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
@@ -44822,7 +44822,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 70,
+          "line": 73,
           "kind": "other"
         },
         {
@@ -45532,47 +45532,47 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358109,
+          "line": 358243,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358110,
+          "line": 358244,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358135,
+          "line": 358269,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358169,
+          "line": 358303,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358170,
+          "line": 358304,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358197,
+          "line": 358331,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358231,
+          "line": 358365,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358232,
+          "line": 358366,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 358254,
+          "line": 358388,
           "kind": "other"
         },
         {
@@ -47817,12 +47817,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 68,
+          "line": 71,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1133,
+          "line": 1215,
           "kind": "other"
         },
         {
@@ -48654,12 +48654,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 68,
+          "line": 71,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1133,
+          "line": 1215,
           "kind": "other"
         },
         {
@@ -49536,7 +49536,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 69,
+          "line": 72,
           "kind": "other"
         },
         {
@@ -50363,7 +50363,7 @@
       "files": [
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
@@ -52855,17 +52855,17 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 67,
+          "line": 70,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 71,
+          "line": 74,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1134,
+          "line": 1216,
           "kind": "other"
         },
         {
@@ -54599,7 +54599,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 71,
+          "line": 74,
           "kind": "other"
         },
         {
@@ -58806,7 +58806,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 67,
+          "line": 70,
           "kind": "other"
         },
         {
@@ -63873,7 +63873,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 70,
+          "line": 73,
           "kind": "other"
         },
         {
@@ -70694,7 +70694,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 347562,
+          "line": 347696,
           "kind": "other"
         },
         {
@@ -71534,7 +71534,7 @@
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 372,
+          "line": 397,
           "kind": "tests"
         },
         {
@@ -72296,7 +72296,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 74,
+          "line": 77,
           "kind": "other"
         },
         {
@@ -76490,7 +76490,7 @@
       "files": [
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
@@ -77203,12 +77203,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 68,
+          "line": 71,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1133,
+          "line": 1215,
           "kind": "other"
         },
         {
@@ -77703,6 +77703,11 @@
         },
         {
           "file": "docs/adr/0029-ru-google-recovery.md",
+          "line": 3,
+          "kind": "other"
+        },
+        {
+          "file": "docs/adr/0029-ru-google-recovery.md",
           "line": 15,
           "kind": "other"
         },
@@ -78163,7 +78168,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 352130,
+          "line": 352264,
           "kind": "other"
         },
         {
@@ -80302,7 +80307,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
@@ -86010,12 +86015,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 72,
+          "line": 75,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1133,
+          "line": 1215,
           "kind": "other"
         },
         {
@@ -86784,7 +86789,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 70,
+          "line": 73,
           "kind": "other"
         },
         {
@@ -89524,7 +89529,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 69,
+          "line": 72,
           "kind": "other"
         },
         {
@@ -92460,17 +92465,17 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 53,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 198,
+          "line": 201,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 218,
+          "line": 221,
           "kind": "other"
         },
         {
@@ -93100,17 +93105,17 @@
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 363,
+          "line": 388,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 373,
+          "line": 398,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 374,
+          "line": 399,
           "kind": "tests"
         },
         {
@@ -97425,7 +97430,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 348608,
+          "line": 348742,
           "kind": "other"
         },
         {
@@ -106468,7 +106473,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 75,
+          "line": 78,
           "kind": "other"
         },
         {
@@ -110359,7 +110364,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 71,
+          "line": 74,
           "kind": "other"
         },
         {
@@ -111540,12 +111545,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1179,
+          "line": 1261,
           "kind": "other"
         },
         {
@@ -112373,7 +112378,7 @@
       "files": [
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
@@ -113411,27 +113416,27 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 53,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 67,
+          "line": 70,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 217,
+          "line": 220,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 512,
+          "line": 515,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1133,
+          "line": 1215,
           "kind": "other"
         },
         {
@@ -117276,7 +117281,7 @@
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 381,
+          "line": 406,
           "kind": "tests"
         },
         {
@@ -118159,22 +118164,22 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 709,
+          "line": 717,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 710,
+          "line": 718,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1132,
+          "line": 1214,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1177,
+          "line": 1259,
           "kind": "other"
         },
         {
@@ -118309,12 +118314,12 @@
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 442,
+          "line": 467,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 464,
+          "line": 489,
           "kind": "tests"
         },
         {
@@ -120097,7 +120102,7 @@
         },
         {
           "file": "backend/tests/test_search_federated.py",
-          "line": 382,
+          "line": 407,
           "kind": "tests"
         },
         {
@@ -122175,17 +122180,17 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 67,
+          "line": 70,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 71,
+          "line": 74,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 1133,
+          "line": 1215,
           "kind": "other"
         },
         {
@@ -123693,7 +123698,7 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 71,
+          "line": 74,
           "kind": "other"
         },
         {

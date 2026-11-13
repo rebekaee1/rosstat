@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2444,
-    "code_files": 1973,
-    "current_reviews": 2444,
+    "files": 2445,
+    "code_files": 1974,
+    "current_reviews": 2445,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2174
+      "reviewed": 2175
     },
-    "definitions": 15705,
-    "annotated_definitions": 15705,
+    "definitions": 15719,
+    "annotated_definitions": 15719,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -4756,15 +4756,15 @@
     },
     {
       "path": "backend/app/services/search.py",
-      "sha256": "3cac096c48e9de9290f9ffffcb9cc6d7f0c47b5226a7db13101cb303b8822008",
-      "bytes": 81914,
-      "lines": 1271,
+      "sha256": "ceb1218c411c2e4f474af35bc550141ecbfec8d70faaaefcdf1088bd4f976462",
+      "bytes": 87119,
+      "lines": 1353,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 46,
-      "annotated_definitions": 46,
+      "definitions": 50,
+      "annotated_definitions": 50,
       "missing_definitions": []
     },
     {
@@ -4925,15 +4925,15 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "sha256": "118e4cc89687f5458a343cab5f13c9f20189849ab30eda44c9ebb424e56b4054",
-      "bytes": 6999,
-      "lines": 142,
+      "sha256": "3a007fe5ec541ac0db40844972a1a55924060330d5c389817588cfb01dc7a511",
+      "bytes": 7155,
+      "lines": 143,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 7,
-      "annotated_definitions": 7,
+      "definitions": 8,
+      "annotated_definitions": 8,
       "missing_definitions": []
     },
     {
@@ -10527,16 +10527,29 @@
       "missing_definitions": []
     },
     {
-      "path": "backend/tests/test_search_federated.py",
-      "sha256": "a0d431e2d97d82ff1affc8d6891848422576455c23000f922b33c98c8acd1c2e",
-      "bytes": 29424,
-      "lines": 464,
+      "path": "backend/tests/test_search_fact_blocks.py",
+      "sha256": "b1be43044316f39c0e874c578f8b2c72b047c3843ec31b639e84099538abee72",
+      "bytes": 3795,
+      "lines": 75,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 55,
-      "annotated_definitions": 55,
+      "definitions": 7,
+      "annotated_definitions": 7,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_search_federated.py",
+      "sha256": "ab2de9423d7f97c47ebf35baaf80f80e7d62e6e109d121392d178e87b937375f",
+      "bytes": 31014,
+      "lines": 489,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 57,
+      "annotated_definitions": 57,
       "missing_definitions": []
     },
     {
@@ -13414,9 +13427,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "895eedd2b497180dd8b325d7ec6c35d88cd3cbe3dafac3bb1e2188b442d3818e",
-      "bytes": 701167,
-      "lines": 3254,
+      "sha256": "b99712c360caf6e35273f0babaa1bd5ca30ed49825e46d876654f4eb2a63468d",
+      "bytes": 702413,
+      "lines": 3263,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13505,7 +13518,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "dc546ad530f2f5eef1bd4ce8e2826b6b7a726d8b0cea193739bdd056f44b6725",
+      "sha256": "ec8d857dddfbe39d2b26fc198a5b1b8b5736f8b7f61eccf4ab532d6b7c65f177",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -13973,9 +13986,9 @@
     },
     {
       "path": "docs/enterprise_resilience.md",
-      "sha256": "e9a331d8f272f20f99acf06e81f1149ab19df574a43ad317f710a3479c0334d0",
-      "bytes": 45633,
-      "lines": 171,
+      "sha256": "3e4c1a40e7cdde64c9e0175b793435da915d773e44cb0e5f8a71f64323e8d674",
+      "bytes": 47565,
+      "lines": 184,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14012,9 +14025,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "0238c0976f2d43e0bfa22fa9aaf5a63301193b121f3ae124ea6d84f5fb8e1d0f",
-      "bytes": 3840077,
-      "lines": 135828,
+      "sha256": "1c1ad338b5ce195b0e7c454817110179b1125637e7e90aa7fa2a5d62c81aaf3e",
+      "bytes": 3840202,
+      "lines": 135833,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -14025,7 +14038,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "cde30dd97557c8c73941204dc355e03e161ae615d4728b02735d0f894eaf12e7",
+      "sha256": "b3c9e3e7bb7468caeb300412825ebacd96f8290198c8a785c9e9e1ce95c9e944",
       "bytes": 160576,
       "lines": 1824,
       "code": false,
@@ -14038,9 +14051,9 @@
     },
     {
       "path": "docs/knowledge-unknowns.md",
-      "sha256": "f6bda5be47878996980cb33d5878e4d22b728112e70f861f9a8daef04803caa5",
-      "bytes": 77162,
-      "lines": 191,
+      "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30",
+      "bytes": 78988,
+      "lines": 201,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14064,9 +14077,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "2c8cbfea54fea2562af25b4f7f99de7b37ce59eca082fc9b95f8d2196aee5786",
-      "bytes": 12092929,
-      "lines": 362442,
+      "sha256": "8303e82e15f5c7f3379026facadf4943e274b3f0f065369a219aa99cc3ef8841",
+      "bytes": 12095929,
+      "lines": 362576,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14077,7 +14090,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "2bcb151923cc69878d36af3a3cabb155e44642b2caaf0208820b2197e97e21b5",
+      "sha256": "467d2b11990e57e8d9b2ef3a047d494bc5ae18a826b1dd1a74940bb4a259f531",
       "bytes": 622644,
       "lines": 3367,
       "code": false,
@@ -14727,9 +14740,9 @@
     },
     {
       "path": "docs/search.md",
-      "sha256": "9254a1f09ac81b5ac29c196727600cae62fe28c6ec71d6da2fee89ca305462d3",
-      "bytes": 112703,
-      "lines": 737,
+      "sha256": "8b7b05f8d392239375262b41223a14c9f35b921b67b1b51f7c56284a31376f33",
+      "bytes": 118737,
+      "lines": 779,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -31809,9 +31822,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "1e081715e52ab446dd4f33f5cec672ad94498f6c0e46855b48632083ae03c0f6",
+  "ledger_sha256": "4560ca691fad7f38f50dda0c47a441f45c817546ae00b59074982c7b711c2ea4",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "4f8fa681c4b743d7199ce4b60abfb802257e971a",
-  "branch": "release/2026-11-11",
+  "baseline_commit": "07a01619e5f864a2e0a67a9c5384254fba6f22d9",
+  "branch": "fix/search-region-exists",
   "unstaged_at_capture": []
 }

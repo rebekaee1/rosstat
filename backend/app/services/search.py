@@ -47,6 +47,9 @@ from app.services.seo_i18n import localize_category_name, public_indicator_field
 from app.services.world_subnational_ingest import country_has_subnational
 
 _MAX_CANDIDATES = 500
+# Сколько пар «показатель × территория» проверяет первый запрос фактов; каждый
+# следующий берёт вчетверо больше, поэтому запросов немного и при редких фактах.
+_FACT_BLOCK_PAIRS = 400
 _PERCENT_UNITS = ("PC", "PCT", "PERCENT", "RCH_A", "RCH_M", "RCH_MV12MAVR", "RCH_A_AVG", "RT1", "RT1-SCA",
     "PCH_SM", "PCH_PRE", "PCH_SAME", "PCH_M1", "PCPIPCH", "PCPIEPCH", "NGDP_RPCH", "NGDP_RPC")
 _INTENT_CONCEPTS = {
@@ -630,7 +633,7 @@ async def _geometry(db: AsyncSession) -> tuple[list[dict], dict[str, WorldCountr
     for region in regions:
         geometry.append({"key": f"region:russia:{region.slug}", "kind": "unsupported_region" if region.kind == "remainder" else "region", "slug": region.slug,
             "name_ru": region.name, "name_en": region_display_name(region.slug, region.name, locale="en"),
-            "country_slug": "russia", "country_code": "RU", "id": region.id})
+            "country_slug": "russia", "country_code": "RU", "id": region.id, "sort_order": region.sort_order})
     subnational = list((await db.execute(select(SubnationalRegion))).scalars())
     by_code = {country.code: country for country in countries if country_has_subnational(country.code)}
     for region in subnational:
@@ -638,7 +641,7 @@ async def _geometry(db: AsyncSession) -> tuple[list[dict], dict[str, WorldCountr
         if country:
             geometry.append({"key": f"region:{country.slug}:{region.slug}", "kind": "subnational_region", "slug": region.slug,
                 "name_ru": region.name_ru, "name_en": region.name_en, "country_slug": country.slug,
-                "country_code": country.code, "id": region.id})
+                "country_code": country.code, "id": region.id, "sort_order": region.sort_order})
     return geometry, by_slug
 
 
@@ -659,11 +662,15 @@ async def _entities(db: AsyncSession, geometry: list[dict], intent: SearchIntent
         if score is None or (not intent.terms and not intent.countries):
             continue
         candidates.append((item, score))
+    # Каждая проверка ниже спрашивает «есть ли хоть одна строка» по территории и
+    # останавливается на первой. Прежние запросы читали все строки территории
+    # (у региона России их до 165 тыс.) и на боевой базе шли десятки секунд.
     allowed = set()
     country_ids = [item["id"] for item, _score in candidates if item["kind"] == "country" and item["id"] is not None]
     if country_ids:
-        rows = await db.execute(select(WorldIndicator.country_id).where(WorldIndicator.country_id.in_(country_ids),
-            WorldIndicator.is_listed.is_(True), _world_fact(intent)).distinct())
+        listed_fact = exists(select(1).where(WorldIndicator.country_id == WorldCountry.id,
+            WorldIndicator.is_listed.is_(True), _world_fact(intent)))
+        rows = await db.execute(select(WorldCountry.id).where(WorldCountry.id.in_(country_ids), listed_fact))
         allowed.update(("country", item) for item in rows.scalars())
     if any(item["kind"] == "country" and item["country_slug"] == "russia" for item, _score in candidates):
         fact = exists(select(1).select_from(Indicator).where(Indicator.is_active.is_(True),
@@ -672,16 +679,17 @@ async def _entities(db: AsyncSession, geometry: list[dict], intent: SearchIntent
             allowed.add(("country", None))
     region_ids = [item["id"] for item, _score in candidates if item["kind"] == "region"]
     if region_ids:
-        annual = select(RegionDataPoint.region_id).where(RegionDataPoint.region_id.in_(region_ids), _finite(RegionDataPoint.value))
-        monthly = select(RegionMonthlyPoint.region_id).where(RegionMonthlyPoint.region_id.in_(region_ids), _finite(RegionMonthlyPoint.value))
-        rows = await db.execute(annual.union(monthly))
+        annual = exists(select(1).where(RegionDataPoint.region_id == Region.id, _finite(RegionDataPoint.value)))
+        monthly = exists(select(1).where(RegionMonthlyPoint.region_id == Region.id, _finite(RegionMonthlyPoint.value)))
+        rows = await db.execute(select(Region.id).where(Region.id.in_(region_ids), or_(annual, monthly)))
         allowed.update(("region", item) for item in rows.scalars())
     subnational_ids = [item["id"] for item, _score in candidates if item["kind"] == "subnational_region"]
     if subnational_ids:
-        rows = await db.execute(select(SubnationalDataPoint.region_id).join(SubnationalIndicator,
+        listed_fact = exists(select(1).select_from(SubnationalDataPoint).join(SubnationalIndicator,
             SubnationalIndicator.id == SubnationalDataPoint.indicator_id).where(
-            SubnationalDataPoint.region_id.in_(subnational_ids), SubnationalIndicator.is_listed.is_(True),
-            _finite(SubnationalDataPoint.value)).distinct())
+            SubnationalDataPoint.region_id == SubnationalRegion.id, SubnationalIndicator.is_listed.is_(True),
+            _finite(SubnationalDataPoint.value)))
+        rows = await db.execute(select(SubnationalRegion.id).where(SubnationalRegion.id.in_(subnational_ids), listed_fact))
         allowed.update(("subnational_region", item) for item in rows.scalars())
     country_names = {item["country_slug"]: item["name_en"] if locale == "en" else item["name_ru"]
         for item in geometry if item["kind"] == "country"}
@@ -889,6 +897,72 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
     return output, clipped
 
 
+async def _ordered_fact_rows(run, scores: dict[int, int], ranked_ids: list[int], selected: dict[int, dict], need: int) -> list:
+    """Первые `need` строк выдачи «показатель × территория» без проверки всех пар.
+
+    Порядок выдачи — счёт по убыванию, порядок территории, код показателя.
+    Раньше факт проверялся у каждой пары до LIMIT; на боевой базе это одно
+    чтение с диска на пару и десятки секунд на запрос. Здесь пары идут
+    прямоугольниками подряд в том же порядке, и проверка кончается, когда
+    выдача набрана. `run(indicator_ids, territory_ids, limit)` упорядочивает
+    свой прямоугольник тем же ключом; `ranked_ids` — показатели в порядке кода
+    из базы, чтобы граница куска не зависела от правил сортировки строк.
+    """
+    by_score: dict[int, list[int]] = {}
+    for indicator_id in ranked_ids:
+        if indicator_id in scores:
+            by_score.setdefault(scores[indicator_id], []).append(indicator_id)
+    groups = [by_score[score] for score in sorted(by_score, reverse=True)]
+    by_order: dict[int, list[int]] = {}
+    for territory_id, item in selected.items():
+        by_order.setdefault(item["sort_order"], []).append(territory_id)
+    units = [by_order[order] for order in sorted(by_order)]
+    everywhere = [territory_id for unit in units for territory_id in unit]
+    rows: list = []
+    target = max(_FACT_BLOCK_PAIRS, 4 * need)
+
+    async def take(indicator_ids: list[int], territory_ids: list[int]) -> bool:
+        nonlocal target
+        rows.extend(await run(indicator_ids, territory_ids, need - len(rows)))
+        target *= 4
+        return len(rows) >= need
+
+    position = 0
+    while position < len(groups):
+        if len(groups[position]) * len(everywhere) <= target:
+            # Целые группы счёта по всем территориям.
+            indicator_ids: list[int] = []
+            while position < len(groups) and (len(indicator_ids) + len(groups[position])) * len(everywhere) <= target:
+                indicator_ids += groups[position]
+                position += 1
+            if await take(indicator_ids, everywhere):
+                return rows
+            continue
+        group = groups[position]
+        position += 1
+        index = 0
+        while index < len(units):
+            if len(group) * len(units[index]) <= target:
+                # Одна группа счёта, территории подряд.
+                territory_ids: list[int] = []
+                while index < len(units) and len(group) * (len(territory_ids) + len(units[index])) <= target:
+                    territory_ids += units[index]
+                    index += 1
+                if await take(group, territory_ids):
+                    return rows
+                continue
+            unit = units[index]
+            index += 1
+            start = 0
+            while start < len(group):
+                # Одна группа счёта и одна территория: показатели подряд по коду.
+                size = max(1, target // len(unit))
+                if await take(group[start:start + size], unit):
+                    return rows
+                start += size
+    return rows
+
+
 async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict], locale: str, budget: int) -> tuple[list[dict], bool]:
     selected = {item["id"]: item for item in geometry if item["kind"] == "region" and _eligible_geo(item, intent)}
     frequency = _intent_frequency(intent)
@@ -896,7 +970,7 @@ async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict],
         # There is no monthly regional period route. Annual period routes are
         # backed only by annual facts, while ordinary cards can show monthly.
         return [], False
-    definitions = list((await db.execute(select(RegionIndicator).where(RegionIndicator.is_listed.is_(True)))).scalars())
+    definitions = list((await db.execute(select(RegionIndicator).where(RegionIndicator.is_listed.is_(True)).order_by(RegionIndicator.code))).scalars())
     definition_intent = replace(intent, terms=tuple(term for term in intent.terms if not term[0].startswith("search-freq-")))
     candidates, copies = {}, {}
     for row in definitions:
@@ -915,10 +989,14 @@ async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict],
     annual = literal(False) if frequency == "monthly" else _annual_fact(intent)
     monthly = literal(False) if frequency == "annual" else _monthly_fact(intent)
     usable = annual if intent.year is not None else or_(annual, monthly)
-    stmt = select(Region, RegionIndicator, monthly.label("monthly"), annual.label("annual")).select_from(RegionIndicator).join(Region, true()).where(
-        RegionIndicator.id.in_(candidates), Region.id.in_(selected), usable).order_by(
-        case(candidates, value=RegionIndicator.id).desc(), Region.sort_order, RegionIndicator.code).limit(budget + 1)
-    rows = (await db.execute(stmt)).all()
+    async def run(indicator_ids: list[int], region_ids: list[int], limit: int) -> list:
+        stmt = select(Region, RegionIndicator, monthly.label("monthly"), annual.label("annual")).select_from(RegionIndicator).join(Region, true()).where(
+            RegionIndicator.id.in_(indicator_ids), Region.id.in_(region_ids), usable).order_by(
+            case({item: candidates[item] for item in indicator_ids}, value=RegionIndicator.id).desc(),
+            Region.sort_order, RegionIndicator.code).limit(limit)
+        return (await db.execute(stmt)).all()
+
+    rows = await _ordered_fact_rows(run, candidates, [row.id for row in definitions], selected, budget + 1)
     output = []
     for region, row, has_monthly, has_annual in rows[:budget]:
         geo, en = selected[region.id], copies[row.id]
@@ -942,7 +1020,7 @@ async def _subnational(db: AsyncSession, intent: SearchIntent, geometry: list[di
         return [], False
     codes = {item["country_code"] for item in selected.values()}
     definitions = list((await db.execute(select(SubnationalIndicator).where(
-        SubnationalIndicator.country_code.in_(codes), SubnationalIndicator.is_listed.is_(True)))).scalars())
+        SubnationalIndicator.country_code.in_(codes), SubnationalIndicator.is_listed.is_(True)).order_by(SubnationalIndicator.code))).scalars())
     candidates = {}
     for row in definitions:
         score = match_score(intent, code=row.code, names=(row.name_ru, row.name_en),
@@ -954,11 +1032,15 @@ async def _subnational(db: AsyncSession, intent: SearchIntent, geometry: list[di
     fact = exists(select(1).where(SubnationalDataPoint.indicator_id == SubnationalIndicator.id,
         SubnationalDataPoint.region_id == SubnationalRegion.id, _finite(SubnationalDataPoint.value),
         *_date_constraints(SubnationalDataPoint.period, intent)))
-    stmt = select(SubnationalRegion, SubnationalIndicator).select_from(SubnationalIndicator).join(
-        SubnationalRegion, SubnationalRegion.country_code == SubnationalIndicator.country_code).where(
-        SubnationalIndicator.id.in_(candidates), SubnationalRegion.id.in_(selected), fact).order_by(
-        case(candidates, value=SubnationalIndicator.id).desc(), SubnationalRegion.sort_order, SubnationalIndicator.code).limit(budget + 1)
-    rows = (await db.execute(stmt)).all()
+    async def run(indicator_ids: list[int], region_ids: list[int], limit: int) -> list:
+        stmt = select(SubnationalRegion, SubnationalIndicator).select_from(SubnationalIndicator).join(
+            SubnationalRegion, SubnationalRegion.country_code == SubnationalIndicator.country_code).where(
+            SubnationalIndicator.id.in_(indicator_ids), SubnationalRegion.id.in_(region_ids), fact).order_by(
+            case({item: candidates[item] for item in indicator_ids}, value=SubnationalIndicator.id).desc(),
+            SubnationalRegion.sort_order, SubnationalIndicator.code).limit(limit)
+        return (await db.execute(stmt)).all()
+
+    rows = await _ordered_fact_rows(run, candidates, [row.id for row in definitions], selected, budget + 1)
     output = []
     for region, row in rows[:budget]:
         geo = selected[region.id]
