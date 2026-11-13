@@ -133,6 +133,13 @@ LANGUAGE_CONCEPTS = (
 )
 
 
+def fuel_cost_as_price(words: list[str]) -> list[str]:
+    """«Стоимость» рядом с топливом читается как «цена»; остальные слова и запросы без топлива не меняются."""
+    if any(re.fullmatch(r"бензин.*|дизел.*|топлив.*|солярк.*", word) for word in words):
+        return ["цена" if re.fullmatch(r"стоимост.*", word) else word for word in words]
+    return words
+
+
 def prepare_language(text: str) -> str:
     """Resolve a few compositional questions while retaining unknown qualifiers.
 
@@ -159,6 +166,9 @@ def prepare_language(text: str) -> str:
     if food_sector:
         words = [replacement for word in words for replacement in
             (("food", "sector") if word == "food" else (word,))]
+    # «Стоимость бензина / дизельного топлива» — вопрос о цене топлива, а не о продажах в рублях (13.11.2026):
+    # без этого «стоимость дизельного топлива калужская область» выдавала розничные продажи.
+    words = fuel_cost_as_price(words)
     text = " ".join(words)
     def consume(patterns: tuple[str, ...], replacement: str) -> str:
         retained = [word for word in words if not any(re.fullmatch(p, word) for p in patterns)]
@@ -370,6 +380,10 @@ def title_frequencies(terms: tuple[tuple[str, ...], ...], candidates: list[dict]
     return frequencies
 
 
+# Понятие (первая замена) → (признак соседнего товара, признак своего товара) в названии ряда.
+NEIGHBOUR_DEMOTIONS = {"fuel": (r"дизел|diesel", r"бензин|gasoline|petrol")}
+
+
 def relevance_bonus(terms: tuple[tuple[str, ...], ...], *, names: tuple[str, ...],
         frequencies: Counter[str], count: int) -> int:
     """Candidate-set inverse document frequency rewards concise subject titles.
@@ -389,4 +403,10 @@ def relevance_bonus(terms: tuple[tuple[str, ...], ...], *, names: tuple[str, ...
     # Additional semicolon slices tend to be demographic/sector subdivisions;
     # broad intent prefers the explicitly aggregated title. Specific words remain
     # mandatory and therefore cannot be overridden by this small penalty.
+    # Соседний товар того же понятия (13.11.2026): у понятия «бензин» есть общая замена «fuel», она стоит и в
+    # английском названии дизеля, встречается реже и давала дизелю больший добавочный счёт — «цена бензина
+    # удмуртия» ставила дизель первой строкой. Состав выдачи не меняется, только порядок.
+    for concept, (neighbour, own) in NEIGHBOUR_DEMOTIONS.items():
+        if any(alternatives[0] == concept for alternatives in terms) and re.search(neighbour, title) and not re.search(own, title):
+            score -= 4
     return round(score) - min(title.count(";") * 2, 16)

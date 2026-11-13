@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2244  ·  **Строк:** 1 417 700  ·  **Токенов (≈):** 13 509 771
+**Файлов:** 2244  ·  **Строк:** 1 417 794  ·  **Токенов (≈):** 13 511 088
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 797 | 64 788 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 915 | 319 469 | 3 493 047 |
+| `backend` | 915 | 319 513 | 3 493 761 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 143 | 17 255 |
-| `docs` | 144 | 884 652 | 7 601 558 |
+| `docs` | 144 | 884 702 | 7 602 161 |
 | `frontend` | 1014 | 184 423 | 2 020 294 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 364 605 | 2 986 402 |
+| `docs/mechanism-inventory.json` | 364 649 | 2 986 746 |
 | `docs/client-mechanism-inventory.json` | 255 286 | 1 803 159 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -36,11 +36,11 @@
 | `docs/design/local-acceptance/baseline-paced/http.json` | 23 844 | 219 383 |
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
-| `docs/mechanism-inventory.md` | 3 389 | 155 361 |
+| `docs/mechanism-inventory.md` | 3 390 | 155 403 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
-| `docs/backlog.md` | 3 405 | 121 788 |
+| `docs/backlog.md` | 3 406 | 121 849 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `docs/data-contracts.md` | 1 193 | 60 505 |
@@ -69,9 +69,9 @@
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
 | `backend/app/main.py` | 2 071 | 22 094 |
 | `backend/app/services/site_urls.py` | 2 253 | 22 012 |
-| `backend/app/services/search.py` | 1 414 | 21 702 |
+| `backend/app/services/search.py` | 1 421 | 21 850 |
+| `docs/search.md` | 859 | 21 428 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
-| `docs/search.md` | 855 | 21 272 |
 | `backend/app/services/seo_world.py` | 2 227 | 21 146 |
 | `backend/app/services/seo_regional.py` | 2 122 | 21 014 |
 | `docs/data_sources.md` | 760 | 20 874 |
@@ -131,10 +131,10 @@
 | `backend/app/services/pulse.py` | 891 | 9 888 |
 | `backend/app/services/eurostat_parser.py` | 1 009 | 9 773 |
 | `backend/app/tasks/scheduler.py` | 893 | 9 694 |
+| `backend/app/services/search_language.py` | 412 | 9 610 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 888 | 9 566 |
 | `frontend/src/styles/z8-tools.css` | 905 | 9 371 |
 | `backend/tests/test_world.py` | 963 | 9 310 |
-| `backend/app/services/search_language.py` | 392 | 9 283 |
 | `backend/app/data/world_bea_regional/description_ru.json` | 477 | 9 258 |
 | `frontend/src/pages/WorldIndicatorPage.jsx` | 839 | 9 234 |
 | `backend/scripts/repair-world-listing.py` | 979 | 9 209 |
@@ -300,6 +300,7 @@
 | `backend/tests/forecast_strategies/test_derived.py` | 554 | 4 953 |
 | `backend/tests/test_regional_publication.py` | 412 | 4 953 |
 | `.env.example` | 363 | 4 904 |
+| `backend/tests/test_search_pulse_gaps.py` | 338 | 4 891 |
 | `backend/app/services/forecast_strategies/derived_from_source.py` | 453 | 4 871 |
 | `backend/app/services/world_adapters/ons_timeseries.py` | 573 | 4 845 |
 | `backend/app/services/world_adapters/ecos_bok.py` | 551 | 4 839 |
@@ -327,7 +328,6 @@
 | `backend/app/services/analytics_report_bundle.py` | 441 | 4 662 |
 | `backend/tests/test_forecast_policy.py` | 441 | 4 660 |
 | `backend/tests/test_sitemap_scheduler_hardening.py` | 499 | 4 659 |
-| `backend/tests/test_search_pulse_gaps.py` | 321 | 4 652 |
 | `docs/research/ui-brainstorm-planet-2026-10-04.md` | 100 | 4 651 |
 | `frontend/src/pages/CompoundCalculatorPage.jsx` | 348 | 4 637 |
 | `backend/app/api/oauth.py` | 495 | 4 632 |

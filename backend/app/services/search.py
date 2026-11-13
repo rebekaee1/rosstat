@@ -1283,6 +1283,13 @@ async def _second_readings(db: AsyncSession, raw: str, geometry: list[dict], int
         if concept:
             terms = tuple(dict.fromkeys(concept if term == (intent.literal,) else term for term in intent.terms))
             readings.append(replace(intent, terms=terms, literal=None))
+    elif intent.content and (intent.regions or intent.countries):
+        # Слова запроса после подготовки сложились в точное название ряда («стоимость дизельного топлива» →
+        # «цена дизельного топлива»), а название региона стоит рядом: читаем название как понятие своего ряда.
+        prepared_title = await _literal_title(db, intent.content, geometry)
+        concept = await _title_concept(db, prepared_title) if prepared_title and phrase(prepared_title) == intent.content else None
+        if concept:
+            readings.append(replace(intent, terms=(concept,), literal=None))
     regional = region_reading(raw, intent, geometry, literal_content=literal)
     if regional is not None:
         readings.append(regional)

@@ -148,6 +148,23 @@ def test_colloquial_republic_name_with_fuel_price(gaps_client):
     assert 'ceni-ai92' in codes(get(gaps_client, 'бензин в удмуртии'))
 
 
+def test_gasoline_price_in_region_puts_gasoline_before_diesel(gaps_client):
+    """«цена бензина удмуртия»: бензин первой строкой, дизель остаётся в выдаче ниже."""
+    found = codes(get(gaps_client, 'цена бензина удмуртия'))
+    assert found[0] == 'ceni-ai92', found
+    assert 'ceni-dt' in found and found.index('ceni-dt') > found.index('ceni-ai92')
+    # Запрос о дизеле по-прежнему ставит первым дизель.
+    assert codes(get(gaps_client, 'цена дизеля удмуртия'))[0] == 'ceni-dt'
+
+
+def test_fuel_cost_means_fuel_price(gaps_client):
+    """«стоимость дизельного топлива калужская область» — цена дизеля в регионе, а не продажи в рублях."""
+    body = get(gaps_client, 'стоимость дизельного топлива калужская область')
+    assert body['results'] and body['results'][0]['code'] == 'ceni-dt', body
+    assert body['results'][0]['region_slug'] == 'kaluzhskaya-oblast'
+    assert codes(get(gaps_client, 'стоимость дизельного топлива'))[0] == 'fuel-diesel'
+
+
 def test_national_title_does_not_hide_the_regional_series(gaps_client):
     """«цена дизельного топлива калужская область»: точное название национального ряда не заслоняет региональный."""
     body = get(gaps_client, 'цена дизельного топлива калужская область')
