@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { chartSeriesForViewMode } from './chartSeriesForViewMode';
+import { chartSeriesForViewMode, heroDeltaSuffixKey } from './chartSeriesForViewMode';
+import ru from '../i18n/messages.ru';
+import en from '../i18n/messages.en';
 
 describe('chartSeriesForViewMode', () => {
   const dataPoints = [{ date: '2024-12-01', value: 16 }];
@@ -54,5 +56,25 @@ describe('chartSeriesForViewMode', () => {
       dataPoints,
     });
     expect(series).toBe(dataPoints);
+  });
+});
+
+describe('heroDeltaSuffixKey — подпись изменения в шапке', () => {
+  it('недельный ИПЦ на месячном cpi: «к прошлой неделе», не «к прошлому месяцу» (рассылка 14.11.2026)', () => {
+    const key = heroDeltaSuffixKey({ chartMode: 'weekly', frequency: 'monthly' });
+    expect(ru[key]).toBe('к прошлой неделе');
+    expect(en[key]).toBe('vs previous week');
+  });
+
+  it('рост за период по неделям сравнивается с прошлым отчётом', () => {
+    expect(heroDeltaSuffixKey({ chartMode: 'period-weekly', frequency: 'monthly' })).toBe('w3.tele.delta.prevReport');
+  });
+
+  it('прежние режимы не меняются', () => {
+    expect(heroDeltaSuffixKey({ chartMode: 'cpi', frequency: 'monthly' })).toBe('w3.tele.delta.prevMonth');
+    expect(heroDeltaSuffixKey({ chartMode: 'qoq', frequency: 'monthly' })).toBe('w3.tele.delta.prevQuarter');
+    expect(heroDeltaSuffixKey({ chartMode: 'annual', frequency: 'monthly' })).toBe('w3.tele.delta.prevYear');
+    expect(heroDeltaSuffixKey({ chartMode: 'cpi', frequency: 'daily', dailyFromRawSeries: true })).toBe('c12u.delta.prevDay');
+    expect(heroDeltaSuffixKey({ chartMode: 'cpi', frequency: 'daily' })).toBe('w3.tele.delta.prevValue');
   });
 });
