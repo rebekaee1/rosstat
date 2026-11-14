@@ -16,7 +16,7 @@
 - Registry declarations: **1420**
 - Registry references: **2680**
 - Migration operations: **490**
-- Candidate effects: **2946**
+- Candidate effects: **2949**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -152,7 +152,7 @@
 | POST | /api/v1/cabinet/calendar-feed | app.api.cabinet.calendar_feed_rotate | [backend/app/api/cabinet.py:458](../backend/app/api/cabinet.py#L458) |
 | DELETE | /api/v1/cabinet/calendar-feed | app.api.cabinet.calendar_feed_revoke | [backend/app/api/cabinet.py:468](../backend/app/api/cabinet.py#L468) |
 | GET | /api/v1/cabinet/calendar.ics | app.api.cabinet.calendar_ics | [backend/app/api/cabinet.py:475](../backend/app/api/cabinet.py#L475) |
-| POST | /api/v1/human-pass | app.api.human_pass.human_pass | [backend/app/api/human_pass.py:63](../backend/app/api/human_pass.py#L63) |
+| POST | /api/v1/human-pass | app.api.human_pass.human_pass | [backend/app/api/human_pass.py:110](../backend/app/api/human_pass.py#L110) |
 | GET | /api/v1/research | app.api.research.research_list | [backend/app/api/research.py:66](../backend/app/api/research.py#L66) |
 | GET | /api/v1/research/{slug}/download | app.api.research.research_download | [backend/app/api/research.py:147](../backend/app/api/research.py#L147) |
 | GET | /api/v1/mail/unsubscribe | app.api.mail.unsubscribe_state | [backend/app/api/mail.py:114](../backend/app/api/mail.py#L114) |
@@ -2510,11 +2510,11 @@ Relationships: `[]`
 | app.services.bot_exports.TRIGGER_LABELS_RU | Dict | 'gate_download', 'gate_chart_image', 'gate_compare', 'gate_gif', 'nudge', 'header', 'direct' | [backend/app/services/bot_exports.py:36](../backend/app/services/bot_exports.py#L36) |
 | app.services.bot_score._BOT_UA_RE | Call | computed source expression | [backend/app/services/bot_score.py:29](../backend/app/services/bot_score.py#L29) |
 | app.services.bot_score.HEURISTICS | Tuple | sequence/source expression | [backend/app/services/bot_score.py:155](../backend/app/services/bot_score.py#L155) |
-| app.services.bot_traffic.CLASSES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:36](../backend/app/services/bot_traffic.py#L36) |
-| app.services.bot_traffic.OUTCOMES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:37](../backend/app/services/bot_traffic.py#L37) |
-| app.services.bot_traffic._LINE_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:45](../backend/app/services/bot_traffic.py#L45) |
-| app.services.bot_traffic._HUMAN_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:49](../backend/app/services/bot_traffic.py#L49) |
-| app.services.bot_traffic._GENUINE_HOST_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:54](../backend/app/services/bot_traffic.py#L54) |
+| app.services.bot_traffic.CLASSES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:42](../backend/app/services/bot_traffic.py#L42) |
+| app.services.bot_traffic.OUTCOMES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:43](../backend/app/services/bot_traffic.py#L43) |
+| app.services.bot_traffic._LINE_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:51](../backend/app/services/bot_traffic.py#L51) |
+| app.services.bot_traffic._HUMAN_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:55](../backend/app/services/bot_traffic.py#L55) |
+| app.services.bot_traffic._GENUINE_HOST_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:60](../backend/app/services/bot_traffic.py#L60) |
 | app.services.brent_fred_parser._DEFAULT_BACKFILL_FROM | Call | computed source expression | [backend/app/services/brent_fred_parser.py:40](../backend/app/services/brent_fred_parser.py#L40) |
 | app.services.cabinet.SAVED_KINDS | Tuple | sequence/source expression | [backend/app/services/cabinet.py:41](../backend/app/services/cabinet.py#L41) |
 | app.services.cabinet.WATCH_KINDS | Tuple | sequence/source expression | [backend/app/services/cabinet.py:42](../backend/app/services/cabinet.py#L42) |
