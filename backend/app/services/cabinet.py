@@ -530,6 +530,61 @@ def _ics_fold(line: str) -> str:
     return "\r\n ".join(parts) + "\r\n"
 
 
+# Имена источников для людей (принцип 7: без кодов «CBR», «ROSSTAT»); те же, что на страницах календаря.
+_ICS_SOURCE_NAMES = {
+    "rosstat": ("Росстат", "Rosstat"),
+    "cbr": ("Банк России", "Bank of Russia"),
+    "minfin": ("Минфин России", "Ministry of Finance of Russia"),
+}
+_MSK_OFFSET = timedelta(hours=3)
+
+
+def _personal_event_lines(ev: EconomicEvent, code: str, stamp: str, en: bool) -> list[str]:
+    """Событие личного календаря (14.11.2026): как в общем календаре сайта — время МСК, если оно известно
+    (иначе событие на весь день), перенос даты сдвигает событие (UID и SEQUENCE), имя источника словами,
+    ссылка ведёт на страницу показателя на сайте, а не на файл источника. Язык — по хосту ссылки."""
+    from app.api.calendar import _ics_uid, _rescheduled_from
+    from app.services import site_paths
+    from app.services.mail.service import site_link
+    from app.services.seo_i18n import event_public_title, localize_reference_period
+
+    loc = "en" if en else "ru"
+    title = event_public_title(ev.title, ev.title_en, locale=loc)
+    period = localize_reference_period(ev.reference_period, locale=loc)
+    if period:
+        title += f" ({period})"
+    src = _ICS_SOURCE_NAMES.get((ev.source or "").lower())
+    desc = []
+    moved = _rescheduled_from(ev)
+    if moved:
+        desc.append(f"The source moved the date from {moved:%d.%m.%Y}." if en
+                    else f"Источник перенёс дату с {moved:%d.%m.%Y}.")
+    if ev.scheduled_time:
+        desc.append(("Time: " if en else "Время: ") + f"{ev.scheduled_time} " + ("Moscow time" if en else "по Москве"))
+    if ev.previous_value:
+        desc.append(("Previous: " if en else "Предыдущее: ") + ev.previous_value)
+    if src:
+        desc.append(("Source: " if en else "Источник: ") + src[1 if en else 0])
+    lines = ["BEGIN:VEVENT", f"UID:{_ics_uid(ev)}", f"DTSTAMP:{stamp}"]
+    hhmm = ev.scheduled_time or ""
+    if len(hhmm) == 5 and hhmm[2] == ":" and hhmm[:2].isdigit() and hhmm[3:].isdigit():
+        start = datetime(ev.scheduled_date.year, ev.scheduled_date.month, ev.scheduled_date.day,
+                         int(hhmm[:2]), int(hhmm[3:])) - _MSK_OFFSET
+        lines += [f"DTSTART:{start:%Y%m%dT%H%M%SZ}", f"DTEND:{start + timedelta(minutes=30):%Y%m%dT%H%M%SZ}"]
+    else:
+        lines += [f"DTSTART;VALUE=DATE:{ev.scheduled_date:%Y%m%d}",
+                  f"DTEND;VALUE=DATE:{ev.scheduled_date + timedelta(days=1):%Y%m%d}"]
+    lines += [
+        f"SEQUENCE:{len((ev.metadata_json or {}).get('reschedule_audit') or [])}",
+        f"SUMMARY:{_ics_escape(title)}",
+        f"DESCRIPTION:{_ics_escape(chr(10).join(desc))}",
+        f"URL:{site_link(loc, site_paths.russia_indicator(code))}",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+    ]
+    return lines
+
+
 async def build_personal_ics(db: AsyncSession, user_id: uuid.UUID, *, today: date) -> str:
     """Календарь выходов значений по рядам, за которыми следит человек.
 
@@ -537,7 +592,7 @@ async def build_personal_ics(db: AsyncSession, user_id: uuid.UUID, *, today: dat
     /calendar/export/ical) и только федеральные показатели (EconomicEvent
     привязан к `indicators`). Отправки нет: календарь телефона сам читает ленту.
     """
-    from app.api.calendar import _ics_uid, _public_calendar_conditions  # единое определение «публичного» события
+    from app.api.calendar import _public_calendar_conditions  # единое определение «публичного» события
 
     codes = list((await db.scalars(
         select(UserWatch.subject_key).where(
@@ -567,26 +622,7 @@ async def build_personal_ics(db: AsyncSession, user_id: uuid.UUID, *, today: dat
         f"X-WR-CALNAME:{_ics_escape(name)}", "X-WR-TIMEZONE:Europe/Moscow",
         "REFRESH-INTERVAL;VALUE=DURATION:PT12H", "X-PUBLISHED-TTL:PT12H",
     ]
-    for ev, _code in events:
-        title = (ev.title_en if en and ev.title_en else ev.title) or ""
-        if ev.reference_period:
-            title += f" ({ev.reference_period})"
-        desc = [("Source: " if en else "Источник: ") + (ev.source or "").upper()]
-        if ev.previous_value:
-            desc.append(("Previous: " if en else "Предыдущее: ") + ev.previous_value)
-        if ev.scheduled_time:
-            desc.append(("Time: " if en else "Время: ") + f"{ev.scheduled_time} " + ("MSK" if en else "МСК"))
-        lines += [
-            "BEGIN:VEVENT",
-            f"UID:{_ics_uid(ev)}",
-            f"DTSTAMP:{stamp}",
-            f"DTSTART;VALUE=DATE:{ev.scheduled_date.strftime('%Y%m%d')}",
-            f"SEQUENCE:{len((ev.metadata_json or {}).get('reschedule_audit') or [])}",
-            f"SUMMARY:{_ics_escape(title)}",
-            f"DESCRIPTION:{_ics_escape(chr(10).join(desc))}",
-        ]
-        if ev.source_url:
-            lines.append(f"URL:{ev.source_url}")
-        lines.append("END:VEVENT")
+    for ev, code in events:
+        lines += _personal_event_lines(ev, code, stamp, en)
     lines.append("END:VCALENDAR")
     return "".join(_ics_fold(line) for line in lines)

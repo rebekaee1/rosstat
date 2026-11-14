@@ -601,8 +601,12 @@ def test_calendar_feed_token_lifecycle_and_content(auth_client, auth_env, on):
     assert text.startswith("BEGIN:VCALENDAR\r\n") and text.endswith("END:VCALENDAR\r\n")
     assert r"Инфляция\, мой выход\; с запятой (сентябрь)" in text.replace("\r\n ", "")
     assert "Не моё" not in text and text.count("BEGIN:VEVENT") == 1
-    assert "DTSTART;VALUE=DATE:" in text and "DTSTAMP:" in text
+    assert "DTSTART;VALUE=DATE:" in text and "DTEND;VALUE=DATE:" in text and "DTSTAMP:" in text
     assert all(len(line.encode()) <= 75 for line in text.split("\r\n"))
+    # 14.11.2026: источник словами, ссылка на страницу показателя на сайте, а не на файл источника
+    flat = text.replace("\r\n ", "")
+    assert "Источник: Росстат" in flat and "ROSSTAT" not in flat
+    assert "URL:" in flat and "/russia/indicator/cpi_yoy" in flat and "rosstat.gov.ru/x" not in flat
 
     assert auth_client.get(f"{C}/calendar.ics?token={'x' * 40}").status_code == 404
     assert auth_client.get(f"{C}/calendar.ics").status_code == 422
@@ -628,7 +632,24 @@ def test_calendar_feed_revoke_and_empty(auth_client, on):
     assert auth_client.delete(f"{C}/calendar-feed", headers=h).json()["removed"] is False
 
 
-def test_calendar_ics_flag_off_404(auth_client):
+def test_calendar_ics_timed_event_in_moscow_time(auth_client, auth_env, on):
+    """Событие со временем источника встаёт в календарь телефона на это время (МСК → UTC), не на весь день."""
+    async def run(s):
+        await _seed_event(s)
+        ev = await s.scalar(select(EconomicEvent).where(EconomicEvent.event_key == "k1"))
+        ev.scheduled_time = "19:00"
+    seed(auth_client, auth_env, run)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    auth_client.post(f"{C}/watches", json={"subject_kind": "indicator", "subject_key": "cpi_yoy"}, headers=h)
+    token = auth_client.post(f"{C}/calendar-feed", headers=h).json()["token"]
+    text = auth_client.get(f"{C}/calendar.ics?token={token}").text.replace("\r\n ", "")
+    day = (date.today() + timedelta(days=3)).strftime("%Y%m%d")
+    assert f"DTSTART:{day}T160000Z" in text and f"DTEND:{day}T163000Z" in text
+    assert "Время: 19:00 по Москве" in text
+
+
+def test_calendar_ics_flag_off_404(auth_client, off):
     assert auth_client.get(f"{C}/calendar.ics?token={'a' * 40}").status_code == 404
 
 
