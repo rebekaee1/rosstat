@@ -2208,9 +2208,9 @@
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "45b3c61e8f5327d8be4e057a7c3959ee8d882cd722512f658241954951945ac7",
-      "bytes": 11101,
-      "lines": 144,
+      "sha256": "cfeb886e6e4873287434b98a4991071838c809008e08603576b893e0857ae076",
+      "bytes": 12239,
+      "lines": 156,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -4587,7 +4587,7 @@
     },
     {
       "path": "backend/app/services/pulse_context.py",
-      "sha256": "0a72e21a1be812c84c425984706b1f7e389d6514a3ba044eb9efa8fb4c6c6174",
+      "sha256": "7c9c57c76ed240b3d5cc9064f5d8a6f32c45206ab09786d8c77e16c3fb177593",
       "bytes": 16456,
       "lines": 359,
       "code": true,
@@ -13466,8 +13466,8 @@
     },
     {
       "path": "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md",
-      "sha256": "d72aed125915cb8c633d8ba42cca62c7959fec3bf47673187fd83b0ae66f5647",
-      "bytes": 33318,
+      "sha256": "9d8e59f43d127fa60174f3ebd9b3974fe218521965a0184d665512bfbb2ae07a",
+      "bytes": 33361,
       "lines": 334,
       "code": false,
       "status": "reviewed",
@@ -14662,7 +14662,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "963564c08b2ebf03f0d3d95abf2b6ecec70bfc56a0e249b49a2ac25d7f51369e",
+      "sha256": "8b13597f35cfdac8f27db0cc606c93a62b69831c1db6b9b2fef78d86dac1b383",
       "bytes": 12426638,
       "lines": 372893,
       "code": false,
@@ -32563,13 +32563,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "c856d284e93c5d82cae3ca5896e6df42f712c6fd8e468cd9105f00fbf7b46d5d",
+  "ledger_sha256": "cea0ad49057c2743be69bb33fa19a1fdbf574bca67a5f463d59b5b01be5a8dc2",
   "javascript_inventory_sha256": "e6d36e5cf4fe983b42f453b607a62c9154502ef66bda37bf4168c488d2c3f73b",
-  "baseline_commit": "92b1eb1ec4c8ac1c1c84ccfb617d7b65d0f75bf0",
+  "baseline_commit": "65b85f77028568311d31a6fe82d05cff2547b218",
   "branch": "fix/counter-google-farm-2026-11-14",
-  "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
