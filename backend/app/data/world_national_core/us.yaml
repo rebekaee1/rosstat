@@ -20,6 +20,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "CPIAUCSL"
     series_id: "CPIAUCSL"
     source_url: "https://fred.stlouisfed.org/series/CPIAUCSL"
@@ -46,6 +47,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "UNRATE"
     series_id: "UNRATE"
     source_url: "https://fred.stlouisfed.org/series/UNRATE"
@@ -70,6 +72,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "PAYEMS"
     series_id: "PAYEMS"
     source_url: "https://fred.stlouisfed.org/series/PAYEMS"
@@ -94,6 +97,7 @@ series:
     frequency: quarterly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "GDPC1"
     series_id: "GDPC1"
     source_url: "https://fred.stlouisfed.org/series/GDPC1"
@@ -118,6 +122,7 @@ series:
     frequency: monthly
     aggregation: sum
     provider: fred
+    origin_ru: "Бюро переписи населения США"
     dataset_id: "RSAFS"
     series_id: "RSAFS"
     source_url: "https://fred.stlouisfed.org/series/RSAFS"
@@ -142,6 +147,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "INDPRO"
     series_id: "INDPRO"
     source_url: "https://fred.stlouisfed.org/series/INDPRO"
@@ -166,6 +172,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "FEDFUNDS"
     series_id: "FEDFUNDS"
     source_url: "https://fred.stlouisfed.org/series/FEDFUNDS"
@@ -190,6 +197,7 @@ series:
     frequency: daily
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "DTWEXBGS"
     series_id: "DTWEXBGS"
     source_url: "https://fred.stlouisfed.org/series/DTWEXBGS"
@@ -214,6 +222,7 @@ series:
     frequency: daily
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "DEXUSEU"
     series_id: "DEXUSEU"
     source_url: "https://fred.stlouisfed.org/series/DEXUSEU"
@@ -237,6 +246,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "CPILFESL"
     series_id: "CPILFESL"
     source_url: "https://fred.stlouisfed.org/series/CPILFESL"
@@ -263,6 +273,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "PCEPI"
     series_id: "PCEPI"
     source_url: "https://fred.stlouisfed.org/series/PCEPI"
@@ -287,6 +298,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "PCEPILFE"
     series_id: "PCEPILFE"
     source_url: "https://fred.stlouisfed.org/series/PCEPILFE"
@@ -312,6 +324,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "PPIACO"
     series_id: "PPIACO"
     source_url: "https://fred.stlouisfed.org/series/PPIACO"
@@ -337,6 +350,7 @@ series:
     frequency: weekly
     aggregation: mean
     provider: fred
+    origin_ru: "Управление энергетической информации США (EIA)"
     dataset_id: "GASREGW"
     series_id: "GASREGW"
     source_url: "https://fred.stlouisfed.org/series/GASREGW"
@@ -360,6 +374,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "CUUR0000SEHA"
     series_id: "CUUR0000SEHA"
     source_url: "https://fred.stlouisfed.org/series/CUUR0000SEHA"
@@ -384,6 +399,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "CIVPART"
     series_id: "CIVPART"
     source_url: "https://fred.stlouisfed.org/series/CIVPART"
@@ -408,6 +424,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "EMRATIO"
     series_id: "EMRATIO"
     source_url: "https://fred.stlouisfed.org/series/EMRATIO"
@@ -431,6 +448,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "UNEMPLOY"
     series_id: "UNEMPLOY"
     source_url: "https://fred.stlouisfed.org/series/UNEMPLOY"
@@ -455,6 +473,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "CLF16OV"
     series_id: "CLF16OV"
     source_url: "https://fred.stlouisfed.org/series/CLF16OV"
@@ -478,6 +497,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "CE16OV"
     series_id: "CE16OV"
     source_url: "https://fred.stlouisfed.org/series/CE16OV"
@@ -501,6 +521,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "USGOVT"
     series_id: "USGOVT"
     source_url: "https://fred.stlouisfed.org/series/USGOVT"
@@ -523,6 +544,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "U6RATE"
     series_id: "U6RATE"
     source_url: "https://fred.stlouisfed.org/series/U6RATE"
@@ -547,6 +569,7 @@ series:
     frequency: weekly
     aggregation: mean
     provider: fred
+    origin_ru: "Министерство труда США"
     dataset_id: "ICSA"
     series_id: "ICSA"
     source_url: "https://fred.stlouisfed.org/series/ICSA"
@@ -571,6 +594,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "JTSJOL"
     series_id: "JTSJOL"
     source_url: "https://fred.stlouisfed.org/series/JTSJOL"
@@ -594,6 +618,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "JTSQUR"
     series_id: "JTSQUR"
     source_url: "https://fred.stlouisfed.org/series/JTSQUR"
@@ -618,6 +643,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро трудовой статистики США"
     dataset_id: "CES0500000003"
     series_id: "CES0500000003"
     source_url: "https://fred.stlouisfed.org/series/CES0500000003"
@@ -642,6 +668,7 @@ series:
     frequency: quarterly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "GDP"
     series_id: "GDP"
     source_url: "https://fred.stlouisfed.org/series/GDP"
@@ -666,6 +693,7 @@ series:
     frequency: quarterly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "A191RL1Q225SBEA"
     series_id: "A191RL1Q225SBEA"
     source_url: "https://fred.stlouisfed.org/series/A191RL1Q225SBEA"
@@ -691,6 +719,7 @@ series:
     frequency: quarterly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "PCEC"
     series_id: "PCEC"
     source_url: "https://fred.stlouisfed.org/series/PCEC"
@@ -715,6 +744,7 @@ series:
     frequency: quarterly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "GPDI"
     series_id: "GPDI"
     source_url: "https://fred.stlouisfed.org/series/GPDI"
@@ -739,6 +769,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "PI"
     series_id: "PI"
     source_url: "https://fred.stlouisfed.org/series/PI"
@@ -763,6 +794,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "DSPIC96"
     series_id: "DSPIC96"
     source_url: "https://fred.stlouisfed.org/series/DSPIC96"
@@ -788,6 +820,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "PSAVERT"
     series_id: "PSAVERT"
     source_url: "https://fred.stlouisfed.org/series/PSAVERT"
@@ -812,6 +845,7 @@ series:
     frequency: quarterly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "A939RX0Q048SBEA"
     series_id: "A939RX0Q048SBEA"
     source_url: "https://fred.stlouisfed.org/series/A939RX0Q048SBEA"
@@ -837,6 +871,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "TCU"
     series_id: "TCU"
     source_url: "https://fred.stlouisfed.org/series/TCU"
@@ -861,6 +896,7 @@ series:
     frequency: monthly
     aggregation: sum
     provider: fred
+    origin_ru: "Бюро переписи населения США"
     dataset_id: "DGORDER"
     series_id: "DGORDER"
     source_url: "https://fred.stlouisfed.org/series/DGORDER"
@@ -885,6 +921,7 @@ series:
     frequency: monthly
     aggregation: last
     provider: fred
+    origin_ru: "Бюро переписи населения США"
     dataset_id: "BUSINV"
     series_id: "BUSINV"
     source_url: "https://fred.stlouisfed.org/series/BUSINV"
@@ -909,6 +946,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "TOTALSA"
     series_id: "TOTALSA"
     source_url: "https://fred.stlouisfed.org/series/TOTALSA"
@@ -933,6 +971,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро переписи населения США"
     dataset_id: "HOUST"
     series_id: "HOUST"
     source_url: "https://fred.stlouisfed.org/series/HOUST"
@@ -958,6 +997,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро переписи населения США"
     dataset_id: "PERMIT"
     series_id: "PERMIT"
     source_url: "https://fred.stlouisfed.org/series/PERMIT"
@@ -982,6 +1022,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро переписи населения США"
     dataset_id: "HSN1F"
     series_id: "HSN1F"
     source_url: "https://fred.stlouisfed.org/series/HSN1F"
@@ -1005,6 +1046,7 @@ series:
     frequency: quarterly
     aggregation: mean
     provider: fred
+    origin_ru: "Бюро переписи населения США"
     dataset_id: "MSPUS"
     series_id: "MSPUS"
     source_url: "https://fred.stlouisfed.org/series/MSPUS"
@@ -1029,6 +1071,7 @@ series:
     frequency: quarterly
     aggregation: mean
     provider: fred
+    origin_ru: "Федеральное агентство по жилищному финансированию США"
     dataset_id: "USSTHPI"
     series_id: "USSTHPI"
     source_url: "https://fred.stlouisfed.org/series/USSTHPI"
@@ -1053,6 +1096,7 @@ series:
     frequency: weekly
     aggregation: mean
     provider: fred
+    origin_ru: "Freddie Mac"
     dataset_id: "MORTGAGE30US"
     series_id: "MORTGAGE30US"
     source_url: "https://fred.stlouisfed.org/series/MORTGAGE30US"
@@ -1078,6 +1122,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "GS10"
     series_id: "GS10"
     source_url: "https://fred.stlouisfed.org/series/GS10"
@@ -1102,6 +1147,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "GS2"
     series_id: "GS2"
     source_url: "https://fred.stlouisfed.org/series/GS2"
@@ -1126,6 +1172,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "T10Y2YM"
     series_id: "T10Y2YM"
     source_url: "https://fred.stlouisfed.org/series/T10Y2YM"
@@ -1150,6 +1197,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "T10YIEM"
     series_id: "T10YIEM"
     source_url: "https://fred.stlouisfed.org/series/T10YIEM"
@@ -1174,6 +1222,7 @@ series:
     frequency: monthly
     aggregation: last
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "M2SL"
     series_id: "M2SL"
     source_url: "https://fred.stlouisfed.org/series/M2SL"
@@ -1199,6 +1248,7 @@ series:
     frequency: weekly
     aggregation: last
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "WALCL"
     series_id: "WALCL"
     source_url: "https://fred.stlouisfed.org/series/WALCL"
@@ -1222,6 +1272,7 @@ series:
     frequency: quarterly
     aggregation: last
     provider: fred
+    origin_ru: "Министерство финансов США"
     dataset_id: "GFDEBTN"
     series_id: "GFDEBTN"
     source_url: "https://fred.stlouisfed.org/series/GFDEBTN"
@@ -1246,6 +1297,7 @@ series:
     frequency: quarterly
     aggregation: last
     provider: fred
+    origin_ru: "Министерство финансов США"
     dataset_id: "GFDEGDQ188S"
     series_id: "GFDEGDQ188S"
     source_url: "https://fred.stlouisfed.org/series/GFDEGDQ188S"
@@ -1271,6 +1323,7 @@ series:
     frequency: monthly
     aggregation: sum
     provider: fred
+    origin_ru: "Министерство финансов США"
     dataset_id: "MTSDS133FMS"
     series_id: "MTSDS133FMS"
     source_url: "https://fred.stlouisfed.org/series/MTSDS133FMS"
@@ -1295,6 +1348,7 @@ series:
     frequency: monthly
     aggregation: sum
     provider: fred
+    origin_ru: "Министерство финансов США"
     dataset_id: "MTSR133FMS"
     series_id: "MTSR133FMS"
     source_url: "https://fred.stlouisfed.org/series/MTSR133FMS"
@@ -1318,6 +1372,7 @@ series:
     frequency: monthly
     aggregation: sum
     provider: fred
+    origin_ru: "Министерство финансов США"
     dataset_id: "MTSO133FMS"
     series_id: "MTSO133FMS"
     source_url: "https://fred.stlouisfed.org/series/MTSO133FMS"
@@ -1341,6 +1396,7 @@ series:
     frequency: annual
     aggregation: last
     provider: fred
+    origin_ru: "Административно-бюджетное управление США"
     dataset_id: "FYFSD"
     series_id: "FYFSD"
     source_url: "https://fred.stlouisfed.org/series/FYFSD"
@@ -1365,6 +1421,7 @@ series:
     frequency: monthly
     aggregation: sum
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "BOPGSTB"
     series_id: "BOPGSTB"
     source_url: "https://fred.stlouisfed.org/series/BOPGSTB"
@@ -1389,6 +1446,7 @@ series:
     frequency: monthly
     aggregation: sum
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "BOPTEXP"
     series_id: "BOPTEXP"
     source_url: "https://fred.stlouisfed.org/series/BOPTEXP"
@@ -1412,6 +1470,7 @@ series:
     frequency: monthly
     aggregation: sum
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "BOPTIMP"
     series_id: "BOPTIMP"
     source_url: "https://fred.stlouisfed.org/series/BOPTIMP"
@@ -1436,6 +1495,7 @@ series:
     frequency: quarterly
     aggregation: sum
     provider: fred
+    origin_ru: "Бюро экономического анализа США"
     dataset_id: "IEABC"
     series_id: "IEABC"
     source_url: "https://fred.stlouisfed.org/series/IEABC"
@@ -1460,6 +1520,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Совет управляющих Федеральной резервной системы США"
     dataset_id: "EXCHUS"
     series_id: "EXCHUS"
     source_url: "https://fred.stlouisfed.org/series/EXCHUS"
@@ -1483,6 +1544,7 @@ series:
     frequency: monthly
     aggregation: mean
     provider: fred
+    origin_ru: "Управление энергетической информации США (EIA)"
     dataset_id: "MCOILWTICO"
     series_id: "MCOILWTICO"
     source_url: "https://fred.stlouisfed.org/series/MCOILWTICO"

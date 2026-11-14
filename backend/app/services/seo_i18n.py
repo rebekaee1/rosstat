@@ -424,11 +424,13 @@ def translate_source(source: str | None, locale: Locale | None = None) -> str | 
     exact = GLOSSARY_EN.get(source)
     if exact:
         return exact
-    # Longest-first so «Минфин России» wins over bare «Минфин».
+    # Longest-first so «Минфин России» wins over bare «Минфин». Every known part is replaced, not only the first:
+    # «Бюро трудовой статистики США (через FRED)» → «U.S. Bureau of Labor Statistics (via FRED)» (14.11.2026).
+    out = source
     for ru, en in sorted(GLOSSARY_EN.items(), key=lambda kv: len(kv[0]), reverse=True):
-        if ru in source:
-            return source.replace(ru, en)
-    return source
+        if ru in out:
+            out = out.replace(ru, en)
+    return out
 
 
 def localize_territory_fact(payload: dict | None, locale: Locale | None = None) -> dict | None:
