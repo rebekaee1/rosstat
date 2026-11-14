@@ -19,15 +19,15 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2464,
-    "code_files": 1992,
-    "current_reviews": 2464,
+    "files": 2465,
+    "code_files": 1993,
+    "current_reviews": 2465,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2194
+      "reviewed": 2195
     },
     "definitions": 16016,
     "annotated_definitions": 16016,
@@ -12971,6 +12971,19 @@
       "missing_definitions": []
     },
     {
+      "path": "deploy/verify-bot-defense-live.sh",
+      "sha256": "23c20a060aeccca29b1c16eb750f42a597847c178c38b7705247d2746ff0155c",
+      "bytes": 6917,
+      "lines": 92,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "docker-compose.yml",
       "sha256": "4c07ae4a7f5c6a4a43f0e417327046949d6a41ec45dccc429c9d9f6edb598083",
       "bytes": 39253,
@@ -13635,8 +13648,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "2b1e12107acc0b8b7aa99790807197e1190d0a231a023098cea3e966bddd79d9",
-      "bytes": 765628,
+      "sha256": "aa36f9d7ee4b398232e4dba08f4ae96bd769bbb43006dead2c2fa8bcbd2adfcc",
+      "bytes": 765845,
       "lines": 3549,
       "code": false,
       "status": "reviewed",
@@ -15052,8 +15065,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "7f507eb614526f18d1f5c23b44f9e7441ba6eb4dc1ab45bd8af67586a41bfab9",
-      "bytes": 139387,
+      "sha256": "1b35a0224858a9f88f39e796f5f4ff86c244429a976c4c880baf8b50f6f072a0",
+      "bytes": 139566,
       "lines": 670,
       "code": false,
       "status": "reviewed",
@@ -32069,9 +32082,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "9f91d9ff5d61833d6b9a32930df020c03350db1b387616b64f7e249271930cbb",
+  "ledger_sha256": "07be2f632db62b23c29d8b13e0f85c4d5fde14980bafb4847151eb2207fa441b",
   "javascript_inventory_sha256": "ff07e771d69de4817e88614a86a53747aafd3122d75b0bbe7982760f87d81c5d",
-  "baseline_commit": "6ef8b44c4c0b2a72fc53720c9ce9941e45bc15d8",
+  "baseline_commit": "867ec755a7cfc48cbff7687999911dbc69632ccd",
   "branch": "fix/counter-google-farm-2026-11-14",
   "unstaged_at_capture": []
 }

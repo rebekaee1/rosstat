@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `6ef8b44c4c0b2a72fc53720c9ce9941e45bc15d8`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `867ec755a7cfc48cbff7687999911dbc69632ccd`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2464 |
-| Код, шаблоны и стили | 1992 |
-| Актуальные рецензии без пропусков guard | 2464 |
+| Файлы в явно определённом scope | 2465 |
+| Код, шаблоны и стили | 1993 |
+| Актуальные рецензии без пропусков guard | 2465 |
 | Именованные определения Python/JS: с аннотацией / всего | 16016 / 16016 |
 | Файлы, требующие внимания | 0 |
 
@@ -1033,6 +1033,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [deploy/tor-http-bridge/README.md](../deploy/tor-http-bridge/README.md) | reviewed | 0/0 | актуально |
 | [deploy/tor-http-bridge/tor-http-bridge.service](../deploy/tor-http-bridge/tor-http-bridge.service) | reviewed | 0/0 | актуально |
 | [deploy/tor-http-bridge/tor_http_bridge.py](../deploy/tor-http-bridge/tor_http_bridge.py) | reviewed | 10/10 | актуально |
+| [deploy/verify-bot-defense-live.sh](../deploy/verify-bot-defense-live.sh) | reviewed | 0/0 | актуально |
 | [docker-compose.yml](../docker-compose.yml) | reviewed | 0/0 | актуально |
 | [docs/adr/0001-derived-indicators-engine-shape.md](../docs/adr/0001-derived-indicators-engine-shape.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0002-derived-always-reflects-source.md](../docs/adr/0002-derived-always-reflects-source.md) | reviewed | 0/0 | актуально |

@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2253  ·  **Строк:** 1 421 321  ·  **Токенов (≈):** 13 561 694
+**Файлов:** 2254  ·  **Строк:** 1 421 413  ·  **Токенов (≈):** 13 563 188
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 920 | 320 811 | 3 512 143 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 20 | 1 369 | 21 925 |
-| `docs` | 144 | 886 411 | 7 625 587 |
+| `deploy` | 21 | 1 461 | 23 358 |
+| `docs` | 144 | 886 411 | 7 625 648 |
 | `frontend` | 1017 | 184 676 | 2 023 813 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 675 | 307 438 |
@@ -40,7 +40,7 @@
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
-| `docs/backlog.md` | 3 549 | 127 586 |
+| `docs/backlog.md` | 3 549 | 127 615 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/data-contracts.md` | 1 212 | 61 165 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
@@ -65,7 +65,7 @@
 | `backend/app/services/public_bot.py` | 2 063 | 27 394 |
 | `backend/app/services/analytics_marts.py` | 2 404 | 26 945 |
 | `backend/app/models.py` | 1 920 | 25 109 |
-| `docs/workflow.md` | 670 | 24 419 |
+| `docs/workflow.md` | 670 | 24 451 |
 | `docs/search.md` | 986 | 24 225 |
 | `backend/app/services/search.py` | 1 512 | 23 157 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
@@ -1005,6 +1005,7 @@
 | `backend/tests/test_upsert.py` | 166 | 1 439 |
 | `frontend/src/components/CurrencySelect.jsx` | 151 | 1 438 |
 | `backend/tests/test_ru_google_recovery.py` | 132 | 1 435 |
+| `deploy/verify-bot-defense-live.sh` | 92 | 1 433 |
 | `backend/tests/test_forecaster.py` | 174 | 1 431 |
 | `backend/app/data/world_concept_national.py` | 153 | 1 429 |
 | `scripts/build-rid-listing.py` | 172 | 1 428 |
