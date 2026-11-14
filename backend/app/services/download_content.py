@@ -495,7 +495,11 @@ async def collect(db: AsyncSession, period: Period) -> dict[str, Any]:
             if r.visitor_id_hash not in excluded and not (r.user_id and r.user_id in admin_users)]
 
     refs = [content_ref(r.event_name, r.params_json if isinstance(r.params_json, dict) else {}, r.url) for r in kept]
-    names = await load_names(db, refs)
+    # Серверный счёт отказов 403 (wall_counter): путь страницы → то же содержание, что у событий.
+    from app.services.wall_counter import read_walls
+    server_counts = await read_walls(period)
+    server_refs = {f: content_ref("download_limit", {}, f.split("|", 1)[1]) for f in (server_counts or {})}
+    names = await load_names(db, refs + list(server_refs.values()))
     wall_visitors = {r.visitor_id_hash for r in kept if r.event_name in WALL_EVENTS and r.visitor_id_hash}
     signups = await _signup_times(db, wall_visitors) if wall_visitors else {}
     portraits = await _session_portraits(db, {r.session_id_hash for r in kept if r.session_id_hash})
@@ -526,7 +530,21 @@ async def collect(db: AsyncSession, period: Period) -> dict[str, Any]:
             "device": device,
             "country": country,
         })
-    return {"period": period, "rows": rows, "summary": summarize(rows)}
+    summary = summarize(rows)
+    summary["server"] = server_summary(
+        server_counts, {f: content_title(ref, names) for f, ref in server_refs.items()},
+        browser=sum(1 for r in raw if r.event_name == "download_limit"))
+    return {"period": period, "rows": rows, "summary": summary}
+
+
+def server_summary(counts: dict[str, int] | None, titles: dict[str, str], *, browser: int) -> dict[str, Any]:
+    """Сервер против браузера по упорам в лимит скачиваний. `count=None` — Redis не ответил.
+    `browser` — все события `download_limit` за период, до исключения роботов (сервер их тоже не отличает)."""
+    items = []
+    for field, n in sorted((counts or {}).items(), key=lambda kv: -kv[1]):
+        fmt, _, path = field.partition("|")
+        items.append({"title": titles.get(field) or path, "path": path, "format": fmt, "count": n})
+    return {"count": None if counts is None else sum(counts.values()), "browser": browser, "items": items}
 
 
 def summarize(rows: list[dict[str, Any]], top: int = 10) -> dict[str, Any]:
@@ -621,12 +639,26 @@ def _times(n: int) -> str:
     return f"{_n(n)} раз"
 
 
+def _server_line(server: dict[str, Any] | None) -> str:
+    """«Лимит скачиваний: сервер видел упоров N / браузер сообщил M» (обе цифры с роботами)."""
+    if not server:
+        return ""
+    if server["count"] is None:
+        return f"Лимит скачиваний: сервер — нет ответа счётчика / браузер сообщил {_n(server['browser'])}"
+    if not server["count"] and not server["browser"]:
+        return ""
+    return (f"Лимит скачиваний: сервер видел упоров {_n(server['count'])} / "
+            f"браузер сообщил {_n(server['browser'])}")
+
+
 def format_report(summary: dict[str, Any], period_label: str, *, top: int = 10) -> str:
     """Отчёт «Что скачивают»: сначала смысл, подробности — в раскрывающемся блоке."""
     d, w = summary["downloads"], summary["walls"]
     lines = [f"📥 <b>Что скачивают — {escape(period_label)}</b>"]
     if not d["count"] and not w["count"]:
         lines.append("За этот срок никто ничего не скачивал и в лимит не упирался.")
+        if _server_line(summary.get("server")):
+            lines.append(_server_line(summary.get("server")))
         return "\n".join(lines)
 
     if d["count"]:
@@ -640,6 +672,9 @@ def format_report(summary: dict[str, Any], period_label: str, *, top: int = 10) 
             f"Упёрлись в лимит: {_people(w['people'])} ({_times(w['count'])}), "
             f"из них зарегистрировались {_n(w['signed_up'])} ({_pct(w['signed_up'], w['people'])}), "
             f"ушли без регистрации {_n(w['people'] - w['signed_up'])}")
+    server_line = _server_line(summary.get("server"))
+    if server_line:
+        lines.append(server_line)
 
     if d["top"]:
         lines.append("")
@@ -728,6 +763,7 @@ def build_xlsx(data: dict[str, Any]) -> bytes:
         *[[f"Раздел: {SECTION_LABELS.get(k, k)}", v] for k, v in d["by_section"].items()],
         *[[f"Откуда пришли скачавшие: {CHANNEL_LABELS.get(k, k)}", v] for k, v in d["by_channel"].items()],
         *[[f"Не дал лимит: {k}", v] for k, v in w["by_what"].items()],
+        *_server_rows(data["summary"].get("server") if "summary" in data else None),
         ["Примечание", "Роботы и собственные заходы исключены. Человек = посетитель сайта (браузер)."],
     ], [48, 60])
     sheet(wb.create_sheet("Что скачивали"), ["Что", "Раздел", "Человек", "Скачиваний", "Как скачивали"], [
@@ -753,7 +789,22 @@ def build_xlsx(data: dict[str, Any]) -> bytes:
          r["country"]]
         for r in data["rows"]
     ], [17, 15, 24, 60, 16, 50, 9, 12, 12, 16, 12, 14])
+    server = (data.get("summary") or {}).get("server")
+    if server is not None:
+        sheet(wb.create_sheet("Сервер — упоры"), ["Что", "Страница", "Формат", "Отказов"], [
+            [i["title"], i["path"], i["format"], i["count"]] for i in server["items"]
+        ] + [["Примечание", "Счёт сервера: каждый отказ 403 по лимиту скачиваний, включая роботов; "
+              "без IP и идентификаторов. Браузер не сообщает об упоре, если посетитель отказался от "
+              "аналитики или стоит блокировщик.", "", ""]], [70, 50, 10, 10])
     buf = io.BytesIO()
     wb.save(buf)
     return buf.getvalue()
+
+
+def _server_rows(server: dict[str, Any] | None) -> list[list[Any]]:
+    if not server:
+        return []
+    count = "нет ответа счётчика" if server["count"] is None else server["count"]
+    return [["Лимит скачиваний: сервер видел упоров", count],
+            ["Лимит скачиваний: браузер сообщил (с роботами)", server["browser"]]]
 

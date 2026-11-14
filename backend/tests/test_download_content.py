@@ -144,7 +144,14 @@ def _seed(now: datetime):
     ]
 
 
-def test_collect_counts_people_excludes_robots_and_links_signups():
+def test_collect_counts_people_excludes_robots_and_links_signups(monkeypatch):
+    # Серверный счётчик (wall_counter) не ходит в настоящий Redis из теста.
+    from app.services import wall_counter
+
+    async def walls(_period):
+        return {"xlsx|/russia/indicator/key-rate": 2}
+
+    monkeypatch.setattr(wall_counter, "read_walls", walls)
     now = datetime.utcnow().replace(microsecond=0)
 
     async def scenario(maker):
@@ -181,7 +188,10 @@ def test_collect_counts_people_excludes_robots_and_links_signups():
     book = dc.build_xlsx(data)
     from openpyxl import load_workbook
     wb = load_workbook(io.BytesIO(book))
-    assert wb.sheetnames == ["Сводка", "Что скачивали", "Где упёрлись", "Все события"]
+    assert wb.sheetnames == ["Сводка", "Что скачивали", "Где упёрлись", "Все события", "Сервер — упоры"]
+    assert s["server"]["count"] == 2 and s["server"]["browser"] == 2  # два download_limit от людей и робота нет
+    assert s["server"]["items"][0]["title"] == "Ключевая ставка ЦБ РФ"
+    assert "сервер видел упоров 2 / браузер сообщил 2" in text
     assert wb["Все события"].max_row == 1 + 6
 
 
