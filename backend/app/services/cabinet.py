@@ -281,9 +281,10 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
             .where(RegionIndicator.code.in_(keys), RegionIndicator.is_listed.is_(True))
         )).all()
         for code, name, unit, year_max in rows:
+            # Слежение за региональным показателем — по всем регионам (новый год у ряда); подпись говорит об этом.
             out[("region", code)] = SeriesInfo(
                 "region", code, name, localize_unit(unit) or None, "annual",
-                date(year_max, 1, 1) if year_max else None)
+                date(year_max, 1, 1) if year_max else None, country_name=_pick("Регионы России", "Russian regions"))
     return out
 
 

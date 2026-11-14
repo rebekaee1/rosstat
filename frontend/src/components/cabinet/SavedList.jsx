@@ -189,7 +189,10 @@ export default function SavedList({ mode = 'favorites' }) {
         <p className="c11b-hint">
           {comparisons
             ? t('c11b.saved.countShared', { n: visible.length, total: items.length, max: limit })
-            : t('c11b.saved.count', { n: items.length, max: limit })}
+            : visible.length !== items.length
+              // В «Избранном» не видно сравнений, но предел у них общий: «2 из 200» при одной строке путало.
+              ? t('c11b.saved.countFavShared', { n: visible.length, total: items.length, max: limit })
+              : t('c11b.saved.count', { n: items.length, max: limit })}
         </p>
       ) : null}
     </div>

@@ -714,3 +714,12 @@ def test_user_payload_says_if_site_mail_is_available(auth_client, monkeypatch):
     monkeypatch.setattr(settings, "mail_enabled", True)
     monkeypatch.setattr(settings, "mail_token_secret", "x" * 32)
     assert auth_client.get("/api/v1/auth/me").json()["user"]["mail_available"] is True
+
+
+def test_region_watch_says_it_covers_all_regions(auth_client, auth_env, on):
+    """Слежение за региональным показателем — по всем регионам: строка подписана «Регионы России» (14.11.2026)."""
+    seed(auth_client, auth_env, _seed_series)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    item = auth_client.post(f"{C}/watches", json={"subject_kind": "region", "subject_key": "reg-wage"}, headers=h).json()["item"]
+    assert item["country_name"] == "Регионы России" and item["country_slug"] is None

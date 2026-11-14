@@ -3437,6 +3437,7 @@ export default {
   'c11b.saved.empty': 'Indicators, countries and regions you mark with a star will appear here.',
   'c11b.saved.emptyCta': 'Open the catalogue',
   'c11b.saved.count': 'Saved: {n} of {max}',
+  'c11b.saved.countFavShared': 'Favourites: {n}. Saved together with comparisons: {total} of {max}.',
   'c11b.saved.countShared': 'Comparisons: {n}. Saved together with favourites: {total} of {max}.',
   'c11b.compare.empty': 'Save a comparison with the “Save” button above the chart and it will appear here.',
   'c11b.compare.emptyCta': 'Open comparison',
