@@ -9,6 +9,7 @@ import {
 import { cn, formatDate, formatValue } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
+import { quotedWords } from '../lib/quotedWords';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
 import { useWorldCountries, useWorldRatingConcepts } from '../lib/worldApi';
@@ -103,12 +104,6 @@ function RotatingHint({ lead, items }) {
  * ⌘K / Ctrl+K на любой раскладке. При русской раскладке `event.key` у этой клавиши «л», поэтому сочетание не срабатывало;
  * физическую клавишу (`code`) берём только когда `key` не латинская буква (Dvorak и подобные остаются на `key`).
  */
-/** Слова запроса, без которых нашлись ряды «Ближайшего»: «структура», «кормовых» (ru) / “structure” (en). */
-export function quotedWords(words, locale) {
-  const list = Array.isArray(words) ? words.filter(Boolean) : [];
-  return list.map((word) => (locale === 'en' ? `“${word}”` : `«${word}»`)).join(', ');
-}
-
 function isKKey(event) {
   const key = String(event.key || '');
   if (key === 'k' || key === 'K') return true;

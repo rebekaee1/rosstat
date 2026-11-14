@@ -1,6 +1,6 @@
 // «Ближайшее» без слова, которого нет в названиях рядов (14.11.2026): подпись простыми словами, ru и en.
 import { describe, expect, it } from 'vitest';
-import { quotedWords } from './IndicatorSearch';
+import { quotedWords } from './quotedWords';
 import ru from '../i18n/messages.ru';
 import en from '../i18n/messages.en';
 
