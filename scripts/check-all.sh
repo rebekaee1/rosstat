@@ -43,5 +43,14 @@ fi
 "$MAP_PY" scripts/export-page-meta.py --check
 echo "== public language audit =="
 "$MAP_PY" scripts/audit-public-language.py
+
+# --- nginx (14.11.2026): быстрые проверки, если доступен Docker -----------------
+# Полный поведенческий набор (~5 минут) идёт в CI job nginx и вручную: bash deploy/test-nginx-all.sh.
+echo "== nginx quick (deploy/test-nginx-all.sh --quick) =="
+if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+  bash "$ROOT/deploy/test-nginx-all.sh" --quick
+else
+  echo "nginx-тесты пропущены: нет Docker"
+fi
 echo "== map OK =="
 echo "== ALL CHECKS OK =="
