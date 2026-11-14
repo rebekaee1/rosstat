@@ -272,6 +272,10 @@ async def render_world_indicator_year_html(
     in_country = _in(country)  # «в Германии» / «во Франции» / «на Кипре»
     country_label = _country_label(country)
     place = country_label if en else in_country
+    # Уточнение среза в названии — по рядам страны с тем же именем (14.11.2026, world_series_title).
+    from app.services.world_series_title import load_title_axes
+
+    await load_title_axes(db, country.id)
     display = _display_name(indicator)
     unit = _unit_of(indicator)
     # Русская каноническая единица → локализованная для показа (EN: pp вместо п.п.).

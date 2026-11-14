@@ -90,6 +90,9 @@ describe('pageMeta single source', () => {
     expect(desc).not.toMatch(/[А-Яа-яЁё]/);
     expect(worldIndicatorsPhrase(1, 'en')).toBe('1 indicator');
     expect(worldIndicatorsPhrase(22, 'en')).toBe('22 indicators');
+    // Тысячи с разделителем, как сервер (seo_world._n_indicators_phrase), 14.11.2026.
+    expect(worldIndicatorsPhrase(8196, 'en')).toBe('8,196 indicators');
+    expect(worldIndicatorsPhrase(8196, 'ru')).toBe('8\u00A0196 показателей');
   });
 });
 

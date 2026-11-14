@@ -1938,6 +1938,19 @@ class PublicBotSubscription(Base):
     last_sent_at: Mapped[datetime | None] = mapped_column(DateTime)
 
 
+class PulseContextNote(Base):
+    """Заметка владельца для аналитика Пульса (14.11.2026): «что происходит», добавленное из служебного бота
+    командой /context или текстом «контекст …». Текст очищается от почт и телефонов до записи; удаление - пометкой.
+    Записи из кода - `app/data/pulse_context.yaml`, журнал выпусков - `app/data/release_log.json`."""
+    __tablename__ = "pulse_context_notes"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    text: Mapped[str] = mapped_column(String(600), nullable=False)
+    until: Mapped[date | None] = mapped_column(Date, nullable=True)
+    deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+
+
 class ResearchDownload(Base):
     """Скачивания PDF-отчётов раздела «Исследования» (09.11.2026): счётчик по отчёту и дню.
 

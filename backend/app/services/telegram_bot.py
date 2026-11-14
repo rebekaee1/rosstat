@@ -736,9 +736,22 @@ async def _handle_reports_only_message(chat_id: str, text: str) -> None:
                            kind="bot_report")
 
 
+def _is_context_command(text: str) -> bool:
+    """/context и «контекст …» — заметки владельца для аналитика Пульса (14.11.2026), не публичный режим."""
+    t = (text or "").strip().lower()
+    return t.startswith("/context") or t.startswith("контекст")
+
+
 async def _handle_message(msg: dict) -> None:
     chat_id = str(msg.get("chat", {}).get("id", ""))
     text = (msg.get("text") or "").strip().lower()
+    if chat_id in interactive_authorized_ids() and _is_context_command(text):
+        from app.services import pulse_context
+
+        reply = await pulse_context.handle_owner_command(msg.get("text") or "")
+        if reply:
+            await send_message(chat_id, reply, reply_markup=main_menu_keyboard(), kind="bot_reply")
+            return
     if _public_shared() and _is_public_message(chat_id, text):
         from app.services import public_bot
         await public_bot.handle_message(msg)
@@ -812,6 +825,8 @@ def _is_public_message(chat_id: str, text: str) -> bool:
         return True
     if text.startswith("/start "):
         return True
+    if _is_context_command(text):
+        return False
     first = text.split()[0] if text else ""
     return text not in _ADMIN_TEXTS + _EXPORT_COMMANDS and first not in _DOWNLOAD_COMMANDS
 

@@ -39137,7 +39137,7 @@
     "anonymous_functions": 3
   },
   "frontend/src/lib/pageMeta.js": {
-    "sha256": "d7d1d14e7c0b5f0350369e16bd4910df3de4dfe7407fdf0f76ac290b874e062e",
+    "sha256": "f8095490e7f9c9acaaeb06aab75c1cabc8af39839c21fce014a87cc3b8c2fda7",
     "definitions": [
       {
         "name": "resolvePageMetaLocale",
@@ -39170,21 +39170,27 @@
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "worldIndicatorsPhrase",
+        "name": "groupedCount",
         "line": 54,
-        "end_line": 69,
+        "end_line": 56,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "worldIndicatorsPhrase",
+        "line": 59,
+        "end_line": 74,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldCountryTitle",
-        "line": 79,
-        "end_line": 88,
+        "line": 84,
+        "end_line": 93,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldCountryDescription",
-        "line": 95,
-        "end_line": 125,
+        "line": 100,
+        "end_line": 130,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -39227,31 +39233,31 @@
         "names": [
           "worldIndicatorsPhrase"
         ],
-        "line": 54
+        "line": 59
       },
       {
         "names": [
           "worldCountryTitle"
         ],
-        "line": 79
+        "line": 84
       },
       {
         "names": [
           "worldCountryDescription"
         ],
-        "line": 95
+        "line": 100
       },
       {
         "names": [
           "default"
         ],
-        "line": 127
+        "line": 132
       }
     ],
     "anonymous_functions": 1
   },
   "frontend/src/lib/pageMeta.test.js": {
-    "sha256": "956a0a1f11bf13c560473f09e7c0cc65f4d4e534dda0b0fb1052f31559b88e3a",
+    "sha256": "18aff248841e69e1f9d89d01e709bd925b0cd190e1444125ccd47f41eec97231",
     "definitions": [],
     "imports": [
       {

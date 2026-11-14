@@ -1,7 +1,7 @@
 """Журнал писем mail_outbox (14.11.2026, ADR-0032).
 
 Revision ID: 20261114_mail_outbox
-Revises: 20261113_world_slice_idx
+Revises: 20261114_pulse_context
 
 Только добавляющая миграция: новая таблица, существующие не меняются. Адрес получателя —
 ПДн: строка удаляется вместе с аккаунтом (FK ON DELETE CASCADE + явное удаление в
@@ -11,7 +11,7 @@ from alembic import op
 import sqlalchemy as sa
 
 revision = "20261114_mail_outbox"
-down_revision = "20261113_world_slice_idx"
+down_revision = "20261114_pulse_context"
 branch_labels = None
 depends_on = None
 
