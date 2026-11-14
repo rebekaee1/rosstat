@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1394**
-- Registry references: **2632**
+- Registry declarations: **1395**
+- Registry references: **2633**
 - Migration operations: **482**
-- Candidate effects: **2901**
+- Candidate effects: **2903**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -2615,6 +2615,7 @@ Relationships: `[]`
 | app.services.http_client._MAINTENANCE_HOSTS | Tuple | sequence/source expression | [backend/app/services/http_client.py:63](../backend/app/services/http_client.py#L63) |
 | app.services.http_client._MAINTENANCE_MARKERS | Tuple | sequence/source expression | [backend/app/services/http_client.py:64](../backend/app/services/http_client.py#L64) |
 | app.services.http_error_monitor._RULES | Dict | KIND_ERROR, KIND_SHED | [backend/app/services/http_error_monitor.py:80](../backend/app/services/http_error_monitor.py#L80) |
+| app.services.hypotheses_triage.ACTIONS | Tuple | sequence/source expression | [backend/app/services/hypotheses_triage.py:24](../backend/app/services/hypotheses_triage.py#L24) |
 | app.services.identity.consents.NEWSLETTER_KINDS | Tuple | sequence/source expression | [backend/app/services/identity/consents.py:5](../backend/app/services/identity/consents.py#L5) |
 | app.services.imf_weo_adapter.WEO_CIRCLE12_CODES | Call | computed source expression | [backend/app/services/imf_weo_adapter.py:92](../backend/app/services/imf_weo_adapter.py#L92) |
 | app.services.imf_weo_adapter.WEO_SERIES | Dict | WEO_NGDPD, WEO_NGDPDPC, WEO_GGXCNL_NGDP, WEO_GGXWDG_NGDP, WEO_LP, WEO_LUR, WEO_PCPIPCH, WEO_NGDP_RPCH, WEO_BCA_NGDPD | [backend/app/services/imf_weo_adapter.py:98](../backend/app/services/imf_weo_adapter.py#L98) |

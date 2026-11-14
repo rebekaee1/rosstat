@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `65b85f77028568311d31a6fe82d05cff2547b218`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `f933b0cf5c1be0bb031a323f677feb6eb3a351fe`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2502 |
-| Код, шаблоны и стили | 2026 |
-| Актуальные рецензии без пропусков guard | 2502 |
-| Именованные определения Python/JS: с аннотацией / всего | 16432 / 16432 |
+| Файлы в явно определённом scope | 2505 |
+| Код, шаблоны и стили | 2029 |
+| Актуальные рецензии без пропусков guard | 2505 |
+| Именованные определения Python/JS: с аннотацией / всего | 16446 / 16446 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -352,6 +352,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/host_pressure.py](../backend/app/services/host_pressure.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 27/27 | актуально |
 | [backend/app/services/http_error_monitor.py](../backend/app/services/http_error_monitor.py) | reviewed | 11/11 | актуально |
+| [backend/app/services/hypotheses_triage.py](../backend/app/services/hypotheses_triage.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/i18n_display.py](../backend/app/services/i18n_display.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/identity/__init__.py](../backend/app/services/identity/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/services/identity/consents.py](../backend/app/services/identity/consents.py) | reviewed | 1/1 | актуально |
@@ -556,6 +557,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/requirements-dev.txt](../backend/requirements-dev.txt) | reviewed | 0/0 | актуально |
 | [backend/requirements.txt](../backend/requirements.txt) | reviewed | 0/0 | актуально |
 | [backend/scripts/apply-eurostat-listing-decisions.py](../backend/scripts/apply-eurostat-listing-decisions.py) | reviewed | 6/6 | актуально |
+| [backend/scripts/apply-hypotheses-triage.py](../backend/scripts/apply-hypotheses-triage.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/audit-freshness.py](../backend/scripts/audit-freshness.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/audit-groups-submodes.py](../backend/scripts/audit-groups-submodes.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/audit-world-eurostat-underslice.py](../backend/scripts/audit-world-eurostat-underslice.py) | reviewed | 11/11 | актуально |
@@ -775,6 +777,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_housing_historical_backfill.py](../backend/tests/test_housing_historical_backfill.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_http_client.py](../backend/tests/test_http_client.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_http_error_monitor.py](../backend/tests/test_http_error_monitor.py) | reviewed | 24/24 | актуально |
+| [backend/tests/test_hypotheses_triage.py](../backend/tests/test_hypotheses_triage.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_i18n_parity.py](../backend/tests/test_i18n_parity.py) | reviewed | 100/100 | актуально |
 | [backend/tests/test_imf_weo_adapter.py](../backend/tests/test_imf_weo_adapter.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_index_policy.py](../backend/tests/test_index_policy.py) | reviewed | 11/11 | актуально |

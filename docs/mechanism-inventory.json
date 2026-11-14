@@ -1070,8 +1070,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "sha256": "75190e72674abe73ee1072511d2f4f9e8b1cc7fd81fc26de3ad3cbdf6314ae3c",
-      "lines": 312
+      "sha256": "ad151ee51e30d4a692c43b30ec6ba5700f03f733045644cbf7a6a057e79548b2",
+      "lines": 317
     },
     {
       "path": "backend/app/services/demand_router.py",
@@ -1292,6 +1292,11 @@
       "path": "backend/app/services/http_error_monitor.py",
       "sha256": "2f78118c2974655d566a29314b3389005dcbe63cc1c9b853a14d9ee50c448862",
       "lines": 186
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "sha256": "7359e96b6266091a7762cca6dd84086ab773f678b03837a05b0e529d8a38fc98",
+      "lines": 96
     },
     {
       "path": "backend/app/services/i18n_display.py",
@@ -2267,6 +2272,11 @@
       "path": "backend/scripts/apply-eurostat-listing-decisions.py",
       "sha256": "1fb4aa65e6a7c9efdf9c3ee7d81b05efc2c6931cbbeac8cf005e358d6cb101fa",
       "lines": 314
+    },
+    {
+      "path": "backend/scripts/apply-hypotheses-triage.py",
+      "sha256": "e8c28d1d44133d4ff660506e2e2a92f41f973df31c52037ba6d07ce986159304",
+      "lines": 53
     },
     {
       "path": "backend/scripts/audit-freshness.py",
@@ -100106,6 +100116,23 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "line": 24,
+      "end_line": 24,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "ACTIONS",
+      "symbol": "app.services.hypotheses_triage.ACTIONS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('close_true', 'close_false', 'merge', 'keep')",
+      "expression_truncated": false,
+      "expression_chars": 46,
+      "ast_sha256": "dc7200af44c356bc2f881bde28e93d519c75d971b1329b0872e370cdde36c9fe",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/identity/consents.py",
       "line": 5,
       "end_line": 5,
@@ -146195,8 +146222,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 316,
+      "end_line": 316,
       "owner": "format_inventory_html",
       "conditions": [
         "b['from']"
@@ -146248,10 +146275,10 @@
       "operation": "execute",
       "receiver": "db",
       "symbol": "app.services.dataset_inventory.db.execute",
-      "expression": "db.execute(select(Hypothesis.verdict, func.count()).group_by(Hypothesis.verdict))",
+      "expression": "db.execute(select(Hypothesis.verdict, Hypothesis.source, func.count()).group_by(Hypothesis.verdict, Hypothesis.source))",
       "expression_truncated": false,
-      "expression_chars": 81,
-      "ast_sha256": "1943014f34fbdc732d067564793574bdb474c589508a5e365e0614068225e53b"
+      "expression_chars": 119,
+      "ast_sha256": "edbe0441816dd4134dfc97e1d525f3a94cac03ac087499447146f690691376eb"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -148615,6 +148642,22 @@
       "expression_truncated": false,
       "expression_chars": 14,
       "ast_sha256": "8905a89ab83d46c71f6c0701a1c7bb2a2a1828f4913b89f10242639c614f813d"
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "line": 95,
+      "end_line": 95,
+      "owner": "apply_triage",
+      "conditions": [
+        "apply and changes"
+      ],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.services.hypotheses_triage.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
     },
     {
       "path": "backend/app/services/identity/resolve.py",
@@ -165264,6 +165307,20 @@
       "expression_truncated": false,
       "expression_chars": 88,
       "ast_sha256": "11190ff0204e00f844db403cb466c62718bef2744a36215cf3510def0bf74f42"
+    },
+    {
+      "path": "backend/scripts/apply-hypotheses-triage.py",
+      "line": 21,
+      "end_line": 21,
+      "owner": "<module>",
+      "conditions": [],
+      "operation": "insert",
+      "receiver": "sys.path",
+      "symbol": "sys.path.insert",
+      "expression": "sys.path.insert(0, '/app')",
+      "expression_truncated": false,
+      "expression_chars": 26,
+      "ast_sha256": "6b05a398a5d90bb719ec141069ceb23ea1f752f7524f6ffc8876fa4f08a7cbcb"
     },
     {
       "path": "backend/scripts/audit-freshness.py",
@@ -219570,8 +219627,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 248,
+      "end_line": 248,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -219579,8 +219636,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 252,
+      "end_line": 252,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -219588,8 +219645,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 256,
+      "end_line": 256,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaGoal",
@@ -219687,8 +219744,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 247,
+      "end_line": 247,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -219696,8 +219753,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 264,
+      "end_line": 264,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyPage",
@@ -219705,8 +219762,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 269,
+      "end_line": 269,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.User",
@@ -219714,8 +219771,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 266,
-      "end_line": 266,
+      "line": 270,
+      "end_line": 270,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -219723,8 +219780,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 267,
-      "end_line": 267,
+      "line": 271,
+      "end_line": 271,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -219732,8 +219789,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 264,
+      "end_line": 264,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyTraffic",
@@ -219741,8 +219798,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 264,
+      "end_line": 264,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -219756,6 +219813,15 @@
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict",
       "expression": "Hypothesis.verdict"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 231,
+      "end_line": 231,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.Hypothesis.source",
+      "expression": "Hypothesis.source"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -219831,8 +219897,17 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 231,
+      "end_line": 231,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.Hypothesis",
+      "expression": "Hypothesis"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 251,
+      "end_line": 251,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.IdentityLink.id",
@@ -219840,8 +219915,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 255,
+      "end_line": 255,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaGoal.goal_id",
@@ -219957,12 +220032,12 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 231,
+      "end_line": 231,
       "owner": "build_inventory",
       "conditions": [],
-      "symbol": "app.models.IdentityLink",
-      "expression": "IdentityLink"
+      "symbol": "app.models.Hypothesis.source",
+      "expression": "Hypothesis.source"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -219970,13 +220045,22 @@
       "end_line": 251,
       "owner": "build_inventory",
       "conditions": [],
+      "symbol": "app.models.IdentityLink",
+      "expression": "IdentityLink"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 255,
+      "end_line": 255,
+      "owner": "build_inventory",
+      "conditions": [],
       "symbol": "app.models.MetrikaGoal",
       "expression": "MetrikaGoal"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 262,
+      "end_line": 262,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyPage.id",
@@ -220038,8 +220122,17 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 231,
+      "end_line": 231,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.Hypothesis",
+      "expression": "Hypothesis"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 260,
+      "end_line": 260,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyTraffic.id",
@@ -220047,8 +220140,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 261,
+      "end_line": 261,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyGoal.id",
@@ -220056,8 +220149,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 262,
+      "end_line": 262,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyPage",
@@ -220092,8 +220185,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 260,
+      "end_line": 260,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyTraffic",
@@ -220101,8 +220194,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 261,
+      "end_line": 261,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -225301,6 +225394,26 @@
       "conditions": [],
       "symbol": "app.models.GscSearchQuery",
       "expression": "GscSearchQuery"
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "apply_triage",
+      "conditions": [],
+      "symbol": "app.models.Hypothesis",
+      "expression": "Hypothesis"
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "line": 73,
+      "end_line": 73,
+      "owner": "apply_triage",
+      "conditions": [
+        "d.action == 'merge'"
+      ],
+      "symbol": "app.models.Hypothesis",
+      "expression": "Hypothesis"
     },
     {
       "path": "backend/app/services/identity/consents.py",
@@ -298974,7 +299087,7 @@
     {
       "path": "backend/app/services/dataset_inventory.py",
       "line": 138,
-      "end_line": 282,
+      "end_line": 286,
       "owner": "<module>",
       "conditions": [],
       "name": "build_inventory",
@@ -298982,8 +299095,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 285,
-      "end_line": 287,
+      "line": 289,
+      "end_line": 291,
       "owner": "<module>",
       "conditions": [],
       "name": "_n",
@@ -298991,8 +299104,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 290,
-      "end_line": 312,
+      "line": 294,
+      "end_line": 317,
       "owner": "<module>",
       "conditions": [],
       "name": "format_inventory_html",
@@ -303002,6 +303115,33 @@
       "conditions": [],
       "name": "schedule",
       "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "line": 28,
+      "end_line": 33,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "Decision",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "line": 36,
+      "end_line": 50,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "read_decisions",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "line": 53,
+      "end_line": 96,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "apply_triage",
+      "kind": "AsyncFunctionDef"
     },
     {
       "path": "backend/app/services/i18n_display.py",
@@ -327008,6 +327148,15 @@
       "kind": "AsyncFunctionDef"
     },
     {
+      "path": "backend/scripts/apply-hypotheses-triage.py",
+      "line": 26,
+      "end_line": 49,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "main",
+      "kind": "AsyncFunctionDef"
+    },
+    {
       "path": "backend/scripts/audit-freshness.py",
       "line": 26,
       "end_line": 48,
@@ -347431,6 +347580,14 @@
       "owner": "note",
       "conditions": [],
       "symbol": "app.services.http_error_monitor._RULES"
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "line": 41,
+      "end_line": 41,
+      "owner": "read_decisions",
+      "conditions": [],
+      "symbol": "app.services.hypotheses_triage.ACTIONS"
     },
     {
       "path": "backend/app/services/identity/consents.py",

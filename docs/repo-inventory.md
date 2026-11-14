@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2291  ·  **Строк:** 1 437 707  ·  **Токенов (≈):** 13 739 466
+**Файлов:** 2294  ·  **Строк:** 1 438 150  ·  **Токенов (≈):** 13 743 997
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 824 | 65 476 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 947 | 328 289 | 3 602 987 |
+| `backend` | 950 | 328 572 | 3 606 168 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 461 | 23 358 |
-| `docs` | 145 | 894 538 | 7 702 445 |
+| `docs` | 145 | 894 698 | 7 703 795 |
 | `frontend` | 1022 | 184 976 | 2 027 962 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 139 | 25 054 | 311 586 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 372 893 | 3 051 341 |
+| `docs/mechanism-inventory.json` | 373 050 | 3 052 482 |
 | `docs/client-mechanism-inventory.json` | 256 130 | 1 808 792 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -36,11 +36,11 @@
 | `docs/design/local-acceptance/baseline-paced/http.json` | 23 844 | 219 383 |
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
-| `docs/mechanism-inventory.md` | 3 455 | 157 998 |
+| `docs/mechanism-inventory.md` | 3 456 | 158 043 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
-| `docs/backlog.md` | 3 639 | 129 802 |
+| `docs/backlog.md` | 3 641 | 129 966 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/data-contracts.md` | 1 271 | 66 604 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
@@ -457,6 +457,7 @@
 | `frontend/src/components/regions/RegionPrices.jsx` | 277 | 3 562 |
 | `scripts/regional/parse_pril_2025.py` | 359 | 3 558 |
 | `backend/app/services/world_adapters/bls_api.py` | 402 | 3 552 |
+| `backend/app/services/dataset_inventory.py` | 317 | 3 542 |
 | `frontend/src/pages/ForecastsPage.jsx` | 341 | 3 542 |
 | `backend/tests/test_pulse_context.py` | 298 | 3 505 |
 | `frontend/src/components/W6eIndicator.component.test.jsx` | 320 | 3 504 |
@@ -467,7 +468,6 @@
 | `docs/research/search-history-2026-09-30.md` | 231 | 3 464 |
 | `frontend/src/styles/w6-g.css` | 474 | 3 453 |
 | `frontend/src/styles/s6-shell.test.js` | 232 | 3 450 |
-| `backend/app/services/dataset_inventory.py` | 312 | 3 445 |
 | `backend/app/services/world_compare.py` | 385 | 3 439 |
 | `frontend/src/lib/track.js` | 346 | 3 434 |
 | `frontend/src/components/country/CountryIndicatorRow.jsx` | 339 | 3 429 |
@@ -1019,6 +1019,7 @@
 | `backend/tests/test_world_concept_national.py` | 150 | 1 440 |
 | `backend/tests/test_upsert.py` | 166 | 1 439 |
 | `frontend/src/components/CurrencySelect.jsx` | 151 | 1 438 |
+| `backend/tests/test_hypotheses_triage.py` | 129 | 1 437 |
 | `backend/tests/test_ru_google_recovery.py` | 132 | 1 435 |
 | `deploy/verify-bot-defense-live.sh` | 92 | 1 433 |
 | `backend/tests/test_forecaster.py` | 174 | 1 431 |
@@ -1268,6 +1269,7 @@
 | `frontend/src/lib/calcFormat.test.js` | 104 | 1 071 |
 | `backend/app/services/identity/resolve.py` | 119 | 1 069 |
 | `frontend/src/components/OAuthButtons.component.test.jsx` | 88 | 1 069 |
+| `backend/app/services/hypotheses_triage.py` | 96 | 1 068 |
 | `frontend/src/lib/viewModeEngine.js` | 119 | 1 068 |
 | `frontend/src/lib/countryIndicatorGroups.js` | 97 | 1 066 |
 | `backend/app/services/pii_scrub.py` | 107 | 1 065 |
@@ -1724,6 +1726,7 @@
 | `backend/app/data/global_market_indicators.py` | 67 | 582 |
 | `backend/app/data/world_simple_names.py` | 53 | 580 |
 | `backend/tests/test_ssr_analytics_entry.py` | 59 | 580 |
+| `backend/scripts/apply-hypotheses-triage.py` | 53 | 579 |
 | `backend/scripts/retrain-all-monthly-auto.py` | 71 | 579 |
 | `frontend/src/lib/ppiViewModeGroups.js` | 73 | 578 |
 | `backend/app/services/analytics_repair.py` | 46 | 576 |

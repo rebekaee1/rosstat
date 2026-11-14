@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2502,
-    "code_files": 2026,
-    "current_reviews": 2502,
+    "files": 2505,
+    "code_files": 2029,
+    "current_reviews": 2505,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2232
+      "reviewed": 2235
     },
-    "definitions": 16432,
-    "annotated_definitions": 16432,
+    "definitions": 16446,
+    "annotated_definitions": 16446,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -3534,9 +3534,9 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "sha256": "75190e72674abe73ee1072511d2f4f9e8b1cc7fd81fc26de3ad3cbdf6314ae3c",
-      "bytes": 16045,
-      "lines": 312,
+      "sha256": "ad151ee51e30d4a692c43b30ec6ba5700f03f733045644cbf7a6a057e79548b2",
+      "bytes": 16496,
+      "lines": 317,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4115,6 +4115,19 @@
       "issues": [],
       "definitions": 11,
       "annotated_definitions": 11,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/hypotheses_triage.py",
+      "sha256": "7359e96b6266091a7762cca6dd84086ab773f678b03837a05b0e529d8a38fc98",
+      "bytes": 5057,
+      "lines": 96,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 3,
+      "annotated_definitions": 3,
       "missing_definitions": []
     },
     {
@@ -6767,6 +6780,19 @@
       "issues": [],
       "definitions": 6,
       "annotated_definitions": 6,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/scripts/apply-hypotheses-triage.py",
+      "sha256": "e8c28d1d44133d4ff660506e2e2a92f41f973df31c52037ba6d07ce986159304",
+      "bytes": 2727,
+      "lines": 53,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 1,
+      "annotated_definitions": 1,
       "missing_definitions": []
     },
     {
@@ -9614,6 +9640,19 @@
       "issues": [],
       "definitions": 24,
       "annotated_definitions": 24,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_hypotheses_triage.py",
+      "sha256": "768ea811843099e07a598a80a00f2674cbf2784a782c362d7a2c85d48e9565f2",
+      "bytes": 6178,
+      "lines": 129,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 10,
+      "annotated_definitions": 10,
       "missing_definitions": []
     },
     {
@@ -14012,9 +14051,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "7b421b55e52c9ecd076991bc3dc239b3f9035b8573997094fd94c039815e19d9",
-      "bytes": 779134,
-      "lines": 3639,
+      "sha256": "1caa7adc63fdd24c71608ce175da92d7cb13170427eca7a516f89965693a2f76",
+      "bytes": 780142,
+      "lines": 3641,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14610,7 +14649,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "face018ed025d2730aa91f37e5e8083945b39e76620583faa103648a0962b89b",
+      "sha256": "f148c95fc0d0d22a01a8e42aa5d712427e816ab676c0a924bb75454b3b9e132b",
       "bytes": 3872167,
       "lines": 137073,
       "code": false,
@@ -14662,9 +14701,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "8b13597f35cfdac8f27db0cc606c93a62b69831c1db6b9b2fef78d86dac1b383",
-      "bytes": 12426638,
-      "lines": 372893,
+      "sha256": "44c652a71a2714b57fc88a2115999f72a781cdea9aa8e7b2f97b886b91f4fd31",
+      "bytes": 12431205,
+      "lines": 373050,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14675,9 +14714,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "6002656cc34cee7bcd56b3887d1767ad9bf6c700b652b140122b7145877a698f",
-      "bytes": 637849,
-      "lines": 3455,
+      "sha256": "fa4bb1b8b5b9b1ad3bb41b1f962368384895311139f611a620b03ea2ac68d8fa",
+      "bytes": 638028,
+      "lines": 3456,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -32563,9 +32602,14 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "cea0ad49057c2743be69bb33fa19a1fdbf574bca67a5f463d59b5b01be5a8dc2",
+  "ledger_sha256": "aeba5385507442c84efdc7d3b5c88e726fca0b76acf356ad85f787d5eeb1ae12",
   "javascript_inventory_sha256": "e6d36e5cf4fe983b42f453b607a62c9154502ef66bda37bf4168c488d2c3f73b",
-  "baseline_commit": "65b85f77028568311d31a6fe82d05cff2547b218",
+  "baseline_commit": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
   "branch": "fix/counter-google-farm-2026-11-14",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/backlog.md",
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
+  ]
 }
