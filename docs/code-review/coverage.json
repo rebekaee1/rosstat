@@ -32903,16 +32903,7 @@
   "input_scope": "tracked",
   "ledger_sha256": "1fd36242ea2b378f3fc096d3177c5235e5c41ab23f1aa3a0245947fbb933f91c",
   "javascript_inventory_sha256": "9958ca78a00f853feee78e9b115d5ed10eb8a70e6a9061621a07b4cecd8819f5",
-  "baseline_commit": "624cc8d27d49bec2f87af20b7557f17298077ebe",
+  "baseline_commit": "a5c1fadc0a48092c3cc6e64ca6b751184414ac18",
   "branch": "int/2026-11-14",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.md",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
