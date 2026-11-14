@@ -27,11 +27,11 @@ const renderLogin = () => render(
 );
 
 describe('Login wave 6: forgot password, remember note, Google', () => {
-  it('has a "Forgot password?" link that opens a letter and a 30-day remember note', () => {
+  it('has a "Forgot password?" link to the recovery page and a 30-day remember note', () => {
     renderLogin();
     const forgot = screen.getByTestId('login-forgot');
     expect(forgot.textContent).toBe('auth.login.forgot');
-    expect(forgot.getAttribute('href')).toMatch(/^mailto:/);
+    expect(forgot.getAttribute('href')).toBe('/account/forgot-password');
     expect(screen.getByTestId('login-remember').textContent).toBe('w6a.login.remember');
   });
 

@@ -1608,6 +1608,42 @@ class Consent(Base):
     user: Mapped["User"] = relationship(back_populates="consents")
 
 
+class MailMessage(Base):
+    """Журнал писем (ADR-0032): каждое служебное письмо и письмо рассылки.
+
+    Адрес получателя — ПДн: строка удаляется вместе с аккаунтом (CASCADE и явное
+    удаление в DELETE /account). Тело письма не хранится — только тема и итог.
+    Уникальность (campaign, user_id) делает повторный запуск рассылки безопасным:
+    тот же выпуск одному человеку второй раз не уходит.
+    """
+    __tablename__ = "mail_outbox"
+    __table_args__ = (
+        UniqueConstraint("campaign", "user_id", name="uq_mail_outbox_campaign_user"),
+        Index("ix_mail_outbox_user", "user_id"),
+        Index("ix_mail_outbox_status_created", "status", "created_at"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    # verify_email / password_reset / newsletter / test
+    kind: Mapped[str] = mapped_column(String(30), nullable=False)
+    # Ключ выпуска рассылки («2026-11-digest»); у служебных писем NULL (уникальность не мешает).
+    campaign: Mapped[str | None] = mapped_column(String(80))
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
+    to_email: Mapped[str] = mapped_column(String(320), nullable=False)
+    locale: Mapped[str] = mapped_column(String(5), nullable=False, default="ru")
+    subject: Mapped[str] = mapped_column(String(300), nullable=False)
+    # queued / sent / failed / blocked (не в списке допуска) / disabled (почта выключена)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="queued")
+    attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # Короткий код ошибки SMTP/сети, без адресов и секретов.
+    error: Mapped[str | None] = mapped_column(String(200))
+    message_id: Mapped[str | None] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    sent_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
 class AuthAudit(Base):
     __tablename__ = "auth_audit"
     __table_args__ = (

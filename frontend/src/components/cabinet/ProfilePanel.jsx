@@ -5,6 +5,7 @@ import { useAuth } from '../../context/authContext';
 import { track, events } from '../../lib/track';
 import {
   logoutUser, logoutAll, deleteAccount, submitFeedback, updateNewsletter, updateProfile, fetchAccountExport,
+  resendVerifyEmail,
 } from '../../lib/api';
 import { apiErrorMessage } from '../../lib/apiErrorMessage';
 import { useT } from '../../i18n';
@@ -27,6 +28,7 @@ export default function ProfilePanel() {
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
   const [nlBusy, setNlBusy] = useState(false);
+  const [verifyState, setVerifyState] = useState(null); // ADR-0032: null | busy | sent | текст ошибки
   const [editName, setEditName] = useState(false);
   const [nameVal, setNameVal] = useState('');
   const [nameBusy, setNameBusy] = useState(false);
@@ -118,6 +120,17 @@ export default function ProfilePanel() {
     }
   };
 
+  // ADR-0032: адрес входа по паролю не подтверждён — повторить письмо со ссылкой.
+  const resendVerify = async () => {
+    setVerifyState('busy');
+    try {
+      await resendVerifyEmail();
+      setVerifyState('sent');
+    } catch (e) {
+      setVerifyState(apiErrorMessage(e, t));
+    }
+  };
+
   const toggleNewsletter = async () => {
     const subscribe = !user.newsletter;
     setNlBusy(true); setErr(null);
@@ -205,6 +218,20 @@ export default function ProfilePanel() {
           {fieldRow(t('common.email'), user.email)}
           {user.phone && fieldRow(t('account.phone'), user.phone)}
         </dl>
+        {user.has_password && user.email && user.email_verified === false && (
+          <div data-testid="account-verify-email" className="mt-3 rounded-xl bg-champagne/10 px-3.5 py-3 text-sm text-text-secondary fe-shadow-2">
+            <p role="status">{verifyState === 'sent' ? t('mail.verify.resent') : t('mail.verify.banner')}</p>
+            {verifyState !== 'sent' && (
+              <Button variant="ghost" size="sm" className="mt-1 -ml-2 px-2" loading={verifyState === 'busy'}
+                onClick={resendVerify} data-testid="account-verify-resend">
+                {t('mail.verify.resend')}
+              </Button>
+            )}
+            {verifyState && !['busy', 'sent'].includes(verifyState) && (
+              <p role="alert" className="mt-1 text-xs text-negative">{verifyState}</p>
+            )}
+          </div>
+        )}
       </section>
 
       <section
