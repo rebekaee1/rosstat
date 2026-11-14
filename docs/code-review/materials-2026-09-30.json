@@ -15273,8 +15273,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "20ee69185f8815e93bd333a950d36fc3a9c1835a174e914c3049458dc6b2514e",
-        "bytes": 944995
+        "sha256": "294c80253a553945d72a6cc096a0d69415af7232f00b1feb956b3ddbe852e3c9",
+        "bytes": 945376
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -17701,8 +17701,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "50f9e8ec5177eb2c926d9b8cda5543a03bd45c5157d3a29d1c6afd956203aae3",
-        "bytes": 7829159
+        "sha256": "971faf64e4d8321e502c0556c3e0b25e057682da817b08d6ce338d40579d9c0a",
+        "bytes": 7832094
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -22404,8 +22404,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "9c1aca110a05b7faeeacee9f249c56a07429adeae3a778f30c9445d804f4190c",
-        "bytes": 23542284
+        "sha256": "6ae8e350632d53c017f9c59b81ce751fbf86533f97b5caabf9df309565d2c6ad",
+        "bytes": 23511396
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -29651,8 +29651,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "c8125959a33818259ce543a015c9b7ec663750403d426d67978ff709662f4da1",
-        "bytes": 81405
+        "sha256": "7de3666e146d84ab70ef574f73d9fd3376915a625914fbe81ef1750a02e00bd3",
+        "bytes": 84487
       },
       "review_status": "прежнее чтение документа плюс дельта f4c93f20..рабочее дерево: добавленный текст написан и перечитан в этой сессии (git diff по файлу); остальной текст не менялся",
       "body_reviewed_in_this_pass": false,
@@ -30221,8 +30221,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "4682d07d4cef707b29115723bf3ba43aa54ccce7aa6fbb43710ed75147f6575b",
-        "bytes": 3863866
+        "sha256": "0ce538c1669db787cec8356a83934738c7f63b3df3ae2b602fde75516c79cfda",
+        "bytes": 3863999
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -40343,8 +40343,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "0db392934f1d83eeeb6eef07b7363d19ef7bb75c8faf93dda4fcb5f51d636ae8",
-        "bytes": 12338983
+        "sha256": "4188cee5b9b2244d96c4265cd426ee7d8606e1d2a5882b84da9f26c19a5a8ad1",
+        "bytes": 12349838
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -41420,8 +41420,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "0fced52605a4be31b546e1ac9bf7e11e1bcad621e4cd961a2a52807df1ba867c",
-        "bytes": 632605
+        "sha256": "1a31cc2bdecf5faae37c843d2ecae051f063b635a2ed3deaa95886e893a5df92",
+        "bytes": 633499
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -47674,11 +47674,11 @@
       "role": "dev/release procedures",
       "classification": "current_document",
       "source_version": {
-        "main": "3facbff4d6520ba819eebb4c449a5d91e4c632e2",
+        "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "fc3e47520b69a451b2851f4d4633c81f7416a72c6f04c490d936fd96090bf2fa",
-        "bytes": 142011
+        "date": "2026-11-14",
+        "sha256": "5b97be510c37976b626743236b81509bf4db5e8debdab1c51805abd74297a834",
+        "bytes": 143768
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
