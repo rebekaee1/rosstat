@@ -233,3 +233,66 @@ def test_owner_chat_context_is_handled_and_stranger_is_not(monkeypatch):
     monkeypatch.setattr(public_bot, "handle_message", public)
     asyncio.run(tb._handle_message({"chat": {"id": 999}, "text": "/context чужой"}))
     assert sent == [] and routed == ["/context чужой"]
+
+
+# --- расчистка гипотез: закрытия по контексту вне лимита 5 ---------------------------------------------------------
+
+
+def _upd(i, *, verdict=None, rationale="наблюдение", statement=None):
+    return {"id": i, "statement": statement or f"гипотеза {i}", "verdict": verdict, "confidence": 0.8,
+            "rationale": rationale}
+
+
+def test_context_closures_have_their_own_cap():
+    from app.services import pulse_report as pr
+
+    ids = {"pulse-etl-count", "rosstat-partial-outage"}
+    regular = [_upd(None) for _ in range(7)]                       # новые - лимит 5
+    closures = [_upd(100 + i, verdict=False, rationale="объяснено [pulse-etl-count]") for i in range(20)]
+    noted = [_upd(200, verdict=True, rationale="владелец написал [заметка 4]")]
+    fake = [_upd(300, verdict=False, rationale="см. [unknown-entry]"),   # ссылка не на запись - обычное изменение
+            _upd(None, verdict=False, rationale="[pulse-etl-count]")]    # без id - не закрытие существующей
+    chosen = pr.select_hypothesis_updates(regular + closures + noted + fake, ids)
+    closed = [u for u in chosen if pr.is_context_closure(u, ids)]
+    assert len(closed) == pr.MAX_CONTEXT_CLOSURES == 15
+    assert len(chosen) - len(closed) == pr.MAX_HYPOTHESIS_CHANGES == 5
+    assert not pr.is_context_closure(_upd(1, verdict=None, rationale="[pulse-etl-count]"), ids)  # без вердикта
+    assert pr.is_context_closure(noted[0], ids)
+    assert "до 15 за день" in pr._SYSTEM_PROMPT
+
+
+def test_apply_closes_more_than_five_by_context(auth_env, monkeypatch):
+    from contextlib import asynccontextmanager
+    from datetime import datetime
+
+    from sqlalchemy import select
+
+    from app.models import Hypothesis
+    from app.services import pulse_report as pr
+
+    @asynccontextmanager
+    async def session():
+        async with auth_env["session_maker"]() as db:
+            yield db
+
+    monkeypatch.setattr(pr, "analytics_session", session)
+
+    async def run():
+        async with auth_env["session_maker"]() as db:
+            db.add_all([Hypothesis(statement=f"старая гипотеза про раздел {i}", confidence=0.4,
+                                   created_at=datetime(2026, 10, 1), updated_at=datetime(2026, 10, 1))
+                        for i in range(12)])
+            await db.commit()
+            ids = [h.id for h in (await db.execute(select(Hypothesis))).scalars()]
+        updates = [_upd(h, verdict=False, statement=f"старая гипотеза про раздел закрыта {h}",
+                        rationale="это смена счёта [pulse-etl-count]") for h in ids]
+        updates += [_upd(None, statement=f"новая гипотеза номер {i} о совсем другом предмете {i * 7}")
+                    for i in range(7)]
+        applied = await pr._apply_hypothesis_updates(updates)
+        async with auth_env["session_maker"]() as db:
+            rows = (await db.execute(select(Hypothesis))).scalars().all()
+        return applied, rows
+
+    applied, rows = asyncio.run(run())
+    assert applied == 12 + 5
+    assert sum(1 for r in rows if r.verdict is False) == 12
