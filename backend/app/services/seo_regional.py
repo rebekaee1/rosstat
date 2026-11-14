@@ -114,6 +114,14 @@ def _fmt(value: float) -> str:
         digits = 1
     else:
         digits = 3
+    from app.services.locale import get_locale
+
+    if get_locale() == "en":
+        # \u0410\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0430\u044f \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u2014 \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0430\u044f \u0437\u0430\u043f\u0438\u0441\u044c \u0447\u0438\u0441\u043b\u0430: 101.4, 1,234 (14.11.2026; \u0440\u0430\u043d\u044c\u0448\u0435 \u00ab101,4 roubles\u00bb).
+        text = f"{v:,.{digits}f}"
+        if "." in text:
+            text = text.rstrip("0").rstrip(".")
+        return text
     text = f"{v:,.{digits}f}".replace(",", "\u202f").replace(".", ",")
     if "," in text:
         text = text.rstrip("0").rstrip(",")
@@ -1278,26 +1286,105 @@ async def render_regions_map_html(
     return 200, html
 
 
-_MONTH_NAMES_GEN = (
-    "января", "февраля", "марта", "апреля", "мая", "июня",
-    "июля", "августа", "сентября", "октября", "ноября", "декабря",
-)
-
-
 _MONTH_NAMES_NOM = (
     "январь", "февраль", "март", "апрель", "май", "июнь",
     "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь",
 )
+_MONTH_NAMES_GEN = (
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря",
+)
+_MONTH_NAMES_PREP = (
+    "январе", "феврале", "марте", "апреле", "мае", "июне",
+    "июле", "августе", "сентябре", "октябре", "ноябре", "декабре",
+)
+_MONTH_NAMES_DAT = (
+    "январю", "февралю", "марту", "апрелю", "маю", "июню",
+    "июлю", "августу", "сентябрю", "октябрю", "ноябрю", "декабрю",
+)
+_MONTH_NAMES_EN = (
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+)
+_MONTH_CASES = {"nom": _MONTH_NAMES_NOM, "gen": _MONTH_NAMES_GEN, "prep": _MONTH_NAMES_PREP, "dat": _MONTH_NAMES_DAT}
+
+
+def _month_label(month_int: int, case: str = "nom") -> str:
+    """YYYYMM → «сентябрь 2026» в нужном падеже («в сентябре», «с сентября», «к сентябрю»); на английском — «September 2026».
+
+    До 14.11.2026 здесь был один родительный падеж для всех мест, и карточки цен писали «в сентября 2026» (находка
+    редактора рассылки).
+    """
+    from app.services.locale import get_locale
+
+    names = _MONTH_NAMES_EN if get_locale() == "en" else _MONTH_CASES[case]
+    return f"{names[month_int % 100 - 1]} {month_int // 100}"
 
 
 def _month_label_nom(month_int: int) -> str:
     """YYYYMM → «сентябрь 2026» (именительный: для заголовка в скобках)."""
-    return f"{_MONTH_NAMES_NOM[month_int % 100 - 1]} {month_int // 100}"
+    return _month_label(month_int, "nom")
 
 
-def _month_label(month_int: int) -> str:
-    """YYYYMM → «май 2012» (для осей, таблиц, alt)."""
-    return f"{_MONTH_NAMES_GEN[month_int % 100 - 1]} {month_int // 100}"
+# Тексты месячной карточки цен региона. Русский — здесь; английский — `region_monthly.*` в REGIONAL_TEMPLATES_EN.
+# Месяц подставляется уже в нужном падеже: {month_prep} — «в сентябре», {month_gen} — «с сентября», {month_dat} —
+# «к сентябрю», {month} — именительный (таблицы, списки, скобки).
+_MONTHLY_RU = {
+    "p1": "{indicator} в регионе {region} в {month_prep}: {value}{unit}.",
+    "p1_mom": " К предыдущему месяцу показатель {change}.",
+    "p1_yoy": " К {month_dat} — {change}.",
+    "p2": (
+        "Наблюдение ведётся с {month_gen} — данные публикуются ежемесячно. Это средние потребительские цены "
+        "отчётного месяца по региону, а не цена конкретного магазина или заправки."
+    ),
+    "p3": (
+        "Среднероссийская цена в {month_prep} — {value}{unit}: регион {rel} среднего по стране. Региональные цены "
+        "различаются из-за логистики, структуры сети продаж и местных налогов и сборов."
+    ),
+    "rel_level": "на уровне",
+    "rel_above": "выше",
+    "rel_below": "ниже",
+    "extremes": "Максимум за весь период наблюдений — {max}{unit} ({max_month}), минимум — {min}{unit} ({min_month}).",
+    "checkpoints_h2": "{indicator} в регионе {region} по контрольным месяцам",
+    "faq_value_q": "Какая цена на «{short}» в регионе {region}?",
+    "faq_value_a": "В {month_prep} — {value}{unit}. Это средняя потребительская цена по данным Росстата (ЕМИСС).",
+    "faq_change_q": "Как изменилась цена за последний месяц?",
+    "faq_change_a": "С {month_gen} по {month} показатель {change}.",
+    "faq_change_flat": "К предыдущему месяцу значение почти не изменилось.",
+    "faq_source_q": "Откуда взяты данные и как часто они обновляются?",
+    "faq_source_a": (
+        "Источник — система показателей Росстата (ЕМИСС), средние потребительские цены по субъектам РФ. "
+        "Данные месячные, обновляются после очередной публикации Росстата."
+    ),
+    "faq_h2": "Вопросы и ответы",
+    "neighbors_h2": "Этот показатель у соседей по округу",
+    "table_h2": "{indicator} по месяцам",
+    "th_month": "Месяц",
+    "th_value": "Значение",
+    "alt": "{indicator} — {region}: график динамики, {first} — {last}, последнее значение {value} {unit}",
+    "caption": "{indicator} в регионе {region}, {first_year}–{last_year}. Источник: Росстат (ЕМИСС).",
+    "siblings_h2": "Ещё в разделе «{section}»",
+    "title": "{indicator} — {region}: {value} {unit} ({month})",
+    "description": (
+        "{indicator} в регионе {region}: {value} {unit} в {month_prep}. Динамика с {first_year} года, график и "
+        "таблица по месяцам, сравнение со среднероссийской ценой. Данные Росстата, обновление ежемесячное."
+    ),
+    "dataset_description": "{indicator} ({unit}), {region}, {first_year}–{last_year}, помесячно. Источник: Росстат (ЕМИСС).",
+    "creator": "Росстат",
+    "image_name": "{indicator} — {region}: график",
+    "source_h2": "Источник данных",
+    "source_p": (
+        "Система показателей Росстата (ЕМИСС), средние потребительские цены. Значения приведены в единицах: {unit}. "
+        "Период наблюдений: {first} — {last}, обновление ежемесячное."
+    ),
+    "unit_fallback": "единицы источника",
+    "keywords": "{indicator} {region}, средние цены {region}, {indicator} по месяцам, статистика цен Росстата",
+}
+
+
+def _mt(key: str, **kwargs) -> str:
+    tpl = regional_template(f"region_monthly.{key}") or _MONTHLY_RU[key]
+    return tpl.format(**kwargs) if kwargs else tpl
 
 
 async def _render_region_indicator_monthly(
@@ -1308,14 +1395,15 @@ async def _render_region_indicator_monthly(
     rows: list,
     db: AsyncSession,
 ) -> tuple[int, str]:
-    """SSR-карточка месячного показателя региона (цены на топливо, ЕМИСС).
+    """SSR-карточка месячного показателя региона (средние потребительские цены, ЕМИСС).
 
     Годовой рендер строит тексты вокруг «года»: контрольные годы, рейтинг по
     последнему году, «за пять лет». Для месячного ряда своя аналогичная
     обвязка: последний месяц, изменение к предыдущему месяцу и к тому же
     месяцу прошлого года, полная таблица по месяцам. Рейтинг по цене региона
     не строится — уровень цены зависит от структуры рынка и логистики,
-    «место в рейтинге цен» вводило бы в заблуждение.
+    «место в рейтинге цен» вводило бы в заблуждение. Тексты — на языке хоста (14.11.2026: раньше en-страница
+    была наполовину русской).
     """
     series = [(int(m), float(v)) for m, v in rows]
     first_period, first_value = series[0]
@@ -1323,7 +1411,7 @@ async def _render_region_indicator_monthly(
     first_year = first_period // 100
     last_year = last_period // 100
     by_period = dict(series)
-    prev_value = series[-2][1] if len(series) > 1 else None
+    prev_period, prev_value = series[-2] if len(series) > 1 else (None, None)
     year_ago_value = by_period.get(last_period - 100)
 
     region_name = _rname(region.slug, region.name)
@@ -1344,54 +1432,39 @@ async def _render_region_indicator_monthly(
 
     unit = unit_loc
     unit_sfx = f" {escape(unit)}" if unit else ""
+    unit_sp = f" {unit}" if unit else ""
     last_label = _month_label(last_period)
     first_label = _month_label(first_period)
 
     paragraphs = []
-    p1 = (
-        f"{escape(ind_name)} в регионе {escape(region_name)} "
-        f"в {escape(last_label)}: {_fmt(last_value)}{unit_sfx}."
-    )
+    p1 = _mt("p1", indicator=escape(ind_name), region=escape(region_name),
+             month_prep=escape(_month_label(last_period, "prep")), value=_fmt(last_value), unit=unit_sfx)
     mom = _pct(last_value, prev_value)
     if mom:
-        p1 += f" К предыдущему месяцу показатель {mom}."
+        p1 += _mt("p1_mom", change=mom)
     yoy = _pct(last_value, year_ago_value)
     if yoy:
-        yoy_label = _month_label(last_period - 100)
-        p1 += f" К {escape(yoy_label)} — {yoy}."
+        p1 += _mt("p1_yoy", month_dat=escape(_month_label(last_period - 100, "dat")), change=yoy)
     paragraphs.append(p1)
-
-    p2 = (
-        f"Наблюдение ведётся с {escape(first_label)} — данные публикуются ежемесячно. "
-        f"Это средние потребительские цены отчётного месяца, а не котировка конкретной заправки."
-    )
-    paragraphs.append(p2)
+    paragraphs.append(_mt("p2", month_gen=escape(_month_label(first_period, "gen"))))
 
     if rf_last is not None:
         if abs(last_value - float(rf_last)) / (abs(float(rf_last)) or 1) < 0.005:
-            rel = "на уровне"
+            rel = _mt("rel_level")
         elif last_value > float(rf_last):
-            rel = "выше"
+            rel = _mt("rel_above")
         else:
-            rel = "ниже"
-        p3 = (
-            f"Среднероссийская цена в {escape(last_label)} — "
-            f"{_fmt(float(rf_last))}{unit_sfx}: регион {rel} среднего по стране. "
-            f"Региональные цены различаются из-за логистики, структуры сети "
-            f"продаж и локальных акцизов и сборов."
-        )
-        paragraphs.append(p3)
+            rel = _mt("rel_below")
+        paragraphs.append(_mt("p3", month_prep=escape(_month_label(last_period, "prep")),
+                              value=_fmt(float(rf_last)), unit=unit_sfx, rel=rel))
 
     values_desc = [v for _p, v in series]
     vmax = max(values_desc)
     vmin = min(values_desc)
     p_at = series[values_desc.index(vmax)][0]
     n_at = series[values_desc.index(vmin)][0]
-    paragraphs.append(
-        f"Максимум за весь период наблюдений — {_fmt(vmax)}{unit_sfx} "
-        f"({escape(_month_label(p_at))}), минимум — {_fmt(vmin)}{unit_sfx} "
-        f"({escape(_month_label(n_at))})."
-    )
+    paragraphs.append(_mt("extremes", max=_fmt(vmax), min=_fmt(vmin), unit=unit_sfx,
+                          max_month=escape(_month_label(p_at)), min_month=escape(_month_label(n_at))))
     paragraphs_html = "".join(f"<p>{p}</p>" for p in paragraphs)
 
     # контрольные точки: январь каждого пятого года + последний месяц
@@ -1407,35 +1480,27 @@ async def _render_region_indicator_monthly(
         cp_items += (
             f"<li>{escape(last_label)} — {_fmt(last_value)}{unit_sfx}</li>"
         )
-        cp_h2 = f"{escape(ind_name)} в регионе {escape(region_name)} по контрольным месяцам"
+        cp_h2 = _mt("checkpoints_h2", indicator=escape(ind_name), region=escape(region_name))
         checkpoints_html = (
             f'<section class="seo-section"><h2>{cp_h2}</h2>'
             f"<ul>{cp_items}</ul></section>"
         )
 
+    # «За последний месяц» — от предыдущей точки ряда, а не от того же месяца год назад (до 14.11.2026 подпись
+    # называла годовой интервал при месячном изменении).
     faq: list[tuple[str, str]] = [
         (
-            f"Какая цена на «{ind_name.split(',')[0].lower()}» в регионе {region_name}?",
-            f"В {last_label} — {_fmt(last_value)}{unit}. "
-            f"Это средняя потребительская цена по данным Росстата (ЕМИСС).",
+            _mt("faq_value_q", short=ind_name.split(',')[0].lower(), region=region_name),
+            _mt("faq_value_a", month_prep=_month_label(last_period, "prep"), value=_fmt(last_value), unit=unit_sp),
         ),
         (
-            "Как изменилась цена за последний месяц?",
-            (
-                f"С {escape(_month_label(last_period - 100))} по {escape(last_label)} "
-                f"показатель {mom}."
-                if mom else
-                f"К предыдущему месяцу значение почти не изменилось."
-            ),
+            _mt("faq_change_q"),
+            _mt("faq_change_a", month_gen=_month_label(prev_period, "gen"), month=last_label, change=mom)
+            if mom else _mt("faq_change_flat"),
         ),
-        (
-            "Откуда взяты данные и как часто они обновляются?",
-            "Источник — система показателей Росстата (ЕМИСС), средние "
-            "потребительские цены на топливо по субъектам РФ. Данные месячные, "
-            "обновляются ежемесячно после очередной публикации.",
-        ),
+        (_mt("faq_source_q"), _mt("faq_source_a")),
     ]
-    faq_h2 = "Вопросы и ответы"
+    faq_h2 = _mt("faq_h2")
     faq_html = (
         f'<section class="seo-section"><h2>{escape(faq_h2)}</h2>'
         + "".join(f"<h3>{escape(q)}</h3><p>{escape(a)}</p>" for q, a in faq)
@@ -1487,16 +1552,16 @@ async def _render_region_indicator_monthly(
                 f"{_fmt(v)}{unit_sfx}</a></li>"
                 for s, n, v in neighbor_periods
             )
-            n_h2 = "Этот показатель у соседей по округу"
+            n_h2 = _mt("neighbors_h2")
             district_html = (
                 f'<section class="seo-section"><h2>{escape(n_h2)}</h2>'
                 f"<ul>{items}</ul></section>"
             )
 
     # таблица по месяцам (полная — 283 строки, помещается в скролл)
-    table_h2 = f"{ind_name} по месяцам"
-    th_month = "Месяц"
-    th_value = unit or "Значение"
+    table_h2 = _mt("table_h2", indicator=ind_name)
+    th_month = _mt("th_month")
+    th_value = unit or _mt("th_value")
     table_rows = "".join(
         f"<tr><td>{escape(_month_label(p))}</td><td>{_fmt(v)}</td></tr>"
         for p, v in reversed(series)
@@ -1509,15 +1574,9 @@ async def _render_region_indicator_monthly(
     )
 
     og_path = paths.og_region(slug, code)
-    alt = (
-        f"{ind_name} — {region_name}: график динамики, "
-        f"{first_label} — {last_label}, последнее значение "
-        f"{_fmt(last_value)} {unit}"
-    )
-    caption = (
-        f"{ind_name} в регионе {region_name}, {first_year}–{last_year}. "
-        f"Источник: Росстат (ЕМИСС)."
-    )
+    alt = _mt("alt", indicator=ind_name, region=region_name, first=first_label, last=last_label,
+              value=_fmt(last_value), unit=unit).strip()
+    caption = _mt("caption", indicator=ind_name, region=region_name, first_year=first_year, last_year=last_year)
     figure_html = (
         f'<figure class="seo-chart"><a class="seo-chart-link" '
         f'href="{escape(paths.region_indicator(slug, code))}#chart">'
@@ -1541,22 +1600,16 @@ async def _render_region_indicator_monthly(
             f'{escape(_icopy(sib)["name"] or sib.name)}</a></li>'
             for sib in siblings
         )
-        sib_h2 = f"Ещё в разделе «{section_name}»"
+        sib_h2 = _mt("siblings_h2", section=section_name)
         siblings_html = (
             f'<section class="seo-section"><h2>{escape(sib_h2)}</h2>'
             f"<ul>{items}</ul></section>"
         )
 
-    title = (
-        f"{ind_name} — {region_name}: {_fmt(last_value)} "
-        f"{unit} ({_month_label_nom(last_period)})"
-    ).strip()
-    desc = (
-        f"{ind_name} в регионе {region_name}: {_fmt(last_value)} {unit} "
-        f"в {last_label}. Динамика с {first_year} года, график и таблица "
-        f"по месяцам, сравнение со среднероссийской ценой. "
-        f"Данные Росстата, обновление ежемесячное."
-    )
+    title = _mt("title", indicator=ind_name, region=region_name, value=_fmt(last_value), unit=unit,
+                month=_month_label_nom(last_period)).replace("  ", " ").strip()
+    desc = _mt("description", indicator=ind_name, region=region_name, value=_fmt(last_value), unit=unit,
+               month_prep=_month_label(last_period, "prep"), first_year=first_year).replace("  ", " ")
 
     json_ld = [
         _breadcrumbs(crumbs.region_indicator_trail(
@@ -1568,14 +1621,12 @@ async def _render_region_indicator_monthly(
             "@context": "https://schema.org",
             "@type": "Dataset",
             "name": f"{ind_name} — {region_name}",
-            "description": (
-                f"{ind_name} ({unit}), {region_name}, "
-                f"{first_year}–{last_year}, помесячно. Источник: Росстат (ЕМИСС)."
-            ),
+            "description": _mt("dataset_description", indicator=ind_name, unit=unit, region=region_name,
+                               first_year=first_year, last_year=last_year),
             "url": _absolute(paths.region_indicator(slug, code)),
             "temporalCoverage": f"{first_year}/{last_year}",
             "spatialCoverage": region_name,
-            "creator": {"@type": "Organization", "name": "Росстат"},
+            "creator": {"@type": "Organization", "name": _mt("creator")},
             "image": _absolute(og_path),
         },
         {
@@ -1585,19 +1636,15 @@ async def _render_region_indicator_monthly(
             "url": _absolute(og_path),
             "width": 1200,
             "height": 630,
-            "name": f"{ind_name} — {region_name}: график",
+            "name": _mt("image_name", indicator=ind_name, region=region_name),
             "caption": alt,
             "representativeOfPage": True,
         },
     ]
 
     h1 = f"{ind_name} — {region_name}"
-    source_h2 = "Источник данных"
-    source_p = (
-        f"Система показателей Росстата (ЕМИСС), средние потребительские цены. "
-        f"Значения приведены в единицах: {unit or 'единицы источника'}. "
-        f"Период наблюдений: {first_label} — {last_label}, обновление ежемесячное."
-    )
+    source_h2 = _mt("source_h2")
+    source_p = _mt("source_p", unit=unit or _mt("unit_fallback"), first=first_label, last=last_label)
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.region_indicator_trail(
     region_name, paths.region(slug), ind_name,
@@ -1622,10 +1669,7 @@ async def _render_region_indicator_monthly(
         canonical_path=paths.region_indicator(slug, code),
         body=body,
         json_ld=json_ld,
-        keywords=(
-            f"{ind_name} {region_name}, {region_name} цены на топливо, "
-            f"{ind_name} по месяцам, {region_name} бензин цена, статистика"
-        ),
+        keywords=_mt("keywords", indicator=ind_name, region=region_name),
         og_image=_absolute(og_path),
     )
     return 200, html

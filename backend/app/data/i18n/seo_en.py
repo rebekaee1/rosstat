@@ -1248,6 +1248,62 @@ REGIONAL_TEMPLATES_EN: dict[str, str] = {
         '{region} statistics, {region} economy, {region} population, '
         '{region} wages, {region} GRP'
     ),
+    # Monthly regional price card (seo_regional._render_region_indicator_monthly, 14.11.2026).
+    'region_monthly.p1': '{indicator} in {region} in {month_prep}: {value}{unit}.',
+    'region_monthly.p1_mom': ' Compared with the previous month the indicator {change}.',
+    'region_monthly.p1_yoy': ' Compared with {month_dat} it {change}.',
+    'region_monthly.p2': (
+        'Observations start in {month_gen}; the data are published monthly. These are average consumer prices '
+        'for the reporting month across the region, not the price at a particular shop or filling station.'
+    ),
+    'region_monthly.p3': (
+        'The Russia-wide average price in {month_prep} was {value}{unit}: the region is {rel} the national average. '
+        'Regional prices differ because of logistics, retail structure and local taxes and fees.'
+    ),
+    'region_monthly.rel_level': 'in line with',
+    'region_monthly.rel_above': 'above',
+    'region_monthly.rel_below': 'below',
+    'region_monthly.extremes': (
+        'The highest value over the whole period is {max}{unit} ({max_month}), the lowest is {min}{unit} ({min_month}).'
+    ),
+    'region_monthly.checkpoints_h2': '{indicator} in {region} at checkpoint months',
+    'region_monthly.faq_value_q': 'What is the price of “{short}” in {region}?',
+    'region_monthly.faq_value_a': (
+        'In {month_prep} it was {value}{unit}. This is the average consumer price according to Rosstat (EMISS).'
+    ),
+    'region_monthly.faq_change_q': 'How did the price change over the last month?',
+    'region_monthly.faq_change_a': 'From {month_gen} to {month} the indicator {change}.',
+    'region_monthly.faq_change_flat': 'The value was virtually unchanged from the previous month.',
+    'region_monthly.faq_source_q': 'Where do the data come from and how often are they updated?',
+    'region_monthly.faq_source_a': (
+        'The source is the Rosstat statistical indicator system (EMISS), average consumer prices by federal subject. '
+        'The data are monthly and are updated after each Rosstat release.'
+    ),
+    'region_monthly.faq_h2': 'Questions and answers',
+    'region_monthly.neighbors_h2': 'This indicator in neighbouring regions of the district',
+    'region_monthly.table_h2': '{indicator} by month',
+    'region_monthly.th_month': 'Month',
+    'region_monthly.th_value': 'Value',
+    'region_monthly.alt': '{indicator} — {region}: chart, {first} — {last}, latest value {value} {unit}',
+    'region_monthly.caption': '{indicator} in {region}, {first_year}–{last_year}. Source: Rosstat (EMISS).',
+    'region_monthly.siblings_h2': 'More in “{section}”',
+    'region_monthly.title': '{indicator} — {region}: {value} {unit} ({month})',
+    'region_monthly.description': (
+        '{indicator} in {region}: {value} {unit} in {month_prep}. Monthly data since {first_year}, chart and table, '
+        'comparison with the Russia-wide average price. Rosstat data, updated monthly.'
+    ),
+    'region_monthly.dataset_description': (
+        '{indicator} ({unit}), {region}, {first_year}–{last_year}, monthly. Source: Rosstat (EMISS).'
+    ),
+    'region_monthly.creator': 'Rosstat',
+    'region_monthly.image_name': '{indicator} — {region}: chart',
+    'region_monthly.source_h2': 'Data source',
+    'region_monthly.source_p': (
+        'Rosstat statistical indicator system (EMISS), average consumer prices. Values are given in: {unit}. '
+        'Observation period: {first} — {last}, updated monthly.'
+    ),
+    'region_monthly.unit_fallback': 'source units',
+    'region_monthly.keywords': '{indicator} {region}, average prices {region}, {indicator} by month, Rosstat price statistics',
     'region_indicator.title': '{indicator} — {region}: {value} ({year})',
     'region_indicator.description': '{indicator} in {region}: {value} {unit} in {year}. Dynamics since the 1990s, comparison with Russia, and place among federal subjects.',
     'region_indicator.h1': '{indicator} in {region}',
