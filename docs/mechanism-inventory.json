@@ -890,8 +890,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "sha256": "ab7813a5552e85831635d5a0a791a35f8cab01d2529097474760d02e25f055ab",
-      "lines": 262
+      "sha256": "191941afa5f32773acc502de89d18346e3f8db4c8331fbbc5d2621b04a538d09",
+      "lines": 266
     },
     {
       "path": "backend/app/services/br_pop_adapter.py",
@@ -90653,10 +90653,10 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "('anon', 'human', 'referred', 'crawler', 'goodbot', 'robot', 'fake', 'preview', 'internal')",
+      "expression": "('anon', 'gfarm', 'human', 'referred', 'crawler', 'goodbot', 'robot', 'fake', 'preview', 'internal')",
       "expression_truncated": false,
-      "expression_chars": 91,
-      "ast_sha256": "918e06c2019654f4831f463e8c23ad3da5947fc8216fa0a96dfe5d6b03532240",
+      "expression_chars": 100,
+      "ast_sha256": "e60c749e1283f15c71cc18f0ac0cc4aa6a694b7499e352a5bfa034b3d788318c",
       "runtime_expansion": false
     },
     {
@@ -142973,8 +142973,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 257,
+      "end_line": 257,
       "owner": "summary_lines",
       "conditions": [],
       "operation": "get_state_redis",
@@ -291174,7 +291174,7 @@
     {
       "path": "backend/app/services/bot_traffic.py",
       "line": 213,
-      "end_line": 245,
+      "end_line": 249,
       "owner": "<module>",
       "conditions": [],
       "name": "format_lines",
@@ -291182,8 +291182,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 248,
-      "end_line": 262,
+      "line": 252,
+      "end_line": 266,
       "owner": "<module>",
       "conditions": [],
       "name": "summary_lines",

@@ -52866,7 +52866,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/pages/AdminBI.jsx": {
-    "sha256": "a506889dcb3c8b14b3e3560504da54863f60dd70c48ce2e01f4c39dcdc1a068b",
+    "sha256": "229c717f206d4ed1d0e164beaa07a0765900f662ce9a5ff76bcc1d7a0b1f7ffe",
     "definitions": [
       {
         "name": "eventLabel",
@@ -53033,176 +53033,170 @@
       {
         "name": "AcquisitionTab",
         "line": 763,
-        "end_line": 897,
+        "end_line": 905,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "FunnelTab",
-        "line": 899,
-        "end_line": 997,
+        "line": 907,
+        "end_line": 1005,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CohortTable",
-        "line": 1000,
-        "end_line": 1038,
+        "line": 1008,
+        "end_line": 1046,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RetentionTab",
-        "line": 1040,
-        "end_line": 1107,
+        "line": 1048,
+        "end_line": 1115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PagesTab",
-        "line": 1109,
-        "end_line": 1236,
+        "line": 1117,
+        "end_line": 1244,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DemandTab",
-        "line": 1238,
-        "end_line": 1345,
+        "line": 1246,
+        "end_line": 1353,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NavigationTab",
-        "line": 1347,
-        "end_line": 1401,
+        "line": 1355,
+        "end_line": 1409,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PairedBars",
-        "line": 1406,
-        "end_line": 1422,
+        "line": 1414,
+        "end_line": 1430,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AudienceTab",
-        "line": 1424,
-        "end_line": 1516,
+        "line": 1432,
+        "end_line": 1524,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EventsTab",
-        "line": 1518,
-        "end_line": 1557,
+        "line": 1526,
+        "end_line": 1565,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EventsRegistryCard",
-        "line": 1559,
-        "end_line": 1594,
+        "line": 1567,
+        "end_line": 1602,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HypothesesTab",
-        "line": 1596,
-        "end_line": 1637,
+        "line": 1604,
+        "end_line": 1645,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DatasetTab",
-        "line": 1665,
-        "end_line": 1729,
+        "line": 1673,
+        "end_line": 1737,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fmtDriverValue",
-        "line": 1738,
-        "end_line": 1741,
+        "line": 1746,
+        "end_line": 1749,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DriverNode",
-        "line": 1752,
-        "end_line": 1823,
+        "line": 1760,
+        "end_line": 1831,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MetricTreeTab",
-        "line": 1826,
-        "end_line": 1935,
+        "line": 1834,
+        "end_line": 1943,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MetricTreeTab.formatter",
-        "line": 1842,
-        "end_line": 1842,
+        "line": 1850,
+        "end_line": 1850,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "FunnelSteps",
-        "line": 1938,
-        "end_line": 1963,
+        "line": 1946,
+        "end_line": 1971,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "GoalReconciliationCard",
-        "line": 1967,
-        "end_line": 2026,
+        "line": 1975,
+        "end_line": 2034,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ConversionTab",
-        "line": 2029,
-        "end_line": 2074,
+        "line": 2037,
+        "end_line": 2082,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BehaviorTab",
-        "line": 2077,
-        "end_line": 2193,
+        "line": 2085,
+        "end_line": 2201,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2112,
-        "end_line": 2112,
+        "line": 2120,
+        "end_line": 2120,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2124,
-        "end_line": 2124,
+        "line": 2132,
+        "end_line": 2132,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2138,
-        "end_line": 2138,
+        "line": 2146,
+        "end_line": 2146,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PeopleCard",
-        "line": 2197,
-        "end_line": 2248,
+        "line": 2205,
+        "end_line": 2256,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AudienceFullTab",
-        "line": 2251,
-        "end_line": 2273,
+        "line": 2259,
+        "end_line": 2281,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ProductLoopTab",
-        "line": 2280,
-        "end_line": 2397,
+        "line": 2288,
+        "end_line": 2405,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SlicesTab",
-        "line": 2400,
-        "end_line": 2518,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "SlicesTab.queryFn",
         "line": 2408,
-        "end_line": 2408,
-        "kind": "ArrowFunctionExpression"
+        "end_line": 2526,
+        "kind": "FunctionDeclaration"
       },
       {
         "name": "SlicesTab.queryFn",
@@ -53211,93 +53205,99 @@
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "SlicesTab.queryFn",
+        "line": 2424,
+        "end_line": 2424,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "SlicesTab.dimValue",
-        "line": 2430,
-        "end_line": 2435,
+        "line": 2438,
+        "end_line": 2443,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ReliabilityTab",
-        "line": 2521,
-        "end_line": 2640,
+        "line": 2529,
+        "end_line": 2648,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ReliabilityTab.vitalStatus",
-        "line": 2527,
-        "end_line": 2531,
+        "line": 2535,
+        "end_line": 2539,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BotnessCard",
-        "line": 2644,
-        "end_line": 2689,
+        "line": 2652,
+        "end_line": 2697,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BotnessCard.inCorridor",
-        "line": 2648,
-        "end_line": 2648,
+        "line": 2656,
+        "end_line": 2656,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AcquisitionFullTab",
-        "line": 2692,
-        "end_line": 2799,
+        "line": 2700,
+        "end_line": 2807,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AcquisitionFullTab.fmtRub",
-        "line": 2699,
-        "end_line": 2699,
+        "line": 2707,
+        "end_line": 2707,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "TermsLegend",
-        "line": 2806,
-        "end_line": 2838,
+        "line": 2814,
+        "end_line": 2846,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminLogin",
-        "line": 2842,
-        "end_line": 2887,
+        "line": 2850,
+        "end_line": 2895,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminLogin.submit",
-        "line": 2848,
-        "end_line": 2860,
+        "line": 2856,
+        "end_line": 2868,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI",
-        "line": 2907,
-        "end_line": 3052,
+        "line": 2915,
+        "end_line": 3060,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminBI.queryFn",
-        "line": 2926,
-        "end_line": 2930,
+        "line": 2934,
+        "end_line": 2938,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refetchInterval",
-        "line": 2932,
-        "end_line": 2937,
+        "line": 2940,
+        "end_line": 2945,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refreshNow",
-        "line": 2945,
-        "end_line": 2949,
+        "line": 2953,
+        "end_line": 2957,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.openSlices",
-        "line": 2962,
-        "end_line": 2962,
+        "line": 2970,
+        "end_line": 2970,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -53352,7 +53352,7 @@
         "names": [
           "default"
         ],
-        "line": 2907
+        "line": 2915
       }
     ],
     "anonymous_functions": 203
