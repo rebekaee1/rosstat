@@ -353,4 +353,10 @@ async def calm_morning_summary_job() -> bool:
         return False
     today = datetime.now(MSK).date()
     text = build_summary([(k, t) for k, t in held], day=today, urgent_sent=len(urgent))
+    # Календарь (14.11.2026): сторож источников дат и, за флагом, выпуски дня и переносы.
+    from app.services.calendar_digest import morning_calendar_lines
+
+    extra = await morning_calendar_lines()
+    if extra and len(text) + sum(len(x) + 1 for x in extra) <= MESSAGE_LIMIT:
+        text = text + "\n" + "\n".join(extra)
     return await send_telegram(text, kind=SUMMARY_KIND)

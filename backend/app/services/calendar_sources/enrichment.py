@@ -313,6 +313,9 @@ async def enrich_events_from_indicator_data(db: AsyncSession, *, today: date | N
         seen_on = _msk_date(created)
         due = ev.scheduled_date <= today or (
             seen_on is not None and seen_on >= ev.scheduled_date - timedelta(days=7)
+        ) or (
+            # Срок «не позднее»: выход раньше срока — норма (Минфин, сентябрь 2026: 12.10 при сроке 20.10).
+            ev.date_confidence == "official_deadline" and seen_on is not None and seen_on > ref_date
         )
         if not due:
             continue
@@ -447,3 +450,84 @@ async def _load_fact_for(db: AsyncSession, ev: EconomicEvent, ind: Indicator):
         .limit(1)
     )).first()
     return (row[0], float(row[1]), row[2]) if row else None
+
+
+async def _series_decimals(db: AsyncSession, indicator_id: int) -> int:
+    """Сколько знаков после запятой у последних фактов ряда (не больше 2): прогноз пишется так же."""
+    values = (await db.execute(
+        select(IndicatorData.value).where(IndicatorData.indicator_id == indicator_id)
+        .order_by(IndicatorData.date.desc()).limit(6)
+    )).scalars().all()
+    best = 0
+    for v in values:
+        text = format(float(v), ".4f").rstrip("0").rstrip(".")
+        if "." in text:
+            best = max(best, len(text.split(".", 1)[1]))
+    return min(best, 2)
+
+
+async def fill_event_forecasts(db: AsyncSession, *, today: date | None = None) -> int:
+    """Наш точечный прогноз на отчётный период будущего выпуска («Прогноз Forecast Economy»).
+
+    Утверждено владельцем 14.11.2026. Одно число — значение текущего прогноза ряда на дату периода;
+    диапазон не берётся никогда. Только российские ряды с включённым прогнозом (`forecast_steps > 0`)
+    и прямой моделью ряда (не 12-месячная инфляция). Вышедший выпуск прогноз не получает, а прогноз,
+    которого больше нет (модель переобучили, период вне горизонта), стирается.
+    """
+    from app.config import settings
+    from app.models import Forecast, ForecastValue
+    from app.services.display import today_msk
+
+    today = today or today_msk()
+    rows = (await db.execute(
+        select(EconomicEvent, Indicator)
+        .join(Indicator, EconomicEvent.indicator_id == Indicator.id)
+        .where(
+            EconomicEvent.source.in_(("cbr", "rosstat", "minfin")),
+            EconomicEvent.reference_period.is_not(None),
+            EconomicEvent.is_estimated.is_(False),
+            or_(EconomicEvent.scheduled_date >= today - timedelta(days=14),
+                EconomicEvent.forecast_value.is_not(None)),
+        )
+    )).all()
+    current: dict[int, int | None] = {}
+    changed = 0
+    for ev, ind in rows:
+        wanted = None
+        released = ev.actual_value not in (None, "")
+        ref_date = parse_reference_period_date(ev.reference_period)
+        cfg = ind.model_config_json or {}
+        steps = int(cfg.get("forecast_steps", settings.forecast_steps) or 0)
+        # До выхода и пока ждём загрузку (две недели после даты) прогноз держится на карточке.
+        if not released and ref_date is not None and steps > 0 and ev.scheduled_date >= today - timedelta(days=14):
+            if ind.id not in current:
+                current[ind.id] = (await db.execute(
+                    select(Forecast.id)
+                    .where(Forecast.indicator_id == ind.id, Forecast.is_current,
+                           ~Forecast.model_name.like("Inflation-12M%"))
+                    .order_by(Forecast.created_at.desc())
+                    .limit(1)
+                )).scalar()
+            fid = current[ind.id]
+            if fid is not None:
+                value = (await db.execute(
+                    select(ForecastValue.value).where(ForecastValue.forecast_id == fid,
+                                                      ForecastValue.date == ref_date)
+                )).scalar()
+                if value is not None:
+                    wanted = _format_actual(round(float(value), await _series_decimals(db, ind.id)))
+        # «Предыдущее» до выхода — последний факт ряда перед отчётным периодом (рядом с прогнозом).
+        if not released and not ev.previous_value and ref_date is not None:
+            prev = await _previous_point(db, ind.id, ref_date)
+            if prev is not None:
+                ev.previous_value = _format_actual(round(prev, await _series_decimals(db, ind.id)))
+                changed += 1
+        if released and ev.forecast_value is not None:
+            continue  # прогноз до выхода остаётся рядом с фактом — это и есть сравнение
+        if ev.forecast_value != wanted:
+            ev.forecast_value = wanted
+            changed += 1
+    if changed:
+        await db.commit()
+        logger.info("Calendar: forecast set or cleared on %d events", changed)
+    return changed

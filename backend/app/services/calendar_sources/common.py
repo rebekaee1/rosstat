@@ -16,7 +16,9 @@ from app.models import EconomicEvent, Indicator
 logger = logging.getLogger(__name__)
 
 
-OFFICIAL_CONFIDENCES = ("official_explicit", "official_rule")
+# official_deadline (14.11.2026): источник публикует срок «не позднее», а не день выхода (Минфин:
+# «14-й рабочий день месяца, следующего за отчётным», данные выходят раньше). Дата события = срок.
+OFFICIAL_CONFIDENCES = ("official_explicit", "official_rule", "official_deadline")
 
 
 @dataclass(frozen=True)
@@ -122,6 +124,11 @@ def _feed_row_conditions(feed: str) -> list:
         return [
             EconomicEvent.source == "rosstat",
             EconomicEvent.event_key.like("rosstat:sep:%"),
+        ]
+    if feed in ("fed", "bea", "eurostat"):
+        return [
+            EconomicEvent.source == feed,
+            EconomicEvent.event_key.like(f"world:{feed}:%"),
         ]
     raise ValueError(f"Unknown calendar feed: {feed}")
 
@@ -476,6 +483,10 @@ async def _find_existing_event(
     found = by_key.scalars().first()
     if found:
         return found
+    if candidate.source in ("fed", "bea", "eurostat"):
+        # У мировых событий нет российского показателя: в один день у BEA выходят ВВП и доходы,
+        # поиск «тот же день, тот же источник, без показателя» склеил бы их. Только ключ.
+        return None
 
     natural_conditions = [
         EconomicEvent.source == candidate.source,

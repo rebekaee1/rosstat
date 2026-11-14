@@ -54,7 +54,7 @@ async def render_calendar_month_html(
     if not (paths.is_public_year(year) and 1 <= month <= 12):
         return 404, "Not found"
 
-    from app.api.calendar import _public_calendar_conditions
+    from app.api.calendar import RUSSIAN_SOURCES, _public_calendar_conditions
     from app.services.seo_i18n import calendar_month_name, calendar_template, event_public_title, localize_reference_period
 
     events = (await db.execute(
@@ -63,6 +63,7 @@ async def render_calendar_month_html(
             extract("year", EconomicEvent.scheduled_date) == year,
             extract("month", EconomicEvent.scheduled_date) == month,
             *_public_calendar_conditions(),
+            EconomicEvent.source.in_(RUSSIAN_SOURCES),  # страница — календарь России
         )
         .order_by(EconomicEvent.scheduled_date, EconomicEvent.importance.desc())
     )).scalars().all()

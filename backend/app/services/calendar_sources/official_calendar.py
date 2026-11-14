@@ -406,6 +406,11 @@ async def refresh_official_calendar(
         await prune_persisted_speculative_rosstat_monthly(session)
         await enrich_events_from_indicator_data(session)
         await confirm_releases_from_loads(session)
+        from app.services.calendar_sources.enrichment import fill_event_forecasts
+        from app.services.calendar_sources.world_enrichment import enrich_world_events
+
+        await enrich_world_events(session)
+        await fill_event_forecasts(session)
         return changed
 
     if db is not None:
@@ -455,6 +460,12 @@ def _collect_calendar_feeds(today: date, months_ahead: int) -> CollectedCalendar
     if oper:
         complete.append("rosstat_oper")
     candidates.extend(oper)
+
+    from app.services.calendar_sources.world_calendar import fetch_world_candidates
+
+    for feed, world in fetch_world_candidates(today=today, months_ahead=months_ahead).items():
+        complete.append(feed)
+        candidates.extend(world)
 
     candidates = prefer_explicit_plan_candidates(candidates)
     return CollectedCalendar(candidates, complete)
@@ -629,15 +640,20 @@ def build_minfin_rule_candidates(*, today: date, months_ahead: int) -> list[Cale
                 source="minfin",
                 indicator_code=rule["code"],
                 scheduled_date=scheduled,
-                date_confidence="estimated",
+                # Срок «не позднее» по опубликованному графику Минфина (minfin.gov.ru/ru/statistics/schedule,
+                # сверено 14.11.2026); данные часто выходят раньше — выход подтверждает наша загрузка.
+                date_confidence="official_deadline",
                 reference_period=_month_ref(ref_month, ref_year),
                 importance=rule["importance"],
                 source_url=MINFIN_SCHEDULE_URL,
+                source_event_uid=f"minfin-{rule['code']}-{ref_year}-{ref_month:02d}",
                 description=_event_description(
                     rule["code"],
-                    "Оперативные данные Минфина России об исполнении федерального бюджета; плановая дата — 14-й рабочий день месяца.",
+                    "Оперативные данные Минфина России об исполнении федерального бюджета: не позднее 14-го рабочего дня месяца, часто раньше.",
                 ),
                 metadata={
+                    "feed": "minfin_rule",
+                    "deadline": True,
                     "rule": "14-й рабочий день месяца, следующего за отчетным",
                     "working_calendar_source": calendar_source_url(release_year),
                 },

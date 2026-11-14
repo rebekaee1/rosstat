@@ -255,7 +255,8 @@ def test_minfin_budget_uses_14th_workday_rule():
     ]
     assert len(may_budget) == 1
     assert may_budget[0].scheduled_date == date(2026, 5, 22)
-    assert may_budget[0].date_confidence == "estimated"
+    # 14.11.2026: правило Минфина — срок «не позднее», публикуется как official_deadline.
+    assert may_budget[0].date_confidence == "official_deadline"
     assert {
         e.indicator_code for e in events
         if e.reference_period == "апрель 2026"

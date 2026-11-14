@@ -542,7 +542,7 @@ async def _today_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    from app.api.calendar import _public_calendar_conditions
+    from app.api.calendar import RUSSIAN_SOURCES, _public_calendar_conditions
 
     stmt = (
         select(
@@ -553,6 +553,7 @@ async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         )
         .where(
             *_public_calendar_conditions(),
+            EconomicEvent.source.in_(RUSSIAN_SOURCES),  # страница — календарь России
             EconomicEvent.scheduled_date >= date(paths.PUBLIC_YEAR_MIN, 1, 1),
             EconomicEvent.scheduled_date < date(paths.PUBLIC_YEAR_MAX + 1, 1, 1),
         )

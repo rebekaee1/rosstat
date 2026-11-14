@@ -18,6 +18,18 @@ router = APIRouter(prefix="/calendar", tags=["calendar"])
 
 CACHE_TTL = 900  # 15 min
 PUBLIC_CONFIDENCES = ("official_explicit", "official_rule")
+# Календарь России по умолчанию — российские источники; мировые выпуски (ФРС, BEA, Eurostat, с 14.11.2026)
+# показываются, когда их просят явно (`source=fed,bea,eurostat`): страница называется «календарь России».
+RUSSIAN_SOURCES = ("cbr", "rosstat", "minfin")
+WORLD_SOURCES = ("fed", "bea", "eurostat")
+
+
+def _sources_condition(source: Optional[str]):
+    if not source:
+        return EconomicEvent.source.in_(RUSSIAN_SOURCES)
+    if source.strip() == "all":
+        return EconomicEvent.source.in_(RUSSIAN_SOURCES + WORLD_SOURCES)
+    return EconomicEvent.source.in_([s.strip() for s in source.split(",") if s.strip()])
 
 
 def _public_calendar_conditions():
@@ -26,6 +38,8 @@ def _public_calendar_conditions():
         or_(
             EconomicEvent.date_confidence == "official_explicit",
             and_(EconomicEvent.date_confidence == "official_rule", EconomicEvent.source == "cbr"),
+            # Срок «не позднее» из опубликованного правила Минфина (14.11.2026, утверждено владельцем).
+            and_(EconomicEvent.date_confidence == "official_deadline", EconomicEvent.source == "minfin"),
         ),
         EconomicEvent.is_estimated.is_(False),
         EconomicEvent.event_key.is_not(None),
@@ -38,7 +52,8 @@ def _public_calendar_conditions():
 def _is_public_source_bound_event(ev: EconomicEvent) -> bool:
     return (
         (ev.date_confidence == "official_explicit"
-         or (ev.date_confidence == "official_rule" and ev.source == "cbr"))
+         or (ev.date_confidence == "official_rule" and ev.source == "cbr")
+         or (ev.date_confidence == "official_deadline" and ev.source == "minfin"))
         and ev.is_estimated is False
         and bool(ev.event_key)
         and bool(ev.source_url)
@@ -72,6 +87,26 @@ def _rescheduled_from(ev: EconomicEvent):
     if new != ev.scheduled_date or previous == ev.scheduled_date:
         return None
     return previous
+
+
+def _world_details(ev: EconomicEvent) -> dict:
+    return (((ev.metadata_json or {}).get("provenance") or {}).get("details") or {})
+
+
+def _world_link(ev: EconomicEvent):
+    """Адрес карточки мирового ряда (страна → ряд), если ряд есть в каталоге."""
+    details = _world_details(ev)
+    slug, code = details.get("world_country_slug"), details.get("world_code")
+    if not (details.get("world") and slug and code):
+        return None
+    return f"/{slug}/{code}"
+
+
+def _world_country(ev: EconomicEvent):
+    details = _world_details(ev)
+    if not details.get("world"):
+        return None
+    return details.get("country_en") if get_locale() == "en" else details.get("country_ru")
 
 
 def _released_on(ev: EconomicEvent):
@@ -120,6 +155,9 @@ def _build_event_out(ev: EconomicEvent, indicator: Indicator | None) -> Calendar
         indicator_code=indicator.code if indicator else None,
         indicator_name=indicator_name,
         rescheduled_from=_rescheduled_from(ev),
+        link_path=_world_link(ev),
+        country=_world_country(ev),
+        deadline=ev.date_confidence == "official_deadline",
         released_on=_released_on(ev) if _effective_status(ev) == "released" else None,
     )
 
@@ -142,7 +180,7 @@ async def list_events(
 
     # Locale in key: event.title is localized via event_public_title (RU/EN race otherwise).
     cache_key = (
-        f"fe:calendar:sourcebound-v3:{get_locale()}:{from_date}:{to_date}:"
+        f"fe:calendar:sourcebound-v4:{get_locale()}:{from_date}:{to_date}:"
         f"{source}:{importance}:{event_type}:{limit}:{offset}"
     )
     cached = await cache_get(cache_key)
@@ -154,9 +192,6 @@ async def list_events(
         EconomicEvent.scheduled_date <= to_date,
         *_public_calendar_conditions(),
     ]
-    if source:
-        sources = [s.strip() for s in source.split(",")]
-        conditions.append(EconomicEvent.source.in_(sources))
     if importance:
         levels = [int(x.strip()) for x in importance.split(",") if x.strip().isdigit()]
         if levels:
@@ -164,6 +199,8 @@ async def list_events(
     if event_type:
         types = [t.strip() for t in event_type.split(",")]
         conditions.append(EconomicEvent.event_type.in_(types))
+
+    conditions.append(_sources_condition(source))
 
     count_q = await db.execute(
         select(func.count(EconomicEvent.id)).where(and_(*conditions))
@@ -197,11 +234,13 @@ async def upcoming_events(
         description="Только события этого показателя (например key-rate: «Следующее заседание»)",
     ),
     event_type: Optional[str] = Query(None, description="Comma-separated event types, e.g. rate_decision"),
+    source: Optional[str] = Query(None, description="Comma-separated sources; default — Russian (cbr,rosstat,minfin); all"),
 ):
     cache_key = (
-        f"fe:calendar:upcoming:sourcebound-v3:{get_locale()}:{limit}:{importance_min}"
+        f"fe:calendar:upcoming:sourcebound-v4:{get_locale()}:{limit}:{importance_min}"
         + (f":{indicator_code}" if indicator_code else "")
         + (f":{event_type}" if event_type else "")
+        + (f":src={source}" if source else "")
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -214,6 +253,7 @@ async def upcoming_events(
         EconomicEvent.actual_value.is_(None),
         EconomicEvent.status != "released",
         *_public_calendar_conditions(),
+        _sources_condition(source),
     ]
     if indicator_code:
         conditions.append(Indicator.code == indicator_code)
@@ -363,6 +403,7 @@ async def export_ical(
     from_date: Optional[date] = Query(None, alias="from"),
     to_date: Optional[date] = Query(None, alias="to"),
     importance_min: int = Query(2, ge=1, le=3),
+    source: Optional[str] = Query(None, description="Comma-separated sources; default — Russian; all"),
 ):
     from datetime import datetime as _dt
     from datetime import timezone as _tz
@@ -380,6 +421,7 @@ async def export_ical(
             EconomicEvent.scheduled_date <= to_date,
             EconomicEvent.importance >= importance_min,
             *_public_calendar_conditions(),
+            _sources_condition(source),
         )
         .order_by(EconomicEvent.scheduled_date, EconomicEvent.id)
         .limit(1000)
