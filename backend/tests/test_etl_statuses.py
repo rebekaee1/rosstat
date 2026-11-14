@@ -268,3 +268,34 @@ def test_other_sources_do_not_probe_rosstat(env, monkeypatch):
     monkeypatch.setattr(rosstat_outage, "_probe", boom)
     fl = _run(_Parser([]), _FakeDB(existing=277))
     assert fl.status == "parsed_zero"
+
+
+class _RosstatSegmentParser(_RosstatParser):
+    """Сегмент недельного ИПЦ: собственный fetch пуст по замыслу, точки пишет основной ряд."""
+
+    def _zero_parse_expected(self, indicator, cfg):
+        return True
+
+
+def test_rosstat_segment_with_by_design_empty_fetch_is_not_marked_unreachable(env, monkeypatch):
+    """14.11.2026: при частичном восстановлении Росстата три сегмента недельного ИПЦ дважды в день становились
+    failed «источник недоступен», хотя раздел цен работал и их точки были на месте."""
+    import app.services.rosstat_outage as rosstat_outage
+
+    rosstat_outage.reset_cache()
+    calls = []
+
+    def partial():
+        calls.append(1)
+        return ("rosstat.gov.ru unreachable: сайт восстановлен частично, страницы разделов ссылаются на файлы, "
+                "которых нет: национальные счета (5 из 5 файлов — 404)")
+
+    monkeypatch.setattr(rosstat_outage, "_probe", partial)
+    try:
+        fl = _run(_RosstatSegmentParser([]), _FakeDB(existing=500))
+    finally:
+        rosstat_outage.reset_cache()
+    assert fl.status == "no_new_data"
+    assert not (fl.error_message or "").startswith("Source fetch failed")
+    assert calls == []
+    assert env["zero_alerts"] == []
