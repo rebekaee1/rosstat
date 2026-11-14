@@ -723,6 +723,40 @@ def digest_lines(summary: dict[str, Any], top: int = 3) -> list[str]:
     return out
 
 
+def _delta(cur: int, prev: int) -> str:
+    if not prev:
+        return ""
+    diff = cur - prev
+    return f" ({'+' if diff > 0 else '−' if diff < 0 else '±'}{_n(abs(diff))} к прошлой неделе)"
+
+
+def week_digest_lines(summary: dict[str, Any], prev: dict[str, Any] | None, label: str, top: int = 5) -> list[str]:
+    """Недельный блок понедельничного дайджеста (вместо дневного, отдельного сообщения нет —
+    спокойный режим 08.11.2026). Пусто, если за неделю ничего не было."""
+    d, w = summary["downloads"], summary["walls"]
+    if not d["count"] and not w["count"]:
+        return []
+    pd = (prev or {}).get("downloads", {})
+    pw = (prev or {}).get("walls", {})
+    out = ["", f"📥 <b>Что скачивали за неделю ({escape(label)})</b>"]
+    out.append(f"Скачали {_people(d['people'])}{_delta(d['people'], pd.get('people', 0))}")
+    if w["count"]:
+        out.append(
+            f"Упёрлись в лимит {_people(w['people'])}{_delta(w['people'], pw.get('people', 0))}, "
+            f"зарегистрировались {_n(w['signed_up'])} ({_pct(w['signed_up'], w['people'])})")
+    server_line = _server_line(summary.get("server"))
+    if server_line:
+        out.append(server_line)
+    if d["top"]:
+        out.append("Чаще скачивали: " + "; ".join(
+            f"{_short(i['title'], 60)} ({_n(i['people'])})" for i in d["top"][:top]))
+    if w["top"]:
+        out.append("Чаще упирались: " + "; ".join(
+            f"{_short(i['title'], 60)} ({_n(i['people'])})" for i in w["top"][:top]))
+    out.append("Подробно и файлом — кнопка «📥 Скачивания» → «7 дней».")
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Файл Excel
 # ---------------------------------------------------------------------------

@@ -210,12 +210,29 @@ async def _research_download_lines(report_date: date) -> list[str]:
 
 
 _DOWNLOAD_BLOCK_TIMEOUT_S = 60
+_DOWNLOAD_WEEK_TIMEOUT_S = 90
 
 
 async def _download_content_lines(report_date: date) -> list[str]:
     """Что скачивали вчера и где упёрлись в лимит — по содержанию (14.11.2026, вопрос партнёра
     «что за данные они скачивают»). Пусто, если за день ничего не было."""
     from app.services import download_content as dc
+    from app.services.analytics_period import resolve_period
+
+    # Понедельник (вчера — воскресенье): вместо дневного блока — неделя пн–вс к прошлой неделе.
+    # Тем же сообщением дайджеста: отдельного недельного сообщения нет (спокойный режим 08.11.2026).
+    if report_date.weekday() == 6:
+        week = resolve_period("custom", report_date - timedelta(days=6), report_date)
+        prev = resolve_period("custom", report_date - timedelta(days=13), report_date - timedelta(days=7))
+
+        async def run_week() -> list[str]:
+            async with analytics_session() as db:
+                cur = await dc.collect(db, week)
+                before = await dc.collect(db, prev)
+            label = f"{week.start_date.strftime('%d.%m')}–{week.end_date.strftime('%d.%m')}"
+            return dc.week_digest_lines(cur["summary"], before["summary"], label)
+
+        return await asyncio.wait_for(run_week(), _DOWNLOAD_WEEK_TIMEOUT_S)
 
     async def run() -> list[str]:
         async with analytics_session() as db:
