@@ -3282,7 +3282,7 @@ export default function ComparePage({ renderSave = null } = {}) {
           </div>
 
           {analysisSummary.correlations.length > 0 && (
-            <div className="mt-5 rounded-2xl bg-champagne/[0.05] p-4 fe-shadow-2">
+            <div className="mt-5 rounded-2xl bg-[rgba(30,38,56,0.035)] p-4 fe-shadow-2">
               <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
                 <Sparkles size={14} className="text-champagne" />
                 {t('compare.analysis.sync')}
