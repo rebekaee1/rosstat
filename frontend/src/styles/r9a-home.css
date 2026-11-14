@@ -57,6 +57,28 @@
 .r9a-chip__per { font-size: 12px; color: var(--text-secondary, #5b6477); }
 @media (min-width: 768px) { .r9a-strip, .r9a-strip__cap { display: none; } }
 
+/* Проход дизайна 15.11 (утверждено): цен меньше, чем колонок, — ряд не оставляет пустую половину.
+   Одна цена — плитка на всю ширину строкой «название слева, цена справа»; две — две равные колонки.
+   В ленте телефона одна-две плитки делят ширину поровну, а не стоят одинокой карточкой у левого края. */
+.r9a-tiles[data-count='1'] { grid-template-columns: minmax(0, 1fr); }
+.r9a-tiles[data-count='2'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.r9a-tiles[data-count='1'] .r9a-tile {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'name val' 'trend per';
+  align-items: baseline; column-gap: 16px; row-gap: 2px; padding: 14px 18px;
+}
+.r9a-tiles[data-count='1'] .r9a-tile__name { grid-area: name; min-height: 0; margin: 0; font-size: 14px; }
+.r9a-tiles[data-count='1'] .r9a-tile__val { grid-area: val; margin: 0; text-align: right; }
+.r9a-tiles[data-count='1'] .r9a-tile__per { grid-area: per; text-align: right; }
+.r9a-tiles[data-count='1'] .r9a-tile__trend { grid-area: trend; margin: 0; padding: 0; }
+.r9a-strip[data-count='1'] > li, .r9a-strip[data-count='2'] > li { flex: 1 1 0; min-width: 0; }
+.r9a-strip[data-count='1'] .r9a-chip {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'name val' '. per';
+  align-items: baseline; column-gap: 16px; min-height: 64px;
+}
+.r9a-strip[data-count='1'] .r9a-chip__name { grid-area: name; max-width: none; font-size: 14px; }
+.r9a-strip[data-count='1'] .r9a-chip__val { grid-area: val; text-align: right; }
+.r9a-strip[data-count='1'] .r9a-chip__per { grid-area: per; text-align: right; }
+
 /* «Платформа в цифрах»: четыре числа, на телефоне 2 x 2 */
 .fe-dashboard .fe-scope-stats--four { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 6px; }
 @media (min-width: 1100px) { .fe-dashboard .fe-scope-stats--four { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

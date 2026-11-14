@@ -64,7 +64,7 @@ export default function HomeRegionPriceTiles({ region, regionName }) {
   return (
     <div className="r9a-prices" data-block="home-price-tiles">
       <p className="r9a-prices__cap">{t('r9a.tiles.cap', { period: items[0].period_label || '' })}</p>
-      <ul className="r9a-tiles">
+      <ul className="r9a-tiles" data-count={Math.min(items.length, 3)}>
         {items.map((it) => {
           const en = locale === 'en';
           const { sign, per: perRu } = unitParts(it.unit);
@@ -127,7 +127,7 @@ export function HomePriceStrip() {
   return (
     <>
     <p className="r9a-strip__cap">{t('r9a.tiles.cap', { period: items[0].period_label || '' })}</p>
-    <ul className="r9a-strip scrollbar-hide fe-fade-x" data-block="home-price-strip" aria-label={t('r9a.strip.aria')}>
+    <ul className="r9a-strip scrollbar-hide fe-fade-x" data-count={Math.min(items.length, 3)} data-block="home-price-strip" aria-label={t('r9a.strip.aria')}>
       {items.map((it) => {
         const en = locale === 'en';
         const { sign, per: perRu } = unitParts(it.unit);
