@@ -280,8 +280,9 @@ footer.fe-footer.fe-k2-footer .fe-foot-sources__label { display: inline-flex; al
 }
 footer.fe-footer.fe-k2-footer .fe-foot-top { padding-bottom: 28px; margin-bottom: 28px; }
 @media (max-width: 767px) {
-  /* Круг 9, S7: на телефоне зазоры между блоками подвала короче (16 + 16 вместо 28 + 28). */
-  footer.fe-footer.fe-k2-footer .fe-foot-top { padding-bottom: 16px; margin-bottom: 16px; }
+  /* Круг 9, S7: на телефоне зазоры между блоками подвала короче. Проход дизайна 15.11: верх телефона кончается свёрнутым
+     «Источники», а ниже идут такие же строки-раскрывашки; зазор 16 + 16 читался как раскрытый пустой список, теперь ритм общий. */
+  footer.fe-footer.fe-k2-footer .fe-foot-top { padding-bottom: 0; margin-bottom: 0; }
 }
 /* Круг 9, S7: ссылки подвала 14 px (были 12–13): читаются без приближения, строки по-прежнему не ниже 44 px на касании. */
 footer.fe-footer.fe-k2-footer .fe-foot-list a,
