@@ -112735,45 +112735,45 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/viewModeLabels.js": {
-      "sha256": "587d5f7e31c422d29ac01af94937d97df398273745dba9ede5e1535556516623",
+      "sha256": "d5d95c813c1b27c39748e9e92e83846c7f109fcb44ff3c9eb2129c65b03ddc2b",
       "imports": [],
       "routes": [],
       "functions": [
         {
-          "line": 106,
-          "end_line": 109,
+          "line": 112,
+          "end_line": 115,
           "owner": "<module>",
           "name": "localizeViewModeLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 112,
-          "end_line": 118,
+          "line": 118,
+          "end_line": 124,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n  const map = {};\n  for (const [ru, en] of Object.entries(SOURCE_EN)) {\n    if (!map[en] || ru.length > map[en].length) map[en] = ru;\n  }\n  return map;\n}"
         },
         {
-          "line": 120,
-          "end_line": 138,
+          "line": 126,
+          "end_line": 144,
           "owner": "<module>",
           "name": "localizeSource",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 126,
-          "end_line": 126,
+          "line": 132,
+          "end_line": 132,
           "owner": "localizeSource",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(SOURCE_RU).sort"
         },
         {
-          "line": 132,
-          "end_line": 132,
+          "line": 138,
+          "end_line": 138,
           "owner": "localizeSource",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -112860,7 +112860,7 @@
         },
         {
           "line": 71,
-          "end_line": 104,
+          "end_line": 110,
           "owner": "<module>",
           "name": "SOURCE_EN",
           "kind": "ObjectExpression",
@@ -112895,13 +112895,18 @@
             "'Управление энергетической информации США (EIA)'",
             "'Европейский центральный банк'",
             "'Министерство финансов США'",
-            "'Совет управляющих Федеральной резервной системы США'"
+            "'Совет управляющих Федеральной резервной системы США'",
+            "'Бюро переписи населения США'",
+            "'Министерство труда США'",
+            "'Федеральное агентство по жилищному финансированию США'",
+            "'Административно-бюджетное управление США'",
+            "'через FRED'"
           ],
           "initializer": null
         },
         {
-          "line": 112,
-          "end_line": 118,
+          "line": 118,
+          "end_line": 124,
           "owner": "<module>",
           "name": "SOURCE_RU",
           "kind": "CallExpression",
@@ -112912,7 +112917,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/viewModeLabels.test.js": {
-      "sha256": "282c3c3f6cd2604b66da67f142f434e92cba69fead632ea9723a112d2dcdb918",
+      "sha256": "9f7d077ad03766321e85d01f8ef3b4f03fb26e1741deb0e680946db76f97d4c3",
       "imports": [
         {
           "line": 1,
@@ -113036,7 +113041,7 @@
         },
         {
           "line": 43,
-          "end_line": 63,
+          "end_line": 73,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -113069,6 +113074,14 @@
         {
           "line": 57,
           "end_line": 62,
+          "owner": "<callback@43>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 64,
+          "end_line": 72,
           "owner": "<callback@43>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -127691,7 +127704,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/chartSeriesForViewMode.js": {
-      "sha256": "53a38c71829ba910e4db6e92dde85efa57fea489d6a623daf1b4591839266283",
+      "sha256": "6a5e325f7f69c423552a69792f423b81e34913464af1b05b0349965d3bd3f2cb",
       "imports": [],
       "routes": [],
       "functions": [
@@ -127700,6 +127713,14 @@
           "end_line": 33,
           "owner": "<module>",
           "name": "chartSeriesForViewMode",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 41,
+          "end_line": 53,
+          "owner": "<module>",
+          "name": "heroDeltaSuffixKey",
           "kind": "FunctionDeclaration",
           "callback_context": null
         }
@@ -127713,7 +127734,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/chartSeriesForViewMode.test.js": {
-      "sha256": "4290d8c74d713c3f7f35393e261096a597fcdc2e045ac2b83a1b81a08169ce09",
+      "sha256": "ad5ae74e196cd3eca3cf414956d93f1b88991b5cf6d70c91214bd7155d4dfdde",
       "imports": [
         {
           "line": 1,
@@ -127738,56 +127759,115 @@
             "frontend/src/lib/chartSeriesForViewMode.js"
           ],
           "bindings": [
-            "chartSeriesForViewMode"
+            "chartSeriesForViewMode",
+            "heroDeltaSuffixKey"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "../i18n/messages.ru",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/messages.ru.js"
+          ],
+          "bindings": [
+            "ru"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "../i18n/messages.en",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/messages.en.js"
+          ],
+          "bindings": [
+            "en"
           ]
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 4,
-          "end_line": 58,
+          "line": 6,
+          "end_line": 60,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "describe"
         },
         {
-          "line": 10,
-          "end_line": 20,
-          "owner": "<callback@4>",
+          "line": 12,
+          "end_line": 22,
+          "owner": "<callback@6>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 22,
-          "end_line": 30,
-          "owner": "<callback@4>",
+          "line": 24,
+          "end_line": 32,
+          "owner": "<callback@6>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 32,
-          "end_line": 39,
-          "owner": "<callback@4>",
+          "line": 34,
+          "end_line": 41,
+          "owner": "<callback@6>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 41,
-          "end_line": 48,
-          "owner": "<callback@4>",
+          "line": 43,
+          "end_line": 50,
+          "owner": "<callback@6>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 50,
-          "end_line": 57,
-          "owner": "<callback@4>",
+          "line": 52,
+          "end_line": 59,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 62,
+          "end_line": 80,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 63,
+          "end_line": 67,
+          "owner": "<callback@62>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 69,
+          "end_line": 71,
+          "owner": "<callback@62>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 73,
+          "end_line": 79,
+          "owner": "<callback@62>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
@@ -217806,7 +217886,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/IndicatorDetail.jsx": {
-      "sha256": "e1d966f2c1dd76fbb0ba6113b1b370eb766a546054a8cd20f41066052974c2e8",
+      "sha256": "1aedc7fe9a63b24da4a445ff9659e3c46571c82e7ab6b2030d7c783045f60bef",
       "imports": [
         {
           "line": 1,
@@ -218213,7 +218293,8 @@
             "frontend/src/lib/chartSeriesForViewMode.js"
           ],
           "bindings": [
-            "chartSeriesForViewMode"
+            "chartSeriesForViewMode",
+            "heroDeltaSuffixKey"
           ]
         },
         {
@@ -218549,7 +218630,7 @@
         },
         {
           "line": 110,
-          "end_line": 889,
+          "end_line": 888,
           "owner": "<module>",
           "name": "IndicatorDetail",
           "kind": "FunctionDeclaration",
@@ -218780,25 +218861,25 @@
           "callback_context": "useMemo"
         },
         {
-          "line": 717,
-          "end_line": 717,
+          "line": 716,
+          "end_line": 716,
           "owner": "IndicatorDetail",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "viewFamily.modes.map"
         },
         {
-          "line": 777,
-          "end_line": 777,
+          "line": 776,
+          "end_line": 776,
           "owner": "IndicatorDetail",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 777,
-          "end_line": 777,
-          "owner": "IndicatorDetail.<callback@777>",
+          "line": 776,
+          "end_line": 776,
+          "owner": "IndicatorDetail.<callback@776>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setShowForecast"
@@ -219178,120 +219259,120 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 603,
-          "end_line": 606,
+          "line": 602,
+          "end_line": 605,
           "owner": "IndicatorDetail",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{refetchIndicatorPage}"
         },
         {
-          "line": 621,
-          "end_line": 621,
+          "line": 620,
+          "end_line": 620,
           "owner": "IndicatorDetail",
           "component": "LoadingNote",
           "event": "onRefresh",
           "expression": "{refetchIndicatorPage}"
         },
         {
-          "line": 674,
-          "end_line": 680,
+          "line": 673,
+          "end_line": 679,
           "owner": "IndicatorDetail",
           "component": "CpiIndicatorControls",
           "event": "onChange",
           "expression": "{setViewMode}"
         },
         {
-          "line": 682,
-          "end_line": 688,
+          "line": 681,
+          "end_line": 687,
           "owner": "IndicatorDetail",
           "component": "HousingIndicatorControls",
           "event": "onChange",
           "expression": "{setViewMode}"
         },
         {
-          "line": 690,
-          "end_line": 694,
+          "line": 689,
+          "end_line": 693,
           "owner": "IndicatorDetail",
           "component": "PpiIndicatorControls",
           "event": "onChange",
           "expression": "{setViewMode}"
         },
         {
-          "line": 696,
-          "end_line": 702,
+          "line": 695,
+          "end_line": 701,
           "owner": "IndicatorDetail",
           "component": "CbrTermSliceRateIndicatorControls",
           "event": "onChange",
           "expression": "{setViewMode}"
         },
         {
-          "line": 704,
-          "end_line": 708,
+          "line": 703,
+          "end_line": 707,
           "owner": "IndicatorDetail",
           "component": "UnemploymentIndicatorControls",
           "event": "onChange",
           "expression": "{setViewMode}"
         },
         {
-          "line": 715,
-          "end_line": 722,
+          "line": 714,
+          "end_line": 721,
           "owner": "IndicatorDetail",
           "component": "ViewModePicker",
           "event": "onChange",
           "expression": "{setViewMode}"
         },
         {
-          "line": 728,
-          "end_line": 740,
+          "line": 727,
+          "end_line": 739,
           "owner": "IndicatorDetail",
           "component": "ViewModePicker",
           "event": "onChange",
           "expression": "{setViewMode}"
         },
         {
-          "line": 746,
-          "end_line": 785,
+          "line": 745,
+          "end_line": 784,
           "owner": "IndicatorDetail",
           "component": "IndicatorChartSection",
           "event": "onToggleForecast",
           "expression": "{() => setShowForecast((v) => !v)}"
         },
         {
-          "line": 746,
-          "end_line": 785,
+          "line": 745,
+          "end_line": 784,
           "owner": "IndicatorDetail",
           "component": "IndicatorChartSection",
           "event": "onFullData",
           "expression": "{handleFullData}"
         },
         {
-          "line": 746,
-          "end_line": 785,
+          "line": 745,
+          "end_line": 784,
           "owner": "IndicatorDetail",
           "component": "IndicatorChartSection",
           "event": "onChartData",
           "expression": "{handleChartRows}"
         },
         {
-          "line": 746,
-          "end_line": 785,
+          "line": 745,
+          "end_line": 784,
           "owner": "IndicatorDetail",
           "component": "IndicatorChartSection",
           "event": "onDownloadCsv",
           "expression": "{handleDownloadCSV}"
         },
         {
-          "line": 746,
-          "end_line": 785,
+          "line": 745,
+          "end_line": 784,
           "owner": "IndicatorDetail",
           "component": "IndicatorChartSection",
           "event": "onDownloadExcel",
           "expression": "{handleDownloadExcel}"
         },
         {
-          "line": 746,
-          "end_line": 785,
+          "line": 745,
+          "end_line": 784,
           "owner": "IndicatorDetail",
           "component": "IndicatorChartSection",
           "event": "onNeedCompatibleMode",
@@ -256114,9 +256195,9 @@
     }
   },
   "totals": {
-    "imports": 4813,
+    "imports": 4815,
     "routes": 95,
-    "functions": 15334,
+    "functions": 15340,
     "hooks": 2830,
     "http": 119,
     "storage": 244,

@@ -2600,11 +2600,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "3fca757bb10f6cc5de2d3e45d443efc25e023bc5f0a20b25d3a0a19d08ab2dc1",
-        "bytes": 4190
+        "sha256": "b55b3723eb46f1882a086dd83530cf26ff3baa574e3ef930a19b143734e21334",
+        "bytes": 4730
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -3022,11 +3022,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "198772228cec73d8f7768725f76173d291b4a21ffc403a0db39e538b1543225c",
-        "bytes": 75908
+        "sha256": "e30de7d370435a87803a029c0bf23aca74141cb13441fee692849b5137fdf4b3",
+        "bytes": 79584
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
@@ -3811,11 +3811,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "66a0688ee3cf6a89125e5908052b40be93e286234a2ede3d2bcec4f2ee919ea5",
-        "bytes": 304335
+        "sha256": "b5b24cc78cb63069e3e37e1f33e1e69b494018e4ddffbb323538b89e6553ebb5",
+        "bytes": 305131
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
@@ -10641,11 +10641,11 @@
       "role": "one execution backlog",
       "classification": "current",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "1caa7adc63fdd24c71608ce175da92d7cb13170427eca7a516f89965693a2f76",
-        "bytes": 780142
+        "sha256": "94c70d8568da10b86846f686cd57a8f1e61ae62f7dcb0a491968663dc238c3d7",
+        "bytes": 784521
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -13016,11 +13016,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "11a4b992a31cd2738b96e222fba7f8164ec135dfaf8e99e41961d70cf3a77ad6",
-        "bytes": 7271106
+        "sha256": "3d843a8864e18814588c1b9668d022d1e05c0a8143dba7d8bda30b54ddccf710",
+        "bytes": 7273448
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -13804,10 +13804,10 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "9d09f26f6b39a633c8639c7e9c0993d4b12c866921501276f2452319b427d6d2",
+        "sha256": "7f82d565867ee5944eb4c48df774836052da8c7d85426c43051aba6eec057cd8",
         "bytes": 13421
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -15763,11 +15763,11 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "1d9beb040b9de9ae2ce67a8083a101ce18e5ba459a8c630fbd7bcadd7de4bbc8",
-        "bytes": 954501
+        "sha256": "3271b07faf6d41222572735653d0790b8162e43801ad0ef5f064097647478896",
+        "bytes": 955129
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -18463,11 +18463,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "017fb16da5a1205d794cebc96d88eeaffdd3b55b6415d2c288ef082536a78db4",
-        "bytes": 7939563
+        "sha256": "cb4b326db726c5f97ad50696051eba684dc7e4b0ccab0d4ca56853fd1083748d",
+        "bytes": 7944050
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -21787,11 +21787,11 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e6d36e5cf4fe983b42f453b607a62c9154502ef66bda37bf4168c488d2c3f73b",
-        "bytes": 1332280
+        "sha256": "5ca2eb344c46f817c2fad2414d3e4fdbc68f70e4998bf07c65c8d5a4ee1b1c95",
+        "bytes": 1332667
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -23591,11 +23591,11 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "generated",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "aeba5385507442c84efdc7d3b5c88e726fca0b76acf356ad85f787d5eeb1ae12",
-        "bytes": 23541066
+        "sha256": "101ae2f7ac28665aac20483433e0a4000e78d7474891b048108df1678413076c",
+        "bytes": 23543053
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -27986,11 +27986,11 @@
       "role": "official source mappings",
       "classification": "current",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "8a376ca1985fb7ccacaebcd1e1d2ecdf6959dcf9c0ecb8fec8b7456cd58e1a74",
-        "bytes": 118834
+        "sha256": "0de2c1900bf9b7fc2893e2d344b188ff7ff023815f640ff155c5b297394d592f",
+        "bytes": 119824
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
@@ -32009,11 +32009,11 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "f148c95fc0d0d22a01a8e42aa5d712427e816ab676c0a924bb75454b3b9e132b",
-        "bytes": 3872167
+        "sha256": "f8cc884df1d899a893711c509e5769fa5cb3507e27f81e251a6d19c2150692fd",
+        "bytes": 3876370
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -42381,11 +42381,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "44c652a71a2714b57fc88a2115999f72a781cdea9aa8e7b2f97b886b91f4fd31",
-        "bytes": 12431205
+        "sha256": "98f5ec8575c5e4135e8e341d7175f6f830ed9d167d2f271cec7f02286d9b6621",
+        "bytes": 12480122
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -43662,11 +43662,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "fa4bb1b8b5b9b1ad3bb41b1f962368384895311139f611a620b03ea2ac68d8fa",
-        "bytes": 638028
+        "sha256": "5cc4014bc128ab117742b66a630953c4c825b0200634947e996d12dc148d0214",
+        "bytes": 640698
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -58431,11 +58431,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "587d5f7e31c422d29ac01af94937d97df398273745dba9ede5e1535556516623",
-        "bytes": 6666
+        "sha256": "d5d95c813c1b27c39748e9e92e83846c7f109fcb44ff3c9eb2129c65b03ddc2b",
+        "bytes": 7265
       },
       "review_status": "прежнее полное чтение + содержательная дельта: прочитан дифф от старой версии, тела изменённых и новых определений прочитаны целиком, неизменные определения перенесены по совпадению тел",
       "body_reviewed_in_this_pass": false,
@@ -58556,11 +58556,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f933b0cf5c1be0bb031a323f677feb6eb3a351fe",
+        "main": "58aa3d7a4cf1d4aef1ac3089b431671f8a9a03d2",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "282c3c3f6cd2604b66da67f142f434e92cba69fead632ea9723a112d2dcdb918",
-        "bytes": 3491
+        "sha256": "9f7d077ad03766321e85d01f8ef3b4f03fb26e1741deb0e680946db76f97d4c3",
+        "bytes": 4336
       },
       "review_status": "прежнее полное чтение + содержательная дельта: прочитан дифф от старой версии, тела изменённых и новых определений прочитаны целиком, неизменные определения перенесены по совпадению тел",
       "body_reviewed_in_this_pass": false,
