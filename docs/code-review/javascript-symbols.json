@@ -17485,66 +17485,54 @@
     "anonymous_functions": 27
   },
   "frontend/src/components/calendar/CalendarEventCard.jsx": {
-    "sha256": "c7ecb7a8222053f80f61ceaf209af0c6893657e6b315f1c0525bc1077abab5b7",
+    "sha256": "fadd6a83310bc55add388e167bd2b4f1d1d80d8aa9fe565247e0710025ca075f",
     "definitions": [
       {
         "name": "ImportanceBadge",
-        "line": 49,
-        "end_line": 60,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "localTodayIso",
-        "line": 62,
-        "end_line": 65,
+        "line": 50,
+        "end_line": 61,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "dayMonth",
-        "line": 68,
-        "end_line": 72,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "eventStatus",
-        "line": 83,
-        "end_line": 99,
+        "line": 64,
+        "end_line": 68,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DateStatus",
-        "line": 101,
-        "end_line": 137,
+        "line": 71,
+        "end_line": 107,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ValueCell",
-        "line": 139,
-        "end_line": 147,
+        "line": 109,
+        "end_line": 117,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ActualValueCell",
-        "line": 149,
-        "end_line": 182,
+        "line": 119,
+        "end_line": 152,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarEventCard",
-        "line": 184,
-        "end_line": 381,
+        "line": 154,
+        "end_line": 351,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarEventCard.addToCalendar",
-        "line": 200,
-        "end_line": 207,
+        "line": 170,
+        "end_line": 177,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CalendarEventCard.pathOf",
-        "line": 217,
-        "end_line": 217,
+        "line": 187,
+        "end_line": 187,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -17608,26 +17596,24 @@
       {
         "source": "../../styles/ui-detail-nav-calendar.css",
         "line": 18
+      },
+      {
+        "source": "../../lib/calendarStatus",
+        "line": 19
       }
     ],
     "exports": [
       {
         "names": [
-          "eventStatus"
-        ],
-        "line": 83
-      },
-      {
-        "names": [
           "default"
         ],
-        "line": 184
+        "line": 154
       }
     ],
     "anonymous_functions": 1
   },
   "frontend/src/components/calendar/CalendarEventCard.status.test.js": {
-    "sha256": "e6e2e05591b1773e58970a44691cc88da58c708950c6e6cb615fe3526d3784af",
+    "sha256": "d4e7268ba5e9ec7c6960f9bb49c9e9432568db87b77ad7173364ccb7576648d6",
     "definitions": [],
     "imports": [
       {
@@ -17635,7 +17621,7 @@
         "line": 1
       },
       {
-        "source": "./CalendarEventCard",
+        "source": "../../lib/calendarStatus",
         "line": 2
       }
     ],
@@ -29363,6 +29349,39 @@
     ],
     "exports": [],
     "anonymous_functions": 5
+  },
+  "frontend/src/lib/calendarStatus.js": {
+    "sha256": "9c45f3e686b2bb305c6d46d5881c1a5d968384857fd7415c22dd2eeffd5f91a1",
+    "definitions": [
+      {
+        "name": "localTodayIso",
+        "line": 3,
+        "end_line": 6,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "eventStatus",
+        "line": 17,
+        "end_line": 33,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "localTodayIso"
+        ],
+        "line": 3
+      },
+      {
+        "names": [
+          "eventStatus"
+        ],
+        "line": 17
+      }
+    ],
+    "anonymous_functions": 0
   },
   "frontend/src/lib/calendarText.js": {
     "sha256": "afe759176e341b456711241346007b9bf0e3b7269c1d98f1dfea90e294877b4e",

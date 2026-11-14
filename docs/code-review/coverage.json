@@ -19,16 +19,16 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2590,
-    "code_files": 2104,
-    "current_reviews": 2590,
+    "files": 2591,
+    "code_files": 2105,
+    "current_reviews": 2591,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
       "binary_asset": 1,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2317
+      "reviewed": 2318
     },
     "definitions": 17199,
     "annotated_definitions": 17199,
@@ -14884,9 +14884,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "0eeaeb1f7228ab90554753700bf3a4fd7c1a4c75cbf2f08fa9324e91eb3f8211",
-      "bytes": 7368486,
-      "lines": 259755,
+      "sha256": "8202b085eda92bae7378995b0b2f73988bf50a2b315595662c5c6cdf66a9a595",
+      "bytes": 7369155,
+      "lines": 259782,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14897,7 +14897,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "1d8b2adc082d8de0a5f58bbfd30eacf2d88c04962e6350bbf26b7806563797b8",
+      "sha256": "3c1ec80b5fe212f15c44d25d12fea64ab7a3c5cd629e3a97440e2f0c96ce50a4",
       "bytes": 14011,
       "lines": 142,
       "code": false,
@@ -15456,9 +15456,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "f455af6a24cef01d6096b6a61f1dfd037cd255dc67ee82ce8a772e1aee220840",
-      "bytes": 3919950,
-      "lines": 138903,
+      "sha256": "cb9bdb8464c7658810d03b541d7459de1c09e7989402395166030e6ee8e60bac",
+      "bytes": 3920081,
+      "lines": 138908,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -22073,21 +22073,21 @@
     },
     {
       "path": "frontend/src/components/calendar/CalendarEventCard.jsx",
-      "sha256": "c7ecb7a8222053f80f61ceaf209af0c6893657e6b315f1c0525bc1077abab5b7",
-      "bytes": 17213,
-      "lines": 381,
+      "sha256": "fadd6a83310bc55add388e167bd2b4f1d1d80d8aa9fe565247e0710025ca075f",
+      "bytes": 15072,
+      "lines": 351,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 10,
-      "annotated_definitions": 10,
+      "definitions": 8,
+      "annotated_definitions": 8,
       "missing_definitions": []
     },
     {
       "path": "frontend/src/components/calendar/CalendarEventCard.status.test.js",
-      "sha256": "e6e2e05591b1773e58970a44691cc88da58c708950c6e6cb615fe3526d3784af",
-      "bytes": 2419,
+      "sha256": "d4e7268ba5e9ec7c6960f9bb49c9e9432568db87b77ad7173364ccb7576648d6",
+      "bytes": 2424,
       "lines": 38,
       "code": true,
       "status": "reviewed",
@@ -24006,6 +24006,19 @@
       "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/lib/calendarStatus.js",
+      "sha256": "9c45f3e686b2bb305c6d46d5881c1a5d968384857fd7415c22dd2eeffd5f91a1",
+      "bytes": 2404,
+      "lines": 33,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
       "missing_definitions": []
     },
     {
@@ -33708,16 +33721,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "78e0f197622884054835f958b62a1f5a484d9f5d81e2ff9ee2e5a1488628d2c1",
-  "javascript_inventory_sha256": "662361675e87355e39dfdcdf266c50e46aeb464eaa1ff645470fbf8df65827d1",
-  "baseline_commit": "1012b5c07d353bf55b2765fb7a767e561196182a",
+  "ledger_sha256": "627f23037c94f6ad63f4e2d5ebb46c46136237101334b14625b90d7ac306d093",
+  "javascript_inventory_sha256": "7631dcc6e06b5906f5ecb61c2ac21cb4c0b54d3bdaf7eab7873accb8a01f806b",
+  "baseline_commit": "953fc1614de378684cd1d247d7fd6014b9095d2a",
   "branch": "int/2026-11-14",
   "unstaged_at_capture": [
     "docs/client-mechanism-inventory.json",
     "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "frontend/src/components/ApiInterest.component.test.jsx",
-    "frontend/src/components/calendar/CalendarEventCard.jsx",
-    "frontend/src/pages/W6F.component.test.jsx"
+    "docs/indicator-index.json"
   ]
 }

@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2376  ·  **Строк:** 1 490 683  ·  **Токенов (≈):** 14 262 092
+**Файлов:** 2377  ·  **Строк:** 1 490 713  ·  **Токенов (≈):** 14 262 307
 
 ## По верхним папкам
 
@@ -19,8 +19,8 @@
 | `backend` | 1007 | 344 437 | 3 792 598 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 565 | 25 195 |
-| `docs` | 149 | 929 059 | 8 004 148 |
-| `frontend` | 1040 | 186 827 | 2 052 626 |
+| `docs` | 149 | 929 086 | 8 004 315 |
+| `frontend` | 1041 | 186 830 | 2 052 674 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 142 | 25 358 | 315 080 |
 
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 402 505 | 3 283 417 |
-| `docs/client-mechanism-inventory.json` | 259 755 | 1 833 046 |
+| `docs/client-mechanism-inventory.json` | 259 782 | 1 833 213 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -420,7 +420,6 @@
 | `frontend/src/lib/biLabels.js` | 382 | 4 036 |
 | `frontend/src/styles/w6d.css` | 222 | 4 031 |
 | `frontend/src/lib/api.js` | 380 | 4 020 |
-| `frontend/src/components/calendar/CalendarEventCard.jsx` | 381 | 4 018 |
 | `frontend/src/lib/planetLabels.test.js` | 272 | 4 016 |
 | `backend/app/services/newsletter_personal/signals.py` | 329 | 3 969 |
 | `backend/app/data/world_concepts.py` | 386 | 3 964 |
@@ -470,6 +469,7 @@
 | `frontend/src/pages/RegionProfile.jsx` | 333 | 3 619 |
 | `frontend/src/pages/WorldRegionsHome.component.test.jsx` | 330 | 3 619 |
 | `frontend/src/pages/ComparePage.component.test.jsx` | 343 | 3 609 |
+| `frontend/src/components/calendar/CalendarEventCard.jsx` | 351 | 3 607 |
 | `frontend/src/components/CookieConsent.jsx` | 332 | 3 605 |
 | `backend/app/services/seo_weekly_report.py` | 331 | 3 594 |
 | `frontend/src/lib/countryKeyFigures.js` | 326 | 3 587 |
@@ -1847,7 +1847,7 @@
 | `frontend/src/lib/consent.js` | 58 | 529 |
 | `frontend/src/lib/homeContinue.test.js` | 49 | 529 |
 | `frontend/src/components/SourceLink.component.test.jsx` | 45 | 528 |
-| `frontend/src/components/calendar/CalendarEventCard.status.test.js` | 38 | 527 |
+| `frontend/src/components/calendar/CalendarEventCard.status.test.js` | 38 | 528 |
 | `frontend/src/lib/slugFlags.js` | 36 | 527 |
 | `scripts/dev/perf_mem_replay.py` | 37 | 527 |
 | `frontend/src/components/regions/DownloadMenu.component.test.jsx` | 58 | 526 |
@@ -1937,6 +1937,7 @@
 | `backend/app/services/forecast_strategies/approved.py` | 62 | 462 |
 | `frontend/src/lib/compareTooltip.test.js` | 46 | 461 |
 | `frontend/src/lib/deltaText.test.js` | 40 | 459 |
+| `frontend/src/lib/calendarStatus.js` | 33 | 458 |
 | `backend/alembic/versions/20260510_calendar_official_provenance.py` | 52 | 457 |
 | `frontend/src/lib/deltaTone.test.js` | 32 | 457 |
 | `frontend/src/lib/r10aUnits.js` | 45 | 456 |

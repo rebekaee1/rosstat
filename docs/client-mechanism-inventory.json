@@ -87883,7 +87883,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/calendar/CalendarEventCard.jsx": {
-      "sha256": "c7ecb7a8222053f80f61ceaf209af0c6893657e6b315f1c0525bc1077abab5b7",
+      "sha256": "fadd6a83310bc55add388e167bd2b4f1d1d80d8aa9fe565247e0710025ca075f",
       "imports": [
         {
           "line": 1,
@@ -88085,93 +88085,90 @@
             "frontend/src/styles/ui-detail-nav-calendar.css"
           ],
           "bindings": []
+        },
+        {
+          "line": 19,
+          "end_line": 19,
+          "owner": "<module>",
+          "specifier": "../../lib/calendarStatus",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/calendarStatus.js"
+          ],
+          "bindings": [
+            "eventStatus"
+          ]
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 49,
-          "end_line": 60,
+          "line": 50,
+          "end_line": 61,
           "owner": "<module>",
           "name": "ImportanceBadge",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 62,
-          "end_line": 65,
-          "owner": "<module>",
-          "name": "localTodayIso",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
-          "line": 68,
-          "end_line": 72,
+          "line": 64,
+          "end_line": 68,
           "owner": "<module>",
           "name": "dayMonth",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 83,
-          "end_line": 99,
-          "owner": "<module>",
-          "name": "eventStatus",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
-          "line": 101,
-          "end_line": 137,
+          "line": 71,
+          "end_line": 107,
           "owner": "<module>",
           "name": "DateStatus",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 139,
-          "end_line": 147,
+          "line": 109,
+          "end_line": 117,
           "owner": "<module>",
           "name": "ValueCell",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 149,
-          "end_line": 182,
+          "line": 119,
+          "end_line": 152,
           "owner": "<module>",
           "name": "ActualValueCell",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 184,
-          "end_line": 381,
+          "line": 154,
+          "end_line": 351,
           "owner": "<module>",
           "name": "CalendarEventCard",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 200,
-          "end_line": 207,
+          "line": 170,
+          "end_line": 177,
           "owner": "CalendarEventCard",
           "name": "addToCalendar",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 217,
-          "end_line": 217,
+          "line": 187,
+          "end_line": 187,
           "owner": "CalendarEventCard",
           "name": "pathOf",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 333,
-          "end_line": 346,
+          "line": 303,
+          "end_line": 316,
           "owner": "CalendarEventCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -88180,43 +88177,43 @@
       ],
       "hooks": [
         {
-          "line": 50,
-          "end_line": 50,
+          "line": 51,
+          "end_line": 51,
           "owner": "ImportanceBadge",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 102,
-          "end_line": 102,
+          "line": 72,
+          "end_line": 72,
           "owner": "DateStatus",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 103,
-          "end_line": 103,
+          "line": 73,
+          "end_line": 73,
           "owner": "DateStatus",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 150,
-          "end_line": 150,
+          "line": 120,
+          "end_line": 120,
           "owner": "ActualValueCell",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 185,
-          "end_line": 185,
+          "line": 155,
+          "end_line": 155,
           "owner": "CalendarEventCard",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 186,
-          "end_line": 186,
+          "line": 156,
+          "end_line": 156,
           "owner": "CalendarEventCard",
           "callee": "useLocale",
           "arguments": []
@@ -88227,8 +88224,8 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 356,
-          "end_line": 364,
+          "line": 326,
+          "end_line": 334,
           "owner": "CalendarEventCard",
           "component": "button",
           "event": "onClick",
@@ -88237,8 +88234,8 @@
       ],
       "registries": [
         {
-          "line": 20,
-          "end_line": 46,
+          "line": 21,
+          "end_line": 47,
           "owner": "<module>",
           "name": "SOURCE_STYLES",
           "kind": "ObjectExpression",
@@ -88256,7 +88253,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/calendar/CalendarEventCard.status.test.js": {
-      "sha256": "e6e2e05591b1773e58970a44691cc88da58c708950c6e6cb615fe3526d3784af",
+      "sha256": "d4e7268ba5e9ec7c6960f9bb49c9e9432568db87b77ad7173364ccb7576648d6",
       "imports": [
         {
           "line": 1,
@@ -88275,10 +88272,10 @@
           "line": 2,
           "end_line": 2,
           "owner": "<module>",
-          "specifier": "./CalendarEventCard",
+          "specifier": "../../lib/calendarStatus",
           "category": "owned_source",
           "targets": [
-            "frontend/src/components/calendar/CalendarEventCard.jsx"
+            "frontend/src/lib/calendarStatus.js"
           ],
           "bindings": [
             "eventStatus"
@@ -126316,6 +126313,36 @@
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/lib/calendarStatus.js": {
+      "sha256": "9c45f3e686b2bb305c6d46d5881c1a5d968384857fd7415c22dd2eeffd5f91a1",
+      "imports": [],
+      "routes": [],
+      "functions": [
+        {
+          "line": 3,
+          "end_line": 6,
+          "owner": "<module>",
+          "name": "localTodayIso",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 17,
+          "end_line": 33,
+          "owner": "<module>",
+          "name": "eventStatus",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
         }
       ],
       "hooks": [],
@@ -259739,7 +259766,7 @@
     }
   },
   "totals": {
-    "imports": 4882,
+    "imports": 4883,
     "routes": 100,
     "functions": 15555,
     "hooks": 2871,
@@ -259749,7 +259776,7 @@
     "jsx_handlers": 1260,
     "registries": 719,
     "mcp_tools": 7,
-    "files": 923,
+    "files": 924,
     "parse_errors": 0
   }
 }

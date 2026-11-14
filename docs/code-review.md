@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `1012b5c07d353bf55b2765fb7a767e561196182a`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `953fc1614de378684cd1d247d7fd6014b9095d2a`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2590 |
-| Код, шаблоны и стили | 2104 |
-| Актуальные рецензии без пропусков guard | 2590 |
+| Файлы в явно определённом scope | 2591 |
+| Код, шаблоны и стили | 2105 |
+| Актуальные рецензии без пропусков guard | 2591 |
 | Именованные определения Python/JS: с аннотацией / всего | 17199 / 17199 |
 | Файлы, требующие внимания | 0 |
 
@@ -1733,7 +1733,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/cabinet/cabinet.c13.component.test.jsx](../frontend/src/components/cabinet/cabinet.c13.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/cabinet/cabinet.c14.component.test.jsx](../frontend/src/components/cabinet/cabinet.c14.component.test.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/cabinet/cabinet.component.test.jsx](../frontend/src/components/cabinet/cabinet.component.test.jsx) | reviewed | 2/2 | актуально |
-| [frontend/src/components/calendar/CalendarEventCard.jsx](../frontend/src/components/calendar/CalendarEventCard.jsx) | reviewed | 10/10 | актуально |
+| [frontend/src/components/calendar/CalendarEventCard.jsx](../frontend/src/components/calendar/CalendarEventCard.jsx) | reviewed | 8/8 | актуально |
 | [frontend/src/components/calendar/CalendarEventCard.status.test.js](../frontend/src/components/calendar/CalendarEventCard.status.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/components/calendar/CalendarFilters.jsx](../frontend/src/components/calendar/CalendarFilters.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/calendar/CalendarGrid.jsx](../frontend/src/components/calendar/CalendarGrid.jsx) | reviewed | 3/3 | актуально |
@@ -1882,6 +1882,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/calendarGrouping.test.js](../frontend/src/lib/calendarGrouping.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/calendarIcs.js](../frontend/src/lib/calendarIcs.js) | reviewed | 6/6 | актуально |
 | [frontend/src/lib/calendarIcs.test.js](../frontend/src/lib/calendarIcs.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/calendarStatus.js](../frontend/src/lib/calendarStatus.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/calendarText.js](../frontend/src/lib/calendarText.js) | reviewed | 7/7 | актуально |
 | [frontend/src/lib/calendarText.test.js](../frontend/src/lib/calendarText.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/categories.js](../frontend/src/lib/categories.js) | reviewed | 8/8 | актуально |

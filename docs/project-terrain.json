@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "1012b5c07d353bf55b2765fb7a767e561196182a",
+  "baseline_commit": "953fc1614de378684cd1d247d7fd6014b9095d2a",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
     "docs/client-mechanism-inventory.json",
@@ -9,27 +9,24 @@
     "docs/code-review/coverage.json",
     "docs/code-review/javascript-symbols.json",
     "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json",
-    "frontend/src/components/ApiInterest.component.test.jsx",
-    "frontend/src/components/calendar/CalendarEventCard.jsx",
-    "frontend/src/pages/W6F.component.test.jsx"
+    "docs/indicator-index.json"
   ],
   "untracked_at_capture": [],
   "stats": {
-    "files": 2590,
-    "attempted": 2218,
-    "files_with_nodes": 2122,
-    "nodes": 26634,
-    "symbol_edges": 84320,
-    "file_edges": 19248,
+    "files": 2591,
+    "attempted": 2219,
+    "files_with_nodes": 2123,
+    "nodes": 26635,
+    "symbol_edges": 84321,
+    "file_edges": 19250,
     "projection_omissions": {
       "external_or_unresolved_file": 3265,
       "missing_endpoint": 4746,
-      "within_file": 36627
+      "within_file": 36626
     },
     "confidence": {
-      "EXTRACTED": 76258,
-      "INFERRED": 8062
+      "EXTRACTED": 76260,
+      "INFERRED": 8061
     }
   },
   "overview": {
@@ -47,9 +44,9 @@
       {
         "id": "client",
         "label": "Клиент: данные, hooks и состояние",
-        "files": 244,
-        "code": 238,
-        "with_nodes": 238,
+        "files": 245,
+        "code": 239,
+        "with_nodes": 239,
         "file_node_only": 1,
         "semantic_evidence": 4
       },
@@ -232,8 +229,8 @@
       {
         "source": "browser",
         "target": "client",
-        "file_relations": 3265,
-        "symbol_relations": 5188
+        "file_relations": 3268,
+        "symbol_relations": 5191
       },
       {
         "source": "browser",
@@ -292,8 +289,8 @@
       {
         "source": "docs",
         "target": "browser",
-        "file_relations": 251,
-        "symbol_relations": 338
+        "file_relations": 250,
+        "symbol_relations": 337
       },
       {
         "source": "docs",
@@ -616,14 +613,14 @@
       {
         "source": "tests",
         "target": "browser",
-        "file_relations": 554,
-        "symbol_relations": 590
+        "file_relations": 552,
+        "symbol_relations": 588
       },
       {
         "source": "tests",
         "target": "client",
-        "file_relations": 754,
-        "symbol_relations": 1523
+        "file_relations": 756,
+        "symbol_relations": 1525
       },
       {
         "source": "tests",
@@ -742,8 +739,8 @@
       "scripts/deploy.sh",
       "scripts/pg-backup.sh"
     ],
-    "code_files": 2104,
-    "code_with_nodes": 2006,
+    "code_files": 2105,
+    "code_with_nodes": 2007,
     "code_file_node_only": 135
   },
   "input_scope": "tracked",
@@ -1890,8 +1887,8 @@
     {"path": "docs/architecture.md", "kind": "document", "bytes": 98346, "lines": 468, "sha256": "93d312d6793b2b15f1cdbaaf354b8271ed34440d91974c1e267378da13d3f7d0", "symlink": false, "nodes": 32, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/backlog.md", "kind": "document", "bytes": 815727, "lines": 3812, "sha256": "5676349dcf3b85e60492b9b19a3b9581e51733950ba60ad5a3e5301dc5c88a0f", "symlink": false, "nodes": 207, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/circle-playbook.md", "kind": "document", "bytes": 26180, "lines": 124, "sha256": "157a0677237f20afde22faf1bb85e95c88802c3a9bbb30742831a68485bc7daf", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7368486, "lines": 259755, "sha256": "0eeaeb1f7228ab90554753700bf3a4fd7c1a4c75cbf2f08fa9324e91eb3f8211", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 14011, "lines": 142, "sha256": "1d8b2adc082d8de0a5f58bbfd30eacf2d88c04962e6350bbf26b7806563797b8", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7369155, "lines": 259782, "sha256": "8202b085eda92bae7378995b0b2f73988bf50a2b315595662c5c6cdf66a9a595", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 14011, "lines": 142, "sha256": "3c1ec80b5fe212f15c44d25d12fea64ab7a3c5cd629e3a97440e2f0c96ce50a4", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 31882, "lines": 161, "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/data-contracts.md", "kind": "document", "bytes": 429901, "lines": 1370, "sha256": "17769941f4875e058dda7d38d3737db47008061a24c4dab9596fc4b0decfcdd2", "symlink": false, "nodes": 110, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/data_sources.md", "kind": "document", "bytes": 124851, "lines": 789, "sha256": "1c65359cba04db11e5e38ccf527271038b0c3efde47990e20f606f8df27f46b6", "symlink": false, "nodes": 40, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1934,7 +1931,7 @@
     {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 87646, "lines": 367, "sha256": "1b5658dfb97f5494afe4dd9d217dfd8b3bbd10acce2f7e5b9de06326babeec3e", "symlink": false, "nodes": 24, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3919950, "lines": 138903, "sha256": "f455af6a24cef01d6096b6a61f1dfd037cd255dc67ee82ce8a772e1aee220840", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3920081, "lines": 138908, "sha256": "cb9bdb8464c7658810d03b541d7459de1c09e7989402395166030e6ee8e60bac", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 160576, "lines": 1824, "sha256": "8e224ca292c3c68855ec250a66e4c8811b76ae87d65886a66926ac51ec0ec449", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 80104, "lines": 201, "sha256": "ca400019e555ee120a4267b349201b94a05d354cb23ed078b36dbbfc08cb8654", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11924, "lines": 111, "sha256": "850a062686dbafd8c6047c9f015043ada0378d27d6c2f89ea3ed2026416f1a97", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -2443,8 +2440,8 @@
     {"path": "frontend/src/components/cabinet/cabinet.c13.component.test.jsx", "kind": "code", "bytes": 8741, "lines": 156, "sha256": "f4cc7bb76b4c83cb6e16fd611d56bdc49da7ff1ac12ce5fdd1cc270fbe2d7ec7", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/cabinet/cabinet.c14.component.test.jsx", "kind": "code", "bytes": 6787, "lines": 122, "sha256": "b1e7d4b641827f8622b31b6c861714a4e4bf17cbba780f4fd418aaacab6dfac4", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/cabinet/cabinet.component.test.jsx", "kind": "code", "bytes": 7872, "lines": 148, "sha256": "d5fc454c76f7ec11c793451f3938cf6c98283b1d96f5d74e238944476cae65b3", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
-    {"path": "frontend/src/components/calendar/CalendarEventCard.jsx", "kind": "code", "bytes": 17213, "lines": 381, "sha256": "c7ecb7a8222053f80f61ceaf209af0c6893657e6b315f1c0525bc1077abab5b7", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
-    {"path": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "kind": "code", "bytes": 2419, "lines": 38, "sha256": "e6e2e05591b1773e58970a44691cc88da58c708950c6e6cb615fe3526d3784af", "symlink": false, "nodes": 1, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
+    {"path": "frontend/src/components/calendar/CalendarEventCard.jsx", "kind": "code", "bytes": 15072, "lines": 351, "sha256": "fadd6a83310bc55add388e167bd2b4f1d1d80d8aa9fe565247e0710025ca075f", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
+    {"path": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "kind": "code", "bytes": 2424, "lines": 38, "sha256": "d4e7268ba5e9ec7c6960f9bb49c9e9432568db87b77ad7173364ccb7576648d6", "symlink": false, "nodes": 1, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/calendar/CalendarFilters.jsx", "kind": "code", "bytes": 3588, "lines": 115, "sha256": "8a1672307c3c6c408ddb2cfb8f4ca90cfdebfcd21e28134cb2d0654215727b36", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/calendar/CalendarGrid.jsx", "kind": "code", "bytes": 11096, "lines": 253, "sha256": "f84256b1d7168b7076e886a682461e0dbee210f65f738486d60fbb1ef3028855", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/calendar/CalendarHero.jsx", "kind": "code", "bytes": 4952, "lines": 124, "sha256": "6f6b85a64642e0edfe830963ee6a5a89c9e0d7eab66b88c44ac3444cfbbde246", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
@@ -2592,6 +2589,7 @@
     {"path": "frontend/src/lib/calendarGrouping.test.js", "kind": "code", "bytes": 6951, "lines": 182, "sha256": "2bd472a2fe24ccb6c754fb7a518eeee731fe10a0d02e301a9cc86e22a305fec9", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/calendarIcs.js", "kind": "code", "bytes": 3973, "lines": 101, "sha256": "2c423e80fb8855751aa0e35d369973abe111ecc20d1bebda282187d44c842611", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/calendarIcs.test.js", "kind": "code", "bytes": 1539, "lines": 32, "sha256": "046d2a6e5882e6eacb682fb53f4d6c382ac28dbaa39dc85b798d49f6161cd1af", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
+    {"path": "frontend/src/lib/calendarStatus.js", "kind": "code", "bytes": 2404, "lines": 33, "sha256": "9c45f3e686b2bb305c6d46d5881c1a5d968384857fd7415c22dd2eeffd5f91a1", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/calendarText.js", "kind": "code", "bytes": 7104, "lines": 116, "sha256": "afe759176e341b456711241346007b9bf0e3b7269c1d98f1dfea90e294877b4e", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/calendarText.test.js", "kind": "code", "bytes": 3287, "lines": 63, "sha256": "5f0c16427d44ebe571f0d2d253021156f62a409f733e575df64c2ff74004d298", "symlink": false, "nodes": 1, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/categories.js", "kind": "code", "bytes": 13367, "lines": 292, "sha256": "86f595f4b11d2923dfb8fdae35bdc78c953a302ead30984dbd6d698298af7895", "symlink": false, "nodes": 12, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
@@ -13372,7 +13370,6 @@
     {"source": "docs/data-contracts.md", "target": "frontend/src/components/R7PricesBlock.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L1192", "source": "2026-11-09 — круг 9: `movers` в сводке цен, `prev` и `missing` в рейтинге цен, правило чтения `region_monthly_data` (локально, не выпущено)", "target": "deriveMovers()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/components/RecentPagesTracker.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L578", "source": "Круг 11 (09.10.2026): личный кабинет за флагом, `POST /export/grid`, браузерные ключи (локально, не выпущено)", "target": "RecentPagesTracker()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/components/cabinet/ProfilePanel.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L1366", "source": "Почта сайта — 2026-11-14", "target": "ProfilePanel()"}]},
-    {"source": "docs/data-contracts.md", "target": "frontend/src/components/calendar/CalendarEventCard.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L365", "source": "5. Календарь публикаций", "target": "eventStatus()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/components/country/CountryKeyFigures.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L607", "source": "Страница страны: «Главное» в HTML и предзагрузка `#fe-country-bootstrap`", "target": "CountryKeyFigures()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/components/regions/R6Annual.jsx", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L1166", "source": "2026-11-09 — круг 6: `rank.around`, кэш карточки региона v3 (локально, не выпущено)", "target": "R6RatingExtras()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/components/regions/RegionPricesSubgroups.jsx", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L1188", "source": "2026-11-09 — круг 8: `nearest` в ответе поиска, офлайн-память курсов (локально, не выпущено)", "target": "goodsSubgroup()"}]},
@@ -17215,37 +17212,40 @@
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/components/SourceLink.jsx", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L6", "source": "CalendarEventCard.jsx", "target": "SourceLink()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/components/SourceLink.jsx", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L6", "source": "CalendarEventCard.jsx", "target": "SourceLink.jsx"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/i18n/index.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L13", "source": "CalendarEventCard.jsx", "target": "index.js"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/i18n/localeContext.js", "relation": "calls", "confidence": "EXTRACTED", "count": 6, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L50", "source": "ImportanceBadge()", "target": "useT()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/i18n/localeContext.js", "relation": "calls", "confidence": "EXTRACTED", "count": 6, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L51", "source": "ImportanceBadge()", "target": "useT()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/i18n/localeContext.js", "relation": "imports", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L13", "source": "CalendarEventCard.jsx", "target": "useLocale()"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/cabinetSubjects.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L352", "source": "CalendarEventCard()", "target": "russiaIndicatorSubject()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/cabinetSubjects.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L322", "source": "CalendarEventCard()", "target": "russiaIndicatorSubject()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/cabinetSubjects.js", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L8", "source": "CalendarEventCard.jsx", "target": "russiaIndicatorSubject()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/cabinetSubjects.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L8", "source": "CalendarEventCard.jsx", "target": "cabinetSubjects.js"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarIcs.js", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L201", "source": "CalendarEventCard()", "target": "buildEventIcs()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarIcs.js", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L171", "source": "CalendarEventCard()", "target": "buildEventIcs()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarIcs.js", "relation": "imports", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L16", "source": "CalendarEventCard.jsx", "target": "buildEventIcs()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarIcs.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L16", "source": "CalendarEventCard.jsx", "target": "calendarIcs.js"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarText.js", "relation": "calls", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L195", "source": "CalendarEventCard()", "target": "plainEventTitle()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarStatus.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L74", "source": "DateStatus()", "target": "eventStatus()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarStatus.js", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L19", "source": "CalendarEventCard.jsx", "target": "eventStatus()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarStatus.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L19", "source": "CalendarEventCard.jsx", "target": "calendarStatus.js"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarText.js", "relation": "calls", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L165", "source": "CalendarEventCard()", "target": "plainEventTitle()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarText.js", "relation": "imports", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L14", "source": "CalendarEventCard.jsx", "target": "plainEventTitle()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/calendarText.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L14", "source": "CalendarEventCard.jsx", "target": "calendarText.js"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/deltaTone.js", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L169", "source": "ActualValueCell()", "target": "deltaTone()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/deltaTone.js", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L139", "source": "ActualValueCell()", "target": "deltaTone()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/deltaTone.js", "relation": "imports", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L15", "source": "CalendarEventCard.jsx", "target": "deltaTone()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/deltaTone.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L15", "source": "CalendarEventCard.jsx", "target": "deltaTone.js"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/format.js", "relation": "calls", "confidence": "EXTRACTED", "count": 5, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L69", "source": "dayMonth()", "target": "formatDate()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/format.js", "relation": "calls", "confidence": "EXTRACTED", "count": 5, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L65", "source": "dayMonth()", "target": "formatDate()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/format.js", "relation": "imports", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L3", "source": "CalendarEventCard.jsx", "target": "cn()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/format.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L3", "source": "CalendarEventCard.jsx", "target": "format.js"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/siteOrigin.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L204", "source": "CalendarEventCard()", "target": "getSiteOrigin()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/siteOrigin.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L174", "source": "CalendarEventCard()", "target": "getSiteOrigin()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/siteOrigin.js", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L17", "source": "CalendarEventCard.jsx", "target": "getSiteOrigin()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/siteOrigin.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L17", "source": "CalendarEventCard.jsx", "target": "siteOrigin.js"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/sitePaths.js", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L204", "source": "CalendarEventCard()", "target": "calendarPath()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/sitePaths.js", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L174", "source": "CalendarEventCard()", "target": "calendarPath()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/sitePaths.js", "relation": "imports", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L9", "source": "CalendarEventCard.jsx", "target": "calendarPath()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/sitePaths.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L9", "source": "CalendarEventCard.jsx", "target": "sitePaths.js"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/sourceLink.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L375", "source": "CalendarEventCard()", "target": "isExternalHref()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/sourceLink.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L345", "source": "CalendarEventCard()", "target": "isExternalHref()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/sourceLink.js", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L5", "source": "CalendarEventCard.jsx", "target": "isExternalHref()"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/sourceLink.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L5", "source": "CalendarEventCard.jsx", "target": "sourceLink.js"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/uiTokens.js", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L4", "source": "CalendarEventCard.jsx", "target": "FOCUS_RING_SURFACE"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.jsx", "target": "frontend/src/lib/uiTokens.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.jsx", "line": "L4", "source": "CalendarEventCard.jsx", "target": "uiTokens.js"}]},
     {"source": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "target": "frontend/package.json", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "line": "L1", "source": "CalendarEventCard.status.test.js", "target": "vitest"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "target": "frontend/src/components/calendar/CalendarEventCard.jsx", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "line": "L2", "source": "CalendarEventCard.status.test.js", "target": "eventStatus()"}]},
-    {"source": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "target": "frontend/src/components/calendar/CalendarEventCard.jsx", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "line": "L2", "source": "CalendarEventCard.status.test.js", "target": "CalendarEventCard.jsx"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "target": "frontend/src/lib/calendarStatus.js", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "line": "L2", "source": "CalendarEventCard.status.test.js", "target": "eventStatus()"}]},
+    {"source": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "target": "frontend/src/lib/calendarStatus.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarEventCard.status.test.js", "line": "L2", "source": "CalendarEventCard.status.test.js", "target": "calendarStatus.js"}]},
     {"source": "frontend/src/components/calendar/CalendarFilters.jsx", "target": "frontend/package.json", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarFilters.jsx", "line": "L1", "source": "CalendarFilters.jsx", "target": "lucide-react"}]},
     {"source": "frontend/src/components/calendar/CalendarFilters.jsx", "target": "frontend/src/i18n/index.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarFilters.jsx", "line": "L4", "source": "CalendarFilters.jsx", "target": "index.js"}]},
     {"source": "frontend/src/components/calendar/CalendarFilters.jsx", "target": "frontend/src/i18n/localeContext.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/components/calendar/CalendarFilters.jsx", "line": "L30", "source": "CalendarFilters()", "target": "useT()"}]},

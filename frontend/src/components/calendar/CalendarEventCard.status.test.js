@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { eventStatus } from './CalendarEventCard';
+import { eventStatus } from '../../lib/calendarStatus';
 
 const TODAY = '2026-11-14';
 
