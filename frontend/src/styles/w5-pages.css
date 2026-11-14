@@ -423,6 +423,8 @@
 .fe-calendar-event.border-l-blue-500::before { background: var(--color-blue-500, #3b82f6); }
 .fe-calendar-event.border-l-emerald-500::before { background: var(--color-emerald-500, #10b981); }
 .fe-calendar-event.border-l-amber-500::before { background: var(--color-amber-500, #f59e0b); }
+/* Мировые выпуски (ФРС, BEA, Eurostat; 14.11.2026): холодный графит, без золота по умолчанию. */
+.fe-calendar-event.border-l-slate-500::before { background: var(--color-slate-500, #64748b); }
 
 /* Чекбокс согласия на входе/регистрации: заметная рамка вместо бледной системной. */
 .fe-auth-card input[type='checkbox'] {

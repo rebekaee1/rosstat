@@ -94,7 +94,7 @@ export const JSX_BORDER_ALLOW = [
   { file: 'pages/TodayIndicatorPage.jsx', token: /^border-t$|^border-border-subtle$/, why: 'п.2: строки таблицы значений (<tr>)' },
   { file: 'components/PlanetLabels.jsx', token: /^border$/, why: 'не CSS: слово «border» в тексте GLSL-шейдера планеты (рамка панели на текстуре подписей)' },
   { file: 'components/RegionAnnualChart.jsx', token: /^border-t-2$|^border-dashed$/, why: 'п.3: образец штриховой линии в легенде графика' },
-  { file: 'components/calendar/CalendarEventCard.jsx', token: /^border-l-(blue|emerald|amber)-500$|^border-l-\[3px\]$|^border$/, why: 'п.4: цвет акцента слева у события (3 px, рисуется ::before)' },
+  { file: 'components/calendar/CalendarEventCard.jsx', token: /^border-l-(blue|emerald|amber|slate)-500$|^border-l-\[3px\]$|^border$/, why: 'п.4: цвет акцента слева у события (3 px, рисуется ::before)' },
 ];
 
 // Токен рамки Tailwind с любым вариантом (sm:, hover:, group-hover: ...). Фокусные варианты допустимы (п.1).

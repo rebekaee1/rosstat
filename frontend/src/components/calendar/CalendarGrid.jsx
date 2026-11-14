@@ -14,12 +14,18 @@ const SOURCE_DOT = {
   cbr: 'bg-blue-500',
   rosstat: 'bg-emerald-500',
   minfin: 'bg-amber-500',
+  fed: 'bg-slate-500',
+  bea: 'bg-slate-500',
+  eurostat: 'bg-slate-500',
 };
 
 const SOURCE_BAR = {
   cbr: 'is-cbr',
   rosstat: 'is-rosstat',
   minfin: 'is-minfin',
+  fed: 'is-world',
+  bea: 'is-world',
+  eurostat: 'is-world',
 };
 
 function buildGrid(year, month) {
@@ -90,6 +96,8 @@ export default function CalendarGrid({
     { value: 'cbr', label: t('calendar.source.cbr'), dot: 'bg-blue-500' },
     { value: 'rosstat', label: t('calendar.source.rosstat'), dot: 'bg-emerald-500' },
     { value: 'minfin', label: t('calendar.source.minfin'), dot: 'bg-amber-500' },
+    // Мировые выпуски (ФРС, BEA, Eurostat) — отдельным выбором: страница — календарь России (14.11.2026).
+    { value: 'world', label: t('calendar.source.world'), dot: 'bg-slate-500' },
   ];
 
   return (

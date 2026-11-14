@@ -18,6 +18,18 @@ router = APIRouter(prefix="/calendar", tags=["calendar"])
 
 CACHE_TTL = 900  # 15 min
 PUBLIC_CONFIDENCES = ("official_explicit", "official_rule")
+# Календарь России по умолчанию — российские источники; мировые выпуски (ФРС, BEA, Eurostat, с 14.11.2026)
+# показываются, когда их просят явно (`source=fed,bea,eurostat`): страница называется «календарь России».
+RUSSIAN_SOURCES = ("cbr", "rosstat", "minfin")
+WORLD_SOURCES = ("fed", "bea", "eurostat")
+
+
+def _sources_condition(source: Optional[str]):
+    if not source:
+        return EconomicEvent.source.in_(RUSSIAN_SOURCES)
+    if source.strip() == "all":
+        return EconomicEvent.source.in_(RUSSIAN_SOURCES + WORLD_SOURCES)
+    return EconomicEvent.source.in_([s.strip() for s in source.split(",") if s.strip()])
 
 
 def _public_calendar_conditions():
@@ -26,6 +38,8 @@ def _public_calendar_conditions():
         or_(
             EconomicEvent.date_confidence == "official_explicit",
             and_(EconomicEvent.date_confidence == "official_rule", EconomicEvent.source == "cbr"),
+            # Срок «не позднее» из опубликованного правила Минфина (14.11.2026, утверждено владельцем).
+            and_(EconomicEvent.date_confidence == "official_deadline", EconomicEvent.source == "minfin"),
         ),
         EconomicEvent.is_estimated.is_(False),
         EconomicEvent.event_key.is_not(None),
@@ -38,7 +52,8 @@ def _public_calendar_conditions():
 def _is_public_source_bound_event(ev: EconomicEvent) -> bool:
     return (
         (ev.date_confidence == "official_explicit"
-         or (ev.date_confidence == "official_rule" and ev.source == "cbr"))
+         or (ev.date_confidence == "official_rule" and ev.source == "cbr")
+         or (ev.date_confidence == "official_deadline" and ev.source == "minfin"))
         and ev.is_estimated is False
         and bool(ev.event_key)
         and bool(ev.source_url)
@@ -54,6 +69,54 @@ def _effective_status(ev: EconomicEvent) -> str:
     if ev.status in ("scheduled", "released"):
         return "awaiting_confirmation" if ev.scheduled_date < today_msk() else "scheduled"
     return ev.status
+
+
+def _rescheduled_from(ev: EconomicEvent):
+    """Прежняя официальная дата, если источник перенёс событие на текущую (последняя запись аудита)."""
+    from datetime import date as _date
+
+    audit = (ev.metadata_json or {}).get("reschedule_audit") or []
+    if not audit or ev.date_confidence != "official_explicit":
+        return None
+    last = audit[-1] or {}
+    try:
+        previous = _date.fromisoformat(str(last.get("previous_date")))
+        new = _date.fromisoformat(str(last.get("new_date")))
+    except ValueError:
+        return None
+    if new != ev.scheduled_date or previous == ev.scheduled_date:
+        return None
+    return previous
+
+
+def _world_details(ev: EconomicEvent) -> dict:
+    return (((ev.metadata_json or {}).get("provenance") or {}).get("details") or {})
+
+
+def _world_link(ev: EconomicEvent):
+    """Адрес карточки мирового ряда (страна → ряд), если ряд есть в каталоге."""
+    details = _world_details(ev)
+    slug, code = details.get("world_country_slug"), details.get("world_code")
+    if not (details.get("world") and slug and code):
+        return None
+    return f"/{slug}/{code}"
+
+
+def _world_country(ev: EconomicEvent):
+    details = _world_details(ev)
+    if not details.get("world"):
+        return None
+    return details.get("country_en") if get_locale() == "en" else details.get("country_ru")
+
+
+def _released_on(ev: EconomicEvent):
+    from datetime import date as _date
+
+    raw = ((ev.metadata_json or {}).get("release_fact") or {}).get("seen_on")
+    try:
+        return _date.fromisoformat(str(raw)) if raw else None
+    except ValueError:
+        return None
 
 
 def _build_event_out(ev: EconomicEvent, indicator: Indicator | None) -> CalendarEventOut:
@@ -91,6 +154,11 @@ def _build_event_out(ev: EconomicEvent, indicator: Indicator | None) -> Calendar
         source_hash=ev.source_hash,
         indicator_code=indicator.code if indicator else None,
         indicator_name=indicator_name,
+        rescheduled_from=_rescheduled_from(ev),
+        link_path=_world_link(ev),
+        country=_world_country(ev),
+        deadline=ev.date_confidence == "official_deadline",
+        released_on=_released_on(ev) if _effective_status(ev) == "released" else None,
     )
 
 
@@ -112,7 +180,7 @@ async def list_events(
 
     # Locale in key: event.title is localized via event_public_title (RU/EN race otherwise).
     cache_key = (
-        f"fe:calendar:sourcebound-v2:{get_locale()}:{from_date}:{to_date}:"
+        f"fe:calendar:sourcebound-v4:{get_locale()}:{from_date}:{to_date}:"
         f"{source}:{importance}:{event_type}:{limit}:{offset}"
     )
     cached = await cache_get(cache_key)
@@ -124,9 +192,6 @@ async def list_events(
         EconomicEvent.scheduled_date <= to_date,
         *_public_calendar_conditions(),
     ]
-    if source:
-        sources = [s.strip() for s in source.split(",")]
-        conditions.append(EconomicEvent.source.in_(sources))
     if importance:
         levels = [int(x.strip()) for x in importance.split(",") if x.strip().isdigit()]
         if levels:
@@ -134,6 +199,8 @@ async def list_events(
     if event_type:
         types = [t.strip() for t in event_type.split(",")]
         conditions.append(EconomicEvent.event_type.in_(types))
+
+    conditions.append(_sources_condition(source))
 
     count_q = await db.execute(
         select(func.count(EconomicEvent.id)).where(and_(*conditions))
@@ -167,11 +234,13 @@ async def upcoming_events(
         description="Только события этого показателя (например key-rate: «Следующее заседание»)",
     ),
     event_type: Optional[str] = Query(None, description="Comma-separated event types, e.g. rate_decision"),
+    source: Optional[str] = Query(None, description="Comma-separated sources; default — Russian (cbr,rosstat,minfin); all"),
 ):
     cache_key = (
-        f"fe:calendar:upcoming:sourcebound-v2:{get_locale()}:{limit}:{importance_min}"
+        f"fe:calendar:upcoming:sourcebound-v4:{get_locale()}:{limit}:{importance_min}"
         + (f":{indicator_code}" if indicator_code else "")
         + (f":{event_type}" if event_type else "")
+        + (f":src={source}" if source else "")
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -184,6 +253,7 @@ async def upcoming_events(
         EconomicEvent.actual_value.is_(None),
         EconomicEvent.status != "released",
         *_public_calendar_conditions(),
+        _sources_condition(source),
     ]
     if indicator_code:
         conditions.append(Indicator.code == indicator_code)
@@ -230,7 +300,101 @@ ICAL_HEADER = (
     "METHOD:PUBLISH\r\n"
     "X-WR-CALNAME:Forecast Economy — Экономический календарь\r\n"
     "X-WR-TIMEZONE:Europe/Moscow\r\n"
+    "REFRESH-INTERVAL;VALUE=DURATION:PT12H\r\n"
+    "X-PUBLISHED-TTL:PT12H\r\n"
 )
+
+# Москва — UTC+3 круглый год; время событий пишется в UTC, чтобы календарь телефона
+# не зависел от того, знает ли он зону Europe/Moscow.
+_MSK_OFFSET_HOURS = 3
+
+
+def _ics_escape(text: str) -> str:
+    return (
+        (text or "")
+        .replace("\\", "\\\\")
+        .replace(";", "\\;")
+        .replace(",", "\\,")
+        .replace("\r\n", "\\n")
+        .replace("\n", "\\n")
+    )
+
+
+def _ics_fold(line: str) -> str:
+    """RFC 5545 3.1: строки длиннее 75 октетов переносятся с пробелом в начале продолжения."""
+    raw = line.encode("utf-8")
+    if len(raw) <= 75:
+        return line + "\r\n"
+    parts: list[str] = []
+    current = b""
+    limit = 75
+    for ch in line:
+        enc = ch.encode("utf-8")
+        if len(current) + len(enc) > limit:
+            parts.append(current.decode("utf-8"))
+            current = b""
+            limit = 74  # у продолжения первый октет — пробел
+        current += enc
+    parts.append(current.decode("utf-8"))
+    return "\r\n ".join(parts) + "\r\n"
+
+
+def _ics_uid(ev: EconomicEvent) -> str:
+    """Постоянный UID: от источника и ключа события, а не от номера строки в базе.
+
+    Номер строки менялся, когда строку пересоздавали, и подписанный календарь получал
+    дубль вместо переноса. Ключ события переживает перенос даты — телефон сдвигает событие.
+    """
+    import hashlib
+
+    basis = f"{ev.source}|{ev.event_type}|{ev.event_key or ev.id}"
+    return "fe-" + hashlib.sha1(basis.encode("utf-8")).hexdigest()[:24] + "@forecasteconomy.com"
+
+
+def _ics_event_lines(ev: EconomicEvent, indicator: Indicator | None, dtstamp: str) -> list[str]:
+    from datetime import datetime as _dt
+    from datetime import timedelta as _td
+
+    from app.services.seo_i18n import event_public_title
+
+    summary = event_public_title(ev.title, ev.title_en)
+    if ev.reference_period:
+        summary += f" ({ev.reference_period})"
+    status = _effective_status(ev)
+    moved_from = _rescheduled_from(ev)
+    desc_parts = []
+    if ev.description:
+        desc_parts.append(ev.description)
+    if moved_from:
+        desc_parts.append(f"Источник перенёс дату с {moved_from.strftime('%d.%m.%Y')}.")
+    if ev.scheduled_time:
+        desc_parts.append(f"Время: {ev.scheduled_time} МСК")
+    if ev.previous_value:
+        desc_parts.append(f"Предыдущее: {ev.previous_value}")
+    if status == "released" and ev.actual_value:
+        desc_parts.append(f"Факт: {ev.actual_value}")
+    desc_parts.append(f"Источник: {ev.source_url or ev.source.upper()}")
+
+    lines = ["BEGIN:VEVENT", f"UID:{_ics_uid(ev)}", f"DTSTAMP:{dtstamp}"]
+    time_ok = bool(ev.scheduled_time) and len(ev.scheduled_time) == 5 and ev.scheduled_time[2] == ":"
+    if time_ok:
+        hh, mm = int(ev.scheduled_time[:2]), int(ev.scheduled_time[3:])
+        start = _dt(ev.scheduled_date.year, ev.scheduled_date.month, ev.scheduled_date.day, hh, mm) \
+            - _td(hours=_MSK_OFFSET_HOURS)
+        lines.append(f"DTSTART:{start.strftime('%Y%m%dT%H%M%SZ')}")
+        lines.append(f"DTEND:{(start + _td(minutes=30)).strftime('%Y%m%dT%H%M%SZ')}")
+    else:
+        lines.append(f"DTSTART;VALUE=DATE:{ev.scheduled_date.strftime('%Y%m%d')}")
+        lines.append(f"DTEND;VALUE=DATE:{(ev.scheduled_date + _td(days=1)).strftime('%Y%m%d')}")
+    lines.append(f"SUMMARY:{_ics_escape(summary)}")
+    lines.append(f"DESCRIPTION:{_ics_escape(chr(10).join(desc_parts))}")
+    if ev.source_url:
+        lines.append(f"URL:{ev.source_url}")
+    # Номер версии растёт с каждым переносом: календарь телефона заменит старую дату.
+    lines.append(f"SEQUENCE:{len((ev.metadata_json or {}).get('reschedule_audit') or [])}")
+    lines.append("TRANSP:TRANSPARENT")
+    lines.append("END:VEVENT")
+    return lines
 
 
 @router.get("/export/ical", response_class=PlainTextResponse)
@@ -239,52 +403,39 @@ async def export_ical(
     from_date: Optional[date] = Query(None, alias="from"),
     to_date: Optional[date] = Query(None, alias="to"),
     importance_min: int = Query(2, ge=1, le=3),
+    source: Optional[str] = Query(None, description="Comma-separated sources; default — Russian; all"),
 ):
+    from datetime import datetime as _dt
+    from datetime import timezone as _tz
+
     if not from_date:
-        from_date = today_msk()
+        from_date = today_msk() - timedelta(days=14)
     if not to_date:
-        to_date = from_date + timedelta(days=90)
+        to_date = today_msk() + timedelta(days=180)
 
     stmt = (
-        select(EconomicEvent)
+        select(EconomicEvent, Indicator)
+        .outerjoin(Indicator, EconomicEvent.indicator_id == Indicator.id)
         .where(
             EconomicEvent.scheduled_date >= from_date,
             EconomicEvent.scheduled_date <= to_date,
             EconomicEvent.importance >= importance_min,
             *_public_calendar_conditions(),
+            _sources_condition(source),
         )
-        .order_by(EconomicEvent.scheduled_date)
-        .limit(500)
+        .order_by(EconomicEvent.scheduled_date, EconomicEvent.id)
+        .limit(1000)
     )
-    events = (await db.execute(stmt)).scalars().all()
+    rows = (await db.execute(stmt)).all()
+    dtstamp = _dt.now(_tz.utc).strftime("%Y%m%dT%H%M%SZ")
 
-    lines = [ICAL_HEADER]
-    for ev in events:
-        dt_str = ev.scheduled_date.strftime("%Y%m%d")
-        uid = f"fe-event-{ev.id}@forecasteconomy.com"
-        summary = ev.title
-        if ev.reference_period:
-            summary += f" ({ev.reference_period})"
-        desc_parts = [f"Источник: {ev.source.upper()}"]
-        if ev.previous_value:
-            desc_parts.append(f"Предыдущее: {ev.previous_value}")
-        if ev.scheduled_time:
-            desc_parts.append(f"Время: {ev.scheduled_time} МСК")
-        desc = "\\n".join(desc_parts)
-
-        lines.append("BEGIN:VEVENT\r\n")
-        lines.append(f"UID:{uid}\r\n")
-        lines.append(f"DTSTART;VALUE=DATE:{dt_str}\r\n")
-        lines.append(f"SUMMARY:{summary}\r\n")
-        lines.append(f"DESCRIPTION:{desc}\r\n")
-        if ev.source_url:
-            lines.append(f"URL:{ev.source_url}\r\n")
-        lines.append("END:VEVENT\r\n")
-
-    lines.append("END:VCALENDAR\r\n")
+    out = [_ics_fold(line) for line in ICAL_HEADER.split("\r\n") if line]
+    for ev, ind in rows:
+        out.extend(_ics_fold(line) for line in _ics_event_lines(ev, ind, dtstamp))
+    out.append("END:VCALENDAR\r\n")
 
     return PlainTextResponse(
-        content="".join(lines),
+        content="".join(out),
         media_type="text/calendar; charset=utf-8",
         headers={"Content-Disposition": "attachment; filename=forecast-economy-calendar.ics"},
     )

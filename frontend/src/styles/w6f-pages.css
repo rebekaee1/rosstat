@@ -79,6 +79,7 @@
 .fe-cal-day__title.is-cbr { border-left-color: #3b82f6; }
 .fe-cal-day__title.is-rosstat { border-left-color: #10b981; }
 .fe-cal-day__title.is-minfin { border-left-color: #f59e0b; }
+.fe-cal-day__title.is-world { border-left-color: #64748b; }
 .fe-cal-day__more { color: var(--color-text-secondary); font-weight: 600; }
 .fe-cal-what {
   display: -webkit-box;

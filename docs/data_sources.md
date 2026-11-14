@@ -661,6 +661,26 @@ OMB), а публичный `source` = «<ведомство> (через FRED)�
 
 ---
 
+## Календарь публикаций — официальные графики (не ряды)
+
+Календарь (`backend/app/services/calendar_sources/`, [ADR-0005](adr/0005-official-calendar-source-bound.md)) читает не данные, а **даты выхода**. Каждую ночь в 03:00 МСК (`calendar_refresh`), сверено 14.11.2026:
+
+| Источник | Адрес | Что даёт | Модуль |
+|---|---|---|---|
+| Банк России, календарь решений по ключевой ставке | `https://cbr.ru/dkp/cal_mp/` (HTML, блоки `main-events_day`) | Заседания (опорные — с «Среднесрочным прогнозом»), резюме обсуждения; все опубликованные годы, 14.11 — по 2027 включительно | `cbr_key_rate.py` (запасной список `FALLBACK_MEETINGS` = страница на 14.11) |
+| Банк России, календарь статистики | `https://www.cbr.ru/Queries/FileSource/105732/vCalendar.ics` (ссылка со страницы `statistics/indcalendar/`) | Резервы, денежная масса, кредиты и вклады, ставки, ипотека, внешний сектор, оценка платёжного баланса; время в **UTC** (`Z`) — переводится в МСК | `official_calendar.parse_cbr_ics` |
+| Банк России, ежедневные публикации | правило «каждый рабочий день» + производственный календарь | Курсы доллара, евро, юаня, золото, RUONIA | `official_calendar.build_cbr_daily_rule_candidates` |
+| Росстат, график срочных информаций | `rosstat.gov.ru/publications-plans/getPage?type=50` → `Grafik_srochn_YYYY.docx` (все годы на странице) | ИПЦ и срезы, ИЦП, ИПП, ВВП (две оценки и предварительная) | `rosstat_plan.py` |
+| Росстат, график оперативных публикаций | `getPage?type=52` → `Grafic_oper_public_YYYY.doc` (Word 97, текст UTF-16LE, ячейки через `\x07`) | Доклад «Социально-экономическое положение России»: безработица, зарплата (с лагом месяц); «Краткосрочные экономические показатели»: розница, ввод жилья, строительство | `rosstat_oper_plan.py` |
+| Производственный календарь | 2026: `publication.pravo.gov.ru/document/0001202509240023`; 2027: постановление № 1187 от 17.09.2026 (`government.ru/docs/59913/`) | Рабочие дни и рабочие субботы (20.02.2027) | `working_calendar.py` |
+| Минфин | `minfin.gov.ru/ru/statistics/schedule` | Правило «14-й рабочий день месяца, следующего за отчётным» — срок «не позднее» (`official_deadline`, второй заход 14.11): выход часто раньше, подтверждается загрузкой | `official_calendar.build_minfin_rule_candidates` |
+| ФРС США | `https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm` (блоки `fomc-meeting` по годам) | Решения FOMC 2026–2027, «*» — с прогнозами | `world_calendar.parse_fomc_calendar` |
+| BEA (США) | `https://www.bea.gov/news/schedule/ics/online-calendar-subscription.ics` | ВВП (три оценки), личные доходы и PCE, внешняя торговля; время UTC | `world_calendar.parse_bea_ics` |
+| Eurostat | `https://ec.europa.eu/eurostat/o/calendars/eventsJson?start=…Z&end=…Z&theme=&category=&keywords=&isEuroindicator=true&authorInclude=&authorExclude=` (без пустых параметров отвечает пустым телом) | Евроиндикаторы с отчётным периодом | `world_calendar.parse_eurostat_events` |
+| BLS, ЕЦБ, FRED | `bls.gov/schedule` — 403 с боевого; `ecb.europa.eu` — не отвечает; FRED-календарь — разрыв соединений, ключа API нет | **не подключены** (14.11.2026) | — |
+
+Доступ с боевого сервера 14.11.2026: `cbr.ru/dkp/cal_mp/` — 200; Росстат — читался в ночь на 14.11 (`last_seen_at`); Минфин режет сети Timeweb (на календарь не влияет, он скрыт). Ежегодно в декабре: проверить, что на страницах Росстата появились `Grafik_srochn_{год+1}.docx` и `Grafic_oper_public_{год+1}.doc`, и внести производственный календарь следующего года в `working_calendar.py` (без него правила следующего года не строятся).
+
 ## Соглашения о публикационных задержках
 
 | Источник | Публикационная конвенция |

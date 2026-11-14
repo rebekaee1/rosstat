@@ -8,15 +8,15 @@
 - HTTP reachable paths: **200**
 - ORM tables: **77**
 - DTO schemas (own fields + resolved inherited bases): **53**
-- Settings fields: **295**
-- Settings reads: **756**
+- Settings fields: **297**
+- Settings reads: **762**
 - Direct environment reads: **36**
 - Jobs: **61**
 - Middleware: **6**
-- Registry declarations: **1440**
-- Registry references: **2705**
+- Registry declarations: **1467**
+- Registry references: **2746**
 - Migration operations: **490**
-- Candidate effects: **2973**
+- Candidate effects: **3016**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -38,10 +38,10 @@
 | GET | /api/v1/metrics | app.api.system.prometheus_metrics | [backend/app/api/system.py:211](../backend/app/api/system.py#L211) |
 | GET | /api/v1/system/status | app.api.system.system_status | [backend/app/api/system.py:332](../backend/app/api/system.py#L332) |
 | GET | /api/v1/health/freshness | app.api.system.health_freshness | [backend/app/api/system.py:365](../backend/app/api/system.py#L365) |
-| GET | /api/v1/calendar | app.api.calendar.list_events | [backend/app/api/calendar.py:97](../backend/app/api/calendar.py#L97) |
-| GET | /api/v1/calendar/upcoming | app.api.calendar.upcoming_events | [backend/app/api/calendar.py:160](../backend/app/api/calendar.py#L160) |
-| GET | /api/v1/calendar/{event_id} | app.api.calendar.get_event | [backend/app/api/calendar.py:208](../backend/app/api/calendar.py#L208) |
-| GET | /api/v1/calendar/export/ical | app.api.calendar.export_ical | [backend/app/api/calendar.py:236](../backend/app/api/calendar.py#L236) |
+| GET | /api/v1/calendar | app.api.calendar.list_events | [backend/app/api/calendar.py:165](../backend/app/api/calendar.py#L165) |
+| GET | /api/v1/calendar/upcoming | app.api.calendar.upcoming_events | [backend/app/api/calendar.py:227](../backend/app/api/calendar.py#L227) |
+| GET | /api/v1/calendar/{event_id} | app.api.calendar.get_event | [backend/app/api/calendar.py:278](../backend/app/api/calendar.py#L278) |
+| GET | /api/v1/calendar/export/ical | app.api.calendar.export_ical | [backend/app/api/calendar.py:400](../backend/app/api/calendar.py#L400) |
 | GET | /api/v1/embed/spark/{code}.svg | app.api.embed.sparkline_svg | [backend/app/api/embed.py:155](../backend/app/api/embed.py#L155) |
 | GET | /api/v1/embed/card/{code}.svg | app.api.embed.card_svg | [backend/app/api/embed.py:221](../backend/app/api/embed.py#L221) |
 | GET | /api/v1/embed/badge/{code}.svg | app.api.embed.badge_svg | [backend/app/api/embed.py:337](../backend/app/api/embed.py#L337) |
@@ -1855,7 +1855,7 @@ Relationships: `[]`
 | RUSTATS_MINFIN_BASE_URL | str = 'https://minfin.gov.ru' | 0 | [backend/app/config.py:123](../backend/app/config.py#L123) |
 | RUSTATS_ROSSTAT_BASE_URL | str = 'https://rosstat.gov.ru/storage/mediabank' | 1 | [backend/app/config.py:126](../backend/app/config.py#L126) |
 | RUSTATS_ROSSTAT_CPI_TEMPLATE | str = 'ipc_mes_{mm}-{yyyy}.xlsx' | 1 | [backend/app/config.py:127](../backend/app/config.py#L127) |
-| RUSTATS_ROSSTAT_CA_CERT | str = str(Path(__file__).parent.parent / 'certs' / 'russiantrustedca2024.pem') | 9 | [backend/app/config.py:128](../backend/app/config.py#L128) |
+| RUSTATS_ROSSTAT_CA_CERT | str = str(Path(__file__).parent.parent / 'certs' / 'russiantrustedca2024.pem') | 11 | [backend/app/config.py:128](../backend/app/config.py#L128) |
 | RUSTATS_ROSSTAT_MAX_MONTHS_BACK | int = 6 | 2 | [backend/app/config.py:129](../backend/app/config.py#L129) |
 | RUSTATS_ROSSTAT_REQUEST_TIMEOUT | int = 30 | 10 | [backend/app/config.py:130](../backend/app/config.py#L130) |
 | RUSTATS_SCHEDULER_ENABLED | bool = True | 3 | [backend/app/config.py:133](../backend/app/config.py#L133) |
@@ -1906,10 +1906,10 @@ Relationships: `[]`
 | RUSTATS_WORLD_BEA_REGIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:243](../backend/app/config.py#L243) |
 | RUSTATS_WORLD_BEA_REGIONAL_INGEST_HOUR | int = 4 | 1 | [backend/app/config.py:244](../backend/app/config.py#L244) |
 | RUSTATS_WORLD_BEA_REGIONAL_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:245](../backend/app/config.py#L245) |
-| RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED | bool = True | 1 | [backend/app/config.py:250](../backend/app/config.py#L250) |
+| RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED | bool = True | 2 | [backend/app/config.py:250](../backend/app/config.py#L250) |
 | RUSTATS_TELEGRAM_BOT_TOKEN | str = '' | 19 | [backend/app/config.py:253](../backend/app/config.py#L253) |
 | RUSTATS_TELEGRAM_CHAT_ID | str = '' | 17 | [backend/app/config.py:254](../backend/app/config.py#L254) |
-| RUSTATS_FORECAST_STEPS | int = 12 | 2 | [backend/app/config.py:257](../backend/app/config.py#L257) |
+| RUSTATS_FORECAST_STEPS | int = 12 | 3 | [backend/app/config.py:257](../backend/app/config.py#L257) |
 | RUSTATS_SEO_APP_SHELL_URL | str = 'http://frontend/__spa-index.html' | 2 | [backend/app/config.py:260](../backend/app/config.py#L260) |
 | RUSTATS_SSR_WARM_ENABLED | bool = False | 2 | [backend/app/config.py:263](../backend/app/config.py#L263) |
 | RUSTATS_SSR_WARM_BASE_URL | str = 'http://frontend' | 2 | [backend/app/config.py:264](../backend/app/config.py#L264) |
@@ -2009,97 +2009,99 @@ Relationships: `[]`
 | RUSTATS_TELEGRAM_CALM_MODE | bool = True | 5 | [backend/app/config.py:463](../backend/app/config.py#L463) |
 | RUSTATS_TELEGRAM_CALM_SUMMARY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:464](../backend/app/config.py#L464) |
 | RUSTATS_TELEGRAM_CALM_SUMMARY_CRON_MINUTE | int = 10 | 2 | [backend/app/config.py:465](../backend/app/config.py#L465) |
-| RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 4 | [backend/app/config.py:470](../backend/app/config.py#L470) |
-| RUSTATS_TELEGRAM_REPORTS_CHAT_IDS | str = '' | 1 | [backend/app/config.py:474](../backend/app/config.py#L474) |
-| RUSTATS_TELEGRAM_REPORTS_ONLY_ENABLED | bool = False | 1 | [backend/app/config.py:479](../backend/app/config.py#L479) |
-| RUSTATS_TELEGRAM_REPORTS_ONLY_CHAT_IDS | str = '' | 1 | [backend/app/config.py:480](../backend/app/config.py#L480) |
-| RUSTATS_TELEGRAM_WEEKLY_ENABLED | bool = False | 1 | [backend/app/config.py:482](../backend/app/config.py#L482) |
-| RUSTATS_TELEGRAM_WEEKLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:483](../backend/app/config.py#L483) |
-| RUSTATS_TELEGRAM_WEEKLY_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:484](../backend/app/config.py#L484) |
-| RUSTATS_SEO_WEEKLY_REPORT_ENABLED | bool = False | 4 | [backend/app/config.py:487](../backend/app/config.py#L487) |
-| RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:488](../backend/app/config.py#L488) |
-| RUSTATS_SEO_WEEKLY_REPORT_CRON_MINUTE | int = 40 | 2 | [backend/app/config.py:489](../backend/app/config.py#L489) |
-| RUSTATS_TELEGRAM_MONTHLY_ENABLED | bool = False | 1 | [backend/app/config.py:490](../backend/app/config.py#L490) |
-| RUSTATS_TELEGRAM_MONTHLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:491](../backend/app/config.py#L491) |
-| RUSTATS_TELEGRAM_MONTHLY_CRON_MINUTE | int = 45 | 2 | [backend/app/config.py:492](../backend/app/config.py#L492) |
-| RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED | bool = False | 2 | [backend/app/config.py:495](../backend/app/config.py#L495) |
-| RUSTATS_TELEGRAM_SEND_MAX_ATTEMPTS | int = 3 | 1 | [backend/app/config.py:499](../backend/app/config.py#L499) |
-| RUSTATS_TELEGRAM_SEND_RETRY_BASE_SECONDS | float = 1.0 | 1 | [backend/app/config.py:500](../backend/app/config.py#L500) |
-| RUSTATS_TELEGRAM_SEND_RETRY_BUDGET_SECONDS | float = 45.0 | 1 | [backend/app/config.py:501](../backend/app/config.py#L501) |
-| RUSTATS_TELEGRAM_RESEND_ENABLED | bool = True | 1 | [backend/app/config.py:505](../backend/app/config.py#L505) |
-| RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES | int = 10 | 1 | [backend/app/config.py:506](../backend/app/config.py#L506) |
-| RUSTATS_TELEGRAM_RESEND_WINDOW_HOURS | int = 6 | 1 | [backend/app/config.py:507](../backend/app/config.py#L507) |
-| RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:508](../backend/app/config.py#L508) |
-| RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:509](../backend/app/config.py#L509) |
-| RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:513](../backend/app/config.py#L513) |
-| RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:514](../backend/app/config.py#L514) |
-| RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:515](../backend/app/config.py#L515) |
-| RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:516](../backend/app/config.py#L516) |
-| RUSTATS_OPENROUTER_API_KEY | str = '' | 17 | [backend/app/config.py:518](../backend/app/config.py#L518) |
-| RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:522](../backend/app/config.py#L522) |
-| RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:523](../backend/app/config.py#L523) |
-| RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:524](../backend/app/config.py#L524) |
-| RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:525](../backend/app/config.py#L525) |
-| RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:526](../backend/app/config.py#L526) |
-| RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:527](../backend/app/config.py#L527) |
-| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5.5' | 7 | [backend/app/config.py:528](../backend/app/config.py#L528) |
-| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 5 | [backend/app/config.py:534](../backend/app/config.py#L534) |
-| RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:538](../backend/app/config.py#L538) |
-| RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:541](../backend/app/config.py#L541) |
-| RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 2 | [backend/app/config.py:545](../backend/app/config.py#L545) |
-| RUSTATS_FRESHNESS_WATCHDOG_ENABLED | bool = False | 2 | [backend/app/config.py:550](../backend/app/config.py#L550) |
-| RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE | int = 25 | 1 | [backend/app/config.py:551](../backend/app/config.py#L551) |
-| RUSTATS_FRESHNESS_WATCHDOG_CRON_HOUR | int = 10 | 1 | [backend/app/config.py:552](../backend/app/config.py#L552) |
-| RUSTATS_FRESHNESS_WATCHDOG_CRON_MINUTE | int = 30 | 1 | [backend/app/config.py:553](../backend/app/config.py#L553) |
-| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:555](../backend/app/config.py#L555) |
-| RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 7 | [backend/app/config.py:559](../backend/app/config.py#L559) |
-| RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:562](../backend/app/config.py#L562) |
-| RUSTATS_PUBLIC_BOT_USERNAME | str = 'ForecastEconomyBot' | 1 | [backend/app/config.py:564](../backend/app/config.py#L564) |
-| RUSTATS_PUBLIC_BOT_GROUP_URL | str = '' | 3 | [backend/app/config.py:567](../backend/app/config.py#L567) |
-| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 10 | [backend/app/config.py:570](../backend/app/config.py#L570) |
-| RUSTATS_PUBLIC_BOT_LLM_MODEL | str = 'anthropic/claude-sonnet-5.5' | 3 | [backend/app/config.py:573](../backend/app/config.py#L573) |
-| RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:574](../backend/app/config.py#L574) |
-| RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:576](../backend/app/config.py#L576) |
-| RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:577](../backend/app/config.py#L577) |
-| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:583](../backend/app/config.py#L583) |
-| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:591](../backend/app/config.py#L591) |
-| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:598](../backend/app/config.py#L598) |
-| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:599](../backend/app/config.py#L599) |
-| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:610](../backend/app/config.py#L610) |
-| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:611](../backend/app/config.py#L611) |
-| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:612](../backend/app/config.py#L612) |
-| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:613](../backend/app/config.py#L613) |
-| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:614](../backend/app/config.py#L614) |
-| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:615](../backend/app/config.py#L615) |
-| RUSTATS_MAIL_ENABLED | bool = False | 11 | [backend/app/config.py:627](../backend/app/config.py#L627) |
-| RUSTATS_MAIL_SMTP_HOST | str = 'smtp.yandex.ru' | 5 | [backend/app/config.py:628](../backend/app/config.py#L628) |
-| RUSTATS_MAIL_SMTP_PORT | int = 465 | 4 | [backend/app/config.py:629](../backend/app/config.py#L629) |
-| RUSTATS_MAIL_SMTP_SECURITY | str = 'ssl' | 3 | [backend/app/config.py:630](../backend/app/config.py#L630) |
-| RUSTATS_MAIL_SMTP_USER | str = '' | 11 | [backend/app/config.py:631](../backend/app/config.py#L631) |
-| RUSTATS_MAIL_SMTP_PASSWORD | str = '' | 7 | [backend/app/config.py:632](../backend/app/config.py#L632) |
-| RUSTATS_MAIL_SMTP_TIMEOUT_SECONDS | float = 20.0 | 1 | [backend/app/config.py:633](../backend/app/config.py#L633) |
-| RUSTATS_MAIL_FROM_ADDRESS | str = '' | 2 | [backend/app/config.py:634](../backend/app/config.py#L634) |
-| RUSTATS_MAIL_FROM_NAME | str = 'Forecast Economy' | 2 | [backend/app/config.py:635](../backend/app/config.py#L635) |
-| RUSTATS_MAIL_REPLY_TO | str = 'info@forecasteconomy.com' | 4 | [backend/app/config.py:636](../backend/app/config.py#L636) |
-| RUSTATS_MAIL_ALLOWLIST | str = 'rebeka.ee@yandex.ru' | 1 | [backend/app/config.py:637](../backend/app/config.py#L637) |
-| RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 5 | [backend/app/config.py:638](../backend/app/config.py#L638) |
-| RUSTATS_MAIL_TOKEN_SECRET | str = '' | 2 | [backend/app/config.py:641](../backend/app/config.py#L641) |
-| RUSTATS_MAIL_CAMPAIGN_MAX_PER_RUN | int = 250 | 2 | [backend/app/config.py:644](../backend/app/config.py#L644) |
-| RUSTATS_MAIL_CAMPAIGN_PAUSE_SECONDS | float = 4.0 | 2 | [backend/app/config.py:645](../backend/app/config.py#L645) |
-| RUSTATS_MAIL_LINK_ORIGIN_RU | str = '' | 2 | [backend/app/config.py:648](../backend/app/config.py#L648) |
-| RUSTATS_MAIL_LINK_ORIGIN_EN | str = '' | 1 | [backend/app/config.py:649](../backend/app/config.py#L649) |
-| RUSTATS_MAIL_BULK_SMTP_HOST | str = '' | 3 | [backend/app/config.py:653](../backend/app/config.py#L653) |
-| RUSTATS_MAIL_BULK_SMTP_PORT | int = 587 | 1 | [backend/app/config.py:654](../backend/app/config.py#L654) |
-| RUSTATS_MAIL_BULK_SMTP_SECURITY | str = 'starttls' | 1 | [backend/app/config.py:655](../backend/app/config.py#L655) |
-| RUSTATS_MAIL_BULK_SMTP_USER | str = '' | 1 | [backend/app/config.py:656](../backend/app/config.py#L656) |
-| RUSTATS_MAIL_BULK_SMTP_PASSWORD | str = '' | 1 | [backend/app/config.py:657](../backend/app/config.py#L657) |
-| RUSTATS_MAIL_BULK_FROM_ADDRESS | str = '' | 1 | [backend/app/config.py:658](../backend/app/config.py#L658) |
-| RUSTATS_MAIL_BOUNCE_POLL_ENABLED | bool = False | 4 | [backend/app/config.py:662](../backend/app/config.py#L662) |
-| RUSTATS_MAIL_IMAP_HOST | str = 'imap.yandex.ru' | 2 | [backend/app/config.py:663](../backend/app/config.py#L663) |
-| RUSTATS_MAIL_IMAP_PORT | int = 993 | 2 | [backend/app/config.py:664](../backend/app/config.py#L664) |
-| RUSTATS_MAIL_WATCH_DIGEST_ENABLED | bool = False | 5 | [backend/app/config.py:667](../backend/app/config.py#L667) |
-| RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK | int = 10 | 3 | [backend/app/config.py:668](../backend/app/config.py#L668) |
-| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:672](../backend/app/config.py#L672) |
+| RUSTATS_CALENDAR_WATCHDOG_ENABLED | bool = True | 1 | [backend/app/config.py:469](../backend/app/config.py#L469) |
+| RUSTATS_TELEGRAM_CALENDAR_TODAY_ENABLED | bool = False | 1 | [backend/app/config.py:470](../backend/app/config.py#L470) |
+| RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 4 | [backend/app/config.py:475](../backend/app/config.py#L475) |
+| RUSTATS_TELEGRAM_REPORTS_CHAT_IDS | str = '' | 1 | [backend/app/config.py:479](../backend/app/config.py#L479) |
+| RUSTATS_TELEGRAM_REPORTS_ONLY_ENABLED | bool = False | 1 | [backend/app/config.py:484](../backend/app/config.py#L484) |
+| RUSTATS_TELEGRAM_REPORTS_ONLY_CHAT_IDS | str = '' | 1 | [backend/app/config.py:485](../backend/app/config.py#L485) |
+| RUSTATS_TELEGRAM_WEEKLY_ENABLED | bool = False | 1 | [backend/app/config.py:487](../backend/app/config.py#L487) |
+| RUSTATS_TELEGRAM_WEEKLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:488](../backend/app/config.py#L488) |
+| RUSTATS_TELEGRAM_WEEKLY_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:489](../backend/app/config.py#L489) |
+| RUSTATS_SEO_WEEKLY_REPORT_ENABLED | bool = False | 4 | [backend/app/config.py:492](../backend/app/config.py#L492) |
+| RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:493](../backend/app/config.py#L493) |
+| RUSTATS_SEO_WEEKLY_REPORT_CRON_MINUTE | int = 40 | 2 | [backend/app/config.py:494](../backend/app/config.py#L494) |
+| RUSTATS_TELEGRAM_MONTHLY_ENABLED | bool = False | 1 | [backend/app/config.py:495](../backend/app/config.py#L495) |
+| RUSTATS_TELEGRAM_MONTHLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:496](../backend/app/config.py#L496) |
+| RUSTATS_TELEGRAM_MONTHLY_CRON_MINUTE | int = 45 | 2 | [backend/app/config.py:497](../backend/app/config.py#L497) |
+| RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED | bool = False | 2 | [backend/app/config.py:500](../backend/app/config.py#L500) |
+| RUSTATS_TELEGRAM_SEND_MAX_ATTEMPTS | int = 3 | 1 | [backend/app/config.py:504](../backend/app/config.py#L504) |
+| RUSTATS_TELEGRAM_SEND_RETRY_BASE_SECONDS | float = 1.0 | 1 | [backend/app/config.py:505](../backend/app/config.py#L505) |
+| RUSTATS_TELEGRAM_SEND_RETRY_BUDGET_SECONDS | float = 45.0 | 1 | [backend/app/config.py:506](../backend/app/config.py#L506) |
+| RUSTATS_TELEGRAM_RESEND_ENABLED | bool = True | 1 | [backend/app/config.py:510](../backend/app/config.py#L510) |
+| RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES | int = 10 | 1 | [backend/app/config.py:511](../backend/app/config.py#L511) |
+| RUSTATS_TELEGRAM_RESEND_WINDOW_HOURS | int = 6 | 1 | [backend/app/config.py:512](../backend/app/config.py#L512) |
+| RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:513](../backend/app/config.py#L513) |
+| RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:514](../backend/app/config.py#L514) |
+| RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:518](../backend/app/config.py#L518) |
+| RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:519](../backend/app/config.py#L519) |
+| RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:520](../backend/app/config.py#L520) |
+| RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:521](../backend/app/config.py#L521) |
+| RUSTATS_OPENROUTER_API_KEY | str = '' | 17 | [backend/app/config.py:523](../backend/app/config.py#L523) |
+| RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:527](../backend/app/config.py#L527) |
+| RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:528](../backend/app/config.py#L528) |
+| RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:529](../backend/app/config.py#L529) |
+| RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:530](../backend/app/config.py#L530) |
+| RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:531](../backend/app/config.py#L531) |
+| RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:532](../backend/app/config.py#L532) |
+| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5.5' | 7 | [backend/app/config.py:533](../backend/app/config.py#L533) |
+| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 5 | [backend/app/config.py:539](../backend/app/config.py#L539) |
+| RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:543](../backend/app/config.py#L543) |
+| RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:546](../backend/app/config.py#L546) |
+| RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 2 | [backend/app/config.py:550](../backend/app/config.py#L550) |
+| RUSTATS_FRESHNESS_WATCHDOG_ENABLED | bool = False | 2 | [backend/app/config.py:555](../backend/app/config.py#L555) |
+| RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE | int = 25 | 1 | [backend/app/config.py:556](../backend/app/config.py#L556) |
+| RUSTATS_FRESHNESS_WATCHDOG_CRON_HOUR | int = 10 | 1 | [backend/app/config.py:557](../backend/app/config.py#L557) |
+| RUSTATS_FRESHNESS_WATCHDOG_CRON_MINUTE | int = 30 | 1 | [backend/app/config.py:558](../backend/app/config.py#L558) |
+| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:560](../backend/app/config.py#L560) |
+| RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 7 | [backend/app/config.py:564](../backend/app/config.py#L564) |
+| RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:567](../backend/app/config.py#L567) |
+| RUSTATS_PUBLIC_BOT_USERNAME | str = 'ForecastEconomyBot' | 1 | [backend/app/config.py:569](../backend/app/config.py#L569) |
+| RUSTATS_PUBLIC_BOT_GROUP_URL | str = '' | 3 | [backend/app/config.py:572](../backend/app/config.py#L572) |
+| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 10 | [backend/app/config.py:575](../backend/app/config.py#L575) |
+| RUSTATS_PUBLIC_BOT_LLM_MODEL | str = 'anthropic/claude-sonnet-5.5' | 3 | [backend/app/config.py:578](../backend/app/config.py#L578) |
+| RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:579](../backend/app/config.py#L579) |
+| RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:581](../backend/app/config.py#L581) |
+| RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:582](../backend/app/config.py#L582) |
+| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:588](../backend/app/config.py#L588) |
+| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:596](../backend/app/config.py#L596) |
+| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:603](../backend/app/config.py#L603) |
+| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:604](../backend/app/config.py#L604) |
+| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:615](../backend/app/config.py#L615) |
+| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:616](../backend/app/config.py#L616) |
+| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:617](../backend/app/config.py#L617) |
+| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:618](../backend/app/config.py#L618) |
+| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:619](../backend/app/config.py#L619) |
+| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:620](../backend/app/config.py#L620) |
+| RUSTATS_MAIL_ENABLED | bool = False | 11 | [backend/app/config.py:632](../backend/app/config.py#L632) |
+| RUSTATS_MAIL_SMTP_HOST | str = 'smtp.yandex.ru' | 5 | [backend/app/config.py:633](../backend/app/config.py#L633) |
+| RUSTATS_MAIL_SMTP_PORT | int = 465 | 4 | [backend/app/config.py:634](../backend/app/config.py#L634) |
+| RUSTATS_MAIL_SMTP_SECURITY | str = 'ssl' | 3 | [backend/app/config.py:635](../backend/app/config.py#L635) |
+| RUSTATS_MAIL_SMTP_USER | str = '' | 11 | [backend/app/config.py:636](../backend/app/config.py#L636) |
+| RUSTATS_MAIL_SMTP_PASSWORD | str = '' | 7 | [backend/app/config.py:637](../backend/app/config.py#L637) |
+| RUSTATS_MAIL_SMTP_TIMEOUT_SECONDS | float = 20.0 | 1 | [backend/app/config.py:638](../backend/app/config.py#L638) |
+| RUSTATS_MAIL_FROM_ADDRESS | str = '' | 2 | [backend/app/config.py:639](../backend/app/config.py#L639) |
+| RUSTATS_MAIL_FROM_NAME | str = 'Forecast Economy' | 2 | [backend/app/config.py:640](../backend/app/config.py#L640) |
+| RUSTATS_MAIL_REPLY_TO | str = 'info@forecasteconomy.com' | 4 | [backend/app/config.py:641](../backend/app/config.py#L641) |
+| RUSTATS_MAIL_ALLOWLIST | str = 'rebeka.ee@yandex.ru' | 1 | [backend/app/config.py:642](../backend/app/config.py#L642) |
+| RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 5 | [backend/app/config.py:643](../backend/app/config.py#L643) |
+| RUSTATS_MAIL_TOKEN_SECRET | str = '' | 2 | [backend/app/config.py:646](../backend/app/config.py#L646) |
+| RUSTATS_MAIL_CAMPAIGN_MAX_PER_RUN | int = 250 | 2 | [backend/app/config.py:649](../backend/app/config.py#L649) |
+| RUSTATS_MAIL_CAMPAIGN_PAUSE_SECONDS | float = 4.0 | 2 | [backend/app/config.py:650](../backend/app/config.py#L650) |
+| RUSTATS_MAIL_LINK_ORIGIN_RU | str = '' | 2 | [backend/app/config.py:653](../backend/app/config.py#L653) |
+| RUSTATS_MAIL_LINK_ORIGIN_EN | str = '' | 1 | [backend/app/config.py:654](../backend/app/config.py#L654) |
+| RUSTATS_MAIL_BULK_SMTP_HOST | str = '' | 3 | [backend/app/config.py:658](../backend/app/config.py#L658) |
+| RUSTATS_MAIL_BULK_SMTP_PORT | int = 587 | 1 | [backend/app/config.py:659](../backend/app/config.py#L659) |
+| RUSTATS_MAIL_BULK_SMTP_SECURITY | str = 'starttls' | 1 | [backend/app/config.py:660](../backend/app/config.py#L660) |
+| RUSTATS_MAIL_BULK_SMTP_USER | str = '' | 1 | [backend/app/config.py:661](../backend/app/config.py#L661) |
+| RUSTATS_MAIL_BULK_SMTP_PASSWORD | str = '' | 1 | [backend/app/config.py:662](../backend/app/config.py#L662) |
+| RUSTATS_MAIL_BULK_FROM_ADDRESS | str = '' | 1 | [backend/app/config.py:663](../backend/app/config.py#L663) |
+| RUSTATS_MAIL_BOUNCE_POLL_ENABLED | bool = False | 4 | [backend/app/config.py:667](../backend/app/config.py#L667) |
+| RUSTATS_MAIL_IMAP_HOST | str = 'imap.yandex.ru' | 2 | [backend/app/config.py:668](../backend/app/config.py#L668) |
+| RUSTATS_MAIL_IMAP_PORT | int = 993 | 2 | [backend/app/config.py:669](../backend/app/config.py#L669) |
+| RUSTATS_MAIL_WATCH_DIGEST_ENABLED | bool = False | 5 | [backend/app/config.py:672](../backend/app/config.py#L672) |
+| RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK | int = 10 | 3 | [backend/app/config.py:673](../backend/app/config.py#L673) |
+| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:677](../backend/app/config.py#L677) |
 
 ## Registries and declarations
 
@@ -2123,6 +2125,8 @@ Relationships: `[]`
 | app.api.cabinet._TOKEN_RE | Call | computed source expression | [backend/app/api/cabinet.py:373](../backend/app/api/cabinet.py#L373) |
 | app.api.cabinet._SLUG_RE | Call | computed source expression | [backend/app/api/cabinet.py:374](../backend/app/api/cabinet.py#L374) |
 | app.api.calendar.PUBLIC_CONFIDENCES | Tuple | sequence/source expression | [backend/app/api/calendar.py:20](../backend/app/api/calendar.py#L20) |
+| app.api.calendar.RUSSIAN_SOURCES | Tuple | sequence/source expression | [backend/app/api/calendar.py:23](../backend/app/api/calendar.py#L23) |
+| app.api.calendar.WORLD_SOURCES | Tuple | sequence/source expression | [backend/app/api/calendar.py:24](../backend/app/api/calendar.py#L24) |
 | app.api.dashboard.FLAGSHIP_MAP | Dict | 'prices', 'rates', 'finance', 'labor', 'gdp', 'population', 'trade', 'business', 'science' | [backend/app/api/dashboard.py:21](../backend/app/api/dashboard.py#L21) |
 | app.api.embed._CODE_RE | Call | computed source expression | [backend/app/api/embed.py:32](../backend/app/api/embed.py#L32) |
 | app.api.embed._COLOR_RE | Call | computed source expression | [backend/app/api/embed.py:33](../backend/app/api/embed.py#L33) |
@@ -2357,10 +2361,10 @@ Relationships: `[]`
 | app.data.i18n.seo_en.WORLD_TEMPLATES_EN | Dict | 'country_title', 'country_h1', 'country_desc_national', 'country_desc_eurostat', 'indicator_title', 'indicator_desc', 'indicator_h1', 'rating_title', 'rating_title_year', 'rating_title_for_year', 'rating_desc', 'rating_intro', 'n_indicators_one', 'n_indicators_many', 'keywords_rating', 'keywords_country', 'keywords_indicator', 'rating_eyebrow', 'rating_th_rank', 'rating_th_country', 'rating_th_value', 'rating_th_unit', 'rating_th_period', 'rating_h2_full', 'rating_h2_missing', 'rating_missing_p', 'rating_h2_other', 'rating_h2_years', 'rating_h2_source', 'rating_source_p', 'rating_tile_first', 'rating_tile_last', 'rating_tile_with_data', 'rating_tile_last_date', 'rating_no_data', 'rating_unit_fallback', 'rating_of_total', 'rating_money_guard', 'rating_index_guard', 'rating_with_data', 'rating_without_data', 'country_eyebrow_national', 'country_eyebrow_eurostat', 'country_lead_national', 'country_lead_eurostat', 'country_h2_key', 'country_h2_main', 'country_figure_year_ago', 'country_figure_real', 'country_figure_yoy', 'country_h2_source', 'country_source_national', 'country_source_eurostat', 'country_figcaption', 'country_h2_neighbors', 'country_image_name', 'country_section_total', 'country_h2_russia', 'country_russia_p', 'th_indicator', 'th_value', 'th_period', 'indicator_tile_last', 'indicator_tile_date', 'indicator_tile_period', 'indicator_tile_source', 'indicator_table_h2', 'indicator_h2_source', 'indicator_source_p', 'indicator_h2_russia', 'indicator_russia_p', 'indicator_lead', 'indicator_desc_fallback', 'indicator_unit_clause', 'indicator_period_line', 'indicator_period_line_freq', 'indicator_h2_peers', 'indicator_h2_siblings', 'indicator_open_source', 'indicator_unit_fallback', 'indicator_alt', 'indicator_figcaption', 'indicator_dataset_desc', 'period_year', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'freq_daily', 'freq_weekly' | [backend/app/data/i18n/seo_en.py:819](../backend/app/data/i18n/seo_en.py#L819) |
 | app.data.i18n.seo_en.TODAY_SPECS_EN | Dict | 'usd-rub', 'eur-rub', 'cny-rub', 'key-rate', 'cpi', 'gold-price', 'fuel-ai92', 'fuel-ai95', 'fuel-diesel', 'imoex' | [backend/app/data/i18n/seo_en.py:1010](../backend/app/data/i18n/seo_en.py#L1010) |
 | app.data.i18n.seo_en.TODAY_TEMPLATES_EN | Dict | 'title_fresh', 'title_stale', 'desc', 'stale_clause', 'fresh_clause', 'h1_fresh', 'h1_stale', 'keywords', 'change_flat', 'change_up_pp', 'change_down_pp', 'change_up', 'change_down', 'badge_flat', 'faq_h2', 'faq_answer_last', 'faq_answer_change', 'faq_freq_q', 'faq_freq_a', 'eyebrow_fresh', 'eyebrow_stale', 'stale_note', 'tile_prev', 'tile_min', 'tile_max', 'tile_updated', 'on_date', 'source_meta', 'body_lead', 'chart_alt', 'chart_caption', 'cta_chart', 'table_h2', 'th_date', 'th_value', 'range_note', 'history_h2', 'history_p', 'hub_eyebrow', 'hub_lead', 'hub_h2', 'hub_more_h2', 'hub_more_p', 'hub_item_today', 'hub_keywords', 'hub_alt', 'hub_caption' | [backend/app/data/i18n/seo_en.py:1053](../backend/app/data/i18n/seo_en.py#L1053) |
-| app.data.i18n.seo_en.CALENDAR_TEMPLATES_EN | Dict | 'title', 'desc_future', 'desc_past', 'h1', 'intro', 'keywords', 'eyebrow', 'tile_publications', 'tile_rosstat', 'tile_cbr', 'tile_other', 'h2_month', 'h2_neighbors', 'th_date', 'th_publication', 'th_agency', 'th_status', 'status_expected', 'status_dash', 'actual_prefix', 'interactive', 'source_rosstat', 'source_cbr', 'source_minfin', 'months' | [backend/app/data/i18n/seo_en.py:1145](../backend/app/data/i18n/seo_en.py#L1145) |
-| app.data.i18n.seo_en.REGIONAL_TEMPLATES_EN | Dict | 'regions_hub.title', 'regions_hub.description', 'regions_hub.h1', 'regions_hub.eyebrow', 'regions_hub.lead', 'regions_hub.ratings_h2', 'regions_hub.ratings_p', 'regions_hub.ratings_h3', 'regions_hub.map_h3', 'regions_hub.keywords', 'region_profile.title', 'region_profile.description', 'region_profile.h1', 'region_profile.eyebrow', 'region_profile.lead', 'region_profile.catalog_partial', 'region_profile.catalog_full', 'region_profile.see_also', 'region_profile.all_regions', 'region_profile.russia_summary', 'region_profile.top_demand', 'region_profile.keywords', 'region_monthly.p1', 'region_monthly.p1_mom', 'region_monthly.p1_yoy', 'region_monthly.p2', 'region_monthly.p3', 'region_monthly.rel_level', 'region_monthly.rel_above', 'region_monthly.rel_below', 'region_monthly.extremes', 'region_monthly.checkpoints_h2', 'region_monthly.faq_value_q', 'region_monthly.faq_value_a', 'region_monthly.faq_change_q', 'region_monthly.faq_change_a', 'region_monthly.faq_change_flat', 'region_monthly.faq_source_q', 'region_monthly.faq_source_a', 'region_monthly.faq_h2', 'region_monthly.neighbors_h2', 'region_monthly.table_h2', 'region_monthly.th_month', 'region_monthly.th_value', 'region_monthly.alt', 'region_monthly.caption', 'region_monthly.siblings_h2', 'region_monthly.title', 'region_monthly.description', 'region_monthly.dataset_description', 'region_monthly.creator', 'region_monthly.image_name', 'region_monthly.source_h2', 'region_monthly.source_p', 'region_monthly.unit_fallback', 'region_monthly.keywords', 'region_indicator.title', 'region_indicator.description', 'region_indicator.h1', 'region_indicator.p1', 'region_indicator.p1_change', 'region_indicator.p2_5y', 'region_indicator.p2_full', 'region_indicator.p3', 'region_indicator.p3_rf', 'region_indicator.rel_above', 'region_indicator.rel_below', 'region_indicator.rel_level', 'region_indicator.rating_full', 'region_indicator.rating_table', 'region_indicator.p4', 'region_indicator.checkpoints_h2', 'region_indicator.checkpoint_item', 'region_indicator.faq_h2', 'region_indicator.faq_value_q', 'region_indicator.faq_value_a', 'region_indicator.faq_rank_q', 'region_indicator.faq_rank_a', 'region_indicator.faq_list_q', 'region_indicator.faq_list_a', 'region_indicator.faq_change_q', 'region_indicator.faq_change_a', 'region_indicator.faq_source_q', 'region_indicator.faq_source_a', 'region_indicator.macro_h2', 'region_indicator.macro_p', 'region_indicator.neighbors_h2', 'region_indicator.table_h2', 'region_indicator.th_year', 'region_indicator.th_value', 'region_indicator.alt', 'region_indicator.caption', 'region_indicator.siblings_h2', 'region_indicator.rank_bit_achievement', 'region_indicator.rank_bit_list', 'region_indicator.rank_bit_none', 'region_indicator.keywords', 'region_indicator.pct_flat', 'region_indicator.pct_up', 'region_indicator.pct_down', 'region_indicator.pct_by', 'region_indicator.pct_times', 'region_indicator.times_word', 'region_indicator.rank_top3', 'region_indicator.rank_top10', 'region_indicator.rank_bottom', 'region_indicator.rank_place', 'region_indicator.list_top3', 'region_indicator.list_top10', 'region_indicator.list_bottom', 'region_indicator.list_place', 'region_rating_hub.title', 'region_rating_hub.description', 'region_rating_hub.h1', 'region_rating_hub.eyebrow', 'region_rating_hub.lead', 'region_rating_hub.keywords', 'region_rating.title', 'region_rating.description', 'region_rating.h1', 'region_vs.title', 'region_vs.description', 'region_vs.h1', 'region_vs.intro', 'region_vs.eyebrow', 'region_vs.alt', 'region_vs.caption', 'region_vs.table_h2', 'region_vs.th_indicator', 'region_vs.th_year', 'region_vs.section_dynamics', 'region_vs.rating_link', 'region_vs.profiles_h2', 'region_vs.profiles_p', 'region_vs.keywords', 'region_vs.jsonld_name', 'region_vs.image_name', 'region_rating.alt', 'region_rating.russia_tile', 'region_rating.data_for', 'region_rating.year_suffix', 'region_rating.regions_n', 'region_rating.th_region', 'region_rating.faq_h2', 'region_rating.faq_year_q', 'region_rating.faq_year_a', 'region_rating.map_h2', 'region_rating.map_p', 'region_rating.macro_h2', 'region_rating.macro_p', 'region_rating.source_h2', 'region_rating.source_p', 'region_rating.keywords', 'region_rating.image_name', 'region_rating.siblings_rankings', 'region_rating.siblings_indicators', 'region_rating.source_label', 'region_map.title', 'region_map.description', 'region_map.h1', 'region_map.eyebrow', 'region_map.lead', 'region_map.year_note', 'region_map.year_note_stale', 'region_map.tile_year', 'region_map.tile_regions', 'region_map.leaders_h2', 'region_map.rating_h2', 'region_map.rating_p', 'region_map.rating_label_achievement', 'region_map.rating_label_list', 'region_map.years_h2', 'region_map.source_h2', 'region_map.source_p', 'region_map.caption', 'region_map.alt', 'region_map.crumb', 'region_map.overview_title', 'region_map.overview_desc', 'region_map.overview_h1', 'region_map.overview_eyebrow', 'region_map.overview_lead', 'region_map.overview_popular_h2', 'region_map.overview_rankings_h2', 'region_map.overview_rankings_p', 'region_map.overview_keywords', 'region_map.keywords' | [backend/app/data/i18n/seo_en.py:1207](../backend/app/data/i18n/seo_en.py#L1207) |
-| app.data.i18n.seo_en.YEAR_TEMPLATES_EN | Dict | 'title_annual_current', 'title_annual', 'title_ytd', 'title_single', 'title_quarterly', 'title_weekly', 'title_daily', 'title_monthly', 'desc_single', 'desc_multi', 'period_note_ytd', 'summary_as_of', 'summary_annual_value', 'summary_value', 'summary_chain', 'summary_sum', 'summary_last', 'summary_avg', 'h2_single', 'h2_single_as_of', 'h2_ytd', 'h2_totals', 'h2_neighbors', 'h2_all_values', 'h2_chart', 'h2_other_years', 'chart_p', 'year_link', 'chart_alt_single', 'chart_alt_multi', 'chart_caption_single', 'chart_caption_multi', 'image_caption_single', 'image_caption_multi', 'jsonld_name', 'keywords', 'th_year', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'li_value_date', 'li_source', 'li_summary', 'li_year_start', 'li_year_end', 'li_latest', 'li_range', 'li_obs', 'range_minmax', 'range_cpi', 'change_value', 'change_no_prev', 'change_no_data', 'change_vs', 'change_vs_pp', 'change_zero_base', 'hist_insufficient', 'hist_no_data', 'hist_above', 'hist_below', 'hist_at', 'hist_position', 'hist_max_sole', 'hist_max_tie', 'hist_max_other', 'hist_min_sole', 'hist_min_tie', 'hist_min_other', 'gap_ago', 'gap_ago_one' | [backend/app/data/i18n/seo_en.py:1563](../backend/app/data/i18n/seo_en.py#L1563) |
-| app.data.i18n.seo_en.INDICATOR_TEMPLATES_EN | Dict | 'title', 'description_fallback', 'intro_fallback', 'chart_caption', 'chart_alt', 'image_name', 'forecast_image_name', 'methodology_fallback', 'block_what', 'block_why', 'block_read', 'block_freq', 'block_method', 'block_source', 'block_why_body', 'block_read_body', 'block_freq_body', 'block_source_body', 'freq_daily', 'freq_weekly', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'section_current', 'section_methodology', 'section_latest', 'section_related', 'section_years', 'year_link', 'li_latest', 'li_date', 'li_frequency', 'li_source', 'li_points', 'li_period', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'keywords', 'forecast_desc_tail', 'forecast_chart_note', 'forecast_link' | [backend/app/data/i18n/seo_en.py:1662](../backend/app/data/i18n/seo_en.py#L1662) |
+| app.data.i18n.seo_en.CALENDAR_TEMPLATES_EN | Dict | 'title', 'desc_future', 'desc_past', 'h1', 'intro', 'keywords', 'eyebrow', 'tile_publications', 'tile_rosstat', 'tile_cbr', 'tile_other', 'h2_month', 'h2_neighbors', 'th_date', 'th_publication', 'th_agency', 'th_status', 'status_expected', 'status_dash', 'status_moved', 'actual_prefix', 'interactive', 'source_rosstat', 'source_cbr', 'source_minfin', 'months' | [backend/app/data/i18n/seo_en.py:1145](../backend/app/data/i18n/seo_en.py#L1145) |
+| app.data.i18n.seo_en.REGIONAL_TEMPLATES_EN | Dict | 'regions_hub.title', 'regions_hub.description', 'regions_hub.h1', 'regions_hub.eyebrow', 'regions_hub.lead', 'regions_hub.ratings_h2', 'regions_hub.ratings_p', 'regions_hub.ratings_h3', 'regions_hub.map_h3', 'regions_hub.keywords', 'region_profile.title', 'region_profile.description', 'region_profile.h1', 'region_profile.eyebrow', 'region_profile.lead', 'region_profile.catalog_partial', 'region_profile.catalog_full', 'region_profile.see_also', 'region_profile.all_regions', 'region_profile.russia_summary', 'region_profile.top_demand', 'region_profile.keywords', 'region_monthly.p1', 'region_monthly.p1_mom', 'region_monthly.p1_yoy', 'region_monthly.p2', 'region_monthly.p3', 'region_monthly.rel_level', 'region_monthly.rel_above', 'region_monthly.rel_below', 'region_monthly.extremes', 'region_monthly.checkpoints_h2', 'region_monthly.faq_value_q', 'region_monthly.faq_value_a', 'region_monthly.faq_change_q', 'region_monthly.faq_change_a', 'region_monthly.faq_change_flat', 'region_monthly.faq_source_q', 'region_monthly.faq_source_a', 'region_monthly.faq_h2', 'region_monthly.neighbors_h2', 'region_monthly.table_h2', 'region_monthly.th_month', 'region_monthly.th_value', 'region_monthly.alt', 'region_monthly.caption', 'region_monthly.siblings_h2', 'region_monthly.title', 'region_monthly.description', 'region_monthly.dataset_description', 'region_monthly.creator', 'region_monthly.image_name', 'region_monthly.source_h2', 'region_monthly.source_p', 'region_monthly.unit_fallback', 'region_monthly.keywords', 'region_indicator.title', 'region_indicator.description', 'region_indicator.h1', 'region_indicator.p1', 'region_indicator.p1_change', 'region_indicator.p2_5y', 'region_indicator.p2_full', 'region_indicator.p3', 'region_indicator.p3_rf', 'region_indicator.rel_above', 'region_indicator.rel_below', 'region_indicator.rel_level', 'region_indicator.rating_full', 'region_indicator.rating_table', 'region_indicator.p4', 'region_indicator.checkpoints_h2', 'region_indicator.checkpoint_item', 'region_indicator.faq_h2', 'region_indicator.faq_value_q', 'region_indicator.faq_value_a', 'region_indicator.faq_rank_q', 'region_indicator.faq_rank_a', 'region_indicator.faq_list_q', 'region_indicator.faq_list_a', 'region_indicator.faq_change_q', 'region_indicator.faq_change_a', 'region_indicator.faq_source_q', 'region_indicator.faq_source_a', 'region_indicator.macro_h2', 'region_indicator.macro_p', 'region_indicator.neighbors_h2', 'region_indicator.table_h2', 'region_indicator.th_year', 'region_indicator.th_value', 'region_indicator.alt', 'region_indicator.caption', 'region_indicator.siblings_h2', 'region_indicator.rank_bit_achievement', 'region_indicator.rank_bit_list', 'region_indicator.rank_bit_none', 'region_indicator.keywords', 'region_indicator.pct_flat', 'region_indicator.pct_up', 'region_indicator.pct_down', 'region_indicator.pct_by', 'region_indicator.pct_times', 'region_indicator.times_word', 'region_indicator.rank_top3', 'region_indicator.rank_top10', 'region_indicator.rank_bottom', 'region_indicator.rank_place', 'region_indicator.list_top3', 'region_indicator.list_top10', 'region_indicator.list_bottom', 'region_indicator.list_place', 'region_rating_hub.title', 'region_rating_hub.description', 'region_rating_hub.h1', 'region_rating_hub.eyebrow', 'region_rating_hub.lead', 'region_rating_hub.keywords', 'region_rating.title', 'region_rating.description', 'region_rating.h1', 'region_vs.title', 'region_vs.description', 'region_vs.h1', 'region_vs.intro', 'region_vs.eyebrow', 'region_vs.alt', 'region_vs.caption', 'region_vs.table_h2', 'region_vs.th_indicator', 'region_vs.th_year', 'region_vs.section_dynamics', 'region_vs.rating_link', 'region_vs.profiles_h2', 'region_vs.profiles_p', 'region_vs.keywords', 'region_vs.jsonld_name', 'region_vs.image_name', 'region_rating.alt', 'region_rating.russia_tile', 'region_rating.data_for', 'region_rating.year_suffix', 'region_rating.regions_n', 'region_rating.th_region', 'region_rating.faq_h2', 'region_rating.faq_year_q', 'region_rating.faq_year_a', 'region_rating.map_h2', 'region_rating.map_p', 'region_rating.macro_h2', 'region_rating.macro_p', 'region_rating.source_h2', 'region_rating.source_p', 'region_rating.keywords', 'region_rating.image_name', 'region_rating.siblings_rankings', 'region_rating.siblings_indicators', 'region_rating.source_label', 'region_map.title', 'region_map.description', 'region_map.h1', 'region_map.eyebrow', 'region_map.lead', 'region_map.year_note', 'region_map.year_note_stale', 'region_map.tile_year', 'region_map.tile_regions', 'region_map.leaders_h2', 'region_map.rating_h2', 'region_map.rating_p', 'region_map.rating_label_achievement', 'region_map.rating_label_list', 'region_map.years_h2', 'region_map.source_h2', 'region_map.source_p', 'region_map.caption', 'region_map.alt', 'region_map.crumb', 'region_map.overview_title', 'region_map.overview_desc', 'region_map.overview_h1', 'region_map.overview_eyebrow', 'region_map.overview_lead', 'region_map.overview_popular_h2', 'region_map.overview_rankings_h2', 'region_map.overview_rankings_p', 'region_map.overview_keywords', 'region_map.keywords' | [backend/app/data/i18n/seo_en.py:1208](../backend/app/data/i18n/seo_en.py#L1208) |
+| app.data.i18n.seo_en.YEAR_TEMPLATES_EN | Dict | 'title_annual_current', 'title_annual', 'title_ytd', 'title_single', 'title_quarterly', 'title_weekly', 'title_daily', 'title_monthly', 'desc_single', 'desc_multi', 'period_note_ytd', 'summary_as_of', 'summary_annual_value', 'summary_value', 'summary_chain', 'summary_sum', 'summary_last', 'summary_avg', 'h2_single', 'h2_single_as_of', 'h2_ytd', 'h2_totals', 'h2_neighbors', 'h2_all_values', 'h2_chart', 'h2_other_years', 'chart_p', 'year_link', 'chart_alt_single', 'chart_alt_multi', 'chart_caption_single', 'chart_caption_multi', 'image_caption_single', 'image_caption_multi', 'jsonld_name', 'keywords', 'th_year', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'li_value_date', 'li_source', 'li_summary', 'li_year_start', 'li_year_end', 'li_latest', 'li_range', 'li_obs', 'range_minmax', 'range_cpi', 'change_value', 'change_no_prev', 'change_no_data', 'change_vs', 'change_vs_pp', 'change_zero_base', 'hist_insufficient', 'hist_no_data', 'hist_above', 'hist_below', 'hist_at', 'hist_position', 'hist_max_sole', 'hist_max_tie', 'hist_max_other', 'hist_min_sole', 'hist_min_tie', 'hist_min_other', 'gap_ago', 'gap_ago_one' | [backend/app/data/i18n/seo_en.py:1564](../backend/app/data/i18n/seo_en.py#L1564) |
+| app.data.i18n.seo_en.INDICATOR_TEMPLATES_EN | Dict | 'title', 'description_fallback', 'intro_fallback', 'chart_caption', 'chart_alt', 'image_name', 'forecast_image_name', 'methodology_fallback', 'block_what', 'block_why', 'block_read', 'block_freq', 'block_method', 'block_source', 'block_why_body', 'block_read_body', 'block_freq_body', 'block_source_body', 'freq_daily', 'freq_weekly', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'section_current', 'section_methodology', 'section_latest', 'section_related', 'section_years', 'year_link', 'li_latest', 'li_date', 'li_frequency', 'li_source', 'li_points', 'li_period', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'keywords', 'forecast_desc_tail', 'forecast_chart_note', 'forecast_link' | [backend/app/data/i18n/seo_en.py:1663](../backend/app/data/i18n/seo_en.py#L1663) |
 | app.data.indicator_seo.CATEGORY_KEYWORDS_RU | Dict | 'Цены', 'Ставки', 'Финансы', 'ВВП', 'Рынок труда', 'Население', 'Торговля', 'Бизнес', 'Наука' | [backend/app/data/indicator_seo.py:16](../backend/app/data/indicator_seo.py#L16) |
 | app.data.indicator_seo.FORECAST_SSR_PILOT_CODES | Call | computed source expression | [backend/app/data/indicator_seo.py:33](../backend/app/data/indicator_seo.py#L33) |
 | app.data.indicator_seo.INDICATOR_SEO_KEYWORDS | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'inflation-quarterly', 'inflation-annual', 'cpi-food-annual', 'cpi-nonfood-annual', 'cpi-services-annual', 'inflation-weekly', 'inflation-weekly-food', 'inflation-weekly-nonfood', 'inflation-weekly-services', 'ppi', 'ppi-yoy', 'ppi-mom', 'ppi-annual', 'key-rate', 'usd-rub', 'eur-rub', 'cny-rub', 'try-rub', 'kzt-rub', 'ruonia', 'm0', 'm2', 'mortgage-rate', 'auto-loan-rate', 'credit-rate-corp-short', 'credit-rate-corp-1to3y', 'credit-rate-corp-over3y', 'credit-rate-ind-short', 'credit-rate-ind-1to3y', 'credit-rate-ind-over3y', 'deposit-rate-medium', 'deposit-rate-long', 'deposit-rate', 'budget-deficit', 'budget-revenue', 'budget-expenditure', 'consumer-credit', 'deposits-individual', 'external-debt', 'business-credit', 'ipi-mining', 'ipi-manufacturing', 'ipi-energy', 'ipi-water', 'fuel-ai92', 'fuel-ai95', 'fuel-diesel', 'gold-price', 'btc-usd', 'eth-usd', 'sol-usd', 'imoex', 'mcftr', 'rtsi', 'rgbi', 'corp-bond-index', 'usd-index', 'ust-10y', 'eur-usd', 'gbp-usd', 'usd-cny', 'weo-gdp-usd', 'weo-gdp-per-capita-usd', 'weo-budget-balance-gdp', 'weo-government-debt-gdp', 'brent', 'copper', 'silver', 'natural-gas', 'wheat', 'soybean', 'coal', 'steel', 'gdp-nominal', 'gdp-nominal-annual', 'gdp-real', 'gdp-real-annual', 'gdp-yoy', 'gdp-qoq', 'gdp-real-yoy', 'gdp-real-qoq', 'gdp-consumption', 'gdp-government', 'housing-price-primary', 'housing-price-secondary', 'housing-yoy-primary', 'housing-yoy-secondary', 'housing-annual-primary', 'housing-annual-secondary', 'unemployment', 'labor-force', 'employment', 'wages', 'wages-real', 'population', 'births', 'deaths', 'retail-trade', 'construction-work', 'capital-investment', 'ipi', 'depreciation-rate', 'housing-commissioned', 'gdp-investment', 'birth-rate', 'death-rate', 'pensioners', 'pop-over-working-age', 'pop-under-working-age', 'working-age-population', 'population-migration', 'population-natural-growth', 'population-total-growth', 'doctoral-students', 'grad-students', 'innovation-activity', 'rd-organizations', 'rd-personnel', 'small-business-innovation', 'tech-innovation-share', 'wages-nominal', 'current-account', 'exports', 'imports', 'services-exports', 'services-imports', 'trade-balance', 'fdi-net', 'deposits-business', 'international-reserves', 'm1', 'housing-affordability' | [backend/app/data/indicator_seo.py:102](../backend/app/data/indicator_seo.py#L102) |
@@ -2499,8 +2503,8 @@ Relationships: `[]`
 | app.services.binance_btcusdt_parser._HOSTS | List | sequence/source expression | [backend/app/services/binance_btcusdt_parser.py:52](../backend/app/services/binance_btcusdt_parser.py#L52) |
 | app.services.bot_agent_tools.TOOLS | List | sequence/source expression | [backend/app/services/bot_agent_tools.py:34](../backend/app/services/bot_agent_tools.py#L34) |
 | app.services.bot_agent_tools._SYN | Dict | 'инфля', 'зарпла', 'ввп', 'безрабо', 'ставк', 'курс' | [backend/app/services/bot_agent_tools.py:132](../backend/app/services/bot_agent_tools.py#L132) |
-| app.services.bot_agent_tools._OPS | Dict | ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Pow, ast.USub, ast.UAdd, ast.Mod | [backend/app/services/bot_agent_tools.py:366](../backend/app/services/bot_agent_tools.py#L366) |
-| app.services.bot_agent_tools._FUNCS | Dict | 'round', 'min', 'max', 'abs' | [backend/app/services/bot_agent_tools.py:368](../backend/app/services/bot_agent_tools.py#L368) |
+| app.services.bot_agent_tools._OPS | Dict | ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Pow, ast.USub, ast.UAdd, ast.Mod | [backend/app/services/bot_agent_tools.py:370](../backend/app/services/bot_agent_tools.py#L370) |
+| app.services.bot_agent_tools._FUNCS | Dict | 'round', 'min', 'max', 'abs' | [backend/app/services/bot_agent_tools.py:372](../backend/app/services/bot_agent_tools.py#L372) |
 | app.services.bot_chart.BG_TOP | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:25](../backend/app/services/bot_chart.py#L25) |
 | app.services.bot_chart.BG_BOTTOM | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:26](../backend/app/services/bot_chart.py#L26) |
 | app.services.bot_chart.BLUE | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:28](../backend/app/services/bot_chart.py#L28) |
@@ -2526,6 +2530,9 @@ Relationships: `[]`
 | app.services.cabinet._CTRL_RE | Call | computed source expression | [backend/app/services/cabinet.py:57](../backend/app/services/cabinet.py#L57) |
 | app.services.cabinet._SOURCE_RE | Call | computed source expression | [backend/app/services/cabinet.py:58](../backend/app/services/cabinet.py#L58) |
 | app.services.calculation_engine.DERIVED_SPECS | List | sequence/source expression | [backend/app/services/calculation_engine.py:66](../backend/app/services/calculation_engine.py#L66) |
+| app.services.calendar_digest.FEEDS | Tuple | sequence/source expression | [backend/app/services/calendar_digest.py:24](../backend/app/services/calendar_digest.py#L24) |
+| app.services.calendar_digest.KEY_CODES | Dict | 'cpi', 'key-rate', 'ipi', 'ppi', 'unemployment', 'wages-nominal', 'retail-trade', 'gdp-real', 'budget-revenue' | [backend/app/services/calendar_digest.py:35](../backend/app/services/calendar_digest.py#L35) |
+| app.services.calendar_digest._MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/calendar_digest.py:41](../backend/app/services/calendar_digest.py#L41) |
 | app.services.calendar_i18n.INDICATOR_CALENDAR_CONTEXT_EN | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'ipi', 'unemployment', 'wages-nominal', 'retail-trade', 'housing-commissioned', 'ppi', 'construction-work', 'gdp-nominal', 'gdp-real', 'budget-revenue', 'budget-expenditure', 'budget-deficit', 'usd-rub', 'eur-rub', 'cny-rub', 'gold-price', 'ruonia', 'key-rate', 'international-reserves', 'm2', 'm1', 'm0', 'business-credit', 'consumer-credit', 'deposits-business', 'deposits-individual', 'deposit-rate', 'credit-rate-corp-short', 'credit-rate-corp-1to3y', 'credit-rate-corp-over3y', 'credit-rate-ind-short', 'credit-rate-ind-1to3y', 'credit-rate-ind-over3y', 'mortgage-rate', 'auto-loan-rate', 'exports', 'imports', 'trade-balance', 'services-exports', 'services-imports', 'current-account', 'external-debt', 'fdi-net' | [backend/app/services/calendar_i18n.py:10](../backend/app/services/calendar_i18n.py#L10) |
 | app.services.calendar_i18n.LEGACY_CONTEXT_RU | Dict | 'ipi', 'ruonia', 'exports', 'imports', 'budget-revenue', 'budget-expenditure', 'm2', 'm1', 'm0' | [backend/app/services/calendar_i18n.py:62](../backend/app/services/calendar_i18n.py#L62) |
 | app.services.calendar_seed.CBR_MEETINGS_2026 | List | sequence/source expression | [backend/app/services/calendar_seed.py:51](../backend/app/services/calendar_seed.py#L51) |
@@ -2537,19 +2544,29 @@ Relationships: `[]`
 | app.services.calendar_seed.WEEKLY_SPECS | List | sequence/source expression | [backend/app/services/calendar_seed.py:210](../backend/app/services/calendar_seed.py#L210) |
 | app.services.calendar_seed.MONTH_NAMES_RU | List | sequence/source expression | [backend/app/services/calendar_seed.py:256](../backend/app/services/calendar_seed.py#L256) |
 | app.services.calendar_seed.MONTH_NAMES_EN | List | sequence/source expression | [backend/app/services/calendar_seed.py:261](../backend/app/services/calendar_seed.py#L261) |
-| app.services.calendar_sources.common.OFFICIAL_CONFIDENCES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/common.py:19](../backend/app/services/calendar_sources/common.py#L19) |
+| app.services.calendar_sources.cbr_key_rate._MONTHS_GEN | Dict | 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' | [backend/app/services/calendar_sources/cbr_key_rate.py:27](../backend/app/services/calendar_sources/cbr_key_rate.py#L27) |
+| app.services.calendar_sources.cbr_key_rate._DATE_RE | Call | computed source expression | [backend/app/services/calendar_sources/cbr_key_rate.py:31](../backend/app/services/calendar_sources/cbr_key_rate.py#L31) |
+| app.services.calendar_sources.cbr_key_rate.FALLBACK_MEETINGS | Tuple | sequence/source expression | [backend/app/services/calendar_sources/cbr_key_rate.py:43](../backend/app/services/calendar_sources/cbr_key_rate.py#L43) |
+| app.services.calendar_sources.common.OFFICIAL_CONFIDENCES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/common.py:21](../backend/app/services/calendar_sources/common.py#L21) |
 | app.services.calendar_sources.enrichment.MONTH_NAMES_RU | List | sequence/source expression | [backend/app/services/calendar_sources/enrichment.py:21](../backend/app/services/calendar_sources/enrichment.py#L21) |
 | app.services.calendar_sources.enrichment._MONTH_REF_RE | Call | computed source expression | [backend/app/services/calendar_sources/enrichment.py:26](../backend/app/services/calendar_sources/enrichment.py#L26) |
 | app.services.calendar_sources.enrichment._QUARTER_REF_RE | Call | computed source expression | [backend/app/services/calendar_sources/enrichment.py:31](../backend/app/services/calendar_sources/enrichment.py#L31) |
 | app.services.calendar_sources.enrichment._QUARTER_STORE_MONTH | Dict | 1, 2, 3, 4 | [backend/app/services/calendar_sources/enrichment.py:34](../backend/app/services/calendar_sources/enrichment.py#L34) |
-| app.services.calendar_sources.official_calendar.MONTH_NAMES_RU | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:39](../backend/app/services/calendar_sources/official_calendar.py#L39) |
-| app.services.calendar_sources.official_calendar.INDICATOR_CALENDAR_CONTEXT | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'ipi', 'unemployment', 'wages-nominal', 'retail-trade', 'housing-commissioned', 'ppi', 'construction-work', 'gdp-nominal', 'gdp-real', 'budget-revenue', 'budget-expenditure', 'budget-deficit', 'usd-rub', 'eur-rub', 'cny-rub', 'gold-price', 'ruonia', 'key-rate', 'international-reserves', 'm2', 'm1', 'm0', 'business-credit', 'consumer-credit', 'deposits-business', 'deposits-individual', 'deposit-rate', 'credit-rate-corp-short', 'credit-rate-corp-1to3y', 'credit-rate-corp-over3y', 'credit-rate-ind-short', 'credit-rate-ind-1to3y', 'credit-rate-ind-over3y', 'mortgage-rate', 'auto-loan-rate', 'exports', 'imports', 'trade-balance', 'services-exports', 'services-imports', 'current-account', 'external-debt', 'fdi-net' | [backend/app/services/calendar_sources/official_calendar.py:48](../backend/app/services/calendar_sources/official_calendar.py#L48) |
-| app.services.calendar_sources.official_calendar.ROSSTAT_MONTHLY_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:112](../backend/app/services/calendar_sources/official_calendar.py#L112) |
-| app.services.calendar_sources.official_calendar.ROSSTAT_GDP_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:214](../backend/app/services/calendar_sources/official_calendar.py#L214) |
-| app.services.calendar_sources.official_calendar.MINFIN_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:231](../backend/app/services/calendar_sources/official_calendar.py#L231) |
-| app.services.calendar_sources.official_calendar.CBR_KEY_RATE_MEETINGS_2026 | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:252](../backend/app/services/calendar_sources/official_calendar.py#L252) |
-| app.services.calendar_sources.official_calendar.CBR_DAILY_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:263](../backend/app/services/calendar_sources/official_calendar.py#L263) |
-| app.services.calendar_sources.official_calendar.CBR_EVENT_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:311](../backend/app/services/calendar_sources/official_calendar.py#L311) |
+| app.services.calendar_sources.enrichment._DAILY_POINT_OFFSET | Dict | 'usd-rub', 'eur-rub', 'cny-rub', 'gold-price', 'ruonia' | [backend/app/services/calendar_sources/enrichment.py:338](../backend/app/services/calendar_sources/enrichment.py#L338) |
+| app.services.calendar_sources.official_calendar.MSK_UTC_OFFSET | Call | computed source expression | [backend/app/services/calendar_sources/official_calendar.py:40](../backend/app/services/calendar_sources/official_calendar.py#L40) |
+| app.services.calendar_sources.official_calendar.MONTH_NAMES_RU | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:43](../backend/app/services/calendar_sources/official_calendar.py#L43) |
+| app.services.calendar_sources.official_calendar.INDICATOR_CALENDAR_CONTEXT | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'ipi', 'unemployment', 'wages-nominal', 'retail-trade', 'housing-commissioned', 'ppi', 'construction-work', 'gdp-nominal', 'gdp-real', 'budget-revenue', 'budget-expenditure', 'budget-deficit', 'usd-rub', 'eur-rub', 'cny-rub', 'gold-price', 'ruonia', 'key-rate', 'international-reserves', 'm2', 'm1', 'm0', 'business-credit', 'consumer-credit', 'deposits-business', 'deposits-individual', 'deposit-rate', 'credit-rate-corp-short', 'credit-rate-corp-1to3y', 'credit-rate-corp-over3y', 'credit-rate-ind-short', 'credit-rate-ind-1to3y', 'credit-rate-ind-over3y', 'mortgage-rate', 'auto-loan-rate', 'exports', 'imports', 'trade-balance', 'services-exports', 'services-imports', 'current-account', 'external-debt', 'fdi-net' | [backend/app/services/calendar_sources/official_calendar.py:52](../backend/app/services/calendar_sources/official_calendar.py#L52) |
+| app.services.calendar_sources.official_calendar.ROSSTAT_MONTHLY_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:116](../backend/app/services/calendar_sources/official_calendar.py#L116) |
+| app.services.calendar_sources.official_calendar.ROSSTAT_GDP_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:218](../backend/app/services/calendar_sources/official_calendar.py#L218) |
+| app.services.calendar_sources.official_calendar.MINFIN_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:235](../backend/app/services/calendar_sources/official_calendar.py#L235) |
+| app.services.calendar_sources.official_calendar.CBR_DAILY_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:259](../backend/app/services/calendar_sources/official_calendar.py#L259) |
+| app.services.calendar_sources.official_calendar.CBR_EVENT_RULES | List | sequence/source expression | [backend/app/services/calendar_sources/official_calendar.py:307](../backend/app/services/calendar_sources/official_calendar.py#L307) |
+| app.services.calendar_sources.rosstat_oper_plan._DOC_HREF_RE | Call | computed source expression | [backend/app/services/calendar_sources/rosstat_oper_plan.py:36](../backend/app/services/calendar_sources/rosstat_oper_plan.py#L36) |
+| app.services.calendar_sources.rosstat_oper_plan._MONTHS_GEN | Dict | 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' | [backend/app/services/calendar_sources/rosstat_oper_plan.py:37](../backend/app/services/calendar_sources/rosstat_oper_plan.py#L37) |
+| app.services.calendar_sources.rosstat_oper_plan._MONTH_STEMS | Tuple | sequence/source expression | [backend/app/services/calendar_sources/rosstat_oper_plan.py:41](../backend/app/services/calendar_sources/rosstat_oper_plan.py#L41) |
+| app.services.calendar_sources.rosstat_oper_plan._MONTH_NAMES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/rosstat_oper_plan.py:43](../backend/app/services/calendar_sources/rosstat_oper_plan.py#L43) |
+| app.services.calendar_sources.rosstat_oper_plan._ROW_RE | Call | computed source expression | [backend/app/services/calendar_sources/rosstat_oper_plan.py:46](../backend/app/services/calendar_sources/rosstat_oper_plan.py#L46) |
+| app.services.calendar_sources.rosstat_oper_plan.SERIES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/rosstat_oper_plan.py:68](../backend/app/services/calendar_sources/rosstat_oper_plan.py#L68) |
 | app.services.calendar_sources.rosstat_plan._SCHEDULE_CARD_RE | Call | computed source expression | [backend/app/services/calendar_sources/rosstat_plan.py:44](../backend/app/services/calendar_sources/rosstat_plan.py#L44) |
 | app.services.calendar_sources.rosstat_plan._SCHEDULE_DOC_HREF_RE | Call | computed source expression | [backend/app/services/calendar_sources/rosstat_plan.py:45](../backend/app/services/calendar_sources/rosstat_plan.py#L45) |
 | app.services.calendar_sources.rosstat_plan._MONTH_HEADER_RE | Call | computed source expression | [backend/app/services/calendar_sources/rosstat_plan.py:49](../backend/app/services/calendar_sources/rosstat_plan.py#L49) |
@@ -2561,9 +2578,21 @@ Relationships: `[]`
 | app.services.calendar_sources.rosstat_plan._MONTH_REF_RE | Call | computed source expression | [backend/app/services/calendar_sources/rosstat_plan.py:75](../backend/app/services/calendar_sources/rosstat_plan.py#L75) |
 | app.services.calendar_sources.rosstat_plan._MONTH_NAMES_RU | List | sequence/source expression | [backend/app/services/calendar_sources/rosstat_plan.py:79](../backend/app/services/calendar_sources/rosstat_plan.py#L79) |
 | app.services.calendar_sources.rosstat_plan._MONTH_STEMS | List | sequence/source expression | [backend/app/services/calendar_sources/rosstat_plan.py:83](../backend/app/services/calendar_sources/rosstat_plan.py#L83) |
-| app.services.calendar_sources.rosstat_plan._TOPIC_RULES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/rosstat_plan.py:107](../backend/app/services/calendar_sources/rosstat_plan.py#L107) |
-| app.services.calendar_sources.working_calendar.WORKING_CALENDAR_SOURCES | Dict | 2026 | [backend/app/services/calendar_sources/working_calendar.py:6](../backend/app/services/calendar_sources/working_calendar.py#L6) |
-| app.services.calendar_sources.working_calendar.NON_WORKING_DAYS | Dict | 2026 | [backend/app/services/calendar_sources/working_calendar.py:11](../backend/app/services/calendar_sources/working_calendar.py#L11) |
+| app.services.calendar_sources.rosstat_plan._TOPIC_RULES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/rosstat_plan.py:110](../backend/app/services/calendar_sources/rosstat_plan.py#L110) |
+| app.services.calendar_sources.working_calendar.WORKING_CALENDAR_SOURCES | Dict | 2026, 2027 | [backend/app/services/calendar_sources/working_calendar.py:6](../backend/app/services/calendar_sources/working_calendar.py#L6) |
+| app.services.calendar_sources.working_calendar.NON_WORKING_DAYS | Dict | 2026, 2027 | [backend/app/services/calendar_sources/working_calendar.py:13](../backend/app/services/calendar_sources/working_calendar.py#L13) |
+| app.services.calendar_sources.working_calendar.WORKING_WEEKENDS | Dict | 2026, 2027 | [backend/app/services/calendar_sources/working_calendar.py:44](../backend/app/services/calendar_sources/working_calendar.py#L44) |
+| app.services.calendar_sources.world_calendar.WORLD_SOURCES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/world_calendar.py:36](../backend/app/services/calendar_sources/world_calendar.py#L36) |
+| app.services.calendar_sources.world_calendar._UA | Dict | 'User-Agent' | [backend/app/services/calendar_sources/world_calendar.py:37](../backend/app/services/calendar_sources/world_calendar.py#L37) |
+| app.services.calendar_sources.world_calendar._NY | Call | computed source expression | [backend/app/services/calendar_sources/world_calendar.py:39](../backend/app/services/calendar_sources/world_calendar.py#L39) |
+| app.services.calendar_sources.world_calendar._MSK | Call | computed source expression | [backend/app/services/calendar_sources/world_calendar.py:40](../backend/app/services/calendar_sources/world_calendar.py#L40) |
+| app.services.calendar_sources.world_calendar._MONTHS_EN | DictComp | computed source expression | [backend/app/services/calendar_sources/world_calendar.py:41](../backend/app/services/calendar_sources/world_calendar.py#L41) |
+| app.services.calendar_sources.world_calendar._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/calendar_sources/world_calendar.py:44](../backend/app/services/calendar_sources/world_calendar.py#L44) |
+| app.services.calendar_sources.world_calendar._QUARTER_WORD | Dict | '1st', '2nd', '3rd', '4th' | [backend/app/services/calendar_sources/world_calendar.py:46](../backend/app/services/calendar_sources/world_calendar.py#L46) |
+| app.services.calendar_sources.world_calendar._BEA_RULES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/world_calendar.py:145](../backend/app/services/calendar_sources/world_calendar.py#L145) |
+| app.services.calendar_sources.world_calendar._ESTIMATE_RU | Dict | 'advance', 'second', 'third' | [backend/app/services/calendar_sources/world_calendar.py:154](../backend/app/services/calendar_sources/world_calendar.py#L154) |
+| app.services.calendar_sources.world_calendar._EUROSTAT_RULES | Tuple | sequence/source expression | [backend/app/services/calendar_sources/world_calendar.py:212](../backend/app/services/calendar_sources/world_calendar.py#L212) |
+| app.services.calendar_sources.world_enrichment._QUARTER_RE | Call | computed source expression | [backend/app/services/calendar_sources/world_enrichment.py:22](../backend/app/services/calendar_sources/world_enrichment.py#L22) |
 | app.services.cbr_bop_parser._Q_RE | Call | computed source expression | [backend/app/services/cbr_bop_parser.py:31](../backend/app/services/cbr_bop_parser.py#L31) |
 | app.services.cbr_bop_parser.QUARTER_MONTH | Dict | 1, 2, 3, 4 | [backend/app/services/cbr_bop_parser.py:33](../backend/app/services/cbr_bop_parser.py#L33) |
 | app.services.cbr_dataservice_parser.MONTH_MAP | Dict | 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' | [backend/app/services/cbr_dataservice_parser.py:55](../backend/app/services/cbr_dataservice_parser.py#L55) |
@@ -2803,39 +2832,39 @@ Relationships: `[]`
 | app.services.public_bot._MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/public_bot.py:106](../backend/app/services/public_bot.py#L106) |
 | app.services.public_bot._FREQ_STEP | Dict | 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:108](../backend/app/services/public_bot.py#L108) |
 | app.services.public_bot._FUZZY | Dict | 'дизель', 'солярка', 'бензин', 'инфляция', 'золото', 'доллар', 'ипотека', 'вклады', 'депозит', 'ключевая' | [backend/app/services/public_bot.py:139](../backend/app/services/public_bot.py#L139) |
-| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:270](../backend/app/services/public_bot.py#L270) |
-| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:272](../backend/app/services/public_bot.py#L272) |
-| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:273](../backend/app/services/public_bot.py#L273) |
-| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:274](../backend/app/services/public_bot.py#L274) |
-| app.services.public_bot.WELCOME_EXAMPLES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:377](../backend/app/services/public_bot.py#L377) |
-| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:448](../backend/app/services/public_bot.py#L448) |
-| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:450](../backend/app/services/public_bot.py#L450) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1068](../backend/app/services/public_bot.py#L1068) |
-| app.services.public_bot._YEAR_END_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1087](../backend/app/services/public_bot.py#L1087) |
-| app.services.public_bot._NO_CHART_ROWS | Call | computed source expression | [backend/app/services/public_bot.py:1096](../backend/app/services/public_bot.py#L1096) |
-| app.services.public_bot._CHART_FOR_ROW | Dict | 'usd', 'eur', 'gold' | [backend/app/services/public_bot.py:1097](../backend/app/services/public_bot.py#L1097) |
-| app.services.public_bot._TOOL_TEXT | Call | computed source expression | [backend/app/services/public_bot.py:1304](../backend/app/services/public_bot.py#L1304) |
-| app.services.public_bot._LLM_USAGE | Call | computed source expression | [backend/app/services/public_bot.py:1306](../backend/app/services/public_bot.py#L1306) |
-| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1415](../backend/app/services/public_bot.py#L1415) |
-| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1417](../backend/app/services/public_bot.py#L1417) |
-| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1437](../backend/app/services/public_bot.py#L1437) |
-| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1442](../backend/app/services/public_bot.py#L1442) |
-| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1444](../backend/app/services/public_bot.py#L1444) |
-| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1446](../backend/app/services/public_bot.py#L1446) |
-| app.services.public_bot._LAT2CYR | Dict | 'a', 'c', 'e', 'o', 'p', 'x', 'y', 'r', 'k', 'm', 't' | [backend/app/services/public_bot.py:1449](../backend/app/services/public_bot.py#L1449) |
-| app.services.public_bot._LAT_IN_CYR | Call | computed source expression | [backend/app/services/public_bot.py:1451](../backend/app/services/public_bot.py#L1451) |
-| app.services.public_bot._LINK | Call | computed source expression | [backend/app/services/public_bot.py:1482](../backend/app/services/public_bot.py#L1482) |
-| app.services.public_bot._OK_PATHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1483](../backend/app/services/public_bot.py#L1483) |
-| app.services.public_bot._NO_CHART | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1484](../backend/app/services/public_bot.py#L1484) |
-| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1544](../backend/app/services/public_bot.py#L1544) |
-| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1546](../backend/app/services/public_bot.py#L1546) |
-| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1548](../backend/app/services/public_bot.py#L1548) |
-| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1572](../backend/app/services/public_bot.py#L1572) |
-| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1680](../backend/app/services/public_bot.py#L1680) |
-| app.services.public_bot._PHONE | Call | computed source expression | [backend/app/services/public_bot.py:1730](../backend/app/services/public_bot.py#L1730) |
-| app.services.public_bot._PASSPORT | Call | computed source expression | [backend/app/services/public_bot.py:1731](../backend/app/services/public_bot.py#L1731) |
-| app.services.public_bot._PLACES | List | sequence/source expression | [backend/app/services/public_bot.py:1739](../backend/app/services/public_bot.py#L1739) |
-| app.services.public_bot._PLACE_SKIP | Set | sequence/source expression | [backend/app/services/public_bot.py:1740](../backend/app/services/public_bot.py#L1740) |
+| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:274](../backend/app/services/public_bot.py#L274) |
+| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:276](../backend/app/services/public_bot.py#L276) |
+| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:277](../backend/app/services/public_bot.py#L277) |
+| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:278](../backend/app/services/public_bot.py#L278) |
+| app.services.public_bot.WELCOME_EXAMPLES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:381](../backend/app/services/public_bot.py#L381) |
+| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:452](../backend/app/services/public_bot.py#L452) |
+| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:454](../backend/app/services/public_bot.py#L454) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1072](../backend/app/services/public_bot.py#L1072) |
+| app.services.public_bot._YEAR_END_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1091](../backend/app/services/public_bot.py#L1091) |
+| app.services.public_bot._NO_CHART_ROWS | Call | computed source expression | [backend/app/services/public_bot.py:1100](../backend/app/services/public_bot.py#L1100) |
+| app.services.public_bot._CHART_FOR_ROW | Dict | 'usd', 'eur', 'gold' | [backend/app/services/public_bot.py:1101](../backend/app/services/public_bot.py#L1101) |
+| app.services.public_bot._TOOL_TEXT | Call | computed source expression | [backend/app/services/public_bot.py:1310](../backend/app/services/public_bot.py#L1310) |
+| app.services.public_bot._LLM_USAGE | Call | computed source expression | [backend/app/services/public_bot.py:1312](../backend/app/services/public_bot.py#L1312) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1421](../backend/app/services/public_bot.py#L1421) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1423](../backend/app/services/public_bot.py#L1423) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1443](../backend/app/services/public_bot.py#L1443) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1448](../backend/app/services/public_bot.py#L1448) |
+| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1450](../backend/app/services/public_bot.py#L1450) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1452](../backend/app/services/public_bot.py#L1452) |
+| app.services.public_bot._LAT2CYR | Dict | 'a', 'c', 'e', 'o', 'p', 'x', 'y', 'r', 'k', 'm', 't' | [backend/app/services/public_bot.py:1455](../backend/app/services/public_bot.py#L1455) |
+| app.services.public_bot._LAT_IN_CYR | Call | computed source expression | [backend/app/services/public_bot.py:1457](../backend/app/services/public_bot.py#L1457) |
+| app.services.public_bot._LINK | Call | computed source expression | [backend/app/services/public_bot.py:1488](../backend/app/services/public_bot.py#L1488) |
+| app.services.public_bot._OK_PATHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1489](../backend/app/services/public_bot.py#L1489) |
+| app.services.public_bot._NO_CHART | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1490](../backend/app/services/public_bot.py#L1490) |
+| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1550](../backend/app/services/public_bot.py#L1550) |
+| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1552](../backend/app/services/public_bot.py#L1552) |
+| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1554](../backend/app/services/public_bot.py#L1554) |
+| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1578](../backend/app/services/public_bot.py#L1578) |
+| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1686](../backend/app/services/public_bot.py#L1686) |
+| app.services.public_bot._PHONE | Call | computed source expression | [backend/app/services/public_bot.py:1736](../backend/app/services/public_bot.py#L1736) |
+| app.services.public_bot._PASSPORT | Call | computed source expression | [backend/app/services/public_bot.py:1737](../backend/app/services/public_bot.py#L1737) |
+| app.services.public_bot._PLACES | List | sequence/source expression | [backend/app/services/public_bot.py:1745](../backend/app/services/public_bot.py#L1745) |
+| app.services.public_bot._PLACE_SKIP | Set | sequence/source expression | [backend/app/services/public_bot.py:1746](../backend/app/services/public_bot.py#L1746) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |
@@ -3120,14 +3149,14 @@ Relationships: `[]`
 | app.services.site_urls._W3C_LASTMOD | Call | computed source expression | [backend/app/services/site_urls.py:100](../backend/app/services/site_urls.py#L100) |
 | app.services.site_urls._PUBLIC_REGION_KINDS | Tuple | sequence/source expression | [backend/app/services/site_urls.py:109](../backend/app/services/site_urls.py#L109) |
 | app.services.site_urls._REGIONAL_PAIR_DATA | Call | computed source expression | [backend/app/services/site_urls.py:441](../backend/app/services/site_urls.py#L441) |
-| app.services.site_urls._REG_PAIRS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1765](../backend/app/services/site_urls.py#L1765) |
-| app.services.site_urls._REG_YEARS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1767](../backend/app/services/site_urls.py#L1767) |
-| app.services.site_urls._WORLD_CARDS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1779](../backend/app/services/site_urls.py#L1779) |
-| app.services.site_urls._WORLD_YEARS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1788](../backend/app/services/site_urls.py#L1788) |
-| app.services.site_urls._SIMPLE_SECTION_ORDER | List | sequence/source expression | [backend/app/services/site_urls.py:1798](../backend/app/services/site_urls.py#L1798) |
-| app.services.site_urls._CHUNKED_SOURCES | Dict | 'months-', 'world-indicators-', 'regional-', 'regional-years-', 'world-years-', 'world-region-years-' | [backend/app/services/site_urls.py:1893](../backend/app/services/site_urls.py#L1893) |
-| app.services.site_urls._SIMPLE_SECTION_BUILDERS | Dict | 'core', 'today', 'ratings', 'maps', 'regions', 'region-vs', 'world-ratings', 'world', 'world-regions', 'world-region-vs', 'calendar', 'world-vs', 'years' | [backend/app/services/site_urls.py:1934](../backend/app/services/site_urls.py#L1934) |
-| app.services.site_urls.SECTION_BUILDERS | Dict | sequence/source expression | [backend/app/services/site_urls.py:1987](../backend/app/services/site_urls.py#L1987) |
+| app.services.site_urls._REG_PAIRS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1766](../backend/app/services/site_urls.py#L1766) |
+| app.services.site_urls._REG_YEARS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1768](../backend/app/services/site_urls.py#L1768) |
+| app.services.site_urls._WORLD_CARDS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1780](../backend/app/services/site_urls.py#L1780) |
+| app.services.site_urls._WORLD_YEARS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1789](../backend/app/services/site_urls.py#L1789) |
+| app.services.site_urls._SIMPLE_SECTION_ORDER | List | sequence/source expression | [backend/app/services/site_urls.py:1799](../backend/app/services/site_urls.py#L1799) |
+| app.services.site_urls._CHUNKED_SOURCES | Dict | 'months-', 'world-indicators-', 'regional-', 'regional-years-', 'world-years-', 'world-region-years-' | [backend/app/services/site_urls.py:1894](../backend/app/services/site_urls.py#L1894) |
+| app.services.site_urls._SIMPLE_SECTION_BUILDERS | Dict | 'core', 'today', 'ratings', 'maps', 'regions', 'region-vs', 'world-ratings', 'world', 'world-regions', 'world-region-vs', 'calendar', 'world-vs', 'years' | [backend/app/services/site_urls.py:1935](../backend/app/services/site_urls.py#L1935) |
+| app.services.site_urls.SECTION_BUILDERS | Dict | sequence/source expression | [backend/app/services/site_urls.py:1988](../backend/app/services/site_urls.py#L1988) |
 | app.services.sitemap_images._SEGMENT | Call | computed source expression | [backend/app/services/sitemap_images.py:16](../backend/app/services/sitemap_images.py#L16) |
 | app.services.sitemap_images._WORLD_CODE | Call | computed source expression | [backend/app/services/sitemap_images.py:17](../backend/app/services/sitemap_images.py#L17) |
 | app.services.sitemap_priority.WHOLE_SECTIONS | Tuple | sequence/source expression | [backend/app/services/sitemap_priority.py:39](../backend/app/services/sitemap_priority.py#L39) |

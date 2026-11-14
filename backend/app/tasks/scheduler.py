@@ -884,9 +884,15 @@ async def _promote_past_events() -> None:
             logger.info("Removed %d unconfirmed calendar release statuses", result.rowcount)
         try:
             from app.services.calendar_sources.enrichment import (
+                confirm_releases_from_loads,
                 enrich_events_from_indicator_data,
             )
             enriched = await enrich_events_from_indicator_data(db)
+            # Факт выхода событий без отчётного периода (ЦБ: ставка, резервы, курсы) — по загрузке.
+            enriched += await confirm_releases_from_loads(db)
+            # Прогноз на карточке события обновляется после переобучения моделей в той же выгрузке.
+            from app.services.calendar_sources.enrichment import fill_event_forecasts
+            enriched += await fill_event_forecasts(db)
             if enriched:
                 logger.info("Calendar enrichment after promote: %d events", enriched)
         except Exception:

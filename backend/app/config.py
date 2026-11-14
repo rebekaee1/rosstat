@@ -463,6 +463,11 @@ class Settings(BaseSettings):
     telegram_calm_mode: bool = True
     telegram_calm_summary_cron_hour: int = 9
     telegram_calm_summary_cron_minute: int = 10
+    # Календарь в утренней сводке (14.11.2026, `services/calendar_digest.py`): сторож пишет строку,
+    # только если источник дат молчит > 36 ч или у главного показателя нет даты на 45 дней;
+    # «сегодня в календаре» и переносы за сутки — за отдельным флагом, по умолчанию выключено.
+    calendar_watchdog_enabled: bool = True
+    telegram_calendar_today_enabled: bool = False
     # Круг 11 (зона H): новое в отчётах. Всё выключено по умолчанию: старые отчёты
     # (дайджест 09:00, Пульс 09:05, мгновенные сообщения) работают как раньше.
     # v2 дайджеста добавляет блоки «Регистрации», «Что делали», «Воронка», «Сайт» и

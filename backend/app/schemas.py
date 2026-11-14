@@ -160,6 +160,15 @@ class CalendarEventOut(BaseModel):
     source_hash: str | None = None
     indicator_code: str | None = None
     indicator_name: str | None = None
+    # Источник перенёс дату: прежняя официальная дата (последний перенос). None — переносов не было.
+    rescheduled_from: date | None = None
+    # День, когда факт выхода появился в нашей загрузке (не дата периода).
+    released_on: date | None = None
+    # Мировой выпуск: адрес карточки ряда на сайте и страна/регион для подписи (14.11.2026).
+    link_path: str | None = None
+    country: str | None = None
+    # Дата — официальный срок «не позднее» (бюджет Минфина), а не объявленный день выхода.
+    deadline: bool = False
 
     model_config = {"from_attributes": True}
 

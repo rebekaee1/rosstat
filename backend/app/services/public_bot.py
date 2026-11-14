@@ -227,10 +227,14 @@ async def load_figure(db, topic: Topic) -> Figure | None:
     nxt = None
     rel_code = _RELEASE_CODE.get(topic.key)
     if rel_code:
+        from app.api.calendar import _public_calendar_conditions
+
+        # Только события, которые видит календарь сайта (14.11.2026: бот брал скрытые старые оценки дат).
         nxt = (await db.execute(
             select(EconomicEvent.scheduled_date, EconomicEvent.is_estimated)
             .join(Indicator, Indicator.id == EconomicEvent.indicator_id)
-            .where(Indicator.code == rel_code, EconomicEvent.scheduled_date >= _now().date())
+            .where(Indicator.code == rel_code, EconomicEvent.scheduled_date >= _now().date(),
+                   *_public_calendar_conditions())
             .order_by(EconomicEvent.scheduled_date).limit(1)
         )).first()
     return Figure(
@@ -1199,11 +1203,13 @@ async def build_llm_context(db, today: date | None = None) -> str:
                 IndicatorData.indicator_id == ind.id, IndicatorData.date > changed)
         )).scalar_one_or_none() if changed else None
         # Тестер 1, 09.11: «когда следующее заседание ЦБ» — бот отвечал «даты нет», хотя календарь событий её знает.
+        from app.api.calendar import _public_calendar_conditions
+
         meeting = (await db.execute(
             select(EconomicEvent.scheduled_date, EconomicEvent.is_estimated)
             .join(Indicator, Indicator.id == EconomicEvent.indicator_id)
             .where(Indicator.code == TOPICS["keyrate"].indicator, EconomicEvent.event_type == "rate_decision",
-                   EconomicEvent.scheduled_date >= today)
+                   EconomicEvent.scheduled_date >= today, *_public_calendar_conditions())
             .order_by(EconomicEvent.scheduled_date).limit(1)
         )).first()
         meeting_txt = (f"следующее заседание Банка России по ставке: {'ориентировочно ' if meeting[1] else ''}"
