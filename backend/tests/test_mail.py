@@ -100,6 +100,16 @@ def test_newsletter_message_headers(monkeypatch):
     assert parsed.get_content_type() == "multipart/alternative"
 
 
+def test_light_only_and_outlook_dark_guards():
+    """Письмо светлое (только светлая схема), а шапка и знак защищены от перекраски Outlook."""
+    from app.services.mail.templates import render_action
+
+    html = render_action("verify", "ru", action_url="https://x/a", site_url="https://x/").html
+    assert '<meta name="color-scheme" content="only light">' in html
+    assert "color-scheme: light only" in html
+    assert "[data-ogsb] .fe-hero" in html and 'class="fe-mark"' in html
+
+
 def test_service_message_is_auto_submitted():
     from app.services.mail import transport
 

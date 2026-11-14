@@ -277,10 +277,10 @@ def _hero(locale: str, site_url: str) -> str:
         f'<img src="cid:{CID_F}" width="84" height="93" alt="" '
         'style="display:block;width:84px;height:93px;border:0;outline:none;margin:-16px 0 -16px -18px;"></a></td>'
         f'<td valign="middle"><a href="{escape(site_url, quote=True)}" target="_blank" '
-        f'style="text-decoration:none;color:{ON_DARK};font-family:{FONT};font-size:25px;line-height:1;'
+        f'class="fe-mark" style="text-decoration:none;color:{ON_DARK};font-family:{FONT};font-size:25px;line-height:1;'
         'letter-spacing:-.04em;"><span style="font-weight:700;color:#FFFFFF;">forecast</span>'
         f'<span style="font-weight:300;color:{ON_DARK};">economy</span></a>'
-        f'<div style="margin-top:7px;font-family:{FONT};font-size:12.5px;line-height:1.2;font-weight:400;'
+        f'<div class="fe-tag" style="margin-top:7px;font-family:{FONT};font-size:12.5px;line-height:1.2;font-weight:400;'
         f'color:{ON_DARK_MUTED};text-decoration:none;">'
         f'<span style="text-decoration:none;color:{ON_DARK_MUTED};">{escape(t(locale, "tagline"))}</span></div></td>'
         '</tr></table></td></tr>'
@@ -303,12 +303,18 @@ def layout(locale: str, *, preheader: str, body_html: str, footer_html: str, sit
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="only light">
 <meta name="supported-color-schemes" content="light">
 <meta name="x-apple-disable-message-reformatting">
 <title>Forecast Economy</title>
 <style>
-  :root {{ color-scheme: light; supported-color-schemes: light; }}
+  /* Письмо светлое: просим почту не перекрашивать (Apple Mail, iOS, браузеры с автотёмной темой). */
+  :root {{ color-scheme: light only; supported-color-schemes: light; }}
+  /* Outlook.com / Outlook в тёмной теме перекрашивает цвета, помечая элементы data-ogsc/ogsb:
+     шапка остаётся сапфировой, знак — белым. */
+  [data-ogsb] .fe-hero {{ background-color:{SAPPHIRE} !important; }}
+  [data-ogsc] .fe-mark, [data-ogsc] .fe-mark span {{ color:#FFFFFF !important; }}
+  [data-ogsc] .fe-tag, [data-ogsc] .fe-tag span {{ color:{ON_DARK_MUTED} !important; }}
   @media (max-width:620px) {{
     .fe-wrap {{ padding:14px 8px 28px !important; }}
     .fe-hero {{ padding:26px 24px 22px !important; border-radius:20px 20px 0 0 !important; }}
