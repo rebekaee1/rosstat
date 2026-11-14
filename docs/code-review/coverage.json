@@ -12907,9 +12907,9 @@
     },
     {
       "path": "deploy/test-og-crawler-limit.sh",
-      "sha256": "d7bfac9bf03cf777bf30a5cdbee183c3fb3e3854d264a40c620d8487a8e7d3e9",
-      "bytes": 2879,
-      "lines": 41,
+      "sha256": "8543b7c7454a1464f14b733e42d9ad566f2a06bf9bed7e1298865dcafdd07256",
+      "bytes": 3738,
+      "lines": 46,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -13622,8 +13622,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "ca58a53ed75567093fcdc1c705f8dd325aaa94332f17abb5f2050dd62c23fbf5",
-      "bytes": 761838,
+      "sha256": "a3eaeb860bfddc9c2f0ba6338e6aa501b42ddb6ac38960ee81bcfb958e232c11",
+      "bytes": 762450,
       "lines": 3523,
       "code": false,
       "status": "reviewed",
@@ -14220,7 +14220,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "62f0f7b397975faafbf2af93dff49a570dbfbd4799c951bba1b65cbf25874b73",
+      "sha256": "800cdc22994558f65e292a69aa8e51197a25dfb2d3e3a60d31a10c996a4feb12",
       "bytes": 3852995,
       "lines": 136343,
       "code": false,
@@ -15039,8 +15039,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "22081c7db638d523473e39e1f7ebff28d303e6e983d4aa009a288b42d5216178",
-      "bytes": 138304,
+      "sha256": "1cefe12905173fc74affea13efb3f6ae6666e198a0ee889b2ad2d1ee69aedbdb",
+      "bytes": 138522,
       "lines": 670,
       "code": false,
       "status": "reviewed",
@@ -32043,9 +32043,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "cb66a76b055097900d2b1a411b0774a358dff09de2947db1c51b86b072e3f508",
+  "ledger_sha256": "4fcfbf1adbc860d632b54a87b552894c67b45a436ed3591de6c0c6bf9629bc57",
   "javascript_inventory_sha256": "ff07e771d69de4817e88614a86a53747aafd3122d75b0bbe7982760f87d81c5d",
-  "baseline_commit": "e2b1ff09d2531b6ad756f17bb5f145005a838772",
+  "baseline_commit": "6e677ff1761edc91d5a70ce031f2278be71ff181",
   "branch": "fix/counter-google-farm-2026-11-14",
   "unstaged_at_capture": []
 }

@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2251  ·  **Строк:** 1 420 702  ·  **Токенов (≈):** 13 553 454
+**Файлов:** 2251  ·  **Строк:** 1 420 707  ·  **Токенов (≈):** 13 553 746
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 920 | 320 655 | 3 510 169 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 19 | 1 274 | 20 256 |
-| `docs` | 144 | 886 119 | 7 622 021 |
+| `deploy` | 19 | 1 279 | 20 406 |
+| `docs` | 144 | 886 119 | 7 622 163 |
 | `frontend` | 1016 | 184 629 | 2 023 137 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -40,7 +40,7 @@
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
-| `docs/backlog.md` | 3 523 | 126 938 |
+| `docs/backlog.md` | 3 523 | 127 038 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/data-contracts.md` | 1 212 | 61 165 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
@@ -65,7 +65,7 @@
 | `backend/app/services/public_bot.py` | 2 063 | 27 394 |
 | `backend/app/services/analytics_marts.py` | 2 404 | 26 945 |
 | `backend/app/models.py` | 1 920 | 25 109 |
-| `docs/workflow.md` | 670 | 24 235 |
+| `docs/workflow.md` | 670 | 24 277 |
 | `docs/search.md` | 986 | 24 225 |
 | `backend/app/services/search.py` | 1 512 | 23 157 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
@@ -1495,6 +1495,7 @@
 | `frontend/src/components/Navbar.c11g.component.test.jsx` | 62 | 789 |
 | `frontend/src/lib/homeBootstrap.test.js` | 94 | 789 |
 | `frontend/src/lib/tickerFormat.test.js` | 68 | 787 |
+| `deploy/test-og-crawler-limit.sh` | 46 | 786 |
 | `frontend/src/lib/countryBootstrap.test.js` | 92 | 786 |
 | `frontend/src/pages/RegionProfile.component.test.jsx` | 65 | 786 |
 | `backend/tests/test_world_country_slim.py` | 73 | 785 |
@@ -1643,7 +1644,6 @@
 | `backend/tests/test_session_change_log_pg.py` | 58 | 639 |
 | `frontend/src/components/regions/DownloadMenu.jsx` | 68 | 639 |
 | `frontend/src/components/country/CountryMood.component.test.jsx` | 55 | 638 |
-| `deploy/test-og-crawler-limit.sh` | 41 | 636 |
 | `frontend/src/components/calendar/CalendarUpcoming.jsx` | 57 | 636 |
 | `frontend/src/styles/r4c-wide.css` | 45 | 636 |
 | `backend/alembic/versions/20260903_indexing_control.py` | 63 | 633 |
