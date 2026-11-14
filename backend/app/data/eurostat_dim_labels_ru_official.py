@@ -130,6 +130,63 @@ RU_FROM_OFFICIAL_EN: dict[str, dict[str, tuple[str, str]]] = {
 }
 
 
+# Дополнение 14.11.2026: значения с показами в Search Console (по убыванию показов), тот же формат.
+RU_FROM_OFFICIAL_EN_GSC: dict[str, dict[str, tuple[str, str]]] = {
+    "indic": {
+        "LM-UN-M-TOT": ("Unemployment according to ILO definition - males", "по методологии МОТ: мужчины"),
+        "LM-UN-F-TOT": ("Unemployment according to ILO definition - females", "по методологии МОТ: женщины"),
+        "LM-UN-T-LE25": ("Unemployment according to ILO definition - under 25 years - total", "по методологии МОТ: моложе 25 лет, всего"),
+        "LM-UN-M-LE25": ("Unemployment according to ILO definition - under 25 years - males", "по методологии МОТ: моложе 25 лет, мужчины"),
+        "LM-UN-F-LE25": ("Unemployment according to ILO definition - under 25 years - females", "по методологии МОТ: моложе 25 лет, женщины"),
+        "LM-UN-T-GT25": ("Unemployment according to ILO definition - over 25 years - total", "по методологии МОТ: старше 25 лет, всего"),
+        "LM-UN-M-GT25": ("Unemployment according to ILO definition - over 25 years - males", "по методологии МОТ: старше 25 лет, мужчины"),
+        "LM-UN-F-GT25": ("Unemployment according to ILO definition - over 25 years - females", "по методологии МОТ: старше 25 лет, женщины"),
+    },
+    "na_item": {
+        "P5G": ("Gross capital formation", "валовое накопление"),
+        "D21X31": ("Taxes less subsidies on products", "налоги на продукты за вычетом субсидий"),
+        "D31": ("Subsidies on products", "субсидии на продукты"),
+        "P3_P5": ("Final consumption expenditure and gross capital formation", "конечное потребление и валовое накопление"),
+        "P3_P6": ("Final consumption expenditure, gross capital formation and exports of goods and services", "конечное потребление, валовое накопление и экспорт"),
+        "POP_NC": ("Total population national concept", "всё население, национальная концепция"),
+        "EMP_NC": ("Total employment national concept", "все занятые, национальная концепция"),
+        "IGL_F4_EA21": ("Intergovernmental lending within EA21 (from 2026)", "межгосударственные кредиты внутри еврозоны-21 (с 2026)"),
+        "IGL_F4_EA20": ("Intergovernmental lending within EA20 (2023-2025)", "межгосударственные кредиты внутри еврозоны-20 (2023–2025)"),
+        "IGL_F4_EA19": ("Intergovernmental lending within EA19 (2015-2022)", "межгосударственные кредиты внутри еврозоны-19 (2015–2022)"),
+        "IGL_F4_EU27_2020": ("Intergovernmental lending within EU27 (from 2020)", "межгосударственные кредиты внутри ЕС-27 (с 2020)"),
+        "GD_F2": ("Government consolidated gross debt at face value - currency and deposits", "госдолг по номиналу: наличные деньги и депозиты"),
+        "GD_F3": ("Government consolidated gross debt at face value - debt securities", "госдолг по номиналу: долговые ценные бумаги"),
+        "GD_F31": ("Government consolidated gross debt at face value - short-term debt securities", "госдолг по номиналу: краткосрочные долговые ценные бумаги"),
+        "GD_F32": ("Government consolidated gross debt at face value - long-term debt securities", "госдолг по номиналу: долгосрочные долговые ценные бумаги"),
+        "GD_F4": ("Government consolidated gross debt at face value - loans", "госдолг по номиналу: кредиты"),
+        "GD_F41": ("Government consolidated gross debt at face value - short-term loans", "госдолг по номиналу: краткосрочные кредиты"),
+        "GD_F42": ("Government consolidated gross debt at face value - long-term loans", "госдолг по номиналу: долгосрочные кредиты"),
+        "AF_81L": ("Trade credits and advances - liabilities", "торговые кредиты и авансы, обязательства"),
+        "EXP_PPS_EU27_2020": ("Real expenditure (in PPS_EU27_2020)", "реальные расходы в ППС ЕС-27 (2020)"),
+        "EXP_PPS_EU27_2007": ("Real expenditure (in PPS_EU27_2007)", "реальные расходы в ППС ЕС-27 (2007)"),
+        "EXP_PPS_EU27_2020_HAB": ("Real expenditure per capita (in PPS_EU27_2020)", "реальные расходы на душу в ППС ЕС-27 (2020)"),
+        "EXP_PPS_EU28_HAB": ("Real expenditure per capita (in PPS_EU28)", "реальные расходы на душу в ППС ЕС-28"),
+        "EXP_PPS_EU27_2007_HAB": ("Real expenditure per capita (in PPS_EU27_2007)", "реальные расходы на душу в ППС ЕС-27 (2007)"),
+    },
+    "ord_brth": {
+        "1": ("First", "первый ребёнок"),
+        "2": ("Second", "второй ребёнок"),
+        "3": ("Third", "третий ребёнок"),
+        "GE4": ("Fourth and following", "четвёртый и последующие"),
+        "UNK": ("Unknown", "очерёдность не указана"),
+    },
+    "indic_de": {
+        "NUMBERDYING": ("Number dying between exact ages (dx)", "число умирающих между точными возрастами"),
+        "SURVIVORS": ("Number left alive at given exact age (lx)", "число доживающих до точного возраста"),
+    },
+    "c_birth": {
+        "NRP": ("No response", "нет ответа"),
+    },
+}
+for _dim, _members in RU_FROM_OFFICIAL_EN_GSC.items():
+    RU_FROM_OFFICIAL_EN.setdefault(_dim, {}).update(_members)
+
+
 def official_translation_ru(dim: str, code: str) -> str | None:
     """Русский перевод официальной подписи значения или None."""
     pair = RU_FROM_OFFICIAL_EN.get(dim, {}).get(code)

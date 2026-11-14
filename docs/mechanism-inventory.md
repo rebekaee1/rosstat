@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1396**
-- Registry references: **2641**
+- Registry declarations: **1397**
+- Registry references: **2643**
 - Migration operations: **482**
-- Candidate effects: **2919**
+- Candidate effects: **2920**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -2198,6 +2198,7 @@ Relationships: `[]`
 | app.data.eurostat_dim_labels_ru._DAY_RANGE_RE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_ru.py:1117](../backend/app/data/eurostat_dim_labels_ru.py#L1117) |
 | app.data.eurostat_dim_labels_ru._DAY_SINGLE_RE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_ru.py:1118](../backend/app/data/eurostat_dim_labels_ru.py#L1118) |
 | app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN | Dict | 'stk_flow', 'hhcomp', 'wstatus', 'isced11', 'na_item', 'duration', 'nace_r2', 'siec', 'indic_nrg', 'statinfo', 'indic_is' | [backend/app/data/eurostat_dim_labels_ru_official.py:14](../backend/app/data/eurostat_dim_labels_ru_official.py#L14) |
+| app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN_GSC | Dict | 'indic', 'na_item', 'ord_brth', 'indic_de', 'c_birth' | [backend/app/data/eurostat_dim_labels_ru_official.py:134](../backend/app/data/eurostat_dim_labels_ru_official.py#L134) |
 | app.data.eurostat_headline.HEADLINE_MEMBER_OVERRIDES | Dict | 'gov_10dd_edpt1', 'gov_10a_main', 'gov_10dd_slgd', 'nama_10_gdp', 'namq_10_gdp', 'nrg_cb_sffm', 'nrg_cb_sff', 'nrg_cb_em', 'nrg_cb_h', 'nrg_cb_oil', 'nrg_cb_gas', 'nrg_te_bio', 'nrg_te_gas', 'nrg_te_gasm', 'nrg_te_sff', 'nrg_ti_bio', 'nrg_ti_gas', 'nrg_inf_lbpc', 'prc_hpi_q', 'prc_hpi_ooq', 'prc_hpi_hsnq', 'prc_hpi_hsvq', 'tour_dem_exac' | [backend/app/data/eurostat_headline.py:16](../backend/app/data/eurostat_headline.py#L16) |
 | app.data.eurostat_listing.LISTING_MIN_POINTS_BY_FREQUENCY | Dict | 'monthly', 'quarterly', 'annual', 'yearly', 'weekly', 'daily' | [backend/app/data/eurostat_listing.py:24](../backend/app/data/eurostat_listing.py#L24) |
 | app.data.eurostat_listing.LISTING_MIN_HISTORY_END | Call | computed source expression | [backend/app/data/eurostat_listing.py:37](../backend/app/data/eurostat_listing.py#L37) |

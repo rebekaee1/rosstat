@@ -485,8 +485,8 @@
     },
     {
       "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
-      "sha256": "4098246befbf03980dbad58277a0138fa95d738288a0053f4a1709a7b23ead81",
-      "lines": 136
+      "sha256": "cb7bb39ddafcdec8f0a1fc0e6ecb97f8ec47e384a593feb6a51764d746fd4b1a",
+      "lines": 193
     },
     {
       "path": "backend/app/data/eurostat_headline.py",
@@ -55288,6 +55288,65 @@
       "expression_truncated": true,
       "expression_chars": 6310,
       "ast_sha256": "35767d343096276bd0ddafd4b144242184b8c50f9e8e9f0d5b20873f675b0980",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 134,
+      "end_line": 185,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "RU_FROM_OFFICIAL_EN_GSC",
+      "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN_GSC",
+      "kind": "Dict",
+      "literal_keys": [
+        "'indic'",
+        "'na_item'",
+        "'ord_brth'",
+        "'indic_de'",
+        "'c_birth'"
+      ],
+      "entries": [
+        {
+          "key": "'indic'",
+          "expression": "{'LM-UN-M-TOT': ('Unemployment according to ILO definition - males', 'по методологии МОТ: мужчины'), 'LM-UN-F-TOT': ('Unemployment according to ILO definition - females', 'по методологии МОТ: женщины'), 'LM-UN-T-LE25': ('Unemployment according to ILO definition - under 25 years - total', 'по методол",
+          "expression_truncated": true,
+          "expression_chars": 997,
+          "ast_sha256": "59a19874908a09e1d86bae27cc8fc77bce68eea1f6292df0bdc138e4970160ce"
+        },
+        {
+          "key": "'na_item'",
+          "expression": "{'P5G': ('Gross capital formation', 'валовое накопление'), 'D21X31': ('Taxes less subsidies on products', 'налоги на продукты за вычетом субсидий'), 'D31': ('Subsidies on products', 'субсидии на продукты'), 'P3_P5': ('Final consumption expenditure and gross capital formation', 'конечное потребление ",
+          "expression_truncated": true,
+          "expression_chars": 2763,
+          "ast_sha256": "b61b3e4296d9eebc6b62cab28c3ab32fe5a1737507be147d9048657570453c15"
+        },
+        {
+          "key": "'ord_brth'",
+          "expression": "{'1': ('First', 'первый ребёнок'), '2': ('Second', 'второй ребёнок'), '3': ('Third', 'третий ребёнок'), 'GE4': ('Fourth and following', 'четвёртый и последующие'), 'UNK': ('Unknown', 'очерёдность не указана')}",
+          "expression_truncated": false,
+          "expression_chars": 209,
+          "ast_sha256": "8f5e47096db52af5c2fa99642d274dee637db3ee0c869aa3db7dc599b2db693d"
+        },
+        {
+          "key": "'indic_de'",
+          "expression": "{'NUMBERDYING': ('Number dying between exact ages (dx)', 'число умирающих между точными возрастами'), 'SURVIVORS': ('Number left alive at given exact age (lx)', 'число доживающих до точного возраста')}",
+          "expression_truncated": false,
+          "expression_chars": 201,
+          "ast_sha256": "afe18a9fd49cad64c8f47347d365ae2f0ad073515c511bb15c1d8066e69e5bba"
+        },
+        {
+          "key": "'c_birth'",
+          "expression": "{'NRP': ('No response', 'нет ответа')}",
+          "expression_truncated": false,
+          "expression_chars": 38,
+          "ast_sha256": "7c4db3447b818fb4c4892ced8c11d195d2374dcd2afdf6695fb33b89665716f0"
+        }
+      ],
+      "expression": "{'indic': {'LM-UN-M-TOT': ('Unemployment according to ILO definition - males', 'по методологии МОТ: мужчины'), 'LM-UN-F-TOT': ('Unemployment according to ILO definition - females', 'по методологии МОТ: женщины'), 'LM-UN-T-LE25': ('Unemployment according to ILO definition - under 25 years - total', 'по методологии МОТ: моложе 25 лет, всего'), 'LM-UN-M-LE25': ('Unemployment according to ILO definition - under 25 years - males', 'по методологии МОТ: моложе 25 лет, мужчины'), 'LM-UN-F-LE25': ('Unemployment according to ILO definition - under 25 years - females', 'по методологии МОТ: моложе 25 лет, женщины'), 'LM-UN-T-GT25': ('Unemployment according to ILO definition - over 25 years - total', 'по методологии МОТ: старше 25 лет, всего'), 'LM-UN-M-GT25': ('Unemployment according to ILO definition - over 25 years - males', 'по методологии МОТ: старше 25 лет, мужчины'), 'LM-UN-F-GT25': ('Unemployment according to ILO definition - over 25 years - females', 'по методологии МОТ: старше 25 лет, женщины')}, 'na_item': {'P5G': ('Gross capital formation', 'валовое накопление'), 'D21X31': ('Taxes less subsidies on products', 'налоги на продукты за вычетом субсидий'), 'D31': ('Subsidies on products', 'субсидии на продукты'), 'P3_P5': ('Final consumption expenditure and gross capital formation', 'конечное потребление и валовое накопление'), 'P3_P6': ('Final consumption expenditure, gross capital formation and exports of goods and services', 'конечное потребление, валовое накопление и экспорт'), 'POP_NC': ('Total population national concept', 'всё население, национальная концепция'), 'EMP_NC': ('Total employment national concept', 'все занятые, национальная концепция'), 'IGL_F4_EA21': ('Intergovernmental lending within EA21 (from 2026)', 'межгосударственные кредиты внутри еврозоны-21 (с 2026)'), 'IGL_F4_EA20': ('Intergovernmental lending within EA20 (2023-2025)', 'межгосударственные кредиты внутри еврозоны-20 (2023–2025)'), 'IGL_F4_EA19': ('Intergovernmental lending within EA19 (2015-2",
+      "expression_truncated": true,
+      "expression_chars": 4273,
+      "ast_sha256": "9ef7492d5822edb1db050a951782840e37af2ff8800f51b4725682ab18ef85a9",
       "runtime_expansion": false
     },
     {
@@ -129933,6 +129992,15 @@
       "ast_sha256": "a45d734577156c6bff784bc419bc8610c858db5a9307e025ca2163a0c4414e6a"
     },
     {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 187,
+      "end_line": 187,
+      "owner": "<module>",
+      "conditions": [],
+      "registry": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN",
+      "expression": "RU_FROM_OFFICIAL_EN.setdefault(_dim, {})"
+    },
+    {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
       "line": 1085,
       "end_line": 1085,
@@ -139870,6 +139938,20 @@
       "expression_truncated": false,
       "expression_chars": 13,
       "ast_sha256": "09a23fdc00a32b9cb9beee691bfac3e436189f9f0e75cbd75174d497f025afb8"
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 187,
+      "end_line": 187,
+      "owner": "<module>",
+      "conditions": [],
+      "operation": "update",
+      "receiver": "RU_FROM_OFFICIAL_EN.setdefault(_dim, {})",
+      "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN.setdefault(_dim, {}).update",
+      "expression": "RU_FROM_OFFICIAL_EN.setdefault(_dim, {}).update(_members)",
+      "expression_truncated": false,
+      "expression_chars": 57,
+      "ast_sha256": "48a48d46f77018bacc975ef7b550bb39ce8446e27d3ed72fce5a32fb98b0129a"
     },
     {
       "path": "backend/app/data/eurostat_listing.py",
@@ -290938,8 +291020,8 @@
     },
     {
       "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
-      "line": 133,
-      "end_line": 136,
+      "line": 190,
+      "end_line": 193,
       "owner": "<module>",
       "conditions": [],
       "name": "official_translation_ru",
@@ -342904,8 +342986,24 @@
     },
     {
       "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 186,
+      "end_line": 186,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN_GSC"
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 187,
+      "end_line": 187,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN"
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 192,
+      "end_line": 192,
       "owner": "official_translation_ru",
       "conditions": [],
       "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN"
