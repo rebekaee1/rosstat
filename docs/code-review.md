@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `3ba6f65e5175666d67c10a6f74ebbd15f72acc55`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `e2b1ff09d2531b6ad756f17bb5f145005a838772`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2462 |
 | Код, шаблоны и стили | 1990 |
 | Актуальные рецензии без пропусков guard | 2462 |
-| Именованные определения Python/JS: с аннотацией / всего | 16005 / 16005 |
+| Именованные определения Python/JS: с аннотацией / всего | 16006 / 16006 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -654,7 +654,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_bank_credit_seo.py](../backend/tests/test_bank_credit_seo.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_bi_portrait_humans.py](../backend/tests/test_bi_portrait_humans.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_boot_splash.py](../backend/tests/test_boot_splash.py) | reviewed | 14/14 | актуально |
-| [backend/tests/test_bot_defense.py](../backend/tests/test_bot_defense.py) | reviewed | 17/17 | актуально |
+| [backend/tests/test_bot_defense.py](../backend/tests/test_bot_defense.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_bot_google_root_linux_us.py](../backend/tests/test_bot_google_root_linux_us.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_bot_portrait_cluster_and_calibration.py](../backend/tests/test_bot_portrait_cluster_and_calibration.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_branded_errors.py](../backend/tests/test_branded_errors.py) | reviewed | 6/6 | актуально |
