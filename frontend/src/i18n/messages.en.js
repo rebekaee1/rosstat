@@ -3465,7 +3465,7 @@ export default {
   'c11b.watch.onAriaPlain': 'Follow new values',
   'c11b.watch.offAria': 'Stop following “{name}”',
   'c11b.watch.offAriaPlain': 'Stop following new values',
-  'c11b.watch.limit': 'You can follow up to {n} series.',
+  'c11b.watch.limit': 'You can follow up to {n} series. Remove some in your account.',
   'c11b.watch.title': 'What you follow',
   'c11b.watch.empty': 'Press the bell on an indicator and a row appears here. When a new value is published, the “Account” button lights up.',
   'c11b.watch.emptyCta': 'Open indicators',

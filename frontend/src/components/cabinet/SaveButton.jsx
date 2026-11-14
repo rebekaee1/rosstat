@@ -51,11 +51,14 @@ export default function SaveButton({
     busyRef.current = false;
     setBusy(false);
     if (!res.ok) {
+      const full = res.reason === 'limit_reached';
       setTip({
         tone: 'warn',
-        text: res.reason === 'limit_reached'
+        text: full
           ? t('c11b.save.limit', { n: limit ?? 200 })
           : res.reason === 'network' ? t('c11b.err.network') : t('c11b.err.generic'),
+        // Вошедшему у предела — путь в кабинет, где можно убрать лишнее; гостю кабинета нет.
+        ...(full && authed ? { to: '/account?tab=saved', toLabel: t('c11b.tip.openCabinet') } : {}),
       });
       return;
     }
