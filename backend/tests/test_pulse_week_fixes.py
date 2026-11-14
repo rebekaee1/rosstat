@@ -105,6 +105,48 @@ def test_calendar_refresh_skips_a_colliding_event_and_keeps_the_rest(auth_env):
     assert changed == 1
 
 
+def test_official_reschedule_displaces_a_hidden_estimated_row(auth_env):
+    """14.11.2026: ИПЦ за октябрь перенесён Росстатом с 13.11 на 25.11; на 25.11 у `cpi` лежала скрытая оценочная
+    строка «Недельная инфляция». Перенос падал на уникальности, календарь показывал 13.11 «ждёт подтверждения»."""
+
+    def official(day):
+        return CalendarCandidate(event_key="rosstat:plan:cpi:октябрь-2026:r1", title="Индекс потребительских цен (ИПЦ)",
+                                 event_type="data_release", source="rosstat", scheduled_date=day,
+                                 date_confidence="official_explicit", importance=3, reference_period="октябрь 2026",
+                                 source_url="https://rosstat.gov.ru/storage/mediabank/Grafik_srochn_2026.docx",
+                                 indicator_code="cpi")
+
+    async def check():
+        async with auth_env["session_maker"]() as db:
+            cpi = Indicator(code="cpi", name="cpi", name_en="cpi", unit="%", frequency="monthly",
+                            source="Росстат", parser_type="rosstat_cpi", is_active=True)
+            db.add(cpi)
+            await db.flush()
+            now = datetime(2026, 11, 1)
+            db.add_all([
+                EconomicEvent(title="Недельная инфляция (ИПЦ)", event_type="data_release", source="rosstat",
+                              indicator_id=cpi.id, scheduled_date=date(2026, 11, 25), is_estimated=True,
+                              date_confidence="estimated", importance=2, status="scheduled",
+                              created_at=now, updated_at=now),
+                EconomicEvent(title="Недельная инфляция (ИПЦ)", event_type="data_release", source="rosstat",
+                              indicator_id=cpi.id, scheduled_date=date(2026, 12, 2), is_estimated=True,
+                              date_confidence="estimated", importance=2, status="scheduled",
+                              created_at=now, updated_at=now),
+            ])
+            await db.commit()
+            await upsert_calendar_candidates(db, [official(date(2026, 11, 13))])
+            changed = await upsert_calendar_candidates(db, [official(date(2026, 11, 25))])
+            rows = (await db.execute(select(EconomicEvent))).scalars().all()
+            return changed, [(e.title, e.scheduled_date, e.date_confidence) for e in rows]
+
+    changed, rows = asyncio.run(check())
+    assert changed == 1
+    assert ("Индекс потребительских цен (ИПЦ)", date(2026, 11, 25), "official_explicit") in rows
+    assert not any(d == date(2026, 11, 13) for _t, d, _c in rows)
+    assert ("Недельная инфляция (ИПЦ)", date(2026, 11, 25), "estimated") not in rows
+    assert ("Недельная инфляция (ИПЦ)", date(2026, 12, 2), "estimated") in rows  # чужие даты не тронуты
+
+
 def test_small_tables_are_counted_exactly(auth_env):
     from app.models import User
     from app.services.dataset_inventory import EXACT_COUNT_MAX_ROWS, _row_count

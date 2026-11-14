@@ -332,6 +332,8 @@ async def _apply_candidate(
     if (existing is not None and existing.date_confidence == "official_explicit"
             and candidate.date_confidence != "official_explicit"):
         return 0
+    if candidate.date_confidence in OFFICIAL_CONFIDENCES:
+        await _release_estimated_slot(db, candidate, indicator_id, keep_id=existing.id if existing else None)
     metadata = merge_metadata(
         existing.metadata_json if existing else None,
         candidate,
@@ -417,6 +419,43 @@ async def _apply_candidate(
         existing.source_url,
     )
     return int(before != after)
+
+
+async def _release_estimated_slot(
+    db: AsyncSession,
+    candidate: CalendarCandidate,
+    indicator_id: int | None,
+    *,
+    keep_id: int | None,
+) -> int:
+    """Официальная дата вытесняет непубличную оценочную строку с того же места (`uq_event_natural_key`).
+
+    14.11.2026: Росстат перенёс ИПЦ за октябрь с 13.11 на 25.11, а на 25.11 у `cpi` лежала старая оценочная строка
+    «Недельная инфляция» (`estimated`, без ключа, публично не показывается). Перенос официальной строки падал на
+    уникальности и пропускался, календарь показывал 13.11 «ждёт подтверждения». Оценочные строки — наследие
+    старого сидера (новых не создаётся), поэтому место отдаётся официальной дате; строки с фактом не трогаются.
+    """
+    if indicator_id is None:
+        return 0
+    blockers = (await db.execute(select(EconomicEvent).where(
+        EconomicEvent.source == candidate.source,
+        EconomicEvent.event_type == candidate.event_type,
+        EconomicEvent.scheduled_date == candidate.scheduled_date,
+        EconomicEvent.indicator_id == indicator_id,
+    ))).scalars().all()
+    removed = 0
+    for row in blockers:
+        if row.id == keep_id or row.date_confidence in OFFICIAL_CONFIDENCES or not row.is_estimated:
+            continue
+        if row.actual_value not in (None, ""):
+            continue
+        logger.info("Calendar: estimated %s/%s on %s gives way to official %s",
+                    row.source, row.title, row.scheduled_date, candidate.event_key)
+        await db.delete(row)
+        removed += 1
+    if removed:
+        await db.flush()
+    return removed
 
 
 async def _find_existing_event(
