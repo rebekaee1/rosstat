@@ -256,7 +256,8 @@ def all_years_block(
 
     def part(chunk: Sequence[tuple[int, str, str]]) -> str:
         if head_value is None:
-            return "<ul>" + "".join(
+            # Строка годов без маркеров и рамок (визуальная проверка 14.11: столбец из 23 голых годов).
+            return '<ul class="seo-years">' + "".join(
                 f'<li><a href="{escape(href)}">{year}</a></li>' for year, href, _value in chunk
             ) + "</ul>"
         body = "".join(

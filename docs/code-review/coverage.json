@@ -5172,9 +5172,9 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "e519347bea03563d0e489ce0430a4b4ac776b837cbc309a4a102e02b687f5047",
-      "bytes": 222882,
-      "lines": 4289,
+      "sha256": "370095a0ab15f8be4addaafe6bd27a6856715c159d0d01045503427724cee122",
+      "bytes": 223003,
+      "lines": 4291,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5302,9 +5302,9 @@
     },
     {
       "path": "backend/app/services/seo_year_ui.py",
-      "sha256": "4dfa9e376508d4574a3e237079ecfab7908b8f418f3fa1510415f51e94ca19ad",
-      "bytes": 14432,
-      "lines": 338,
+      "sha256": "2765e4e0fdca1ea739307c9b5e9a2ca515708f2a6d8b974a050da54ef2b9ddbe",
+      "bytes": 14619,
+      "lines": 339,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -7785,8 +7785,8 @@
     },
     {
       "path": "backend/tests/test_all_years_block.py",
-      "sha256": "a9c76a02616c1e457cd28096622a7dc93a75d9df56c4d263464d7138cddb35b7",
-      "bytes": 3203,
+      "sha256": "84d4f4a08606c6e5ce5bec8bb58f293805515be586f0d754c348b3bd328e3510",
+      "bytes": 3221,
       "lines": 73,
       "code": true,
       "status": "reviewed",
@@ -13687,8 +13687,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "de77a7556a927ce3f48db45500f43352cbb18790825f83060177cfec860df39c",
-      "bytes": 366058,
+      "sha256": "49f7d9245a7c760876a2757c9588853249ec418bd8e4ffb87323ac08a32f1b5a",
+      "bytes": 366510,
       "lines": 1226,
       "code": false,
       "status": "reviewed",
@@ -14220,7 +14220,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "789a6463fd71c47a42424c31cae7786d1ed29539d52476fa7d170d4166d125b0",
+      "sha256": "3cc0773d6595f0d9a4ad1f6dfa9077ce4d76954945c457cc2e38e86683c8b7b0",
       "bytes": 3853565,
       "lines": 136363,
       "code": false,
@@ -14272,7 +14272,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "52d5cc0bf23ce983fb5b25d8c8129471ea718220398a6d1f1261e3727b11b3ab",
+      "sha256": "385a3366e878624b59e39b8ab57de1c20c68caaf9934e2c7e870684e874a6a7b",
       "bytes": 12198470,
       "lines": 365715,
       "code": false,
@@ -14285,7 +14285,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "38cd8e48c2629e1df43440b0feaaab3d132b543c1b566e6dc77fe9338ea78cb7",
+      "sha256": "54244206bdd7f7fb50e4c9c4ed2d18be281b8cad069c9754730c2f0b1dfe3c32",
       "bytes": 628082,
       "lines": 3394,
       "code": false,
@@ -32017,9 +32017,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "af7f12eb5a0671b255aa174da1bef70d9906c094cb344d10c2d3985683d88dc6",
+  "ledger_sha256": "95ecec546829d245fe6bcbb5621073823429783ebd810ca35e5e668b4c50662a",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "01fe4258a2dda678a34c5fa065a7c9ddc9226325",
+  "baseline_commit": "35d09a99063314075ab14d471fc2a751ac98d884",
   "branch": "worktree-agent-a60cd3db86caaa5f2",
   "unstaged_at_capture": []
 }

@@ -2916,16 +2916,16 @@ Relationships: `[]`
 | app.services.seo_regional._MONTH_NAMES_NOM | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1287](../backend/app/services/seo_regional.py#L1287) |
 | app.services.seo_regional_year._ALLOWED_REGION_KINDS | Tuple | sequence/source expression | [backend/app/services/seo_regional_year.py:65](../backend/app/services/seo_regional_year.py#L65) |
 | app.services.seo_regional_year._YEAR_TEMPLATES_EN | Dict | 'h1', 'alt', 'caption', 'desc_main', 'change_vs', 'change_vs_pct', 'rf_h2', 'rf_para', 'rf_note', 'rank_h2', 'rank_full_link', 'rank_sentence', 'dyn_h2_by_year', 'dyn_h2_neighbors', 'checkpoints_h2', 'checkpoint_item', 'decade_h2', 'cta_h2', 'cta_link', 'cta_p', 'other_years_h2', 'other_year_link', 'trail_last', 'rank_desc', 'rank_desc_none', 'jsonld_name', 'keywords' | [backend/app/services/seo_regional_year.py:75](../backend/app/services/seo_regional_year.py#L75) |
-| app.services.seo_renderer._BOOT_FACTS | Dict | 'ru', 'en' | [backend/app/services/seo_renderer.py:1090](../backend/app/services/seo_renderer.py#L1090) |
-| app.services.seo_renderer.FREQUENCY_LABELS_RU | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1417](../backend/app/services/seo_renderer.py#L1417) |
-| app.services.seo_renderer.FREQUENCY_LABELS_EN | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1426](../backend/app/services/seo_renderer.py#L1426) |
-| app.services.seo_renderer.FLAGSHIP_CODES | Call | computed source expression | [backend/app/services/seo_renderer.py:1435](../backend/app/services/seo_renderer.py#L1435) |
-| app.services.seo_renderer.YANDEX_VERIFICATION_CODES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1531](../backend/app/services/seo_renderer.py#L1531) |
-| app.services.seo_renderer._NF_GUESS_RULES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2018](../backend/app/services/seo_renderer.py#L2018) |
-| app.services.seo_renderer.AUTOLINK_TERMS | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2274](../backend/app/services/seo_renderer.py#L2274) |
-| app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2448](../backend/app/services/seo_renderer.py#L2448) |
-| app.services.seo_renderer.HOME_POPULAR_CODES_RU | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2466](../backend/app/services/seo_renderer.py#L2466) |
-| app.services.seo_renderer._SSR_VS_COUNTRY_LABELS | Dict | 'germany', 'united-states', 'france', 'china', 'japan', 'russia' | [backend/app/services/seo_renderer.py:3980](../backend/app/services/seo_renderer.py#L3980) |
+| app.services.seo_renderer._BOOT_FACTS | Dict | 'ru', 'en' | [backend/app/services/seo_renderer.py:1092](../backend/app/services/seo_renderer.py#L1092) |
+| app.services.seo_renderer.FREQUENCY_LABELS_RU | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1419](../backend/app/services/seo_renderer.py#L1419) |
+| app.services.seo_renderer.FREQUENCY_LABELS_EN | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1428](../backend/app/services/seo_renderer.py#L1428) |
+| app.services.seo_renderer.FLAGSHIP_CODES | Call | computed source expression | [backend/app/services/seo_renderer.py:1437](../backend/app/services/seo_renderer.py#L1437) |
+| app.services.seo_renderer.YANDEX_VERIFICATION_CODES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1533](../backend/app/services/seo_renderer.py#L1533) |
+| app.services.seo_renderer._NF_GUESS_RULES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2020](../backend/app/services/seo_renderer.py#L2020) |
+| app.services.seo_renderer.AUTOLINK_TERMS | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2276](../backend/app/services/seo_renderer.py#L2276) |
+| app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2450](../backend/app/services/seo_renderer.py#L2450) |
+| app.services.seo_renderer.HOME_POPULAR_CODES_RU | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2468](../backend/app/services/seo_renderer.py#L2468) |
+| app.services.seo_renderer._SSR_VS_COUNTRY_LABELS | Dict | 'germany', 'united-states', 'france', 'china', 'japan', 'russia' | [backend/app/services/seo_renderer.py:3982](../backend/app/services/seo_renderer.py#L3982) |
 | app.services.seo_research._COPY | Dict | 'ru', 'en' | [backend/app/services/seo_research.py:15](../backend/app/services/seo_research.py#L15) |
 | app.services.seo_today._MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/seo_today.py:49](../backend/app/services/seo_today.py#L49) |
 | app.services.seo_today._STALE_AFTER_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/seo_today.py:95](../backend/app/services/seo_today.py#L95) |

@@ -731,6 +731,8 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,san
 .seo-pills li{margin:0}
 .seo-pills a{display:inline-block;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:999px;padding:.35rem .9rem;font-size:.8125rem;text-decoration:none!important;color:rgba(26,26,46,.75)}
 .seo-pills a:hover{border-color:#B8942F;color:#B8942F}
+.seo-years{display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin:.6rem 0;padding:0;list-style:none}
+.seo-years li{margin:0}
 .seo-faq{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:.9rem;padding:.35rem 1.1rem .6rem;margin:.75rem 0}
 .seo-cta{max-width:56rem;margin:2.5rem auto 0;padding:0 1rem}
 .seo-cta-in{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:1rem;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}

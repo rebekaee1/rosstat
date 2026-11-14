@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "0bda2f1b50927bdc37e726278efabbfd78c4dbcbb384ea278c5cf6cde1b15d36",
-  "extraction_sha256": "73a8d12b17f5bb3ec1c21064736bfaec15234180dad151d89b22283112bac91a",
-  "terrain_baseline_commit": "01fe4258a2dda678a34c5fa065a7c9ddc9226325",
+  "terrain_sha256": "087acfa2bd2970f573166b36d6824f6a2f602e1c34102cf278017092985e9494",
+  "extraction_sha256": "a748745f085c33dad7e3835b99bd9e7ca961d7cf27e5b9a9a801e58e4d94aedf",
+  "terrain_baseline_commit": "35d09a99063314075ab14d471fc2a751ac98d884",
   "counts": {
     "external_or_unresolved_file": 2986,
     "missing_endpoint": 4372
@@ -82376,14 +82376,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L1645",
+        "source_location": "L1647",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_add_platform_bridge()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L1645"
+        "source_location": "L1647"
       },
       "target_endpoint": {
         "label": "BeautifulSoup",
@@ -82406,14 +82406,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2433",
+        "source_location": "L2435",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_home_country_links()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2433"
+        "source_location": "L2435"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82436,14 +82436,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2473",
+        "source_location": "L2475",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_home_flagship_links_en()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2473"
+        "source_location": "L2475"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82466,14 +82466,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2498",
+        "source_location": "L2500",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "render_home_html()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2498"
+        "source_location": "L2500"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82496,14 +82496,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2693",
+        "source_location": "L2695",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_last_data_refresh()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2693"
+        "source_location": "L2695"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82526,14 +82526,14 @@
         "context": "return_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2693",
+        "source_location": "L2695",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_last_data_refresh()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2693"
+        "source_location": "L2695"
       },
       "target_endpoint": {
         "label": "date",
@@ -82556,14 +82556,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2709",
+        "source_location": "L2711",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_indicators_by_codes()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2709"
+        "source_location": "L2711"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82586,14 +82586,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2725",
+        "source_location": "L2727",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_active_indicators()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2725"
+        "source_location": "L2727"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82616,14 +82616,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2749",
+        "source_location": "L2751",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "render_categories_hub_html()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2749"
+        "source_location": "L2751"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82646,14 +82646,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2807",
+        "source_location": "L2809",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "render_category_html()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2807"
+        "source_location": "L2809"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82676,14 +82676,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2880",
+        "source_location": "L2882",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "render_indicator_html()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L2880"
+        "source_location": "L2882"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82706,14 +82706,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3189",
+        "source_location": "L3191",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "indicator_data_years()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3189"
+        "source_location": "L3191"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82736,14 +82736,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3202",
+        "source_location": "L3204",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "yearly_last_points()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3202"
+        "source_location": "L3204"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82766,14 +82766,14 @@
         "context": "generic_arg",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3202",
+        "source_location": "L3204",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "yearly_last_points()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3202"
+        "source_location": "L3204"
       },
       "target_endpoint": {
         "label": "date",
@@ -82796,14 +82796,14 @@
         "context": "generic_arg",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3219",
+        "source_location": "L3221",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "neighbor_year_window()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3219"
+        "source_location": "L3221"
       },
       "target_endpoint": {
         "label": "date",
@@ -82826,14 +82826,14 @@
         "context": "generic_arg",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3293",
+        "source_location": "L3295",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "year_history_position_lines()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3293"
+        "source_location": "L3295"
       },
       "target_endpoint": {
         "label": "date",
@@ -82856,14 +82856,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3523",
+        "source_location": "L3525",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "render_indicator_year_html()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3523"
+        "source_location": "L3525"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82886,14 +82886,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3943",
+        "source_location": "L3945",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_latest_rows()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3943"
+        "source_location": "L3945"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82916,14 +82916,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3953",
+        "source_location": "L3955",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_indicator_stats()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3953"
+        "source_location": "L3955"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82946,14 +82946,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3964",
+        "source_location": "L3966",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_related_indicators()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L3964"
+        "source_location": "L3966"
       },
       "target_endpoint": {
         "label": "AsyncSession",
@@ -82976,14 +82976,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L4024",
+        "source_location": "L4026",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_indicator_body()",
         "source_file": "backend/app/services/seo_renderer.py",
-        "source_location": "L4024"
+        "source_location": "L4026"
       },
       "target_endpoint": {
         "label": "date",
@@ -85448,14 +85448,14 @@
         "context": "generic_arg",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_year_ui.py",
-        "source_location": "L285",
+        "source_location": "L286",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "extreme_dates()",
         "source_file": "backend/app/services/seo_year_ui.py",
-        "source_location": "L285"
+        "source_location": "L286"
       },
       "target_endpoint": {
         "label": "date",

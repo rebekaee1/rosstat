@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2249  ·  **Строк:** 1 420 706  ·  **Токенов (≈):** 13 549 248
+**Файлов:** 2249  ·  **Строк:** 1 420 709  ·  **Токенов (≈):** 13 549 384
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 798 | 64 987 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 919 | 321 006 | 3 513 254 |
+| `backend` | 919 | 321 009 | 3 513 318 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 146 | 17 427 |
-| `docs` | 145 | 886 117 | 7 620 457 |
+| `docs` | 145 | 886 117 | 7 620 529 |
 | `frontend` | 1014 | 184 423 | 2 020 294 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -42,14 +42,14 @@
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `docs/backlog.md` | 3 502 | 124 382 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
-| `docs/data-contracts.md` | 1 226 | 62 414 |
+| `docs/data-contracts.md` | 1 226 | 62 486 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `backend/seed_data.py` | 5 732 | 59 343 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `frontend/src/i18n/messages.ru.js` | 4 162 | 58 516 |
 | `frontend/src/i18n/messages.en.js` | 4 157 | 57 653 |
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
-| `backend/app/services/seo_renderer.py` | 4 289 | 51 737 |
+| `backend/app/services/seo_renderer.py` | 4 291 | 51 767 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `CONTEXT.md` | 1 332 | 43 812 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
@@ -526,12 +526,12 @@
 | `backend/tests/test_sitemap_public_coverage.py` | 229 | 3 019 |
 | `frontend/src/lib/behavior.browser.test.js` | 226 | 3 018 |
 | `frontend/src/styles/w5-tools.css` | 323 | 3 017 |
+| `backend/app/services/seo_year_ui.py` | 339 | 3 015 |
 | `backend/app/data/world_national_core/au.yaml` | 292 | 3 000 |
 | `frontend/src/lib/sessionReplay.js` | 255 | 2 995 |
 | `frontend/public/brand/manifest.json` | 361 | 2 994 |
 | `backend/app/services/rosstat_labor_parser.py` | 329 | 2 990 |
 | `backend/tests/test_ssr_swr.py` | 332 | 2 987 |
-| `backend/app/services/seo_year_ui.py` | 338 | 2 985 |
 | `backend/tests/test_search_intent_roles.py` | 237 | 2 980 |
 | `docs/design/local-acceptance/baseline-world-rating-target/browser.json` | 460 | 2 970 |
 | `frontend/src/components/ApiInterest.component.test.jsx` | 258 | 2 968 |
@@ -1552,10 +1552,10 @@
 | `backend/tests/test_housing_historical_backfill.py` | 80 | 736 |
 | `frontend/src/components/home/HomePopularCountries.jsx` | 73 | 736 |
 | `scripts/build-pwa-icons.py` | 80 | 736 |
+| `backend/tests/test_all_years_block.py` | 73 | 735 |
 | `frontend/src/lib/countryMood.js` | 52 | 734 |
 | `frontend/src/lib/useScrollDirection.component.test.jsx` | 67 | 734 |
 | `backend/app/services/page_meta_export.py` | 84 | 731 |
-| `backend/tests/test_all_years_block.py` | 73 | 731 |
 | `frontend/src/components/home/HomeTools.c10m.component.test.jsx` | 64 | 731 |
 | `frontend/src/styles/c9c-country.test.js` | 67 | 730 |
 | `frontend/src/lib/comparePresets.js` | 80 | 729 |

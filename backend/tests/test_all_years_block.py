@@ -49,7 +49,7 @@ def test_links_only_and_russian_summary():
         html = all_years_block(_rows(5), head_year="", head_value=None, shown=0, collapse_above=0)
     finally:
         _locale_var.reset(token)
-    assert html.startswith('<details class="seo-more"><summary>Все годы: 2021–2025</summary><ul>')
+    assert html.startswith('<details class="seo-more"><summary>Все годы: 2021–2025</summary><ul class="seo-years">')
     assert "<table" not in html and html.count("<li>") == 5
 
 
