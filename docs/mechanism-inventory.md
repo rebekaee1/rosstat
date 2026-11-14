@@ -6,17 +6,17 @@
 
 - HTTP declarations: **192**
 - HTTP reachable paths: **192**
-- ORM tables: **74**
+- ORM tables: **75**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **266**
-- Settings reads: **660**
+- Settings reads: **664**
 - Direct environment reads: **36**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1385**
-- Registry references: **2624**
-- Migration operations: **480**
-- Candidate effects: **2895**
+- Registry declarations: **1393**
+- Registry references: **2631**
+- Migration operations: **482**
+- Candidate effects: **2900**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -1662,17 +1662,31 @@ Constraints: `[{'path': 'backend/app/models.py', 'line': 1891, 'end_line': 1891,
 
 Relationships: `[]`
 
+## Table `pulse_context_notes`
+
+| Python / SQL | Type | Nullable | Column arguments / options | Source |
+| --- | --- | --- | --- | --- |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1911](../backend/app/models.py#L1911) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1912](../backend/app/models.py#L1912) |
+| text / text | Mapped[str] | False | ['String(600)'] {'nullable': 'False'} | [backend/app/models.py:1913](../backend/app/models.py#L1913) |
+| until / until | Mapped[date \| None] | True | ['Date'] {'nullable': 'True'} | [backend/app/models.py:1914](../backend/app/models.py#L1914) |
+| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:1915](../backend/app/models.py#L1915) |
+
+Constraints: `[]`
+
+Relationships: `[]`
+
 ## Table `research_downloads`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1914](../backend/app/models.py#L1914) |
-| slug / slug | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1915](../backend/app/models.py#L1915) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:1916](../backend/app/models.py#L1916) |
-| source / source | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'site'", 'server_default': "'site'"} | [backend/app/models.py:1918](../backend/app/models.py#L1918) |
-| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1919](../backend/app/models.py#L1919) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1927](../backend/app/models.py#L1927) |
+| slug / slug | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1928](../backend/app/models.py#L1928) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:1929](../backend/app/models.py#L1929) |
+| source / source | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'site'", 'server_default': "'site'"} | [backend/app/models.py:1931](../backend/app/models.py#L1931) |
+| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1932](../backend/app/models.py#L1932) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1912, 'end_line': 1912, 'owner': 'ResearchDownload', 'conditions': [], 'definition': "(UniqueConstraint('slug', 'date', 'source', name='uq_research_downloads_slug_date_src'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1925, 'end_line': 1925, 'owner': 'ResearchDownload', 'conditions': [], 'definition': "(UniqueConstraint('slug', 'date', 'source', name='uq_research_downloads_slug_date_src'),)"}]`
 
 Relationships: `[]`
 
@@ -1973,7 +1987,7 @@ Relationships: `[]`
 | RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:510](../backend/app/config.py#L510) |
 | RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:511](../backend/app/config.py#L511) |
 | RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:512](../backend/app/config.py#L512) |
-| RUSTATS_OPENROUTER_API_KEY | str = '' | 15 | [backend/app/config.py:514](../backend/app/config.py#L514) |
+| RUSTATS_OPENROUTER_API_KEY | str = '' | 17 | [backend/app/config.py:514](../backend/app/config.py#L514) |
 | RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:518](../backend/app/config.py#L518) |
 | RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:519](../backend/app/config.py#L519) |
 | RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:520](../backend/app/config.py#L520) |
@@ -1981,7 +1995,7 @@ Relationships: `[]`
 | RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:522](../backend/app/config.py#L522) |
 | RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:523](../backend/app/config.py#L523) |
 | RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5.5' | 7 | [backend/app/config.py:524](../backend/app/config.py#L524) |
-| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 4 | [backend/app/config.py:530](../backend/app/config.py#L530) |
+| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 5 | [backend/app/config.py:530](../backend/app/config.py#L530) |
 | RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:534](../backend/app/config.py#L534) |
 | RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:537](../backend/app/config.py#L537) |
 | RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 2 | [backend/app/config.py:541](../backend/app/config.py#L541) |
@@ -2724,10 +2738,13 @@ Relationships: `[]`
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |
 | app.services.pulse.ETL_ERROR_STATUSES | Tuple | sequence/source expression | [backend/app/services/pulse.py:72](../backend/app/services/pulse.py#L72) |
-| app.services.pulse._REGION_MARKERS | Tuple | sequence/source expression | [backend/app/services/pulse.py:451](../backend/app/services/pulse.py#L451) |
+| app.services.pulse._REGION_MARKERS | Tuple | sequence/source expression | [backend/app/services/pulse.py:457](../backend/app/services/pulse.py#L457) |
+| app.services.pulse_context.FLAG_WHITELIST | Tuple | sequence/source expression | [backend/app/services/pulse_context.py:49](../backend/app/services/pulse_context.py#L49) |
+| app.services.pulse_context._SECRET_HINTS | Tuple | sequence/source expression | [backend/app/services/pulse_context.py:60](../backend/app/services/pulse_context.py#L60) |
 | app.services.pulse_report._TG_ALLOWED_TAG_RE | Call | computed source expression | [backend/app/services/pulse_report.py:44](../backend/app/services/pulse_report.py#L44) |
 | app.services.pulse_report._HTML_ENTITY_RE | Call | computed source expression | [backend/app/services/pulse_report.py:48](../backend/app/services/pulse_report.py#L48) |
-| app.services.pulse_report._HYP_WORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:201](../backend/app/services/pulse_report.py#L201) |
+| app.services.pulse_report._HYP_WORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:211](../backend/app/services/pulse_report.py#L211) |
+| app.services.pulse_report._AFFORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:351](../backend/app/services/pulse_report.py#L351) |
 | app.services.r4a_price_compare.BASKET | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:21](../backend/app/services/r4a_price_compare.py#L21) |
 | app.services.r4a_price_compare._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:35](../backend/app/services/r4a_price_compare.py#L35) |
 | app.services.r4a_price_compare._MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:37](../backend/app/services/r4a_price_compare.py#L37) |
@@ -2759,6 +2776,7 @@ Relationships: `[]`
 | app.services.rosstat_outage.SECTION_PAGES | Tuple | sequence/source expression | [backend/app/services/rosstat_outage.py:45](../backend/app/services/rosstat_outage.py#L45) |
 | app.services.rosstat_outage._SECTION_FILE_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:54](../backend/app/services/rosstat_outage.py#L54) |
 | app.services.rosstat_outage._MISSING_FILE_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:55](../backend/app/services/rosstat_outage.py#L55) |
+| app.services.rosstat_outage._NAME_YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:101](../backend/app/services/rosstat_outage.py#L101) |
 | app.services.rosstat_population_parser._YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_population_parser.py:48](../backend/app/services/rosstat_population_parser.py#L48) |
 | app.services.rosstat_population_parser.INDICATOR_SOURCE_MAP | Dict | 'population', 'population-total-growth', 'population-natural-growth', 'population-migration' | [backend/app/services/rosstat_population_parser.py:245](../backend/app/services/rosstat_population_parser.py#L245) |
 | app.services.rosstat_population_parser.COMPONENT_SERIES_MAP | Dict | 'population-total-growth', 'population-natural-growth', 'population-migration' | [backend/app/services/rosstat_population_parser.py:252](../backend/app/services/rosstat_population_parser.py#L252) |
@@ -3019,11 +3037,12 @@ Relationships: `[]`
 | app.services.telegram_bot._REDIS_TRANSIENT | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:67](../backend/app/services/telegram_bot.py#L67) |
 | app.services.telegram_bot._RETRY_METHODS | Call | computed source expression | [backend/app/services/telegram_bot.py:107](../backend/app/services/telegram_bot.py#L107) |
 | app.services.telegram_bot._EXPORT_WINDOWS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:431](../backend/app/services/telegram_bot.py#L431) |
-| app.services.telegram_bot._DOWNLOAD_COMMANDS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:764](../backend/app/services/telegram_bot.py#L764) |
-| app.services.telegram_bot._EXPORT_COMMANDS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:765](../backend/app/services/telegram_bot.py#L765) |
-| app.services.telegram_bot._ADMIN_TEXTS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:766](../backend/app/services/telegram_bot.py#L766) |
-| app.services.telegram_bot.OWNER_COMMANDS | List | sequence/source expression | [backend/app/services/telegram_bot.py:772](../backend/app/services/telegram_bot.py#L772) |
-| app.services.telegram_bot.REPORTS_ONLY_COMMANDS | List | sequence/source expression | [backend/app/services/telegram_bot.py:778](../backend/app/services/telegram_bot.py#L778) |
+| app.services.telegram_bot._DOWNLOAD_COMMANDS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:777](../backend/app/services/telegram_bot.py#L777) |
+| app.services.telegram_bot._EXPORT_COMMANDS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:778](../backend/app/services/telegram_bot.py#L778) |
+| app.services.telegram_bot._ADMIN_TEXTS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:779](../backend/app/services/telegram_bot.py#L779) |
+| app.services.telegram_bot._CONTEXT_COMMANDS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:781](../backend/app/services/telegram_bot.py#L781) |
+| app.services.telegram_bot.OWNER_COMMANDS | List | sequence/source expression | [backend/app/services/telegram_bot.py:787](../backend/app/services/telegram_bot.py#L787) |
+| app.services.telegram_bot.REPORTS_ONLY_COMMANDS | List | sequence/source expression | [backend/app/services/telegram_bot.py:794](../backend/app/services/telegram_bot.py#L794) |
 | app.services.telegram_calm.MSK | Call | computed source expression | [backend/app/services/telegram_calm.py:35](../backend/app/services/telegram_calm.py#L35) |
 | app.services.telegram_calm.HELD_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:42](../backend/app/services/telegram_calm.py#L42) |
 | app.services.telegram_calm.ACTION_KINDS | Dict | 'data_sanity' | [backend/app/services/telegram_calm.py:57](../backend/app/services/telegram_calm.py#L57) |
@@ -3359,6 +3378,7 @@ Relationships: `[]`
 | scripts.catalog-harvest._IBGE_FREQ | Dict | 'mensal', 'trimestral', 'anual', 'semestral', 'decenal', 'quinquenal', 'bienal', 'diaria', 'semanal', 'irregular' | [scripts/catalog-harvest.py:152](../scripts/catalog-harvest.py#L152) |
 | scripts.catalog-harvest._ONS_FREQ | Dict | 'monthly', 'quarterly', 'annual', 'annually', 'weekly', 'daily', 'yearly' | [scripts/catalog-harvest.py:212](../scripts/catalog-harvest.py#L212) |
 | scripts.catalog-harvest.HARVESTERS | Dict | 'eurostat', 'ibge', 'ons' | [scripts/catalog-harvest.py:273](../scripts/catalog-harvest.py#L273) |
+| scripts.check-pulse-context.METRIC_PATHS | Tuple | sequence/source expression | [scripts/check-pulse-context.py:21](../scripts/check-pulse-context.py#L21) |
 | scripts.completeness.TOP_ORDER | List | sequence/source expression | [scripts/completeness.py:49](../scripts/completeness.py#L49) |
 | scripts.completeness.TOP_LABEL | Dict | TOP_VALUE, TOP_POP, TOP_YOY, TOP_INDEX | [scripts/completeness.py:50](../scripts/completeness.py#L50) |
 | scripts.completeness.FREQ_ORDER | List | sequence/source expression | [scripts/completeness.py:57](../scripts/completeness.py#L57) |
@@ -3388,6 +3408,8 @@ Relationships: `[]`
 | scripts.refresh-search-crawler-ranges.GOOD_BOTS | Dict | 'apple', 'openai', 'perplexity', 'duckduckgo' | [scripts/refresh-search-crawler-ranges.py:38](../scripts/refresh-search-crawler-ranges.py#L38) |
 | scripts.refresh-search-crawler-ranges.YANDEX_VERIFIED_24S | Tuple | sequence/source expression | [scripts/refresh-search-crawler-ranges.py:52](../scripts/refresh-search-crawler-ranges.py#L52) |
 | scripts.refresh-search-crawler-ranges.MIN_PREFIXES | Dict | 'google', 'bing', 'apple', 'openai', 'perplexity', 'duckduckgo', 'telegram' | [scripts/refresh-search-crawler-ranges.py:63](../scripts/refresh-search-crawler-ranges.py#L63) |
+| scripts.release-log._SKIP | Call | computed source expression | [scripts/release-log.py:23](../scripts/release-log.py#L23) |
+| scripts.release-log._EMAIL | Call | computed source expression | [scripts/release-log.py:24](../scripts/release-log.py#L24) |
 | scripts.repo-inventory.SKIP_DIRS | Set | sequence/source expression | [scripts/repo-inventory.py:56](../scripts/repo-inventory.py#L56) |
 | scripts.repo-inventory.SKIP_SUFFIXES | Set | sequence/source expression | [scripts/repo-inventory.py:63](../scripts/repo-inventory.py#L63) |
 | scripts.repo-inventory.SKIP_NAMES | Set | sequence/source expression | [scripts/repo-inventory.py:71](../scripts/repo-inventory.py#L71) |
