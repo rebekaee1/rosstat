@@ -191,3 +191,43 @@ def test_daily_job_in_partial_copy_moves_only_missing_file_failures(monkeypatch)
     assert modes == [True]
     assert summaries[0]["unreachable"] == ["births"]
     assert summaries[0]["failed"] == ["deaths", "usd-rub"]
+
+
+# Ссылки страницы «Промышленность» 14.11.2026 (боевой, только чтение): живы только старые файлы 2022 года.
+INDUSTRY_14_11 = [
+    "Ind_sub_2023.xlsx", "Utoch_ind_2024-2025.xlsx", "ind_2010_okved2.xlsx", "ind_2015-2019_god.xlsx",
+    "ind_baza_2018_12-2025.xlsx", "ind_baza_2018_4kv-2025.xlsx", "ind_baza_2023.xlsx", "ind_god.xlsx",
+    "ind_god_2015-2025.xlsx", "ind_prom_okved.xlsx", "ind_prom_sub.xlsx", "ind_sub_2015-2025.xlsx",
+    "ind_sub_2018_12-2025.xlsx",
+]
+LIVE_14_11 = {"ind_god.xlsx", "ind_prom_okved.xlsx", "ind_prom_sub.xlsx", "ind_2010_okved2.xlsx",
+              "ind_2015-2019_god.xlsx"}
+
+
+def test_sample_takes_freshest_files_by_year_in_name():
+    html = "".join(f'<a href="/storage/mediabank/{n}">x</a>' for n in INDUSTRY_14_11)
+    sample = rosstat_outage.sample_section_files(html)
+    assert len(sample) == 5
+    assert all(rosstat_outage._name_year(n) == 2025 for n in sample)
+    assert not set(sample) & LIVE_14_11
+
+
+def test_industry_with_only_old_files_alive_is_reported_broken():
+    """14.11.2026: равномерная выборка брала живые файлы 2022 года, промышленность считалась рабочей, а её ряды падали
+    с «файл не найден» без раздела в причине. С выборкой по свежести раздел назван."""
+    rosstat_outage.reset_cache()
+    fresh_feed = '<a href="/storage/mediabank/1_%s.pdf">x</a>' % date.today().strftime("%d-%m-%Y")
+    listing = "".join(f'<a href="/storage/mediabank/{n}">x</a>' for n in INDUSTRY_14_11)
+    pages = {rosstat_outage.CENTRAL_NEWS_URL: (200, fresh_feed), rosstat_outage.SECTION_PAGES[0][1]: (200, listing)}
+    pages.update({f"https://rosstat.gov.ru/storage/mediabank/{n}": (200, "") for n in LIVE_14_11})
+    try:
+        reason = rosstat_outage._reason_for(_FakeSession(pages))
+    finally:
+        rosstat_outage.reset_cache()
+    assert rosstat_outage.is_partial(reason) and "промышленность (5 из 5" in reason
+
+
+def test_undated_names_fill_the_sample_only_when_dated_are_few():
+    html = ('<a href="/storage/mediabank/demo14.xlsx">x</a><a href="/storage/mediabank/Popul_2025.xlsx">x</a>'
+            '<a href="/storage/mediabank/a.xlsx">x</a><a href="/storage/mediabank/b.xlsx">x</a>')
+    assert rosstat_outage.sample_section_files(html, n=3) == ["Popul_2025.xlsx", "a.xlsx", "b.xlsx"]

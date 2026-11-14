@@ -106,6 +106,53 @@ def test_etl_snapshot_sees_failed_and_timeout():
             pass
 
 
+def test_etl_count_is_not_capped_and_source_outage_is_not_our_failure():
+    """14.11.2026: Пульс неделю писал «упавших ETL-индикаторов: 20» - длину обрезанного списка - при 28-31 ряде,
+    и все они были недоступностью Росстата (в ошибке «unreachable»), а не нашей ошибкой."""
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.models import Base, FetchLog
+
+    fd, db_path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        sync_engine = create_engine(f"sqlite:///{db_path}")
+        Base.metadata.create_all(sync_engine)
+        sync_engine.dispose()
+        engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}")
+        Session = async_sessionmaker(engine, expire_on_commit=False)
+        d = date(2026, 11, 13)
+        ts = datetime(2026, 11, 13, 3, 0)
+
+        async def run() -> dict:
+            async with Session() as db:
+                db.add_all([FetchLog(indicator_id=i, status="failed", started_at=ts, records_added=0,
+                                     error_message="rosstat.gov.ru unreachable: сайт восстановлен частично")
+                            for i in range(1, 29)])
+                db.add(FetchLog(indicator_id=99, status="failed", started_at=ts, records_added=0,
+                                error_message="ValueError: неожиданный разрез"))
+                await db.commit()
+                start, end = _day_bounds(d)
+                snap = await _etl_snapshot(db, start, end)
+            await engine.dispose()
+            return snap
+
+        etl = asyncio.run(run())
+        assert len(etl["failed_indicator_ids"]) == 20          # список для промпта по-прежнему короткий
+        assert etl["failed_indicators"] == 29                  # а число - полное
+        assert etl["source_unavailable_indicators"] == 28
+        assert etl["failed_own_indicators"] == 1
+        text = _fallback_summary({**SNAP, "etl": etl})
+        assert "🏭 ETL: наших ошибок 1, источник недоступен у 28 рядов" in text
+        assert "Упавших ETL-индикаторов: 20" not in text
+    finally:
+        try:
+            os.unlink(db_path)
+        except OSError:
+            pass
+
+
 def test_memory_core_is_compact():
     core = memory_core(SNAP)
     assert core == {
@@ -666,3 +713,60 @@ def test_poller_ignores_foreign_chat(monkeypatch):
     }))
     # только answerCallbackQuery, никакого sendDocument
     assert calls == ["answerCallbackQuery"]
+
+
+def _openrouter_client(responses, seen):
+    import httpx
+
+    class Client:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+        async def post(self, url, json, headers):
+            seen.append(json)
+            status, body = responses.pop(0)
+            return httpx.Response(status, json=body)
+
+    return Client
+
+
+_402 = {"error": {"code": 402, "message": "This request requires more credits, or fewer max_tokens. You requested up "
+                  "to 65536 tokens, but can only afford 36268. To increase, visit https://openrouter.ai/settings/credits"}}
+
+
+def test_low_balance_402_is_retried_once_with_affordable_max_tokens(monkeypatch):
+    """14.11.2026: Пульс ушёл без аналитика - OpenRouter отклонил запрос без max_tokens (резерв 65536 токенов при
+    остатке на 36268). Повтор с max_tokens по остатку; в обычной работе лимита по-прежнему нет."""
+    from unittest.mock import AsyncMock
+    from app.services import pulse_report
+
+    seen = []
+    ok = (200, {"choices": [{"message": {"content": "Сводка дня.---HYPOTHESES---[]"}}]})
+    monkeypatch.setattr(pulse_report.httpx, "AsyncClient", _openrouter_client([(402, _402), ok], seen))
+    monkeypatch.setattr(pulse_report.settings, "openrouter_api_key", "fixture-key")
+    monkeypatch.setattr(pulse_report, "_open_hypotheses", AsyncMock(return_value=[]))
+    assert asyncio.run(pulse_report._llm_summary(SNAP, [memory_core(SNAP)])) == "Сводка дня."
+    assert "max_tokens" not in seen[0]
+    assert seen[1]["max_tokens"] == 36268 - 512
+    assert pulse_report.llm_failure_note() == "LLM-аналитик недоступен"
+
+
+def test_empty_balance_gives_plain_reason_in_report_header(monkeypatch):
+    from unittest.mock import AsyncMock
+    from app.services import pulse_report
+
+    seen = []
+    tiny = {"error": {"code": 402, "message": "You requested up to 65536 tokens, but can only afford 900."}}
+    monkeypatch.setattr(pulse_report.httpx, "AsyncClient", _openrouter_client([(402, tiny)], seen))
+    monkeypatch.setattr(pulse_report.settings, "openrouter_api_key", "fixture-key")
+    monkeypatch.setattr(pulse_report, "_open_hypotheses", AsyncMock(return_value=[]))
+    assert asyncio.run(pulse_report._llm_summary(SNAP, [memory_core(SNAP)])) is None
+    assert len(seen) == 1, "при остатке меньше порога повтора нет"
+    note = pulse_report.llm_failure_note()
+    assert "на счёте OpenRouter почти нет денег" in note and "openrouter.ai/settings/credits" in note
