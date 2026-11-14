@@ -198,7 +198,7 @@ async def cmd_send_test(args) -> int:
         try:
             await transport.send(transport.OutgoingMail(
                 to=args.to, subject=rendered.subject, html=rendered.html, text=rendered.text, kind="newsletter",
-                unsubscribe_url=one_click, campaign="test"))
+                unsubscribe_url=one_click, campaign="test", images=getattr(rendered, "images", None) or {}))
             status = "sent"
         except (transport.SendError, transport.MailConfigError) as exc:
             status = f"failed:{getattr(exc, 'code', type(exc).__name__)}"
