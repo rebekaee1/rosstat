@@ -7420,96 +7420,96 @@
     "anonymous_functions": 48
   },
   "frontend/src/components/IndicatorSearch.jsx": {
-    "sha256": "5244547758686084e0efa651c0fff89b8cb04e826fe8d85fa39f00180aedd23f",
+    "sha256": "12a878f1194858ccca74fd8b8e2a34de095012a68351834d2b08e60cd4ace5bd",
     "definitions": [
       {
         "name": "RotatingHint",
-        "line": 69,
-        "end_line": 101,
+        "line": 70,
+        "end_line": 102,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isKKey",
-        "line": 107,
-        "end_line": 111,
+        "line": 108,
+        "end_line": 112,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch",
-        "line": 113,
-        "end_line": 889,
+        "line": 114,
+        "end_line": 893,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch.shownTitle",
-        "line": 245,
-        "end_line": 245,
+        "line": 246,
+        "end_line": 246,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onKey",
-        "line": 359,
-        "end_line": 389,
+        "line": 360,
+        "end_line": 390,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.focusInput",
-        "line": 405,
-        "end_line": 405,
+        "line": 406,
+        "end_line": 406,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onQueryChange",
-        "line": 443,
-        "end_line": 448,
+        "line": 444,
+        "end_line": 449,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.handleListKey",
-        "line": 457,
-        "end_line": 469,
+        "line": 458,
+        "end_line": 470,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.renderRow",
-        "line": 488,
-        "end_line": 508,
+        "line": 489,
+        "end_line": 509,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "regionValueText",
-        "line": 894,
-        "end_line": 903,
+        "line": 898,
+        "end_line": 907,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionGroupChips",
-        "line": 906,
-        "end_line": 936,
+        "line": 910,
+        "end_line": 940,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "latestText",
-        "line": 939,
-        "end_line": 956,
+        "line": 943,
+        "end_line": 960,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchRow",
-        "line": 962,
-        "end_line": 1079,
+        "line": 966,
+        "end_line": 1083,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "filterValueLabel",
-        "line": 1084,
-        "end_line": 1089,
+        "line": 1088,
+        "end_line": 1093,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchFilters",
-        "line": 1095,
-        "end_line": 1142,
+        "line": 1099,
+        "end_line": 1146,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -7551,104 +7551,108 @@
         "line": 12
       },
       {
-        "source": "../i18n",
+        "source": "../lib/rowUnit",
         "line": 13
       },
       {
-        "source": "../lib/useGlobalSearch",
+        "source": "../i18n",
         "line": 14
       },
       {
-        "source": "../lib/worldApi",
+        "source": "../lib/useGlobalSearch",
         "line": 15
       },
       {
-        "source": "../lib/searchExamples",
+        "source": "../lib/worldApi",
         "line": 16
       },
       {
-        "source": "../lib/searchGroups",
+        "source": "../lib/searchExamples",
         "line": 17
       },
       {
-        "source": "../lib/searchRecent",
+        "source": "../lib/searchGroups",
         "line": 18
       },
       {
-        "source": "../lib/homeContinue",
-        "line": 21
+        "source": "../lib/searchRecent",
+        "line": 19
       },
       {
-        "source": "../lib/searchFilters",
+        "source": "../lib/homeContinue",
         "line": 22
       },
       {
-        "source": "../lib/searchView",
-        "line": 25
+        "source": "../lib/searchFilters",
+        "line": 23
       },
       {
-        "source": "../lib/searchText",
+        "source": "../lib/searchView",
         "line": 26
       },
       {
-        "source": "../lib/homeWorkbench",
+        "source": "../lib/searchText",
         "line": 27
       },
       {
-        "source": "../lib/countryFlag",
+        "source": "../lib/homeWorkbench",
         "line": 28
       },
       {
-        "source": "./Chip",
+        "source": "../lib/countryFlag",
         "line": 29
       },
       {
-        "source": "./CountryFlag",
+        "source": "./Chip",
         "line": 30
       },
       {
-        "source": "./brand/EmptyState",
+        "source": "./CountryFlag",
         "line": 31
       },
       {
-        "source": "./RatingExtras",
+        "source": "./brand/EmptyState",
         "line": 32
       },
       {
-        "source": "../styles/shell.css",
+        "source": "./RatingExtras",
         "line": 33
       },
       {
-        "source": "../styles/w6d.css",
+        "source": "../styles/shell.css",
         "line": 34
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../styles/w6d.css",
         "line": 35
       },
       {
-        "source": "../styles/k8-tools.css",
+        "source": "../styles/z8-tools.css",
         "line": 36
       },
       {
-        "source": "../styles/z4s-search.css",
+        "source": "../styles/k8-tools.css",
         "line": 37
       },
       {
-        "source": "../styles/r6a-search.css",
+        "source": "../styles/z4s-search.css",
         "line": 38
       },
       {
-        "source": "../styles/r7a-search.css",
+        "source": "../styles/r6a-search.css",
         "line": 39
       },
       {
-        "source": "../styles/r8a-search.css",
+        "source": "../styles/r7a-search.css",
         "line": 40
       },
       {
-        "source": "./searchLabourHints",
+        "source": "../styles/r8a-search.css",
         "line": 41
+      },
+      {
+        "source": "./searchLabourHints",
+        "line": 42
       }
     ],
     "exports": [
@@ -7656,10 +7660,10 @@
         "names": [
           "default"
         ],
-        "line": 113
+        "line": 114
       }
     ],
-    "anonymous_functions": 126
+    "anonymous_functions": 124
   },
   "frontend/src/components/IndicatorSearch.w6d.component.test.jsx": {
     "sha256": "3a774271b5d60ae0b4278b4f84a50e6ef7bf881063da12e3cbefecaed39dc7d4",
@@ -22097,7 +22101,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/components/searchLabourHints.js": {
-    "sha256": "68ad11ac8fbede4921826e061b27f0ba3e0b056f924a3c8e46c06e5b324ebfeb",
+    "sha256": "4c81aa6607e9eddc225aa71c785e72d21b096d6045fd38853fcad3f2c66ad06a",
     "definitions": [
       {
         "name": "isLabourQuery",
@@ -22134,6 +22138,18 @@
         "line": 35,
         "end_line": 40,
         "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "tryTheseExamples",
+        "line": 47,
+        "end_line": 62,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "tryTheseExamples.same",
+        "line": 55,
+        "end_line": 55,
+        "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [],
@@ -22173,9 +22189,15 @@
           "labourSuggestions"
         ],
         "line": 35
+      },
+      {
+        "names": [
+          "tryTheseExamples"
+        ],
+        "line": 47
       }
     ],
-    "anonymous_functions": 4
+    "anonymous_functions": 8
   },
   "frontend/src/components/searchLabourHints.test.js": {
     "sha256": "a321b8361ff891e08137028dd2947d2d4924a7e9c4d7e492a8ea5ebfd4b47747",
@@ -22205,6 +22227,33 @@
     ],
     "exports": [],
     "anonymous_functions": 6
+  },
+  "frontend/src/components/searchTryThese.test.js": {
+    "sha256": "7cf4d7878f62635596b42c0d4aa1cde42afd5aae8217576647d403c56525cd88",
+    "definitions": [
+      {
+        "name": "t",
+        "line": 6,
+        "end_line": 6,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "./searchLabourHints",
+        "line": 3
+      },
+      {
+        "source": "../i18n/messages.ru",
+        "line": 4
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 9
   },
   "frontend/src/components/shellScrollOffset.component.test.jsx": {
     "sha256": "628239088b7633e8d39193131369d64ad819b46ab2519f85f7f3ae56e366c31f",
@@ -43056,7 +43105,7 @@
     "anonymous_functions": 18
   },
   "frontend/src/lib/regionsApi.js": {
-    "sha256": "65a9cf30560a37c093806f1dafde165d85d568719a90462b962dc1f6f97e32a5",
+    "sha256": "565bf7c0857071dbd17299b888c1f7475b17c272e56703a37fd0ad2c6dac5902",
     "definitions": [
       {
         "name": "localeKey",
@@ -43209,15 +43258,9 @@
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "shortUnit",
-        "line": 205,
-        "end_line": 242,
-        "kind": "FunctionDeclaration"
-      },
-      {
         "name": "yearDelta",
-        "line": 249,
-        "end_line": 255,
+        "line": 211,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -43332,13 +43375,13 @@
         "names": [
           "shortUnit"
         ],
-        "line": 205
+        "line": 204
       },
       {
         "names": [
           "yearDelta"
         ],
-        "line": 249
+        "line": 211
       },
       {
         "names": [
@@ -43349,7 +43392,7 @@
           "regionRatingPath",
           "regionVsPath"
         ],
-        "line": 258
+        "line": 220
       }
     ],
     "anonymous_functions": 8
@@ -43940,6 +43983,66 @@
       }
     ],
     "anonymous_functions": 1
+  },
+  "frontend/src/lib/rowUnit.js": {
+    "sha256": "f1f4a88acbe490787b46e433f23980c4c413d45c4697d21ef668f81da183a592",
+    "definitions": [
+      {
+        "name": "compact",
+        "line": 10,
+        "end_line": 14,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "rowUnit",
+        "line": 22,
+        "end_line": 31,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "./countryFlag",
+        "line": 1
+      },
+      {
+        "source": "./searchText",
+        "line": 2
+      },
+      {
+        "source": "./shortUnit",
+        "line": 3
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "rowUnit"
+        ],
+        "line": 22
+      }
+    ],
+    "anonymous_functions": 0
+  },
+  "frontend/src/lib/rowUnit.test.js": {
+    "sha256": "764a08171926dddb6d7e5eaa9e6ef9c9aa7897de5fca420dccc4ebd47aaccb9c",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./rowUnit",
+        "line": 2
+      },
+      {
+        "source": "./regionsApi",
+        "line": 3
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 5
   },
   "frontend/src/lib/rsyFloorAd.js": {
     "sha256": "14e66473ba1a48c06d2bfeefe4a32a4182ca6697fdc0d78760280936b2a65098",
@@ -46041,6 +46144,27 @@
     "exports": [],
     "anonymous_functions": 30
   },
+  "frontend/src/lib/shortUnit.js": {
+    "sha256": "3c85e5c6f2ebca08d57457f9506cc9b12bd752c26da32e7f79ded216eae40cef",
+    "definitions": [
+      {
+        "name": "shortUnit",
+        "line": 5,
+        "end_line": 42,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "shortUnit"
+        ],
+        "line": 5
+      }
+    ],
+    "anonymous_functions": 0
+  },
   "frontend/src/lib/siteOrigin.js": {
     "sha256": "443b4fb2a1afa4b98998c8e3b34007887f2ee02c78b73c5a5d86cd0a3ac52bba",
     "definitions": [
@@ -47810,6 +47934,26 @@
         "line": 88
       }
     ],
+    "anonymous_functions": 2
+  },
+  "frontend/src/lib/uniformDigits.test.js": {
+    "sha256": "216067762cd1274eec87711dd5678b1eb4b01ee8120cd65a16c17d70d7cf879b",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./uniformDigits.cases.json",
+        "line": 2
+      },
+      {
+        "source": "./countryFlag",
+        "line": 3
+      }
+    ],
+    "exports": [],
     "anonymous_functions": 2
   },
   "frontend/src/lib/usCatalogTopics.js": {

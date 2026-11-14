@@ -105,11 +105,12 @@ def test_vs_page_answers_in_words_and_titles_the_pair_first(frequency_client):  
     assert title.startswith("Germany vs Japan: ") and title.endswith(", 2025") and "data comparison" not in title
     # Германия здесь месячная, Япония годовая: счёт периодов не выводится, у каждой страны своя подпись периода.
     assert "was higher in" not in en
-    assert "Germany: highest 12 % (January 2024), lowest 10.62 % (February 2025)." in en
+    # Точность — правило ряда, как в приложении (14.11.2026): у Германии два знака у всех чисел ряда.
+    assert "Germany: highest 12.00 % (January 2024), lowest 10.62 % (February 2025)." in en
     assert "Japan: highest 2.8 % (2024), lowest 2.5 % (2025)." in en
     ru = frequency_client.get("/seo/world-vs/germany-vs-japan/hicp-index",
         headers={"Host": "ru.forecasteconomy.com", "X-FE-Locale": "ru"}).text
-    assert "Германия: максимум — 12 % (январь 2024), минимум — 10,62 % (февраль 2025)." in ru
+    assert "Германия: максимум — 12,00 % (январь 2024), минимум — 10,62 % (февраль 2025)." in ru
     ru_title = re.search(r"<title>(.*?)</title>", ru, re.S).group(1)
     assert ru_title.startswith("Германия против Японии: ") and ru_title.endswith(", 2025")
 

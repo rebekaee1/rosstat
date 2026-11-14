@@ -1,0 +1,11 @@
+{
+  "about": "Одна точность для списка значений разных стран (рейтинг мира): SPA countryFlag.uniformDigits и сервер display.uniform_digits. 14.11.2026.",
+  "cases": [
+    {"values": [2.5333, 14.8, 4.2], "digits": 1},
+    {"values": [2.5333, 2.7917, 3.1], "digits": 2},
+    {"values": [30767.2, 5048.1, 4003.0], "digits": 0},
+    {"values": [-6.2, 1.1], "digits": 1},
+    {"values": [null, "", 0.5], "digits": 2},
+    {"values": [], "digits": 2}
+  ]
+}

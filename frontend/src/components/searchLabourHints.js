@@ -38,3 +38,25 @@ export function labourSuggestions(query, t, regionName) {
   return ['r6a.labour.wage', 'r6a.labour.unemployment', 'r6a.labour.living', 'r6a.labour.pension', 'r6a.labour.income']
     .map((key) => [String(t(key)), place].filter(Boolean).join(' '));
 }
+
+/**
+ * «Попробуйте, например» под пустой выдачей (14.11.2026). Запрос назвал регион — подсказки по этому региону
+ * («Инфляция Воронежская область», «Зарплата …»), а не курсы валют и популярное по сайту («Курс узбекского сума»
+ * под запросом о посевных площадях). Без региона — как раньше: три курса и популярные запросы, без повторов.
+ */
+export function tryTheseExamples({ suggest = [], regionName, popular = [], t }) {
+  // Подсказка — `{ label, query }`: короткая подпись на кнопке и точный запрос по нажатию.
+  // Сервер подобрал соседей по разделу Росстата и региону: подпись без региона, если регион уже в запросе
+  // («Валовой сбор картофеля»), запрос — с регионом («Валовой сбор картофеля Воронежская область»).
+  const near = (Array.isArray(suggest) ? suggest : []).map((item) => (
+    typeof item === 'string' ? { label: item, query: item } : { label: String(item?.label || item?.query || ''), query: String(item?.query || item?.label || '') }
+  )).filter((item) => item.label && item.query);
+  if (near.length) return near.slice(0, 6);
+  const same = (text) => ({ label: String(text), query: String(text) });
+  const local = localSuggestions(regionName, t);
+  if (local.length) return local.slice(0, 6).map(same);
+  return [...new Set([
+    ...['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => t(key)),
+    ...popular.slice(0, 6),
+  ].map((text) => String(text)))].slice(0, 6).map(same);
+}

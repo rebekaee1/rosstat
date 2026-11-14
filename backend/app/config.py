@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     # без спроса (нет в опубликованном sitemap-priority.xml) — meta googlebot noindex, follow.
     # Нет шарда или спроса — метки нет. Откат — false. См. index_policy.is_apex_google_noindex_path.
     apex_google_noindex_years_without_demand: bool = True
+    # 14.11.2026: ряды стран мира, совпадающие точно (один показатель в нескольких наборах Евростата), —
+    # неосновные карточки и их годовые страницы получают canonical на основную версию и не попадают в
+    # sitemap (services/world_canonical.py). Откат — false.
+    world_duplicate_canonical: bool = True
     # Кто географически считается русской аудиторией для geo-редиректа.
     geo_ru_country_codes: str = (
         "RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD"
