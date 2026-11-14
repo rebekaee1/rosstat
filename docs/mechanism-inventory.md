@@ -13,10 +13,10 @@
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1350**
-- Registry references: **2547**
+- Registry declarations: **1351**
+- Registry references: **2550**
 - Migration operations: **480**
-- Candidate effects: **2824**
+- Candidate effects: **2827**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2932,6 +2932,7 @@ Relationships: `[]`
 | app.services.seo_today.TODAY_SPECS | DictComp | computed source expression | [backend/app/services/seo_today.py:127](../backend/app/services/seo_today.py#L127) |
 | app.services.seo_today.TODAY_CODES | Call | computed source expression | [backend/app/services/seo_today.py:141](../backend/app/services/seo_today.py#L141) |
 | app.services.seo_weekly_report._BOT_RE | Tuple | sequence/source expression | [backend/app/services/seo_weekly_report.py:30](../backend/app/services/seo_weekly_report.py#L30) |
+| app.services.seo_weekly_report.ADR31_BASE | Dict | 'en_imp', 'apex_clk', 'ru_clk' | [backend/app/services/seo_weekly_report.py:111](../backend/app/services/seo_weekly_report.py#L111) |
 | app.services.seo_world._WORLD_HEAVY_TEXT_COLUMNS | Tuple | sequence/source expression | [backend/app/services/seo_world.py:77](../backend/app/services/seo_world.py#L77) |
 | app.services.seo_world._WORLD_RATING_LOW_FIRST | Call | computed source expression | [backend/app/services/seo_world.py:94](../backend/app/services/seo_world.py#L94) |
 | app.services.seo_world._WORLD_RATING_MONEY_CONCEPTS | Call | computed source expression | [backend/app/services/seo_world.py:95](../backend/app/services/seo_world.py#L95) |

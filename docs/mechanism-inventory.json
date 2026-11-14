@@ -1715,8 +1715,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "sha256": "71997785f4c6af48be5aa97d4444af230795e6423a1ec597512bfb54547dc12a",
-      "lines": 247
+      "sha256": "45546152c7cddffa1d43b588509f76ad29b9899958c828aeab9fba4f1e7b2434",
+      "lines": 331
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -38099,8 +38099,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 323,
+      "end_line": 323,
       "owner": "seo_weekly_report_job",
       "conditions": [],
       "name": "seo_weekly_report_enabled",
@@ -38108,8 +38108,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 325,
+      "end_line": 325,
       "owner": "seo_weekly_report_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -38117,8 +38117,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 325,
+      "end_line": 325,
       "owner": "seo_weekly_report_job",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -111997,6 +111997,49 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 111,
+      "end_line": 113,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "ADR31_BASE",
+      "symbol": "app.services.seo_weekly_report.ADR31_BASE",
+      "kind": "Dict",
+      "literal_keys": [
+        "'en_imp'",
+        "'apex_clk'",
+        "'ru_clk'"
+      ],
+      "entries": [
+        {
+          "key": "'en_imp'",
+          "expression": "(325, 5000)",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "52145c0cb8d765ae82ededeb6c9c4a1935424b5861fe37ca0a170177ac041af9"
+        },
+        {
+          "key": "'apex_clk'",
+          "expression": "(75, 150)",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "b273cccdd60b176fbecc6b6a3d8d362661ac129128d66fb030c71b5796c7c300"
+        },
+        {
+          "key": "'ru_clk'",
+          "expression": "(0, 10)",
+          "expression_truncated": false,
+          "expression_chars": 7,
+          "ast_sha256": "af6a858b9f8aeabf59989a9763c491dc20fb5349903e8518869355aca9926a86"
+        }
+      ],
+      "expression": "{'en_imp': (325, 5000), 'apex_clk': (75, 150), 'ru_clk': (0, 10)}",
+      "expression_truncated": false,
+      "expression_chars": 65,
+      "ast_sha256": "3fb7c9da6b9d5b7c93fae0dca00dad51ba6610aab5ddd879a0a4b506e68b378f",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/seo_world.py",
       "line": 77,
       "end_line": 83,
@@ -152712,8 +152755,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 155,
-      "end_line": 155,
+      "line": 238,
+      "end_line": 238,
       "owner": "collect_seo_week",
       "conditions": [],
       "operation": "get_redis",
@@ -152740,8 +152783,36 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 108,
-      "end_line": 108,
+      "line": 121,
+      "end_line": 121,
+      "owner": "_window_sum",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.seo_weekly_report.db.execute",
+      "expression": "db.execute(sql, {'a': window[0], 'b': window[1], **params})",
+      "expression_truncated": false,
+      "expression_chars": 59,
+      "ast_sha256": "10e26e6c7416f64873b7af0a1d4e9ded2118620f3ce7e1a57f826cffc59aca31"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 127,
+      "end_line": 127,
+      "owner": "_collect_adr31",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.seo_weekly_report.db.execute",
+      "expression": "db.execute(text('SELECT MAX(date) FROM gsc_page_daily'))",
+      "expression_truncated": false,
+      "expression_chars": 56,
+      "ast_sha256": "20882c99aee727e706bf091c974b5e06e7130f74b2b870a6eed3df75e36c2281"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 186,
+      "end_line": 186,
       "owner": "collect_seo_week",
       "conditions": [],
       "operation": "execute",
@@ -152754,8 +152825,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 109,
-      "end_line": 109,
+      "line": 187,
+      "end_line": 187,
       "owner": "collect_seo_week",
       "conditions": [],
       "operation": "execute",
@@ -152768,8 +152839,22 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 130,
-      "end_line": 133,
+      "line": 212,
+      "end_line": 212,
+      "owner": "collect_seo_week",
+      "conditions": [],
+      "operation": "rollback",
+      "receiver": "db",
+      "symbol": "app.services.seo_weekly_report.db.rollback",
+      "expression": "db.rollback()",
+      "expression_truncated": false,
+      "expression_chars": 13,
+      "ast_sha256": "aa3e7e65c178776f8f1c40cd84fbccf3f33f4fa33bb1ac644d5e5ac26ac08089"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 213,
+      "end_line": 216,
       "owner": "collect_seo_week",
       "conditions": [],
       "operation": "execute",
@@ -152782,8 +152867,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 135,
-      "end_line": 138,
+      "line": 218,
+      "end_line": 221,
       "owner": "collect_seo_week",
       "conditions": [],
       "operation": "execute",
@@ -276906,8 +276991,28 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 108,
-      "end_line": 108,
+      "line": 117,
+      "end_line": 120,
+      "owner": "_window_sum",
+      "conditions": [],
+      "literal": null,
+      "expression": "f'SELECT COALESCE(SUM(impressions),0) AS imp, COALESCE(SUM(clicks),0) AS clk FROM {table} WHERE date BETWEEN :a AND :b {clause}'",
+      "resolved_text_constructor": "sqlalchemy.text"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 127,
+      "end_line": 127,
+      "owner": "_collect_adr31",
+      "conditions": [],
+      "literal": "SELECT MAX(date) FROM gsc_page_daily",
+      "expression": "'SELECT MAX(date) FROM gsc_page_daily'",
+      "resolved_text_constructor": "sqlalchemy.text"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 186,
+      "end_line": 186,
       "owner": "collect_seo_week",
       "conditions": [],
       "literal": "SELECT MAX(date) FROM webmaster_search_queries",
@@ -276916,8 +277021,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 109,
-      "end_line": 109,
+      "line": 187,
+      "end_line": 187,
       "owner": "collect_seo_week",
       "conditions": [],
       "literal": "SELECT MAX(date) FROM gsc_search_queries",
@@ -276926,8 +277031,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 130,
-      "end_line": 133,
+      "line": 213,
+      "end_line": 216,
       "owner": "collect_seo_week",
       "conditions": [],
       "literal": "SELECT DISTINCT ON (host) host, day, sitemap_errors, in_search FROM webmaster_indexing_daily WHERE sitemap_errors IS NOT NULL ORDER BY host, day DESC",
@@ -276936,8 +277041,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 135,
-      "end_line": 138,
+      "line": 218,
+      "end_line": 221,
       "owner": "collect_seo_week",
       "conditions": [],
       "literal": "SELECT status, started_at, left(coalesce(error_message,''),120) AS err FROM analytics_sync_runs WHERE source='yandex_webmaster' ORDER BY id DESC LIMIT 1",
@@ -307156,8 +307261,35 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 104,
-      "end_line": 165,
+      "line": 116,
+      "end_line": 122,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_window_sum",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 125,
+      "end_line": 147,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_collect_adr31",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 150,
+      "end_line": 179,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "format_adr31",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 182,
+      "end_line": 248,
       "owner": "<module>",
       "conditions": [],
       "name": "collect_seo_week",
@@ -307165,8 +307297,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 168,
-      "end_line": 176,
+      "line": 251,
+      "end_line": 259,
       "owner": "<module>",
       "conditions": [],
       "name": "_engine_line",
@@ -307174,8 +307306,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 179,
-      "end_line": 230,
+      "line": 262,
+      "end_line": 314,
       "owner": "<module>",
       "conditions": [],
       "name": "format_seo_week",
@@ -307183,8 +307315,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 233,
-      "end_line": 234,
+      "line": 317,
+      "end_line": 318,
       "owner": "<module>",
       "conditions": [],
       "name": "build_seo_weekly_report",
@@ -307192,8 +307324,8 @@
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
-      "line": 237,
-      "end_line": 247,
+      "line": 321,
+      "end_line": 331,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_weekly_report_job",
@@ -346842,6 +346974,36 @@
       "owner": "bot_family",
       "conditions": [],
       "symbol": "app.services.seo_weekly_report._BOT_RE"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 158,
+      "end_line": 158,
+      "owner": "format_adr31",
+      "conditions": [
+        "data.get('en')"
+      ],
+      "symbol": "app.services.seo_weekly_report.ADR31_BASE"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 168,
+      "end_line": 168,
+      "owner": "format_adr31",
+      "conditions": [
+        "data.get('apex')"
+      ],
+      "symbol": "app.services.seo_weekly_report.ADR31_BASE"
+    },
+    {
+      "path": "backend/app/services/seo_weekly_report.py",
+      "line": 176,
+      "end_line": 176,
+      "owner": "format_adr31",
+      "conditions": [
+        "data.get('ru')"
+      ],
+      "symbol": "app.services.seo_weekly_report.ADR31_BASE"
     },
     {
       "path": "backend/app/services/seo_world.py",

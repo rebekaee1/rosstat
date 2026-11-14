@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "96d9b3eba04ca4acf6baec0a67a2120b3a47a3b3",
+  "baseline_commit": "01fe4258a2dda678a34c5fa065a7c9ddc9226325",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
@@ -9,17 +9,17 @@
     "files": 2460,
     "attempted": 2096,
     "files_with_nodes": 2004,
-    "nodes": 24802,
-    "symbol_edges": 77859,
-    "file_edges": 17917,
+    "nodes": 24817,
+    "symbol_edges": 77893,
+    "file_edges": 17920,
     "projection_omissions": {
-      "external_or_unresolved_file": 2984,
+      "external_or_unresolved_file": 2986,
       "missing_endpoint": 4372,
-      "within_file": 33776
+      "within_file": 33797
     },
     "confidence": {
-      "EXTRACTED": 70701,
-      "INFERRED": 7158
+      "EXTRACTED": 70728,
+      "INFERRED": 7165
     }
   },
   "overview": {
@@ -342,8 +342,8 @@
       {
         "source": "docs",
         "target": "services",
-        "file_relations": 384,
-        "symbol_relations": 877
+        "file_relations": 386,
+        "symbol_relations": 881
       },
       {
         "source": "docs",
@@ -583,7 +583,7 @@
         "source": "services",
         "target": "services",
         "file_relations": 1978,
-        "symbol_relations": 4274
+        "symbol_relations": 4276
       },
       {
         "source": "services",
@@ -655,13 +655,13 @@
         "source": "tests",
         "target": "services",
         "file_relations": 1726,
-        "symbol_relations": 5551
+        "symbol_relations": 5555
       },
       {
         "source": "tests",
         "target": "tests",
-        "file_relations": 478,
-        "symbol_relations": 931
+        "file_relations": 479,
+        "symbol_relations": 932
       }
     ],
     "semantic_files": 68,
@@ -1129,7 +1129,7 @@
     {"path": "backend/app/services/seo_renderer.py", "kind": "code", "bytes": 222882, "lines": 4289, "sha256": "e519347bea03563d0e489ce0430a4b4ac776b837cbc309a4a102e02b687f5047", "symlink": false, "nodes": 159, "extraction": "nodes", "layer": "services", "semantic_evidence": true, "semantic_current": false},
     {"path": "backend/app/services/seo_research.py", "kind": "code", "bytes": 3712, "lines": 70, "sha256": "f4bc66b5aa8b5f734d2e96422d9b07593521710c2df341aef754109742cc2472", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/seo_today.py", "kind": "code", "bytes": 28859, "lines": 635, "sha256": "5ca6537654b1a4f8a7b6d3aa4cc2d1e8a1df52785f07cff397dac93f57e6b70e", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/app/services/seo_weekly_report.py", "kind": "code", "bytes": 11396, "lines": 247, "sha256": "71997785f4c6af48be5aa97d4444af230795e6423a1ec597512bfb54547dc12a", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/app/services/seo_weekly_report.py", "kind": "code", "bytes": 15735, "lines": 331, "sha256": "45546152c7cddffa1d43b588509f76ad29b9899958c828aeab9fba4f1e7b2434", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/seo_world.py", "kind": "code", "bytes": 95807, "lines": 2243, "sha256": "669b7fcda312c4f9363f3f0054ed51827cea5543f8699b9b71fe3ac850279e93", "symlink": false, "nodes": 72, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/seo_world_compare.py", "kind": "code", "bytes": 33956, "lines": 728, "sha256": "a823f60bb9e26f08047da3d8ede73b3becb7e090d044439f29e5b2bfc32604a6", "symlink": false, "nodes": 30, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/seo_world_subnational.py", "kind": "code", "bytes": 18188, "lines": 463, "sha256": "868682aeafe5101b6b196c3858f0e129f0f85219869fbcc2eb5a84c2fbcaa53a", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
@@ -1592,7 +1592,7 @@
     {"path": "backend/tests/test_seo_source_link.py", "kind": "code", "bytes": 627, "lines": 14, "sha256": "67305b780cdfac3c2d4e90a228f72bdf061c3cc58a8a68f8743ddac3c5973761", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_seo_text_defects.py", "kind": "code", "bytes": 818, "lines": 14, "sha256": "f48239c3ebca5734e87c957992f528697c29a07b6bb5eea403196cff642dd14e", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_seo_ticker.py", "kind": "code", "bytes": 1940, "lines": 40, "sha256": "de532da11fbdc290f0b9dae811f1270dffa1db5e23cb0fa5d3984d4225ed7740", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/tests/test_seo_weekly_report.py", "kind": "code", "bytes": 2006, "lines": 42, "sha256": "aa9e7d9c74209bfcda9ef73a8e4da7842ca40b36c951a466b153ce47a68bbb3b", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/tests/test_seo_weekly_report.py", "kind": "code", "bytes": 4895, "lines": 101, "sha256": "4fa8e5487d3a0a12f528aa8dfb16d2b7233285084d8dc839f605505fe7a3f62a", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_seo_world.py", "kind": "code", "bytes": 52780, "lines": 1107, "sha256": "6e8816258a145da0c22dab65f04b04d6c8e699eecae1896690a03f33505396d7", "symlink": false, "nodes": 51, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_seo_world_year.py", "kind": "code", "bytes": 27739, "lines": 572, "sha256": "7b7a8c66145e0d6fda0d241be78f9f5811647faa1bf6a5580e1b87b7b7e9f1bb", "symlink": false, "nodes": 41, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_session_analysis.py", "kind": "code", "bytes": 20831, "lines": 361, "sha256": "48814c591b7521f8ff249dbaf725e81d9ef0813a4fc15dbdfbe8f8006586f938", "symlink": false, "nodes": 31, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
@@ -1755,7 +1755,7 @@
     {"path": "docs/adr/0028-research-reports-section.md", "kind": "document", "bytes": 8253, "lines": 44, "sha256": "331b9983d070805cbf616fda121aec756f95329bd7f75a68a83894265c6edb1d", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/adr/0029-ru-google-recovery.md", "kind": "document", "bytes": 11161, "lines": 50, "sha256": "2161d156589afea9c69ea38fc17e3429719b853e6fbf6aed57b55b17e30a827f", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/adr/0030-ru-google-short-sitemap.md", "kind": "document", "bytes": 12398, "lines": 80, "sha256": "59a2019c65cfd1863706b73b2a3e1ed7e0ee02fb3dab1b88cae37d5c8665247a", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/adr/0031-apex-google-demand-only-years.md", "kind": "document", "bytes": 13158, "lines": 80, "sha256": "a7b342ba81870b88b026f085cf7cbb807b3cf233180923b460d2103d3aef6df4", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/adr/0031-apex-google-demand-only-years.md", "kind": "document", "bytes": 13637, "lines": 80, "sha256": "9d463f0d1bd4d997b646d7af94dc97d708d8f2dbfe9ada152b6fa757d71e8ab4", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/agent-briefs/README.md", "kind": "document", "bytes": 1327, "lines": 15, "sha256": "43842e3dc8bccb3c36f4fbff1511a9ea9c965b4266ca1dedaf926a3a6c23c821", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/agent-briefs/hotfix-brief.md", "kind": "document", "bytes": 3550, "lines": 15, "sha256": "b4dd7bdd0b9788ea419b46b7e033679bd78235e627cb6eaa4639d09cf5dda5c4", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/agent-briefs/integration-brief.md", "kind": "document", "bytes": 2422, "lines": 13, "sha256": "5ef4634590c8f0ceb16fc258593f30fcc3f67621309bd277788d72df9eed3f28", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1781,7 +1781,7 @@
     {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7248552, "lines": 255286, "sha256": "8558d0c419f392e3ef2ae03712871c6aa9f9a437c37d108e5d0ec983846db757", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 13421, "lines": 137, "sha256": "7ccb4e89ad4fad5bf7d811dc6a7af4f00fcefda31acc9edc52ea32fe4ff474b3", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 31882, "lines": 161, "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/data-contracts.md", "kind": "document", "bytes": 364687, "lines": 1225, "sha256": "783404f4fc5563dd1b51f4ba9d8c22b5e9154eb96dd9794657035872e1f6427f", "symlink": false, "nodes": 101, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/data-contracts.md", "kind": "document", "bytes": 366058, "lines": 1226, "sha256": "de77a7556a927ce3f48db45500f43352cbb18790825f83060177cfec860df39c", "symlink": false, "nodes": 101, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/data_sources.md", "kind": "document", "bytes": 118834, "lines": 760, "sha256": "8a376ca1985fb7ccacaebcd1e1d2ecdf6959dcf9c0ecb8fec8b7456cd58e1a74", "symlink": false, "nodes": 39, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/dead-code-report.md", "kind": "document", "bytes": 12346, "lines": 82, "sha256": "18766a1f5a124b7a6279d793bdf19ca132aceef8c06f22408776eba440aa1d8c", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/design-system.md", "kind": "document", "bytes": 250832, "lines": 499, "sha256": "a5f94d1ea1000f31d5e3720be748ae969f603831e5cf001b24742cacd78dc23f", "symlink": false, "nodes": 20, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1822,12 +1822,12 @@
     {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 71833, "lines": 329, "sha256": "147b05690e456e8661c25d38bcf253fabae3b72f9e7855d50e1e3b53cffb908d", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3853565, "lines": 136363, "sha256": "8d213e8c407a7369c1b3a9e8b6619c90818a58f54212ae68db569074af8dff21", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3853565, "lines": 136363, "sha256": "789a6463fd71c47a42424c31cae7786d1ed29539d52476fa7d170d4166d125b0", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 160576, "lines": 1824, "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 78988, "lines": 201, "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12193312, "lines": 365553, "sha256": "8067c04722c26a2ab76fa737387d12496c290a970baa83df63284c9b9e067415", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 627895, "lines": 3393, "sha256": "2d208c53c65028501725b67d22c794444993fef819ff46c8d1bd9284b89a2dc9", "symlink": false, "nodes": 84, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12198470, "lines": 365715, "sha256": "52d5cc0bf23ce983fb5b25d8c8129471ea718220398a6d1f1261e3727b11b3ab", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 628082, "lines": 3394, "sha256": "38cd8e48c2629e1df43440b0feaaab3d132b543c1b566e6dc77fe9338ea78cb7", "symlink": false, "nodes": 84, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/offsite-backup-runbook.md", "kind": "document", "bytes": 8720, "lines": 74, "sha256": "96fb520148401f8994a2f2eaf202f547e5b136cdc0a5874ef6203b3500b25ef9", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/planet-view.md", "kind": "document", "bytes": 96534, "lines": 594, "sha256": "734f228d975268e7c0eade45272be4df6549d4df43d9ae9bbfaa2661ce241a92", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -6368,15 +6368,15 @@
     {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/core/cache.py", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L62", "source": "record_bot_status()", "target": "get_redis()"}]},
     {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/core/cache.py", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L60", "source": "seo_weekly_report.py", "target": "get_redis()"}]},
     {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/database.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L25", "source": "seo_weekly_report.py", "target": "database.py"}]},
-    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/alerting.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L246", "source": "seo_weekly_report_job()", "target": "send_telegram()"}]},
-    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/alerting.py", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L243", "source": "seo_weekly_report.py", "target": "send_telegram()"}]},
+    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/alerting.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L330", "source": "seo_weekly_report_job()", "target": "send_telegram()"}]},
+    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/alerting.py", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L327", "source": "seo_weekly_report.py", "target": "send_telegram()"}]},
     {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/display.py", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L63", "source": "record_bot_status()", "target": "today_msk()"}]},
     {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/display.py", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L26", "source": "seo_weekly_report.py", "target": "today_msk()"}]},
     {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/display.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L26", "source": "seo_weekly_report.py", "target": "display.py"}]},
-    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/og_image.py", "relation": "calls", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L95", "source": "_query_window()", "target": ".text()"}]},
-    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/seo_index_control.py", "relation": "calls", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L143", "source": "collect_seo_week()", "target": "collect_yandex_indexing()"}]},
-    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/seo_index_control.py", "relation": "imports", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L141", "source": "seo_weekly_report.py", "target": "collect_yandex_indexing()"}]},
-    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/tests/test_analytics_batch_delivery.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L120", "source": "collect_seo_week()", "target": "db()"}]},
+    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/og_image.py", "relation": "calls", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L95", "source": "_query_window()", "target": ".text()"}]},
+    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/seo_index_control.py", "relation": "calls", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L226", "source": "collect_seo_week()", "target": "collect_yandex_indexing()"}]},
+    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/app/services/seo_index_control.py", "relation": "imports", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L224", "source": "seo_weekly_report.py", "target": "collect_yandex_indexing()"}]},
+    {"source": "backend/app/services/seo_weekly_report.py", "target": "backend/tests/test_analytics_batch_delivery.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/app/services/seo_weekly_report.py", "line": "L198", "source": "collect_seo_week()", "target": "db()"}]},
     {"source": "backend/app/services/seo_world.py", "target": "backend/app/core/cache.py", "relation": "calls", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/app/services/seo_world.py", "line": "L284", "source": "_category_siblings()", "target": "versioned_key()"}]},
     {"source": "backend/app/services/seo_world.py", "target": "backend/app/core/cache.py", "relation": "imports", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/app/services/seo_world.py", "line": "L22", "source": "seo_world.py", "target": "cache_get()"}]},
     {"source": "backend/app/services/seo_world.py", "target": "backend/app/core/cache.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/seo_world.py", "line": "L22", "source": "seo_world.py", "target": "cache.py"}]},
@@ -10026,8 +10026,9 @@
     {"source": "backend/tests/test_seo_weekly_report.py", "target": "backend/app/config.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_seo_weekly_report.py", "line": "L3", "source": "test_seo_weekly_report.py", "target": "config.py"}]},
     {"source": "backend/tests/test_seo_weekly_report.py", "target": "backend/app/config.py", "relation": "uses", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/tests/test_seo_weekly_report.py", "line": "L8", "source": "test_flag_is_off_by_default()", "target": "Settings"}]},
     {"source": "backend/tests/test_seo_weekly_report.py", "target": "backend/app/services/__init__.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_seo_weekly_report.py", "line": "L4", "source": "test_seo_weekly_report.py", "target": "__init__.py"}]},
-    {"source": "backend/tests/test_seo_weekly_report.py", "target": "backend/app/services/seo_weekly_report.py", "relation": "calls", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/tests/test_seo_weekly_report.py", "line": "L12", "source": "test_bot_family_by_ua()", "target": "bot_family()"}]},
+    {"source": "backend/tests/test_seo_weekly_report.py", "target": "backend/app/services/seo_weekly_report.py", "relation": "calls", "confidence": "EXTRACTED", "count": 7, "evidence": [{"file": "backend/tests/test_seo_weekly_report.py", "line": "L12", "source": "test_bot_family_by_ua()", "target": "bot_family()"}]},
     {"source": "backend/tests/test_seo_weekly_report.py", "target": "backend/app/services/seo_weekly_report.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_seo_weekly_report.py", "line": "L4", "source": "test_seo_weekly_report.py", "target": "seo_weekly_report.py"}]},
+    {"source": "backend/tests/test_seo_weekly_report.py", "target": "backend/tests/test_webmaster_failure_trace.py", "relation": "calls", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/tests/test_seo_weekly_report.py", "line": "L96", "source": "test_adr31_collect_runs_against_both_tables()", "target": "FakeDb"}]},
     {"source": "backend/tests/test_seo_world.py", "target": "backend/app/models.py", "relation": "calls", "confidence": "EXTRACTED", "count": 6, "evidence": [{"file": "backend/tests/test_seo_world.py", "line": "L23", "source": "_seed()", "target": "WorldCountry"}]},
     {"source": "backend/tests/test_seo_world.py", "target": "backend/app/models.py", "relation": "imports", "confidence": "EXTRACTED", "count": 5, "evidence": [{"file": "backend/tests/test_seo_world.py", "line": "L19", "source": "test_seo_world.py", "target": "WorldCountry"}]},
     {"source": "backend/tests/test_seo_world.py", "target": "backend/app/models.py", "relation": "uses", "confidence": "INFERRED", "count": 5, "evidence": [{"file": "backend/tests/test_seo_world.py", "line": "L23", "source": "world_seo_client()", "target": "WorldCountry"}]},
@@ -11366,6 +11367,7 @@
     {"source": "docs/adr/0030-ru-google-short-sitemap.md", "target": "docs/data-contracts.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0030-ru-google-short-sitemap.md", "line": "L6", "source": "0030-ru-google-short-sitemap.md", "target": "data-contracts.md"}]},
     {"source": "docs/adr/0031-apex-google-demand-only-years.md", "target": "backend/app/api/sitemap.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/adr/0031-apex-google-demand-only-years.md", "line": "L8", "source": "ADR-0031: Английский хост для Google — короткий sitemap и годовые страницы только со спросом", "target": "sitemap_index()"}]},
     {"source": "docs/adr/0031-apex-google-demand-only-years.md", "target": "backend/app/services/index_policy.py", "relation": "references", "confidence": "INFERRED", "count": 5, "evidence": [{"file": "docs/adr/0031-apex-google-demand-only-years.md", "line": "L8", "source": "ADR-0031: Английский хост для Google — короткий sitemap и годовые страницы только со спросом", "target": "is_apex_google_year_path()"}]},
+    {"source": "docs/adr/0031-apex-google-demand-only-years.md", "target": "backend/app/services/seo_weekly_report.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/adr/0031-apex-google-demand-only-years.md", "line": "L60", "source": "Как мерить", "target": "format_adr31()"}]},
     {"source": "docs/adr/0031-apex-google-demand-only-years.md", "target": "backend/app/services/sitemap_priority.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/adr/0031-apex-google-demand-only-years.md", "line": "L8", "source": "ADR-0031: Английский хост для Google — короткий sitemap и годовые страницы только со спросом", "target": "_load_gsc_pages()"}]},
     {"source": "docs/adr/0031-apex-google-demand-only-years.md", "target": "backend/app/services/sitemap_static.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/adr/0031-apex-google-demand-only-years.md", "line": "L55", "source": "Последствия и цена", "target": "section_file()"}]},
     {"source": "docs/adr/0031-apex-google-demand-only-years.md", "target": "docs/adr/0013-country-first-url-architecture.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0031-apex-google-demand-only-years.md", "line": "L7", "source": "0031-apex-google-demand-only-years.md", "target": "0013-country-first-url-architecture.md"}]},
@@ -12026,6 +12028,7 @@
     {"source": "docs/data-contracts.md", "target": "backend/app/services/search_r8a.py", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L1132", "source": "2026-11-09 — круг 8: `nearest` в ответе поиска, офлайн-память курсов (локально, не выпущено)", "target": "nearest_plan()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/search_r8a.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/data-contracts.md", "line": "L1132", "source": "2026-11-09 — круг 8: `nearest` в ответе поиска, офлайн-память курсов (локально, не выпущено)", "target": "sort_cheapest_first()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/seo_renderer.py", "relation": "references", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "docs/data-contracts.md", "line": "L458", "source": "Быстрые ссылки: мост на платформу и название приложения", "target": "_prepare_quicklink_body()"}]},
+    {"source": "docs/data-contracts.md", "target": "backend/app/services/seo_weekly_report.py", "relation": "references", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "docs/data-contracts.md", "line": "L1226", "source": "Английский хост для Google — 2026-11-14", "target": "collect_seo_week()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/seo_world.py", "relation": "references", "confidence": "INFERRED", "count": 6, "evidence": [{"file": "docs/data-contracts.md", "line": "L562", "source": "Страница страны: «Главное» в HTML и предзагрузка `#fe-country-bootstrap`", "target": "render_world_country_html()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/seo_world_compare.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/data-contracts.md", "line": "L1191", "source": "Точность и доверие по руководствам Google — 2026-11-13", "target": "render_world_vs_html()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/seo_year_ui.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/data-contracts.md", "line": "L897", "source": "Тексты SSR-страниц (круг 13, SEO)", "target": "year_range_note()"}]},
