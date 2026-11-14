@@ -103,7 +103,8 @@ js_files_failed_inert_sessions — то же у сессий без единог
 токен Вебмастера истёк, владелец знает и обновить его не может: не напоминай
 об этом и не делай выводов об индексации в Яндексе за этот день. etl.source_unavailable_indicators — ряды, у которых
 не ответил источник (Росстат, Минфин и т.п.): это авария у источника, данные
-догрузятся сами; не называй её проблемой нашей синхронизации.
+догрузятся сами; не называй её проблемой нашей синхронизации. Число упавших рядов - etl.failed_indicators
+(из них наших ошибок - etl.failed_own_indicators); etl.failed_indicator_ids - только первые 20 id, не считай по нему.
 
 Блок acquisition — привлечение из Яндекс.Метрики: источники трафика
 (реклама/органика/прямые/переходы с сайтов), поисковики, поисковые фразы,
@@ -453,11 +454,21 @@ def _fallback_summary(snapshot: dict) -> str:
         f"📥 Скачиваний: {sum(ev.get('downloads', {}).values())} "
         f"(зарег. {dl_aud.get('authed', 0)} / гости {dl_aud.get('guest', 0)})",
         f"🛑 Ошибок фронта: {sum(ev.get('errors', {}).values())}",
-        f"🏭 Упавших ETL-индикаторов: {len(etl.get('failed_indicator_ids', []))}",
+        _etl_line(etl),
         f"➕ Новых точек данных: {snapshot.get('data', {}).get('new_points', 0)}",
     ]
     lines.extend(escape(line) for line in _acquisition_lines(snapshot))
     return "\n".join(lines)
+
+
+def _etl_line(etl: dict) -> str:
+    """ETL дня: наши ошибки отдельно от недоступности источника (14.11.2026: было «упавших 20» = обрезанный список)."""
+    total = etl.get("failed_indicators", len(etl.get("failed_indicator_ids", [])))
+    down = etl.get("source_unavailable_indicators", 0)
+    own = etl.get("failed_own_indicators", max(total - down, 0))
+    if down:
+        return f"🏭 ETL: наших ошибок {own}, источник недоступен у {down} рядов (догрузятся сами)"
+    return f"🏭 Упавших ETL-индикаторов: {total}"
 
 
 def _raw_digits_block(snapshot: dict) -> str:

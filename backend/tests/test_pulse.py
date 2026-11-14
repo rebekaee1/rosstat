@@ -106,6 +106,53 @@ def test_etl_snapshot_sees_failed_and_timeout():
             pass
 
 
+def test_etl_count_is_not_capped_and_source_outage_is_not_our_failure():
+    """14.11.2026: Пульс неделю писал «упавших ETL-индикаторов: 20» - длину обрезанного списка - при 28-31 ряде,
+    и все они были недоступностью Росстата (в ошибке «unreachable»), а не нашей ошибкой."""
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.models import Base, FetchLog
+
+    fd, db_path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        sync_engine = create_engine(f"sqlite:///{db_path}")
+        Base.metadata.create_all(sync_engine)
+        sync_engine.dispose()
+        engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}")
+        Session = async_sessionmaker(engine, expire_on_commit=False)
+        d = date(2026, 11, 13)
+        ts = datetime(2026, 11, 13, 3, 0)
+
+        async def run() -> dict:
+            async with Session() as db:
+                db.add_all([FetchLog(indicator_id=i, status="failed", started_at=ts, records_added=0,
+                                     error_message="rosstat.gov.ru unreachable: сайт восстановлен частично")
+                            for i in range(1, 29)])
+                db.add(FetchLog(indicator_id=99, status="failed", started_at=ts, records_added=0,
+                                error_message="ValueError: неожиданный разрез"))
+                await db.commit()
+                start, end = _day_bounds(d)
+                snap = await _etl_snapshot(db, start, end)
+            await engine.dispose()
+            return snap
+
+        etl = asyncio.run(run())
+        assert len(etl["failed_indicator_ids"]) == 20          # список для промпта по-прежнему короткий
+        assert etl["failed_indicators"] == 29                  # а число - полное
+        assert etl["source_unavailable_indicators"] == 28
+        assert etl["failed_own_indicators"] == 1
+        text = _fallback_summary({**SNAP, "etl": etl})
+        assert "🏭 ETL: наших ошибок 1, источник недоступен у 28 рядов" in text
+        assert "Упавших ETL-индикаторов: 20" not in text
+    finally:
+        try:
+            os.unlink(db_path)
+        except OSError:
+            pass
+
+
 def test_memory_core_is_compact():
     core = memory_core(SNAP)
     assert core == {

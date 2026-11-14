@@ -109,9 +109,15 @@ async def _etl_snapshot(db, start: datetime, end: datetime) -> dict[str, Any]:
             func.lower(func.coalesce(FetchLog.error_message, "")).like("%unreachable%"),
         )
     )).scalars().all()
+    # 14.11.2026: список id обрезан до 20 ради объёма промпта, но число бралось из длины списка - Пульс неделю писал
+    # «упавших ETL-индикаторов: 20» при 28-31 ряде, и все они были недоступностью Росстата, а не нашей ошибкой.
+    # Число - полное; «наших» = упавшие минус те, у кого не ответил источник.
+    unreachable_set = {int(i) for i in unreachable_ids}
     return {
         "by_status": {s: {"runs": n, "records": int(r)} for s, n, r in etl_rows},
         "failed_indicator_ids": [int(i) for i in failed_codes][:20],
+        "failed_indicators": len(failed_codes),
+        "failed_own_indicators": len([i for i in failed_codes if int(i) not in unreachable_set]),
         "source_unavailable_indicators": len(unreachable_ids),
     }
 
@@ -856,7 +862,8 @@ def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
         "authed_active": aud.get("authed_active", 0),
         "guest_sessions": aud.get("guest_sessions", 0),
         "errors": sum(ev.get("errors", {}).values()),
-        "etl_failed": len(snap.get("etl", {}).get("failed_indicator_ids", [])),
+        "etl_failed": snap.get("etl", {}).get(
+            "failed_indicators", len(snap.get("etl", {}).get("failed_indicator_ids", []))),
         "new_points": snap.get("data", {}).get("new_points", 0),
         "behavior_clicks": snap.get("behavior", {}).get("by_type", {}).get("click", 0),
         "behavior_dead": sum(d.get("n", 0) for d in snap.get("behavior", {}).get("dead_clicks_top", [])),
