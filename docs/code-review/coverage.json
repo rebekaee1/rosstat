@@ -32903,7 +32903,7 @@
   "input_scope": "tracked",
   "ledger_sha256": "1fd36242ea2b378f3fc096d3177c5235e5c41ab23f1aa3a0245947fbb933f91c",
   "javascript_inventory_sha256": "9958ca78a00f853feee78e9b115d5ed10eb8a70e6a9061621a07b4cecd8819f5",
-  "baseline_commit": "a5c1fadc0a48092c3cc6e64ca6b751184414ac18",
+  "baseline_commit": "a5d68ba86f6e41a3cfbc542010eab70f15588a51",
   "branch": "int/2026-11-14",
   "unstaged_at_capture": []
 }

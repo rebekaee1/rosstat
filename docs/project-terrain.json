@@ -1,12 +1,10 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "a5c1fadc0a48092c3cc6e64ca6b751184414ac18",
+  "baseline_commit": "a5d68ba86f6e41a3cfbc542010eab70f15588a51",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/code-review/coverage.json",
-    "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/materials-2026-09-30.json"
+    "docs/code-review/coverage.json"
   ],
   "untracked_at_capture": [],
   "stats": {
