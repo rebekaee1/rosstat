@@ -143,11 +143,13 @@ def _title_desc(
         label_out = summary_label.lower()
 
     if en:
+        # Description (14.11.2026): показатель, страна, год и значение — в первом предложении; источник
+        # последним (английский хост держит description ≤ 160 знаков, хвост отбрасывается первым).
         if n_rows > 1:
             title = f"{name} in {country_name}, {year} — published observations"
             desc = (
-                f"{name} in {country_name}, {year}{period_note}: {n_rows} observations, "
-                f"{label_out} — {summary_bit}.{range_note} Official data — {source}."
+                f"{name} in {country_name}, {year}{period_note}: average of {n_rows} observations "
+                f"— {summary_bit}.{range_note} Source: {source}."
             )
             return title, desc
         if freq == "annual":
@@ -157,16 +159,11 @@ def _title_desc(
         else:
             title_key = "title_single"
         title = yt(title_key).format(name=name, year=year, country=country_name)
-        desc_key = "desc_single" if freq == "annual" and n_rows == 1 else "desc_multi"
-        desc = yt(desc_key).format(
-            name=name,
-            year=year,
-            country=country_name,
-            period_note=period_note,
-            summary_label=label_out,
-            summary_bit=summary_bit,
-            source=source,
-            n=n_rows,
+        # Общие шаблоны desc_single/desc_multi (их делят страницы России) не знают страны: у стран мира
+        # страна в description обязательна — своя строка.
+        desc = (
+            f"{name} in {country_name}, {year}{period_note}: {summary_bit}. "
+            f"Change on the previous year and place in the series history. Source: {source}."
         )
         return title, desc
 

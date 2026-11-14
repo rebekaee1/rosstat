@@ -126,7 +126,8 @@ def test_vs_snippet_answers_who_is_higher_in_both_languages(frequency_client):  
         desc = re.search(r'<meta name="description" content="([^"]*)"', html).group(1)
         assert ", 2025: Germany — " in desc if locale == "en" else ", 2025: Германия — " in desc
         assert ("Higher in " in desc) if locale == "en" else ("Выше у " in desc)
-        assert ("Source: " in desc) if locale == "en" else ("Источник: " in desc)
+        # Английский хост держит description ≤ 160 знаков: источник последним предложением может уйти (14.11.2026).
+        assert (len(desc) <= 160) if locale == "en" else ("Источник: " in desc)
         # Не больше одного знака после запятой у чисел от 1 до 100.
         assert not re.search(r"\d[.,]\d{2,}\s?%", desc), desc
 
