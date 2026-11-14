@@ -1075,8 +1075,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "sha256": "b5e874ee6f73a99e28937a9cf40e82440048cbe270aac7876ac757431efb4d79",
-      "lines": 968
+      "sha256": "497214514971015f014eead6ca2bb53dcca6fb8e3fb8863af61c8894c5c9768c",
+      "lines": 981
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -145505,8 +145505,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 440,
+      "end_line": 440,
       "owner": "_excluded_visitors",
       "conditions": [],
       "operation": "set",
@@ -145519,8 +145519,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 447,
-      "end_line": 447,
+      "line": 460,
+      "end_line": 460,
       "owner": "_signup_times",
       "conditions": [],
       "operation": "set",
@@ -145533,8 +145533,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 429,
-      "end_line": 434,
+      "line": 442,
+      "end_line": 447,
       "owner": "_excluded_visitors",
       "conditions": [],
       "operation": "set",
@@ -145547,8 +145547,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 494,
-      "end_line": 494,
+      "line": 507,
+      "end_line": 507,
       "owner": "collect",
       "conditions": [],
       "operation": "set",
@@ -145561,8 +145561,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 322,
+      "end_line": 322,
       "owner": "load_names",
       "conditions": [],
       "operation": "set",
@@ -145575,8 +145575,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 450,
-      "end_line": 450,
+      "line": 463,
+      "end_line": 463,
       "owner": "_signup_times",
       "conditions": [],
       "operation": "add",
@@ -145589,8 +145589,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 485,
-      "end_line": 492,
+      "line": 498,
+      "end_line": 505,
       "owner": "collect",
       "conditions": [],
       "operation": "execute",
@@ -145603,8 +145603,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 566,
-      "end_line": 566,
+      "line": 579,
+      "end_line": 579,
       "owner": "summarize.by_content",
       "conditions": [
         "r['person']"
@@ -145619,8 +145619,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 569,
-      "end_line": 569,
+      "line": 582,
+      "end_line": 582,
       "owner": "summarize.by_content",
       "conditions": [
         "walls and r['signed_up_after']"
@@ -145635,8 +145635,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 306,
-      "end_line": 307,
+      "line": 319,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145649,8 +145649,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 310,
-      "end_line": 313,
+      "line": 323,
+      "end_line": 326,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145663,8 +145663,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 316,
-      "end_line": 317,
+      "line": 329,
+      "end_line": 330,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145677,8 +145677,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 333,
+      "end_line": 333,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145691,8 +145691,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 323,
-      "end_line": 325,
+      "line": 336,
+      "end_line": 338,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145705,8 +145705,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 456,
-      "end_line": 457,
+      "line": 469,
+      "end_line": 470,
       "owner": "_signup_times",
       "conditions": [],
       "operation": "execute",
@@ -145719,8 +145719,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 471,
-      "end_line": 474,
+      "line": 484,
+      "end_line": 487,
       "owner": "_session_portraits",
       "conditions": [],
       "operation": "execute",
@@ -145733,8 +145733,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 563,
-      "end_line": 563,
+      "line": 576,
+      "end_line": 576,
       "owner": "summarize.by_content",
       "conditions": [],
       "operation": "set",
@@ -145747,8 +145747,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 563,
-      "end_line": 563,
+      "line": 576,
+      "end_line": 576,
       "owner": "summarize.by_content",
       "conditions": [],
       "operation": "set",
@@ -145761,8 +145761,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 851,
-      "end_line": 851,
+      "line": 864,
+      "end_line": 864,
       "owner": "collect_paths",
       "conditions": [],
       "operation": "rollback",
@@ -145775,8 +145775,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 338,
-      "end_line": 340,
+      "line": 351,
+      "end_line": 353,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -145791,8 +145791,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 343,
-      "end_line": 345,
+      "line": 356,
+      "end_line": 358,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -145807,8 +145807,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 429,
-      "end_line": 434,
+      "line": 442,
+      "end_line": 447,
       "owner": "_excluded_visitors",
       "conditions": [],
       "operation": "execute",
@@ -145821,8 +145821,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 837,
-      "end_line": 843,
+      "line": 850,
+      "end_line": 856,
       "owner": "collect_paths",
       "conditions": [],
       "operation": "execute",
@@ -145835,8 +145835,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 444,
-      "end_line": 446,
+      "line": 457,
+      "end_line": 459,
       "owner": "_signup_times",
       "conditions": [],
       "operation": "execute",
@@ -219141,8 +219141,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 504,
+      "end_line": 504,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -219150,8 +219150,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 504,
+      "end_line": 504,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219159,8 +219159,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -219168,8 +219168,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 326,
+      "end_line": 326,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code.in_",
@@ -219177,8 +219177,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 330,
+      "end_line": 330,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.in_",
@@ -219186,8 +219186,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 333,
+      "end_line": 333,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region.slug.in_",
@@ -219195,8 +219195,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 338,
+      "end_line": 338,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug.in_",
@@ -219204,8 +219204,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 457,
-      "end_line": 457,
+      "line": 470,
+      "end_line": 470,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User.id.in_",
@@ -219213,8 +219213,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 474,
-      "end_line": 474,
+      "line": 487,
+      "end_line": 487,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash.in_",
@@ -219222,8 +219222,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -219231,8 +219231,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator.name",
@@ -219240,8 +219240,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -219249,8 +219249,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 312,
-      "end_line": 312,
+      "line": 325,
+      "end_line": 325,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -219258,8 +219258,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 326,
+      "end_line": 326,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -219267,8 +219267,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 330,
+      "end_line": 330,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -219276,8 +219276,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 330,
+      "end_line": 330,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.name",
@@ -219285,8 +219285,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 330,
+      "end_line": 330,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -219294,8 +219294,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 333,
+      "end_line": 333,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -219303,8 +219303,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 333,
+      "end_line": 333,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region.name",
@@ -219312,8 +219312,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 333,
+      "end_line": 333,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -219321,8 +219321,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 337,
+      "end_line": 337,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -219330,8 +219330,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 337,
+      "end_line": 337,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.code",
@@ -219339,8 +219339,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 337,
+      "end_line": 337,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -219348,8 +219348,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 338,
+      "end_line": 338,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -219357,8 +219357,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 340,
-      "end_line": 340,
+      "line": 353,
+      "end_line": 353,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219368,8 +219368,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 358,
+      "end_line": 358,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219379,8 +219379,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 457,
-      "end_line": 457,
+      "line": 470,
+      "end_line": 470,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User.id",
@@ -219388,8 +219388,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 457,
-      "end_line": 457,
+      "line": 470,
+      "end_line": 470,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -219397,8 +219397,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 457,
-      "end_line": 457,
+      "line": 470,
+      "end_line": 470,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User.id",
@@ -219406,8 +219406,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 485,
+      "end_line": 485,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash",
@@ -219415,8 +219415,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 485,
+      "end_line": 485,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.channel",
@@ -219424,8 +219424,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 486,
+      "end_line": 486,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.device_type",
@@ -219433,8 +219433,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 486,
+      "end_line": 486,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.country",
@@ -219442,8 +219442,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 474,
-      "end_line": 474,
+      "line": 487,
+      "end_line": 487,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash",
@@ -219451,8 +219451,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 502,
+      "end_line": 502,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name.in_",
@@ -219460,8 +219460,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 503,
+      "end_line": 503,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -219469,8 +219469,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 503,
+      "end_line": 503,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -219478,8 +219478,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -219487,8 +219487,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -219496,8 +219496,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -219505,8 +219505,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 312,
-      "end_line": 312,
+      "line": 325,
+      "end_line": 325,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -219514,8 +219514,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 312,
-      "end_line": 312,
+      "line": 325,
+      "end_line": 325,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -219523,8 +219523,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 326,
+      "end_line": 326,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -219532,8 +219532,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 330,
+      "end_line": 330,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -219541,8 +219541,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 330,
+      "end_line": 330,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -219550,8 +219550,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 330,
+      "end_line": 330,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -219559,8 +219559,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 333,
+      "end_line": 333,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -219568,8 +219568,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 333,
+      "end_line": 333,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -219577,8 +219577,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 333,
+      "end_line": 333,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -219586,8 +219586,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 337,
+      "end_line": 337,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -219595,8 +219595,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 337,
+      "end_line": 337,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -219604,12 +219604,316 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 337,
+      "end_line": 337,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
       "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 338,
+      "end_line": 338,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 352,
+      "end_line": 352,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.country_code",
+      "expression": "SubnationalIndicator.country_code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 352,
+      "end_line": 352,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.code",
+      "expression": "SubnationalIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 352,
+      "end_line": 352,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.name_ru",
+      "expression": "SubnationalIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 353,
+      "end_line": 353,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.code",
+      "expression": "SubnationalIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 357,
+      "end_line": 357,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.country_code",
+      "expression": "SubnationalRegion.country_code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 357,
+      "end_line": 357,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.slug",
+      "expression": "SubnationalRegion.slug"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 357,
+      "end_line": 357,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.name_ru",
+      "expression": "SubnationalRegion.name_ru"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 358,
+      "end_line": 358,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.slug",
+      "expression": "SubnationalRegion.slug"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 459,
+      "end_line": 459,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.IdentityLink.visitor_id_hash.in_",
+      "expression": "IdentityLink.visitor_id_hash.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 470,
+      "end_line": 470,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User",
+      "expression": "User"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 470,
+      "end_line": 470,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User",
+      "expression": "User"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 470,
+      "end_line": 470,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User",
+      "expression": "User"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 485,
+      "end_line": 485,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 485,
+      "end_line": 485,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 486,
+      "end_line": 486,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 486,
+      "end_line": 486,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 487,
+      "end_line": 487,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 499,
+      "end_line": 499,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 499,
+      "end_line": 499,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 499,
+      "end_line": 499,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 500,
+      "end_line": 500,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash",
+      "expression": "FrontendEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 500,
+      "end_line": 500,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.user_id",
+      "expression": "FrontendEvent.user_id"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 500,
+      "end_line": 500,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.authed",
+      "expression": "FrontendEvent.authed"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 501,
+      "end_line": 501,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url",
+      "expression": "FrontendEvent.url"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 501,
+      "end_line": 501,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.params_json",
+      "expression": "FrontendEvent.params_json"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 502,
+      "end_line": 502,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 503,
+      "end_line": 503,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 503,
+      "end_line": 503,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 324,
+      "end_line": 324,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 324,
+      "end_line": 324,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_ru",
+      "expression": "WorldIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 324,
+      "end_line": 324,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.name_ru",
+      "expression": "WorldCountry.name_ru"
     },
     {
       "path": "backend/app/services/download_content.py",
@@ -219622,312 +219926,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 339,
-      "end_line": 339,
-      "owner": "load_names",
-      "conditions": [
-        "sub_pairs"
-      ],
-      "symbol": "app.models.SubnationalIndicator.country_code",
-      "expression": "SubnationalIndicator.country_code"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 339,
-      "end_line": 339,
-      "owner": "load_names",
-      "conditions": [
-        "sub_pairs"
-      ],
-      "symbol": "app.models.SubnationalIndicator.code",
-      "expression": "SubnationalIndicator.code"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 339,
-      "end_line": 339,
-      "owner": "load_names",
-      "conditions": [
-        "sub_pairs"
-      ],
-      "symbol": "app.models.SubnationalIndicator.name_ru",
-      "expression": "SubnationalIndicator.name_ru"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 340,
-      "end_line": 340,
-      "owner": "load_names",
-      "conditions": [
-        "sub_pairs"
-      ],
-      "symbol": "app.models.SubnationalIndicator.code",
-      "expression": "SubnationalIndicator.code"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 344,
-      "end_line": 344,
-      "owner": "load_names",
-      "conditions": [
-        "sub_pairs"
-      ],
-      "symbol": "app.models.SubnationalRegion.country_code",
-      "expression": "SubnationalRegion.country_code"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 344,
-      "end_line": 344,
-      "owner": "load_names",
-      "conditions": [
-        "sub_pairs"
-      ],
-      "symbol": "app.models.SubnationalRegion.slug",
-      "expression": "SubnationalRegion.slug"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 344,
-      "end_line": 344,
-      "owner": "load_names",
-      "conditions": [
-        "sub_pairs"
-      ],
-      "symbol": "app.models.SubnationalRegion.name_ru",
-      "expression": "SubnationalRegion.name_ru"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 345,
-      "end_line": 345,
-      "owner": "load_names",
-      "conditions": [
-        "sub_pairs"
-      ],
-      "symbol": "app.models.SubnationalRegion.slug",
-      "expression": "SubnationalRegion.slug"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 446,
-      "end_line": 446,
-      "owner": "_signup_times",
-      "conditions": [],
-      "symbol": "app.models.IdentityLink.visitor_id_hash.in_",
-      "expression": "IdentityLink.visitor_id_hash.in_"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 457,
-      "end_line": 457,
-      "owner": "_signup_times",
-      "conditions": [],
-      "symbol": "app.models.User",
-      "expression": "User"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 457,
-      "end_line": 457,
-      "owner": "_signup_times",
-      "conditions": [],
-      "symbol": "app.models.User",
-      "expression": "User"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 457,
-      "end_line": 457,
-      "owner": "_signup_times",
-      "conditions": [],
-      "symbol": "app.models.User",
-      "expression": "User"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 472,
-      "end_line": 472,
-      "owner": "_session_portraits",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 472,
-      "end_line": 472,
-      "owner": "_session_portraits",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 473,
-      "end_line": 473,
-      "owner": "_session_portraits",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 473,
-      "end_line": 473,
-      "owner": "_session_portraits",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 474,
-      "end_line": 474,
-      "owner": "_session_portraits",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 486,
-      "end_line": 486,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.occurred_at",
-      "expression": "FrontendEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 486,
-      "end_line": 486,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 486,
-      "end_line": 486,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.session_id_hash",
-      "expression": "FrontendEvent.session_id_hash"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 487,
-      "end_line": 487,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.visitor_id_hash",
-      "expression": "FrontendEvent.visitor_id_hash"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 487,
-      "end_line": 487,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.user_id",
-      "expression": "FrontendEvent.user_id"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 487,
-      "end_line": 487,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.authed",
-      "expression": "FrontendEvent.authed"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 488,
-      "end_line": 488,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.url",
-      "expression": "FrontendEvent.url"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 488,
-      "end_line": 488,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.params_json",
-      "expression": "FrontendEvent.params_json"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 489,
-      "end_line": 489,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 490,
-      "end_line": 490,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 490,
-      "end_line": 490,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 311,
-      "end_line": 311,
-      "owner": "load_names",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.code",
-      "expression": "WorldIndicator.code"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 311,
-      "end_line": 311,
-      "owner": "load_names",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.name_ru",
-      "expression": "WorldIndicator.name_ru"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 311,
-      "end_line": 311,
-      "owner": "load_names",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.name_ru",
-      "expression": "WorldCountry.name_ru"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 312,
-      "end_line": 312,
-      "owner": "load_names",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 312,
-      "end_line": 312,
+      "line": 325,
+      "end_line": 325,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -219935,8 +219935,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 352,
+      "end_line": 352,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219946,8 +219946,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 352,
+      "end_line": 352,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219957,8 +219957,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 352,
+      "end_line": 352,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219968,8 +219968,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 340,
-      "end_line": 340,
+      "line": 353,
+      "end_line": 353,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219979,8 +219979,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 357,
+      "end_line": 357,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219990,8 +219990,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 357,
+      "end_line": 357,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -220001,8 +220001,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 357,
+      "end_line": 357,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -220012,8 +220012,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 358,
+      "end_line": 358,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -220023,8 +220023,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 431,
-      "end_line": 431,
+      "line": 444,
+      "end_line": 444,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash.in_",
@@ -220032,17 +220032,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 432,
-      "end_line": 432,
-      "owner": "_excluded_visitors",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.day",
-      "expression": "ServerSession.day"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 432,
-      "end_line": 432,
+      "line": 445,
+      "end_line": 445,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.day",
@@ -220052,6 +220043,15 @@
       "path": "backend/app/services/download_content.py",
       "line": 445,
       "end_line": 445,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.day",
+      "expression": "ServerSession.day"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 458,
+      "end_line": 458,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink.visitor_id_hash",
@@ -220059,8 +220059,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 458,
+      "end_line": 458,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink.user_id",
@@ -220068,8 +220068,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 459,
+      "end_line": 459,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink.visitor_id_hash",
@@ -220077,8 +220077,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 486,
-      "end_line": 486,
+      "line": 499,
+      "end_line": 499,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220086,8 +220086,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 486,
-      "end_line": 486,
+      "line": 499,
+      "end_line": 499,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220095,8 +220095,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 486,
-      "end_line": 486,
+      "line": 499,
+      "end_line": 499,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220104,8 +220104,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 487,
-      "end_line": 487,
+      "line": 500,
+      "end_line": 500,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220113,8 +220113,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 487,
-      "end_line": 487,
+      "line": 500,
+      "end_line": 500,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220122,8 +220122,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 487,
-      "end_line": 487,
+      "line": 500,
+      "end_line": 500,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220131,8 +220131,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 501,
+      "end_line": 501,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220140,8 +220140,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 501,
+      "end_line": 501,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220149,8 +220149,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 502,
+      "end_line": 502,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -220158,8 +220158,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 839,
-      "end_line": 839,
+      "line": 852,
+      "end_line": 852,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash.in_",
@@ -220167,8 +220167,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 839,
-      "end_line": 839,
+      "line": 852,
+      "end_line": 852,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -220176,8 +220176,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 840,
-      "end_line": 840,
+      "line": 853,
+      "end_line": 853,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -220185,8 +220185,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 841,
-      "end_line": 841,
+      "line": 854,
+      "end_line": 854,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -220194,8 +220194,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -220203,8 +220203,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -220212,8 +220212,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -220221,8 +220221,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 430,
-      "end_line": 430,
+      "line": 443,
+      "end_line": 443,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -220230,8 +220230,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 431,
-      "end_line": 431,
+      "line": 444,
+      "end_line": 444,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -220239,8 +220239,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 432,
-      "end_line": 432,
+      "line": 445,
+      "end_line": 445,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -220248,8 +220248,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 432,
-      "end_line": 432,
+      "line": 445,
+      "end_line": 445,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -220257,8 +220257,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 446,
+      "end_line": 446,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_bot.is_",
@@ -220266,8 +220266,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 446,
+      "end_line": 446,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_internal.is_",
@@ -220275,8 +220275,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 458,
+      "end_line": 458,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -220284,8 +220284,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 458,
+      "end_line": 458,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -220293,8 +220293,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 459,
+      "end_line": 459,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -220302,8 +220302,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 838,
-      "end_line": 838,
+      "line": 851,
+      "end_line": 851,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash",
@@ -220311,8 +220311,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 838,
-      "end_line": 838,
+      "line": 851,
+      "end_line": 851,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -220320,8 +220320,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 838,
-      "end_line": 838,
+      "line": 851,
+      "end_line": 851,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -220329,8 +220329,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 839,
-      "end_line": 839,
+      "line": 852,
+      "end_line": 852,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash",
@@ -220338,8 +220338,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 839,
-      "end_line": 839,
+      "line": 852,
+      "end_line": 852,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220347,8 +220347,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 840,
-      "end_line": 840,
+      "line": 853,
+      "end_line": 853,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220356,8 +220356,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 841,
-      "end_line": 841,
+      "line": 854,
+      "end_line": 854,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220365,8 +220365,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 430,
-      "end_line": 430,
+      "line": 443,
+      "end_line": 443,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -220374,8 +220374,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 431,
-      "end_line": 431,
+      "line": 444,
+      "end_line": 444,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -220383,8 +220383,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 446,
+      "end_line": 446,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_bot",
@@ -220392,8 +220392,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 446,
+      "end_line": 446,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_internal",
@@ -220401,8 +220401,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 838,
-      "end_line": 838,
+      "line": 851,
+      "end_line": 851,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220410,8 +220410,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 838,
-      "end_line": 838,
+      "line": 851,
+      "end_line": 851,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220419,8 +220419,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 838,
-      "end_line": 838,
+      "line": 851,
+      "end_line": 851,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220428,8 +220428,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 839,
-      "end_line": 839,
+      "line": 852,
+      "end_line": 852,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220437,8 +220437,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 446,
+      "end_line": 446,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -220446,8 +220446,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 446,
+      "end_line": 446,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -297654,7 +297654,25 @@
     {
       "path": "backend/app/services/download_content.py",
       "line": 175,
-      "end_line": 202,
+      "end_line": 181,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_more",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 184,
+      "end_line": 185,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_more_tail",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 188,
+      "end_line": 215,
       "owner": "<module>",
       "conditions": [],
       "name": "_from_subject",
@@ -297662,8 +297680,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 205,
-      "end_line": 219,
+      "line": 218,
+      "end_line": 232,
       "owner": "<module>",
       "conditions": [],
       "name": "content_ref",
@@ -297671,8 +297689,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 222,
-      "end_line": 270,
+      "line": 235,
+      "end_line": 283,
       "owner": "<module>",
       "conditions": [],
       "name": "_from_path",
@@ -297680,8 +297698,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 278,
-      "end_line": 286,
+      "line": 291,
+      "end_line": 299,
       "owner": "<module>",
       "conditions": [],
       "name": "Names",
@@ -297689,8 +297707,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 289,
-      "end_line": 292,
+      "line": 302,
+      "end_line": 305,
       "owner": "<module>",
       "conditions": [],
       "name": "_chunks",
@@ -297698,8 +297716,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 295,
-      "end_line": 351,
+      "line": 308,
+      "end_line": 364,
       "owner": "<module>",
       "conditions": [],
       "name": "load_names",
@@ -297707,8 +297725,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 354,
-      "end_line": 360,
+      "line": 367,
+      "end_line": 373,
       "owner": "<module>",
       "conditions": [],
       "name": "_series_name",
@@ -297716,8 +297734,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 363,
-      "end_line": 402,
+      "line": 376,
+      "end_line": 415,
       "owner": "<module>",
       "conditions": [],
       "name": "content_title",
@@ -297725,8 +297743,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 409,
-      "end_line": 420,
+      "line": 422,
+      "end_line": 433,
       "owner": "<module>",
       "conditions": [],
       "name": "period_for_window",
@@ -297734,8 +297752,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 423,
-      "end_line": 436,
+      "line": 436,
+      "end_line": 449,
       "owner": "<module>",
       "conditions": [],
       "name": "_excluded_visitors",
@@ -297743,8 +297761,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 439,
-      "end_line": 465,
+      "line": 452,
+      "end_line": 478,
       "owner": "<module>",
       "conditions": [],
       "name": "_signup_times",
@@ -297752,8 +297770,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 468,
-      "end_line": 476,
+      "line": 481,
+      "end_line": 489,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_portraits",
@@ -297761,8 +297779,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 479,
-      "end_line": 480,
+      "line": 492,
+      "end_line": 493,
       "owner": "<module>",
       "conditions": [],
       "name": "_person",
@@ -297770,8 +297788,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 483,
-      "end_line": 541,
+      "line": 496,
+      "end_line": 554,
       "owner": "<module>",
       "conditions": [],
       "name": "collect",
@@ -297779,8 +297797,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 544,
-      "end_line": 551,
+      "line": 557,
+      "end_line": 564,
       "owner": "<module>",
       "conditions": [],
       "name": "server_summary",
@@ -297788,8 +297806,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 554,
-      "end_line": 598,
+      "line": 567,
+      "end_line": 611,
       "owner": "<module>",
       "conditions": [],
       "name": "summarize",
@@ -297797,8 +297815,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 605,
-      "end_line": 606,
+      "line": 618,
+      "end_line": 619,
       "owner": "<module>",
       "conditions": [],
       "name": "_n",
@@ -297806,8 +297824,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 609,
-      "end_line": 610,
+      "line": 622,
+      "end_line": 623,
       "owner": "<module>",
       "conditions": [],
       "name": "_pct",
@@ -297815,8 +297833,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 613,
-      "end_line": 623,
+      "line": 626,
+      "end_line": 636,
       "owner": "<module>",
       "conditions": [],
       "name": "_people",
@@ -297824,8 +297842,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 626,
-      "end_line": 628,
+      "line": 639,
+      "end_line": 641,
       "owner": "<module>",
       "conditions": [],
       "name": "_mix",
@@ -297833,8 +297851,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 634,
-      "end_line": 636,
+      "line": 647,
+      "end_line": 649,
       "owner": "<module>",
       "conditions": [],
       "name": "_short",
@@ -297842,8 +297860,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 639,
-      "end_line": 643,
+      "line": 652,
+      "end_line": 656,
       "owner": "<module>",
       "conditions": [],
       "name": "_times",
@@ -297851,8 +297869,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 646,
-      "end_line": 655,
+      "line": 659,
+      "end_line": 668,
       "owner": "<module>",
       "conditions": [],
       "name": "_server_line",
@@ -297860,8 +297878,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 658,
-      "end_line": 710,
+      "line": 671,
+      "end_line": 723,
       "owner": "<module>",
       "conditions": [],
       "name": "format_report",
@@ -297869,8 +297887,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 713,
-      "end_line": 727,
+      "line": 726,
+      "end_line": 740,
       "owner": "<module>",
       "conditions": [],
       "name": "digest_lines",
@@ -297878,8 +297896,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 730,
-      "end_line": 734,
+      "line": 743,
+      "end_line": 747,
       "owner": "<module>",
       "conditions": [],
       "name": "_delta",
@@ -297887,8 +297905,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 737,
-      "end_line": 761,
+      "line": 750,
+      "end_line": 774,
       "owner": "<module>",
       "conditions": [],
       "name": "week_digest_lines",
@@ -297896,8 +297914,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 781,
-      "end_line": 785,
+      "line": 794,
+      "end_line": 798,
       "owner": "<module>",
       "conditions": [],
       "name": "_page_label",
@@ -297905,8 +297923,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 788,
-      "end_line": 815,
+      "line": 801,
+      "end_line": 828,
       "owner": "<module>",
       "conditions": [],
       "name": "build_paths",
@@ -297914,8 +297932,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 818,
-      "end_line": 859,
+      "line": 831,
+      "end_line": 872,
       "owner": "<module>",
       "conditions": [],
       "name": "collect_paths",
@@ -297923,8 +297941,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 862,
-      "end_line": 874,
+      "line": 875,
+      "end_line": 887,
       "owner": "<module>",
       "conditions": [],
       "name": "_paths_sheet_rows",
@@ -297932,8 +297950,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 877,
-      "end_line": 879,
+      "line": 890,
+      "end_line": 892,
       "owner": "<module>",
       "conditions": [],
       "name": "_who",
@@ -297941,8 +297959,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 882,
-      "end_line": 959,
+      "line": 895,
+      "end_line": 972,
       "owner": "<module>",
       "conditions": [],
       "name": "build_xlsx",
@@ -297950,8 +297968,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 962,
-      "end_line": 967,
+      "line": 975,
+      "end_line": 980,
       "owner": "<module>",
       "conditions": [],
       "name": "_server_rows",
@@ -297968,8 +297986,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 559,
-      "end_line": 575,
+      "line": 572,
+      "end_line": 588,
       "owner": "summarize",
       "conditions": [],
       "name": "by_content",
@@ -297977,8 +297995,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 893,
-      "end_line": 901,
+      "line": 906,
+      "end_line": 914,
       "owner": "build_xlsx",
       "conditions": [],
       "name": "sheet",
@@ -343744,24 +343762,24 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 245,
-      "end_line": 245,
+      "line": 258,
+      "end_line": 258,
       "owner": "_from_path",
       "conditions": [],
       "symbol": "app.services.download_content._RESERVED_FIRST"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 512,
-      "end_line": 512,
+      "line": 525,
+      "end_line": 525,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.services.download_content.WALL_EVENTS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 350,
-      "end_line": 350,
+      "line": 363,
+      "end_line": 363,
       "owner": "load_names",
       "conditions": [
         "any((r.kind == 'world_rating' for r in refs))"
@@ -343770,32 +343788,32 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 414,
+      "end_line": 414,
       "owner": "content_title",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 506,
-      "end_line": 506,
+      "line": 519,
+      "end_line": 519,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.services.download_content.WALL_EVENTS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 869,
-      "end_line": 869,
+      "line": 882,
+      "end_line": 882,
       "owner": "_paths_sheet_rows",
       "conditions": [],
       "symbol": "app.services.download_content.CHANNEL_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 699,
-      "end_line": 699,
+      "line": 712,
+      "end_line": 712,
       "owner": "format_report",
       "conditions": [
         "d['by_section']"
@@ -343804,8 +343822,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 701,
-      "end_line": 701,
+      "line": 714,
+      "end_line": 714,
       "owner": "format_report",
       "conditions": [
         "d['by_channel']"
@@ -343814,8 +343832,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 705,
-      "end_line": 705,
+      "line": 718,
+      "end_line": 718,
       "owner": "format_report",
       "conditions": [
         "w['by_channel']"
@@ -343824,19 +343842,85 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 868,
-      "end_line": 868,
+      "line": 881,
+      "end_line": 881,
       "owner": "_paths_sheet_rows",
       "conditions": [],
       "symbol": "app.services.analytics_period.MSK_OFFSET"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 923,
-      "end_line": 923,
+      "line": 936,
+      "end_line": 936,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 942,
+      "end_line": 942,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 952,
+      "end_line": 952,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 954,
+      "end_line": 954,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.CHANNEL_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 954,
+      "end_line": 954,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.DEVICE_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 529,
+      "end_line": 529,
+      "owner": "collect",
+      "conditions": [
+        "is_wall and r.visitor_id_hash"
+      ],
+      "symbol": "app.services.download_content._SIGNUP_SLACK"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 537,
+      "end_line": 537,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.services.download_content.WALL_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 537,
+      "end_line": 537,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.services.download_content.FORMAT_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 950,
+      "end_line": 950,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.analytics_period.MSK_OFFSET"
     },
     {
       "path": "backend/app/services/download_content.py",
@@ -343848,74 +343932,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 939,
-      "end_line": 939,
-      "owner": "build_xlsx",
-      "conditions": [],
-      "symbol": "app.services.download_content.SECTION_LABELS"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 941,
-      "end_line": 941,
-      "owner": "build_xlsx",
-      "conditions": [],
-      "symbol": "app.services.download_content.CHANNEL_LABELS"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 941,
-      "end_line": 941,
-      "owner": "build_xlsx",
-      "conditions": [],
-      "symbol": "app.services.download_content.DEVICE_LABELS"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 516,
-      "end_line": 516,
-      "owner": "collect",
-      "conditions": [
-        "is_wall and r.visitor_id_hash"
-      ],
-      "symbol": "app.services.download_content._SIGNUP_SLACK"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 524,
-      "end_line": 524,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.services.download_content.WALL_LABELS"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 524,
-      "end_line": 524,
-      "owner": "collect",
-      "conditions": [],
-      "symbol": "app.services.download_content.FORMAT_LABELS"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 937,
-      "end_line": 937,
-      "owner": "build_xlsx",
-      "conditions": [],
-      "symbol": "app.services.analytics_period.MSK_OFFSET"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 916,
-      "end_line": 916,
-      "owner": "build_xlsx",
-      "conditions": [],
-      "symbol": "app.services.download_content.SECTION_LABELS"
-    },
-    {
-      "path": "backend/app/services/download_content.py",
-      "line": 917,
-      "end_line": 917,
+      "line": 930,
+      "end_line": 930,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.CHANNEL_LABELS"

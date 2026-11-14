@@ -172,14 +172,27 @@ def _split(value: Any) -> tuple[str, ...]:
     return tuple(v.strip() for v in str(value or "").split(",") if v.strip())[:8]
 
 
+def _more(value: Any) -> str:
+    """Сколько кодов не вошло в 200 знаков (фронт: `codes_more` / `regions_more`), строкой для ContentRef.place."""
+    try:
+        n = int(value)
+    except (TypeError, ValueError):
+        return ""
+    return str(n) if n > 0 else ""
+
+
+def _more_tail(ref: "ContentRef") -> str:
+    return f" и ещё {ref.place}" if ref.place.isdigit() else ""
+
+
 def _from_subject(params: dict, segs: list[str]) -> ContentRef | None:
     """Явное содержание события (`code`, `country`, `region`, `codes`, `regions`; фронт с 14.11.2026,
     `lib/downloadSubject.js`). Вид страницы — по префиксу прежнего параметра `indicator`."""
     codes, regions = _split(params.get("codes")), _split(params.get("regions"))
     if codes:
-        return ContentRef("compare", "compare", codes=codes)
+        return ContentRef("compare", "compare", codes=codes, place=_more(params.get("codes_more")))
     if regions:
-        return ContentRef("region", "regions_compare", codes=regions)
+        return ContentRef("region", "regions_compare", codes=regions, place=_more(params.get("regions_more")))
     code = str(params.get("code") or "").strip()
     if not code:
         return None
@@ -379,7 +392,7 @@ def content_title(ref: ContentRef, names: Names) -> str:
     if k == "region_rating":
         return f"{names.region_ind.get(ref.code) or ref.code} — рейтинг регионов"
     if k == "regions_compare":
-        return "Сравнение регионов: " + ", ".join(names.regions.get(s) or s for s in ref.codes)
+        return "Сравнение регионов: " + ", ".join(names.regions.get(s) or s for s in ref.codes) + _more_tail(ref)
     if k == "region_page":
         return f"{names.regions.get(ref.place) or ref.place} — страница региона"
     if k in ("world_region", "world_region_map"):
@@ -393,7 +406,7 @@ def content_title(ref: ContentRef, names: Names) -> str:
     if k == "compare":
         if not ref.codes:
             return "Сравнение"
-        return "Сравнение: " + ", ".join(_series_name(c, names) for c in ref.codes)
+        return "Сравнение: " + ", ".join(_series_name(c, names) for c in ref.codes) + _more_tail(ref)
     if k == "world_rating":
         return f"{names.concepts.get(ref.code) or ref.code} — рейтинг стран"
     if k == "research":

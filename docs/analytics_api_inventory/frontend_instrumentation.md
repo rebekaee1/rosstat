@@ -334,10 +334,10 @@ UTM проставляются в кабинете Yandex Direct. Шаблон:
 | `code` | у любого показателя (Россия, страна, регион, карта, рейтинг) | `fuel-diesel-eop-month`, `de-weo-ngdp`, `gdp-usd` |
 | `country` | страна не Россия | `germany` |
 | `region` | регион России или страны | `moskva`, `california` |
-| `codes` | сравнение рядов, до 8 через запятую | `cpi,de-gdp` |
-| `regions` | сравнение регионов, до 8 через запятую | `moskva,tatarstan` |
+| `codes` | сравнение рядов: до 8 целых кодов через запятую, не длиннее 200 знаков; не вошедшие — числом в `codes_more` | `cpi,de-gdp` |
+| `regions` | сравнение регионов, так же; остаток — `regions_more` | `moskva,tatarstan` |
 
-Прежний `indicator` (в т.ч. `region:…`, `regions-leaders:…`, `regions-map:…`, `world-region:…`, `rating:…`) не менялся — его читают Пульс и BI; GIF карты регионов теперь тоже пишет `regions-map:<код>`. Без показателя по смыслу: график платежей калькулятора (`source: calc-mortgage`), календарь, демография, PDF-отчёт (`report`). Страж — `frontend/src/lib/downloadSubject.test.js`: обходит исходники и требует `subjectParams` в каждом таком вызове. Сервер (`download_content.content_ref`) берёт эти поля первыми, адрес страницы — запасной источник для событий до 14.11. Приём режет строку до 200 знаков (`event_params`).
+Прежний `indicator` (в т.ч. `region:…`, `regions-leaders:…`, `regions-map:…`, `world-region:…`, `rating:…`) не менялся — его читают Пульс и BI; GIF карты регионов теперь тоже пишет `regions-map:<код>`. Без показателя по смыслу: график платежей калькулятора (`source: calc-mortgage`), календарь, демография, PDF-отчёт (`report`). Страж — `frontend/src/lib/downloadSubject.test.js`: обходит исходники и требует `subjectParams` в каждом таком вызове. Сервер (`download_content.content_ref`) берёт эти поля первыми, адрес страницы — запасной источник для событий до 14.11. Приём режет строку до 200 знаков (`event_params`), поэтому списки собираются целыми кодами; сервер дописывает к названию «и ещё N».
 
 ## Связь с warehouse
 

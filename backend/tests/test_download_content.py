@@ -80,6 +80,13 @@ def test_explicit_subject_params_win_over_the_address():
     r = ref("download_limit", {"indicator": "regions-compare", "regions": "moskva,tatarstan"}, None)
     assert (r.kind, r.codes) == ("regions_compare", ("moskva", "tatarstan"))
     assert dc.content_title(r, dc.Names(regions={"moskva": "Москва"})) == "Сравнение регионов: Москва, tatarstan"
+    # Список обрезан фронтом целыми кодами: остаток — «и ещё N» (14.11.2026).
+    more = ref("compare_image_blocked", {"codes": "cpi,de-gdp", "codes_more": 3}, None)
+    assert dc.content_title(more, dc.Names(ru={"cpi": "Инфляция"})) == "Сравнение: Инфляция, de-gdp и ещё 3"
+    assert more.key != ref("compare_image_blocked", {"codes": "cpi,de-gdp"}, None).key
+    regs = ref("download_limit", {"indicator": "regions-compare", "regions": "moskva", "regions_more": "2"}, None)
+    assert dc.content_title(regs, dc.Names()) == "Сравнение регионов: moskva и ещё 2"
+    assert ref("download_limit", {"codes": "a", "codes_more": "x"}, None).place == ""
     # Старые события без новых полей разбираются как раньше.
     assert ref("download_limit", {"indicator": "rating:gdp-usd"}, None).kind == "world_rating"
     assert ref("download_limit", {"indicator": "regions-compare"}, None).code == "сравнение регионов"

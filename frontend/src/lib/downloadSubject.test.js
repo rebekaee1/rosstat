@@ -4,7 +4,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { subjectParams } from './downloadSubject';
+import { MAX_LIST_CHARS, subjectParams } from './downloadSubject';
 
 describe('subjectParams', () => {
   it('keeps only filled fields and skips Russia as a country', () => {
@@ -14,7 +14,19 @@ describe('subjectParams', () => {
     expect(subjectParams({ codes: ['cpi', '', 'usd-rub'] })).toEqual({ codes: 'cpi,usd-rub' });
     expect(subjectParams({ regions: ['moskva', 'tatarstan'] })).toEqual({ regions: 'moskva,tatarstan' });
     expect(subjectParams()).toEqual({});
-    expect(subjectParams({ codes: Array.from({ length: 12 }, (_, i) => `c${i}`) }).codes.split(',')).toHaveLength(8);
+    const twelve = subjectParams({ codes: Array.from({ length: 12 }, (_, i) => `c${i}`) });
+    expect(twelve.codes.split(',')).toHaveLength(8);
+    expect(twelve.codes_more).toBe(4);
+  });
+
+  it('cuts long lists by whole codes within 200 chars and counts the rest', () => {
+    const long = Array.from({ length: 6 }, (_, i) => `de-bop_its6_tot-s-mio-eur-ext-eu27-2020-cre-${i}`); // 46 знаков
+    const out = subjectParams({ codes: long });
+    expect(out.codes.length).toBeLessThanOrEqual(MAX_LIST_CHARS);
+    expect(out.codes.split(',')).toEqual(long.slice(0, 4)); // 4×46 + 3 запятые = 187
+    expect(out.codes_more).toBe(2);
+    expect(subjectParams({ codes: ['x'.repeat(250)] })).toEqual({ codes_more: 1 });
+    expect(subjectParams({ regions: ['moskva'] })).toEqual({ regions: 'moskva' });
   });
 });
 

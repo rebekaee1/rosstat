@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2266  ·  **Строк:** 1 429 125  ·  **Токенов (≈):** 13 636 389
+**Файлов:** 2266  ·  **Строк:** 1 429 216  ·  **Токенов (≈):** 13 637 310
 
 ## По верхним папкам
 
@@ -16,11 +16,11 @@
 | `(root)` | 8 | 2 807 | 65 153 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 932 | 323 751 | 3 546 998 |
+| `backend` | 932 | 323 771 | 3 547 284 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 213 | 18 804 |
-| `docs` | 145 | 891 379 | 7 667 740 |
-| `frontend` | 1018 | 184 759 | 2 024 865 |
+| `docs` | 145 | 891 422 | 7 668 061 |
+| `frontend` | 1018 | 184 787 | 2 025 179 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
 
@@ -28,8 +28,8 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 370 091 | 3 028 950 |
-| `docs/client-mechanism-inventory.json` | 256 001 | 1 807 958 |
+| `docs/mechanism-inventory.json` | 370 109 | 3 029 059 |
+| `docs/client-mechanism-inventory.json` | 256 026 | 1 808 128 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -109,11 +109,11 @@
 | `backend/tests/test_seo_world.py` | 1 107 | 11 928 |
 | `backend/app/api/regions.py` | 1 194 | 11 765 |
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 889 | 11 753 |
+| `backend/app/services/download_content.py` | 981 | 11 724 |
 | `frontend/src/components/WorldMap.jsx` | 1 128 | 11 713 |
 | `backend/tests/test_seo_og.py` | 1 221 | 11 689 |
 | `frontend/src/pages/RegionsHome.jsx` | 1 033 | 11 615 |
 | `backend/app/data/eurostat_unit_codelist_en.json` | 760 | 11 604 |
-| `backend/app/services/download_content.py` | 968 | 11 600 |
 | `frontend/src/components/IndicatorChart.jsx` | 1 087 | 11 462 |
 | `backend/tests/test_public_bot.py` | 928 | 11 443 |
 | `docs/research/competitor-tradingeconomics-2026-10-04.md` | 445 | 11 353 |
@@ -215,7 +215,7 @@
 | `backend/app/services/freshness.py` | 648 | 6 637 |
 | `frontend/src/styles/regions-w4.css` | 423 | 6 635 |
 | `frontend/src/styles/z2-shell.css` | 530 | 6 634 |
-| `docs/analytics_api_inventory/frontend_instrumentation.md` | 360 | 6 579 |
+| `docs/analytics_api_inventory/frontend_instrumentation.md` | 360 | 6 621 |
 | `docs/adr/0027-public-telegram-bot.md` | 229 | 6 556 |
 | `docs/research/_fpsr_raw/agent06.json` | 425 | 6 550 |
 | `backend/tests/test_parser_publication.py` | 543 | 6 455 |
@@ -353,6 +353,7 @@
 | `backend/tests/test_world_national_reconcile_pg.py` | 393 | 4 391 |
 | `backend/alembic/versions/20260428_add_analytics_os_tables.py` | 327 | 4 373 |
 | `backend/app/services/world_adapters/boj_stat.py` | 492 | 4 366 |
+| `backend/tests/test_download_content.py` | 295 | 4 361 |
 | `docs/agent-recipes.md` | 220 | 4 352 |
 | `frontend/src/pages/DemographicsPage.jsx` | 421 | 4 349 |
 | `frontend/public/consent.js` | 384 | 4 348 |
@@ -374,7 +375,6 @@
 | `frontend/src/components/IndicatorSearch.w6d.component.test.jsx` | 313 | 4 209 |
 | `scripts/dev/layout-sweep.mjs` | 319 | 4 208 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 158 | 4 201 |
-| `backend/tests/test_download_content.py` | 288 | 4 199 |
 | `backend/tests/test_search_speed.py` | 286 | 4 182 |
 | `backend/app/api/admin_session_analysis.py` | 249 | 4 173 |
 | `scripts/emiss/classify_collected.py` | 264 | 4 170 |
@@ -1102,6 +1102,7 @@
 | `frontend/src/lib/recentPages.js` | 115 | 1 288 |
 | `frontend/src/lib/useMeta.component.test.jsx` | 102 | 1 287 |
 | `backend/app/services/analytics_ingestion.py` | 160 | 1 285 |
+| `frontend/src/lib/downloadSubject.test.js` | 109 | 1 284 |
 | `frontend/src/lib/countryReference.js` | 75 | 1 280 |
 | `backend/app/services/world_view_modes.py` | 170 | 1 277 |
 | `frontend/src/components/CalcMortgageSchedule.jsx` | 111 | 1 276 |
@@ -1217,7 +1218,6 @@
 | `backend/tests/test_forecast_constraints.py` | 122 | 1 115 |
 | `scripts/dev/world-map-palette-check.py` | 98 | 1 112 |
 | `frontend/src/lib/compareInsight.js` | 112 | 1 111 |
-| `frontend/src/lib/downloadSubject.test.js` | 97 | 1 110 |
 | `frontend/src/lib/behavior.test.js` | 114 | 1 109 |
 | `frontend/src/lib/publicProductClaims.test.js` | 120 | 1 109 |
 | `frontend/src/lib/useCabinet.js` | 114 | 1 108 |
@@ -1890,6 +1890,7 @@
 | `docs/agent-briefs/knowledge-sync-brief.md` | 11 | 426 |
 | `frontend/src/lib/exportHistoryHref.test.js` | 35 | 426 |
 | `frontend/src/components/regions/RegionPrices.test.jsx` | 32 | 425 |
+| `frontend/src/lib/downloadSubject.js` | 38 | 425 |
 | `frontend/src/lib/housingViewModeContent.test.js` | 48 | 425 |
 | `frontend/src/lib/popupPlacement.test.js` | 37 | 425 |
 | `backend/constraints.txt` | 86 | 424 |
@@ -2072,7 +2073,6 @@
 | `frontend/src/lib/cleanUrl.js` | 31 | 288 |
 | `frontend/src/lib/usStatesMap.test.js` | 29 | 288 |
 | `backend/tests/test_calendar_i18n.py` | 25 | 286 |
-| `frontend/src/lib/downloadSubject.js` | 22 | 285 |
 | `frontend/src/lib/todaySpecs.js` | 24 | 285 |
 | `frontend/src/components/CpiIndicatorControls.jsx` | 46 | 284 |
 | `backend/tests/test_key_rate_seo.py` | 37 | 282 |
