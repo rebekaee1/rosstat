@@ -117,3 +117,46 @@ def test_duplicate_measure_counts_groups_and_missing_labels():
     assert report["groups"] == 1 and report["series_in_groups"] == 3 and report["series_total"] == 5
     assert report["differing_axes"] == [("age", 1)]
     assert report["missing_labels"] == [("age=Y_XX", 1)]  # «итого» не требует подписи
+
+
+GVA = "Gross value added and income by main industry (NACE Rev.2 )"
+
+
+def test_title_tag_drops_words_of_base_and_keeps_h1_full():
+    rows = [
+        _row(1, "ВДС, % ВВП", {"nace_r2": "G-I", "na_item": "B1G"}, name_en=GVA, code="a"),
+        _row(1, "ВДС, % ВВП", {"nace_r2": "R-U", "na_item": "B1G"}, name_en=GVA, code="b"),
+        _row(1, "ВДС, % ВВП", {"nace_r2": "R-U", "na_item": "D1"}, name_en=GVA, code="c"),
+    ]
+    wst.bind_rows(rows)
+    full = wst.world_series_title(rows[0], "en")
+    assert full.endswith(", value added, gross)")  # H1 и текст — официальная подпись целиком
+    tag = wst.world_series_title_for_tag(rows[0], "en", 200)
+    assert "value added, gross" not in tag.split("(", 2)[-1]  # слова базового имени не повторяются
+    assert "wholesale and retail trade" in tag
+
+
+def test_cut_words_never_breaks_a_word():
+    assert wst.cut_words("arts, entertainment and recreation; other service activities", 30) == "arts, entertainment and…"
+    assert wst.cut_words("короткое", 5) == "короткое"
+    assert wst.cut_words("пользовались интернетом", 5) == "пользовались…"
+
+
+def test_title_tag_stays_unique_at_any_room():
+    """Обрезка не склеивает названия группы: минимум группы держит различие при любом месте."""
+    rows = [
+        _row(1, BUSES, {"age": "Y_LT2"}), _row(1, BUSES, {"age": "Y10-20"}), _row(1, BUSES, {"age": "Y2-5"}),
+        _row(1, BUSES, {"age": "TOTAL"}),
+    ]
+    wst.bind_rows(rows)
+    for locale in ("ru", "en"):
+        full = {wst.world_series_title(r, locale) for r in rows}
+        for room in (0, 10, 30, 50, 80):
+            tags = {wst.world_series_title_for_tag(r, locale, room) for r in rows}
+            assert len(tags) == len(full), (locale, room, tags)
+
+
+def test_title_tag_without_group_budget_keeps_full_qualifier():
+    rows = [_row(1, BUSES, {"age": "Y_LT2"}), _row(1, BUSES, {"age": "Y10-20"})]
+    wst.bind_title_axes(wst.differing_axes(rows))  # без минимумов — уточнение целиком
+    assert wst.world_series_title_for_tag(rows[0], "ru", 10) == f"{BUSES} (младше 2 лет)"

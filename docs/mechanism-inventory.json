@@ -1755,8 +1755,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "b0045ac61759204d8479da2766bec7ce176f32a01f7ee669dc6cb05cf4819552",
-      "lines": 2295
+      "sha256": "1240a6c696d26d27e6078c67719355edc689dba9d6a8e2916473ea931ddb21d4",
+      "lines": 2301
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
@@ -1780,8 +1780,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "sha256": "86f3f2b3d839ad1106d9a376f11b1555d0e26c5c4a6859855a6dd9279c29ba6f",
-      "lines": 598
+      "sha256": "58b803fba32c6972e6a6afc49d951855bc1af36379b792d507e6c1815929d835",
+      "lines": 612
     },
     {
       "path": "backend/app/services/seo_year_ui.py",
@@ -2150,8 +2150,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "sha256": "fe5701313946e5f226de76de04516da5309d961c7e42ed863917e4ce6f5f33ea",
-      "lines": 174
+      "sha256": "e5d518972b2a900cae89531cce5bef16f0129cd583828df196948b37a7dd14ea",
+      "lines": 310
     },
     {
       "path": "backend/app/services/world_source_adapter.py",
@@ -2750,8 +2750,8 @@
     },
     {
       "path": "scripts/world-title-duplicates.py",
-      "sha256": "6b59ea18c71cbf20a9517bd885c1a78d2c45e030443fa082c415f01d45e5b4ee",
-      "lines": 125
+      "sha256": "6c04b62a75c455249df374fba514e2aa80b769f08ab84d7e20b282548bc2c7b3",
+      "lines": 142
     }
   ],
   "declarative_data": [
@@ -123089,8 +123089,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 25,
-      "end_line": 25,
+      "line": 26,
+      "end_line": 26,
       "owner": "<module>",
       "conditions": [],
       "name": "_TITLE_AXES",
@@ -123107,7 +123107,24 @@
     {
       "path": "backend/app/services/world_series_title.py",
       "line": 28,
-      "end_line": 33,
+      "end_line": 28,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_TITLE_BUDGETS",
+      "symbol": "app.services.world_series_title._TITLE_BUDGETS",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "ContextVar('fe_title_budgets', default=None)",
+      "expression_truncated": false,
+      "expression_chars": 44,
+      "ast_sha256": "58215f1b18da600068ac636326a0749d311bc4ea415441f7c742e9637d1db792",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 35,
+      "end_line": 40,
       "owner": "<module>",
       "conditions": [],
       "name": "SLICE_AXES",
@@ -123123,8 +123140,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 37,
-      "end_line": 37,
+      "line": 44,
+      "end_line": 44,
       "owner": "<module>",
       "conditions": [],
       "name": "_NOT_QUALIFIERS",
@@ -123136,6 +123153,23 @@
       "expression_truncated": false,
       "expression_chars": 52,
       "ast_sha256": "253e352cc5859a810dbfcb256ad938793897055c959b48dc79065c56ec352fe7",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 217,
+      "end_line": 217,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_WORD",
+      "symbol": "app.services.world_series_title._WORD",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('[\\\\w%]+', re.UNICODE)",
+      "expression_truncated": false,
+      "expression_chars": 33,
+      "ast_sha256": "a9c29d03005b51899c73a1df98ad15d5f9a40f49ac9506d84b3c86c257c6eb24",
       "runtime_expansion": true
     },
     {
@@ -155993,8 +156027,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 227,
-      "end_line": 232,
+      "line": 233,
+      "end_line": 238,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "operation": "execute",
@@ -156007,8 +156041,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 255,
-      "end_line": 259,
+      "line": 261,
+      "end_line": 265,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "operation": "execute",
@@ -156021,8 +156055,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 241,
-      "end_line": 249,
+      "line": 247,
+      "end_line": 255,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -162423,8 +162457,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 109,
+      "end_line": 109,
       "owner": "bind_title_axes",
       "conditions": [],
       "operation": "update",
@@ -162437,8 +162471,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 80,
-      "end_line": 80,
+      "line": 110,
+      "end_line": 110,
       "owner": "bind_title_axes",
       "conditions": [],
       "operation": "set",
@@ -162451,22 +162485,68 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 93,
-      "end_line": 93,
+      "line": 113,
+      "end_line": 113,
+      "owner": "bind_title_axes",
+      "conditions": [
+        "budgets"
+      ],
+      "operation": "update",
+      "receiver": "merged",
+      "symbol": "app.services.world_series_title.merged.update",
+      "expression": "merged.update(budgets)",
+      "expression_truncated": false,
+      "expression_chars": 22,
+      "ast_sha256": "9421bee90e1b719c85eb841eeb8a8c4d7af88ffb19960cc61d0bc754f70fce65"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 114,
+      "end_line": 114,
+      "owner": "bind_title_axes",
+      "conditions": [
+        "budgets"
+      ],
+      "operation": "set",
+      "receiver": "_TITLE_BUDGETS",
+      "symbol": "app.services.world_series_title._TITLE_BUDGETS.set",
+      "expression": "_TITLE_BUDGETS.set(merged)",
+      "expression_truncated": false,
+      "expression_chars": 26,
+      "ast_sha256": "d56920d7b006a6b79403a32996f215f2e030a7dcd50fe719847a3f8f5cfeb16c"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 256,
+      "end_line": 256,
+      "owner": "_cut_points",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.world_series_title.set",
+      "expression": "set(points + [len(text)])",
+      "expression_truncated": false,
+      "expression_chars": 25,
+      "ast_sha256": "c7834547b600d461870e1e27942596b374a296979fedef8ac8e2c48f1bc67bf9"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 135,
+      "end_line": 135,
       "owner": "load_title_axes",
       "conditions": [],
       "operation": "versioned_key",
       "receiver": null,
       "symbol": "app.core.cache.versioned_key",
-      "expression": "versioned_key('world', f'title-axes:v2:{country_id}')",
+      "expression": "versioned_key('world', f'title-axes:v4:{country_id}')",
       "expression_truncated": false,
       "expression_chars": 53,
-      "ast_sha256": "230c5bf3b84cf48ef60d1183bed08dfef3dbb9ebfeedf7533b99c4f5de7623c0"
+      "ast_sha256": "47c0fb11a2d3268fbea8a6380a7378aacfc1083803607f000c4fe5fe96c3d479"
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 94,
-      "end_line": 94,
+      "line": 136,
+      "end_line": 136,
       "owner": "load_title_axes",
       "conditions": [],
       "operation": "cache_get",
@@ -162479,8 +162559,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 100,
-      "end_line": 104,
+      "line": 143,
+      "end_line": 147,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -162488,15 +162568,15 @@
       "operation": "execute",
       "receiver": "db",
       "symbol": "app.services.world_series_title.db.execute",
-      "expression": "db.execute(select(WorldIndicator.country_id, WorldIndicator.name_ru, WorldIndicator.name_en, WorldIndicator.slice_json).where(WorldIndicator.country_id == country_id, WorldIndicator.is_listed.is_(True)))",
+      "expression": "db.execute(select(WorldIndicator.country_id, WorldIndicator.code, WorldIndicator.name_ru, WorldIndicator.name_en, WorldIndicator.slice_json).where(WorldIndicator.country_id == country_id, WorldIndicator.is_listed.is_(True)))",
       "expression_truncated": false,
-      "expression_chars": 203,
-      "ast_sha256": "332708e5a3a73ae56d5acbe49fb5df9a1173ca971b725f85ca696736466a8d55"
+      "expression_chars": 224,
+      "ast_sha256": "c9d3914d6c68b0146e91328cf192c887cfba52d8fa0fe18334654af6554f3a8c"
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 108,
-      "end_line": 109,
+      "line": 152,
+      "end_line": 153,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None",
@@ -162505,10 +162585,10 @@
       "operation": "cache_set",
       "receiver": null,
       "symbol": "app.core.cache.cache_set",
-      "expression": "cache_set(key, [[lang, name, sorted(axes)] for (lang, _c, name), axes in mapping.items()], ttl=6 * 3600)",
+      "expression": "cache_set(key, [[lang, name, sorted(axes), budgets.get((lang, c, name), 0)] for (lang, c, name), axes in mapping.items()], ttl=6 * 3600)",
       "expression_truncated": false,
-      "expression_chars": 104,
-      "ast_sha256": "9f15746d07cbba9349148f890193cc4af1953beade82ffbd7948592e5b6691de"
+      "expression_chars": 136,
+      "ast_sha256": "bb5c4b48dc6c4f9910cc30d1541dbcb074a411f5584eaa2841d2183534b7e51d"
     },
     {
       "path": "backend/app/services/world_subnational_ingest.py",
@@ -172584,22 +172664,50 @@
     },
     {
       "path": "scripts/world-title-duplicates.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 108,
+      "end_line": 108,
       "owner": "main",
       "conditions": [],
       "operation": "set",
       "receiver": "_TITLE_AXES",
       "symbol": "app.services.world_series_title._TITLE_AXES.set",
-      "expression": "_TITLE_AXES.set(differing_axes(rows))",
+      "expression": "_TITLE_AXES.set(axes)",
       "expression_truncated": false,
-      "expression_chars": 37,
-      "ast_sha256": "e872bd116b5a16699de62b1c07af42d6ac2a79d6a808554194624c5640db62c2"
+      "expression_chars": 21,
+      "ast_sha256": "28e425d5a15e67c267823302a13c5b35d8b4ea89263d004a07be1976f651e03a"
     },
     {
       "path": "scripts/world-title-duplicates.py",
-      "line": 106,
-      "end_line": 106,
+      "line": 109,
+      "end_line": 109,
+      "owner": "main",
+      "conditions": [],
+      "operation": "set",
+      "receiver": "_TITLE_BUDGETS",
+      "symbol": "app.services.world_series_title._TITLE_BUDGETS.set",
+      "expression": "_TITLE_BUDGETS.set(title_budgets(rows, axes))",
+      "expression_truncated": false,
+      "expression_chars": 45,
+      "ast_sha256": "c6e6e903bd3af354c38a697a109ac4893a8f8f8e627f19428e37d70a5dcc92ad"
+    },
+    {
+      "path": "scripts/world-title-duplicates.py",
+      "line": 112,
+      "end_line": 112,
+      "owner": "main",
+      "conditions": [],
+      "operation": "set",
+      "receiver": "_locale_var",
+      "symbol": "app.services.locale._locale_var.set",
+      "expression": "_locale_var.set(locale)",
+      "expression_truncated": false,
+      "expression_chars": 23,
+      "ast_sha256": "f02f5d4415ab16585c5ae2735e0be1777d66d3b831f2bc965ebaf47dc0f6d4b0"
+    },
+    {
+      "path": "scripts/world-title-duplicates.py",
+      "line": 119,
+      "end_line": 119,
       "owner": "main",
       "conditions": [],
       "operation": "set",
@@ -247343,8 +247451,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 264,
+      "end_line": 264,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -247352,8 +247460,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 235,
+      "end_line": 235,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -247361,8 +247469,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 236,
+      "end_line": 236,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -247370,8 +247478,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 264,
+      "end_line": 264,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -247379,8 +247487,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 234,
+      "end_line": 234,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -247388,8 +247496,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 235,
+      "end_line": 235,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -247397,8 +247505,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 236,
+      "end_line": 236,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -247406,8 +247514,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 263,
+      "end_line": 263,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -247415,8 +247523,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 250,
+      "end_line": 250,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -247426,8 +247534,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 245,
-      "end_line": 245,
+      "line": 251,
+      "end_line": 251,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -247437,8 +247545,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 252,
+      "end_line": 252,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -247448,8 +247556,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 262,
+      "end_line": 262,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -247457,8 +247565,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 262,
+      "end_line": 262,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -247466,8 +247574,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 263,
+      "end_line": 263,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -247475,8 +247583,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 248,
+      "end_line": 248,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -247486,8 +247594,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 250,
+      "end_line": 250,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -247497,8 +247605,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 245,
-      "end_line": 245,
+      "line": 251,
+      "end_line": 251,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -247508,8 +247616,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 252,
+      "end_line": 252,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -247519,8 +247627,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 262,
+      "end_line": 262,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -247528,8 +247636,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 262,
+      "end_line": 262,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -247537,8 +247645,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 248,
+      "end_line": 248,
       "owner": "render_world_indicator_year_html",
       "conditions": [
         "1 <= year < 9999"
@@ -266841,8 +266949,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 146,
+      "end_line": 146,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266852,8 +266960,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 146,
+      "end_line": 146,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266863,8 +266971,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 101,
-      "end_line": 101,
+      "line": 144,
+      "end_line": 144,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266874,8 +266982,19 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 101,
-      "end_line": 101,
+      "line": 144,
+      "end_line": 144,
+      "owner": "load_title_axes",
+      "conditions": [
+        "mapping is None"
+      ],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 144,
+      "end_line": 144,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266885,8 +267004,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 101,
-      "end_line": 101,
+      "line": 145,
+      "end_line": 145,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266896,8 +267015,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 102,
-      "end_line": 102,
+      "line": 145,
+      "end_line": 145,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266907,8 +267026,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 146,
+      "end_line": 146,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266918,8 +267037,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 146,
+      "end_line": 146,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266929,8 +267048,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 101,
-      "end_line": 101,
+      "line": 144,
+      "end_line": 144,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266940,8 +267059,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 101,
-      "end_line": 101,
+      "line": 144,
+      "end_line": 144,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266951,8 +267070,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 101,
-      "end_line": 101,
+      "line": 144,
+      "end_line": 144,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266962,8 +267081,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 102,
-      "end_line": 102,
+      "line": 145,
+      "end_line": 145,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -266973,8 +267092,19 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 145,
+      "end_line": 145,
+      "owner": "load_title_axes",
+      "conditions": [
+        "mapping is None"
+      ],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 146,
+      "end_line": 146,
       "owner": "load_title_axes",
       "conditions": [
         "mapping is None"
@@ -313548,7 +313678,7 @@
     {
       "path": "backend/app/services/seo_world.py",
       "line": 1841,
-      "end_line": 2295,
+      "end_line": 2301,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_html",
@@ -313633,6 +313763,15 @@
       "owner": "render_world_indicator_html",
       "conditions": [],
       "name": "_fmt_series",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2149,
+      "end_line": 2158,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "name": "_title_with",
       "kind": "FunctionDef"
     },
     {
@@ -314007,7 +314146,7 @@
     {
       "path": "backend/app/services/seo_world_year.py",
       "line": 121,
-      "end_line": 200,
+      "end_line": 206,
       "owner": "<module>",
       "conditions": [],
       "name": "_title_desc",
@@ -314015,8 +314154,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 203,
-      "end_line": 598,
+      "line": 209,
+      "end_line": 612,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_year_html",
@@ -314024,8 +314163,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 325,
-      "end_line": 326,
+      "line": 331,
+      "end_line": 332,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "name": "_plain",
@@ -314033,8 +314172,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "line": 328,
-      "end_line": 329,
+      "line": 334,
+      "end_line": 335,
       "owner": "render_world_indicator_year_html",
       "conditions": [],
       "name": "_with_unit",
@@ -324619,8 +324758,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 40,
-      "end_line": 46,
+      "line": 47,
+      "end_line": 53,
       "owner": "<module>",
       "conditions": [],
       "name": "_slice",
@@ -324628,8 +324767,26 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 49,
-      "end_line": 73,
+      "line": 56,
+      "end_line": 69,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_base_name",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 72,
+      "end_line": 74,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_lang_of",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 77,
+      "end_line": 100,
       "owner": "<module>",
       "conditions": [],
       "name": "differing_axes",
@@ -324637,8 +324794,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 76,
-      "end_line": 80,
+      "line": 103,
+      "end_line": 114,
       "owner": "<module>",
       "conditions": [],
       "name": "bind_title_axes",
@@ -324646,8 +324803,17 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 83,
-      "end_line": 113,
+      "line": 117,
+      "end_line": 121,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "bind_rows",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 124,
+      "end_line": 157,
       "owner": "<module>",
       "conditions": [],
       "name": "load_title_axes",
@@ -324655,8 +324821,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 116,
-      "end_line": 145,
+      "line": 160,
+      "end_line": 189,
       "owner": "<module>",
       "conditions": [],
       "name": "slice_qualifiers",
@@ -324664,8 +324830,8 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 148,
-      "end_line": 152,
+      "line": 192,
+      "end_line": 196,
       "owner": "<module>",
       "conditions": [],
       "name": "with_slice",
@@ -324673,11 +324839,65 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 155,
-      "end_line": 174,
+      "line": 199,
+      "end_line": 208,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_base_and_bits",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 211,
+      "end_line": 214,
       "owner": "<module>",
       "conditions": [],
       "name": "world_series_title",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 220,
+      "end_line": 230,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "title_qualifier",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 233,
+      "end_line": 247,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "cut_words",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 250,
+      "end_line": 256,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_cut_points",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 259,
+      "end_line": 289,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "title_budgets",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 292,
+      "end_line": 310,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "world_series_title_for_tag",
       "kind": "FunctionDef"
     },
     {
@@ -331840,7 +332060,7 @@
     {
       "path": "scripts/world-title-duplicates.py",
       "line": 86,
-      "end_line": 121,
+      "end_line": 138,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -357473,51 +357693,103 @@
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 132,
-      "end_line": 132,
+      "line": 176,
+      "end_line": 176,
       "owner": "slice_qualifiers",
       "conditions": [],
       "symbol": "app.services.world_series_title.SLICE_AXES"
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 80,
-      "end_line": 80,
+      "line": 110,
+      "end_line": 110,
       "owner": "bind_title_axes",
       "conditions": [],
       "symbol": "app.services.world_series_title._TITLE_AXES"
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 142,
-      "end_line": 142,
+      "line": 114,
+      "end_line": 114,
+      "owner": "bind_title_axes",
+      "conditions": [
+        "budgets"
+      ],
+      "symbol": "app.services.world_series_title._TITLE_BUDGETS"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 186,
+      "end_line": 186,
       "owner": "slice_qualifiers",
       "conditions": [],
       "symbol": "app.services.world_series_title._NOT_QUALIFIERS"
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 159,
-      "end_line": 159,
-      "owner": "world_series_title",
+      "line": 298,
+      "end_line": 298,
+      "owner": "world_series_title_for_tag",
       "conditions": [],
       "symbol": "app.services.world_series_title._TITLE_AXES"
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 68,
-      "end_line": 68,
+      "line": 95,
+      "end_line": 95,
       "owner": "differing_axes",
       "conditions": [],
       "symbol": "app.services.world_series_title.SLICE_AXES"
     },
     {
       "path": "backend/app/services/world_series_title.py",
-      "line": 78,
-      "end_line": 78,
+      "line": 108,
+      "end_line": 108,
       "owner": "bind_title_axes",
       "conditions": [],
       "symbol": "app.services.world_series_title._TITLE_AXES"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 213,
+      "end_line": 213,
+      "owner": "world_series_title",
+      "conditions": [],
+      "symbol": "app.services.world_series_title._TITLE_AXES"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 223,
+      "end_line": 223,
+      "owner": "title_qualifier",
+      "conditions": [],
+      "symbol": "app.services.world_series_title._WORD"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 112,
+      "end_line": 112,
+      "owner": "bind_title_axes",
+      "conditions": [
+        "budgets"
+      ],
+      "symbol": "app.services.world_series_title._TITLE_BUDGETS"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 226,
+      "end_line": 226,
+      "owner": "title_qualifier",
+      "conditions": [],
+      "symbol": "app.services.world_series_title._WORD"
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "world_series_title_for_tag",
+      "conditions": [],
+      "symbol": "app.services.world_series_title._TITLE_BUDGETS"
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
@@ -361571,16 +361843,32 @@
     },
     {
       "path": "scripts/world-title-duplicates.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 108,
+      "end_line": 108,
       "owner": "main",
       "conditions": [],
       "symbol": "app.services.world_series_title._TITLE_AXES"
     },
     {
       "path": "scripts/world-title-duplicates.py",
-      "line": 112,
-      "end_line": 112,
+      "line": 109,
+      "end_line": 109,
+      "owner": "main",
+      "conditions": [],
+      "symbol": "app.services.world_series_title._TITLE_BUDGETS"
+    },
+    {
+      "path": "scripts/world-title-duplicates.py",
+      "line": 127,
+      "end_line": 127,
+      "owner": "main",
+      "conditions": [],
+      "symbol": "app.services.world_series_title._TITLE_BUDGETS"
+    },
+    {
+      "path": "scripts/world-title-duplicates.py",
+      "line": 128,
+      "end_line": 128,
       "owner": "main",
       "conditions": [],
       "symbol": "app.services.world_series_title._TITLE_AXES"

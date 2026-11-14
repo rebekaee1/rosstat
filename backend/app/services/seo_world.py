@@ -2142,18 +2142,24 @@ async def render_world_indicator_html(
     en_title = world_template("indicator_title")
     en_desc = world_template("indicator_desc")
     en_h1 = world_template("indicator_h1")
-    if en_title:
-        title = en_title.format(
-            display=display,
-            country=country_label,
-            last_value=last_value_text,
-            unit_sfx=unit_sfx,
-            last_label=last_label,
-        ).strip()
-    else:
-        title = (
-            f"{display} {in_country}: {last_value_text}{unit_sfx} ({last_label})"
-        ).strip()
+    # <title>: название с уточнением, укороченным под ~70 знаков без потери уникальности в стране
+    # (world_series_title_for_tag, 14.11.2026); H1 и текст — полная официальная подпись среза.
+    from app.services.world_series_title import TITLE_TARGET, world_series_title_for_tag
+
+    def _title_with(name: str) -> str:
+        if en_title:
+            return en_title.format(
+                display=name,
+                country=country_label,
+                last_value=last_value_text,
+                unit_sfx=unit_sfx,
+                last_label=last_label,
+            ).strip()
+        return f"{name} {in_country}: {last_value_text}{unit_sfx} ({last_label})".strip()
+
+    title = _title_with(world_series_title_for_tag(
+        indicator, "en" if en_title else "ru", TITLE_TARGET - len(_title_with("")),
+    ))
     if en_desc:
         meta_desc = en_desc.format(
             display=display,

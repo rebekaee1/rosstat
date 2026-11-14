@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2291  ·  **Строк:** 1 437 468  ·  **Токенов (≈):** 13 736 819
+**Файлов:** 2291  ·  **Строк:** 1 437 974  ·  **Токенов (≈):** 13 741 899
 
 ## По верхним папкам
 
@@ -16,19 +16,19 @@
 | `(root)` | 8 | 2 824 | 65 476 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 947 | 328 135 | 3 601 081 |
+| `backend` | 947 | 328 334 | 3 603 458 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 461 | 23 358 |
-| `docs` | 145 | 894 453 | 7 701 704 |
+| `docs` | 145 | 894 743 | 7 704 149 |
 | `frontend` | 1022 | 184 976 | 2 027 962 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 139 | 25 054 | 311 586 |
+| `scripts` | 139 | 25 071 | 311 844 |
 
 ## Все файлы (по убыванию токенов)
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 372 810 | 3 050 695 |
+| `docs/mechanism-inventory.json` | 373 098 | 3 052 810 |
 | `docs/client-mechanism-inventory.json` | 256 130 | 1 808 792 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -36,13 +36,13 @@
 | `docs/design/local-acceptance/baseline-paced/http.json` | 23 844 | 219 383 |
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
-| `docs/mechanism-inventory.md` | 3 453 | 157 911 |
+| `docs/mechanism-inventory.md` | 3 455 | 158 003 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `docs/backlog.md` | 3 639 | 129 802 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
-| `docs/data-contracts.md` | 1 271 | 66 604 |
+| `docs/data-contracts.md` | 1 271 | 66 842 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `backend/seed_data.py` | 5 732 | 59 343 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
@@ -69,8 +69,8 @@
 | `docs/search.md` | 986 | 24 225 |
 | `backend/app/services/search.py` | 1 512 | 23 157 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
+| `backend/app/services/seo_world.py` | 2 301 | 22 136 |
 | `backend/app/main.py` | 2 071 | 22 094 |
-| `backend/app/services/seo_world.py` | 2 295 | 22 022 |
 | `backend/app/services/site_urls.py` | 2 253 | 22 012 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
 | `frontend/nginx.conf` | 1 676 | 21 209 |
@@ -232,6 +232,7 @@
 | `docs/research/_fpsr_raw/agent03.json` | 503 | 6 238 |
 | `backend/app/services/minfin_budget_parser.py` | 669 | 6 225 |
 | `backend/app/api/indicators.py` | 623 | 6 186 |
+| `backend/app/services/seo_world_year.py` | 612 | 6 106 |
 | `frontend/index.html` | 240 | 6 076 |
 | `backend/tests/test_forecast_showcase.py` | 579 | 6 053 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 644 | 6 042 |
@@ -240,7 +241,6 @@
 | `frontend/src/pages/WorldRegionsHome.jsx` | 562 | 5 974 |
 | `backend/app/services/forecast_showcase.py` | 592 | 5 943 |
 | `backend/app/services/alerting.py` | 566 | 5 911 |
-| `backend/app/services/seo_world_year.py` | 598 | 5 893 |
 | `docs/adr/0012-world-multi-provider-official-first-forecasts.md` | 245 | 5 783 |
 | `frontend/src/styles/k1-scene.css` | 587 | 5 773 |
 | `frontend/src/components/WorldMap.component.test.jsx` | 481 | 5 756 |
@@ -456,6 +456,7 @@
 | `backend/app/services/pulse_context.py` | 359 | 3 567 |
 | `frontend/src/components/regions/RegionPrices.jsx` | 277 | 3 562 |
 | `scripts/regional/parse_pril_2025.py` | 359 | 3 558 |
+| `backend/app/services/world_series_title.py` | 310 | 3 556 |
 | `backend/app/services/world_adapters/bls_api.py` | 402 | 3 552 |
 | `frontend/src/pages/ForecastsPage.jsx` | 341 | 3 542 |
 | `frontend/src/components/W6eIndicator.component.test.jsx` | 320 | 3 504 |
@@ -768,7 +769,6 @@
 | `frontend/src/components/DataTable.component.test.jsx` | 147 | 2 031 |
 | `frontend/src/embed/EmbedCompare.jsx` | 155 | 2 028 |
 | `frontend/src/lib/rsyFloorAd.js` | 241 | 2 022 |
-| `backend/app/services/world_series_title.py` | 174 | 2 018 |
 | `frontend/src/components/Z4Indicator.component.test.jsx` | 179 | 2 014 |
 | `backend/scripts/world-forecast-gap-audit.py` | 149 | 2 012 |
 | `frontend/src/components/IndicatorSearch.c11d.component.test.jsx` | 141 | 2 012 |
@@ -840,6 +840,7 @@
 | `frontend/src/components/WorldConceptPicker.component.test.jsx` | 205 | 1 841 |
 | `frontend/src/components/regions/R10bCompare.jsx` | 174 | 1 841 |
 | `frontend/src/lib/searchFilters.js` | 135 | 1 841 |
+| `backend/tests/test_world_series_title.py` | 162 | 1 840 |
 | `backend/app/data/emiss_labor.py` | 146 | 1 839 |
 | `frontend/src/components/cabinet/cabinet.component.test.jsx` | 148 | 1 837 |
 | `backend/app/services/seo_world_subnational_compare.py` | 151 | 1 834 |
@@ -928,6 +929,7 @@
 | `backend/tests/test_http_error_monitor.py` | 166 | 1 623 |
 | `backend/app/services/cbr_trade_services_monthly_parser.py` | 206 | 1 621 |
 | `backend/tests/test_etl_job_ceiling.py` | 180 | 1 617 |
+| `scripts/world-title-duplicates.py` | 142 | 1 617 |
 | `backend/tests/test_path_cut_redirects.py` | 149 | 1 616 |
 | `frontend/src/components/LocaleSwitcher.jsx` | 169 | 1 615 |
 | `frontend/src/components/regions/MonthlyPricePartsHistory.jsx` | 124 | 1 611 |
@@ -1068,7 +1070,6 @@
 | `frontend/src/components/MapTimeline.jsx` | 130 | 1 364 |
 | `frontend/src/styles/r9a-home.css` | 63 | 1 361 |
 | `backend/tests/test_eurostat_structure_stale_c27.py` | 102 | 1 359 |
-| `scripts/world-title-duplicates.py` | 125 | 1 359 |
 | `frontend/src/styles/w6e-indicator.css` | 141 | 1 358 |
 | `frontend/src/styles/calc-ui.css` | 127 | 1 356 |
 | `frontend/src/components/MobileDock.jsx` | 110 | 1 355 |
@@ -1083,7 +1084,6 @@
 | `backend/app/data/seo_static/llms.txt` | 74 | 1 333 |
 | `frontend/public/llms.txt` | 74 | 1 333 |
 | `frontend/src/components/home/HomeDataScope.jsx` | 117 | 1 331 |
-| `backend/tests/test_world_series_title.py` | 119 | 1 328 |
 | `backend/app/data/eurostat_substance.py` | 157 | 1 324 |
 | `backend/app/services/cbr_keyrate_parser.py` | 152 | 1 321 |
 | `docs/adr/0025-oil-quote-source-legality.md` | 29 | 1 321 |
