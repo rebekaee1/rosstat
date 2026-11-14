@@ -1720,8 +1720,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "c47ef311c91d5723ecb7e5602da10b1bd22494a003a89ae92b1ea696dda5457b",
-      "lines": 2251
+      "sha256": "137ea9e075f9d1cdfcefdcf7488ad82ceababa1ba7a3778056bd700605647d87",
+      "lines": 2252
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
@@ -112618,8 +112618,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 206,
-      "end_line": 212,
+      "line": 207,
+      "end_line": 213,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_RU",
@@ -112677,8 +112677,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 214,
-      "end_line": 220,
+      "line": 215,
+      "end_line": 221,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_EN",
@@ -112736,8 +112736,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 223,
-      "end_line": 232,
+      "line": 224,
+      "end_line": 233,
       "owner": "<module>",
       "conditions": [],
       "name": "_KEY_CATEGORY_ORDER",
@@ -112753,8 +112753,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 365,
-      "end_line": 371,
+      "line": 366,
+      "end_line": 372,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_LINK_LABEL_RU",
@@ -112812,8 +112812,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 373,
-      "end_line": 379,
+      "line": 374,
+      "end_line": 380,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_LINK_LABEL_EN",
@@ -112871,8 +112871,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 500,
-      "end_line": 523,
+      "line": 501,
+      "end_line": 524,
       "owner": "<module>",
       "conditions": [],
       "name": "_SOURCE_BY_PROVIDER",
@@ -113066,8 +113066,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 594,
-      "end_line": 597,
+      "line": 595,
+      "end_line": 598,
       "owner": "<module>",
       "conditions": [],
       "name": "_PROVIDER_OPEN_LABEL",
@@ -152947,23 +152947,9 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 562,
-      "end_line": 562,
+      "line": 563,
+      "end_line": 563,
       "owner": "_join_sources",
-      "conditions": [],
-      "operation": "set",
-      "receiver": null,
-      "symbol": "app.services.seo_world.set",
-      "expression": "set()",
-      "expression_truncated": false,
-      "expression_chars": 5,
-      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 615,
-      "end_line": 615,
-      "owner": "_source_links_html",
       "conditions": [],
       "operation": "set",
       "receiver": null,
@@ -152989,8 +152975,22 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 567,
-      "end_line": 567,
+      "line": 617,
+      "end_line": 617,
+      "owner": "_source_links_html",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.seo_world.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 568,
+      "end_line": 568,
       "owner": "_join_sources",
       "conditions": [],
       "operation": "add",
@@ -153003,8 +153003,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 630,
-      "end_line": 630,
+      "line": 631,
+      "end_line": 631,
       "owner": "_source_links_html",
       "conditions": [],
       "operation": "add",
@@ -153017,8 +153017,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 633,
-      "end_line": 633,
+      "line": 634,
+      "end_line": 634,
       "owner": "_source_links_html",
       "conditions": [],
       "operation": "add",
@@ -153031,8 +153031,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1480,
-      "end_line": 1480,
+      "line": 1481,
+      "end_line": 1481,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "update",
@@ -153045,8 +153045,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1925,
-      "end_line": 1931,
+      "line": 1926,
+      "end_line": 1932,
       "owner": "render_world_indicator_html",
       "conditions": [
         "is_retired_world_hicp(slug, code)"
@@ -153061,8 +153061,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1940,
-      "end_line": 1940,
+      "line": 1941,
+      "end_line": 1941,
       "owner": "render_world_indicator_html",
       "conditions": [
         "freshness_note is not None"
@@ -153077,8 +153077,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 285,
+      "end_line": 285,
       "owner": "_category_siblings",
       "conditions": [],
       "operation": "versioned_key",
@@ -153091,8 +153091,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 285,
-      "end_line": 285,
+      "line": 286,
+      "end_line": 286,
       "owner": "_category_siblings",
       "conditions": [],
       "operation": "cache_get",
@@ -153105,8 +153105,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 698,
-      "end_line": 698,
+      "line": 699,
+      "end_line": 699,
       "owner": "_concept_allowed_datasets",
       "conditions": [
         "concept.provider_dataset_ids"
@@ -153121,8 +153121,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 314,
+      "end_line": 314,
       "owner": "_category_siblings",
       "conditions": [
         "not (ids)",
@@ -153138,8 +153138,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 734,
-      "end_line": 739,
+      "line": 735,
+      "end_line": 740,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "operation": "execute",
@@ -153152,8 +153152,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 756,
-      "end_line": 772,
+      "line": 757,
+      "end_line": 773,
       "owner": "_world_rating_members",
       "conditions": [],
       "operation": "execute",
@@ -153166,8 +153166,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1801,
-      "end_line": 1805,
+      "line": 1802,
+      "end_line": 1806,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -153180,8 +153180,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2006,
-      "end_line": 2019,
+      "line": 2007,
+      "end_line": 2020,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -153194,8 +153194,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 842,
-      "end_line": 850,
+      "line": 843,
+      "end_line": 851,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -153210,8 +153210,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1407,
-      "end_line": 1420,
+      "line": 1408,
+      "end_line": 1421,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "execute",
@@ -153224,8 +153224,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1536,
-      "end_line": 1544,
+      "line": 1537,
+      "end_line": 1545,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "execute",
@@ -153238,8 +153238,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 290,
-      "end_line": 294,
+      "line": 291,
+      "end_line": 295,
       "owner": "_category_siblings",
       "conditions": [
         "ids"
@@ -153254,8 +153254,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 300,
-      "end_line": 309,
+      "line": 301,
+      "end_line": 310,
       "owner": "_category_siblings",
       "conditions": [
         "not (ids)"
@@ -153270,8 +153270,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 714,
-      "end_line": 718,
+      "line": 715,
+      "end_line": 719,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -239158,8 +239158,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 266,
-      "end_line": 266,
+      "line": 267,
+      "end_line": 267,
       "owner": "_category_siblings",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239167,8 +239167,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 318,
+      "end_line": 318,
       "owner": "_pick_card_primaries",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239176,8 +239176,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 744,
-      "end_line": 744,
+      "line": 745,
+      "end_line": 745,
       "owner": "_world_rating_countries",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239185,8 +239185,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 980,
-      "end_line": 980,
+      "line": 981,
+      "end_line": 981,
       "owner": "_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239230,8 +239230,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 235,
-      "end_line": 235,
+      "line": 236,
+      "end_line": 236,
       "owner": "_display_name",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239239,8 +239239,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 266,
-      "end_line": 266,
+      "line": 267,
+      "end_line": 267,
       "owner": "_category_siblings",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239248,8 +239248,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 408,
+      "end_line": 408,
       "owner": "_frequency_links_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239257,8 +239257,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 443,
+      "end_line": 443,
       "owner": "_weo_circle12_unit_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239266,8 +239266,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 461,
+      "end_line": 461,
       "owner": "_unit_of",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239275,8 +239275,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 470,
-      "end_line": 470,
+      "line": 471,
+      "end_line": 471,
       "owner": "_unit_sfx_of",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239284,8 +239284,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 687,
-      "end_line": 687,
+      "line": 688,
+      "end_line": 688,
       "owner": "_same_public_unit",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239293,8 +239293,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1472,
-      "end_line": 1472,
+      "line": 1473,
+      "end_line": 1473,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239302,8 +239302,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 318,
+      "end_line": 318,
       "owner": "_pick_card_primaries",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239311,8 +239311,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 601,
-      "end_line": 601,
+      "line": 602,
+      "end_line": 602,
       "owner": "_source_links_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239320,8 +239320,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 666,
-      "end_line": 666,
+      "line": 667,
+      "end_line": 667,
       "owner": "_country_source_phrase",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239329,8 +239329,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 702,
-      "end_line": 702,
+      "line": 703,
+      "end_line": 703,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239338,8 +239338,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 751,
-      "end_line": 751,
+      "line": 752,
+      "end_line": 752,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239347,8 +239347,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 751,
-      "end_line": 751,
+      "line": 752,
+      "end_line": 752,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239356,8 +239356,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 855,
-      "end_line": 855,
+      "line": 856,
+      "end_line": 856,
       "owner": "build_world_rating_payload._item_country_name",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239365,8 +239365,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1449,
-      "end_line": 1449,
+      "line": 1450,
+      "end_line": 1450,
       "owner": "render_world_country_html._key_sort",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239374,8 +239374,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1459,
-      "end_line": 1459,
+      "line": 1460,
+      "end_line": 1460,
       "owner": "render_world_country_html._is_curated_card",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239392,8 +239392,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 331,
+      "end_line": 331,
       "owner": "_pick_card_primaries",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239401,8 +239401,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 346,
+      "end_line": 346,
       "owner": "_pick_card_primaries",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239410,8 +239410,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 730,
-      "end_line": 730,
+      "line": 731,
+      "end_line": 731,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -239419,8 +239419,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 774,
-      "end_line": 774,
+      "line": 775,
+      "end_line": 775,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239428,8 +239428,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 774,
-      "end_line": 774,
+      "line": 775,
+      "end_line": 775,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239437,12 +239437,102 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1507,
-      "end_line": 1507,
+      "line": 1508,
+      "end_line": 1508,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
       "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 731,
+      "end_line": 731,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 784,
+      "end_line": 784,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 784,
+      "end_line": 784,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 730,
+      "end_line": 730,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed",
+      "expression": "WorldIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 739,
+      "end_line": 739,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.sort_order",
+      "expression": "WorldCountry.sort_order"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 739,
+      "end_line": 739,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.name_ru",
+      "expression": "WorldCountry.name_ru"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 772,
+      "end_line": 772,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.sort_order",
+      "expression": "WorldCountry.sort_order"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 772,
+      "end_line": 772,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.name_ru",
+      "expression": "WorldCountry.name_ru"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 772,
+      "end_line": 772,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1805,
+      "end_line": 1805,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -239455,8 +239545,26 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 783,
-      "end_line": 783,
+      "line": 739,
+      "end_line": 739,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 739,
+      "end_line": 739,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 772,
+      "end_line": 772,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239464,8 +239572,17 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 783,
-      "end_line": 783,
+      "line": 772,
+      "end_line": 772,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 772,
+      "end_line": 772,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239473,125 +239590,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 729,
-      "end_line": 729,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.is_listed",
-      "expression": "WorldIndicator.is_listed"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 738,
-      "end_line": 738,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.sort_order",
-      "expression": "WorldCountry.sort_order"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 738,
-      "end_line": 738,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.name_ru",
-      "expression": "WorldCountry.name_ru"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 771,
-      "end_line": 771,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.sort_order",
-      "expression": "WorldCountry.sort_order"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 771,
-      "end_line": 771,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.name_ru",
-      "expression": "WorldCountry.name_ru"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 771,
-      "end_line": 771,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.code",
-      "expression": "WorldIndicator.code"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1804,
-      "end_line": 1804,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint.date",
-      "expression": "WorldDataPoint.date"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 729,
-      "end_line": 729,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 738,
-      "end_line": 738,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 738,
-      "end_line": 738,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 771,
-      "end_line": 771,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 771,
-      "end_line": 771,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 771,
-      "end_line": 771,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 849,
-      "end_line": 849,
+      "line": 850,
+      "end_line": 850,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -239601,8 +239601,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 849,
-      "end_line": 849,
+      "line": 850,
+      "end_line": 850,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -239612,8 +239612,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1804,
-      "end_line": 1804,
+      "line": 1805,
+      "end_line": 1805,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -239621,8 +239621,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 723,
-      "end_line": 723,
+      "line": 724,
+      "end_line": 724,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -239630,8 +239630,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 849,
-      "end_line": 849,
+      "line": 850,
+      "end_line": 850,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -239641,8 +239641,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 849,
-      "end_line": 849,
+      "line": 850,
+      "end_line": 850,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -239652,8 +239652,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1419,
-      "end_line": 1419,
+      "line": 1420,
+      "end_line": 1420,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.category_ru",
@@ -239661,8 +239661,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1419,
-      "end_line": 1419,
+      "line": 1420,
+      "end_line": 1420,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_ru",
@@ -239670,8 +239670,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2017,
-      "end_line": 2017,
+      "line": 2018,
+      "end_line": 2018,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -239679,8 +239679,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2017,
-      "end_line": 2017,
+      "line": 2018,
+      "end_line": 2018,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -239688,8 +239688,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 309,
+      "end_line": 309,
       "owner": "_category_siblings",
       "conditions": [
         "not (ids)"
@@ -239699,8 +239699,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 309,
+      "end_line": 309,
       "owner": "_category_siblings",
       "conditions": [
         "not (ids)"
@@ -239710,8 +239710,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 717,
-      "end_line": 717,
+      "line": 718,
+      "end_line": 718,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -239721,8 +239721,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 717,
-      "end_line": 717,
+      "line": 718,
+      "end_line": 718,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -239732,8 +239732,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 723,
-      "end_line": 723,
+      "line": 724,
+      "end_line": 724,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239741,18 +239741,9 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 737,
-      "end_line": 737,
+      "line": 738,
+      "end_line": 738,
       "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.is_active.is_",
-      "expression": "WorldCountry.is_active.is_"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 760,
-      "end_line": 760,
-      "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
       "expression": "WorldCountry.is_active.is_"
@@ -239763,13 +239754,22 @@
       "end_line": 761,
       "owner": "_world_rating_members",
       "conditions": [],
+      "symbol": "app.models.WorldCountry.is_active.is_",
+      "expression": "WorldCountry.is_active.is_"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 762,
+      "end_line": 762,
+      "owner": "_world_rating_members",
+      "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
       "expression": "WorldIndicator.is_listed.is_"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1419,
-      "end_line": 1419,
+      "line": 1420,
+      "end_line": 1420,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239777,8 +239777,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1419,
-      "end_line": 1419,
+      "line": 1420,
+      "end_line": 1420,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -239786,8 +239786,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1803,
-      "end_line": 1803,
+      "line": 1804,
+      "end_line": 1804,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -239795,8 +239795,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2017,
-      "end_line": 2017,
+      "line": 2018,
+      "end_line": 2018,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239804,8 +239804,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2017,
-      "end_line": 2017,
+      "line": 2018,
+      "end_line": 2018,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239813,8 +239813,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 294,
+      "end_line": 294,
       "owner": "_category_siblings",
       "conditions": [
         "ids"
@@ -239824,8 +239824,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 294,
+      "end_line": 294,
       "owner": "_category_siblings",
       "conditions": [
         "ids"
@@ -239835,8 +239835,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 309,
+      "end_line": 309,
       "owner": "_category_siblings",
       "conditions": [
         "not (ids)"
@@ -239846,8 +239846,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 309,
+      "end_line": 309,
       "owner": "_category_siblings",
       "conditions": [
         "not (ids)"
@@ -239857,8 +239857,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 717,
-      "end_line": 717,
+      "line": 718,
+      "end_line": 718,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -239868,8 +239868,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 717,
-      "end_line": 717,
+      "line": 718,
+      "end_line": 718,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -239879,8 +239879,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 737,
-      "end_line": 737,
+      "line": 738,
+      "end_line": 738,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -239888,21 +239888,12 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 758,
-      "end_line": 758,
+      "line": 759,
+      "end_line": 759,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
       "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 760,
-      "end_line": 760,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.is_active",
-      "expression": "WorldCountry.is_active"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -239910,13 +239901,22 @@
       "end_line": 761,
       "owner": "_world_rating_members",
       "conditions": [],
+      "symbol": "app.models.WorldCountry.is_active",
+      "expression": "WorldCountry.is_active"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 762,
+      "end_line": 762,
+      "owner": "_world_rating_members",
+      "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
       "expression": "WorldIndicator.is_listed"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 848,
-      "end_line": 848,
+      "line": 849,
+      "end_line": 849,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -239926,8 +239926,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1542,
-      "end_line": 1542,
+      "line": 1543,
+      "end_line": 1543,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -239935,8 +239935,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1542,
-      "end_line": 1542,
+      "line": 1543,
+      "end_line": 1543,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -239944,8 +239944,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1802,
-      "end_line": 1802,
+      "line": 1803,
+      "end_line": 1803,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -239953,12 +239953,186 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1802,
-      "end_line": 1802,
+      "line": 1803,
+      "end_line": 1803,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
       "expression": "WorldDataPoint.value"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1804,
+      "end_line": 1804,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 294,
+      "end_line": 294,
+      "owner": "_category_siblings",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldIndicator.id",
+      "expression": "WorldIndicator.id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 294,
+      "end_line": 294,
+      "owner": "_category_siblings",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldIndicator.is_listed",
+      "expression": "WorldIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 737,
+      "end_line": 737,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 738,
+      "end_line": 738,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 759,
+      "end_line": 759,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 759,
+      "end_line": 759,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 761,
+      "end_line": 761,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 762,
+      "end_line": 762,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 766,
+      "end_line": 766,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code.in_",
+      "expression": "WorldIndicator.code.in_"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 845,
+      "end_line": 845,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldDataPoint.indicator_id",
+      "expression": "WorldDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 846,
+      "end_line": 846,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 847,
+      "end_line": 847,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldDataPoint.value",
+      "expression": "WorldDataPoint.value"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 849,
+      "end_line": 849,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldDataPoint.indicator_id",
+      "expression": "WorldDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1412,
+      "end_line": 1412,
+      "owner": "render_world_country_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1418,
+      "end_line": 1418,
+      "owner": "render_world_country_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed.is_",
+      "expression": "WorldIndicator.is_listed.is_"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1543,
+      "end_line": 1543,
+      "owner": "render_world_country_html",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1543,
+      "end_line": 1543,
+      "owner": "render_world_country_html",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -239971,25 +240145,132 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 293,
-      "end_line": 293,
-      "owner": "_category_siblings",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldIndicator.id",
-      "expression": "WorldIndicator.id"
+      "line": 1803,
+      "end_line": 1803,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 2011,
+      "end_line": 2011,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.provider",
+      "expression": "WorldIndicator.provider"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2012,
+      "end_line": 2012,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.dataset_id",
+      "expression": "WorldIndicator.dataset_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2013,
+      "end_line": 2013,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.slice_hash",
+      "expression": "WorldIndicator.slice_hash"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2014,
+      "end_line": 2014,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed.is_",
+      "expression": "WorldIndicator.is_listed.is_"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2015,
+      "end_line": 2015,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.is_active.is_",
+      "expression": "WorldCountry.is_active.is_"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2016,
+      "end_line": 2016,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 294,
+      "end_line": 294,
       "owner": "_category_siblings",
       "conditions": [
         "ids"
       ],
-      "symbol": "app.models.WorldIndicator.is_listed",
-      "expression": "WorldIndicator.is_listed"
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 294,
+      "end_line": 294,
+      "owner": "_category_siblings",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 305,
+      "end_line": 305,
+      "owner": "_category_siblings",
+      "conditions": [
+        "not (ids)"
+      ],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 306,
+      "end_line": 306,
+      "owner": "_category_siblings",
+      "conditions": [
+        "not (ids)"
+      ],
+      "symbol": "app.models.WorldIndicator.category_ru",
+      "expression": "WorldIndicator.category_ru"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 307,
+      "end_line": 307,
+      "owner": "_category_siblings",
+      "conditions": [
+        "not (ids)"
+      ],
+      "symbol": "app.models.WorldIndicator.is_listed.is_",
+      "expression": "WorldIndicator.is_listed.is_"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 717,
+      "end_line": 717,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [
+        "materialized is not None"
+      ],
+      "symbol": "app.models.WorldCountry.is_active.is_",
+      "expression": "WorldCountry.is_active.is_"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -239997,8 +240278,8 @@
       "end_line": 736,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
-      "symbol": "app.models.WorldCountry.id",
-      "expression": "WorldCountry.id"
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -240015,298 +240296,8 @@
       "end_line": 758,
       "owner": "_world_rating_members",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator.country_id",
-      "expression": "WorldIndicator.country_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 758,
-      "end_line": 758,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.id",
-      "expression": "WorldCountry.id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 760,
-      "end_line": 760,
-      "owner": "_world_rating_members",
-      "conditions": [],
       "symbol": "app.models.WorldCountry",
       "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 761,
-      "end_line": 761,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 765,
-      "end_line": 765,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.code.in_",
-      "expression": "WorldIndicator.code.in_"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 844,
-      "end_line": 844,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint.indicator_id",
-      "expression": "WorldDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 845,
-      "end_line": 845,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint.date",
-      "expression": "WorldDataPoint.date"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 846,
-      "end_line": 846,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint.value",
-      "expression": "WorldDataPoint.value"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 848,
-      "end_line": 848,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint.indicator_id",
-      "expression": "WorldDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1411,
-      "end_line": 1411,
-      "owner": "render_world_country_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.country_id",
-      "expression": "WorldIndicator.country_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1417,
-      "end_line": 1417,
-      "owner": "render_world_country_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.is_listed.is_",
-      "expression": "WorldIndicator.is_listed.is_"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1542,
-      "end_line": 1542,
-      "owner": "render_world_country_html",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1542,
-      "end_line": 1542,
-      "owner": "render_world_country_html",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1802,
-      "end_line": 1802,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1802,
-      "end_line": 1802,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2010,
-      "end_line": 2010,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.provider",
-      "expression": "WorldIndicator.provider"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2011,
-      "end_line": 2011,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.dataset_id",
-      "expression": "WorldIndicator.dataset_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2012,
-      "end_line": 2012,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.slice_hash",
-      "expression": "WorldIndicator.slice_hash"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2013,
-      "end_line": 2013,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.is_listed.is_",
-      "expression": "WorldIndicator.is_listed.is_"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2014,
-      "end_line": 2014,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.is_active.is_",
-      "expression": "WorldCountry.is_active.is_"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2015,
-      "end_line": 2015,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.id",
-      "expression": "WorldCountry.id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 293,
-      "end_line": 293,
-      "owner": "_category_siblings",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 293,
-      "end_line": 293,
-      "owner": "_category_siblings",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_category_siblings",
-      "conditions": [
-        "not (ids)"
-      ],
-      "symbol": "app.models.WorldIndicator.country_id",
-      "expression": "WorldIndicator.country_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 305,
-      "end_line": 305,
-      "owner": "_category_siblings",
-      "conditions": [
-        "not (ids)"
-      ],
-      "symbol": "app.models.WorldIndicator.category_ru",
-      "expression": "WorldIndicator.category_ru"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 306,
-      "end_line": 306,
-      "owner": "_category_siblings",
-      "conditions": [
-        "not (ids)"
-      ],
-      "symbol": "app.models.WorldIndicator.is_listed.is_",
-      "expression": "WorldIndicator.is_listed.is_"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 716,
-      "end_line": 716,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [
-        "materialized is not None"
-      ],
-      "symbol": "app.models.WorldCountry.is_active.is_",
-      "expression": "WorldCountry.is_active.is_"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 735,
-      "end_line": 735,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 736,
-      "end_line": 736,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 757,
-      "end_line": 757,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 757,
-      "end_line": 757,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -240319,8 +240310,17 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 758,
-      "end_line": 758,
+      "line": 759,
+      "end_line": 759,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 759,
+      "end_line": 759,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240328,8 +240328,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 765,
-      "end_line": 765,
+      "line": 766,
+      "end_line": 766,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -240337,23 +240337,12 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 768,
-      "end_line": 768,
+      "line": 769,
+      "end_line": 769,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
       "expression": "WorldIndicator.dataset_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 844,
-      "end_line": 844,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -240379,8 +240368,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 848,
-      "end_line": 848,
+      "line": 847,
+      "end_line": 847,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -240390,8 +240379,19 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1411,
-      "end_line": 1411,
+      "line": 849,
+      "end_line": 849,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1412,
+      "end_line": 1412,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240399,8 +240399,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1417,
-      "end_line": 1417,
+      "line": 1418,
+      "end_line": 1418,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -240408,17 +240408,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2008,
-      "end_line": 2008,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2010,
-      "end_line": 2010,
+      "line": 2009,
+      "end_line": 2009,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240448,8 +240439,8 @@
       "end_line": 2013,
       "owner": "render_world_indicator_html",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator.is_listed",
-      "expression": "WorldIndicator.is_listed"
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -240457,8 +240448,8 @@
       "end_line": 2014,
       "owner": "render_world_indicator_html",
       "conditions": [],
-      "symbol": "app.models.WorldCountry.is_active",
-      "expression": "WorldCountry.is_active"
+      "symbol": "app.models.WorldIndicator.is_listed",
+      "expression": "WorldIndicator.is_listed"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -240466,27 +240457,25 @@
       "end_line": 2015,
       "owner": "render_world_indicator_html",
       "conditions": [],
+      "symbol": "app.models.WorldCountry.is_active",
+      "expression": "WorldCountry.is_active"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2016,
+      "end_line": 2016,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
       "symbol": "app.models.WorldCountry",
       "expression": "WorldCountry"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 291,
-      "end_line": 291,
+      "line": 292,
+      "end_line": 292,
       "owner": "_category_siblings",
       "conditions": [
         "ids"
-      ],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_category_siblings",
-      "conditions": [
-        "not (ids)"
       ],
       "symbol": "app.models.WorldIndicator",
       "expression": "WorldIndicator"
@@ -240510,19 +240499,19 @@
       "conditions": [
         "not (ids)"
       ],
-      "symbol": "app.models.WorldIndicator.is_listed",
-      "expression": "WorldIndicator.is_listed"
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 715,
-      "end_line": 715,
-      "owner": "_active_countries_with_listed_counts",
+      "line": 307,
+      "end_line": 307,
+      "owner": "_category_siblings",
       "conditions": [
-        "materialized is not None"
+        "not (ids)"
       ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
+      "symbol": "app.models.WorldIndicator.is_listed",
+      "expression": "WorldIndicator.is_listed"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -240532,17 +240521,131 @@
       "conditions": [
         "materialized is not None"
       ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 717,
+      "end_line": 717,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [
+        "materialized is not None"
+      ],
       "symbol": "app.models.WorldCountry.is_active",
       "expression": "WorldCountry.is_active"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 764,
-      "end_line": 764,
+      "line": 765,
+      "end_line": 765,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
       "expression": "WorldIndicator.dataset_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 766,
+      "end_line": 766,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 769,
+      "end_line": 769,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1418,
+      "end_line": 1418,
+      "owner": "render_world_country_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1540,
+      "end_line": 1540,
+      "owner": "render_world_country_html",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.is_active.is_",
+      "expression": "WorldCountry.is_active.is_"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1541,
+      "end_line": 1541,
+      "owner": "render_world_country_html",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.slug",
+      "expression": "WorldCountry.slug"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2009,
+      "end_line": 2009,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2009,
+      "end_line": 2009,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2014,
+      "end_line": 2014,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 2015,
+      "end_line": 2015,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 307,
+      "end_line": 307,
+      "owner": "_category_siblings",
+      "conditions": [
+        "not (ids)"
+      ],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 717,
+      "end_line": 717,
+      "owner": "_active_countries_with_listed_counts",
+      "conditions": [
+        "materialized is not None"
+      ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -240555,17 +240658,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 768,
-      "end_line": 768,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1417,
-      "end_line": 1417,
+      "line": 1409,
+      "end_line": 1409,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240573,111 +240667,17 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1539,
-      "end_line": 1539,
+      "line": 1538,
+      "end_line": 1538,
       "owner": "render_world_country_html",
       "conditions": [],
-      "symbol": "app.models.WorldCountry.is_active.is_",
-      "expression": "WorldCountry.is_active.is_"
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
     },
     {
       "path": "backend/app/services/seo_world.py",
       "line": 1540,
       "end_line": 1540,
-      "owner": "render_world_country_html",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.slug",
-      "expression": "WorldCountry.slug"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2008,
-      "end_line": 2008,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.country_id",
-      "expression": "WorldIndicator.country_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2008,
-      "end_line": 2008,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.id",
-      "expression": "WorldCountry.id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2013,
-      "end_line": 2013,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 2014,
-      "end_line": 2014,
-      "owner": "render_world_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 306,
-      "end_line": 306,
-      "owner": "_category_siblings",
-      "conditions": [
-        "not (ids)"
-      ],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 716,
-      "end_line": 716,
-      "owner": "_active_countries_with_listed_counts",
-      "conditions": [
-        "materialized is not None"
-      ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 764,
-      "end_line": 764,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1408,
-      "end_line": 1408,
-      "owner": "render_world_country_html",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1537,
-      "end_line": 1537,
-      "owner": "render_world_country_html",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1539,
-      "end_line": 1539,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -240685,8 +240685,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1540,
-      "end_line": 1540,
+      "line": 1541,
+      "end_line": 1541,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240694,8 +240694,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -240703,8 +240703,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -240712,8 +240712,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_en",
@@ -240721,8 +240721,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -240730,8 +240730,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2008,
-      "end_line": 2008,
+      "line": 2009,
+      "end_line": 2009,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240739,8 +240739,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2008,
-      "end_line": 2008,
+      "line": 2009,
+      "end_line": 2009,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240748,8 +240748,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 302,
+      "end_line": 302,
       "owner": "_category_siblings",
       "conditions": [
         "not (ids)"
@@ -240759,8 +240759,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1539,
-      "end_line": 1539,
+      "line": 1540,
+      "end_line": 1540,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240768,8 +240768,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240777,8 +240777,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240786,8 +240786,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240795,8 +240795,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -307491,7 +307491,7 @@
     {
       "path": "backend/app/services/seo_world.py",
       "line": 187,
-      "end_line": 203,
+      "end_line": 204,
       "owner": "<module>",
       "conditions": [],
       "name": "_n_indicators_phrase",
@@ -307499,8 +307499,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 235,
-      "end_line": 253,
+      "line": 236,
+      "end_line": 254,
       "owner": "<module>",
       "conditions": [],
       "name": "_display_name",
@@ -307508,8 +307508,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 256,
-      "end_line": 259,
+      "line": 257,
+      "end_line": 260,
       "owner": "<module>",
       "conditions": [],
       "name": "_category_label",
@@ -307517,8 +307517,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 266,
-      "end_line": 314,
+      "line": 267,
+      "end_line": 315,
       "owner": "<module>",
       "conditions": [],
       "name": "_category_siblings",
@@ -307526,8 +307526,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 317,
-      "end_line": 362,
+      "line": 318,
+      "end_line": 363,
       "owner": "<module>",
       "conditions": [],
       "name": "_pick_card_primaries",
@@ -307535,8 +307535,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 382,
-      "end_line": 388,
+      "line": 383,
+      "end_line": 389,
       "owner": "<module>",
       "conditions": [],
       "name": "_freq_adverb",
@@ -307544,8 +307544,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 391,
-      "end_line": 397,
+      "line": 392,
+      "end_line": 398,
       "owner": "<module>",
       "conditions": [],
       "name": "_freq_link_label",
@@ -307553,8 +307553,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 400,
-      "end_line": 403,
+      "line": 401,
+      "end_line": 404,
       "owner": "<module>",
       "conditions": [],
       "name": "_fmt",
@@ -307562,8 +307562,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 406,
-      "end_line": 439,
+      "line": 407,
+      "end_line": 440,
       "owner": "<module>",
       "conditions": [],
       "name": "_frequency_links_html",
@@ -307571,8 +307571,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 442,
-      "end_line": 457,
+      "line": 443,
+      "end_line": 458,
       "owner": "<module>",
       "conditions": [],
       "name": "_weo_circle12_unit_en",
@@ -307580,8 +307580,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 460,
-      "end_line": 467,
+      "line": 461,
+      "end_line": 468,
       "owner": "<module>",
       "conditions": [],
       "name": "_unit_of",
@@ -307589,8 +307589,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 470,
-      "end_line": 476,
+      "line": 471,
+      "end_line": 477,
       "owner": "<module>",
       "conditions": [],
       "name": "_unit_sfx_of",
@@ -307598,8 +307598,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 479,
-      "end_line": 495,
+      "line": 480,
+      "end_line": 496,
       "owner": "<module>",
       "conditions": [],
       "name": "_unit_sfx",
@@ -307607,8 +307607,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 526,
-      "end_line": 554,
+      "line": 527,
+      "end_line": 555,
       "owner": "<module>",
       "conditions": [],
       "name": "_source_label",
@@ -307616,8 +307616,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 557,
-      "end_line": 577,
+      "line": 558,
+      "end_line": 578,
       "owner": "<module>",
       "conditions": [],
       "name": "_join_sources",
@@ -307625,8 +307625,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 580,
-      "end_line": 589,
+      "line": 581,
+      "end_line": 590,
       "owner": "<module>",
       "conditions": [],
       "name": "_on_site_provider_href",
@@ -307634,8 +307634,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 600,
-      "end_line": 634,
+      "line": 601,
+      "end_line": 635,
       "owner": "<module>",
       "conditions": [],
       "name": "_source_links_html",
@@ -307643,8 +307643,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 637,
-      "end_line": 640,
+      "line": 638,
+      "end_line": 641,
       "owner": "<module>",
       "conditions": [],
       "name": "_source_links_phrase",
@@ -307652,8 +307652,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 643,
-      "end_line": 663,
+      "line": 644,
+      "end_line": 664,
       "owner": "<module>",
       "conditions": [],
       "name": "_period_sentence",
@@ -307661,8 +307661,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 666,
-      "end_line": 676,
+      "line": 667,
+      "end_line": 677,
       "owner": "<module>",
       "conditions": [],
       "name": "_country_source_phrase",
@@ -307670,8 +307670,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 679,
-      "end_line": 680,
+      "line": 680,
+      "end_line": 681,
       "owner": "<module>",
       "conditions": [],
       "name": "world_rating_default_sort",
@@ -307679,8 +307679,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 683,
-      "end_line": 684,
+      "line": 684,
+      "end_line": 685,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_money_rating",
@@ -307688,8 +307688,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 687,
-      "end_line": 691,
+      "line": 688,
+      "end_line": 692,
       "owner": "<module>",
       "conditions": [],
       "name": "_same_public_unit",
@@ -307697,8 +307697,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 694,
-      "end_line": 699,
+      "line": 695,
+      "end_line": 700,
       "owner": "<module>",
       "conditions": [],
       "name": "_concept_allowed_datasets",
@@ -307706,8 +307706,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 702,
-      "end_line": 741,
+      "line": 703,
+      "end_line": 742,
       "owner": "<module>",
       "conditions": [],
       "name": "_active_countries_with_listed_counts",
@@ -307715,8 +307715,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 744,
-      "end_line": 745,
+      "line": 745,
+      "end_line": 746,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_rating_countries",
@@ -307724,8 +307724,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 748,
-      "end_line": 797,
+      "line": 749,
+      "end_line": 798,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_rating_members",
@@ -307733,8 +307733,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 800,
-      "end_line": 809,
+      "line": 801,
+      "end_line": 810,
       "owner": "<module>",
       "conditions": [],
       "name": "_resolve_rating_year",
@@ -307742,8 +307742,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 812,
-      "end_line": 950,
+      "line": 813,
+      "end_line": 951,
       "owner": "<module>",
       "conditions": [],
       "name": "build_world_rating_payload",
@@ -307751,8 +307751,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 953,
-      "end_line": 968,
+      "line": 954,
+      "end_line": 969,
       "owner": "<module>",
       "conditions": [],
       "name": "_period_label",
@@ -307760,8 +307760,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 971,
-      "end_line": 977,
+      "line": 972,
+      "end_line": 978,
       "owner": "<module>",
       "conditions": [],
       "name": "_date_range_ru",
@@ -307769,8 +307769,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 980,
-      "end_line": 984,
+      "line": 981,
+      "end_line": 985,
       "owner": "<module>",
       "conditions": [],
       "name": "_country",
@@ -307778,8 +307778,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 987,
-      "end_line": 999,
+      "line": 988,
+      "end_line": 1000,
       "owner": "<module>",
       "conditions": [],
       "name": "listed_country_links",
@@ -307787,8 +307787,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1002,
-      "end_line": 1396,
+      "line": 1003,
+      "end_line": 1397,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_rating_html",
@@ -307796,8 +307796,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1399,
-      "end_line": 1783,
+      "line": 1400,
+      "end_line": 1784,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_country_html",
@@ -307805,8 +307805,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1786,
-      "end_line": 2251,
+      "line": 1787,
+      "end_line": 2252,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_html",
@@ -307814,8 +307814,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 855,
-      "end_line": 858,
+      "line": 856,
+      "end_line": 859,
       "owner": "build_world_rating_payload",
       "conditions": [],
       "name": "_item_country_name",
@@ -307823,8 +307823,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1040,
-      "end_line": 1045,
+      "line": 1041,
+      "end_line": 1046,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_value_text",
@@ -307832,8 +307832,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1047,
-      "end_line": 1052,
+      "line": 1048,
+      "end_line": 1053,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_date_text",
@@ -307841,8 +307841,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1054,
-      "end_line": 1064,
+      "line": 1055,
+      "end_line": 1065,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_countries_phrase",
@@ -307850,8 +307850,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1175,
-      "end_line": 1178,
+      "line": 1176,
+      "end_line": 1179,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_unit_cell",
@@ -307859,8 +307859,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1180,
-      "end_line": 1183,
+      "line": 1181,
+      "end_line": 1184,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_country_link",
@@ -307868,8 +307868,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1449,
-      "end_line": 1457,
+      "line": 1450,
+      "end_line": 1458,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_key_sort",
@@ -307877,8 +307877,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1459,
-      "end_line": 1463,
+      "line": 1460,
+      "end_line": 1464,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_is_curated_card",
@@ -307886,8 +307886,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1885,
-      "end_line": 1886,
+      "line": 1886,
+      "end_line": 1887,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "name": "_fmt_series",
@@ -347159,16 +347159,16 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 454,
+      "end_line": 454,
       "owner": "_weo_circle12_unit_en",
       "conditions": [],
       "symbol": "app.services.imf_weo_adapter.WEO_CIRCLE12_CODES"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 684,
-      "end_line": 684,
+      "line": 685,
+      "end_line": 685,
       "owner": "_is_money_rating",
       "conditions": [],
       "symbol": "app.services.seo_world._WORLD_RATING_MONEY_CONCEPTS"
@@ -347191,56 +347191,56 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 389,
+      "end_line": 389,
       "owner": "_freq_adverb",
       "conditions": [],
       "symbol": "app.services.seo_world._FREQ_RU"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 397,
-      "end_line": 397,
+      "line": 398,
+      "end_line": 398,
       "owner": "_freq_link_label",
       "conditions": [],
       "symbol": "app.services.seo_world._FREQ_LINK_LABEL_RU"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 454,
-      "end_line": 454,
+      "line": 455,
+      "end_line": 455,
       "owner": "_weo_circle12_unit_en",
       "conditions": [],
       "symbol": "app.services.imf_weo_adapter.WEO_SERIES"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 680,
-      "end_line": 680,
+      "line": 681,
+      "end_line": 681,
       "owner": "world_rating_default_sort",
       "conditions": [],
       "symbol": "app.services.seo_world._WORLD_RATING_LOW_FIRST"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 818,
-      "end_line": 818,
+      "line": 819,
+      "end_line": 819,
       "owner": "build_world_rating_payload",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1033,
-      "end_line": 1033,
+      "line": 1034,
+      "end_line": 1034,
       "owner": "render_world_rating_html",
       "conditions": [],
       "symbol": "app.services.world_rank_values.WORLD_RATING_QUERY_NAMES"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 388,
+      "end_line": 388,
       "owner": "_freq_adverb",
       "conditions": [
         "get_locale() == 'en'"
@@ -347249,8 +347249,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 397,
+      "end_line": 397,
       "owner": "_freq_link_label",
       "conditions": [
         "get_locale() == 'en'"
@@ -347259,8 +347259,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 536,
-      "end_line": 536,
+      "line": 537,
+      "end_line": 537,
       "owner": "_source_label",
       "conditions": [
         "prov"
@@ -347269,29 +347269,19 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 597,
+      "end_line": 597,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.seo_world._SOURCE_BY_PROVIDER"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 623,
-      "end_line": 623,
+      "line": 624,
+      "end_line": 624,
       "owner": "_source_links_html",
       "conditions": [],
       "symbol": "app.services.seo_world._PROVIDER_OPEN_LABEL"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 1071,
-      "end_line": 1071,
-      "owner": "render_world_rating_html",
-      "conditions": [
-        "en"
-      ],
-      "symbol": "app.services.world_rank_values.WORLD_RATING_QUERY_NAMES_EN"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -347305,40 +347295,50 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1153,
-      "end_line": 1153,
+      "line": 1073,
+      "end_line": 1073,
+      "owner": "render_world_rating_html",
+      "conditions": [
+        "en"
+      ],
+      "symbol": "app.services.world_rank_values.WORLD_RATING_QUERY_NAMES_EN"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1154,
+      "end_line": 1154,
       "owner": "render_world_rating_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1340,
-      "end_line": 1340,
+      "line": 1341,
+      "end_line": 1341,
       "owner": "render_world_rating_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1447,
-      "end_line": 1447,
+      "line": 1448,
+      "end_line": 1448,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.services.seo_world._KEY_CATEGORY_ORDER"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 595,
-      "end_line": 595,
+      "line": 596,
+      "end_line": 596,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.i18n.glossary_en.GLOSSARY_EN"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 625,
-      "end_line": 625,
+      "line": 626,
+      "end_line": 626,
       "owner": "_source_links_html",
       "conditions": [],
       "symbol": "app.services.seo_world._PROVIDER_OPEN_LABEL"

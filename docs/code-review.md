@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `292f6940a56682354e2ab86a53d6fbae5da99651`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `2626d05eeafb83be139ba002ebe7e408894aed3c`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2465 |
-| Код, шаблоны и стили | 1991 |
-| Актуальные рецензии без пропусков guard | 2465 |
-| Именованные определения Python/JS: с аннотацией / всего | 16068 / 16068 |
+| Файлы в явно определённом scope | 2466 |
+| Код, шаблоны и стили | 1992 |
+| Актуальные рецензии без пропусков guard | 2466 |
+| Именованные определения Python/JS: с аннотацией / всего | 16073 / 16073 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -898,6 +898,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_seo_og.py](../backend/tests/test_seo_og.py) | reviewed | 77/77 | актуально |
 | [backend/tests/test_seo_regional_year.py](../backend/tests/test_seo_regional_year.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_seo_source_link.py](../backend/tests/test_seo_source_link.py) | reviewed | 2/2 | актуально |
+| [backend/tests/test_seo_ssr_audit.py](../backend/tests/test_seo_ssr_audit.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_seo_text_defects.py](../backend/tests/test_seo_text_defects.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_seo_ticker.py](../backend/tests/test_seo_ticker.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_seo_weekly_report.py](../backend/tests/test_seo_weekly_report.py) | reviewed | 14/14 | актуально |
@@ -1944,7 +1945,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/pageImage.js](../frontend/src/lib/pageImage.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/pageImage.test.js](../frontend/src/lib/pageImage.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/pageMeta.generated.json](../frontend/src/lib/pageMeta.generated.json) | artifact_schema_reviewed | 0/0 | актуально |
-| [frontend/src/lib/pageMeta.js](../frontend/src/lib/pageMeta.js) | reviewed | 8/8 | актуально |
+| [frontend/src/lib/pageMeta.js](../frontend/src/lib/pageMeta.js) | reviewed | 9/9 | актуально |
 | [frontend/src/lib/pageMeta.test.js](../frontend/src/lib/pageMeta.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/periodPhrase.js](../frontend/src/lib/periodPhrase.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/periodPhrase.test.js](../frontend/src/lib/periodPhrase.test.js) | reviewed | 1/1 | актуально |

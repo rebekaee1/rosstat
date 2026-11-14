@@ -4,7 +4,7 @@
 
 - imports: 4787
 - routes: 95
-- functions: 15294
+- functions: 15295
 - hooks: 2830
 - http: 119
 - storage: 244

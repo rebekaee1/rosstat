@@ -191,8 +191,9 @@ def _n_indicators_phrase(n: int) -> str:
     n = abs(int(n))
     en_key = "n_indicators_one" if n == 1 else "n_indicators_many"
     en_tpl = world_template(en_key)
+    # Тысячи с разделителем (14.11.2026): «8,196 indicators» / «8 196 показателей», как pageMeta.worldIndicatorsPhrase.
     if en_tpl:
-        return en_tpl.format(n=n)
+        return en_tpl.format(n=f"{n:,}")
     mod10, mod100 = n % 10, n % 100
     if mod10 == 1 and mod100 != 11:
         word = "показатель"
@@ -200,7 +201,7 @@ def _n_indicators_phrase(n: int) -> str:
         word = "показателя"
     else:
         word = "показателей"
-    return f"{n} {word}"
+    return f"{n:,}".replace(",", "\u00a0") + f" {word}"
 
 
 _FREQ_RU = {
