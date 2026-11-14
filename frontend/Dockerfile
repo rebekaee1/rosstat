@@ -32,6 +32,8 @@ COPY search-crawlers.conf /etc/nginx/search-crawlers.conf
 COPY --chmod=755 40-fe-human-pass.sh /docker-entrypoint.d/40-fe-human-pass.sh
 # Флаг правила фермы с Referer Google: FE_GOOGLE_FARM_LIMIT=0 пишет переопределение в /etc/nginx/fe-pass/.
 COPY --chmod=755 41-fe-google-farm.sh /docker-entrypoint.d/41-fe-google-farm.sh
+# Привязка пропуска к сети и UA: FE_PASS_BIND=0 пишет переопределение в /etc/nginx/fe-pass/.
+COPY --chmod=755 42-fe-pass-bind.sh /docker-entrypoint.d/42-fe-pass-bind.sh
 
 # security/ is bind-mounted in prod for fail2ban; create it in-image so
 # nginx -t / local runs without the host mount still succeed. CI prepares the

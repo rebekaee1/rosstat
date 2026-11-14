@@ -124,6 +124,23 @@ def test_pass_cookie_matches_nginx_secure_link(monkeypatch):
     assert digest == want
 
 
+def test_bound_pass_signs_exactly_what_nginx_passes(monkeypatch):
+    """14.11.2026: secure_link_md5 "$fe_pass_expires$fe_pass_id $fe_pass_bind$fe_pass_secret", bind = "<сеть>|<UA> "."""
+    bind = "93.1.1|Mozilla/5.0 (X11; Linux x86_64) Chrome/157.0.0.0 Safari/537.36 "
+    resp = _client(monkeypatch, SECRET).post("/api/v1/human-pass",
+                                             headers={"X-FE-Pass-Request": "1", "X-FE-Pass-Bind": bind})
+    assert resp.status_code == 204
+    value = resp.cookies.get("fe_pass") or resp.headers["set-cookie"].split("fe_pass=", 1)[1].split(";", 1)[0]
+    digest, expires, pass_id = value.split(".")
+    raw = f"{expires}{pass_id} {bind}{SECRET}".encode()
+    assert digest == base64.urlsafe_b64encode(hashlib.md5(raw).digest()).decode().rstrip("=")
+    # Без заголовка (FE_PASS_BIND=0) - прежняя подпись; не-ASCII байты UA подписываются как их видит nginx.
+    assert human_pass.sign(1, "a" * 16, SECRET) == human_pass.sign(1, "a" * 16, SECRET, "")
+    raw_ua = "1.2.3|Mozilla \xe9 "
+    expected = hashlib.md5(b"1" + b"a" * 16 + b" " + raw_ua.encode("latin-1") + SECRET.encode()).digest()
+    assert human_pass.sign(1, "a" * 16, SECRET, raw_ua) == base64.urlsafe_b64encode(expected).decode().rstrip("=")
+
+
 # --- сводка по роботам -------------------------------------------------------------------------------------------
 
 LINES = [

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `db092065acf98abb21b22974ed2fd1431bf4c3dc`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `9bdde0769c66cbad3ddd6557fc9b3057c1b326c9`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2477 |
-| Код, шаблоны и стили | 2004 |
-| Актуальные рецензии без пропусков guard | 2477 |
-| Именованные определения Python/JS: с аннотацией / всего | 16218 / 16218 |
+| Файлы в явно определённом scope | 2478 |
+| Код, шаблоны и стили | 2005 |
+| Актуальные рецензии без пропусков guard | 2478 |
+| Именованные определения Python/JS: с аннотацией / всего | 16219 / 16219 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -660,7 +660,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_bank_credit_seo.py](../backend/tests/test_bank_credit_seo.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_bi_portrait_humans.py](../backend/tests/test_bi_portrait_humans.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_boot_splash.py](../backend/tests/test_boot_splash.py) | reviewed | 14/14 | актуально |
-| [backend/tests/test_bot_defense.py](../backend/tests/test_bot_defense.py) | reviewed | 16/16 | актуально |
+| [backend/tests/test_bot_defense.py](../backend/tests/test_bot_defense.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_bot_google_root_linux_us.py](../backend/tests/test_bot_google_root_linux_us.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_bot_portrait_cluster_and_calibration.py](../backend/tests/test_bot_portrait_cluster_and_calibration.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_branded_errors.py](../backend/tests/test_branded_errors.py) | reviewed | 6/6 | актуально |
@@ -1212,6 +1212,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/.nvmrc](../frontend/.nvmrc) | reviewed | 0/0 | актуально |
 | [frontend/40-fe-human-pass.sh](../frontend/40-fe-human-pass.sh) | reviewed | 0/0 | актуально |
 | [frontend/41-fe-google-farm.sh](../frontend/41-fe-google-farm.sh) | reviewed | 0/0 | актуально |
+| [frontend/42-fe-pass-bind.sh](../frontend/42-fe-pass-bind.sh) | reviewed | 0/0 | актуально |
 | [frontend/Dockerfile](../frontend/Dockerfile) | reviewed | 0/0 | актуально |
 | [frontend/eslint.config.js](../frontend/eslint.config.js) | reviewed | 0/0 | актуально |
 | [frontend/index.html](../frontend/index.html) | reviewed | 0/0 | актуально |

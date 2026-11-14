@@ -325,8 +325,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "sha256": "e5c92213d417c562ab2657f204df380786dd8b4559cf1d80368e75c4b83104f3",
-      "lines": 71
+      "sha256": "f0b3ffcb4d5c596829647c49a59425ccfd99db0abaf869096d97194686a3b25d",
+      "lines": 78
     },
     {
       "path": "backend/app/api/indicators.py",
@@ -10271,8 +10271,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 51,
-      "end_line": 51,
+      "line": 58,
+      "end_line": 58,
       "owner": "human_pass",
       "conditions": [],
       "handler": "app.api.human_pass.human_pass",
@@ -10286,8 +10286,8 @@
         "status_code": "204",
         "include_in_schema": "False"
       },
-      "handler_line": 52,
-      "handler_end_line": 71,
+      "handler_line": 59,
+      "handler_end_line": 78,
       "parameters": [
         {
           "name": "request",
@@ -33587,8 +33587,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 46,
-      "end_line": 46,
+      "line": 53,
+      "end_line": 53,
       "owner": "issue",
       "conditions": [],
       "name": "fe_human_pass_days",
@@ -33596,8 +33596,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 65,
-      "end_line": 65,
+      "line": 72,
+      "end_line": 72,
       "owner": "human_pass",
       "conditions": [],
       "name": "fe_human_pass_days",
@@ -284228,8 +284228,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 40,
-      "end_line": 42,
+      "line": 46,
+      "end_line": 49,
       "owner": "<module>",
       "conditions": [],
       "name": "sign",
@@ -284237,8 +284237,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 45,
-      "end_line": 48,
+      "line": 52,
+      "end_line": 55,
       "owner": "<module>",
       "conditions": [],
       "name": "issue",
@@ -284246,8 +284246,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 52,
-      "end_line": 71,
+      "line": 59,
+      "end_line": 78,
       "owner": "<module>",
       "conditions": [],
       "name": "human_pass",
@@ -366287,8 +366287,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 51,
-      "end_line": 51,
+      "line": 58,
+      "end_line": 58,
       "owner": "human_pass",
       "conditions": [],
       "handler": "app.api.human_pass.human_pass",
@@ -366302,8 +366302,8 @@
         "status_code": "204",
         "include_in_schema": "False"
       },
-      "handler_line": 52,
-      "handler_end_line": 71,
+      "handler_line": 59,
+      "handler_end_line": 78,
       "parameters": [
         {
           "name": "request",

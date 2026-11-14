@@ -1,5 +1,21 @@
 # Backlog — текущие правки в работе
 
+<a id="pass-bind-2026-11-14"></a>
+
+## 2026-11-14 — ферма с JS берёт пропуска: привязка пропуска к сети и UA
+
+**Статус.** Ветка `fix/counter-google-farm-2026-11-14` (линия после приёмки пункта 2, утверждена координатором). Код, тесты и документы локально; **не запушено, не выпущено**. Основание — [ADR-0026, дополнение 14.11 (2)](adr/0026-graceful-degradation-and-traffic-priority.md).
+
+**Замер (боевой `security.log`, только чтение).** 13.11: выдано 12 574 пропуска с 8 601 адреса; запросов с пропуском 318 с 89 адресов. 14.11 до 14:40 UTC: 8 184 и 238 с 31. Выдачу просит ферма с JS (Chrome 148–150 Windows/macOS, Linux Chrome 152/155) после 429 класса `anon` (141 тыс. отказов `anon` за 14.11). Пропуска она не использует — угроза пока не реализована.
+
+**Сделано.** Подпись включает сеть /24 (IPv6 — четыре группы) и UA; nginx передаёт привязку backend только в `= /api/v1/human-pass`, в общем `/api/` клиентский `X-FE-Pass-Bind` вырезается; флаг `FE_PASS_BIND` (0 — прежняя подпись, `frontend/42-fe-pass-bind.sh`).
+
+**Проверено.** `deploy/test-bot-classes.sh` (docker) зелёный: свой адрес и адрес из той же /24 — `human`; чужой адрес, другой UA, старая подпись — `anon`; IPv6 по четырём группам; подмена `X-FE-Pass-Bind` клиентом не проходит ни через выдачу, ни через общий `/api/`; флаг выключает и включает; человек с отпечатком фермы под шумом: 429 → пропуск с привязкой → `human`. `deploy/test-anon-cold-limit.sh` и `deploy/test-nginx-config.sh` зелёные. `test_bot_defense.py` 15 passed. `deploy/test-og-crawler-limit.sh` падает («подделка не ограничена») и на чистом `e4049dca` — не связано, отдельный разбор.
+
+**Попутно — «короткая полоса Яндекса» в BI на 390 px не дефект:** прежний снимок попал в середину анимации столбиков; снимок через 3 с — полоса во всю ширину, подписи значений на месте (`/tmp/claude-work/shots/engines-card-390-settled.png`, до — `engines-card-390.png`). Код не менялся.
+
+**Не проверено / остаток.** Как часто у людей с пропуском меняется сеть /24 (id пропуска в журнале не пишется). Ферма с JS, которая будет брать новый пропуск на каждом адресе, по-прежнему ограничена только потолком выдачи 5 в секунду на сайт.
+
 <a id="counter-google-farm-2026-11-14"></a>
 
 ## 2026-11-14 — расхождение счётчиков: «Google 1 790» у нас против ~13 в Метрике
@@ -32,7 +48,7 @@
 1. *Окно:* не в окна ETL 05:30–07:30 и 19:30–22:30 МСК, не в 04:50 (ночной пересчёт 60 дней) и 08:20 (выгрузка Метрики); удобно 10:00–19:00 или после 22:45. До запуска `cat /proc/pressure/io` (при `full avg60` > ~25 % отложить).
 2. *Состав:* влить ветку в `main`, `./scripts/check-all.sh`, `bash deploy/test-bot-classes.sh`, `bash deploy/test-anon-cold-limit.sh`. Диапазон `git log --oneline d742846c..<TARGET>`; миграций нет: `git diff --stat d742846c..<TARGET> -- backend/alembic/versions` пуст. Пересобираются backend, scheduler и frontend (nginx), у frontend новая переменная окружения.
 3. *Одобрение и выпуск:* коммит «chore(deploy): одобрить `<TARGET>`» с полным SHA в `deploy/approved-shas.txt`, push по слову владельца, затем `ssh fe-prod 'bash /opt/rosstat/scripts/deploy.sh'` (при VPN — `-o ProxyCommand='nc -b en0 %h %p'`).
-4. *Проверка nginx сразу:* `docker compose exec frontend nginx -t`; `docker compose exec frontend ls /etc/nginx/fe-pass/` — файла `google-farm.conf` нет (правило включено); через 10–15 минут `tail -n 50000 /var/log/rosstat-nginx/security.log | grep 'X11; Linux x86_64' | grep -o 'cls=[a-z]*' | sort | uniq -c` — у фермы `cls=gfarm`, у прямых посетителей без Referer доля 429 не выросла (`cls=anon`); `grep Googlebot` в том же хвосте — без `429`.
+4. *Проверка nginx сразу:* `docker compose exec frontend nginx -t`; `docker compose exec frontend ls /etc/nginx/fe-pass/` — файлов `google-farm.conf` и `pass-bind.conf` нет (правило фермы и привязка пропуска включены); через 10–15 минут `tail -n 50000 /var/log/rosstat-nginx/security.log | grep 'X11; Linux x86_64' | grep -o 'cls=[a-z]*' | sort | uniq -c` — у фермы `cls=gfarm`, у прямых посетителей без Referer доля 429 не выросла (`cls=anon`); `grep Googlebot` в том же хвосте — без `429`.
 5. *Ручной пересчёт 13–17.11* (после выпуска, в том же окне, один раз; ночной 04:50 сделает то же сам):
    `docker compose exec -T scheduler python -c "import asyncio; from app.services.job_lease import locked_job; from app.tasks.analytics_rollups import run_rollups; print(asyncio.run(locked_job(lambda: run_rollups(days=6), 'analytics_rollups_15min', ttl_seconds=1800)()))"` — `days=6` от 18.11 начинает с 12.11 МСК; при другой дате `days` = число суток от 12.11 до сегодня. Замок тот же, что у 15-минутного пересчёта: параллельно они не идут; вывод `None` — замок занят, повторить через 15 минут, словарь с числом сессий — пересчёт прошёл.
 6. *Проверка после пересчёта* (только чтение): `select day, channel, is_bot, count(*) from server_sessions where day between '2026-11-12' and '2026-11-17' group by 1,2,3 order by 1,2,3;` — ожидание 13.11: небот-поиск ≈ 444 (было 1 797), «люди» ≈ 2 150 (было 3 502); BI «Поисковые системы» за 13.11 — Google ≈ 20 против 13 в Метрике.
