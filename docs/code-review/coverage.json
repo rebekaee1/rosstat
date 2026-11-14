@@ -19,15 +19,15 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2462,
-    "code_files": 1990,
-    "current_reviews": 2462,
+    "files": 2463,
+    "code_files": 1991,
+    "current_reviews": 2463,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2192
+      "reviewed": 2193
     },
     "definitions": 16006,
     "annotated_definitions": 16006,
@@ -193,9 +193,9 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "2a066a2470a234747aee25f6a8cc027d32894f0774d8513ff6a700d7626ddb1a",
-      "bytes": 7397,
-      "lines": 185,
+      "sha256": "1c496e236998ec9624270933bbbe75b5b5409445caec16f681b3121586e53f6d",
+      "bytes": 8131,
+      "lines": 200,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12893,6 +12893,19 @@
       "missing_definitions": []
     },
     {
+      "path": "deploy/test-nginx-all.sh",
+      "sha256": "8a3462bb474381c828969c783aafc15d8cd06cdd98edcceb4aabdd9487261bf2",
+      "bytes": 2210,
+      "lines": 40,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "deploy/test-nginx-config.sh",
       "sha256": "f4c1ce43204c0ce7380a1b8dfbfa2bd5c04b0dd6ef7e9d538ef855878acf1325",
       "bytes": 1531,
@@ -14220,7 +14233,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "800cdc22994558f65e292a69aa8e51197a25dfb2d3e3a60d31a10c996a4feb12",
+      "sha256": "5a9754028a802ebd8a65f9d60af361348550cf35b8735b1d3550b6a4905fb31f",
       "bytes": 3852995,
       "lines": 136343,
       "code": false,
@@ -15039,8 +15052,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "1cefe12905173fc74affea13efb3f6ae6666e198a0ee889b2ad2d1ee69aedbdb",
-      "bytes": 138522,
+      "sha256": "5cb658682de37a885b681407cfec87b622040f9c178c9708a76949e526fc86d4",
+      "bytes": 139231,
       "lines": 670,
       "code": false,
       "status": "reviewed",
@@ -30574,9 +30587,9 @@
     },
     {
       "path": "scripts/check-all.sh",
-      "sha256": "47186b67442a2b7acabec3c12c93ebb0d8d4dc21e038bf42fdbef2806c48bb8b",
-      "bytes": 1881,
-      "lines": 47,
+      "sha256": "efaf69c141862f83637c2343480e2a1781b29fa807d5838d292e3a61b2115307",
+      "bytes": 2386,
+      "lines": 56,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -32043,9 +32056,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "4fcfbf1adbc860d632b54a87b552894c67b45a436ed3591de6c0c6bf9629bc57",
+  "ledger_sha256": "596b1cb54ba8284d8a6bdcec9f548aef76011a8cc92fb35f62ee7bf656b69fbe",
   "javascript_inventory_sha256": "ff07e771d69de4817e88614a86a53747aafd3122d75b0bbe7982760f87d81c5d",
-  "baseline_commit": "6e677ff1761edc91d5a70ce031f2278be71ff181",
+  "baseline_commit": "f9c8344ea9ceeb84165ab15b69624ee1a5167a4e",
   "branch": "fix/counter-google-farm-2026-11-14",
   "unstaged_at_capture": []
 }

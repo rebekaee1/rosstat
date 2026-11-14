@@ -7,22 +7,22 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2251  ·  **Строк:** 1 420 707  ·  **Токенов (≈):** 13 553 746
+**Файлов:** 2252  ·  **Строк:** 1 420 771  ·  **Токенов (≈):** 13 554 574
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 2 809 | 65 042 |
-| `.github` | 3 | 300 | 3 089 |
+| `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 920 | 320 655 | 3 510 169 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 19 | 1 279 | 20 406 |
-| `docs` | 144 | 886 119 | 7 622 163 |
+| `deploy` | 20 | 1 319 | 20 856 |
+| `docs` | 144 | 886 119 | 7 622 280 |
 | `frontend` | 1016 | 184 629 | 2 023 137 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 135 | 24 666 | 307 333 |
+| `scripts` | 135 | 24 675 | 307 438 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -65,7 +65,7 @@
 | `backend/app/services/public_bot.py` | 2 063 | 27 394 |
 | `backend/app/services/analytics_marts.py` | 2 404 | 26 945 |
 | `backend/app/models.py` | 1 920 | 25 109 |
-| `docs/workflow.md` | 670 | 24 277 |
+| `docs/workflow.md` | 670 | 24 394 |
 | `docs/search.md` | 986 | 24 225 |
 | `backend/app/services/search.py` | 1 512 | 23 157 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
@@ -803,6 +803,7 @@
 | `frontend/src/lib/useInflationCalc.js` | 224 | 1 895 |
 | `backend/app/api/dashboard.py` | 240 | 1 887 |
 | `frontend/src/components/home/HomeToday.jsx` | 170 | 1 886 |
+| `.github/workflows/ci.yml` | 200 | 1 882 |
 | `backend/app/services/cbr_bop_parser.py` | 221 | 1 881 |
 | `backend/tests/forecast_strategies/snapshots/prod_gdp_nominal_quarterly.json` | 546 | 1 877 |
 | `backend/tests/test_forecast_catch_up.py` | 235 | 1 875 |
@@ -873,7 +874,6 @@
 | `backend/tests/conftest.py` | 191 | 1 732 |
 | `backend/tests/test_gsc_client.py` | 163 | 1 732 |
 | `backend/tests/test_emiss_regional_parser.py` | 182 | 1 728 |
-| `.github/workflows/ci.yml` | 185 | 1 726 |
 | `scripts/regional/build_map_paths.py` | 190 | 1 724 |
 | `frontend/src/components/compare/CompareCountryStep.component.test.jsx` | 144 | 1 721 |
 | `frontend/src/components/IndicatorForecastSection.jsx` | 187 | 1 716 |
@@ -1764,6 +1764,7 @@
 | `frontend/src/lib/gridDownload.test.js` | 41 | 508 |
 | `scripts/dev/perf_ssr_shell.py` | 53 | 508 |
 | `frontend/src/lib/absoluteAuthNext.test.js` | 55 | 507 |
+| `scripts/check-all.sh` | 56 | 507 |
 | `frontend/src/main.jsx` | 55 | 506 |
 | `backend/tests/test_world_forecast_priority_config.py` | 44 | 505 |
 | `frontend/src/components/CurrencyNext.jsx` | 44 | 504 |
@@ -1846,6 +1847,7 @@
 | `frontend/src/lib/useCountUp.js` | 45 | 451 |
 | `frontend/src/lib/useDownloadAccess.js` | 47 | 451 |
 | `backend/alembic/versions/20260904_world_card_lookup_idx.py` | 48 | 450 |
+| `deploy/test-nginx-all.sh` | 40 | 450 |
 | `frontend/src/lib/worldDerive.test.js` | 52 | 449 |
 | `frontend/src/lib/dockSuppress.component.test.jsx` | 37 | 448 |
 | `backend/scripts/create-admin.py` | 50 | 447 |
@@ -1903,7 +1905,6 @@
 | `frontend/src/components/cabinet/CabinetPrefsApplier.jsx` | 40 | 403 |
 | `frontend/src/components/LegalToc.jsx` | 41 | 402 |
 | `frontend/src/styles/c13-cabinet.test.js` | 33 | 402 |
-| `scripts/check-all.sh` | 47 | 402 |
 | `backend/scripts/backfill-behavior-channels.py` | 47 | 401 |
 | `frontend/src/components/Skeleton.component.test.jsx` | 35 | 401 |
 | `frontend/src/styles/r8d-currency.css` | 24 | 400 |

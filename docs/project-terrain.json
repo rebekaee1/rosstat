@@ -1,24 +1,24 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "6e677ff1761edc91d5a70ce031f2278be71ff181",
+  "baseline_commit": "f9c8344ea9ceeb84165ab15b69624ee1a5167a4e",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
   "stats": {
-    "files": 2462,
-    "attempted": 2098,
-    "files_with_nodes": 2006,
-    "nodes": 24778,
-    "symbol_edges": 77856,
+    "files": 2463,
+    "attempted": 2099,
+    "files_with_nodes": 2007,
+    "nodes": 24780,
+    "symbol_edges": 77857,
     "file_edges": 17912,
     "projection_omissions": {
       "external_or_unresolved_file": 2982,
       "missing_endpoint": 4367,
-      "within_file": 33759
+      "within_file": 33760
     },
     "confidence": {
-      "EXTRACTED": 70686,
+      "EXTRACTED": 70687,
       "INFERRED": 7170
     }
   },
@@ -127,9 +127,9 @@
       {
         "id": "infra",
         "label": "Инфраструктура и конфигурация",
-        "files": 52,
-        "code": 17,
-        "with_nodes": 17,
+        "files": 53,
+        "code": 18,
+        "with_nodes": 18,
         "file_node_only": 2,
         "semantic_evidence": 1
       },
@@ -725,8 +725,8 @@
       "scripts/deploy.sh",
       "scripts/pg-backup.sh"
     ],
-    "code_files": 1990,
-    "code_with_nodes": 1895,
+    "code_files": 1991,
+    "code_with_nodes": 1896,
     "code_file_node_only": 131
   },
   "input_scope": "tracked",
@@ -743,7 +743,7 @@
     {"path": ".cursor/rules/working-agreement.mdc", "kind": "document", "bytes": 13013, "lines": 63, "sha256": "70153297639346d10d2d8cafaf08d70e6a9f567400f41b0b347154a1c0507f89", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": ".cursor/rules/world-ui-parity.mdc", "kind": "document", "bytes": 2084, "lines": 32, "sha256": "749b68755d24418863ffc2fd1218ce7e13dd6e4ff0b6dd990a1266dcc9829c37", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": ".env.example", "kind": "asset/data/config", "bytes": 26768, "lines": 370, "sha256": "d97ee8c63b74585e3a1be7f7c285737d397378a8723e633c761c742b2032e0c4", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
-    {"path": ".github/workflows/ci.yml", "kind": "asset/data/config", "bytes": 7397, "lines": 185, "sha256": "2a066a2470a234747aee25f6a8cc027d32894f0774d8513ff6a700d7626ddb1a", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
+    {"path": ".github/workflows/ci.yml", "kind": "asset/data/config", "bytes": 8131, "lines": 200, "sha256": "1c496e236998ec9624270933bbbe75b5b5409445caec16f681b3121586e53f6d", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": ".github/workflows/zone1-claim-comment.yml", "kind": "asset/data/config", "bytes": 3061, "lines": 58, "sha256": "31163524707cced683a2fcb09c716a4bc2ae2a02f7f28d12bab9046dcf7c11d1", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": ".github/workflows/zone2-claim-comment.yml", "kind": "asset/data/config", "bytes": 2399, "lines": 57, "sha256": "e8728ced273554481a2c28b39148c6dcb697f4d5b30a508be0c2f6bde8af2faa", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": ".gitignore", "kind": "asset/data/config", "bytes": 2490, "lines": 119, "sha256": "fb92ec8a20d4128f1305f62f1c2fbbb5fa1ce1e5fe1860cb0eae7891ef021d08", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
@@ -1720,6 +1720,7 @@
     {"path": "deploy/test-anon-cold-limit.sh", "kind": "code", "bytes": 7563, "lines": 88, "sha256": "8973a8fc405c5e1271a7369e0f00ef0b000f5a0db7be58e1709e7e261baac17f", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/test-bot-classes.sh", "kind": "code", "bytes": 21209, "lines": 228, "sha256": "15f73339d8f5644f6a7cc15477f7c7b40b53784504407791f90a6ec0e5c2874a", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/test-fail2ban-filters.py", "kind": "code", "bytes": 6879, "lines": 172, "sha256": "48cfb46e1d8426e5b52f6543e4675cec8ac325e6dbd75d3544d8e23a6b77cabb", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
+    {"path": "deploy/test-nginx-all.sh", "kind": "code", "bytes": 2210, "lines": 40, "sha256": "8a3462bb474381c828969c783aafc15d8cd06cdd98edcceb4aabdd9487261bf2", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/test-nginx-config.sh", "kind": "code", "bytes": 1531, "lines": 30, "sha256": "f4c1ce43204c0ce7380a1b8dfbfa2bd5c04b0dd6ef7e9d538ef855878acf1325", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/test-og-crawler-limit.sh", "kind": "code", "bytes": 3738, "lines": 46, "sha256": "8543b7c7454a1464f14b733e42d9ad566f2a06bf9bed7e1298865dcafdd07256", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/tor-http-bridge/README.md", "kind": "document", "bytes": 5046, "lines": 50, "sha256": "1d1c4a4ae55810486de3b279f644af740d7045a752a96d7a253332205d8f39ab", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1822,7 +1823,7 @@
     {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 71833, "lines": 329, "sha256": "147b05690e456e8661c25d38bcf253fabae3b72f9e7855d50e1e3b53cffb908d", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3852995, "lines": 136343, "sha256": "800cdc22994558f65e292a69aa8e51197a25dfb2d3e3a60d31a10c996a4feb12", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3852995, "lines": 136343, "sha256": "5a9754028a802ebd8a65f9d60af361348550cf35b8735b1d3550b6a4905fb31f", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 160576, "lines": 1824, "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 78988, "lines": 201, "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1885,7 +1886,7 @@
     {"path": "docs/verification/us-eu-source-audit-2026-09-24.md", "kind": "document", "bytes": 10885, "lines": 114, "sha256": "e0548dcf2b4155648fe21c8924efa9752b0b174fb96160f89843db1a924c66d2", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/verification/us-indicators-2026-09-24.md", "kind": "document", "bytes": 12298, "lines": 41, "sha256": "42181870d6129e325dcb37782a9ccd24f6a57186ec5e945564e80bcc5c366ebf", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/verification/world-forecast-v2-2026-09-24.md", "kind": "document", "bytes": 5952, "lines": 64, "sha256": "54e63895a8275fe3aafdd3dd6c5b673ebe1280a738ad82d06128f0958f5e8275", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/workflow.md", "kind": "document", "bytes": 138522, "lines": 670, "sha256": "1cefe12905173fc74affea13efb3f6ae6666e198a0ee889b2ad2d1ee69aedbdb", "symlink": false, "nodes": 44, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/workflow.md", "kind": "document", "bytes": 139231, "lines": 670, "sha256": "5cb658682de37a885b681407cfec87b622040f9c178c9708a76949e526fc86d4", "symlink": false, "nodes": 44, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "frontend/.dockerignore", "kind": "asset/data/config", "bytes": 29, "lines": 4, "sha256": "7c315a50e9bffd071480765e53d9e0c1def00a54bfb1eff15ff24351f8a56d04", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/.env.example", "kind": "asset/data/config", "bytes": 605, "lines": 9, "sha256": "9c227a3dde548088648605e2c401bf0b8901ba512a892655ac467bc448bde1ed", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/.gitignore", "kind": "asset/data/config", "bytes": 253, "lines": 24, "sha256": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
@@ -3080,7 +3081,7 @@
     {"path": "scripts/build-rid-listing.py", "kind": "code", "bytes": 6357, "lines": 172, "sha256": "6542c36cafa5927d97896f295449119c0a9776a6e23c03a408cf2e826237a1d1", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/build-us-bea-catalog.py", "kind": "code", "bytes": 15391, "lines": 263, "sha256": "79eca862a42fd2098b1d770a3c579f7bb6c5181ca5cb2b85c6f024593c226e0e", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/catalog-harvest.py", "kind": "code", "bytes": 22049, "lines": 523, "sha256": "4b8b63dd2aab868d3baf182ed45b1ce4dd5b67c408eb0d738e5bed23cb0eca72", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
-    {"path": "scripts/check-all.sh", "kind": "code", "bytes": 1881, "lines": 47, "sha256": "47186b67442a2b7acabec3c12c93ebb0d8d4dc21e038bf42fdbef2806c48bb8b", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
+    {"path": "scripts/check-all.sh", "kind": "code", "bytes": 2386, "lines": 56, "sha256": "efaf69c141862f83637c2343480e2a1781b29fa807d5838d292e3a61b2115307", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/check-project-knowledge.sh", "kind": "code", "bytes": 1360, "lines": 30, "sha256": "e80d214b65adfea9d31223b271a57c6aad2eb9486e927deaf9467bb372e659dd", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/classify-graph-omissions.py", "kind": "code", "bytes": 10190, "lines": 168, "sha256": "209042984ccb36fd6fcd87fc34173beecb42d267947d125bc21917ed4ce79357", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/code-review-symbols.mjs", "kind": "code", "bytes": 4880, "lines": 97, "sha256": "c05185d826694eb8c1cd70c8d3b99aaf962dd4c44911ad334a4367c4c4fcb841", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
