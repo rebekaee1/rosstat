@@ -232,6 +232,37 @@ def test_google_referer_farm_has_its_own_summary_line():
     assert "с поддельным переходом из Google (ферма): 100 запросов, отрезано 90 %" in text
 
 
+def test_batch_counts_people_by_pass_path_and_minted_passes():
+    """15.11.2026: люди - адреса класса human (отказ -> пропуск -> страница); ферма с JS возвращается классом referred."""
+    batch = bot_traffic.Batch()
+    lines = [
+        '2026-11-14T03:48:57+00:00 5.130.190.167 429 "GET /russia/indicator/fuel-diesel/2026 HTTP/1.1" "Firefox" cls=anon',
+        '2026-11-14T03:48:57+00:00 5.130.190.167 204 "POST /api/v1/human-pass HTTP/1.1" "Firefox" cls=referred',
+        '2026-11-14T03:48:57+00:00 5.130.190.167 200 "GET /russia/indicator/fuel-diesel/2026 HTTP/1.1" "Firefox" cls=human',
+        '2026-11-14T03:49:00+00:00 5.130.190.167 200 "GET /russia/indicator/fuel-diesel HTTP/1.1" "Firefox" cls=human',
+        '2026-11-14T02:53:04+00:00 1.92.192.87 429 "GET /russia/region/a/b/2021 HTTP/1.1" "Chrome/148" cls=anon',
+        '2026-11-14T02:53:04+00:00 1.92.192.87 204 "POST /api/v1/human-pass HTTP/1.1" "Chrome/148" cls=referred',
+        '2026-11-14T02:53:05+00:00 1.92.192.87 200 "GET /russia/region/a/b/2021 HTTP/1.1" "Chrome/148" cls=referred',
+        '2026-11-14T05:00:00+00:00 9.9.9.9 200 "GET /russia/region/a/b HTTP/1.1" "curl/8.7.1" cls=staff',
+    ]
+    assert all(batch.add_line(line) for line in lines)
+    assert batch.pass_ips == {"2026-11-14": {"5.130.190.167"}}
+    day = batch.counts["2026-11-14"]
+    assert day["pass_minted"] == 2 and day["staff:ok"] == 1 and day["human:ok"] == 2
+
+
+def test_pass_line_and_staff_line_plain_words():
+    from datetime import date
+    line = bot_traffic.pass_line(15, 0, 6984, date(2026, 11, 13))
+    assert line == ("Люди по пропуску за 13.11: 15 адресов (отказ → пропуск → страница), отказов после пропуска 0; "
+                    "выдано пропусков 6\u00a0984")
+    assert len(line) < 140
+    assert bot_traffic.pass_line(1, 0, 0, date(2026, 11, 13)).startswith("Люди по пропуску за 13.11: 1 адрес (")
+    assert bot_traffic.pass_line(0, 0, 0, date(2026, 11, 13)) == "Люди по пропуску за 13.11: не было"
+    text = "\n".join(bot_traffic.format_lines({"staff:ok": 40, "staff:429": 0}, [], date(2026, 11, 13)))
+    assert "наши агенты по служебному пропуску: 40 запросов, без отказов" in text
+
+
 def test_format_lines_warns_about_genuine_robot_outside_lists():
     lines = bot_traffic.format_lines({"fake:ok": 5}, [("1.2.3.4", "crawl-1-2-3-4.googlebot.com")],
                                      __import__("datetime").date(2026, 11, 7))
@@ -278,9 +309,11 @@ def test_human_batch_counts_refused_and_passed_without_farm():
 def test_human_line_shows_numerator_and_denominator():
     from datetime import date
     line = bot_traffic.human_line(2, 1, date(2026, 11, 13))
-    assert line == "Отказ «подождите» у людей за 13.11: 2, прошли по пропуску 1, не прошли 1 (50 %)"
+    # 15.11.2026: cookie Метрики - не доказательство человека (ферма с JavaScript её несёт): строка так и называется.
+    assert line == ("Браузеры с Метрикой за 13.11: отказ 2, прошли по пропуску 1, не прошли 1 (50 %); "
+                    "среди них и ферма с JavaScript")
     assert len(line) < 140
-    assert bot_traffic.human_line(0, 0, date(2026, 11, 13)).endswith("не было")
+    assert bot_traffic.human_line(0, 0, date(2026, 11, 13)).endswith("отказов не было")
 
 
 def test_collect_and_morning_note_once_per_day(tmp_path, monkeypatch):
@@ -294,6 +327,12 @@ def test_collect_and_morning_note_once_per_day(tmp_path, monkeypatch):
     hum = tmp_path / "human429.log"
     sec.write_text("")
     hum.write_text("")
+    sec_lines = [
+        '2026-11-13T08:00:00+00:00 5.5.5.5 429 "GET /russia/region/a/b HTTP/1.1" "Firefox" cls=anon',
+        '2026-11-13T08:00:00+00:00 5.5.5.5 204 "POST /api/v1/human-pass HTTP/1.1" "Firefox" cls=referred',
+        '2026-11-13T08:00:01+00:00 5.5.5.5 200 "GET /russia/region/a/b HTTP/1.1" "Firefox" cls=human',
+        '2026-11-13T08:00:09+00:00 5.5.5.6 200 "GET /russia/region/a/c HTTP/1.1" "Safari" cls=human',
+    ]
     monkeypatch.setattr(bot_traffic.settings, "bot_traffic_log_path", str(sec))
     redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
     monkeypatch.setattr(cache_mod, "_state_redis", redis)
@@ -311,6 +350,7 @@ def test_collect_and_morning_note_once_per_day(tmp_path, monkeypatch):
     async def scenario():
         await bot_traffic.collect_job()                      # первый прогон: запоминает конец файлов
         hum.write_text("\n".join(HUMAN_LINES) + "\n")
+        sec.write_text("\n".join(sec_lines) + "\n")
         await bot_traffic.collect_job()
         monkeypatch.setattr(bot_traffic, "REPORT_AFTER_UTC_HOUR", 5.75)
         early = await bot_traffic._maybe_report(redis, datetime(2026, 11, 14, 5, 0, tzinfo=timezone.utc))
@@ -322,7 +362,11 @@ def test_collect_and_morning_note_once_per_day(tmp_path, monkeypatch):
     assert (early, first, again) == (False, True, False)
     assert [k for k, _ in sent] == ["bot_traffic"]
     text = sent[0][1]
-    assert text.startswith("Отказ «подождите» у людей за 13.11: 2, прошли по пропуску 1, не прошли 1 (50 %)")
+    first, second = text.splitlines()[:2]
+    assert first == ("Люди по пропуску за 13.11: 2 адреса (отказ → пропуск → страница), отказов после пропуска 0; "
+                     "выдано пропусков 1")
+    assert second.startswith("Браузеры с Метрикой за 13.11: отказ 2, прошли по пропуску 1, не прошли 1 (50 %)")
+    assert "Человек здесь" not in text
     assert "bot_traffic" in telegram_calm.HELD_KINDS
     summary = telegram_calm.build_summary([("bot_traffic", text)], day=datetime(2026, 11, 14).date())
-    assert "не прошли 1 (50 %)" in summary
+    assert "Люди по пропуску за 13.11: 2 адреса" in summary

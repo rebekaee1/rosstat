@@ -11,11 +11,17 @@ other) и самые частые адреса «самозванцев» (`fake
 обратная и прямая проверка DNS у самых частых адресов: если среди них настоящий робот (новая сеть, которой ещё нет
 в search-crawlers.conf), строка просит обновить списки (`scripts/refresh-search-crawler-ranges.py`).
 
-Люди и отказы (14.11.2026). nginx пишет в `human429.log` (тот же каталог) отказы 429 и запросы с действующим пропуском,
-но только у браузеров с cookie Метрики `_ym_uid` (признак человека, как в наблюдении за привязкой пропуска; ферма без
-JavaScript её не имеет); вместо id - последние 8 цифр. `collect_job` складывает их в множества по суткам UTC: кто получил
-429 и кто ходил с пропуском. Раз в сутки (первый прогон после 05:45 UTC) за вчера кладётся отложенная заметка вида
-`bot_traffic` в утреннюю сводку 09:10: сколько людей получили отказ, сколько прошли по пропуску, сколько нет.
+Люди и отказы (15.11.2026). Основной признак человека - путь «отказ → пропуск → страница»: страница отказа сама
+получает пропуск (только из JavaScript) и перезагружает ту же страницу без Referer, nginx относит её к классу `human`.
+Ферма с JavaScript (замер 08-14.11) тоже берёт пропуска, но возвращается с Referer (класс `referred`), поэтому адреса
+класса `human` за сутки - это люди: 08-14.11 их было 10-19 в сутки (российские сети, все прошли). `collect_job` считает
+их уникальные адреса (HyperLogLog `{сутки}:h_pass_ips`) и число выданных пропусков (`pass_minted`).
+Второй, вспомогательный счёт (14.11.2026) - `human429.log` (тот же каталог): отказы 429 и запросы с пропуском у
+браузеров с cookie Метрики `_ym_uid`; вместо id - последние 8 цифр. Это не доказательство человека: ферма с JavaScript
+(пояс Asia/Shanghai) загружает Метрику и несёт cookie, поэтому в сводке строка называется «браузеры с Метрикой».
+Служебный пропуск наших агентов (класс `staff`, scripts/ops/staff-pass.sh) идёт своей строкой среди роботов.
+Раз в сутки (первый прогон после 05:45 UTC) за вчера кладётся отложенная заметка вида `bot_traffic` в утреннюю
+сводку 09:10.
 
 Ошибки чтения/Redis не роняют задачу: нет файла (локально, тесты) - сводка просто пустая.
 """
@@ -33,7 +39,7 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-CLASSES = ("anon", "gfarm", "human", "referred", "crawler", "goodbot", "robot", "fake", "preview", "internal")
+CLASSES = ("anon", "gfarm", "human", "staff", "referred", "crawler", "goodbot", "robot", "fake", "preview", "internal")
 OUTCOMES = ("ok", "403", "429", "5xx", "other")
 _KEY_PREFIX = "bot_traffic"
 _TTL_SECONDS = 9 * 86400
@@ -43,7 +49,7 @@ _RDNS_CHECK = 20
 
 # 2026-11-08T00:06:09+00:00 1.2.3.4 200 "GET / HTTP/1.1" "UA" cls=anon
 _LINE_RE = re.compile(
-    r'^(?P<day>\d{4}-\d{2}-\d{2})T\S+ (?P<ip>\S+) (?P<status>\d{3}) "(?:[^"\\]|\\.)*" "(?:[^"\\]|\\.)*" cls=(?P<cls>[a-z]+)\s*$'
+    r'^(?P<day>\d{4}-\d{2}-\d{2})T\S+ (?P<ip>\S+) (?P<status>\d{3}) "(?P<req>(?:[^"\\]|\\.)*)" "(?:[^"\\]|\\.)*" cls=(?P<cls>[a-z]+)\s*$'
 )
 # 2026-11-14T08:48:28+00:00 st=429 pass=0 ym=12345678 cls=anon
 _HUMAN_RE = re.compile(r"^(?P<day>\d{4}-\d{2}-\d{2})T\S+ st=(?P<st>\d{3}) pass=(?P<pass>[01]) ym=(?P<ym>\d{8}) cls=(?P<cls>[a-z]+)\s*$")
@@ -76,6 +82,7 @@ class Batch:
 
     counts: dict[str, dict[str, int]] = field(default_factory=dict)  # day -> "cls:outcome" -> n
     fake_ips: dict[str, dict[str, int]] = field(default_factory=dict)  # day -> ip -> n
+    pass_ips: dict[str, set[str]] = field(default_factory=dict)  # day -> адреса класса human (отказ -> пропуск -> страница)
 
     def add_line(self, line: str) -> bool:
         m = _LINE_RE.match(line)
@@ -88,6 +95,10 @@ class Batch:
         if cls == "fake":
             ips = self.fake_ips.setdefault(day, {})
             ips[m["ip"]] = ips.get(m["ip"], 0) + 1
+        elif cls == "human":
+            self.pass_ips.setdefault(day, set()).add(m["ip"])
+        if m["status"] == "204" and m["req"].startswith("POST /api/v1/human-pass"):
+            bucket["pass_minted"] = bucket.get("pass_minted", 0) + 1
         return True
 
 
@@ -109,14 +120,23 @@ class HumanBatch:
         return True
 
 
+def pass_line(people: int, refused_after: int, minted: int, day: date) -> str:
+    """Главная строка о людях: путь «отказ -> пропуск -> страница». Короче 140 знаков (видно в подробностях сводки)."""
+    if people <= 0:
+        head = f"Люди по пропуску за {day:%d.%m}: не было"
+    else:
+        head = (f"Люди по пропуску за {day:%d.%m}: {_addr(people)} (отказ → пропуск → страница), "
+                f"отказов после пропуска {_n(refused_after)}")
+    return head + (f"; выдано пропусков {_n(minted)}" if minted else "")
+
+
 def human_line(refused: int, passed_of_refused: int, day: date) -> str:
-    """Строка для владельца: числитель и знаменатель видны."""
+    """Вспомогательная строка по cookie Метрики: числитель и знаменатель видны; это не только люди."""
     if refused <= 0:
-        return f"Отказ «подождите» у людей за {day:%d.%m}: не было"
+        return f"Браузеры с Метрикой за {day:%d.%m}: отказов не было"
     stuck = refused - passed_of_refused
-    # Первая строка короче 140 знаков: столько утренняя сводка показывает в подробностях.
-    return (f"Отказ «подождите» у людей за {day:%d.%m}: {_n(refused)}, прошли по пропуску {_n(passed_of_refused)}, "
-            f"не прошли {_n(stuck)} ({_pct(stuck, refused)})")
+    return (f"Браузеры с Метрикой за {day:%d.%m}: отказ {_n(refused)}, прошли по пропуску {_n(passed_of_refused)}, "
+            f"не прошли {_n(stuck)} ({_pct(stuck, refused)}); среди них и ферма с JavaScript")
 
 
 def read_new(path: str, state: str | None, max_bytes: int = _MAX_READ_BYTES) -> tuple[list[str], str | None]:
@@ -190,6 +210,10 @@ async def collect_job() -> int:
             for key, n in bucket.items():
                 pipe.hincrby(_day_key(day), key, n)
             pipe.expire(_day_key(day), _TTL_SECONDS)
+        for day, ips in batch.pass_ips.items():
+            hkey = f"{_day_key(day)}:h_pass_ips"
+            pipe.pfadd(hkey, *ips)
+            pipe.expire(hkey, _TTL_SECONDS)
         for day, ips in batch.fake_ips.items():
             zkey = f"{_day_key(day)}:fake_ips"
             for ip, n in ips.items():
@@ -219,6 +243,15 @@ async def collect_job() -> int:
         return 0
 
 
+async def pass_counts(redis, day: date) -> tuple[int, int, int]:
+    """(адресов прошли отказ -> пропуск -> страницу, отказов им после пропуска, выдано пропусков) за сутки UTC."""
+    key = _day_key(day.isoformat())
+    people = int(await redis.pfcount(f"{key}:h_pass_ips") or 0)
+    after = int(await redis.hget(key, "human:429") or 0)
+    minted = int(await redis.hget(key, "pass_minted") or 0)
+    return people, after, minted
+
+
 async def human_counts(redis, day: date) -> tuple[int, int]:
     """(получили 429, из них ходили с пропуском) за сутки UTC `day`."""
     key = _day_key(day.isoformat())
@@ -236,12 +269,13 @@ async def _maybe_report(redis, now: datetime | None = None) -> bool:
     if not await redis.set(f"{_KEY_PREFIX}:reported:{day.isoformat()}", "1", nx=True, ex=_TTL_SECONDS):
         return False
     refused, passed = await human_counts(redis, day)
+    people, after, minted = await pass_counts(redis, day)
     robot_lines = await summary_lines(day)
-    if not refused and not robot_lines:
+    if not refused and not people and not minted and not robot_lines:
         return False
     from app.services.alerting import send_telegram
 
-    text = "\n".join([human_line(refused, passed, day), "Человек здесь - браузер с cookie Метрики.", *robot_lines])
+    text = "\n".join([pass_line(people, after, minted, day), human_line(refused, passed, day), *robot_lines])
     if not await send_telegram(text, kind="bot_traffic"):
         await redis.delete(f"{_KEY_PREFIX}:reported:{day.isoformat()}")
         return False
@@ -285,6 +319,12 @@ def _req(value: int) -> str:
     return f"{_n(value)} {word}"
 
 
+def _addr(value: int) -> str:
+    n = value % 100
+    word = "адресов" if 11 <= n <= 14 else {1: "адрес", 2: "адреса", 3: "адреса", 4: "адреса"}.get(n % 10, "адресов")
+    return f"{_n(value)} {word}"
+
+
 def _pct(part: int, whole: int) -> str:
     if whole <= 0:
         return "0 %"
@@ -320,6 +360,11 @@ def format_lines(counts: dict[str, int], genuine_fakes: list[tuple[str, str]], d
     humans = get("human")
     if humans:
         lines.append(f"• люди по пропуску (страница отказа сама пропустила): {_req(humans)}")
+    staff = get("staff")
+    if staff:  # 15.11.2026: служебный пропуск наших агентов (scripts/ops/staff-pass.sh)
+        refused = get("staff", "429")
+        tail = "без отказов" if refused == 0 else f"отказов {_n(refused)} ({_pct(refused, staff)})"
+        lines.append(f"• наши агенты по служебному пропуску: {_req(staff)}, {tail}")
     robots = get("robot") + get("fake") + get("preview")
     if robots:
         cut = sum(get(c, "429") for c in ("robot", "fake", "preview"))
