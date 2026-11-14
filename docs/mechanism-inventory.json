@@ -884,6 +884,11 @@
       "lines": 293
     },
     {
+      "path": "backend/app/services/bot_exports.py",
+      "sha256": "43f1261de288372b667bc99cdf3754638ad3b996fb3fbdede918f135e386e124",
+      "lines": 123
+    },
+    {
       "path": "backend/app/services/bot_score.py",
       "sha256": "50221862531a55fb7460771a6d1c72de41f6ff69e0792e222a347b86cccb700f",
       "lines": 177
@@ -1067,6 +1072,11 @@
       "path": "backend/app/services/display.py",
       "sha256": "8f722a866309bd388623aec0d1dcae8041b7811003415779be3b463d71e39d45",
       "lines": 618
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "sha256": "25b577ed87653bd59bbd32ae0e25d5a8b9605c54c6200367213ad9c29656317f",
+      "lines": 717
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -1820,8 +1830,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "sha256": "c1caffd16052a1517afa9afa63f43add63d4ecf973b47e53e2e5843930545daa",
-      "lines": 581
+      "sha256": "f880243865b9fbf0bde96054c1d68e32aaa26a87f372b074512a15142299aba3",
+      "lines": 764
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -2190,8 +2200,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "sha256": "6ff9c8e45f5b242c39edeb4b4bb6411b3fecce215771c3e0d40a26c82d7beaef",
-      "lines": 438
+      "sha256": "f40cec3c5558d50023e86ae4e82160d991dcba4b40a3e26fef0f2d84faa75f1a",
+      "lines": 458
     },
     {
       "path": "backend/app/tasks/freshness_watchdog.py",
@@ -38275,8 +38285,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 85,
-      "end_line": 85,
+      "line": 93,
+      "end_line": 93,
       "owner": "main_menu_keyboard",
       "conditions": [],
       "name": "telegram_digest_v2_enabled",
@@ -38284,8 +38294,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 91,
-      "end_line": 91,
+      "line": 99,
+      "end_line": 99,
       "owner": "main_menu_keyboard",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -38293,8 +38303,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 110,
-      "end_line": 110,
+      "line": 118,
+      "end_line": 118,
       "owner": "_api",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -38302,8 +38312,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 704,
+      "end_line": 704,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -38311,8 +38321,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 704,
+      "end_line": 704,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_token",
@@ -38320,8 +38330,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 539,
-      "end_line": 539,
+      "line": 722,
+      "end_line": 722,
       "owner": "telegram_poll_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -38329,8 +38339,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 125,
-      "end_line": 125,
+      "line": 133,
+      "end_line": 133,
       "owner": "_api",
       "conditions": [],
       "name": "telegram_proxy_url",
@@ -38338,8 +38348,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 483,
-      "end_line": 483,
+      "line": 643,
+      "end_line": 643,
       "owner": "_handle_callback",
       "conditions": [
         "not (data == 'users')",
@@ -38353,8 +38363,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 652,
+      "end_line": 652,
       "owner": "_handle_callback",
       "conditions": [
         "not (data == 'users')",
@@ -38975,8 +38985,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 359,
+      "end_line": 359,
       "owner": "behavior_retention_job",
       "conditions": [],
       "name": "behavior_raw_retention_days",
@@ -38984,8 +38994,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 369,
-      "end_line": 369,
+      "line": 385,
+      "end_line": 385,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_digest_v2_enabled",
@@ -39002,8 +39012,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 341,
+      "end_line": 341,
       "owner": "webmaster_queries_daily_job",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -39011,8 +39021,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 390,
-      "end_line": 390,
+      "line": 410,
+      "end_line": 410,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -39020,8 +39030,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 390,
-      "end_line": 390,
+      "line": 410,
+      "end_line": 410,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -39029,8 +39039,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 416,
-      "end_line": 416,
+      "line": 436,
+      "end_line": 436,
       "owner": "analytics_daily_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -39038,8 +39048,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 309,
+      "end_line": 309,
       "owner": "acquisition_daily_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -39047,8 +39057,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 309,
+      "end_line": 309,
       "owner": "acquisition_daily_job",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -39056,8 +39066,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 360,
-      "end_line": 360,
+      "line": 376,
+      "end_line": 376,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -39065,8 +39075,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 360,
-      "end_line": 360,
+      "line": 376,
+      "end_line": 376,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -90534,6 +90544,140 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 32,
+      "end_line": 35,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "TIER_LABELS_RU",
+      "symbol": "app.services.bot_exports.TIER_LABELS_RU",
+      "kind": "Dict",
+      "literal_keys": [
+        "'macro'",
+        "'micro'",
+        "'intent'",
+        "'engagement'",
+        "'technical'"
+      ],
+      "entries": [
+        {
+          "key": "'macro'",
+          "expression": "'главная цель'",
+          "expression_truncated": false,
+          "expression_chars": 14,
+          "ast_sha256": "b2eb3de4a2f62db7fc0fd4612f3b7741705a3406541095950797b1aaefafdb05"
+        },
+        {
+          "key": "'micro'",
+          "expression": "'ценное действие'",
+          "expression_truncated": false,
+          "expression_chars": 17,
+          "ast_sha256": "76b43d91ee619ed717700503d3b1dbab8c6598b087b33e5a468eff4a96dbb6d7"
+        },
+        {
+          "key": "'intent'",
+          "expression": "'намерение'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "257861fc51fbfa984454ecda4d5f5fbf1e8bd4696d63b0d4c0542f87c89657ba"
+        },
+        {
+          "key": "'engagement'",
+          "expression": "'вовлечение'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "5a2351e0b3d581b7c1b64e8ac863cf7652a8000efe24ab6dffdd1599997a9e85"
+        },
+        {
+          "key": "'technical'",
+          "expression": "'служебное'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "05b0cf929eef72d119f495d6616abb33c20728db8d27f7073260915a4c7ae8b1"
+        }
+      ],
+      "expression": "{'macro': 'главная цель', 'micro': 'ценное действие', 'intent': 'намерение', 'engagement': 'вовлечение', 'technical': 'служебное'}",
+      "expression_truncated": false,
+      "expression_chars": 130,
+      "ast_sha256": "47bcafb8649571d354618626384611dc48cd00d12e71bd48489c338d68724fa1",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 36,
+      "end_line": 40,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "TRIGGER_LABELS_RU",
+      "symbol": "app.services.bot_exports.TRIGGER_LABELS_RU",
+      "kind": "Dict",
+      "literal_keys": [
+        "'gate_download'",
+        "'gate_chart_image'",
+        "'gate_compare'",
+        "'gate_gif'",
+        "'nudge'",
+        "'header'",
+        "'direct'"
+      ],
+      "entries": [
+        {
+          "key": "'gate_download'",
+          "expression": "'упёрся в лимит скачиваний'",
+          "expression_truncated": false,
+          "expression_chars": 27,
+          "ast_sha256": "c4feabc413e085c1287465f39b5f93f0b5c0b435feb6cc587b0e01bce29753ac"
+        },
+        {
+          "key": "'gate_chart_image'",
+          "expression": "'картинка графика'",
+          "expression_truncated": false,
+          "expression_chars": 18,
+          "ast_sha256": "bf1bfe8c0b3c14c7d513d14042a1b8bdb84fcc77e614a7b4c8d9c89f00d74e33"
+        },
+        {
+          "key": "'gate_compare'",
+          "expression": "'сравнение'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "64a507ce18df8eee7002152750dbe9b3603302bab677a0844cb973897462d1b4"
+        },
+        {
+          "key": "'gate_gif'",
+          "expression": "'анимация карты'",
+          "expression_truncated": false,
+          "expression_chars": 16,
+          "ast_sha256": "248dfaffa3f2ea3d64ef8b3a7c176f912be11d98a99f5de81bf630e02eea4f9c"
+        },
+        {
+          "key": "'nudge'",
+          "expression": "'приглашение на странице'",
+          "expression_truncated": false,
+          "expression_chars": 25,
+          "ast_sha256": "b598ae6726925f875024b517b3f2cbfc3b0a7909685c44aed7b9bd7676e3b374"
+        },
+        {
+          "key": "'header'",
+          "expression": "'кнопка в шапке'",
+          "expression_truncated": false,
+          "expression_chars": 16,
+          "ast_sha256": "c1d8bfcad68d8d5f2fb5854377620c4f88065073f450b7d1e98fd966a8884276"
+        },
+        {
+          "key": "'direct'",
+          "expression": "'сам, без подсказки'",
+          "expression_truncated": false,
+          "expression_chars": 20,
+          "ast_sha256": "0a937e82875ff32bd95d3ae2b491b013a0b1e5fd66a7c560e16236bc34cd2f51"
+        }
+      ],
+      "expression": "{'gate_download': 'упёрся в лимит скачиваний', 'gate_chart_image': 'картинка графика', 'gate_compare': 'сравнение', 'gate_gif': 'анимация карты', 'nudge': 'приглашение на странице', 'header': 'кнопка в шапке', 'direct': 'сам, без подсказки'}",
+      "expression_truncated": false,
+      "expression_chars": 241,
+      "ast_sha256": "ff205ce91cf8a8469b2c9202a2400ee4275ff7ac344ee33565aa69853c38bd41",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/bot_score.py",
       "line": 29,
       "end_line": 34,
@@ -95832,6 +95976,515 @@
       "expression_chars": 95,
       "ast_sha256": "c8cafb321616ec957391b578aed225edec503625f1fda4e9837c4f15aaa09582",
       "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 58,
+      "end_line": 58,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "WALL_EVENTS",
+      "symbol": "app.services.download_content.WALL_EVENTS",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "events_in_group(GROUP_WALL)",
+      "expression_truncated": false,
+      "expression_chars": 27,
+      "ast_sha256": "f5c01795fbed19e095e2acc4cb0be5399e2cfff031363142f5b9332dacd0282f",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 61,
+      "end_line": 71,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "FORMAT_LABELS",
+      "symbol": "app.services.download_content.FORMAT_LABELS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'download_excel'",
+        "'download_csv'",
+        "'demographics_csv'",
+        "'download_ical'",
+        "'chart_image_download'",
+        "'compare_image_download'",
+        "'regions_map_gif_download'",
+        "'export_run'",
+        "'research_download'"
+      ],
+      "entries": [
+        {
+          "key": "'download_excel'",
+          "expression": "'Excel'",
+          "expression_truncated": false,
+          "expression_chars": 7,
+          "ast_sha256": "22bae9b3842970ee2c54392cfc9913c740be621cf79cc4638a2e1441ed7aeb2d"
+        },
+        {
+          "key": "'download_csv'",
+          "expression": "'CSV'",
+          "expression_truncated": false,
+          "expression_chars": 5,
+          "ast_sha256": "d811ba03fb2547ec97bbc7312f648cc3d7e32b3719389d3d67de0d765a0d6851"
+        },
+        {
+          "key": "'demographics_csv'",
+          "expression": "'CSV'",
+          "expression_truncated": false,
+          "expression_chars": 5,
+          "ast_sha256": "d811ba03fb2547ec97bbc7312f648cc3d7e32b3719389d3d67de0d765a0d6851"
+        },
+        {
+          "key": "'download_ical'",
+          "expression": "'календарь'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "8a586e364847abc258eb69669ea3b570094d051c8d4e2308cb562e51930a7e32"
+        },
+        {
+          "key": "'chart_image_download'",
+          "expression": "'картинка графика'",
+          "expression_truncated": false,
+          "expression_chars": 18,
+          "ast_sha256": "bf1bfe8c0b3c14c7d513d14042a1b8bdb84fcc77e614a7b4c8d9c89f00d74e33"
+        },
+        {
+          "key": "'compare_image_download'",
+          "expression": "'картинка сравнения'",
+          "expression_truncated": false,
+          "expression_chars": 20,
+          "ast_sha256": "578c15e76cdb3b387273104de10acd53a5dbb7f1223c2364824e112b549983d5"
+        },
+        {
+          "key": "'regions_map_gif_download'",
+          "expression": "'анимация карты'",
+          "expression_truncated": false,
+          "expression_chars": 16,
+          "ast_sha256": "248dfaffa3f2ea3d64ef8b3a7c176f912be11d98a99f5de81bf630e02eea4f9c"
+        },
+        {
+          "key": "'export_run'",
+          "expression": "'выгрузка из кабинета'",
+          "expression_truncated": false,
+          "expression_chars": 22,
+          "ast_sha256": "aca656b8971d57adcbd19414d642f9c6e9aa21b15ead23925d94d1543c1deeb8"
+        },
+        {
+          "key": "'research_download'",
+          "expression": "'PDF-отчёт'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "91d4bc3ea665d6fd99225c5f5d377fb8c6876952fb0b942877fab8feb46aefcd"
+        }
+      ],
+      "expression": "{'download_excel': 'Excel', 'download_csv': 'CSV', 'demographics_csv': 'CSV', 'download_ical': 'календарь', 'chart_image_download': 'картинка графика', 'compare_image_download': 'картинка сравнения', 'regions_map_gif_download': 'анимация карты', 'export_run': 'выгрузка из кабинета', 'research_download': 'PDF-отчёт'}",
+      "expression_truncated": false,
+      "expression_chars": 317,
+      "ast_sha256": "c2799ef141522f5e8974a4f0f50ac953836c728d670dfad091ff92e584557819",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 72,
+      "end_line": 78,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "WALL_LABELS",
+      "symbol": "app.services.download_content.WALL_LABELS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'download_limit'",
+        "'chart_image_blocked'",
+        "'compare_image_blocked'",
+        "'compare_limit_hit'",
+        "'regions_map_gif_blocked'"
+      ],
+      "entries": [
+        {
+          "key": "'download_limit'",
+          "expression": "'таблица (лимит скачиваний)'",
+          "expression_truncated": false,
+          "expression_chars": 28,
+          "ast_sha256": "9ff3529139ff750d541c5c3d9216013ba405c090487a2fe7f2bf68be629fe72d"
+        },
+        {
+          "key": "'chart_image_blocked'",
+          "expression": "'картинка графика'",
+          "expression_truncated": false,
+          "expression_chars": 18,
+          "ast_sha256": "bf1bfe8c0b3c14c7d513d14042a1b8bdb84fcc77e614a7b4c8d9c89f00d74e33"
+        },
+        {
+          "key": "'compare_image_blocked'",
+          "expression": "'картинка сравнения'",
+          "expression_truncated": false,
+          "expression_chars": 20,
+          "ast_sha256": "578c15e76cdb3b387273104de10acd53a5dbb7f1223c2364824e112b549983d5"
+        },
+        {
+          "key": "'compare_limit_hit'",
+          "expression": "'больше рядов в сравнении'",
+          "expression_truncated": false,
+          "expression_chars": 26,
+          "ast_sha256": "e4f68c2272d8bcb56c8355c74aa27440e2a58fbb452e6ed19a6d28baa31b1dbf"
+        },
+        {
+          "key": "'regions_map_gif_blocked'",
+          "expression": "'анимация карты'",
+          "expression_truncated": false,
+          "expression_chars": 16,
+          "ast_sha256": "248dfaffa3f2ea3d64ef8b3a7c176f912be11d98a99f5de81bf630e02eea4f9c"
+        }
+      ],
+      "expression": "{'download_limit': 'таблица (лимит скачиваний)', 'chart_image_blocked': 'картинка графика', 'compare_image_blocked': 'картинка сравнения', 'compare_limit_hit': 'больше рядов в сравнении', 'regions_map_gif_blocked': 'анимация карты'}",
+      "expression_truncated": false,
+      "expression_chars": 232,
+      "ast_sha256": "e47c4401e0af0fa9c706b03132d9503464c4381099ab2fa5466a516e23ac6733",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 79,
+      "end_line": 84,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SECTION_LABELS",
+      "symbol": "app.services.download_content.SECTION_LABELS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'russia'",
+        "'currency'",
+        "'world'",
+        "'region'",
+        "'world_region'",
+        "'compare'",
+        "'rating'",
+        "'calculator'",
+        "'demographics'",
+        "'calendar'",
+        "'research'",
+        "'other'"
+      ],
+      "entries": [
+        {
+          "key": "'russia'",
+          "expression": "'Россия'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "90a8c35b2cb209eb37769b99325e54eb133a0e45ec728451fbc4d9373d7a3761"
+        },
+        {
+          "key": "'currency'",
+          "expression": "'валюты'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "77302c4fdd214e861cf43bce7aaadf12763fd71c25b6a0bba0ebcfc1ab2fa63e"
+        },
+        {
+          "key": "'world'",
+          "expression": "'страны мира'",
+          "expression_truncated": false,
+          "expression_chars": 13,
+          "ast_sha256": "f3b0d107013f0b87679bf42796a7374c8fff4ed1356fe359d3162589b51c24de"
+        },
+        {
+          "key": "'region'",
+          "expression": "'регионы России'",
+          "expression_truncated": false,
+          "expression_chars": 16,
+          "ast_sha256": "e3a16ef47b1fb5366b0c0a8f75dc9c09795ddf0e77919f23e58b8168b75ddb71"
+        },
+        {
+          "key": "'world_region'",
+          "expression": "'регионы других стран'",
+          "expression_truncated": false,
+          "expression_chars": 22,
+          "ast_sha256": "c5c5b4e6c266784d9dd6f7b20dfbd2e34078ca8f9bbb19293caa0c10622c7c46"
+        },
+        {
+          "key": "'compare'",
+          "expression": "'сравнение'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "64a507ce18df8eee7002152750dbe9b3603302bab677a0844cb973897462d1b4"
+        },
+        {
+          "key": "'rating'",
+          "expression": "'рейтинги'",
+          "expression_truncated": false,
+          "expression_chars": 10,
+          "ast_sha256": "8dbd132e1e230e52d50f822bcb42de6f8d3fa99baa67d08d19c2d9f772d68cac"
+        },
+        {
+          "key": "'calculator'",
+          "expression": "'калькуляторы'",
+          "expression_truncated": false,
+          "expression_chars": 14,
+          "ast_sha256": "683a10777ad04f28317d79c24fac993cbb05037b7b2966d5fef8492ea46e1dae"
+        },
+        {
+          "key": "'demographics'",
+          "expression": "'демография'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "cfdc0aa57109a7760967e0a29d8781a3a46dfc08739e86f45f6b1a3c13912447"
+        },
+        {
+          "key": "'calendar'",
+          "expression": "'календарь'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "8a586e364847abc258eb69669ea3b570094d051c8d4e2308cb562e51930a7e32"
+        },
+        {
+          "key": "'research'",
+          "expression": "'исследования'",
+          "expression_truncated": false,
+          "expression_chars": 14,
+          "ast_sha256": "6cdb2aedf12f000aef513e2c04834c8753af68aa564ee2b934cc475c4d0bda14"
+        },
+        {
+          "key": "'other'",
+          "expression": "'другие страницы'",
+          "expression_truncated": false,
+          "expression_chars": 17,
+          "ast_sha256": "1fea8a389fdbdce47e1b1ef01545848a4dbb6d3a5daf0641e734923e669e5039"
+        }
+      ],
+      "expression": "{'russia': 'Россия', 'currency': 'валюты', 'world': 'страны мира', 'region': 'регионы России', 'world_region': 'регионы других стран', 'compare': 'сравнение', 'rating': 'рейтинги', 'calculator': 'калькуляторы', 'demographics': 'демография', 'calendar': 'календарь', 'research': 'исследования', 'other': 'другие страницы'}",
+      "expression_truncated": false,
+      "expression_chars": 321,
+      "ast_sha256": "d5e8a1f1099aa6c727c50e723767435789291b5cb20d40453af26213c755301a",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 85,
+      "end_line": 88,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "CHANNEL_LABELS",
+      "symbol": "app.services.download_content.CHANNEL_LABELS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'search'",
+        "'direct'",
+        "'social'",
+        "'referral'",
+        "'ad'",
+        "'campaign'",
+        "'internal'",
+        "'unknown'"
+      ],
+      "entries": [
+        {
+          "key": "'search'",
+          "expression": "'поиск'",
+          "expression_truncated": false,
+          "expression_chars": 7,
+          "ast_sha256": "39c5dc498f8ca720d59d9190f224f60d59e4b1c4ef56bfaa3136489961058666"
+        },
+        {
+          "key": "'direct'",
+          "expression": "'прямой заход'",
+          "expression_truncated": false,
+          "expression_chars": 14,
+          "ast_sha256": "5a9c846e9f12651d9c67646cd0131ed10db62c46faba8ee708c552e3a39ba7e3"
+        },
+        {
+          "key": "'social'",
+          "expression": "'соцсети'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "7a361810c601c18da25bd8701ae6c88730ecdb53639d40a79fecf3060caa1120"
+        },
+        {
+          "key": "'referral'",
+          "expression": "'с другого сайта'",
+          "expression_truncated": false,
+          "expression_chars": 17,
+          "ast_sha256": "12751d714db042e877a2f61dd3a2e0088b0b92d0006f0a363d630cba51c1a032"
+        },
+        {
+          "key": "'ad'",
+          "expression": "'реклама'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "05ff6a23c60054130b348d1fed3beae62ad274973a114871ac5c01eae6957830"
+        },
+        {
+          "key": "'campaign'",
+          "expression": "'рассылка'",
+          "expression_truncated": false,
+          "expression_chars": 10,
+          "ast_sha256": "85aafd841a4a645c22cab90468d30146b95a5a42e1969c5ba0c4374a076ab802"
+        },
+        {
+          "key": "'internal'",
+          "expression": "'внутренний переход'",
+          "expression_truncated": false,
+          "expression_chars": 20,
+          "ast_sha256": "2e39e95af39d1cb456f40372df4063b47dc690956d930ac12cf475d933df8af1"
+        },
+        {
+          "key": "'unknown'",
+          "expression": "'неизвестно'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "42ee27c27c4caa91c301b354e439d311cd5a7fcd6aec0a3ff1cf6c8f49e16863"
+        }
+      ],
+      "expression": "{'search': 'поиск', 'direct': 'прямой заход', 'social': 'соцсети', 'referral': 'с другого сайта', 'ad': 'реклама', 'campaign': 'рассылка', 'internal': 'внутренний переход', 'unknown': 'неизвестно'}",
+      "expression_truncated": false,
+      "expression_chars": 197,
+      "ast_sha256": "8cecb13e09bb12ade543cd40f23cbf70b014f25f6674fb34cf2816f549b4f4ba",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 89,
+      "end_line": 91,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "DEVICE_LABELS",
+      "symbol": "app.services.download_content.DEVICE_LABELS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'mobile'",
+        "'desktop'",
+        "'tablet'",
+        "'unknown'"
+      ],
+      "entries": [
+        {
+          "key": "'mobile'",
+          "expression": "'телефон'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "f4368bd873f15b214c70afd604dc2a589cda7fc581b13006136a708868eab223"
+        },
+        {
+          "key": "'desktop'",
+          "expression": "'компьютер'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "3a6c7d3503f28be38e1ba13702050204bf8471f6626548f6588b672e36b8aaa7"
+        },
+        {
+          "key": "'tablet'",
+          "expression": "'планшет'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "b20e34af22a9c3f1462fd794e996938f2e3978ac8947077ced0be55971cca62e"
+        },
+        {
+          "key": "'unknown'",
+          "expression": "'неизвестно'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "42ee27c27c4caa91c301b354e439d311cd5a7fcd6aec0a3ff1cf6c8f49e16863"
+        }
+      ],
+      "expression": "{'mobile': 'телефон', 'desktop': 'компьютер', 'tablet': 'планшет', 'unknown': 'неизвестно'}",
+      "expression_truncated": false,
+      "expression_chars": 91,
+      "ast_sha256": "e11d040e09e8b82e322f444fb971ad8376bb2579a2e23467eefe5ceb161ca774",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 94,
+      "end_line": 94,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "WINDOWS",
+      "symbol": "app.services.download_content.WINDOWS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'0'",
+        "'1'",
+        "'7'",
+        "'30'",
+        "'90'"
+      ],
+      "entries": [
+        {
+          "key": "'0'",
+          "expression": "'сегодня'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "0faafd87c6fd1305b72d5723958b7d3396455e30519c5d8a405bfcb7ea990015"
+        },
+        {
+          "key": "'1'",
+          "expression": "'вчера'",
+          "expression_truncated": false,
+          "expression_chars": 7,
+          "ast_sha256": "987d91b55dd9b450ee4e2141b9e266623566da7ece51f0eef5f689af689aa073"
+        },
+        {
+          "key": "'7'",
+          "expression": "'7 дней'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "13967a564de05257720cce2e560236780406b309be8f1f5a4107d42f20bf6465"
+        },
+        {
+          "key": "'30'",
+          "expression": "'30 дней'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "b0b3850695c737061ddb086e9cacd0eb02637aeedc676575a91ed6f16aa8a27a"
+        },
+        {
+          "key": "'90'",
+          "expression": "'90 дней'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "2f1ad160a5526a895f761ef58ece4dbb965ce73f4d43c1e3cca0ac6494d96232"
+        }
+      ],
+      "expression": "{'0': 'сегодня', '1': 'вчера', '7': '7 дней', '30': '30 дней', '90': '90 дней'}",
+      "expression_truncated": false,
+      "expression_chars": 79,
+      "ast_sha256": "05c022b7c48c107a8d2cf7ec672e06140fd27efb0d2f536e09940d62dcc1c0b7",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 98,
+      "end_line": 98,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_SIGNUP_SLACK",
+      "symbol": "app.services.download_content._SIGNUP_SLACK",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "timedelta(minutes=5)",
+      "expression_truncated": false,
+      "expression_chars": 20,
+      "ast_sha256": "c4bdd05dc410025bdfd0d4a400d1d384e94b6078be0923c113b8efbef9f62496",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 101,
+      "end_line": 104,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_RESERVED_FIRST",
+      "symbol": "app.services.download_content._RESERVED_FIRST",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "frozenset({'compare', 'world', 'calculator', 'calculators', 'widgets', 'embed', 'currencies', 'research', 'forecasts', 'login', 'register', 'account', 'admin', 'about', 'privacy', 'api', 'og'})",
+      "expression_truncated": false,
+      "expression_chars": 193,
+      "ast_sha256": "f39d48adcdb344e3887c17c3cb03493283e77adb1e56a931267fca171b6a93e7",
+      "runtime_expansion": true
     },
     {
       "path": "backend/app/services/emiss_labor_parser.py",
@@ -114139,8 +114792,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 64,
-      "end_line": 64,
+      "line": 67,
+      "end_line": 67,
       "owner": "<module>",
       "conditions": [],
       "name": "_REDIS_TRANSIENT",
@@ -114156,8 +114809,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 99,
-      "end_line": 99,
+      "line": 107,
+      "end_line": 107,
       "owner": "<module>",
       "conditions": [],
       "name": "_RETRY_METHODS",
@@ -114170,6 +114823,74 @@
       "expression_chars": 42,
       "ast_sha256": "cc969afd39deea0d167d9f7220e17e8195eba1fcad42eeead8356a54cb19fb7f",
       "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 431,
+      "end_line": 431,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_EXPORT_WINDOWS",
+      "symbol": "app.services.telegram_bot._EXPORT_WINDOWS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('7', '30', '90')",
+      "expression_truncated": false,
+      "expression_chars": 17,
+      "ast_sha256": "194343a6793a6b36320eee8964ee0e18522436e2089670e85e3dc3f8c3509d43",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 695,
+      "end_line": 695,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_DOWNLOAD_COMMANDS",
+      "symbol": "app.services.telegram_bot._DOWNLOAD_COMMANDS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('/downloads', 'скачивания')",
+      "expression_truncated": false,
+      "expression_chars": 28,
+      "ast_sha256": "35b59d92e0d508cf2d3e378d115250c5b1ebd013d0b545893600df61b69e79c3",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 696,
+      "end_line": 696,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_EXPORT_COMMANDS",
+      "symbol": "app.services.telegram_bot._EXPORT_COMMANDS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('/export', 'выгрузки', 'выгрузка')",
+      "expression_truncated": false,
+      "expression_chars": 35,
+      "ast_sha256": "3910b5bbdc49e6ca7bd041bc424bc912e55a1de2ce6aa9fa383cd8580c48e4de",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 697,
+      "end_line": 697,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_ADMIN_TEXTS",
+      "symbol": "app.services.telegram_bot._ADMIN_TEXTS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('/start', '/menu', 'меню', '/users')",
+      "expression_truncated": false,
+      "expression_chars": 37,
+      "ast_sha256": "2f985816e7c475b1c55404ddc4a178d47259f1c78e5dec45839c37f58e836d21",
+      "runtime_expansion": false
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -121971,8 +122692,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 261,
-      "end_line": 261,
+      "line": 277,
+      "end_line": 277,
       "owner": "<module>",
       "conditions": [],
       "name": "_METRIKA_DIGEST_RETRY_PAUSES_S",
@@ -142744,6 +143465,48 @@
       "ast_sha256": "a1870d197041809ad380f64e44e6d4d3447f5f42c66d2d3bc42907ad83cc02ed"
     },
     {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 72,
+      "end_line": 72,
+      "owner": "events_csv",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.bot_exports.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 61,
+      "end_line": 68,
+      "owner": "events_csv",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.bot_exports.db.execute",
+      "expression": "db.execute(select(FrontendEvent.occurred_at, FrontendEvent.event_name, FrontendEvent.visitor_id_hash, FrontendEvent.session_id_hash, FrontendEvent.user_id, FrontendEvent.authed, FrontendEvent.url, FrontendEvent.params_json).where(FrontendEvent.occurred_at >= period.start, FrontendEvent.occurred_at < period.end).order_by(FrontendEvent.occurred_at).limit(EVENTS_ROW_CAP + 1))",
+      "expression_truncated": false,
+      "expression_chars": 375,
+      "ast_sha256": "6ce6eb4ba7a1f6eb0bbf3132c8bfa89a3b91408a5f9d3167cd643073ba0399a3"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 102,
+      "end_line": 105,
+      "owner": "signups_csv",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.bot_exports.db.execute",
+      "expression": "db.execute(select(UserSignup).where(UserSignup.created_at >= period.start, UserSignup.created_at < period.end).order_by(UserSignup.created_at))",
+      "expression_truncated": false,
+      "expression_chars": 143,
+      "ast_sha256": "1e2f464f92f899a8b415e6078f2524841d43ca6acc56d41f0885158225683e5e"
+    },
+    {
       "path": "backend/app/services/bot_traffic.py",
       "line": 144,
       "end_line": 144,
@@ -144335,6 +145098,322 @@
       "expression_truncated": false,
       "expression_chars": 5,
       "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 382,
+      "end_line": 382,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 402,
+      "end_line": 402,
+      "owner": "_signup_times",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 384,
+      "end_line": 389,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set((await db.execute(select(ServerSession.visitor_id_hash).where(ServerSession.visitor_id_hash.in_(part), ServerSession.day >= period.start_date, ServerSession.day <= period.end_date, or_(ServerSession.is_bot.is_(True), ServerSession.is_internal.is_(True))).distinct())).scalars())",
+      "expression_truncated": false,
+      "expression_chars": 282,
+      "ast_sha256": "bc2b8036823986a3e6361a57c4e115a5f87d8c070d4f9541203a5c28aec2e4a8"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 449,
+      "end_line": 449,
+      "owner": "collect",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 266,
+      "end_line": 266,
+      "owner": "load_names",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set(names.ru)",
+      "expression_truncated": false,
+      "expression_chars": 13,
+      "ast_sha256": "60ca05e07b6817dd6f4891103dc2a3e4faa571ccb3e7018a97b6940e902bce32"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 405,
+      "end_line": 405,
+      "owner": "_signup_times",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "ids",
+      "symbol": "app.services.download_content.ids.add",
+      "expression": "ids.add(uuid.UUID(str(u)))",
+      "expression_truncated": false,
+      "expression_chars": 26,
+      "ast_sha256": "2157eefefb1dffa3d19a89ad66c91427116db825906b178c54f9aa2e4a6e03f2"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 440,
+      "end_line": 447,
+      "owner": "collect",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(FrontendEvent.occurred_at, FrontendEvent.event_name, FrontendEvent.session_id_hash, FrontendEvent.visitor_id_hash, FrontendEvent.user_id, FrontendEvent.authed, FrontendEvent.url, FrontendEvent.params_json).where(FrontendEvent.event_name.in_(sorted(ALL_EVENTS)), FrontendEvent.occurred_at >= period.start, FrontendEvent.occurred_at < period.end).order_by(FrontendEvent.occurred_at))",
+      "expression_truncated": false,
+      "expression_chars": 399,
+      "ast_sha256": "20947d9d222334b3bae107e873eb609afd9e09d18fb9470ff2c90a391002eef3"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 502,
+      "end_line": 502,
+      "owner": "summarize.by_content",
+      "conditions": [
+        "r['person']"
+      ],
+      "operation": "add",
+      "receiver": "g['people']",
+      "symbol": "app.services.download_content.g['people'].add",
+      "expression": "g['people'].add(r['person'])",
+      "expression_truncated": false,
+      "expression_chars": 28,
+      "ast_sha256": "b5dd55f42e71f504dc9837be2eae0ed1fed2acfb7c5dcb1cd6bd3942b1f4ddb1"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 505,
+      "end_line": 505,
+      "owner": "summarize.by_content",
+      "conditions": [
+        "walls and r['signed_up_after']"
+      ],
+      "operation": "add",
+      "receiver": "g['signed']",
+      "symbol": "app.services.download_content.g['signed'].add",
+      "expression": "g['signed'].add(r['person'])",
+      "expression_truncated": false,
+      "expression_chars": 28,
+      "ast_sha256": "38b8f300349a30d85d9145b29aea41ce93e13c3c3cb06eb7fbd82ca8f525b97e"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 263,
+      "end_line": 264,
+      "owner": "load_names",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(Indicator.code, Indicator.name).where(Indicator.code.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 82,
+      "ast_sha256": "a2979fb59c7e1c472f36121b37798a14cadff010273f70bc314fd9f145117915"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 267,
+      "end_line": 270,
+      "owner": "load_names",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(WorldIndicator.code, WorldIndicator.name_ru, WorldCountry.name_ru).join(WorldCountry, WorldCountry.id == WorldIndicator.country_id).where(WorldIndicator.code.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 187,
+      "ast_sha256": "f037da42437d86773d5b359af855cbd0890193077fcdc7c009de8612dd958003"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 273,
+      "end_line": 274,
+      "owner": "load_names",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(RegionIndicator.code, RegionIndicator.name).where(RegionIndicator.code.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 100,
+      "ast_sha256": "318b3066699cd25aba0d3365f7efecae1a32a6e0d4e5297b366c62726d5d1f48"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 277,
+      "end_line": 277,
+      "owner": "load_names",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(Region.slug, Region.name).where(Region.slug.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 73,
+      "ast_sha256": "3653f9584b46617e7dbaa61e214fdba7a54e2b583943c285f0e956e23018fd64"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 280,
+      "end_line": 282,
+      "owner": "load_names",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(WorldCountry.slug, WorldCountry.code, WorldCountry.name_ru).where(WorldCountry.slug.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 113,
+      "ast_sha256": "9faf451173274d216f2b9d652e7d73cc06f95667f68778eedfed216bf93d299f"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 411,
+      "end_line": 412,
+      "owner": "_signup_times",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(User.id, User.created_at).where(User.id.in_(id_list[i:i + _IN_CHUNK])))",
+      "expression_truncated": false,
+      "expression_chars": 89,
+      "ast_sha256": "566ba8b06da7433047c63e329aba6bdb91f9c0199d6163c3152b8718009a8527"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 426,
+      "end_line": 429,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(BehaviorSession.session_id_hash, BehaviorSession.channel, BehaviorSession.device_type, BehaviorSession.country).where(BehaviorSession.session_id_hash.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 179,
+      "ast_sha256": "2d96aed5e189b09c687eec071ae555eb308f74612d662641d96cb86d886ea60e"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 499,
+      "end_line": 499,
+      "owner": "summarize.by_content",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 499,
+      "end_line": 499,
+      "owner": "summarize.by_content",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 295,
+      "end_line": 297,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(SubnationalIndicator.country_code, SubnationalIndicator.code, SubnationalIndicator.name_ru).where(SubnationalIndicator.code.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 153,
+      "ast_sha256": "995f9d8a3e13ebb507abf88419440031a8a66775f8bd2ed0241b4d487683b33d"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 300,
+      "end_line": 302,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(SubnationalRegion.country_code, SubnationalRegion.slug, SubnationalRegion.name_ru).where(SubnationalRegion.slug.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 141,
+      "ast_sha256": "4d00067a12b1056b715347780b5deb20a8374fcbbb9587d9220ee0488dce8004"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 384,
+      "end_line": 389,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(ServerSession.visitor_id_hash).where(ServerSession.visitor_id_hash.in_(part), ServerSession.day >= period.start_date, ServerSession.day <= period.end_date, or_(ServerSession.is_bot.is_(True), ServerSession.is_internal.is_(True))).distinct())",
+      "expression_truncated": false,
+      "expression_chars": 259,
+      "ast_sha256": "25030eb0922d89e7e8bfa0e368ff900a5bb031512e10df3586d39aa5a1c96264"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 399,
+      "end_line": 401,
+      "owner": "_signup_times",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(IdentityLink.visitor_id_hash, IdentityLink.user_id).where(IdentityLink.visitor_id_hash.in_(part)))",
+      "expression_truncated": false,
+      "expression_chars": 116,
+      "ast_sha256": "48435c7f1f8c7a37a6f555f74d57e46fe1e9bc21d45271ef55f67abf95801652"
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
@@ -155802,8 +156881,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 113,
-      "end_line": 113,
+      "line": 121,
+      "end_line": 121,
       "owner": "_api",
       "conditions": [],
       "operation": "set",
@@ -155816,8 +156895,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 237,
+      "end_line": 237,
       "owner": "send_document",
       "conditions": [],
       "operation": "set",
@@ -155830,8 +156909,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 176,
-      "end_line": 176,
+      "line": 184,
+      "end_line": 184,
       "owner": "send_message",
       "conditions": [],
       "operation": "set",
@@ -155844,8 +156923,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 544,
-      "end_line": 544,
+      "line": 727,
+      "end_line": 727,
       "owner": "telegram_poll_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -155858,8 +156937,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 137,
-      "end_line": 137,
+      "line": 145,
+      "end_line": 145,
       "owner": "_api",
       "conditions": [
         "error is not None or resp is None"
@@ -155874,8 +156953,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 142,
-      "end_line": 142,
+      "line": 150,
+      "end_line": 150,
       "owner": "_api",
       "conditions": [
         "not data.get('ok')"
@@ -155890,8 +156969,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 147,
-      "end_line": 147,
+      "line": 155,
+      "end_line": 155,
       "owner": "_api",
       "conditions": [],
       "operation": "set",
@@ -155904,8 +156983,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 762,
+      "end_line": 762,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -155920,8 +156999,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 258,
-      "end_line": 260,
+      "line": 266,
+      "end_line": 268,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -155934,8 +157013,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 297,
-      "end_line": 300,
+      "line": 305,
+      "end_line": 308,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -155948,8 +157027,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 301,
-      "end_line": 303,
+      "line": 309,
+      "end_line": 311,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -155962,8 +157041,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 304,
-      "end_line": 308,
+      "line": 312,
+      "end_line": 316,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -155976,8 +157055,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 314,
-      "end_line": 319,
+      "line": 322,
+      "end_line": 327,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -155990,8 +157069,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 380,
-      "end_line": 382,
+      "line": 388,
+      "end_line": 390,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -156004,8 +157083,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 254,
-      "end_line": 256,
+      "line": 262,
+      "end_line": 264,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -156018,8 +157097,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 376,
-      "end_line": 378,
+      "line": 384,
+      "end_line": 386,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -156032,8 +157111,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 251,
-      "end_line": 253,
+      "line": 259,
+      "end_line": 261,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -156046,8 +157125,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 383,
+      "end_line": 383,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -156060,8 +157139,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 401,
-      "end_line": 403,
+      "line": 409,
+      "end_line": 411,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "operation": "execute",
@@ -161052,8 +162131,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 364,
+      "end_line": 364,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "execute",
@@ -161066,8 +162145,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 349,
-      "end_line": 349,
+      "line": 365,
+      "end_line": 365,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "commit",
@@ -161080,8 +162159,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 447,
+      "end_line": 447,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -161108,8 +162187,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 453,
+      "end_line": 453,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -161178,8 +162257,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 456,
+      "end_line": 456,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "rollback",
@@ -161192,8 +162271,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 438,
-      "end_line": 438,
+      "line": 458,
+      "end_line": 458,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -161220,8 +162299,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 364,
+      "end_line": 364,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "delete",
@@ -210715,6 +211794,267 @@
       "expression": "WorldIndicator"
     },
     {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 66,
+      "end_line": 66,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 104,
+      "end_line": 104,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.models.UserSignup.created_at",
+      "expression": "UserSignup.created_at"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 66,
+      "end_line": 66,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 104,
+      "end_line": 104,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.models.UserSignup",
+      "expression": "UserSignup"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 103,
+      "end_line": 103,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.models.UserSignup.created_at",
+      "expression": "UserSignup.created_at"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 103,
+      "end_line": 103,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.models.UserSignup.created_at",
+      "expression": "UserSignup.created_at"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash",
+      "expression": "FrontendEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.user_id",
+      "expression": "FrontendEvent.user_id"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.authed",
+      "expression": "FrontendEvent.authed"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url",
+      "expression": "FrontendEvent.url"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.params_json",
+      "expression": "FrontendEvent.params_json"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 103,
+      "end_line": 103,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.models.UserSignup",
+      "expression": "UserSignup"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 103,
+      "end_line": 103,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.models.UserSignup",
+      "expression": "UserSignup"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 103,
+      "end_line": 103,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.models.UserSignup",
+      "expression": "UserSignup"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
       "path": "backend/app/services/brent_fred_parser.py",
       "line": 82,
       "end_line": 82,
@@ -216968,6 +218308,1185 @@
       "conditions": [],
       "symbol": "app.models.IndicatorData",
       "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 446,
+      "end_line": 446,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 446,
+      "end_line": 446,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 264,
+      "end_line": 264,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code.in_",
+      "expression": "Indicator.code.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 270,
+      "end_line": 270,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code.in_",
+      "expression": "WorldIndicator.code.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 274,
+      "end_line": 274,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code.in_",
+      "expression": "RegionIndicator.code.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 277,
+      "end_line": 277,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Region.slug.in_",
+      "expression": "Region.slug.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 282,
+      "end_line": 282,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.slug.in_",
+      "expression": "WorldCountry.slug.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User.id.in_",
+      "expression": "User.id.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 429,
+      "end_line": 429,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.session_id_hash.in_",
+      "expression": "BehaviorSession.session_id_hash.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 264,
+      "end_line": 264,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 264,
+      "end_line": 264,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Indicator.name",
+      "expression": "Indicator.name"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 264,
+      "end_line": 264,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 269,
+      "end_line": 269,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 270,
+      "end_line": 270,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 274,
+      "end_line": 274,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 274,
+      "end_line": 274,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.name",
+      "expression": "RegionIndicator.name"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 274,
+      "end_line": 274,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 277,
+      "end_line": 277,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Region.slug",
+      "expression": "Region.slug"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 277,
+      "end_line": 277,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Region.name",
+      "expression": "Region.name"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 277,
+      "end_line": 277,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Region.slug",
+      "expression": "Region.slug"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 281,
+      "end_line": 281,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.slug",
+      "expression": "WorldCountry.slug"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 281,
+      "end_line": 281,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.code",
+      "expression": "WorldCountry.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 281,
+      "end_line": 281,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.name_ru",
+      "expression": "WorldCountry.name_ru"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 282,
+      "end_line": 282,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.slug",
+      "expression": "WorldCountry.slug"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 297,
+      "end_line": 297,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.code.in_",
+      "expression": "SubnationalIndicator.code.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.slug.in_",
+      "expression": "SubnationalRegion.slug.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User.id",
+      "expression": "User.id"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User.created_at",
+      "expression": "User.created_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User.id",
+      "expression": "User.id"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 427,
+      "end_line": 427,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.session_id_hash",
+      "expression": "BehaviorSession.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 427,
+      "end_line": 427,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.channel",
+      "expression": "BehaviorSession.channel"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 428,
+      "end_line": 428,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.device_type",
+      "expression": "BehaviorSession.device_type"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 428,
+      "end_line": 428,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.country",
+      "expression": "BehaviorSession.country"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 429,
+      "end_line": 429,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.session_id_hash",
+      "expression": "BehaviorSession.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 444,
+      "end_line": 444,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name.in_",
+      "expression": "FrontendEvent.event_name.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 445,
+      "end_line": 445,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 445,
+      "end_line": 445,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 264,
+      "end_line": 264,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 264,
+      "end_line": 264,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 264,
+      "end_line": 264,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 269,
+      "end_line": 269,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 269,
+      "end_line": 269,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 270,
+      "end_line": 270,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 274,
+      "end_line": 274,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 274,
+      "end_line": 274,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 274,
+      "end_line": 274,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 277,
+      "end_line": 277,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 277,
+      "end_line": 277,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 277,
+      "end_line": 277,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 281,
+      "end_line": 281,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 281,
+      "end_line": 281,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 281,
+      "end_line": 281,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 282,
+      "end_line": 282,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.country_code",
+      "expression": "SubnationalIndicator.country_code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.code",
+      "expression": "SubnationalIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.name_ru",
+      "expression": "SubnationalIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 297,
+      "end_line": 297,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator.code",
+      "expression": "SubnationalIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 301,
+      "end_line": 301,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.country_code",
+      "expression": "SubnationalRegion.country_code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 301,
+      "end_line": 301,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.slug",
+      "expression": "SubnationalRegion.slug"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 301,
+      "end_line": 301,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.name_ru",
+      "expression": "SubnationalRegion.name_ru"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion.slug",
+      "expression": "SubnationalRegion.slug"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 401,
+      "end_line": 401,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.IdentityLink.visitor_id_hash.in_",
+      "expression": "IdentityLink.visitor_id_hash.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User",
+      "expression": "User"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User",
+      "expression": "User"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.User",
+      "expression": "User"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 427,
+      "end_line": 427,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 427,
+      "end_line": 427,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 428,
+      "end_line": 428,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 428,
+      "end_line": 428,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 429,
+      "end_line": 429,
+      "owner": "_session_portraits",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 441,
+      "end_line": 441,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 441,
+      "end_line": 441,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 441,
+      "end_line": 441,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 442,
+      "end_line": 442,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash",
+      "expression": "FrontendEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 442,
+      "end_line": 442,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.user_id",
+      "expression": "FrontendEvent.user_id"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 442,
+      "end_line": 442,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.authed",
+      "expression": "FrontendEvent.authed"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 443,
+      "end_line": 443,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url",
+      "expression": "FrontendEvent.url"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 443,
+      "end_line": 443,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.params_json",
+      "expression": "FrontendEvent.params_json"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 444,
+      "end_line": 444,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 445,
+      "end_line": 445,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 445,
+      "end_line": 445,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 268,
+      "end_line": 268,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 268,
+      "end_line": 268,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_ru",
+      "expression": "WorldIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 268,
+      "end_line": 268,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.name_ru",
+      "expression": "WorldCountry.name_ru"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 269,
+      "end_line": 269,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 269,
+      "end_line": 269,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 297,
+      "end_line": 297,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 301,
+      "end_line": 301,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion",
+      "expression": "SubnationalRegion"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 301,
+      "end_line": 301,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion",
+      "expression": "SubnationalRegion"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 301,
+      "end_line": 301,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion",
+      "expression": "SubnationalRegion"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "load_names",
+      "conditions": [
+        "sub_pairs"
+      ],
+      "symbol": "app.models.SubnationalRegion",
+      "expression": "SubnationalRegion"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 386,
+      "end_line": 386,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.visitor_id_hash.in_",
+      "expression": "ServerSession.visitor_id_hash.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 387,
+      "end_line": 387,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.day",
+      "expression": "ServerSession.day"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 387,
+      "end_line": 387,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.day",
+      "expression": "ServerSession.day"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 400,
+      "end_line": 400,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.IdentityLink.visitor_id_hash",
+      "expression": "IdentityLink.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 400,
+      "end_line": 400,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.IdentityLink.user_id",
+      "expression": "IdentityLink.user_id"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 401,
+      "end_line": 401,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.IdentityLink.visitor_id_hash",
+      "expression": "IdentityLink.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 441,
+      "end_line": 441,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 441,
+      "end_line": 441,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 441,
+      "end_line": 441,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 442,
+      "end_line": 442,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 442,
+      "end_line": 442,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 442,
+      "end_line": 442,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 443,
+      "end_line": 443,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 443,
+      "end_line": 443,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 444,
+      "end_line": 444,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 268,
+      "end_line": 268,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 268,
+      "end_line": 268,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 268,
+      "end_line": 268,
+      "owner": "load_names",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 385,
+      "end_line": 385,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.visitor_id_hash",
+      "expression": "ServerSession.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 386,
+      "end_line": 386,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.visitor_id_hash",
+      "expression": "ServerSession.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 387,
+      "end_line": 387,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 387,
+      "end_line": 387,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 388,
+      "end_line": 388,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_bot.is_",
+      "expression": "ServerSession.is_bot.is_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 388,
+      "end_line": 388,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_internal.is_",
+      "expression": "ServerSession.is_internal.is_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 400,
+      "end_line": 400,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.IdentityLink",
+      "expression": "IdentityLink"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 400,
+      "end_line": 400,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.IdentityLink",
+      "expression": "IdentityLink"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 401,
+      "end_line": 401,
+      "owner": "_signup_times",
+      "conditions": [],
+      "symbol": "app.models.IdentityLink",
+      "expression": "IdentityLink"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 385,
+      "end_line": 385,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 386,
+      "end_line": 386,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 388,
+      "end_line": 388,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_bot",
+      "expression": "ServerSession.is_bot"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 388,
+      "end_line": 388,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_internal",
+      "expression": "ServerSession.is_internal"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 388,
+      "end_line": 388,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 388,
+      "end_line": 388,
+      "owner": "_excluded_visitors",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -254804,8 +257323,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 291,
-      "end_line": 291,
+      "line": 299,
+      "end_line": 299,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.User",
@@ -254813,8 +257332,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 295,
-      "end_line": 295,
+      "line": 303,
+      "end_line": 303,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -254822,8 +257341,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 267,
+      "end_line": 267,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -254831,8 +257350,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 267,
+      "end_line": 267,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -254840,8 +257359,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 295,
-      "end_line": 295,
+      "line": 303,
+      "end_line": 303,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -254849,8 +257368,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 295,
-      "end_line": 295,
+      "line": 303,
+      "end_line": 303,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -254858,8 +257377,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 319,
+      "end_line": 319,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.user_id",
@@ -254867,8 +257386,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 319,
+      "end_line": 319,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.event",
@@ -254876,8 +257395,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 389,
+      "end_line": 389,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -254885,8 +257404,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 389,
+      "end_line": 389,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -254894,8 +257413,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 389,
+      "end_line": 389,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.phone",
@@ -254903,8 +257422,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 263,
+      "end_line": 263,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -254912,8 +257431,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 263,
+      "end_line": 263,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -254921,8 +257440,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 267,
+      "end_line": 267,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -254930,8 +257449,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 267,
+      "end_line": 267,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -254939,8 +257458,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 295,
-      "end_line": 295,
+      "line": 303,
+      "end_line": 303,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -254948,8 +257467,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 307,
+      "end_line": 307,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -254957,8 +257476,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 310,
+      "end_line": 310,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent.user_id",
@@ -254966,8 +257485,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 319,
+      "end_line": 319,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -254975,8 +257494,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 319,
+      "end_line": 319,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -254984,8 +257503,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 385,
+      "end_line": 385,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -254993,8 +257512,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 385,
+      "end_line": 385,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -255002,8 +257521,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 389,
+      "end_line": 389,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -255011,8 +257530,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 389,
+      "end_line": 389,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -255020,8 +257539,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 389,
+      "end_line": 389,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -255029,8 +257548,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 263,
+      "end_line": 263,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -255038,8 +257557,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 263,
+      "end_line": 263,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -255047,8 +257566,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 306,
+      "end_line": 306,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -255056,8 +257575,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 306,
+      "end_line": 306,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.email",
@@ -255065,8 +257584,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 306,
+      "end_line": 306,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.phone",
@@ -255074,8 +257593,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 307,
+      "end_line": 307,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -255083,8 +257602,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 310,
+      "end_line": 310,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent.kind",
@@ -255092,8 +257611,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 310,
+      "end_line": 310,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent.granted",
@@ -255101,8 +257620,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 310,
+      "end_line": 310,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -255110,8 +257629,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 318,
+      "end_line": 318,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.id",
@@ -255119,8 +257638,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 383,
+      "end_line": 383,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -255128,8 +257647,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 385,
+      "end_line": 385,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -255137,8 +257656,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 385,
+      "end_line": 385,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -255146,8 +257665,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 260,
+      "end_line": 260,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User.created_at.desc",
@@ -255155,8 +257674,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 306,
+      "end_line": 306,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -255164,8 +257683,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 306,
+      "end_line": 306,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -255173,39 +257692,12 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 306,
+      "end_line": 306,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
       "expression": "OAuthIdentity"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 302,
-      "end_line": 302,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.Consent",
-      "expression": "Consent"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 302,
-      "end_line": 302,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.Consent",
-      "expression": "Consent"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 307,
-      "end_line": 307,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.AuthAudit.ts.desc",
-      "expression": "AuthAudit.ts.desc"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -255213,13 +257705,40 @@
       "end_line": 310,
       "owner": "_user_card",
       "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 310,
+      "end_line": 310,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 315,
+      "end_line": 315,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.AuthAudit.ts.desc",
+      "expression": "AuthAudit.ts.desc"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 318,
+      "end_line": 318,
+      "owner": "_user_card",
+      "conditions": [],
       "symbol": "app.models.AuthAudit",
       "expression": "AuthAudit"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 325,
+      "end_line": 325,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at.desc",
@@ -255227,8 +257746,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 383,
+      "end_line": 383,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.User",
@@ -255236,8 +257755,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 260,
+      "end_line": 260,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User",
@@ -255245,8 +257764,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 260,
+      "end_line": 260,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -255254,8 +257773,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 315,
+      "end_line": 315,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts",
@@ -255263,8 +257782,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 325,
+      "end_line": 325,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -255272,8 +257791,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 383,
+      "end_line": 383,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.User",
@@ -255281,8 +257800,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 260,
+      "end_line": 260,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User",
@@ -255290,8 +257809,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 314,
+      "end_line": 314,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.user_id",
@@ -255299,8 +257818,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 315,
+      "end_line": 315,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -255308,8 +257827,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 324,
+      "end_line": 324,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.user_id",
@@ -255317,8 +257836,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 325,
+      "end_line": 325,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -255326,8 +257845,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 410,
+      "end_line": 410,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at.desc",
@@ -255335,8 +257854,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 313,
+      "end_line": 313,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.event",
@@ -255344,8 +257863,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 313,
+      "end_line": 313,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ip",
@@ -255353,8 +257872,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 313,
+      "end_line": 313,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts",
@@ -255362,8 +257881,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 314,
+      "end_line": 314,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -255371,8 +257890,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 323,
+      "end_line": 323,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -255380,8 +257899,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 323,
+      "end_line": 323,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -255389,8 +257908,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 323,
+      "end_line": 323,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -255398,8 +257917,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 324,
+      "end_line": 324,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -255407,8 +257926,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 410,
+      "end_line": 410,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -255416,8 +257935,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 410,
+      "end_line": 410,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at",
@@ -255425,8 +257944,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 313,
+      "end_line": 313,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -255434,8 +257953,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 313,
+      "end_line": 313,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -255443,8 +257962,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 313,
+      "end_line": 313,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -255452,8 +257971,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 323,
+      "end_line": 323,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -255461,8 +257980,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 323,
+      "end_line": 323,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -255470,8 +257989,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 323,
+      "end_line": 323,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -255479,8 +257998,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 410,
+      "end_line": 410,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -266160,8 +268679,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 364,
+      "end_line": 364,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -266178,8 +268697,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 364,
+      "end_line": 364,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -266187,8 +268706,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 364,
+      "end_line": 364,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -290566,6 +293085,42 @@
       "kind": "FunctionDef"
     },
     {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 43,
+      "end_line": 48,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_csv",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 51,
+      "end_line": 52,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_msk",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 55,
+      "end_line": 95,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "events_csv",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 98,
+      "end_line": 123,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "signups_csv",
+      "kind": "AsyncFunctionDef"
+    },
+    {
       "path": "backend/app/services/bot_score.py",
       "line": 41,
       "end_line": 61,
@@ -293911,6 +296466,267 @@
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 112,
+      "end_line": 124,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "ContentRef",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 127,
+      "end_line": 135,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_path_parts",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 138,
+      "end_line": 161,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_from_params",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 164,
+      "end_line": 177,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "content_ref",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 180,
+      "end_line": 228,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_from_path",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 236,
+      "end_line": 244,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "Names",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 247,
+      "end_line": 250,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_chunks",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 253,
+      "end_line": 308,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "load_names",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 311,
+      "end_line": 317,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_series_name",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 320,
+      "end_line": 357,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "content_title",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 364,
+      "end_line": 375,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "period_for_window",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 378,
+      "end_line": 391,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_excluded_visitors",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 394,
+      "end_line": 420,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_signup_times",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 423,
+      "end_line": 431,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_session_portraits",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 434,
+      "end_line": 435,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_person",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 438,
+      "end_line": 487,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "collect",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 490,
+      "end_line": 534,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "summarize",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 541,
+      "end_line": 542,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_n",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 545,
+      "end_line": 546,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_pct",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 549,
+      "end_line": 559,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_people",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 562,
+      "end_line": 564,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_mix",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 570,
+      "end_line": 572,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_short",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 575,
+      "end_line": 579,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_times",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 582,
+      "end_line": 629,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "format_report",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 632,
+      "end_line": 646,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "digest_lines",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 653,
+      "end_line": 716,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "build_xlsx",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 123,
+      "end_line": 124,
+      "owner": "ContentRef",
+      "conditions": [],
+      "name": "key",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 495,
+      "end_line": 511,
+      "owner": "summarize",
+      "conditions": [],
+      "name": "by_content",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 663,
+      "end_line": 671,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "name": "sheet",
       "kind": "FunctionDef"
     },
     {
@@ -310404,8 +313220,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 71,
-      "end_line": 93,
+      "line": 74,
+      "end_line": 101,
       "owner": "<module>",
       "conditions": [],
       "name": "main_menu_keyboard",
@@ -310413,8 +313229,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 105,
-      "end_line": 149,
+      "line": 113,
+      "end_line": 157,
       "owner": "<module>",
       "conditions": [],
       "name": "_api",
@@ -310422,8 +313238,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 152,
-      "end_line": 213,
+      "line": 160,
+      "end_line": 221,
       "owner": "<module>",
       "conditions": [],
       "name": "send_message",
@@ -310431,8 +313247,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 216,
-      "end_line": 241,
+      "line": 224,
+      "end_line": 249,
       "owner": "<module>",
       "conditions": [],
       "name": "send_document",
@@ -310440,8 +313256,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 248,
-      "end_line": 286,
+      "line": 256,
+      "end_line": 294,
       "owner": "<module>",
       "conditions": [],
       "name": "_users_overview",
@@ -310449,8 +313265,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 289,
-      "end_line": 370,
+      "line": 297,
+      "end_line": 378,
       "owner": "<module>",
       "conditions": [],
       "name": "_user_card",
@@ -310458,8 +313274,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 373,
-      "end_line": 394,
+      "line": 381,
+      "end_line": 402,
       "owner": "<module>",
       "conditions": [],
       "name": "_users_csv",
@@ -310467,8 +313283,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 397,
-      "end_line": 414,
+      "line": 405,
+      "end_line": 422,
       "owner": "<module>",
       "conditions": [],
       "name": "_hypotheses_overview",
@@ -310476,8 +313292,80 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 421,
-      "end_line": 499,
+      "line": 434,
+      "end_line": 447,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "downloads_keyboard",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 450,
+      "end_line": 460,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "export_keyboard",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 476,
+      "end_line": 482,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_window_or_none",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 485,
+      "end_line": 501,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_downloads_data",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 504,
+      "end_line": 510,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_period_label",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 513,
+      "end_line": 522,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_send_downloads_report",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 525,
+      "end_line": 538,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_send_downloads_file",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 541,
+      "end_line": 574,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_send_export_file",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 581,
+      "end_line": 669,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_callback",
@@ -310485,8 +313373,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 502,
-      "end_line": 515,
+      "line": 672,
+      "end_line": 692,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_message",
@@ -310494,8 +313382,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 518,
-      "end_line": 522,
+      "line": 700,
+      "end_line": 704,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_shared",
@@ -310503,8 +313391,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 525,
-      "end_line": 533,
+      "line": 707,
+      "end_line": 716,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_public_message",
@@ -310512,8 +313400,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 536,
-      "end_line": 581,
+      "line": 719,
+      "end_line": 764,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_poll_job",
@@ -310521,8 +313409,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 116,
-      "end_line": 121,
+      "line": 124,
+      "end_line": 129,
       "owner": "_api",
       "conditions": [],
       "name": "_rewind",
@@ -310530,8 +313418,35 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 127,
-      "end_line": 131,
+      "line": 451,
+      "end_line": 452,
+      "owner": "export_keyboard",
+      "conditions": [],
+      "name": "row",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 493,
+      "end_line": 495,
+      "owner": "_downloads_data",
+      "conditions": [],
+      "name": "run",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 551,
+      "end_line": 555,
+      "owner": "_send_export_file",
+      "conditions": [],
+      "name": "run",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 135,
+      "end_line": 139,
       "owner": "_api",
       "conditions": [],
       "name": "_once",
@@ -319710,8 +322625,17 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 212,
-      "end_line": 256,
+      "line": 215,
+      "end_line": 225,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_download_content_lines",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/analytics_scheduler.py",
+      "line": 228,
+      "end_line": 272,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_goal_lines",
@@ -319719,8 +322643,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 264,
-      "end_line": 272,
+      "line": 280,
+      "end_line": 288,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_temporary_failure",
@@ -319728,8 +322652,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 275,
-      "end_line": 285,
+      "line": 291,
+      "end_line": 301,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_goal_lines_with_retry",
@@ -319737,8 +322661,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 288,
-      "end_line": 300,
+      "line": 304,
+      "end_line": 316,
       "owner": "<module>",
       "conditions": [],
       "name": "acquisition_daily_job",
@@ -319746,8 +322670,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 303,
-      "end_line": 315,
+      "line": 319,
+      "end_line": 331,
       "owner": "<module>",
       "conditions": [],
       "name": "partner_revenue_daily_job",
@@ -319755,8 +322679,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 318,
-      "end_line": 332,
+      "line": 334,
+      "end_line": 348,
       "owner": "<module>",
       "conditions": [],
       "name": "webmaster_queries_daily_job",
@@ -319764,8 +322688,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 335,
-      "end_line": 350,
+      "line": 351,
+      "end_line": 366,
       "owner": "<module>",
       "conditions": [],
       "name": "behavior_retention_job",
@@ -319773,8 +322697,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 357,
-      "end_line": 412,
+      "line": 373,
+      "end_line": 432,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_daily_digest_job",
@@ -319782,8 +322706,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 415,
-      "end_line": 438,
+      "line": 435,
+      "end_line": 458,
       "owner": "<module>",
       "conditions": [],
       "name": "analytics_daily_job",
@@ -319800,8 +322724,17 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 224,
-      "end_line": 234,
+      "line": 220,
+      "end_line": 223,
+      "owner": "_download_content_lines",
+      "conditions": [],
+      "name": "run",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/analytics_scheduler.py",
+      "line": 240,
+      "end_line": 250,
       "owner": "_metrika_goal_lines",
       "conditions": [],
       "name": "_totals",
@@ -319809,8 +322742,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 236,
-      "end_line": 237,
+      "line": 252,
+      "end_line": 253,
       "owner": "_metrika_goal_lines",
       "conditions": [],
       "name": "_int",
@@ -319818,8 +322751,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 401,
-      "end_line": 403,
+      "line": 421,
+      "end_line": 423,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "_inventory_block",
@@ -338090,6 +341023,62 @@
       "symbol": "app.services.bot_chart.COMPARE"
     },
     {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 52,
+      "end_line": 52,
+      "owner": "_msk",
+      "conditions": [],
+      "symbol": "app.services.analytics_period.MSK_OFFSET"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 107,
+      "end_line": 107,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.services.telegram_reports.METHOD_LABELS"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 110,
+      "end_line": 110,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.services.telegram_reports.CHANNEL_LABELS"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 112,
+      "end_line": 112,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.services.telegram_reports.DEVICE_LABELS"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 113,
+      "end_line": 113,
+      "owner": "signups_csv",
+      "conditions": [],
+      "symbol": "app.services.bot_exports.TRIGGER_LABELS_RU"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 90,
+      "end_line": 90,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.services.bot_exports.TIER_LABELS_RU"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 90,
+      "end_line": 90,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.services.goal_taxonomy.GROUP_LABELS_RU"
+    },
+    {
       "path": "backend/app/services/bot_score.py",
       "line": 169,
       "end_line": 169,
@@ -339252,6 +342241,176 @@
         "freq.startswith('month')"
       ],
       "symbol": "app.services.display._EN_MONTHS_NOM"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 59,
+      "end_line": 59,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.download_content.WALL_EVENTS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 203,
+      "end_line": 203,
+      "owner": "_from_path",
+      "conditions": [],
+      "symbol": "app.services.download_content._RESERVED_FIRST"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 463,
+      "end_line": 463,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.services.download_content.WALL_EVENTS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 307,
+      "end_line": 307,
+      "owner": "load_names",
+      "conditions": [
+        "any((r.kind == 'world_rating' for r in refs))"
+      ],
+      "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 356,
+      "end_line": 356,
+      "owner": "content_title",
+      "conditions": [],
+      "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 457,
+      "end_line": 457,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.services.download_content.WALL_EVENTS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 618,
+      "end_line": 618,
+      "owner": "format_report",
+      "conditions": [
+        "d['by_section']"
+      ],
+      "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 620,
+      "end_line": 620,
+      "owner": "format_report",
+      "conditions": [
+        "d['by_channel']"
+      ],
+      "symbol": "app.services.download_content.CHANNEL_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 624,
+      "end_line": 624,
+      "owner": "format_report",
+      "conditions": [
+        "w['by_channel']"
+      ],
+      "symbol": "app.services.download_content.CHANNEL_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 692,
+      "end_line": 692,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 698,
+      "end_line": 698,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 708,
+      "end_line": 708,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 710,
+      "end_line": 710,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.CHANNEL_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 710,
+      "end_line": 710,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.DEVICE_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 467,
+      "end_line": 467,
+      "owner": "collect",
+      "conditions": [
+        "is_wall and r.visitor_id_hash"
+      ],
+      "symbol": "app.services.download_content._SIGNUP_SLACK"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 475,
+      "end_line": 475,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.services.download_content.WALL_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 475,
+      "end_line": 475,
+      "owner": "collect",
+      "conditions": [],
+      "symbol": "app.services.download_content.FORMAT_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 706,
+      "end_line": 706,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.analytics_period.MSK_OFFSET"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 686,
+      "end_line": 686,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.SECTION_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 687,
+      "end_line": 687,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.CHANNEL_LABELS"
     },
     {
       "path": "backend/app/services/emiss_labor_parser.py",
@@ -347689,16 +350848,40 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 547,
-      "end_line": 547,
+      "line": 451,
+      "end_line": 451,
+      "owner": "export_keyboard.row",
+      "conditions": [],
+      "symbol": "app.services.telegram_bot._EXPORT_WINDOWS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 730,
+      "end_line": 730,
       "owner": "telegram_poll_job",
       "conditions": [],
       "symbol": "app.services.telegram_bot._REDIS_TRANSIENT"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 479,
+      "end_line": 479,
+      "owner": "_window_or_none",
+      "conditions": [],
+      "symbol": "app.services.download_content.WINDOWS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 716,
+      "end_line": 716,
+      "owner": "_is_public_message",
+      "conditions": [],
+      "symbol": "app.services.telegram_bot._DOWNLOAD_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 763,
+      "end_line": 763,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -347707,11 +350890,93 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 134,
-      "end_line": 134,
+      "line": 507,
+      "end_line": 507,
+      "owner": "_period_label",
+      "conditions": [],
+      "symbol": "app.services.download_content.WINDOWS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 716,
+      "end_line": 716,
+      "owner": "_is_public_message",
+      "conditions": [],
+      "symbol": "app.services.telegram_bot._ADMIN_TEXTS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 716,
+      "end_line": 716,
+      "owner": "_is_public_message",
+      "conditions": [],
+      "symbol": "app.services.telegram_bot._EXPORT_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 440,
+      "end_line": 440,
+      "owner": "downloads_keyboard",
+      "conditions": [],
+      "symbol": "app.services.download_content.WINDOWS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 686,
+      "end_line": 686,
+      "owner": "_handle_message",
+      "conditions": [
+        "not (text in ('/start', '/menu', 'меню'))",
+        "not (text == '/users')"
+      ],
+      "symbol": "app.services.telegram_bot._DOWNLOAD_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 691,
+      "end_line": 691,
+      "owner": "_handle_message",
+      "conditions": [
+        "not (text in ('/start', '/menu', 'меню'))",
+        "not (text == '/users')",
+        "not (text and text.split()[0] in _DOWNLOAD_COMMANDS)"
+      ],
+      "symbol": "app.services.telegram_bot._EXPORT_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 142,
+      "end_line": 142,
       "owner": "_api",
       "conditions": [],
       "symbol": "app.services.telegram_bot._RETRY_METHODS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 444,
+      "end_line": 444,
+      "owner": "downloads_keyboard",
+      "conditions": [],
+      "symbol": "app.services.download_content.WINDOWS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 661,
+      "end_line": 661,
+      "owner": "_handle_callback",
+      "conditions": [
+        "not (data == 'users')",
+        "not (data == 'users_csv')",
+        "not (data == 'pulse_today')",
+        "not (data == 'dataset')",
+        "not (data == 'hypotheses')",
+        "not (data in ('signups', 'funnel', 'goals') and settings.telegram_digest_v2_enabled)",
+        "not (data == 'public_bot' and settings.public_bot_enabled)",
+        "not (data.startswith('dl:') and (w := _window_or_none(data[3:])))",
+        "not (data.startswith('dlx:') and (w := _window_or_none(data[4:])))",
+        "not (data == 'export')"
+      ],
+      "symbol": "app.services.telegram_bot._EXPORT_WINDOWS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -350264,8 +353529,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 276,
-      "end_line": 276,
+      "line": 292,
+      "end_line": 292,
       "owner": "_metrika_goal_lines_with_retry",
       "conditions": [],
       "symbol": "app.tasks.analytics_scheduler._METRIKA_DIGEST_RETRY_PAUSES_S"

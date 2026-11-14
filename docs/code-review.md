@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `d742846c627ea41cdc6f05cb80966969fb40de77`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `e4049dca93a88ceb80409fa3781fc5201ca8fd4c`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2457 |
-| Код, шаблоны и стили | 1985 |
-| Актуальные рецензии без пропусков guard | 2457 |
-| Именованные определения Python/JS: с аннотацией / всего | 15975 / 15975 |
+| Файлы в явно определённом scope | 2460 |
+| Код, шаблоны и стили | 1988 |
+| Актуальные рецензии без пропусков guard | 2460 |
+| Именованные определения Python/JS: с аннотацией / всего | 16036 / 16036 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -270,6 +270,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/binance_btcusdt_parser.py](../backend/app/services/binance_btcusdt_parser.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/bot_agent_tools.py](../backend/app/services/bot_agent_tools.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/bot_chart.py](../backend/app/services/bot_chart.py) | reviewed | 13/13 | актуально |
+| [backend/app/services/bot_exports.py](../backend/app/services/bot_exports.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/bot_score.py](../backend/app/services/bot_score.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/bot_traffic.py](../backend/app/services/bot_traffic.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/br_pop_adapter.py](../backend/app/services/br_pop_adapter.py) | reviewed | 14/14 | актуально |
@@ -307,6 +308,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/demographics.py](../backend/app/services/demographics.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/derived_ops.py](../backend/app/services/derived_ops.py) | reviewed | 31/31 | актуально |
 | [backend/app/services/display.py](../backend/app/services/display.py) | reviewed | 19/19 | актуально |
+| [backend/app/services/download_content.py](../backend/app/services/download_content.py) | reviewed | 29/29 | актуально |
 | [backend/app/services/ecb_fx_parser.py](../backend/app/services/ecb_fx_parser.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/emiss_labor_parser.py](../backend/app/services/emiss_labor_parser.py) | body_reviewed | 3/3 | актуально |
 | [backend/app/services/emiss_regional_parser.py](../backend/app/services/emiss_regional_parser.py) | reviewed | 14/14 | актуально |
@@ -457,7 +459,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/ssr_swr.py](../backend/app/services/ssr_swr.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/ssr_warm.py](../backend/app/services/ssr_warm.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/staleness.py](../backend/app/services/staleness.py) | reviewed | 17/17 | актуально |
-| [backend/app/services/telegram_bot.py](../backend/app/services/telegram_bot.py) | reviewed | 15/15 | актуально |
+| [backend/app/services/telegram_bot.py](../backend/app/services/telegram_bot.py) | reviewed | 26/26 | актуально |
 | [backend/app/services/telegram_calm.py](../backend/app/services/telegram_calm.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/telegram_missed_summary.py](../backend/app/services/telegram_missed_summary.py) | reviewed | 24/24 | актуально |
 | [backend/app/services/telegram_outbox.py](../backend/app/services/telegram_outbox.py) | reviewed | 6/6 | актуально |
@@ -531,7 +533,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/session_analysis_schema.py](../backend/app/session_analysis_schema.py) | reviewed | 10/10 | актуально |
 | [backend/app/tasks/__init__.py](../backend/app/tasks/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/tasks/analytics_rollups.py](../backend/app/tasks/analytics_rollups.py) | reviewed | 40/40 | актуально |
-| [backend/app/tasks/analytics_scheduler.py](../backend/app/tasks/analytics_scheduler.py) | reviewed | 19/19 | актуально |
+| [backend/app/tasks/analytics_scheduler.py](../backend/app/tasks/analytics_scheduler.py) | reviewed | 21/21 | актуально |
 | [backend/app/tasks/freshness_watchdog.py](../backend/app/tasks/freshness_watchdog.py) | reviewed | 1/1 | актуально |
 | [backend/app/tasks/scheduler.py](../backend/app/tasks/scheduler.py) | reviewed | 26/26 | актуально |
 | [backend/app/tasks/session_analysis.py](../backend/app/tasks/session_analysis.py) | reviewed | 5/5 | актуально |
@@ -699,6 +701,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_derived_specs_execution.py](../backend/tests/test_derived_specs_execution.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_digest_period.py](../backend/tests/test_digest_period.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_display_adapter.py](../backend/tests/test_display_adapter.py) | reviewed | 18/18 | актуально |
+| [backend/tests/test_download_content.py](../backend/tests/test_download_content.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_dual_host_release_gate.py](../backend/tests/test_dual_host_release_gate.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_ecb_fx_parser.py](../backend/tests/test_ecb_fx_parser.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_embed_tracking.py](../backend/tests/test_embed_tracking.py) | reviewed | 5/5 | актуально |

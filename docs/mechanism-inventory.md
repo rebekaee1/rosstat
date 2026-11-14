@@ -13,10 +13,10 @@
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1349**
-- Registry references: **2545**
+- Registry declarations: **1364**
+- Registry references: **2583**
 - Migration operations: **480**
-- Candidate effects: **2818**
+- Candidate effects: **2843**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2407,6 +2407,8 @@ Relationships: `[]`
 | app.services.bot_chart.GRID | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:31](../backend/app/services/bot_chart.py#L31) |
 | app.services.bot_chart.COMPARE | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:33](../backend/app/services/bot_chart.py#L33) |
 | app.services.bot_chart._MONTHS_SHORT | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:35](../backend/app/services/bot_chart.py#L35) |
+| app.services.bot_exports.TIER_LABELS_RU | Dict | 'macro', 'micro', 'intent', 'engagement', 'technical' | [backend/app/services/bot_exports.py:32](../backend/app/services/bot_exports.py#L32) |
+| app.services.bot_exports.TRIGGER_LABELS_RU | Dict | 'gate_download', 'gate_chart_image', 'gate_compare', 'gate_gif', 'nudge', 'header', 'direct' | [backend/app/services/bot_exports.py:36](../backend/app/services/bot_exports.py#L36) |
 | app.services.bot_score._BOT_UA_RE | Call | computed source expression | [backend/app/services/bot_score.py:29](../backend/app/services/bot_score.py#L29) |
 | app.services.bot_score.HEURISTICS | Tuple | sequence/source expression | [backend/app/services/bot_score.py:135](../backend/app/services/bot_score.py#L135) |
 | app.services.bot_traffic.CLASSES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:30](../backend/app/services/bot_traffic.py#L30) |
@@ -2513,6 +2515,15 @@ Relationships: `[]`
 | app.services.display._CYRILLIC_RE | Call | computed source expression | [backend/app/services/display.py:349](../backend/app/services/display.py#L349) |
 | app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:479](../backend/app/services/display.py#L479) |
 | app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:581](../backend/app/services/display.py#L581) |
+| app.services.download_content.WALL_EVENTS | Call | computed source expression | [backend/app/services/download_content.py:58](../backend/app/services/download_content.py#L58) |
+| app.services.download_content.FORMAT_LABELS | Dict | 'download_excel', 'download_csv', 'demographics_csv', 'download_ical', 'chart_image_download', 'compare_image_download', 'regions_map_gif_download', 'export_run', 'research_download' | [backend/app/services/download_content.py:61](../backend/app/services/download_content.py#L61) |
+| app.services.download_content.WALL_LABELS | Dict | 'download_limit', 'chart_image_blocked', 'compare_image_blocked', 'compare_limit_hit', 'regions_map_gif_blocked' | [backend/app/services/download_content.py:72](../backend/app/services/download_content.py#L72) |
+| app.services.download_content.SECTION_LABELS | Dict | 'russia', 'currency', 'world', 'region', 'world_region', 'compare', 'rating', 'calculator', 'demographics', 'calendar', 'research', 'other' | [backend/app/services/download_content.py:79](../backend/app/services/download_content.py#L79) |
+| app.services.download_content.CHANNEL_LABELS | Dict | 'search', 'direct', 'social', 'referral', 'ad', 'campaign', 'internal', 'unknown' | [backend/app/services/download_content.py:85](../backend/app/services/download_content.py#L85) |
+| app.services.download_content.DEVICE_LABELS | Dict | 'mobile', 'desktop', 'tablet', 'unknown' | [backend/app/services/download_content.py:89](../backend/app/services/download_content.py#L89) |
+| app.services.download_content.WINDOWS | Dict | '0', '1', '7', '30', '90' | [backend/app/services/download_content.py:94](../backend/app/services/download_content.py#L94) |
+| app.services.download_content._SIGNUP_SLACK | Call | computed source expression | [backend/app/services/download_content.py:98](../backend/app/services/download_content.py#L98) |
+| app.services.download_content._RESERVED_FIRST | Call | computed source expression | [backend/app/services/download_content.py:101](../backend/app/services/download_content.py#L101) |
 | app.services.emiss_labor_parser._PERIODS | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/emiss_labor_parser.py:21](../backend/app/services/emiss_labor_parser.py#L21) |
 | app.services.emiss_labor_parser._TERRITORIES | Dict | '1688487', '1849012' | [backend/app/services/emiss_labor_parser.py:26](../backend/app/services/emiss_labor_parser.py#L26) |
 | app.services.emiss_regional_parser.PRICE_FUELS | Dict | '1709730', '1709750', '1755196' | [backend/app/services/emiss_regional_parser.py:90](../backend/app/services/emiss_regional_parser.py#L90) |
@@ -2991,8 +3002,12 @@ Relationships: `[]`
 | app.services.staleness.UNHEALTHY_FETCH_STATUSES | Call | computed source expression | [backend/app/services/staleness.py:68](../backend/app/services/staleness.py#L68) |
 | app.services.staleness._KIND_LABEL | Dict | KIND_SOURCE_PROBLEM, KIND_DERIVED_ORPHAN | [backend/app/services/staleness.py:76](../backend/app/services/staleness.py#L76) |
 | app.services.staleness.SLA_OVERRIDE_DAYS | Dict | 'usd-index' | [backend/app/services/staleness.py:88](../backend/app/services/staleness.py#L88) |
-| app.services.telegram_bot._REDIS_TRANSIENT | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:64](../backend/app/services/telegram_bot.py#L64) |
-| app.services.telegram_bot._RETRY_METHODS | Call | computed source expression | [backend/app/services/telegram_bot.py:99](../backend/app/services/telegram_bot.py#L99) |
+| app.services.telegram_bot._REDIS_TRANSIENT | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:67](../backend/app/services/telegram_bot.py#L67) |
+| app.services.telegram_bot._RETRY_METHODS | Call | computed source expression | [backend/app/services/telegram_bot.py:107](../backend/app/services/telegram_bot.py#L107) |
+| app.services.telegram_bot._EXPORT_WINDOWS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:431](../backend/app/services/telegram_bot.py#L431) |
+| app.services.telegram_bot._DOWNLOAD_COMMANDS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:695](../backend/app/services/telegram_bot.py#L695) |
+| app.services.telegram_bot._EXPORT_COMMANDS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:696](../backend/app/services/telegram_bot.py#L696) |
+| app.services.telegram_bot._ADMIN_TEXTS | Tuple | sequence/source expression | [backend/app/services/telegram_bot.py:697](../backend/app/services/telegram_bot.py#L697) |
 | app.services.telegram_calm.MSK | Call | computed source expression | [backend/app/services/telegram_calm.py:35](../backend/app/services/telegram_calm.py#L35) |
 | app.services.telegram_calm.HELD_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:42](../backend/app/services/telegram_calm.py#L42) |
 | app.services.telegram_calm.ACTION_KINDS | Dict | 'data_sanity' | [backend/app/services/telegram_calm.py:55](../backend/app/services/telegram_calm.py#L55) |
@@ -3191,7 +3206,7 @@ Relationships: `[]`
 | app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:65](../backend/app/tasks/analytics_rollups.py#L65) |
 | app.tasks.analytics_rollups._RAW_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:104](../backend/app/tasks/analytics_rollups.py#L104) |
 | app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:435](../backend/app/tasks/analytics_rollups.py#L435) |
-| app.tasks.analytics_scheduler._METRIKA_DIGEST_RETRY_PAUSES_S | Tuple | sequence/source expression | [backend/app/tasks/analytics_scheduler.py:261](../backend/app/tasks/analytics_scheduler.py#L261) |
+| app.tasks.analytics_scheduler._METRIKA_DIGEST_RETRY_PAUSES_S | Tuple | sequence/source expression | [backend/app/tasks/analytics_scheduler.py:277](../backend/app/tasks/analytics_scheduler.py#L277) |
 | app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:43](../backend/app/tasks/scheduler.py#L43) |
 | app.tasks.session_analysis._INACTIVE | Call | computed source expression | [backend/app/tasks/session_analysis.py:27](../backend/app/tasks/session_analysis.py#L27) |
 | app.tasks.ticker_worker._SERIES_TICKER_SPECS | Tuple | sequence/source expression | [backend/app/tasks/ticker_worker.py:47](../backend/app/tasks/ticker_worker.py#L47) |

@@ -209,6 +209,22 @@ async def _research_download_lines(report_date: date) -> list[str]:
     return [line]
 
 
+_DOWNLOAD_BLOCK_TIMEOUT_S = 60
+
+
+async def _download_content_lines(report_date: date) -> list[str]:
+    """Что скачивали вчера и где упёрлись в лимит — по содержанию (14.11.2026, вопрос партнёра
+    «что за данные они скачивают»). Пусто, если за день ничего не было."""
+    from app.services import download_content as dc
+
+    async def run() -> list[str]:
+        async with analytics_session() as db:
+            data = await dc.collect(db, dc.period_for_window("0", report_date))
+        return dc.digest_lines(data["summary"])
+
+    return await asyncio.wait_for(run(), _DOWNLOAD_BLOCK_TIMEOUT_S)
+
+
 async def _metrika_goal_lines(report_date: date) -> list[str]:
     """Достижения всех целей счётчика за указанный день (для дайджеста CTA).
 
@@ -387,6 +403,10 @@ async def telegram_daily_digest_job() -> None:
         parts += await _research_download_lines(yesterday)
     except Exception:  # noqa: BLE001 - строка дайджеста не должна ронять дайджест
         logger.warning("Telegram digest: research downloads failed", exc_info=True)
+    try:
+        parts += await _download_content_lines(yesterday)
+    except Exception:  # noqa: BLE001 — в т.ч. таймаут; блок не роняет дайджест
+        logger.warning("Telegram digest: download content failed", exc_info=True)
     if settings.analytics_enabled and settings.yandex_metrika_read_token:
         try:
             parts += await _metrika_goal_lines_with_retry(yesterday)
