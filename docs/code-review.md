@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `64347427086572c54a0fe341201eb915380a0c77`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `6ef8b44c4c0b2a72fc53720c9ce9941e45bc15d8`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2463 |
-| Код, шаблоны и стили | 1991 |
-| Актуальные рецензии без пропусков guard | 2463 |
+| Файлы в явно определённом scope | 2464 |
+| Код, шаблоны и стили | 1992 |
+| Актуальные рецензии без пропусков guard | 2464 |
 | Именованные определения Python/JS: с аннотацией / всего | 16016 / 16016 |
 | Файлы, требующие внимания | 0 |
 
@@ -1201,6 +1201,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/40-fe-human-pass.sh](../frontend/40-fe-human-pass.sh) | reviewed | 0/0 | актуально |
 | [frontend/41-fe-google-farm.sh](../frontend/41-fe-google-farm.sh) | reviewed | 0/0 | актуально |
 | [frontend/42-fe-pass-bind.sh](../frontend/42-fe-pass-bind.sh) | reviewed | 0/0 | актуально |
+| [frontend/43-fe-pass-mint.sh](../frontend/43-fe-pass-mint.sh) | reviewed | 0/0 | актуально |
 | [frontend/Dockerfile](../frontend/Dockerfile) | reviewed | 0/0 | актуально |
 | [frontend/eslint.config.js](../frontend/eslint.config.js) | reviewed | 0/0 | актуально |
 | [frontend/index.html](../frontend/index.html) | reviewed | 0/0 | актуально |

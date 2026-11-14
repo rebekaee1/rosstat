@@ -19,15 +19,15 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2463,
-    "code_files": 1991,
-    "current_reviews": 2463,
+    "files": 2464,
+    "code_files": 1992,
+    "current_reviews": 2464,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2193
+      "reviewed": 2194
     },
     "definitions": 16016,
     "annotated_definitions": 16016,
@@ -180,9 +180,9 @@
     },
     {
       "path": ".env.example",
-      "sha256": "d97ee8c63b74585e3a1be7f7c285737d397378a8723e633c761c742b2032e0c4",
-      "bytes": 26768,
-      "lines": 370,
+      "sha256": "a30a0676eb447b204c1716dc9e4afdd979331b278fc2aa67c5591974dad140af",
+      "bytes": 27059,
+      "lines": 373,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12868,9 +12868,9 @@
     },
     {
       "path": "deploy/test-bot-classes.sh",
-      "sha256": "8d624ef3b919768672c9e2988c000941414e22e3fbd8e864b14a4936c99dd861",
-      "bytes": 22840,
-      "lines": 246,
+      "sha256": "5514735ba6a8278b4505c9e738ff86259ae5a747abcfce4bc784ade58721672e",
+      "bytes": 26397,
+      "lines": 278,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -12972,9 +12972,9 @@
     },
     {
       "path": "docker-compose.yml",
-      "sha256": "03c0abbb11c51b05fa87f6d0ba7a83dc43858e2c42d5a0453e1bf8159b27429d",
-      "bytes": 39033,
-      "lines": 566,
+      "sha256": "4c07ae4a7f5c6a4a43f0e417327046949d6a41ec45dccc429c9d9f6edb598083",
+      "bytes": 39253,
+      "lines": 568,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13310,9 +13310,9 @@
     },
     {
       "path": "docs/adr/0026-graceful-degradation-and-traffic-priority.md",
-      "sha256": "0c19856c859a355db7afbc411808a3cfed98a88783d6410adce3a4096d15c154",
-      "bytes": 29110,
-      "lines": 81,
+      "sha256": "67422364eff07c9919f27b7f084535e5dc090dcf2aeba01fe0b8311cb85915d3",
+      "bytes": 31254,
+      "lines": 89,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13635,9 +13635,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "c7238b346a88b29500dcf31737fdfec65861d00ad7ce941893245eeb76eae63c",
-      "bytes": 764177,
-      "lines": 3535,
+      "sha256": "2b1e12107acc0b8b7aa99790807197e1190d0a231a023098cea3e966bddd79d9",
+      "bytes": 765628,
+      "lines": 3549,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14233,7 +14233,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "06777fb25a4fe27074ca4b283e8427bbcca518e38d9a9f61b86257ceff059a35",
+      "sha256": "067d3e31ca6374c9550baf986488dd3e365ecc25c937ed264a334d3a5cfc5896",
       "bytes": 3852995,
       "lines": 136343,
       "code": false,
@@ -15052,8 +15052,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "5cb658682de37a885b681407cfec87b622040f9c178c9708a76949e526fc86d4",
-      "bytes": 139231,
+      "sha256": "7f507eb614526f18d1f5c23b44f9e7441ba6eb4dc1ab45bd8af67586a41bfab9",
+      "bytes": 139387,
       "lines": 670,
       "code": false,
       "status": "reviewed",
@@ -15155,10 +15155,23 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/43-fe-pass-mint.sh",
+      "sha256": "b4cafd9985c9db8adfa4c71655658426e3b98a9a71e0a4018506632ede750a76",
+      "bytes": 935,
+      "lines": 16,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "frontend/Dockerfile",
-      "sha256": "9101a601fe9563cc9f8c43d9b82ee4a9d63c244018131f0d4ecdd898bb878c1a",
-      "bytes": 2165,
-      "lines": 48,
+      "sha256": "02a0c0f1ecab5965553f88c1c1fcd3d36c96f70b0951695a491066c297215af0",
+      "bytes": 2405,
+      "lines": 50,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -15195,9 +15208,9 @@
     },
     {
       "path": "frontend/nginx.conf",
-      "sha256": "76d7920de2833da409e863e8a33d6cf4452c652b8dca077bd7537cae3fce208f",
-      "bytes": 93801,
-      "lines": 1662,
+      "sha256": "62f2c5f33f793e296a2717ed7253d8cde611ac1da547c09d7b0bbe1ae4b8ff67",
+      "bytes": 95230,
+      "lines": 1676,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -32056,9 +32069,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "42d0ebc5d50e23244c6d557e9abcab63579cbb0df2f24dc9fb1aba667d9557d7",
+  "ledger_sha256": "9f91d9ff5d61833d6b9a32930df020c03350db1b387616b64f7e249271930cbb",
   "javascript_inventory_sha256": "ff07e771d69de4817e88614a86a53747aafd3122d75b0bbe7982760f87d81c5d",
-  "baseline_commit": "64347427086572c54a0fe341201eb915380a0c77",
+  "baseline_commit": "6ef8b44c4c0b2a72fc53720c9ce9941e45bc15d8",
   "branch": "fix/counter-google-farm-2026-11-14",
   "unstaged_at_capture": []
 }

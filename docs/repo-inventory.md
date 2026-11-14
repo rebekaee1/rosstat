@@ -7,20 +7,20 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2252  ·  **Строк:** 1 421 230  ·  **Токенов (≈):** 13 559 787
+**Файлов:** 2253  ·  **Строк:** 1 421 321  ·  **Токенов (≈):** 13 561 694
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 809 | 65 042 |
+| `(root)` | 8 | 2 814 | 65 136 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 920 | 320 811 | 3 512 143 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 20 | 1 337 | 21 196 |
-| `docs` | 144 | 886 389 | 7 624 979 |
-| `frontend` | 1016 | 184 644 | 2 023 337 |
+| `deploy` | 20 | 1 369 | 21 925 |
+| `docs` | 144 | 886 411 | 7 625 587 |
+| `frontend` | 1017 | 184 676 | 2 023 813 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 675 | 307 438 |
 
@@ -40,7 +40,7 @@
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
-| `docs/backlog.md` | 3 535 | 127 337 |
+| `docs/backlog.md` | 3 549 | 127 586 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/data-contracts.md` | 1 212 | 61 165 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
@@ -65,16 +65,16 @@
 | `backend/app/services/public_bot.py` | 2 063 | 27 394 |
 | `backend/app/services/analytics_marts.py` | 2 404 | 26 945 |
 | `backend/app/models.py` | 1 920 | 25 109 |
-| `docs/workflow.md` | 670 | 24 394 |
+| `docs/workflow.md` | 670 | 24 419 |
 | `docs/search.md` | 986 | 24 225 |
 | `backend/app/services/search.py` | 1 512 | 23 157 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
 | `backend/app/main.py` | 2 071 | 22 094 |
 | `backend/app/services/site_urls.py` | 2 253 | 22 012 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
+| `frontend/nginx.conf` | 1 676 | 21 209 |
 | `backend/app/services/seo_world.py` | 2 227 | 21 146 |
 | `backend/app/services/seo_regional.py` | 2 122 | 21 014 |
-| `frontend/nginx.conf` | 1 662 | 20 953 |
 | `docs/data_sources.md` | 760 | 20 874 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/components/PlanetView.component.test.jsx` | 1 234 | 19 476 |
@@ -157,9 +157,9 @@
 | `frontend/src/pages/WorldRatingPage.component.test.jsx` | 824 | 8 520 |
 | `frontend/src/styles/k7-home.css` | 712 | 8 492 |
 | `backend/app/api/analytics.py` | 801 | 8 459 |
+| `docker-compose.yml` | 568 | 8 275 |
 | `backend/app/services/world_forecaster.py` | 849 | 8 270 |
 | `backend/app/services/indexnow.py` | 875 | 8 269 |
-| `docker-compose.yml` | 566 | 8 231 |
 | `frontend/src/pages/EmbedBuilder.jsx` | 662 | 8 224 |
 | `frontend/search-crawlers.conf` | 1 284 | 8 181 |
 | `scripts/audit-seo-title-dupes.py` | 909 | 8 178 |
@@ -244,6 +244,7 @@
 | `backend/tests/test_telegram_reports.py` | 442 | 5 730 |
 | `backend/app/services/bot_agent_tools.py` | 424 | 5 720 |
 | `backend/app/api/world_subnational.py` | 648 | 5 712 |
+| `deploy/test-bot-classes.sh` | 278 | 5 669 |
 | `frontend/src/styles/k5-pages.css` | 541 | 5 666 |
 | `frontend/src/styles/z6-rating.css` | 387 | 5 630 |
 | `deploy/approved-shas.txt` | 190 | 5 611 |
@@ -282,14 +283,15 @@
 | `frontend/src/styles/k2-brand.css` | 436 | 5 120 |
 | `backend/app/services/calculation_engine.py` | 445 | 5 119 |
 | `frontend/src/i18n/legalPages.en.jsx` | 397 | 5 111 |
+| `.env.example` | 373 | 5 101 |
 | `backend/tests/test_sitemap_static.py` | 480 | 5 095 |
 | `scripts/audit-world-plausibility.py` | 480 | 5 091 |
 | `docs/research/_fpsr_raw/agent10.json` | 336 | 5 087 |
 | `frontend/src/pages/CalendarPage.jsx` | 469 | 5 067 |
 | `backend/tests/test_search_pulse_gaps.py` | 344 | 5 066 |
 | `scripts/catalog-harvest.py` | 523 | 5 054 |
-| `.env.example` | 370 | 5 051 |
 | `frontend/src/lib/searchSynonyms.js` | 417 | 5 047 |
+| `docs/adr/0026-graceful-degradation-and-traffic-priority.md` | 89 | 5 038 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 247 | 5 034 |
 | `frontend/src/components/CurrencyDesk.jsx` | 435 | 5 018 |
 | `backend/app/data/world_aggregation.py` | 580 | 5 015 |
@@ -302,7 +304,6 @@
 | `frontend/src/components/LiveTicker.jsx` | 415 | 4 954 |
 | `backend/tests/forecast_strategies/test_derived.py` | 554 | 4 953 |
 | `backend/tests/test_regional_publication.py` | 412 | 4 953 |
-| `deploy/test-bot-classes.sh` | 246 | 4 940 |
 | `backend/app/tasks/analytics_scheduler.py` | 445 | 4 875 |
 | `backend/app/services/forecast_strategies/derived_from_source.py` | 453 | 4 871 |
 | `backend/app/services/world_adapters/ons_timeseries.py` | 573 | 4 845 |
@@ -316,7 +317,6 @@
 | `frontend/src/components/DataTable.jsx` | 433 | 4 740 |
 | `frontend/src/components/brand/flagArt.js` | 238 | 4 728 |
 | `frontend/src/lib/currencyRates.js` | 437 | 4 722 |
-| `docs/adr/0026-graceful-degradation-and-traffic-priority.md` | 81 | 4 704 |
 | `backend/tests/test_rosstat_weekly_inflation.py` | 444 | 4 701 |
 | `backend/app/services/session_replay.py` | 378 | 4 696 |
 | `backend/tests/test_marts_signup_funnel.py` | 334 | 4 696 |
@@ -1740,6 +1740,7 @@
 | `frontend/src/components/SourceLink.component.test.jsx` | 45 | 528 |
 | `frontend/src/lib/slugFlags.js` | 36 | 527 |
 | `scripts/dev/perf_mem_replay.py` | 37 | 527 |
+| `frontend/Dockerfile` | 50 | 526 |
 | `frontend/src/components/regions/DownloadMenu.component.test.jsx` | 58 | 526 |
 | `frontend/src/components/CbrTermSliceRateViewModePicker.jsx` | 75 | 525 |
 | `frontend/src/lib/useCalcUrlSync.js` | 45 | 523 |
@@ -1801,7 +1802,6 @@
 | `backend/tests/test_seo_weekly_report.py` | 42 | 480 |
 | `frontend/src/lib/cpiCumulativeIndex.js` | 45 | 480 |
 | `frontend/src/styles/r6c-annual.css` | 32 | 480 |
-| `frontend/Dockerfile` | 48 | 479 |
 | `backend/tests/test_cpi_provenance.py` | 41 | 478 |
 | `docs/design/local-acceptance/year-contract.json` | 54 | 478 |
 | `frontend/src/components/country/CountryStatesMap.jsx` | 45 | 478 |
@@ -2173,6 +2173,7 @@
 | `deploy/fail2ban/filter.d-honeytrap.conf` | 11 | 178 |
 | `frontend/src/styles/z1-polish.css` | 22 | 178 |
 | `backend/app/data/cpi_provenance.py` | 12 | 177 |
+| `frontend/43-fe-pass-mint.sh` | 16 | 173 |
 | `frontend/src/lib/planetViewPreference.js` | 12 | 172 |
 | `frontend/src/lib/worldMocks.test.js` | 17 | 171 |
 | `backend/tests/test_r10c_cpi_chain.py` | 19 | 170 |
