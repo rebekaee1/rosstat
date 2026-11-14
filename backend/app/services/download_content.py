@@ -859,13 +859,13 @@ async def collect_paths(db: AsyncSession, data: dict[str, Any]) -> dict[str, Any
     return {"status": "ok", "items": build_paths(data["rows"], pageviews, titles), "cut": cut}
 
 
-def _paths_sheet_rows(paths: dict[str, Any]) -> list[list[Any]]:
+def _paths_sheet_rows(paths: dict[str, Any], anonymous: bool = False) -> list[list[Any]]:
     if paths["status"] == "too_long":
         return [[PATH_TOO_LONG, "", "", "", "", "", "", ""]]
     if paths["status"] == "timeout":
         return [[PATH_TIMEOUT, "", "", "", "", "", "", ""]]
     yes_no = {True: "да", False: "нет", None: ""}
-    out = [[(i["at"] + MSK_OFFSET).strftime("%d.%m.%Y %H:%M"), (i["person"] or "")[:10], i["title"], i["what"],
+    out = [[(i["at"] + MSK_OFFSET).strftime("%d.%m.%Y %H:%M"), _who(i["person"], anonymous), i["title"], i["what"],
             CHANNEL_LABELS.get(i["channel"], i["channel"]), i["pages_before"], " → ".join(i["path"]),
             yes_no[i["signed_up_after"]], yes_no[i["same_after"]]] for i in paths["items"]]
     if paths.get("cut"):
@@ -874,8 +874,14 @@ def _paths_sheet_rows(paths: dict[str, Any]) -> list[list[Any]]:
     return out
 
 
-def build_xlsx(data: dict[str, Any]) -> bytes:
-    """Книга: «Сводка», «Что скачивали», «Где упёрлись», «Все события» (время МСК)."""
+def _who(person: str | None, anonymous: bool) -> str:
+    """Короткий хэш посетителя; в роли «только отчёты» (anonymous) — пусто."""
+    return "" if anonymous else (person or "")[:10]
+
+
+def build_xlsx(data: dict[str, Any], *, anonymous: bool = False) -> bytes:
+    """Книга: «Сводка», «Что скачивали», «Где упёрлись», «Все события» (время МСК), при наличии —
+    «Путь до упора» и «Сервер — упоры». `anonymous=True` (роль «только отчёты») — без хэшей посетителей."""
     from openpyxl import Workbook
     from openpyxl.styles import Font
 
@@ -931,7 +937,7 @@ def build_xlsx(data: dict[str, Any]) -> bytes:
         [(r["at"] + MSK_OFFSET).strftime("%d.%m.%Y %H:%M"),
          "упёрся в лимит" if r["wall"] else "скачал", r["what"], r["title"],
          SECTION_LABELS.get(r["section"], r["section"]), r["page"], "да" if r["authed"] else "гость",
-         (r["person"] or "")[:10], {True: "да", False: "нет", None: ""}[r["signed_up_after"]],
+         _who(r["person"], anonymous), {True: "да", False: "нет", None: ""}[r["signed_up_after"]],
          CHANNEL_LABELS.get(r["channel"], r["channel"]), DEVICE_LABELS.get(r["device"], r["device"]),
          r["country"]]
         for r in data["rows"]
@@ -940,7 +946,7 @@ def build_xlsx(data: dict[str, Any]) -> bytes:
         sheet(wb.create_sheet("Путь до упора"), [
             "Время упора (МСК)", "Посетитель", "Где упёрся", "Что не дал лимит", "Откуда пришёл",
             "Страниц до упора", "Последние страницы до упора", "Зарегистрировался потом", "Скачал то же потом",
-        ], _paths_sheet_rows(data["paths"]), [17, 12, 60, 24, 16, 10, 90, 14, 14])
+        ], _paths_sheet_rows(data["paths"], anonymous), [17, 12, 60, 24, 16, 10, 90, 14, 14])
     server = (data.get("summary") or {}).get("server")
     if server is not None:
         sheet(wb.create_sheet("Сервер — упоры"), ["Что", "Страница", "Формат", "Отказов"], [

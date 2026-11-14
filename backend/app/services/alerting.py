@@ -288,6 +288,15 @@ def interactive_authorized_ids() -> set[str]:
     return {str(i) for i in ids if i}
 
 
+def reports_only_ids() -> set[str]:
+    """Чаты роли «только отчёты» (14.11.2026): за флагом `telegram_reports_only_enabled`, без чатов
+    с полными правами. Никаких сообщений этим чатам сам бот не шлёт — только ответы на их кнопки."""
+    if not settings.telegram_reports_only_enabled:
+        return set()
+    ids = {i.strip() for i in (settings.telegram_reports_only_chat_ids or "").split(",") if i.strip()}
+    return ids - interactive_authorized_ids()
+
+
 async def notify_new_user(info: dict) -> None:
     """Мгновенное уведомление администратора о новой регистрации (ADR-0007 Phase 2).
 

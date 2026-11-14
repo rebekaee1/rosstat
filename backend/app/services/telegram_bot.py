@@ -41,7 +41,7 @@ from sqlalchemy import func, select
 from collections import Counter
 
 from app.config import settings
-from app.services.alerting import interactive_authorized_ids
+from app.services.alerting import interactive_authorized_ids, reports_only_ids
 from app.services.telegram_text import (  # noqa: F401 — реэкспорт для обратной совместимости
     _BLOCKQUOTE_OPEN_RE,
     _BLOCKQUOTE_RE,
@@ -447,17 +447,24 @@ def downloads_keyboard(window: str) -> dict:
     ]}
 
 
-def export_keyboard() -> dict:
+def export_keyboard(reports_only: bool = False) -> dict:
+    """Выгрузки за срок. Роль «только отчёты» — без CSV пользователей."""
     def row(prefix: str, icon: str, windows=_EXPORT_WINDOWS) -> list[dict]:
         return [{"text": f"{icon} {w} дн.", "callback_data": f"{prefix}:{w}"} for w in windows]
 
-    return {"inline_keyboard": [
-        row("dlx", "📥"),
-        row("exs", "🌍"),
-        row("exv", "🖱", ("1", "7", "30")),
-        [{"text": "👥 Все пользователи (CSV)", "callback_data": "users_csv"}],
-        [{"text": "⬅️ Меню", "callback_data": "menu"}],
-    ]}
+    rows = [row("dlx", "📥"), row("exs", "🌍"), row("exv", "🖱", ("1", "7", "30"))]
+    if not reports_only:
+        rows.append([{"text": "👥 Все пользователи (CSV)", "callback_data": "users_csv"}])
+    rows.append([{"text": "⬅️ Меню", "callback_data": "menu"}])
+    return {"inline_keyboard": rows}
+
+
+def reports_only_keyboard() -> dict:
+    """Меню роли «только отчёты» (14.11.2026): без пользователей, карточек, Пульса, датасета и гипотез."""
+    return {"inline_keyboard": [[
+        {"text": "📥 Скачивания", "callback_data": "dl:7"},
+        {"text": "📤 Выгрузки", "callback_data": "export"},
+    ]]}
 
 
 EXPORT_MENU_TEXT = (
@@ -470,6 +477,14 @@ EXPORT_MENU_TEXT = (
     "сравнения) со страницей и параметрами.\n"
     "👥 <b>Все пользователи</b> — CSV со списком аккаунтов.\n\n"
     "Роботы и наши собственные заходы в файлы не попадают. Имён и почт в первых трёх файлах нет."
+)
+EXPORT_MENU_TEXT_REPORTS_ONLY = (
+    "📤 <b>Выгрузки файлом</b>\n"
+    "Нажмите срок в нужной строке — файл придёт сюда же.\n\n"
+    "📥 <b>Скачивания и лимит</b> — Excel: что скачивали, где упёрлись в лимит, кто потом зарегистрировался.\n"
+    "🌍 <b>Регистрации</b> — CSV: откуда пришёл человек, устройство, первая страница, что подтолкнуло.\n"
+    "🖱 <b>Все действия на сайте</b> — CSV: действия посетителей со страницей и параметрами.\n\n"
+    "Без имён, почт, телефонов и меток посетителей. Роботы и наши собственные заходы не попадают."
 )
 
 
@@ -540,7 +555,7 @@ async def _download_paths(data: dict) -> dict:
         return {"status": "timeout", "items": []}
 
 
-async def _send_downloads_file(chat_id: str, window: str) -> None:
+async def _send_downloads_file(chat_id: str, window: str, reports_only: bool = False) -> None:
     from app.services import download_content as dc
 
     data = await _downloads_data(window)
@@ -554,10 +569,10 @@ async def _send_downloads_file(chat_id: str, window: str) -> None:
     name = f"skachivaniya-{p.start_date.isoformat()}_{p.end_date.isoformat()}.xlsx"
     caption = (f"📥 Скачивания и лимит — {escape(_period_label(window, p))}: "
                f"скачали {s['downloads']['people']} чел., упёрлись {s['walls']['people']} чел.")
-    await send_document(chat_id, name, dc.build_xlsx(data), caption=caption)
+    await send_document(chat_id, name, dc.build_xlsx(data, anonymous=reports_only), caption=caption)
 
 
-async def _send_export_file(chat_id: str, kind: str, window: str) -> None:
+async def _send_export_file(chat_id: str, kind: str, window: str, reports_only: bool = False) -> None:
     import asyncio
 
     from app.database import analytics_session
@@ -570,7 +585,7 @@ async def _send_export_file(chat_id: str, kind: str, window: str) -> None:
     async def run():
         async with analytics_session() as db:
             if kind == "exv":
-                return await bot_exports.events_csv(db, period)
+                return await bot_exports.events_csv(db, period, anonymous=reports_only)
             return await bot_exports.signups_csv(db, period)
 
     try:
@@ -608,6 +623,8 @@ async def _handle_callback(cq: dict) -> None:
     await _api("answerCallbackQuery", {"callback_query_id": cq["id"]})
     chat_id = str(cq.get("message", {}).get("chat", {}).get("id", ""))
     if chat_id not in interactive_authorized_ids():
+        if chat_id in reports_only_ids():
+            await _handle_reports_only_callback(chat_id, data)
         return
 
     if data == "users":
@@ -688,6 +705,37 @@ async def _handle_callback(cq: dict) -> None:
         await send_message(chat_id, "Меню:", reply_markup=main_menu_keyboard())
 
 
+async def _handle_reports_only_callback(chat_id: str, data: str) -> None:
+    """Роль «только отчёты»: белый список кнопок; всё остальное (пользователи, карточки, CSV пользователей,
+    Пульс, датасет, гипотезы) молча игнорируется. Файлы — без хэшей посетителей."""
+    if data.startswith("dl:") and (w := _window_or_none(data[3:])):
+        await _send_downloads_report(chat_id, w)
+    elif data.startswith("dlx:") and (w := _window_or_none(data[4:])):
+        await _send_downloads_file(chat_id, w, reports_only=True)
+    elif data == "export":
+        await send_message(chat_id, EXPORT_MENU_TEXT_REPORTS_ONLY, reply_markup=export_keyboard(reports_only=True),
+                           kind="bot_report")
+    elif data.startswith("exs:") and (w := _window_or_none(data[4:], _EXPORT_WINDOWS)):
+        await _send_export_file(chat_id, "exs", w, reports_only=True)
+    elif data.startswith("exv:") and (w := _window_or_none(data[4:], ("1", "7", "30"))):
+        await _send_export_file(chat_id, "exv", w, reports_only=True)
+    elif data == "menu":
+        await send_message(chat_id, "Меню:", reply_markup=reports_only_keyboard())
+
+
+async def _handle_reports_only_message(chat_id: str, text: str) -> None:
+    if text in ("/start", "/menu", "меню"):
+        await send_message(chat_id, "📥 <b>Forecast Economy — отчёты</b>\nВыберите раздел:",
+                           reply_markup=reports_only_keyboard())
+    elif text and text.split()[0] in _DOWNLOAD_COMMANDS:
+        parts = text.split()
+        w = _window_or_none(parts[1]) if len(parts) > 1 else "7"
+        await _send_downloads_report(chat_id, w or "7")
+    elif text in _EXPORT_COMMANDS:
+        await send_message(chat_id, EXPORT_MENU_TEXT_REPORTS_ONLY, reply_markup=export_keyboard(reports_only=True),
+                           kind="bot_report")
+
+
 async def _handle_message(msg: dict) -> None:
     chat_id = str(msg.get("chat", {}).get("id", ""))
     text = (msg.get("text") or "").strip().lower()
@@ -696,6 +744,8 @@ async def _handle_message(msg: dict) -> None:
         await public_bot.handle_message(msg)
         return
     if chat_id not in interactive_authorized_ids():
+        if chat_id in reports_only_ids():
+            await _handle_reports_only_message(chat_id, text)
         return
     if text in ("/start", "/menu", "меню"):
         await send_message(chat_id, "🛰 <b>Forecast Economy — пульс</b>\nВыберите раздел:", reply_markup=main_menu_keyboard())
@@ -727,7 +777,7 @@ def _is_public_message(chat_id: str, text: str) -> bool:
     """Чужой чат — всегда публичный режим. Владелец и получатели отчёта попадают в него
     ссылкой с кодом (`/start r014`) и любым текстом, кроме команд админ-меню, — так
     владелец проверяет путь человека из ролика на своём телефоне."""
-    if chat_id not in interactive_authorized_ids():
+    if chat_id not in interactive_authorized_ids() and chat_id not in reports_only_ids():
         return True
     if text.startswith("/start "):
         return True

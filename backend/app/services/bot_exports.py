@@ -52,8 +52,9 @@ def _msk(dt) -> str:
     return (dt + MSK_OFFSET).strftime("%d.%m.%Y %H:%M") if dt else ""
 
 
-async def events_csv(db: AsyncSession, period: Period) -> tuple[bytes, int, bool]:
-    """(файл, строк, обрезано ли). Все бизнес-события людей за период."""
+async def events_csv(db: AsyncSession, period: Period, *, anonymous: bool = False) -> tuple[bytes, int, bool]:
+    """(файл, строк, обрезано ли). Все бизнес-события людей за период; `anonymous` — без хэша посетителя
+    (роль «только отчёты», 14.11.2026)."""
     from app.services.analytics_marts import admin_identity
     from app.services.download_content import _excluded_visitors
     from app.services.pii_scrub import scrub_text
@@ -88,7 +89,7 @@ async def events_csv(db: AsyncSession, period: Period) -> tuple[bytes, int, bool
         rows.append([
             _msk(r.occurred_at), r.event_name,
             GROUP_LABELS_RU.get(group, "") if group else "", TIER_LABELS_RU.get(tier_for_event(r.event_name), ""),
-            scrub_text(page)[:300], "да" if r.authed else "гость", (r.visitor_id_hash or "")[:10],
+            scrub_text(page)[:300], "да" if r.authed else "гость", "" if anonymous else (r.visitor_id_hash or "")[:10],
             scrub_text(json.dumps(params, ensure_ascii=False))[:500] if params else "",
         ])
     data = _csv(["Время (МСК)", "Событие", "Группа", "Вид", "Страница", "Аккаунт", "Посетитель", "Параметры"], rows)
