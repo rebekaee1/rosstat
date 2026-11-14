@@ -688,7 +688,7 @@ Telegram-only route: заполнить RUSTATS_TELEGRAM_PROXY_URL в серве
 ```bash
 cd backend && set -a && . ~/.config/fe-mail.env && set +a && export RUSTATS_MAIL_ENABLED=true RUSTATS_MAIL_TOKEN_SECRET=$(openssl rand -hex 32)
 .venv/bin/python scripts/mail.py check                                   # вход на SMTP без письма
-.venv/bin/python scripts/mail.py test --to rebeka.ee@yandex.ru --no-db  # 6 писем: ru/en × подтверждение, сброс, рассылка
+.venv/bin/python scripts/mail.py test --to rebeka.ee@yandex.ru --no-db  # 12 писем: ru/en × 6 видов; --locale ru --only verify_email,newsletter — выборочно
 ```
 В Яндекс Почте у полученного письма «⋯» → «Свойства письма»: в `Authentication-Results` ждём `spf=pass`, `dkim=pass header.d=forecasteconomy.com`, `dmarc=pass`.
 

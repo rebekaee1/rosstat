@@ -859,7 +859,7 @@
       "mcp_tools": []
     },
     "frontend/src/App.jsx": {
-      "sha256": "fa483868a8044e6b0f9e1306bd623e79874f5540eeb09e4a5cd9731a99ae930c",
+      "sha256": "77064d9b68d30c574a1be89c97854f61d88410290de420e905dbecf4befd5a39",
       "imports": [
         {
           "line": 1,
@@ -1524,9 +1524,53 @@
           ]
         },
         {
-          "line": 81,
-          "end_line": 81,
-          "owner": "<callback@81>",
+          "line": 82,
+          "end_line": 82,
+          "owner": "<callback@82>",
+          "dynamic": true,
+          "specifier": "./pages/AccountMail",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/pages/AccountMail.jsx"
+          ]
+        },
+        {
+          "line": 83,
+          "end_line": 83,
+          "owner": "<callback@83>",
+          "dynamic": true,
+          "specifier": "./pages/AccountMail",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/pages/AccountMail.jsx"
+          ]
+        },
+        {
+          "line": 84,
+          "end_line": 84,
+          "owner": "<callback@84>",
+          "dynamic": true,
+          "specifier": "./pages/AccountMail",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/pages/AccountMail.jsx"
+          ]
+        },
+        {
+          "line": 85,
+          "end_line": 85,
+          "owner": "<callback@85>",
+          "dynamic": true,
+          "specifier": "./pages/AccountMail",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/pages/AccountMail.jsx"
+          ]
+        },
+        {
+          "line": 86,
+          "end_line": 86,
+          "owner": "<callback@86>",
           "dynamic": true,
           "specifier": "./pages/RegionsHome",
           "category": "owned_source",
@@ -1535,9 +1579,9 @@
           ]
         },
         {
-          "line": 82,
-          "end_line": 82,
-          "owner": "<callback@82>",
+          "line": 87,
+          "end_line": 87,
+          "owner": "<callback@87>",
           "dynamic": true,
           "specifier": "./pages/RegionProfile",
           "category": "owned_source",
@@ -1546,9 +1590,9 @@
           ]
         },
         {
-          "line": 83,
-          "end_line": 83,
-          "owner": "<callback@83>",
+          "line": 88,
+          "end_line": 88,
+          "owner": "<callback@88>",
           "dynamic": true,
           "specifier": "./pages/RegionIndicatorPage",
           "category": "owned_source",
@@ -1557,9 +1601,9 @@
           ]
         },
         {
-          "line": 84,
-          "end_line": 84,
-          "owner": "<callback@84>",
+          "line": 89,
+          "end_line": 89,
+          "owner": "<callback@89>",
           "dynamic": true,
           "specifier": "./pages/WorldRatingPage",
           "category": "owned_source",
@@ -1568,9 +1612,9 @@
           ]
         },
         {
-          "line": 85,
-          "end_line": 85,
-          "owner": "<callback@85>",
+          "line": 90,
+          "end_line": 90,
+          "owner": "<callback@90>",
           "dynamic": true,
           "specifier": "./pages/WorldCountry",
           "category": "owned_source",
@@ -1579,9 +1623,9 @@
           ]
         },
         {
-          "line": 86,
-          "end_line": 86,
-          "owner": "<callback@86>",
+          "line": 91,
+          "end_line": 91,
+          "owner": "<callback@91>",
           "dynamic": true,
           "specifier": "./pages/WorldIndicatorPage",
           "category": "owned_source",
@@ -1590,9 +1634,9 @@
           ]
         },
         {
-          "line": 87,
-          "end_line": 87,
-          "owner": "<callback@87>",
+          "line": 92,
+          "end_line": 92,
+          "owner": "<callback@92>",
           "dynamic": true,
           "specifier": "./pages/WorldRegionsHome",
           "category": "owned_source",
@@ -1601,9 +1645,9 @@
           ]
         },
         {
-          "line": 88,
-          "end_line": 88,
-          "owner": "<callback@88>",
+          "line": 93,
+          "end_line": 93,
+          "owner": "<callback@93>",
           "dynamic": true,
           "specifier": "./pages/WorldRegionProfile",
           "category": "owned_source",
@@ -1612,9 +1656,9 @@
           ]
         },
         {
-          "line": 89,
-          "end_line": 89,
-          "owner": "<callback@89>",
+          "line": 94,
+          "end_line": 94,
+          "owner": "<callback@94>",
           "dynamic": true,
           "specifier": "./pages/WorldRegionIndicatorPage",
           "category": "owned_source",
@@ -1623,9 +1667,9 @@
           ]
         },
         {
-          "line": 90,
-          "end_line": 90,
-          "owner": "<callback@90>",
+          "line": 95,
+          "end_line": 95,
+          "owner": "<callback@95>",
           "dynamic": true,
           "specifier": "./pages/RussiaHome",
           "category": "owned_source",
@@ -1634,9 +1678,9 @@
           ]
         },
         {
-          "line": 91,
-          "end_line": 91,
-          "owner": "<callback@91>",
+          "line": 96,
+          "end_line": 96,
+          "owner": "<callback@96>",
           "dynamic": true,
           "specifier": "./pages/TodayHub",
           "category": "owned_source",
@@ -1645,9 +1689,9 @@
           ]
         },
         {
-          "line": 92,
-          "end_line": 92,
-          "owner": "<callback@92>",
+          "line": 97,
+          "end_line": 97,
+          "owner": "<callback@97>",
           "dynamic": true,
           "specifier": "./pages/TodayIndicatorPage",
           "category": "owned_source",
@@ -1656,9 +1700,9 @@
           ]
         },
         {
-          "line": 93,
-          "end_line": 93,
-          "owner": "<callback@93>",
+          "line": 98,
+          "end_line": 98,
+          "owner": "<callback@98>",
           "dynamic": true,
           "specifier": "./pages/RegionRatingPage",
           "category": "owned_source",
@@ -1667,9 +1711,9 @@
           ]
         },
         {
-          "line": 94,
-          "end_line": 94,
-          "owner": "<callback@94>",
+          "line": 99,
+          "end_line": 99,
+          "owner": "<callback@99>",
           "dynamic": true,
           "specifier": "./pages/RegionComparePage",
           "category": "owned_source",
@@ -1678,9 +1722,9 @@
           ]
         },
         {
-          "line": 95,
-          "end_line": 95,
-          "owner": "<callback@95>",
+          "line": 100,
+          "end_line": 100,
+          "owner": "<callback@100>",
           "dynamic": true,
           "specifier": "./pages/CalendarMonthPage",
           "category": "owned_source",
@@ -1689,9 +1733,9 @@
           ]
         },
         {
-          "line": 96,
-          "end_line": 96,
-          "owner": "<callback@96>",
+          "line": 101,
+          "end_line": 101,
+          "owner": "<callback@101>",
           "dynamic": true,
           "specifier": "./pages/AdminBI",
           "category": "owned_source",
@@ -1700,9 +1744,9 @@
           ]
         },
         {
-          "line": 98,
-          "end_line": 98,
-          "owner": "<callback@98>",
+          "line": 103,
+          "end_line": 103,
+          "owner": "<callback@103>",
           "dynamic": true,
           "specifier": "./embed/EmbedChart",
           "category": "owned_source",
@@ -1711,9 +1755,9 @@
           ]
         },
         {
-          "line": 99,
-          "end_line": 99,
-          "owner": "<callback@99>",
+          "line": 104,
+          "end_line": 104,
+          "owner": "<callback@104>",
           "dynamic": true,
           "specifier": "./embed/EmbedCard",
           "category": "owned_source",
@@ -1722,9 +1766,9 @@
           ]
         },
         {
-          "line": 100,
-          "end_line": 100,
-          "owner": "<callback@100>",
+          "line": 105,
+          "end_line": 105,
+          "owner": "<callback@105>",
           "dynamic": true,
           "specifier": "./embed/EmbedTable",
           "category": "owned_source",
@@ -1733,9 +1777,9 @@
           ]
         },
         {
-          "line": 101,
-          "end_line": 101,
-          "owner": "<callback@101>",
+          "line": 106,
+          "end_line": 106,
+          "owner": "<callback@106>",
           "dynamic": true,
           "specifier": "./embed/EmbedTicker",
           "category": "owned_source",
@@ -1744,9 +1788,9 @@
           ]
         },
         {
-          "line": 102,
-          "end_line": 102,
-          "owner": "<callback@102>",
+          "line": 107,
+          "end_line": 107,
+          "owner": "<callback@107>",
           "dynamic": true,
           "specifier": "./embed/EmbedCompare",
           "category": "owned_source",
@@ -1757,8 +1801,8 @@
       ],
       "routes": [
         {
-          "line": 220,
-          "end_line": 220,
+          "line": 225,
+          "end_line": 225,
           "owner": "EmbedRoutes",
           "attributes": {
             "path": "\"/embed/chart/:code\"",
@@ -1766,8 +1810,8 @@
           }
         },
         {
-          "line": 221,
-          "end_line": 221,
+          "line": 226,
+          "end_line": 226,
           "owner": "EmbedRoutes",
           "attributes": {
             "path": "\"/embed/card/:code\"",
@@ -1775,8 +1819,8 @@
           }
         },
         {
-          "line": 222,
-          "end_line": 222,
+          "line": 227,
+          "end_line": 227,
           "owner": "EmbedRoutes",
           "attributes": {
             "path": "\"/embed/table/:code\"",
@@ -1784,8 +1828,8 @@
           }
         },
         {
-          "line": 223,
-          "end_line": 223,
+          "line": 228,
+          "end_line": 228,
           "owner": "EmbedRoutes",
           "attributes": {
             "path": "\"/embed/ticker\"",
@@ -1793,8 +1837,8 @@
           }
         },
         {
-          "line": 224,
-          "end_line": 224,
+          "line": 229,
+          "end_line": 229,
           "owner": "EmbedRoutes",
           "attributes": {
             "path": "\"/embed/compare\"",
@@ -1802,8 +1846,8 @@
           }
         },
         {
-          "line": 276,
-          "end_line": 276,
+          "line": 281,
+          "end_line": 281,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/\"",
@@ -1811,8 +1855,8 @@
           }
         },
         {
-          "line": 277,
-          "end_line": 277,
+          "line": 282,
+          "end_line": 282,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/about\"",
@@ -1820,8 +1864,8 @@
           }
         },
         {
-          "line": 278,
-          "end_line": 278,
+          "line": 283,
+          "end_line": 283,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/methodology\"",
@@ -1829,8 +1873,8 @@
           }
         },
         {
-          "line": 279,
-          "end_line": 279,
+          "line": 284,
+          "end_line": 284,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/research\"",
@@ -1838,8 +1882,8 @@
           }
         },
         {
-          "line": 280,
-          "end_line": 280,
+          "line": 285,
+          "end_line": 285,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/privacy\"",
@@ -1847,8 +1891,8 @@
           }
         },
         {
-          "line": 281,
-          "end_line": 281,
+          "line": 286,
+          "end_line": 286,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/terms\"",
@@ -1856,8 +1900,8 @@
           }
         },
         {
-          "line": 282,
-          "end_line": 282,
+          "line": 287,
+          "end_line": 287,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/compare\"",
@@ -1865,8 +1909,8 @@
           }
         },
         {
-          "line": 283,
-          "end_line": 283,
+          "line": 288,
+          "end_line": 288,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/forecasts\"",
@@ -1874,8 +1918,8 @@
           }
         },
         {
-          "line": 284,
-          "end_line": 284,
+          "line": 289,
+          "end_line": 289,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/widgets\"",
@@ -1883,8 +1927,8 @@
           }
         },
         {
-          "line": 285,
-          "end_line": 285,
+          "line": 290,
+          "end_line": 290,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/calculator\"",
@@ -1892,8 +1936,8 @@
           }
         },
         {
-          "line": 286,
-          "end_line": 286,
+          "line": 291,
+          "end_line": 291,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/calculator/mortgage\"",
@@ -1901,8 +1945,8 @@
           }
         },
         {
-          "line": 287,
-          "end_line": 287,
+          "line": 292,
+          "end_line": 292,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/calculator/compound\"",
@@ -1910,8 +1954,8 @@
           }
         },
         {
-          "line": 288,
-          "end_line": 288,
+          "line": 293,
+          "end_line": 293,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/login\"",
@@ -1919,8 +1963,8 @@
           }
         },
         {
-          "line": 289,
-          "end_line": 289,
+          "line": 294,
+          "end_line": 294,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/register\"",
@@ -1928,8 +1972,8 @@
           }
         },
         {
-          "line": 290,
-          "end_line": 290,
+          "line": 295,
+          "end_line": 295,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/account\"",
@@ -1937,30 +1981,12 @@
           }
         },
         {
-          "line": 291,
-          "end_line": 291,
+          "line": 296,
+          "end_line": 296,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/admin/bi\"",
-            "element": "{<AdminBI />}"
-          }
-        },
-        {
-          "line": 294,
-          "end_line": 294,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/world/rating\"",
-            "element": "{<WorldRatingPage />}"
-          }
-        },
-        {
-          "line": 295,
-          "end_line": 295,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/world/rating/:conceptSlug/:year?\"",
-            "element": "{<WorldRatingPage />}"
+            "path": "\"/account/forgot-password\"",
+            "element": "{<ForgotPassword />}"
           }
         },
         {
@@ -1968,8 +1994,8 @@
           "end_line": 297,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/currencies\"",
-            "element": "{<CategoryPage fixedSlug=\"currencies\" />}"
+            "path": "\"/account/reset-password\"",
+            "element": "{<ResetPassword />}"
           }
         },
         {
@@ -1977,8 +2003,8 @@
           "end_line": 298,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/currencies/indicator/:code\"",
-            "element": "{<IndicatorDetailKeyed />}"
+            "path": "\"/account/verify-email\"",
+            "element": "{<VerifyEmail />}"
           }
         },
         {
@@ -1986,17 +2012,17 @@
           "end_line": 299,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/currencies/indicator/:code/:year\"",
-            "element": "{<IndicatorDetailKeyed />}"
+            "path": "\"/account/unsubscribe\"",
+            "element": "{<Unsubscribe />}"
           }
         },
         {
-          "line": 302,
-          "end_line": 302,
+          "line": 300,
+          "end_line": 300,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia\"",
-            "element": "{<RussiaHome />}"
+            "path": "\"/admin/bi\"",
+            "element": "{<AdminBI />}"
           }
         },
         {
@@ -2004,8 +2030,8 @@
           "end_line": 303,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/category\"",
-            "element": "{<CategoriesHub />}"
+            "path": "\"/world/rating\"",
+            "element": "{<WorldRatingPage />}"
           }
         },
         {
@@ -2013,17 +2039,8 @@
           "end_line": 304,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/category/:slug\"",
-            "element": "{<CategoryPage />}"
-          }
-        },
-        {
-          "line": 305,
-          "end_line": 305,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/russia/indicator/:code\"",
-            "element": "{<IndicatorDetailKeyed />}"
+            "path": "\"/world/rating/:conceptSlug/:year?\"",
+            "element": "{<WorldRatingPage />}"
           }
         },
         {
@@ -2031,8 +2048,8 @@
           "end_line": 306,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/indicator/:code/:year\"",
-            "element": "{<IndicatorDetailKeyed />}"
+            "path": "\"/currencies\"",
+            "element": "{<CategoryPage fixedSlug=\"currencies\" />}"
           }
         },
         {
@@ -2040,8 +2057,8 @@
           "end_line": 307,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/today\"",
-            "element": "{<TodayHub />}"
+            "path": "\"/currencies/indicator/:code\"",
+            "element": "{<IndicatorDetailKeyed />}"
           }
         },
         {
@@ -2049,26 +2066,8 @@
           "end_line": 308,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/today/:code\"",
-            "element": "{<TodayIndicatorPage />}"
-          }
-        },
-        {
-          "line": 309,
-          "end_line": 309,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/russia/calendar\"",
-            "element": "{<CalendarPage />}"
-          }
-        },
-        {
-          "line": 310,
-          "end_line": 310,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/russia/calendar/:year/:month\"",
-            "element": "{<CalendarMonthPage />}"
+            "path": "\"/currencies/indicator/:code/:year\"",
+            "element": "{<IndicatorDetailKeyed />}"
           }
         },
         {
@@ -2076,8 +2075,8 @@
           "end_line": 311,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/demographics\"",
-            "element": "{<DemographicsPage />}"
+            "path": "\"/russia\"",
+            "element": "{<RussiaHome />}"
           }
         },
         {
@@ -2085,8 +2084,8 @@
           "end_line": 312,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/region/map/:code\"",
-            "element": "{<RegionsHome />}"
+            "path": "\"/russia/category\"",
+            "element": "{<CategoriesHub />}"
           }
         },
         {
@@ -2094,8 +2093,8 @@
           "end_line": 313,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/region\"",
-            "element": "{<RegionsHome />}"
+            "path": "\"/russia/category/:slug\"",
+            "element": "{<CategoryPage />}"
           }
         },
         {
@@ -2103,8 +2102,8 @@
           "end_line": 314,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/region/:slug\"",
-            "element": "{<RegionProfile />}"
+            "path": "\"/russia/indicator/:code\"",
+            "element": "{<IndicatorDetailKeyed />}"
           }
         },
         {
@@ -2112,8 +2111,8 @@
           "end_line": 315,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/region/:slug/:code\"",
-            "element": "{<RegionIndicatorPage />}"
+            "path": "\"/russia/indicator/:code/:year\"",
+            "element": "{<IndicatorDetailKeyed />}"
           }
         },
         {
@@ -2121,8 +2120,8 @@
           "end_line": 316,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/region-rating\"",
-            "element": "{<RegionRatingsHub />}"
+            "path": "\"/russia/today\"",
+            "element": "{<TodayHub />}"
           }
         },
         {
@@ -2130,8 +2129,8 @@
           "end_line": 317,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/region-rating/:code\"",
-            "element": "{<RegionRatingPage />}"
+            "path": "\"/russia/today/:code\"",
+            "element": "{<TodayIndicatorPage />}"
           }
         },
         {
@@ -2139,8 +2138,26 @@
           "end_line": 318,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/region-vs/:pair\"",
-            "element": "{<RegionComparePage />}"
+            "path": "\"/russia/calendar\"",
+            "element": "{<CalendarPage />}"
+          }
+        },
+        {
+          "line": 319,
+          "end_line": 319,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/russia/calendar/:year/:month\"",
+            "element": "{<CalendarMonthPage />}"
+          }
+        },
+        {
+          "line": 320,
+          "end_line": 320,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/russia/demographics\"",
+            "element": "{<DemographicsPage />}"
           }
         },
         {
@@ -2148,8 +2165,8 @@
           "end_line": 321,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/:countrySlug/regions\"",
-            "element": "{<WorldRegionsHome />}"
+            "path": "\"/russia/region/map/:code\"",
+            "element": "{<RegionsHome />}"
           }
         },
         {
@@ -2157,8 +2174,8 @@
           "end_line": 322,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/:countrySlug/region/map/:code\"",
-            "element": "{<WorldRegionsHome />}"
+            "path": "\"/russia/region\"",
+            "element": "{<RegionsHome />}"
           }
         },
         {
@@ -2166,8 +2183,8 @@
           "end_line": 323,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/:countrySlug/region/:slug/:code\"",
-            "element": "{<WorldRegionIndicatorPage />}"
+            "path": "\"/russia/region/:slug\"",
+            "element": "{<RegionProfile />}"
           }
         },
         {
@@ -2175,8 +2192,26 @@
           "end_line": 324,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/:countrySlug/region/:slug\"",
-            "element": "{<WorldRegionProfile />}"
+            "path": "\"/russia/region/:slug/:code\"",
+            "element": "{<RegionIndicatorPage />}"
+          }
+        },
+        {
+          "line": 325,
+          "end_line": 325,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/russia/region-rating\"",
+            "element": "{<RegionRatingsHub />}"
+          }
+        },
+        {
+          "line": 326,
+          "end_line": 326,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/russia/region-rating/:code\"",
+            "element": "{<RegionRatingPage />}"
           }
         },
         {
@@ -2184,26 +2219,8 @@
           "end_line": 327,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/:countrySlug/indicator/:code/:year\"",
-            "element": "{<WorldIndicatorRoute />}"
-          }
-        },
-        {
-          "line": 328,
-          "end_line": 328,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/:countrySlug/indicator/:code\"",
-            "element": "{<WorldIndicatorRoute />}"
-          }
-        },
-        {
-          "line": 329,
-          "end_line": 329,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/:countrySlug/category/:slug\"",
-            "element": "{<NotFound />}"
+            "path": "\"/russia/region-vs/:pair\"",
+            "element": "{<RegionComparePage />}"
           }
         },
         {
@@ -2211,8 +2228,26 @@
           "end_line": 330,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/:countrySlug\"",
-            "element": "{<WorldCountryRoute />}"
+            "path": "\"/:countrySlug/regions\"",
+            "element": "{<WorldRegionsHome />}"
+          }
+        },
+        {
+          "line": 331,
+          "end_line": 331,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/:countrySlug/region/map/:code\"",
+            "element": "{<WorldRegionsHome />}"
+          }
+        },
+        {
+          "line": 332,
+          "end_line": 332,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/:countrySlug/region/:slug/:code\"",
+            "element": "{<WorldRegionIndicatorPage />}"
           }
         },
         {
@@ -2220,26 +2255,17 @@
           "end_line": 333,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/category/:slug\"",
-            "element": "{<RedirectTo build={({ slug }) => russiaCategoryPath(slug)} />}"
+            "path": "\"/:countrySlug/region/:slug\"",
+            "element": "{<WorldRegionProfile />}"
           }
         },
         {
-          "line": 334,
-          "end_line": 334,
+          "line": 336,
+          "end_line": 336,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/indicator/:code/:year\"",
-            "element": "{<RedirectTo build={({ code, year }) => russiaIndicatorYearPath(code, year)} />}"
-          }
-        },
-        {
-          "line": 335,
-          "end_line": 335,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/indicator/:code\"",
-            "element": "{<RedirectTo build={({ code }) => russiaIndicatorPath(code)} />}"
+            "path": "\"/:countrySlug/indicator/:code/:year\"",
+            "element": "{<WorldIndicatorRoute />}"
           }
         },
         {
@@ -2247,8 +2273,8 @@
           "end_line": 337,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/rankings\"",
-            "element": "{<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />}"
+            "path": "\"/:countrySlug/indicator/:code\"",
+            "element": "{<WorldIndicatorRoute />}"
           }
         },
         {
@@ -2256,8 +2282,8 @@
           "end_line": 338,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/ranking\"",
-            "element": "{<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />}"
+            "path": "\"/:countrySlug/category/:slug\"",
+            "element": "{<NotFound />}"
           }
         },
         {
@@ -2265,26 +2291,8 @@
           "end_line": 339,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/rankings/gdp\"",
-            "element": "{<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />}"
-          }
-        },
-        {
-          "line": 340,
-          "end_line": 340,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/ranking/gdp\"",
-            "element": "{<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />}"
-          }
-        },
-        {
-          "line": 341,
-          "end_line": 341,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/calculators\"",
-            "element": "{<NavigateKeepSearch to=\"/calculator\" />}"
+            "path": "\"/:countrySlug\"",
+            "element": "{<WorldCountryRoute />}"
           }
         },
         {
@@ -2292,8 +2300,8 @@
           "end_line": 342,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/calculators/*\"",
-            "element": "{<CalculatorsAlias />}"
+            "path": "\"/category/:slug\"",
+            "element": "{<RedirectTo build={({ slug }) => russiaCategoryPath(slug)} />}"
           }
         },
         {
@@ -2301,8 +2309,8 @@
           "end_line": 343,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/today\"",
-            "element": "{<NavigateKeepSearch to={todayPath()} />}"
+            "path": "\"/indicator/:code/:year\"",
+            "element": "{<RedirectTo build={({ code, year }) => russiaIndicatorYearPath(code, year)} />}"
           }
         },
         {
@@ -2310,17 +2318,8 @@
           "end_line": 344,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/today/:code\"",
-            "element": "{<RedirectTo build={({ code }) => todayPath(code)} />}"
-          }
-        },
-        {
-          "line": 345,
-          "end_line": 345,
-          "owner": "AppRoutes",
-          "attributes": {
-            "path": "\"/calendar\"",
-            "element": "{<NavigateKeepSearch to={calendarPath()} />}"
+            "path": "\"/indicator/:code\"",
+            "element": "{<RedirectTo build={({ code }) => russiaIndicatorPath(code)} />}"
           }
         },
         {
@@ -2328,8 +2327,8 @@
           "end_line": 346,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/calendar/:year/:month\"",
-            "element": "{<RedirectTo build={({ year, month }) => calendarPath(year, month)} />}"
+            "path": "\"/rankings\"",
+            "element": "{<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />}"
           }
         },
         {
@@ -2337,8 +2336,8 @@
           "end_line": 347,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/demographics\"",
-            "element": "{<NavigateKeepSearch to={demographicsPath()} />}"
+            "path": "\"/ranking\"",
+            "element": "{<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />}"
           }
         },
         {
@@ -2346,8 +2345,8 @@
           "end_line": 348,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/regions\"",
-            "element": "{<NavigateKeepSearch to={regionHubPath()} />}"
+            "path": "\"/rankings/gdp\"",
+            "element": "{<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />}"
           }
         },
         {
@@ -2355,8 +2354,8 @@
           "end_line": 349,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/russia/regions\"",
-            "element": "{<NavigateKeepSearch to={regionHubPath()} />}"
+            "path": "\"/ranking/gdp\"",
+            "element": "{<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />}"
           }
         },
         {
@@ -2364,8 +2363,8 @@
           "end_line": 350,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/countries\"",
-            "element": "{<CountriesToHome />}"
+            "path": "\"/calculators\"",
+            "element": "{<NavigateKeepSearch to=\"/calculator\" />}"
           }
         },
         {
@@ -2373,8 +2372,8 @@
           "end_line": 351,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/countries/:slug\"",
-            "element": "{<RedirectTo build={({ slug }) => countryPath(slug)} />}"
+            "path": "\"/calculators/*\"",
+            "element": "{<CalculatorsAlias />}"
           }
         },
         {
@@ -2382,8 +2381,8 @@
           "end_line": 352,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/regions/map/:code\"",
-            "element": "{<RedirectTo build={({ code }) => regionMapPath(code)} />}"
+            "path": "\"/today\"",
+            "element": "{<NavigateKeepSearch to={todayPath()} />}"
           }
         },
         {
@@ -2391,8 +2390,8 @@
           "end_line": 353,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/region/:slug\"",
-            "element": "{<RedirectTo build={({ slug }) => regionPath(slug)} />}"
+            "path": "\"/today/:code\"",
+            "element": "{<RedirectTo build={({ code }) => todayPath(code)} />}"
           }
         },
         {
@@ -2400,8 +2399,8 @@
           "end_line": 354,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/region/:slug/:code\"",
-            "element": "{<RedirectTo build={({ slug, code }) => regionIndicatorPath(slug, code)} />}"
+            "path": "\"/calendar\"",
+            "element": "{<NavigateKeepSearch to={calendarPath()} />}"
           }
         },
         {
@@ -2409,17 +2408,44 @@
           "end_line": 355,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/region-rating/:code\"",
-            "element": "{<RedirectTo build={({ code }) => regionRatingPath(code)} />}"
+            "path": "\"/calendar/:year/:month\"",
+            "element": "{<RedirectTo build={({ year, month }) => calendarPath(year, month)} />}"
           }
         },
         {
           "line": 356,
+          "end_line": 356,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/demographics\"",
+            "element": "{<NavigateKeepSearch to={demographicsPath()} />}"
+          }
+        },
+        {
+          "line": 357,
+          "end_line": 357,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/regions\"",
+            "element": "{<NavigateKeepSearch to={regionHubPath()} />}"
+          }
+        },
+        {
+          "line": 358,
+          "end_line": 358,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/russia/regions\"",
+            "element": "{<NavigateKeepSearch to={regionHubPath()} />}"
+          }
+        },
+        {
+          "line": 359,
           "end_line": 359,
           "owner": "AppRoutes",
           "attributes": {
-            "path": "\"/region-vs/:pair\"",
-            "element": "{<RedirectTo build={({ pair }) => {\n              const m = String(pair || '').match(/^(.+)-vs-(.+)$/);\n              return m ? regionVsPath(m[1], m[2]) : regionHubPath();\n            }} />}"
+            "path": "\"/countries\"",
+            "element": "{<CountriesToHome />}"
           }
         },
         {
@@ -2427,13 +2453,67 @@
           "end_line": 360,
           "owner": "AppRoutes",
           "attributes": {
+            "path": "\"/countries/:slug\"",
+            "element": "{<RedirectTo build={({ slug }) => countryPath(slug)} />}"
+          }
+        },
+        {
+          "line": 361,
+          "end_line": 361,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/regions/map/:code\"",
+            "element": "{<RedirectTo build={({ code }) => regionMapPath(code)} />}"
+          }
+        },
+        {
+          "line": 362,
+          "end_line": 362,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/region/:slug\"",
+            "element": "{<RedirectTo build={({ slug }) => regionPath(slug)} />}"
+          }
+        },
+        {
+          "line": 363,
+          "end_line": 363,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/region/:slug/:code\"",
+            "element": "{<RedirectTo build={({ slug, code }) => regionIndicatorPath(slug, code)} />}"
+          }
+        },
+        {
+          "line": 364,
+          "end_line": 364,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/region-rating/:code\"",
+            "element": "{<RedirectTo build={({ code }) => regionRatingPath(code)} />}"
+          }
+        },
+        {
+          "line": 365,
+          "end_line": 368,
+          "owner": "AppRoutes",
+          "attributes": {
+            "path": "\"/region-vs/:pair\"",
+            "element": "{<RedirectTo build={({ pair }) => {\n              const m = String(pair || '').match(/^(.+)-vs-(.+)$/);\n              return m ? regionVsPath(m[1], m[2]) : regionHubPath();\n            }} />}"
+          }
+        },
+        {
+          "line": 369,
+          "end_line": 369,
+          "owner": "AppRoutes",
+          "attributes": {
             "path": "\"/world/:slug/:code\"",
             "element": "{<RedirectTo build={({ slug, code }) => indicatorPath(slug, code)} />}"
           }
         },
         {
-          "line": 361,
-          "end_line": 364,
+          "line": 370,
+          "end_line": 373,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"/world/:slug\"",
@@ -2441,8 +2521,8 @@
           }
         },
         {
-          "line": 366,
-          "end_line": 366,
+          "line": 375,
+          "end_line": 375,
           "owner": "AppRoutes",
           "attributes": {
             "path": "\"*\"",
@@ -2620,8 +2700,8 @@
           "callback_context": "lazy"
         },
         {
-          "line": 81,
-          "end_line": 81,
+          "line": 82,
+          "end_line": 82,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -2630,10 +2710,10 @@
         {
           "line": 82,
           "end_line": 82,
-          "owner": "<module>",
+          "owner": "<callback@82>",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "lazy"
+          "callback_context": "import('./pages/AccountMail').then"
         },
         {
           "line": 83,
@@ -2644,6 +2724,14 @@
           "callback_context": "lazy"
         },
         {
+          "line": 83,
+          "end_line": 83,
+          "owner": "<callback@83>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "import('./pages/AccountMail').then"
+        },
+        {
           "line": 84,
           "end_line": 84,
           "owner": "<module>",
@@ -2652,12 +2740,28 @@
           "callback_context": "lazy"
         },
         {
+          "line": 84,
+          "end_line": 84,
+          "owner": "<callback@84>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "import('./pages/AccountMail').then"
+        },
+        {
           "line": 85,
           "end_line": 85,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "lazy"
+        },
+        {
+          "line": 85,
+          "end_line": 85,
+          "owner": "<callback@85>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "import('./pages/AccountMail').then"
         },
         {
           "line": 86,
@@ -2748,6 +2852,14 @@
           "callback_context": "lazy"
         },
         {
+          "line": 97,
+          "end_line": 97,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "lazy"
+        },
+        {
           "line": 98,
           "end_line": 98,
           "owner": "<module>",
@@ -2780,8 +2892,8 @@
           "callback_context": "lazy"
         },
         {
-          "line": 102,
-          "end_line": 102,
+          "line": 103,
+          "end_line": 103,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -2789,183 +2901,207 @@
         },
         {
           "line": 104,
-          "end_line": 115,
+          "end_line": 104,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "lazy"
+        },
+        {
+          "line": 105,
+          "end_line": 105,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "lazy"
+        },
+        {
+          "line": 106,
+          "end_line": 106,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "lazy"
+        },
+        {
+          "line": 107,
+          "end_line": 107,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "lazy"
+        },
+        {
+          "line": 109,
+          "end_line": 120,
           "owner": "<module>",
           "name": "ScrollToTop",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 107,
-          "end_line": 113,
+          "line": 112,
+          "end_line": 118,
           "owner": "ScrollToTop",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 117,
-          "end_line": 141,
+          "line": 122,
+          "end_line": 146,
           "owner": "<module>",
           "name": "YandexMetrikaHit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 121,
-          "end_line": 121,
+          "line": 126,
+          "end_line": 126,
           "owner": "YandexMetrikaHit",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 122,
-          "end_line": 139,
+          "line": 127,
+          "end_line": 144,
           "owner": "YandexMetrikaHit",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 130,
-          "end_line": 137,
-          "owner": "YandexMetrikaHit.<callback@122>",
+          "line": 135,
+          "end_line": 142,
+          "owner": "YandexMetrikaHit.<callback@127>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 138,
-          "end_line": 138,
-          "owner": "YandexMetrikaHit.<callback@122>",
+          "line": 143,
+          "end_line": 143,
+          "owner": "YandexMetrikaHit.<callback@127>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 143,
-          "end_line": 146,
+          "line": 148,
+          "end_line": 151,
           "owner": "<module>",
           "name": "IndicatorDetailKeyed",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 149,
-          "end_line": 155,
+          "line": 154,
+          "end_line": 160,
           "owner": "<module>",
           "name": "WorldCountryRoute",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 158,
-          "end_line": 164,
+          "line": 163,
+          "end_line": 169,
           "owner": "<module>",
           "name": "WorldIndicatorRoute",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 166,
-          "end_line": 170,
+          "line": 171,
+          "end_line": 175,
           "owner": "<module>",
           "name": "RedirectTo",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 173,
-          "end_line": 176,
+          "line": 178,
+          "end_line": 181,
           "owner": "<module>",
           "name": "NavigateKeepSearch",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 179,
-          "end_line": 182,
+          "line": 184,
+          "end_line": 187,
           "owner": "<module>",
           "name": "CalculatorsAlias",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 185,
-          "end_line": 188,
+          "line": 190,
+          "end_line": 193,
           "owner": "<module>",
           "name": "CountriesToHome",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 198,
-          "end_line": 201,
+          "line": 203,
+          "end_line": 206,
           "owner": "<module>",
           "name": "ServerNotFoundGate",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 205,
-          "end_line": 212,
+          "line": 210,
+          "end_line": 217,
           "owner": "<module>",
           "name": "EmbedSpinner",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 214,
-          "end_line": 230,
+          "line": 219,
+          "end_line": 235,
           "owner": "<module>",
           "name": "EmbedRoutes",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 233,
-          "end_line": 233,
+          "line": 238,
+          "end_line": 238,
           "owner": "<module>",
           "name": "renderCabinetActions",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 234,
-          "end_line": 234,
+          "line": 239,
+          "end_line": 239,
           "owner": "<module>",
           "name": "renderCompareSave",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 236,
-          "end_line": 382,
+          "line": 241,
+          "end_line": 391,
           "owner": "<module>",
           "name": "AppRoutes",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 333,
-          "end_line": 333,
+          "line": 342,
+          "end_line": 342,
           "owner": "AppRoutes",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 334,
-          "end_line": 334,
-          "owner": "AppRoutes",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 335,
-          "end_line": 335,
+          "line": 343,
+          "end_line": 343,
           "owner": "AppRoutes",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -2980,30 +3116,6 @@
           "callback_context": null
         },
         {
-          "line": 346,
-          "end_line": 346,
-          "owner": "AppRoutes",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 351,
-          "end_line": 351,
-          "owner": "AppRoutes",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 352,
-          "end_line": 352,
-          "owner": "AppRoutes",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
           "line": 353,
           "end_line": 353,
           "owner": "AppRoutes",
@@ -3012,24 +3124,8 @@
           "callback_context": null
         },
         {
-          "line": 354,
-          "end_line": 354,
-          "owner": "AppRoutes",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
           "line": 355,
           "end_line": 355,
-          "owner": "AppRoutes",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 356,
-          "end_line": 359,
           "owner": "AppRoutes",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -3045,6 +3141,30 @@
         },
         {
           "line": 361,
+          "end_line": 361,
+          "owner": "AppRoutes",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 362,
+          "end_line": 362,
+          "owner": "AppRoutes",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 363,
+          "end_line": 363,
+          "owner": "AppRoutes",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 364,
           "end_line": 364,
           "owner": "AppRoutes",
           "name": null,
@@ -3052,8 +3172,32 @@
           "callback_context": null
         },
         {
-          "line": 384,
-          "end_line": 390,
+          "line": 365,
+          "end_line": 368,
+          "owner": "AppRoutes",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 369,
+          "end_line": 369,
+          "owner": "AppRoutes",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 370,
+          "end_line": 373,
+          "owner": "AppRoutes",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 393,
+          "end_line": 399,
           "owner": "<module>",
           "name": "App",
           "kind": "FunctionDeclaration",
@@ -3062,15 +3206,15 @@
       ],
       "hooks": [
         {
-          "line": 105,
-          "end_line": 105,
+          "line": 110,
+          "end_line": 110,
           "owner": "ScrollToTop",
           "callee": "useLocation",
           "arguments": []
         },
         {
-          "line": 106,
-          "end_line": 106,
+          "line": 111,
+          "end_line": 111,
           "owner": "ScrollToTop",
           "callee": "useRef",
           "arguments": [
@@ -3078,8 +3222,8 @@
           ]
         },
         {
-          "line": 107,
-          "end_line": 113,
+          "line": 112,
+          "end_line": 118,
           "owner": "ScrollToTop",
           "callee": "useEffect",
           "arguments": [
@@ -3088,15 +3232,15 @@
           ]
         },
         {
-          "line": 118,
-          "end_line": 118,
+          "line": 123,
+          "end_line": 123,
           "owner": "YandexMetrikaHit",
           "callee": "useLocation",
           "arguments": []
         },
         {
-          "line": 119,
-          "end_line": 119,
+          "line": 124,
+          "end_line": 124,
           "owner": "YandexMetrikaHit",
           "callee": "useRef",
           "arguments": [
@@ -3104,8 +3248,8 @@
           ]
         },
         {
-          "line": 120,
-          "end_line": 120,
+          "line": 125,
+          "end_line": 125,
           "owner": "YandexMetrikaHit",
           "callee": "useRef",
           "arguments": [
@@ -3113,8 +3257,8 @@
           ]
         },
         {
-          "line": 121,
-          "end_line": 121,
+          "line": 126,
+          "end_line": 126,
           "owner": "YandexMetrikaHit",
           "callee": "useEffect",
           "arguments": [
@@ -3123,8 +3267,8 @@
           ]
         },
         {
-          "line": 122,
-          "end_line": 139,
+          "line": 127,
+          "end_line": 144,
           "owner": "YandexMetrikaHit",
           "callee": "useEffect",
           "arguments": [
@@ -3133,71 +3277,71 @@
           ]
         },
         {
-          "line": 144,
-          "end_line": 144,
+          "line": 149,
+          "end_line": 149,
           "owner": "IndicatorDetailKeyed",
           "callee": "useParams",
           "arguments": []
         },
         {
-          "line": 150,
-          "end_line": 150,
+          "line": 155,
+          "end_line": 155,
           "owner": "WorldCountryRoute",
           "callee": "useParams",
           "arguments": []
         },
         {
-          "line": 159,
-          "end_line": 159,
+          "line": 164,
+          "end_line": 164,
           "owner": "WorldIndicatorRoute",
           "callee": "useParams",
           "arguments": []
         },
         {
-          "line": 167,
-          "end_line": 167,
+          "line": 172,
+          "end_line": 172,
           "owner": "RedirectTo",
           "callee": "useParams",
           "arguments": []
         },
         {
-          "line": 168,
-          "end_line": 168,
+          "line": 173,
+          "end_line": 173,
           "owner": "RedirectTo",
           "callee": "useLocation",
           "arguments": []
         },
         {
-          "line": 174,
-          "end_line": 174,
+          "line": 179,
+          "end_line": 179,
           "owner": "NavigateKeepSearch",
           "callee": "useLocation",
           "arguments": []
         },
         {
-          "line": 180,
-          "end_line": 180,
+          "line": 185,
+          "end_line": 185,
           "owner": "CalculatorsAlias",
           "callee": "useParams",
           "arguments": []
         },
         {
-          "line": 186,
-          "end_line": 186,
+          "line": 191,
+          "end_line": 191,
           "owner": "CountriesToHome",
           "callee": "useLocation",
           "arguments": []
         },
         {
-          "line": 199,
-          "end_line": 199,
+          "line": 204,
+          "end_line": 204,
           "owner": "ServerNotFoundGate",
           "callee": "useLocation",
           "arguments": []
         },
         {
-          "line": 237,
-          "end_line": 237,
+          "line": 242,
+          "end_line": 242,
           "owner": "AppRoutes",
           "callee": "useLocation",
           "arguments": []
@@ -84268,7 +84412,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/cabinet/ProfilePanel.jsx": {
-      "sha256": "3bea42ac12a0cf9ae29c19e6c5931d2c39957f045d16c4e39ef2366814c9234b",
+      "sha256": "98bec5c9405b286dfe046b1a46085d3a66ff9e471f69abf4b0a4e399581eeee8",
       "imports": [
         {
           "line": 1,
@@ -84337,7 +84481,7 @@
         },
         {
           "line": 6,
-          "end_line": 8,
+          "end_line": 9,
           "owner": "<module>",
           "specifier": "../../lib/api",
           "category": "owned_source",
@@ -84351,12 +84495,13 @@
             "submitFeedback",
             "updateNewsletter",
             "updateProfile",
-            "fetchAccountExport"
+            "fetchAccountExport",
+            "resendVerifyEmail"
           ]
         },
         {
-          "line": 9,
-          "end_line": 9,
+          "line": 10,
+          "end_line": 10,
           "owner": "<module>",
           "specifier": "../../lib/apiErrorMessage",
           "category": "owned_source",
@@ -84368,8 +84513,8 @@
           ]
         },
         {
-          "line": 10,
-          "end_line": 10,
+          "line": 11,
+          "end_line": 11,
           "owner": "<module>",
           "specifier": "../../i18n",
           "category": "owned_source",
@@ -84381,8 +84526,8 @@
           ]
         },
         {
-          "line": 11,
-          "end_line": 11,
+          "line": 12,
+          "end_line": 12,
           "owner": "<module>",
           "specifier": "../../lib/format",
           "category": "owned_source",
@@ -84394,8 +84539,8 @@
           ]
         },
         {
-          "line": 12,
-          "end_line": 12,
+          "line": 13,
+          "end_line": 13,
           "owner": "<module>",
           "specifier": "../Button",
           "category": "owned_source",
@@ -84410,192 +84555,200 @@
       "routes": [],
       "functions": [
         {
-          "line": 20,
-          "end_line": 379,
+          "line": 21,
+          "end_line": 406,
           "owner": "<module>",
           "name": "ProfilePanel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 43,
-          "end_line": 47,
+          "line": 45,
+          "end_line": 49,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 52,
-          "end_line": 70,
+          "line": 54,
+          "end_line": 72,
           "owner": "ProfilePanel",
           "name": "doExport",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 64,
-          "end_line": 64,
+          "line": 66,
+          "end_line": 66,
           "owner": "ProfilePanel.doExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 72,
-          "end_line": 85,
+          "line": 74,
+          "end_line": 87,
           "owner": "ProfilePanel",
           "name": "run",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 87,
-          "end_line": 91,
+          "line": 89,
+          "end_line": 93,
           "owner": "ProfilePanel",
           "name": "doLogout",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 88,
-          "end_line": 88,
+          "line": 90,
+          "end_line": 90,
           "owner": "ProfilePanel.doLogout",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "run"
         },
         {
-          "line": 95,
-          "end_line": 100,
+          "line": 97,
+          "end_line": 102,
           "owner": "ProfilePanel",
           "name": "doDelete",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 97,
-          "end_line": 97,
+          "line": 99,
+          "end_line": 99,
           "owner": "ProfilePanel.doDelete",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "run"
         },
         {
-          "line": 102,
-          "end_line": 106,
+          "line": 104,
+          "end_line": 108,
           "owner": "ProfilePanel",
           "name": "startEditName",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 108,
-          "end_line": 119,
+          "line": 110,
+          "end_line": 121,
           "owner": "ProfilePanel",
           "name": "saveName",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 121,
-          "end_line": 133,
+          "line": 124,
+          "end_line": 132,
+          "owner": "ProfilePanel",
+          "name": "resendVerify",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 134,
+          "end_line": 146,
           "owner": "ProfilePanel",
           "name": "toggleNewsletter",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 135,
-          "end_line": 149,
+          "line": 148,
+          "end_line": 162,
           "owner": "ProfilePanel",
           "name": "sendFeedback",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 152,
-          "end_line": 157,
+          "line": 165,
+          "end_line": 170,
           "owner": "ProfilePanel",
           "name": "fieldRow",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 172,
-          "end_line": 172,
+          "line": 185,
+          "end_line": 185,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 173,
-          "end_line": 176,
+          "line": 186,
+          "end_line": 189,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 190,
-          "end_line": 190,
+          "line": 203,
+          "end_line": 203,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 225,
-          "end_line": 225,
+          "line": 252,
+          "end_line": 252,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 237,
-          "end_line": 237,
+          "line": 264,
+          "end_line": 264,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 321,
-          "end_line": 321,
+          "line": 348,
+          "end_line": 348,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 321,
-          "end_line": 321,
-          "owner": "ProfilePanel.<callback@321>",
+          "line": 348,
+          "end_line": 348,
+          "owner": "ProfilePanel.<callback@348>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "run"
         },
         {
-          "line": 349,
-          "end_line": 349,
+          "line": 376,
+          "end_line": 376,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 365,
-          "end_line": 365,
+          "line": 392,
+          "end_line": 392,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 371,
-          "end_line": 371,
+          "line": 398,
+          "end_line": 398,
           "owner": "ProfilePanel",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -84604,41 +84757,32 @@
       ],
       "hooks": [
         {
-          "line": 21,
-          "end_line": 21,
-          "owner": "ProfilePanel",
-          "callee": "useT",
-          "arguments": []
-        },
-        {
           "line": 22,
           "end_line": 22,
           "owner": "ProfilePanel",
-          "callee": "useNavigate",
+          "callee": "useT",
           "arguments": []
         },
         {
           "line": 23,
           "end_line": 23,
           "owner": "ProfilePanel",
-          "callee": "useLocation",
+          "callee": "useNavigate",
           "arguments": []
         },
         {
           "line": 24,
           "end_line": 24,
           "owner": "ProfilePanel",
-          "callee": "useAuth",
+          "callee": "useLocation",
           "arguments": []
         },
         {
           "line": 25,
           "end_line": 25,
           "owner": "ProfilePanel",
-          "callee": "useState",
-          "arguments": [
-            "false"
-          ]
+          "callee": "useAuth",
+          "arguments": []
         },
         {
           "line": 26,
@@ -84646,7 +84790,7 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "null"
+            "false"
           ]
         },
         {
@@ -84673,7 +84817,7 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "false"
+            "null"
           ]
         },
         {
@@ -84691,7 +84835,7 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "''"
+            "null"
           ]
         },
         {
@@ -84709,7 +84853,7 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "null"
+            "''"
           ]
         },
         {
@@ -84718,7 +84862,7 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "''"
+            "false"
           ]
         },
         {
@@ -84727,7 +84871,7 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "false"
+            "null"
           ]
         },
         {
@@ -84736,7 +84880,7 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "false"
+            "''"
           ]
         },
         {
@@ -84745,7 +84889,7 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "null"
+            "false"
           ]
         },
         {
@@ -84763,12 +84907,30 @@
           "owner": "ProfilePanel",
           "callee": "useState",
           "arguments": [
-            "''"
+            "null"
           ]
         },
         {
           "line": 40,
           "end_line": 40,
+          "owner": "ProfilePanel",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 41,
+          "end_line": 41,
+          "owner": "ProfilePanel",
+          "callee": "useState",
+          "arguments": [
+            "''"
+          ]
+        },
+        {
+          "line": 42,
+          "end_line": 42,
           "owner": "ProfilePanel",
           "callee": "useRef",
           "arguments": [
@@ -84776,8 +84938,8 @@
           ]
         },
         {
-          "line": 43,
-          "end_line": 47,
+          "line": 45,
+          "end_line": 49,
           "owner": "ProfilePanel",
           "callee": "useEffect",
           "arguments": [
@@ -84791,40 +84953,40 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 170,
-          "end_line": 186,
+          "line": 183,
+          "end_line": 199,
           "owner": "ProfilePanel",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setNameVal(e.target.value)}"
         },
         {
-          "line": 170,
-          "end_line": 186,
+          "line": 183,
+          "end_line": 199,
           "owner": "ProfilePanel",
           "component": "input",
           "event": "onKeyDown",
           "expression": "{(e) => {\n                      if (e.key === 'Enter') { e.preventDefault(); saveName(); }\n                      if (e.key === 'Escape') setEditName(false);\n                    }}"
         },
         {
-          "line": 187,
-          "end_line": 187,
+          "line": 200,
+          "end_line": 200,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{saveName}"
         },
         {
-          "line": 190,
-          "end_line": 190,
+          "line": 203,
+          "end_line": 203,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => setEditName(false)}"
         },
         {
-          "line": 197,
-          "end_line": 197,
+          "line": 210,
+          "end_line": 210,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
@@ -84832,87 +84994,95 @@
         },
         {
           "line": 225,
-          "end_line": 225,
+          "end_line": 226,
+          "owner": "ProfilePanel",
+          "component": "Button",
+          "event": "onClick",
+          "expression": "{resendVerify}"
+        },
+        {
+          "line": 252,
+          "end_line": 252,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => setFbSent(false)}"
         },
         {
-          "line": 235,
-          "end_line": 248,
+          "line": 262,
+          "end_line": 275,
           "owner": "ProfilePanel",
           "component": "textarea",
           "event": "onChange",
           "expression": "{(e) => setFbText(e.target.value)}"
         },
         {
-          "line": 253,
-          "end_line": 259,
+          "line": 280,
+          "end_line": 286,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{sendFeedback}"
         },
         {
-          "line": 276,
-          "end_line": 285,
+          "line": 303,
+          "end_line": 312,
           "owner": "ProfilePanel",
           "component": "button",
           "event": "onClick",
           "expression": "{toggleNewsletter}"
         },
         {
-          "line": 318,
-          "end_line": 318,
+          "line": 345,
+          "end_line": 345,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{doLogout}"
         },
         {
-          "line": 319,
-          "end_line": 325,
+          "line": 346,
+          "end_line": 352,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => run(() => logoutAll(), t('account.logoutAllOk'), true, 'logoutAll')}"
         },
         {
-          "line": 332,
-          "end_line": 332,
+          "line": 359,
+          "end_line": 359,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{doExport}"
         },
         {
-          "line": 346,
-          "end_line": 355,
+          "line": 373,
+          "end_line": 382,
           "owner": "ProfilePanel",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setDelWord(e.target.value)}"
         },
         {
-          "line": 356,
-          "end_line": 362,
+          "line": 383,
+          "end_line": 389,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{doDelete}"
         },
         {
-          "line": 365,
-          "end_line": 365,
+          "line": 392,
+          "end_line": 392,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => { setDelOpen(false); setDelWord(''); }}"
         },
         {
-          "line": 371,
-          "end_line": 371,
+          "line": 398,
+          "end_line": 398,
           "owner": "ProfilePanel",
           "component": "Button",
           "event": "onClick",
@@ -111457,7 +111627,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "102134c154539f5148016e9066a3a7eeaec6739672d744fd1215adadacff8704",
+      "sha256": "c202722d01a527825ac5c7bd44e03eb3d8013c6a10e20904a08d0a8607cbe2f7",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -111880,7 +112050,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "198381ea5169ed52c67667a83c1cbbe467b4cc7d7d06eff4d06481b51e3d8f81",
+      "sha256": "7f897a44c92f4dae58cee5faa6c58ed2ab5ac2f76b2e251ac73c584c787ddde1",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -113206,7 +113376,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/api.js": {
-      "sha256": "16f10d146597a2fcfd972a174f2918e81c4a7a6d9018d4058cec3953d51a8287",
+      "sha256": "d39823ae01916236e4d6c0e7aaa4ab3af67638c383a647ec78106da52ef18153",
       "imports": [
         {
           "line": 1,
@@ -113741,120 +113911,232 @@
           "callback_context": "api.post('/auth/account/newsletter', { subscribe }).then"
         },
         {
-          "line": 239,
-          "end_line": 240,
+          "line": 240,
+          "end_line": 241,
           "owner": "<module>",
-          "name": "updateProfile",
+          "name": "verifyEmail",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 240,
-          "end_line": 240,
-          "owner": "updateProfile",
+          "line": 241,
+          "end_line": 241,
+          "owner": "verifyEmail",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "api.patch('/auth/account/profile', { display_name: displayName }).then"
+          "callback_context": "api.post('/auth/email/verify', { token }).then"
         },
         {
           "line": 243,
           "end_line": 244,
           "owner": "<module>",
-          "name": "fetchDownloadQuota",
+          "name": "resendVerifyEmail",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
           "line": 244,
           "end_line": 244,
+          "owner": "resendVerifyEmail",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.post('/auth/email/verify/resend').then"
+        },
+        {
+          "line": 246,
+          "end_line": 247,
+          "owner": "<module>",
+          "name": "requestPasswordReset",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 247,
+          "end_line": 247,
+          "owner": "requestPasswordReset",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.post('/auth/password/forgot', { email }).then"
+        },
+        {
+          "line": 249,
+          "end_line": 250,
+          "owner": "<module>",
+          "name": "resetPassword",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 250,
+          "end_line": 250,
+          "owner": "resetPassword",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.post('/auth/password/reset', { token, password }).then"
+        },
+        {
+          "line": 252,
+          "end_line": 253,
+          "owner": "<module>",
+          "name": "fetchUnsubscribeState",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 253,
+          "end_line": 253,
+          "owner": "fetchUnsubscribeState",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.get('/mail/unsubscribe', { params: { t } }).then"
+        },
+        {
+          "line": 255,
+          "end_line": 256,
+          "owner": "<module>",
+          "name": "unsubscribeByLink",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 256,
+          "end_line": 256,
+          "owner": "unsubscribeByLink",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.post('/mail/unsubscribe', { t }).then"
+        },
+        {
+          "line": 258,
+          "end_line": 259,
+          "owner": "<module>",
+          "name": "resubscribeByLink",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 259,
+          "end_line": 259,
+          "owner": "resubscribeByLink",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.post('/mail/resubscribe', { t }).then"
+        },
+        {
+          "line": 261,
+          "end_line": 262,
+          "owner": "<module>",
+          "name": "updateProfile",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 262,
+          "end_line": 262,
+          "owner": "updateProfile",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.patch('/auth/account/profile', { display_name: displayName }).then"
+        },
+        {
+          "line": 265,
+          "end_line": 266,
+          "owner": "<module>",
+          "name": "fetchDownloadQuota",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 266,
+          "end_line": 266,
           "owner": "fetchDownloadQuota",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "api.get('/export/quota', { signal }).then"
         },
         {
-          "line": 251,
-          "end_line": 262,
+          "line": 273,
+          "end_line": 284,
           "owner": "<module>",
           "name": "absoluteAuthNext",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 266,
-          "end_line": 271,
+          "line": 288,
+          "end_line": 293,
           "owner": "<module>",
           "name": "oauthStartUrl",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 274,
-          "end_line": 275,
+          "line": 296,
+          "end_line": 297,
           "owner": "<module>",
           "name": "fetchOAuthProviders",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 275,
-          "end_line": 275,
+          "line": 297,
+          "end_line": 297,
           "owner": "fetchOAuthProviders",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "api.get('/auth/oauth/providers', { signal }).then"
         },
         {
-          "line": 281,
-          "end_line": 288,
+          "line": 303,
+          "end_line": 310,
           "owner": "<module>",
           "name": "defaultExportHistory",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 294,
-          "end_line": 300,
+          "line": 316,
+          "end_line": 322,
           "owner": "<module>",
           "name": "withExportHref",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 306,
-          "end_line": 329,
+          "line": 328,
+          "end_line": 351,
           "owner": "<module>",
           "name": "postExportBlob",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 337,
-          "end_line": 340,
+          "line": 359,
+          "end_line": 362,
           "owner": "<module>",
           "name": "exportTable",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 347,
-          "end_line": 350,
+          "line": 369,
+          "end_line": 372,
           "owner": "<module>",
           "name": "exportGrid",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 356,
-          "end_line": 356,
+          "line": 378,
+          "end_line": 378,
           "owner": "<module>",
           "name": "fetchAccountExport",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 356,
-          "end_line": 356,
+          "line": 378,
+          "end_line": 378,
           "owner": "fetchAccountExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -114110,8 +114392,77 @@
           ]
         },
         {
-          "line": 240,
-          "end_line": 240,
+          "line": 241,
+          "end_line": 241,
+          "owner": "verifyEmail",
+          "callee": "api.post",
+          "arguments": [
+            "'/auth/email/verify'",
+            "{ token }"
+          ]
+        },
+        {
+          "line": 244,
+          "end_line": 244,
+          "owner": "resendVerifyEmail",
+          "callee": "api.post",
+          "arguments": [
+            "'/auth/email/verify/resend'"
+          ]
+        },
+        {
+          "line": 247,
+          "end_line": 247,
+          "owner": "requestPasswordReset",
+          "callee": "api.post",
+          "arguments": [
+            "'/auth/password/forgot'",
+            "{ email }"
+          ]
+        },
+        {
+          "line": 250,
+          "end_line": 250,
+          "owner": "resetPassword",
+          "callee": "api.post",
+          "arguments": [
+            "'/auth/password/reset'",
+            "{ token, password }"
+          ]
+        },
+        {
+          "line": 253,
+          "end_line": 253,
+          "owner": "fetchUnsubscribeState",
+          "callee": "api.get",
+          "arguments": [
+            "'/mail/unsubscribe'",
+            "{ params: { t } }"
+          ]
+        },
+        {
+          "line": 256,
+          "end_line": 256,
+          "owner": "unsubscribeByLink",
+          "callee": "api.post",
+          "arguments": [
+            "'/mail/unsubscribe'",
+            "{ t }"
+          ]
+        },
+        {
+          "line": 259,
+          "end_line": 259,
+          "owner": "resubscribeByLink",
+          "callee": "api.post",
+          "arguments": [
+            "'/mail/resubscribe'",
+            "{ t }"
+          ]
+        },
+        {
+          "line": 262,
+          "end_line": 262,
           "owner": "updateProfile",
           "callee": "api.patch",
           "arguments": [
@@ -114120,8 +114471,8 @@
           ]
         },
         {
-          "line": 244,
-          "end_line": 244,
+          "line": 266,
+          "end_line": 266,
           "owner": "fetchDownloadQuota",
           "callee": "api.get",
           "arguments": [
@@ -114130,8 +114481,8 @@
           ]
         },
         {
-          "line": 275,
-          "end_line": 275,
+          "line": 297,
+          "end_line": 297,
           "owner": "fetchOAuthProviders",
           "callee": "api.get",
           "arguments": [
@@ -114140,8 +114491,8 @@
           ]
         },
         {
-          "line": 308,
-          "end_line": 308,
+          "line": 330,
+          "end_line": 330,
           "owner": "postExportBlob",
           "callee": "api.post",
           "arguments": [
@@ -114151,8 +114502,8 @@
           ]
         },
         {
-          "line": 356,
-          "end_line": 356,
+          "line": 378,
+          "end_line": 378,
           "owner": "fetchAccountExport",
           "callee": "api.get",
           "arguments": [
@@ -192150,6 +192501,925 @@
       ],
       "mcp_tools": []
     },
+    "frontend/src/pages/AccountMail.component.test.jsx": {
+      "sha256": "8afec2ef7dc49191558e770958189278bd22e1e4866dbd952f263b73b3ac1b8f",
+      "imports": [
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "@testing-library/react",
+          "category": "external_package",
+          "target": "@testing-library/react",
+          "bindings": [
+            "cleanup",
+            "fireEvent",
+            "render",
+            "screen",
+            "waitFor"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "afterEach",
+            "beforeEach",
+            "describe",
+            "expect",
+            "it",
+            "vi"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "react-router-dom",
+          "category": "external_package",
+          "target": "react-router-dom",
+          "bindings": [
+            "MemoryRouter",
+            "Routes",
+            "Route"
+          ]
+        },
+        {
+          "line": 5,
+          "end_line": 5,
+          "owner": "<module>",
+          "specifier": "./AccountMail",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/pages/AccountMail.jsx"
+          ],
+          "bindings": [
+            "ForgotPassword",
+            "ResetPassword",
+            "Unsubscribe",
+            "VerifyEmail"
+          ]
+        },
+        {
+          "line": 6,
+          "end_line": 8,
+          "owner": "<module>",
+          "specifier": "../lib/api",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/api.js"
+          ],
+          "bindings": [
+            "requestPasswordReset",
+            "resetPassword",
+            "resubscribeByLink",
+            "unsubscribeByLink",
+            "verifyEmail"
+          ]
+        }
+      ],
+      "routes": [
+        {
+          "line": 26,
+          "end_line": 26,
+          "owner": "at",
+          "attributes": {
+            "path": "{path.split('?')[0]}",
+            "element": "{element}"
+          }
+        }
+      ],
+      "functions": [
+        {
+          "line": 10,
+          "end_line": 17,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 11,
+          "end_line": 11,
+          "owner": "<callback@10>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.fn"
+        },
+        {
+          "line": 12,
+          "end_line": 12,
+          "owner": "<callback@10>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.fn"
+        },
+        {
+          "line": 13,
+          "end_line": 13,
+          "owner": "<callback@10>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.fn"
+        },
+        {
+          "line": 15,
+          "end_line": 15,
+          "owner": "<callback@10>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.fn"
+        },
+        {
+          "line": 16,
+          "end_line": 16,
+          "owner": "<callback@10>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.fn"
+        },
+        {
+          "line": 18,
+          "end_line": 18,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 19,
+          "end_line": 19,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 19,
+          "end_line": 19,
+          "owner": "<callback@19>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 19,
+          "end_line": 19,
+          "owner": "<callback@19>.<callback@19>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 21,
+          "end_line": 21,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "beforeEach"
+        },
+        {
+          "line": 24,
+          "end_line": 28,
+          "owner": "<module>",
+          "name": "at",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 30,
+          "end_line": 85,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 31,
+          "end_line": 37,
+          "owner": "<callback@30>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 39,
+          "end_line": 50,
+          "owner": "<callback@30>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 52,
+          "end_line": 55,
+          "owner": "<callback@30>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 57,
+          "end_line": 62,
+          "owner": "<callback@30>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 64,
+          "end_line": 68,
+          "owner": "<callback@30>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 70,
+          "end_line": 78,
+          "owner": "<callback@30>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 76,
+          "end_line": 76,
+          "owner": "<callback@30>.<callback@70>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 80,
+          "end_line": 84,
+          "owner": "<callback@30>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/pages/AccountMail.jsx": {
+      "sha256": "ebe8874ba62e881fbee391c1eeb2c1b0f6ffaf7f0c2414ce1ff5bab832f9c141",
+      "imports": [
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<module>",
+          "specifier": "react",
+          "category": "external_package",
+          "target": "react",
+          "bindings": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "line": 8,
+          "end_line": 8,
+          "owner": "<module>",
+          "specifier": "react-router-dom",
+          "category": "external_package",
+          "target": "react-router-dom",
+          "bindings": [
+            "Link",
+            "useNavigate",
+            "useSearchParams"
+          ]
+        },
+        {
+          "line": 9,
+          "end_line": 9,
+          "owner": "<module>",
+          "specifier": "../lib/useMeta",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/useMeta.js"
+          ],
+          "bindings": [
+            "useDocumentMeta"
+          ]
+        },
+        {
+          "line": 10,
+          "end_line": 10,
+          "owner": "<module>",
+          "specifier": "../i18n",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/index.js"
+          ],
+          "bindings": [
+            "useT"
+          ]
+        },
+        {
+          "line": 11,
+          "end_line": 14,
+          "owner": "<module>",
+          "specifier": "../lib/api",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/api.js"
+          ],
+          "bindings": [
+            "requestPasswordReset",
+            "resetPassword",
+            "resubscribeByLink",
+            "unsubscribeByLink",
+            "verifyEmail"
+          ]
+        },
+        {
+          "line": 15,
+          "end_line": 15,
+          "owner": "<module>",
+          "specifier": "../lib/apiErrorMessage",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/apiErrorMessage.js"
+          ],
+          "bindings": [
+            "apiErrorMessage"
+          ]
+        },
+        {
+          "line": 16,
+          "end_line": 16,
+          "owner": "<module>",
+          "specifier": "../components/PasswordField",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/PasswordField.jsx"
+          ],
+          "bindings": [
+            "PasswordField"
+          ]
+        },
+        {
+          "line": 17,
+          "end_line": 17,
+          "owner": "<module>",
+          "specifier": "../components/Button",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/Button.jsx"
+          ],
+          "bindings": [
+            "Button"
+          ]
+        },
+        {
+          "line": 18,
+          "end_line": 18,
+          "owner": "<module>",
+          "specifier": "../lib/format",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/format.js"
+          ],
+          "bindings": [
+            "cn"
+          ]
+        },
+        {
+          "line": 19,
+          "end_line": 19,
+          "owner": "<module>",
+          "specifier": "../styles/w5-pages.css",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/styles/w5-pages.css"
+          ],
+          "bindings": []
+        },
+        {
+          "line": 20,
+          "end_line": 20,
+          "owner": "<module>",
+          "specifier": "../styles/k8-tools.css",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/styles/k8-tools.css"
+          ],
+          "bindings": []
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 22,
+          "end_line": 25,
+          "owner": "<module>",
+          "name": "inputClass",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 27,
+          "end_line": 37,
+          "owner": "<module>",
+          "name": "Card",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 39,
+          "end_line": 46,
+          "owner": "<module>",
+          "name": "Note",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 52,
+          "end_line": 60,
+          "owner": "<module>",
+          "name": "useLinkToken",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 54,
+          "end_line": 54,
+          "owner": "useLinkToken",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useState"
+        },
+        {
+          "line": 55,
+          "end_line": 58,
+          "owner": "useLinkToken",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 62,
+          "end_line": 109,
+          "owner": "<module>",
+          "name": "ForgotPassword",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 70,
+          "end_line": 82,
+          "owner": "ForgotPassword",
+          "name": "submit",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 96,
+          "end_line": 96,
+          "owner": "ForgotPassword",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 111,
+          "end_line": 168,
+          "owner": "<module>",
+          "name": "ResetPassword",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 121,
+          "end_line": 137,
+          "owner": "ResetPassword",
+          "name": "submit",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 143,
+          "end_line": 143,
+          "owner": "ResetPassword",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 153,
+          "end_line": 153,
+          "owner": "ResetPassword",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 170,
+          "end_line": 194,
+          "owner": "<module>",
+          "name": "VerifyEmail",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 178,
+          "end_line": 184,
+          "owner": "VerifyEmail",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 182,
+          "end_line": 182,
+          "owner": "VerifyEmail.<callback@178>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "verifyEmail(token)\n      .then"
+        },
+        {
+          "line": 183,
+          "end_line": 183,
+          "owner": "VerifyEmail.<callback@178>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "verifyEmail(token)\n      .then(() => setState('done'))\n      .catch"
+        },
+        {
+          "line": 196,
+          "end_line": 243,
+          "owner": "<module>",
+          "name": "Unsubscribe",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 206,
+          "end_line": 210,
+          "owner": "Unsubscribe",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 209,
+          "end_line": 209,
+          "owner": "Unsubscribe.<callback@206>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "unsubscribeByLink(token).then(setInfo).catch"
+        },
+        {
+          "line": 212,
+          "end_line": 222,
+          "owner": "Unsubscribe",
+          "name": "toggle",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        }
+      ],
+      "hooks": [
+        {
+          "line": 53,
+          "end_line": 53,
+          "owner": "useLinkToken",
+          "callee": "useSearchParams",
+          "arguments": []
+        },
+        {
+          "line": 54,
+          "end_line": 54,
+          "owner": "useLinkToken",
+          "callee": "useState",
+          "arguments": [
+            "() => params.get('t') || ''"
+          ]
+        },
+        {
+          "line": 55,
+          "end_line": 58,
+          "owner": "useLinkToken",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    if (typeof window === 'undefined' || !window.location.search.includes('t=')) return;\n    window.history.replaceState(window.history.state, '', window.location.pathname);\n  }",
+            "[]"
+          ]
+        },
+        {
+          "line": 63,
+          "end_line": 63,
+          "owner": "ForgotPassword",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 64,
+          "end_line": 64,
+          "owner": "ForgotPassword",
+          "callee": "useDocumentMeta",
+          "arguments": [
+            "{ title: t('mail.forgot.title'), path: '/account/forgot-password', robots: 'noindex, nofollow' }"
+          ]
+        },
+        {
+          "line": 65,
+          "end_line": 65,
+          "owner": "ForgotPassword",
+          "callee": "useState",
+          "arguments": [
+            "''"
+          ]
+        },
+        {
+          "line": 66,
+          "end_line": 66,
+          "owner": "ForgotPassword",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 67,
+          "end_line": 67,
+          "owner": "ForgotPassword",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 68,
+          "end_line": 68,
+          "owner": "ForgotPassword",
+          "callee": "useState",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 112,
+          "end_line": 112,
+          "owner": "ResetPassword",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 113,
+          "end_line": 113,
+          "owner": "ResetPassword",
+          "callee": "useDocumentMeta",
+          "arguments": [
+            "{ title: t('mail.reset.title'), path: '/account/reset-password', robots: 'noindex, nofollow' }"
+          ]
+        },
+        {
+          "line": 114,
+          "end_line": 114,
+          "owner": "ResetPassword",
+          "callee": "useLinkToken",
+          "arguments": []
+        },
+        {
+          "line": 115,
+          "end_line": 115,
+          "owner": "ResetPassword",
+          "callee": "useNavigate",
+          "arguments": []
+        },
+        {
+          "line": 116,
+          "end_line": 116,
+          "owner": "ResetPassword",
+          "callee": "useState",
+          "arguments": [
+            "''"
+          ]
+        },
+        {
+          "line": 117,
+          "end_line": 117,
+          "owner": "ResetPassword",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 118,
+          "end_line": 118,
+          "owner": "ResetPassword",
+          "callee": "useState",
+          "arguments": [
+            "token ? null : t('mail.linkBroken')"
+          ]
+        },
+        {
+          "line": 119,
+          "end_line": 119,
+          "owner": "ResetPassword",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 171,
+          "end_line": 171,
+          "owner": "VerifyEmail",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 172,
+          "end_line": 172,
+          "owner": "VerifyEmail",
+          "callee": "useDocumentMeta",
+          "arguments": [
+            "{ title: t('mail.verify.title'), path: '/account/verify-email', robots: 'noindex, nofollow' }"
+          ]
+        },
+        {
+          "line": 173,
+          "end_line": 173,
+          "owner": "VerifyEmail",
+          "callee": "useLinkToken",
+          "arguments": []
+        },
+        {
+          "line": 174,
+          "end_line": 174,
+          "owner": "VerifyEmail",
+          "callee": "useState",
+          "arguments": [
+            "token ? 'pending' : 'error'"
+          ]
+        },
+        {
+          "line": 175,
+          "end_line": 175,
+          "owner": "VerifyEmail",
+          "callee": "useState",
+          "arguments": [
+            "token ? null : t('mail.linkBroken')"
+          ]
+        },
+        {
+          "line": 177,
+          "end_line": 177,
+          "owner": "VerifyEmail",
+          "callee": "useRef",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 178,
+          "end_line": 184,
+          "owner": "VerifyEmail",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    if (ran.current || !token) return;\n    ran.current = true;\n    verifyEmail(token)\n      .then(() => setState('done'))\n      .catch((err) => { setError(apiErrorMessage(err, t)); setState('error'); });\n  }",
+            "[token, t]"
+          ]
+        },
+        {
+          "line": 197,
+          "end_line": 197,
+          "owner": "Unsubscribe",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 198,
+          "end_line": 198,
+          "owner": "Unsubscribe",
+          "callee": "useDocumentMeta",
+          "arguments": [
+            "{ title: t('mail.unsub.title'), path: '/account/unsubscribe', robots: 'noindex, nofollow' }"
+          ]
+        },
+        {
+          "line": 199,
+          "end_line": 199,
+          "owner": "Unsubscribe",
+          "callee": "useLinkToken",
+          "arguments": []
+        },
+        {
+          "line": 200,
+          "end_line": 200,
+          "owner": "Unsubscribe",
+          "callee": "useState",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 201,
+          "end_line": 201,
+          "owner": "Unsubscribe",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 202,
+          "end_line": 202,
+          "owner": "Unsubscribe",
+          "callee": "useState",
+          "arguments": [
+            "token ? null : t('mail.linkBroken')"
+          ]
+        },
+        {
+          "line": 205,
+          "end_line": 205,
+          "owner": "Unsubscribe",
+          "callee": "useRef",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 206,
+          "end_line": 210,
+          "owner": "Unsubscribe",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    if (ran.current || !token) return;\n    ran.current = true;\n    unsubscribeByLink(token).then(setInfo).catch((err) => setError(apiErrorMessage(err, t)));\n  }",
+            "[token, t]"
+          ]
+        }
+      ],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [
+        {
+          "line": 92,
+          "end_line": 92,
+          "owner": "ForgotPassword",
+          "component": "form",
+          "event": "onSubmit",
+          "expression": "{submit}"
+        },
+        {
+          "line": 95,
+          "end_line": 98,
+          "owner": "ForgotPassword",
+          "component": "input",
+          "event": "onChange",
+          "expression": "{(e) => setEmail(e.target.value)}"
+        },
+        {
+          "line": 143,
+          "end_line": 143,
+          "owner": "ResetPassword",
+          "component": "Button",
+          "event": "onClick",
+          "expression": "{() => navigate('/login', { replace: true })}"
+        },
+        {
+          "line": 151,
+          "end_line": 151,
+          "owner": "ResetPassword",
+          "component": "form",
+          "event": "onSubmit",
+          "expression": "{submit}"
+        },
+        {
+          "line": 152,
+          "end_line": 155,
+          "owner": "ResetPassword",
+          "component": "PasswordField",
+          "event": "onChange",
+          "expression": "{(e) => setPassword(e.target.value)}"
+        },
+        {
+          "line": 235,
+          "end_line": 236,
+          "owner": "Unsubscribe",
+          "component": "Button",
+          "event": "onClick",
+          "expression": "{toggle}"
+        }
+      ],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/pages/AdminBI.component.test.jsx": {
       "sha256": "ea099e8a28fa99ee20b50f6bfd43be9f62c439a731914bb7ea1f95d49bd81664",
       "imports": [
@@ -192323,7 +193593,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/AdminBI.jsx": {
-      "sha256": "229c717f206d4ed1d0e164beaa07a0765900f662ce9a5ff76bcc1d7a0b1f7ffe",
+      "sha256": "31156e32a0c681b07c8be1de7b763c83f8791a6d35ea83e28e293e874f8d59b6",
       "imports": [
         {
           "line": 11,
@@ -192408,7 +193678,8 @@
             "Globe2",
             "SlidersHorizontal",
             "Layers",
-            "Info"
+            "Info",
+            "Mail"
           ]
         },
         {
@@ -194624,96 +195895,224 @@
         },
         {
           "line": 2915,
-          "end_line": 3060,
+          "end_line": 3021,
+          "owner": "<module>",
+          "name": "MailTab",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 2919,
+          "end_line": 2919,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2919,
+          "end_line": 2919,
+          "owner": "MailTab.<callback@2919>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.get(`/admin/bi/mail?days=${days}`).then"
+        },
+        {
+          "line": 2927,
+          "end_line": 2927,
+          "owner": "MailTab",
+          "name": "total",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2927,
+          "end_line": 2927,
+          "owner": "MailTab.total",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "kinds.reduce"
+        },
+        {
+          "line": 2928,
+          "end_line": 2928,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "kinds.flatMap"
+        },
+        {
+          "line": 2929,
+          "end_line": 2929,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Object.entries(data.daily || {}).map"
+        },
+        {
+          "line": 2932,
+          "end_line": 2936,
+          "owner": "MailTab",
+          "name": "flag",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2946,
+          "end_line": 2951,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[7, 30, 90].map"
+        },
+        {
+          "line": 2947,
+          "end_line": 2947,
+          "owner": "MailTab.<callback@2946>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2971,
+          "end_line": 2971,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2972,
+          "end_line": 2974,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "statuses.map"
+        },
+        {
+          "line": 2983,
+          "end_line": 2990,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "kinds.map"
+        },
+        {
+          "line": 2987,
+          "end_line": 2987,
+          "owner": "MailTab.<callback@2983>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Object.entries(v).map"
+        },
+        {
+          "line": 2999,
+          "end_line": 3006,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "data.campaigns.map"
+        },
+        {
+          "line": 3003,
+          "end_line": 3003,
+          "owner": "MailTab.<callback@2999>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Object.entries(c.statuses).map"
+        },
+        {
+          "line": 3038,
+          "end_line": 3184,
           "owner": "<module>",
           "name": "AdminBI",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2934,
-          "end_line": 2938,
+          "line": 3058,
+          "end_line": 3062,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2940,
-          "end_line": 2945,
+          "line": 3064,
+          "end_line": 3069,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2953,
-          "end_line": 2957,
+          "line": 3077,
+          "end_line": 3081,
           "owner": "AdminBI",
           "name": "refreshNow",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2969,
-          "end_line": 2969,
+          "line": 3093,
+          "end_line": 3093,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TABS.find"
         },
         {
-          "line": 2970,
-          "end_line": 2970,
+          "line": 3094,
+          "end_line": 3094,
           "owner": "AdminBI",
           "name": "openSlices",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2977,
-          "end_line": 2986,
+          "line": 3101,
+          "end_line": 3110,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "PERIODS.map"
         },
         {
-          "line": 2979,
-          "end_line": 2979,
-          "owner": "AdminBI.<callback@2977>",
+          "line": 3103,
+          "end_line": 3103,
+          "owner": "AdminBI.<callback@3101>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2992,
-          "end_line": 2992,
+          "line": 3116,
+          "end_line": 3116,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2998,
-          "end_line": 2998,
+          "line": 3122,
+          "end_line": 3122,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3028,
-          "end_line": 3040,
+          "line": 3152,
+          "end_line": 3164,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TABS.map"
         },
         {
-          "line": 3030,
-          "end_line": 3030,
-          "owner": "AdminBI.<callback@3028>",
+          "line": 3154,
+          "end_line": 3154,
+          "owner": "AdminBI.<callback@3152>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -195103,13 +196502,31 @@
         {
           "line": 2916,
           "end_line": 2916,
+          "owner": "MailTab",
+          "callee": "useState",
+          "arguments": [
+            "30"
+          ]
+        },
+        {
+          "line": 2917,
+          "end_line": 2922,
+          "owner": "MailTab",
+          "callee": "useQuery",
+          "arguments": [
+            "{\n    queryKey: ['bi-mail', days],\n    queryFn: () => api.get(`/admin/bi/mail?days=${days}`).then((r) => r.data),\n    staleTime: 60 * 1000,\n    retry: 1,\n  }"
+          ]
+        },
+        {
+          "line": 3039,
+          "end_line": 3039,
           "owner": "AdminBI",
           "callee": "useAuth",
           "arguments": []
         },
         {
-          "line": 2917,
-          "end_line": 2917,
+          "line": 3040,
+          "end_line": 3040,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -195117,8 +196534,8 @@
           ]
         },
         {
-          "line": 2918,
-          "end_line": 2918,
+          "line": 3041,
+          "end_line": 3041,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -195126,8 +196543,8 @@
           ]
         },
         {
-          "line": 2919,
-          "end_line": 2919,
+          "line": 3042,
+          "end_line": 3042,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -195135,8 +196552,8 @@
           ]
         },
         {
-          "line": 2920,
-          "end_line": 2920,
+          "line": 3043,
+          "end_line": 3043,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -195144,8 +196561,8 @@
           ]
         },
         {
-          "line": 2922,
-          "end_line": 2922,
+          "line": 3045,
+          "end_line": 3045,
           "owner": "AdminBI",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -195153,8 +196570,8 @@
           ]
         },
         {
-          "line": 2931,
-          "end_line": 2931,
+          "line": 3055,
+          "end_line": 3055,
           "owner": "AdminBI",
           "callee": "useRef",
           "arguments": [
@@ -195162,8 +196579,8 @@
           ]
         },
         {
-          "line": 2932,
-          "end_line": 2948,
+          "line": 3056,
+          "end_line": 3072,
           "owner": "AdminBI",
           "callee": "useQuery",
           "arguments": [
@@ -195197,6 +196614,15 @@
           "callee": "api.get",
           "arguments": [
             "`/admin/bi/slices?metric=${metric}&dims=${dims}&days=${days}`"
+          ]
+        },
+        {
+          "line": 2919,
+          "end_line": 2919,
+          "owner": "MailTab.<callback@2919>",
+          "callee": "api.get",
+          "arguments": [
+            "`/admin/bi/mail?days=${days}`"
           ]
         }
       ],
@@ -195344,56 +196770,64 @@
           "expression": "{(e) => setPassword(e.target.value)}"
         },
         {
-          "line": 2960,
-          "end_line": 2960,
+          "line": 2947,
+          "end_line": 2948,
+          "owner": "MailTab.<callback@2946>",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{() => setDays(n)}"
+        },
+        {
+          "line": 3084,
+          "end_line": 3084,
           "owner": "AdminBI",
           "component": "AdminLogin",
           "event": "onSuccess",
           "expression": "{setUser}"
         },
         {
-          "line": 2978,
-          "end_line": 2983,
-          "owner": "AdminBI.<callback@2977>",
+          "line": 3102,
+          "end_line": 3107,
+          "owner": "AdminBI.<callback@3101>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setPeriod(p.id)}"
         },
         {
-          "line": 2990,
-          "end_line": 2994,
+          "line": 3114,
+          "end_line": 3118,
           "owner": "AdminBI",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setCustomFrom(e.target.value)}"
         },
         {
-          "line": 2996,
-          "end_line": 3000,
+          "line": 3120,
+          "end_line": 3124,
           "owner": "AdminBI",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setCustomTo(e.target.value)}"
         },
         {
-          "line": 3011,
-          "end_line": 3016,
+          "line": 3135,
+          "end_line": 3140,
           "owner": "AdminBI",
           "component": "button",
           "event": "onClick",
           "expression": "{refreshNow}"
         },
         {
-          "line": 3029,
-          "end_line": 3036,
-          "owner": "AdminBI.<callback@3028>",
+          "line": 3153,
+          "end_line": 3160,
+          "owner": "AdminBI.<callback@3152>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setTab(t.id)}"
         },
         {
-          "line": 3057,
-          "end_line": 3057,
+          "line": 3181,
+          "end_line": 3181,
           "owner": "AdminBI",
           "component": "Active",
           "event": "onOpenSlices",
@@ -195770,8 +197204,59 @@
           "initializer": null
         },
         {
-          "line": 2901,
+          "line": 2902,
+          "end_line": 2905,
+          "owner": "<module>",
+          "name": "MAIL_KIND_LABEL",
+          "kind": "ObjectExpression",
+          "entries": [
+            "verify_email",
+            "password_reset",
+            "oauth_hint",
+            "reconfirm",
+            "newsletter",
+            "watch_digest",
+            "test"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 2906,
+          "end_line": 2909,
+          "owner": "<module>",
+          "name": "MAIL_STATUS_LABEL",
+          "kind": "ObjectExpression",
+          "entries": [
+            "sent",
+            "failed",
+            "blocked",
+            "disabled",
+            "suppressed",
+            "bounced",
+            "queued"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 2910,
           "end_line": 2913,
+          "owner": "<module>",
+          "name": "MAIL_STATUS_COLOR",
+          "kind": "ObjectExpression",
+          "entries": [
+            "sent",
+            "failed",
+            "bounced",
+            "suppressed",
+            "blocked",
+            "disabled",
+            "queued"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 3023,
+          "end_line": 3036,
           "owner": "<module>",
           "name": "TABS",
           "kind": "ArrayExpression",
@@ -195786,11 +197271,121 @@
             "{ id: 'demand', label: 'Спрос и SEO', icon: Search, C: DemandTab }",
             "{ id: 'product', label: 'Что менять', icon: Wrench, C: ProductLoopTab }",
             "{ id: 'slices', label: 'Срезы', icon: SlidersHorizontal, C: SlicesTab }",
-            "{ id: 'reliability', label: 'Надёжность', icon: ShieldCheck, C: ReliabilityTab }"
+            "{ id: 'reliability', label: 'Надёжность', icon: ShieldCheck, C: ReliabilityTab }",
+            "{ id: 'mail', label: 'Почта', icon: Mail, C: MailTab }"
           ],
           "initializer": null
         }
       ],
+      "mcp_tools": []
+    },
+    "frontend/src/pages/AdminBI.mail.component.test.jsx": {
+      "sha256": "6017d545e7e5d0746a7291ed909098767b98b745c7b92619946cc13eed617115",
+      "imports": [
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "it",
+            "expect",
+            "afterEach",
+            "vi"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "@testing-library/react",
+          "category": "external_package",
+          "target": "@testing-library/react",
+          "bindings": [
+            "fireEvent",
+            "screen"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "./AdminBI",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/pages/AdminBI.jsx"
+          ],
+          "bindings": [
+            "AdminBI"
+          ]
+        },
+        {
+          "line": 5,
+          "end_line": 5,
+          "owner": "<module>",
+          "specifier": "../test/renderPage",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/test/renderPage.jsx"
+          ],
+          "bindings": [
+            "renderPage",
+            "mockApiGet"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<callback@7>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 9,
+          "end_line": 9,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "afterEach"
+        },
+        {
+          "line": 11,
+          "end_line": 42,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 12,
+          "end_line": 41,
+          "owner": "<callback@11>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
       "mcp_tools": []
     },
     "frontend/src/pages/AuthForms.analytics.component.test.jsx": {
@@ -219647,7 +221242,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Login.component.test.jsx": {
-      "sha256": "857ed445e61addfe1e812a269ccc1a3f588d1354da5477496c8eddb9597cc12d",
+      "sha256": "362cf07c2d14066c987535f5390e108ea9a4edb71314f6a9277b8bd67d328832",
       "imports": [
         {
           "line": 2,
@@ -219917,7 +221512,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Login.jsx": {
-      "sha256": "3c1f943cf4b6eb93b9820176057e54b71d2a6f73ed20f2a07fcb695dd6a6d0c0",
+      "sha256": "b7b5afe7af1821d16fbc4cef8b68e31e8ace027af95d39c41a5df50b351a8d1c",
       "imports": [
         {
           "line": 1,
@@ -220132,7 +221727,7 @@
       "functions": [
         {
           "line": 18,
-          "end_line": 153,
+          "end_line": 154,
           "owner": "<module>",
           "name": "Login",
           "kind": "FunctionDeclaration",
@@ -256114,17 +257709,17 @@
     }
   },
   "totals": {
-    "imports": 4813,
-    "routes": 95,
-    "functions": 15334,
-    "hooks": 2830,
-    "http": 119,
+    "imports": 4837,
+    "routes": 100,
+    "functions": 15420,
+    "hooks": 2865,
+    "http": 127,
     "storage": 244,
     "events": 455,
-    "jsx_handlers": 1249,
-    "registries": 714,
+    "jsx_handlers": 1257,
+    "registries": 717,
     "mcp_tools": 7,
-    "files": 907,
+    "files": 910,
     "parse_errors": 0
   }
 }
