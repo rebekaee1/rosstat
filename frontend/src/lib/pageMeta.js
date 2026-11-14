@@ -50,7 +50,12 @@ export function worldCountryGenitive(slug, nameRu) {
   return pageMeta.world.countryGenitive[slug] || nameRu || '';
 }
 
-/** «1 показатель» / «22 показателя» / «105 показателей» — как seo_world._n_indicators_phrase. */
+// Тысячи с разделителем: EN — запятая («8,196»), RU — неразрывный пробел («8 196»); так же seo_world._n_indicators_phrase.
+function groupedCount(count, en) {
+  return String(count).replace(/\B(?=(\d{3})+(?!\d))/g, en ? ',' : '\u00A0');
+}
+
+/** «1 показатель» / «22 показателя» / «8 196 показателей» — как seo_world._n_indicators_phrase. */
 export function worldIndicatorsPhrase(n, locale) {
   const count = Math.abs(Number(n) || 0);
   if (resolvePageMetaLocale(locale) === 'en') {
@@ -58,14 +63,14 @@ export function worldIndicatorsPhrase(n, locale) {
     const tpl = count === 1
       ? (worldEn.nIndicatorsOne || '{n} indicator')
       : (worldEn.nIndicatorsMany || '{n} indicators');
-    return tpl.replace('{n}', String(count));
+    return tpl.replace('{n}', groupedCount(count, true));
   }
   const mod10 = count % 10;
   const mod100 = count % 100;
   let word = 'показателей';
   if (mod10 === 1 && mod100 !== 11) word = 'показатель';
   else if (mod10 >= 2 && mod10 <= 4 && ![12, 13, 14].includes(mod100)) word = 'показателя';
-  return `${count} ${word}`;
+  return `${groupedCount(count, false)} ${word}`;
 }
 
 /**

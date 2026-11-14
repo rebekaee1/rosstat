@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2489,
-    "code_files": 2015,
-    "current_reviews": 2489,
+    "files": 2496,
+    "code_files": 2021,
+    "current_reviews": 2496,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2219
+      "reviewed": 2226
     },
-    "definitions": 16316,
-    "annotated_definitions": 16316,
+    "definitions": 16349,
+    "annotated_definitions": 16349,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -1402,9 +1402,9 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "sha256": "2feb04da420a269c7ae1bffcc306c8973403075bf66c5f849775d49add48d6ee",
-      "bytes": 125273,
-      "lines": 2905,
+      "sha256": "536745f74c765b863b0fc6e48779a78e53c3047822b6280d6fe1c236f225dc20",
+      "bytes": 125809,
+      "lines": 2909,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -1843,6 +1843,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/data/eurostat_codelists_en.json",
+      "sha256": "f7d7cb261b4f874901ef34ec33f10aebfda77dfd7b961753385806675406ee7b",
+      "bytes": 76854,
+      "lines": 1438,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/data/eurostat_country_visibility.py",
       "sha256": "e2c21c6d9e5a8b9843d9ee2d6380c35c8494785d9da48d30ab1a1688cce769d0",
       "bytes": 5709,
@@ -1870,28 +1883,41 @@
     },
     {
       "path": "backend/app/data/eurostat_dim_labels_en.py",
-      "sha256": "1832413d8836061c6f044fe9aa707e2e3db104e8e1538cb9923705875b99b3c9",
-      "bytes": 8668,
-      "lines": 237,
+      "sha256": "39479e54047fa8c8fd0822b14804c1007d94ecbc19e3c5e18374a8f60ee7bb1d",
+      "bytes": 9847,
+      "lines": 265,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 4,
-      "annotated_definitions": 4,
+      "definitions": 6,
+      "annotated_definitions": 6,
       "missing_definitions": []
     },
     {
       "path": "backend/app/data/eurostat_dim_labels_ru.py",
-      "sha256": "f4d2ddabf04b8e2e06d975f7f5cd459a1e215a3b67cac90d245a27baa3f9ab37",
-      "bytes": 60368,
-      "lines": 1218,
+      "sha256": "7bd43c7e5291761cb6bfe04ffaabe4eb73faf338e3002e5ab7d4f9fe6f702c23",
+      "bytes": 60884,
+      "lines": 1224,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
       "definitions": 5,
       "annotated_definitions": 5,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "sha256": "4098246befbf03980dbad58277a0138fa95d738288a0053f4a1709a7b23ead81",
+      "bytes": 10923,
+      "lines": 136,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 1,
+      "annotated_definitions": 1,
       "missing_definitions": []
     },
     {
@@ -5055,7 +5081,7 @@
     },
     {
       "path": "backend/app/services/seo_country_figures.py",
-      "sha256": "1e279c23ced1feb236adfa02e1733ea060235600e277862f8ad562a5eb3912ac",
+      "sha256": "c5f6d01408b3461f618e7440c5b592f38f7f07fd12ffdd5945bb1db32f42aa21",
       "bytes": 18321,
       "lines": 419,
       "code": true,
@@ -5250,8 +5276,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "565e5a6ccfff3f774b5ea75ff5e8a5d8c0964253b36c3917c4df9adfb6f3d8b6",
-      "bytes": 98968,
+      "sha256": "b0045ac61759204d8479da2766bec7ce176f32a01f7ee669dc6cb05cf4819552",
+      "bytes": 99439,
       "lines": 2295,
       "code": true,
       "status": "reviewed",
@@ -5315,9 +5341,9 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "sha256": "c34dfcc1511360ab8cf7a8c0d5bc533726901459235ce89381a9a7f0a337b82c",
-      "bytes": 26435,
-      "lines": 594,
+      "sha256": "86f3f2b3d839ad1106d9a376f11b1555d0e26c5c4a6859855a6dd9279c29ba6f",
+      "bytes": 26693,
+      "lines": 598,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -6273,6 +6299,19 @@
       "issues": [],
       "definitions": 15,
       "annotated_definitions": 15,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/world_series_title.py",
+      "sha256": "fe5701313946e5f226de76de04516da5309d961c7e42ed863917e4ce6f5f33ea",
+      "bytes": 9675,
+      "lines": 174,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 7,
+      "annotated_definitions": 7,
       "missing_definitions": []
     },
     {
@@ -11256,7 +11295,7 @@
     },
     {
       "path": "backend/tests/test_seo_country_figures.py",
-      "sha256": "9a11df22a89c6a14b79ad80e2a05a5edb8a92c82b8b0732f59668020d4700711",
+      "sha256": "0e9c796352e6b62537ef897febda88cc9c2933097d1c8b13db8d941dd8c69521",
       "bytes": 9061,
       "lines": 185,
       "code": true,
@@ -11382,6 +11421,19 @@
       "issues": [],
       "definitions": 2,
       "annotated_definitions": 2,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_seo_ssr_audit.py",
+      "sha256": "07b633d1c6eb04b8b73b999caac8f6abf77c4516c3acfa5952029cceba5ca475",
+      "bytes": 8489,
+      "lines": 157,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 4,
+      "annotated_definitions": 4,
       "missing_definitions": []
     },
     {
@@ -12737,6 +12789,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_world_series_title.py",
+      "sha256": "b2a98c81b10a21a786a7bc9bc87a3c1b5d022c84d4a045fd792b98dbf84561af",
+      "bytes": 5970,
+      "lines": 119,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 10,
+      "annotated_definitions": 10,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_world_simple_names.py",
       "sha256": "0b6dc17dc8771e2da94b702d632b25e8d3a204008d496688895f9c2264f6507c",
       "bytes": 2347,
@@ -13895,9 +13960,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "0871be520d45da3c91d3a5ad23cb3a33597675c0c404952b3b2bc9825d6ad636",
-      "bytes": 769020,
-      "lines": 3584,
+      "sha256": "e3adf44f1d6e4e73d546e191bf119677a1cfd0bd315b1a0ca03a14203fc6affe",
+      "bytes": 770504,
+      "lines": 3598,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13921,9 +13986,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "3122cb6ef0818bd000075d31cbd8e7fd2bf957b380ee3cfa664f0175bbd70227",
-      "bytes": 7270894,
-      "lines": 256122,
+      "sha256": "11a4b992a31cd2738b96e222fba7f8164ec135dfaf8e99e41961d70cf3a77ad6",
+      "bytes": 7271106,
+      "lines": 256130,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13934,7 +13999,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "b88c3733d85eb15b3c044fdc726ecfd1641900ffe80aaaa468a93169c7ef6a1f",
+      "sha256": "9d09f26f6b39a633c8639c7e9c0993d4b12c866921501276f2452319b427d6d2",
       "bytes": 13421,
       "lines": 137,
       "code": false,
@@ -13960,9 +14025,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "eb2c3ee7e482b1a5fc75c960e46e339e7d94ae0e64af3d0e2713d73a869d2a9c",
-      "bytes": 387397,
-      "lines": 1269,
+      "sha256": "82d3f5dedf22668f6051b88c5750d875354f719ce56b9bd6e500dfb30e3b523c",
+      "bytes": 391736,
+      "lines": 1271,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14493,9 +14558,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "2d44a27bf5322674c114b98a5fe4fbd75391b491fab403439d1e624c7235a4b7",
-      "bytes": 3864130,
-      "lines": 136773,
+      "sha256": "c102f5cc8158ba61693919bcbdd55deea24291f29ed02f07e615bd1676c03eac",
+      "bytes": 3871951,
+      "lines": 137063,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -14545,9 +14610,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "3c123c38b0d029eb9f07b06d801aa0d0f0362e928a7fdf9539e96feea0d98e5c",
-      "bytes": 12365720,
-      "lines": 371071,
+      "sha256": "4e8ec1401db33d3fe45f9888027b94c97cbfc90facd0b63f975703838c30e3fd",
+      "bytes": 12399039,
+      "lines": 371955,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14558,9 +14623,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "f473e61beb5ab39791752b1f9ff31ca19ebd9ae7ffa0c39d2001da2e419fb2d4",
-      "bytes": 634228,
-      "lines": 3426,
+      "sha256": "291d69488e95f99e2415a82c9ca31eed53998a78baff16a31ef46cb99f26958c",
+      "bytes": 635458,
+      "lines": 3432,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -25127,22 +25192,22 @@
     },
     {
       "path": "frontend/src/lib/pageMeta.js",
-      "sha256": "d7d1d14e7c0b5f0350369e16bd4910df3de4dfe7407fdf0f76ac290b874e062e",
-      "bytes": 4880,
-      "lines": 127,
+      "sha256": "f8095490e7f9c9acaaeb06aab75c1cabc8af39839c21fce014a87cc3b8c2fda7",
+      "bytes": 5211,
+      "lines": 132,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 8,
-      "annotated_definitions": 8,
+      "definitions": 9,
+      "annotated_definitions": 9,
       "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/pageMeta.test.js",
-      "sha256": "956a0a1f11bf13c560473f09e7c0cc65f4d4e534dda0b0fb1052f31559b88e3a",
-      "bytes": 5073,
-      "lines": 124,
+      "sha256": "18aff248841e69e1f9d89d01e709bd925b0cd190e1444125ccd47f41eec97231",
+      "bytes": 5349,
+      "lines": 127,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -31678,6 +31743,19 @@
       "missing_definitions": []
     },
     {
+      "path": "scripts/fetch-eurostat-codelists.py",
+      "sha256": "3164a9d94b0e1a4c2b05344281c8e83b371c03c2a9abbd99d2b67fabae4bbdb7",
+      "bytes": 4029,
+      "lines": 86,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 4,
+      "annotated_definitions": 4,
+      "missing_definitions": []
+    },
+    {
       "path": "scripts/frontend-asset-archive.py",
       "sha256": "408e67eca5e780a6a9a4bad5347e3d9c7b55aeb861d17d89eb8698368980596d",
       "bytes": 3382,
@@ -32391,12 +32469,30 @@
       "definitions": 4,
       "annotated_definitions": 4,
       "missing_definitions": []
+    },
+    {
+      "path": "scripts/world-title-duplicates.py",
+      "sha256": "6b59ea18c71cbf20a9517bd885c1a78d2c45e030443fa082c415f01d45e5b4ee",
+      "bytes": 6246,
+      "lines": 125,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 4,
+      "annotated_definitions": 4,
+      "missing_definitions": []
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "781a8315da2b8774009f422de0af5afe8ca867e94ffb71d2fd2fdadd844af606",
-  "javascript_inventory_sha256": "173cfd4555ce8d4ff8fb491a75ab441424b95957dae8ddb3b3d78b2c80747db6",
-  "baseline_commit": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+  "ledger_sha256": "35fb054daed1366016da76c802dad63db4c2fa47a57beb84032dbd2892e8ff64",
+  "javascript_inventory_sha256": "e6d36e5cf4fe983b42f453b607a62c9154502ef66bda37bf4168c488d2c3f73b",
+  "baseline_commit": "1d93e084a3748f46be0c295c8063b4a1d4ed4bf8",
   "branch": "int/2026-11-14",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/indicator-index.json",
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.md",
+    "docs/mechanism-inventory.md"
+  ]
 }
