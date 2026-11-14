@@ -595,8 +595,8 @@ export default {
   'account.adminCta': 'Открыть BI-дашборд',
   'account.logout': 'Выйти',
   'account.logoutAll': 'Выйти везде',
-  'account.logoutAllTitle': 'Завершить сессии на всех устройствах',
-  'account.logoutAllOk': 'Сессии на всех устройствах завершены',
+  'account.logoutAllTitle': 'Завершит вход на всех других устройствах; здесь вы останетесь в аккаунте',
+  'account.logoutAllOk': 'Вход на всех других устройствах завершён. Здесь вы остаётесь в аккаунте.',
   'account.delete': 'Удалить аккаунт',
   'account.deleteConfirm':
     'Удалить аккаунт без возможности восстановления? Все данные будут стёрты.',

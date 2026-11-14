@@ -596,8 +596,8 @@ export default {
   'account.adminCta': 'Open BI dashboard',
   'account.logout': 'Sign out',
   'account.logoutAll': 'Sign out everywhere',
-  'account.logoutAllTitle': 'End sessions on all devices',
-  'account.logoutAllOk': 'Sessions on all devices have been ended',
+  'account.logoutAllTitle': 'Signs you out on all other devices; you stay signed in here',
+  'account.logoutAllOk': 'You are signed out on all other devices. You stay signed in here.',
   'account.delete': 'Delete account',
   'account.deleteConfirm':
     'Delete this account permanently? All data will be erased.',
