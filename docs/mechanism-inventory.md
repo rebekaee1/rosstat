@@ -2539,8 +2539,8 @@ Relationships: `[]`
 | app.services.display._CHAIN_LINKED_YEAR_RE | Call | computed source expression | [backend/app/services/display.py:302](../backend/app/services/display.py#L302) |
 | app.services.display._CHAIN_LINKED_RE | Call | computed source expression | [backend/app/services/display.py:305](../backend/app/services/display.py#L305) |
 | app.services.display._CYRILLIC_RE | Call | computed source expression | [backend/app/services/display.py:349](../backend/app/services/display.py#L349) |
-| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:535](../backend/app/services/display.py#L535) |
-| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:637](../backend/app/services/display.py#L637) |
+| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:556](../backend/app/services/display.py#L556) |
+| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:658](../backend/app/services/display.py#L658) |
 | app.services.download_content.WALL_EVENTS | Call | computed source expression | [backend/app/services/download_content.py:61](../backend/app/services/download_content.py#L61) |
 | app.services.download_content.FORMAT_LABELS | Dict | 'download_excel', 'download_csv', 'demographics_csv', 'download_ical', 'chart_image_download', 'compare_image_download', 'regions_map_gif_download', 'export_run', 'research_download' | [backend/app/services/download_content.py:64](../backend/app/services/download_content.py#L64) |
 | app.services.download_content.WALL_LABELS | Dict | 'download_limit', 'chart_image_blocked', 'compare_image_blocked', 'compare_limit_hit', 'regions_map_gif_blocked' | [backend/app/services/download_content.py:75](../backend/app/services/download_content.py#L75) |

@@ -172814,6 +172814,76 @@
       ],
       "mcp_tools": []
     },
+    "frontend/src/lib/uniformDigits.test.js": {
+      "sha256": "216067762cd1274eec87711dd5678b1eb4b01ee8120cd65a16c17d70d7cf879b",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "./uniformDigits.cases.json",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/uniformDigits.cases.json"
+          ],
+          "bindings": [
+            "cases"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "./countryFlag",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/countryFlag.js"
+          ],
+          "bindings": [
+            "uniformDigits"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 6,
+          "end_line": 12,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 8,
+          "end_line": 10,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/lib/usCatalogTopics.js": {
       "sha256": "0a3c5b4fe39744df9b96bfc8b5964e2b75ae987440dfddac7a12a8a6ed057a78",
       "imports": [],
@@ -256114,9 +256184,9 @@
     }
   },
   "totals": {
-    "imports": 4813,
+    "imports": 4816,
     "routes": 95,
-    "functions": 15334,
+    "functions": 15336,
     "hooks": 2830,
     "http": 119,
     "storage": 244,
@@ -256124,7 +256194,7 @@
     "jsx_handlers": 1249,
     "registries": 714,
     "mcp_tools": 7,
-    "files": 907,
+    "files": 908,
     "parse_errors": 0
   }
 }
