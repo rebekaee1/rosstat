@@ -42,6 +42,17 @@
 .fe-research-card__figures .tone-gold strong { color: #8A6A2B; }
 .fe-research-card__figures span { font-size: 12.5px; line-height: 1.35; color: var(--fe-text-muted); }
 .fe-research-card__more summary { cursor: pointer; color: var(--fe-blue); font-weight: 600; font-size: 14px; width: fit-content; }
+/* Проход дизайна 15.11: вместо системного треугольника «►» — тонкий шеврон, как у остальных раскрывашек сайта. */
+.fe-research-card__more summary { list-style: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; }
+.fe-research-card__more summary::-webkit-details-marker { display: none; }
+.fe-research-card__more summary::after {
+  content: ''; width: 14px; height: 14px; flex: none; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 0.2s ease;
+}
+.fe-research-card__more[open] summary::after { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .fe-research-card__more summary::after { transition: none; } }
 .fe-research-card__more p, .fe-research-card__more ol { color: var(--fe-ink-2); font-size: 14.5px; line-height: 1.55; }
 .fe-research-card__more p { margin: 10px 0 0; }
 .fe-research-card__more ol { list-style: decimal; margin: 10px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }

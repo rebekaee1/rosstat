@@ -69,8 +69,8 @@ function ReportCard({ item, locale, t }) {
             <FileText className="h-4 w-4" aria-hidden="true" />
             <span>
               {t('research.meta', { pages: item.pages, size: String(item.size_mb).replace('.', locale === 'en' ? '.' : ',') })}
-              {', '}
-              {t('research.downloads', { n: formatCount(item.downloads, locale) })}
+              {/* «скачали 0» читается как «никому не нужно»: счётчик показываем, когда есть что показать (проход дизайна 15.11). */}
+              {Number(item.downloads) > 0 ? <>{', '}{t('research.downloads', { n: formatCount(item.downloads, locale) })}</> : null}
             </span>
           </span>
         </div>
