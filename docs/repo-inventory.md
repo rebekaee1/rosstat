@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2270  ·  **Строк:** 1 430 483  ·  **Токенов (≈):** 13 654 771
+**Файлов:** 2270  ·  **Строк:** 1 430 647  ·  **Токенов (≈):** 13 656 749
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 816 | 65 344 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 935 | 324 341 | 3 553 946 |
+| `backend` | 935 | 324 408 | 3 554 740 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 279 | 20 406 |
-| `docs` | 145 | 891 961 | 7 675 840 |
+| `docs` | 145 | 892 058 | 7 677 024 |
 | `frontend` | 1019 | 184 870 | 2 026 406 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 370 579 | 3 032 507 |
+| `docs/mechanism-inventory.json` | 370 666 | 3 033 169 |
 | `docs/client-mechanism-inventory.json` | 256 026 | 1 808 128 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -85,8 +85,8 @@
 | `backend/app/data/eurostat_titles_ru.py` | 1 902 | 17 591 |
 | `backend/app/services/search_intent.py` | 1 154 | 17 315 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
+| `backend/app/tasks/analytics_rollups.py` | 1 368 | 16 688 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 1 402 | 16 539 |
-| `backend/app/tasks/analytics_rollups.py` | 1 351 | 16 412 |
 | `backend/tests/test_i18n_parity.py` | 1 833 | 16 334 |
 | `docs/design/local-acceptance/final-narrow/browser.json` | 2 181 | 16 120 |
 | `backend/app/data/research_catalog.json` | 1 221 | 15 986 |
@@ -94,8 +94,8 @@
 | `frontend/src/components/IndicatorSearch.jsx` | 1 141 | 15 102 |
 | `backend/app/data/view_model_families.py` | 1 238 | 14 854 |
 | `backend/app/data/world_national_core/us.yaml` | 1 498 | 14 637 |
+| `docs/enterprise_resilience.md` | 367 | 14 603 |
 | `frontend/src/components/PlanetView.jsx` | 843 | 14 421 |
-| `docs/enterprise_resilience.md` | 357 | 14 081 |
 | `frontend/src/pages/CalculatorPage.jsx` | 1 263 | 13 946 |
 | `frontend/src/components/PlanetView.css` | 556 | 13 913 |
 | `backend/tests/test_seo_growth_pages.py` | 1 406 | 13 545 |
@@ -647,6 +647,7 @@
 | `frontend/src/components/home/HomePricesRates.jsx` | 211 | 2 476 |
 | `backend/app/services/sitemap_priority.py` | 262 | 2 470 |
 | `frontend/src/lib/homeToday.js` | 234 | 2 461 |
+| `backend/tests/test_sessionize_increment.py` | 225 | 2 460 |
 | `frontend/src/pages/RegionRatingsHub.jsx` | 230 | 2 459 |
 | `scripts/regional/backfill_pril_2022_2023.py` | 249 | 2 453 |
 | `frontend/src/components/IndicatorPage.w3.component.test.jsx` | 245 | 2 447 |
@@ -788,7 +789,6 @@
 | `frontend/src/components/cabinet/SavedList.jsx` | 190 | 1 956 |
 | `backend/app/services/r4a_price_compare.py` | 199 | 1 954 |
 | `backend/app/services/job_lease.py` | 205 | 1 944 |
-| `backend/tests/test_sessionize_increment.py` | 175 | 1 942 |
 | `frontend/src/lib/api.test.js` | 176 | 1 930 |
 | `backend/tests/test_action_apply_idempotency.py` | 227 | 1 928 |
 | `backend/tests/forecast_strategies/snapshots/prod_signed_quarterly.json` | 560 | 1 926 |

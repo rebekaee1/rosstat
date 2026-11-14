@@ -6,7 +6,7 @@
 
 [Независимый backend-инвентарь](mechanism-inventory.md) · [Клиент/anonymous callbacks/MCP](client-mechanism-inventory.md) · [Приёмка и границы](project-knowledge-acceptance.md) · [Неизвестное](knowledge-unknowns.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `c4e8dbfbc9b4`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `a4272c30f9ca`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
 
 Input scope: `tracked`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.
 
@@ -17,8 +17,8 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | Файлы в инвентаризации | 2481 |
 | Переданы структурному экстрактору | 2117 |
 | Дали узлы графа | 2025 |
-| Узлы / связи между символами | 25164 / 79091 |
-| Связи между файлами (тип и уверенность сохраняются) | 18186 |
+| Узлы / связи между символами | 25171 / 79113 |
+| Связи между файлами (тип и уверенность сохраняются) | 18184 |
 
 Исходники, шаблоны и стили: **2008** файлов; узлы есть у **1913**, из них **131** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
 
@@ -51,8 +51,8 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 
 `EXTRACTED` и `INFERRED` — метки Graphify. Даже EXTRACTED означает статическую конструкцию, а не выполненный вызов. JSON сохраняет направление, тип, количество и примеры исходных строк. Внутрифайловые отношения остаются в полном Graphify-графе; внешние/неразрешённые endpoints не превращаются в выдуманные файлы. Отсутствие входящих связей не доказывает мёртвый код. Динамические реестры, HTTP, SQL, Redis и scheduler требуют контрактов из отдельных документов.
 
-Метки связей: `{"EXTRACTED": 71745, "INFERRED": 7346}`.
-Не включены в проекцию между файлами: `{"external_or_unresolved_file": 3019, "missing_endpoint": 4429, "within_file": 34366}`.
+Метки связей: `{"EXTRACTED": 71765, "INFERRED": 7348}`.
+Не включены в проекцию между файлами: `{"external_or_unresolved_file": 3019, "missing_endpoint": 4430, "within_file": 34385}`.
 
 ## Слои файлов
 
@@ -155,7 +155,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/design/design-review-gallery.md](../docs/design/design-review-gallery.md) | 78 | nodes |
 | [docs/design/local-acceptance/README.md](../docs/design/local-acceptance/README.md) | 31 | nodes |
 | [docs/design/requirements-coverage.md](../docs/design/requirements-coverage.md) | 16 | nodes |
-| [docs/enterprise_resilience.md](../docs/enterprise_resilience.md) | 357 | nodes |
+| [docs/enterprise_resilience.md](../docs/enterprise_resilience.md) | 367 | nodes |
 | [docs/indexnow-sitemap-backfill-plan.md](../docs/indexnow-sitemap-backfill-plan.md) | 204 | nodes |
 | [docs/indicator-family-playbook.md](../docs/indicator-family-playbook.md) | 618 | nodes |
 | [docs/indicator-index.md](../docs/indicator-index.md) | 1824 | nodes |
