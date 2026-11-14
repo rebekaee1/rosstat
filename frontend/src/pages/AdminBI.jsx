@@ -28,7 +28,7 @@ import api, { loginUser } from '../lib/api';
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
 import {
-  channelLabel, deviceLabel, engineLabel,
+  channelLabel, deviceLabel, engineLabel, engineReconcileRows,
   languageLabel, timezoneLabel, cityLabel, geoRegionLabel, blockLabel, pageSectionRu,
   sliceMetricLabel, sliceDimLabel, collapsePhrases,
 } from '../lib/biLabels';
@@ -773,6 +773,7 @@ function AcquisitionTab({ d }) {
   // Поисковики: наш счётчик + сверка с Метрикой по переключателю.
   const metrikaEngines = a.search_engines || {};
   const engineBars = dictToBars(own.search_engines, 8);
+  const engineReconcile = engineReconcileRows(own.search_engines, metrikaEngines);
   const ownCities = dictToBars(aud.cities, 8, cityLabel);
   const [cmpSrc, toggleCmpSrc] = useMetrikaCompare('sources-acq');
   const [cmpEng, toggleCmpEng] = useMetrikaCompare('engines-acq');
@@ -794,11 +795,17 @@ function AcquisitionTab({ d }) {
       </Card>
       <Card title="Поисковые системы" icon={Search} source={engineBars.length ? 'own' : 'metrika'}
         compare={{ on: cmpEng, toggle: toggleCmpEng }}
-        insight="Из каких поисковиков приходит органический трафик: сессии нашего счётчика; пока собственный слой не накопился — данные Метрики."
-        hint="Из какого поисковика пришла сессия — по домену перехода (yandex.*, google.* и т. д.). Источник — наш счётчик; сверка — Метрика. Читать: баланс Яндекс/Google показывает, под какую выдачу оптимизировать в первую очередь.">
+        insight="Из каких поисковиков приходят люди: сессии нашего счётчика без роботов и своей активности; пока собственный слой не накопился — данные Метрики."
+        hint="Из какого поисковика пришла сессия — по домену перехода (yandex.*, google.* и т. д.). Роботы отсеяны: посетитель, хоть раз признанный роботом за период, не считается. Ниже — те же поисковики в Метрике; расхождение в разы — почти всегда роботы, которых не отсеял один из счётчиков.">
         {engineBars.length
           ? <HBars data={engineBars} color={BLUE} />
           : <HBars data={dictToBars(metrikaEngines, 8, engineLabel)} color={BLUE} />}
+        {engineBars.length > 0 && engineReconcile.length > 0 && (
+          <p className="text-[11.5px] text-text-tertiary mt-3 tabular-nums" data-testid="engine-reconcile">
+            Без роботов. Сверка с Метрикой (у нас / в Метрике):{' '}
+            {engineReconcile.map((r) => `${r.name} ${fmtInt(r.own)} / ${fmtInt(r.metrika)}`).join('; ')}
+          </p>
+        )}
         {cmpEng && engineBars.length > 0 && (
           <MetrikaOverlay>
             <HBars data={dictToBars(metrikaEngines, 8, engineLabel)} color={PURPLE} />

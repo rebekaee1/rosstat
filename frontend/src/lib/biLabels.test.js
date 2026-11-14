@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  blockLabel, channelLabel, cityLabel, collapsePhrases, engineLabel,
+  blockLabel, channelLabel, cityLabel, collapsePhrases, engineLabel, engineReconcileRows,
   languageLabel, pageSectionRu, timezoneLabel,
 } from './biLabels';
 
@@ -59,5 +59,20 @@ describe('biLabels — словарь ярлыков BI', () => {
     // короче minLen=3 — отброшено
     expect(rows.find((r) => r.phrase === 'ип')).toBeUndefined();
     expect(rows.find((r) => r.phrase === 'bvghn').count).toBe(1);
+  });
+});
+
+describe('engineReconcileRows (сверка поисковиков, 14.11.2026)', () => {
+  it('сводит наши имена с кодами Метрики и сортирует по большему числу', () => {
+    const rows = engineReconcileRows({ Google: 20, 'Яндекс': 377 }, { yandex: 366, google: 13, bing: 6 });
+    expect(rows).toEqual([
+      { name: 'Яндекс', own: 377, metrika: 366 },
+      { name: 'Google', own: 20, metrika: 13 },
+      { name: 'Bing', own: 0, metrika: 6 },
+    ]);
+  });
+  it('пустые входы и «не определён» не дают строк', () => {
+    expect(engineReconcileRows(undefined, null)).toEqual([]);
+    expect(engineReconcileRows({ '(не определён)': 3 }, {})).toEqual([]);
   });
 });
