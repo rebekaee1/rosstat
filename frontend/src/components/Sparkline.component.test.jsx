@@ -21,6 +21,24 @@ describe('Sparkline', () => {
     expect(observe.mock.calls[0][0]).toBe(container.querySelector('.sparkline-container'));
   });
 
+  it('таймер появления снимается при размонтировании (иначе он срабатывал после конца теста)', () => {
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal('IntersectionObserver', class {
+        constructor(cb) { this.cb = cb; }
+        observe() { this.cb([{ isIntersecting: true }]); }
+        disconnect() {}
+      });
+      vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+      const { unmount } = render(<Sparkline points={[1, 2, 3, 2]} trend="up" staggerMs={400} />);
+      expect(vi.getTimerCount()).toBeGreaterThan(0);
+      unmount();
+      expect(vi.getTimerCount()).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('с одной точкой ничего не рисует и ничего не наблюдает', () => {
     const observe = vi.fn();
     vi.stubGlobal('IntersectionObserver', class {

@@ -112,10 +112,13 @@ export default function Sparkline({
     if (!hasPoints || !wrapRef.current || reducedMotion) return;
     if (typeof IntersectionObserver === 'undefined') return;
 
+    // Таймер появления снимается вместе с компонентом: иначе он срабатывал после размонтирования
+    // (смена страницы, конец теста) и обновлял состояние уже убранного графика.
+    let timer;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTimeout(() => setInView(true), staggerMs);
+          timer = setTimeout(() => setInView(true), staggerMs);
           observer.disconnect();
         }
       },
@@ -123,7 +126,10 @@ export default function Sparkline({
       { threshold: 0.01, rootMargin: '160px 0px' },
     );
     observer.observe(wrapRef.current);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
   }, [staggerMs, reducedMotion, hasPoints]);
 
   useEffect(() => {
