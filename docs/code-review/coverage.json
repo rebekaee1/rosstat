@@ -19,19 +19,21 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2537,
-    "code_files": 2058,
-    "current_reviews": 2537,
+    "files": 2549,
+    "code_files": 2067,
+    "current_reviews": 2545,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
+      "binary_asset": 1,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2265
+      "missing": 1,
+      "reviewed": 2275
     },
-    "definitions": 16723,
-    "annotated_definitions": 16723,
-    "files_needing_attention": 0
+    "definitions": 16825,
+    "annotated_definitions": 16790,
+    "files_needing_attention": 4
   },
   "orphan_reviews": [],
   "files": [
@@ -180,9 +182,9 @@
     },
     {
       "path": ".env.example",
-      "sha256": "46ec048d3a9e2ddec8d04699c8c7114da0461e6e3a8be4655e10ad570d47aee2",
-      "bytes": 27667,
-      "lines": 379,
+      "sha256": "fc31223b25c47ab67bbd9f95acc423c3fafc9a1290124eb5bff23898a6cfb9ca",
+      "bytes": 27801,
+      "lines": 380,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -284,8 +286,8 @@
     },
     {
       "path": "CONTEXT.md",
-      "sha256": "23d13bc1d237bcf12f687f1bc035144cbd5e4d37d126bca53055f46599cf0916",
-      "bytes": 252012,
+      "sha256": "7d720c401f32a86bebac9960ddea1f141bec5f74be8a3d0f1535e18246bd1c87",
+      "bytes": 252611,
       "lines": 1333,
       "code": false,
       "status": "reviewed",
@@ -1155,15 +1157,15 @@
     },
     {
       "path": "backend/app/api/calendar.py",
-      "sha256": "94cb6c23d4f19438548acf46370698681803cec6fe3471bbf886113ee59b3fa4",
-      "bytes": 11028,
-      "lines": 290,
+      "sha256": "e0c8a739eebbb24f069ab11f68a6d1bf27376f617c60f66095a6c3b842cd49dc",
+      "bytes": 15946,
+      "lines": 399,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 8,
-      "annotated_definitions": 8,
+      "definitions": 14,
+      "annotated_definitions": 14,
       "missing_definitions": []
     },
     {
@@ -1753,9 +1755,9 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "ff07ed1e3e95232b2d669e73dbfdf651980010b323c7c88e1c1877de7cdb4fd5",
-      "bytes": 55719,
-      "lines": 693,
+      "sha256": "089c949371f04c073dc1b6dc4d252e86323de0bc0d9419b1dae3ece411f6004f",
+      "bytes": 55868,
+      "lines": 694,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2182,9 +2184,9 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "198772228cec73d8f7768725f76173d291b4a21ffc403a0db39e538b1543225c",
-      "bytes": 75908,
-      "lines": 1679,
+      "sha256": "9e7e6ecf9c040584b572cdd3bfc43eb1e2dae78b511ea285c3c2a9eb07891b92",
+      "bytes": 75949,
+      "lines": 1680,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2234,9 +2236,9 @@
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "9ac47080fecdf932e1df7f5b5a45d083d3ddf05990708ba901fd6185ac365ec9",
-      "bytes": 9092,
-      "lines": 115,
+      "sha256": "abccb01acedc9538701c4385580cf79e840c0962efbdc5b45d2d06ceb4c5244b",
+      "bytes": 9653,
+      "lines": 122,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -2793,9 +2795,9 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "sha256": "5c0b6de304b47ba0ffed051a558419775d80e875725fbc59470e145111c451fe",
-      "bytes": 7049,
-      "lines": 179,
+      "sha256": "21563c27289a3bac8d21ed493d6177194a912891a6cf2bbb8eded8cbb82ddc4d",
+      "bytes": 7430,
+      "lines": 183,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3105,9 +3107,9 @@
     },
     {
       "path": "backend/app/services/bot_agent_tools.py",
-      "sha256": "7e020d3a31d0757c12279046ba0595d6016f18a9d48daade46fe691b33234847",
-      "bytes": 26093,
-      "lines": 424,
+      "sha256": "0bd60e73bb61c610ab5eb24555b42d79f8b057f4e7ecdc7e53f24674335bdc4a",
+      "bytes": 26386,
+      "lines": 428,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3209,15 +3211,15 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "sha256": "8863ebc0487505fd827ec35a9371e516a956031624f4108ac9e1ce99fc7b10b1",
-      "bytes": 24084,
-      "lines": 550,
+      "sha256": "c59c09006d60d5168cfaa47134966ea5189d798a6f498fe55a1bbc2c3a03fa4f",
+      "bytes": 29626,
+      "lines": 634,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 31,
-      "annotated_definitions": 31,
+      "definitions": 33,
+      "annotated_definitions": 33,
       "missing_definitions": []
     },
     {
@@ -3273,49 +3275,62 @@
       "missing_definitions": []
     },
     {
-      "path": "backend/app/services/calendar_sources/common.py",
-      "sha256": "ae5d9ba50cacb1e33e9933e309f1b09957cbd6c47d06a20525a9f4c8ad284f2d",
-      "bytes": 9871,
-      "lines": 259,
+      "path": "backend/app/services/calendar_sources/cbr_key_rate.py",
+      "sha256": "dee46e2ffed2bc8cb9fe21468a58c54c695c1c211a0ef4aeafdc982e456433c0",
+      "bytes": 6185,
+      "lines": 122,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 10,
-      "annotated_definitions": 10,
+      "definitions": 4,
+      "annotated_definitions": 4,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/calendar_sources/common.py",
+      "sha256": "3d0fe72e9daa5f050d0f1df490e24fbf9b8d90b01418237e01300821a84d838e",
+      "bytes": 22386,
+      "lines": 490,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 16,
+      "annotated_definitions": 16,
       "missing_definitions": []
     },
     {
       "path": "backend/app/services/calendar_sources/enrichment.py",
-      "sha256": "00cac76a39d38236a8f957a070d857b547d564aa15fd834729add9ffbb2ec110",
-      "bytes": 8961,
-      "lines": 265,
+      "sha256": "fdbbe234ecbaba7bd3cae7e5e8b8f7597288ffa4bbad4a78412df87355a49e66",
+      "bytes": 19082,
+      "lines": 449,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 8,
-      "annotated_definitions": 8,
+      "definitions": 14,
+      "annotated_definitions": 14,
       "missing_definitions": []
     },
     {
       "path": "backend/app/services/calendar_sources/official_calendar.py",
-      "sha256": "acfe876d42e597913d07cf80feac1b8b09cef287b375dc7bcdef83f12224de97",
-      "bytes": 43366,
-      "lines": 838,
+      "sha256": "7b3c04faab9df878a71be136ae95f9e54573c93a3dfed90f577451a5fb005b69",
+      "bytes": 50814,
+      "lines": 978,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 24,
-      "annotated_definitions": 24,
+      "definitions": 29,
+      "annotated_definitions": 29,
       "missing_definitions": []
     },
     {
-      "path": "backend/app/services/calendar_sources/rosstat_plan.py",
-      "sha256": "446008b0b658409374314733298102443bb3f870dac9b327463f24a1f8a7ebf5",
-      "bytes": 18676,
-      "lines": 397,
+      "path": "backend/app/services/calendar_sources/rosstat_oper_plan.py",
+      "sha256": "6c68881b8b6641e6b72d64b4f410631c57c86ee98b1312c593146756cb33c3f2",
+      "bytes": 10382,
+      "lines": 233,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3325,10 +3340,23 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/services/calendar_sources/rosstat_plan.py",
+      "sha256": "80bb32af7374bfa671416416a0e610169ffbadc2a7f255a787a62aaa0442d4e4",
+      "bytes": 23050,
+      "lines": 487,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 12,
+      "annotated_definitions": 12,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/services/calendar_sources/working_calendar.py",
-      "sha256": "a97693925e1c7e2d8885332d560b68cf8b431d41c313877568451d73ffbd152b",
-      "bytes": 1557,
-      "lines": 56,
+      "sha256": "3efbd982f4247f1bcaec77a0ef3d6cc0bb06698259de52ba88631f2b4831061a",
+      "bytes": 2887,
+      "lines": 80,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3625,16 +3653,159 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "sha256": "497214514971015f014eead6ca2bb53dcca6fb8e3fb8863af61c8894c5c9768c",
-      "bytes": 52760,
-      "lines": 981,
+      "sha256": "fc99138935fb9c6b54ebfecc68848ae26d969c2231df0dc77396c069c3329f16",
+      "bytes": 54440,
+      "lines": 1010,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 43,
-      "annotated_definitions": 43,
-      "missing_definitions": []
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
+      "definitions": 45,
+      "annotated_definitions": 22,
+      "missing_definitions": [
+        {
+          "name": "_walls_by_device",
+          "line": 567,
+          "end_line": 579,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_device_line",
+          "line": 582,
+          "end_line": 587,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "summarize",
+          "line": 590,
+          "end_line": 635,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "summarize.by_content",
+          "line": 595,
+          "end_line": 611,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_n",
+          "line": 642,
+          "end_line": 643,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_pct",
+          "line": 646,
+          "end_line": 647,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_people",
+          "line": 650,
+          "end_line": 660,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_mix",
+          "line": 663,
+          "end_line": 665,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_short",
+          "line": 671,
+          "end_line": 673,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_times",
+          "line": 676,
+          "end_line": 680,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_server_line",
+          "line": 683,
+          "end_line": 692,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "format_report",
+          "line": 695,
+          "end_line": 750,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "digest_lines",
+          "line": 753,
+          "end_line": 767,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_delta",
+          "line": 770,
+          "end_line": 774,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "week_digest_lines",
+          "line": 777,
+          "end_line": 801,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_page_label",
+          "line": 821,
+          "end_line": 825,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_paths",
+          "line": 828,
+          "end_line": 855,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "collect_paths",
+          "line": 858,
+          "end_line": 899,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_paths_sheet_rows",
+          "line": 902,
+          "end_line": 914,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_who",
+          "line": 917,
+          "end_line": 919,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_xlsx",
+          "line": 922,
+          "end_line": 1001,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_xlsx.sheet",
+          "line": 933,
+          "end_line": 941,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_server_rows",
+          "line": 1004,
+          "end_line": 1009,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -4210,9 +4381,9 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "sha256": "3bb740138979f1bdcedef5d588029c11a353c059ee6521769c4a05bd7a3c9996",
-      "bytes": 4491,
-      "lines": 114,
+      "sha256": "9d4ee8fa1eb3b9bbcd4c1ae4f4f1c042010591cd4ae8bef60c1ca2c7bce6712a",
+      "bytes": 4978,
+      "lines": 118,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4756,9 +4927,9 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "sha256": "8e7cecef6d8223254831b4cd2f6ef9c6d29d0cc65b2f4f14e4007398994b325f",
-      "bytes": 131397,
-      "lines": 2063,
+      "sha256": "9c2cfb46f5bbd3fa2f4f689ce2375857ff3a11456b3f28e9073ede8e14331521",
+      "bytes": 131786,
+      "lines": 2069,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5315,9 +5486,9 @@
     },
     {
       "path": "backend/app/services/seo_calendar.py",
-      "sha256": "c67c581479a926d3886ffffe20b34b81bdc74f95c4e96b2e0f34e5f495698fde",
-      "bytes": 9564,
-      "lines": 221,
+      "sha256": "ebe949259eb7e9b5c5904a16d5cd6595ab79ad83e885a828f3d6c8634f6fc30c",
+      "bytes": 10178,
+      "lines": 230,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -6810,9 +6981,9 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "sha256": "34338c64d225e8f181fc8f4c46adc313a4ed461c567e7154523b1f66930e1e2f",
-      "bytes": 44137,
-      "lines": 893,
+      "sha256": "4a4684680490407e8d5e41358c8b3dd2ad12d7fa593263de7dd43d7f34ccdcc5",
+      "bytes": 44412,
+      "lines": 896,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -7586,6 +7757,45 @@
       "issues": [],
       "definitions": 18,
       "annotated_definitions": 18,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/fixtures/calendar/cbr_cal_mp_2026-11-14.html",
+      "sha256": "1f0396a3eb78a9bb350b3f4d6a86e3fb3bb3a969acbfa03f2cb030896a6ba52f",
+      "bytes": 20479,
+      "lines": 426,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/fixtures/calendar/rosstat_grafic_oper_public_2026.doc",
+      "sha256": "7d1c8c986272982f877f0e44b91d9afd05d30be93e915e8e160590b632cab437",
+      "bytes": 39936,
+      "lines": null,
+      "code": false,
+      "status": "binary_asset",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/fixtures/calendar/rosstat_plans_type52_2026-11-14.html",
+      "sha256": "20c90f94afc34d2abd65b71e056b404a80cb9564cb24671bceb155812c8408f4",
+      "bytes": 5074,
+      "lines": 92,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
       "missing_definitions": []
     },
     {
@@ -8539,15 +8749,15 @@
     },
     {
       "path": "backend/tests/test_cabinet.py",
-      "sha256": "4927ecda758e6a10ba22f211d7581f01332673c6a3c062668939d6cb9cb853ba",
-      "bytes": 34038,
-      "lines": 642,
+      "sha256": "9075ff6bbc9f95e53ac70bc130d90cf2f93f06d74f7a912f67ff11f780c5b2bd",
+      "bytes": 40464,
+      "lines": 738,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 53,
-      "annotated_definitions": 53,
+      "definitions": 64,
+      "annotated_definitions": 64,
       "missing_definitions": []
     },
     {
@@ -8574,6 +8784,19 @@
       "issues": [],
       "definitions": 26,
       "annotated_definitions": 26,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_calendar_actuality.py",
+      "sha256": "436cce8e793270b848355e2bac10f779b3683b61d72c00d76937431a1b6398d8",
+      "bytes": 21651,
+      "lines": 399,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 27,
+      "annotated_definitions": 27,
       "missing_definitions": []
     },
     {
@@ -8604,9 +8827,9 @@
     },
     {
       "path": "backend/tests/test_calendar_truth.py",
-      "sha256": "eb032f7ccb22484c421a739459dfc397e775c8cbcd6ba6413e016b8eb0aca68e",
-      "bytes": 5576,
-      "lines": 112,
+      "sha256": "5658bd1faa6b0016e5395737363a8411a3cebe34b5e9eb88c0a7df464fd258e6",
+      "bytes": 5762,
+      "lines": 116,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -9059,16 +9282,27 @@
     },
     {
       "path": "backend/tests/test_download_content.py",
-      "sha256": "93f46c805f916b00588da65db1dfb68c22ce176f45bb9b3161f3f8b87626c197",
-      "bytes": 18801,
-      "lines": 295,
+      "sha256": "d5f45ca33035a59292f1137cbeed947380b4a1a856e49eaecc47f931d1796378",
+      "bytes": 19745,
+      "lines": 308,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 17,
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
+      "definitions": 18,
       "annotated_definitions": 17,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "test_walls_by_device_counts_people_once_and_shows_line",
+          "line": 298,
+          "end_line": 308,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_download_paths.py",
@@ -10424,9 +10658,9 @@
     },
     {
       "path": "backend/tests/test_public_bot.py",
-      "sha256": "acbeb81e0db3ef4192bef9b87223890dc055e427974e4acee8e7d10763117c17",
-      "bytes": 49548,
-      "lines": 928,
+      "sha256": "ed5ef2e9937698920f5316f3f0747ce019d0fd051dc0ad82f1560e55fc60d8e5",
+      "bytes": 49974,
+      "lines": 932,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -10515,15 +10749,15 @@
     },
     {
       "path": "backend/tests/test_pulse_week_fixes.py",
-      "sha256": "4b6fa9786eafd3993d1d0e132a5bb08adde79fdc9f7f0e1d0bbcb5c634961df8",
-      "bytes": 14850,
-      "lines": 251,
+      "sha256": "e0aa34fe0d566681185a666aecc384b1f9ea8b8d167691da4948ed86b0504cb4",
+      "bytes": 17926,
+      "lines": 293,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 20,
-      "annotated_definitions": 20,
+      "definitions": 23,
+      "annotated_definitions": 23,
       "missing_definitions": []
     },
     {
@@ -13661,8 +13895,8 @@
     },
     {
       "path": "docker-compose.yml",
-      "sha256": "74265a026b03fbcb982bd74be72eaff584d413e60d6ef32c4793facf77e8d778",
-      "bytes": 41731,
+      "sha256": "3bfcab6942cc92757164c4d737006f5b9baa0a91e14f9b845b4756611ae777f5",
+      "bytes": 41748,
       "lines": 598,
       "code": false,
       "status": "reviewed",
@@ -13726,9 +13960,9 @@
     },
     {
       "path": "docs/adr/0005-official-calendar-source-bound.md",
-      "sha256": "11e9af1b5cf850645cdfd0d1b2447c93f82e50f2c9bae1bc8bc0f17cc3431e0f",
-      "bytes": 7404,
-      "lines": 83,
+      "sha256": "eb00dc08f6cfbb07cdeabc4a8d1c19e2e1f0d81e8cf0327b9b4f53c0c2768ff7",
+      "bytes": 12270,
+      "lines": 119,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13908,9 +14142,9 @@
     },
     {
       "path": "docs/adr/0019-personal-cabinet-behind-flag.md",
-      "sha256": "2f07ec480578fdadb59b2e8fb7363554271f02d1354bb6e3956d8f5a24763560",
-      "bytes": 9350,
-      "lines": 40,
+      "sha256": "37e794b43d16bda3d3f37d6b372619e154fda950a96dfda3f5196b38ee98f0bd",
+      "bytes": 15243,
+      "lines": 50,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14337,8 +14571,8 @@
     },
     {
       "path": "docs/architecture.md",
-      "sha256": "2ac4f63b944117233d2ee2bd629aefecf437d8cb370373f5aeeb722302998ec5",
-      "bytes": 97723,
+      "sha256": "8e26720590617bbe977ade39224dae725d0927fd4003cebb7e9e1cf17eeb5565",
+      "bytes": 98223,
       "lines": 468,
       "code": false,
       "status": "reviewed",
@@ -14350,9 +14584,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "c5e8dd800b4cd7b0ead8dfd23a61aa4d1446d3cd0d3baf894ec132c4def6b5f9",
-      "bytes": 790657,
-      "lines": 3695,
+      "sha256": "88732a7b227c04d5ed401152cf3e36937d859eee337a8257a4bad6dabf9700b8",
+      "bytes": 801472,
+      "lines": 3737,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14376,9 +14610,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "fd4fb7a2c7b77ee968c0d9399f57305bf5bc5a0346767ca257473d3a547c20d5",
-      "bytes": 7329373,
-      "lines": 258317,
+      "sha256": "6d6492037fb1e1613ba99d6b042c4491c757c530c179957172ae6198f7d749a3",
+      "bytes": 7358649,
+      "lines": 259392,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14389,7 +14623,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "5ab14342817223ad548ad73a75f596c95da3ca4a10276f7a9d60fe2ffc2d1546",
+      "sha256": "ed6d5ec77eb9b43cc2fbc6b0b71730c619274cd8b256898907d61e7903223d34",
       "bytes": 14011,
       "lines": 142,
       "code": false,
@@ -14415,9 +14649,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "42bccfe171e8817cdf362b080ff55a522e9211931cc1c757f468b66c683f5aae",
-      "bytes": 401791,
-      "lines": 1286,
+      "sha256": "ece7b1a469fb88b7d1517173081247b9a1830c630cc305a2c5dd072d9c9493d9",
+      "bytes": 411619,
+      "lines": 1320,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14428,9 +14662,9 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "8a376ca1985fb7ccacaebcd1e1d2ecdf6959dcf9c0ecb8fec8b7456cd58e1a74",
-      "bytes": 118834,
-      "lines": 760,
+      "sha256": "cde28dc5ce166199ce83aefec54166a82adb3742d9e933de7845df3cd57bf9a9",
+      "bytes": 122689,
+      "lines": 776,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14441,7 +14675,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "18766a1f5a124b7a6279d793bdf19ca132aceef8c06f22408776eba440aa1d8c",
+      "sha256": "4ab45dac7520ced3bf435580ebf63dc021c6d1a2aae3469d82023f35665c448c",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -14948,9 +15182,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "879dafc79dc518012a616572bd2897b72d54447189248ec6a4dc8cc36866fabf",
-      "bytes": 3873129,
-      "lines": 137108,
+      "sha256": "12627781e59e081f2fa9c2f8ff6a0d4dcfcb68f3d2e33aac3021fe76bf0599f3",
+      "bytes": 3887802,
+      "lines": 137663,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -14961,7 +15195,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734",
+      "sha256": "8e224ca292c3c68855ec250a66e4c8811b76ae87d65886a66926ac51ec0ec449",
       "bytes": 160576,
       "lines": 1824,
       "code": false,
@@ -14974,8 +15208,8 @@
     },
     {
       "path": "docs/knowledge-unknowns.md",
-      "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30",
-      "bytes": 78988,
+      "sha256": "ca400019e555ee120a4267b349201b94a05d354cb23ed078b36dbbfc08cb8654",
+      "bytes": 80104,
       "lines": 201,
       "code": false,
       "status": "reviewed",
@@ -14999,10 +15233,23 @@
       "missing_definitions": []
     },
     {
+      "path": "docs/legal/privacy-cabinet-draft-2026-11-14.md",
+      "sha256": "54cdd341d5781937fac2dc21ac22b22674513c852611bff3cee5cd39041a3398",
+      "bytes": 11009,
+      "lines": 104,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "a538cb11c02737058ea11fd4da42a8bbd5852835e7618d9cf336e8a2315e91e3",
-      "bytes": 12672268,
-      "lines": 381543,
+      "sha256": "9f0753d83cae007c23b7410f798d833331b2557b0205189407c6dfbcae982fb2",
+      "bytes": 12799390,
+      "lines": 385502,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -15013,9 +15260,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "d49ab7854f4f84b3ad968ff285a9e458007f4fa039142a0b0556b57f29cf29d2",
-      "bytes": 650727,
-      "lines": 3556,
+      "sha256": "11ba7a04be6cc2bc22c45e6f7615e3d001d0475800e8b982d6bd59de6a585e2c",
+      "bytes": 653900,
+      "lines": 3569,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -15649,6 +15896,19 @@
       "missing_definitions": []
     },
     {
+      "path": "docs/research/wall-funnel-2026-11-14.md",
+      "sha256": "da5d66bbff8bac6afcee0e52000db64450e0b5ea7346eb8bc8c340f42c121e50",
+      "bytes": 9446,
+      "lines": 99,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "docs/runtime-inventory.json",
       "sha256": "53fbc68ec8abec4c469a0077cd0f35b82078981ba2c1a079c52b2403ce3c2241",
       "bytes": 248779,
@@ -15767,9 +16027,9 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "031e7fdcd96e7e3feba2fdf9709c62362e515f5403ebc7ad61072f39fcdf6a27",
-      "bytes": 159587,
-      "lines": 757,
+      "sha256": "654ce15ee4a34a89f97284507f15ae05a01494430edc17584918c112b057e72b",
+      "bytes": 161240,
+      "lines": 763,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -15923,9 +16183,9 @@
     },
     {
       "path": "frontend/nginx.conf",
-      "sha256": "3d7f10d47f053f04f9fb712bd493630d89e72959fc4661010592a177765a8f5f",
-      "bytes": 95631,
-      "lines": 1679,
+      "sha256": "deee332183f16d4a82aa47f412af694257861763cd6021cd85a86989769fafb5",
+      "bytes": 98564,
+      "lines": 1721,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -19146,17 +19406,107 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/src/components/DownloadLimitModal.guest.test.jsx",
+      "sha256": "e98b13162426411c6f86099ac983142aeb0d2ee0384ea76b3714cd538fae2a3c",
+      "bytes": 3294,
+      "lines": 60,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 6,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "useAuth",
+          "line": 7,
+          "end_line": 7,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "useT",
+          "line": 15,
+          "end_line": 15,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "useLocale",
+          "line": 16,
+          "end_line": 16,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "useLocale.t",
+          "line": 16,
+          "end_line": 16,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "openWall",
+          "line": 25,
+          "end_line": 28,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "href",
+          "line": 49,
+          "end_line": 49,
+          "kind": "ObjectMethod"
+        }
+      ]
+    },
+    {
       "path": "frontend/src/components/DownloadLimitModal.jsx",
-      "sha256": "6e4ec06d094224c22c29e347cc23be9fb0767536a5ab79f6edb0c225e687cf8c",
-      "bytes": 4841,
-      "lines": 108,
+      "sha256": "ea07011e3b684f1a807e031ab41c0ac0e72630959fca8277b8f3dfff22cc3a1f",
+      "bytes": 6120,
+      "lines": 130,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
       "definitions": 5,
-      "annotated_definitions": 5,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "DownloadLimitModal",
+          "line": 18,
+          "end_line": 130,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "DownloadLimitModal.close",
+          "line": 30,
+          "end_line": 30,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "DownloadLimitModal.resume",
+          "line": 31,
+          "end_line": 36,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "DownloadLimitModal.handler",
+          "line": 39,
+          "end_line": 39,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "DownloadLimitModal.onKey",
+          "line": 46,
+          "end_line": 46,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/DownloadLimitModal.test.jsx",
@@ -20031,15 +20381,15 @@
     },
     {
       "path": "frontend/src/components/Navbar.jsx",
-      "sha256": "a7ccf6ac0ee62cb14c8e4d259b41e2b29a5e51dc569eecd0a7075bf98f917935",
-      "bytes": 30751,
-      "lines": 623,
+      "sha256": "736c47513ca46d75ca361a175ec082394a77e25e3a16f7672c90b23ee78acf4e",
+      "bytes": 31297,
+      "lines": 631,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 16,
-      "annotated_definitions": 16,
+      "definitions": 17,
+      "annotated_definitions": 17,
       "missing_definitions": []
     },
     {
@@ -20083,9 +20433,9 @@
     },
     {
       "path": "frontend/src/components/OAuthButtons.component.test.jsx",
-      "sha256": "1158bfe5da9dcc0acfd305a1b776f587388cc00c83e609e27b16e06f33c92933",
-      "bytes": 4354,
-      "lines": 88,
+      "sha256": "a3ced1e96a52fa74ae4a1be7546494e4a5ab621442e229caeaa1d5d81e4653a4",
+      "bytes": 5268,
+      "lines": 99,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -20096,9 +20446,9 @@
     },
     {
       "path": "frontend/src/components/OAuthButtons.jsx",
-      "sha256": "77e5021954f0e32021ccbf919359eaf698fa0ebde7f2760783b69997cd89abab",
-      "bytes": 9903,
-      "lines": 224,
+      "sha256": "7210333ffcf86f61b040771e30d22b0e0977eca292b98ff2f5f2bab1788f14d0",
+      "bytes": 10639,
+      "lines": 230,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -21331,9 +21681,9 @@
     },
     {
       "path": "frontend/src/components/cabinet/CabinetWiring.component.test.jsx",
-      "sha256": "688ea9985e5a8cf0c7538f45fad8a97da2df9187bbec0a0edf4b5265d7f8a130",
-      "bytes": 14382,
-      "lines": 240,
+      "sha256": "24d4f51401715fd9204560f229fbdc64963d2fcdf2c2df4e7e2cf24ef0631e5f",
+      "bytes": 15261,
+      "lines": 253,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -21344,8 +21694,8 @@
     },
     {
       "path": "frontend/src/components/cabinet/CabinetWiring.jsx",
-      "sha256": "f3213a1513375103c34478751deb91d25ef462165a98c37efa194b5c2397cace",
-      "bytes": 1761,
+      "sha256": "1bbcdf0c14f67f8c2b0f14c4a89d1fc9cce4af4ad6b92541e9a82f8b2cc2c2b9",
+      "bytes": 1820,
       "lines": 30,
       "code": true,
       "status": "reviewed",
@@ -21409,9 +21759,9 @@
     },
     {
       "path": "frontend/src/components/cabinet/ProfilePanel.jsx",
-      "sha256": "98bec5c9405b286dfe046b1a46085d3a66ff9e471f69abf4b0a4e399581eeee8",
-      "bytes": 17057,
-      "lines": 406,
+      "sha256": "7bdf491cb27dc94401c7162f96574ec66395ff002d6422aeb67ba4e3c0ee8cc7",
+      "bytes": 17309,
+      "lines": 407,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -21422,9 +21772,9 @@
     },
     {
       "path": "frontend/src/components/cabinet/SaveButton.jsx",
-      "sha256": "4ff44b36c1f999fb79f7cc45494e920cb6b20b3773f42d148dc622f1347706d8",
-      "bytes": 4272,
-      "lines": 89,
+      "sha256": "a81f6306dfb4ae5bf30d3b46cbf751b447f4243dd6c5074fcf29a4c9439f1ba0",
+      "bytes": 4559,
+      "lines": 92,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -21435,9 +21785,9 @@
     },
     {
       "path": "frontend/src/components/cabinet/SavedList.jsx",
-      "sha256": "e3ded342623aaf461bbc503e2344212fce5dc118d3bbf22ec9e3689904c4cd57",
-      "bytes": 8068,
-      "lines": 190,
+      "sha256": "8ae0dc3f5ba8ce14c6f9677c7803c71e5c120e78a43c2d74855c8842b494238b",
+      "bytes": 9014,
+      "lines": 200,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -21448,9 +21798,9 @@
     },
     {
       "path": "frontend/src/components/cabinet/WatchButton.jsx",
-      "sha256": "a89dfc098f80f154ab74575a9c84249bb5be0456aa434398849f46889d4f4a9d",
-      "bytes": 3991,
-      "lines": 86,
+      "sha256": "ddc1b6790f5111b5cf7d2f9ef073c0e4a15450df2c0925ccd8e9c4d319877a6b",
+      "bytes": 4250,
+      "lines": 89,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -21461,9 +21811,9 @@
     },
     {
       "path": "frontend/src/components/cabinet/WatchList.jsx",
-      "sha256": "f7884825beb12bc4bf35fa194debef8b498bc63c0ef47f8ff96bb9202fb07ad4",
-      "bytes": 5505,
-      "lines": 125,
+      "sha256": "5113f9d5daf149562ecc7fc048aed5aec5441ce492020a2df65136be972c7a9b",
+      "bytes": 6077,
+      "lines": 129,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -21486,6 +21836,19 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/src/components/cabinet/cabinet.c14.component.test.jsx",
+      "sha256": "b1e7d4b641827f8622b31b6c861714a4e4bf17cbba780f4fd418aaacab6dfac4",
+      "bytes": 6787,
+      "lines": 122,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 4,
+      "annotated_definitions": 4,
+      "missing_definitions": []
+    },
+    {
       "path": "frontend/src/components/cabinet/cabinet.component.test.jsx",
       "sha256": "d5fc454c76f7ec11c793451f3938cf6c98283b1d96f5d74e238944476cae65b3",
       "bytes": 7872,
@@ -21500,15 +21863,28 @@
     },
     {
       "path": "frontend/src/components/calendar/CalendarEventCard.jsx",
-      "sha256": "82f1c47ac85300dad1ac74e25c8a2873a9ae1efa5f260b4983d2fbf7a676348a",
-      "bytes": 12891,
-      "lines": 309,
+      "sha256": "a460078b650221994b3e4e7915f9b86f0844c9c5a03fbd2d8fbfd14a44c62503",
+      "bytes": 15695,
+      "lines": 365,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 6,
-      "annotated_definitions": 6,
+      "definitions": 9,
+      "annotated_definitions": 9,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/components/calendar/CalendarEventCard.status.test.js",
+      "sha256": "0914a814fc6a5c9176ad9086f298cc3e9f6704172a825b14881f9481eae846ad",
+      "bytes": 1991,
+      "lines": 31,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
       "missing_definitions": []
     },
     {
@@ -22657,9 +23033,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.en.js",
-      "sha256": "c3d1dc1b51e255230e59a0a7dc5a5448ba9bfbc923aad45003cdb8b2df3d7916",
-      "bytes": 234551,
-      "lines": 4187,
+      "sha256": "ca7641148d34dadfb97a34c32297b5d2b3e39d4d2b6557bdbd708fbc1d865cca",
+      "bytes": 236309,
+      "lines": 4206,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -22696,9 +23072,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.ru.js",
-      "sha256": "b0e8710dc96cc402c0fe28dff74f9d33696c05234c356a060e250e3b38a2d0f5",
-      "bytes": 332953,
-      "lines": 4192,
+      "sha256": "ff0336eeabe7117023d77173898ead0d149e270f9b68e56e4b8af56e1b3cfeba",
+      "bytes": 335572,
+      "lines": 4211,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -23164,22 +23540,22 @@
     },
     {
       "path": "frontend/src/lib/cabinetStore.js",
-      "sha256": "81334c16855c6070b32a4ba49b15a49764487661db5308098a52ef990fe2ca02",
-      "bytes": 19172,
-      "lines": 461,
+      "sha256": "c50bcf8cd73f3e1061f6e9c4d4c4d573480abd1b1286061b3b4215ee65e73590",
+      "bytes": 21009,
+      "lines": 501,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 35,
-      "annotated_definitions": 35,
+      "definitions": 37,
+      "annotated_definitions": 37,
       "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/cabinetStore.test.js",
-      "sha256": "b3da395d6e028f3fda38348eea1d0e3ae09875b29dba8b2ea35b07f3c0721b03",
-      "bytes": 11536,
-      "lines": 248,
+      "sha256": "58b3146ad94f55d30be4f52304a7e8b210d4e3828f562f11b9263ccac006e1b3",
+      "bytes": 13791,
+      "lines": 280,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -23190,9 +23566,9 @@
     },
     {
       "path": "frontend/src/lib/cabinetSubjects.js",
-      "sha256": "a0aa65ee4abbdcf2aea6fb7e8a16f42fb30ae2e8d73885758f1f0f4d8c2a186b",
-      "bytes": 4831,
-      "lines": 93,
+      "sha256": "61fbf260bc578f2288598580bfc87e718d8371d6cb7e9cd921574dcb7506fc24",
+      "bytes": 5081,
+      "lines": 94,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -23332,16 +23708,29 @@
       "missing_definitions": []
     },
     {
-      "path": "frontend/src/lib/calendarGrouping.js",
-      "sha256": "798db07f6716025d7bf1e3b7ea6e9d7d78e55a80a80c7fba78e357e37753ebf1",
-      "bytes": 7900,
-      "lines": 156,
+      "path": "frontend/src/lib/calendarGroupFacts.test.js",
+      "sha256": "d95ff6b1a3b5941a5ffd2cbe8e5c14ead86c527ea587606baeacf2f157398588",
+      "bytes": 1477,
+      "lines": 27,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 6,
-      "annotated_definitions": 6,
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/lib/calendarGrouping.js",
+      "sha256": "a715fce73633e4fe170b6c7bed7b1fca04359861f81585d6500a970dcbf9e492",
+      "bytes": 9361,
+      "lines": 179,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 7,
+      "annotated_definitions": 7,
       "missing_definitions": []
     },
     {
@@ -28390,9 +28779,9 @@
     },
     {
       "path": "frontend/src/pages/Account.jsx",
-      "sha256": "2b0000089ae6d18e7529b34f6fd52567f4b31ccba37834d3f7ddcec44041f77b",
-      "bytes": 5554,
-      "lines": 118,
+      "sha256": "432f9ad362f60b3ab9de38bf37a2c663db1ed84751cb382b9d57cdfee806d423",
+      "bytes": 6221,
+      "lines": 128,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -28611,9 +29000,9 @@
     },
     {
       "path": "frontend/src/pages/CalendarPage.jsx",
-      "sha256": "35ed06ae5e0fe229851178e3a65b4fcf0ed2def35d660bf85887a70dc8e7cdf2",
-      "bytes": 21573,
-      "lines": 469,
+      "sha256": "8d9a8fcd40837bb6b9cb0c4148d5374c395dd86aa2854e986ee54d48cfb519f5",
+      "bytes": 22136,
+      "lines": 475,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29014,9 +29403,9 @@
     },
     {
       "path": "frontend/src/pages/Login.component.test.jsx",
-      "sha256": "362cf07c2d14066c987535f5390e108ea9a4edb71314f6a9277b8bd67d328832",
-      "bytes": 3559,
-      "lines": 73,
+      "sha256": "535d09819b6b12d10cae3ef2aa212b7d9586ff1469e9537f7b52907758159fc8",
+      "bytes": 3658,
+      "lines": 74,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29027,9 +29416,9 @@
     },
     {
       "path": "frontend/src/pages/Login.jsx",
-      "sha256": "b7b5afe7af1821d16fbc4cef8b68e31e8ace027af95d39c41a5df50b351a8d1c",
-      "bytes": 6613,
-      "lines": 154,
+      "sha256": "8981c7ae95b5ffa91bd6ebc704222052d35946381ddf8d7f264a547177194325",
+      "bytes": 6754,
+      "lines": 156,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29300,9 +29689,9 @@
     },
     {
       "path": "frontend/src/pages/Register.component.test.jsx",
-      "sha256": "9a540d91781a916d210ac715cca87f95a6d7b7b148645e8ebc851fe214dd2cb7",
-      "bytes": 6832,
-      "lines": 138,
+      "sha256": "08e506c46a34b3c66d8e22e904d5183bd17d74b1a78d7034870ac0cff24293fc",
+      "bytes": 7022,
+      "lines": 139,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29313,9 +29702,9 @@
     },
     {
       "path": "frontend/src/pages/Register.jsx",
-      "sha256": "c0a432006b8c959c33286be546b497b8c156edb55ddd177f60ea7a5d0b7bc41b",
-      "bytes": 9556,
-      "lines": 202,
+      "sha256": "0a23b5a80a27a4a3d7438edaf147f882e00cf19cb371f925d68fc4fd8f2f8d85",
+      "bytes": 9880,
+      "lines": 206,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29391,9 +29780,9 @@
     },
     {
       "path": "frontend/src/pages/RussiaPages.w3.component.test.jsx",
-      "sha256": "826c71475781f9dce99921c2d63bfcdc2cbfb93db7e451df6e4caa300bc2a08e",
-      "bytes": 9012,
-      "lines": 152,
+      "sha256": "3a2040a5411bdd1ab94a3f6085f0c4014bc73a4d818fb8eccbf644677586c4a7",
+      "bytes": 9693,
+      "lines": 160,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29794,9 +30183,9 @@
     },
     {
       "path": "frontend/src/styles/c11b-cabinet.css",
-      "sha256": "d2a1c4e80254b5b6398a9e782f8f3ac22c2cca7cdc84486abd55d53ddc355199",
-      "bytes": 10075,
-      "lines": 241,
+      "sha256": "fbec35f4426d945f1b8c4238b033260bd8e8e5ad7a2fcb762b800f4a0df269c6",
+      "bytes": 10580,
+      "lines": 245,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -30067,9 +30456,9 @@
     },
     {
       "path": "frontend/src/styles/k3-shell.css",
-      "sha256": "dc8193a5046d1100b6830998063c92a4c9f782f943aba430543f054ec09e5740",
-      "bytes": 43133,
-      "lines": 746,
+      "sha256": "5bbffd01d2ed2235372e20f5e10d188ceb889f8a1634e71a6d50a935fc9726e0",
+      "bytes": 43619,
+      "lines": 750,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -30587,9 +30976,9 @@
     },
     {
       "path": "frontend/src/styles/r8e-fixes.css",
-      "sha256": "b31bbc800cb1057af9d8ca569e16ac0e929420b1c5e27bb11dacfd2c363c8cc3",
-      "bytes": 1887,
-      "lines": 18,
+      "sha256": "198cdd45cacb26c0ac39a7c6e61730e1be4c5835741f7b6e63b819b251064a94",
+      "bytes": 2765,
+      "lines": 28,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -30600,9 +30989,9 @@
     },
     {
       "path": "frontend/src/styles/r9a-home.css",
-      "sha256": "eef58414a275582389d7f00532f3834a5108893821b5ca3b4a4acc214d8e8cc2",
-      "bytes": 5799,
-      "lines": 63,
+      "sha256": "194feb29ac4ba87f89d6598177f7eb375b1b24d21e19198bfda00572a1048515",
+      "bytes": 6386,
+      "lines": 71,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -33018,20 +33407,18 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "78060a163dea52d5fbc0dfd2b29cf634961d3a87ff122ababec6d193fe6171fb",
-  "javascript_inventory_sha256": "43323efb14cd6e41008a5bda5eed3a087cdc5a871136d277b87040975c3a3c3b",
-  "baseline_commit": "a48feaa582bc13d3a121664a3482428302baf760",
-  "branch": "int/2026-11-14",
+  "ledger_sha256": "ede2ba82167f50a3233a974200dd43892cf34e3445e006650d199da2d68349d0",
+  "javascript_inventory_sha256": "e28098536443028516e06b3fb1dfcd2d7e5d7da110b931552876cdfb9055e70b",
+  "baseline_commit": "e916c1d62c3b3a17303162515debc9b8919702e0",
+  "branch": "worktree-agent-ac66bf4fe79aa74f0",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
+    "docs/backlog.md",
     "docs/client-mechanism-inventory.json",
     "docs/client-mechanism-inventory.md",
-    "docs/client-mechanism-inventory.md",
+    "docs/dead-code-report.md",
     "docs/indicator-index.json",
-    "docs/indicator-index.json",
+    "docs/indicator-index.md",
     "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
     "docs/mechanism-inventory.md"
   ]
 }

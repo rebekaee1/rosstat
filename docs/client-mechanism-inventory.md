@@ -2,17 +2,17 @@
 
 Источник: Babel AST текущих tracked frontend/MCP файлов. Генератор не исполняет приложение и не присваивает reviewed.
 
-- imports: 4853
+- imports: 4872
 - routes: 100
-- functions: 15454
-- hooks: 2865
+- functions: 15534
+- hooks: 2871
 - http: 127
-- storage: 244
-- events: 455
-- jsx_handlers: 1257
+- storage: 248
+- events: 458
+- jsx_handlers: 1260
 - registries: 719
 - mcp_tools: 7
-- files: 916
+- files: 920
 - parse_errors: 0
 
 Полные call sites, выражения, anonymous callbacks, owner и строки — [JSON](client-mechanism-inventory.json). Смысл, loading/empty/error/access и исключения — [досье клиента](code-review/client-mechanism-acceptance-2026-09-30.md) и рецензии соответствующего файла.
@@ -126,13 +126,13 @@
 | [frontend/src/pages/AuthReturn.test.jsx:18](../frontend/src/pages/AuthReturn.test.jsx#L18) | {`/${page}`} | {<Component />} |
 | [frontend/src/pages/AuthReturn.test.jsx:18](../frontend/src/pages/AuthReturn.test.jsx#L18) | "/indicator/cpi" | {<Destination />} |
 | [frontend/src/pages/Login.component.test.jsx:25](../frontend/src/pages/Login.component.test.jsx#L25) | "/login" | {<Login />} |
-| [frontend/src/pages/Register.component.test.jsx:35](../frontend/src/pages/Register.component.test.jsx#L35) | "/register" | {<Register />} |
-| [frontend/src/pages/Register.component.test.jsx:36](../frontend/src/pages/Register.component.test.jsx#L36) | "/world/rating/gdp-usd" | {<span>destination</span>} |
-| [frontend/src/pages/Register.component.test.jsx:52](../frontend/src/pages/Register.component.test.jsx#L52) | "/register" | {<Register />} |
-| [frontend/src/pages/Register.component.test.jsx:59](../frontend/src/pages/Register.component.test.jsx#L59) | "/register" | {<Register />} |
-| [frontend/src/pages/Register.component.test.jsx:73](../frontend/src/pages/Register.component.test.jsx#L73) | "/register" | {<Register />} |
-| [frontend/src/pages/Register.component.test.jsx:108](../frontend/src/pages/Register.component.test.jsx#L108) | "/register" | {<Register />} |
-| [frontend/src/pages/Register.component.test.jsx:127](../frontend/src/pages/Register.component.test.jsx#L127) | "/register" | {<Register />} |
+| [frontend/src/pages/Register.component.test.jsx:36](../frontend/src/pages/Register.component.test.jsx#L36) | "/register" | {<Register />} |
+| [frontend/src/pages/Register.component.test.jsx:37](../frontend/src/pages/Register.component.test.jsx#L37) | "/world/rating/gdp-usd" | {<span>destination</span>} |
+| [frontend/src/pages/Register.component.test.jsx:53](../frontend/src/pages/Register.component.test.jsx#L53) | "/register" | {<Register />} |
+| [frontend/src/pages/Register.component.test.jsx:60](../frontend/src/pages/Register.component.test.jsx#L60) | "/register" | {<Register />} |
+| [frontend/src/pages/Register.component.test.jsx:74](../frontend/src/pages/Register.component.test.jsx#L74) | "/register" | {<Register />} |
+| [frontend/src/pages/Register.component.test.jsx:109](../frontend/src/pages/Register.component.test.jsx#L109) | "/register" | {<Register />} |
+| [frontend/src/pages/Register.component.test.jsx:128](../frontend/src/pages/Register.component.test.jsx#L128) | "/register" | {<Register />} |
 | [frontend/src/test/renderPage.jsx:36](../frontend/src/test/renderPage.jsx#L36) | {path} | {ui} |
 
 ## Границы

@@ -821,9 +821,9 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "23d13bc1d237bcf12f687f1bc035144cbd5e4d37d126bca53055f46599cf0916",
-        "bytes": 252012
+        "date": "2026-11-14",
+        "sha256": "7d720c401f32a86bebac9960ddea1f141bec5f74be8a3d0f1535e18246bd1c87",
+        "bytes": 252611
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
@@ -831,13 +831,11 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-14",
-          "reviewer": "Claude Opus 5.5 (английский хост для Google, ADR-0031, 14.11.2026)",
-          "head": "e4049dca",
-          "branch": "worktree-agent-a60cd3db86caaa5f2",
-          "mode": "полное чтение после изменения"
+          "reviewer": "агент календаря (ветка feat/calendar-actuality-2026-11-14, e55dc5ad); влито агентом кабинета, SHA сверен",
+          "branch": "feat/calendar-actuality-2026-11-14"
         },
         "status_in_review": "reviewed",
-        "sha256": "23d13bc1d237bcf12f687f1bc035144cbd5e4d37d126bca53055f46599cf0916"
+        "sha256": "7d720c401f32a86bebac9960ddea1f141bec5f74be8a3d0f1535e18246bd1c87"
       },
       "canonical_source": "CONTEXT.md",
       "linked_mechanisms": "domain glossary and dated invariants",
@@ -3048,9 +3046,9 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "198772228cec73d8f7768725f76173d291b4a21ffc403a0db39e538b1543225c",
-        "bytes": 75908
+        "date": "2026-11-14",
+        "sha256": "9e7e6ecf9c040584b572cdd3bfc43eb1e2dae78b511ea285c3c2a9eb07891b92",
+        "bytes": 75949
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
@@ -3058,13 +3056,11 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-14",
-          "reviewer": "Claude Opus 5.5 (линия «годовые страницы стран мира: точность и единица», 14.11.2026)",
-          "head": "d98eca36",
-          "branch": "worktree-agent-a60cd3db86caaa5f2",
-          "mode": "полное чтение после изменения"
+          "reviewer": "агент календаря (ветка feat/calendar-actuality-2026-11-14, e55dc5ad); влито агентом кабинета, SHA сверен",
+          "branch": "feat/calendar-actuality-2026-11-14"
         },
         "status_in_review": "reviewed",
-        "sha256": "198772228cec73d8f7768725f76173d291b4a21ffc403a0db39e538b1543225c"
+        "sha256": "9e7e6ecf9c040584b572cdd3bfc43eb1e2dae78b511ea285c3c2a9eb07891b92"
       },
       "canonical_source": "backend/app/data/i18n/seo_en.py",
       "linked_mechanisms": null,
@@ -4553,17 +4549,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "11e9af1b5cf850645cdfd0d1b2447c93f82e50f2c9bae1bc8bc0f17cc3431e0f",
-        "bytes": 7404
+        "date": "2026-11-14",
+        "sha256": "eb00dc08f6cfbb07cdeabc4a8d1c19e2e1f0d81e8cf0327b9b4f53c0c2768ff7",
+        "bytes": 12270
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": null,
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент календаря (ветка feat/calendar-actuality-2026-11-14, e55dc5ad); влито агентом кабинета, SHA сверен",
+          "branch": "feat/calendar-actuality-2026-11-14"
+        },
         "status_in_review": "reviewed",
-        "sha256": "11e9af1b5cf850645cdfd0d1b2447c93f82e50f2c9bae1bc8bc0f17cc3431e0f"
+        "sha256": "eb00dc08f6cfbb07cdeabc4a8d1c19e2e1f0d81e8cf0327b9b4f53c0c2768ff7"
       },
       "canonical_source": "docs/adr/0005-official-calendar-source-bound.md",
       "linked_mechanisms": null,
@@ -6405,28 +6405,20 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-12",
-          "reviewer": "Claude Sonnet 5.5 (исполнитель цикла знаний после круга 13)",
-          "head": "f0572bf9",
-          "branch": "circle13/int",
-          "mode": "дельта круга 13: изменённые диапазоны прочитаны по git diff circle13/base..HEAD и отчёту зоны; остальное сохранено по прежнему чтению",
-          "previous_sha256": "37b51cf6e859776673e965c7d3883333aa667fbb96b0d4cf52f5174e12c7b903",
-          "old_commit": "2b489e3d",
-          "delta_evidence": "git diff circle13/base..HEAD по файлу; сверено с impl-r-*.md зоны.",
-          "freshly_read_definitions": 0,
-          "reanchored_definitions": 0,
-          "reanchored_nondefinition_blocks": 0
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
         },
         "status_in_review": "reviewed",
-        "sha256": "2f07ec480578fdadb59b2e8fb7363554271f02d1354bb6e3956d8f5a24763560"
+        "sha256": "37e794b43d16bda3d3f37d6b372619e154fda950a96dfda3f5196b38ee98f0bd"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "2f07ec480578fdadb59b2e8fb7363554271f02d1354bb6e3956d8f5a24763560",
-        "bytes": 9350
+        "date": "2026-11-14",
+        "sha256": "37e794b43d16bda3d3f37d6b372619e154fda950a96dfda3f5196b38ee98f0bd",
+        "bytes": 15243
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -9996,26 +9988,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "2ac4f63b944117233d2ee2bd629aefecf437d8cb370373f5aeeb722302998ec5",
-        "bytes": 97723
+        "date": "2026-11-14",
+        "sha256": "8e26720590617bbe977ade39224dae725d0927fd4003cebb7e9e1cf17eeb5565",
+        "bytes": 98223
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "3b36be592e0b35caa5a95f8912d3acca3e5bc66726285dd3ea8c184e4a284dcd",
-          "prior_commit": "d002e0063bd471f2638ad7383aa1e4506213606f",
-          "delta": "Ссылка на контракт моста.",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
+          "date": "2026-11-14",
+          "reviewer": "агент календаря (ветка feat/calendar-actuality-2026-11-14, e55dc5ad); влито агентом кабинета, SHA сверен",
+          "branch": "feat/calendar-actuality-2026-11-14"
         },
         "status_in_review": "reviewed",
-        "sha256": "2ac4f63b944117233d2ee2bd629aefecf437d8cb370373f5aeeb722302998ec5"
+        "sha256": "8e26720590617bbe977ade39224dae725d0927fd4003cebb7e9e1cf17eeb5565"
       },
       "canonical_source": "docs/architecture.md",
       "linked_mechanisms": "system topology/scenarios",
@@ -10769,26 +10756,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "c5e8dd800b4cd7b0ead8dfd23a61aa4d1446d3cd0d3baf894ec132c4def6b5f9",
-        "bytes": 790657
+        "date": "2026-11-14",
+        "sha256": "88732a7b227c04d5ed401152cf3e36937d859eee337a8257a4bad6dabf9700b8",
+        "bytes": 801472
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "1608b99f925e094fa019638bd59734814ba115553dd6e0a5f13291e7f9dff9ec",
-          "prior_commit": "d002e0063bd471f2638ad7383aa1e4506213606f",
-          "delta": "Пункт 4: быстрые SSR-страницы холодные, остались золотые акценты.",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
         },
         "status_in_review": "reviewed",
-        "sha256": "c5e8dd800b4cd7b0ead8dfd23a61aa4d1446d3cd0d3baf894ec132c4def6b5f9"
+        "sha256": "88732a7b227c04d5ed401152cf3e36937d859eee337a8257a4bad6dabf9700b8"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
@@ -13266,16 +13248,21 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "fd4fb7a2c7b77ee968c0d9399f57305bf5bc5a0346767ca257473d3a547c20d5",
-        "canonical_source": "docs/client-mechanism-inventory.json"
+        "sha256": "6d6492037fb1e1613ba99d6b042c4491c757c530c179957172ae6198f7d749a3",
+        "canonical_source": "docs/client-mechanism-inventory.json",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "fd4fb7a2c7b77ee968c0d9399f57305bf5bc5a0346767ca257473d3a547c20d5",
-        "bytes": 7329373
+        "date": "2026-11-14",
+        "sha256": "6d6492037fb1e1613ba99d6b042c4491c757c530c179957172ae6198f7d749a3",
+        "bytes": 7358649
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -14122,15 +14109,20 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "5ab14342817223ad548ad73a75f596c95da3ca4a10276f7a9d60fe2ffc2d1546",
-        "canonical_source": "docs/client-mechanism-inventory.md"
+        "sha256": "ed6d5ec77eb9b43cc2fbc6b0b71730c619274cd8b256898907d61e7903223d34",
+        "canonical_source": "docs/client-mechanism-inventory.md",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "5ab14342817223ad548ad73a75f596c95da3ca4a10276f7a9d60fe2ffc2d1546",
+        "date": "2026-11-14",
+        "sha256": "ed6d5ec77eb9b43cc2fbc6b0b71730c619274cd8b256898907d61e7903223d34",
         "bytes": 14011
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -16156,16 +16148,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "34f81d0df792001a6bd2a75c99766cef00e139a0015a5548de0ccc91a360cb62",
-        "bytes": 966785
+        "date": "2026-11-14",
+        "sha256": "c664d9a77d82bbba4e17e124d9bac0ecf32ae1c5c1d198f3dc6709478ffffbd1",
+        "bytes": 976858
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "34f81d0df792001a6bd2a75c99766cef00e139a0015a5548de0ccc91a360cb62",
-        "canonical_source": "scripts/audit-code-documentation.py"
+        "sha256": "c664d9a77d82bbba4e17e124d9bac0ecf32ae1c5c1d198f3dc6709478ffffbd1",
+        "canonical_source": "scripts/audit-code-documentation.py",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "canonical_source": "scripts/audit-code-documentation.py",
       "linked_mechanisms": null,
@@ -18900,16 +18897,21 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "277738b2a652ee9abb79e23d81d1bb27bcfcbae105a34d3cf3a2ef0d3d86e95e",
-        "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
+        "sha256": "349907382c0a0ee87897edbef6abcd5808f64a6bd77672aad61dfa4beaecc3c9",
+        "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "277738b2a652ee9abb79e23d81d1bb27bcfcbae105a34d3cf3a2ef0d3d86e95e",
-        "bytes": 8122138
+        "date": "2026-11-14",
+        "sha256": "349907382c0a0ee87897edbef6abcd5808f64a6bd77672aad61dfa4beaecc3c9",
+        "bytes": 8171624
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -22418,16 +22420,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "43323efb14cd6e41008a5bda5eed3a087cdc5a871136d277b87040975c3a3c3b",
-        "bytes": 1343412
+        "date": "2026-11-14",
+        "sha256": "e28098536443028516e06b3fb1dfcd2d7e5d7da110b931552876cdfb9055e70b",
+        "bytes": 1347788
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "43323efb14cd6e41008a5bda5eed3a087cdc5a871136d277b87040975c3a3c3b",
-        "canonical_source": "scripts/code-review-symbols.mjs"
+        "sha256": "e28098536443028516e06b3fb1dfcd2d7e5d7da110b931552876cdfb9055e70b",
+        "canonical_source": "scripts/code-review-symbols.mjs",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "canonical_source": "scripts/code-review-symbols.mjs",
       "linked_mechanisms": null,
@@ -24290,16 +24297,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "78060a163dea52d5fbc0dfd2b29cf634961d3a87ff122ababec6d193fe6171fb",
-        "bytes": 24485823
+        "date": "2026-11-14",
+        "sha256": "ede2ba82167f50a3233a974200dd43892cf34e3445e006650d199da2d68349d0",
+        "bytes": 23817288
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "78060a163dea52d5fbc0dfd2b29cf634961d3a87ff122ababec6d193fe6171fb",
-        "canonical_source": "docs/code-review/reviews.jsonl"
+        "sha256": "ede2ba82167f50a3233a974200dd43892cf34e3445e006650d199da2d68349d0",
+        "canonical_source": "docs/code-review/reviews.jsonl",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
       "linked_mechanisms": null,
@@ -26959,26 +26971,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "42bccfe171e8817cdf362b080ff55a522e9211931cc1c757f468b66c683f5aae",
-        "bytes": 401791
+        "date": "2026-11-14",
+        "sha256": "ece7b1a469fb88b7d1517173081247b9a1830c630cc305a2c5dd072d9c9493d9",
+        "bytes": 411619
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "4e63a096df4b878756371fbbac66cd4cefd10ec3d5cd1ca2f6cc146b4e77d24c",
-          "prior_commit": "81a31144baf34d891385fe200a47a73c8c3cfb54",
-          "delta": "Новый раздел «Быстрые ссылки: мост на платформу и название приложения».",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
         },
         "status_in_review": "reviewed",
-        "sha256": "42bccfe171e8817cdf362b080ff55a522e9211931cc1c757f468b66c683f5aae"
+        "sha256": "ece7b1a469fb88b7d1517173081247b9a1830c630cc305a2c5dd072d9c9493d9"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -28912,35 +28919,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "8a376ca1985fb7ccacaebcd1e1d2ecdf6959dcf9c0ecb8fec8b7456cd58e1a74",
-        "bytes": 118834
+        "date": "2026-11-14",
+        "sha256": "cde28dc5ce166199ce83aefec54166a82adb3742d9e933de7845df3cd57bf9a9",
+        "bytes": 122689
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "mode": "previous_full_read_plus_reviewed_delta",
-          "baseline_commit": "5534d0f2a6d836613bf03890440dd60eef1fc522",
-          "baseline_sha256": "bdb26e1963d415da3623bafa53c8f98b7f4c2a622628122715f3bef2b6396efa",
-          "baseline_matches_previous_review": true,
-          "delta_ranges": [
-            [
-              9,
-              9
-            ],
-            [
-              520,
-              522
-            ]
-          ],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+          "date": "2026-11-14",
+          "reviewer": "агент календаря (ветка feat/calendar-actuality-2026-11-14, e55dc5ad); влито агентом кабинета, SHA сверен",
+          "branch": "feat/calendar-actuality-2026-11-14"
         },
         "status_in_review": "reviewed",
-        "sha256": "8a376ca1985fb7ccacaebcd1e1d2ecdf6959dcf9c0ecb8fec8b7456cd58e1a74"
+        "sha256": "cde28dc5ce166199ce83aefec54166a82adb3742d9e933de7845df3cd57bf9a9"
       },
       "canonical_source": "docs/data_sources.md",
       "linked_mechanisms": "official source mappings",
@@ -29554,16 +29547,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "18766a1f5a124b7a6279d793bdf19ca132aceef8c06f22408776eba440aa1d8c",
+        "date": "2026-11-14",
+        "sha256": "4ab45dac7520ced3bf435580ebf63dc021c6d1a2aae3469d82023f35665c448c",
         "bytes": 12346
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "18766a1f5a124b7a6279d793bdf19ca132aceef8c06f22408776eba440aa1d8c",
-        "canonical_source": "scripts/build-indicator-index.py"
+        "sha256": "4ab45dac7520ced3bf435580ebf63dc021c6d1a2aae3469d82023f35665c448c",
+        "canonical_source": "scripts/build-indicator-index.py",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "canonical_source": "scripts/build-indicator-index.py",
       "linked_mechanisms": "Generated investigation map changes generation date only; shadowed legacy remains a consumer/redirect investigation, never a delete-list.",
@@ -32935,16 +32933,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "879dafc79dc518012a616572bd2897b72d54447189248ec6a4dc8cc36866fabf",
-        "bytes": 3873129
+        "date": "2026-11-14",
+        "sha256": "12627781e59e081f2fa9c2f8ff6a0d4dcfcb68f3d2e33aac3021fe76bf0599f3",
+        "bytes": 3887802
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "879dafc79dc518012a616572bd2897b72d54447189248ec6a4dc8cc36866fabf",
-        "canonical_source": "scripts/build-indicator-index.py"
+        "sha256": "12627781e59e081f2fa9c2f8ff6a0d4dcfcb68f3d2e33aac3021fe76bf0599f3",
+        "canonical_source": "scripts/build-indicator-index.py",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "canonical_source": "scripts/build-indicator-index.py",
       "linked_mechanisms": "Generated map schema and semantic delta inspected: 194 annual forecast horizons shrink 2 to1; remaining changes are file reference membership/line shifts. Individual observations are outside this artifact.",
@@ -41821,16 +41824,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734",
+        "date": "2026-11-14",
+        "sha256": "8e224ca292c3c68855ec250a66e4c8811b76ae87d65886a66926ac51ec0ec449",
         "bytes": 160576
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734",
-        "canonical_source": "scripts/build-indicator-index.py"
+        "sha256": "8e224ca292c3c68855ec250a66e4c8811b76ae87d65886a66926ac51ec0ec449",
+        "canonical_source": "scripts/build-indicator-index.py",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "canonical_source": "scripts/build-indicator-index.py",
       "linked_mechanisms": "Generated Russian indicator guide updates generation date only; actual annual-horizon and reference changes live in machine index.",
@@ -42207,25 +42215,20 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "5a4f85f5b5a9eab92fda544b09103989d201cdc2aec417eacaa6938ca17459ef",
-          "prior_commit": "849a0373c4ea3202f8192380d20b59d31e0f67e2",
-          "delta": "U10: hero-desktop не удалён.",
-          "head": "204af55a",
-          "branch": "integration/all-20261002"
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
         },
         "status_in_review": "reviewed",
-        "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30"
+        "sha256": "ca400019e555ee120a4267b349201b94a05d354cb23ed078b36dbbfc08cb8654"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30",
-        "bytes": 78988
+        "date": "2026-11-14",
+        "sha256": "ca400019e555ee120a4267b349201b94a05d354cb23ed078b36dbbfc08cb8654",
+        "bytes": 80104
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -43344,16 +43347,21 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "a538cb11c02737058ea11fd4da42a8bbd5852835e7618d9cf336e8a2315e91e3",
-        "canonical_source": "docs/mechanism-inventory.json"
+        "sha256": "9f0753d83cae007c23b7410f798d833331b2557b0205189407c6dfbcae982fb2",
+        "canonical_source": "docs/mechanism-inventory.json",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "a538cb11c02737058ea11fd4da42a8bbd5852835e7618d9cf336e8a2315e91e3",
-        "bytes": 12672268
+        "date": "2026-11-14",
+        "sha256": "9f0753d83cae007c23b7410f798d833331b2557b0205189407c6dfbcae982fb2",
+        "bytes": 12799390
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -44676,16 +44684,21 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "d49ab7854f4f84b3ad968ff285a9e458007f4fa039142a0b0556b57f29cf29d2",
-        "canonical_source": "docs/mechanism-inventory.md"
+        "sha256": "11ba7a04be6cc2bc22c45e6f7615e3d001d0475800e8b982d6bd59de6a585e2c",
+        "canonical_source": "docs/mechanism-inventory.md",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "d49ab7854f4f84b3ad968ff285a9e458007f4fa039142a0b0556b57f29cf29d2",
-        "bytes": 650727
+        "date": "2026-11-14",
+        "sha256": "11ba7a04be6cc2bc22c45e6f7615e3d001d0475800e8b982d6bd59de6a585e2c",
+        "bytes": 653900
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -51249,26 +51262,21 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "031e7fdcd96e7e3feba2fdf9709c62362e515f5403ebc7ad61072f39fcdf6a27",
-        "bytes": 159587
+        "date": "2026-11-14",
+        "sha256": "654ce15ee4a34a89f97284507f15ae05a01494430edc17584918c112b057e72b",
+        "bytes": 161240
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после дизайн-раундов 2-4)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые диапазоны прочитаны и сверены с кодом, неизменные разделы перенесены по совпадению текста",
-          "prior_sha256": "97e2508be6fa0f09acc9e5f2d9134f141c21b00eb764fcbbf4e9b5b14ceae25d",
-          "prior_commit": "324c8cbbe4921949fce9e2a5bc117a78a0d0fd5e",
-          "delta": "2026-10-06: изменён при актуализации знаний после дизайн-раундов 2-4 (дизайн-система, ADR-0018, контракты /forecasts, ticker, SSR «Главное», 404, лимиты).",
-          "head": "0ad80ce4",
-          "branch": "integration/all-20261002"
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
         },
         "status_in_review": "reviewed",
-        "sha256": "031e7fdcd96e7e3feba2fdf9709c62362e515f5403ebc7ad61072f39fcdf6a27"
+        "sha256": "654ce15ee4a34a89f97284507f15ae05a01494430edc17584918c112b057e72b"
       },
       "canonical_source": "docs/workflow.md",
       "linked_mechanisms": "dev/release procedures",
@@ -56015,9 +56023,9 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "c3d1dc1b51e255230e59a0a7dc5a5448ba9bfbc923aad45003cdb8b2df3d7916",
-        "bytes": 234551
+        "date": "2026-11-14",
+        "sha256": "ca7641148d34dadfb97a34c32297b5d2b3e39d4d2b6557bdbd708fbc1d865cca",
+        "bytes": 236309
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -56025,11 +56033,11 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-14",
-          "reviewer": "Claude Opus 5.5 (слияние int/2026-11-14; рецензии двух веток сведены сливающим)",
-          "branch": "int/2026-11-14"
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
         },
         "status_in_review": "reviewed",
-        "sha256": "c3d1dc1b51e255230e59a0a7dc5a5448ba9bfbc923aad45003cdb8b2df3d7916"
+        "sha256": "ca7641148d34dadfb97a34c32297b5d2b3e39d4d2b6557bdbd708fbc1d865cca"
       },
       "canonical_source": "frontend/src/i18n/messages.en.js",
       "linked_mechanisms": "English UI dictionary fully read: navigation, data/forecast states, comparison controls, auth/consent, calculators, country/region surfaces and methodology. New shared-base, official-cadence and loading wording matches changed consumers.",
@@ -57915,9 +57923,9 @@
       "source_version": {
         "main": "a48feaa582bc13d3a121664a3482428302baf760",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "b0e8710dc96cc402c0fe28dff74f9d33696c05234c356a060e250e3b38a2d0f5",
-        "bytes": 332953
+        "date": "2026-11-14",
+        "sha256": "ff0336eeabe7117023d77173898ead0d149e270f9b68e56e4b8af56e1b3cfeba",
+        "bytes": 335572
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -57925,11 +57933,11 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-14",
-          "reviewer": "Claude Opus 5.5 (слияние int/2026-11-14; рецензии двух веток сведены сливающим)",
-          "branch": "int/2026-11-14"
+          "reviewer": "агент кабинета (Claude), рецензия в reviews.jsonl после правок включения кабинета",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
         },
         "status_in_review": "reviewed",
-        "sha256": "b0e8710dc96cc402c0fe28dff74f9d33696c05234c356a060e250e3b38a2d0f5"
+        "sha256": "ff0336eeabe7117023d77173898ead0d149e270f9b68e56e4b8af56e1b3cfeba"
       },
       "canonical_source": "frontend/src/i18n/messages.ru.js",
       "linked_mechanisms": "Russian UI delta updates Russia-only regional scope and comparison shared-date/official-frequency/HICP/empty/loading explanations alongside English keys.",
@@ -60920,6 +60928,38 @@
         }
       ],
       "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/legal/privacy-cabinet-draft-2026-11-14.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/legal/privacy-cabinet-draft-2026-11-14.md",
+      "repository_path": "docs/legal/privacy-cabinet-draft-2026-11-14.md",
+      "format": ".md",
+      "role": "legal draft for owner/lawyer (privacy policy text proposal)",
+      "classification": "current",
+      "canonical_source": "docs/legal/privacy-cabinet-draft-2026-11-14.md",
+      "linked_mechanisms": "Личный кабинет (ADR-0019): четыре таблицы ПДн, личная ссылка календаря, выгрузка «Мои данные»; текст на сайте (Privacy.jsx) не менялся.",
+      "review_status": "дельта круга 13: изменённые диапазоны прочитаны по git diff circle13/base..HEAD и отчёту зоны; остальное сохранено по прежнему чтению",
+      "body_reviewed_in_this_pass": true,
+      "review_basis": {
+        "proposal": "docs/code-review/reviews.jsonl",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "агент кабинета (Claude), автор черновика",
+          "branch": "worktree-agent-ac66bf4fe79aa74f0"
+        },
+        "status_in_review": "reviewed",
+        "sha256": "54cdd341d5781937fac2dc21ac22b22674513c852611bff3cee5cd39041a3398"
+      },
+      "update_action": "created 2026-11-14 by cabinet agent",
+      "source_version": {
+        "main": null,
+        "scope": "tracked/index",
+        "date": "2026-11-14",
+        "sha256": "54cdd341d5781937fac2dc21ac22b22674513c852611bff3cee5cd39041a3398",
+        "bytes": 11009
+      },
+      "current_delta_reviewed_in_this_pass": true,
+      "prior_version_evidence": null
     }
   ],
   "external_sources": [
