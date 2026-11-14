@@ -430,6 +430,27 @@ def world_series_digits(values) -> int:
     return min(cap, max(_decimals_in(v) for v in nums))
 
 
+def uniform_digits(values) -> int:
+    """Одна точность для списка значений разных стран (рейтинг мира) — правило SPA `uniformDigits`
+    (frontend/src/lib/countryFlag.js): от 1000 по модулю — целые, от 5 — один знак, иначе два.
+    Общие случаи — frontend/src/lib/uniformDigits.cases.json (14.11.2026)."""
+    biggest = 0.0
+    for raw in values or []:
+        if raw is None or raw == "":
+            continue
+        try:
+            value = abs(float(raw))
+        except (TypeError, ValueError):
+            continue
+        if value == value and value > biggest:
+            biggest = value
+    if biggest >= 1000:
+        return 0
+    if biggest >= 5:
+        return 1
+    return 2
+
+
 def format_fixed(value, digits: int, *, locale: str | None = None) -> str:
     """Число с фиксированным числом знаков (``toFixed``) и типографикой локали, как formatFixed SPA.
 

@@ -14,10 +14,34 @@ import pytest
 
 from app.services.display import format_fixed, world_series_digits
 from tests.test_seo_world_year import CODE_ANNUAL, CODE_MONTHLY, world_year_client  # noqa: F401
+from tests.test_world_compare_frequency import frequency_client  # noqa: F401
 
 CASES = json.loads(
     (Path(__file__).resolve().parents[2] / "frontend/src/lib/worldValueDigits.cases.json").read_text("utf-8")
 )
+
+
+UNIFORM_CASES = json.loads(
+    (Path(__file__).resolve().parents[2] / "frontend/src/lib/uniformDigits.cases.json").read_text("utf-8")
+)
+
+
+@pytest.mark.parametrize("case", UNIFORM_CASES["cases"], ids=lambda c: str(c["values"]))
+def test_rating_precision_matches_spa(case):
+    """Рейтинг мира: одна точность на список, как countryFlag.uniformDigits (14.11.2026)."""
+    from app.services.display import uniform_digits
+
+    assert uniform_digits(case["values"]) == case["digits"]
+
+
+@pytest.mark.parametrize("host, locale", [("forecasteconomy.com", "en"), ("ru.forecasteconomy.com", "ru")])
+def test_world_vs_page_uses_series_precision(frequency_client, host, locale):  # noqa: F811
+    """Сравнение стран: числа каждой страны — по правилу её ряда, без «2,5333» (14.11.2026)."""
+    html = frequency_client.get("/seo/world-vs/germany-vs-japan/hicp-index",
+                                headers={"Host": host, "X-FE-Locale": locale}).text
+    body = html.split("<h1", 1)[1]
+    numbers = re.findall(r"\d+[.,](\d+)\s?%", re.sub(r"<[^>]+>", " ", body))
+    assert numbers and all(len(frac) <= 2 for frac in numbers), numbers
 
 
 def _plain(text: str) -> str:

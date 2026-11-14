@@ -223,7 +223,8 @@ def _value_as_of(series: list[tuple[date, float]], day: date) -> float | None:
 
 def _pair_history(series_a: list[tuple[date, float]], series_b: list[tuple[date, float]], *, en: bool,
         table_freq: str | None, freq_a: str | None, freq_b: str | None, label_a_name: str, label_b_name: str,
-        gen_a: str, gen_b: str, vsfx_a: str, vsfx_b: str, diff_sfx: str) -> str:
+        gen_a: str, gen_b: str, vsfx_a: str, vsfx_b: str, diff_sfx: str,
+        fmt_a=None, fmt_b=None, fmt_diff=None) -> str:
     """История пары словами (13.11.2026): кто был выше, как менялся разрыв, максимум и минимум каждой страны.
 
     Отвечает на вопрос «кто выше и давно ли» текстом, а не только таблицей последних лет. Считается по всем
@@ -246,15 +247,18 @@ def _pair_history(series_a: list[tuple[date, float]], series_b: list[tuple[date,
     leader_a = a_higher >= b_higher
     leader_count = a_higher if leader_a else b_higher
 
-    def _extreme(series: list[tuple[date, float]], freq: str | None, pick) -> tuple[str, str]:
-        day, value = pick((item for item in series if item[0] >= start), key=lambda item: item[1])
-        return _fmt(value), _label(day, freq)
+    # Точность — правило ряда (display.world_series_digits, 14.11.2026); без форматтеров — прежний _fmt.
+    fmt_a, fmt_b, fmt_diff = fmt_a or _fmt, fmt_b or _fmt, fmt_diff or _fmt
 
-    (max_a, max_a_at), (min_a, min_a_at) = _extreme(series_a, freq_a, max), _extreme(series_a, freq_a, min)
-    (max_b, max_b_at), (min_b, min_b_at) = _extreme(series_b, freq_b, max), _extreme(series_b, freq_b, min)
+    def _extreme(series: list[tuple[date, float]], freq: str | None, pick, fmt) -> tuple[str, str]:
+        day, value = pick((item for item in series if item[0] >= start), key=lambda item: item[1])
+        return fmt(value), _label(day, freq)
+
+    (max_a, max_a_at), (min_a, min_a_at) = _extreme(series_a, freq_a, max, fmt_a), _extreme(series_a, freq_a, min, fmt_a)
+    (max_b, max_b_at), (min_b, min_b_at) = _extreme(series_b, freq_b, max, fmt_b), _extreme(series_b, freq_b, min, fmt_b)
     comparable = table_freq is not None
-    gap_first = _fmt(round(abs(pairs[0][1] - pairs[0][2]), 4))
-    gap_last = _fmt(round(abs(pairs[-1][1] - pairs[-1][2]), 4))
+    gap_first = fmt_diff(abs(pairs[0][1] - pairs[0][2]))
+    gap_last = fmt_diff(abs(pairs[-1][1] - pairs[-1][2]))
     if en:
         parts = [f"From {first_label} to {last_label}, {label_a_name if leader_a else label_b_name} was higher "
             f"in {leader_count} of {len(pairs)} periods."] if comparable else []
@@ -353,6 +357,22 @@ async def render_world_vs_html(
     )
     series_a = apply_rank_series_for(ind_a, raw_a, mode)
     series_b = apply_rank_series_for(ind_b, raw_b, mode)
+    # Точность чисел — правило ряда, как на карточке страны (display.world_series_digits, 14.11.2026):
+    # «2,53 %», а не «2,5333 %»; у каждой страны своя, у разницы — большая из двух.
+    from app.services.display import format_fixed, world_series_digits
+
+    digits_a = world_series_digits(v for _d, v in series_a)
+    digits_b = world_series_digits(v for _d, v in series_b)
+
+    def _fmt_a(value: float) -> str:
+        return format_fixed(value, digits_a)
+
+    def _fmt_b(value: float) -> str:
+        return format_fixed(value, digits_b)
+
+    def _fmt_diff(value: float) -> str:
+        return format_fixed(value, max(digits_a, digits_b))
+
     if len(series_a) < 2 or len(series_b) < 2 or (
         mode == "level" and (series_a[-1][1] == 0 or series_b[-1][1] == 0)
     ):
@@ -429,7 +449,7 @@ async def render_world_vs_html(
 
     diff = value_a - value_b
     same = abs(diff) < 5e-9
-    diff_text = _fmt(round(abs(diff), 4))
+    diff_text = _fmt_diff(abs(diff))
     vsfx = f" {_value_sfx(unit_a)}" if shared_unit else ""
     vsfx_a = f" {_value_sfx(unit_a)}" if not shared_unit else vsfx
     vsfx_b = f" {_value_sfx(unit_b)}" if not shared_unit else vsfx
@@ -442,13 +462,13 @@ async def render_world_vs_html(
     if en:
         if last_a_date == last_b_date:
             lead = (
-                f"Latest data: {label_a_name} — {_fmt(value_a)}{vsfx_a}, "
-                f"{label_b_name} — {_fmt(value_b)}{vsfx_b} (as of {date_label_a})."
+                f"Latest data: {label_a_name} — {_fmt_a(value_a)}{vsfx_a}, "
+                f"{label_b_name} — {_fmt_b(value_b)}{vsfx_b} (as of {date_label_a})."
             )
         else:
             lead = (
-                f"Latest data: {label_a_name} — {_fmt(value_a)}{vsfx_a} "
-                f"(as of {date_label_a}), {label_b_name} — {_fmt(value_b)}{vsfx_b} "
+                f"Latest data: {label_a_name} — {_fmt_a(value_a)}{vsfx_a} "
+                f"(as of {date_label_a}), {label_b_name} — {_fmt_b(value_b)}{vsfx_b} "
                 f"(as of {date_label_b})."
             )
         if same:
@@ -460,13 +480,13 @@ async def render_world_vs_html(
     else:
         if last_a_date == last_b_date:
             lead = (
-                f"Последние данные: {label_a_name} — {_fmt(value_a)}{vsfx_a}, "
-                f"{label_b_name} — {_fmt(value_b)}{vsfx_b} (на {date_label_a})."
+                f"Последние данные: {label_a_name} — {_fmt_a(value_a)}{vsfx_a}, "
+                f"{label_b_name} — {_fmt_b(value_b)}{vsfx_b} (на {date_label_a})."
             )
         else:
             lead = (
-                f"Последние данные: {label_a_name} — {_fmt(value_a)}{vsfx_a} "
-                f"(на {date_label_a}), {label_b_name} — {_fmt(value_b)}{vsfx_b} "
+                f"Последние данные: {label_a_name} — {_fmt_a(value_a)}{vsfx_a} "
+                f"(на {date_label_a}), {label_b_name} — {_fmt_b(value_b)}{vsfx_b} "
                 f"(на {date_label_b})."
             )
         if same:
@@ -488,11 +508,13 @@ async def render_world_vs_html(
 
     def _cell(series: list[tuple[date, float]], day: date) -> str:
         v = _value_as_of(series, day)
-        return "—" if v is None else _fmt(v)
+        if v is None:
+            return "—"
+        return _fmt_a(v) if series is series_a else _fmt_b(v)
 
     history = _pair_history(series_a, series_b, en=en, table_freq=table_freq, freq_a=freq_a, freq_b=freq_b,
         label_a_name=label_a_name, label_b_name=label_b_name, gen_a=gen_a, gen_b=gen_b,
-        vsfx_a=vsfx_a, vsfx_b=vsfx_b, diff_sfx=diff_sfx)
+        vsfx_a=vsfx_a, vsfx_b=vsfx_b, diff_sfx=diff_sfx, fmt_a=_fmt_a, fmt_b=_fmt_b, fmt_diff=_fmt_diff)
 
     body_rows = "".join(
         f"<tr><td>{escape(_period_label(d, table_freq))}</td>"
@@ -558,8 +580,8 @@ async def render_world_vs_html(
         h2_source = "Data source"
         chart_alt = (
             f"{name}: {label_a_name} vs {label_b_name} — comparison of the "
-            f"latest values, {label_a_name} {_fmt(value_a)}{vsfx_a}, "
-            f"{label_b_name} {_fmt(value_b)}{vsfx_b}"
+            f"latest values, {label_a_name} {_fmt_a(value_a)}{vsfx_a}, "
+            f"{label_b_name} {_fmt_b(value_b)}{vsfx_b}"
         )
         figcaption = (
             f"{name}: {label_a_name} and {label_b_name}, {period_range}. "
@@ -592,8 +614,8 @@ async def render_world_vs_html(
         h2_source = "Источник данных"
         chart_alt = (
             f"{name}: {label_a_name} против {gen_b} — сравнение последних "
-            f"значений, {label_a_name} {_fmt(value_a)}{vsfx_a}, "
-            f"{label_b_name} {_fmt(value_b)}{vsfx_b}"
+            f"значений, {label_a_name} {_fmt_a(value_a)}{vsfx_a}, "
+            f"{label_b_name} {_fmt_b(value_b)}{vsfx_b}"
         )
         figcaption = (
             f"{name}: {label_a_name} и {label_b_name}, {period_range}. "

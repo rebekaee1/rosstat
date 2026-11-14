@@ -375,6 +375,15 @@ async def render_world_indicator_year_html(
     og_path = paths.og_indicator(slug, code, year)
     canonical_path = paths.indicator_year(slug, code, year)
     card_path = paths.indicator(slug, code)
+    # Неосновная версия одинакового ряда (world_canonical, 14.11.2026): canonical и hreflang — на годовую
+    # страницу основной версии того же года; у основной нет этого года — canonical свой.
+    from app.services.world_canonical import primary_code as _primary_code
+    from app.services.world_canonical import primary_has_year
+
+    document_canonical = canonical_path
+    canonical_code = _primary_code(slug, code)
+    if canonical_code and await primary_has_year(db, country.id, canonical_code, year):
+        document_canonical = paths.indicator_year(slug, canonical_code, year)
 
     if en:
         value_head = (
@@ -602,7 +611,7 @@ async def render_world_indicator_year_html(
     html = await build_document(
         title=title,
         description=desc,
-        canonical_path=canonical_path,
+        canonical_path=document_canonical,
         body=body,
         json_ld=json_ld,
         keywords=keywords,

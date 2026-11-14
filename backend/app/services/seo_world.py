@@ -1088,12 +1088,19 @@ async def render_world_rating_html(
         else "https://schema.org/ItemListOrderDescending"
     )
 
+    # Одна точность на весь рейтинг — правило SPA рейтинга (display.uniform_digits, 14.11.2026):
+    # «2,5» у Японии рядом с «14,8», а не «2,5333».
+    from app.services.display import format_fixed, uniform_digits
+
+    rating_digits = uniform_digits(item.get("value") for item in items)
+
     def _value_text(item: dict, with_unit: bool = True) -> str:
+        text = format_fixed(item["value"], rating_digits)
         if not with_unit:
-            return format_number_ru(item["value"])
+            return text
         row_unit = item.get("unit") or unit
         suffix = unit_suffix(row_unit)
-        return f"{format_number_ru(item['value'])} {suffix}".strip()
+        return f"{text} {suffix}".strip()
 
     def _date_text(raw: str | None, frequency: str | None = None) -> str:
         if not raw:
@@ -2280,10 +2287,14 @@ async def render_world_indicator_html(
 <p>{russia_p}</p></section>
 </div>"""
 
+    # Неосновная версия одинакового ряда (world_canonical, 14.11.2026): canonical и hreflang — на основную.
+    from app.services.world_canonical import primary_code as _primary_code
+
+    canonical_code = _primary_code(slug, code) or code
     html = await build_document(
         title=title,
         description=meta_desc,
-        canonical_path=paths.indicator(slug, code),
+        canonical_path=paths.indicator(slug, canonical_code),
         body=body,
         json_ld=json_ld,
         keywords=(

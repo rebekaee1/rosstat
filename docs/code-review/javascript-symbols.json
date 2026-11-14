@@ -47873,6 +47873,26 @@
     ],
     "anonymous_functions": 2
   },
+  "frontend/src/lib/uniformDigits.test.js": {
+    "sha256": "216067762cd1274eec87711dd5678b1eb4b01ee8120cd65a16c17d70d7cf879b",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./uniformDigits.cases.json",
+        "line": 2
+      },
+      {
+        "source": "./countryFlag",
+        "line": 3
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 2
+  },
   "frontend/src/lib/usCatalogTopics.js": {
     "sha256": "0a3c5b4fe39744df9b96bfc8b5964e2b75ae987440dfddac7a12a8a6ed057a78",
     "definitions": [

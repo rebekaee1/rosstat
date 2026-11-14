@@ -420,8 +420,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "ff07ed1e3e95232b2d669e73dbfdf651980010b323c7c88e1c1877de7cdb4fd5",
-      "lines": 693
+      "sha256": "772148c18dc1a272a5188802e2e321d607fbb048e72dd62de8bc07f2897aebb9",
+      "lines": 697
     },
     {
       "path": "backend/app/core/__init__.py",
@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
-      "sha256": "4098246befbf03980dbad58277a0138fa95d738288a0053f4a1709a7b23ead81",
-      "lines": 136
+      "sha256": "cb7bb39ddafcdec8f0a1fc0e6ecb97f8ec47e384a593feb6a51764d746fd4b1a",
+      "lines": 193
     },
     {
       "path": "backend/app/data/eurostat_headline.py",
@@ -600,8 +600,8 @@
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "9ac47080fecdf932e1df7f5b5a45d083d3ddf05990708ba901fd6185ac365ec9",
-      "lines": 115
+      "sha256": "d6f9b16072ee17d5c1fb7cced281720c77f125fb2695aa8a23e7a70c8790c4ad",
+      "lines": 127
     },
     {
       "path": "backend/app/data/region_indicator_polarity.py",
@@ -1100,8 +1100,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "sha256": "f06930cf3cb8ef7310327e082598eb4f77010b5de3cc78bb1b51d34db459a983",
-      "lines": 674
+      "sha256": "edfa5d72be942cd60a2efb9657622a8c0fd6a7405e8f79282a67b05306fc4f38",
+      "lines": 695
     },
     {
       "path": "backend/app/services/download_content.py",
@@ -1830,13 +1830,13 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "1240a6c696d26d27e6078c67719355edc689dba9d6a8e2916473ea931ddb21d4",
-      "lines": 2301
+      "sha256": "b3534640910051b5510e6be8b24cd13cb01c0350e9f1a86c0129bb882587ada7",
+      "lines": 2312
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "sha256": "a823f60bb9e26f08047da3d8ede73b3becb7e090d044439f29e5b2bfc32604a6",
-      "lines": 728
+      "sha256": "5366a4ef4c05b73946bed41cd47a42ea22d8776aa69ee3b44c465196fcecfdbf",
+      "lines": 750
     },
     {
       "path": "backend/app/services/seo_world_subnational.py",
@@ -1855,8 +1855,8 @@
     },
     {
       "path": "backend/app/services/seo_world_year.py",
-      "sha256": "58b803fba32c6972e6a6afc49d951855bc1af36379b792d507e6c1815929d835",
-      "lines": 612
+      "sha256": "46f42247957209f9dbcf169c78fbdcb4b49820692cf08025f2384c8056061ea3",
+      "lines": 621
     },
     {
       "path": "backend/app/services/seo_year_ui.py",
@@ -1910,8 +1910,8 @@
     },
     {
       "path": "backend/app/services/sitemap_static.py",
-      "sha256": "16457bec413a38af1844ffbc1edac1f19df0a65794d481b5430ab0bf744959ff",
-      "lines": 478
+      "sha256": "8974b724483fd85a013c7342d1f831ac4fc318981bb22710a25174d7e97b7e1c",
+      "lines": 502
     },
     {
       "path": "backend/app/services/ssr_swr.py",
@@ -2142,6 +2142,11 @@
       "path": "backend/app/services/world_bea_regional.py",
       "sha256": "36b97d53ba6376de0f94bee56bfb196f8aeff849185db8bb754785fdb6fb80f4",
       "lines": 453
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "sha256": "9cec261f2d97c68a035d23a6833e8d61952ae4e24af63e8c017946b0a5e2db90",
+      "lines": 254
     },
     {
       "path": "backend/app/services/world_cards.py",
@@ -2827,6 +2832,11 @@
       "path": "scripts/verify-derived-incremental.py",
       "sha256": "fd7465dc336998157e24ab32b977f3d73b478562d202126d25453d13c41afb30",
       "lines": 117
+    },
+    {
+      "path": "scripts/world-duplicate-canonical.py",
+      "sha256": "cc3e81c14672d1d1f69866e828d87cc756699399cbf4b7edc40d6cd1799cc852",
+      "lines": 71
     },
     {
       "path": "scripts/world-title-duplicates.py",
@@ -31367,8 +31377,19 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 38,
+      "line": 40,
       "end_line": 40,
+      "owner": "Settings",
+      "conditions": [],
+      "name": "world_duplicate_canonical",
+      "env_name": "RUSTATS_WORLD_DUPLICATE_CANONICAL",
+      "annotation": "bool",
+      "default": "True"
+    },
+    {
+      "path": "backend/app/config.py",
+      "line": 42,
+      "end_line": 44,
       "owner": "Settings",
       "conditions": [],
       "name": "geo_ru_country_codes",
@@ -31378,8 +31399,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 42,
-      "end_line": 42,
+      "line": 46,
+      "end_line": 46,
       "owner": "Settings",
       "conditions": [],
       "name": "browser_lang_redirect_enabled",
@@ -31389,8 +31410,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 43,
-      "end_line": 43,
+      "line": 47,
+      "end_line": 47,
       "owner": "Settings",
       "conditions": [],
       "name": "browser_lang_min_quality",
@@ -31400,8 +31421,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 44,
-      "end_line": 44,
+      "line": 48,
+      "end_line": 48,
       "owner": "Settings",
       "conditions": [],
       "name": "locale_preference_cookie",
@@ -31411,8 +31432,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 47,
-      "end_line": 47,
+      "line": 51,
+      "end_line": 51,
       "owner": "Settings",
       "conditions": [],
       "name": "database_url",
@@ -31422,8 +31443,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 51,
-      "end_line": 51,
+      "line": 55,
+      "end_line": 55,
       "owner": "Settings",
       "conditions": [],
       "name": "migration_database_url",
@@ -31433,8 +31454,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 52,
-      "end_line": 52,
+      "line": 56,
+      "end_line": 56,
       "owner": "Settings",
       "conditions": [],
       "name": "database_echo",
@@ -31444,8 +31465,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 66,
+      "end_line": 66,
       "owner": "Settings",
       "conditions": [],
       "name": "db_pool_size",
@@ -31455,8 +31476,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 67,
+      "end_line": 67,
       "owner": "Settings",
       "conditions": [],
       "name": "db_max_overflow",
@@ -31466,8 +31487,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 64,
-      "end_line": 64,
+      "line": 68,
+      "end_line": 68,
       "owner": "Settings",
       "conditions": [],
       "name": "db_pool_timeout",
@@ -31477,8 +31498,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 65,
-      "end_line": 65,
+      "line": 69,
+      "end_line": 69,
       "owner": "Settings",
       "conditions": [],
       "name": "db_statement_timeout_ms",
@@ -31488,8 +31509,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 66,
-      "end_line": 66,
+      "line": 70,
+      "end_line": 70,
       "owner": "Settings",
       "conditions": [],
       "name": "db_idle_in_transaction_timeout_ms",
@@ -31499,8 +31520,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 69,
-      "end_line": 69,
+      "line": 73,
+      "end_line": 73,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_db_pool_size",
@@ -31510,8 +31531,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 70,
-      "end_line": 70,
+      "line": 74,
+      "end_line": 74,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_db_max_overflow",
@@ -31521,8 +31542,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 75,
+      "end_line": 75,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_db_pool_timeout",
@@ -31532,8 +31553,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 72,
-      "end_line": 72,
+      "line": 76,
+      "end_line": 76,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_db_statement_timeout_ms",
@@ -31543,8 +31564,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 73,
-      "end_line": 73,
+      "line": 77,
+      "end_line": 77,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_db_idle_in_transaction_timeout_ms",
@@ -31554,8 +31575,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 79,
+      "end_line": 79,
       "owner": "Settings",
       "conditions": [],
       "name": "sitemap_dir",
@@ -31565,8 +31586,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 81,
-      "end_line": 81,
+      "line": 85,
+      "end_line": 85,
       "owner": "Settings",
       "conditions": [],
       "name": "sitemap_priority_max_urls",
@@ -31576,8 +31597,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 87,
+      "end_line": 87,
       "owner": "Settings",
       "conditions": [],
       "name": "google_site_verification",
@@ -31587,8 +31608,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 85,
-      "end_line": 85,
+      "line": 89,
+      "end_line": 89,
       "owner": "Settings",
       "conditions": [],
       "name": "bing_site_verification",
@@ -31598,8 +31619,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 87,
-      "end_line": 87,
+      "line": 91,
+      "end_line": 91,
       "owner": "Settings",
       "conditions": [],
       "name": "gsc_access_token",
@@ -31609,8 +31630,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 89,
-      "end_line": 89,
+      "line": 93,
+      "end_line": 93,
       "owner": "Settings",
       "conditions": [],
       "name": "gsc_credentials_file",
@@ -31620,8 +31641,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 91,
-      "end_line": 91,
+      "line": 95,
+      "end_line": 95,
       "owner": "Settings",
       "conditions": [],
       "name": "gsc_site_url",
@@ -31631,8 +31652,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 95,
-      "end_line": 95,
+      "line": 99,
+      "end_line": 99,
       "owner": "Settings",
       "conditions": [],
       "name": "scrape_block_countries",
@@ -31642,8 +31663,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 98,
-      "end_line": 98,
+      "line": 102,
+      "end_line": 102,
       "owner": "Settings",
       "conditions": [],
       "name": "scrape_bind_enabled",
@@ -31653,8 +31674,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 99,
-      "end_line": 99,
+      "line": 103,
+      "end_line": 103,
       "owner": "Settings",
       "conditions": [],
       "name": "scrape_bind_secret",
@@ -31664,8 +31685,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 102,
-      "end_line": 102,
+      "line": 106,
+      "end_line": 106,
       "owner": "Settings",
       "conditions": [],
       "name": "scrape_block_hosting",
@@ -31675,8 +31696,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 104,
-      "end_line": 104,
+      "line": 108,
+      "end_line": 108,
       "owner": "Settings",
       "conditions": [],
       "name": "scrape_challenge_enabled",
@@ -31686,8 +31707,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 105,
-      "end_line": 105,
+      "line": 109,
+      "end_line": 109,
       "owner": "Settings",
       "conditions": [],
       "name": "scrape_challenge_min_cores",
@@ -31697,8 +31718,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 108,
-      "end_line": 108,
+      "line": 112,
+      "end_line": 112,
       "owner": "Settings",
       "conditions": [],
       "name": "redis_url",
@@ -31708,8 +31729,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 112,
-      "end_line": 112,
+      "line": 116,
+      "end_line": 116,
       "owner": "Settings",
       "conditions": [],
       "name": "state_redis_url",
@@ -31719,8 +31740,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 113,
-      "end_line": 113,
+      "line": 117,
+      "end_line": 117,
       "owner": "Settings",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -31730,8 +31751,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 114,
-      "end_line": 114,
+      "line": 118,
+      "end_line": 118,
       "owner": "Settings",
       "conditions": [],
       "name": "cache_ttl_meta",
@@ -31741,8 +31762,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 117,
-      "end_line": 117,
+      "line": 121,
+      "end_line": 121,
       "owner": "Settings",
       "conditions": [],
       "name": "cbr_base_url",
@@ -31752,8 +31773,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 118,
-      "end_line": 118,
+      "line": 122,
+      "end_line": 122,
       "owner": "Settings",
       "conditions": [],
       "name": "cbr_request_timeout",
@@ -31763,8 +31784,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 119,
-      "end_line": 119,
+      "line": 123,
+      "end_line": 123,
       "owner": "Settings",
       "conditions": [],
       "name": "minfin_base_url",
@@ -31774,8 +31795,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 122,
-      "end_line": 122,
+      "line": 126,
+      "end_line": 126,
       "owner": "Settings",
       "conditions": [],
       "name": "rosstat_base_url",
@@ -31785,8 +31806,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 123,
-      "end_line": 123,
+      "line": 127,
+      "end_line": 127,
       "owner": "Settings",
       "conditions": [],
       "name": "rosstat_cpi_template",
@@ -31796,8 +31817,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 128,
+      "end_line": 128,
       "owner": "Settings",
       "conditions": [],
       "name": "rosstat_ca_cert",
@@ -31807,8 +31828,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 125,
-      "end_line": 125,
+      "line": 129,
+      "end_line": 129,
       "owner": "Settings",
       "conditions": [],
       "name": "rosstat_max_months_back",
@@ -31818,8 +31839,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 126,
-      "end_line": 126,
+      "line": 130,
+      "end_line": 130,
       "owner": "Settings",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -31829,8 +31850,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 129,
-      "end_line": 129,
+      "line": 133,
+      "end_line": 133,
       "owner": "Settings",
       "conditions": [],
       "name": "scheduler_enabled",
@@ -31840,8 +31861,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 132,
-      "end_line": 132,
+      "line": 136,
+      "end_line": 136,
       "owner": "Settings",
       "conditions": [],
       "name": "worker_recycle_mb",
@@ -31851,8 +31872,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 134,
-      "end_line": 134,
+      "line": 138,
+      "end_line": 138,
       "owner": "Settings",
       "conditions": [],
       "name": "worker_recycle_min_gap_seconds",
@@ -31862,8 +31883,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 139,
+      "end_line": 139,
       "owner": "Settings",
       "conditions": [],
       "name": "scheduler_cron_hour",
@@ -31873,8 +31894,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 140,
+      "end_line": 140,
       "owner": "Settings",
       "conditions": [],
       "name": "scheduler_cron_minute",
@@ -31884,8 +31905,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 139,
-      "end_line": 139,
+      "line": 143,
+      "end_line": 143,
       "owner": "Settings",
       "conditions": [],
       "name": "scheduler_evening_hour",
@@ -31895,8 +31916,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 140,
-      "end_line": 140,
+      "line": 144,
+      "end_line": 144,
       "owner": "Settings",
       "conditions": [],
       "name": "scheduler_evening_minute",
@@ -31906,8 +31927,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 145,
-      "end_line": 145,
+      "line": 149,
+      "end_line": 149,
       "owner": "Settings",
       "conditions": [],
       "name": "scheduler_late_fred_hour",
@@ -31917,8 +31938,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 146,
-      "end_line": 146,
+      "line": 150,
+      "end_line": 150,
       "owner": "Settings",
       "conditions": [],
       "name": "scheduler_late_fred_minute",
@@ -31928,8 +31949,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 147,
-      "end_line": 147,
+      "line": 151,
+      "end_line": 151,
       "owner": "Settings",
       "conditions": [],
       "name": "ticker_pull_interval_seconds",
@@ -31939,8 +31960,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 152,
-      "end_line": 152,
+      "line": 156,
+      "end_line": 156,
       "owner": "Settings",
       "conditions": [],
       "name": "moex_brent_live_enabled",
@@ -31950,8 +31971,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 155,
-      "end_line": 155,
+      "line": 159,
+      "end_line": 159,
       "owner": "Settings",
       "conditions": [],
       "name": "moex_brent_delay_minutes",
@@ -31961,8 +31982,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 164,
+      "end_line": 164,
       "owner": "Settings",
       "conditions": [],
       "name": "world_eurostat_ingest_enabled",
@@ -31972,8 +31993,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 167,
+      "end_line": 167,
       "owner": "Settings",
       "conditions": [],
       "name": "world_eurostat_ingest_shadow",
@@ -31983,8 +32004,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 166,
-      "end_line": 166,
+      "line": 170,
+      "end_line": 170,
       "owner": "Settings",
       "conditions": [],
       "name": "eurostat_rebase_enabled",
@@ -31994,8 +32015,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 171,
+      "end_line": 171,
       "owner": "Settings",
       "conditions": [],
       "name": "world_eurostat_ingest_hour",
@@ -32005,8 +32026,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 168,
-      "end_line": 168,
+      "line": 172,
+      "end_line": 172,
       "owner": "Settings",
       "conditions": [],
       "name": "world_eurostat_ingest_minute",
@@ -32016,8 +32037,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 171,
-      "end_line": 171,
+      "line": 175,
+      "end_line": 175,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_enabled",
@@ -32027,8 +32048,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 174,
-      "end_line": 174,
+      "line": 178,
+      "end_line": 178,
       "owner": "Settings",
       "conditions": [],
       "name": "us_world_forecast_enabled",
@@ -32038,8 +32059,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 175,
-      "end_line": 175,
+      "line": 179,
+      "end_line": 179,
       "owner": "Settings",
       "conditions": [],
       "name": "europe_world_forecast_enabled",
@@ -32049,8 +32070,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 176,
-      "end_line": 176,
+      "line": 180,
+      "end_line": 180,
       "owner": "Settings",
       "conditions": [],
       "name": "us_world_forecast_daily_limit",
@@ -32060,8 +32081,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 181,
+      "end_line": 181,
       "owner": "Settings",
       "conditions": [],
       "name": "europe_world_forecast_daily_limit",
@@ -32071,8 +32092,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 182,
-      "end_line": 182,
+      "line": 186,
+      "end_line": 186,
       "owner": "Settings",
       "conditions": [],
       "name": "europe_world_forecast_hour",
@@ -32082,8 +32103,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 183,
-      "end_line": 183,
+      "line": 187,
+      "end_line": 187,
       "owner": "Settings",
       "conditions": [],
       "name": "europe_world_forecast_minute",
@@ -32093,8 +32114,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 189,
-      "end_line": 189,
+      "line": 193,
+      "end_line": 193,
       "owner": "Settings",
       "conditions": [],
       "name": "europe_world_forecast_max_run_seconds",
@@ -32104,8 +32125,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 190,
-      "end_line": 190,
+      "line": 194,
+      "end_line": 194,
       "owner": "Settings",
       "conditions": [],
       "name": "us_world_forecast_hour",
@@ -32115,8 +32136,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 191,
-      "end_line": 191,
+      "line": 195,
+      "end_line": 195,
       "owner": "Settings",
       "conditions": [],
       "name": "us_world_forecast_minute",
@@ -32126,8 +32147,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 196,
+      "end_line": 196,
       "owner": "Settings",
       "conditions": [],
       "name": "rest_world_forecast_hour",
@@ -32137,8 +32158,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 193,
-      "end_line": 193,
+      "line": 197,
+      "end_line": 197,
       "owner": "Settings",
       "conditions": [],
       "name": "rest_world_forecast_minute",
@@ -32148,8 +32169,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 198,
+      "end_line": 198,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_hour",
@@ -32159,8 +32180,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 199,
+      "end_line": 199,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_minute",
@@ -32170,8 +32191,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 199,
-      "end_line": 199,
+      "line": 203,
+      "end_line": 203,
       "owner": "Settings",
       "conditions": [],
       "name": "rest_world_forecast_enabled",
@@ -32181,8 +32202,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 204,
+      "end_line": 204,
       "owner": "Settings",
       "conditions": [],
       "name": "rest_world_forecast_daily_limit",
@@ -32192,8 +32213,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 208,
+      "end_line": 208,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_candidates_enabled",
@@ -32203,8 +32224,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 214,
+      "end_line": 214,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_publish_all",
@@ -32214,8 +32235,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 213,
-      "end_line": 213,
+      "line": 217,
+      "end_line": 217,
       "owner": "Settings",
       "conditions": [],
       "name": "world_imf_official_forecast_enabled",
@@ -32225,8 +32246,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 221,
+      "end_line": 221,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_max_run_seconds",
@@ -32236,8 +32257,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 220,
-      "end_line": 220,
+      "line": 224,
+      "end_line": 224,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_max_age_days",
@@ -32247,8 +32268,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 229,
+      "end_line": 229,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_max_age_days_annual",
@@ -32258,8 +32279,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 230,
+      "end_line": 230,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_max_age_days_quarterly",
@@ -32269,8 +32290,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 232,
+      "end_line": 232,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_cache_bump_every",
@@ -32280,8 +32301,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 231,
-      "end_line": 235,
+      "line": 235,
+      "end_line": 239,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_priority_countries",
@@ -32291,8 +32312,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 236,
-      "end_line": 236,
+      "line": 240,
+      "end_line": 240,
       "owner": "Settings",
       "conditions": [],
       "name": "world_subnational_ingest_enabled",
@@ -32302,8 +32323,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 237,
-      "end_line": 237,
+      "line": 241,
+      "end_line": 241,
       "owner": "Settings",
       "conditions": [],
       "name": "world_subnational_ingest_hour",
@@ -32313,8 +32334,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 242,
+      "end_line": 242,
       "owner": "Settings",
       "conditions": [],
       "name": "world_subnational_ingest_minute",
@@ -32324,8 +32345,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 243,
+      "end_line": 243,
       "owner": "Settings",
       "conditions": [],
       "name": "world_bea_regional_ingest_enabled",
@@ -32335,8 +32356,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 244,
+      "end_line": 244,
       "owner": "Settings",
       "conditions": [],
       "name": "world_bea_regional_ingest_hour",
@@ -32346,8 +32367,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 245,
+      "end_line": 245,
       "owner": "Settings",
       "conditions": [],
       "name": "world_bea_regional_ingest_minute",
@@ -32357,8 +32378,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 250,
+      "end_line": 250,
       "owner": "Settings",
       "conditions": [],
       "name": "calendar_rosstat_plan_enabled",
@@ -32368,8 +32389,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 253,
+      "end_line": 253,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -32379,8 +32400,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 254,
+      "end_line": 254,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -32390,8 +32411,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 257,
+      "end_line": 257,
       "owner": "Settings",
       "conditions": [],
       "name": "forecast_steps",
@@ -32401,8 +32422,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 260,
+      "end_line": 260,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_app_shell_url",
@@ -32412,8 +32433,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 263,
+      "end_line": 263,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_warm_enabled",
@@ -32423,8 +32444,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 264,
+      "end_line": 264,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_warm_base_url",
@@ -32434,8 +32455,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 263,
-      "end_line": 263,
+      "line": 267,
+      "end_line": 267,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_warm_top_n",
@@ -32445,8 +32466,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 267,
-      "end_line": 267,
+      "line": 271,
+      "end_line": 271,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_enabled",
@@ -32456,8 +32477,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 268,
-      "end_line": 268,
+      "line": 272,
+      "end_line": 272,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_stale_seconds",
@@ -32467,8 +32488,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 272,
-      "end_line": 272,
+      "line": 276,
+      "end_line": 276,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_render_queue_timeout_seconds",
@@ -32478,8 +32499,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 276,
-      "end_line": 276,
+      "line": 280,
+      "end_line": 280,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_low_priority_render_slots",
@@ -32489,8 +32510,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 281,
+      "end_line": 281,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_low_priority_queue_timeout_seconds",
@@ -32500,8 +32521,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 284,
+      "end_line": 284,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_goodbot_render_slots",
@@ -32511,8 +32532,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 283,
-      "end_line": 283,
+      "line": 287,
+      "end_line": 287,
       "owner": "Settings",
       "conditions": [],
       "name": "fe_human_pass_secret",
@@ -32522,8 +32543,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 288,
+      "end_line": 288,
       "owner": "Settings",
       "conditions": [],
       "name": "fe_human_pass_days",
@@ -32533,8 +32554,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 286,
-      "end_line": 286,
+      "line": 290,
+      "end_line": 290,
       "owner": "Settings",
       "conditions": [],
       "name": "bot_traffic_log_path",
@@ -32544,8 +32565,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 289,
-      "end_line": 289,
+      "line": 293,
+      "end_line": 293,
       "owner": "Settings",
       "conditions": [],
       "name": "host_brownout_io_full_pct",
@@ -32555,8 +32576,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 296,
+      "end_line": 296,
       "owner": "Settings",
       "conditions": [],
       "name": "host_alert_io_full_pct",
@@ -32566,8 +32587,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 297,
+      "end_line": 297,
       "owner": "Settings",
       "conditions": [],
       "name": "host_alert_disk_free_pct",
@@ -32577,8 +32598,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 295,
-      "end_line": 295,
+      "line": 299,
+      "end_line": 299,
       "owner": "Settings",
       "conditions": [],
       "name": "host_alert_mem_full_pct",
@@ -32588,8 +32609,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 306,
+      "end_line": 306,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_admit_on_repeat_enabled",
@@ -32599,8 +32620,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 307,
+      "end_line": 307,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_admit_window_seconds",
@@ -32610,8 +32631,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 304,
-      "end_line": 304,
+      "line": 308,
+      "end_line": 308,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_base_url",
@@ -32621,8 +32642,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 309,
+      "end_line": 309,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_token",
@@ -32632,8 +32653,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 315,
+      "end_line": 315,
       "owner": "Settings",
       "conditions": [],
       "name": "world_listed_counts_enabled",
@@ -32643,8 +32664,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 312,
-      "end_line": 312,
+      "line": 316,
+      "end_line": 316,
       "owner": "Settings",
       "conditions": [],
       "name": "world_listed_counts_max_age_seconds",
@@ -32654,8 +32675,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 320,
+      "end_line": 320,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_enabled",
@@ -32665,8 +32686,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 321,
+      "end_line": 321,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_key",
@@ -32676,8 +32697,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 322,
+      "end_line": 322,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_endpoint",
@@ -32687,8 +32708,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 324,
+      "end_line": 324,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_daily_send_cap",
@@ -32698,8 +32719,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 327,
+      "end_line": 327,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_history_daily_cap",
@@ -32709,8 +32730,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 328,
+      "end_line": 328,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_history_year_min",
@@ -32720,8 +32741,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 328,
-      "end_line": 328,
+      "line": 332,
+      "end_line": 332,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_recrawl_enabled",
@@ -32731,8 +32752,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 331,
-      "end_line": 331,
+      "line": 335,
+      "end_line": 335,
       "owner": "Settings",
       "conditions": [],
       "name": "metrics_token",
@@ -32742,8 +32763,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 342,
+      "end_line": 342,
       "owner": "Settings",
       "conditions": [],
       "name": "frontend_events_enabled",
@@ -32753,8 +32774,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 348,
+      "end_line": 348,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_events_enabled",
@@ -32764,8 +32785,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 349,
+      "end_line": 349,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_batch_max_events",
@@ -32775,8 +32796,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 350,
+      "end_line": 350,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_raw_retention_days",
@@ -32786,8 +32807,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 351,
-      "end_line": 351,
+      "line": 355,
+      "end_line": 355,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_db_path",
@@ -32797,8 +32818,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 352,
-      "end_line": 354,
+      "line": 356,
+      "end_line": 358,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_download_url_template",
@@ -32808,8 +32829,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 355,
-      "end_line": 355,
+      "line": 359,
+      "end_line": 359,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_asn_db_path",
@@ -32819,8 +32840,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 356,
-      "end_line": 358,
+      "line": 360,
+      "end_line": 362,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_asn_download_url_template",
@@ -32830,8 +32851,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 363,
+      "end_line": 363,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_auto_download",
@@ -32841,8 +32862,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 363,
-      "end_line": 363,
+      "line": 367,
+      "end_line": 367,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_enabled",
@@ -32852,8 +32873,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 368,
+      "end_line": 368,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_host",
@@ -32863,8 +32884,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 365,
-      "end_line": 365,
+      "line": 369,
+      "end_line": 369,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_port",
@@ -32874,8 +32895,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 366,
-      "end_line": 366,
+      "line": 370,
+      "end_line": 370,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_db",
@@ -32885,8 +32906,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 367,
-      "end_line": 367,
+      "line": 371,
+      "end_line": 371,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_user",
@@ -32896,8 +32917,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 368,
-      "end_line": 368,
+      "line": 372,
+      "end_line": 372,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_password",
@@ -32907,8 +32928,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 371,
-      "end_line": 371,
+      "line": 375,
+      "end_line": 375,
       "owner": "Settings",
       "conditions": [],
       "name": "direct_api_token",
@@ -32918,8 +32939,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 373,
-      "end_line": 373,
+      "line": 377,
+      "end_line": 377,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_client_id",
@@ -32929,8 +32950,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 374,
-      "end_line": 374,
+      "line": 378,
+      "end_line": 378,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_client_secret",
@@ -32940,8 +32961,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 379,
+      "end_line": 379,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_token",
@@ -32951,8 +32972,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 378,
-      "end_line": 378,
+      "line": 382,
+      "end_line": 382,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_enabled",
@@ -32962,8 +32983,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 379,
-      "end_line": 379,
+      "line": 383,
+      "end_line": 383,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_enabled",
@@ -32973,8 +32994,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 380,
-      "end_line": 380,
+      "line": 384,
+      "end_line": 384,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_cron_hour",
@@ -32984,8 +33005,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 385,
+      "end_line": 385,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_cron_minute",
@@ -32995,8 +33016,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 389,
+      "end_line": 389,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_sessionize_incremental_enabled",
@@ -33006,8 +33027,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 390,
+      "end_line": 390,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_api_token",
@@ -33017,8 +33038,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 389,
-      "end_line": 389,
+      "line": 393,
+      "end_line": 393,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_base_url",
@@ -33028,8 +33049,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 390,
-      "end_line": 390,
+      "line": 394,
+      "end_line": 394,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_allowed_counter_ids",
@@ -33039,8 +33060,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 395,
+      "end_line": 395,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_allowed_hosts",
@@ -33050,8 +33071,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 392,
-      "end_line": 392,
+      "line": 396,
+      "end_line": 396,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_default_retention_days",
@@ -33061,8 +33082,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 393,
-      "end_line": 393,
+      "line": 397,
+      "end_line": 397,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_raw_log_retention_days",
@@ -33072,8 +33093,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 394,
-      "end_line": 394,
+      "line": 398,
+      "end_line": 398,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_backfill_days",
@@ -33083,8 +33104,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 395,
-      "end_line": 395,
+      "line": 399,
+      "end_line": 399,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_request_timeout",
@@ -33094,8 +33115,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 400,
+      "end_line": 400,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_live_writes_enabled",
@@ -33105,8 +33126,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 398,
-      "end_line": 398,
+      "line": 402,
+      "end_line": 402,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -33116,8 +33137,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 399,
-      "end_line": 399,
+      "line": 403,
+      "end_line": 403,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_metrika_write_token",
@@ -33127,8 +33148,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 404,
+      "end_line": 404,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -33138,8 +33159,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 407,
+      "end_line": 407,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_session_ttl_seconds",
@@ -33149,8 +33170,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 404,
-      "end_line": 404,
+      "line": 408,
+      "end_line": 408,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_cookie_secure",
@@ -33160,8 +33181,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 405,
-      "end_line": 405,
+      "line": 409,
+      "end_line": 409,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_cookie_domain",
@@ -33171,8 +33192,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 406,
-      "end_line": 406,
+      "line": 410,
+      "end_line": 410,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_oauth_state_ttl_seconds",
@@ -33182,8 +33203,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 411,
+      "end_line": 411,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_login_max_fails",
@@ -33193,8 +33214,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 408,
-      "end_line": 408,
+      "line": 412,
+      "end_line": 412,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_login_lockout_seconds",
@@ -33204,8 +33225,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 410,
-      "end_line": 410,
+      "line": 414,
+      "end_line": 414,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_fake_provider_enabled",
@@ -33215,8 +33236,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 416,
+      "end_line": 416,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_public_base_url",
@@ -33226,8 +33247,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 415,
-      "end_line": 415,
+      "line": 419,
+      "end_line": 419,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_client_id",
@@ -33237,8 +33258,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 416,
-      "end_line": 416,
+      "line": 420,
+      "end_line": 420,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_client_secret",
@@ -33248,8 +33269,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 417,
-      "end_line": 417,
+      "line": 421,
+      "end_line": 421,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_redirect_uri",
@@ -33259,8 +33280,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 420,
-      "end_line": 420,
+      "line": 424,
+      "end_line": 424,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_client_id",
@@ -33270,8 +33291,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 421,
-      "end_line": 421,
+      "line": 425,
+      "end_line": 425,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_client_secret",
@@ -33281,8 +33302,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 422,
-      "end_line": 422,
+      "line": 426,
+      "end_line": 426,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_scope",
@@ -33292,8 +33313,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 424,
-      "end_line": 424,
+      "line": 428,
+      "end_line": 428,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_client_id",
@@ -33303,8 +33324,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 429,
+      "end_line": 429,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_client_secret",
@@ -33314,8 +33335,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 430,
+      "end_line": 430,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_service_key",
@@ -33325,8 +33346,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 431,
+      "end_line": 431,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_scope",
@@ -33336,8 +33357,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 430,
-      "end_line": 430,
+      "line": 434,
+      "end_line": 434,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_redirect_uri",
@@ -33347,8 +33368,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 431,
-      "end_line": 431,
+      "line": 435,
+      "end_line": 435,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_redirect_uri",
@@ -33358,8 +33379,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 434,
-      "end_line": 434,
+      "line": 438,
+      "end_line": 438,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_limit",
@@ -33369,8 +33390,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 435,
-      "end_line": 435,
+      "line": 439,
+      "end_line": 439,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_window_seconds",
@@ -33380,8 +33401,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 443,
+      "end_line": 443,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_history_years",
@@ -33391,8 +33412,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 446,
+      "end_line": 446,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_enabled",
@@ -33402,8 +33423,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 447,
+      "end_line": 447,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_cron_hour",
@@ -33413,8 +33434,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 448,
+      "end_line": 448,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_cron_minute",
@@ -33424,8 +33445,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 448,
-      "end_line": 448,
+      "line": 452,
+      "end_line": 452,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_chat_ids",
@@ -33435,8 +33456,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 455,
+      "end_line": 455,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_proxy_url",
@@ -33446,8 +33467,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 454,
-      "end_line": 454,
+      "line": 458,
+      "end_line": 458,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -33457,8 +33478,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 463,
+      "end_line": 463,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -33468,8 +33489,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 464,
+      "end_line": 464,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_calm_summary_cron_hour",
@@ -33479,8 +33500,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 465,
+      "end_line": 465,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_calm_summary_cron_minute",
@@ -33490,8 +33511,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 466,
-      "end_line": 466,
+      "line": 470,
+      "end_line": 470,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_v2_enabled",
@@ -33501,8 +33522,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 470,
-      "end_line": 470,
+      "line": 474,
+      "end_line": 474,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_reports_chat_ids",
@@ -33512,8 +33533,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 479,
+      "end_line": 479,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_reports_only_enabled",
@@ -33523,8 +33544,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 480,
+      "end_line": 480,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_reports_only_chat_ids",
@@ -33534,8 +33555,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 478,
-      "end_line": 478,
+      "line": 482,
+      "end_line": 482,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_enabled",
@@ -33545,8 +33566,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 479,
-      "end_line": 479,
+      "line": 483,
+      "end_line": 483,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_cron_hour",
@@ -33556,8 +33577,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 480,
-      "end_line": 480,
+      "line": 484,
+      "end_line": 484,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_cron_minute",
@@ -33567,8 +33588,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 483,
-      "end_line": 483,
+      "line": 487,
+      "end_line": 487,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_enabled",
@@ -33578,8 +33599,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 484,
-      "end_line": 484,
+      "line": 488,
+      "end_line": 488,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_cron_hour",
@@ -33589,8 +33610,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 489,
+      "end_line": 489,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_cron_minute",
@@ -33600,8 +33621,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 486,
-      "end_line": 486,
+      "line": 490,
+      "end_line": 490,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_enabled",
@@ -33611,8 +33632,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 487,
-      "end_line": 487,
+      "line": 491,
+      "end_line": 491,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_cron_hour",
@@ -33622,8 +33643,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 492,
+      "end_line": 492,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_cron_minute",
@@ -33633,8 +33654,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 495,
+      "end_line": 495,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_new_alerts_enabled",
@@ -33644,8 +33665,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 499,
+      "end_line": 499,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_max_attempts",
@@ -33655,8 +33676,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 496,
-      "end_line": 496,
+      "line": 500,
+      "end_line": 500,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_retry_base_seconds",
@@ -33666,8 +33687,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 497,
-      "end_line": 497,
+      "line": 501,
+      "end_line": 501,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_retry_budget_seconds",
@@ -33677,8 +33698,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 505,
+      "end_line": 505,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_enabled",
@@ -33688,8 +33709,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 506,
+      "end_line": 506,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_min_age_minutes",
@@ -33699,8 +33720,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 507,
+      "end_line": 507,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_window_hours",
@@ -33710,8 +33731,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 504,
-      "end_line": 504,
+      "line": 508,
+      "end_line": 508,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_max_per_run",
@@ -33721,8 +33742,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 509,
+      "end_line": 509,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_max_tries",
@@ -33732,8 +33753,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 513,
+      "end_line": 513,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_enabled",
@@ -33743,8 +33764,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 514,
+      "end_line": 514,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -33754,8 +33775,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 515,
+      "end_line": 515,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_report_cron_hour",
@@ -33765,8 +33786,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 512,
-      "end_line": 512,
+      "line": 516,
+      "end_line": 516,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_report_cron_minute",
@@ -33776,8 +33797,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 514,
-      "end_line": 514,
+      "line": 518,
+      "end_line": 518,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -33787,8 +33808,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 518,
-      "end_line": 518,
+      "line": 522,
+      "end_line": 522,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_enabled",
@@ -33798,8 +33819,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 519,
-      "end_line": 519,
+      "line": 523,
+      "end_line": 523,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_ai_enabled",
@@ -33809,8 +33830,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 520,
-      "end_line": 520,
+      "line": 524,
+      "end_line": 524,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_batch_size",
@@ -33820,8 +33841,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 521,
-      "end_line": 521,
+      "line": 525,
+      "end_line": 525,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_enabled",
@@ -33831,8 +33852,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 526,
+      "end_line": 526,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_retention_days",
@@ -33842,8 +33863,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 523,
-      "end_line": 523,
+      "line": 527,
+      "end_line": 527,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_max_recording_bytes",
@@ -33853,8 +33874,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 528,
+      "end_line": 528,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_model",
@@ -33864,8 +33885,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 530,
-      "end_line": 530,
+      "line": 534,
+      "end_line": 534,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -33875,8 +33896,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 538,
+      "end_line": 538,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_http_proxy_url",
@@ -33886,8 +33907,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 537,
-      "end_line": 537,
+      "line": 541,
+      "end_line": 541,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_socks_proxy_url",
@@ -33897,8 +33918,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 541,
-      "end_line": 541,
+      "line": 545,
+      "end_line": 545,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_job_max_seconds",
@@ -33908,8 +33929,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 546,
-      "end_line": 546,
+      "line": 550,
+      "end_line": 550,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_enabled",
@@ -33919,8 +33940,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 547,
-      "end_line": 547,
+      "line": 551,
+      "end_line": 551,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_min_stale",
@@ -33930,8 +33951,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 548,
-      "end_line": 548,
+      "line": 552,
+      "end_line": 552,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_cron_hour",
@@ -33941,8 +33962,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 549,
-      "end_line": 549,
+      "line": 553,
+      "end_line": 553,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_cron_minute",
@@ -33952,8 +33973,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 551,
-      "end_line": 551,
+      "line": 555,
+      "end_line": 555,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_poller_enabled",
@@ -33963,8 +33984,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 555,
-      "end_line": 555,
+      "line": 559,
+      "end_line": 559,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -33974,8 +33995,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 558,
-      "end_line": 558,
+      "line": 562,
+      "end_line": 562,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_token",
@@ -33985,8 +34006,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 560,
-      "end_line": 560,
+      "line": 564,
+      "end_line": 564,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_username",
@@ -33996,8 +34017,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 563,
-      "end_line": 563,
+      "line": 567,
+      "end_line": 567,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_group_url",
@@ -34007,8 +34028,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 566,
-      "end_line": 566,
+      "line": 570,
+      "end_line": 570,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_llm_enabled",
@@ -34018,8 +34039,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 569,
-      "end_line": 569,
+      "line": 573,
+      "end_line": 573,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_llm_model",
@@ -34029,8 +34050,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 570,
-      "end_line": 570,
+      "line": 574,
+      "end_line": 574,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_llm_daily_limit",
@@ -34040,8 +34061,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 572,
-      "end_line": 572,
+      "line": 576,
+      "end_line": 576,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_notify_from_hour",
@@ -34051,8 +34072,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 573,
-      "end_line": 573,
+      "line": 577,
+      "end_line": 577,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_notify_to_hour",
@@ -34062,8 +34083,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 583,
+      "end_line": 583,
       "owner": "Settings",
       "conditions": [],
       "name": "api_interest_enabled",
@@ -34073,8 +34094,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 587,
-      "end_line": 587,
+      "line": 591,
+      "end_line": 591,
       "owner": "Settings",
       "conditions": [],
       "name": "cabinet_enabled",
@@ -34084,8 +34105,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 594,
-      "end_line": 594,
+      "line": 598,
+      "end_line": 598,
       "owner": "Settings",
       "conditions": [],
       "name": "pwa_enabled",
@@ -34095,8 +34116,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 595,
-      "end_line": 595,
+      "line": 599,
+      "end_line": 599,
       "owner": "Settings",
       "conditions": [],
       "name": "pwa_install_prompt_enabled",
@@ -34106,8 +34127,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 606,
-      "end_line": 606,
+      "line": 610,
+      "end_line": 610,
       "owner": "Settings",
       "conditions": [],
       "name": "push_subscribe_enabled",
@@ -34117,8 +34138,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 607,
-      "end_line": 607,
+      "line": 611,
+      "end_line": 611,
       "owner": "Settings",
       "conditions": [],
       "name": "push_send_enabled",
@@ -34128,8 +34149,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 608,
-      "end_line": 608,
+      "line": 612,
+      "end_line": 612,
       "owner": "Settings",
       "conditions": [],
       "name": "push_dry_run",
@@ -34139,8 +34160,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 609,
-      "end_line": 609,
+      "line": 613,
+      "end_line": 613,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_public_key",
@@ -34150,8 +34171,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 610,
-      "end_line": 610,
+      "line": 614,
+      "end_line": 614,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_private_key",
@@ -34161,8 +34182,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 611,
-      "end_line": 611,
+      "line": 615,
+      "end_line": 615,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_subject",
@@ -34172,8 +34193,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 623,
-      "end_line": 623,
+      "line": 627,
+      "end_line": 627,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_enabled",
@@ -34183,8 +34204,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 624,
-      "end_line": 624,
+      "line": 628,
+      "end_line": 628,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_host",
@@ -34194,8 +34215,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 625,
-      "end_line": 625,
+      "line": 629,
+      "end_line": 629,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_port",
@@ -34205,8 +34226,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 630,
+      "end_line": 630,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_security",
@@ -34216,8 +34237,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 631,
+      "end_line": 631,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_user",
@@ -34227,8 +34248,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 628,
-      "end_line": 628,
+      "line": 632,
+      "end_line": 632,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_password",
@@ -34238,8 +34259,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 629,
-      "end_line": 629,
+      "line": 633,
+      "end_line": 633,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_timeout_seconds",
@@ -34249,8 +34270,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 630,
-      "end_line": 630,
+      "line": 634,
+      "end_line": 634,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_from_address",
@@ -34260,8 +34281,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 631,
-      "end_line": 631,
+      "line": 635,
+      "end_line": 635,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_from_name",
@@ -34271,8 +34292,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 632,
-      "end_line": 632,
+      "line": 636,
+      "end_line": 636,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_reply_to",
@@ -34282,8 +34303,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 633,
-      "end_line": 633,
+      "line": 637,
+      "end_line": 637,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_allowlist",
@@ -34293,8 +34314,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 634,
-      "end_line": 634,
+      "line": 638,
+      "end_line": 638,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_allow_all_recipients",
@@ -34304,8 +34325,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 641,
+      "end_line": 641,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_token_secret",
@@ -34315,8 +34336,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 640,
-      "end_line": 640,
+      "line": 644,
+      "end_line": 644,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_campaign_max_per_run",
@@ -34326,8 +34347,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 641,
-      "end_line": 641,
+      "line": 645,
+      "end_line": 645,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_campaign_pause_seconds",
@@ -34337,8 +34358,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 644,
-      "end_line": 644,
+      "line": 648,
+      "end_line": 648,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_link_origin_ru",
@@ -34348,8 +34369,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 645,
-      "end_line": 645,
+      "line": 649,
+      "end_line": 649,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_link_origin_en",
@@ -34359,8 +34380,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 649,
-      "end_line": 649,
+      "line": 653,
+      "end_line": 653,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_host",
@@ -34370,8 +34391,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 650,
-      "end_line": 650,
+      "line": 654,
+      "end_line": 654,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_port",
@@ -34381,8 +34402,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 651,
-      "end_line": 651,
+      "line": 655,
+      "end_line": 655,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_security",
@@ -34392,8 +34413,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 652,
-      "end_line": 652,
+      "line": 656,
+      "end_line": 656,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_user",
@@ -34403,8 +34424,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 653,
-      "end_line": 653,
+      "line": 657,
+      "end_line": 657,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_password",
@@ -34414,8 +34435,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 654,
-      "end_line": 654,
+      "line": 658,
+      "end_line": 658,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_from_address",
@@ -34425,8 +34446,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 662,
+      "end_line": 662,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bounce_poll_enabled",
@@ -34436,8 +34457,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 659,
-      "end_line": 659,
+      "line": 663,
+      "end_line": 663,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_imap_host",
@@ -34447,8 +34468,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 660,
-      "end_line": 660,
+      "line": 664,
+      "end_line": 664,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_imap_port",
@@ -34458,8 +34479,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 663,
-      "end_line": 663,
+      "line": 667,
+      "end_line": 667,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_watch_digest_enabled",
@@ -34469,8 +34490,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 664,
-      "end_line": 664,
+      "line": 668,
+      "end_line": 668,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_watch_digest_hour_msk",
@@ -34480,8 +34501,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 668,
-      "end_line": 668,
+      "line": 672,
+      "end_line": 672,
       "owner": "Settings",
       "conditions": [],
       "name": "admin_emails",
@@ -35353,8 +35374,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 689,
+      "end_line": 689,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -35362,8 +35383,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 689,
+      "end_line": 689,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "public_host",
@@ -35371,8 +35392,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 675,
-      "end_line": 675,
+      "line": 679,
+      "end_line": 679,
       "owner": "Settings.public_origin",
       "conditions": [],
       "name": "public_base_url",
@@ -35380,8 +35401,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 680,
-      "end_line": 680,
+      "line": 684,
+      "end_line": 684,
       "owner": "Settings.public_host",
       "conditions": [],
       "name": "public_base_url",
@@ -40167,8 +40188,17 @@
     },
     {
       "path": "backend/app/services/sitemap_static.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 472,
+      "end_line": 472,
+      "owner": "_load_duplicate_map",
+      "conditions": [],
+      "name": "world_duplicate_canonical",
+      "expression": "settings.world_duplicate_canonical"
+    },
+    {
+      "path": "backend/app/services/sitemap_static.py",
+      "line": 489,
+      "end_line": 489,
       "owner": "_load_priority_plan",
       "conditions": [],
       "name": "sitemap_priority_max_urls",
@@ -40764,6 +40794,15 @@
       "name": "banxico_api_token",
       "expression": "getattr(settings, 'banxico_api_token', None)",
       "dynamic": false
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 201,
+      "end_line": 201,
+      "owner": "enabled",
+      "conditions": [],
+      "name": "world_duplicate_canonical",
+      "expression": "settings.world_duplicate_canonical"
     },
     {
       "path": "backend/app/services/world_eurostat_ingest.py",
@@ -57295,6 +57334,65 @@
       "expression_truncated": true,
       "expression_chars": 6310,
       "ast_sha256": "35767d343096276bd0ddafd4b144242184b8c50f9e8e9f0d5b20873f675b0980",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 134,
+      "end_line": 185,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "RU_FROM_OFFICIAL_EN_GSC",
+      "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN_GSC",
+      "kind": "Dict",
+      "literal_keys": [
+        "'indic'",
+        "'na_item'",
+        "'ord_brth'",
+        "'indic_de'",
+        "'c_birth'"
+      ],
+      "entries": [
+        {
+          "key": "'indic'",
+          "expression": "{'LM-UN-M-TOT': ('Unemployment according to ILO definition - males', 'по методологии МОТ: мужчины'), 'LM-UN-F-TOT': ('Unemployment according to ILO definition - females', 'по методологии МОТ: женщины'), 'LM-UN-T-LE25': ('Unemployment according to ILO definition - under 25 years - total', 'по методол",
+          "expression_truncated": true,
+          "expression_chars": 997,
+          "ast_sha256": "59a19874908a09e1d86bae27cc8fc77bce68eea1f6292df0bdc138e4970160ce"
+        },
+        {
+          "key": "'na_item'",
+          "expression": "{'P5G': ('Gross capital formation', 'валовое накопление'), 'D21X31': ('Taxes less subsidies on products', 'налоги на продукты за вычетом субсидий'), 'D31': ('Subsidies on products', 'субсидии на продукты'), 'P3_P5': ('Final consumption expenditure and gross capital formation', 'конечное потребление ",
+          "expression_truncated": true,
+          "expression_chars": 2763,
+          "ast_sha256": "b61b3e4296d9eebc6b62cab28c3ab32fe5a1737507be147d9048657570453c15"
+        },
+        {
+          "key": "'ord_brth'",
+          "expression": "{'1': ('First', 'первый ребёнок'), '2': ('Second', 'второй ребёнок'), '3': ('Third', 'третий ребёнок'), 'GE4': ('Fourth and following', 'четвёртый и последующие'), 'UNK': ('Unknown', 'очерёдность не указана')}",
+          "expression_truncated": false,
+          "expression_chars": 209,
+          "ast_sha256": "8f5e47096db52af5c2fa99642d274dee637db3ee0c869aa3db7dc599b2db693d"
+        },
+        {
+          "key": "'indic_de'",
+          "expression": "{'NUMBERDYING': ('Number dying between exact ages (dx)', 'число умирающих между точными возрастами'), 'SURVIVORS': ('Number left alive at given exact age (lx)', 'число доживающих до точного возраста')}",
+          "expression_truncated": false,
+          "expression_chars": 201,
+          "ast_sha256": "afe18a9fd49cad64c8f47347d365ae2f0ad073515c511bb15c1d8066e69e5bba"
+        },
+        {
+          "key": "'c_birth'",
+          "expression": "{'NRP': ('No response', 'нет ответа')}",
+          "expression_truncated": false,
+          "expression_chars": 38,
+          "ast_sha256": "7c4db3447b818fb4c4892ced8c11d195d2374dcd2afdf6695fb33b89665716f0"
+        }
+      ],
+      "expression": "{'indic': {'LM-UN-M-TOT': ('Unemployment according to ILO definition - males', 'по методологии МОТ: мужчины'), 'LM-UN-F-TOT': ('Unemployment according to ILO definition - females', 'по методологии МОТ: женщины'), 'LM-UN-T-LE25': ('Unemployment according to ILO definition - under 25 years - total', 'по методологии МОТ: моложе 25 лет, всего'), 'LM-UN-M-LE25': ('Unemployment according to ILO definition - under 25 years - males', 'по методологии МОТ: моложе 25 лет, мужчины'), 'LM-UN-F-LE25': ('Unemployment according to ILO definition - under 25 years - females', 'по методологии МОТ: моложе 25 лет, женщины'), 'LM-UN-T-GT25': ('Unemployment according to ILO definition - over 25 years - total', 'по методологии МОТ: старше 25 лет, всего'), 'LM-UN-M-GT25': ('Unemployment according to ILO definition - over 25 years - males', 'по методологии МОТ: старше 25 лет, мужчины'), 'LM-UN-F-GT25': ('Unemployment according to ILO definition - over 25 years - females', 'по методологии МОТ: старше 25 лет, женщины')}, 'na_item': {'P5G': ('Gross capital formation', 'валовое накопление'), 'D21X31': ('Taxes less subsidies on products', 'налоги на продукты за вычетом субсидий'), 'D31': ('Subsidies on products', 'субсидии на продукты'), 'P3_P5': ('Final consumption expenditure and gross capital formation', 'конечное потребление и валовое накопление'), 'P3_P6': ('Final consumption expenditure, gross capital formation and exports of goods and services', 'конечное потребление, валовое накопление и экспорт'), 'POP_NC': ('Total population national concept', 'всё население, национальная концепция'), 'EMP_NC': ('Total employment national concept', 'все занятые, национальная концепция'), 'IGL_F4_EA21': ('Intergovernmental lending within EA21 (from 2026)', 'межгосударственные кредиты внутри еврозоны-21 (с 2026)'), 'IGL_F4_EA20': ('Intergovernmental lending within EA20 (2023-2025)', 'межгосударственные кредиты внутри еврозоны-20 (2023–2025)'), 'IGL_F4_EA19': ('Intergovernmental lending within EA19 (2015-2",
+      "expression_truncated": true,
+      "expression_chars": 4273,
+      "ast_sha256": "9ef7492d5822edb1db050a951782840e37af2ff8800f51b4725682ab18ef85a9",
       "runtime_expansion": false
     },
     {
@@ -98573,8 +98671,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 535,
-      "end_line": 549,
+      "line": 556,
+      "end_line": 570,
       "owner": "<module>",
       "conditions": [],
       "name": "_EN_MONTHS_NOM",
@@ -98590,8 +98688,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 637,
-      "end_line": 640,
+      "line": 658,
+      "end_line": 661,
       "owner": "<module>",
       "conditions": [],
       "name": "_TEMPLATE_ANNUAL_KIND",
@@ -123545,6 +123643,90 @@
       "runtime_expansion": true
     },
     {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 33,
+      "end_line": 33,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_TECHNICAL",
+      "symbol": "app.services.world_canonical._TECHNICAL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "frozenset({'freq', 'geo'})",
+      "expression_truncated": false,
+      "expression_chars": 26,
+      "ast_sha256": "d78797a9fa38c49c4346acc3b3c3c592d695a9cd93616789db20ac3ce55a1e5c",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 34,
+      "end_line": 34,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_FREQ_RANK",
+      "symbol": "app.services.world_canonical._FREQ_RANK",
+      "kind": "Dict",
+      "literal_keys": [
+        "'monthly'",
+        "'m'",
+        "'quarterly'",
+        "'q'",
+        "'annual'",
+        "'a'"
+      ],
+      "entries": [
+        {
+          "key": "'monthly'",
+          "expression": "0",
+          "expression_truncated": false,
+          "expression_chars": 1,
+          "ast_sha256": "3665a31e7cefc7e4d62b864a2de16f8ac2d46f669e7695b79bdeb398cebfcfae"
+        },
+        {
+          "key": "'m'",
+          "expression": "0",
+          "expression_truncated": false,
+          "expression_chars": 1,
+          "ast_sha256": "3665a31e7cefc7e4d62b864a2de16f8ac2d46f669e7695b79bdeb398cebfcfae"
+        },
+        {
+          "key": "'quarterly'",
+          "expression": "1",
+          "expression_truncated": false,
+          "expression_chars": 1,
+          "ast_sha256": "dcce64221460ae02ade35eabf689c8afe44d59a36c7cf9a2a9db244a4284ded2"
+        },
+        {
+          "key": "'q'",
+          "expression": "1",
+          "expression_truncated": false,
+          "expression_chars": 1,
+          "ast_sha256": "dcce64221460ae02ade35eabf689c8afe44d59a36c7cf9a2a9db244a4284ded2"
+        },
+        {
+          "key": "'annual'",
+          "expression": "2",
+          "expression_truncated": false,
+          "expression_chars": 1,
+          "ast_sha256": "72263497eca1fae09934eb2a5fd87010ab1c1319f8a419e68001ccc729cc14da"
+        },
+        {
+          "key": "'a'",
+          "expression": "2",
+          "expression_truncated": false,
+          "expression_chars": 1,
+          "ast_sha256": "72263497eca1fae09934eb2a5fd87010ab1c1319f8a419e68001ccc729cc14da"
+        }
+      ],
+      "expression": "{'monthly': 0, 'm': 0, 'quarterly': 1, 'q': 1, 'annual': 2, 'a': 2}",
+      "expression_truncated": false,
+      "expression_chars": 67,
+      "ast_sha256": "3cb568815801553a802b9ed818e87dfb890332ffcd6fe7d983ea9259f909c62c",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/world_cards.py",
       "line": 38,
       "end_line": 38,
@@ -132453,6 +132635,15 @@
       "expression_truncated": false,
       "expression_chars": 296,
       "ast_sha256": "a45d734577156c6bff784bc419bc8610c858db5a9307e025ca2163a0c4414e6a"
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 187,
+      "end_line": 187,
+      "owner": "<module>",
+      "conditions": [],
+      "registry": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN",
+      "expression": "RU_FROM_OFFICIAL_EN.setdefault(_dim, {})"
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
@@ -142551,6 +142742,20 @@
       "expression_truncated": false,
       "expression_chars": 13,
       "ast_sha256": "09a23fdc00a32b9cb9beee691bfac3e436189f9f0e75cbd75174d497f025afb8"
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 187,
+      "end_line": 187,
+      "owner": "<module>",
+      "conditions": [],
+      "operation": "update",
+      "receiver": "RU_FROM_OFFICIAL_EN.setdefault(_dim, {})",
+      "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN.setdefault(_dim, {}).update",
+      "expression": "RU_FROM_OFFICIAL_EN.setdefault(_dim, {}).update(_members)",
+      "expression_truncated": false,
+      "expression_chars": 57,
+      "ast_sha256": "48a48d46f77018bacc975ef7b550bb39ce8446e27d3ed72fce5a32fb98b0129a"
     },
     {
       "path": "backend/app/data/eurostat_listing.py",
@@ -158606,8 +158811,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1535,
-      "end_line": 1535,
+      "line": 1542,
+      "end_line": 1542,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "update",
@@ -158620,8 +158825,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1984,
-      "end_line": 1990,
+      "line": 1991,
+      "end_line": 1997,
       "owner": "render_world_indicator_html",
       "conditions": [
         "is_retired_world_hicp(slug, code)"
@@ -158636,8 +158841,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2006,
+      "end_line": 2006,
       "owner": "render_world_indicator_html",
       "conditions": [
         "freshness_note is not None"
@@ -158783,8 +158988,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1856,
-      "end_line": 1860,
+      "line": 1863,
+      "end_line": 1867,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -158830,8 +159035,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1458,
-      "end_line": 1471,
+      "line": 1465,
+      "end_line": 1478,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "execute",
@@ -158844,8 +159049,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1591,
-      "end_line": 1599,
+      "line": 1598,
+      "end_line": 1606,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "execute",
@@ -163337,6 +163542,180 @@
       "expression_truncated": false,
       "expression_chars": 16,
       "ast_sha256": "396e5ce92d803eb9844ba7241cb210a39cf40078869284e22b784f6ae0ae329e"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 53,
+      "end_line": 53,
+      "owner": "slice_signature",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.world_canonical.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 153,
+      "end_line": 153,
+      "owner": "_searched",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.world_canonical.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 60,
+      "end_line": 60,
+      "owner": "slice_signature",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "out",
+      "symbol": "app.services.world_canonical.out.add",
+      "expression": "out.add((axis, text.upper()))",
+      "expression_truncated": false,
+      "expression_chars": 29,
+      "ast_sha256": "8fc7deacf5ae2473f480a980b7709eef15fd9278c6b139a8c79c04e5829a88ee"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 140,
+      "end_line": 140,
+      "owner": "_digests",
+      "conditions": [],
+      "operation": "update",
+      "receiver": "out",
+      "symbol": "app.services.world_canonical.out.update",
+      "expression": "out.update({int(i): str(d) for i, d in rows})",
+      "expression_truncated": false,
+      "expression_chars": 45,
+      "ast_sha256": "263bcfe4bdafbc21d5e984765264e38a22ad056024e6d3d05d2eb3973dce101d"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 158,
+      "end_line": 158,
+      "owner": "_searched",
+      "conditions": [
+        "len(parts) >= 3 and parts[1] == 'indicator'"
+      ],
+      "operation": "add",
+      "receiver": "out",
+      "symbol": "app.services.world_canonical.out.add",
+      "expression": "out.add((parts[0], parts[2]))",
+      "expression_truncated": false,
+      "expression_chars": 29,
+      "ast_sha256": "73fc8a7bf293a8d219a7a51392143579968c30c70c39d595c9e245f0ebd9d979"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 216,
+      "end_line": 216,
+      "owner": "published_map",
+      "conditions": [
+        "path is None or not path.is_file()"
+      ],
+      "operation": "update",
+      "receiver": "_cache",
+      "symbol": "app.services.world_canonical._cache.update",
+      "expression": "_cache.update(key=None, map={})",
+      "expression_truncated": false,
+      "expression_chars": 31,
+      "ast_sha256": "9eacff7065e769aea25991c650ef427f3277b2d385faaddf28506ce65c1e301f"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 220,
+      "end_line": 220,
+      "owner": "published_map",
+      "conditions": [
+        "key != _cache['key']"
+      ],
+      "operation": "update",
+      "receiver": "_cache",
+      "symbol": "app.services.world_canonical._cache.update",
+      "expression": "_cache.update(key=key, map=json.loads(path.read_text(encoding='utf-8')).get('map', {}))",
+      "expression_truncated": false,
+      "expression_chars": 87,
+      "ast_sha256": "c8d48441fbe24705b53429b3e2e77babb104c23df3336102bbbaa501e32cd333"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 222,
+      "end_line": 222,
+      "owner": "published_map",
+      "conditions": [],
+      "operation": "update",
+      "receiver": "_cache",
+      "symbol": "app.services.world_canonical._cache.update",
+      "expression": "_cache.update(key=None, map={})",
+      "expression_truncated": false,
+      "expression_chars": 31,
+      "ast_sha256": "9eacff7065e769aea25991c650ef427f3277b2d385faaddf28506ce65c1e301f"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 117,
+      "end_line": 126,
+      "owner": "_load_rows",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.world_canonical.db.execute",
+      "expression": "db.execute(select(WorldIndicator.id, WorldIndicator.country_id, WorldCountry.slug, WorldIndicator.code, WorldIndicator.name_ru, WorldIndicator.name_en, WorldIndicator.slice_json, WorldIndicator.provider, WorldIndicator.frequency, WorldIndicator.points_count, WorldIndicator.history_start, WorldIndicator.history_end).join(WorldCountry, WorldCountry.id == WorldIndicator.country_id).where(WorldIndicator.is_listed.is_(True), WorldCountry.is_active.is_(True)))",
+      "expression_truncated": false,
+      "expression_chars": 458,
+      "ast_sha256": "362836be3b33a9ace85361e8639a255e7e9273de0dfb14cd0b369647b44a0646"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 148,
+      "end_line": 152,
+      "owner": "_searched",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.world_canonical.db.execute",
+      "expression": "db.execute(text('SELECT DISTINCT page FROM gsc_page_daily WHERE impressions > 0 UNION SELECT DISTINCT page FROM gsc_search_queries WHERE impressions > 0 AND date >= CURRENT_DATE - 120'))",
+      "expression_truncated": false,
+      "expression_chars": 186,
+      "ast_sha256": "478597c04442b997dc5173726e601787ccf7b397dc0acf54bdf17b4e6a04c7af"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 242,
+      "end_line": 253,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.world_canonical.db.execute",
+      "expression": "db.execute(select(WorldDataPoint.id).join(WorldIndicator, WorldIndicator.id == WorldDataPoint.indicator_id).where(WorldIndicator.country_id == country_id, WorldIndicator.code == code, WorldIndicator.is_listed.is_(True), WorldDataPoint.date >= date(year, 1, 1), WorldDataPoint.date <= date(year, 12, 31)).limit(1))",
+      "expression_truncated": false,
+      "expression_chars": 313,
+      "ast_sha256": "8c8932d288aeeed61e738a47e9051a8d0f55abcbda09b165ffbd585b79c28017"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 136,
+      "end_line": 139,
+      "owner": "_digests",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.world_canonical.db.execute",
+      "expression": "db.execute(text(\"SELECT indicator_id, md5(string_agg(date::text || ':' || round(value::numeric, 6)::text, ',' ORDER BY date)) FROM world_data_points WHERE indicator_id = ANY(:ids) GROUP BY indicator_id\"), {'ids': chunk})",
+      "expression_truncated": false,
+      "expression_chars": 220,
+      "ast_sha256": "c6e362fa5fff56c11b7bbf43a53691aab6c52332343fea020aff519b22e282f1"
     },
     {
       "path": "backend/app/services/world_cards.py",
@@ -175883,6 +176262,34 @@
       "expression_truncated": false,
       "expression_chars": 132,
       "ast_sha256": "326ec4402b46e24a3884ce16b1c1ddfd54be689021ba857b8c7d9824241696db"
+    },
+    {
+      "path": "scripts/world-duplicate-canonical.py",
+      "line": 19,
+      "end_line": 19,
+      "owner": "<module>",
+      "conditions": [],
+      "operation": "insert",
+      "receiver": "sys.path",
+      "symbol": "sys.path.insert",
+      "expression": "sys.path.insert(0, str(ROOT / 'backend'))",
+      "expression_truncated": false,
+      "expression_chars": 41,
+      "ast_sha256": "a2ebe15d8849f29ae1e520b53cd62894ed6ef24504e2e50579cb55e326cfd04b"
+    },
+    {
+      "path": "scripts/world-duplicate-canonical.py",
+      "line": 46,
+      "end_line": 46,
+      "owner": "run",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "scripts.world-duplicate-canonical.db.execute",
+      "expression": "db.execute(text('SELECT count(*) FROM gsc_page_daily'))",
+      "expression_truncated": false,
+      "expression_chars": 55,
+      "ast_sha256": "b4426535d78f0edc97cd0de82abe161aa27f17441d33ad60385ffe2ca8222f06"
     },
     {
       "path": "scripts/world-title-duplicates.py",
@@ -249851,8 +250258,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1527,
-      "end_line": 1527,
+      "line": 1534,
+      "end_line": 1534,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -249923,8 +250330,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1504,
-      "end_line": 1504,
+      "line": 1511,
+      "end_line": 1511,
       "owner": "render_world_country_html._key_sort",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -249932,8 +250339,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1514,
-      "end_line": 1514,
+      "line": 1521,
+      "end_line": 1521,
       "owner": "render_world_country_html._is_curated_card",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -249995,8 +250402,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1562,
-      "end_line": 1562,
+      "line": 1569,
+      "end_line": 1569,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -250085,8 +250492,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1859,
-      "end_line": 1859,
+      "line": 1866,
+      "end_line": 1866,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -250170,8 +250577,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1859,
-      "end_line": 1859,
+      "line": 1866,
+      "end_line": 1866,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -250237,8 +250644,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1470,
-      "end_line": 1470,
+      "line": 1477,
+      "end_line": 1477,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.category_ru",
@@ -250246,8 +250653,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1470,
-      "end_line": 1470,
+      "line": 1477,
+      "end_line": 1477,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_ru",
@@ -250362,8 +250769,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1470,
-      "end_line": 1470,
+      "line": 1477,
+      "end_line": 1477,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -250371,8 +250778,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1470,
-      "end_line": 1470,
+      "line": 1477,
+      "end_line": 1477,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -250380,8 +250787,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1858,
-      "end_line": 1858,
+      "line": 1865,
+      "end_line": 1865,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -250502,8 +250909,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1597,
-      "end_line": 1597,
+      "line": 1604,
+      "end_line": 1604,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -250511,8 +250918,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1597,
-      "end_line": 1597,
+      "line": 1604,
+      "end_line": 1604,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -250520,8 +250927,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1857,
-      "end_line": 1857,
+      "line": 1864,
+      "end_line": 1864,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -250529,8 +250936,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1857,
-      "end_line": 1857,
+      "line": 1864,
+      "end_line": 1864,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -250538,8 +250945,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1858,
-      "end_line": 1858,
+      "line": 1865,
+      "end_line": 1865,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -250721,8 +251128,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1462,
-      "end_line": 1462,
+      "line": 1469,
+      "end_line": 1469,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -250730,8 +251137,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1468,
-      "end_line": 1468,
+      "line": 1475,
+      "end_line": 1475,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -250739,8 +251146,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1597,
-      "end_line": 1597,
+      "line": 1604,
+      "end_line": 1604,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -250748,8 +251155,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1597,
-      "end_line": 1597,
+      "line": 1604,
+      "end_line": 1604,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -250757,8 +251164,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1857,
-      "end_line": 1857,
+      "line": 1864,
+      "end_line": 1864,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -250766,8 +251173,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1857,
-      "end_line": 1857,
+      "line": 1864,
+      "end_line": 1864,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -251011,8 +251418,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1462,
-      "end_line": 1462,
+      "line": 1469,
+      "end_line": 1469,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -251020,8 +251427,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1468,
-      "end_line": 1468,
+      "line": 1475,
+      "end_line": 1475,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -251158,8 +251565,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1468,
-      "end_line": 1468,
+      "line": 1475,
+      "end_line": 1475,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -251167,8 +251574,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1594,
-      "end_line": 1594,
+      "line": 1601,
+      "end_line": 1601,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -251176,8 +251583,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1595,
-      "end_line": 1595,
+      "line": 1602,
+      "end_line": 1602,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -251279,8 +251686,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1459,
-      "end_line": 1459,
+      "line": 1466,
+      "end_line": 1466,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -251288,8 +251695,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1592,
-      "end_line": 1592,
+      "line": 1599,
+      "end_line": 1599,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -251297,8 +251704,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1594,
-      "end_line": 1594,
+      "line": 1601,
+      "end_line": 1601,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -251306,8 +251713,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1595,
-      "end_line": 1595,
+      "line": 1602,
+      "end_line": 1602,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -251371,8 +251778,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1594,
-      "end_line": 1594,
+      "line": 1601,
+      "end_line": 1601,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -251488,8 +251895,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 394,
-      "end_line": 394,
+      "line": 414,
+      "end_line": 414,
       "owner": "render_world_vs_html._row_unit",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -268474,6 +268881,483 @@
       "conditions": [],
       "symbol": "app.models.SubnationalDataPoint",
       "expression": "SubnationalDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed.is_",
+      "expression": "WorldIndicator.is_listed.is_"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.is_active.is_",
+      "expression": "WorldCountry.is_active.is_"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 124,
+      "end_line": 124,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed",
+      "expression": "WorldIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.is_active",
+      "expression": "WorldCountry.is_active"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 124,
+      "end_line": 124,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 124,
+      "end_line": 124,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 246,
+      "end_line": 246,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 247,
+      "end_line": 247,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 248,
+      "end_line": 248,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed.is_",
+      "expression": "WorldIndicator.is_listed.is_"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 250,
+      "end_line": 250,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.id",
+      "expression": "WorldIndicator.id"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.slug",
+      "expression": "WorldCountry.slug"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 120,
+      "end_line": 120,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_ru",
+      "expression": "WorldIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 120,
+      "end_line": 120,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_en",
+      "expression": "WorldIndicator.name_en"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 120,
+      "end_line": 120,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.slice_json",
+      "expression": "WorldIndicator.slice_json"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 121,
+      "end_line": 121,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.provider",
+      "expression": "WorldIndicator.provider"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 121,
+      "end_line": 121,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.frequency",
+      "expression": "WorldIndicator.frequency"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 121,
+      "end_line": 121,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.points_count",
+      "expression": "WorldIndicator.points_count"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 122,
+      "end_line": 122,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.history_start",
+      "expression": "WorldIndicator.history_start"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 122,
+      "end_line": 122,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.history_end",
+      "expression": "WorldIndicator.history_end"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 124,
+      "end_line": 124,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 124,
+      "end_line": 124,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 246,
+      "end_line": 246,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 247,
+      "end_line": 247,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 248,
+      "end_line": 248,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed",
+      "expression": "WorldIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 250,
+      "end_line": 250,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 120,
+      "end_line": 120,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 120,
+      "end_line": 120,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 120,
+      "end_line": 120,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 121,
+      "end_line": 121,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 121,
+      "end_line": 121,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 121,
+      "end_line": 121,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 122,
+      "end_line": 122,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 122,
+      "end_line": 122,
+      "owner": "_load_rows",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.id",
+      "expression": "WorldIndicator.id"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.indicator_id",
+      "expression": "WorldDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 248,
+      "end_line": 248,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 243,
+      "end_line": 243,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.id",
+      "expression": "WorldDataPoint.id"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 243,
+      "end_line": 243,
+      "owner": "primary_has_year",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
     },
     {
       "path": "backend/app/services/world_compare.py",
@@ -288090,6 +288974,26 @@
       "resolved_text_constructor": "sqlalchemy.text"
     },
     {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 148,
+      "end_line": 152,
+      "owner": "_searched",
+      "conditions": [],
+      "literal": "SELECT DISTINCT page FROM gsc_page_daily WHERE impressions > 0 UNION SELECT DISTINCT page FROM gsc_search_queries WHERE impressions > 0 AND date >= CURRENT_DATE - 120",
+      "expression": "'SELECT DISTINCT page FROM gsc_page_daily WHERE impressions > 0 UNION SELECT DISTINCT page FROM gsc_search_queries WHERE impressions > 0 AND date >= CURRENT_DATE - 120'",
+      "resolved_text_constructor": "sqlalchemy.text"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 136,
+      "end_line": 139,
+      "owner": "_digests",
+      "conditions": [],
+      "literal": "SELECT indicator_id, md5(string_agg(date::text || ':' || round(value::numeric, 6)::text, ',' ORDER BY date)) FROM world_data_points WHERE indicator_id = ANY(:ids) GROUP BY indicator_id",
+      "expression": "\"SELECT indicator_id, md5(string_agg(date::text || ':' || round(value::numeric, 6)::text, ',' ORDER BY date)) FROM world_data_points WHERE indicator_id = ANY(:ids) GROUP BY indicator_id\"",
+      "resolved_text_constructor": "sqlalchemy.text"
+    },
+    {
       "path": "backend/app/services/world_eurostat_ingest.py",
       "line": 173,
       "end_line": 173,
@@ -289068,6 +289972,16 @@
       "literal": null,
       "expression": "comment",
       "resolved_text_constructor": "scripts.read-project-workbooks.text"
+    },
+    {
+      "path": "scripts/world-duplicate-canonical.py",
+      "line": 46,
+      "end_line": 46,
+      "owner": "run",
+      "conditions": [],
+      "literal": "SELECT count(*) FROM gsc_page_daily",
+      "expression": "'SELECT count(*) FROM gsc_page_daily'",
+      "resolved_text_constructor": "sqlalchemy.text"
     },
     {
       "path": "scripts/world-title-duplicates.py",
@@ -295117,7 +296031,7 @@
     {
       "path": "backend/app/config.py",
       "line": 6,
-      "end_line": 690,
+      "end_line": 694,
       "owner": "<module>",
       "conditions": [],
       "name": "Settings",
@@ -295125,8 +296039,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 673,
-      "end_line": 675,
+      "line": 677,
+      "end_line": 679,
       "owner": "Settings",
       "conditions": [],
       "name": "public_origin",
@@ -295134,8 +296048,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 678,
-      "end_line": 680,
+      "line": 682,
+      "end_line": 684,
       "owner": "Settings",
       "conditions": [],
       "name": "public_host",
@@ -295143,8 +296057,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 683,
-      "end_line": 685,
+      "line": 687,
+      "end_line": 689,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id",
@@ -295152,8 +296066,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 687,
-      "end_line": 690,
+      "line": 691,
+      "end_line": 694,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -296160,8 +297074,8 @@
     },
     {
       "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
-      "line": 133,
-      "end_line": 136,
+      "line": 190,
+      "end_line": 193,
       "owner": "<module>",
       "conditions": [],
       "name": "official_translation_ru",
@@ -305632,7 +306546,16 @@
     {
       "path": "backend/app/services/display.py",
       "line": 433,
-      "end_line": 455,
+      "end_line": 451,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "uniform_digits",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/display.py",
+      "line": 454,
+      "end_line": 476,
       "owner": "<module>",
       "conditions": [],
       "name": "format_fixed",
@@ -305640,8 +306563,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 458,
-      "end_line": 500,
+      "line": 479,
+      "end_line": 521,
       "owner": "<module>",
       "conditions": [],
       "name": "format_number_ru",
@@ -305649,8 +306572,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 503,
-      "end_line": 525,
+      "line": 524,
+      "end_line": 546,
       "owner": "<module>",
       "conditions": [],
       "name": "display_value_text",
@@ -305658,8 +306581,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 528,
-      "end_line": 532,
+      "line": 549,
+      "end_line": 553,
       "owner": "<module>",
       "conditions": [],
       "name": "format_date_ru",
@@ -305667,8 +306590,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 552,
-      "end_line": 587,
+      "line": 573,
+      "end_line": 608,
       "owner": "<module>",
       "conditions": [],
       "name": "value_period_phrase",
@@ -305676,8 +306599,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 590,
-      "end_line": 594,
+      "line": 611,
+      "end_line": 615,
       "owner": "<module>",
       "conditions": [],
       "name": "format_month_ru",
@@ -305685,8 +306608,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 597,
-      "end_line": 608,
+      "line": 618,
+      "end_line": 629,
       "owner": "<module>",
       "conditions": [],
       "name": "format_month_year",
@@ -305694,8 +306617,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 611,
-      "end_line": 627,
+      "line": 632,
+      "end_line": 648,
       "owner": "<module>",
       "conditions": [],
       "name": "format_date_locale",
@@ -305703,8 +306626,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 643,
-      "end_line": 654,
+      "line": 664,
+      "end_line": 675,
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary_kind",
@@ -305712,8 +306635,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 657,
-      "end_line": 674,
+      "line": 678,
+      "end_line": 695,
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary",
@@ -320983,7 +321906,7 @@
     {
       "path": "backend/app/services/seo_world.py",
       "line": 1053,
-      "end_line": 1447,
+      "end_line": 1454,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_rating_html",
@@ -320991,8 +321914,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1450,
-      "end_line": 1838,
+      "line": 1457,
+      "end_line": 1845,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_country_html",
@@ -321000,8 +321923,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1841,
-      "end_line": 2301,
+      "line": 1848,
+      "end_line": 2312,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_html",
@@ -321018,8 +321941,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1091,
-      "end_line": 1096,
+      "line": 1097,
+      "end_line": 1103,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_value_text",
@@ -321027,8 +321950,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1098,
-      "end_line": 1103,
+      "line": 1105,
+      "end_line": 1110,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_date_text",
@@ -321036,8 +321959,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1105,
-      "end_line": 1115,
+      "line": 1112,
+      "end_line": 1122,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_countries_phrase",
@@ -321045,8 +321968,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1226,
-      "end_line": 1229,
+      "line": 1233,
+      "end_line": 1236,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_unit_cell",
@@ -321054,8 +321977,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1231,
-      "end_line": 1234,
+      "line": 1238,
+      "end_line": 1241,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_country_link",
@@ -321063,8 +321986,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1504,
-      "end_line": 1512,
+      "line": 1511,
+      "end_line": 1519,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_key_sort",
@@ -321072,8 +321995,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1514,
-      "end_line": 1518,
+      "line": 1521,
+      "end_line": 1525,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_is_curated_card",
@@ -321081,8 +322004,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1944,
-      "end_line": 1945,
+      "line": 1951,
+      "end_line": 1952,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "name": "_fmt_series",
@@ -321090,8 +322013,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2149,
-      "end_line": 2158,
+      "line": 2156,
+      "end_line": 2165,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "name": "_title_with",
@@ -321163,7 +322086,7 @@
     {
       "path": "backend/app/services/seo_world_compare.py",
       "line": 224,
-      "end_line": 273,
+      "end_line": 277,
       "owner": "<module>",
       "conditions": [],
       "name": "_pair_history",
@@ -321171,8 +322094,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 276,
-      "end_line": 289,
+      "line": 280,
+      "end_line": 293,
       "owner": "<module>",
       "conditions": [],
       "name": "_snippet_number",
@@ -321180,8 +322103,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 292,
-      "end_line": 318,
+      "line": 296,
+      "end_line": 322,
       "owner": "<module>",
       "conditions": [],
       "name": "_snippet_description",
@@ -321189,8 +322112,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 321,
-      "end_line": 728,
+      "line": 325,
+      "end_line": 750,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_vs_html",
@@ -321207,8 +322130,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 233,
-      "end_line": 235,
+      "line": 234,
+      "end_line": 236,
       "owner": "_pair_history",
       "conditions": [],
       "name": "_label",
@@ -321216,8 +322139,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 249,
-      "end_line": 251,
+      "line": 253,
+      "end_line": 255,
       "owner": "_pair_history",
       "conditions": [],
       "name": "_extreme",
@@ -321225,8 +322148,35 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 375,
-      "end_line": 383,
+      "line": 367,
+      "end_line": 368,
+      "owner": "render_world_vs_html",
+      "conditions": [],
+      "name": "_fmt_a",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world_compare.py",
+      "line": 370,
+      "end_line": 371,
+      "owner": "render_world_vs_html",
+      "conditions": [],
+      "name": "_fmt_b",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world_compare.py",
+      "line": 373,
+      "end_line": 374,
+      "owner": "render_world_vs_html",
+      "conditions": [],
+      "name": "_fmt_diff",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world_compare.py",
+      "line": 395,
+      "end_line": 403,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_unit_tail",
@@ -321234,8 +322184,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 394,
-      "end_line": 400,
+      "line": 414,
+      "end_line": 420,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_row_unit",
@@ -321243,8 +322193,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 406,
-      "end_line": 409,
+      "line": 426,
+      "end_line": 429,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_value_sfx",
@@ -321252,8 +322202,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 411,
-      "end_line": 412,
+      "line": 431,
+      "end_line": 432,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_dot",
@@ -321261,8 +322211,8 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 489,
-      "end_line": 491,
+      "line": 509,
+      "end_line": 513,
       "owner": "render_world_vs_html",
       "conditions": [],
       "name": "_cell",
@@ -321478,7 +322428,7 @@
     {
       "path": "backend/app/services/seo_world_year.py",
       "line": 209,
-      "end_line": 612,
+      "end_line": 621,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_year_html",
@@ -323836,7 +324786,7 @@
     {
       "path": "backend/app/services/sitemap_static.py",
       "line": 301,
-      "end_line": 458,
+      "end_line": 467,
       "owner": "<module>",
       "conditions": [],
       "name": "build_static_sitemaps",
@@ -323844,8 +324794,17 @@
     },
     {
       "path": "backend/app/services/sitemap_static.py",
-      "line": 461,
-      "end_line": 473,
+      "line": 470,
+      "end_line": 482,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_load_duplicate_map",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/sitemap_static.py",
+      "line": 485,
+      "end_line": 497,
       "owner": "<module>",
       "conditions": [],
       "name": "_load_priority_plan",
@@ -323853,8 +324812,8 @@
     },
     {
       "path": "backend/app/services/sitemap_static.py",
-      "line": 476,
-      "end_line": 478,
+      "line": 500,
+      "end_line": 502,
       "owner": "<module>",
       "conditions": [],
       "name": "sitemap_build_job",
@@ -329827,6 +330786,150 @@
       "owner": "<module>",
       "conditions": [],
       "name": "world_bea_regional_job",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 40,
+      "end_line": 46,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_slice",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 49,
+      "end_line": 61,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "slice_signature",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 64,
+      "end_line": 75,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "primary_key",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 78,
+      "end_line": 91,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "candidate_groups",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 94,
+      "end_line": 109,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "resolve_map",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 112,
+      "end_line": 127,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_load_rows",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 130,
+      "end_line": 141,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_digests",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 144,
+      "end_line": 159,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_searched",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 162,
+      "end_line": 173,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "build_duplicate_map",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 176,
+      "end_line": 177,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "excluded_pairs",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 180,
+      "end_line": 190,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "drop_from_sitemap",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 193,
+      "end_line": 195,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "write_map",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 198,
+      "end_line": 201,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "enabled",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 204,
+      "end_line": 223,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "published_map",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 226,
+      "end_line": 230,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "primary_code",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 234,
+      "end_line": 254,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "primary_has_year",
       "kind": "AsyncFunctionDef"
     },
     {
@@ -339460,6 +340563,24 @@
       "conditions": [],
       "name": "main",
       "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "scripts/world-duplicate-canonical.py",
+      "line": 22,
+      "end_line": 55,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "run",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "scripts/world-duplicate-canonical.py",
+      "line": 58,
+      "end_line": 67,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "main",
+      "kind": "FunctionDef"
     },
     {
       "path": "scripts/world-title-duplicates.py",
@@ -349550,8 +350671,24 @@
     },
     {
       "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 186,
+      "end_line": 186,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN_GSC"
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 187,
+      "end_line": 187,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN"
+    },
+    {
+      "path": "backend/app/data/eurostat_dim_labels_ru_official.py",
+      "line": 192,
+      "end_line": 192,
       "owner": "official_translation_ru",
       "conditions": [],
       "symbol": "app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN"
@@ -354007,32 +355144,32 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 532,
-      "end_line": 532,
+      "line": 553,
+      "end_line": 553,
       "owner": "format_date_ru",
       "conditions": [],
       "symbol": "app.services.display._RU_MONTHS_GEN"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 594,
-      "end_line": 594,
+      "line": 615,
+      "end_line": 615,
       "owner": "format_month_ru",
       "conditions": [],
       "symbol": "app.services.display._RU_MONTHS_NOM"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 649,
-      "end_line": 649,
+      "line": 670,
+      "end_line": 670,
       "owner": "annual_summary_kind",
       "conditions": [],
       "symbol": "app.data.view_model_families.FAMILY_BY_BASE"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 653,
-      "end_line": 653,
+      "line": 674,
+      "end_line": 674,
       "owner": "annual_summary_kind",
       "conditions": [
         "fam is not None"
@@ -354057,8 +355194,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 586,
-      "end_line": 586,
+      "line": 607,
+      "end_line": 607,
       "owner": "value_period_phrase",
       "conditions": [
         "freq.startswith('month')"
@@ -354067,8 +355204,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 607,
-      "end_line": 607,
+      "line": 628,
+      "end_line": 628,
       "owner": "format_month_year",
       "conditions": [
         "loc == 'en'"
@@ -354077,8 +355214,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 647,
+      "end_line": 647,
       "owner": "format_date_locale",
       "conditions": [
         "loc == 'en'"
@@ -354087,8 +355224,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 600,
+      "end_line": 600,
       "owner": "value_period_phrase",
       "conditions": [
         "loc == 'en'",
@@ -362020,8 +363157,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1122,
-      "end_line": 1122,
+      "line": 1129,
+      "end_line": 1129,
       "owner": "render_world_rating_html",
       "conditions": [
         "en"
@@ -362030,8 +363167,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1123,
-      "end_line": 1123,
+      "line": 1130,
+      "end_line": 1130,
       "owner": "render_world_rating_html",
       "conditions": [
         "en"
@@ -362040,24 +363177,24 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1204,
-      "end_line": 1204,
+      "line": 1211,
+      "end_line": 1211,
       "owner": "render_world_rating_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1391,
-      "end_line": 1391,
+      "line": 1398,
+      "end_line": 1398,
       "owner": "render_world_rating_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1502,
-      "end_line": 1502,
+      "line": 1509,
+      "end_line": 1509,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.services.seo_world._KEY_CATEGORY_ORDER"
@@ -362088,16 +363225,16 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 639,
+      "end_line": 639,
       "owner": "render_world_vs_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 333,
+      "end_line": 333,
       "owner": "render_world_vs_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
@@ -362968,8 +364105,8 @@
     },
     {
       "path": "backend/app/services/sitemap_static.py",
-      "line": 367,
-      "end_line": 367,
+      "line": 373,
+      "end_line": 373,
       "owner": "build_static_sitemaps",
       "conditions": [],
       "symbol": "app.services.sitemap_static._SECTION"
@@ -364967,6 +366104,22 @@
       "owner": "world_bea_regional_job",
       "conditions": [],
       "symbol": "app.services.world_bea_regional.TABLES_BY_ARCHIVE"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 55,
+      "end_line": 55,
+      "owner": "slice_signature",
+      "conditions": [],
+      "symbol": "app.services.world_canonical._TECHNICAL"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 70,
+      "end_line": 70,
+      "owner": "primary_key",
+      "conditions": [],
+      "symbol": "app.services.world_canonical._FREQ_RANK"
     },
     {
       "path": "backend/app/services/world_cards.py",
