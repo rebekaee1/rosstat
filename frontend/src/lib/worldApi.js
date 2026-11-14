@@ -432,6 +432,18 @@ export async function fetchWorldAverageSeries(conceptSlug, mode, { signal } = {}
 }
 
 /**
+ * Знаков после запятой для всех чисел ряда страны: столько, сколько есть в самих данных, но не больше двух
+ * («1 815 983», «3,1», «3,58»). То же правило у серверной страницы — backend `display.world_series_digits`;
+ * общие случаи — `worldValueDigits.cases.json` (сервер отступает только для рядов меньше единицы по модулю).
+ */
+export function worldValueDigits(values) {
+  return Math.min(2, Math.max(...values.map((raw) => {
+    const value = Number(raw);
+    return Number.isFinite(value) ? (String(Math.abs(value)).split('.')[1] || '').length : 0;
+  })));
+}
+
+/**
  * Формат числа для витрины мира: RU — запятая и неразрывный пробел; EN — точка.
  * Переиспользует formatValue из lib/format.js.
  */

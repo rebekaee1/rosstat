@@ -1877,7 +1877,15 @@ async def render_world_indicator_html(
                 f"публикация — {escape(freq_label)}. Источник — {escape(source)}."
             )
 
-    last_value_text = _fmt(last_value)
+    # Точность — правило SPA для всего ряда (display.world_series_digits, 14.11.2026): «3,58», а не «3,5764».
+    from app.services.display import format_fixed, world_series_digits
+
+    series_digits = world_series_digits(v for _d, v in series)
+
+    def _fmt_series(value: float) -> str:
+        return format_fixed(value, series_digits)
+
+    last_value_text = _fmt_series(last_value)
     en_lead = _wt_ind("indicator_lead")
     if en_lead:
         lead_p = escape(
@@ -1946,7 +1954,7 @@ async def render_world_indicator_html(
     recent = list(reversed(series[-24:]))
     table_rows = "".join(
         f"<tr><td>{escape(_period_label(d, indicator.frequency))}</td>"
-        f"<td>{_fmt(v)}</td></tr>"
+        f"<td>{_fmt_series(v)}</td></tr>"
         for d, v in recent
     )
     table_h2 = _wt_ind("indicator_table_h2") or "Последние значения"
@@ -2065,7 +2073,7 @@ async def render_world_indicator_html(
                 f'<section class="seo-section"><h2>{escape(yh2)}</h2>'
                 + all_years_block(
                     [
-                        (y, paths.indicator_year(slug, indicator.code, y), _fmt(year_last[y]))
+                        (y, paths.indicator_year(slug, indicator.code, y), _fmt_series(year_last[y]))
                         for y in sorted(year_last, reverse=True)
                     ],
                     head_year="Year" if loc == "en" else "Год",

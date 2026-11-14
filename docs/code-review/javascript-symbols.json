@@ -49922,7 +49922,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/worldApi.js": {
-    "sha256": "03bd5ecdcf17172a3ab9683f98f03dc1405d105a18dab1c30622646fbdcc953f",
+    "sha256": "2c73d7212d43d3781c7c0224a6c47dcb691e8bbbcb10510726c20b4a8c32561c",
     "definitions": [
       {
         "name": "localeKey",
@@ -50183,51 +50183,57 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "worldValueDigits",
+        "line": 439,
+        "end_line": 444,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "formatWorldValue",
-        "line": 438,
-        "end_line": 448,
+        "line": 450,
+        "end_line": 460,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyUnitEn",
-        "line": 472,
-        "end_line": 480,
+        "line": 484,
+        "end_line": 492,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyUnitRu",
-        "line": 499,
-        "end_line": 506,
+        "line": 511,
+        "end_line": 518,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "localizeWorldUnit",
-        "line": 509,
-        "end_line": 514,
+        "line": 521,
+        "end_line": 526,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pluralRu",
-        "line": 517,
-        "end_line": 524,
+        "line": 529,
+        "end_line": 536,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionId",
-        "line": 553,
-        "end_line": 557,
+        "line": 565,
+        "end_line": 569,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupCountriesByRegion",
-        "line": 564,
-        "end_line": 587,
+        "line": 576,
+        "end_line": 599,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupCountriesByRegion.rank",
-        "line": 576,
-        "end_line": 579,
+        "line": 588,
+        "end_line": 591,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -50408,36 +50414,42 @@
       },
       {
         "names": [
+          "worldValueDigits"
+        ],
+        "line": 439
+      },
+      {
+        "names": [
           "formatWorldValue"
         ],
-        "line": 438
+        "line": 450
       },
       {
         "names": [
           "localizeWorldUnit"
         ],
-        "line": 509
+        "line": 521
       },
       {
         "names": [
           "pluralRu"
         ],
-        "line": 517
+        "line": 529
       },
       {
         "names": [
           "countryRegionId"
         ],
-        "line": 553
+        "line": 565
       },
       {
         "names": [
           "groupCountriesByRegion"
         ],
-        "line": 564
+        "line": 576
       }
     ],
-    "anonymous_functions": 18
+    "anonymous_functions": 19
   },
   "frontend/src/lib/worldApi.test.js": {
     "sha256": "b7194785d0cc84b58d5710e0bc4cc278242a4667f203061a24a2c296623e5354",
@@ -51354,6 +51366,33 @@
         "line": 50
       }
     ],
+    "anonymous_functions": 2
+  },
+  "frontend/src/lib/worldValueDigits.test.js": {
+    "sha256": "1d62ad548617a9f9e9ce1df642a517b6bd2c2ebc007f3b98661180ed7e1cd22b",
+    "definitions": [
+      {
+        "name": "plain",
+        "line": 6,
+        "end_line": 6,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./worldValueDigits.cases.json",
+        "line": 2
+      },
+      {
+        "source": "./worldApi",
+        "line": 3
+      }
+    ],
+    "exports": [],
     "anonymous_functions": 2
   },
   "frontend/src/lib/worldViewModes.js": {
@@ -61059,18 +61098,18 @@
     "anonymous_functions": 33
   },
   "frontend/src/pages/WorldIndicatorPage.jsx": {
-    "sha256": "3abb18f4373fb2657a0b8fc10bdeb13a92d78515017cc44af4f408f993883310",
+    "sha256": "c64b651139e02f844439b6285e751587b283c1828fc3bf9512e5cbe67353fc80",
     "definitions": [
       {
         "name": "WorldIndicatorPage",
         "line": 85,
-        "end_line": 839,
+        "end_line": 836,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldIndicatorPage.hideRu",
-        "line": 461,
-        "end_line": 463,
+        "line": 458,
+        "end_line": 460,
         "kind": "ArrowFunctionExpression"
       }
     ],

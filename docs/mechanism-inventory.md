@@ -171,16 +171,16 @@
 | GET | /api/v1/og-image/world-rating/{concept_slug}.png | app.api.sitemap.og_image_world_rating | [backend/app/api/sitemap.py:1743](../backend/app/api/sitemap.py#L1743) |
 | GET | /api/v1/og-image/world-rating/{concept_slug}/{year}.png | app.api.sitemap.og_image_world_rating_year | [backend/app/api/sitemap.py:1798](../backend/app/api/sitemap.py#L1798) |
 | GET | /api/v1/og-image/world/{slug}/{code}.png | app.api.sitemap.og_image_world_indicator | [backend/app/api/sitemap.py:1865](../backend/app/api/sitemap.py#L1865) |
-| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1958](../backend/app/api/sitemap.py#L1958) |
-| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2116](../backend/app/api/sitemap.py#L2116) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2188](../backend/app/api/sitemap.py#L2188) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2268](../backend/app/api/sitemap.py#L2268) |
-| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2354](../backend/app/api/sitemap.py#L2354) |
-| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2490](../backend/app/api/sitemap.py#L2490) |
-| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2596](../backend/app/api/sitemap.py#L2596) |
-| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2603](../backend/app/api/sitemap.py#L2603) |
-| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2610](../backend/app/api/sitemap.py#L2610) |
-| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2619](../backend/app/api/sitemap.py#L2619) |
+| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1961](../backend/app/api/sitemap.py#L1961) |
+| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2119](../backend/app/api/sitemap.py#L2119) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2191](../backend/app/api/sitemap.py#L2191) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2271](../backend/app/api/sitemap.py#L2271) |
+| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2357](../backend/app/api/sitemap.py#L2357) |
+| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2493](../backend/app/api/sitemap.py#L2493) |
+| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2599](../backend/app/api/sitemap.py#L2599) |
+| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2606](../backend/app/api/sitemap.py#L2606) |
+| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2613](../backend/app/api/sitemap.py#L2613) |
+| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2622](../backend/app/api/sitemap.py#L2622) |
 | GET/HEAD | /manifest.webmanifest | app.api.pwa.manifest | [backend/app/api/pwa.py:87](../backend/app/api/pwa.py#L87) |
 | GET/HEAD | /offline.html | app.api.pwa.offline_page | [backend/app/api/pwa.py:133](../backend/app/api/pwa.py#L133) |
 | GET/HEAD | /seo/not-found | app.api.seo_pages.seo_not_found | [backend/app/api/seo_pages.py:497](../backend/app/api/seo_pages.py#L497) |
@@ -2513,8 +2513,8 @@ Relationships: `[]`
 | app.services.display._CHAIN_LINKED_YEAR_RE | Call | computed source expression | [backend/app/services/display.py:302](../backend/app/services/display.py#L302) |
 | app.services.display._CHAIN_LINKED_RE | Call | computed source expression | [backend/app/services/display.py:305](../backend/app/services/display.py#L305) |
 | app.services.display._CYRILLIC_RE | Call | computed source expression | [backend/app/services/display.py:349](../backend/app/services/display.py#L349) |
-| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:479](../backend/app/services/display.py#L479) |
-| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:581](../backend/app/services/display.py#L581) |
+| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:536](../backend/app/services/display.py#L536) |
+| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:638](../backend/app/services/display.py#L638) |
 | app.services.emiss_labor_parser._PERIODS | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/emiss_labor_parser.py:21](../backend/app/services/emiss_labor_parser.py#L21) |
 | app.services.emiss_labor_parser._TERRITORIES | Dict | '1688487', '1849012' | [backend/app/services/emiss_labor_parser.py:26](../backend/app/services/emiss_labor_parser.py#L26) |
 | app.services.emiss_regional_parser.PRICE_FUELS | Dict | '1709730', '1709750', '1755196' | [backend/app/services/emiss_regional_parser.py:90](../backend/app/services/emiss_regional_parser.py#L90) |

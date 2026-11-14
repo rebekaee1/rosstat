@@ -1873,7 +1873,7 @@ async def og_image_world_indicator(
     from app.services.og_image import cached_og, render_indicator_og, store_og_async
 
     loc = get_locale()
-    cache_key = f"fe1:world:{loc}:{slug}:{code}"
+    cache_key = f"fe2:world:{loc}:{slug}:{code}"  # fe2: точность по правилу SPA (14.11.2026)
     cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
@@ -1913,7 +1913,10 @@ async def og_image_world_indicator(
 
         unit = public_unit_en(indicator.unit_ru, unit_storage=indicator.unit)
         unit = unit_suffix(unit) or unit
-        value_text = f"{format_number_ru(values[-1], locale=loc)} {unit}".strip()
+        from app.services.display import format_fixed, world_series_digits
+
+        # Точность — та же, что у страницы и SPA (display.world_series_digits, 14.11.2026).
+        value_text = f"{format_fixed(values[-1], world_series_digits(values), locale=loc)} {unit}".strip()
         last_date = rows[-1][0]
         first_date = rows[0][0]
         date_text = format_month_year(last_date, locale=loc) or last_date.isoformat()

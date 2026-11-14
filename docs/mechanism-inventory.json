@@ -380,8 +380,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "sha256": "36396ff9a1413749aa36c06f8da9542bea192d5598e2f04cb9704610b0040737",
-      "lines": 2642
+      "sha256": "d8ee91742ecce93a3f94ded190676bac4d16875c578d6c9910f11ccf58dfa390",
+      "lines": 2645
     },
     {
       "path": "backend/app/api/system.py",
@@ -1065,8 +1065,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "sha256": "8f722a866309bd388623aec0d1dcae8041b7811003415779be3b463d71e39d45",
-      "lines": 618
+      "sha256": "18645b54e208c2fb33ab277a8551833678b48883132939e63e0126f867c3393d",
+      "lines": 675
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -1720,8 +1720,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "669b7fcda312c4f9363f3f0054ed51827cea5543f8699b9b71fe3ac850279e93",
-      "lines": 2243
+      "sha256": "c47ef311c91d5723ecb7e5602da10b1bd22494a003a89ae92b1ea696dda5457b",
+      "lines": 2251
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
@@ -13322,7 +13322,7 @@
         "include_in_schema": "False"
       },
       "handler_line": 1866,
-      "handler_end_line": 1955,
+      "handler_end_line": 1958,
       "parameters": [
         {
           "name": "slug",
@@ -13349,8 +13349,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1958,
-      "end_line": 1961,
+      "line": 1961,
+      "end_line": 1964,
       "owner": "og_image_world_indicator_year",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_indicator_year",
@@ -13363,8 +13363,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 1962,
-      "handler_end_line": 2113,
+      "handler_line": 1965,
+      "handler_end_line": 2116,
       "parameters": [
         {
           "name": "country_slug",
@@ -13396,8 +13396,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2116,
-      "end_line": 2119,
+      "line": 2119,
+      "end_line": 2122,
       "owner": "og_image_world_region_vs",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_region_vs",
@@ -13410,8 +13410,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2120,
-      "handler_end_line": 2185,
+      "handler_line": 2123,
+      "handler_end_line": 2188,
       "parameters": [
         {
           "name": "country",
@@ -13443,8 +13443,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2188,
-      "end_line": 2191,
+      "line": 2191,
+      "end_line": 2194,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_region_indicator_year",
@@ -13457,8 +13457,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2192,
-      "handler_end_line": 2265,
+      "handler_line": 2195,
+      "handler_end_line": 2268,
       "parameters": [
         {
           "name": "country",
@@ -13495,8 +13495,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2268,
-      "end_line": 2271,
+      "line": 2271,
+      "end_line": 2274,
       "owner": "og_image_world_region_indicator",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_region_indicator",
@@ -13509,8 +13509,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2272,
-      "handler_end_line": 2351,
+      "handler_line": 2275,
+      "handler_end_line": 2354,
       "parameters": [
         {
           "name": "country",
@@ -13542,8 +13542,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2354,
-      "end_line": 2357,
+      "line": 2357,
+      "end_line": 2360,
       "owner": "og_image_world_region_profile",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_region_profile",
@@ -13556,8 +13556,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2358,
-      "handler_end_line": 2487,
+      "handler_line": 2361,
+      "handler_end_line": 2490,
       "parameters": [
         {
           "name": "country",
@@ -13584,8 +13584,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2490,
-      "end_line": 2493,
+      "line": 2493,
+      "end_line": 2496,
       "owner": "og_image_world_regions_hub",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_regions_hub",
@@ -13598,8 +13598,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2494,
-      "handler_end_line": 2589,
+      "handler_line": 2497,
+      "handler_end_line": 2592,
       "parameters": [
         {
           "name": "country",
@@ -13621,8 +13621,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2596,
-      "end_line": 2596,
+      "line": 2599,
+      "end_line": 2599,
       "owner": "og_indicator",
       "conditions": [],
       "handler": "app.api.sitemap.og_indicator",
@@ -13635,8 +13635,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2597,
-      "handler_end_line": 2600,
+      "handler_line": 2600,
+      "handler_end_line": 2603,
       "parameters": [
         {
           "name": "code",
@@ -13653,8 +13653,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2603,
-      "end_line": 2603,
+      "line": 2606,
+      "end_line": 2606,
       "owner": "og_category",
       "conditions": [],
       "handler": "app.api.sitemap.og_category",
@@ -13667,8 +13667,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2604,
-      "handler_end_line": 2607,
+      "handler_line": 2607,
+      "handler_end_line": 2610,
       "parameters": [
         {
           "name": "slug",
@@ -13685,8 +13685,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2610,
-      "end_line": 2610,
+      "line": 2613,
+      "end_line": 2613,
       "owner": "og_page",
       "conditions": [],
       "handler": "app.api.sitemap.og_page",
@@ -13699,8 +13699,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2611,
-      "handler_end_line": 2616,
+      "handler_line": 2614,
+      "handler_end_line": 2619,
       "parameters": [
         {
           "name": "page",
@@ -13717,8 +13717,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2619,
-      "end_line": 2619,
+      "line": 2622,
+      "end_line": 2622,
       "owner": "og_image_demographics",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_demographics",
@@ -13731,8 +13731,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2620,
-      "handler_end_line": 2642,
+      "handler_line": 2623,
+      "handler_end_line": 2645,
       "parameters": [
         {
           "name": "db",
@@ -95805,8 +95805,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 479,
-      "end_line": 493,
+      "line": 536,
+      "end_line": 550,
       "owner": "<module>",
       "conditions": [],
       "name": "_EN_MONTHS_NOM",
@@ -95822,8 +95822,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 581,
-      "end_line": 584,
+      "line": 638,
+      "end_line": 641,
       "owner": "<module>",
       "conditions": [],
       "name": "_TEMPLATE_ANNUAL_KIND",
@@ -135155,8 +135155,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1987,
-      "end_line": 1992,
+      "line": 1990,
+      "end_line": 1995,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -135171,8 +135171,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1995,
-      "end_line": 1999,
+      "line": 1998,
+      "end_line": 2002,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -135187,8 +135187,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2010,
-      "end_line": 2017,
+      "line": 2013,
+      "end_line": 2020,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -135203,8 +135203,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2212,
-      "end_line": 2215,
+      "line": 2215,
+      "end_line": 2218,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -135219,8 +135219,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2216,
-      "end_line": 2220,
+      "line": 2219,
+      "end_line": 2223,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -135235,8 +135235,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2223,
-      "end_line": 2226,
+      "line": 2226,
+      "end_line": 2229,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -135251,8 +135251,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2294,
-      "end_line": 2299,
+      "line": 2297,
+      "end_line": 2302,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -135267,8 +135267,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2302,
-      "end_line": 2308,
+      "line": 2305,
+      "end_line": 2311,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -135283,8 +135283,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2313,
-      "end_line": 2320,
+      "line": 2316,
+      "end_line": 2323,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -135299,8 +135299,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2387,
-      "end_line": 2392,
+      "line": 2390,
+      "end_line": 2395,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -135315,8 +135315,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2524,
-      "end_line": 2530,
+      "line": 2527,
+      "end_line": 2533,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -135331,8 +135331,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2535,
-      "end_line": 2539,
+      "line": 2538,
+      "end_line": 2542,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -135347,8 +135347,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2544,
-      "end_line": 2554,
+      "line": 2547,
+      "end_line": 2557,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -135428,8 +135428,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2048,
-      "end_line": 2052,
+      "line": 2051,
+      "end_line": 2055,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -135493,8 +135493,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2397,
-      "end_line": 2404,
+      "line": 2400,
+      "end_line": 2407,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -135509,8 +135509,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2436,
-      "end_line": 2440,
+      "line": 2439,
+      "end_line": 2443,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -152979,8 +152979,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1917,
-      "end_line": 1923,
+      "line": 1925,
+      "end_line": 1931,
       "owner": "render_world_indicator_html",
       "conditions": [
         "is_retired_world_hicp(slug, code)"
@@ -152995,8 +152995,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1932,
-      "end_line": 1932,
+      "line": 1940,
+      "end_line": 1940,
       "owner": "render_world_indicator_html",
       "conditions": [
         "freshness_note is not None"
@@ -153114,8 +153114,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1998,
-      "end_line": 2011,
+      "line": 2006,
+      "end_line": 2019,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -179956,8 +179956,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2417,
-      "end_line": 2417,
+      "line": 2420,
+      "end_line": 2420,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -179967,8 +179967,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2428,
-      "end_line": 2428,
+      "line": 2431,
+      "end_line": 2431,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -179978,8 +179978,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2429,
-      "end_line": 2429,
+      "line": 2432,
+      "end_line": 2432,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180214,8 +180214,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2016,
-      "end_line": 2016,
+      "line": 2019,
+      "end_line": 2019,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -180225,8 +180225,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2226,
-      "end_line": 2226,
+      "line": 2229,
+      "end_line": 2229,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -180236,8 +180236,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2319,
-      "end_line": 2319,
+      "line": 2322,
+      "end_line": 2322,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -180247,8 +180247,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2417,
-      "end_line": 2417,
+      "line": 2420,
+      "end_line": 2420,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180258,8 +180258,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2418,
-      "end_line": 2418,
+      "line": 2421,
+      "end_line": 2421,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180269,8 +180269,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2422,
-      "end_line": 2422,
+      "line": 2425,
+      "end_line": 2425,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180280,8 +180280,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2423,
-      "end_line": 2423,
+      "line": 2426,
+      "end_line": 2426,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180291,8 +180291,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2424,
-      "end_line": 2424,
+      "line": 2427,
+      "end_line": 2427,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180302,8 +180302,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2428,
-      "end_line": 2428,
+      "line": 2431,
+      "end_line": 2431,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180313,8 +180313,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2429,
-      "end_line": 2429,
+      "line": 2432,
+      "end_line": 2432,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180648,8 +180648,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1989,
-      "end_line": 1989,
+      "line": 1992,
+      "end_line": 1992,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -180659,8 +180659,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1990,
-      "end_line": 1990,
+      "line": 1993,
+      "end_line": 1993,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -180670,8 +180670,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1997,
-      "end_line": 1997,
+      "line": 2000,
+      "end_line": 2000,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -180681,8 +180681,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2016,
-      "end_line": 2016,
+      "line": 2019,
+      "end_line": 2019,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -180692,8 +180692,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2051,
-      "end_line": 2051,
+      "line": 2054,
+      "end_line": 2054,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -180704,25 +180704,14 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2213,
-      "end_line": 2213,
+      "line": 2216,
+      "end_line": 2216,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
       ],
       "symbol": "app.models.SubnationalRegion.country_code",
       "expression": "SubnationalRegion.country_code"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2214,
-      "end_line": 2214,
-      "owner": "og_image_world_region_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalRegion.slug",
-      "expression": "SubnationalRegion.slug"
     },
     {
       "path": "backend/app/api/sitemap.py",
@@ -180732,13 +180721,24 @@
       "conditions": [
         "png is None"
       ],
+      "symbol": "app.models.SubnationalRegion.slug",
+      "expression": "SubnationalRegion.slug"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2220,
+      "end_line": 2220,
+      "owner": "og_image_world_region_indicator_year",
+      "conditions": [
+        "png is None"
+      ],
       "symbol": "app.models.SubnationalIndicator.country_code",
       "expression": "SubnationalIndicator.country_code"
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2218,
-      "end_line": 2218,
+      "line": 2221,
+      "end_line": 2221,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -180748,8 +180748,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2219,
-      "end_line": 2219,
+      "line": 2222,
+      "end_line": 2222,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -180759,8 +180759,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2226,
-      "end_line": 2226,
+      "line": 2229,
+      "end_line": 2229,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -180770,8 +180770,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2296,
-      "end_line": 2296,
+      "line": 2299,
+      "end_line": 2299,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -180781,8 +180781,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2297,
-      "end_line": 2297,
+      "line": 2300,
+      "end_line": 2300,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -180792,8 +180792,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2304,
-      "end_line": 2304,
+      "line": 2307,
+      "end_line": 2307,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -180803,8 +180803,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2305,
-      "end_line": 2305,
+      "line": 2308,
+      "end_line": 2308,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -180814,8 +180814,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2306,
-      "end_line": 2306,
+      "line": 2309,
+      "end_line": 2309,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -180825,8 +180825,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2319,
-      "end_line": 2319,
+      "line": 2322,
+      "end_line": 2322,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -180836,8 +180836,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2389,
-      "end_line": 2389,
+      "line": 2392,
+      "end_line": 2392,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180847,8 +180847,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2390,
-      "end_line": 2390,
+      "line": 2393,
+      "end_line": 2393,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180858,8 +180858,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2418,
-      "end_line": 2418,
+      "line": 2421,
+      "end_line": 2421,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180869,8 +180869,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2422,
-      "end_line": 2422,
+      "line": 2425,
+      "end_line": 2425,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180880,8 +180880,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2423,
-      "end_line": 2423,
+      "line": 2426,
+      "end_line": 2426,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180891,8 +180891,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2424,
-      "end_line": 2424,
+      "line": 2427,
+      "end_line": 2427,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180902,8 +180902,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2429,
-      "end_line": 2429,
+      "line": 2432,
+      "end_line": 2432,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -180913,8 +180913,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2526,
-      "end_line": 2526,
+      "line": 2529,
+      "end_line": 2529,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -180924,8 +180924,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2527,
-      "end_line": 2527,
+      "line": 2530,
+      "end_line": 2530,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -180935,8 +180935,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2528,
-      "end_line": 2528,
+      "line": 2531,
+      "end_line": 2531,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -180946,8 +180946,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2537,
-      "end_line": 2537,
+      "line": 2540,
+      "end_line": 2540,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -180957,8 +180957,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2551,
-      "end_line": 2551,
+      "line": 2554,
+      "end_line": 2554,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -180968,8 +180968,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2552,
-      "end_line": 2552,
+      "line": 2555,
+      "end_line": 2555,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -181468,8 +181468,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1988,
-      "end_line": 1988,
+      "line": 1991,
+      "end_line": 1991,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -181479,8 +181479,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1989,
-      "end_line": 1989,
+      "line": 1992,
+      "end_line": 1992,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -181490,8 +181490,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1990,
-      "end_line": 1990,
+      "line": 1993,
+      "end_line": 1993,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -181501,8 +181501,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1996,
-      "end_line": 1996,
+      "line": 1999,
+      "end_line": 1999,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -181512,8 +181512,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1997,
-      "end_line": 1997,
+      "line": 2000,
+      "end_line": 2000,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -181523,8 +181523,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2051,
-      "end_line": 2051,
+      "line": 2054,
+      "end_line": 2054,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -181535,30 +181535,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2212,
-      "end_line": 2212,
-      "owner": "og_image_world_region_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalRegion",
-      "expression": "SubnationalRegion"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2213,
-      "end_line": 2213,
-      "owner": "og_image_world_region_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalRegion",
-      "expression": "SubnationalRegion"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2214,
-      "end_line": 2214,
+      "line": 2215,
+      "end_line": 2215,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -181574,8 +181552,8 @@
       "conditions": [
         "png is None"
       ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
+      "symbol": "app.models.SubnationalRegion",
+      "expression": "SubnationalRegion"
     },
     {
       "path": "backend/app/api/sitemap.py",
@@ -181585,19 +181563,8 @@
       "conditions": [
         "png is None"
       ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2218,
-      "end_line": 2218,
-      "owner": "og_image_world_region_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
+      "symbol": "app.models.SubnationalRegion",
+      "expression": "SubnationalRegion"
     },
     {
       "path": "backend/app/api/sitemap.py",
@@ -181607,13 +181574,46 @@
       "conditions": [
         "png is None"
       ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2220,
+      "end_line": 2220,
+      "owner": "og_image_world_region_indicator_year",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2221,
+      "end_line": 2221,
+      "owner": "og_image_world_region_indicator_year",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2222,
+      "end_line": 2222,
+      "owner": "og_image_world_region_indicator_year",
+      "conditions": [
+        "png is None"
+      ],
       "symbol": "app.models.SubnationalIndicator.is_listed",
       "expression": "SubnationalIndicator.is_listed"
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2295,
-      "end_line": 2295,
+      "line": 2298,
+      "end_line": 2298,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -181623,8 +181623,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2296,
-      "end_line": 2296,
+      "line": 2299,
+      "end_line": 2299,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -181634,47 +181634,14 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2297,
-      "end_line": 2297,
+      "line": 2300,
+      "end_line": 2300,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
       ],
       "symbol": "app.models.SubnationalRegion",
       "expression": "SubnationalRegion"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2303,
-      "end_line": 2303,
-      "owner": "og_image_world_region_indicator",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2304,
-      "end_line": 2304,
-      "owner": "og_image_world_region_indicator",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2305,
-      "end_line": 2305,
-      "owner": "og_image_world_region_indicator",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
     },
     {
       "path": "backend/app/api/sitemap.py",
@@ -181684,13 +181651,46 @@
       "conditions": [
         "png is None"
       ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2307,
+      "end_line": 2307,
+      "owner": "og_image_world_region_indicator",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2308,
+      "end_line": 2308,
+      "owner": "og_image_world_region_indicator",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2309,
+      "end_line": 2309,
+      "owner": "og_image_world_region_indicator",
+      "conditions": [
+        "png is None"
+      ],
       "symbol": "app.models.SubnationalIndicator.is_listed",
       "expression": "SubnationalIndicator.is_listed"
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2388,
-      "end_line": 2388,
+      "line": 2391,
+      "end_line": 2391,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -181700,8 +181700,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2389,
-      "end_line": 2389,
+      "line": 2392,
+      "end_line": 2392,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -181711,8 +181711,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2390,
-      "end_line": 2390,
+      "line": 2393,
+      "end_line": 2393,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -181722,8 +181722,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2403,
-      "end_line": 2403,
+      "line": 2406,
+      "end_line": 2406,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -181733,8 +181733,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2418,
-      "end_line": 2418,
+      "line": 2421,
+      "end_line": 2421,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -181744,41 +181744,41 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2525,
-      "end_line": 2525,
-      "owner": "og_image_world_regions_hub",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2526,
-      "end_line": 2526,
-      "owner": "og_image_world_regions_hub",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2527,
-      "end_line": 2527,
-      "owner": "og_image_world_regions_hub",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
       "line": 2528,
       "end_line": 2528,
+      "owner": "og_image_world_regions_hub",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2529,
+      "end_line": 2529,
+      "owner": "og_image_world_regions_hub",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2530,
+      "end_line": 2530,
+      "owner": "og_image_world_regions_hub",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2531,
+      "end_line": 2531,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -181788,8 +181788,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2537,
-      "end_line": 2537,
+      "line": 2540,
+      "end_line": 2540,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -181799,8 +181799,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2547,
-      "end_line": 2547,
+      "line": 2550,
+      "end_line": 2550,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -181810,8 +181810,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2551,
-      "end_line": 2551,
+      "line": 2554,
+      "end_line": 2554,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -181821,8 +181821,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2552,
-      "end_line": 2552,
+      "line": 2555,
+      "end_line": 2555,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182209,8 +182209,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1990,
-      "end_line": 1990,
+      "line": 1993,
+      "end_line": 1993,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -182220,8 +182220,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2013,
-      "end_line": 2013,
+      "line": 2016,
+      "end_line": 2016,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -182231,8 +182231,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2219,
-      "end_line": 2219,
+      "line": 2222,
+      "end_line": 2222,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -182242,8 +182242,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2224,
-      "end_line": 2224,
+      "line": 2227,
+      "end_line": 2227,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -182253,8 +182253,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2225,
-      "end_line": 2225,
+      "line": 2228,
+      "end_line": 2228,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -182264,8 +182264,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2306,
-      "end_line": 2306,
+      "line": 2309,
+      "end_line": 2309,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -182275,8 +182275,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2316,
-      "end_line": 2316,
+      "line": 2319,
+      "end_line": 2319,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -182286,8 +182286,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2317,
-      "end_line": 2317,
+      "line": 2320,
+      "end_line": 2320,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -182297,8 +182297,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2403,
-      "end_line": 2403,
+      "line": 2406,
+      "end_line": 2406,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -182308,8 +182308,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2528,
-      "end_line": 2528,
+      "line": 2531,
+      "end_line": 2531,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182319,8 +182319,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2536,
-      "end_line": 2536,
+      "line": 2539,
+      "end_line": 2539,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182330,8 +182330,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2548,
-      "end_line": 2548,
+      "line": 2551,
+      "end_line": 2551,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182341,8 +182341,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2548,
-      "end_line": 2548,
+      "line": 2551,
+      "end_line": 2551,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182619,39 +182619,6 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2011,
-      "end_line": 2011,
-      "owner": "og_image_world_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.WorldDataPoint.date",
-      "expression": "WorldDataPoint.date"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2011,
-      "end_line": 2011,
-      "owner": "og_image_world_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.WorldDataPoint.value",
-      "expression": "WorldDataPoint.value"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2013,
-      "end_line": 2013,
-      "owner": "og_image_world_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
       "line": 2014,
       "end_line": 2014,
       "owner": "og_image_world_indicator_year",
@@ -182663,8 +182630,41 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2050,
-      "end_line": 2050,
+      "line": 2014,
+      "end_line": 2014,
+      "owner": "og_image_world_indicator_year",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.WorldDataPoint.value",
+      "expression": "WorldDataPoint.value"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2016,
+      "end_line": 2016,
+      "owner": "og_image_world_indicator_year",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2017,
+      "end_line": 2017,
+      "owner": "og_image_world_indicator_year",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2053,
+      "end_line": 2053,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -182675,8 +182675,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2223,
-      "end_line": 2223,
+      "line": 2226,
+      "end_line": 2226,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -182686,8 +182686,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2223,
-      "end_line": 2223,
+      "line": 2226,
+      "end_line": 2226,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -182697,8 +182697,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2224,
-      "end_line": 2224,
+      "line": 2227,
+      "end_line": 2227,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -182708,42 +182708,9 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2225,
-      "end_line": 2225,
+      "line": 2228,
+      "end_line": 2228,
       "owner": "og_image_world_region_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalDataPoint",
-      "expression": "SubnationalDataPoint"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2314,
-      "end_line": 2314,
-      "owner": "og_image_world_region_indicator",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalDataPoint.period",
-      "expression": "SubnationalDataPoint.period"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2314,
-      "end_line": 2314,
-      "owner": "og_image_world_region_indicator",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalDataPoint.value",
-      "expression": "SubnationalDataPoint.value"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2316,
-      "end_line": 2316,
-      "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
       ],
@@ -182758,13 +182725,46 @@
       "conditions": [
         "png is None"
       ],
+      "symbol": "app.models.SubnationalDataPoint.period",
+      "expression": "SubnationalDataPoint.period"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2317,
+      "end_line": 2317,
+      "owner": "og_image_world_region_indicator",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalDataPoint.value",
+      "expression": "SubnationalDataPoint.value"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2319,
+      "end_line": 2319,
+      "owner": "og_image_world_region_indicator",
+      "conditions": [
+        "png is None"
+      ],
       "symbol": "app.models.SubnationalDataPoint",
       "expression": "SubnationalDataPoint"
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2536,
-      "end_line": 2536,
+      "line": 2320,
+      "end_line": 2320,
+      "owner": "og_image_world_region_indicator",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalDataPoint",
+      "expression": "SubnationalDataPoint"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2539,
+      "end_line": 2539,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182774,8 +182774,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2545,
-      "end_line": 2545,
+      "line": 2548,
+      "end_line": 2548,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182785,8 +182785,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2545,
-      "end_line": 2545,
+      "line": 2548,
+      "end_line": 2548,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182796,8 +182796,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2548,
-      "end_line": 2548,
+      "line": 2551,
+      "end_line": 2551,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182807,8 +182807,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2548,
-      "end_line": 2548,
+      "line": 2551,
+      "end_line": 2551,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -182997,19 +182997,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2011,
-      "end_line": 2011,
-      "owner": "og_image_world_indicator_year",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2011,
-      "end_line": 2011,
+      "line": 2014,
+      "end_line": 2014,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None"
@@ -183030,8 +183019,19 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2049,
-      "end_line": 2049,
+      "line": 2017,
+      "end_line": 2017,
+      "owner": "og_image_world_indicator_year",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2052,
+      "end_line": 2052,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -183042,8 +183042,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2049,
-      "end_line": 2049,
+      "line": 2052,
+      "end_line": 2052,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -183054,8 +183054,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2050,
-      "end_line": 2050,
+      "line": 2053,
+      "end_line": 2053,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -183066,8 +183066,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2223,
-      "end_line": 2223,
+      "line": 2226,
+      "end_line": 2226,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -183077,8 +183077,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2223,
-      "end_line": 2223,
+      "line": 2226,
+      "end_line": 2226,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [
         "png is None"
@@ -183088,8 +183088,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2314,
-      "end_line": 2314,
+      "line": 2317,
+      "end_line": 2317,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -183099,8 +183099,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2314,
-      "end_line": 2314,
+      "line": 2317,
+      "end_line": 2317,
       "owner": "og_image_world_region_indicator",
       "conditions": [
         "png is None"
@@ -183110,8 +183110,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2400,
-      "end_line": 2400,
+      "line": 2403,
+      "end_line": 2403,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -183121,8 +183121,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2401,
-      "end_line": 2401,
+      "line": 2404,
+      "end_line": 2404,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -183132,8 +183132,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2545,
-      "end_line": 2545,
+      "line": 2548,
+      "end_line": 2548,
       "owner": "og_image_world_regions_hub",
       "conditions": [
         "png is None"
@@ -183282,8 +183282,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2049,
-      "end_line": 2049,
+      "line": 2052,
+      "end_line": 2052,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -183294,8 +183294,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2049,
-      "end_line": 2049,
+      "line": 2052,
+      "end_line": 2052,
       "owner": "og_image_world_indicator_year",
       "conditions": [
         "png is None",
@@ -183303,33 +183303,33 @@
       ],
       "symbol": "app.models.WorldDataPoint",
       "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2398,
-      "end_line": 2398,
-      "owner": "og_image_world_region_profile",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/sitemap.py",
-      "line": 2400,
-      "end_line": 2400,
-      "owner": "og_image_world_region_profile",
-      "conditions": [
-        "png is None"
-      ],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
     },
     {
       "path": "backend/app/api/sitemap.py",
       "line": 2401,
       "end_line": 2401,
+      "owner": "og_image_world_region_profile",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2403,
+      "end_line": 2403,
+      "owner": "og_image_world_region_profile",
+      "conditions": [
+        "png is None"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/api/sitemap.py",
+      "line": 2404,
+      "end_line": 2404,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -183427,8 +183427,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2401,
-      "end_line": 2401,
+      "line": 2404,
+      "end_line": 2404,
       "owner": "og_image_world_region_profile",
       "conditions": [
         "png is None"
@@ -239612,8 +239612,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2009,
-      "end_line": 2009,
+      "line": 2017,
+      "end_line": 2017,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -239621,8 +239621,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2009,
-      "end_line": 2009,
+      "line": 2017,
+      "end_line": 2017,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -239737,8 +239737,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2009,
-      "end_line": 2009,
+      "line": 2017,
+      "end_line": 2017,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -239746,8 +239746,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2009,
-      "end_line": 2009,
+      "line": 2017,
+      "end_line": 2017,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240096,8 +240096,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2002,
-      "end_line": 2002,
+      "line": 2010,
+      "end_line": 2010,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.provider",
@@ -240105,8 +240105,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2003,
-      "end_line": 2003,
+      "line": 2011,
+      "end_line": 2011,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
@@ -240114,8 +240114,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2004,
-      "end_line": 2004,
+      "line": 2012,
+      "end_line": 2012,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.slice_hash",
@@ -240123,8 +240123,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2005,
-      "end_line": 2005,
+      "line": 2013,
+      "end_line": 2013,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -240132,8 +240132,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2006,
-      "end_line": 2006,
+      "line": 2014,
+      "end_line": 2014,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -240141,8 +240141,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2015,
+      "end_line": 2015,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -240350,8 +240350,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2000,
-      "end_line": 2000,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240359,8 +240359,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2002,
-      "end_line": 2002,
+      "line": 2010,
+      "end_line": 2010,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240368,8 +240368,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2003,
-      "end_line": 2003,
+      "line": 2011,
+      "end_line": 2011,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240377,8 +240377,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2004,
-      "end_line": 2004,
+      "line": 2012,
+      "end_line": 2012,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240386,8 +240386,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2005,
-      "end_line": 2005,
+      "line": 2013,
+      "end_line": 2013,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -240395,8 +240395,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2006,
-      "end_line": 2006,
+      "line": 2014,
+      "end_line": 2014,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -240404,8 +240404,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2007,
-      "end_line": 2007,
+      "line": 2015,
+      "end_line": 2015,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240533,8 +240533,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2000,
-      "end_line": 2000,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -240542,8 +240542,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2000,
-      "end_line": 2000,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -240551,8 +240551,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2005,
-      "end_line": 2005,
+      "line": 2013,
+      "end_line": 2013,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240560,8 +240560,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2006,
-      "end_line": 2006,
+      "line": 2014,
+      "end_line": 2014,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240636,8 +240636,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2007,
+      "end_line": 2007,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -240645,8 +240645,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2007,
+      "end_line": 2007,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -240654,8 +240654,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2007,
+      "end_line": 2007,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_en",
@@ -240663,8 +240663,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2007,
+      "end_line": 2007,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -240672,8 +240672,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2000,
-      "end_line": 2000,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -240681,8 +240681,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2000,
-      "end_line": 2000,
+      "line": 2008,
+      "end_line": 2008,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240710,8 +240710,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2007,
+      "end_line": 2007,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240719,8 +240719,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2007,
+      "end_line": 2007,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240728,8 +240728,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2007,
+      "end_line": 2007,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -240737,8 +240737,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1999,
-      "end_line": 1999,
+      "line": 2007,
+      "end_line": 2007,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -282898,7 +282898,7 @@
     {
       "path": "backend/app/api/sitemap.py",
       "line": 1866,
-      "end_line": 1955,
+      "end_line": 1958,
       "owner": "<module>",
       "conditions": [],
       "name": "og_image_world_indicator",
@@ -282906,8 +282906,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1962,
-      "end_line": 2113,
+      "line": 1965,
+      "end_line": 2116,
       "owner": "<module>",
       "conditions": [],
       "name": "og_image_world_indicator_year",
@@ -282915,8 +282915,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2120,
-      "end_line": 2185,
+      "line": 2123,
+      "end_line": 2188,
       "owner": "<module>",
       "conditions": [],
       "name": "og_image_world_region_vs",
@@ -282924,8 +282924,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2192,
-      "end_line": 2265,
+      "line": 2195,
+      "end_line": 2268,
       "owner": "<module>",
       "conditions": [],
       "name": "og_image_world_region_indicator_year",
@@ -282933,8 +282933,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2272,
-      "end_line": 2351,
+      "line": 2275,
+      "end_line": 2354,
       "owner": "<module>",
       "conditions": [],
       "name": "og_image_world_region_indicator",
@@ -282942,8 +282942,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2358,
-      "end_line": 2487,
+      "line": 2361,
+      "end_line": 2490,
       "owner": "<module>",
       "conditions": [],
       "name": "og_image_world_region_profile",
@@ -282951,8 +282951,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2494,
-      "end_line": 2589,
+      "line": 2497,
+      "end_line": 2592,
       "owner": "<module>",
       "conditions": [],
       "name": "og_image_world_regions_hub",
@@ -282960,8 +282960,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2592,
-      "end_line": 2593,
+      "line": 2595,
+      "end_line": 2596,
       "owner": "<module>",
       "conditions": [],
       "name": "_html_response",
@@ -282969,8 +282969,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2597,
-      "end_line": 2600,
+      "line": 2600,
+      "end_line": 2603,
       "owner": "<module>",
       "conditions": [],
       "name": "og_indicator",
@@ -282978,8 +282978,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2604,
-      "end_line": 2607,
+      "line": 2607,
+      "end_line": 2610,
       "owner": "<module>",
       "conditions": [],
       "name": "og_category",
@@ -282987,8 +282987,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2611,
-      "end_line": 2616,
+      "line": 2614,
+      "end_line": 2619,
       "owner": "<module>",
       "conditions": [],
       "name": "og_page",
@@ -282996,8 +282996,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2620,
-      "end_line": 2642,
+      "line": 2623,
+      "end_line": 2645,
       "owner": "<module>",
       "conditions": [],
       "name": "og_image_demographics",
@@ -283027,8 +283027,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2150,
-      "end_line": 2163,
+      "line": 2153,
+      "end_line": 2166,
       "owner": "og_image_world_region_vs",
       "conditions": [
         "png is None"
@@ -294196,8 +294196,35 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 402,
-      "end_line": 444,
+      "line": 412,
+      "end_line": 422,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_decimals_in",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/display.py",
+      "line": 425,
+      "end_line": 431,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "world_series_digits",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/display.py",
+      "line": 434,
+      "end_line": 456,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "format_fixed",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/display.py",
+      "line": 459,
+      "end_line": 501,
       "owner": "<module>",
       "conditions": [],
       "name": "format_number_ru",
@@ -294205,8 +294232,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 447,
-      "end_line": 469,
+      "line": 504,
+      "end_line": 526,
       "owner": "<module>",
       "conditions": [],
       "name": "display_value_text",
@@ -294214,8 +294241,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 472,
-      "end_line": 476,
+      "line": 529,
+      "end_line": 533,
       "owner": "<module>",
       "conditions": [],
       "name": "format_date_ru",
@@ -294223,8 +294250,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 496,
-      "end_line": 531,
+      "line": 553,
+      "end_line": 588,
       "owner": "<module>",
       "conditions": [],
       "name": "value_period_phrase",
@@ -294232,8 +294259,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 534,
-      "end_line": 538,
+      "line": 591,
+      "end_line": 595,
       "owner": "<module>",
       "conditions": [],
       "name": "format_month_ru",
@@ -294241,8 +294268,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 541,
-      "end_line": 552,
+      "line": 598,
+      "end_line": 609,
       "owner": "<module>",
       "conditions": [],
       "name": "format_month_year",
@@ -294250,8 +294277,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 555,
-      "end_line": 571,
+      "line": 612,
+      "end_line": 628,
       "owner": "<module>",
       "conditions": [],
       "name": "format_date_locale",
@@ -294259,8 +294286,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 587,
-      "end_line": 598,
+      "line": 644,
+      "end_line": 655,
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary_kind",
@@ -294268,8 +294295,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 601,
-      "end_line": 618,
+      "line": 658,
+      "end_line": 675,
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary",
@@ -307694,7 +307721,7 @@
     {
       "path": "backend/app/services/seo_world.py",
       "line": 1786,
-      "end_line": 2243,
+      "end_line": 2251,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_html",
@@ -307770,6 +307797,15 @@
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_is_curated_card",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1885,
+      "end_line": 1886,
+      "owner": "render_world_indicator_html",
+      "conditions": [],
+      "name": "_fmt_series",
       "kind": "FunctionDef"
     },
     {
@@ -333877,8 +333913,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2631,
-      "end_line": 2631,
+      "line": 2634,
+      "end_line": 2634,
       "owner": "og_image_demographics",
       "conditions": [],
       "symbol": "app.services.demographics.AGE_GROUP_CODES"
@@ -339634,32 +339670,32 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 533,
+      "end_line": 533,
       "owner": "format_date_ru",
       "conditions": [],
       "symbol": "app.services.display._RU_MONTHS_GEN"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 538,
-      "end_line": 538,
+      "line": 595,
+      "end_line": 595,
       "owner": "format_month_ru",
       "conditions": [],
       "symbol": "app.services.display._RU_MONTHS_NOM"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 593,
-      "end_line": 593,
+      "line": 650,
+      "end_line": 650,
       "owner": "annual_summary_kind",
       "conditions": [],
       "symbol": "app.data.view_model_families.FAMILY_BY_BASE"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 654,
+      "end_line": 654,
       "owner": "annual_summary_kind",
       "conditions": [
         "fam is not None"
@@ -339684,8 +339720,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 530,
-      "end_line": 530,
+      "line": 587,
+      "end_line": 587,
       "owner": "value_period_phrase",
       "conditions": [
         "freq.startswith('month')"
@@ -339694,8 +339730,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 551,
-      "end_line": 551,
+      "line": 608,
+      "end_line": 608,
       "owner": "format_month_year",
       "conditions": [
         "loc == 'en'"
@@ -339704,8 +339740,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 570,
-      "end_line": 570,
+      "line": 627,
+      "end_line": 627,
       "owner": "format_date_locale",
       "conditions": [
         "loc == 'en'"
@@ -339714,8 +339750,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 523,
-      "end_line": 523,
+      "line": 580,
+      "end_line": 580,
       "owner": "value_period_phrase",
       "conditions": [
         "loc == 'en'",
@@ -363124,7 +363160,7 @@
         "include_in_schema": "False"
       },
       "handler_line": 1866,
-      "handler_end_line": 1955,
+      "handler_end_line": 1958,
       "parameters": [
         {
           "name": "slug",
@@ -363165,8 +363201,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 1958,
-      "end_line": 1961,
+      "line": 1961,
+      "end_line": 1964,
       "owner": "og_image_world_indicator_year",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_indicator_year",
@@ -363179,8 +363215,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 1962,
-      "handler_end_line": 2113,
+      "handler_line": 1965,
+      "handler_end_line": 2116,
       "parameters": [
         {
           "name": "country_slug",
@@ -363226,8 +363262,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2116,
-      "end_line": 2119,
+      "line": 2119,
+      "end_line": 2122,
       "owner": "og_image_world_region_vs",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_region_vs",
@@ -363240,8 +363276,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2120,
-      "handler_end_line": 2185,
+      "handler_line": 2123,
+      "handler_end_line": 2188,
       "parameters": [
         {
           "name": "country",
@@ -363287,8 +363323,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2188,
-      "end_line": 2191,
+      "line": 2191,
+      "end_line": 2194,
       "owner": "og_image_world_region_indicator_year",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_region_indicator_year",
@@ -363301,8 +363337,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2192,
-      "handler_end_line": 2265,
+      "handler_line": 2195,
+      "handler_end_line": 2268,
       "parameters": [
         {
           "name": "country",
@@ -363353,8 +363389,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2268,
-      "end_line": 2271,
+      "line": 2271,
+      "end_line": 2274,
       "owner": "og_image_world_region_indicator",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_region_indicator",
@@ -363367,8 +363403,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2272,
-      "handler_end_line": 2351,
+      "handler_line": 2275,
+      "handler_end_line": 2354,
       "parameters": [
         {
           "name": "country",
@@ -363414,8 +363450,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2354,
-      "end_line": 2357,
+      "line": 2357,
+      "end_line": 2360,
       "owner": "og_image_world_region_profile",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_region_profile",
@@ -363428,8 +363464,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2358,
-      "handler_end_line": 2487,
+      "handler_line": 2361,
+      "handler_end_line": 2490,
       "parameters": [
         {
           "name": "country",
@@ -363470,8 +363506,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2490,
-      "end_line": 2493,
+      "line": 2493,
+      "end_line": 2496,
       "owner": "og_image_world_regions_hub",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_world_regions_hub",
@@ -363484,8 +363520,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2494,
-      "handler_end_line": 2589,
+      "handler_line": 2497,
+      "handler_end_line": 2592,
       "parameters": [
         {
           "name": "country",
@@ -363521,8 +363557,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2596,
-      "end_line": 2596,
+      "line": 2599,
+      "end_line": 2599,
       "owner": "og_indicator",
       "conditions": [],
       "handler": "app.api.sitemap.og_indicator",
@@ -363535,8 +363571,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2597,
-      "handler_end_line": 2600,
+      "handler_line": 2600,
+      "handler_end_line": 2603,
       "parameters": [
         {
           "name": "code",
@@ -363567,8 +363603,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2603,
-      "end_line": 2603,
+      "line": 2606,
+      "end_line": 2606,
       "owner": "og_category",
       "conditions": [],
       "handler": "app.api.sitemap.og_category",
@@ -363581,8 +363617,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2604,
-      "handler_end_line": 2607,
+      "handler_line": 2607,
+      "handler_end_line": 2610,
       "parameters": [
         {
           "name": "slug",
@@ -363613,8 +363649,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2610,
-      "end_line": 2610,
+      "line": 2613,
+      "end_line": 2613,
       "owner": "og_page",
       "conditions": [],
       "handler": "app.api.sitemap.og_page",
@@ -363627,8 +363663,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2611,
-      "handler_end_line": 2616,
+      "handler_line": 2614,
+      "handler_end_line": 2619,
       "parameters": [
         {
           "name": "page",
@@ -363659,8 +363695,8 @@
     },
     {
       "path": "backend/app/api/sitemap.py",
-      "line": 2619,
-      "end_line": 2619,
+      "line": 2622,
+      "end_line": 2622,
       "owner": "og_image_demographics",
       "conditions": [],
       "handler": "app.api.sitemap.og_image_demographics",
@@ -363673,8 +363709,8 @@
       "options": {
         "include_in_schema": "False"
       },
-      "handler_line": 2620,
-      "handler_end_line": 2642,
+      "handler_line": 2623,
+      "handler_end_line": 2645,
       "parameters": [
         {
           "name": "db",

@@ -399,6 +399,63 @@ def public_unit_en(
     return localized or raw or ru
 
 
+# --- Точность чисел ряда стран мира: правило SPA (14.11.2026) ------------------------------------
+# Источник правила — frontend/src/pages/WorldIndicatorPage.jsx (valueDigits) и
+# frontend/src/lib/worldApi.js::formatWorldValue: знаков после запятой столько, сколько есть в самих
+# данных ряда, но не больше двух («1 815 983», «3,1», «3,58»). Отступление — ряд, где все значения по
+# модулю меньше единицы: там до четырёх знаков, иначе «0,0123» стал бы «0,01» (малые величины теряли
+# бы точность). Общие случаи сверяет `frontend/src/lib/worldValueDigits.cases.json` с обеих сторон.
+WORLD_DIGITS_CAP = 2
+WORLD_SMALL_DIGITS_CAP = 4
+
+
+def _decimals_in(value: float) -> int:
+    """Число знаков после точки в кратчайшей записи числа (как ``String(Math.abs(v))`` в JS)."""
+    number = abs(float(value))
+    if number.is_integer():
+        return 0  # JS: String(83400000) = "83400000", без «.0»
+    text = repr(number)
+    if "e" in text or "E" in text:
+        mantissa, _, exponent = text.lower().partition("e")
+        frac = mantissa.split(".", 1)[1] if "." in mantissa else ""
+        return max(0, len(frac) - int(exponent))
+    return len(text.split(".", 1)[1]) if "." in text else 0
+
+
+def world_series_digits(values) -> int:
+    """Знаков после запятой для всех чисел ряда страны мира (правило SPA, см. блок выше)."""
+    nums = [float(v) for v in values if v is not None and float(v) == float(v)]
+    if not nums:
+        return WORLD_DIGITS_CAP
+    cap = WORLD_SMALL_DIGITS_CAP if max(abs(v) for v in nums) < 1 else WORLD_DIGITS_CAP
+    return min(cap, max(_decimals_in(v) for v in nums))
+
+
+def format_fixed(value, digits: int, *, locale: str | None = None) -> str:
+    """Число с фиксированным числом знаков (``toFixed``) и типографикой локали, как formatFixed SPA.
+
+    RU: тонкий неразрывный пробел в тысячах и запятая; EN: запятая в тысячах и точка. Минус —
+    типографский; округлённый до нуля минус не пишется («0,00», а не «−0,00»).
+    """
+    loc = locale
+    if loc is None:
+        from app.services.locale import get_locale
+
+        loc = get_locale()
+    if value is None:
+        return "no data" if loc == "en" else "нет данных"
+    from decimal import ROUND_HALF_UP, Decimal
+
+    number = float(value)
+    places = max(0, int(digits))
+    # toFixed берёт точное двоичное значение и при равной близости — большее по модулю: не «банковское» округление.
+    exact = Decimal(abs(number)).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
+    text = f"{exact:,.{places}f}"
+    if loc != "en":
+        text = text.replace(",", "\u202f").replace(".", ",")
+    return f"\u2212{text}" if number < 0 and exact != 0 else text
+
+
 def format_number_ru(
     value,
     *,

@@ -183303,7 +183303,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/worldApi.js": {
-      "sha256": "03bd5ecdcf17172a3ab9683f98f03dc1405d105a18dab1c30622646fbdcc953f",
+      "sha256": "2c73d7212d43d3781c7c0224a6c47dcb691e8bbbcb10510726c20b4a8c32561c",
       "imports": [
         {
           "line": 4,
@@ -183871,88 +183871,104 @@
           "callback_context": null
         },
         {
-          "line": 438,
-          "end_line": 448,
+          "line": 439,
+          "end_line": 444,
+          "owner": "<module>",
+          "name": "worldValueDigits",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 440,
+          "end_line": 443,
+          "owner": "worldValueDigits",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "values.map"
+        },
+        {
+          "line": 450,
+          "end_line": 460,
           "owner": "<module>",
           "name": "formatWorldValue",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 472,
-          "end_line": 480,
+          "line": 484,
+          "end_line": 492,
           "owner": "<module>",
           "name": "tidyUnitEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 499,
-          "end_line": 506,
+          "line": 511,
+          "end_line": 518,
           "owner": "<module>",
           "name": "tidyUnitRu",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 509,
-          "end_line": 514,
+          "line": 521,
+          "end_line": 526,
           "owner": "<module>",
           "name": "localizeWorldUnit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 517,
-          "end_line": 524,
+          "line": 529,
+          "end_line": 536,
           "owner": "<module>",
           "name": "pluralRu",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 553,
-          "end_line": 557,
+          "line": 565,
+          "end_line": 569,
           "owner": "<module>",
           "name": "countryRegionId",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 564,
-          "end_line": 587,
+          "line": 576,
+          "end_line": 599,
           "owner": "<module>",
           "name": "groupCountriesByRegion",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 576,
-          "end_line": 579,
+          "line": 588,
+          "end_line": 591,
           "owner": "groupCountriesByRegion",
           "name": "rank",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 581,
-          "end_line": 585,
+          "line": 593,
+          "end_line": 597,
           "owner": "groupCountriesByRegion",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...map.values()]\n    .map"
         },
         {
-          "line": 584,
-          "end_line": 584,
-          "owner": "groupCountriesByRegion.<callback@581>",
+          "line": 596,
+          "end_line": 596,
+          "owner": "groupCountriesByRegion.<callback@593>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...group.countries].sort"
         },
         {
-          "line": 586,
-          "end_line": 586,
+          "line": 598,
+          "end_line": 598,
           "owner": "groupCountriesByRegion",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -184279,8 +184295,8 @@
       "jsx_handlers": [],
       "registries": [
         {
-          "line": 450,
-          "end_line": 469,
+          "line": 462,
+          "end_line": 481,
           "owner": "<module>",
           "name": "WORLD_UNIT_EN",
           "kind": "CallExpression",
@@ -184288,8 +184304,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 483,
-          "end_line": 497,
+          "line": 495,
+          "end_line": 509,
           "owner": "<module>",
           "name": "WORLD_UNIT_RU",
           "kind": "CallExpression",
@@ -184297,8 +184313,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 531,
-          "end_line": 542,
+          "line": 543,
+          "end_line": 554,
           "owner": "<module>",
           "name": "REGION_ID_BY_LABEL",
           "kind": "CallExpression",
@@ -184306,8 +184322,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 545,
-          "end_line": 545,
+          "line": 557,
+          "end_line": 557,
           "owner": "<module>",
           "name": "REGION_ORDER",
           "kind": "CallExpression",
@@ -184315,8 +184331,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 551,
-          "end_line": 551,
+          "line": 563,
+          "end_line": 563,
           "owner": "<module>",
           "name": "REGION_ID_BY_CODE",
           "kind": "CallExpression",
@@ -186943,6 +186959,85 @@
           "initializer": null
         }
       ],
+      "mcp_tools": []
+    },
+    "frontend/src/lib/worldValueDigits.test.js": {
+      "sha256": "1d62ad548617a9f9e9ce1df642a517b6bd2c2ebc007f3b98661180ed7e1cd22b",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "./worldValueDigits.cases.json",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/worldValueDigits.cases.json"
+          ],
+          "bindings": [
+            "cases"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "./worldApi",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/worldApi.js"
+          ],
+          "bindings": [
+            "formatWorldValue",
+            "worldValueDigits"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 6,
+          "end_line": 6,
+          "owner": "<module>",
+          "name": "plain",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 8,
+          "end_line": 17,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 10,
+          "end_line": 15,
+          "owner": "<callback@8>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
       "mcp_tools": []
     },
     "frontend/src/lib/worldViewModes.js": {
@@ -240330,7 +240425,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/WorldIndicatorPage.jsx": {
-      "sha256": "3abb18f4373fb2657a0b8fc10bdeb13a92d78515017cc44af4f408f993883310",
+      "sha256": "c64b651139e02f844439b6285e751587b283c1828fc3bf9512e5cbe67353fc80",
       "imports": [
         {
           "line": 3,
@@ -240440,6 +240535,7 @@
             "useWorldCountry",
             "useWorldCompareSnapshot",
             "formatWorldValue",
+            "worldValueDigits",
             "localizeWorldUnit"
           ]
         },
@@ -241030,7 +241126,7 @@
       "functions": [
         {
           "line": 85,
-          "end_line": 839,
+          "end_line": 836,
           "owner": "<module>",
           "name": "WorldIndicatorPage",
           "kind": "FunctionDeclaration",
@@ -241206,127 +241302,127 @@
         },
         {
           "line": 338,
-          "end_line": 341,
+          "end_line": 338,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.map"
         },
         {
-          "line": 348,
-          "end_line": 355,
+          "line": 345,
+          "end_line": 352,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 361,
-          "end_line": 365,
+          "line": 358,
+          "end_line": 362,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 418,
-          "end_line": 430,
+          "line": 415,
+          "end_line": 427,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 432,
-          "end_line": 441,
+          "line": 429,
+          "end_line": 438,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 443,
-          "end_line": 468,
+          "line": 440,
+          "end_line": 465,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 461,
-          "end_line": 463,
-          "owner": "WorldIndicatorPage.<callback@443>",
+          "line": 458,
+          "end_line": 460,
+          "owner": "WorldIndicatorPage.<callback@440>",
           "name": "hideRu",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 470,
-          "end_line": 477,
+          "line": 467,
+          "end_line": 474,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 486,
-          "end_line": 489,
+          "line": 483,
+          "end_line": 486,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 491,
-          "end_line": 496,
+          "line": 488,
+          "end_line": 493,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 498,
-          "end_line": 503,
+          "line": 495,
+          "end_line": 500,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 510,
-          "end_line": 513,
+          "line": 507,
+          "end_line": 510,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 555,
-          "end_line": 555,
+          "line": 552,
+          "end_line": 552,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 668,
-          "end_line": 668,
+          "line": 665,
+          "end_line": 665,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 668,
-          "end_line": 668,
-          "owner": "WorldIndicatorPage.<callback@668>",
+          "line": 665,
+          "end_line": 665,
+          "owner": "WorldIndicatorPage.<callback@665>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setShowForecast"
         },
         {
-          "line": 687,
-          "end_line": 689,
+          "line": 684,
+          "end_line": 686,
           "owner": "WorldIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -241581,8 +241677,8 @@
           ]
         },
         {
-          "line": 347,
-          "end_line": 357,
+          "line": 344,
+          "end_line": 354,
           "owner": "WorldIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -241591,8 +241687,8 @@
           ]
         },
         {
-          "line": 360,
-          "end_line": 360,
+          "line": 357,
+          "end_line": 357,
           "owner": "WorldIndicatorPage",
           "callee": "useWorldCompareSnapshot",
           "arguments": [
@@ -241600,8 +241696,8 @@
           ]
         },
         {
-          "line": 361,
-          "end_line": 365,
+          "line": 358,
+          "end_line": 362,
           "owner": "WorldIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -241610,8 +241706,8 @@
           ]
         },
         {
-          "line": 393,
-          "end_line": 416,
+          "line": 390,
+          "end_line": 413,
           "owner": "WorldIndicatorPage",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -241619,8 +241715,8 @@
           ]
         },
         {
-          "line": 418,
-          "end_line": 430,
+          "line": 415,
+          "end_line": 427,
           "owner": "WorldIndicatorPage",
           "callee": "useEffect",
           "arguments": [
@@ -241629,8 +241725,8 @@
           ]
         },
         {
-          "line": 432,
-          "end_line": 441,
+          "line": 429,
+          "end_line": 438,
           "owner": "WorldIndicatorPage",
           "callee": "useEffect",
           "arguments": [
@@ -241639,8 +241735,8 @@
           ]
         },
         {
-          "line": 443,
-          "end_line": 468,
+          "line": 440,
+          "end_line": 465,
           "owner": "WorldIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -241649,8 +241745,8 @@
           ]
         },
         {
-          "line": 470,
-          "end_line": 477,
+          "line": 467,
+          "end_line": 474,
           "owner": "WorldIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -241659,8 +241755,8 @@
           ]
         },
         {
-          "line": 486,
-          "end_line": 489,
+          "line": 483,
+          "end_line": 486,
           "owner": "WorldIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -241669,8 +241765,8 @@
           ]
         },
         {
-          "line": 491,
-          "end_line": 496,
+          "line": 488,
+          "end_line": 493,
           "owner": "WorldIndicatorPage",
           "callee": "useCallback",
           "arguments": [
@@ -241679,8 +241775,8 @@
           ]
         },
         {
-          "line": 498,
-          "end_line": 503,
+          "line": 495,
+          "end_line": 500,
           "owner": "WorldIndicatorPage",
           "callee": "useCallback",
           "arguments": [
@@ -241689,8 +241785,8 @@
           ]
         },
         {
-          "line": 510,
-          "end_line": 513,
+          "line": 507,
+          "end_line": 510,
           "owner": "WorldIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -241704,64 +241800,64 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 548,
-          "end_line": 548,
+          "line": 545,
+          "end_line": 545,
           "owner": "WorldIndicatorPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{metaQ.refetch}"
         },
         {
-          "line": 555,
-          "end_line": 555,
+          "line": 552,
+          "end_line": 552,
           "owner": "WorldIndicatorPage",
           "component": "LoadingNote",
           "event": "onRefresh",
           "expression": "{() => metaQ.refetch()}"
         },
         {
-          "line": 640,
-          "end_line": 646,
+          "line": 637,
+          "end_line": 643,
           "owner": "WorldIndicatorPage",
           "component": "WorldViewModePicker",
           "event": "onChange",
           "expression": "{setMode}"
         },
         {
-          "line": 651,
-          "end_line": 651,
+          "line": 648,
+          "end_line": 648,
           "owner": "WorldIndicatorPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{dataRefetch}"
         },
         {
-          "line": 658,
-          "end_line": 681,
+          "line": 655,
+          "end_line": 678,
           "owner": "WorldIndicatorPage",
           "component": "WorldChartSection",
           "event": "onToggleForecast",
           "expression": "{() => setShowForecast((current) => !current)}"
         },
         {
-          "line": 658,
-          "end_line": 681,
+          "line": 655,
+          "end_line": 678,
           "owner": "WorldIndicatorPage",
           "component": "WorldChartSection",
           "event": "onFullData",
           "expression": "{setFullChartData}"
         },
         {
-          "line": 658,
-          "end_line": 681,
+          "line": 655,
+          "end_line": 678,
           "owner": "WorldIndicatorPage",
           "component": "WorldChartSection",
           "event": "onDownloadCsv",
           "expression": "{handleDownloadCSV}"
         },
         {
-          "line": 658,
-          "end_line": 681,
+          "line": 655,
+          "end_line": 678,
           "owner": "WorldIndicatorPage",
           "component": "WorldChartSection",
           "event": "onDownloadExcel",
@@ -241779,8 +241875,8 @@
           "initializer": null
         },
         {
-          "line": 377,
-          "end_line": 383,
+          "line": 374,
+          "end_line": 380,
           "owner": "WorldIndicatorPage",
           "name": "FREQ_KEYS",
           "kind": "ObjectExpression",
@@ -255270,9 +255366,9 @@
     }
   },
   "totals": {
-    "imports": 4784,
+    "imports": 4787,
     "routes": 95,
-    "functions": 15289,
+    "functions": 15294,
     "hooks": 2830,
     "http": 119,
     "storage": 244,
@@ -255280,7 +255376,7 @@
     "jsx_handlers": 1249,
     "registries": 711,
     "mcp_tools": 7,
-    "files": 903,
+    "files": 904,
     "parse_errors": 0
   }
 }
