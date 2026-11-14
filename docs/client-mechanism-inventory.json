@@ -111845,7 +111845,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/legalPages.en.jsx": {
-      "sha256": "d8a2defcca3b2236173a39792ee14f2df9b72f22b81f6aba30c772d1da3c091e",
+      "sha256": "467857964f809f3d00602ba7cd21335ea5769c59fae89a23758076ffc704bc59",
       "imports": [
         {
           "line": 5,
@@ -111921,45 +111921,59 @@
           "bindings": [
             "FOCUS_RING"
           ]
+        },
+        {
+          "line": 11,
+          "end_line": 11,
+          "owner": "<module>",
+          "specifier": "./privacyPersonalNewsletter",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/privacyPersonalNewsletter.jsx"
+          ],
+          "bindings": [
+            "PERSONAL_NEWSLETTER_POLICY_PUBLISHED",
+            "PersonalNewsletterPolicyEn"
+          ]
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 16,
-          "end_line": 24,
+          "line": 17,
+          "end_line": 25,
           "owner": "<module>",
           "name": "CookieRow",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 27,
-          "end_line": 266,
+          "line": 28,
+          "end_line": 268,
           "owner": "<module>",
           "name": "PrivacyBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 254,
-          "end_line": 254,
+          "line": 256,
+          "end_line": 256,
           "owner": "PrivacyBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 269,
-          "end_line": 397,
+          "line": 271,
+          "end_line": 399,
           "owner": "<module>",
           "name": "TermsBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 389,
-          "end_line": 389,
+          "line": 391,
+          "end_line": 391,
           "owner": "TermsBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -111972,24 +111986,24 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 154,
-          "end_line": 161,
+          "line": 156,
+          "end_line": 163,
           "owner": "PrivacyBodyEn",
           "component": "button",
           "event": "onClick",
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 251,
-          "end_line": 255,
+          "line": 253,
+          "end_line": 257,
           "owner": "PrivacyBodyEn",
           "component": "a",
           "event": "onClick",
           "expression": "{() => track(events.CONTACT_EMAIL)}"
         },
         {
-          "line": 386,
-          "end_line": 390,
+          "line": 388,
+          "end_line": 392,
           "owner": "TermsBodyEn",
           "component": "a",
           "event": "onClick",
@@ -112722,6 +112736,125 @@
       "imports": [],
       "routes": [],
       "functions": [],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/i18n/privacyPersonalNewsletter.component.test.jsx": {
+      "sha256": "8e909e456d9f98d7e4a474c5f180d36958c7399a67ccb3c1c0585ce2d4740133",
+      "imports": [
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "@testing-library/react",
+          "category": "external_package",
+          "target": "@testing-library/react",
+          "bindings": [
+            "cleanup",
+            "render",
+            "screen"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "afterEach",
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 8,
+          "owner": "<module>",
+          "specifier": "./privacyPersonalNewsletter",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/privacyPersonalNewsletter.jsx"
+          ],
+          "bindings": [
+            "PERSONAL_NEWSLETTER_POLICY_PUBLISHED",
+            "PersonalNewsletterPolicyEn",
+            "PersonalNewsletterPolicyRu"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 12,
+          "end_line": 35,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 13,
+          "end_line": 15,
+          "owner": "<callback@12>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 17,
+          "end_line": 25,
+          "owner": "<callback@12>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 27,
+          "end_line": 34,
+          "owner": "<callback@12>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/i18n/privacyPersonalNewsletter.jsx": {
+      "sha256": "b2603996a7f290b25a0e54b11eef5d94ac36ad545f3a7fe4654eba6a80c2f6d7",
+      "imports": [],
+      "routes": [],
+      "functions": [
+        {
+          "line": 17,
+          "end_line": 71,
+          "owner": "<module>",
+          "name": "PersonalNewsletterPolicyRu",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 73,
+          "end_line": 125,
+          "owner": "<module>",
+          "name": "PersonalNewsletterPolicyEn",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        }
+      ],
       "hooks": [],
       "http": [],
       "storage": [],
@@ -225678,7 +225811,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Privacy.jsx": {
-      "sha256": "a57af798a3eddd17691d4421501fd8744dcaf2fd754f80f8863c6b166b07b50c",
+      "sha256": "4101058c220854390e48921679b2c9791eb6fe7e671a6d2ca5120a26c90f5baf",
       "imports": [
         {
           "line": 1,
@@ -225867,29 +226000,43 @@
           "bindings": [
             "PrivacyBodyEn"
           ]
+        },
+        {
+          "line": 16,
+          "end_line": 19,
+          "owner": "<module>",
+          "specifier": "../i18n/privacyPersonalNewsletter",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/privacyPersonalNewsletter.jsx"
+          ],
+          "bindings": [
+            "PERSONAL_NEWSLETTER_POLICY_PUBLISHED",
+            "PersonalNewsletterPolicyRu"
+          ]
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 34,
-          "end_line": 42,
+          "line": 38,
+          "end_line": 46,
           "owner": "<module>",
           "name": "CookieRow",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 44,
-          "end_line": 303,
+          "line": 48,
+          "end_line": 308,
           "owner": "<module>",
           "name": "Privacy",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 288,
-          "end_line": 288,
+          "line": 293,
+          "end_line": 293,
           "owner": "Privacy",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -225898,15 +226045,15 @@
       ],
       "hooks": [
         {
-          "line": 45,
-          "end_line": 45,
+          "line": 49,
+          "end_line": 49,
           "owner": "Privacy",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 46,
-          "end_line": 46,
+          "line": 50,
+          "end_line": 50,
           "owner": "Privacy",
           "callee": "useRef",
           "arguments": [
@@ -225914,8 +226061,8 @@
           ]
         },
         {
-          "line": 48,
-          "end_line": 52,
+          "line": 52,
+          "end_line": 56,
           "owner": "Privacy",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -225928,16 +226075,16 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 186,
-          "end_line": 193,
+          "line": 191,
+          "end_line": 198,
           "owner": "Privacy",
           "component": "button",
           "event": "onClick",
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 285,
-          "end_line": 289,
+          "line": 290,
+          "end_line": 294,
           "owner": "Privacy",
           "component": "a",
           "event": "onClick",
@@ -259034,9 +259181,9 @@
     }
   },
   "totals": {
-    "imports": 4868,
+    "imports": 4873,
     "routes": 100,
-    "functions": 15505,
+    "functions": 15511,
     "hooks": 2867,
     "http": 127,
     "storage": 244,
@@ -259044,7 +259191,7 @@
     "jsx_handlers": 1258,
     "registries": 719,
     "mcp_tools": 7,
-    "files": 920,
+    "files": 922,
     "parse_errors": 0
   }
 }

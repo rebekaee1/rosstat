@@ -1317,6 +1317,32 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 - **Основная версия точных дублей рядов стран мира (14.11.2026).** `services/world_canonical.py`: ночная сборка sitemap (`sitemap_static._load_duplicate_map`) строит список «неосновная → основная» — группы листинговых рядов одной страны с одинаковым публичным именем, частотой и смысловым срезом (`slice_signature`: без «итого», частоты, географии; нет измерения = «итого»), у которых отпечаток всех точек (md5 по дате и значению) совпадает у всех членов; основная — `primary_key` (свежая последняя точка, частота, длина истории, точки, Евростат, код). Неосновные с показами Search Console (`gsc_page_daily` всё время, `gsc_search_queries` 120 дней; карточка или годовая) не входят; без данных Search Console список пустой. Список пишется в генерацию `world-canonical.json` (вне каталогов хостов), шарды теряют карточки и годовые страницы неосновных (`drop_from_sitemap`), `sitemap-stats.json` — `world_canonical_pairs`. SSR (`primary_code`, кэш процесса по mtime, проверка раз в 5 минут): карточка неосновной — canonical и hreflang на карточку основной на своём хосте; годовая — на годовую основной того же года, если у основной есть точка этого года (`primary_has_year`), иначе свой. Основная — сама себе canonical. Флаг `world_duplicate_canonical` (`RUSTATS_WORLD_DUPLICATE_CANONICAL`, по умолчанию true). Замер `scripts/world-duplicate-canonical.py` (локальная копия, без данных Search Console): 4 394 группы, 7 579 неосновных карточек, ~192 тыс. годовых страниц из sitemap.
 - **Недельный замер в SEO-отчёте Telegram (14.11.2026, пункт 6 утверждённого списка).** `seo_weekly_report.collect_seo_week` кладёт в `adr31` результат `_collect_adr31`: английские запросы apex (`gsc_search_queries`, страница на `https://forecasteconomy.com/`, запрос без кириллицы; окно — 7 дней до последней даты таблицы и 7 дней перед ними), клики apex, из них годовых страниц (регулярное выражение пути), и клики `ru.` (`gsc_page_daily`, своё окно по последней дате). `format_adr31` добавляет блок «Google, английский хост (ADR-0031)» с базой и целью из `ADR31_BASE` (английские показы 325 → > 5 000, клики apex ~75 → > 150, клики `ru.` → > 10) перед «Ошибками sitemap». Сбой сбора не роняет отчёт (warning, rollback). Индекс Search Console и доля обхода годовых в базе приложения отсутствуют — блок называет, где их смотреть. Отчёт по-прежнему за флагом `seo_weekly_report_enabled` (по умолчанию выключен).
 
+## Персональный выпуск рассылки — 2026-11-15
+
+Решение — [ADR-0033](adr/0033-personal-newsletter-issue.md). Ветка агента персонализации, не выпущено; всё за флагами.
+
+- **Настройки** (`config.py`, проброс в `docker-compose.yml`):
+  - `RUSTATS_NEWSLETTER_PERSONAL_ENABLED` (false) — личные выпуски людям;
+  - `…_BEHAVIOR_SIGNALS` (false) — поведение на сайте в письмах людям, только после текста политики;
+  - `…_CLICK_TOKEN` (false) — псевдонимная метка клика `utm_term=r<HMAC10>`, действует только вместе с предыдущим флагом;
+  - `…_HOLDOUT_PCT` (0) — контрольная группа; `…_SUBJECT_AB_PCT` (50) — группа «личная тема»;
+  - `…_BUILD_ENABLED` (false) и `…_ISSUE_PATH` — задачи планировщика;
+  - тихие часы `…_SEND_START_HOUR`/`…_SEND_END_HOUR` (8/21) по поясу человека;
+  - `…_MIN_DAYS_BETWEEN` (6); `…_DORMANT_ENABLED`/`…_DORMANT_DAYS` (false/60);
+  - `…_BATCH_SIZE`/`…_BATCH_PAUSE_SECONDS` (100/0,5).
+- **Таблицы** (Alembic `20261115_newsletter_personal`):
+  - `newsletter_profiles` (ключ `user_id`): `tier` (`rich`/`light`/`cold`), `locale`, `timezone`, `topics` `{тема: вес}`, `subjects` `[{key, score, signals, last}]` (до 30), `geo` `{country, region, region_source}`, `stats`;
+  - `newsletter_personal_issues` (уникальны `campaign` + `user_id`): `arm` (`personal`/`control`), `subject_arm` (`subj_personal`/`subj_base`), `status` (`built`/`general`/`fallback`/`control`/`off`/`no_locale`), `error`, `payload` (язык выпуска в формате ADR-0032), `blocks_meta` `[{pos, origin: personal|editorial|dropped, type, gen, subject, as_of, reason, score, topic, utm_content, item_id?, target?, value_text?, period?}]`, `data_as_of`, `built_at`;
+  - `newsletter_related` (`subject`, `related`, `score`, `visitors`);
+  - `newsletter_query_map` (`q_hash` = sha256 нормализованного запроса, `subject`, `selects`, `share`).
+  Первые две — ПДн: CASCADE, явное удаление в `DELETE /auth/account`, раздел `newsletter_personal` в `GET /auth/account/export`.
+- **Ключ предмета:** `ru:<code>`, `w:<country>:<code>`, `r:<region>:<code>`, `ri:<code>`, `reg:<region>`, `c:<country>`, `t:<тема>`. Генераторы: `series`, `download`, `search`, `region`, `related`, `now`, `forecast`, `check`, `since`, `table`, `calendar`, `section`.
+- **Выход** `build_personal_issue(db, user_id, issue)` → словарь языка: `subject`, `preheader`, `title`, `intro`, `masthead`, `blocks`, `cta_*`, `outro`, `signoff`, `personal_note`.
+  - Личные блоки: `kicker`, `why`, `source`, `as_of`, ссылка с `utm_content=p<N>-<генератор>` (у блоков редакции остаются `b<N>-<тип>`).
+  - `per_recipient_hook(issue)` для `campaign.run` → словарь, `campaign.DEFER` (тихие часы, частота) или выпуск редакции (флаг выключен, ошибка).
+- **Стык с почтой** (`services/personalization.py`): `set_mail_personalization(db, user_id, enabled, request, source)` — журнал согласий `mail_personal`/`mail_personal_revoked` и аудит `mail_personal_on|off`; `block_effect_summary(db, days)` → `[{generator, label, shown, clicks}]`.
+- **Задачи** (`main.py`, за `…_BUILD_ENABLED`): `newsletter_personal_aggregates` 00:40 МСК, `newsletter_personal_build` чт 07:40 МСК. Ничего не отправляют.
+
 ## Почта сайта — 2026-11-14
 
 Решение и замер — [ADR-0032](adr/0032-email-channel-service-mail-and-newsletter.md). Ветка агента, не выпущено; почта выключена флагом.

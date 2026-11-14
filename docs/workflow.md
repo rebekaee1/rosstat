@@ -738,6 +738,33 @@ docker compose exec -T backend python /app/scripts/mail.py reconfirm --send --ma
 
 **Выпуск рассылки.** `scripts/mail.py audience` (счёт, без адресов) → `campaign issue.json` (сухой прогон) → `campaign issue.json --test-to rebeka.ee@yandex.ru` → `campaign issue.json --send` только по команде владельца. Запуск повторяем, пока отчёт не перестанет показывать `stopped: max_per_run`; `server_limit` — остановиться и разобрать (лимит или подозрение на спам у почтового сервиса). Журнал: `select status, error, count(*) from mail_outbox where campaign='…' group by 1, 2`.
 
+## Персональный выпуск рассылки (ADR-0033)
+
+Команда — `scripts/newsletter_personal.py` в контейнере backend (адреса на экран не выводятся):
+
+```bash
+docker compose exec -T backend python /app/scripts/newsletter_personal.py profile --user <uuid|адрес>
+docker compose exec -T backend python /app/scripts/newsletter_personal.py explain --user <uuid|адрес> --issue /app/data/issue-ru.json /app/data/issue-en.json
+docker compose exec -T backend python /app/scripts/newsletter_personal.py preview --user <uuid|адрес> --issue … --out /tmp/nl
+docker compose exec -T backend python /app/scripts/newsletter_personal.py preview --persona rich|light|cold|rich-en|light-en|cold-en --issue … --out /tmp/nl
+docker compose exec -T backend python /app/scripts/newsletter_personal.py build --issue …            # сухой прогон: уровни, блоки, без записи
+docker compose exec -T backend python /app/scripts/newsletter_personal.py build --issue … --persist  # снимки
+docker compose exec -T backend python /app/scripts/newsletter_personal.py send-test --user … --issue … --to rebeka.ee@yandex.ru
+docker compose exec -T backend python /app/scripts/newsletter_personal.py campaign --issue …         # сухой прогон с покрытием
+docker compose exec -T backend python /app/scripts/newsletter_personal.py metrics --campaign <ключ>
+```
+
+- Предпросмотр и проверочное письмо учитывают поведение и при выключенном флаге: это не отправка людям. `--no-behavior` показывает письмо таким, каким оно будет без текста политики.
+- Сборку гонять вне окон ETL (05:30–07:30, 19:30–22:30 МСК).
+- Отправка людям — `campaign … --send` только по команде владельца.
+- Локальный предпросмотр без миграции работает: история пустая, ничего не пишется.
+- Включение по шагам — в [ADR-0033](adr/0033-personal-newsletter-issue.md#порядок-включения).
+
+**Кабинет на боевом (предложение 1, решение владельца).** Явные сигналы (избранное, колокольчик, настройки) появятся только при `RUSTATS_CABINET_ENABLED=true`: миграции кабинета уже на боевом, флаг — в `.env` backend и scheduler, затем `up -d --force-recreate backend scheduler`. Перед этим:
+- вернуть в форму настроек «темы рассылки» (ключи тем — `subjects.TOPICS`), сейчас их нет в форме с круга 13;
+- проверить кабинет на симуляторах iOS по [оркестрации дизайна](agent-orchestration.md);
+- сверить, что слежения только хранятся (сводку колокольчика включает отдельный флаг почты).
+
 ## Выпуск «Скачиваний» и «Выгрузок» служебного бота — 2026-11-14
 
 Ветка `worktree-agent-a4879bc09991f03fb` (не выпущено). Миграций нет. Порядок — по команде владельца, без сообщений в живой Telegram со стороны агента.

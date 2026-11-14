@@ -8,6 +8,7 @@ import { track, events } from '../lib/track';
 import { openConsentSettings } from '../lib/consent';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
+import { PERSONAL_NEWSLETTER_POLICY_PUBLISHED, PersonalNewsletterPolicyEn } from './privacyPersonalNewsletter';
 
 const h2 = 'text-xl font-semibold text-text-primary mt-10 mb-3';
 const p = 'text-text-secondary leading-relaxed mb-4';
@@ -123,6 +124,7 @@ export function PrivacyBodyEn({ t, h1 }) {
           enquiry.
         </li>
       </ul>
+      {PERSONAL_NEWSLETTER_POLICY_PUBLISHED && <PersonalNewsletterPolicyEn />}
 
       <h2 className={h2}>4. Cookies and consent</h2>
       <p className={p}>

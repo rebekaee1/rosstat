@@ -672,6 +672,41 @@ class Settings(BaseSettings):
     mail_watch_digest_enabled: bool = False
     mail_watch_digest_hour_msk: int = 10
 
+    # Персональный выпуск рассылки (ADR-0033, 15.11.2026). Всё выключено; предпросмотр и
+    # проверочное письмо на адрес из списка допуска работают и при выключенных флагах.
+    # enabled — личные выпуски людям (иначе людям уходит общий выпуск редакции);
+    # behavior_signals — сигналы поведения на сайте (просмотры, поиск, скачивания) в письмах
+    # людям: только после текста в политике конфиденциальности (решение 15.11.2026);
+    # click_token — псевдонимная метка клика в ссылках (тот же флаг политики нужен тоже).
+    newsletter_personal_enabled: bool = False
+    newsletter_personal_behavior_signals: bool = False
+    newsletter_personal_click_token: bool = False
+    # Контрольная группа (только выпуск редакции), % подписчиков; 0 — нет группы.
+    newsletter_personal_holdout_pct: int = 0
+    # A/B личной темы и прехедера: доля группы «личная тема», % (действует при enabled).
+    newsletter_personal_subject_ab_pct: int = 50
+    # Сборка снимков личных выпусков по расписанию (четверг, после окна ETL).
+    newsletter_personal_build_enabled: bool = False
+    newsletter_personal_build_weekday: str = "thu"
+    newsletter_personal_build_hour_msk: int = 7
+    newsletter_personal_build_minute: int = 40
+    # Файл выпуска редакции для сборки по расписанию (JSON ADR-0032; ru и en в одном или через запятую).
+    newsletter_personal_issue_path: str = ""
+    # Ночной пересчёт обезличенных таблиц (связанные ряды, запрос → ряд).
+    newsletter_personal_aggregates_hour_msk: int = 0
+    newsletter_personal_aggregates_minute: int = 40
+    # Тихие часы по поясу человека: письмо уходит только с start до end (локальное время).
+    newsletter_personal_send_start_hour: int = 8
+    newsletter_personal_send_end_hour: int = 21
+    # Не чаще одного выпуска за столько дней одному человеку.
+    newsletter_personal_min_days_between: int = 6
+    # «Давно не заходили»: короткий выпуск тем, кто не был на сайте столько дней (за флагом).
+    newsletter_personal_dormant_enabled: bool = False
+    newsletter_personal_dormant_days: int = 60
+    # Пакет пересчёта и пауза между пакетами (общий сервер 4 vCPU).
+    newsletter_personal_batch_size: int = 100
+    newsletter_personal_batch_pause_seconds: float = 0.5
+
     # Админ-BI (/admin/bi): comma-separated email'ы с доступом к дашборду.
     # Вход обычной сессией; email сверяется по способам входа пользователя.
     admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"

@@ -13,6 +13,10 @@ import LegalToc from '../components/LegalToc';
 import '../styles/w5-pages.css';
 import { toolTrail } from '../lib/breadcrumbs';
 import { PrivacyBodyEn } from '../i18n/legalPages.en';
+import {
+  PERSONAL_NEWSLETTER_POLICY_PUBLISHED,
+  PersonalNewsletterPolicyRu,
+} from '../i18n/privacyPersonalNewsletter';
 
 /**
  * Политика конфиденциальности и обработки персональных данных.
@@ -155,6 +159,7 @@ export default function Privacy() {
             ответы на обращения и переписка по существу вопроса — на основании вашего обращения.
           </li>
         </ul>
+        {PERSONAL_NEWSLETTER_POLICY_PUBLISHED && <PersonalNewsletterPolicyRu />}
 
         <h2 className={h2}>4. Файлы cookie и согласие</h2>
         <p className={p}>

@@ -6,17 +6,17 @@
 
 - HTTP declarations: **200**
 - HTTP reachable paths: **200**
-- ORM tables: **77**
+- ORM tables: **81**
 - DTO schemas (own fields + resolved inherited bases): **53**
-- Settings fields: **297**
-- Settings reads: **762**
+- Settings fields: **316**
+- Settings reads: **791**
 - Direct environment reads: **36**
-- Jobs: **61**
+- Jobs: **63**
 - Middleware: **6**
-- Registry declarations: **1467**
-- Registry references: **2748**
-- Migration operations: **490**
-- Candidate effects: **3020**
+- Registry declarations: **1504**
+- Registry references: **2811**
+- Migration operations: **500**
+- Candidate effects: **3099**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -63,22 +63,22 @@
 | POST | /api/v1/analytics/behavior | app.api.analytics.collect_behavior_batch | [backend/app/api/analytics.py:683](../backend/app/api/analytics.py#L683) |
 | GET | /api/v1/ticker/rates/{pair} | app.api.ticker.get_rate_basis | [backend/app/api/ticker.py:169](../backend/app/api/ticker.py#L169) |
 | GET | /api/v1/ticker/live | app.api.ticker.get_live_ticker | [backend/app/api/ticker.py:237](../backend/app/api/ticker.py#L237) |
-| POST | /api/v1/auth/register | app.api.auth.register | [backend/app/api/auth.py:123](../backend/app/api/auth.py#L123) |
-| POST | /api/v1/auth/login | app.api.auth.login | [backend/app/api/auth.py:194](../backend/app/api/auth.py#L194) |
-| POST | /api/v1/auth/logout | app.api.auth.logout | [backend/app/api/auth.py:237](../backend/app/api/auth.py#L237) |
-| GET | /api/v1/auth/me | app.api.auth.me | [backend/app/api/auth.py:245](../backend/app/api/auth.py#L245) |
-| POST | /api/v1/auth/set-password | app.api.auth.set_password | [backend/app/api/auth.py:287](../backend/app/api/auth.py#L287) |
-| DELETE | /api/v1/auth/identities/{identity_id} | app.api.auth.unlink_identity | [backend/app/api/auth.py:335](../backend/app/api/auth.py#L335) |
-| POST | /api/v1/auth/logout-all | app.api.auth.logout_all | [backend/app/api/auth.py:357](../backend/app/api/auth.py#L357) |
-| POST | /api/v1/auth/feedback | app.api.auth.submit_feedback | [backend/app/api/auth.py:403](../backend/app/api/auth.py#L403) |
-| PATCH | /api/v1/auth/account/profile | app.api.auth.update_profile | [backend/app/api/auth.py:434](../backend/app/api/auth.py#L434) |
-| POST | /api/v1/auth/account/newsletter | app.api.auth.update_newsletter | [backend/app/api/auth.py:447](../backend/app/api/auth.py#L447) |
-| GET | /api/v1/auth/account/export | app.api.auth.export_account | [backend/app/api/auth.py:463](../backend/app/api/auth.py#L463) |
-| DELETE | /api/v1/auth/account | app.api.auth.delete_account | [backend/app/api/auth.py:526](../backend/app/api/auth.py#L526) |
-| POST | /api/v1/auth/email/verify | app.api.auth.verify_email | [backend/app/api/auth.py:595](../backend/app/api/auth.py#L595) |
-| POST | /api/v1/auth/email/verify/resend | app.api.auth.resend_verify_email | [backend/app/api/auth.py:617](../backend/app/api/auth.py#L617) |
-| POST | /api/v1/auth/password/forgot | app.api.auth.forgot_password | [backend/app/api/auth.py:637](../backend/app/api/auth.py#L637) |
-| POST | /api/v1/auth/password/reset | app.api.auth.reset_password | [backend/app/api/auth.py:685](../backend/app/api/auth.py#L685) |
+| POST | /api/v1/auth/register | app.api.auth.register | [backend/app/api/auth.py:125](../backend/app/api/auth.py#L125) |
+| POST | /api/v1/auth/login | app.api.auth.login | [backend/app/api/auth.py:196](../backend/app/api/auth.py#L196) |
+| POST | /api/v1/auth/logout | app.api.auth.logout | [backend/app/api/auth.py:239](../backend/app/api/auth.py#L239) |
+| GET | /api/v1/auth/me | app.api.auth.me | [backend/app/api/auth.py:247](../backend/app/api/auth.py#L247) |
+| POST | /api/v1/auth/set-password | app.api.auth.set_password | [backend/app/api/auth.py:289](../backend/app/api/auth.py#L289) |
+| DELETE | /api/v1/auth/identities/{identity_id} | app.api.auth.unlink_identity | [backend/app/api/auth.py:337](../backend/app/api/auth.py#L337) |
+| POST | /api/v1/auth/logout-all | app.api.auth.logout_all | [backend/app/api/auth.py:359](../backend/app/api/auth.py#L359) |
+| POST | /api/v1/auth/feedback | app.api.auth.submit_feedback | [backend/app/api/auth.py:405](../backend/app/api/auth.py#L405) |
+| PATCH | /api/v1/auth/account/profile | app.api.auth.update_profile | [backend/app/api/auth.py:436](../backend/app/api/auth.py#L436) |
+| POST | /api/v1/auth/account/newsletter | app.api.auth.update_newsletter | [backend/app/api/auth.py:449](../backend/app/api/auth.py#L449) |
+| GET | /api/v1/auth/account/export | app.api.auth.export_account | [backend/app/api/auth.py:465](../backend/app/api/auth.py#L465) |
+| DELETE | /api/v1/auth/account | app.api.auth.delete_account | [backend/app/api/auth.py:530](../backend/app/api/auth.py#L530) |
+| POST | /api/v1/auth/email/verify | app.api.auth.verify_email | [backend/app/api/auth.py:601](../backend/app/api/auth.py#L601) |
+| POST | /api/v1/auth/email/verify/resend | app.api.auth.resend_verify_email | [backend/app/api/auth.py:623](../backend/app/api/auth.py#L623) |
+| POST | /api/v1/auth/password/forgot | app.api.auth.forgot_password | [backend/app/api/auth.py:643](../backend/app/api/auth.py#L643) |
+| POST | /api/v1/auth/password/reset | app.api.auth.reset_password | [backend/app/api/auth.py:691](../backend/app/api/auth.py#L691) |
 | GET | /api/v1/auth/oauth/providers | app.api.oauth.oauth_providers | [backend/app/api/oauth.py:254](../backend/app/api/oauth.py#L254) |
 | GET | /api/v1/auth/oauth/{provider}/start | app.api.oauth.oauth_start | [backend/app/api/oauth.py:260](../backend/app/api/oauth.py#L260) |
 | GET | /api/v1/auth/oauth/fake/authorize | app.api.oauth.fake_authorize | [backend/app/api/oauth.py:346](../backend/app/api/oauth.py#L346) |
@@ -229,12 +229,12 @@
 
 | Order | Class | Source |
 | --- | --- | --- |
-| 1 | app.services.og_webp.OgWebpMiddleware | [backend/app/main.py:2062](../backend/app/main.py#L2062) |
-| 2 | app.main.RateLimitMiddleware | [backend/app/main.py:2063](../backend/app/main.py#L2063) |
-| 3 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:2064](../backend/app/main.py#L2064) |
-| 4 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:2065](../backend/app/main.py#L2065) |
-| 5 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:2066](../backend/app/main.py#L2066) |
-| 6 | app.main.LocaleMiddleware | [backend/app/main.py:2082](../backend/app/main.py#L2082) |
+| 1 | app.services.og_webp.OgWebpMiddleware | [backend/app/main.py:2092](../backend/app/main.py#L2092) |
+| 2 | app.main.RateLimitMiddleware | [backend/app/main.py:2093](../backend/app/main.py#L2093) |
+| 3 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:2094](../backend/app/main.py#L2094) |
+| 4 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:2095](../backend/app/main.py#L2095) |
+| 5 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:2096](../backend/app/main.py#L2096) |
+| 6 | app.main.LocaleMiddleware | [backend/app/main.py:2112](../backend/app/main.py#L2112) |
 
 ## Table `session_replay_chunks`
 
@@ -1485,19 +1485,88 @@ Constraints: `[{'path': 'backend/app/models.py', 'line': 1656, 'end_line': 1658,
 
 Relationships: `[]`
 
+## Table `newsletter_profiles`
+
+| Python / SQL | Type | Nullable | Column arguments / options | Source |
+| --- | --- | --- | --- | --- |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:1682](../backend/app/models.py#L1682) |
+| version / version | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '1'} | [backend/app/models.py:1685](../backend/app/models.py#L1685) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1686](../backend/app/models.py#L1686) |
+| tier / tier | Mapped[str] | False | ['String(10)'] {'nullable': 'False', 'default': "'cold'"} | [backend/app/models.py:1688](../backend/app/models.py#L1688) |
+| locale / locale | Mapped[str] | False | ['String(2)'] {'nullable': 'False', 'default': "'ru'"} | [backend/app/models.py:1689](../backend/app/models.py#L1689) |
+| timezone / timezone | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1690](../backend/app/models.py#L1690) |
+| topics / topics | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1692](../backend/app/models.py#L1692) |
+| subjects / subjects | Mapped[list \| None] | True | ['JSON'] {} | [backend/app/models.py:1694](../backend/app/models.py#L1694) |
+| geo / geo | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1696](../backend/app/models.py#L1696) |
+| stats / stats | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1698](../backend/app/models.py#L1698) |
+
+Constraints: `[]`
+
+Relationships: `[]`
+
+## Table `newsletter_personal_issues`
+
+| Python / SQL | Type | Nullable | Column arguments / options | Source |
+| --- | --- | --- | --- | --- |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1715](../backend/app/models.py#L1715) |
+| campaign / campaign | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1716](../backend/app/models.py#L1716) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1717](../backend/app/models.py#L1717) |
+| locale / locale | Mapped[str] | False | ['String(2)'] {'nullable': 'False', 'default': "'ru'"} | [backend/app/models.py:1720](../backend/app/models.py#L1720) |
+| arm / arm | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'personal'"} | [backend/app/models.py:1722](../backend/app/models.py#L1722) |
+| subject_arm / subject_arm | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1723](../backend/app/models.py#L1723) |
+| tier / tier | Mapped[str] | False | ['String(10)'] {'nullable': 'False', 'default': "'cold'"} | [backend/app/models.py:1724](../backend/app/models.py#L1724) |
+| status / status | Mapped[str] | False | ['String(12)'] {'nullable': 'False', 'default': "'built'"} | [backend/app/models.py:1727](../backend/app/models.py#L1727) |
+| error / error | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1728](../backend/app/models.py#L1728) |
+| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1729](../backend/app/models.py#L1729) |
+| blocks_meta / blocks_meta | Mapped[list \| None] | True | ['JSON'] {} | [backend/app/models.py:1730](../backend/app/models.py#L1730) |
+| data_as_of / data_as_of | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1731](../backend/app/models.py#L1731) |
+| built_at / built_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1732](../backend/app/models.py#L1732) |
+
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1710, 'end_line': 1713, 'owner': 'NewsletterPersonalIssue', 'conditions': [], 'definition': "(UniqueConstraint('campaign', 'user_id', name='uq_newsletter_personal_issue'), Index('ix_newsletter_personal_issue_user', 'user_id', 'built_at'))"}]`
+
+Relationships: `[]`
+
+## Table `newsletter_related`
+
+| Python / SQL | Type | Nullable | Column arguments / options | Source |
+| --- | --- | --- | --- | --- |
+| subject / subject | Mapped[str] | False | ['String(200)'] {'primary_key': 'True'} | [backend/app/models.py:1743](../backend/app/models.py#L1743) |
+| related / related | Mapped[str] | False | ['String(200)'] {'primary_key': 'True'} | [backend/app/models.py:1744](../backend/app/models.py#L1744) |
+| score / score | Mapped[float] | False | ['Numeric(8, 4)'] {'nullable': 'False'} | [backend/app/models.py:1745](../backend/app/models.py#L1745) |
+| visitors / visitors | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:1746](../backend/app/models.py#L1746) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1747](../backend/app/models.py#L1747) |
+
+Constraints: `[]`
+
+Relationships: `[]`
+
+## Table `newsletter_query_map`
+
+| Python / SQL | Type | Nullable | Column arguments / options | Source |
+| --- | --- | --- | --- | --- |
+| q_hash / q_hash | Mapped[str] | False | ['String(64)'] {'primary_key': 'True'} | [backend/app/models.py:1758](../backend/app/models.py#L1758) |
+| subject / subject | Mapped[str] | False | ['String(200)'] {'nullable': 'False'} | [backend/app/models.py:1759](../backend/app/models.py#L1759) |
+| selects / selects | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:1760](../backend/app/models.py#L1760) |
+| share / share | Mapped[float] | False | ['Numeric(5, 4)'] {'nullable': 'False'} | [backend/app/models.py:1761](../backend/app/models.py#L1761) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1762](../backend/app/models.py#L1762) |
+
+Constraints: `[]`
+
+Relationships: `[]`
+
 ## Table `auth_audit`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1678](../backend/app/models.py#L1678) |
-| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1682](../backend/app/models.py#L1682) |
-| event / event | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1685](../backend/app/models.py#L1685) |
-| ip / ip | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1686](../backend/app/models.py#L1686) |
-| user_agent / user_agent | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1687](../backend/app/models.py#L1687) |
-| detail / detail | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1688](../backend/app/models.py#L1688) |
-| ts / ts | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1689](../backend/app/models.py#L1689) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1771](../backend/app/models.py#L1771) |
+| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1775](../backend/app/models.py#L1775) |
+| event / event | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1778](../backend/app/models.py#L1778) |
+| ip / ip | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1779](../backend/app/models.py#L1779) |
+| user_agent / user_agent | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1780](../backend/app/models.py#L1780) |
+| detail / detail | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1781](../backend/app/models.py#L1781) |
+| ts / ts | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1782](../backend/app/models.py#L1782) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1674, 'end_line': 1676, 'owner': 'AuthAudit', 'conditions': [], 'definition': "(Index('ix_auth_audit_user', 'user_id', 'ts'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1767, 'end_line': 1769, 'owner': 'AuthAudit', 'conditions': [], 'definition': "(Index('ix_auth_audit_user', 'user_id', 'ts'),)"}]`
 
 Relationships: `[]`
 
@@ -1505,22 +1574,22 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| session_id_hash / session_id_hash | Mapped[str] | False | ['String(80)'] {'primary_key': 'True'} | [backend/app/models.py:1704](../backend/app/models.py#L1704) |
-| schema_version / schema_version | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'1'", 'server_default': "'1'"} | [backend/app/models.py:1705](../backend/app/models.py#L1705) |
-| source_fingerprint / source_fingerprint | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'default': "''", 'server_default': "''"} | [backend/app/models.py:1706](../backend/app/models.py#L1706) |
-| latest_event_id / latest_event_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1707](../backend/app/models.py#L1707) |
-| pending_event_id / pending_event_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1708](../backend/app/models.py#L1708) |
-| event_count / event_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1709](../backend/app/models.py#L1709) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'pending'", 'server_default': "'pending'"} | [backend/app/models.py:1710](../backend/app/models.py#L1710) |
-| report_json / report_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1711](../backend/app/models.py#L1711) |
-| visual_json / visual_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1712](../backend/app/models.py#L1712) |
-| pending_at / pending_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1713](../backend/app/models.py#L1713) |
-| due_at / due_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1714](../backend/app/models.py#L1714) |
-| attempt_count / attempt_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1715](../backend/app/models.py#L1715) |
-| error / error | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1716](../backend/app/models.py#L1716) |
-| generated_at / generated_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1717](../backend/app/models.py#L1717) |
+| session_id_hash / session_id_hash | Mapped[str] | False | ['String(80)'] {'primary_key': 'True'} | [backend/app/models.py:1797](../backend/app/models.py#L1797) |
+| schema_version / schema_version | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'1'", 'server_default': "'1'"} | [backend/app/models.py:1798](../backend/app/models.py#L1798) |
+| source_fingerprint / source_fingerprint | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'default': "''", 'server_default': "''"} | [backend/app/models.py:1799](../backend/app/models.py#L1799) |
+| latest_event_id / latest_event_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1800](../backend/app/models.py#L1800) |
+| pending_event_id / pending_event_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1801](../backend/app/models.py#L1801) |
+| event_count / event_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1802](../backend/app/models.py#L1802) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'pending'", 'server_default': "'pending'"} | [backend/app/models.py:1803](../backend/app/models.py#L1803) |
+| report_json / report_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1804](../backend/app/models.py#L1804) |
+| visual_json / visual_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1805](../backend/app/models.py#L1805) |
+| pending_at / pending_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1806](../backend/app/models.py#L1806) |
+| due_at / due_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1807](../backend/app/models.py#L1807) |
+| attempt_count / attempt_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1808](../backend/app/models.py#L1808) |
+| error / error | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1809](../backend/app/models.py#L1809) |
+| generated_at / generated_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1810](../backend/app/models.py#L1810) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1700, 'end_line': 1702, 'owner': 'SessionAnalysisReport', 'conditions': [], 'definition': "(Index('ix_session_analysis_due', 'status', 'due_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1793, 'end_line': 1795, 'owner': 'SessionAnalysisReport', 'conditions': [], 'definition': "(Index('ix_session_analysis_due', 'status', 'due_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1528,16 +1597,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1745](../backend/app/models.py#L1745) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1746](../backend/app/models.py#L1746) |
-| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1747](../backend/app/models.py#L1747) |
-| item_key / item_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1748](../backend/app/models.py#L1748) |
-| title / title | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1749](../backend/app/models.py#L1749) |
-| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1750](../backend/app/models.py#L1750) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1751](../backend/app/models.py#L1751) |
-| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1752](../backend/app/models.py#L1752) |
+| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1838](../backend/app/models.py#L1838) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1839](../backend/app/models.py#L1839) |
+| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1840](../backend/app/models.py#L1840) |
+| item_key / item_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1841](../backend/app/models.py#L1841) |
+| title / title | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1842](../backend/app/models.py#L1842) |
+| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1843](../backend/app/models.py#L1843) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1844](../backend/app/models.py#L1844) |
+| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1845](../backend/app/models.py#L1845) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1740, 'end_line': 1743, 'owner': 'UserSavedItem', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'kind', 'item_key', name='uq_user_saved_item'), Index('ix_user_saved_items_user_kind', 'user_id', 'kind', 'created_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1833, 'end_line': 1836, 'owner': 'UserSavedItem', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'kind', 'item_key', name='uq_user_saved_item'), Index('ix_user_saved_items_user_kind', 'user_id', 'kind', 'created_at'))"}]`
 
 Relationships: `[]`
 
@@ -1545,16 +1614,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1769](../backend/app/models.py#L1769) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1770](../backend/app/models.py#L1770) |
-| subject_kind / subject_kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1771](../backend/app/models.py#L1771) |
-| subject_key / subject_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1772](../backend/app/models.py#L1772) |
-| channel / channel | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'inapp'", 'server_default': "'inapp'"} | [backend/app/models.py:1773](../backend/app/models.py#L1773) |
-| last_seen_date / last_seen_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1774](../backend/app/models.py#L1774) |
-| last_notified_date / last_notified_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1775](../backend/app/models.py#L1775) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1776](../backend/app/models.py#L1776) |
+| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1862](../backend/app/models.py#L1862) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1863](../backend/app/models.py#L1863) |
+| subject_kind / subject_kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1864](../backend/app/models.py#L1864) |
+| subject_key / subject_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1865](../backend/app/models.py#L1865) |
+| channel / channel | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'inapp'", 'server_default': "'inapp'"} | [backend/app/models.py:1866](../backend/app/models.py#L1866) |
+| last_seen_date / last_seen_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1867](../backend/app/models.py#L1867) |
+| last_notified_date / last_notified_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1868](../backend/app/models.py#L1868) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1869](../backend/app/models.py#L1869) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1764, 'end_line': 1767, 'owner': 'UserWatch', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'subject_kind', 'subject_key', 'channel', name='uq_user_watch'), Index('ix_user_watches_subject', 'subject_kind', 'subject_key'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1857, 'end_line': 1860, 'owner': 'UserWatch', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'subject_kind', 'subject_key', 'channel', name='uq_user_watch'), Index('ix_user_watches_subject', 'subject_kind', 'subject_key'))"}]`
 
 Relationships: `[]`
 
@@ -1562,16 +1631,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1786](../backend/app/models.py#L1786) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1787](../backend/app/models.py#L1787) |
-| source / source | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1788](../backend/app/models.py#L1788) |
-| subject_key / subject_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False', 'default': "''", 'server_default': "''"} | [backend/app/models.py:1789](../backend/app/models.py#L1789) |
-| format / format | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:1790](../backend/app/models.py#L1790) |
-| params / params | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1791](../backend/app/models.py#L1791) |
-| rows_count / rows_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1792](../backend/app/models.py#L1792) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1793](../backend/app/models.py#L1793) |
+| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1879](../backend/app/models.py#L1879) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1880](../backend/app/models.py#L1880) |
+| source / source | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1881](../backend/app/models.py#L1881) |
+| subject_key / subject_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False', 'default': "''", 'server_default': "''"} | [backend/app/models.py:1882](../backend/app/models.py#L1882) |
+| format / format | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:1883](../backend/app/models.py#L1883) |
+| params / params | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1884](../backend/app/models.py#L1884) |
+| rows_count / rows_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1885](../backend/app/models.py#L1885) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1886](../backend/app/models.py#L1886) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1782, 'end_line': 1784, 'owner': 'UserExport', 'conditions': [], 'definition': "(Index('ix_user_exports_user_created', 'user_id', 'created_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1875, 'end_line': 1877, 'owner': 'UserExport', 'conditions': [], 'definition': "(Index('ix_user_exports_user_created', 'user_id', 'created_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1579,12 +1648,12 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:1808](../backend/app/models.py#L1808) |
-| data / data | Mapped[dict] | False | ['JSON'] {'nullable': 'False', 'default': 'dict'} | [backend/app/models.py:1811](../backend/app/models.py#L1811) |
-| feed_token_hash / feed_token_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1812](../backend/app/models.py#L1812) |
-| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1813](../backend/app/models.py#L1813) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:1901](../backend/app/models.py#L1901) |
+| data / data | Mapped[dict] | False | ['JSON'] {'nullable': 'False', 'default': 'dict'} | [backend/app/models.py:1904](../backend/app/models.py#L1904) |
+| feed_token_hash / feed_token_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1905](../backend/app/models.py#L1905) |
+| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1906](../backend/app/models.py#L1906) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1804, 'end_line': 1806, 'owner': 'UserPreference', 'conditions': [], 'definition': "(Index('ix_user_preferences_feed_token', 'feed_token_hash', unique=True),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1897, 'end_line': 1899, 'owner': 'UserPreference', 'conditions': [], 'definition': "(Index('ix_user_preferences_feed_token', 'feed_token_hash', unique=True),)"}]`
 
 Relationships: `[]`
 
@@ -1592,32 +1661,32 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| user_id / user_id | Mapped[uuid.UUID] | False | ['Uuid()', "ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:1833](../backend/app/models.py#L1833) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1836](../backend/app/models.py#L1836) |
-| method / method | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1838](../backend/app/models.py#L1838) |
-| site_locale / site_locale | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:1840](../backend/app/models.py#L1840) |
-| newsletter / newsletter | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1841](../backend/app/models.py#L1841) |
-| country / country | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1842](../backend/app/models.py#L1842) |
-| country_code / country_code | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:1843](../backend/app/models.py#L1843) |
-| geo_region / geo_region | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1844](../backend/app/models.py#L1844) |
-| channel / channel | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1846](../backend/app/models.py#L1846) |
-| referrer_host / referrer_host | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1847](../backend/app/models.py#L1847) |
-| utm_source / utm_source | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1848](../backend/app/models.py#L1848) |
-| utm_medium / utm_medium | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1849](../backend/app/models.py#L1849) |
-| utm_campaign / utm_campaign | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1850](../backend/app/models.py#L1850) |
-| device_type / device_type | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1851](../backend/app/models.py#L1851) |
-| browser / browser | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:1852](../backend/app/models.py#L1852) |
-| os / os | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:1853](../backend/app/models.py#L1853) |
-| browser_lang / browser_lang | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:1854](../backend/app/models.py#L1854) |
-| landing_page / landing_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1855](../backend/app/models.py#L1855) |
-| trigger / trigger | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:1857](../backend/app/models.py#L1857) |
-| sessions_before / sessions_before | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1858](../backend/app/models.py#L1858) |
-| pageviews_before / pageviews_before | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1859](../backend/app/models.py#L1859) |
-| days_to_signup / days_to_signup | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1860](../backend/app/models.py#L1860) |
-| filled_at / filled_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1862](../backend/app/models.py#L1862) |
-| source / source | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1864](../backend/app/models.py#L1864) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ['Uuid()', "ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:1926](../backend/app/models.py#L1926) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1929](../backend/app/models.py#L1929) |
+| method / method | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1931](../backend/app/models.py#L1931) |
+| site_locale / site_locale | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:1933](../backend/app/models.py#L1933) |
+| newsletter / newsletter | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1934](../backend/app/models.py#L1934) |
+| country / country | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1935](../backend/app/models.py#L1935) |
+| country_code / country_code | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:1936](../backend/app/models.py#L1936) |
+| geo_region / geo_region | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1937](../backend/app/models.py#L1937) |
+| channel / channel | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1939](../backend/app/models.py#L1939) |
+| referrer_host / referrer_host | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1940](../backend/app/models.py#L1940) |
+| utm_source / utm_source | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1941](../backend/app/models.py#L1941) |
+| utm_medium / utm_medium | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1942](../backend/app/models.py#L1942) |
+| utm_campaign / utm_campaign | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1943](../backend/app/models.py#L1943) |
+| device_type / device_type | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1944](../backend/app/models.py#L1944) |
+| browser / browser | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:1945](../backend/app/models.py#L1945) |
+| os / os | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:1946](../backend/app/models.py#L1946) |
+| browser_lang / browser_lang | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:1947](../backend/app/models.py#L1947) |
+| landing_page / landing_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1948](../backend/app/models.py#L1948) |
+| trigger / trigger | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:1950](../backend/app/models.py#L1950) |
+| sessions_before / sessions_before | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1951](../backend/app/models.py#L1951) |
+| pageviews_before / pageviews_before | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1952](../backend/app/models.py#L1952) |
+| days_to_signup / days_to_signup | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1953](../backend/app/models.py#L1953) |
+| filled_at / filled_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1955](../backend/app/models.py#L1955) |
+| source / source | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1957](../backend/app/models.py#L1957) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1829, 'end_line': 1831, 'owner': 'UserSignup', 'conditions': [], 'definition': "(Index('ix_user_signups_created', 'created_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1922, 'end_line': 1924, 'owner': 'UserSignup', 'conditions': [], 'definition': "(Index('ix_user_signups_created', 'created_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1625,16 +1694,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1880](../backend/app/models.py#L1880) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1881](../backend/app/models.py#L1881) |
-| event_name / event_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1882](../backend/app/models.py#L1882) |
-| dim / dim | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:1883](../backend/app/models.py#L1883) |
-| value / value | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1884](../backend/app/models.py#L1884) |
-| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1885](../backend/app/models.py#L1885) |
-| sessions / sessions | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1886](../backend/app/models.py#L1886) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1887](../backend/app/models.py#L1887) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1973](../backend/app/models.py#L1973) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1974](../backend/app/models.py#L1974) |
+| event_name / event_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1975](../backend/app/models.py#L1975) |
+| dim / dim | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:1976](../backend/app/models.py#L1976) |
+| value / value | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1977](../backend/app/models.py#L1977) |
+| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1978](../backend/app/models.py#L1978) |
+| sessions / sessions | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1979](../backend/app/models.py#L1979) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1980](../backend/app/models.py#L1980) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1876, 'end_line': 1878, 'owner': 'DailyGoalDim', 'conditions': [], 'definition': "(UniqueConstraint('day', 'event_name', 'dim', 'value', name='uq_daily_goal_dim_key'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1969, 'end_line': 1971, 'owner': 'DailyGoalDim', 'conditions': [], 'definition': "(UniqueConstraint('day', 'event_name', 'dim', 'value', name='uq_daily_goal_dim_key'),)"}]`
 
 Relationships: `[]`
 
@@ -1642,14 +1711,14 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| chat_id / chat_id | Mapped[str] | False | ['String(32)'] {'primary_key': 'True'} | [backend/app/models.py:1903](../backend/app/models.py#L1903) |
-| chat_hash / chat_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1904](../backend/app/models.py#L1904) |
-| first_code / first_code | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1905](../backend/app/models.py#L1905) |
-| heard_from / heard_from | Mapped[str \| None] | True | ['String(24)'] {} | [backend/app/models.py:1906](../backend/app/models.py#L1906) |
-| asked_source_at / asked_source_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1907](../backend/app/models.py#L1907) |
-| first_seen_at / first_seen_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1908](../backend/app/models.py#L1908) |
-| last_seen_at / last_seen_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1909](../backend/app/models.py#L1909) |
-| blocked_at / blocked_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1910](../backend/app/models.py#L1910) |
+| chat_id / chat_id | Mapped[str] | False | ['String(32)'] {'primary_key': 'True'} | [backend/app/models.py:1996](../backend/app/models.py#L1996) |
+| chat_hash / chat_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1997](../backend/app/models.py#L1997) |
+| first_code / first_code | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1998](../backend/app/models.py#L1998) |
+| heard_from / heard_from | Mapped[str \| None] | True | ['String(24)'] {} | [backend/app/models.py:1999](../backend/app/models.py#L1999) |
+| asked_source_at / asked_source_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2000](../backend/app/models.py#L2000) |
+| first_seen_at / first_seen_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2001](../backend/app/models.py#L2001) |
+| last_seen_at / last_seen_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2002](../backend/app/models.py#L2002) |
+| blocked_at / blocked_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2003](../backend/app/models.py#L2003) |
 
 Constraints: `[]`
 
@@ -1659,14 +1728,14 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1917](../backend/app/models.py#L1917) |
-| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1918](../backend/app/models.py#L1918) |
-| chat_hash / chat_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1919](../backend/app/models.py#L1919) |
-| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1921](../backend/app/models.py#L1921) |
-| code / code | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1922](../backend/app/models.py#L1922) |
-| topic / topic | Mapped[str \| None] | True | ['String(24)'] {} | [backend/app/models.py:1923](../backend/app/models.py#L1923) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2010](../backend/app/models.py#L2010) |
+| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2011](../backend/app/models.py#L2011) |
+| chat_hash / chat_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2012](../backend/app/models.py#L2012) |
+| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2014](../backend/app/models.py#L2014) |
+| code / code | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2015](../backend/app/models.py#L2015) |
+| topic / topic | Mapped[str \| None] | True | ['String(24)'] {} | [backend/app/models.py:2016](../backend/app/models.py#L2016) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1915, 'end_line': 1915, 'owner': 'PublicBotEvent', 'conditions': [], 'definition': "(Index('ix_public_bot_events_kind_ts', 'kind', 'occurred_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2008, 'end_line': 2008, 'owner': 'PublicBotEvent', 'conditions': [], 'definition': "(Index('ix_public_bot_events_kind_ts', 'kind', 'occurred_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1674,20 +1743,20 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1936](../backend/app/models.py#L1936) |
-| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive', 'index': 'True'} | [backend/app/models.py:1937](../backend/app/models.py#L1937) |
-| chat_id / chat_id | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:1938](../backend/app/models.py#L1938) |
-| user_id / user_id | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:1939](../backend/app/models.py#L1939) |
-| username / username | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1940](../backend/app/models.py#L1940) |
-| first_name / first_name | Mapped[str \| None] | True | ['String(128)'] {} | [backend/app/models.py:1941](../backend/app/models.py#L1941) |
-| last_name / last_name | Mapped[str \| None] | True | ['String(128)'] {} | [backend/app/models.py:1942](../backend/app/models.py#L1942) |
-| language_code / language_code | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:1943](../backend/app/models.py#L1943) |
-| direction / direction | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:1944](../backend/app/models.py#L1944) |
-| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1945](../backend/app/models.py#L1945) |
-| text / text | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1946](../backend/app/models.py#L1946) |
-| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1947](../backend/app/models.py#L1947) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2029](../backend/app/models.py#L2029) |
+| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive', 'index': 'True'} | [backend/app/models.py:2030](../backend/app/models.py#L2030) |
+| chat_id / chat_id | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:2031](../backend/app/models.py#L2031) |
+| user_id / user_id | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:2032](../backend/app/models.py#L2032) |
+| username / username | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2033](../backend/app/models.py#L2033) |
+| first_name / first_name | Mapped[str \| None] | True | ['String(128)'] {} | [backend/app/models.py:2034](../backend/app/models.py#L2034) |
+| last_name / last_name | Mapped[str \| None] | True | ['String(128)'] {} | [backend/app/models.py:2035](../backend/app/models.py#L2035) |
+| language_code / language_code | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:2036](../backend/app/models.py#L2036) |
+| direction / direction | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:2037](../backend/app/models.py#L2037) |
+| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2038](../backend/app/models.py#L2038) |
+| text / text | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:2039](../backend/app/models.py#L2039) |
+| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:2040](../backend/app/models.py#L2040) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1934, 'end_line': 1934, 'owner': 'PublicBotDialog', 'conditions': [], 'definition': "(Index('ix_public_bot_dialog_chat_ts', 'chat_id', 'occurred_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2027, 'end_line': 2027, 'owner': 'PublicBotDialog', 'conditions': [], 'definition': "(Index('ix_public_bot_dialog_chat_ts', 'chat_id', 'occurred_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1695,15 +1764,15 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1954](../backend/app/models.py#L1954) |
-| chat_id / chat_id | Mapped[str] | False | ['String(32)', "ForeignKey('public_bot_chats.chat_id', ondelete='CASCADE')"] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1955](../backend/app/models.py#L1955) |
-| topic / topic | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1958](../backend/app/models.py#L1958) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1959](../backend/app/models.py#L1959) |
-| last_point_date / last_point_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1961](../backend/app/models.py#L1961) |
-| last_value / last_value | Mapped[float \| None] | True | ['Numeric(14, 4)'] {} | [backend/app/models.py:1962](../backend/app/models.py#L1962) |
-| last_sent_at / last_sent_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1963](../backend/app/models.py#L1963) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2047](../backend/app/models.py#L2047) |
+| chat_id / chat_id | Mapped[str] | False | ['String(32)', "ForeignKey('public_bot_chats.chat_id', ondelete='CASCADE')"] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2048](../backend/app/models.py#L2048) |
+| topic / topic | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2051](../backend/app/models.py#L2051) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2052](../backend/app/models.py#L2052) |
+| last_point_date / last_point_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2054](../backend/app/models.py#L2054) |
+| last_value / last_value | Mapped[float \| None] | True | ['Numeric(14, 4)'] {} | [backend/app/models.py:2055](../backend/app/models.py#L2055) |
+| last_sent_at / last_sent_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2056](../backend/app/models.py#L2056) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1952, 'end_line': 1952, 'owner': 'PublicBotSubscription', 'conditions': [], 'definition': "(UniqueConstraint('chat_id', 'topic', name='uq_public_bot_sub_chat_topic'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2045, 'end_line': 2045, 'owner': 'PublicBotSubscription', 'conditions': [], 'definition': "(UniqueConstraint('chat_id', 'topic', name='uq_public_bot_sub_chat_topic'),)"}]`
 
 Relationships: `[]`
 
@@ -1711,11 +1780,11 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1972](../backend/app/models.py#L1972) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1973](../backend/app/models.py#L1973) |
-| text / text | Mapped[str] | False | ['String(600)'] {'nullable': 'False'} | [backend/app/models.py:1974](../backend/app/models.py#L1974) |
-| until / until | Mapped[date \| None] | True | ['Date'] {'nullable': 'True'} | [backend/app/models.py:1975](../backend/app/models.py#L1975) |
-| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:1976](../backend/app/models.py#L1976) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2065](../backend/app/models.py#L2065) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2066](../backend/app/models.py#L2066) |
+| text / text | Mapped[str] | False | ['String(600)'] {'nullable': 'False'} | [backend/app/models.py:2067](../backend/app/models.py#L2067) |
+| until / until | Mapped[date \| None] | True | ['Date'] {'nullable': 'True'} | [backend/app/models.py:2068](../backend/app/models.py#L2068) |
+| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:2069](../backend/app/models.py#L2069) |
 
 Constraints: `[]`
 
@@ -1725,13 +1794,13 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1988](../backend/app/models.py#L1988) |
-| slug / slug | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1989](../backend/app/models.py#L1989) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:1990](../backend/app/models.py#L1990) |
-| source / source | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'site'", 'server_default': "'site'"} | [backend/app/models.py:1992](../backend/app/models.py#L1992) |
-| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1993](../backend/app/models.py#L1993) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2081](../backend/app/models.py#L2081) |
+| slug / slug | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:2082](../backend/app/models.py#L2082) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:2083](../backend/app/models.py#L2083) |
+| source / source | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'site'", 'server_default': "'site'"} | [backend/app/models.py:2085](../backend/app/models.py#L2085) |
+| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2086](../backend/app/models.py#L2086) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1986, 'end_line': 1986, 'owner': 'ResearchDownload', 'conditions': [], 'definition': "(UniqueConstraint('slug', 'date', 'source', name='uq_research_downloads_slug_date_src'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2079, 'end_line': 2079, 'owner': 'ResearchDownload', 'conditions': [], 'definition': "(UniqueConstraint('slug', 'date', 'source', name='uq_research_downloads_slug_date_src'),)"}]`
 
 Relationships: `[]`
 
@@ -1751,16 +1820,16 @@ Relationships: `[]`
 | ticker_live_pull | app.tasks.ticker_worker.ticker_pull_job | IntervalTrigger(seconds=settings.ticker_pull_interval_seconds) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:921](../backend/app/main.py#L921) |
 | analytics_rollups_15min | app.tasks.analytics_rollups.rollups_15min_job | IntervalTrigger(minutes=15, start_date=_analytics_start) ['settings.scheduler_enabled'] | {'id_expression': "'analytics_rollups_15min'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1249](../backend/app/main.py#L1249) |
 | analytics_rollups_daily | app.tasks.analytics_rollups.rollups_daily_job | CronTrigger(hour=4, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1258](../backend/app/main.py#L1258) |
-| data_sanity | app.services.data_sanity.data_sanity_job | CronTrigger(hour=8, minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1383](../backend/app/main.py#L1383) |
-| host_health | app.services.host_pressure.host_health_job | IntervalTrigger(minutes=1) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1414](../backend/app/main.py#L1414) |
-| bot_traffic_collect | app.services.bot_traffic.collect_job | IntervalTrigger(minutes=10, start_date=_bot_traffic_start) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1426](../backend/app/main.py#L1426) |
-| sitemap_build | app.services.sitemap_static.sitemap_build_job | CronTrigger(hour=3, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'sitemap_build'", 'ttl_expression': '3 * 3600'} | [backend/app/main.py:1437](../backend/app/main.py#L1437) |
-| webmaster_indexing_daily | app.services.webmaster_indexing_daily.webmaster_indexing_daily_job | CronTrigger(hour=8, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'webmaster_indexing_daily'", 'ttl_expression': '1800'} | [backend/app/main.py:1448](../backend/app/main.py#L1448) |
-| gsc_search_queries | app.services.gsc_client.gsc_search_queries_job | CronTrigger(hour=9, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'gsc_search_queries'", 'ttl_expression': '1800'} | [backend/app/main.py:1459](../backend/app/main.py#L1459) |
-| russia_prices_warm | app.api.regions.russia_prices_warm_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled'] | {'id_expression': "'russia_prices_warm'", 'ttl_expression': '600'} | [backend/app/main.py:1471](../backend/app/main.py#L1471) |
-| price_compare_warm | app.api.regions.price_compare_warm_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled'] | {'id_expression': "'price_compare_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1485](../backend/app/main.py#L1485) |
-| forecast_showcase_warm | app.api.forecast_showcase.forecast_showcase_warm_job | IntervalTrigger(minutes=20) ['settings.scheduler_enabled'] | {'id_expression': "'forecast_showcase_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1498](../backend/app/main.py#L1498) |
-| ssr_warm | app.services.ssr_warm.ssr_warm_job | IntervalTrigger(seconds=45) ['settings.scheduler_enabled'] | {'id_expression': "'ssr_warm'", 'ttl_expression': '420'} | [backend/app/main.py:1525](../backend/app/main.py#L1525) |
+| data_sanity | app.services.data_sanity.data_sanity_job | CronTrigger(hour=8, minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1413](../backend/app/main.py#L1413) |
+| host_health | app.services.host_pressure.host_health_job | IntervalTrigger(minutes=1) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1444](../backend/app/main.py#L1444) |
+| bot_traffic_collect | app.services.bot_traffic.collect_job | IntervalTrigger(minutes=10, start_date=_bot_traffic_start) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1456](../backend/app/main.py#L1456) |
+| sitemap_build | app.services.sitemap_static.sitemap_build_job | CronTrigger(hour=3, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'sitemap_build'", 'ttl_expression': '3 * 3600'} | [backend/app/main.py:1467](../backend/app/main.py#L1467) |
+| webmaster_indexing_daily | app.services.webmaster_indexing_daily.webmaster_indexing_daily_job | CronTrigger(hour=8, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'webmaster_indexing_daily'", 'ttl_expression': '1800'} | [backend/app/main.py:1478](../backend/app/main.py#L1478) |
+| gsc_search_queries | app.services.gsc_client.gsc_search_queries_job | CronTrigger(hour=9, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'gsc_search_queries'", 'ttl_expression': '1800'} | [backend/app/main.py:1489](../backend/app/main.py#L1489) |
+| russia_prices_warm | app.api.regions.russia_prices_warm_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled'] | {'id_expression': "'russia_prices_warm'", 'ttl_expression': '600'} | [backend/app/main.py:1501](../backend/app/main.py#L1501) |
+| price_compare_warm | app.api.regions.price_compare_warm_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled'] | {'id_expression': "'price_compare_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1515](../backend/app/main.py#L1515) |
+| forecast_showcase_warm | app.api.forecast_showcase.forecast_showcase_warm_job | IntervalTrigger(minutes=20) ['settings.scheduler_enabled'] | {'id_expression': "'forecast_showcase_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1528](../backend/app/main.py#L1528) |
+| ssr_warm | app.services.ssr_warm.ssr_warm_job | IntervalTrigger(seconds=45) ['settings.scheduler_enabled'] | {'id_expression': "'ssr_warm'", 'ttl_expression': '420'} | [backend/app/main.py:1555](../backend/app/main.py#L1555) |
 | world_eurostat_ingest | app.services.world_eurostat_ingest.world_eurostat_ingest_job | CronTrigger(hour=settings.world_eurostat_ingest_hour, minute=settings.world_eurostat_ingest_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_eurostat_ingest_enabled'] | {'id_expression': "'world_eurostat_ingest'", 'ttl_expression': '6 * 3600'} | [backend/app/main.py:696](../backend/app/main.py#L696) |
 | world_eurostat_ingest_afternoon | app.main.afternoon_eurostat_ingest | CronTrigger(hour=14, minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_eurostat_ingest_enabled'] | {'id_expression': "'world_eurostat_ingest'", 'ttl_expression': '6 * 3600'} | [backend/app/main.py:717](../backend/app/main.py#L717) |
 | world_forecast | app.services.world_forecast_pipeline.scheduled_world_forecast_job | CronTrigger(hour=settings.world_forecast_hour, minute=settings.world_forecast_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_forecast_enabled'] | {'id_expression': "'world_forecast'", 'ttl_expression': 'WORLD_FORECAST_JOB_LOCK_TTL_SECONDS'} | [backend/app/main.py:737](../backend/app/main.py#L737) |
@@ -1793,10 +1862,12 @@ Relationships: `[]`
 | telegram_poll | app.services.telegram_bot.telegram_poll_job | IntervalTrigger(seconds=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled'] | unresolved | [backend/app/main.py:1296](../backend/app/main.py#L1296) |
 | mail_bounce_poll | app.services.mail.bounces.bounce_poll_job | IntervalTrigger(minutes=30) ['settings.scheduler_enabled', 'settings.mail_enabled and settings.mail_bounce_poll_enabled'] | unresolved | [backend/app/main.py:1338](../backend/app/main.py#L1338) |
 | mail_watch_digest | app.services.mail.watch_digest.watch_digest_job | CronTrigger(hour=int(settings.mail_watch_digest_hour_msk), minute=15, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.mail_enabled and settings.mail_watch_digest_enabled'] | unresolved | [backend/app/main.py:1350](../backend/app/main.py#L1350) |
-| telegram_resend | app.services.telegram_resend.telegram_resend_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.telegram_resend_enabled and settings.telegram_bot_token and settings.telegram_chat_id and (settings.telegram_digest_enabled or settings.telegram_realtime_alerts_enabled)'] | unresolved | [backend/app/main.py:1370](../backend/app/main.py#L1370) |
-| telegram_calm_summary | app.services.telegram_calm.calm_morning_summary_job | CronTrigger(hour=settings.telegram_calm_summary_cron_hour, minute=settings.telegram_calm_summary_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_calm_mode and settings.telegram_bot_token and settings.telegram_chat_id'] | unresolved | [backend/app/main.py:1396](../backend/app/main.py#L1396) |
-| freshness_watchdog | app.tasks.freshness_watchdog.freshness_watchdog_job | CronTrigger(hour=settings.freshness_watchdog_cron_hour, minute=settings.freshness_watchdog_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.freshness_watchdog_enabled'] | {'id_expression': "'freshness_watchdog'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1510](../backend/app/main.py#L1510) |
-| world_listed_counts | app.services.world_listed_counts.world_listed_counts_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled', 'settings.world_listed_counts_enabled'] | {'id_expression': "'world_listed_counts'", 'ttl_expression': '600'} | [backend/app/main.py:1539](../backend/app/main.py#L1539) |
+| newsletter_personal_aggregates | app.services.newsletter_personal.jobs.aggregates_job | CronTrigger(hour=int(settings.newsletter_personal_aggregates_hour_msk), minute=int(settings.newsletter_personal_aggregates_minute), timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.newsletter_personal_build_enabled'] | {'id_expression': "'newsletter_personal_aggregates'", 'ttl_expression': '1800'} | [backend/app/main.py:1365](../backend/app/main.py#L1365) |
+| newsletter_personal_build | app.services.newsletter_personal.jobs.build_job | CronTrigger(day_of_week=settings.newsletter_personal_build_weekday, hour=int(settings.newsletter_personal_build_hour_msk), minute=int(settings.newsletter_personal_build_minute), timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.newsletter_personal_build_enabled'] | {'id_expression': "'newsletter_personal_build'", 'ttl_expression': '3600'} | [backend/app/main.py:1375](../backend/app/main.py#L1375) |
+| telegram_resend | app.services.telegram_resend.telegram_resend_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.telegram_resend_enabled and settings.telegram_bot_token and settings.telegram_chat_id and (settings.telegram_digest_enabled or settings.telegram_realtime_alerts_enabled)'] | unresolved | [backend/app/main.py:1400](../backend/app/main.py#L1400) |
+| telegram_calm_summary | app.services.telegram_calm.calm_morning_summary_job | CronTrigger(hour=settings.telegram_calm_summary_cron_hour, minute=settings.telegram_calm_summary_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_calm_mode and settings.telegram_bot_token and settings.telegram_chat_id'] | unresolved | [backend/app/main.py:1426](../backend/app/main.py#L1426) |
+| freshness_watchdog | app.tasks.freshness_watchdog.freshness_watchdog_job | CronTrigger(hour=settings.freshness_watchdog_cron_hour, minute=settings.freshness_watchdog_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.freshness_watchdog_enabled'] | {'id_expression': "'freshness_watchdog'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1540](../backend/app/main.py#L1540) |
+| world_listed_counts | app.services.world_listed_counts.world_listed_counts_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled', 'settings.world_listed_counts_enabled'] | {'id_expression': "'world_listed_counts'", 'ttl_expression': '600'} | [backend/app/main.py:1569](../backend/app/main.py#L1569) |
 | webmaster_recrawl_ru | app.services.webmaster_recrawl.recrawl_daily_job | CronTrigger(hour=9, minute=15, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.webmaster_recrawl_enabled and settings.yandex_webmaster_token', 'settings.apex_locale_en'] | unresolved | [backend/app/main.py:1005](../backend/app/main.py#L1005) |
 | public_bot_poll | app.services.public_bot.public_bot_poll_job | IntervalTrigger(seconds=60) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled', 'settings.public_bot_enabled and settings.public_bot_token'] | unresolved | [backend/app/main.py:1311](../backend/app/main.py#L1311) |
 | public_bot_notify | app.services.public_bot.public_bot_notify_job | IntervalTrigger(minutes=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled', 'settings.public_bot_enabled'] | unresolved | [backend/app/main.py:1324](../backend/app/main.py#L1324) |
@@ -2085,7 +2156,7 @@ Relationships: `[]`
 | RUSTATS_MAIL_REPLY_TO | str = 'info@forecasteconomy.com' | 4 | [backend/app/config.py:641](../backend/app/config.py#L641) |
 | RUSTATS_MAIL_ALLOWLIST | str = 'rebeka.ee@yandex.ru' | 1 | [backend/app/config.py:642](../backend/app/config.py#L642) |
 | RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 5 | [backend/app/config.py:643](../backend/app/config.py#L643) |
-| RUSTATS_MAIL_TOKEN_SECRET | str = '' | 2 | [backend/app/config.py:646](../backend/app/config.py#L646) |
+| RUSTATS_MAIL_TOKEN_SECRET | str = '' | 6 | [backend/app/config.py:646](../backend/app/config.py#L646) |
 | RUSTATS_MAIL_CAMPAIGN_MAX_PER_RUN | int = 250 | 2 | [backend/app/config.py:649](../backend/app/config.py#L649) |
 | RUSTATS_MAIL_CAMPAIGN_PAUSE_SECONDS | float = 4.0 | 2 | [backend/app/config.py:650](../backend/app/config.py#L650) |
 | RUSTATS_MAIL_LINK_ORIGIN_RU | str = '' | 2 | [backend/app/config.py:653](../backend/app/config.py#L653) |
@@ -2101,7 +2172,26 @@ Relationships: `[]`
 | RUSTATS_MAIL_IMAP_PORT | int = 993 | 2 | [backend/app/config.py:669](../backend/app/config.py#L669) |
 | RUSTATS_MAIL_WATCH_DIGEST_ENABLED | bool = False | 5 | [backend/app/config.py:672](../backend/app/config.py#L672) |
 | RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK | int = 10 | 3 | [backend/app/config.py:673](../backend/app/config.py#L673) |
-| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:677](../backend/app/config.py#L677) |
+| RUSTATS_NEWSLETTER_PERSONAL_ENABLED | bool = False | 1 | [backend/app/config.py:681](../backend/app/config.py#L681) |
+| RUSTATS_NEWSLETTER_PERSONAL_BEHAVIOR_SIGNALS | bool = False | 2 | [backend/app/config.py:682](../backend/app/config.py#L682) |
+| RUSTATS_NEWSLETTER_PERSONAL_CLICK_TOKEN | bool = False | 1 | [backend/app/config.py:683](../backend/app/config.py#L683) |
+| RUSTATS_NEWSLETTER_PERSONAL_HOLDOUT_PCT | int = 0 | 1 | [backend/app/config.py:685](../backend/app/config.py#L685) |
+| RUSTATS_NEWSLETTER_PERSONAL_SUBJECT_AB_PCT | int = 50 | 1 | [backend/app/config.py:687](../backend/app/config.py#L687) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_ENABLED | bool = False | 1 | [backend/app/config.py:689](../backend/app/config.py#L689) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_WEEKDAY | str = 'thu' | 2 | [backend/app/config.py:690](../backend/app/config.py#L690) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_HOUR_MSK | int = 7 | 2 | [backend/app/config.py:691](../backend/app/config.py#L691) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_MINUTE | int = 40 | 2 | [backend/app/config.py:692](../backend/app/config.py#L692) |
+| RUSTATS_NEWSLETTER_PERSONAL_ISSUE_PATH | str = '' | 1 | [backend/app/config.py:694](../backend/app/config.py#L694) |
+| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_HOUR_MSK | int = 0 | 2 | [backend/app/config.py:696](../backend/app/config.py#L696) |
+| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_MINUTE | int = 40 | 2 | [backend/app/config.py:697](../backend/app/config.py#L697) |
+| RUSTATS_NEWSLETTER_PERSONAL_SEND_START_HOUR | int = 8 | 1 | [backend/app/config.py:699](../backend/app/config.py#L699) |
+| RUSTATS_NEWSLETTER_PERSONAL_SEND_END_HOUR | int = 21 | 1 | [backend/app/config.py:700](../backend/app/config.py#L700) |
+| RUSTATS_NEWSLETTER_PERSONAL_MIN_DAYS_BETWEEN | int = 6 | 1 | [backend/app/config.py:702](../backend/app/config.py#L702) |
+| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED | bool = False | 1 | [backend/app/config.py:704](../backend/app/config.py#L704) |
+| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_DAYS | int = 60 | 1 | [backend/app/config.py:705](../backend/app/config.py#L705) |
+| RUSTATS_NEWSLETTER_PERSONAL_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:707](../backend/app/config.py#L707) |
+| RUSTATS_NEWSLETTER_PERSONAL_BATCH_PAUSE_SECONDS | float = 0.5 | 1 | [backend/app/config.py:708](../backend/app/config.py#L708) |
+| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:712](../backend/app/config.py#L712) |
 
 ## Registries and declarations
 
@@ -2120,7 +2210,7 @@ Relationships: `[]`
 | app.api.api_interest._EMAIL_RE | Call | computed source expression | [backend/app/api/api_interest.py:35](../backend/app/api/api_interest.py#L35) |
 | app.api.api_interest._CODE_RE | Call | computed source expression | [backend/app/api/api_interest.py:36](../backend/app/api/api_interest.py#L36) |
 | app.api.api_interest.SOURCES | Tuple | sequence/source expression | [backend/app/api/api_interest.py:37](../backend/app/api/api_interest.py#L37) |
-| app.api.auth._EMAIL_RE | Call | computed source expression | [backend/app/api/auth.py:39](../backend/app/api/auth.py#L39) |
+| app.api.auth._EMAIL_RE | Call | computed source expression | [backend/app/api/auth.py:41](../backend/app/api/auth.py#L41) |
 | app.api.cabinet._MESSAGES | Dict | 'invalid_kind', 'invalid_key', 'invalid_value', 'invalid_payload', 'invalid_channel', 'payload_too_large', 'payload_too_deep', 'range_not_allowed', 'limit_reached', 'subject_not_found' | [backend/app/api/cabinet.py:51](../backend/app/api/cabinet.py#L51) |
 | app.api.cabinet._TOKEN_RE | Call | computed source expression | [backend/app/api/cabinet.py:373](../backend/app/api/cabinet.py#L373) |
 | app.api.cabinet._SLUG_RE | Call | computed source expression | [backend/app/api/cabinet.py:374](../backend/app/api/cabinet.py#L374) |
@@ -2453,8 +2543,8 @@ Relationships: `[]`
 | app.database._PUBLIC_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:25](../backend/app/database.py#L25) |
 | app.database._ANALYTICS_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:48](../backend/app/database.py#L48) |
 | app.main._TRUSTED_PROXY_NETS | Call | computed source expression | [backend/app/main.py:45](../backend/app/main.py#L45) |
-| app.main._GEO_EXCLUDED_PREFIXES | Tuple | sequence/source expression | [backend/app/main.py:1696](../backend/app/main.py#L1696) |
-| app.main._GEO_EXCLUDED_EXACT | Call | computed source expression | [backend/app/main.py:1699](../backend/app/main.py#L1699) |
+| app.main._GEO_EXCLUDED_PREFIXES | Tuple | sequence/source expression | [backend/app/main.py:1726](../backend/app/main.py#L1726) |
+| app.main._GEO_EXCLUDED_EXACT | Call | computed source expression | [backend/app/main.py:1729](../backend/app/main.py#L1729) |
 | app.services.account_erasure.TIME_WINDOW | Call | computed source expression | [backend/app/services/account_erasure.py:46](../backend/app/services/account_erasure.py#L46) |
 | app.services.action_policy.DENIED_ACTIONS | Set | sequence/source expression | [backend/app/services/action_policy.py:22](../backend/app/services/action_policy.py#L22) |
 | app.services.action_policy.HIGH_RISK_ACTIONS | Set | sequence/source expression | [backend/app/services/action_policy.py:33](../backend/app/services/action_policy.py#L33) |
@@ -2776,6 +2866,42 @@ Relationships: `[]`
 | app.services.minfin_budget_parser.PRESS_PERIOD_RE | Call | computed source expression | [backend/app/services/minfin_budget_parser.py:85](../backend/app/services/minfin_budget_parser.py#L85) |
 | app.services.minfin_budget_parser.MONTH_MAP | Dict | 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' | [backend/app/services/minfin_budget_parser.py:89](../backend/app/services/minfin_budget_parser.py#L89) |
 | app.services.minfin_budget_parser.MONTH_GENITIVE_MAP | Dict | 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' | [backend/app/services/minfin_budget_parser.py:95](../backend/app/services/minfin_budget_parser.py#L95) |
+| app.services.newsletter_personal.build.MSK | Call | computed source expression | [backend/app/services/newsletter_personal/build.py:41](../backend/app/services/newsletter_personal/build.py#L41) |
+| app.services.newsletter_personal.compose.REASON_ORDER | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/compose.py:26](../backend/app/services/newsletter_personal/compose.py#L26) |
+| app.services.newsletter_personal.compose.REASON_WHY | Dict | 'watch', 'favorite', 'saved_compare', 'export', 'download', 'download_limit', 'search_select', 'search_query', 'mail_click', 'compare', 'forecast_view', 'view', 'related_click', 'landing', 'landing_gate', 'tile_click' | [backend/app/services/newsletter_personal/compose.py:29](../backend/app/services/newsletter_personal/compose.py#L29) |
+| app.services.newsletter_personal.compose.REASON_KICKER | Dict | 'watch', 'favorite', 'saved_compare', 'export', 'download', 'download_limit', 'landing_gate', 'search_select', 'search_query' | [backend/app/services/newsletter_personal/compose.py:36](../backend/app/services/newsletter_personal/compose.py#L36) |
+| app.services.newsletter_personal.compose.SHOWCASE_THEME_TOPIC | Dict | 'inflation', 'gdp', 'unemployment', 'rates', 'wages' | [backend/app/services/newsletter_personal/compose.py:41](../backend/app/services/newsletter_personal/compose.py#L41) |
+| app.services.newsletter_personal.compose.TOPIC_SHOWCASE_THEME | Dict | 'prices', 'fuel', 'gdp', 'business', 'labor', 'wages', 'rates', 'housing' | [backend/app/services/newsletter_personal/compose.py:42](../backend/app/services/newsletter_personal/compose.py#L42) |
+| app.services.newsletter_personal.compose.REGION_TOPIC_CODE | Dict | 'fuel', 'prices', 'wages' | [backend/app/services/newsletter_personal/compose.py:45](../backend/app/services/newsletter_personal/compose.py#L45) |
+| app.services.newsletter_personal.compose.LIMITS | Dict | 'rich', 'light', 'cold' | [backend/app/services/newsletter_personal/compose.py:49](../backend/app/services/newsletter_personal/compose.py#L49) |
+| app.services.newsletter_personal.facts._EN_SOURCES | Dict | 'Росстат', 'Банк России', 'ЦБ РФ', 'Минфин России', 'Минфин', 'Московская биржа', 'ЕМИСС' | [backend/app/services/newsletter_personal/facts.py:41](../backend/app/services/newsletter_personal/facts.py#L41) |
+| app.services.newsletter_personal.facts.YOY_TITLES | Dict | 'cpi-yoy', 'cpi-food-yoy', 'cpi-nonfood-yoy', 'cpi-services-yoy' | [backend/app/services/newsletter_personal/facts.py:96](../backend/app/services/newsletter_personal/facts.py#L96) |
+| app.services.newsletter_personal.facts._STEP_PHRASE | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/newsletter_personal/facts.py:103](../backend/app/services/newsletter_personal/facts.py#L103) |
+| app.services.newsletter_personal.facts._UNIT_SHORT_RU | Dict | 'рублей за литр', 'рублей за кг', 'рублей', 'рублей за шт.', 'рублей за 10 шт.', 'рублей за 1000 мл' | [backend/app/services/newsletter_personal/facts.py:527](../backend/app/services/newsletter_personal/facts.py#L527) |
+| app.services.newsletter_personal.facts._UNIT_SHORT_EN | Dict | 'roubles per litre', 'roubles per kg', 'roubles' | [backend/app/services/newsletter_personal/facts.py:531](../backend/app/services/newsletter_personal/facts.py#L531) |
+| app.services.newsletter_personal.facts._RU_UNIT_PER | Dict | 'литр', 'кг', 'шт.' | [backend/app/services/newsletter_personal/facts.py:534](../backend/app/services/newsletter_personal/facts.py#L534) |
+| app.services.newsletter_personal.facts._REGION_NAME_PREFIXES | Call | computed source expression | [backend/app/services/newsletter_personal/facts.py:552](../backend/app/services/newsletter_personal/facts.py#L552) |
+| app.services.newsletter_personal.facts._RU_MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/facts.py:563](../backend/app/services/newsletter_personal/facts.py#L563) |
+| app.services.newsletter_personal.facts._EN_MONTHS | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/facts.py:565](../backend/app/services/newsletter_personal/facts.py#L565) |
+| app.services.newsletter_personal.metrics.GEN_LABELS | Dict | 'series', 'download', 'search', 'region', 'related', 'now', 'forecast', 'check', 'since', 'table', 'calendar', 'section', 'editorial' | [backend/app/services/newsletter_personal/metrics.py:103](../backend/app/services/newsletter_personal/metrics.py#L103) |
+| app.services.newsletter_personal.personas.PERSONA_IDS | Dict | 'rich', 'light', 'cold', 'rich-en', 'light-en', 'cold-en' | [backend/app/services/newsletter_personal/personas.py:15](../backend/app/services/newsletter_personal/personas.py#L15) |
+| app.services.newsletter_personal.personas._SIGNALS | Dict | 'rich', 'light', 'cold', 'rich-en', 'light-en', 'cold-en' | [backend/app/services/newsletter_personal/personas.py:25](../backend/app/services/newsletter_personal/personas.py#L25) |
+| app.services.newsletter_personal.profile.SIGNALS | Dict | 'watch', 'favorite', 'saved_compare', 'pref_topic', 'export', 'download', 'download_limit', 'search_select', 'search_query', 'compare', 'forecast_view', 'view', 'related_click', 'tile_click', 'topic_click', 'landing', 'landing_gate', 'mail_click' | [backend/app/services/newsletter_personal/profile.py:25](../backend/app/services/newsletter_personal/profile.py#L25) |
+| app.services.newsletter_personal.profile.EXPLICIT | Call | computed source expression | [backend/app/services/newsletter_personal/profile.py:45](../backend/app/services/newsletter_personal/profile.py#L45) |
+| app.services.newsletter_personal.signals.EVENT_NAMES | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/signals.py:41](../backend/app/services/newsletter_personal/signals.py#L41) |
+| app.services.newsletter_personal.signals.PERSONAL_KINDS | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/signals.py:49](../backend/app/services/newsletter_personal/signals.py#L49) |
+| app.services.newsletter_personal.store._READY | Dict | sequence/source expression | [backend/app/services/newsletter_personal/store.py:39](../backend/app/services/newsletter_personal/store.py#L39) |
+| app.services.newsletter_personal.subjects.TOPICS | Dict | 'prices', 'fuel', 'rates', 'currencies', 'commodities', 'indices', 'wages', 'labor', 'gdp', 'housing', 'finance', 'business', 'trade', 'population', 'science' | [backend/app/services/newsletter_personal/subjects.py:23](../backend/app/services/newsletter_personal/subjects.py#L23) |
+| app.services.newsletter_personal.subjects.CATEGORY_RU_TOPIC | Dict | 'Цены', 'Ставки', 'Валюты', 'Финансы', 'Бюджет', 'Государственные финансы', 'Индексы', 'Товарные рынки', 'Рынок труда', 'ВВП', 'Население', 'Демография', 'Торговля', 'Бизнес', 'Наука' | [backend/app/services/newsletter_personal/subjects.py:42](../backend/app/services/newsletter_personal/subjects.py#L42) |
+| app.services.newsletter_personal.subjects.CATEGORY_SLUG_TOPIC | Dict | 'prices', 'rates', 'currencies', 'finance', 'indices', 'commodities', 'labor', 'gdp', 'population', 'trade', 'business', 'science' | [backend/app/services/newsletter_personal/subjects.py:49](../backend/app/services/newsletter_personal/subjects.py#L49) |
+| app.services.newsletter_personal.subjects._CODE_TOPIC_RULES | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/subjects.py:55](../backend/app/services/newsletter_personal/subjects.py#L55) |
+| app.services.newsletter_personal.subjects._WORLD_TOPIC_WORDS | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/subjects.py:61](../backend/app/services/newsletter_personal/subjects.py#L61) |
+| app.services.newsletter_personal.subjects._SLUG_RE | Call | computed source expression | [backend/app/services/newsletter_personal/subjects.py:133](../backend/app/services/newsletter_personal/subjects.py#L133) |
+| app.services.newsletter_personal.subjects._CODE_RE | Call | computed source expression | [backend/app/services/newsletter_personal/subjects.py:134](../backend/app/services/newsletter_personal/subjects.py#L134) |
+| app.services.newsletter_personal.subjects._PATH_PATTERNS | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/subjects.py:266](../backend/app/services/newsletter_personal/subjects.py#L266) |
+| app.services.newsletter_personal.texts.STR | Dict | 'ru', 'en' | [backend/app/services/newsletter_personal/texts.py:14](../backend/app/services/newsletter_personal/texts.py#L14) |
+| app.services.newsletter_personal.texts._JARGON | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/texts.py:144](../backend/app/services/newsletter_personal/texts.py#L144) |
+| app.services.newsletter_personal.texts.FORBIDDEN_WORDS | Call | computed source expression | [backend/app/services/newsletter_personal/texts.py:149](../backend/app/services/newsletter_personal/texts.py#L149) |
 | app.services.oauth.google._TIMEOUT | Call | computed source expression | [backend/app/services/oauth/google.py:21](../backend/app/services/oauth/google.py#L21) |
 | app.services.oauth.registry.SUPPORTED | Tuple | sequence/source expression | [backend/app/services/oauth/registry.py:14](../backend/app/services/oauth/registry.py#L14) |
 | app.services.oauth.registry.PUBLIC_PROVIDERS | Tuple | sequence/source expression | [backend/app/services/oauth/registry.py:17](../backend/app/services/oauth/registry.py#L17) |
@@ -3421,6 +3547,7 @@ Relationships: `[]`
 | scripts.mail.SAMPLE_LABEL | Dict | 'verify_email', 'password_reset', 'newsletter', 'oauth_hint', 'reconfirm', 'watch_digest' | [backend/scripts/mail.py:47](../backend/scripts/mail.py#L47) |
 | scripts.metrika-goals-redesign._GOAL_NAMES | Dict | 'signup', 'newsletter_opt_in', 'feedback_submit', 'login_success', 'download_csv', 'download_excel', 'download_ical', 'demographics_csv', 'chart_image_download', 'compare_image_download', 'compare_add', 'compare_change', 'region_compare_add', 'calc_share', 'calc_copy_result', 'calc_mortgage', 'calc_compound', 'embed_code_copy', 'contact_email' | [backend/scripts/metrika-goals-redesign.py:39](../backend/scripts/metrika-goals-redesign.py#L39) |
 | scripts.metrika-goals-redesign._FUNNELS | List | sequence/source expression | [backend/scripts/metrika-goals-redesign.py:61](../backend/scripts/metrika-goals-redesign.py#L61) |
+| scripts.newsletter_personal.HERE | Call | computed source expression | [backend/scripts/newsletter_personal.py:30](../backend/scripts/newsletter_personal.py#L30) |
 | scripts.public-bot-setup.COMMANDS | List | sequence/source expression | [backend/scripts/public-bot-setup.py:32](../backend/scripts/public-bot-setup.py#L32) |
 | scripts.public-bot-setup.PRIVATE | Dict | 'type' | [backend/scripts/public-bot-setup.py:41](../backend/scripts/public-bot-setup.py#L41) |
 | scripts.rebase-world-eurostat.PROBE_GEOS | Tuple | sequence/source expression | [backend/scripts/rebase-world-eurostat.py:56](../backend/scripts/rebase-world-eurostat.py#L56) |

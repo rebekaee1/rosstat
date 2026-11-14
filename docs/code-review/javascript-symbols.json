@@ -23516,24 +23516,24 @@
     "anonymous_functions": 8
   },
   "frontend/src/i18n/legalPages.en.jsx": {
-    "sha256": "d8a2defcca3b2236173a39792ee14f2df9b72f22b81f6aba30c772d1da3c091e",
+    "sha256": "467857964f809f3d00602ba7cd21335ea5769c59fae89a23758076ffc704bc59",
     "definitions": [
       {
         "name": "CookieRow",
-        "line": 16,
-        "end_line": 24,
+        "line": 17,
+        "end_line": 25,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PrivacyBodyEn",
-        "line": 27,
-        "end_line": 266,
+        "line": 28,
+        "end_line": 268,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TermsBodyEn",
-        "line": 269,
-        "end_line": 397,
+        "line": 271,
+        "end_line": 399,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -23561,6 +23561,10 @@
       {
         "source": "../lib/uiTokens",
         "line": 10
+      },
+      {
+        "source": "./privacyPersonalNewsletter",
+        "line": 11
       }
     ],
     "exports": [
@@ -23568,13 +23572,13 @@
         "names": [
           "PrivacyBodyEn"
         ],
-        "line": 27
+        "line": 28
       },
       {
         "names": [
           "TermsBodyEn"
         ],
-        "line": 269
+        "line": 271
       }
     ],
     "anonymous_functions": 2
@@ -24041,6 +24045,65 @@
           "default"
         ],
         "line": 2
+      }
+    ],
+    "anonymous_functions": 0
+  },
+  "frontend/src/i18n/privacyPersonalNewsletter.component.test.jsx": {
+    "sha256": "8e909e456d9f98d7e4a474c5f180d36958c7399a67ccb3c1c0585ce2d4740133",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "vitest",
+        "line": 3
+      },
+      {
+        "source": "./privacyPersonalNewsletter",
+        "line": 4
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
+  },
+  "frontend/src/i18n/privacyPersonalNewsletter.jsx": {
+    "sha256": "b2603996a7f290b25a0e54b11eef5d94ac36ad545f3a7fe4654eba6a80c2f6d7",
+    "definitions": [
+      {
+        "name": "PersonalNewsletterPolicyRu",
+        "line": 17,
+        "end_line": 71,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PersonalNewsletterPolicyEn",
+        "line": 73,
+        "end_line": 125,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "PERSONAL_NEWSLETTER_POLICY_PUBLISHED"
+        ],
+        "line": 10
+      },
+      {
+        "names": [
+          "PersonalNewsletterPolicyRu"
+        ],
+        "line": 17
+      },
+      {
+        "names": [
+          "PersonalNewsletterPolicyEn"
+        ],
+        "line": 73
       }
     ],
     "anonymous_functions": 0
@@ -58675,18 +58738,18 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/Privacy.jsx": {
-    "sha256": "a57af798a3eddd17691d4421501fd8744dcaf2fd754f80f8863c6b166b07b50c",
+    "sha256": "4101058c220854390e48921679b2c9791eb6fe7e671a6d2ca5120a26c90f5baf",
     "definitions": [
       {
         "name": "CookieRow",
-        "line": 34,
-        "end_line": 42,
+        "line": 38,
+        "end_line": 46,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Privacy",
-        "line": 44,
-        "end_line": 303,
+        "line": 48,
+        "end_line": 308,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -58750,6 +58813,10 @@
       {
         "source": "../i18n/legalPages.en",
         "line": 15
+      },
+      {
+        "source": "../i18n/privacyPersonalNewsletter",
+        "line": 16
       }
     ],
     "exports": [
@@ -58757,7 +58824,7 @@
         "names": [
           "default"
         ],
-        "line": 44
+        "line": 48
       }
     ],
     "anonymous_functions": 1

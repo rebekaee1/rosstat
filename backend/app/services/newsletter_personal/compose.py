@@ -1,0 +1,411 @@
+"""Кандидаты в блоки, отбор и сборка персонального выпуска (ADR-0033).
+
+Порядок письма: строка выпуска, тема, заголовок и вступление редакции; «Число недели» редакции;
+раздел «Для вас» (личные блоки, при уровне «много» — ещё таблица «Ваши показатели»); оставшиеся
+блоки редакции без дублей; календарь (редакция + выходы данных по его рядам); кнопка, финал, подпись.
+
+Отбор: балл = интерес профиля × новизна значения × (усталость уже в профиле); не больше одного
+блока на тему и двух от одного генератора; тот же факт (ряд и дата значения), уже показанный
+человеку, не повторяется; доля блоков редакции — не меньше трети при уровне «много», не меньше
+половины при «мало» (решение 15.11.2026); при «нет данных» — выпуск редакции целиком.
+"""
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass, field
+from datetime import date, datetime
+
+from app.services import freshness
+from app.services.newsletter_personal import texts as T
+from app.services.newsletter_personal.facts import Fact, FactCache, full_date, number, with_unit
+from app.services.newsletter_personal.profile import Profile
+from app.services.newsletter_personal.signals import UserSignals
+from app.services.newsletter_personal.subjects import parse_key, topic_label
+
+# Сигнал → причина блока (что сказать читателю). Порядок — сила причины.
+REASON_ORDER = ("watch", "favorite", "export", "download", "download_limit", "search_select", "search_query",
+                "mail_click", "saved_compare", "compare", "forecast_view", "view", "related_click",
+                "landing_gate", "landing", "tile_click")
+REASON_WHY = {
+    "watch": "why.watch", "favorite": "why.favorite", "saved_compare": "why.favorite", "export": "why.download",
+    "download": "why.download", "download_limit": "why.download", "search_select": "why.search",
+    "search_query": "why.search", "mail_click": "why.mail_click", "compare": "why.view",
+    "forecast_view": "why.view", "view": "why.view", "related_click": "why.view", "landing": "why.view",
+    "landing_gate": "why.download", "tile_click": "why.view",
+}
+REASON_KICKER = {
+    "watch": "kicker.watch", "favorite": "kicker.favorite", "saved_compare": "kicker.favorite",
+    "export": "kicker.download", "download": "kicker.download", "download_limit": "kicker.download",
+    "landing_gate": "kicker.download", "search_select": "kicker.search", "search_query": "kicker.search",
+}
+SHOWCASE_THEME_TOPIC = {"inflation": "prices", "gdp": "gdp", "unemployment": "labor", "rates": "rates", "wages": "wages"}
+TOPIC_SHOWCASE_THEME = {"prices": "inflation", "fuel": "inflation", "gdp": "gdp", "business": "gdp",
+                        "labor": "unemployment", "wages": "wages", "rates": "rates", "housing": "rates"}
+# Региональный показатель по теме (если человек сам смотрел регион, а ряда темы у него нет).
+REGION_TOPIC_CODE = {
+    "fuel": "ceni-ai95", "prices": "ceni-ai95",
+    "wages": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
+}
+LIMITS = {
+    # уровень: (личных блоков, таблица, минимальная доля редакции)
+    "rich": (4, True, 1 / 3),
+    "light": (2, False, 1 / 2),
+    "cold": (0, False, 1.0),
+}
+MAX_CONTENT_BLOCKS = 8
+MAX_TABLE_ROWS = 5
+MAX_CAL_ENTRIES = 6
+
+
+@dataclass
+class Candidate:
+    gen: str
+    subject: str | None
+    block: dict
+    score: float
+    topic: str | None = None
+    as_of: str | None = None
+    why: str = ""
+    extra: dict = field(default_factory=dict)
+
+
+@dataclass
+class Context:
+    profile: Profile
+    us: UserSignals
+    cache: FactCache
+    locale: str
+    today: date
+    issue_key: str
+    showcase: list[dict]
+    related: dict[str, list[str]]
+    query_map: dict[str, str]
+    dormant: bool = False
+
+    @property
+    def shown_facts(self) -> set[tuple[str, str]]:
+        out = set()
+        for h in self.us.history:
+            for m in h.get("blocks_meta") or []:
+                if m.get("subject") and m.get("as_of") and m.get("origin") == "personal":
+                    out.add((m["subject"], m["as_of"]))
+        return out
+
+    def last_shown_as_of(self, key: str) -> str | None:
+        best = None
+        for h in self.us.history:
+            for m in h.get("blocks_meta") or []:
+                if m.get("subject") == key and m.get("as_of") and (best is None or m["as_of"] > best):
+                    best = m["as_of"]
+        return best
+
+
+def _reason(us: UserSignals, key: str) -> str:
+    kinds = {s.kind for s in us.signals if s.subject.key == key}
+    for r in REASON_ORDER:
+        if r in kinds:
+            return r
+    return "view"
+
+
+def _last_signal(us: UserSignals, key: str, kinds: tuple[str, ...]) -> datetime | None:
+    ats = [s.at for s in us.signals if s.subject.key == key and s.kind in kinds]
+    return max(ats) if ats else None
+
+
+def _news_factor(ctx: Context, fact: Fact) -> float:
+    last = ctx.last_shown_as_of(fact.key)
+    if last is not None:
+        return 1.0 if fact.as_of.isoformat() > last else 0.0
+    level = freshness.freshness_level(fact.as_of, fact.frequency, ctx.today)
+    return {"fresh": 1.0, "aging": 0.45}.get(level or "", 0.0)
+
+
+def _story(fact: Fact, ctx: Context, *, kicker: str, why: str, text: str | None = None) -> dict:
+    loc = ctx.locale
+    body = text if text is not None else T.sentence(fact.period, fact.change_text,
+                                                    T.t(loc, "compare.text", value=fact.compare["value_text"]) if fact.compare else "")
+    return {
+        "type": "story", "kicker": kicker, "title": T.clean_title(fact.title), "value": fact.value_text,
+        "text": T.typo(body, loc), "source": fact.source, "as_of": fact.as_of.isoformat(),
+        "url": fact.path, "why": why,
+    }
+
+
+async def series_candidates(ctx: Context) -> list[Candidate]:
+    out: list[Candidate] = []
+    shown = ctx.shown_facts
+    for item in ctx.profile.series()[:14]:
+        key = item["key"]
+        fact = await ctx.cache.get(key)
+        if fact is None or fact.stale or (key, fact.as_of.isoformat()) in shown:
+            continue
+        news = _news_factor(ctx, fact)
+        reason = _reason(ctx.us, key)
+        gen = "series"
+        why = T.t(ctx.locale, REASON_WHY.get(reason, "why.view"))
+        kicker = T.t(ctx.locale, REASON_KICKER.get(reason, "kicker.view"))
+        text = None
+        if fact.kind == "r":
+            gen, kicker, why = "region", T.t(ctx.locale, "kicker.region"), T.t(ctx.locale, "why.region")
+        elif reason in ("download", "export", "download_limit", "landing_gate"):
+            downloaded = _last_signal(ctx.us, key, ("download", "export", "download_limit", "landing_gate"))
+            if downloaded and fact.as_of > downloaded.date():
+                gen = "download"
+                text = T.sentence(T.t(ctx.locale, "download.text", day=full_date(downloaded.date(), ctx.locale),
+                                      period=fact.period), fact.change_text)
+                news = max(news, 0.9)
+        elif reason in ("search_select", "search_query"):
+            gen = "search"
+        if ctx.dormant and ctx.us.last_visit:
+            then = fact.value_on_or_before(ctx.us.last_visit.date())
+            if then and then[0] < fact.as_of and then[1] != fact.value:
+                gen, kicker, why = "since", T.t(ctx.locale, "kicker.since"), T.t(ctx.locale, "why.since")
+                then_text = with_unit(number(then[1], ctx.locale), fact.unit, ctx.locale) if not fact.headline_yoy else None
+                if then_text:
+                    from app.services.display import value_period_phrase
+
+                    text = T.sentence(T.t(ctx.locale, "since.text",
+                                          then_period=T.cap(value_period_phrase(then[0], fact.frequency, locale=ctx.locale)),
+                                          then=then_text, now=fact.value_text, period=fact.period))
+                    news = 1.0
+        if news <= 0:
+            continue
+        score = float(item["score"]) * news
+        block = _story(fact, ctx, kicker=kicker, why=why, text=text)
+        out.append(Candidate(gen=gen, subject=key, block=block, score=score, topic=fact.topic,
+                             as_of=fact.as_of.isoformat(), why=reason,
+                             extra={"change": fact.change_text, "value": fact.value_text, "title": fact.title,
+                                    "change_dir": fact.change_dir, "fact": fact}))
+    return out
+
+
+async def region_candidates(ctx: Context, taken: set[str]) -> list[Candidate]:
+    region = (ctx.profile.geo or {}).get("region")
+    if not region:
+        return []
+    keys = []
+    for item in ctx.profile.subjects:
+        sub = parse_key(item["key"])
+        if sub is not None and sub.kind == "ri":
+            keys.append((f"r:{region}:{sub.code}", item["score"]))
+    for topic in ctx.profile.top_topics(3):
+        code = REGION_TOPIC_CODE.get(topic)
+        if code:
+            keys.append((f"r:{region}:{code}", ctx.profile.topics.get(topic, 0) * 0.6))
+    if not keys:
+        keys.append((f"r:{region}:{REGION_TOPIC_CODE['fuel']}", 0.6))
+    out = []
+    shown = ctx.shown_facts
+    for key, base in keys:
+        if key in taken:
+            continue
+        fact = await ctx.cache.get(key)
+        if fact is None or fact.stale or (key, fact.as_of.isoformat()) in shown:
+            continue
+        news = _news_factor(ctx, fact)
+        if news <= 0:
+            continue
+        block = _story(fact, ctx, kicker=T.t(ctx.locale, "kicker.region"), why=T.t(ctx.locale, "why.region"))
+        out.append(Candidate(gen="region", subject=key, block=block, score=max(base, 0.5) * news, topic=fact.topic,
+                             as_of=fact.as_of.isoformat(), why="region",
+                             extra={"change": fact.change_text, "value": fact.value_text, "title": fact.title,
+                                    "fact": fact}))
+        taken.add(key)
+    return out
+
+
+async def related_candidates(ctx: Context, taken: set[str]) -> list[Candidate]:
+    out = []
+    shown = ctx.shown_facts
+    mine = {s["key"] for s in ctx.profile.subjects}
+    for item in ctx.profile.series()[:3]:
+        for rel in ctx.related.get(item["key"], []):
+            if rel in mine or rel in taken:
+                continue
+            fact = await ctx.cache.get(rel)
+            if fact is None or fact.stale or (rel, fact.as_of.isoformat()) in shown:
+                continue
+            news = _news_factor(ctx, fact)
+            if news <= 0:
+                continue
+            block = _story(fact, ctx, kicker=T.t(ctx.locale, "kicker.related"), why=T.t(ctx.locale, "why.related"))
+            out.append(Candidate(gen="related", subject=rel, block=block, score=float(item["score"]) * 0.5 * news,
+                                 topic=fact.topic, as_of=fact.as_of.isoformat(), why="related",
+                                 extra={"change": fact.change_text, "value": fact.value_text, "title": fact.title,
+                                        "fact": fact}))
+            taken.add(rel)
+            break
+    return out
+
+
+async def gap_candidates(ctx: Context, taken: set[str]) -> list[Candidate]:
+    out = []
+    for h in dict.fromkeys(ctx.us.gaps):
+        key = ctx.query_map.get(h)
+        if not key or key in taken:
+            continue
+        fact = await ctx.cache.get(key)
+        if fact is None or fact.stale or ctx.last_shown_as_of(key):
+            continue
+        block = _story(fact, ctx, kicker=T.t(ctx.locale, "kicker.now"), why=T.t(ctx.locale, "why.now"),
+                       text=T.sentence(fact.period, T.t(ctx.locale, "now.text")))
+        out.append(Candidate(gen="now", subject=key, block=block, score=1.2, topic=fact.topic,
+                             as_of=fact.as_of.isoformat(), why="gap", extra={"fact": fact}))
+        taken.add(key)
+        if len(out) >= 1:
+            break
+    return out
+
+
+def _forecast_period(day: date, frequency: str, locale: str) -> str:
+    from app.services.display import value_period_phrase
+
+    phrase = value_period_phrase(day, frequency, locale=locale)
+    return phrase.replace("за ", "", 1) if locale != "en" else phrase.replace("for ", "", 1)
+
+
+def _fmt_forecast_value(item: dict, value: float, locale: str) -> str:
+    unit = (item.get("unit") or "").strip()
+    # До двух знаков, без хвостовых нулей — как число того же ряда в других блоках письма.
+    num = number(round(value, 2) if abs(value) < 1000 else round(value), locale)
+    if unit.startswith("%"):
+        return with_unit(num, "%", locale)
+    return with_unit(num, unit, locale)
+
+
+def forecast_candidates(ctx: Context, editorial_forecast_ids: set[str]) -> list[Candidate]:
+    if not ctx.showcase:
+        return []
+    country = (ctx.profile.geo or {}).get("country") or "russia"
+    want = {code for code in (s.subject.code for s in ctx.us.signals if s.kind == "forecast_view")}
+    out = []
+    for item in ctx.showcase:
+        if item.get("id") in editorial_forecast_ids:
+            continue
+        topic = SHOWCASE_THEME_TOPIC.get(item.get("theme"))
+        tscore = max(ctx.profile.topics.get(topic or "", 0.0),
+                     *(ctx.profile.topics.get(t, 0.0) for t, th in TOPIC_SHOWCASE_THEME.items() if th == item.get("theme")))
+        slug = (item.get("country") or {}).get("slug")
+        if slug != country and not (slug == "russia" and country == "russia"):
+            tscore *= 0.4
+        code = (item.get("path") or "").rstrip("/").rsplit("/", 1)[-1]
+        if code in want:
+            tscore += 1.0
+        if tscore <= 0.3:
+            continue
+        end = item["forecast_end"]
+        last = item["last_actual"]
+        end_day, last_day = date.fromisoformat(end["date"]), date.fromisoformat(last["date"])
+        freq = item.get("frequency") or "monthly"
+        period = _forecast_period(end_day, freq, ctx.locale)
+        title = f"{item['title']}, {period}"
+        from app.services.display import value_period_phrase
+
+        last_text = f"{_fmt_forecast_value(item, float(last['value']), ctx.locale)} " \
+                    f"{value_period_phrase(last_day, freq, locale=ctx.locale)}"
+        block = {
+            "type": "forecast", "kicker": T.t(ctx.locale, "kicker.forecast"), "title": T.clean_title(title),
+            "value": _fmt_forecast_value(item, float(end["value"]), ctx.locale), "target": period,
+            "last_actual": T.typo(last_text, ctx.locale), "text": T.t(ctx.locale, "forecast.note"),
+            "source": item.get("source") or "", "url": item.get("path") or "",
+            "why": T.t(ctx.locale, "why.topic", topic=topic_label(topic, ctx.locale).lower()) if topic else "",
+        }
+        out.append(Candidate(gen="forecast", subject=f"fc:{item['id']}", block=block, score=tscore * 0.9,
+                             topic=topic, as_of=last["date"], why="topic",
+                             extra={"item_id": item["id"], "target": end["date"], "value": float(end["value"]),
+                                    "value_text": block["value"], "period": period}))
+    out.sort(key=lambda c: -c.score)
+    return out[:1]
+
+
+def check_candidates(ctx: Context) -> list[Candidate]:
+    """«Сверка»: прогноз из прошлого письма человека и вышедший факт за тот же период."""
+    if not ctx.showcase:
+        return []
+    by_id = {it["id"]: it for it in ctx.showcase}
+    done = {(m.get("item_id"), m.get("target")) for h in ctx.us.history for m in h.get("blocks_meta") or []
+            if m.get("gen") == "check"}
+    out = []
+    for h in ctx.us.history:
+        sent = h.get("built_at")
+        for m in h.get("blocks_meta") or []:
+            if m.get("gen") != "forecast" or (m.get("item_id"), m.get("target")) in done:
+                continue
+            item = by_id.get(m.get("item_id"))
+            if not item:
+                continue
+            # Сверка по тому же расчёту: факт витрины за ту же дату, что и прогноз.
+            facts = [p for p in item.get("history") or [] if p["date"] == m.get("target")]
+            if item["last_actual"]["date"] == m.get("target"):
+                facts = [item["last_actual"]]
+            if not facts:
+                continue
+            actual = _fmt_forecast_value(item, float(facts[0]["value"]), ctx.locale)
+            sent_text = full_date(sent.date() if isinstance(sent, datetime) else date.fromisoformat(str(sent)[:10]),
+                                  ctx.locale)
+            text = T.t(ctx.locale, "check.text", sent=sent_text, period=m.get("period") or "",
+                       forecast=m.get("value_text") or "", actual=actual)
+            block = {"type": "story", "kicker": T.t(ctx.locale, "kicker.check"), "title": T.clean_title(item["title"]),
+                     "value": actual, "text": T.typo(text, ctx.locale), "source": item.get("source") or "",
+                     "as_of": m.get("target"), "url": item.get("path") or "", "why": T.t(ctx.locale, "why.check")}
+            out.append(Candidate(gen="check", subject=f"fc:{item['id']}", block=block, score=3.0,
+                                 topic=SHOWCASE_THEME_TOPIC.get(item.get("theme")), as_of=m.get("target"),
+                                 why="check", extra={"item_id": item["id"], "target": m.get("target")}))
+            done.add((m.get("item_id"), m.get("target")))
+    return out[:1]
+
+
+def pick(cands: list[Candidate], limit: int) -> list[Candidate]:
+    """Жадный отбор с разнообразием: тема — один раз, генератор — не больше двух раз."""
+    chosen: list[Candidate] = []
+    topics: dict[str, int] = {}
+    gens: dict[str, int] = {}
+    subjects: set[str] = set()
+    paths: set[str] = set()
+    for strict in (True, False):
+        for c in sorted(cands, key=lambda c: (-c.score, c.gen, c.subject or "")):
+            if len(chosen) >= limit:
+                break
+            path = str(c.block.get("url") or "").split("?")[0].rstrip("/")
+            # Один показатель — один блок: прогноз и факт той же карточки не идут вместе.
+            if c in chosen or (c.subject and c.subject in subjects) or (path and path in paths):
+                continue
+            if gens.get(c.gen, 0) >= 2 and c.gen not in ("check",):
+                continue
+            if strict and c.topic and topics.get(c.topic, 0) >= 1:
+                continue
+            chosen.append(c)
+            subjects.add(c.subject or "")
+            if path:
+                paths.add(path)
+            gens[c.gen] = gens.get(c.gen, 0) + 1
+            if c.topic:
+                topics[c.topic] = topics.get(c.topic, 0) + 1
+    return chosen
+
+
+def table_block(rest: list[Candidate], locale: str) -> tuple[dict | None, list[Candidate]]:
+    rows, used = [], []
+    for c in rest:
+        if c.gen not in ("series", "search", "download", "region", "related") or "fact" not in c.extra:
+            continue
+        fact: Fact = c.extra["fact"]
+        change = (fact.change_text.split(" за ")[0].split(" over ")[0].split(" (")[0]
+                  if fact.change_text and not fact.change_text.startswith(("без", "unchanged")) else "—")
+        rows.append([T.clean_title(fact.title, 48), fact.value_text, change])
+        used.append(c)
+        if len(rows) >= MAX_TABLE_ROWS:
+            break
+    if len(rows) < 2:
+        return None, []
+    summary = "; ".join(f"{r[0]} — {r[1]}" + (f" ({r[2]})" if r[2] != "—" else "") for r in rows)
+    block = {"type": "table", "kicker": T.t(locale, "kicker.table"), "title": T.t(locale, "table.title"),
+             "columns": T.t(locale, "table.cols"), "rows": rows, "text": T.typo(summary + ".", locale),
+             "source": ", ".join(dict.fromkeys(c.extra["fact"].source for c in used if c.extra["fact"].source)),
+             "why": T.t(locale, "why.view")}
+    return block, used
+
+
+def editorial_share_ok(n_editorial: int, n_total: int, min_share: float) -> bool:
+    return n_total == 0 or n_editorial >= math.ceil(min_share * n_total - 1e-9)
