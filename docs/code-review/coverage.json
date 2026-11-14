@@ -29,8 +29,8 @@
       "data_schema_reviewed": 8,
       "reviewed": 2189
     },
-    "definitions": 16013,
-    "annotated_definitions": 16013,
+    "definitions": 16017,
+    "annotated_definitions": 16017,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -5237,15 +5237,15 @@
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
-      "sha256": "f8d7eea308cb00a8bb594c6c796f0609d08d57832f669ba496953d31c6bb5aec",
-      "bytes": 31418,
-      "lines": 683,
+      "sha256": "a823f60bb9e26f08047da3d8ede73b3becb7e090d044439f29e5b2bfc32604a6",
+      "bytes": 33956,
+      "lines": 728,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 17,
-      "annotated_definitions": 17,
+      "definitions": 19,
+      "annotated_definitions": 19,
       "missing_definitions": []
     },
     {
@@ -12582,15 +12582,15 @@
     },
     {
       "path": "backend/tests/test_world_vs_yoy_kind.py",
-      "sha256": "f1fcd235b9b06527c532eea7115b4e1c883a9cbe5b55219b3e669a5139b9c0cf",
-      "bytes": 8503,
-      "lines": 143,
+      "sha256": "7022d041cd7cdd15cac85e4fdd66c43c9a9bd72f3877f31be6e6297bdea0880d",
+      "bytes": 12019,
+      "lines": 204,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 10,
-      "annotated_definitions": 10,
+      "definitions": 12,
+      "annotated_definitions": 12,
       "missing_definitions": []
     },
     {
@@ -13674,9 +13674,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "ab1ff8d265baab0539515f0e68a3c31a41950c6daad3fd3eb3e9da646724e8c2",
-      "bytes": 361518,
-      "lines": 1223,
+      "sha256": "8c8a95ec38eeebba54256b3a0759db294516c6586f685495bbfcc6aed34a8196",
+      "bytes": 363021,
+      "lines": 1224,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14207,7 +14207,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "2fe508732197b32f97835da47c920cd7e83bcaca42e84f92764da5c59c82c70a",
+      "sha256": "86bbf8afeae80a2ccf4223683266153083d9f4af6cbdcd36979f430e63f4ee28",
       "bytes": 3853565,
       "lines": 136363,
       "code": false,
@@ -14259,9 +14259,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "c9349075515eace4ed0f755a56dfe0f5d6ac30069639fe47d082cc734561fb3c",
-      "bytes": 12192419,
-      "lines": 365517,
+      "sha256": "23b8f979417cedc4fd01b25bbe33c3c05681113859235c0ece39945316111b30",
+      "bytes": 12192876,
+      "lines": 365535,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -32004,9 +32004,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "b916074b60b6d5a608d338c89239e812706281558dd637a85f7a8620dfb76a2e",
+  "ledger_sha256": "80eb4133d480bece5eee8ef6b0203c41ea2177bd49721e8dfb928eb23888a855",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "b63b2c422c96d5265e4b84f9a14011e5c4045953",
+  "baseline_commit": "df4b0ee6ef61ee09372eb955680c4df1fd70ec04",
   "branch": "worktree-agent-a60cd3db86caaa5f2",
   "unstaged_at_capture": []
 }
