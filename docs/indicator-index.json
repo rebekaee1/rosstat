@@ -1771,22 +1771,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108349,
+          "line": 108401,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108720,
+          "line": 108772,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -1821,7 +1821,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -3837,17 +3837,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108332,
+          "line": 108384,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108601,
+          "line": 108653,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -3877,7 +3877,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -4437,22 +4437,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108356,
+          "line": 108408,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108602,
+          "line": 108654,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108769,
+          "line": 108821,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -4492,7 +4492,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -5257,7 +5257,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 61,
+          "line": 68,
           "kind": "other"
         },
         {
@@ -5827,12 +5827,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123266,
+          "line": 123318,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123552,
+          "line": 123604,
           "kind": "other"
         },
         {
@@ -7308,12 +7308,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 83,
+          "line": 90,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 780,
+          "line": 787,
           "kind": "other"
         },
         {
@@ -7608,7 +7608,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -8620,7 +8620,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -9261,12 +9261,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -9998,22 +9998,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108330,
+          "line": 108382,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108587,
+          "line": 108639,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -10063,7 +10063,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -10566,7 +10566,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -12032,22 +12032,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108360,
+          "line": 108412,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108797,
+          "line": 108849,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112024,
+          "line": 112076,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
@@ -12077,7 +12077,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -12822,7 +12822,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -12977,17 +12977,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 70,
+          "line": 77,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 145,
+          "line": 152,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 780,
+          "line": 787,
           "kind": "other"
         },
         {
@@ -13327,27 +13327,27 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108313,
+          "line": 108365,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108468,
+          "line": 108520,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108944,
+          "line": 108996,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -13397,7 +13397,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -14169,7 +14169,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 106,
+          "line": 113,
           "kind": "other"
         },
         {
@@ -14795,7 +14795,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -15333,22 +15333,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108370,
+          "line": 108422,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108867,
+          "line": 108919,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -15383,7 +15383,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -15921,7 +15921,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108285,
+          "line": 108337,
           "kind": "other"
         },
         {
@@ -20893,147 +20893,147 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108399,
+          "line": 108451,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108700,
+          "line": 108752,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108944,
+          "line": 108996,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109022,
+          "line": 109074,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109274,
+          "line": 109326,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109290,
+          "line": 109342,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109301,
+          "line": 109353,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109357,
+          "line": 109409,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110463,
+          "line": 110515,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110644,
+          "line": 110696,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 111909,
+          "line": 111961,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112010,
+          "line": 112062,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112574,
+          "line": 112626,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114852,
+          "line": 114904,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123552,
+          "line": 123604,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124558,
+          "line": 124610,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124958,
+          "line": 125010,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125026,
+          "line": 125078,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 126325,
+          "line": 126377,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 127648,
+          "line": 127700,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 127665,
+          "line": 127717,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 134617,
+          "line": 134669,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 168165,
+          "line": 168217,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 169802,
+          "line": 169854,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 170426,
+          "line": 170478,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 170444,
+          "line": 170496,
           "kind": "other"
         },
         {
@@ -21108,7 +21108,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2870,
+          "line": 2872,
           "kind": "other"
         },
         {
@@ -23944,7 +23944,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 102,
+          "line": 109,
           "kind": "other"
         },
         {
@@ -24339,32 +24339,32 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109022,
+          "line": 109074,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124558,
+          "line": 124610,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124958,
+          "line": 125010,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125026,
+          "line": 125078,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 126325,
+          "line": 126377,
           "kind": "other"
         },
         {
@@ -25365,7 +25365,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109022,
+          "line": 109074,
           "kind": "other"
         },
         {
@@ -25836,32 +25836,32 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109022,
+          "line": 109074,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124558,
+          "line": 124610,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124958,
+          "line": 125010,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125026,
+          "line": 125078,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 126325,
+          "line": 126377,
           "kind": "other"
         },
         {
@@ -26712,7 +26712,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109022,
+          "line": 109074,
           "kind": "other"
         },
         {
@@ -27451,27 +27451,27 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109022,
+          "line": 109074,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124958,
+          "line": 125010,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125026,
+          "line": 125078,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 126325,
+          "line": 126377,
           "kind": "other"
         },
         {
@@ -28357,7 +28357,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109022,
+          "line": 109074,
           "kind": "other"
         },
         {
@@ -28763,12 +28763,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109022,
+          "line": 109074,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
@@ -29214,17 +29214,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125077,
+          "line": 125129,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -29804,17 +29804,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125077,
+          "line": 125129,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -30404,12 +30404,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -31004,17 +31004,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125077,
+          "line": 125129,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -31584,17 +31584,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125077,
+          "line": 125129,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -32174,12 +32174,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -34694,17 +34694,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108333,
+          "line": 108385,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108608,
+          "line": 108660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -34734,7 +34734,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -35184,12 +35184,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108609,
+          "line": 108661,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -35452,7 +35452,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 104,
+          "line": 111,
           "kind": "other"
         },
         {
@@ -35707,17 +35707,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -36117,17 +36117,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125077,
+          "line": 125129,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -36557,7 +36557,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 92,
+          "line": 99,
           "kind": "other"
         },
         {
@@ -36637,17 +36637,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125077,
+          "line": 125129,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -37397,7 +37397,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -37987,12 +37987,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -38464,7 +38464,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -39142,7 +39142,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -40934,32 +40934,32 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108539,
+          "line": 108591,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109274,
+          "line": 109326,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123639,
+          "line": 123691,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123715,
+          "line": 123767,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -41959,7 +41959,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 780,
+          "line": 787,
           "kind": "other"
         },
         {
@@ -42054,7 +42054,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -42682,17 +42682,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 82,
+          "line": 89,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 145,
+          "line": 152,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 780,
+          "line": 787,
           "kind": "other"
         },
         {
@@ -43072,37 +43072,37 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108317,
+          "line": 108369,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108496,
+          "line": 108548,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108944,
+          "line": 108996,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112574,
+          "line": 112626,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -43152,7 +43152,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -43867,17 +43867,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 80,
+          "line": 87,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 145,
+          "line": 152,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 780,
+          "line": 787,
           "kind": "other"
         },
         {
@@ -44137,27 +44137,27 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108318,
+          "line": 108370,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108503,
+          "line": 108555,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108944,
+          "line": 108996,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123266,
+          "line": 123318,
           "kind": "other"
         },
         {
@@ -44177,7 +44177,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -45077,7 +45077,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 52,
+          "line": 59,
           "kind": "other"
         },
         {
@@ -45762,77 +45762,72 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 107291,
+          "line": 108780,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108728,
+          "line": 123891,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123839,
+          "line": 123911,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123859,
+          "line": 131907,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 131855,
+          "line": 131921,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 131869,
+          "line": 366434,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 366333,
+          "line": 366435,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 366334,
+          "line": 366460,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 366359,
+          "line": 366494,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 366393,
+          "line": 366495,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 366394,
+          "line": 366522,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 366421,
+          "line": 366556,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 366455,
+          "line": 366557,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 366456,
-          "kind": "other"
-        },
-        {
-          "file": "docs/mechanism-inventory.json",
-          "line": 366478,
+          "line": 366579,
           "kind": "other"
         },
         {
@@ -46376,7 +46371,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -47359,12 +47354,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108354,
+          "line": 108406,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108755,
+          "line": 108807,
           "kind": "other"
         },
         {
@@ -47404,7 +47399,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -47800,12 +47795,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123846,
+          "line": 123898,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123859,
+          "line": 123911,
           "kind": "other"
         },
         {
@@ -48087,7 +48082,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 89,
+          "line": 96,
           "kind": "other"
         },
         {
@@ -48357,17 +48352,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112031,
+          "line": 112083,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
@@ -48924,7 +48919,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 88,
+          "line": 95,
           "kind": "other"
         },
         {
@@ -49159,22 +49154,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112038,
+          "line": 112090,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
@@ -49811,7 +49806,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 90,
+          "line": 97,
           "kind": "other"
         },
         {
@@ -50141,22 +50136,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112045,
+          "line": 112097,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
@@ -50718,7 +50713,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -51436,12 +51431,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123266,
+          "line": 123318,
           "kind": "other"
         },
         {
@@ -52125,7 +52120,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -52530,7 +52525,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -52910,7 +52905,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -54100,37 +54095,37 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108368,
+          "line": 108420,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108853,
+          "line": 108905,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112017,
+          "line": 112069,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112574,
+          "line": 112626,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123832,
+          "line": 123884,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123859,
+          "line": 123911,
           "kind": "other"
         },
         {
@@ -54175,7 +54170,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -55419,37 +55414,37 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108369,
+          "line": 108421,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108860,
+          "line": 108912,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 118940,
+          "line": 118992,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 119412,
+          "line": 119464,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 119472,
+          "line": 119524,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 119479,
+          "line": 119531,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 170749,
+          "line": 170801,
           "kind": "other"
         },
         {
@@ -55494,12 +55489,12 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 3130,
+          "line": 3132,
           "kind": "other"
         },
         {
@@ -57392,12 +57387,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123266,
+          "line": 123318,
           "kind": "other"
         },
         {
@@ -58129,7 +58124,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -58965,7 +58960,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -59266,7 +59261,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 93,
+          "line": 100,
           "kind": "other"
         },
         {
@@ -59346,7 +59341,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -60345,7 +60340,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -60768,7 +60763,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 97,
+          "line": 104,
           "kind": "other"
         },
         {
@@ -61003,27 +60998,27 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123552,
+          "line": 123604,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124278,
+          "line": 124330,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124975,
+          "line": 125027,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125060,
+          "line": 125112,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -61344,7 +61339,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 99,
+          "line": 106,
           "kind": "other"
         },
         {
@@ -61544,22 +61539,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124278,
+          "line": 124330,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124975,
+          "line": 125027,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125060,
+          "line": 125112,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -63514,12 +63509,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123783,
+          "line": 123835,
           "kind": "other"
         },
         {
@@ -64363,7 +64358,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 53,
+          "line": 60,
           "kind": "other"
         },
         {
@@ -69308,17 +69303,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 107291,
+          "line": 108780,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108728,
-          "kind": "other"
-        },
-        {
-          "file": "docs/mechanism-inventory.json",
-          "line": 170289,
+          "line": 170341,
           "kind": "other"
         },
         {
@@ -69727,7 +69717,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -71189,22 +71179,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123853,
+          "line": 123905,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123859,
+          "line": 123911,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 163214,
+          "line": 163266,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 355786,
+          "line": 355887,
           "kind": "other"
         },
         {
@@ -72134,7 +72124,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -73412,7 +73402,7 @@
       "files": [
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 129088,
+          "line": 129140,
           "kind": "other"
         },
         {
@@ -73563,7 +73553,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 55,
+          "line": 62,
           "kind": "other"
         },
         {
@@ -73903,27 +73893,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 107291,
+          "line": 123604,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123552,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 125146,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
-          "kind": "other"
-        },
-        {
-          "file": "docs/mechanism-inventory.json",
-          "line": 126189,
+          "line": 126241,
           "kind": "other"
         },
         {
@@ -74341,7 +74326,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -74803,7 +74788,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 101,
+          "line": 108,
           "kind": "other"
         },
         {
@@ -74888,7 +74873,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -75298,7 +75283,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 100,
+          "line": 107,
           "kind": "other"
         },
         {
@@ -75383,7 +75368,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -75920,7 +75905,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -76395,7 +76380,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -77738,7 +77723,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 46,
+          "line": 53,
           "kind": "other"
         },
         {
@@ -78753,42 +78738,42 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110463,
+          "line": 110515,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 111909,
+          "line": 111961,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112574,
+          "line": 112626,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123552,
+          "line": 123604,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 168067,
+          "line": 168119,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 169559,
+          "line": 169611,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 360354,
+          "line": 360455,
           "kind": "other"
         },
         {
@@ -80932,17 +80917,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 77,
+          "line": 84,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 145,
+          "line": 152,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 780,
+          "line": 787,
           "kind": "other"
         },
         {
@@ -81122,22 +81107,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108315,
+          "line": 108367,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108482,
+          "line": 108534,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108944,
+          "line": 108996,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -81167,7 +81152,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -81844,12 +81829,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -82353,7 +82338,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 103,
+          "line": 110,
           "kind": "other"
         },
         {
@@ -82508,12 +82493,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -82988,7 +82973,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 103,
+          "line": 110,
           "kind": "other"
         },
         {
@@ -83178,12 +83163,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -83728,7 +83713,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 103,
+          "line": 110,
           "kind": "other"
         },
         {
@@ -84003,22 +83988,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108567,
+          "line": 108619,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112574,
+          "line": 112626,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125094,
+          "line": 125146,
           "kind": "other"
         },
         {
@@ -86950,22 +86935,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108374,
+          "line": 108426,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108895,
+          "line": 108947,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -87005,7 +86990,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -90409,7 +90394,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -91338,7 +91323,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -91644,7 +91629,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -93135,17 +93120,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 54,
+          "line": 61,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 153,
+          "line": 160,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 154,
+          "line": 161,
           "kind": "other"
         },
         {
@@ -95430,197 +95415,192 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 107291,
-          "kind": "other"
-        },
-        {
-          "file": "docs/mechanism-inventory.json",
           "line": 107507,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108342,
+          "line": 108394,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108671,
+          "line": 108723,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108672,
+          "line": 108724,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109291,
+          "line": 109343,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109308,
+          "line": 109360,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109357,
+          "line": 109409,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109970,
+          "line": 110022,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110372,
+          "line": 110424,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110435,
+          "line": 110487,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110436,
+          "line": 110488,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110801,
+          "line": 110853,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110852,
+          "line": 110904,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110894,
+          "line": 110946,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110916,
+          "line": 110968,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110967,
+          "line": 111019,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 111009,
+          "line": 111061,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 111989,
+          "line": 112041,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 120863,
+          "line": 120915,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 120885,
+          "line": 120937,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 120920,
+          "line": 120972,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122316,
+          "line": 122368,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122353,
+          "line": 122405,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122395,
+          "line": 122447,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122415,
+          "line": 122467,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122452,
+          "line": 122504,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122453,
+          "line": 122505,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122494,
+          "line": 122546,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123552,
+          "line": 123604,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123709,
+          "line": 123761,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123715,
+          "line": 123767,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125628,
+          "line": 125680,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 126189,
+          "line": 126241,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 127648,
+          "line": 127700,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 127665,
+          "line": 127717,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 129143,
+          "line": 129195,
           "kind": "other"
         },
         {
@@ -95690,42 +95670,42 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2870,
+          "line": 2872,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2904,
+          "line": 2906,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2911,
+          "line": 2913,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2912,
+          "line": 2914,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 3165,
+          "line": 3167,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 3202,
+          "line": 3204,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 3203,
+          "line": 3205,
           "kind": "other"
         },
         {
@@ -96939,7 +96919,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -97188,7 +97168,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -97427,7 +97407,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -97690,12 +97670,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 58,
+          "line": 65,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 60,
+          "line": 67,
           "kind": "other"
         },
         {
@@ -98195,27 +98175,27 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123825,
+          "line": 123877,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123859,
+          "line": 123911,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125043,
+          "line": 125095,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 169830,
+          "line": 169882,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 356832,
+          "line": 356933,
           "kind": "other"
         },
         {
@@ -99941,7 +99921,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -100242,7 +100222,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -100725,7 +100705,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -103574,12 +103554,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112574,
+          "line": 112626,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
@@ -105458,7 +105438,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -106254,7 +106234,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -107423,7 +107403,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108285,
+          "line": 108337,
           "kind": "other"
         },
         {
@@ -107888,7 +107868,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -108119,12 +108099,12 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108285,
+          "line": 108337,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -109134,7 +109114,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 108,
+          "line": 115,
           "kind": "other"
         },
         {
@@ -109274,22 +109254,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108302,
+          "line": 108354,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108391,
+          "line": 108443,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108392,
+          "line": 108444,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108944,
+          "line": 108996,
           "kind": "other"
         },
         {
@@ -109314,7 +109294,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -109532,7 +109512,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {
@@ -111748,7 +111728,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -112400,17 +112380,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 74,
+          "line": 81,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 145,
+          "line": 152,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 780,
+          "line": 787,
           "kind": "other"
         },
         {
@@ -112645,22 +112625,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108314,
+          "line": 108366,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108475,
+          "line": 108527,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108944,
+          "line": 108996,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
@@ -112690,7 +112670,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -114286,7 +114266,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 51,
+          "line": 58,
           "kind": "other"
         },
         {
@@ -115211,82 +115191,82 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108285,
+          "line": 108337,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109073,
+          "line": 109125,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109089,
+          "line": 109141,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109098,
+          "line": 109150,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109140,
+          "line": 109192,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109493,
+          "line": 109545,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109544,
+          "line": 109596,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112003,
+          "line": 112055,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112574,
+          "line": 112626,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122432,
+          "line": 122484,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 122494,
+          "line": 122546,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123783,
+          "line": 123835,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 125628,
+          "line": 125680,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 126189,
+          "line": 126241,
           "kind": "other"
         },
         {
@@ -115351,7 +115331,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2865,
+          "line": 2867,
           "kind": "other"
         },
         {
@@ -117543,17 +117523,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 123266,
+          "line": 123318,
           "kind": "other"
         },
         {
@@ -118101,12 +118081,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 81,
+          "line": 88,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 145,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -118331,17 +118311,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 115089,
+          "line": 115141,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 115093,
+          "line": 115145,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 115100,
+          "line": 115152,
           "kind": "other"
         },
         {
@@ -118366,7 +118346,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 3013,
+          "line": 3015,
           "kind": "other"
         },
         {
@@ -119074,17 +119054,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 69,
+          "line": 76,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 145,
+          "line": 152,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 780,
+          "line": 787,
           "kind": "other"
         },
         {
@@ -119769,52 +119749,52 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108311,
+          "line": 108363,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108454,
+          "line": 108506,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108944,
+          "line": 108996,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 110463,
+          "line": 110515,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112574,
+          "line": 112626,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112803,
+          "line": 112855,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 114339,
+          "line": 114391,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 151777,
+          "line": 151829,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 151782,
+          "line": 151834,
           "kind": "other"
         },
         {
@@ -119864,7 +119844,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -123700,52 +123680,52 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108285,
+          "line": 108337,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108362,
+          "line": 108414,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108811,
+          "line": 108863,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109292,
+          "line": 109344,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109315,
+          "line": 109367,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 109357,
+          "line": 109409,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 111996,
+          "line": 112048,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112051,
+          "line": 112103,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 112608,
+          "line": 112660,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -123800,12 +123780,12 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2870,
+          "line": 2872,
           "kind": "other"
         },
         {
@@ -124773,22 +124753,22 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108285,
+          "line": 108337,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108366,
+          "line": 108418,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 108839,
+          "line": 108891,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124754,
+          "line": 124806,
           "kind": "other"
         },
         {
@@ -124818,7 +124798,7 @@
         },
         {
           "file": "docs/mechanism-inventory.md",
-          "line": 2857,
+          "line": 2859,
           "kind": "other"
         },
         {
@@ -127276,7 +127256,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 124771,
+          "line": 124823,
           "kind": "other"
         },
         {

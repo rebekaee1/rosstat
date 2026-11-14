@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2481,
-    "code_files": 2008,
-    "current_reviews": 2481,
+    "files": 2482,
+    "code_files": 2009,
+    "current_reviews": 2482,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2211
+      "reviewed": 2212
     },
-    "definitions": 16277,
-    "annotated_definitions": 16277,
+    "definitions": 16282,
+    "annotated_definitions": 16282,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -4847,15 +4847,15 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "sha256": "0182ac2919193c52eb4144f7b3ca2344505a5fd4fae9b50034eb3b395822dced",
-      "bytes": 77787,
-      "lines": 1154,
+      "sha256": "a0d1b86fb6075b70898383820a7e6d6c67b4f87cb08758fee8f6570013207046",
+      "bytes": 80222,
+      "lines": 1180,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 34,
-      "annotated_definitions": 34,
+      "definitions": 35,
+      "annotated_definitions": 35,
       "missing_definitions": []
     },
     {
@@ -11073,6 +11073,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_search_regional_product.py",
+      "sha256": "0b81160fdcfb241f5feafa4b4c2183bc2c89dcb1858cb8490f1de3c7efd46868",
+      "bytes": 2912,
+      "lines": 51,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 4,
+      "annotated_definitions": 4,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_search_registered_semantics.py",
       "sha256": "e95f0631b4c2bb6b088797dc4e616dfd593d56fb07e79666ba9c24380af655f2",
       "bytes": 7432,
@@ -14428,9 +14441,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "9a19448de7d8627f5e058aef342250f75f4ee1ada30ccbee174681dc0f9935dd",
-      "bytes": 3863999,
-      "lines": 136768,
+      "sha256": "ccb00576b32c4bb9d0c2cf3b9c63f1836daf584883d22268a0c8b7f1327b8775",
+      "bytes": 3863506,
+      "lines": 136748,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -14480,9 +14493,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "05df6dcf4d49ba50cdc2c0150e30a5b9329c4e006804711929d16c56b7880db0",
-      "bytes": 12352487,
-      "lines": 370666,
+      "sha256": "e61ba27ba5a06162e7c24fb13e84652ebbe7c4ba307355e395de7370a407ac53",
+      "bytes": 12355857,
+      "lines": 370767,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14493,9 +14506,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "dba5f45f2526cbd517ee385030b529e96cc1f1f525d8365e5a152d8f618915f2",
-      "bytes": 633499,
-      "lines": 3422,
+      "sha256": "1cb1add249771faf71a5d3c13c537c47ec9b784414c8c51ccef9f423fe783a23",
+      "bytes": 633855,
+      "lines": 3424,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -15143,9 +15156,9 @@
     },
     {
       "path": "docs/search.md",
-      "sha256": "2407b008456e28965cfe8ccd92b71aed504c8028eb9f4c943ee54a6e97c119c6",
-      "bytes": 154106,
-      "lines": 986,
+      "sha256": "b60c5b31dfac056d2df89d5e9724dc3b94ca9a743b173532f300a11bc9b5d84c",
+      "bytes": 159331,
+      "lines": 1006,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -32290,9 +32303,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "81e54f9d57961aba1ebc3533ce59075e9f272cdda87d138fd1ffe82baae848ba",
+  "ledger_sha256": "ff1a7e32991dface32d065e3976e75cd840da863c2a9de63c050c32bf29d526a",
   "javascript_inventory_sha256": "94de26a06a8491f8bb5ca8c27ff0f39c9e7bd03992f231268c8b7683555c1cf2",
-  "baseline_commit": "a4272c30f9caf6bbf7e2965333817d1de3a1a778",
+  "baseline_commit": "e828c8d54484517c9af643a1999ba8f4f12ce9e4",
   "branch": "worktree-agent-a4879bc09991f03fb",
   "unstaged_at_capture": []
 }
