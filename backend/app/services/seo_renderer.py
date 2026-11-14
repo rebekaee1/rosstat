@@ -171,6 +171,37 @@ def truncate_meta(value: str, limit: int) -> str:
     return head.rstrip(" ,;:—-") + "…"
 
 
+# Английский хост (14.11.2026): description не длиннее 160 знаков — Google показывает в выдаче около
+# 155–160; длиннее — обрезает сам посреди фразы. Русский хост — прежние 300 (Яндекс, отдельное решение).
+META_DESCRIPTION_LIMIT_EN = 160
+_SENTENCE_END = re.compile(r"(?<=[.!?…])\s+(?=[A-ZА-ЯЁ0-9«\"(])")
+# Точка сокращения не конец предложения: «Federal Reserve Bank of St. Louis», «U.S. Bureau».
+_ABBREVIATION_END = re.compile(r"(?:\b(?:[A-Za-z]\.){1,3}|\b(?:St|Dr|Mr|Mrs|Inc|Co|Ltd|vs|No|Jr|Sr|ул|г|гг|т|д)\.)$")
+
+
+def fit_meta(value: str, limit: int) -> str:
+    """Description в пределах ``limit``: целыми предложениями с начала, иначе — по границе слова.
+
+    Шаблоны ставят главное (показатель, место, год, значение) в первое предложение, источник и
+    пояснения — дальше: они и отбрасываются первыми.
+    """
+    if len(value) <= limit:
+        return value
+    sentences: list[str] = []
+    for piece in _SENTENCE_END.split(value):
+        if sentences and _ABBREVIATION_END.search(sentences[-1]):
+            sentences[-1] = f"{sentences[-1]} {piece}"
+        else:
+            sentences.append(piece)
+    kept = ""
+    for sentence in sentences:
+        candidate = f"{kept} {sentence}".strip() if kept else sentence
+        if len(candidate) > limit:
+            break
+        kept = candidate
+    return kept if kept else truncate_meta(value, limit - 1)
+
+
 def _format_date(value: date | None) -> str:
     """Человекочитаемая дата («1 мая 2026» / «1 May 2026») — для видимого текста."""
     from app.services.display import format_date_locale
@@ -1887,7 +1918,11 @@ def compose_document(
 
     url = _absolute(canonical_path, canonical=True)
     safe_title = escape(title)
-    safe_desc = escape(truncate_meta(clean_text(description), 300))
+    safe_desc = escape(
+        fit_meta(clean_text(description), META_DESCRIPTION_LIMIT_EN)
+        if get_locale() == "en"
+        else truncate_meta(clean_text(description), 300)
+    )
     safe_keywords = escape(clean_text(keywords or _default_keywords())[:400])
     structured_items = list(json_ld or [])
     if og_image:
