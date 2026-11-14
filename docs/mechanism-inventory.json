@@ -1560,8 +1560,8 @@
     },
     {
       "path": "backend/app/services/search.py",
-      "sha256": "42906a3f808a278c3736dcc2d42088935357a1432e1f9aa257589de0177223dc",
-      "lines": 1540
+      "sha256": "f4bc53dbef563d876c8966b4751e5b2f8021aea67d5a4b1923d1eb6dd4b63455",
+      "lines": 1541
     },
     {
       "path": "backend/app/services/search_currency_aliases.py",
@@ -1625,8 +1625,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "sha256": "f825e42550f326d3bfc8e93aee7216bbb23e8533bc4c951a03934103d5bc4424",
-      "lines": 240
+      "sha256": "51a032f205d82a70a3d70b0c41b65b84cc6bf0add6d8f59aa245e1140d1c1e3c",
+      "lines": 243
     },
     {
       "path": "backend/app/services/search_units.py",
@@ -152999,8 +152999,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 209,
-      "end_line": 210,
+      "line": 211,
+      "end_line": 212,
       "owner": "section_suggestions",
       "conditions": [],
       "operation": "execute",
@@ -153013,8 +153013,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 213,
-      "end_line": 217,
+      "line": 215,
+      "end_line": 219,
       "owner": "section_suggestions",
       "conditions": [],
       "operation": "execute",
@@ -237468,8 +237468,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 212,
+      "end_line": 212,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -237477,8 +237477,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 217,
+      "end_line": 217,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_name",
@@ -237486,8 +237486,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 217,
+      "end_line": 217,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -237495,8 +237495,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 216,
-      "end_line": 216,
+      "line": 218,
+      "end_line": 218,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.notin_",
@@ -237504,8 +237504,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 211,
+      "end_line": 211,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_name",
@@ -237513,8 +237513,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 211,
+      "end_line": 211,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.table_code",
@@ -237522,8 +237522,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 212,
+      "end_line": 212,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -237531,8 +237531,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 214,
-      "end_line": 214,
+      "line": 216,
+      "end_line": 216,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -237540,8 +237540,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 214,
-      "end_line": 214,
+      "line": 216,
+      "end_line": 216,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.name",
@@ -237549,8 +237549,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 214,
-      "end_line": 214,
+      "line": 216,
+      "end_line": 216,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.table_code",
@@ -237558,8 +237558,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 217,
+      "end_line": 217,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -237567,8 +237567,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 217,
+      "end_line": 217,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -237576,8 +237576,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 216,
-      "end_line": 216,
+      "line": 218,
+      "end_line": 218,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -237585,8 +237585,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 211,
+      "end_line": 211,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -237594,44 +237594,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 209,
-      "end_line": 209,
-      "owner": "section_suggestions",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/search_regional_groups.py",
-      "line": 214,
-      "end_line": 214,
-      "owner": "section_suggestions",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/search_regional_groups.py",
-      "line": 214,
-      "end_line": 214,
-      "owner": "section_suggestions",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/search_regional_groups.py",
-      "line": 214,
-      "end_line": 214,
-      "owner": "section_suggestions",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/search_regional_groups.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 211,
+      "end_line": 211,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -237641,6 +237605,42 @@
       "path": "backend/app/services/search_regional_groups.py",
       "line": 216,
       "end_line": 216,
+      "owner": "section_suggestions",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/search_regional_groups.py",
+      "line": 216,
+      "end_line": 216,
+      "owner": "section_suggestions",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/search_regional_groups.py",
+      "line": 216,
+      "end_line": 216,
+      "owner": "section_suggestions",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/search_regional_groups.py",
+      "line": 217,
+      "end_line": 217,
+      "owner": "section_suggestions",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/search_regional_groups.py",
+      "line": 218,
+      "end_line": 218,
       "owner": "section_suggestions",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -308336,7 +308336,7 @@
     {
       "path": "backend/app/services/search.py",
       "line": 1398,
-      "end_line": 1540,
+      "end_line": 1541,
       "owner": "<module>",
       "conditions": [],
       "name": "federated_search",
@@ -309427,7 +309427,7 @@
     {
       "path": "backend/app/services/search_regional_groups.py",
       "line": 202,
-      "end_line": 240,
+      "end_line": 243,
       "owner": "<module>",
       "conditions": [],
       "name": "section_suggestions",
@@ -309453,8 +309453,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 219,
-      "end_line": 223,
+      "line": 221,
+      "end_line": 225,
       "owner": "section_suggestions",
       "conditions": [],
       "name": "title",
@@ -351362,8 +351362,8 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 224,
+      "end_line": 224,
       "owner": "section_suggestions.title",
       "conditions": [],
       "symbol": "app.data.i18n.region_indicators_en.REGION_INDICATORS_EN"

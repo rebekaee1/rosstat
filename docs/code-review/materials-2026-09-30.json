@@ -12594,8 +12594,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "f0be2a3fccba3a88f51c6b3898b6c55b840c4c26c73f1fbab9e3e3daecd5744e",
-        "bytes": 7282404
+        "sha256": "73f586e13a30fe9df96f3022ec9a565445a0556cafea855eacd2db7e3a808445",
+        "bytes": 7284433
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -13348,7 +13348,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "af1b53c5a8f79c739577c7890aecb3c4299679d6b93c21a94a9f63c68913fe45",
+        "sha256": "f2e86c96e56fe2e4b390c93b6ce1b704742368fc2ef9d921326629b27aa15e8a",
         "bytes": 13421
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -15273,7 +15273,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "56ef24e7fd79437d5e77f8d27069929b41df4170b5fa5fa4eef94b11752969aa",
+        "sha256": "7507d5a064375e53f441793cbed9a67d8b5402179b13c7853be7d139e4e09917",
         "bytes": 949500
       },
       "review_status": "generated_snapshot",
@@ -17701,8 +17701,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "272c09222beb325cac1f99ac25b804b297d772f968155fe9086f70cf46b365ee",
-        "bytes": 7847909
+        "sha256": "e1c4ba7615625054f3d7ff0458b51006a8b3bc198889caf9d00b2ac6a30fe561",
+        "bytes": 7847898
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -20634,8 +20634,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "324ff29dcdea4e9cc0398f935ad91075e6d36651fe64ab494466e9ebc901efab",
-        "bytes": 1335351
+        "sha256": "711d86e690d3c8c3a04b943e9afdaf340c2db1f8cc1579abebbacaa47fd63351",
+        "bytes": 1335495
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -22404,8 +22404,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "eb3efcc0371f052703b0406c3dc4efc042ec64963df4429b3aaf9b8ffcc93bc9",
-        "bytes": 23556513
+        "sha256": "d06e230267894f2b4cbef518aa74d8ee16aa155966af898b60a345b3942ed943",
+        "bytes": 23561281
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -30221,7 +30221,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "d22f009e8a1b23da942087c458a831fa8d5017230e54ebdfbeedae9e5fc16119",
+        "sha256": "c6c0b7d967b39dd9f136e2ad5139e36e7f6c901764af1c7f5d5396c9f9d74dc1",
         "bytes": 3864292
       },
       "review_status": "generated_snapshot",
@@ -40343,7 +40343,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "8da66651e4a16b76ecb8679a491cf0ee7f1ae2735c619acd81dc0ff434af9623",
+        "sha256": "eb533c4f3089e86f44d26c6d41630d3d6aa6b12bcbd40db4e34dc5be93bcd1df",
         "bytes": 12371234
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -46409,8 +46409,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "4cef1552bbc007b0f8efc62a0a341569c196660dc07f98834638d13f89198757",
-        "bytes": 171785
+        "sha256": "61e48b54111935bf432d2f2a353a1f46da446189578d58a16057392d93f36953",
+        "bytes": 172711
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "prior_version_evidence": [

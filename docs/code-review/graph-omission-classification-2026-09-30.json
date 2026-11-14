@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "517d5e84f2d1678a9808b6397d8f4fb180c5de1c7a66cd909b1b12aaa96bd67b",
-  "extraction_sha256": "2a4e90d9e5fbfa97be5ef66b45a8dde611351fbf3ab2eea980930303e1d4baba",
-  "terrain_baseline_commit": "42d81bfd6908ec06111e4349b8dd97da5c6a5a92",
+  "terrain_sha256": "7f13825a16a82d150521372d3ae2e663d9f4c2d93117bc441dca0e5f6ca410b9",
+  "extraction_sha256": "690e399db054ebe7344a94ac5c6017eedc590125496d495241bcc446905af434",
+  "terrain_baseline_commit": "785a3b13a283b4a7e1a52ebb92d260646c4e4e70",
   "counts": {
     "external_or_unresolved_file": 3026,
     "missing_endpoint": 4436
@@ -79843,7 +79843,7 @@
       },
       "owned_target_candidates": [],
       "import_modules_at_anchor": [],
-      "current_anchor_excerpt": "async def section_suggestions(db: AsyncSession, item: dict, exclude: set[str], locale: str) -> list[str]:"
+      "current_anchor_excerpt": "async def section_suggestions(db: AsyncSession, item: dict, exclude: set[str], locale: str, *,"
     },
     {
       "edge_index": 12339,

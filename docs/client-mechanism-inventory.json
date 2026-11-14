@@ -34115,7 +34115,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/IndicatorSearch.jsx": {
-      "sha256": "634fd9d37126556d1ce9d7281c342ae69dedfab894ccbbe031fd35930f0eaa37",
+      "sha256": "12a878f1194858ccca74fd8b8e2a34de095012a68351834d2b08e60cd4ace5bd",
       "imports": [
         {
           "line": 1,
@@ -36683,7 +36683,7 @@
           "owner": "IndicatorSearch.<callback@829>",
           "component": "Chip",
           "event": "onClick",
-          "expression": "{() => { onQueryChange(example); inputRef.current?.focus(); }}"
+          "expression": "{() => { onQueryChange(example.query); inputRef.current?.focus(); }}"
         },
         {
           "line": 840,
@@ -106931,7 +106931,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/searchLabourHints.js": {
-      "sha256": "1f1c1e524b1d0cbde87dc285b08458ab2aa90bce89d356c0eef80719474374b5",
+      "sha256": "4c81aa6607e9eddc225aa71c785e72d21b096d6045fd38853fcad3f2c66ad06a",
       "imports": [],
       "routes": [],
       "functions": [
@@ -107017,23 +107017,47 @@
         },
         {
           "line": 47,
-          "end_line": 57,
+          "end_line": 62,
           "owner": "<module>",
           "name": "tryTheseExamples",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 54,
-          "end_line": 54,
+          "line": 51,
+          "end_line": 53,
+          "owner": "tryTheseExamples",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(Array.isArray(suggest) ? suggest : []).map"
+        },
+        {
+          "line": 53,
+          "end_line": 53,
+          "owner": "tryTheseExamples",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(Array.isArray(suggest) ? suggest : []).map((item) => (\n    typeof item === 'string' ? { label: item, query: item } : { label: String(item?.label || item?.query || ''), query: String(item?.query || item?.label || '') }\n  )).filter"
+        },
+        {
+          "line": 55,
+          "end_line": 55,
+          "owner": "tryTheseExamples",
+          "name": "same",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 59,
+          "end_line": 59,
           "owner": "tryTheseExamples",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map"
         },
         {
-          "line": 56,
-          "end_line": 56,
+          "line": 61,
+          "end_line": 61,
           "owner": "tryTheseExamples",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -107176,7 +107200,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/searchTryThese.test.js": {
-      "sha256": "88f4ad6371615593b4c84d0de6ca6a929cc1ef64adebb4d4bdf259e0103e91f4",
+      "sha256": "7cf4d7878f62635596b42c0d4aa1cde42afd5aae8217576647d403c56525cd88",
       "imports": [
         {
           "line": 2,
@@ -107230,7 +107254,7 @@
         },
         {
           "line": 8,
-          "end_line": 28,
+          "end_line": 38,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -107238,27 +107262,67 @@
         },
         {
           "line": 9,
-          "end_line": 12,
+          "end_line": 17,
           "owner": "<callback@8>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 14,
-          "end_line": 19,
+          "line": 15,
+          "end_line": 15,
+          "owner": "<callback@8>.<callback@9>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "out.map"
+        },
+        {
+          "line": 16,
+          "end_line": 16,
+          "owner": "<callback@8>.<callback@9>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "out.map"
+        },
+        {
+          "line": 19,
+          "end_line": 22,
           "owner": "<callback@8>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 21,
-          "end_line": 27,
+          "line": 24,
+          "end_line": 29,
           "owner": "<callback@8>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
+        },
+        {
+          "line": 28,
+          "end_line": 28,
+          "owner": "<callback@8>.<callback@24>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "out.map"
+        },
+        {
+          "line": 31,
+          "end_line": 37,
+          "owner": "<callback@8>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 35,
+          "end_line": 35,
+          "owner": "<callback@8>.<callback@31>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "out.map"
         }
       ],
       "hooks": [],
@@ -256540,7 +256604,7 @@
   "totals": {
     "imports": 4826,
     "routes": 95,
-    "functions": 15354,
+    "functions": 15362,
     "hooks": 2830,
     "http": 119,
     "storage": 244,

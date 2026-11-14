@@ -7420,7 +7420,7 @@
     "anonymous_functions": 48
   },
   "frontend/src/components/IndicatorSearch.jsx": {
-    "sha256": "634fd9d37126556d1ce9d7281c342ae69dedfab894ccbbe031fd35930f0eaa37",
+    "sha256": "12a878f1194858ccca74fd8b8e2a34de095012a68351834d2b08e60cd4ace5bd",
     "definitions": [
       {
         "name": "RotatingHint",
@@ -22095,7 +22095,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/components/searchLabourHints.js": {
-    "sha256": "1f1c1e524b1d0cbde87dc285b08458ab2aa90bce89d356c0eef80719474374b5",
+    "sha256": "4c81aa6607e9eddc225aa71c785e72d21b096d6045fd38853fcad3f2c66ad06a",
     "definitions": [
       {
         "name": "isLabourQuery",
@@ -22136,8 +22136,14 @@
       {
         "name": "tryTheseExamples",
         "line": 47,
-        "end_line": 57,
+        "end_line": 62,
         "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "tryTheseExamples.same",
+        "line": 55,
+        "end_line": 55,
+        "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [],
@@ -22185,7 +22191,7 @@
         "line": 47
       }
     ],
-    "anonymous_functions": 6
+    "anonymous_functions": 8
   },
   "frontend/src/components/searchLabourHints.test.js": {
     "sha256": "a321b8361ff891e08137028dd2947d2d4924a7e9c4d7e492a8ea5ebfd4b47747",
@@ -22217,7 +22223,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/searchTryThese.test.js": {
-    "sha256": "88f4ad6371615593b4c84d0de6ca6a929cc1ef64adebb4d4bdf259e0103e91f4",
+    "sha256": "7cf4d7878f62635596b42c0d4aa1cde42afd5aae8217576647d403c56525cd88",
     "definitions": [
       {
         "name": "t",
@@ -22241,7 +22247,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 4
+    "anonymous_functions": 9
   },
   "frontend/src/components/shellScrollOffset.component.test.jsx": {
     "sha256": "628239088b7633e8d39193131369d64ad819b46ab2519f85f7f3ae56e366c31f",

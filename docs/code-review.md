@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `42d81bfd6908ec06111e4349b8dd97da5c6a5a92`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `785a3b13a283b4a7e1a52ebb92d260646c4e4e70`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2492 |
 | Код, шаблоны и стили | 2019 |
 | Актуальные рецензии без пропусков guard | 2492 |
-| Именованные определения Python/JS: с аннотацией / всего | 16319 / 16319 |
+| Именованные определения Python/JS: с аннотацией / всего | 16320 / 16320 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -1714,7 +1714,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/russia/LaborIndicatorGroups.jsx](../frontend/src/components/russia/LaborIndicatorGroups.jsx) | body_reviewed | 1/1 | актуально |
 | [frontend/src/components/russia/RussiaCategorySection.jsx](../frontend/src/components/russia/RussiaCategorySection.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/russia/RussiaKeyFigures.jsx](../frontend/src/components/russia/RussiaKeyFigures.jsx) | reviewed | 7/7 | актуально |
-| [frontend/src/components/searchLabourHints.js](../frontend/src/components/searchLabourHints.js) | reviewed | 7/7 | актуально |
+| [frontend/src/components/searchLabourHints.js](../frontend/src/components/searchLabourHints.js) | reviewed | 8/8 | актуально |
 | [frontend/src/components/searchLabourHints.test.js](../frontend/src/components/searchLabourHints.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/components/searchTryThese.test.js](../frontend/src/components/searchTryThese.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/components/shellScrollOffset.component.test.jsx](../frontend/src/components/shellScrollOffset.component.test.jsx) | reviewed | 6/6 | актуально |
