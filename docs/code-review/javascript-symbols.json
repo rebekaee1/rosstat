@@ -7420,96 +7420,96 @@
     "anonymous_functions": 48
   },
   "frontend/src/components/IndicatorSearch.jsx": {
-    "sha256": "719e4a3d2fd44f87bca9371cb50293b161f8dad79137fb7bbcb84b0b4c597a64",
+    "sha256": "5244547758686084e0efa651c0fff89b8cb04e826fe8d85fa39f00180aedd23f",
     "definitions": [
       {
         "name": "RotatingHint",
-        "line": 68,
-        "end_line": 100,
+        "line": 69,
+        "end_line": 101,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isKKey",
-        "line": 106,
-        "end_line": 110,
+        "line": 107,
+        "end_line": 111,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch",
-        "line": 112,
-        "end_line": 888,
+        "line": 113,
+        "end_line": 889,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch.shownTitle",
-        "line": 244,
-        "end_line": 244,
+        "line": 245,
+        "end_line": 245,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onKey",
-        "line": 358,
-        "end_line": 388,
+        "line": 359,
+        "end_line": 389,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.focusInput",
-        "line": 404,
-        "end_line": 404,
+        "line": 405,
+        "end_line": 405,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onQueryChange",
-        "line": 442,
-        "end_line": 447,
+        "line": 443,
+        "end_line": 448,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.handleListKey",
-        "line": 456,
-        "end_line": 468,
+        "line": 457,
+        "end_line": 469,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.renderRow",
-        "line": 487,
-        "end_line": 507,
+        "line": 488,
+        "end_line": 508,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "regionValueText",
-        "line": 893,
-        "end_line": 902,
+        "line": 894,
+        "end_line": 903,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionGroupChips",
-        "line": 905,
-        "end_line": 935,
+        "line": 906,
+        "end_line": 936,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "latestText",
-        "line": 938,
-        "end_line": 955,
+        "line": 939,
+        "end_line": 956,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchRow",
-        "line": 961,
-        "end_line": 1078,
+        "line": 962,
+        "end_line": 1079,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "filterValueLabel",
-        "line": 1083,
-        "end_line": 1088,
+        "line": 1084,
+        "end_line": 1089,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchFilters",
-        "line": 1094,
-        "end_line": 1141,
+        "line": 1095,
+        "end_line": 1142,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -7547,104 +7547,108 @@
         "line": 11
       },
       {
-        "source": "../i18n",
+        "source": "../lib/quotedWords",
         "line": 12
       },
       {
-        "source": "../lib/useGlobalSearch",
+        "source": "../i18n",
         "line": 13
       },
       {
-        "source": "../lib/worldApi",
+        "source": "../lib/useGlobalSearch",
         "line": 14
       },
       {
-        "source": "../lib/searchExamples",
+        "source": "../lib/worldApi",
         "line": 15
       },
       {
-        "source": "../lib/searchGroups",
+        "source": "../lib/searchExamples",
         "line": 16
       },
       {
-        "source": "../lib/searchRecent",
+        "source": "../lib/searchGroups",
         "line": 17
       },
       {
-        "source": "../lib/homeContinue",
-        "line": 20
+        "source": "../lib/searchRecent",
+        "line": 18
       },
       {
-        "source": "../lib/searchFilters",
+        "source": "../lib/homeContinue",
         "line": 21
       },
       {
-        "source": "../lib/searchView",
-        "line": 24
+        "source": "../lib/searchFilters",
+        "line": 22
       },
       {
-        "source": "../lib/searchText",
+        "source": "../lib/searchView",
         "line": 25
       },
       {
-        "source": "../lib/homeWorkbench",
+        "source": "../lib/searchText",
         "line": 26
       },
       {
-        "source": "../lib/countryFlag",
+        "source": "../lib/homeWorkbench",
         "line": 27
       },
       {
-        "source": "./Chip",
+        "source": "../lib/countryFlag",
         "line": 28
       },
       {
-        "source": "./CountryFlag",
+        "source": "./Chip",
         "line": 29
       },
       {
-        "source": "./brand/EmptyState",
+        "source": "./CountryFlag",
         "line": 30
       },
       {
-        "source": "./RatingExtras",
+        "source": "./brand/EmptyState",
         "line": 31
       },
       {
-        "source": "../styles/shell.css",
+        "source": "./RatingExtras",
         "line": 32
       },
       {
-        "source": "../styles/w6d.css",
+        "source": "../styles/shell.css",
         "line": 33
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../styles/w6d.css",
         "line": 34
       },
       {
-        "source": "../styles/k8-tools.css",
+        "source": "../styles/z8-tools.css",
         "line": 35
       },
       {
-        "source": "../styles/z4s-search.css",
+        "source": "../styles/k8-tools.css",
         "line": 36
       },
       {
-        "source": "../styles/r6a-search.css",
+        "source": "../styles/z4s-search.css",
         "line": 37
       },
       {
-        "source": "../styles/r7a-search.css",
+        "source": "../styles/r6a-search.css",
         "line": 38
       },
       {
-        "source": "../styles/r8a-search.css",
+        "source": "../styles/r7a-search.css",
         "line": 39
       },
       {
-        "source": "./searchLabourHints",
+        "source": "../styles/r8a-search.css",
         "line": 40
+      },
+      {
+        "source": "./searchLabourHints",
+        "line": 41
       }
     ],
     "exports": [
@@ -7652,7 +7656,7 @@
         "names": [
           "default"
         ],
-        "line": 112
+        "line": 113
       }
     ],
     "anonymous_functions": 126
@@ -13553,7 +13557,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/Sparkline.component.test.jsx": {
-    "sha256": "f6a0193b5ac523e8f5c50b4cdc4a3c02588c19fc0b9c7322bea7540058f50320",
+    "sha256": "9e303acc69be83ae328093ea7baa30a2be99b843160655e88b29a9fa74cd6df6",
     "definitions": [
       {
         "name": "observe",
@@ -13580,27 +13584,57 @@
         "kind": "ObjectMethod"
       },
       {
-        "name": "observe",
-        "line": 27,
-        "end_line": 27,
-        "kind": "ClassMethod"
-      },
-      {
-        "name": "disconnect",
+        "name": "constructor",
         "line": 28,
         "end_line": 28,
         "kind": "ClassMethod"
       },
       {
-        "name": "addEventListener",
+        "name": "observe",
+        "line": 29,
+        "end_line": 29,
+        "kind": "ClassMethod"
+      },
+      {
+        "name": "disconnect",
         "line": 30,
         "end_line": 30,
+        "kind": "ClassMethod"
+      },
+      {
+        "name": "addEventListener",
+        "line": 32,
+        "end_line": 32,
         "kind": "ObjectMethod"
       },
       {
         "name": "removeEventListener",
-        "line": 30,
-        "end_line": 30,
+        "line": 32,
+        "end_line": 32,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "observe",
+        "line": 45,
+        "end_line": 45,
+        "kind": "ClassMethod"
+      },
+      {
+        "name": "disconnect",
+        "line": 46,
+        "end_line": 46,
+        "kind": "ClassMethod"
+      },
+      {
+        "name": "addEventListener",
+        "line": 48,
+        "end_line": 48,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "removeEventListener",
+        "line": 48,
+        "end_line": 48,
         "kind": "ObjectMethod"
       }
     ],
@@ -13619,10 +13653,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 6
+    "anonymous_functions": 8
   },
   "frontend/src/components/Sparkline.jsx": {
-    "sha256": "302e4c84d96e70fa0ca25b8490a39dac8ee8b74589ae017ade8cffc7d627acf7",
+    "sha256": "6c7ecdb65370ca5b40a517563f69fe054990a4409a22121a11cb60e55f7e4246",
     "definitions": [
       {
         "name": "resolveColor",
@@ -13651,31 +13685,31 @@
       {
         "name": "Sparkline",
         "line": 81,
-        "end_line": 253,
+        "end_line": 259,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Sparkline.computePoints",
-        "line": 142,
-        "end_line": 151,
+        "line": 148,
+        "end_line": 157,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Sparkline.renderContent",
-        "line": 153,
-        "end_line": 246,
+        "line": 159,
+        "end_line": 252,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SparklineResizer",
-        "line": 255,
-        "end_line": 274,
+        "line": 261,
+        "end_line": 280,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SparklineSkeleton",
-        "line": 277,
-        "end_line": 279,
+        "line": 283,
+        "end_line": 285,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -13708,7 +13742,7 @@
         "names": [
           "SparklineSkeleton"
         ],
-        "line": 277
+        "line": 283
       }
     ],
     "anonymous_functions": 12
@@ -23720,7 +23754,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "102134c154539f5148016e9066a3a7eeaec6739672d744fd1215adadacff8704",
+    "sha256": "33d8b890efe0651b247485f923cbade2bc8839745ac0e64014c2fde1c751e48a",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23828,7 +23862,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "198381ea5169ed52c67667a83c1cbbe467b4cc7d7d06eff4d06481b51e3d8f81",
+    "sha256": "7b540061e76ca922d0cbe0901dff2299acaeee481213a9dda0d3a289d5b9b84c",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -41404,6 +41438,58 @@
     ],
     "exports": [],
     "anonymous_functions": 20
+  },
+  "frontend/src/lib/quotedWords.js": {
+    "sha256": "52b89e455e0fcb745f926afa09a14b63062bd59120fc65e0ed923a258b6343f2",
+    "definitions": [
+      {
+        "name": "quotedWords",
+        "line": 2,
+        "end_line": 5,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "quotedWords"
+        ],
+        "line": 2
+      }
+    ],
+    "anonymous_functions": 1
+  },
+  "frontend/src/lib/quotedWords.test.js": {
+    "sha256": "2d77493e9cafe34a633bb410cb3208794398cb90980c264722e2d0d9baf8377a",
+    "definitions": [
+      {
+        "name": "fill",
+        "line": 7,
+        "end_line": 9,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "./quotedWords",
+        "line": 3
+      },
+      {
+        "source": "../i18n/messages.ru",
+        "line": 4
+      },
+      {
+        "source": "../i18n/messages.en",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 3
   },
   "frontend/src/lib/r10aUnits.js": {
     "sha256": "b3e62d98e9789a6ca2505d823d44e066a4905566c59b95f8f02a82d1f3a30678",

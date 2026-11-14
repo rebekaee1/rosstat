@@ -1560,8 +1560,8 @@
     },
     {
       "path": "backend/app/services/search.py",
-      "sha256": "f5b500250a99c689adfd06af80b63d594d4fca7cd1d48453f6d72042443e422f",
-      "lines": 1512
+      "sha256": "63cb277c7c7fa76003fe26eb2aa54b1c0273838a4faf584674cfd0d46cbf9db5",
+      "lines": 1524
     },
     {
       "path": "backend/app/services/search_currency_aliases.py",
@@ -1632,6 +1632,11 @@
       "path": "backend/app/services/search_units.py",
       "sha256": "b74586e5543d43307387a6b4c60e5f3854adb83e9a376affa308515dcc9accdb",
       "lines": 140
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "sha256": "0f4a2732ec3be5b27e26da22a239b03f34e3bf38de24100adc3848d920b882e1",
+      "lines": 95
     },
     {
       "path": "backend/app/services/search_variants.py",
@@ -237452,6 +237457,180 @@
       "expression": "Region"
     },
     {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.Indicator.name",
+      "expression": "Indicator.name"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.Indicator.name_en",
+      "expression": "Indicator.name_en"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.name",
+      "expression": "RegionIndicator.name"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.SubnationalIndicator.name_ru",
+      "expression": "SubnationalIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_ru",
+      "expression": "WorldIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_en",
+      "expression": "WorldIndicator.name_en"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.RegionIndicator.name",
+      "expression": "RegionIndicator.name"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.SubnationalIndicator.name_ru",
+      "expression": "SubnationalIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.SubnationalIndicator.name_en",
+      "expression": "SubnationalIndicator.name_en"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
       "path": "backend/app/services/seo_calendar.py",
       "line": 67,
       "end_line": 67,
@@ -307949,7 +308128,7 @@
     {
       "path": "backend/app/services/search.py",
       "line": 1394,
-      "end_line": 1512,
+      "end_line": 1524,
       "owner": "<module>",
       "conditions": [],
       "name": "federated_search",
@@ -309054,6 +309233,69 @@
       "conditions": [],
       "name": "denominator_metadata",
       "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 28,
+      "end_line": 38,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "literal_groups",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 41,
+      "end_line": 42,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_escape",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 45,
+      "end_line": 49,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_name_columns",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 52,
+      "end_line": 58,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "word_in_names",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 61,
+      "end_line": 64,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "unknown_words",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 70,
+      "end_line": 74,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_enough_left",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 77,
+      "end_line": 95,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "readings_without_words",
+      "kind": "AsyncFunctionDef"
     },
     {
       "path": "backend/app/services/search_variants.py",
@@ -350911,6 +351153,14 @@
       "owner": "unit_metadata",
       "conditions": [],
       "symbol": "app.services.search_units.UNIT_EXCLUDES"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 32,
+      "end_line": 32,
+      "owner": "literal_groups",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
     },
     {
       "path": "backend/app/services/search_variants.py",
