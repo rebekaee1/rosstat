@@ -103,7 +103,7 @@ async def attempt(db: AsyncSession, row: MailMessage, rendered: RenderedMail, *,
     row.attempts = (row.attempts or 0) + 1
     try:
         row.message_id = await transport.send(transport.OutgoingMail(
-            to=row.to_email, subject=rendered.subject, html=rendered.html, text=rendered.text,
+            to=row.to_email, subject=rendered.subject, html=rendered.html, text=rendered.text, images=rendered.images,
             kind=row.kind, unsubscribe_url=unsubscribe_url, campaign=row.campaign,
         ))
         row.status, row.error, row.sent_at = "sent", None, _now()

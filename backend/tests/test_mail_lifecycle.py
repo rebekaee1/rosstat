@@ -179,7 +179,7 @@ def test_watch_digest_once_per_day_and_own_unsubscribe(mail_env, auth_client, mo
     rep = _db(auth_client, mail_env, lambda s: watch_digest.run(s, today=date(2026, 11, 14)))
     assert rep["statuses"] == {"sent": 1}
     msg = mail_env["sent"][0]
-    assert msg["Subject"].startswith("Новые данные: Инфляция")
+    assert msg["Subject"] == "Новое значение: Инфляция"
     assert msg["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
     html = msg.get_body(("html",)).get_content()
     assert "8,4 %" in html and "utm_medium=watch" in html

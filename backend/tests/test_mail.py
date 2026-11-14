@@ -1,5 +1,6 @@
 """Почта (ADR-0032): ссылки, письма, список допуска, подтверждение, сброс, отписка, выпуск."""
 import asyncio
+import re
 import email
 import time
 
@@ -116,8 +117,10 @@ def test_templates_follow_design_rules():
                   render_digest(sample_digest(loc, "https://x/"), loc, site_url="https://x/",
                                 unsubscribe_url="https://x/u")):
             low = r.html.lower()
-            assert "border:" not in low.replace("border-radius", "")  # без рамок
-            assert "<img" not in low  # без картинок: не блокируются и не размываются
+            assert "border:" not in low.replace("border-radius", "").replace("border:0;", "")  # без рамок
+            # Картинки только внутри письма (cid:), лёгкие: показываются сразу и не зависят от сайта.
+            assert all(src.startswith("cid:") for src in re.findall(r'<img[^>]*src="([^"]+)"', low))
+            assert r.images and all(len(b) < 50_000 for b, _ in r.images.values())
             assert "#b08a3e" in low  # золото — одна тонкая линия
             assert r.text and r.subject
     news = render_digest(sample_digest("ru", "https://x/"), "ru", site_url="https://x/", unsubscribe_url="https://x/u")

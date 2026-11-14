@@ -13,7 +13,7 @@ import logging
 import smtplib
 import ssl
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from email import policy as email_policy
 from email.message import EmailMessage
 from email.utils import format_datetime, formataddr, make_msgid
@@ -48,6 +48,8 @@ class OutgoingMail:
     kind: str  # verify_email / password_reset / newsletter / test
     unsubscribe_url: str | None = None  # для рассылки: List-Unsubscribe + One-Click
     campaign: str | None = None
+    # Картинки внутри письма: cid → (байты, подтип); HTML ссылается на них как cid:имя.
+    images: dict = field(default_factory=dict)
 
 
 # Письма потоком (рассылка, сводка «колокольчика») могут идти через отдельный сервис
@@ -125,6 +127,12 @@ def build_message(mail: OutgoingMail) -> EmailMessage:
         msg["X-Auto-Response-Suppress"] = "OOF, AutoReply"
     msg.set_content(mail.text, subtype="plain", charset="utf-8", cte="quoted-printable")
     msg.add_alternative(mail.html, subtype="html", charset="utf-8", cte="quoted-printable")
+    if mail.images:
+        # multipart/related внутри HTML-части: картинки показываются сразу, без «загрузить изображения».
+        html_part = msg.get_payload()[1]
+        for cid, (data, subtype) in mail.images.items():
+            html_part.add_related(data, maintype="image", subtype=subtype, cid=f"<{cid}>",
+                                  disposition="inline", filename=f"{cid}.{'jpg' if subtype == 'jpeg' else subtype}")
     return msg
 
 

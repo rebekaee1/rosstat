@@ -114,11 +114,13 @@ async def cmd_test(args) -> int:
     code = 0
     for loc in locales:
         for kind, rendered, one_click in _test_mails(loc):
+            if args.only and kind not in args.only.split(","):
+                continue
             rendered.subject = f"[test] {rendered.subject}"
             if args.no_db:
                 try:
                     mid = await transport.send(transport.OutgoingMail(
-                        to=args.to, subject=rendered.subject, html=rendered.html, text=rendered.text,
+                        to=args.to, subject=rendered.subject, html=rendered.html, text=rendered.text, images=rendered.images,
                         kind=kind, unsubscribe_url=one_click, campaign="test"))
                     print(f"{loc} {kind}: sent {mid}")
                 except (transport.SendError, transport.MailConfigError) as exc:
@@ -150,7 +152,7 @@ def cmd_render(args) -> int:
         (out / f"{name}.html").write_text(rendered.html, encoding="utf-8")
         (out / f"{name}.txt").write_text(f"Subject: {rendered.subject}\n\n{rendered.text}", encoding="utf-8")
         msg = transport.build_message(transport.OutgoingMail(
-            to="preview@example.com", subject=rendered.subject, html=rendered.html, text=rendered.text,
+            to="preview@example.com", subject=rendered.subject, html=rendered.html, text=rendered.text, images=rendered.images,
             kind=kind, unsubscribe_url=one_click, campaign="preview"))
         (out / f"{name}.eml").write_bytes(bytes(msg))
         print(out / f"{name}.html")
@@ -234,6 +236,7 @@ def main() -> int:
     t.add_argument("--to", required=True)
     t.add_argument("--locale", choices=("ru", "en", "all"), default="all")
     t.add_argument("--no-db", action="store_true", help="без журнала: прямая отправка (локальная проверка)")
+    t.add_argument("--only", default="", help="виды через запятую: verify_email,password_reset,newsletter,oauth_hint,reconfirm,watch_digest")
     r = sub.add_parser("render")
     r.add_argument("source", help="sample или путь к JSON выпуска")
     r.add_argument("--out", required=True)
