@@ -10,6 +10,8 @@ include_app=False — у SPA-роутера нет такого маршрута
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from datetime import date
 from html import escape
 from statistics import fmean
@@ -24,7 +26,6 @@ from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
 from app.services.display import (
     display_value_text,
-    format_number_ru,
     localize_unit,
     today_msk,
 )
@@ -50,9 +51,14 @@ _OTHER_YEARS_MAX = 15
 
 
 def _observation_summary(
-    rows: list[tuple[date, float]], frequency: str, unit: str, *, en: bool
+    rows: list[tuple[date, float]], frequency: str, unit: str, *, en: bool,
+    value_fmt: Callable[[float], str] | None = None,
 ) -> tuple[str, str]:
-    """Без метаданных об агрегации world описываем наблюдения, не итог."""
+    """Без метаданных об агрегации world описываем наблюдения, не итог.
+
+    ``value_fmt`` — число с единицей по правилу ряда (14.11.2026); без него — прежний
+    ``display_value_text`` с полной единицей.
+    """
     if len(rows) == 1:
         label = (
             ("Annual value" if en else "Годовое значение")
@@ -66,6 +72,8 @@ def _observation_summary(
             else "Среднее по опубликованным наблюдениям"
         )
         value = fmean(v for _d, v in rows)
+    if value_fmt is not None:
+        return label, value_fmt(value)
     return label, display_value_text(None, value, unit or None)
 
 
@@ -271,7 +279,6 @@ async def render_world_indicator_year_html(
     unit = _unit_of(indicator)
     # Русская каноническая единица → локализованная для показа (EN: pp вместо п.п.).
     shown_unit = ((localize_unit(unit) or unit) if unit else "") if en else unit
-    unit_sfx = f" {shown_unit}" if shown_unit else ""
     source = _source_label(indicator.source, indicator.provider)
     frequency = normalize_frequency(indicator.frequency) or ""
     values = [v for _d, v in year_rows]
@@ -300,8 +307,28 @@ async def render_world_indicator_year_html(
     neighbors = neighbor_year_window(series_lp, year, size=_NEIGHBOR_WINDOW)
     other_years = sorted({y for y, _v, _d in series_lp if y != year and paths.is_public_year(y)})
 
+    # Точность и единица (14.11.2026): точность всего ряда по правилу SPA (display.world_series_digits),
+    # справа от числа — короткая единица страницы (seo_world._unit_sfx_of: «7,71 %», у индексов — без
+    # единицы), а не полная («7,7092 изменение за год, %»). Полная единица остаётся в заголовке столбца.
+    from app.services.display import format_fixed, world_series_digits
+    from app.services.seo_world import _unit_sfx_of
+
+    digits = world_series_digits(v for _d, v in series)
+    if len(year_rows) > 1:
+        # Среднее наблюдений года задаёт формат страницы вместе с рядом: «117,5» при целых данных → «112,0».
+        digits = max(digits, world_series_digits([fmean(v for _d, v in year_rows)]))
+    value_sfx = _unit_sfx_of(indicator)
+    # Ряд в процентах (доля, изменение): разница — в п.п., «процент от процента» не считаем.
+    pct_like = value_sfx.strip().startswith("%")
+
+    def _plain(v: float) -> str:
+        return format_fixed(v, digits)
+
+    def _with_unit(v: float) -> str:
+        return f"{_plain(v)}{value_sfx}"
+
     summary_label, summary_text = _observation_summary(
-        year_rows, frequency, shown_unit, en=en
+        year_rows, frequency, shown_unit, en=en, value_fmt=_with_unit,
     )
     coverage_note = _coverage_note(year_rows, frequency, en=en)
     n_rows = len(year_rows)
@@ -324,7 +351,9 @@ async def render_world_indicator_year_html(
         source=source,
         en=en,
         yt=yt,
-        range_note=ui.year_range_note(values, shown_unit, en=en, last_is_partial=current_year) if n_rows > 2 else "",
+        range_note=ui.year_range_note(
+            values, shown_unit, en=en, last_is_partial=current_year, value_fmt=_with_unit,
+        ) if n_rows > 2 else "",
     )
     h1_text = title.split(" — ")[0]
 
@@ -357,9 +386,7 @@ async def render_world_indicator_year_html(
                 name=display, year=year
             )
         change_lines: list[str] = [
-            (yt("change_value") or "Значение: {value}").format(
-                value=f"{format_number_ru(last_value)}{unit_sfx}"
-            )
+            (yt("change_value") or "Значение: {value}").format(value=_with_unit(last_value))
         ]
         if prev_value is None or prev_year is None:
             change_lines.append(
@@ -368,35 +395,45 @@ async def render_world_indicator_year_html(
             )
         else:
             delta = last_value - prev_value
-            abs_text = format_number_ru(round(delta, 4), signed=True)
-            if prev_value == 0:
-                pct_text = (
-                    yt("change_zero_base") or "не рассчитывается (база равна нулю)"
+            abs_text = _plain(delta)
+            if delta > 0 and abs_text.strip("0,.") != "":
+                abs_text = f"+{abs_text}"
+            if pct_like:
+                change_lines.append(
+                    (yt("change_vs_pp") or "Изменение к {prev_year} году: {abs}{unit}").format(
+                        prev_year=prev_year, abs=abs_text, unit=" pp" if en else " п.п.",
+                    )
                 )
             else:
-                pct = round((delta / abs(prev_value)) * 100.0, 2)
-                pct_text = f"{format_number_ru(pct, signed=True)} %"
-            change_lines.append(
-                (yt("change_vs") or "Изменение к {prev_year} году: {abs}{unit} ({pct})").format(
-                    prev_year=prev_year, abs=abs_text, unit=unit_sfx, pct=pct_text,
+                if prev_value == 0:
+                    pct_text = (
+                        yt("change_zero_base") or "не рассчитывается (база равна нулю)"
+                    )
+                else:
+                    pct = (delta / abs(prev_value)) * 100.0
+                    pct_text = f"{'+' if pct > 0 else ''}{format_fixed(pct, 1)} %"
+                change_lines.append(
+                    (yt("change_vs") or "Изменение к {prev_year} году: {abs}{unit} ({pct})").format(
+                        prev_year=prev_year, abs=abs_text, unit=value_sfx, pct=pct_text,
+                    )
                 )
-            )
         history_lines = year_history_position_lines(
             year=year,
             value=last_value,
             series=series_lp,
             code=None,
-            unit=shown_unit,
+            unit=value_sfx.strip(),
+            value_fmt=_plain,
         )
         facts = [
             *change_lines[1:],
             *history_lines,
-            (yt("li_value_date") or "Дата значения: {date}").format(date=_format_date(last_date)),
+            # У годового ряда дата значения — год, а не «1 января 2023» (14.11.2026).
+            (yt("li_value_date") or "Дата значения: {date}").format(
+                date=str(last_date.year) if frequency == "annual" else _format_date(last_date)
+            ),
         ]
-        n_dec = ui.common_decimals(v for _y, v, _d in neighbors)
-        neighbor_rows = [
-            (str(y), ui.format_fixed(v, n_dec), y == year) for y, v, _d in neighbors
-        ]
+        neighbor_rows = [(str(y), _plain(v), y == year) for y, v, _d in neighbors]
         neighbors_h2 = yt("h2_neighbors") or "Динамика соседних лет"
         th_year = yt("th_year") or "Год"
         totals_section = f"<section><h2>{escape(totals_head)}</h2>{ui.year_facts(facts)}</section>"
@@ -429,11 +466,8 @@ async def render_world_indicator_year_html(
             )
         vmin, vmax = min(values), max(values)
         (low_date, _low), (high_date, _high) = ui.extreme_dates(year_rows)
-        n_dec = max(ui.common_decimals(values), ui.decimals_in(summary_text))
         cell_u = ui.cell_unit(shown_unit)
-
-        def _num(value: float) -> str:
-            return ui.format_fixed(value, n_dec)
+        _num = _plain
 
         totals_section = (
             f"<section><h2>{escape(totals_head)}</h2>"

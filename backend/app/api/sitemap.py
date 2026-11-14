@@ -1998,7 +1998,8 @@ async def og_image_world_indicator_year(
     from app.services.site_urls import WORLD_YEAR_LANDING_MIN_POINTS
 
     loc = get_locale()
-    cache_key = f"fe2:wyear:{loc}:{country_slug}:{code}:{year}"  # fe2: русская единица на ru (14.11.2026)
+    # fe3: точность ряда и п.п. у процентных рядов; fe2 — единица на языке картинки (14.11.2026).
+    cache_key = f"fe3:wyear:{loc}:{country_slug}:{code}:{year}"
     cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key, historical=_og_historical(year))
     if png is None:
@@ -2041,7 +2042,28 @@ async def og_image_world_indicator_year(
         unit = _world_og_unit(indicator)
         from app.services.seo_world_year import _observation_summary
         from app.data.eurostat_listing import normalize_frequency
-        summary_label, value_text = _observation_summary(rows, normalize_frequency(indicator.frequency) or "", unit, en=loc == "en")
+        from app.services.display import format_fixed, world_series_digits
+
+        # Вся история ряда: точность значения — по всему ряду, как на странице (14.11.2026).
+        history = (
+            await db.execute(
+                select(WorldDataPoint.date, WorldDataPoint.value)
+                .where(WorldDataPoint.indicator_id == indicator.id)
+                .order_by(WorldDataPoint.date)
+            )
+        ).all()
+        digits = world_series_digits(float(v) for _d, v in history)
+        if len(rows) > 1:
+            from statistics import fmean
+
+            # Как на странице: среднее наблюдений года задаёт формат вместе с рядом.
+            digits = max(digits, world_series_digits([fmean(float(v) for _d, v in rows)]))
+        value_sfx = f" {unit}" if unit else ""
+        pct_like = unit.startswith("%")
+        summary_label, value_text = _observation_summary(
+            rows, normalize_frequency(indicator.frequency) or "", unit, en=loc == "en",
+            value_fmt=lambda v: f"{format_fixed(v, digits, locale=loc)}{value_sfx}",
+        )
 
         point_dates = [d for d, _v in rows]
         selected_index = len(rows) - 1
@@ -2060,13 +2082,6 @@ async def og_image_world_indicator_year(
             )
         else:
             # Одна точка за год: последние точки каждого года всей истории.
-            history = (
-                await db.execute(
-                    select(WorldDataPoint.date, WorldDataPoint.value)
-                    .where(WorldDataPoint.indicator_id == indicator.id)
-                    .order_by(WorldDataPoint.date)
-                )
-            ).all()
             last_by_year: dict[int, tuple[float, date]] = {}
             for d, v in history:
                 known = last_by_year.get(d.year)
@@ -2087,9 +2102,19 @@ async def og_image_world_indicator_year(
             prev_value = next(
                 (v for y, v, _d in series_lp if y == year - 1), None
             )
-            compare = _og_annual_compare(
-                year, prev_value, float(rows[-1][1]), locale=loc
-            ) if prev_value is not None else None
+            if prev_value is None:
+                compare = None
+            elif pct_like:
+                # Ряд в процентах: разница в п.п., «процент от процента» не считаем (14.11.2026).
+                delta = float(rows[-1][1]) - float(prev_value)
+                text = format_fixed(delta, digits, locale=loc)
+                text = f"+{text}" if delta > 0 and text.strip("0,.") else text
+                compare = (
+                    f"vs {year - 1}: {text} pp" if loc == "en"
+                    else f"к {year - 1} году \u2014 {text} п.п."
+                )
+            else:
+                compare = _og_annual_compare(year, prev_value, float(rows[-1][1]), locale=loc)
             date_text = compare or ""
 
         if loc == "en":

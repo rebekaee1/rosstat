@@ -1581,6 +1581,7 @@ YEAR_TEMPLATES_EN: dict[str, str] = {
     "change_no_prev": "Change over previous year: no comparable value",
     "change_no_data": "Change over {prev_year}: no data",
     "change_vs": "Change over {prev_year}: {abs}{unit} ({pct})",
+    "change_vs_pp": "Change over {prev_year}: {abs}{unit}",
     "change_zero_base": "not calculated (base is zero)",
     "hist_insufficient": "Position in history: not enough neighbouring years to compare",
     "hist_no_data": "Position in history: no data",
@@ -1595,6 +1596,7 @@ YEAR_TEMPLATES_EN: dict[str, str] = {
     "hist_min_tie": "This is one of the series minima ({value})",
     "hist_min_other": "Series minimum — {value} in {floor_year}{gap}",
     "gap_ago": " ({n} years ago)",
+    "gap_ago_one": " ({n} year ago)",
 }
 
 # ---------------------------------------------------------------------------

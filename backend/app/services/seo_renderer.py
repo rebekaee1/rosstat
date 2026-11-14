@@ -24,6 +24,7 @@ import json
 import logging
 import re
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
 from html import escape
@@ -3299,8 +3300,13 @@ def year_history_position_lines(
     series: list[tuple[int, float, date]],
     code: str,
     unit: str,
+    value_fmt: Callable[[float], str] | None = None,
 ) -> list[str]:
-    """Положение значения в истории показателя: среднее, рекорд, давность экстремума."""
+    """Положение значения в истории показателя: среднее, рекорд, давность экстремума.
+
+    ``value_fmt`` — формат числа без единицы (страны мира, 14.11.2026: точность ряда); без него —
+    прежний ``format_number_ru``.
+    """
     from app.services.seo_i18n import year_template
 
     yt = year_template
@@ -3311,6 +3317,10 @@ def year_history_position_lines(
         ]
     cpi_mode = is_cpi_index(code)
     unit_suffix = f" {unit}" if unit and not cpi_mode else (" %" if cpi_mode else "")
+
+    def _num(v: float) -> str:
+        return value_fmt(v) if value_fmt is not None else format_number_ru(v, signed=cpi_mode)
+
     shown_pairs = [
         (y, display_value(code, v))
         for y, v, _d in series
@@ -3339,7 +3349,7 @@ def year_history_position_lines(
             or "Положение в истории: {vs_mean} (среднее — {mean})"
         ).format(
             vs_mean=vs_mean,
-            mean=f"{format_number_ru(mean, signed=cpi_mode)}{unit_suffix}",
+            mean=f"{_num(mean)}{unit_suffix}",
         ),
     ]
     vmax = max(values)
@@ -3350,7 +3360,8 @@ def year_history_position_lines(
     def _gap_ago(gap: int) -> str:
         if gap <= 0:
             return ""
-        en = yt("gap_ago")
+        en = yt("gap_ago_one") if gap == 1 else None
+        en = en or yt("gap_ago")
         if en:
             return en.format(n=gap)
         gap_text = (
@@ -3374,7 +3385,7 @@ def year_history_position_lines(
                     yt("hist_max_tie")
                     or "Это один из максимумов за всю историю ({value})"
                 ).format(
-                    value=f"{format_number_ru(vmax, signed=cpi_mode)}{unit_suffix}"
+                    value=f"{_num(vmax)}{unit_suffix}"
                 )
             )
     else:
@@ -3385,7 +3396,7 @@ def year_history_position_lines(
                 yt("hist_max_other")
                 or "Максимум истории — {value} в {peak_year} году{gap}"
             ).format(
-                value=f"{format_number_ru(vmax, signed=cpi_mode)}{unit_suffix}",
+                value=f"{_num(vmax)}{unit_suffix}",
                 peak_year=peak_year,
                 gap=_gap_ago(gap) if gap > 0 else "",
             )
@@ -3404,7 +3415,7 @@ def year_history_position_lines(
                     yt("hist_min_tie")
                     or "Это один из минимумов за всю историю ({value})"
                 ).format(
-                    value=f"{format_number_ru(vmin, signed=cpi_mode)}{unit_suffix}"
+                    value=f"{_num(vmin)}{unit_suffix}"
                 )
             )
     else:
@@ -3415,7 +3426,7 @@ def year_history_position_lines(
                 yt("hist_min_other")
                 or "Минимум истории — {value} в {floor_year} году{gap}"
             ).format(
-                value=f"{format_number_ru(vmin, signed=cpi_mode)}{unit_suffix}",
+                value=f"{_num(vmin)}{unit_suffix}",
                 floor_year=floor_year,
                 gap=_gap_ago(gap) if gap > 0 else "",
             )
