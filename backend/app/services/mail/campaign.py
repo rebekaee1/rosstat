@@ -159,7 +159,7 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         raise CampaignError("почта выключена (RUSTATS_MAIL_ENABLED=false)")
     if send:
         tokens._secret()  # без секрета ссылок отписки рассылка не уходит
-        transport.ensure_configured()
+        transport.ensure_configured("newsletter")
     limit = settings.mail_campaign_max_per_run if max_per_run is None else max_per_run
     pause = settings.mail_campaign_pause_seconds if pause_seconds is None else pause_seconds
 
@@ -206,3 +206,80 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         if pause > 0:
             await asyncio.sleep(pause)
     return report
+
+
+RECONFIRM_KEY = "2026-11-reconfirm"
+
+
+async def run_reconfirm(db: AsyncSession, *, send: bool, key: str = RECONFIRM_KEY,
+                        max_per_run: int | None = None, pause_seconds: float | None = None) -> RunReport:
+    """Письмо «подтвердите почту» всем со входом по паролю и неподтверждённым адресом.
+
+    Те же защиты, что у выпуска: без ``send`` — сухой прогон; людям — только при снятом
+    списке допуска; один раз на человека (уникальность выпуска); лимит за запуск; остановка
+    по лимиту сервера; адрес, подтверждённый во время выпуска, пропускается.
+    """
+    from app.models import EmailCredential
+    from app.services.mail.account import reconfirm_mail
+
+    report = RunReport(key=key, dry_run=not send)
+    if send and not settings.mail_allow_all_recipients:
+        raise CampaignError("отправка людям выключена (RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=false)")
+    if send and not settings.mail_enabled:
+        raise CampaignError("почта выключена (RUSTATS_MAIL_ENABLED=false)")
+    if send:
+        tokens._secret()
+        transport.ensure_configured("reconfirm")
+    limit = settings.mail_campaign_max_per_run if max_per_run is None else max_per_run
+    pause = settings.mail_campaign_pause_seconds if pause_seconds is None else pause_seconds
+    recipients = await audience.unverified_password_accounts(db)
+    report.audience = len(recipients)
+    sent_now = 0
+    for rec in recipients:
+        existing = await db.scalar(select(MailMessage).where(
+            MailMessage.campaign == key, MailMessage.user_id == rec.user_id))
+        if existing is not None and existing.status == "sent":
+            report.already_sent += 1
+            continue
+        report.by_locale[rec.locale] += 1
+        if not send:
+            continue
+        if sent_now >= limit:
+            report.stopped = "max_per_run"
+            break
+        verified = await db.scalar(select(EmailCredential.email_verified).where(
+            EmailCredential.user_id == rec.user_id))
+        if verified:
+            report.statuses["verified_meanwhile"] += 1
+            continue
+        rendered = reconfirm_mail(rec.user_id, rec.email, rec.locale)
+        row = existing or await service.record(
+            db, kind="reconfirm", to=rec.email, locale=rec.locale, subject=rendered.subject,
+            user_id=rec.user_id, campaign=key)
+        try:
+            await service.attempt(db, row, rendered)
+        except transport.SendError as err:
+            report.statuses[row.status] += 1
+            report.stopped = f"server_limit:{err.code}"
+            await db.commit()
+            break
+        report.statuses[row.status] += 1
+        await db.commit()
+        sent_now += 1
+        if pause > 0:
+            await asyncio.sleep(pause)
+    return report
+
+
+async def send_reconfirm_test(to: str) -> dict[str, str]:
+    """Письмо «подтвердите почту» на проверочный адрес, по одному на язык."""
+    from app.services.mail.account import reconfirm_mail
+
+    if not service.recipient_allowed(to):
+        raise CampaignError("проверочный адрес не в списке допуска (RUSTATS_MAIL_ALLOWLIST)")
+    out = {}
+    for loc in ("ru", "en"):
+        rendered = reconfirm_mail("00000000-0000-0000-0000-000000000000", to, loc)
+        rendered.subject = f"[test] {rendered.subject}"
+        out[loc] = await service.send_now(kind="reconfirm", to=to, locale=loc, rendered=rendered)
+    return out

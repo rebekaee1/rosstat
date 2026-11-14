@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models import (
     User, Consent, AuthAudit, EmailCredential, OAuthIdentity, PushSubscription,
-    UserSavedItem, UserWatch, UserExport, UserPreference, MailMessage,
+    UserSavedItem, UserWatch, UserExport, UserPreference, MailMessage, MailSuppression,
 )
 from app.services import session as session_svc
 from app.services.identity.service import (
@@ -540,6 +540,7 @@ async def delete_account(request: Request, response: Response, user: User = Depe
     await db.execute(delete(PushSubscription).where(PushSubscription.user_id == uid))
     # ADR-0032: журнал писем хранит адрес получателя — тоже ПДн.
     await db.execute(delete(MailMessage).where(MailMessage.user_id == uid))
+    await db.execute(delete(MailSuppression).where(MailSuppression.user_id == uid))
     # Круг 11 (152-ФЗ): аналитические следы — user_signups, identity_links, user_id в
     # frontend_events сразу; большие таблицы без индекса обнулит ночная уборка.
     from app.services.account_erasure import erase_analytics_now
@@ -654,9 +655,21 @@ async def forgot_password(body: ForgotIn, request: Request, background: Backgrou
     if not await mail_service.rate_ok("forgot_email", email, limit=3, window_seconds=3600):
         return ok
     cred = await db.scalar(select(EmailCredential).where(EmailCredential.email == email))
-    if cred is None:
-        return ok
     locale = get_locale()
+    if cred is None:
+        # Пароля нет, но адрес известен по входу через провайдера: подсказываем, как войти.
+        ident = await db.scalar(select(OAuthIdentity).where(
+            func.lower(OAuthIdentity.email) == email, OAuthIdentity.email_verified.is_(True)))
+        if ident is not None:
+            try:
+                rendered = mail_account.oauth_hint_mail(ident.provider, locale)
+            except TokenSecretMissing:  # pragma: no cover — письмо без подписанных ссылок
+                return ok
+            await audit(db, ident.user_id, "password_reset_oauth_hint", request)
+            await db.commit()
+            background.add_task(mail_service.send_now, kind="oauth_hint", to=email,
+                                locale=locale, rendered=rendered, user_id=ident.user_id)
+        return ok
     try:
         rendered = mail_account.reset_mail(cred.user_id, cred.password_hash, locale)
     except TokenSecretMissing:

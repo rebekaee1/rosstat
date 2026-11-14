@@ -643,6 +643,25 @@ class Settings(BaseSettings):
     # Пусто = ru → https://ru.<apex>, en → public_base_url.
     mail_link_origin_ru: str = ""
     mail_link_origin_en: str = ""
+    # Отдельный SMTP для писем потоком (рассылка, сводка «колокольчика»), например Yandex Cloud
+    # Postbox (postbox.cloud.yandex.net:587 STARTTLS, логин — ID API-ключа, пароль — секрет).
+    # Пусто = всё через основной ящик. Служебные письма всегда идут через основной.
+    mail_bulk_smtp_host: str = ""
+    mail_bulk_smtp_port: int = 587
+    mail_bulk_smtp_security: str = "starttls"
+    mail_bulk_smtp_user: str = ""
+    mail_bulk_smtp_password: str = ""
+    mail_bulk_from_address: str = ""  # пусто = mail_from_address / ящик основного профиля
+    # Разбор писем-отказов (14.11.2026): раз в 30 минут читает ящик отправителя по IMAP
+    # (тот же пароль приложения), только письма-отчёты о недоставке; ничего не удаляет и
+    # не помечает прочитанным. Постоянный отказ → адрес в mail_suppressions.
+    mail_bounce_poll_enabled: bool = False
+    mail_imap_host: str = "imap.yandex.ru"
+    mail_imap_port: int = 993
+    # Письма о новых значениях по «колокольчику» (14.11.2026): одна сводка в день на человека,
+    # только подтверждённые адреса, своя отписка (отдельно от рассылки). Выключено.
+    mail_watch_digest_enabled: bool = False
+    mail_watch_digest_hour_msk: int = 10
 
     # Админ-BI (/admin/bi): comma-separated email'ы с доступом к дашборду.
     # Вход обычной сессией; email сверяется по способам входа пользователя.

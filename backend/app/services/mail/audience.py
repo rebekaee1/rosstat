@@ -106,3 +106,24 @@ async def is_subscribed(db: AsyncSession, user_id: uuid.UUID) -> bool:
         .limit(1)
     )
     return last == "newsletter"
+
+
+async def unverified_password_accounts(db: AsyncSession) -> list[Recipient]:
+    """Активные аккаунты со входом по паролю и неподтверждённым адресом (письмо «подтвердите почту»).
+
+    Подписка на рассылку не важна: это служебное письмо по аккаунту. Язык — как у рассылки.
+    """
+    rows = (await db.execute(
+        select(EmailCredential.user_id, EmailCredential.email)
+        .join(User, User.id == EmailCredential.user_id)
+        .where(EmailCredential.email_verified.is_(False), User.status == "active")
+        .order_by(EmailCredential.id)
+    )).all()
+    out: list[Recipient] = []
+    for uid, email in rows:
+        idents = (await db.scalars(select(OAuthIdentity).where(OAuthIdentity.user_id == uid))).all()
+        signup = await db.get(UserSignup, uid)
+        locale = _locale(signup.site_locale if signup else None, signup.country_code if signup else None,
+                         [i.locale or "" for i in idents], email)
+        out.append(Recipient(user_id=uid, email=email, verified=False, locale=locale))
+    return out

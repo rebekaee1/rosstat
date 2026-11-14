@@ -8,6 +8,8 @@
   * ``GET /mail/unsubscribe?t=…`` — только состояние (подписан ли, маска адреса);
     GET ничего не меняет: почтовые сканеры ссылок открывают ссылки сами;
   * ``POST /mail/resubscribe`` — «Подписаться снова» на той же странице.
+Ссылки двух списков: рассылка (``unsub``) и письма о новых значениях по «колокольчику»
+(``unsub_watch``, журнал ``watch_mail`` / ``watch_mail_revoked``); ответ несёт ``list``.
 Журнал согласий append-only (152-ФЗ): новая запись newsletter / newsletter_revoked.
 Неизвестный или удалённый человек получает тот же ответ, что и отписанный.
 """
@@ -42,23 +44,47 @@ def _bad() -> HTTPException:
     })
 
 
-async def _user_from(token: str | None, db: AsyncSession) -> tuple[uuid.UUID | None, User | None]:
-    try:
-        tok = tokens.verify("unsub", token or "")
-    except (tokens.TokenError, tokens.TokenSecretMissing):
+# Два списка: рассылка (назначение ссылки unsub) и письма о новых значениях по
+# «колокольчику» (unsub_watch). Список определяет назначение ссылки, а не параметр запроса.
+LISTS = {
+    "unsub": ("newsletter", "newsletter", "newsletter_revoked"),
+    "unsub_watch": ("watch", "watch_mail", "watch_mail_revoked"),
+}
+
+
+async def _user_from(token: str | None, db: AsyncSession) -> tuple[str, User | None]:
+    """(назначение ссылки, пользователь или None, если аккаунт удалён)."""
+    for purpose in LISTS:
+        try:
+            tok = tokens.verify(purpose, token or "")
+            break
+        except tokens.TokenError:
+            continue
+        except tokens.TokenSecretMissing:
+            raise _bad()
+    else:
         raise _bad()
     try:
         uid = uuid.UUID(tok.user_id)
     except ValueError:
         raise _bad()
-    return uid, await db.get(User, uid)
+    return purpose, await db.get(User, uid)
 
 
-async def _state(db: AsyncSession, user: User | None) -> dict:
+async def _subscribed(db: AsyncSession, purpose: str, user: User) -> bool:
+    if purpose == "unsub_watch":
+        from app.services.mail.watch_digest import watch_mail_on
+        return await watch_mail_on(db, user.id)
+    return await audience.is_subscribed(db, user.id)
+
+
+async def _state(db: AsyncSession, purpose: str, user: User | None) -> dict:
+    name = LISTS[purpose][0]
     if user is None:
-        return {"subscribed": False, "email": ""}
+        return {"subscribed": False, "email": "", "list": name}
     rec = await audience.resolve(db, user.id)
-    return {"subscribed": await audience.is_subscribed(db, user.id), "email": mask_email(rec.email if rec else "")}
+    return {"subscribed": await _subscribed(db, purpose, user), "email": mask_email(rec.email if rec else ""),
+            "list": name}
 
 
 async def _write(db: AsyncSession, request: Request, user: User, kind: str) -> None:
@@ -66,8 +92,9 @@ async def _write(db: AsyncSession, request: Request, user: User, kind: str) -> N
 
     db.add(Consent(user_id=user.id, kind=kind, version=AUTH_CONSENT_VERSION, ip=_client_ip(request),
                    user_agent=(request.headers.get("user-agent") or "")[:500]))
-    await audit(db, user.id, "newsletter_off" if kind == "newsletter_revoked" else "newsletter_on",
-                request, detail="mail_link")
+    event = {"newsletter_revoked": "newsletter_off", "newsletter": "newsletter_on",
+             "watch_mail_revoked": "watch_mail_off", "watch_mail": "watch_mail_on"}[kind]
+    await audit(db, user.id, event, request, detail="mail_link")
     await db.commit()
 
 
@@ -86,21 +113,21 @@ async def _token_from(request: Request, query_t: str | None) -> str | None:
 
 @router.get("/unsubscribe")
 async def unsubscribe_state(t: str | None = None, db: AsyncSession = Depends(get_db)):
-    _uid, user = await _user_from(t, db)
-    return await _state(db, user)
+    purpose, user = await _user_from(t, db)
+    return await _state(db, purpose, user)
 
 
 @router.post("/unsubscribe")
 async def unsubscribe(request: Request, t: str | None = None, db: AsyncSession = Depends(get_db)):
-    _uid, user = await _user_from(await _token_from(request, t), db)
-    if user is not None and await audience.is_subscribed(db, user.id):
-        await _write(db, request, user, "newsletter_revoked")
-    return {"ok": True, **(await _state(db, user))}
+    purpose, user = await _user_from(await _token_from(request, t), db)
+    if user is not None and await _subscribed(db, purpose, user):
+        await _write(db, request, user, LISTS[purpose][2])
+    return {"ok": True, **(await _state(db, purpose, user))}
 
 
 @router.post("/resubscribe")
 async def resubscribe(body: TokenBody, request: Request, db: AsyncSession = Depends(get_db)):
-    _uid, user = await _user_from(body.t, db)
-    if user is not None and user.status == "active" and not await audience.is_subscribed(db, user.id):
-        await _write(db, request, user, "newsletter")
-    return {"ok": True, **(await _state(db, user))}
+    purpose, user = await _user_from(body.t, db)
+    if user is not None and user.status == "active" and not await _subscribed(db, purpose, user):
+        await _write(db, request, user, LISTS[purpose][1])
+    return {"ok": True, **(await _state(db, purpose, user))}

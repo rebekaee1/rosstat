@@ -96,6 +96,10 @@ async def attempt(db: AsyncSession, row: MailMessage, rendered: RenderedMail, *,
     if not recipient_allowed(row.to_email):
         row.status, row.error = "blocked", "not_in_allowlist"
         return row
+    if await is_suppressed(db, row.to_email):
+        # Адрес уже возвращал постоянный отказ или жалобу: новые письма вредят репутации домена.
+        row.status, row.error = "suppressed", "suppressed"
+        return row
     row.attempts = (row.attempts or 0) + 1
     try:
         row.message_id = await transport.send(transport.OutgoingMail(
@@ -156,3 +160,11 @@ async def rate_ok(scope: str, key: str, *, limit: int, window_seconds: int) -> b
     except Exception:  # noqa: BLE001
         logger.error("mail rate limiter unavailable (%s)", scope, exc_info=True)
         return True
+
+
+async def is_suppressed(db: AsyncSession, addr: str) -> bool:
+    """Адрес в mail_suppressions (постоянный отказ, жалоба, ручная пометка)."""
+    from app.models import MailSuppression
+
+    found = await db.scalar(select(MailSuppression.id).where(MailSuppression.email == normalize(addr)))
+    return found is not None

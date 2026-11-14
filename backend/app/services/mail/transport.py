@@ -50,12 +50,45 @@ class OutgoingMail:
     campaign: str | None = None
 
 
-def from_address() -> str:
-    return (settings.mail_from_address or settings.mail_smtp_user or "").strip()
+# Письма потоком (рассылка, сводка «колокольчика») могут идти через отдельный сервис
+# (Yandex Cloud Postbox и т. п.): тогда служебные письма не страдают от блокировки ящика.
+BULK_KINDS = frozenset({"newsletter", "watch_digest"})
 
 
-def sender_domain() -> str:
-    addr = from_address()
+@dataclass(frozen=True)
+class SmtpProfile:
+    name: str  # main / bulk
+    host: str
+    port: int
+    security: str
+    user: str
+    password: str
+    from_addr: str
+
+
+def profile_for(kind: str) -> SmtpProfile:
+    """Профиль SMTP письма: bulk, если задан RUSTATS_MAIL_BULK_SMTP_HOST и письмо потоковое."""
+    if kind in BULK_KINDS and (settings.mail_bulk_smtp_host or "").strip():
+        return SmtpProfile(
+            "bulk", settings.mail_bulk_smtp_host.strip(), int(settings.mail_bulk_smtp_port),
+            (settings.mail_bulk_smtp_security or "starttls").lower(), settings.mail_bulk_smtp_user,
+            settings.mail_bulk_smtp_password,
+            # У Postbox логин — ID ключа, поэтому адрес отправителя задаётся отдельно.
+            (settings.mail_bulk_from_address or settings.mail_from_address or settings.mail_smtp_user or "").strip(),
+        )
+    return SmtpProfile(
+        "main", settings.mail_smtp_host, int(settings.mail_smtp_port),
+        (settings.mail_smtp_security or "ssl").lower(), settings.mail_smtp_user, settings.mail_smtp_password,
+        (settings.mail_from_address or settings.mail_smtp_user or "").strip(),
+    )
+
+
+def from_address(kind: str = "verify_email") -> str:
+    return profile_for(kind).from_addr
+
+
+def sender_domain(kind: str = "verify_email") -> str:
+    addr = from_address(kind)
     return addr.rsplit("@", 1)[-1] if "@" in addr else "forecasteconomy.com"
 
 
@@ -66,22 +99,23 @@ _POLICY = email_policy.default.clone(max_line_length=998)
 
 def build_message(mail: OutgoingMail) -> EmailMessage:
     msg = EmailMessage(policy=_POLICY)
-    msg["From"] = formataddr((settings.mail_from_name, from_address()))
+    msg["From"] = formataddr((settings.mail_from_name, from_address(mail.kind)))
     msg["To"] = mail.to
     msg["Subject"] = mail.subject
     msg["Date"] = format_datetime(datetime.now(timezone.utc))
-    msg["Message-ID"] = make_msgid(idstring=uuid.uuid4().hex[:12], domain=sender_domain())
+    msg["Message-ID"] = make_msgid(idstring=uuid.uuid4().hex[:12], domain=sender_domain(mail.kind))
     if settings.mail_reply_to:
         msg["Reply-To"] = settings.mail_reply_to
     # Обратная связь почтовых сервисов (Яндекс, Gmail) группирует жалобы по этому ключу.
     msg["Feedback-ID"] = f"{(mail.campaign or mail.kind)[:40]}:{mail.kind}:fe"
-    if mail.kind == "newsletter":
-        domain = sender_domain()
-        msg["List-Id"] = f"Forecast Economy <news.{domain}>"
+    if mail.kind in BULK_KINDS:
+        domain = sender_domain(mail.kind)
+        msg["List-Id"] = (f"Forecast Economy <news.{domain}>" if mail.kind == "newsletter"
+                          else f"Forecast Economy updates <watch.{domain}>")
         if mail.unsubscribe_url:
             # RFC 2369 + RFC 8058: кнопка «Отписаться» в интерфейсе почты, одно нажатие.
             msg["List-Unsubscribe"] = (
-                f"<{mail.unsubscribe_url}>, <mailto:{settings.mail_reply_to or from_address()}?subject=unsubscribe>"
+                f"<{mail.unsubscribe_url}>, <mailto:{settings.mail_reply_to or from_address(mail.kind)}?subject=unsubscribe>"
             )
             msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
         msg["Precedence"] = "bulk"
@@ -114,40 +148,40 @@ def _classify(exc: Exception) -> SendError:
     return SendError(f"error:{type(exc).__name__}", permanent=False)
 
 
-def _send_sync(msg: EmailMessage) -> None:
-    host, port = settings.mail_smtp_host, int(settings.mail_smtp_port)
+def _send_sync(msg: EmailMessage, profile: SmtpProfile) -> None:
     timeout = float(settings.mail_smtp_timeout_seconds)
     ctx = ssl.create_default_context()
-    if (settings.mail_smtp_security or "ssl").lower() == "starttls":
-        client: smtplib.SMTP = smtplib.SMTP(host, port, timeout=timeout)
+    if profile.security == "starttls":
+        client: smtplib.SMTP = smtplib.SMTP(profile.host, profile.port, timeout=timeout)
         try:
             client.ehlo()
             client.starttls(context=ctx)
             client.ehlo()
-            client.login(settings.mail_smtp_user, settings.mail_smtp_password)
-            client.send_message(msg, from_addr=from_address(), to_addrs=[msg["To"]])
+            client.login(profile.user, profile.password)
+            client.send_message(msg, from_addr=profile.from_addr, to_addrs=[msg["To"]])
         finally:
             try:
                 client.quit()
             except Exception:  # noqa: BLE001
                 pass
         return
-    with smtplib.SMTP_SSL(host, port, timeout=timeout, context=ctx) as client:
-        client.login(settings.mail_smtp_user, settings.mail_smtp_password)
-        client.send_message(msg, from_addr=from_address(), to_addrs=[msg["To"]])
+    with smtplib.SMTP_SSL(profile.host, profile.port, timeout=timeout, context=ctx) as client:
+        client.login(profile.user, profile.password)
+        client.send_message(msg, from_addr=profile.from_addr, to_addrs=[msg["To"]])
 
 
-def ensure_configured() -> None:
-    if not settings.mail_smtp_user or not settings.mail_smtp_password or not from_address():
-        raise MailConfigError("mail is enabled but SMTP user/password are not set")
+def ensure_configured(kind: str = "verify_email") -> None:
+    prof = profile_for(kind)
+    if not prof.user or not prof.password or not prof.from_addr:
+        raise MailConfigError(f"mail is enabled but SMTP profile {prof.name} has no user/password/from")
 
 
 async def send(mail: OutgoingMail) -> str:
     """Отправить одно письмо. Возвращает Message-ID; при отказе — SendError."""
-    ensure_configured()
+    ensure_configured(mail.kind)
     msg = build_message(mail)
     try:
-        await asyncio.to_thread(_send_sync, msg)
+        await asyncio.to_thread(_send_sync, msg, profile_for(mail.kind))
     except Exception as exc:  # noqa: BLE001 — классифицируем любой отказ
         err = _classify(exc)
         logger.warning("mail send failed kind=%s code=%s", mail.kind, err.code)

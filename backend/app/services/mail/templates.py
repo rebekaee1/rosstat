@@ -57,6 +57,27 @@ STRINGS = {
         "test.title": "Проверка почты",
         "test.lead": "Это проверочное письмо. Оно показывает, как выглядят письма сайта: заголовок, текст, блоки новостей, кнопка и подвал с отпиской.",
         "test.button": "Открыть сайт",
+        "oauth.subject": "Как войти в Forecast Economy",
+        "oauth.preheader": "Для этой почты пароля нет: вход через {provider}.",
+        "oauth.title": "Вы входите через {provider}",
+        "oauth.lead": "Кто-то, возможно вы, попросил сбросить пароль для этой почты. Пароля на сайте у вас нет: вы входите через {provider}. Откройте страницу входа и нажмите «Войти через {provider}». Пароль можно задать в личном кабинете после входа.",
+        "oauth.button": "Открыть страницу входа",
+        "oauth.note": "Если вы ничего не просили, просто не отвечайте на это письмо.",
+        "reconfirm.subject": "Подтвердите почту для Forecast Economy",
+        "reconfirm.preheader": "Одно нажатие — и письма будут приходить на этот адрес.",
+        "reconfirm.title": "Подтвердите почту",
+        "reconfirm.lead": "Вы зарегистрированы на Forecast Economy. Мы начинаем присылать письма: новые данные по выбранным показателям, восстановление пароля и, если вы подписаны, новости. Подтвердите, что этот адрес ваш.",
+        "reconfirm.button": "Подтвердить адрес",
+        "reconfirm.note": "Ссылка действует 7 дней. Без подтверждения новости на этот адрес не придут; вход на сайт работает как прежде.",
+        "watch.subject": "Новые данные: {first}",
+        "watch.subject_more": "Новые данные: {first} и ещё {n}",
+        "watch.preheader": "Вышли новые значения показателей, за которыми вы следите.",
+        "watch.title": "Новые значения",
+        "watch.lead": "Вышли новые данные по показателям, за которыми вы следите.",
+        "watch.button": "Все слежения в кабинете",
+        "watch.footer": "Вы получили это письмо, потому что нажали «Следить» у показателя на Forecast Economy. Не больше одного письма в день.",
+        "watch.unsubscribe": "Не присылать письма о новых значениях",
+        "watch.as_of": "на {date}",
     },
     "en": {
         "brand_tail": "The economy in numbers and forecasts",
@@ -83,6 +104,27 @@ STRINGS = {
         "test.title": "Mail check",
         "test.lead": "This is a test email. It shows how the site's emails look: heading, text, news blocks, button and the footer with an unsubscribe link.",
         "test.button": "Open the site",
+        "oauth.subject": "How to sign in to Forecast Economy",
+        "oauth.preheader": "There is no password for this email: you sign in with {provider}.",
+        "oauth.title": "You sign in with {provider}",
+        "oauth.lead": "Someone, probably you, asked to reset the password for this email. Your account has no password: you sign in with {provider}. Open the sign-in page and choose “Sign in with {provider}”. You can set a password in your account after signing in.",
+        "oauth.button": "Open the sign-in page",
+        "oauth.note": "If you did not ask for this, simply ignore this email.",
+        "reconfirm.subject": "Confirm your email for Forecast Economy",
+        "reconfirm.preheader": "One click and emails will arrive at this address.",
+        "reconfirm.title": "Confirm your email",
+        "reconfirm.lead": "You have an account on Forecast Economy. We are starting to send emails: new data for the indicators you follow, password recovery and, if you subscribed, news. Please confirm that this address is yours.",
+        "reconfirm.button": "Confirm address",
+        "reconfirm.note": "The link is valid for 7 days. Without confirmation no news will be sent to this address; signing in works as before.",
+        "watch.subject": "New data: {first}",
+        "watch.subject_more": "New data: {first} and {n} more",
+        "watch.preheader": "New values are out for the indicators you follow.",
+        "watch.title": "New values",
+        "watch.lead": "New data is out for the indicators you follow.",
+        "watch.button": "All follows in your account",
+        "watch.footer": "You received this email because you chose “Follow” for an indicator on Forecast Economy. At most one email a day.",
+        "watch.unsubscribe": "Stop emails about new values",
+        "watch.as_of": "as of {date}",
     },
 }
 
@@ -169,11 +211,11 @@ def _item(item: DigestItem) -> str:
 
 
 def _footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: str | None) -> str:
-    lines = [t(locale, "news_footer" if kind == "newsletter" else "service_footer")]
+    lines = [t(locale, {"newsletter": "news_footer", "watch": "watch.footer"}.get(kind, "service_footer"))]
     links = []
     if unsubscribe_url:
         links.append(f'<a href="{escape(unsubscribe_url, quote=True)}" style="color:{MUTED};'
-                     f'text-decoration:underline;">{escape(t(locale, "unsubscribe"))}</a>')
+                     f'text-decoration:underline;">{escape(t(locale, "watch.unsubscribe" if kind == "watch" else "unsubscribe"))}</a>')
     if manage_url:
         links.append(f'<a href="{escape(manage_url, quote=True)}" style="color:{MUTED};'
                      f'text-decoration:underline;">{escape(t(locale, "manage"))}</a>')
@@ -243,9 +285,10 @@ def _h1(text: str) -> str:
 
 
 def _text_footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: str | None) -> str:
-    parts = ["--", t(locale, "news_footer" if kind == "newsletter" else "service_footer")]
+    parts = ["--", t(locale, {"newsletter": "news_footer", "watch": "watch.footer"}.get(kind, "service_footer"))]
     if unsubscribe_url:
-        parts.append(f"{t(locale, 'unsubscribe')}: {unsubscribe_url}")
+        label = t(locale, "watch.unsubscribe" if kind == "watch" else "unsubscribe")
+        parts.append(f"{label}: {unsubscribe_url}")
     if manage_url:
         parts.append(f"{t(locale, 'manage')}: {manage_url}")
     parts += [t(locale, "reply"), OPERATOR["en" if locale == "en" else "ru"]]
@@ -254,22 +297,59 @@ def _text_footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_
 
 # --- письма ---------------------------------------------------------------------
 
-def render_action(kind: str, locale: str, *, action_url: str, site_url: str, manage_url: str | None = None) -> RenderedMail:
-    """Служебное письмо с одной кнопкой: verify (подтверждение адреса) или reset (сброс пароля)."""
-    if kind not in ("verify", "reset"):
+ACTION_KINDS = ("verify", "reset", "oauth", "reconfirm")
+
+
+def render_action(kind: str, locale: str, *, action_url: str, site_url: str, manage_url: str | None = None,
+                  **fmt: str) -> RenderedMail:
+    """Служебное письмо с одной кнопкой: verify (подтверждение адреса), reset (сброс пароля),
+    oauth (пароля нет — вход через провайдера, ``provider=``), reconfirm (подтверждение адреса
+    для давно зарегистрированных)."""
+    if kind not in ACTION_KINDS:
         raise ValueError(kind)
-    title = t(locale, f"{kind}.title")
-    body = (_h1(title) + _p(t(locale, f"{kind}.lead")) + _button(t(locale, f"{kind}.button"), action_url)
-            + _fallback_link(locale, action_url) + _p(t(locale, f"{kind}.note"), color=MUTED, size=13, margin="0"))
-    html = layout(locale, preheader=t(locale, f"{kind}.preheader"), body_html=body,
+
+    def tx(key: str) -> str:
+        return t(locale, f"{kind}.{key}").format(**fmt) if fmt else t(locale, f"{kind}.{key}")
+
+    title = tx("title")
+    body = (_h1(title) + _p(tx("lead")) + _button(tx("button"), action_url)
+            + _fallback_link(locale, action_url) + _p(tx("note"), color=MUTED, size=13, margin="0"))
+    html = layout(locale, preheader=tx("preheader"), body_html=body,
                   footer_html=_footer(locale, kind="service", unsubscribe_url=None, manage_url=manage_url),
                   site_url=site_url)
     text = "\n\n".join([
-        "Forecast Economy", title, t(locale, f"{kind}.lead"),
-        f"{t(locale, f'{kind}.button')}: {action_url}", t(locale, f"{kind}.note"),
+        "Forecast Economy", title, tx("lead"), f"{tx('button')}: {action_url}", tx("note"),
         _text_footer(locale, kind="service", unsubscribe_url=None, manage_url=manage_url),
     ])
-    return RenderedMail(subject=t(locale, f"{kind}.subject"), html=html, text=text)
+    return RenderedMail(subject=tx("subject"), html=html, text=text)
+
+
+def render_watch(items: list[DigestItem], locale: str, *, site_url: str, cabinet_url: str,
+                 unsubscribe_url: str) -> RenderedMail:
+    """Сводка о новых значениях по «колокольчику»: одно письмо в день, своя отписка."""
+    if not items:
+        raise ValueError("empty watch digest")
+    first = items[0].title
+    subject = (t(locale, "watch.subject").format(first=first) if len(items) == 1
+               else t(locale, "watch.subject_more").format(first=first, n=len(items) - 1))
+    body = (_h1(t(locale, "watch.title")) + _p(t(locale, "watch.lead"), margin="0 0 22px")
+            + "".join(_item(i) for i in items)
+            + '<div style="height:14px;line-height:14px;font-size:14px;">&nbsp;</div>'
+            + _button(t(locale, "watch.button"), cabinet_url))
+    html = layout(locale, preheader=t(locale, "watch.preheader"), body_html=body,
+                  footer_html=_footer(locale, kind="watch", unsubscribe_url=unsubscribe_url, manage_url=cabinet_url),
+                  site_url=site_url)
+    lines = ["Forecast Economy", t(locale, "watch.title"), t(locale, "watch.lead")]
+    for i in items:
+        block = [f"• {i.title}" + (f" — {i.value}" if i.value else "")]
+        if i.text:
+            block.append(f"  {i.text}")
+        if i.url:
+            block.append(f"  {i.url}")
+        lines.append("\n".join(block))
+    lines.append(f"{t(locale, 'watch.button')}: {cabinet_url}")
+    lines.append(_text_footer(locale, kind="watch", unsubscribe_url=unsubscribe_url, manage_url=cabinet_url))
+    return RenderedMail(subject=subject[:300], html=html, text="\n\n".join(lines))
 
 
 def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url: str,

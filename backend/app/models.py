@@ -1634,7 +1634,8 @@ class MailMessage(Base):
     to_email: Mapped[str] = mapped_column(String(320), nullable=False)
     locale: Mapped[str] = mapped_column(String(5), nullable=False, default="ru")
     subject: Mapped[str] = mapped_column(String(300), nullable=False)
-    # queued / sent / failed / blocked (не в списке допуска) / disabled (почта выключена)
+    # queued / sent / failed / blocked (не в списке допуска) / disabled (почта выключена) /
+    # suppressed (адрес в mail_suppressions) / bounced (пришёл отчёт о недоставке)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="queued")
     attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     # Короткий код ошибки SMTP/сети, без адресов и секретов.
@@ -1642,6 +1643,30 @@ class MailMessage(Base):
     message_id: Mapped[str | None] = mapped_column(String(200))
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
     sent_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+class MailSuppression(Base):
+    """Адреса, на которые письма больше не отправляются (ADR-0032, разбор отказов).
+
+    Пишет разбор писем-отказов из ящика отправителя (IMAP): постоянный отказ (5.x.x —
+    адреса нет, ящик закрыт) или жалоба. Адрес — ПДн: строка с user_id удаляется
+    вместе с аккаунтом; строка без user_id (адрес не наш) живёт до ручной чистки.
+    """
+    __tablename__ = "mail_suppressions"
+    __table_args__ = (
+        UniqueConstraint("email", name="uq_mail_suppression_email"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(320), nullable=False)
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
+    # bounce (постоянный отказ) / complaint (жалоба) / manual
+    reason: Mapped[str] = mapped_column(String(20), nullable=False, default="bounce")
+    # Код статуса из отчёта о доставке («5.1.1»), без текста сервера.
+    status_code: Mapped[str | None] = mapped_column(String(20))
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
 
 
 class AuthAudit(Base):

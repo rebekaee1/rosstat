@@ -19,7 +19,7 @@ import {
   Activity, Users, MousePointerClick, Search, TrendingUp, Route,
   AlertTriangle, Brain, Database, Megaphone, RefreshCw, Filter, LogIn,
   CalendarClock, LayoutGrid, Target, Wrench, ShieldCheck, Globe2,
-  SlidersHorizontal, Layers, Info,
+  SlidersHorizontal, Layers, Info, Mail,
 } from 'lucide-react';
 import EChart from '../components/EChart';
 import SessionAnalysisTab from '../components/SessionAnalysisTab';
@@ -2898,6 +2898,128 @@ function AdminLogin({ onSuccess }) {
 
 // 10 разделов executive-модели (этап 3.6 «Аналитики 2.0»): «Дерево» — главная;
 // справочники (События/Датасет/Гипотезы) живут внутри соответствующих разделов.
+// Почта (ADR-0032): сводка без адресов — письма по видам и статусам, выпуски, подписка, отказы.
+const MAIL_KIND_LABEL = {
+  verify_email: 'Подтверждение адреса', password_reset: 'Сброс пароля', oauth_hint: 'Подсказка входа',
+  reconfirm: '«Подтвердите почту»', newsletter: 'Рассылка', watch_digest: 'Новые значения', test: 'Проверочные',
+};
+const MAIL_STATUS_LABEL = {
+  sent: 'отправлено', failed: 'ошибка', blocked: 'вне списка допуска', disabled: 'почта выключена',
+  suppressed: 'адрес в стоп-листе', bounced: 'вернулось', queued: 'в очереди',
+};
+const MAIL_STATUS_COLOR = {
+  sent: GREEN, failed: RED, bounced: '#D97706', suppressed: '#6B7C99', blocked: 'rgba(26,26,46,0.35)',
+  disabled: 'rgba(26,26,46,0.2)', queued: BLUE,
+};
+
+function MailTab() {
+  const [days, setDays] = useState(30);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['bi-mail', days],
+    queryFn: () => api.get(`/admin/bi/mail?days=${days}`).then((r) => r.data),
+    staleTime: 60 * 1000,
+    retry: 1,
+  });
+  if (isLoading) return <p className="text-[14px] text-text-tertiary py-10 text-center">Загружаем почту…</p>;
+  if (isError || !data) return <Empty note="Не удалось загрузить сводку почты." />;
+  const cfg = data.config || {};
+  const kinds = Object.entries(data.by_kind || {});
+  const total = (st) => kinds.reduce((a, [, v]) => a + (v[st] || 0), 0);
+  const statuses = [...new Set(kinds.flatMap(([, v]) => Object.keys(v)))];
+  const daily = Object.entries(data.daily || {}).map(([d, v]) => ({ d: d.slice(5), ...v }));
+  const ce = data.consent_events || {};
+  const sup = data.suppressions || {};
+  const flag = (on, yes, no) => (
+    <span className={`text-[11px] px-2 py-0.5 rounded-full fe-glass-2 ${on ? 'text-text-primary' : 'text-text-tertiary'}`}>
+      {on ? yes : no}
+    </span>
+  );
+  return (
+    <div className="space-y-5" data-testid="bi-mail">
+      <div className="flex flex-wrap items-center gap-2">
+        {flag(cfg.enabled, 'Почта включена', 'Почта выключена')}
+        {flag(!cfg.allowlist_only, 'Письма людям открыты', 'Только список допуска')}
+        {flag(cfg.bulk_profile, 'Рассылка через отдельный сервис', 'Рассылка через основной ящик')}
+        {flag(cfg.bounce_poll, 'Разбор отказов включён', 'Разбор отказов выключен')}
+        {flag(cfg.watch_digest, 'Письма «колокольчика» включены', 'Письма «колокольчика» выключены')}
+        <span className="flex-1" />
+        {[7, 30, 90].map((n) => (
+          <button key={n} type="button" onClick={() => setDays(n)}
+            className={`text-[12px] px-2.5 py-1 rounded-full transition-colors ${days === n ? 'bg-champagne text-white' : 'text-text-secondary hover:text-text-primary'}`}>
+            {n} дн.
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <Kpi label="Отправлено" value={fmtInt(total('sent'))} sub={`за ${days} дн.`} />
+        <Kpi label="Ошибки и возвраты" value={fmtInt(total('failed') + total('bounced'))} />
+        <Kpi label="Подписаны на рассылку" value={fmtInt(data.audience?.newsletter_subscribers || 0)} />
+        <Kpi label="Адрес подтверждён" value={fmtInt(data.audience?.password_verified || 0)} sub="вход по паролю" />
+        <Kpi label="Ждут подтверждения" value={fmtInt(data.audience?.password_unverified || 0)} sub="вход по паролю" />
+        <Kpi label="Отписки" value={fmtInt((ce.newsletter_revoked || 0) + (ce.watch_mail_revoked || 0))}
+          sub={`рассылка ${fmtInt(ce.newsletter_revoked || 0)}, «колокольчик» ${fmtInt(ce.watch_mail_revoked || 0)}`} />
+      </div>
+      <div className="grid lg:grid-cols-2 gap-5">
+        <Card title="Письма по дням" icon={Mail} source="own"
+          insight="Последние 14 дней по статусу. «Вне списка допуска» — письма людям, пока почта открыта только для проверочного адреса.">
+          {daily.length ? (
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={daily} margin={{ top: 4, right: 8, bottom: 0, left: -18 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(26,26,46,0.06)" />
+                <XAxis dataKey="d" tick={{ fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip formatter={(v, k) => [fmtInt(v), MAIL_STATUS_LABEL[k] || k]} />
+                {statuses.map((st) => (
+                  <Bar key={st} dataKey={st} stackId="s" fill={MAIL_STATUS_COLOR[st] || INK} isAnimationActive={false} />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          ) : <Empty note="Писем ещё не было." />}
+        </Card>
+        <Card title="Виды писем" icon={Layers} source="own" insight={`За ${days} дн., по статусам.`}>
+          {kinds.length ? (
+            <table className="w-full text-[13px]">
+              <tbody>
+                {kinds.map(([k, v]) => (
+                  <tr key={k}>
+                    <td className="py-1.5 pr-3 text-text-primary">{MAIL_KIND_LABEL[k] || k}</td>
+                    <td className="py-1.5 text-text-secondary">
+                      {Object.entries(v).map(([st, n]) => `${MAIL_STATUS_LABEL[st] || st} ${fmtInt(n)}`).join(', ')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : <Empty note="Писем ещё не было." />}
+        </Card>
+        <Card title="Выпуски" icon={Megaphone} source="own" insight="Рассылки и «подтвердите почту»: сколько ушло, сколько не дошло.">
+          {(data.campaigns || []).length ? (
+            <table className="w-full text-[13px]">
+              <tbody>
+                {data.campaigns.map((c) => (
+                  <tr key={c.key}>
+                    <td className="py-1.5 pr-3 text-text-primary tabular-nums">{c.key}</td>
+                    <td className="py-1.5 text-text-secondary">
+                      {Object.entries(c.statuses).map(([st, n]) => `${MAIL_STATUS_LABEL[st] || st} ${fmtInt(n)}`).join(', ')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : <Empty note="Выпусков ещё не было." />}
+        </Card>
+        <Card title="Стоп-лист адресов" icon={ShieldCheck} source="own"
+          insight="Постоянные отказы и жалобы из ящика отправителя: на эти адреса письма больше не уходят.">
+          <div className="grid grid-cols-2 gap-3">
+            <Kpi label="Отказы" value={fmtInt(sup.bounce || 0)} />
+            <Kpi label="Жалобы" value={fmtInt(sup.complaint || 0)} />
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
 const TABS = [
   { id: 'tree', label: 'Дерево', icon: Target, C: MetricTreeTab },
   { id: 'acquisition', label: 'Привлечение', icon: Megaphone, C: AcquisitionFullTab },
@@ -2910,6 +3032,7 @@ const TABS = [
   { id: 'product', label: 'Что менять', icon: Wrench, C: ProductLoopTab },
   { id: 'slices', label: 'Срезы', icon: SlidersHorizontal, C: SlicesTab },
   { id: 'reliability', label: 'Надёжность', icon: ShieldCheck, C: ReliabilityTab },
+  { id: 'mail', label: 'Почта', icon: Mail, C: MailTab },
 ];
 
 export default function AdminBI() {
@@ -2926,7 +3049,8 @@ export default function AdminBI() {
   const customReady = period !== 'custom' || Boolean(customFrom);
   const onSlices = tab === 'slices';
   const onSessions = tab === 'sessions';
-  const onIndependent = onSlices || onSessions;
+  const onMail = tab === 'mail';
+  const onIndependent = onSlices || onSessions || onMail;
   // Кнопка «Обновить» просит пересчёт (fresh) один раз; опросы идут без него.
   const freshRef = useRef(false);
   const { data: raw, isLoading: biLoading, isError, error, refetch, isFetching } = useQuery({
@@ -3040,7 +3164,7 @@ export default function AdminBI() {
         ))}
       </div>
 
-      {!onSlices && !customReady && (
+      {!onSlices && !onMail && !customReady && (
         <p className="text-[14px] text-text-tertiary py-10 text-center">Выберите даты периода (московское время).</p>
       )}
       {!onIndependent && customReady && (biLoading || building) && (
@@ -3054,7 +3178,7 @@ export default function AdminBI() {
           {error?.response?.data?.detail || 'Не удалось загрузить данные. Попробуйте обновить.'}
         </p>
       )}
-      {onSlices ? <SlicesTab /> : onSessions ? (customReady && <SessionAnalysisTab key={`${period}-${customFrom}-${customTo}`} period={period} dateFrom={customFrom} dateTo={customTo} />) : (data && <Active d={data} onOpenSlices={openSlices} />)}
+      {onMail ? <MailTab /> : onSlices ? <SlicesTab /> : onSessions ? (customReady && <SessionAnalysisTab key={`${period}-${customFrom}-${customTo}`} period={period} dateFrom={customFrom} dateTo={customTo} />) : (data && <Active d={data} onOpenSlices={openSlices} />)}
     </div>
   );
 }

@@ -25,7 +25,7 @@ def mail_env(auth_env, monkeypatch):
     monkeypatch.setattr(service, "session_factory", auth_env["session_maker"])
     sent: list = []
 
-    def _fake_send(msg):
+    def _fake_send(msg, profile=None):
         sent.append(msg)
 
     monkeypatch.setattr(transport, "_send_sync", _fake_send)
@@ -229,7 +229,7 @@ def test_one_click_unsubscribe_and_resubscribe(mail_env, auth_client):
     uid = _subscribe(auth_client)
     tok = tokens.issue("unsub", uid)
     state = auth_client.get(f"/api/v1/mail/unsubscribe?t={tok}").json()
-    assert state == {"subscribed": True, "email": "a…d@example.com"}
+    assert state == {"subscribed": True, "email": "a…d@example.com", "list": "newsletter"}
     # GET ничего не меняет (сканеры ссылок), POST формы RFC 8058 — отписывает.
     r = auth_client.post(f"/api/v1/mail/unsubscribe?t={tok}", content="List-Unsubscribe=One-Click",
                          headers={"Content-Type": "application/x-www-form-urlencoded"})
@@ -309,7 +309,7 @@ def test_campaign_stops_on_server_limit(mail_env, auth_client, monkeypatch):
     _verify_all(mail_env)
     monkeypatch.setattr(settings, "mail_allow_all_recipients", True)
 
-    def _limit(_msg):
+    def _limit(_msg, profile=None):
         raise smtplib.SMTPDataError(554, b"5.7.1 Message rejected: daily limit exceeded")
 
     monkeypatch.setattr(transport, "_send_sync", _limit)

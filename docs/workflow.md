@@ -700,6 +700,42 @@ ssh fe-prod 'cd /opt/rosstat && docker compose exec -T backend python /app/scrip
 ```
 Секрет ссылок после первой рассылки не менять: ссылки отписки в отправленных письмах перестанут работать. Список допуска (`RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=true`) снимается отдельной командой владельца: с этого момента письма подтверждения и сброса пароля уходят всем.
 
+**Сервис для рассылки: Yandex Cloud Postbox или «Рассылки» Яндекс 360 (сравнение 14.11.2026; оплата и DNS — решение владельца).** Цифры — по официальным страницам на дату сравнения, перед подключением сверить.
+
+| | Yandex Cloud Postbox | «Рассылки» Яндекс 360 для бизнеса |
+|---|---|---|
+| Цена на 200–1000 адресов, 1–4 выпуска в месяц | Первые 2000 писем в месяц бесплатно, дальше ≈ 80 ₽ за 1000 с НДС ([тарифы](https://yandex.cloud/ru/docs/postbox/pricing)): 200 и 500 адресов — 0 ₽, 1000 × 4 выпуска — ≈ 161 ₽/мес. Минимальный платёж на странице не указан | Входит в тариф Яндекс 360 ([тарифы](https://yandex.ru/support/yandex-360/business/purchase/ru/plans/payment-plans-ru), [лимиты](https://yandex.ru/support/yandex-360/business/send/ru/limits)): «Минимальный» 319 ₽ за сотрудника в месяц — 1500 писем; «Основной» 549 ₽ — 50 000 писем. Остаток сгорает |
+| Подключение к нашему коду | SMTP `postbox.cloud.yandex.net:587` STARTTLS (или 465 SSL), логин — ID API-ключа сервисного аккаунта с ролью `postbox.sender`, пароль — секрет ключа; From — адрес подтверждённого домена ([отправка](https://yandex.cloud/ru/docs/postbox/operations/send-email)). **Только настройки** (см. ниже) | SMTP и API в справке не найдены: веб-инструмент, список адресов загружается файлом, письмо — HTML-файлом с обязательной `{{unsubscribe_link}}` ([создание](https://yandex.ru/support/yandex-360/business/send/ru/create)). Наш код в отправке не участвует |
+| DNS (у партнёра на nic.ru) | Две записи CNAME для DKIM (имена и значения — из консоли, свой селектор, не конфликтует с `mail`); SPF переписать в одну запись: `v=spf1 include:_spf.yandex.net include:spf.postbox.yandexcloud.net ~all` ([quickstart](https://yandex.cloud/ru/docs/postbox/quickstart)). Можно отдельный поддомен, например `news.forecasteconomy.com`: жалобы на рассылку не ударят по основной почте | Не нужно: домен уже подтверждён в Яндекс 360 |
+| Лимиты | По умолчанию 200 писем за 24 часа и 1 в секунду; повышение — через поддержку ([квоты](https://yandex.cloud/ru/docs/postbox/concepts/limits)). Для 500–1000 адресов нужно сразу | 10 рассылок в день, до 100 000 адресов в рассылке |
+| Отписка, отказы, жалобы | Наш `List-Unsubscribe` сохраняется ([отписка](https://yandex.cloud/ru/docs/postbox/concepts/unsubscribe)); отказы и жалобы — события в Yandex Data Streams ([уведомления](https://yandex.cloud/ru/docs/postbox/concepts/notification)), жалобы — в стоп-лист сервиса. Наш разбор по IMAP их не видит: нужен отдельный приёмник событий | Статистика прочтений, переходов, отписок в интерфейсе; данные об отказах и выгрузка в справке не описаны. Отписки живут отдельно от журнала согласий сайта — сводить вручную |
+| Оплата | Платёжный аккаунт Yandex Cloud: для ООО — договор и счёт или карта ([биллинг](https://yandex.cloud/ru/docs/billing/concepts/billing-account)) | В счёте Яндекс 360 организации; за жалобы может быть заблокирована вся организация, включая рабочую почту ([правила](https://yandex.ru/support/yandex-360/business/send/ru/rules)) |
+
+Рекомендация агента: Postbox — подключается к нашему SMTP без правки кода, стоит 0–161 ₽ в месяц, служебные письма остаются в ящике Яндекс 360. Минусы: правка DNS, запрос квоты, отказы приходят событиями (приёмник — отдельная задача).
+
+**Смена провайдера — только настройки (проверено тестом `test_mail_lifecycle.py::test_bulk_profile_only_for_stream_mail`).** Письма потоком (рассылка, сводка «колокольчика») идут через второй профиль, если задан `RUSTATS_MAIL_BULK_SMTP_HOST`; служебные (подтверждение, сброс пароля, подсказка входа) — всегда через основной ящик:
+```
+RUSTATS_MAIL_BULK_SMTP_HOST=postbox.cloud.yandex.net
+RUSTATS_MAIL_BULK_SMTP_PORT=587
+RUSTATS_MAIL_BULK_SMTP_SECURITY=starttls
+RUSTATS_MAIL_BULK_SMTP_USER=<ID API-ключа>
+RUSTATS_MAIL_BULK_SMTP_PASSWORD=<секрет ключа>
+RUSTATS_MAIL_BULK_FROM_ADDRESS=news@forecasteconomy.com
+```
+`scripts/mail.py check` показывает, через какой профиль идёт рассылка. Переход на «Рассылки» Яндекс 360 кода не требует, но и не использует его: выгрузка адресов и отписок — вручную.
+
+**«Подтвердите почту» давним аккаунтам (утверждено 14.11; людям — только по команде владельца).** 111 аккаунтов со входом по паролю и неподтверждённым адресом (замер 14.11). Письмо ru/en со ссылкой `/account/verify-email` (срок 7 суток), ключ выпуска `2026-11-reconfirm`, вид письма `reconfirm`:
+```bash
+docker compose exec -T backend python /app/scripts/mail.py reconfirm                                # сухой прогон: сколько и на каком языке
+docker compose exec -T backend python /app/scripts/mail.py reconfirm --test-to rebeka.ee@yandex.ru  # ru + en на проверочный адрес
+docker compose exec -T backend python /app/scripts/mail.py reconfirm --send --max 100              # ЛЮДЯМ, по команде владельца и при снятом списке допуска
+```
+Повторный запуск продолжает с места остановки; адрес, подтверждённый за это время, пропускается. Через 7 суток — повтор для неподтвердивших отдельным ключом (`run_reconfirm(key=…)`), если владелец решит.
+
+**Разбор отказов (IMAP).** `RUSTATS_MAIL_BOUNCE_POLL_ENABLED=true` + пересоздать scheduler: раз в 30 минут читает ящик отправителя только на чтение (письма не помечаются прочитанными и не удаляются), постоянный отказ и жалоба → `mail_suppressions`, жалоба снимает подписку. Ручной проход: `scripts/mail.py bounces`.
+
+**Письма «колокольчика».** `RUSTATS_MAIL_WATCH_DIGEST_ENABLED=true` + пересоздать scheduler: ежедневно в `RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK`:15 МСК одна сводка человеку с новыми значениями по его слежениям; только подтверждённые адреса; своя отписка. Счёт без отправки: `scripts/mail.py watch-digest`.
+
 **Выпуск рассылки.** `scripts/mail.py audience` (счёт, без адресов) → `campaign issue.json` (сухой прогон) → `campaign issue.json --test-to rebeka.ee@yandex.ru` → `campaign issue.json --send` только по команде владельца. Запуск повторяем, пока отчёт не перестанет показывать `stopped: max_per_run`; `server_limit` — остановиться и разобрать (лимит или подозрение на спам у почтового сервиса). Журнал: `select status, error, count(*) from mail_outbox where campaign='…' group by 1, 2`.
 
 ## Выпуск «Скачиваний» и «Выгрузок» служебного бота — 2026-11-14
