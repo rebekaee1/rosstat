@@ -1510,8 +1510,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "sha256": "20fc487eedd800d47836e09014b7c935f0e0962c52d2a832da94ce881aaa7c10",
-      "lines": 211
+      "sha256": "2f057165fcc77b5ecf05e733d146e7d810355a56ef18f1c69f3cff310c77b4c6",
+      "lines": 233
     },
     {
       "path": "backend/app/services/rosstat_population_parser.py",
@@ -37798,8 +37798,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 182,
-      "end_line": 182,
+      "line": 204,
+      "end_line": 204,
       "owner": "_probe",
       "conditions": [],
       "name": "rosstat_ca_cert",
@@ -103888,6 +103888,23 @@
       "runtime_expansion": true
     },
     {
+      "path": "backend/app/services/rosstat_outage.py",
+      "line": 101,
+      "end_line": 101,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_NAME_YEAR_RE",
+      "symbol": "app.services.rosstat_outage._NAME_YEAR_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('(?<!\\\\d)(20\\\\d{2})(?!\\\\d)')",
+      "expression_truncated": false,
+      "expression_chars": 39,
+      "ast_sha256": "47f848949482cbbbd829cb8c1c7a262f1556c774f84f7a9736967036c9afa3f2",
+      "runtime_expansion": true
+    },
+    {
       "path": "backend/app/services/rosstat_population_parser.py",
       "line": 48,
       "end_line": 48,
@@ -149892,8 +149909,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 118,
+      "end_line": 118,
       "owner": "sample_section_files",
       "conditions": [],
       "operation": "set",
@@ -302508,8 +302525,17 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 101,
+      "line": 104,
       "end_line": 107,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_name_year",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_outage.py",
+      "line": 110,
+      "end_line": 129,
       "owner": "<module>",
       "conditions": [],
       "name": "sample_section_files",
@@ -302517,8 +302543,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 110,
-      "end_line": 122,
+      "line": 132,
+      "end_line": 144,
       "owner": "<module>",
       "conditions": [],
       "name": "partial_reason_from_sections",
@@ -302526,8 +302552,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 125,
-      "end_line": 148,
+      "line": 147,
+      "end_line": 170,
       "owner": "<module>",
       "conditions": [],
       "name": "_probe_sections",
@@ -302535,8 +302561,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 151,
-      "end_line": 160,
+      "line": 173,
+      "end_line": 182,
       "owner": "<module>",
       "conditions": [],
       "name": "_sections_reason",
@@ -302544,8 +302570,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 163,
-      "end_line": 174,
+      "line": 185,
+      "end_line": 196,
       "owner": "<module>",
       "conditions": [],
       "name": "_reason_for",
@@ -302553,8 +302579,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 177,
-      "end_line": 186,
+      "line": 199,
+      "end_line": 208,
       "owner": "<module>",
       "conditions": [],
       "name": "_probe",
@@ -302562,8 +302588,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 189,
-      "end_line": 204,
+      "line": 211,
+      "end_line": 226,
       "owner": "<module>",
       "conditions": [],
       "name": "stale_copy_reason",
@@ -302571,8 +302597,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 207,
-      "end_line": 211,
+      "line": 229,
+      "end_line": 233,
       "owner": "<module>",
       "conditions": [],
       "name": "reset_cache",
@@ -344184,8 +344210,8 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 131,
-      "end_line": 131,
+      "line": 153,
+      "end_line": 153,
       "owner": "_probe_sections",
       "conditions": [],
       "symbol": "app.services.rosstat_outage.SECTION_PAGES"
@@ -344208,8 +344234,16 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 106,
+      "end_line": 106,
+      "owner": "_name_year",
+      "conditions": [],
+      "symbol": "app.services.rosstat_outage._NAME_YEAR_RE"
+    },
+    {
+      "path": "backend/app/services/rosstat_outage.py",
+      "line": 118,
+      "end_line": 118,
       "owner": "sample_section_files",
       "conditions": [],
       "symbol": "app.services.rosstat_outage._SECTION_FILE_RE"

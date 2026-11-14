@@ -13,8 +13,8 @@
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1354**
-- Registry references: **2551**
+- Registry declarations: **1355**
+- Registry references: **2552**
 - Migration operations: **480**
 - Candidate effects: **2833**
 - Unresolved syntax: **1**
@@ -2741,6 +2741,7 @@ Relationships: `[]`
 | app.services.rosstat_outage.SECTION_PAGES | Tuple | sequence/source expression | [backend/app/services/rosstat_outage.py:45](../backend/app/services/rosstat_outage.py#L45) |
 | app.services.rosstat_outage._SECTION_FILE_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:54](../backend/app/services/rosstat_outage.py#L54) |
 | app.services.rosstat_outage._MISSING_FILE_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:55](../backend/app/services/rosstat_outage.py#L55) |
+| app.services.rosstat_outage._NAME_YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_outage.py:101](../backend/app/services/rosstat_outage.py#L101) |
 | app.services.rosstat_population_parser._YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_population_parser.py:48](../backend/app/services/rosstat_population_parser.py#L48) |
 | app.services.rosstat_population_parser.INDICATOR_SOURCE_MAP | Dict | 'population', 'population-total-growth', 'population-natural-growth', 'population-migration' | [backend/app/services/rosstat_population_parser.py:245](../backend/app/services/rosstat_population_parser.py#L245) |
 | app.services.rosstat_population_parser.COMPONENT_SERIES_MAP | Dict | 'population-total-growth', 'population-natural-growth', 'population-migration' | [backend/app/services/rosstat_population_parser.py:252](../backend/app/services/rosstat_population_parser.py#L252) |

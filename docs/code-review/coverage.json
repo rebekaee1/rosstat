@@ -29,8 +29,8 @@
       "data_schema_reviewed": 8,
       "reviewed": 2195
     },
-    "definitions": 16032,
-    "annotated_definitions": 16032,
+    "definitions": 16036,
+    "annotated_definitions": 16036,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -4678,15 +4678,15 @@
     },
     {
       "path": "backend/app/services/rosstat_outage.py",
-      "sha256": "20fc487eedd800d47836e09014b7c935f0e0962c52d2a832da94ce881aaa7c10",
-      "bytes": 11231,
-      "lines": 211,
+      "sha256": "2f057165fcc77b5ecf05e733d146e7d810355a56ef18f1c69f3cff310c77b4c6",
+      "bytes": 12555,
+      "lines": 233,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 12,
-      "annotated_definitions": 12,
+      "definitions": 13,
+      "annotated_definitions": 13,
       "missing_definitions": []
     },
     {
@@ -10372,15 +10372,15 @@
     },
     {
       "path": "backend/tests/test_rosstat_outage.py",
-      "sha256": "72c618f4c46861a3374f6cdcc8004522019d9fcb15a5af65788a2ae0f34140a9",
-      "bytes": 9615,
-      "lines": 193,
+      "sha256": "3b0fe39212ed2486fb88b75160ed04bf92ffc07e78d2d66cbaa0f02f511be4f5",
+      "bytes": 12088,
+      "lines": 233,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 24,
-      "annotated_definitions": 24,
+      "definitions": 27,
+      "annotated_definitions": 27,
       "missing_definitions": []
     },
     {
@@ -13648,8 +13648,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "c86118e4c4f55006daf3d2ee48ec52d923314bd07f93fd69169be04248c899ca",
-      "bytes": 771548,
+      "sha256": "1a1ef411c866ab794c2482c308900c6c946a629a22efe93b486d4ac825d9579f",
+      "bytes": 772284,
       "lines": 3578,
       "code": false,
       "status": "reviewed",
@@ -14246,7 +14246,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "e17f357a7eee53191e1791a3f849c1a81fe87fb3c4f2bc8fc59d482ce852ed89",
+      "sha256": "a27603da2c5cba21dd4a668dbb32187b4bb67ca3b9bbc2602ecc32556007f7ae",
       "bytes": 3853208,
       "lines": 136353,
       "code": false,
@@ -14298,9 +14298,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "4481779615548a83823111f12cf81989471307912ff7182206d18be81ba9fada",
-      "bytes": 12208307,
-      "lines": 365976,
+      "sha256": "d412591b1d2615cc11199fb62f8135188f4a9ef8e02e70f6a0a787d5af52b28f",
+      "bytes": 12209328,
+      "lines": 366010,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14311,9 +14311,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "badeab420f96ce6c828984ce360cb3c766dbeea6f6e539116e27c77912b4559e",
-      "bytes": 628401,
-      "lines": 3395,
+      "sha256": "75e06307128c458bffb1677c38310375ef5daa3096849e3dc6411539847eca20",
+      "bytes": 628578,
+      "lines": 3396,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -32082,9 +32082,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "80dab16e3812da44a02f218f45a4d33c3184323a7c75c3332372e970b5a7feab",
+  "ledger_sha256": "85caa38e38ecbb2acc9058749fc33ebcd18f7edcc7b1592ae1d0e4343e7cbdae",
   "javascript_inventory_sha256": "ff07e771d69de4817e88614a86a53747aafd3122d75b0bbe7982760f87d81c5d",
-  "baseline_commit": "79f357fae26eb2ffba7c82765e89b7057a453703",
+  "baseline_commit": "556fbcb5ba37b7ac4b9ca786c94003196f5f35da",
   "branch": "fix/counter-google-farm-2026-11-14",
   "unstaged_at_capture": []
 }
