@@ -275,6 +275,9 @@ async def _clear_stale_blocker(
     нет факта выхода и она не точнее кандидата. Иначе это настоящий конфликт — пропуск с записью.
     14.11.2026: ИПЦ за октябрь с 01.11 не мог переехать с 13.11 на 25.11 — 25.11 занимала скрытая
     строка-оценка без ключа (cpi, 2026-11-25), а остальные срезы ИПЦ переехали.
+    Параллельно тот же случай закрыл `_release_estimated_slot` (коммит 58aa3d7a, внутри `_apply_candidate`:
+    только строки `is_estimated`). Эта функция шире: ещё старые строки по правилу (`official_rule`
+    Росстата и Минфина, `is_estimated=false`) и строки без ключа; работает до поиска существующей строки.
     """
     indicator_id = code_to_id.get(candidate.indicator_code) if candidate.indicator_code else None
     if indicator_id is None:

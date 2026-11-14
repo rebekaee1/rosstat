@@ -83,7 +83,9 @@ export function eventStatus(event, today = localTodayIso()) {
   }
   if (date && date < today) {
     const days = Math.round((Date.parse(today) - Date.parse(date)) / 86400000);
-    return { kind: days <= AWAIT_DAYS && event?.indicator_code ? 'awaiting' : 'passed' };
+    // Предварительная оценка ВВП (ключ «:flash») не добавляет точку в ряд — ждать на сайте нечего.
+    const confirmable = event?.indicator_code && !String(event?.event_key || '').endsWith(':flash');
+    return { kind: days <= AWAIT_DAYS && confirmable ? 'awaiting' : 'passed' };
   }
   if (event?.rescheduled_from) return { kind: 'moved', from: event.rescheduled_from };
   if (event?.date_confidence === 'official_rule') return { kind: 'byRule' };

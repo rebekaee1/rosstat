@@ -15,6 +15,8 @@ describe('eventStatus — честный статус события кален�
     expect(eventStatus({ ...base, scheduled_date: '2026-10-20' }, TODAY).kind).toBe('passed');
     // Резюме обсуждения ставки не даёт цифры — сразу «дата прошла».
     expect(eventStatus({ scheduled_date: '2026-11-05', status: 'awaiting_confirmation' }, TODAY).kind).toBe('passed');
+    expect(eventStatus({ ...base, scheduled_date: '2026-11-13', event_key: 'rosstat:plan:gdp-real:q3-2026:flash' }, TODAY).kind)
+      .toBe('passed');
   });
 
   it('перенос источника виден до даты выхода', () => {

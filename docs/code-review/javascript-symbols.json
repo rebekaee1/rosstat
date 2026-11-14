@@ -17361,7 +17361,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/components/calendar/CalendarEventCard.jsx": {
-    "sha256": "82f1c47ac85300dad1ac74e25c8a2873a9ae1efa5f260b4983d2fbf7a676348a",
+    "sha256": "a460078b650221994b3e4e7915f9b86f0844c9c5a03fbd2d8fbfd14a44c62503",
     "definitions": [
       {
         "name": "ImportanceBadge",
@@ -17370,33 +17370,51 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "localTodayIso",
+        "line": 58,
+        "end_line": 61,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "dayMonth",
+        "line": 64,
+        "end_line": 68,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "eventStatus",
+        "line": 79,
+        "end_line": 93,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "DateStatus",
-        "line": 59,
-        "end_line": 72,
+        "line": 95,
+        "end_line": 128,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ValueCell",
-        "line": 74,
-        "end_line": 82,
+        "line": 130,
+        "end_line": 138,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ActualValueCell",
-        "line": 84,
-        "end_line": 117,
+        "line": 140,
+        "end_line": 173,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarEventCard",
-        "line": 119,
-        "end_line": 309,
+        "line": 175,
+        "end_line": 365,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarEventCard.addToCalendar",
-        "line": 135,
-        "end_line": 142,
+        "line": 191,
+        "end_line": 198,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -17465,12 +17483,34 @@
     "exports": [
       {
         "names": [
+          "eventStatus"
+        ],
+        "line": 79
+      },
+      {
+        "names": [
           "default"
         ],
-        "line": 119
+        "line": 175
       }
     ],
     "anonymous_functions": 1
+  },
+  "frontend/src/components/calendar/CalendarEventCard.status.test.js": {
+    "sha256": "0914a814fc6a5c9176ad9086f298cc3e9f6704172a825b14881f9481eae846ad",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./CalendarEventCard",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 5
   },
   "frontend/src/components/calendar/CalendarFilters.jsx": {
     "sha256": "8a1672307c3c6c408ddb2cfb8f4ca90cfdebfcd21e28134cb2d0654215727b36",
@@ -23760,7 +23800,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "c9be9bf78a8d3074de5e679a1452d770b4863220ff7b1e2363848d30dc01db68",
+    "sha256": "0b7059104866ed08e64cdf7662abeb805bbbf0cb07c1af5e23c1e2880ab366c9",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23868,7 +23908,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "7658d420e0e075a6478b80fdd84266c2f448dc18bbb870d8a140cbe868dfc1d6",
+    "sha256": "ed13ed560b53b61ab3be7acf090bc7af777a4073890145906dcd85291e4a6300",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -28883,8 +28923,24 @@
     "exports": [],
     "anonymous_functions": 2
   },
+  "frontend/src/lib/calendarGroupFacts.test.js": {
+    "sha256": "d95ff6b1a3b5941a5ffd2cbe8e5c14ead86c527ea587606baeacf2f157398588",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./calendarGrouping",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 3
+  },
   "frontend/src/lib/calendarGrouping.js": {
-    "sha256": "798db07f6716025d7bf1e3b7ea6e9d7d78e55a80a80c7fba78e357e37753ebf1",
+    "sha256": "a715fce73633e4fe170b6c7bed7b1fca04359861f81585d6500a970dcbf9e492",
     "definitions": [
       {
         "name": "normalizeEventUid",
@@ -28905,21 +28961,27 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "groupFacts",
+        "line": 103,
+        "end_line": 119,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "findDailyRecurring",
-        "line": 106,
-        "end_line": 130,
+        "line": 129,
+        "end_line": 153,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "recurringKeyOf",
-        "line": 132,
-        "end_line": 134,
+        "line": 155,
+        "end_line": 157,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pickDefaultDay",
-        "line": 146,
-        "end_line": 156,
+        "line": 169,
+        "end_line": 179,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -28946,22 +29008,22 @@
         "names": [
           "findDailyRecurring"
         ],
-        "line": 106
+        "line": 129
       },
       {
         "names": [
           "recurringKeyOf"
         ],
-        "line": 132
+        "line": 155
       },
       {
         "names": [
           "pickDefaultDay"
         ],
-        "line": 146
+        "line": 169
       }
     ],
-    "anonymous_functions": 9
+    "anonymous_functions": 13
   },
   "frontend/src/lib/calendarGrouping.test.js": {
     "sha256": "2bd472a2fe24ccb6c754fb7a518eeee731fe10a0d02e301a9cc86e22a305fec9",
@@ -54754,7 +54816,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/CalendarPage.jsx": {
-    "sha256": "35ed06ae5e0fe229851178e3a65b4fcf0ed2def35d660bf85887a70dc8e7cdf2",
+    "sha256": "8d9a8fcd40837bb6b9cb0c4148d5374c395dd86aa2854e986ee54d48cfb519f5",
     "definitions": [
       {
         "name": "formatDayLabel",
@@ -54783,7 +54845,7 @@
       {
         "name": "CalendarPage",
         "line": 115,
-        "end_line": 469,
+        "end_line": 475,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -54901,7 +54963,7 @@
         "line": 115
       }
     ],
-    "anonymous_functions": 43
+    "anonymous_functions": 45
   },
   "frontend/src/pages/CategoriesHub.jsx": {
     "sha256": "e50a59d59ded036601ffa5fd0116adafcd08f3935f59ab48b681882e15229080",
@@ -60354,7 +60416,7 @@
     "anonymous_functions": 22
   },
   "frontend/src/pages/RussiaPages.w3.component.test.jsx": {
-    "sha256": "826c71475781f9dce99921c2d63bfcdc2cbfb93db7e451df6e4caa300bc2a08e",
+    "sha256": "3a2040a5411bdd1ab94a3f6085f0c4014bc73a4d818fb8eccbf644677586c4a7",
     "definitions": [
       {
         "name": "seriesRoute",
@@ -60406,7 +60468,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 20
+    "anonymous_functions": 21
   },
   "frontend/src/pages/Terms.jsx": {
     "sha256": "579997b8275f7fac61abbedd47287b09cc7f110befc15988c8b51c490d2687a0",

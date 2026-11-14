@@ -87209,7 +87209,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/calendar/CalendarEventCard.jsx": {
-      "sha256": "82f1c47ac85300dad1ac74e25c8a2873a9ae1efa5f260b4983d2fbf7a676348a",
+      "sha256": "a460078b650221994b3e4e7915f9b86f0844c9c5a03fbd2d8fbfd14a44c62503",
       "imports": [
         {
           "line": 1,
@@ -87247,7 +87247,8 @@
             "frontend/src/lib/format.js"
           ],
           "bindings": [
-            "cn"
+            "cn",
+            "formatDate"
           ]
         },
         {
@@ -87423,48 +87424,72 @@
           "callback_context": null
         },
         {
-          "line": 59,
-          "end_line": 72,
+          "line": 58,
+          "end_line": 61,
+          "owner": "<module>",
+          "name": "localTodayIso",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 64,
+          "end_line": 68,
+          "owner": "<module>",
+          "name": "dayMonth",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 79,
+          "end_line": 93,
+          "owner": "<module>",
+          "name": "eventStatus",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 95,
+          "end_line": 128,
           "owner": "<module>",
           "name": "DateStatus",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 74,
-          "end_line": 82,
+          "line": 130,
+          "end_line": 138,
           "owner": "<module>",
           "name": "ValueCell",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 84,
-          "end_line": 117,
+          "line": 140,
+          "end_line": 173,
           "owner": "<module>",
           "name": "ActualValueCell",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 119,
-          "end_line": 309,
+          "line": 175,
+          "end_line": 365,
           "owner": "<module>",
           "name": "CalendarEventCard",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 135,
-          "end_line": 142,
+          "line": 191,
+          "end_line": 198,
           "owner": "CalendarEventCard",
           "name": "addToCalendar",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 261,
-          "end_line": 274,
+          "line": 317,
+          "end_line": 330,
           "owner": "CalendarEventCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -87480,29 +87505,36 @@
           "arguments": []
         },
         {
-          "line": 60,
-          "end_line": 60,
+          "line": 96,
+          "end_line": 96,
           "owner": "DateStatus",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 85,
-          "end_line": 85,
+          "line": 97,
+          "end_line": 97,
+          "owner": "DateStatus",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
+          "line": 141,
+          "end_line": 141,
           "owner": "ActualValueCell",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 120,
-          "end_line": 120,
+          "line": 176,
+          "end_line": 176,
           "owner": "CalendarEventCard",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 121,
-          "end_line": 121,
+          "line": 177,
+          "end_line": 177,
           "owner": "CalendarEventCard",
           "callee": "useLocale",
           "arguments": []
@@ -87513,8 +87545,8 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 284,
-          "end_line": 292,
+          "line": 340,
+          "end_line": 348,
           "owner": "CalendarEventCard",
           "component": "button",
           "event": "onClick",
@@ -87536,6 +87568,87 @@
           "initializer": null
         }
       ],
+      "mcp_tools": []
+    },
+    "frontend/src/components/calendar/CalendarEventCard.status.test.js": {
+      "sha256": "0914a814fc6a5c9176ad9086f298cc3e9f6704172a825b14881f9481eae846ad",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "./CalendarEventCard",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/calendar/CalendarEventCard.jsx"
+          ],
+          "bindings": [
+            "eventStatus"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 6,
+          "end_line": 31,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 7,
+          "end_line": 10,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 12,
+          "end_line": 20,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 22,
+          "end_line": 25,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 27,
+          "end_line": 30,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
       "mcp_tools": []
     },
     "frontend/src/components/calendar/CalendarFilters.jsx": {
@@ -111696,7 +111809,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "c9be9bf78a8d3074de5e679a1452d770b4863220ff7b1e2363848d30dc01db68",
+      "sha256": "0b7059104866ed08e64cdf7662abeb805bbbf0cb07c1af5e23c1e2880ab366c9",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -112119,7 +112232,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "7658d420e0e075a6478b80fdd84266c2f448dc18bbb870d8a140cbe868dfc1d6",
+      "sha256": "ed13ed560b53b61ab3be7acf090bc7af777a4073890145906dcd85291e4a6300",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -124433,8 +124546,73 @@
       "registries": [],
       "mcp_tools": []
     },
+    "frontend/src/lib/calendarGroupFacts.test.js": {
+      "sha256": "d95ff6b1a3b5941a5ffd2cbe8e5c14ead86c527ea587606baeacf2f157398588",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "it",
+            "expect"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "./calendarGrouping",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/calendarGrouping.js"
+          ],
+          "bindings": [
+            "groupSimilarEvents"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 7,
+          "end_line": 27,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 8,
+          "end_line": 16,
+          "owner": "<callback@7>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 18,
+          "end_line": 26,
+          "owner": "<callback@7>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/lib/calendarGrouping.js": {
-      "sha256": "798db07f6716025d7bf1e3b7ea6e9d7d78e55a80a80c7fba78e357e37753ebf1",
+      "sha256": "a715fce73633e4fe170b6c7bed7b1fca04359861f81585d6500a970dcbf9e492",
       "imports": [
         {
           "line": 20,
@@ -124493,80 +124671,120 @@
           "callback_context": "indicators.sort"
         },
         {
-          "line": 106,
-          "end_line": 130,
+          "line": 103,
+          "end_line": 119,
+          "owner": "<module>",
+          "name": "groupFacts",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 104,
+          "end_line": 106,
+          "owner": "groupFacts",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "arr.reduce"
+        },
+        {
+          "line": 108,
+          "end_line": 108,
+          "owner": "groupFacts",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "arr.every"
+        },
+        {
+          "line": 109,
+          "end_line": 109,
+          "owner": "groupFacts",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "arr.filter"
+        },
+        {
+          "line": 115,
+          "end_line": 115,
+          "owner": "groupFacts",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "released.map"
+        },
+        {
+          "line": 129,
+          "end_line": 153,
           "owner": "<module>",
           "name": "findDailyRecurring",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 128,
-          "end_line": 128,
+          "line": 151,
+          "end_line": 151,
           "owner": "findDailyRecurring",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items.sort"
         },
         {
-          "line": 129,
-          "end_line": 129,
+          "line": 152,
+          "end_line": 152,
           "owner": "findDailyRecurring",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items.map"
         },
         {
-          "line": 132,
-          "end_line": 134,
+          "line": 155,
+          "end_line": 157,
           "owner": "<module>",
           "name": "recurringKeyOf",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 146,
-          "end_line": 156,
+          "line": 169,
+          "end_line": 179,
           "owner": "<module>",
           "name": "pickDefaultDay",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 148,
-          "end_line": 148,
+          "line": 171,
+          "end_line": 171,
           "owner": "pickDefaultDay",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(Array.isArray(monthEvents) ? monthEvents : []).filter"
         },
         {
-          "line": 150,
-          "end_line": 150,
+          "line": 173,
+          "end_line": 173,
           "owner": "pickDefaultDay",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "own.some"
         },
         {
-          "line": 152,
-          "end_line": 152,
+          "line": 175,
+          "end_line": 175,
           "owner": "pickDefaultDay",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "own\n    .filter"
         },
         {
-          "line": 153,
-          "end_line": 153,
+          "line": 176,
+          "end_line": 176,
           "owner": "pickDefaultDay",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "own\n    .filter((ev) => ev.scheduled_date > todayStr)\n    .sort"
         },
         {
-          "line": 154,
-          "end_line": 154,
+          "line": 177,
+          "end_line": 177,
           "owner": "pickDefaultDay",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -202267,7 +202485,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/CalendarPage.jsx": {
-      "sha256": "35ed06ae5e0fe229851178e3a65b4fcf0ed2def35d660bf85887a70dc8e7cdf2",
+      "sha256": "8d9a8fcd40837bb6b9cb0c4148d5374c395dd86aa2854e986ee54d48cfb519f5",
       "imports": [
         {
           "line": 1,
@@ -202687,7 +202905,7 @@
         },
         {
           "line": 115,
-          "end_line": 469,
+          "end_line": 475,
           "owner": "<module>",
           "name": "CalendarPage",
           "kind": "FunctionDeclaration",
@@ -202790,48 +203008,56 @@
           "callback_context": "useMemo"
         },
         {
-          "line": 218,
-          "end_line": 218,
+          "line": 221,
+          "end_line": 221,
+          "owner": "CalendarPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 221,
+          "end_line": 221,
+          "owner": "CalendarPage.<callback@221>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "upcomingData?.events?.filter"
+        },
+        {
+          "line": 224,
+          "end_line": 224,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "upcomingList?.find"
         },
         {
-          "line": 220,
-          "end_line": 220,
+          "line": 226,
+          "end_line": 226,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 223,
-          "end_line": 223,
+          "line": 229,
+          "end_line": 229,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 223,
-          "end_line": 223,
-          "owner": "CalendarPage.<callback@223>",
+          "line": 229,
+          "end_line": 229,
+          "owner": "CalendarPage.<callback@229>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "monthEvents.filter"
         },
         {
-          "line": 229,
-          "end_line": 232,
-          "owner": "CalendarPage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 236,
-          "end_line": 239,
+          "line": 235,
+          "end_line": 238,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -202839,14 +203065,14 @@
         },
         {
           "line": 242,
-          "end_line": 242,
+          "end_line": 245,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 245,
+          "line": 248,
           "end_line": 248,
           "owner": "CalendarPage",
           "name": null,
@@ -202854,80 +203080,80 @@
           "callback_context": "useMemo"
         },
         {
-          "line": 254,
-          "end_line": 262,
+          "line": 251,
+          "end_line": 254,
+          "owner": "CalendarPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 260,
+          "end_line": 268,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 265,
-          "end_line": 273,
+          "line": 271,
+          "end_line": 279,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 267,
-          "end_line": 267,
-          "owner": "CalendarPage.<callback@265>",
+          "line": 273,
+          "end_line": 273,
+          "owner": "CalendarPage.<callback@271>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "allEvents.filter"
         },
         {
-          "line": 269,
-          "end_line": 269,
-          "owner": "CalendarPage.<callback@265>",
+          "line": 275,
+          "end_line": 275,
+          "owner": "CalendarPage.<callback@271>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "allEvents.filter"
         },
         {
-          "line": 270,
-          "end_line": 270,
-          "owner": "CalendarPage.<callback@265>",
+          "line": 276,
+          "end_line": 276,
+          "owner": "CalendarPage.<callback@271>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "filtered.filter"
         },
         {
-          "line": 275,
-          "end_line": 293,
+          "line": 281,
+          "end_line": 299,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 282,
-          "end_line": 292,
-          "owner": "CalendarPage.<callback@275>",
+          "line": 288,
+          "end_line": 298,
+          "owner": "CalendarPage.<callback@281>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from(map.entries()).map"
         },
         {
-          "line": 284,
-          "end_line": 289,
-          "owner": "CalendarPage.<callback@275>.<callback@282>",
+          "line": 290,
+          "end_line": 295,
+          "owner": "CalendarPage.<callback@281>.<callback@288>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "events.sort"
         },
         {
-          "line": 326,
-          "end_line": 326,
-          "owner": "CalendarPage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 333,
-          "end_line": 333,
+          "line": 332,
+          "end_line": 332,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -202942,56 +203168,64 @@
           "callback_context": null
         },
         {
-          "line": 340,
-          "end_line": 340,
+          "line": 345,
+          "end_line": 345,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 358,
-          "end_line": 358,
+          "line": 346,
+          "end_line": 346,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 371,
-          "end_line": 376,
+          "line": 364,
+          "end_line": 364,
+          "owner": "CalendarPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 377,
+          "end_line": 382,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "recurring.items.map"
         },
         {
-          "line": 395,
-          "end_line": 395,
+          "line": 401,
+          "end_line": 401,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 408,
-          "end_line": 428,
+          "line": 414,
+          "end_line": 434,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "grouped.map"
         },
         {
-          "line": 445,
-          "end_line": 445,
+          "line": 451,
+          "end_line": 451,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 459,
-          "end_line": 464,
+          "line": 465,
+          "end_line": 470,
           "owner": "CalendarPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -203196,17 +203430,27 @@
           ]
         },
         {
-          "line": 216,
-          "end_line": 216,
+          "line": 219,
+          "end_line": 219,
           "owner": "CalendarPage",
           "callee": "useCalendarUpcoming",
           "arguments": [
-            "{ limit: 8, importance_min: 2 }"
+            "{ limit: 40, importance_min: 2 }"
           ]
         },
         {
           "line": 220,
-          "end_line": 220,
+          "end_line": 223,
+          "owner": "CalendarPage",
+          "callee": "useMemo",
+          "arguments": [
+            "() => upcomingData?.events?.filter((e) => e.date_confidence !== 'official_rule').slice(0, 8)",
+            "[upcomingData]"
+          ]
+        },
+        {
+          "line": 226,
+          "end_line": 226,
           "owner": "CalendarPage",
           "callee": "useMemo",
           "arguments": [
@@ -203215,8 +203459,8 @@
           ]
         },
         {
-          "line": 222,
-          "end_line": 225,
+          "line": 228,
+          "end_line": 231,
           "owner": "CalendarPage",
           "callee": "useMemo",
           "arguments": [
@@ -203225,8 +203469,8 @@
           ]
         },
         {
-          "line": 229,
-          "end_line": 232,
+          "line": 235,
+          "end_line": 238,
           "owner": "CalendarPage",
           "callee": "useMemo",
           "arguments": [
@@ -203235,8 +203479,8 @@
           ]
         },
         {
-          "line": 236,
-          "end_line": 239,
+          "line": 242,
+          "end_line": 245,
           "owner": "CalendarPage",
           "callee": "useMemo",
           "arguments": [
@@ -203245,8 +203489,8 @@
           ]
         },
         {
-          "line": 242,
-          "end_line": 242,
+          "line": 248,
+          "end_line": 248,
           "owner": "CalendarPage",
           "callee": "useMemo",
           "arguments": [
@@ -203255,8 +203499,8 @@
           ]
         },
         {
-          "line": 245,
-          "end_line": 248,
+          "line": 251,
+          "end_line": 254,
           "owner": "CalendarPage",
           "callee": "useMemo",
           "arguments": [
@@ -203265,8 +203509,8 @@
           ]
         },
         {
-          "line": 253,
-          "end_line": 253,
+          "line": 259,
+          "end_line": 259,
           "owner": "CalendarPage",
           "callee": "useRef",
           "arguments": [
@@ -203274,8 +203518,8 @@
           ]
         },
         {
-          "line": 254,
-          "end_line": 262,
+          "line": 260,
+          "end_line": 268,
           "owner": "CalendarPage",
           "callee": "useEffect",
           "arguments": [
@@ -203284,8 +203528,8 @@
           ]
         },
         {
-          "line": 265,
-          "end_line": 273,
+          "line": 271,
+          "end_line": 279,
           "owner": "CalendarPage",
           "callee": "useMemo",
           "arguments": [
@@ -203294,8 +203538,8 @@
           ]
         },
         {
-          "line": 275,
-          "end_line": 293,
+          "line": 281,
+          "end_line": 299,
           "owner": "CalendarPage",
           "callee": "useMemo",
           "arguments": [
@@ -203317,88 +203561,88 @@
           "expression": "{onRefresh}"
         },
         {
-          "line": 322,
-          "end_line": 322,
+          "line": 328,
+          "end_line": 328,
           "owner": "CalendarPage",
           "component": "CalendarUpcoming",
           "event": "onPick",
           "expression": "{handlePickUpcoming}"
         },
         {
-          "line": 326,
-          "end_line": 326,
+          "line": 332,
+          "end_line": 332,
           "owner": "CalendarPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 333,
-          "end_line": 333,
+          "line": 339,
+          "end_line": 339,
           "owner": "CalendarPage",
           "component": "CalendarSkeleton",
           "event": "onRefresh",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 336,
-          "end_line": 349,
+          "line": 342,
+          "end_line": 355,
           "owner": "CalendarPage",
           "component": "CalendarGrid",
           "event": "onPrev",
           "expression": "{() => goMonth(-1)}"
         },
         {
-          "line": 336,
-          "end_line": 349,
+          "line": 342,
+          "end_line": 355,
           "owner": "CalendarPage",
           "component": "CalendarGrid",
           "event": "onNext",
           "expression": "{() => goMonth(1)}"
         },
         {
-          "line": 336,
-          "end_line": 349,
+          "line": 342,
+          "end_line": 355,
           "owner": "CalendarPage",
           "component": "CalendarGrid",
           "event": "onSelectDate",
           "expression": "{handleSelectDate}"
         },
         {
-          "line": 336,
-          "end_line": 349,
+          "line": 342,
+          "end_line": 355,
           "owner": "CalendarPage",
           "component": "CalendarGrid",
           "event": "onSourceChange",
           "expression": "{handleSourceChange}"
         },
         {
-          "line": 336,
-          "end_line": 349,
+          "line": 342,
+          "end_line": 355,
           "owner": "CalendarPage",
           "component": "CalendarGrid",
           "event": "onToggleImportant",
           "expression": "{handleImportantChange}"
         },
         {
-          "line": 356,
-          "end_line": 360,
+          "line": 362,
+          "end_line": 366,
           "owner": "CalendarPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setPickedDate(null); track(events.CALENDAR_CLEAR_DAY); }}"
         },
         {
-          "line": 393,
-          "end_line": 400,
+          "line": 399,
+          "end_line": 406,
           "owner": "CalendarPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => handleSourceChange('')}"
         },
         {
-          "line": 438,
-          "end_line": 447,
+          "line": 444,
+          "end_line": 453,
           "owner": "CalendarPage",
           "component": "a",
           "event": "onClick",
@@ -235949,7 +236193,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/RussiaPages.w3.component.test.jsx": {
-      "sha256": "826c71475781f9dce99921c2d63bfcdc2cbfb93db7e451df6e4caa300bc2a08e",
+      "sha256": "3a2040a5411bdd1ab94a3f6085f0c4014bc73a4d818fb8eccbf644677586c4a7",
       "imports": [
         {
           "line": 2,
@@ -236210,23 +236454,31 @@
         },
         {
           "line": 133,
-          "end_line": 152,
+          "end_line": 160,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "describe"
         },
         {
-          "line": 139,
-          "end_line": 145,
+          "line": 140,
+          "end_line": 146,
           "owner": "<callback@133>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 147,
-          "end_line": 151,
+          "line": 148,
+          "end_line": 152,
+          "owner": "<callback@133>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 154,
+          "end_line": 159,
           "owner": "<callback@133>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -257574,17 +257826,17 @@
     }
   },
   "totals": {
-    "imports": 4838,
+    "imports": 4842,
     "routes": 100,
-    "functions": 15411,
-    "hooks": 2863,
+    "functions": 15430,
+    "hooks": 2865,
     "http": 126,
     "storage": 244,
     "events": 455,
     "jsx_handlers": 1256,
     "registries": 714,
     "mcp_tools": 7,
-    "files": 911,
+    "files": 913,
     "parse_errors": 0
   }
 }

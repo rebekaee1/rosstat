@@ -2,7 +2,7 @@
 
 - **Date:** 2026-05-10
 - **Status:** Accepted
-- **Last verified:** 2026-05-22 (документация-ревизия: invariant в коде стабилен — `app/api/calendar.py` фильтрует public events по `event_key`/`source_url`/`source_hash`/`last_seen_at` IS NOT NULL; backend/tests/test_calendar_seed.py покрывает CPI April 2026 → 2026-05-15, CPI family same official release, CBR daily working-day rules, CBR ICS fixture/multi-indicator mapping, CBR key-rate meeting/summary, Minfin 14th working day incl. deficit, reschedule audit, public source-bound guard).
+- **Last verified:** 2026-11-14 (сверка с официальными источниками и живым календарём, см. Subsequent additions 2026-11-14); ранее 2026-05-22 (документация-ревизия: invariant в коде стабилен — `app/api/calendar.py` фильтрует public events по `event_key`/`source_url`/`source_hash`/`last_seen_at` IS NOT NULL; backend/tests/test_calendar_seed.py покрывает CPI April 2026 → 2026-05-15, CPI family same official release, CBR daily working-day rules, CBR ICS fixture/multi-indicator mapping, CBR key-rate meeting/summary, Minfin 14th working day incl. deficit, reschedule audit, public source-bound guard).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (термин `Calendar event`).
 - **Related:** [ADR-0004](0004-rosstat-russian-canonical-sdds-deprecated.md) (official Russian source policy), [ADR-0002](0002-derived-always-reflects-source.md) (idempotent upsert principle).
 - **Code anchors:** `backend/app/services/calendar_sources/`, `backend/app/services/calendar_seed.py`, `backend/app/api/calendar.py`, `backend/app/models.py::EconomicEvent`.
@@ -49,6 +49,42 @@ Trade-off:
 - CBR/Minfin/Rosstat site markup может ломаться; при падении parser сохраняем последние official rows, алертим логами, estimated не публикуем.
 
 ## Subsequent additions (after acceptance)
+
+### 2026-11-14 — Calendar keeps itself current: sources read every night, moves shown, release confirmed by our loads
+
+Повод: руководитель владельца сказал, что календарь «не актуальный и показывает что-то не то».
+Сверка боевого календаря с официальными источниками 14.11.2026 (подробности — таблица в
+[data-contracts](../data-contracts.md#calendar-actuality-2026-11-14)) нашла причины в коде, а не в источниках:
+
+- ИПЦ за октябрь Росстат перенёс с 13.11 на 25.11 (`Grafik_srochn_2026.docx`, версия от 12.11; в майской
+  версии — 13.11). Срезы ИПЦ переехали, а сам `cpi` с 01.11 падал на уникальности: 25.11 занимала скрытая
+  оценка без ключа (наследие rolling seed). Переноса на карточке видно не было.
+- Даты заседаний ЦБ были зашиты в код только за 2026 год; три даты резюме расходились со страницей ЦБ;
+  2027 год на сайте отсутствовал, хотя ЦБ его опубликовал. Производственный календарь 2027 не был загружен.
+- Время файла календаря ЦБ (UTC, `...Z`) показывалось как московское: −3 часа.
+- События ЦБ без отчётного периода (заседания, резервы, денежная масса, курсы) никогда не получали факта
+  выхода и навсегда оставались «ориентировочно».
+- Безработицы, зарплат, розницы, ввода жилья и строительства в календаре не было вовсе; предварительная
+  оценка ВВП (13.11) терялась из-за аббревиатуры «ВВП».
+
+Решение (инвариант ADR не меняется: на витрину идут только даты с provenance):
+
+1. Официальные источники читаются каждую ночь целиком: страница `cbr.ru/dkp/cal_mp/` (`cbr_key_rate.py`,
+   запасной список на случай недоступности), все годовые `Grafik_srochn_YYYY.docx`, новый документ
+   `Grafic_oper_public_YYYY.doc` (`rosstat_oper_plan.py`: доклад «Социально-экономическое положение России»
+   и «Краткосрочные экономические показатели»), файл ЦБ `vCalendar.ics`.
+2. Источник, ответивший полным списком, становится «полным» (`complete_feeds`): его будущие события,
+   исчезнувшие из ответа, удаляются (`sweep_unseen_feed_events`), события с фактом не трогаются.
+3. Перенос даты — не дубль и не сбой: устаревшая менее точная строка на новой дате удаляется
+   (`_clear_stale_blocker`), старые бесключевые оценки удалены (`prune_legacy_keyless_estimates`);
+   API отдаёт `rescheduled_from`, карточка пишет «Перенесено с …», `.ics` повышает `SEQUENCE`.
+4. Факт выхода — из нашей загрузки: события с периодом — по точке периода (не раньше чем за 7 дней до
+   даты выпуска, иначе второй выпуск ВВП получал «вышло» по первому); без периода — по первой новой точке
+   ряда за 4 дня после даты (`confirm_releases_from_loads`), у дневных рядов ЦБ и решений по ставке — по
+   дате точки. Предварительная оценка ВВП не подтверждается из ряда (ряд пополняется на первой оценке).
+5. Минфин остаётся скрытым: официальное правило «14-й рабочий день» опубликовано
+   (`minfin.gov.ru/ru/statistics/schedule`), но сентябрьские данные 2026 года пришли 12.10 при дате правила
+   20.10 — правило оказалось сроком «не позднее», а не датой выхода.
 
 ### 2026-09-10 — Evidence must survive scheduling and source outages
 
