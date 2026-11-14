@@ -9,14 +9,14 @@
 - ORM tables: **74**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **261**
-- Settings reads: **650**
+- Settings reads: **651**
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1352**
-- Registry references: **2549**
+- Registry declarations: **1353**
+- Registry references: **2550**
 - Migration operations: **480**
-- Candidate effects: **2822**
+- Candidate effects: **2833**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -1858,7 +1858,7 @@ Relationships: `[]`
 | RUSTATS_SSR_GOODBOT_RENDER_SLOTS | int = 2 | 2 | [backend/app/config.py:271](../backend/app/config.py#L271) |
 | RUSTATS_FE_HUMAN_PASS_SECRET | str = '' | 1 | [backend/app/config.py:274](../backend/app/config.py#L274) |
 | RUSTATS_FE_HUMAN_PASS_DAYS | int = 30 | 3 | [backend/app/config.py:275](../backend/app/config.py#L275) |
-| RUSTATS_BOT_TRAFFIC_LOG_PATH | str = '/var/log/rosstat-nginx/security.log' | 1 | [backend/app/config.py:277](../backend/app/config.py#L277) |
+| RUSTATS_BOT_TRAFFIC_LOG_PATH | str = '/var/log/rosstat-nginx/security.log' | 2 | [backend/app/config.py:277](../backend/app/config.py#L277) |
 | RUSTATS_HOST_BROWNOUT_IO_FULL_PCT | float = 40.0 | 2 | [backend/app/config.py:280](../backend/app/config.py#L280) |
 | RUSTATS_HOST_ALERT_IO_FULL_PCT | float = 25.0 | 1 | [backend/app/config.py:283](../backend/app/config.py#L283) |
 | RUSTATS_HOST_ALERT_DISK_FREE_PCT | float = 10.0 | 1 | [backend/app/config.py:284](../backend/app/config.py#L284) |
@@ -2411,10 +2411,11 @@ Relationships: `[]`
 | app.services.bot_chart._MONTHS_SHORT | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:35](../backend/app/services/bot_chart.py#L35) |
 | app.services.bot_score._BOT_UA_RE | Call | computed source expression | [backend/app/services/bot_score.py:29](../backend/app/services/bot_score.py#L29) |
 | app.services.bot_score.HEURISTICS | Tuple | sequence/source expression | [backend/app/services/bot_score.py:155](../backend/app/services/bot_score.py#L155) |
-| app.services.bot_traffic.CLASSES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:30](../backend/app/services/bot_traffic.py#L30) |
-| app.services.bot_traffic.OUTCOMES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:31](../backend/app/services/bot_traffic.py#L31) |
-| app.services.bot_traffic._LINE_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:39](../backend/app/services/bot_traffic.py#L39) |
-| app.services.bot_traffic._GENUINE_HOST_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:43](../backend/app/services/bot_traffic.py#L43) |
+| app.services.bot_traffic.CLASSES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:36](../backend/app/services/bot_traffic.py#L36) |
+| app.services.bot_traffic.OUTCOMES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:37](../backend/app/services/bot_traffic.py#L37) |
+| app.services.bot_traffic._LINE_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:45](../backend/app/services/bot_traffic.py#L45) |
+| app.services.bot_traffic._HUMAN_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:49](../backend/app/services/bot_traffic.py#L49) |
+| app.services.bot_traffic._GENUINE_HOST_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:54](../backend/app/services/bot_traffic.py#L54) |
 | app.services.brent_fred_parser._DEFAULT_BACKFILL_FROM | Call | computed source expression | [backend/app/services/brent_fred_parser.py:40](../backend/app/services/brent_fred_parser.py#L40) |
 | app.services.cabinet.SAVED_KINDS | Tuple | sequence/source expression | [backend/app/services/cabinet.py:41](../backend/app/services/cabinet.py#L41) |
 | app.services.cabinet.WATCH_KINDS | Tuple | sequence/source expression | [backend/app/services/cabinet.py:42](../backend/app/services/cabinet.py#L42) |
@@ -2997,15 +2998,15 @@ Relationships: `[]`
 | app.services.telegram_bot._RETRY_METHODS | Call | computed source expression | [backend/app/services/telegram_bot.py:99](../backend/app/services/telegram_bot.py#L99) |
 | app.services.telegram_calm.MSK | Call | computed source expression | [backend/app/services/telegram_calm.py:35](../backend/app/services/telegram_calm.py#L35) |
 | app.services.telegram_calm.HELD_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:42](../backend/app/services/telegram_calm.py#L42) |
-| app.services.telegram_calm.ACTION_KINDS | Dict | 'data_sanity' | [backend/app/services/telegram_calm.py:56](../backend/app/services/telegram_calm.py#L56) |
-| app.services.telegram_calm.URGENT_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:60](../backend/app/services/telegram_calm.py#L60) |
-| app.services.telegram_calm._MONTHS_GENITIVE | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:164](../backend/app/services/telegram_calm.py#L164) |
-| app.services.telegram_calm._TAG_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:166](../backend/app/services/telegram_calm.py#L166) |
-| app.services.telegram_calm._EMOJI_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:167](../backend/app/services/telegram_calm.py#L167) |
-| app.services.telegram_calm.GROUPS | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:170](../backend/app/services/telegram_calm.py#L170) |
-| app.services.telegram_calm._KIND_GROUP | DictComp | computed source expression | [backend/app/services/telegram_calm.py:178](../backend/app/services/telegram_calm.py#L178) |
-| app.services.telegram_calm.KIND_LABELS | Dict | 'http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert', 'etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch', 'alert' | [backend/app/services/telegram_calm.py:181](../backend/app/services/telegram_calm.py#L181) |
-| app.services.telegram_calm._RECOVERY_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:209](../backend/app/services/telegram_calm.py#L209) |
+| app.services.telegram_calm.ACTION_KINDS | Dict | 'data_sanity' | [backend/app/services/telegram_calm.py:57](../backend/app/services/telegram_calm.py#L57) |
+| app.services.telegram_calm.URGENT_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:61](../backend/app/services/telegram_calm.py#L61) |
+| app.services.telegram_calm._MONTHS_GENITIVE | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:165](../backend/app/services/telegram_calm.py#L165) |
+| app.services.telegram_calm._TAG_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:167](../backend/app/services/telegram_calm.py#L167) |
+| app.services.telegram_calm._EMOJI_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:168](../backend/app/services/telegram_calm.py#L168) |
+| app.services.telegram_calm.GROUPS | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:171](../backend/app/services/telegram_calm.py#L171) |
+| app.services.telegram_calm._KIND_GROUP | DictComp | computed source expression | [backend/app/services/telegram_calm.py:179](../backend/app/services/telegram_calm.py#L179) |
+| app.services.telegram_calm.KIND_LABELS | Dict | 'http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert', 'etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch', 'bot_traffic', 'alert' | [backend/app/services/telegram_calm.py:182](../backend/app/services/telegram_calm.py#L182) |
+| app.services.telegram_calm._RECOVERY_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:211](../backend/app/services/telegram_calm.py#L211) |
 | app.services.telegram_missed_summary.MSK | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:34](../backend/app/services/telegram_missed_summary.py#L34) |
 | app.services.telegram_missed_summary.DELIVERY_WINDOW | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:39](../backend/app/services/telegram_missed_summary.py#L39) |
 | app.services.telegram_missed_summary.SKIPPED_KINDS | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:43](../backend/app/services/telegram_missed_summary.py#L43) |
