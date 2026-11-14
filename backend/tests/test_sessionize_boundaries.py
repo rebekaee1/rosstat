@@ -307,3 +307,25 @@ def test_postgres_raw_history_reads_one_index_range_per_visitor():
     assert 'LATERAL' in sql
     assert 'OFFSET' in sql
     assert 'fixture_visitors.visitor' in sql.split('LATERAL', 1)[1]
+
+
+def test_own_portrait_written_after_single_pageview_still_scores_the_session(monkeypatch):
+    """Ферма 13-14.11.2026: портрет вкладки пишется на десятки мс позже её единственного pageview.
+
+    Конец логической сессии из одного pageview = время этого pageview; портрет позже него раньше
+    отбрасывался целиком, и 640 ядер не попадали в счёт (оставалось 20 из 100 — «человек»).
+    """
+    async def scenario(maker):
+        await _put(maker, [(-2, 'pageview', '/finland/indicator/x', {'ref': 'https://www.google.com/'})])
+        async with maker() as db:
+            db.add(BehaviorSession(session_id_hash='client', visitor_id_hash='boundary-visitor',
+                                   started_at=BOUNDARY - timedelta(minutes=2) + timedelta(milliseconds=30),
+                                   channel='search', referrer='https://www.google.com/', referrer_host='google.com',
+                                   device_type='desktop', screen_w=1920, screen_h=1080, cpu_cores=640))
+            await db.commit()
+        reference, chunked = await _continuous_then_chunked(maker, monkeypatch)
+        assert chunked == reference and len(chunked) == 1
+        row = _fields(chunked[0])
+        assert row['channel'] == 'search' and row['device'] == 'desktop'
+        assert row['bot_score'] >= 60 and row['is_bot'] is True
+    _run_with_db(scenario)
