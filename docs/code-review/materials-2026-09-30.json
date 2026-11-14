@@ -12156,22 +12156,22 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+        "main": "fd09c1e34146a65c03cd67e6b422204ab937392a",
         "scope": "tracked/index",
         "date": "2026-11-15",
-        "sha256": "b2bffe955145291399a3b83ba3943ac06cf7805863862198cc34c0a4d074fefa",
-        "bytes": 976037
+        "sha256": "adcda1ef7fcb37fd57bcb856b13dce8302481a40913bd4785b312471dc223112",
+        "bytes": 976076
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "b2bffe955145291399a3b83ba3943ac06cf7805863862198cc34c0a4d074fefa",
+        "sha256": "adcda1ef7fcb37fd57bcb856b13dce8302481a40913bd4785b312471dc223112",
         "canonical_source": "scripts/audit-code-documentation.py",
         "review_provenance": {
           "date": "2026-11-15",
           "reviewer": "Claude Opus 5.5 (агент персонализации, ADR-0033)",
-          "head": "cf588561",
+          "head": "fd09c1e3",
           "branch": "worktree-agent-a19442c9b3dd97d38",
           "mode": "полное чтение после изменения (свои правки) / пересборка генератором (карты)"
         },
@@ -12182,6 +12182,28 @@
       "linked_mechanisms": null,
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "fd09c1e34146a65c03cd67e6b422204ab937392a",
+            "scope": "tracked/index",
+            "date": "2026-11-15",
+            "sha256": "334b6c3c0ef0714a592554caa7f04df45202058de01a7c478e2fd1ce9f6b6faf",
+            "bytes": 976085
+          },
+          "review_status": "полное чтение после изменения",
+          "body_reviewed_in_this_pass": false
+        },
+        {
+          "source_version": {
+            "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+            "scope": "tracked/index",
+            "date": "2026-11-15",
+            "sha256": "b2bffe955145291399a3b83ba3943ac06cf7805863862198cc34c0a4d074fefa",
+            "bytes": 976037
+          },
+          "review_status": "полное чтение после изменения",
+          "body_reviewed_in_this_pass": false
+        },
         {
           "source_version": {
             "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
@@ -12231,45 +12253,6 @@
           "review_basis": {
             "method": "Current generated artifact bytes recorded; no new body/value review",
             "sha256": "f9c4de6802acb221823c5cc85fea3f50fd8462926d2329cb51505118e5f90beb",
-            "canonical_source": "scripts/audit-code-documentation.py"
-          }
-        },
-        {
-          "source_version": {
-            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-            "scope": "tracked/index",
-            "date": "2026-09-30",
-            "sha256": "208df94da7ef235eb0909887e4b1ef6915b5989fcf565c52b7f9b0578118e8d3",
-            "bytes": 496354
-          },
-          "review_status": "generated_snapshot",
-          "body_reviewed_in_this_pass": false,
-          "current_delta_reviewed_in_this_pass": false,
-          "review_basis": {
-            "method": "Current generated artifact bytes recorded; no new body/value review",
-            "sha256": "208df94da7ef235eb0909887e4b1ef6915b5989fcf565c52b7f9b0578118e8d3",
-            "canonical_source": "scripts/audit-code-documentation.py"
-          }
-        },
-        {
-          "source_version": {
-            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-            "branch": "codex/search-v2-20260930",
-            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-            "scope": "tracked/index",
-            "date": "2026-09-30",
-            "sha256": "0e22ff7730ddd6f4971c4aa28ee983c6d13da20417ef7815247f6b0a299ed9ab",
-            "bytes": 503496,
-            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
-          },
-          "review_status": "generated_snapshot",
-          "body_reviewed_in_this_pass": false,
-          "current_delta_reviewed_in_this_pass": false,
-          "review_basis": {
-            "date_msk": "2026-09-30",
-            "sha256": "0e22ff7730ddd6f4971c4aa28ee983c6d13da20417ef7815247f6b0a299ed9ab",
-            "method": "Generated artifact identity refreshed; no body/value review assigned",
             "canonical_source": "scripts/audit-code-documentation.py"
           }
         }
@@ -12521,12 +12504,12 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "899f0123d555e2efbb52f63e42cd9da7713e2b96eac9e052e0c377dfeee7983e",
+        "sha256": "6d5c478e62910fe4cd14cac0c63cc7c394257c5256cd41d1f58155de05b7ad3b",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json",
         "review_provenance": {
           "date": "2026-11-15",
           "reviewer": "Claude Opus 5.5 (агент персонализации, ADR-0033)",
-          "head": "cf588561",
+          "head": "fd09c1e3",
           "branch": "worktree-agent-a19442c9b3dd97d38",
           "mode": "полное чтение после изменения (свои правки) / пересборка генератором (карты)"
         },
@@ -12535,14 +12518,36 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+        "main": "fd09c1e34146a65c03cd67e6b422204ab937392a",
         "scope": "tracked/index",
         "date": "2026-11-15",
-        "sha256": "899f0123d555e2efbb52f63e42cd9da7713e2b96eac9e052e0c377dfeee7983e",
+        "sha256": "6d5c478e62910fe4cd14cac0c63cc7c394257c5256cd41d1f58155de05b7ad3b",
         "bytes": 8297030
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "fd09c1e34146a65c03cd67e6b422204ab937392a",
+            "scope": "tracked/index",
+            "date": "2026-11-15",
+            "sha256": "3e9719300851614a5a1407705797bb69ac0914fca9f6ff3ddce41761ffb7c7e1",
+            "bytes": 8297030
+          },
+          "review_status": "полное чтение после изменения",
+          "body_reviewed_in_this_pass": false
+        },
+        {
+          "source_version": {
+            "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+            "scope": "tracked/index",
+            "date": "2026-11-15",
+            "sha256": "899f0123d555e2efbb52f63e42cd9da7713e2b96eac9e052e0c377dfeee7983e",
+            "bytes": 8297030
+          },
+          "review_status": "полное чтение после изменения",
+          "body_reviewed_in_this_pass": false
+        },
         {
           "source_version": {
             "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
@@ -12598,46 +12603,6 @@
           "current_delta_reviewed_in_this_pass": false,
           "review_basis": {
             "sha256": "2b700876b19011a2b52a61b48bae009d784908f523d13b074a6c1b64286fc7e8",
-            "review_status": "evidence_schema_and_asserted_outcomes_checked",
-            "body_reviewed_in_this_pass": false,
-            "reviewer": "root and owning specialist",
-            "method": "Full raw omission reason/category count identity and current terrain SHA checked; original rows preserved, categories reviewed, no invented runtime endpoint.",
-            "classification": "current_task_evidence"
-          }
-        },
-        {
-          "source_version": {
-            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-            "scope": "tracked/index",
-            "date": "2026-09-30",
-            "sha256": "1a765cc4f3211f9011c1a44909a61203f88a8e398392e9125278912af2fe5346",
-            "bytes": 5037550
-          },
-          "review_status": "evidence_schema_and_asserted_outcomes_checked",
-          "body_reviewed_in_this_pass": false,
-          "current_delta_reviewed_in_this_pass": false,
-          "review_basis": {
-            "sha256": "1a765cc4f3211f9011c1a44909a61203f88a8e398392e9125278912af2fe5346",
-            "review_status": "evidence_schema_and_asserted_outcomes_checked",
-            "body_reviewed_in_this_pass": false,
-            "reviewer": "root and owning specialist",
-            "method": "Full raw omission reason/category count identity and current terrain SHA checked; original rows preserved, categories reviewed, no invented runtime endpoint.",
-            "classification": "current_task_evidence"
-          }
-        },
-        {
-          "source_version": {
-            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-            "scope": "tracked/index",
-            "date": "2026-09-30",
-            "sha256": "797849ff023cc101ba598d7276e6ad1aca7968eb7a322b2f795f9ec68aca1c00",
-            "bytes": 5037674
-          },
-          "review_status": "evidence_schema_and_asserted_outcomes_checked",
-          "body_reviewed_in_this_pass": false,
-          "current_delta_reviewed_in_this_pass": false,
-          "review_basis": {
-            "sha256": "797849ff023cc101ba598d7276e6ad1aca7968eb7a322b2f795f9ec68aca1c00",
             "review_status": "evidence_schema_and_asserted_outcomes_checked",
             "body_reviewed_in_this_pass": false,
             "reviewer": "root and owning specialist",
@@ -13903,22 +13868,22 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "generated",
       "source_version": {
-        "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+        "main": "fd09c1e34146a65c03cd67e6b422204ab937392a",
         "scope": "tracked/index",
         "date": "2026-11-15",
-        "sha256": "774d3962b5a80cccb529532fb51f45ddf8b88f3c6084df20c02968a05e85c4b5",
-        "bytes": 23870811
+        "sha256": "0de191220ae77b2f7f77488b9c16cd95603ea3e949a014186ff7ffdc45288232",
+        "bytes": 23871062
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "774d3962b5a80cccb529532fb51f45ddf8b88f3c6084df20c02968a05e85c4b5",
+        "sha256": "0de191220ae77b2f7f77488b9c16cd95603ea3e949a014186ff7ffdc45288232",
         "canonical_source": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-15",
           "reviewer": "Claude Opus 5.5 (агент персонализации, ADR-0033)",
-          "head": "cf588561",
+          "head": "fd09c1e3",
           "branch": "worktree-agent-a19442c9b3dd97d38",
           "mode": "полное чтение после изменения (свои правки) / пересборка генератором (карты)"
         },
@@ -13929,6 +13894,28 @@
       "linked_mechanisms": null,
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "fd09c1e34146a65c03cd67e6b422204ab937392a",
+            "scope": "tracked/index",
+            "date": "2026-11-15",
+            "sha256": "064dbaf9db453b2b918c90978501d40eb31d9adbcab20f919edcc8458659ae76",
+            "bytes": 23871062
+          },
+          "review_status": "полное чтение после изменения",
+          "body_reviewed_in_this_pass": false
+        },
+        {
+          "source_version": {
+            "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+            "scope": "tracked/index",
+            "date": "2026-11-15",
+            "sha256": "774d3962b5a80cccb529532fb51f45ddf8b88f3c6084df20c02968a05e85c4b5",
+            "bytes": 23870811
+          },
+          "review_status": "полное чтение после изменения",
+          "body_reviewed_in_this_pass": false
+        },
         {
           "source_version": {
             "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
@@ -13979,46 +13966,6 @@
             "method": "Current generated artifact bytes recorded; no new body/value review",
             "sha256": "7d68f12aea85869a91f588191dcf1dcd5fc02f44a3f2eaf7a5a81f4d16261bee",
             "canonical_source": "docs/code-review/reviews.jsonl"
-          }
-        },
-        {
-          "source_version": {
-            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-            "scope": "tracked/index",
-            "date": "2026-09-30",
-            "sha256": "a331c95e8961e400648b00ff4e13dfe23102beaa875ffa8612adabcf38493a8f",
-            "bytes": 9135072
-          },
-          "review_status": "generated_snapshot",
-          "body_reviewed_in_this_pass": false,
-          "current_delta_reviewed_in_this_pass": false,
-          "review_basis": {
-            "method": "Current generated artifact bytes recorded; no new body/value review",
-            "sha256": "a331c95e8961e400648b00ff4e13dfe23102beaa875ffa8612adabcf38493a8f",
-            "canonical_source": "docs/code-review/reviews.jsonl"
-          }
-        },
-        {
-          "source_version": {
-            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-            "branch": "codex/search-v2-20260930",
-            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-            "scope": "tracked/index",
-            "date": "2026-09-30",
-            "sha256": "023842d756469559a2e70860371909e36aa501be27e52deeab2028dd5958cb07",
-            "bytes": 9305151,
-            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
-          },
-          "review_status": "authored_review_ledger_snapshot",
-          "body_reviewed_in_this_pass": false,
-          "current_delta_reviewed_in_this_pass": false,
-          "review_basis": {
-            "date_msk": "2026-09-30",
-            "sha256": "023842d756469559a2e70860371909e36aa501be27e52deeab2028dd5958cb07",
-            "method": "Final ledger bytes recorded; individual reviewer rows remain authored evidence",
-            "canonical_source": "docs/code-review/reviews.jsonl",
-            "limits": "Snapshot identity does not establish body review of every ledger entry or its referenced source"
           }
         }
       ],
@@ -27567,12 +27514,12 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "a98b8917bae2d9ece272c0bab756cc4e9fe099e4c85835222cc94591dde45a06",
+        "sha256": "90da405568286087484d753552fc2df1deec71668ec6e2644bb53df82b280bf4",
         "canonical_source": "docs/mechanism-inventory.json",
         "review_provenance": {
           "date": "2026-11-15",
           "reviewer": "Claude Opus 5.5 (агент персонализации, ADR-0033)",
-          "head": "cf588561",
+          "head": "fd09c1e3",
           "branch": "worktree-agent-a19442c9b3dd97d38",
           "mode": "полное чтение после изменения (свои правки) / пересборка генератором (карты)"
         },
@@ -27581,14 +27528,25 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+        "main": "fd09c1e34146a65c03cd67e6b422204ab937392a",
         "scope": "tracked/index",
         "date": "2026-11-15",
-        "sha256": "a98b8917bae2d9ece272c0bab756cc4e9fe099e4c85835222cc94591dde45a06",
+        "sha256": "90da405568286087484d753552fc2df1deec71668ec6e2644bb53df82b280bf4",
         "bytes": 13078739
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+            "scope": "tracked/index",
+            "date": "2026-11-15",
+            "sha256": "a98b8917bae2d9ece272c0bab756cc4e9fe099e4c85835222cc94591dde45a06",
+            "bytes": 13078739
+          },
+          "review_status": "полное чтение после изменения",
+          "body_reviewed_in_this_pass": false
+        },
         {
           "source_version": {
             "main": "fb80bf96caa91feca9e322c2a821284604ea8d8a",
@@ -27665,23 +27623,6 @@
           "review_basis": {
             "method": "Current generated artifact bytes recorded; no new body/value review",
             "sha256": "abf29662200b1745d2bb8a4599d518addcfe1e12d62f6730eb62201e5af2d867",
-            "canonical_source": "docs/mechanism-inventory.json"
-          }
-        },
-        {
-          "source_version": {
-            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
-            "scope": "tracked/index",
-            "date": "2026-09-30",
-            "sha256": "7694e93c048e6501becc725bb8cedbbab85105d1281df524a8b1927cc596e04a",
-            "bytes": 8568463
-          },
-          "review_status": "generated_snapshot",
-          "body_reviewed_in_this_pass": false,
-          "current_delta_reviewed_in_this_pass": false,
-          "review_basis": {
-            "method": "Current generated artifact bytes recorded; no new body/value review",
-            "sha256": "7694e93c048e6501becc725bb8cedbbab85105d1281df524a8b1927cc596e04a",
             "canonical_source": "docs/mechanism-inventory.json"
           }
         }

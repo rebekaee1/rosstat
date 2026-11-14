@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+  "baseline_commit": "fd09c1e34146a65c03cd67e6b422204ab937392a",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
@@ -10,16 +10,16 @@
     "attempted": 2195,
     "files_with_nodes": 2100,
     "nodes": 26295,
-    "symbol_edges": 83038,
-    "file_edges": 18995,
+    "symbol_edges": 83042,
+    "file_edges": 18998,
     "projection_omissions": {
       "external_or_unresolved_file": 3213,
       "missing_endpoint": 4676,
       "within_file": 36119
     },
     "confidence": {
-      "EXTRACTED": 75169,
-      "INFERRED": 7869
+      "EXTRACTED": 75172,
+      "INFERRED": 7870
     }
   },
   "overview": {
@@ -528,14 +528,14 @@
       {
         "source": "operations",
         "target": "registry",
-        "file_relations": 89,
-        "symbol_relations": 223
+        "file_relations": 90,
+        "symbol_relations": 224
       },
       {
         "source": "operations",
         "target": "services",
-        "file_relations": 291,
-        "symbol_relations": 511
+        "file_relations": 293,
+        "symbol_relations": 514
       },
       {
         "source": "operations",
@@ -1311,7 +1311,7 @@
     {"path": "backend/scripts/load-world-subnational.py", "kind": "code", "bytes": 4072, "lines": 112, "sha256": "832719d5e94846ba0bd8075aad247dc5a966cb4e26554db874099500268fdcca", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/mail.py", "kind": "code", "bytes": 18089, "lines": 306, "sha256": "29def0b0ab1a13bd3a197e639f595b45d9f04acc6588848a175982cf06d8fb7a", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/metrika-goals-redesign.py", "kind": "code", "bytes": 8101, "lines": 182, "sha256": "556dc882537d75a71f805e2053773d6a672069a34551f7e6741bdeeda73a70b8", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/scripts/newsletter_personal.py", "kind": "code", "bytes": 11755, "lines": 264, "sha256": "7c66f5cf5cd80bc47adac9ca59bee7bc662839fc70436397957c776a5a148f27", "symlink": false, "nodes": 19, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/scripts/newsletter_personal.py", "kind": "code", "bytes": 12553, "lines": 277, "sha256": "e436f7f870c95c6240e556cb607c9aec8859b5b0ad9f5747bc3e953b71c54a66", "symlink": false, "nodes": 19, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/public-bot-dialogs.py", "kind": "code", "bytes": 4366, "lines": 77, "sha256": "01b833b4e4f8a16d920045fc40fa4cb589e866876b544f182206955984a8f0d0", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/public-bot-setup.py", "kind": "code", "bytes": 4777, "lines": 86, "sha256": "0b7c05c38c6094bed26d791c2fc7e74fa1d37d681839acbd27ef69d0a48cd5fb", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/rebase-world-eurostat.py", "kind": "code", "bytes": 13065, "lines": 231, "sha256": "f7561417d0429b6b0189278566c40bfc7543a057aa89ee5b95f147b0f7c8e0b9", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
@@ -1908,7 +1908,7 @@
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 160576, "lines": 1824, "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 78988, "lines": 201, "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11924, "lines": 111, "sha256": "850a062686dbafd8c6047c9f015043ada0378d27d6c2f89ea3ed2026416f1a97", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 13078739, "lines": 393994, "sha256": "a98b8917bae2d9ece272c0bab756cc4e9fe099e4c85835222cc94591dde45a06", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 13078739, "lines": 393994, "sha256": "90da405568286087484d753552fc2df1deec71668ec6e2644bb53df82b280bf4", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 670501, "lines": 3689, "sha256": "bc9199548db3b5bd39313c0451e19ee83f1ff2de9a295dd7f48ad056faf9d49c", "symlink": false, "nodes": 91, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/offsite-backup-runbook.md", "kind": "document", "bytes": 8720, "lines": 74, "sha256": "96fb520148401f8994a2f2eaf202f547e5b136cdc0a5874ef6203b3500b25ef9", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -8410,12 +8410,15 @@
     {"source": "backend/scripts/metrika-goals-redesign.py", "target": "backend/tests/test_analytics_batch_delivery.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/scripts/metrika-goals-redesign.py", "line": "L177", "source": "main()", "target": "payload()"}]},
     {"source": "backend/scripts/metrika-goals-redesign.py", "target": "backend/tests/test_freshness_watchdog.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/scripts/metrika-goals-redesign.py", "line": "L164", "source": "main()", "target": "w()"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/config.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L35", "source": "newsletter_personal.py", "target": "config.py"}]},
+    {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/data/cbr_currencies.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L204", "source": "cmd_send_test()", "target": ".code()"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/models.py", "relation": "imports", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L47", "source": "newsletter_personal.py", "target": "EmailCredential"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/models.py", "relation": "uses", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L54", "source": "_user_id()", "target": "EmailCredential"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/mail/campaign.py", "relation": "calls", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L65", "source": "_issue()", "target": "load_issue()"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/mail/campaign.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L63", "source": "newsletter_personal.py", "target": "campaign.py"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/mail/service.py", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L183", "source": "cmd_send_test()", "target": "recipient_allowed()"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/mail/service.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L181", "source": "newsletter_personal.py", "target": "service.py"}]},
+    {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/mail/transport.py", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L199", "source": "cmd_send_test()", "target": "send()"}]},
+    {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/mail/transport.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L196", "source": "newsletter_personal.py", "target": "transport.py"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/newsletter_personal/build.py", "relation": "calls", "confidence": "EXTRACTED", "count": 8, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L74", "source": "_result()", "target": "Builder"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/newsletter_personal/build.py", "relation": "imports", "confidence": "EXTRACTED", "count": 5, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L69", "source": "newsletter_personal.py", "target": "Builder"}]},
     {"source": "backend/scripts/newsletter_personal.py", "target": "backend/app/services/newsletter_personal/build.py", "relation": "uses", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "backend/scripts/newsletter_personal.py", "line": "L74", "source": "_result()", "target": "Builder"}]},

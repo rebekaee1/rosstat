@@ -191,9 +191,21 @@ async def cmd_send_test(args) -> int:
         return 1
     rendered, one_click = _render(issue, res.locale, res.payload, "00000000-0000-0000-0000-000000000000")
     rendered.subject = f"[test] {rendered.subject}"
-    status = await service.send_now(kind="newsletter", to=args.to, locale=res.locale, rendered=rendered,
-                                    unsubscribe_url=one_click)
-    print(json.dumps({"status": status, **res.summary()}, ensure_ascii=False))
+    if args.no_db:
+        # Без журнала mail_outbox (стенд без миграции почты): прямая отправка, как `mail.py test --no-db`.
+        from app.services.mail import transport
+
+        try:
+            await transport.send(transport.OutgoingMail(
+                to=args.to, subject=rendered.subject, html=rendered.html, text=rendered.text, kind="newsletter",
+                unsubscribe_url=one_click, campaign="test"))
+            status = "sent"
+        except (transport.SendError, transport.MailConfigError) as exc:
+            status = f"failed:{getattr(exc, 'code', type(exc).__name__)}"
+    else:
+        status = await service.send_now(kind="newsletter", to=args.to, locale=res.locale, rendered=rendered,
+                                        unsubscribe_url=one_click)
+    print(json.dumps({**res.summary(), "mail": status}, ensure_ascii=False))
     return 0 if status in ("sent", "disabled") else 2
 
 
@@ -248,6 +260,7 @@ def main() -> int:
     who(st)
     st.add_argument("--issue", nargs="+", required=True)
     st.add_argument("--to", required=True)
+    st.add_argument("--no-db", action="store_true", help="без журнала писем (стенд без миграции почты)")
     c = sub.add_parser("campaign")
     c.add_argument("--issue", nargs="+", required=True)
     c.add_argument("--send", action="store_true")

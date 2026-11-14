@@ -2540,8 +2540,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "sha256": "7c66f5cf5cd80bc47adac9ca59bee7bc662839fc70436397957c776a5a148f27",
-      "lines": 264
+      "sha256": "e436f7f870c95c6240e556cb607c9aec8859b5b0ad9f5747bc3e953b71c54a66",
+      "lines": 277
     },
     {
       "path": "backend/scripts/public-bot-dialogs.py",
@@ -347060,7 +347060,7 @@
     {
       "path": "backend/scripts/newsletter_personal.py",
       "line": 179,
-      "end_line": 197,
+      "end_line": 209,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_send_test",
@@ -347068,8 +347068,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 200,
-      "end_line": 211,
+      "line": 212,
+      "end_line": 223,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_campaign",
@@ -347077,8 +347077,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 214,
-      "end_line": 260,
+      "line": 226,
+      "end_line": 273,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -347086,8 +347086,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 218,
-      "end_line": 226,
+      "line": 230,
+      "end_line": 238,
       "owner": "main",
       "conditions": [],
       "name": "who",

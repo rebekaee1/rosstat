@@ -7499,9 +7499,9 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "sha256": "7c66f5cf5cd80bc47adac9ca59bee7bc662839fc70436397957c776a5a148f27",
-      "bytes": 11755,
-      "lines": 264,
+      "sha256": "e436f7f870c95c6240e556cb607c9aec8859b5b0ad9f5747bc3e953b71c54a66",
+      "bytes": 12553,
+      "lines": 277,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -15260,7 +15260,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "a98b8917bae2d9ece272c0bab756cc4e9fe099e4c85835222cc94591dde45a06",
+      "sha256": "90da405568286087484d753552fc2df1deec71668ec6e2644bb53df82b280bf4",
       "bytes": 13078739,
       "lines": 393994,
       "code": false,
@@ -33343,9 +33343,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "774d3962b5a80cccb529532fb51f45ddf8b88f3c6084df20c02968a05e85c4b5",
+  "ledger_sha256": "0de191220ae77b2f7f77488b9c16cd95603ea3e949a014186ff7ffdc45288232",
   "javascript_inventory_sha256": "1b1b13853d0ffa0b3a189a63917bbeb5c631812f57168722ff2cc0f4a76e1f83",
-  "baseline_commit": "cf58856105140d3ff547bc4c06649c453ad7d6b0",
+  "baseline_commit": "fd09c1e34146a65c03cd67e6b422204ab937392a",
   "branch": "worktree-agent-a19442c9b3dd97d38",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/mechanism-inventory.json"
+  ]
 }
