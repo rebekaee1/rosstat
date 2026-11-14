@@ -121,6 +121,7 @@ def _coverage_note(
 def _title_desc(
     *,
     name: str,
+    title_name: str | None = None,
     country_name: str,
     year: int,
     frequency: str,
@@ -134,7 +135,11 @@ def _title_desc(
     yt,
     range_note: str = "",
 ) -> tuple[str, str]:
-    """Заголовок и description по числу точек года (зеркало РФ-веток)."""
+    """Заголовок и description по числу точек года (зеркало РФ-веток).
+
+    ``title_name`` — название для <title> (укороченное уточнение среза); description — по ``name``.
+    """
+    tname = title_name or name
     freq = (frequency or "").lower()
     summary_bit = summary_text.rstrip(".")
     if en:
@@ -146,7 +151,7 @@ def _title_desc(
         # Description (14.11.2026): показатель, страна, год и значение — в первом предложении; источник
         # последним (английский хост держит description ≤ 160 знаков, хвост отбрасывается первым).
         if n_rows > 1:
-            title = f"{name} in {country_name}, {year} — published observations"
+            title = f"{tname} in {country_name}, {year} — published observations"
             desc = (
                 f"{name} in {country_name}, {year}{period_note}: average of {n_rows} observations "
                 f"— {summary_bit}.{range_note} Source: {source}."
@@ -158,7 +163,7 @@ def _title_desc(
             title_key = "title_ytd"
         else:
             title_key = "title_single"
-        title = yt(title_key).format(name=name, year=year, country=country_name)
+        title = yt(title_key).format(name=tname, year=year, country=country_name)
         # Общие шаблоны desc_single/desc_multi (их делят страницы России) не знают страны: у стран мира
         # страна в description обязательна — своя строка.
         desc = (
@@ -169,11 +174,12 @@ def _title_desc(
 
     # country_name — предложный падеж без предлога; «в/во/на» ставит in_place
     name = f"{name} {in_place(country_name)}"
+    tname = f"{tname} {in_place(country_name)}"
     if freq == "annual" and n_rows == 1:
         title = (
-            f"{name} в {year} году — актуальное годовое значение"
+            f"{tname} в {year} году — актуальное годовое значение"
             if current_year
-            else f"{name} в {year} году — значение и динамика"
+            else f"{tname} в {year} году — значение и динамика"
         )
         desc = (
             f"{name} в {year} году{period_note}: {label_out} — {summary_bit}. "
@@ -182,17 +188,17 @@ def _title_desc(
         )
         return title, desc
     if current_year:
-        title = f"{name} в {year} году — данные с начала года"
+        title = f"{tname} в {year} году — данные с начала года"
     elif n_rows == 1:
-        title = f"{name} в {year} году — значение и динамика"
+        title = f"{tname} в {year} году — значение и динамика"
     elif freq == "quarterly":
-        title = f"{name} в {year} году — наблюдения по кварталам"
+        title = f"{tname} в {year} году — наблюдения по кварталам"
     elif freq == "weekly":
-        title = f"{name} в {year} году — наблюдения по неделям"
+        title = f"{tname} в {year} году — наблюдения по неделям"
     elif freq == "daily":
-        title = f"{name} в {year} году — дневные наблюдения"
+        title = f"{tname} в {year} году — дневные наблюдения"
     else:
-        title = f"{name} в {year} году — наблюдения по месяцам"
+        title = f"{tname} в {year} году — наблюдения по месяцам"
     desc = (
         f"{name} в {year} году{period_note}: {n_rows} наблюдений, "
         f"{label_out} — {summary_bit}.{range_note} Официальные данные — {source}."
@@ -339,7 +345,13 @@ async def render_world_indicator_year_html(
             yt("summary_as_of") or "{label} (на {date})"
         ).format(label=summary_label, date=_format_date(last_date))
 
-    title, desc = _title_desc(
+    # <title> — название с укороченным уточнением (уникально в стране), description и H1 — полное.
+    from app.services.world_series_title import TITLE_TARGET, world_series_title_for_tag
+
+    title_room = TITLE_TARGET - len(f" in {country_label}, {year} — value and dynamics" if en
+                                    else f" {in_country} в {year} году — значение и динамика")
+    title_display = world_series_title_for_tag(indicator, "en" if en else "ru", title_room)
+    title_args = dict(
         name=display,
         country_name=country_label if en else prep,
         year=year,
@@ -356,7 +368,9 @@ async def render_world_indicator_year_html(
             values, shown_unit, en=en, last_is_partial=current_year, value_fmt=_with_unit,
         ) if n_rows > 2 else "",
     )
-    h1_text = title.split(" — ")[0]
+    title, desc = _title_desc(title_name=title_display, **title_args)
+    # H1 — полное официальное название (без укорочения <title>).
+    h1_text = _title_desc(**title_args)[0].split(" — ")[0]
 
     og_path = paths.og_indicator(slug, code, year)
     canonical_path = paths.indicator_year(slug, code, year)

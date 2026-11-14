@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1385**
-- Registry references: **2624**
+- Registry declarations: **1387**
+- Registry references: **2632**
 - Migration operations: **480**
-- Candidate effects: **2895**
+- Candidate effects: **2900**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -3209,9 +3209,11 @@ Relationships: `[]`
 | app.services.world_rank_values._WORLD_REGION_EN | Dict | 'Европа', 'Азия', 'Америка', 'Африка', 'Океания' | [backend/app/services/world_rank_values.py:263](../backend/app/services/world_rank_values.py#L263) |
 | app.services.world_russia_rank._GDP_USD_METHOD_CONCEPTS | Call | computed source expression | [backend/app/services/world_russia_rank.py:42](../backend/app/services/world_russia_rank.py#L42) |
 | app.services.world_russia_rank._NATIVE_COMPARE_FREQUENCIES | Call | computed source expression | [backend/app/services/world_russia_rank.py:242](../backend/app/services/world_russia_rank.py#L242) |
-| app.services.world_series_title._TITLE_AXES | Call | computed source expression | [backend/app/services/world_series_title.py:25](../backend/app/services/world_series_title.py#L25) |
-| app.services.world_series_title.SLICE_AXES | Tuple | sequence/source expression | [backend/app/services/world_series_title.py:28](../backend/app/services/world_series_title.py#L28) |
-| app.services.world_series_title._NOT_QUALIFIERS | Call | computed source expression | [backend/app/services/world_series_title.py:37](../backend/app/services/world_series_title.py#L37) |
+| app.services.world_series_title._TITLE_AXES | Call | computed source expression | [backend/app/services/world_series_title.py:26](../backend/app/services/world_series_title.py#L26) |
+| app.services.world_series_title._TITLE_BUDGETS | Call | computed source expression | [backend/app/services/world_series_title.py:28](../backend/app/services/world_series_title.py#L28) |
+| app.services.world_series_title.SLICE_AXES | Tuple | sequence/source expression | [backend/app/services/world_series_title.py:35](../backend/app/services/world_series_title.py#L35) |
+| app.services.world_series_title._NOT_QUALIFIERS | Call | computed source expression | [backend/app/services/world_series_title.py:44](../backend/app/services/world_series_title.py#L44) |
+| app.services.world_series_title._WORD | Call | computed source expression | [backend/app/services/world_series_title.py:217](../backend/app/services/world_series_title.py#L217) |
 | app.services.world_subnational_forecast.FREQUENCIES | Dict | 'annual', 'quarterly', 'monthly' | [backend/app/services/world_subnational_forecast.py:19](../backend/app/services/world_subnational_forecast.py#L19) |
 | app.services.world_subnational_ingest._REAL_INCOME_UNITS_RE | Call | computed source expression | [backend/app/services/world_subnational_ingest.py:47](../backend/app/services/world_subnational_ingest.py#L47) |
 | app.services.world_view_modes._TRANSFORMS | Dict | 'level', 'mom', 'mom_abs', 'qoq', 'qoq_abs', 'yoy', 'yoy_abs', 'index_first', 'avg_quarter', 'avg_year' | [backend/app/services/world_view_modes.py:139](../backend/app/services/world_view_modes.py#L139) |

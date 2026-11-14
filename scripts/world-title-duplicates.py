@@ -88,6 +88,8 @@ def main() -> int:
     parser.add_argument("--json", type=Path, help="записать полную сводку в файл")
     parser.add_argument("--top", type=int, default=30)
     parser.add_argument("--limit", type=int, default=None, help="только первые N рядов (проверка)")
+    parser.add_argument("--title-room", type=int, default=40,
+                        help="место под название в <title> (70 минус хвост «in Country: value (period)»)")
     args = parser.parse_args()
 
     from app.data.eurostat_dim_labels_en import label_for_dim_member as label_en
@@ -96,11 +98,15 @@ def main() -> int:
     from app.services.locale import _locale_var
     from app.services.seo_world import _display_name
 
-    from app.services.world_series_title import _TITLE_AXES, differing_axes
+    from app.services.world_series_title import (
+        _TITLE_AXES, _TITLE_BUDGETS, differing_axes, title_budgets, world_series_title_for_tag,
+    )
 
     rows = asyncio.run(_load(args.limit))
     # Как на странице и в API: карта различающих измерений по листинговым рядам каждой страны.
-    axes_token = _TITLE_AXES.set(differing_axes(rows))
+    axes = differing_axes(rows)
+    axes_token = _TITLE_AXES.set(axes)
+    budgets_token = _TITLE_BUDGETS.set(title_budgets(rows, axes))
     report = {}
     for locale, label in (("ru", label_ru), ("en", label_en)):
         token = _locale_var.set(locale)
@@ -109,11 +115,22 @@ def main() -> int:
         finally:
             _locale_var.reset(token)
         report[locale] = summarize(groups, label, is_dim_totalish)
+        # <title>: уточнение укорочено под ~70 знаков (room — место под название при длинной стране).
+        token = _locale_var.set(locale)
+        try:
+            tag_groups = series_groups(rows, lambda row: world_series_title_for_tag(row, locale, args.title_room))
+        finally:
+            _locale_var.reset(token)
+        tag = summarize(tag_groups, label, is_dim_totalish)
+        report[locale]["title_tag"] = {"groups": tag["groups"], "series_in_groups": tag["series_in_groups"],
+                                       "room": args.title_room}
+    _TITLE_BUDGETS.reset(budgets_token)
     _TITLE_AXES.reset(axes_token)
     for locale, data in report.items():
         print(f"[{locale}] групп с одинаковым названием: {data['groups']}, рядов в них: "
               f"{data['series_in_groups']} из {data['series_total']}; только техническое различие: "
-              f"{data['technical_only_groups']}")
+              f"{data['technical_only_groups']}; в <title> (room {data['title_tag']['room']}): "
+              f"{data['title_tag']['series_in_groups']}")
         print(f"  оси: {data['differing_axes'][:12]}")
         print(f"  без подписи (топ {args.top}): {data['missing_labels'][:args.top]}")
     if args.json:
