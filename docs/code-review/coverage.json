@@ -12453,9 +12453,9 @@
     },
     {
       "path": "backend/tests/test_sessionize_increment.py",
-      "sha256": "37deaf4b38d255b273f4cf98eadefa0c60eb3affbcfe7838d971d37dc5c95311",
-      "bytes": 10930,
-      "lines": 225,
+      "sha256": "91cb37454f52229633bbf110d7c4a4a5bb5f63caba368d35a3e4dd0d199479bf",
+      "bytes": 11576,
+      "lines": 232,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -15456,7 +15456,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "9e60940dd21115b8c9b54165c342ebef3663df21c4f7c5d46d5dfa6a1519fbcf",
+      "sha256": "d5bebb102e42d7bce1888f636e1a66d9b8c95568f7cd37ef3d029416f4b1dee8",
       "bytes": 3919949,
       "lines": 138903,
       "code": false,
@@ -33708,20 +33708,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "bbb08ebdef7d6b76d0aead7842316e92321555b598dfd69feaa0d0937a7081aa",
+  "ledger_sha256": "f1d9c938938a1538efbfddc0f2f074cbca4ba319be268bd296e14b53c4d809c5",
   "javascript_inventory_sha256": "d200dc0d5b2beedaeba195cc2e528db1dd9541eea2b8736e62a7ddec9d3bbd12",
-  "baseline_commit": "0de16d7819dd9abf741addea7eaa34341005ca6a",
+  "baseline_commit": "6b002b33c6cf79194f7fb4685a4430a226058b90",
   "branch": "int/2026-11-14",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/mechanism-inventory.md"
+    "backend/tests/test_sessionize_increment.py",
+    "docs/indicator-index.json"
   ]
 }

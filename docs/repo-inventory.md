@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2376  ·  **Строк:** 1 490 657  ·  **Токенов (≈):** 14 261 809
+**Файлов:** 2376  ·  **Строк:** 1 490 664  ·  **Токенов (≈):** 14 261 920
 
 ## По верхним папкам
 
@@ -16,7 +16,7 @@
 | `(root)` | 8 | 2 872 | 66 793 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 1007 | 344 430 | 3 792 487 |
+| `backend` | 1007 | 344 437 | 3 792 598 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 565 | 25 195 |
 | `docs` | 149 | 929 043 | 8 004 042 |
@@ -658,6 +658,7 @@
 | `backend/app/services/locale.py` | 327 | 2 596 |
 | `backend/app/services/demand_router.py` | 263 | 2 580 |
 | `backend/tests/test_audience_reports_flow.py` | 235 | 2 574 |
+| `backend/tests/test_sessionize_increment.py` | 232 | 2 571 |
 | `frontend/src/components/Footer.component.test.jsx` | 202 | 2 565 |
 | `backend/tests/test_search_intent_literals.py` | 171 | 2 564 |
 | `backend/scripts/export-design-gallery.py` | 168 | 2 560 |
@@ -686,7 +687,6 @@
 | `backend/app/services/sitemap_priority.py` | 262 | 2 470 |
 | `frontend/src/pages/AccountMail.jsx` | 249 | 2 467 |
 | `frontend/src/lib/homeToday.js` | 234 | 2 461 |
-| `backend/tests/test_sessionize_increment.py` | 225 | 2 460 |
 | `frontend/src/pages/RegionRatingsHub.jsx` | 230 | 2 459 |
 | `scripts/regional/backfill_pril_2022_2023.py` | 249 | 2 453 |
 | `frontend/src/components/IndicatorPage.w3.component.test.jsx` | 245 | 2 447 |

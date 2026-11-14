@@ -6,6 +6,7 @@ occurred_at (пакетная доставка, поздние часы устр
 Инкремент по отметкам id (запас 0 — чтобы проверить точность отбора) должен дать ту же таблицу
 server_sessions, что полный прогон по всем данным в чистой базе.
 """
+import pytest
 import asyncio
 from datetime import datetime, timedelta
 
@@ -188,11 +189,17 @@ def test_cluster_growth_reaches_untouched_visitors(monkeypatch):
     def clone(i, minutes_ago):
         return [_ev(f"x{i}", f"x{i}s", minutes_ago), _portrait(f"x{i}", f"x{i}s", minutes_ago)]
 
+    # Кластер считается по МСК-дням: все клоны держим в одних сутках (до 15.11.2026 тест брал 150–158 и 20 мин назад
+    # и падал около полуночи МСК — давние и новый попадали в разные дни). Давние — 10–18 мин назад, новый — 1 мин.
+    from app.services.analytics_period import msk_day
+    if msk_day(NOW - timedelta(minutes=20)) != msk_day(NOW):
+        pytest.skip("первые 20 минут МСК-суток: клоны неизбежно делятся на два дня")
+
     def first():
-        return [row for i in range(n - 1) for row in clone(i, 150 + i)]
+        return [row for i in range(n - 1) for row in clone(i, 10 + i)]
 
     def late():
-        return clone(n - 1, 20)
+        return clone(n - 1, 1)
 
     async def incremental(maker):
         async with maker() as db:
@@ -200,7 +207,7 @@ def test_cluster_growth_reaches_untouched_visitors(monkeypatch):
             await db.commit()
         async with maker() as db:
             marks = await rollups.current_marks(db)
-            marks["at"] = (NOW - timedelta(minutes=60)).isoformat()
+            marks["at"] = (NOW - timedelta(minutes=5)).isoformat()
             await rollups.sessionize(db, SINCE)
         async with maker() as db:
             db.add_all(late())
