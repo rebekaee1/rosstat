@@ -1,4 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+
+/** Мировые источники календаря (ФРС, BEA, Eurostat); бэкенд без `source` отдаёт только российские. */
+const WORLD_SOURCES = 'fed,bea,eurostat';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { CalendarX2, ChevronDown, Download, X } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
@@ -207,7 +210,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const apiParams = useMemo(() => ({
     from: dates.from,
     to: dates.to,
-    source: source || undefined,
+    source: source === 'world' ? WORLD_SOURCES : (source || undefined),
     limit: 500,
   }), [dates, source]);
 

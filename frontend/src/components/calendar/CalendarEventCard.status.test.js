@@ -28,4 +28,11 @@ describe('eventStatus — честный статус события кален�
     expect(eventStatus({ scheduled_date: '2026-11-16', date_confidence: 'official_rule' }, TODAY).kind).toBe('byRule');
     expect(eventStatus({ scheduled_date: '2026-11-18', date_confidence: 'official_explicit' }, TODAY).kind).toBe('confirmed');
   });
+
+  it('срок Минфина — «не позднее», пока не вышло', () => {
+    expect(eventStatus({ scheduled_date: '2026-11-20', date_confidence: 'official_deadline', deadline: true }, TODAY))
+      .toEqual({ kind: 'deadline', date: '2026-11-20' });
+    expect(eventStatus({ scheduled_date: '2026-11-20', deadline: true, status: 'released', actual_value: '3' }, TODAY).kind)
+      .toBe('released');
+  });
 });

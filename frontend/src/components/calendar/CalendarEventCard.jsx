@@ -39,6 +39,10 @@ const SOURCE_STYLES = {
     dot: 'bg-amber-500',
     labelKey: 'calendar.filter.minfin',
   },
+  // Мировые выпуски (14.11.2026): один холодный графитовый тон, источник назван словами.
+  fed: { border: 'border-l-slate-500', bg: 'bg-slate-100', text: 'text-slate-700', dot: 'bg-slate-500', labelKey: 'calendar.filter.fed' },
+  bea: { border: 'border-l-slate-500', bg: 'bg-slate-100', text: 'text-slate-700', dot: 'bg-slate-500', labelKey: 'calendar.filter.bea' },
+  eurostat: { border: 'border-l-slate-500', bg: 'bg-slate-100', text: 'text-slate-700', dot: 'bg-slate-500', labelKey: 'calendar.filter.eurostat' },
 };
 
 /** Важное событие помечено словами: три одинаковых точки без расшифровки никому ничего не говорят. */
@@ -88,6 +92,8 @@ export function eventStatus(event, today = localTodayIso()) {
     return { kind: days <= AWAIT_DAYS && confirmable ? 'awaiting' : 'passed' };
   }
   if (event?.rescheduled_from) return { kind: 'moved', from: event.rescheduled_from };
+  // Срок «не позднее» (бюджет Минфина): источник обещает не день выхода, а крайний срок.
+  if (event?.deadline || event?.date_confidence === 'official_deadline') return { kind: 'deadline', date };
   if (event?.date_confidence === 'official_rule') return { kind: 'byRule' };
   return { kind: 'confirmed' };
 }
@@ -107,6 +113,9 @@ function DateStatus({ event }) {
     const from = dayMonth(status.from, locale);
     label = t('cal26.status.moved', { date: from });
     hint = t('cal26.status.movedHint', { date: from });
+  } else if (status.kind === 'deadline') {
+    label = t('cal26.status.deadline', { date: dayMonth(status.date, locale) });
+    hint = t('cal26.status.deadlineHint');
   } else if (status.kind === 'released' && event.released_on) {
     // День нашей загрузки — в подсказке, не в метке: «Вышло 11 ноября» читалось бы как дата публикации.
     label = t('cal26.status.released');
@@ -201,7 +210,11 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
     ? event.indicators
     : (event.indicator_code
       ? [{ code: event.indicator_code, name: event.indicator_name || event.indicator_code }]
-      : []);
+      : (event.link_path
+        // Мировой выпуск: карточка ряда страны на сайте (адрес отдаёт бэкенд).
+        ? [{ code: event.link_path, name: t('cal26.world.open', { country: event.country || '' }).trim(), path: event.link_path }]
+        : []));
+  const pathOf = (ind) => ind.path || russiaIndicatorPath(ind.code);
 
   if (isLow && (!isToday || forceCompact)) {
     return (
@@ -225,7 +238,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
         )}
         {linkedIndicators.length === 1 ? (
           <Link
-            to={russiaIndicatorPath(linkedIndicators[0].code)}
+            to={pathOf(linkedIndicators[0])}
             className={cn(FOCUS_RING_SURFACE, '-m-[11px] inline-flex h-9 w-9 shrink-0 items-center justify-center text-champagne hover:text-champagne-muted rounded-md')}
             title={linkedIndicators[0].name}
             aria-label={t('calendar.event.goTo', { name: linkedIndicators[0].name })}
@@ -282,8 +295,11 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
 
         {period && (
           <p className="text-sm text-text-secondary mb-2">
-            {t('z1.cal.period', { period })}
+            {event.country ? `${event.country} · ` : ''}{t('z1.cal.period', { period })}
           </p>
+        )}
+        {!period && event.country && (
+          <p className="text-sm text-text-secondary mb-2">{event.country}</p>
         )}
 
         {event.description && (
@@ -317,7 +333,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
               {linkedIndicators.map((ind) => (
                 <li key={ind.code}>
                   <Link
-                    to={russiaIndicatorPath(ind.code)}
+                    to={pathOf(ind)}
                     className={cn(
                       FOCUS_RING_SURFACE,
                       'inline-flex min-h-10 items-center gap-1.5 rounded-lg py-0.5 text-sm font-medium text-champagne-ink transition-colors hover:text-champagne-muted lg:min-h-8',
@@ -330,7 +346,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
               ))}
             </ul>
           )}
-          {!isPast && linkedIndicators.length === 1 && (
+          {!isPast && linkedIndicators.length === 1 && !linkedIndicators[0].path && (
             <CabinetActionsSlot
               className="fe-cabinet-actions--flush"
               subject={russiaIndicatorSubject(linkedIndicators[0].code, linkedIndicators[0].name, { only: 'watch', variant: 'button' })}
@@ -352,7 +368,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
           )}
           <SourceLink
             href={event.source_url}
-            fallbackTo={linkedIndicators[0] ? russiaIndicatorPath(linkedIndicators[0].code) : calendarPath()}
+            fallbackTo={linkedIndicators[0] ? pathOf(linkedIndicators[0]) : calendarPath()}
             className="inline-flex min-h-10 items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors lg:min-h-8"
           >
             {t('z1.cal.source')}

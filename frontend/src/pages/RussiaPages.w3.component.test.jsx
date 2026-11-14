@@ -157,4 +157,16 @@ describe('CalendarEventCard', () => {
     renderPage(<CalendarEventCard event={{ ...event, date_confidence: 'official_explicit', rescheduled_from: '2099-10-13' }} />);
     expect(screen.getByText(/Перенесено с 13 октября/)).toBeTruthy();
   });
+
+  it('мировой выпуск ведёт на карточку ряда страны, прогноз подписан «Прогноз Forecast Economy»', () => {
+    const { container } = renderPage(<CalendarEventCard event={{
+      id: 9, source: 'bea', importance: 2, title: 'США: ВВП (вторая оценка)', scheduled_date: '2099-11-25',
+      date_confidence: 'official_explicit', reference_period: 'Q3 2099', country: 'США',
+      link_path: '/united-states/us-gdp-real-growth', previous_value: '2,1', forecast_value: '2,5',
+    }} />);
+    expect(container.querySelector('a[href="/united-states/us-gdp-real-growth"]')).toBeTruthy();
+    expect(screen.getByText('Бюро экономического анализа США')).toBeTruthy();
+    expect(screen.getByText('Прогноз Forecast Economy')).toBeTruthy();
+  });
 });
+
