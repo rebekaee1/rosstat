@@ -3504,3 +3504,38 @@ Telegram delivery 09.10: реализован dedicated proxy route в двух 
   в группе Googlebot, на apex их нет; `ru.…/sitemap.xml` с User-Agent Googlebot — `priority-google`
   первым, `ru.…/sitemap-priority-google.xml` — без годовых страниц других стран.
 
+## 2026-11-14 — английский хост для Google (ADR-0031)
+
+Статус: код и тесты в ветке `worktree-agent-a60cd3db86caaa5f2`, не выпущено. Затронуто:
+`index_policy.py`, `api/sitemap.py`, `sitemap_priority.py`, `config.py`, `docker-compose.yml`,
+`.env.example`, `tests/test_apex_google_years.py`, `tests/test_ru_google_short_sitemap.py`,
+[ADR-0031](adr/0031-apex-google-demand-only-years.md), [контракт](data-contracts.md#английский-хост-для-google--2026-11-14).
+
+Остаток после выпуска:
+
+- Дождаться ночной сборки sitemap (новый потолок и источник `gsc_pages`); проверить в
+  `/sitemap-stats.json` размер `priority` apex и число годовых путей в нём (≥ 1 000).
+- Живая проверка: `forecasteconomy.com/sitemap.xml` с `User-Agent` Googlebot — ~70 файлов,
+  первым `sitemap-priority.xml`, без трёх годовых семейств; с YandexBot — полный.
+  Годовая страница без спроса с `User-Agent` Googlebot — строка `meta googlebot`; годовая из
+  шарда, `/russia/indicator/key-rate/2025`, карточка — без неё; `ru.` без изменений.
+- Search Console: отправить `forecasteconomy.com/sitemap.xml` заново; запросить индексирование
+  10 английских карточек и сравнений с наибольшими показами 21.09–11.10.
+- Замер раз в неделю по таблице ADR-0031; первый — 25.11.
+
+### Пересмотр 23.12.2026 — запрет обхода годовых страниц на apex в `robots.txt`
+
+Отложено 14.11 (решение координатора по поручению владельца): закрывать обход годовых страниц
+apex (как на `ru.`, `RU_GOOGLE_CRAWL_BLOCK_RULES`) можно только после того, как Google перечитает
+метку `googlebot noindex` ADR-0031. Иначе адреса останутся в индексе без содержимого.
+
+Критерий для «да» на 23.12 (все три):
+
+- Search Console, отчёт «Индексирование страниц»: «Исключено тегом noindex» выросло не меньше чем
+  на 300 тыс. от базы 51 870 (14.11), «Проиндексировано» упало за счёт годовых.
+- URL Inspection по выборке 20 годовых страниц apex без спроса: у 18+ состояние «Excluded by
+  'noindex' tag» с датой обхода после выпуска ADR-0031.
+- Клики apex в неделю (`gsc_page_daily`) не ниже базы ~75.
+
+Если критерий не выполнен — перенести на 4 недели. Правила запрета — те же, что у `ru.`,
+но без исключения `/russia/region/*/*/{год}` (на apex регионы России с годом тоже массовые).

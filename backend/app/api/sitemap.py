@@ -272,9 +272,9 @@ def _is_ru_origin(origin: str) -> bool:
 async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
     """Sitemap-индекс. До cutover ru. отдаёт пустой индекс (один канон — apex).
 
-    На ``ru.`` робот Google получает короткий индекс без массовых годовых шардов
-    (решение 13.11.2026, ``index_policy.google_short_sitemap_names``); остальные
-    читатели и apex — полный. Адрес, robots.txt и файлы шардов одни для всех.
+    Робот Google получает короткий индекс без массовых годовых шардов: на ``ru.``
+    с 13.11.2026 (ADR-0030), на apex с 14.11.2026 (ADR-0031),
+    ``index_policy.google_short_sitemap_names``; остальные читатели — полный. Адрес, robots.txt и файлы шардов одни для всех.
     """
     from app.core.cache import cache_get, cache_set
     from app.services.index_policy import (
@@ -300,7 +300,8 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
     from app.services.sitemap_static import read_stats, section_lastmods
     generation = read_stats().get("generation", "dynamic")
     # Запрет обхода годовых страниц мира меняет состав короткого индекса — свой ключ кэша.
-    swap_priority = short and bool(ru_google_crawl_block_rules(ru_host=True))
+    # Шард priority-google есть только на ru.; на apex годовые страницы не закрыты в robots.txt.
+    swap_priority = short and bool(ru_google_crawl_block_rules(ru_host=_is_ru_origin(origin)))
     variant = (":google-short" + (":pg" if swap_priority else "")) if short else ""
     cache_key = _sitemap_cache_key(f"index:lastmod-v1:{generation}{variant}", origin)
     cached = await cache_get(cache_key)
