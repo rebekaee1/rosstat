@@ -201,7 +201,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
         <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', src.dot)} />
         <span className="min-w-0 flex-1 text-sm leading-snug text-text-secondary line-clamp-2">{title}</span>
         {event.scheduled_time && (
-          <span className="text-xs text-text-tertiary font-mono shrink-0">{event.scheduled_time}</span>
+          <span className="text-xs tabular-nums text-text-tertiary shrink-0">{event.scheduled_time}</span>
         )}
         {period && (
           <span className="text-xs text-text-tertiary shrink-0 hidden sm:inline">{period}</span>
@@ -250,7 +250,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
             <DateStatus event={event} />
           </div>
           {event.scheduled_time && (
-            <span className="text-sm font-mono text-text-secondary shrink-0">
+            <span className="text-sm font-medium tabular-nums text-text-secondary shrink-0">
               {event.scheduled_time} <span className="text-text-tertiary text-xs">{t('calendar.hero.msk')}</span>
             </span>
           )}
@@ -316,25 +316,30 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
               ))}
             </ul>
           )}
-          {!isPast && linkedIndicators.length === 1 && !linkedIndicators[0].path && (
-            <CabinetActionsSlot
-              className="fe-cabinet-actions--flush"
-              subject={russiaIndicatorSubject(linkedIndicators[0].code, linkedIndicators[0].name, { only: 'watch', variant: 'button' })}
-            />
-          )}
-          {!isPast && event.scheduled_date && (
-            <button
-              type="button"
-              onClick={addToCalendar}
-              className={cn(
-                FOCUS_RING_SURFACE,
-                'fe-press inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-champagne-ink transition-colors hover:text-champagne-muted fe-glass-2 sm:min-h-9',
+          {/* «Следить» и «В календарь телефона» — одна строка действий, а не две ступеньки разной ширины (проход дизайна 15.11). */}
+          {!isPast && (
+            <div className="flex flex-wrap items-center gap-2">
+              {linkedIndicators.length === 1 && !linkedIndicators[0].path && (
+                <CabinetActionsSlot
+                  className="fe-cabinet-actions--flush"
+                  subject={russiaIndicatorSubject(linkedIndicators[0].code, linkedIndicators[0].name, { only: 'watch', variant: 'button' })}
+                />
               )}
-              data-testid="calendar-add-ics"
-            >
-              <CalendarPlus className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {t('c9e.cal.addToCalendar')}
-            </button>
+              {event.scheduled_date && (
+                <button
+                  type="button"
+                  onClick={addToCalendar}
+                  className={cn(
+                    FOCUS_RING_SURFACE,
+                    'fe-press inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-champagne-ink transition-colors hover:text-champagne-muted fe-glass-2 sm:min-h-9',
+                  )}
+                  data-testid="calendar-add-ics"
+                >
+                  <CalendarPlus className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  {t('c9e.cal.addToCalendar')}
+                </button>
+              )}
+            </div>
           )}
           <SourceLink
             href={event.source_url}
