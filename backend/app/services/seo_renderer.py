@@ -4227,13 +4227,22 @@ def _indicator_body(
     # Пары (year, month) готовит async-вызывающий (data_month_pairs).
     years_section = ""
     if data_years:
-        year_links = _links_list(tuple(
+        # Все годы (14.11.2026, ADR-0031): 12 последних видны, остальные — в «Все годы» внутри <details>.
+        from app.services.seo_year_ui import TABLE_SHOWN_ROWS, all_years_block
+
+        ordered = sorted(data_years, reverse=True)
+        shown_links = _links_list(tuple(
             (paths.russia_indicator_year(indicator.code, y), year_link_tpl.format(name=name, year=y))
-            for y in sorted(data_years, reverse=True)[:12]
+            for y in ordered[:TABLE_SHOWN_ROWS]
         ))
+        rest = ordered[TABLE_SHOWN_ROWS:]
+        rest_html = all_years_block(
+            [(y, paths.russia_indicator_year(indicator.code, y), "") for y in rest],
+            head_year="", head_value=None, collapse_above=0, shown=0,
+        ) if rest else ""
         years_section = (
             f"<section><h2>{escape(years_h2_tpl.format(name=name))}</h2>"
-            f"{year_links}</section>\n"
+            f"{shown_links}{rest_html}</section>\n"
         )
     months_section = ""
     if (indicator.frequency or "").startswith("month") and data_month_pairs:

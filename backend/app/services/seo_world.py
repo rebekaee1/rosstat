@@ -2042,20 +2042,36 @@ async def render_world_indicator_html(
             f'<ul class="seo-pills">{items}</ul></section>'
         )
 
-    # Ссылки на годовые страницы ряда (08.11.2026, гигиена после падения Google): мировые годовые страницы (5,5 млн
-    # в sitemap) были «островком» без входа с карточки. Годы берём из уже загруженных точек, только публичные, 12 последних.
+    # Все годы ряда (14.11.2026, ADR-0031; до этого — 12 последних годов ссылками с 08.11): карточка — главная
+    # страница ряда для Google, годовые страницы без спроса закрыты меткой googlebot. Таблица «год — значение»
+    # из уже загруженных точек: значение года — последнее наблюдение года (у годовых рядов — единственное).
     years_html = ""
     if not is_redirect_only_indicator(indicator.code):
-        card_years = sorted({d.year for d, _v in series if paths.is_public_year(d.year)}, reverse=True)[:12]
-        if card_years:
+        year_last: dict[int, float] = {}
+        for d, v in series:
+            if paths.is_public_year(d.year):
+                year_last[d.year] = v
+        if year_last:
+            from app.data.eurostat_listing import normalize_frequency
+            from app.services.seo_year_ui import all_years_block
+
+            annual = normalize_frequency(indicator.frequency) == "annual"
             yh2 = (f"{display} by year" if loc == "en" else f"{display} по годам")
-            items = "".join(
-                f'<li><a href="{escape(paths.indicator_year(slug, indicator.code, y))}">{y}</a></li>'
-                for y in card_years
-            )
+            if loc == "en":
+                head_value = (unit or "Value") if annual else "Last value of the year"
+            else:
+                head_value = (unit or "Значение") if annual else "Последнее значение года"
             years_html = (
                 f'<section class="seo-section"><h2>{escape(yh2)}</h2>'
-                f'<ul class="seo-pills">{items}</ul></section>'
+                + all_years_block(
+                    [
+                        (y, paths.indicator_year(slug, indicator.code, y), _fmt(year_last[y]))
+                        for y in sorted(year_last, reverse=True)
+                    ],
+                    head_year="Year" if loc == "en" else "Год",
+                    head_value=head_value,
+                )
+                + "</section>"
             )
 
     # Имя ведомства ведёт на страницу страны, с которой открыт ряд.

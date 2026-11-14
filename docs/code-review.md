@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `df4b0ee6ef61ee09372eb955680c4df1fd70ec04`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `96d9b3eba04ca4acf6baec0a67a2120b3a47a3b3`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2459 |
-| Код, шаблоны и стили | 1986 |
-| Актуальные рецензии без пропусков guard | 2459 |
-| Именованные определения Python/JS: с аннотацией / всего | 16017 / 16017 |
+| Файлы в явно определённом scope | 2460 |
+| Код, шаблоны и стили | 1987 |
+| Актуальные рецензии без пропусков guard | 2460 |
+| Именованные определения Python/JS: с аннотацией / всего | 16026 / 16026 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -443,7 +443,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/seo_world_subnational_compare.py](../backend/app/services/seo_world_subnational_compare.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/seo_world_subnational_year.py](../backend/app/services/seo_world_subnational_year.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/seo_world_year.py](../backend/app/services/seo_world_year.py) | reviewed | 5/5 | актуально |
-| [backend/app/services/seo_year_ui.py](../backend/app/services/seo_year_ui.py) | reviewed | 19/19 | актуально |
+| [backend/app/services/seo_year_ui.py](../backend/app/services/seo_year_ui.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/session.py](../backend/app/services/session.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/session_analysis.py](../backend/app/services/session_analysis.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/session_change_log.py](../backend/app/services/session_change_log.py) | reviewed | 10/10 | актуально |
@@ -634,6 +634,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_alembic_revision_ids.py](../backend/tests/test_alembic_revision_ids.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_alert_exception_reason.py](../backend/tests/test_alert_exception_reason.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_alerting.py](../backend/tests/test_alerting.py) | reviewed | 31/31 | актуально |
+| [backend/tests/test_all_years_block.py](../backend/tests/test_all_years_block.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_analytics2.py](../backend/tests/test_analytics2.py) | reviewed | 53/53 | актуально |
 | [backend/tests/test_analytics_alert_hygiene.py](../backend/tests/test_analytics_alert_hygiene.py) | reviewed | 49/49 | актуально |
 | [backend/tests/test_analytics_api.py](../backend/tests/test_analytics_api.py) | reviewed | 30/30 | актуально |

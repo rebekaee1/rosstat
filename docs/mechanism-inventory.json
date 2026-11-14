@@ -1700,8 +1700,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "9bd0eb393bf22f913ebdcb001acc9d3aabff91c48e2fd445411e99cf55c2311d",
-      "lines": 4280
+      "sha256": "e519347bea03563d0e489ce0430a4b4ac776b837cbc309a4a102e02b687f5047",
+      "lines": 4289
     },
     {
       "path": "backend/app/services/seo_research.py",
@@ -1720,8 +1720,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "3873304e3a61ef71a155ace333a90215da7ae20d074a0b720d6c13bf54f0ab30",
-      "lines": 2227
+      "sha256": "669b7fcda312c4f9363f3f0054ed51827cea5543f8699b9b71fe3ac850279e93",
+      "lines": 2243
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
@@ -1750,8 +1750,8 @@
     },
     {
       "path": "backend/app/services/seo_year_ui.py",
-      "sha256": "a40163203dc53b861e3c8b914948d2df71863a0d8d2593a732197e18fb79212d",
-      "lines": 292
+      "sha256": "4dfa9e376508d4574a3e237079ecfab7908b8f418f3fa1510415f51e94ca19ad",
+      "lines": 338
     },
     {
       "path": "backend/app/services/session.py",
@@ -306840,7 +306840,7 @@
     {
       "path": "backend/app/services/seo_renderer.py",
       "line": 4024,
-      "end_line": 4280,
+      "end_line": 4289,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_body",
@@ -307562,7 +307562,7 @@
     {
       "path": "backend/app/services/seo_world.py",
       "line": 1786,
-      "end_line": 2227,
+      "end_line": 2243,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_html",
@@ -308176,7 +308176,16 @@
     {
       "path": "backend/app/services/seo_year_ui.py",
       "line": 239,
-      "end_line": 245,
+      "end_line": 282,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "all_years_block",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_year_ui.py",
+      "line": 285,
+      "end_line": 291,
       "owner": "<module>",
       "conditions": [],
       "name": "extreme_dates",
@@ -308184,8 +308193,8 @@
     },
     {
       "path": "backend/app/services/seo_year_ui.py",
-      "line": 248,
-      "end_line": 255,
+      "line": 294,
+      "end_line": 301,
       "owner": "<module>",
       "conditions": [],
       "name": "collapsible_note",
@@ -308193,8 +308202,8 @@
     },
     {
       "path": "backend/app/services/seo_year_ui.py",
-      "line": 258,
-      "end_line": 292,
+      "line": 304,
+      "end_line": 338,
       "owner": "<module>",
       "conditions": [],
       "name": "year_range_note",
@@ -308202,8 +308211,17 @@
     },
     {
       "path": "backend/app/services/seo_year_ui.py",
-      "line": 285,
-      "end_line": 286,
+      "line": 257,
+      "end_line": 270,
+      "owner": "all_years_block",
+      "conditions": [],
+      "name": "part",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_year_ui.py",
+      "line": 331,
+      "end_line": 332,
       "owner": "year_range_note",
       "conditions": [],
       "name": "fmt",

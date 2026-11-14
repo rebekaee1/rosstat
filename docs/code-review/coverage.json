@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2459,
-    "code_files": 1986,
-    "current_reviews": 2459,
+    "files": 2460,
+    "code_files": 1987,
+    "current_reviews": 2460,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2189
+      "reviewed": 2190
     },
-    "definitions": 16017,
-    "annotated_definitions": 16017,
+    "definitions": 16026,
+    "annotated_definitions": 16026,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -5172,9 +5172,9 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "9bd0eb393bf22f913ebdcb001acc9d3aabff91c48e2fd445411e99cf55c2311d",
-      "bytes": 222335,
-      "lines": 4280,
+      "sha256": "e519347bea03563d0e489ce0430a4b4ac776b837cbc309a4a102e02b687f5047",
+      "bytes": 222882,
+      "lines": 4289,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5224,9 +5224,9 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "3873304e3a61ef71a155ace333a90215da7ae20d074a0b720d6c13bf54f0ab30",
-      "bytes": 94998,
-      "lines": 2227,
+      "sha256": "669b7fcda312c4f9363f3f0054ed51827cea5543f8699b9b71fe3ac850279e93",
+      "bytes": 95807,
+      "lines": 2243,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5302,15 +5302,15 @@
     },
     {
       "path": "backend/app/services/seo_year_ui.py",
-      "sha256": "a40163203dc53b861e3c8b914948d2df71863a0d8d2593a732197e18fb79212d",
-      "bytes": 12363,
-      "lines": 292,
+      "sha256": "4dfa9e376508d4574a3e237079ecfab7908b8f418f3fa1510415f51e94ca19ad",
+      "bytes": 14432,
+      "lines": 338,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 19,
-      "annotated_definitions": 19,
+      "definitions": 21,
+      "annotated_definitions": 21,
       "missing_definitions": []
     },
     {
@@ -7781,6 +7781,19 @@
       "issues": [],
       "definitions": 31,
       "annotated_definitions": 31,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_all_years_block.py",
+      "sha256": "a9c76a02616c1e457cd28096622a7dc93a75d9df56c4d263464d7138cddb35b7",
+      "bytes": 3203,
+      "lines": 73,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 7,
+      "annotated_definitions": 7,
       "missing_definitions": []
     },
     {
@@ -13674,9 +13687,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "8c8a95ec38eeebba54256b3a0759db294516c6586f685495bbfcc6aed34a8196",
-      "bytes": 363021,
-      "lines": 1224,
+      "sha256": "783404f4fc5563dd1b51f4ba9d8c22b5e9154eb96dd9794657035872e1f6427f",
+      "bytes": 364687,
+      "lines": 1225,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14207,7 +14220,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "86bbf8afeae80a2ccf4223683266153083d9f4af6cbdcd36979f430e63f4ee28",
+      "sha256": "8d213e8c407a7369c1b3a9e8b6619c90818a58f54212ae68db569074af8dff21",
       "bytes": 3853565,
       "lines": 136363,
       "code": false,
@@ -14259,9 +14272,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "23b8f979417cedc4fd01b25bbe33c3c05681113859235c0ece39945316111b30",
-      "bytes": 12192876,
-      "lines": 365535,
+      "sha256": "8067c04722c26a2ab76fa737387d12496c290a970baa83df63284c9b9e067415",
+      "bytes": 12193312,
+      "lines": 365553,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -32004,9 +32017,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "80eb4133d480bece5eee8ef6b0203c41ea2177bd49721e8dfb928eb23888a855",
+  "ledger_sha256": "32345a95ad11e53679fd82565ec20971d767d748df29bccc7a2043dcc9e48018",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "df4b0ee6ef61ee09372eb955680c4df1fd70ec04",
+  "baseline_commit": "96d9b3eba04ca4acf6baec0a67a2120b3a47a3b3",
   "branch": "worktree-agent-a60cd3db86caaa5f2",
   "unstaged_at_capture": []
 }
