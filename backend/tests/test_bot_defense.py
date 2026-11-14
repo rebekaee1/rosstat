@@ -156,6 +156,35 @@ def test_observe_mode_remembers_issue_network_in_cookie(monkeypatch):
         assert not any(c.startswith("fe_pass_net=") for c in r.headers.get_list("set-cookie"))
 
 
+def test_staff_pass_is_a_regular_signed_pass_with_staff_prefix():
+    """15.11.2026: служебный пропуск наших агентов - тот же формат и подпись, id с префиксом 57aff000 (класс staff)."""
+    value = human_pass.issue_staff(SECRET, 7, now=1_800_000_000)
+    digest, expires, pass_id = value.split(".")
+    assert len(digest) == 22 and expires == str(1_800_000_000 + 7 * 86400) and len(pass_id) == 16
+    assert pass_id.startswith(human_pass.STAFF_ID_PREFIX) and int(pass_id, 16) >= 0
+    assert digest == base64.urlsafe_b64encode(hashlib.md5(f"{expires}{pass_id} {SECRET}".encode()).digest()).decode().rstrip("=")
+    bind = "93.1.1|curl/8.7.1 "
+    bound = human_pass.issue_staff(SECRET, 1, bind=bind, now=1_800_000_000)
+    d, e, i = bound.split(".")
+    assert d == base64.urlsafe_b64encode(hashlib.md5(f"{e}{i} {bind}{SECRET}".encode()).digest()).decode().rstrip("=")
+    for bad in (0, 31, -1):
+        with pytest.raises(ValueError):
+            human_pass.issue_staff(SECRET, bad)
+
+
+def test_staff_pass_cli_refuses_without_secret_and_half_binding(monkeypatch, capsys):
+    monkeypatch.setattr(human_pass.settings, "fe_human_pass_secret", "")
+    assert human_pass._staff_main([]) == 2
+    monkeypatch.setattr(human_pass.settings, "fe_human_pass_secret", SECRET)
+    assert human_pass._staff_main(["--net", "1.2.3"]) == 2
+    assert human_pass._staff_main(["--days", "40"]) == 2
+    capsys.readouterr()
+    assert human_pass._staff_main(["--days", "3"]) == 0
+    out = capsys.readouterr().out.splitlines()
+    assert out[0].startswith("fe_pass=") and out[0].split(".")[2].startswith("57aff000")
+    assert "привязка: нет" in out[1]
+
+
 # --- сводка по роботам -------------------------------------------------------------------------------------------
 
 LINES = [

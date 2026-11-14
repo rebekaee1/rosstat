@@ -7,7 +7,10 @@
 #   (3) действующий пропуск fe_pass -> human; подделанная подпись, истёкший срок, мусор -> anon;
 #   (4) общий бюджет роботов robotcold: 120 запросов с разных IP с UA «SomeBot» -> часть 429, проверенный Applebot
 #       в те же секунды -> все 200; ферма без Referer с пропуском, скопированным на 40 адресов -> часть 429 (один бюджет);
-#   (5) выдача пропуска POST /api/v1/human-pass доходит до backend; entrypoint-скрипт пишет секрет и отвергает плохой.
+#   (5) выдача пропуска POST /api/v1/human-pass доходит до backend; entrypoint-скрипт пишет секрет и отвергает плохой;
+#   (6) ферма с Referer Google, (7) привязка и выдача пропусков - см. разделы ниже;
+#   (8) служебный пропуск наших агентов (класс staff): агент проходит волну фермы, ферма и агент без пропуска - нет;
+#       fail2ban строки агента не считает; флаг FE_STAFF_PASS=0.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 IMAGE="${IMAGE:-nginx:alpine}"
@@ -275,4 +278,71 @@ echo "лимит на сеть выключен (10)   : $off"
 case "$off" in *429*) echo "FAIL: флаг выключения лимита выдачи не действует"; exit 1;; esac
 docker run --rm -e FE_PASS_MINT_NET_LIMIT=1 -v "$PWD/frontend/43-fe-pass-mint.sh:/s.sh:ro" -v "$T/fe-pass:/etc/nginx/fe-pass" "$IMAGE" sh /s.sh >/dev/null
 [ ! -e "$T/fe-pass/pass-mint.conf" ] || { echo "FAIL: включённый лимит выдачи оставил файл"; exit 1; }
+docker exec bcngx nginx -s reload >/dev/null 2>&1; sleep 2
+# (8) служебный пропуск наших агентов (15.11.2026): id 57aff000… с верной подписью -> класс staff (backend видит human),
+#     в том числе с Referer; та же форма с чужой подписью -> anon; обычный пропуск -> human. Ферма без Referer шумит
+#     с 60 адресов - агент (curl, без JavaScript) листает 10 страниц подряд и проходит, такой же агент без пропуска - нет.
+#     fail2ban: строки агента в security.log фильтры не считают. Флаг FE_STAFF_PASS=0 -> обычный human.
+STAFF=$(mkpass $((NOW+86400)) 57aff000c0ffee01 "$SECRET")
+STAFF_FORGED=$(mkpass $((NOW+86400)) 57aff000c0ffee02 "wrong_secret_0123456789abcdefghijklmn")
+AG='curl/8.7.1'
+s1=$(clsr 97.3.3.1 "$AG" '' "fe_pass=$STAFF")
+clsr 97.3.3.2 "$AG" 'https://ru.forecasteconomy.com/russia/region' "fe_pass=$STAFF" >/dev/null
+clsr 97.3.3.3 "$AG" '' "fe_pass=$STAFF_FORGED" >/dev/null
+clsr 97.3.3.4 "$AG" '' "fe_pass=$GOOD" >/dev/null
+st="$(logcls 97.3.3.1) $(logcls 97.3.3.2) $(logcls 97.3.3.3) $(logcls 97.3.3.4)"
+echo "служебный пропуск: классы     : $st (backend: $s1)"
+[ "$st" = "staff staff anon human" ] || { echo "FAIL: классы служебного пропуска"; exit 1; }
+[ "$s1" = "human" ] || { echo "FAIL: backend должен видеть служебный пропуск как human: $s1"; exit 1; }
+sleep 6
+walk() {  # $1 XFF, $2 cookie или пусто: 10 страниц подряд с паузой 0,3 с
+  docker run --rm --network bcnet -e XFF="$1" -e CK="$2" -e UA="$AG" -e URL="$URL" curlimages/curl sh -c '
+    for i in $(seq 1 10); do
+      set -- -s -o /dev/null -w "%{http_code}\n" -m 30 -A "$UA" -H "X-Forwarded-For: $XFF"
+      [ -z "$CK" ] || set -- "$@" -b "$CK"
+      curl "$@" "$URL"; sleep 0.3
+    done' | sort | uniq -c | tr '\n' ' ' | tr -s ' '
+}
+docker run --rm --network bcnet -e UA="$B" -e URL="$URL" curlimages/curl sh -c '
+  for i in $(seq 1 120); do curl -s -o /dev/null -w "%{http_code}\n" -m 30 -A "$UA" -H "X-Forwarded-For: 99.60.$((i / 200)).$((i % 200 + 1))" "$URL" & sleep 0.04; done; wait' \
+  | sort | uniq -c | tr '\n' ' ' > "$T/sfarm.txt" &
+FARM_PID=$!
+sleep 1
+agent=$(walk 97.3.4.1 "fe_pass=$STAFF")
+plain=$(walk 97.3.4.2 '')
+wait $FARM_PID
+sf=$(cat "$T/sfarm.txt")
+echo "ферма без Referer (120)       : $sf"
+echo "агент со служебным пропуском  : $agent"
+echo "тот же агент без пропуска     : $plain"
+case "$sf" in *429*) ;; *) echo "FAIL: ферма не упёрлась в общий бюджет - проверка пустая"; exit 1;; esac
+[ "$agent" = " 10 200 " ] || [ "$agent" = "10 200 " ] || { echo "FAIL: агент со служебным пропуском получил отказ: $agent"; exit 1; }
+case "$plain" in *429*) ;; *) echo "FAIL: агент без пропуска прошёл сквозь волну фермы - проверка пустая"; exit 1;; esac
+docker exec bcngx sh -c "grep ' 97.3.4.1 ' /var/log/nginx/security/security.log" > "$T/agent.log"
+docker exec bcngx sh -c "grep ' 97.3.4.2 ' /var/log/nginx/security/security.log" > "$T/plain.log"
+python3 - "$T/agent.log" "$T/plain.log" <<'PY'
+import importlib.util, sys
+spec = importlib.util.spec_from_file_location("f2b", "deploy/test-fail2ban-filters.py")
+f2b = importlib.util.module_from_spec(spec); spec.loader.exec_module(f2b)
+def counted(name, path):
+    fail, ignore = f2b.parse_filter(name)
+    n = 0
+    for line in open(path):
+        line = line.rstrip("\n")
+        if f2b.matched_ip(fail, line) and not (ignore and ignore.search(f2b.after_date(line))):
+            n += 1
+    return n
+agent, plain = sys.argv[1], sys.argv[2]
+a429, avol, p429 = counted("nginx-429", agent), counted("nginx-volume", agent), counted("nginx-429", plain)
+print(f"fail2ban считает: агент с пропуском 429={a429} страниц={avol}; без пропуска 429={p429}")
+sys.exit(0 if a429 == 0 and avol == 0 and p429 > 0 else 1)
+PY
+# Флаг FE_STAFF_PASS=0: служебный пропуск действует как обычный пропуск человека.
+docker run --rm -e FE_STAFF_PASS=0 -v "$PWD/frontend/44-fe-staff-pass.sh:/s.sh:ro" -v "$T/fe-pass:/etc/nginx/fe-pass" "$IMAGE" sh /s.sh >/dev/null
+grep -q 'set $fe_staff_pass_on "0";' "$T/fe-pass/staff-pass.conf" || { echo "FAIL: флаг служебного пропуска не записан"; exit 1; }
+docker exec bcngx nginx -s reload >/dev/null 2>&1; sleep 2
+clsr 97.3.3.5 "$AG" '' "fe_pass=$STAFF" >/dev/null
+[ "$(logcls 97.3.3.5)" = "human" ] || { echo "FAIL: флаг выключения служебного пропуска не действует: $(logcls 97.3.3.5)"; exit 1; }
+docker run --rm -e FE_STAFF_PASS=1 -v "$PWD/frontend/44-fe-staff-pass.sh:/s.sh:ro" -v "$T/fe-pass:/etc/nginx/fe-pass" "$IMAGE" sh /s.sh >/dev/null
+[ ! -e "$T/fe-pass/staff-pass.conf" ] || { echo "FAIL: включённый служебный пропуск оставил файл"; exit 1; }
 echo "OK"
