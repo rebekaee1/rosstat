@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2524,
-    "code_files": 2045,
-    "current_reviews": 2524,
+    "files": 2526,
+    "code_files": 2047,
+    "current_reviews": 2526,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2252
+      "reviewed": 2254
     },
-    "definitions": 16630,
-    "annotated_definitions": 16630,
+    "definitions": 16666,
+    "annotated_definitions": 16666,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -4391,6 +4391,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/services/mail/blocks.py",
+      "sha256": "692807c72300a6a7b6c97e5a5d8a294badc0048c2ddb8341a9180e19a9031105",
+      "bytes": 15371,
+      "lines": 282,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 20,
+      "annotated_definitions": 20,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/services/mail/bounces.py",
       "sha256": "99005d9979093e87579625fbf159f267490fbe31f94c5578db3303f6da9aed28",
       "bytes": 11039,
@@ -4405,15 +4418,15 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "sha256": "ed18faa9ec5be59371a844b547ec82b9344b9339cc7834164e277ebc39f55557",
-      "bytes": 13127,
-      "lines": 285,
+      "sha256": "9cfae207bbc633373c91e10a1ab085bce1ccfae816d5eaf9ee8bbb38855a8545",
+      "bytes": 15984,
+      "lines": 337,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 13,
-      "annotated_definitions": 13,
+      "definitions": 14,
+      "annotated_definitions": 14,
       "missing_definitions": []
     },
     {
@@ -4444,15 +4457,15 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "sha256": "a672bb877b8c42278aae3f2bffa9c0bafa8c631b0c1704c76f263c5bda65540e",
-      "bytes": 29985,
-      "lines": 484,
+      "sha256": "af420b3b920f7baae6c6c3c9d7de0cd49161f42c98608b7ad66067c90f812baf",
+      "bytes": 32114,
+      "lines": 527,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 23,
-      "annotated_definitions": 23,
+      "definitions": 25,
+      "annotated_definitions": 25,
       "missing_definitions": []
     },
     {
@@ -7239,15 +7252,15 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "sha256": "cf66df677d938bc01b7f78889defe2810349cee13a5ac1cd5a7bb7e905c52c58",
-      "bytes": 15837,
-      "lines": 274,
+      "sha256": "29def0b0ab1a13bd3a197e639f595b45d9f04acc6588848a175982cf06d8fb7a",
+      "bytes": 18089,
+      "lines": 306,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 11,
-      "annotated_definitions": 11,
+      "definitions": 12,
+      "annotated_definitions": 12,
       "missing_definitions": []
     },
     {
@@ -9995,15 +10008,28 @@
     },
     {
       "path": "backend/tests/test_mail.py",
-      "sha256": "513cf0d1dcab30b8ace469fffdf9e68cf19b30148faa130f5728faaa72e9c1ae",
-      "bytes": 15576,
-      "lines": 330,
+      "sha256": "f7c9447e584a23c53cab4553a23291dddd9ab63a6c9d01190750b541fd3be71c",
+      "bytes": 17140,
+      "lines": 362,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 27,
-      "annotated_definitions": 27,
+      "definitions": 30,
+      "annotated_definitions": 30,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_mail_blocks.py",
+      "sha256": "4b56dfc297e37fcc92c231dd374aecef2854ebfab422da16d7e4d0faac4c6d34",
+      "bytes": 5207,
+      "lines": 92,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 9,
+      "annotated_definitions": 9,
       "missing_definitions": []
     },
     {
@@ -13986,9 +14012,9 @@
     },
     {
       "path": "docs/adr/0032-email-channel-service-mail-and-newsletter.md",
-      "sha256": "42bd9edee7c76e4e2abb1912028b6e1da3eb8a0b445438391d46b3cc51580a2f",
-      "bytes": 19936,
-      "lines": 71,
+      "sha256": "90af47085c8791b44d678ed6b7c74866a2d398404946a023be1892f9ddaa0655",
+      "bytes": 23842,
+      "lines": 84,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14324,9 +14350,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "620bfbac642135cd178c36287f4ef3ba3bd1b846d25523350c2a9156cce9ae46",
-      "bytes": 399399,
-      "lines": 1285,
+      "sha256": "a38c7b173c60074eff0adcf20a9030ec83e3f729ea8bb62e2a401d5b70e15d45",
+      "bytes": 400320,
+      "lines": 1286,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14857,9 +14883,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "c2b00e6692bab96d1bc412934f8852622299a1806aae4baf6f09261f5ae477e3",
-      "bytes": 3872594,
-      "lines": 137088,
+      "sha256": "14bc0f3bb0157d596be6e53767768b7ececfa81fc34f8722f90eb46d77e56246",
+      "bytes": 3872836,
+      "lines": 137098,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -14909,9 +14935,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "6e78ff160565341dd58a69e30d3c6482f835228b5fbf129f734593b45ade03fb",
-      "bytes": 12632023,
-      "lines": 380200,
+      "sha256": "1d0f154b0a2321dc10f8c0686f9a3f3d7cc6b7c3e8ef8dbd4c0a2a5bef1326a0",
+      "bytes": 12645059,
+      "lines": 380634,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14922,9 +14948,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "e3a9a7e122c596fc7e4b455d49fbda2742eb94040c7e9ce147655a80f8719eb6",
-      "bytes": 649182,
-      "lines": 3547,
+      "sha256": "881dc990dd7e2ba82acd547956f2bd759dc8b94f8c7926afe27ead083df94c7d",
+      "bytes": 650002,
+      "lines": 3552,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -32849,9 +32875,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "48f3331971669e70c22d348e524bbfcde860f2a9477699b973335b59f35ce9ca",
+  "ledger_sha256": "4c50748eb025ecc8a824ec049e7e9eee8e36a7093909e326b4361f39e14ea7d5",
   "javascript_inventory_sha256": "c93c20dcc7460a1c95613d90220016a4ee19b9ddfd6f2a431968ccf513f9cebe",
-  "baseline_commit": "b0aa1fbe67699c842ede0d99f84bf16beefb1f1f",
+  "baseline_commit": "fc9d56d15597dabb02ea90f737b554a155bd0c97",
   "branch": "worktree-agent-ac64d35e8ddbf65a5",
   "unstaged_at_capture": [
     "docs/indicator-index.json",

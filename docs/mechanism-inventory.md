@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **61**
 - Middleware: **6**
-- Registry declarations: **1411**
-- Registry references: **2660**
+- Registry declarations: **1416**
+- Registry references: **2665**
 - Migration operations: **490**
-- Candidate effects: **2938**
+- Candidate effects: **2939**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -2714,14 +2714,18 @@ Relationships: `[]`
 | app.services.mail.account.PROVIDER_NAMES | Dict | 'ru', 'en' | [backend/app/services/mail/account.py:24](../backend/app/services/mail/account.py#L24) |
 | app.services.mail.audience.RU_COUNTRIES | Call | computed source expression | [backend/app/services/mail/audience.py:23](../backend/app/services/mail/audience.py#L23) |
 | app.services.mail.audience.RU_MAIL_DOMAINS | Tuple | sequence/source expression | [backend/app/services/mail/audience.py:24](../backend/app/services/mail/audience.py#L24) |
+| app.services.mail.blocks.TYPES | Tuple | sequence/source expression | [backend/app/services/mail/blocks.py:19](../backend/app/services/mail/blocks.py#L19) |
+| app.services.mail.blocks.RANGE_FIELDS | Set | sequence/source expression | [backend/app/services/mail/blocks.py:20](../backend/app/services/mail/blocks.py#L20) |
+| app.services.mail.blocks._RANGE_RE | Call | computed source expression | [backend/app/services/mail/blocks.py:21](../backend/app/services/mail/blocks.py#L21) |
+| app.services.mail.blocks.LABELS | Dict | 'ru', 'en' | [backend/app/services/mail/blocks.py:22](../backend/app/services/mail/blocks.py#L22) |
 | app.services.mail.bounces._ADDR_RE | Call | computed source expression | [backend/app/services/mail/bounces.py:40](../backend/app/services/mail/bounces.py#L40) |
 | app.services.mail.bounces._STATUS_RE | Call | computed source expression | [backend/app/services/mail/bounces.py:41](../backend/app/services/mail/bounces.py#L41) |
-| app.services.mail.campaign.KEY_RE | Call | computed source expression | [backend/app/services/mail/campaign.py:42](../backend/app/services/mail/campaign.py#L42) |
-| app.services.mail.campaign.OWN_HOSTS | Tuple | sequence/source expression | [backend/app/services/mail/campaign.py:43](../backend/app/services/mail/campaign.py#L43) |
+| app.services.mail.campaign.KEY_RE | Call | computed source expression | [backend/app/services/mail/campaign.py:44](../backend/app/services/mail/campaign.py#L44) |
+| app.services.mail.campaign.OWN_HOSTS | Tuple | sequence/source expression | [backend/app/services/mail/campaign.py:45](../backend/app/services/mail/campaign.py#L45) |
 | app.services.mail.templates.ASSETS | Call | computed source expression | [backend/app/services/mail/templates.py:40](../backend/app/services/mail/templates.py#L40) |
 | app.services.mail.templates.OPERATOR | Dict | 'ru', 'en' | [backend/app/services/mail/templates.py:44](../backend/app/services/mail/templates.py#L44) |
 | app.services.mail.templates.STRINGS | Dict | 'ru', 'en' | [backend/app/services/mail/templates.py:49](../backend/app/services/mail/templates.py#L49) |
-| app.services.mail.templates.ACTION_KINDS | Tuple | sequence/source expression | [backend/app/services/mail/templates.py:359](../backend/app/services/mail/templates.py#L359) |
+| app.services.mail.templates.ACTION_KINDS | Tuple | sequence/source expression | [backend/app/services/mail/templates.py:365](../backend/app/services/mail/templates.py#L365) |
 | app.services.mail.tokens.PURPOSES | Tuple | sequence/source expression | [backend/app/services/mail/tokens.py:25](../backend/app/services/mail/tokens.py#L25) |
 | app.services.mail.tokens.TTL_SECONDS | Dict | 'unsub', 'unsub_watch', 'verify', 'reset' | [backend/app/services/mail/tokens.py:26](../backend/app/services/mail/tokens.py#L26) |
 | app.services.mail.transport.BULK_KINDS | Call | computed source expression | [backend/app/services/mail/transport.py:57](../backend/app/services/mail/transport.py#L57) |
@@ -3366,6 +3370,7 @@ Relationships: `[]`
 | scripts.indexnow-ping-all._VOLATILE_PREFIXES | Tuple | sequence/source expression | [backend/scripts/indexnow-ping-all.py:50](../backend/scripts/indexnow-ping-all.py#L50) |
 | scripts.load-world-eurostat.PRIORITY_PREFIXES | Tuple | sequence/source expression | [backend/scripts/load-world-eurostat.py:96](../backend/scripts/load-world-eurostat.py#L96) |
 | scripts.mail.HERE | Call | computed source expression | [backend/scripts/mail.py:35](../backend/scripts/mail.py#L35) |
+| scripts.mail.SAMPLE_LABEL | Dict | 'verify_email', 'password_reset', 'newsletter', 'oauth_hint', 'reconfirm', 'watch_digest' | [backend/scripts/mail.py:47](../backend/scripts/mail.py#L47) |
 | scripts.metrika-goals-redesign._GOAL_NAMES | Dict | 'signup', 'newsletter_opt_in', 'feedback_submit', 'login_success', 'download_csv', 'download_excel', 'download_ical', 'demographics_csv', 'chart_image_download', 'compare_image_download', 'compare_add', 'compare_change', 'region_compare_add', 'calc_share', 'calc_copy_result', 'calc_mortgage', 'calc_compound', 'embed_code_copy', 'contact_email' | [backend/scripts/metrika-goals-redesign.py:39](../backend/scripts/metrika-goals-redesign.py#L39) |
 | scripts.metrika-goals-redesign._FUNNELS | List | sequence/source expression | [backend/scripts/metrika-goals-redesign.py:61](../backend/scripts/metrika-goals-redesign.py#L61) |
 | scripts.public-bot-setup.COMMANDS | List | sequence/source expression | [backend/scripts/public-bot-setup.py:32](../backend/scripts/public-bot-setup.py#L32) |

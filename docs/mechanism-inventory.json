@@ -1389,14 +1389,19 @@
       "lines": 129
     },
     {
+      "path": "backend/app/services/mail/blocks.py",
+      "sha256": "692807c72300a6a7b6c97e5a5d8a294badc0048c2ddb8341a9180e19a9031105",
+      "lines": 282
+    },
+    {
       "path": "backend/app/services/mail/bounces.py",
       "sha256": "99005d9979093e87579625fbf159f267490fbe31f94c5578db3303f6da9aed28",
       "lines": 225
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "sha256": "ed18faa9ec5be59371a844b547ec82b9344b9339cc7834164e277ebc39f55557",
-      "lines": 285
+      "sha256": "9cfae207bbc633373c91e10a1ab085bce1ccfae816d5eaf9ee8bbb38855a8545",
+      "lines": 337
     },
     {
       "path": "backend/app/services/mail/service.py",
@@ -1410,8 +1415,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "sha256": "a672bb877b8c42278aae3f2bffa9c0bafa8c631b0c1704c76f263c5bda65540e",
-      "lines": 484
+      "sha256": "af420b3b920f7baae6c6c3c9d7de0cd49161f42c98608b7ad66067c90f812baf",
+      "lines": 527
     },
     {
       "path": "backend/app/services/mail/tokens.py",
@@ -2440,8 +2445,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "sha256": "cf66df677d938bc01b7f78889defe2810349cee13a5ac1cd5a7bb7e905c52c58",
-      "lines": 274
+      "sha256": "29def0b0ab1a13bd3a197e639f595b45d9f04acc6588848a175982cf06d8fb7a",
+      "lines": 306
     },
     {
       "path": "backend/scripts/metrika-goals-redesign.py",
@@ -38611,8 +38616,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 209,
+      "end_line": 209,
       "owner": "run",
       "conditions": [],
       "name": "mail_campaign_max_per_run",
@@ -38620,8 +38625,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 164,
-      "end_line": 164,
+      "line": 210,
+      "end_line": 210,
       "owner": "run",
       "conditions": [],
       "name": "mail_campaign_pause_seconds",
@@ -38629,8 +38634,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 233,
-      "end_line": 233,
+      "line": 285,
+      "end_line": 285,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_campaign_max_per_run",
@@ -38638,8 +38643,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 234,
-      "end_line": 234,
+      "line": 286,
+      "end_line": 286,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_campaign_pause_seconds",
@@ -38647,8 +38652,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 156,
-      "end_line": 156,
+      "line": 202,
+      "end_line": 202,
       "owner": "run",
       "conditions": [],
       "name": "mail_allow_all_recipients",
@@ -38656,8 +38661,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 158,
-      "end_line": 158,
+      "line": 204,
+      "end_line": 204,
       "owner": "run",
       "conditions": [],
       "name": "mail_enabled",
@@ -38665,8 +38670,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 278,
+      "end_line": 278,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_allow_all_recipients",
@@ -38674,8 +38679,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 280,
+      "end_line": 280,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_enabled",
@@ -41302,8 +41307,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 75,
+      "end_line": 75,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_user",
@@ -41311,8 +41316,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 75,
+      "end_line": 75,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_host",
@@ -41320,8 +41325,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 76,
+      "end_line": 76,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_user",
@@ -41329,8 +41334,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 70,
-      "end_line": 70,
+      "line": 83,
+      "end_line": 83,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_user",
@@ -41338,8 +41343,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 70,
-      "end_line": 70,
+      "line": 83,
+      "end_line": 83,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_password",
@@ -41347,8 +41352,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 74,
-      "end_line": 74,
+      "line": 87,
+      "end_line": 87,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_security",
@@ -41356,8 +41361,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 111,
-      "end_line": 111,
+      "line": 124,
+      "end_line": 124,
       "owner": "cmd_test",
       "conditions": [],
       "name": "mail_enabled",
@@ -41365,8 +41370,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 53,
-      "end_line": 53,
+      "line": 66,
+      "end_line": 66,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_enabled",
@@ -41374,8 +41379,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 54,
-      "end_line": 54,
+      "line": 67,
+      "end_line": 67,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_host",
@@ -41383,8 +41388,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 54,
-      "end_line": 54,
+      "line": 67,
+      "end_line": 67,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_port",
@@ -41392,8 +41397,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 54,
-      "end_line": 54,
+      "line": 67,
+      "end_line": 67,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_security",
@@ -41401,8 +41406,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 57,
-      "end_line": 57,
+      "line": 70,
+      "end_line": 70,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_from_name",
@@ -41410,8 +41415,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 68,
-      "end_line": 68,
+      "line": 81,
+      "end_line": 81,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_bounce_poll_enabled",
@@ -41419,8 +41424,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 68,
-      "end_line": 68,
+      "line": 81,
+      "end_line": 81,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_imap_host",
@@ -41428,8 +41433,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 68,
-      "end_line": 68,
+      "line": 81,
+      "end_line": 81,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_imap_port",
@@ -41437,8 +41442,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 69,
-      "end_line": 69,
+      "line": 82,
+      "end_line": 82,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_watch_digest_enabled",
@@ -41446,8 +41451,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 69,
-      "end_line": 69,
+      "line": 82,
+      "end_line": 82,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_watch_digest_hour_msk",
@@ -41455,8 +41460,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 252,
+      "end_line": 252,
       "owner": "cmd_watch_digest",
       "conditions": [],
       "name": "mail_enabled",
@@ -41464,8 +41469,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 252,
+      "end_line": 252,
       "owner": "cmd_watch_digest",
       "conditions": [],
       "name": "mail_watch_digest_enabled",
@@ -41473,8 +41478,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 55,
-      "end_line": 55,
+      "line": 68,
+      "end_line": 68,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_user",
@@ -41482,8 +41487,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 56,
-      "end_line": 56,
+      "line": 69,
+      "end_line": 69,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_smtp_password",
@@ -41491,8 +41496,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 58,
-      "end_line": 58,
+      "line": 71,
+      "end_line": 71,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_reply_to",
@@ -41500,8 +41505,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 60,
-      "end_line": 60,
+      "line": 73,
+      "end_line": 73,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_allow_all_recipients",
@@ -41509,8 +41514,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 88,
+      "end_line": 88,
       "owner": "cmd_check",
       "conditions": [
         "settings.mail_smtp_security == 'starttls'"
@@ -41520,8 +41525,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 88,
+      "end_line": 88,
       "owner": "cmd_check",
       "conditions": [
         "settings.mail_smtp_security == 'starttls'"
@@ -41531,8 +41536,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 77,
-      "end_line": 77,
+      "line": 90,
+      "end_line": 90,
       "owner": "cmd_check",
       "conditions": [
         "settings.mail_smtp_security == 'starttls'"
@@ -41542,8 +41547,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 77,
-      "end_line": 77,
+      "line": 90,
+      "end_line": 90,
       "owner": "cmd_check",
       "conditions": [
         "settings.mail_smtp_security == 'starttls'"
@@ -41553,8 +41558,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 92,
+      "end_line": 92,
       "owner": "cmd_check",
       "conditions": [
         "not (settings.mail_smtp_security == 'starttls')"
@@ -41564,8 +41569,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 92,
+      "end_line": 92,
       "owner": "cmd_check",
       "conditions": [
         "not (settings.mail_smtp_security == 'starttls')"
@@ -41575,8 +41580,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 80,
-      "end_line": 80,
+      "line": 93,
+      "end_line": 93,
       "owner": "cmd_check",
       "conditions": [
         "not (settings.mail_smtp_security == 'starttls')"
@@ -41586,8 +41591,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 80,
-      "end_line": 80,
+      "line": 93,
+      "end_line": 93,
       "owner": "cmd_check",
       "conditions": [
         "not (settings.mail_smtp_security == 'starttls')"
@@ -41597,8 +41602,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 59,
-      "end_line": 59,
+      "line": 72,
+      "end_line": 72,
       "owner": "cmd_check",
       "conditions": [],
       "name": "mail_token_secret",
@@ -103273,6 +103278,92 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 19,
+      "end_line": 19,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "TYPES",
+      "symbol": "app.services.mail.blocks.TYPES",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('lead', 'story', 'forecast', 'table', 'calendar')",
+      "expression_truncated": false,
+      "expression_chars": 50,
+      "ast_sha256": "70edcb0c1e80f6b0dd5eb12df657c2018e5754f1e7525aff04231c06770feb51",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 20,
+      "end_line": 20,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "RANGE_FIELDS",
+      "symbol": "app.services.mail.blocks.RANGE_FIELDS",
+      "kind": "Set",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "{'lower', 'upper', 'range', 'min', 'max', 'interval', 'ci', 'low', 'high'}",
+      "expression_truncated": false,
+      "expression_chars": 74,
+      "ast_sha256": "21859afcf3c418c2528eb13ccd54fef5acd9a42ab48f14aa308ef1fd7e5c89dd",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 21,
+      "end_line": 21,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_RANGE_RE",
+      "symbol": "app.services.mail.blocks._RANGE_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('\\\\d[\\\\d\\\\s\\xa0.,]*\\\\s*[–—-]\\\\s*[−-]?\\\\d|(?<!\\\\w)от\\\\s.+\\\\sдо\\\\s|(?<!\\\\w)from\\\\s.+\\\\sto\\\\s', re.I)",
+      "expression_truncated": false,
+      "expression_chars": 109,
+      "ast_sha256": "b3f3994839c59bb5aeb11f5cc5addaec9d9f077268b08930501d46738a5e9a6a",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 22,
+      "end_line": 25,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "LABELS",
+      "symbol": "app.services.mail.blocks.LABELS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'ru'",
+        "'en'"
+      ],
+      "entries": [
+        {
+          "key": "'ru'",
+          "expression": "{'source': 'Источник', 'last': 'Последнее значение', 'chart': 'График'}",
+          "expression_truncated": false,
+          "expression_chars": 71,
+          "ast_sha256": "b035b18e3be64dcec354b65faaa9769c735e561d4fbdcc91524a406d8dfc478a"
+        },
+        {
+          "key": "'en'",
+          "expression": "{'source': 'Source', 'last': 'Last value', 'chart': 'Chart'}",
+          "expression_truncated": false,
+          "expression_chars": 60,
+          "ast_sha256": "1a7d1b057fd1982e09a16db59f484b9c0da6e610550858ea50f67c92b423cb9f"
+        }
+      ],
+      "expression": "{'ru': {'source': 'Источник', 'last': 'Последнее значение', 'chart': 'График'}, 'en': {'source': 'Source', 'last': 'Last value', 'chart': 'Chart'}}",
+      "expression_truncated": false,
+      "expression_chars": 147,
+      "ast_sha256": "352a943d0527c5795d4f7f3a881d9ac87d1e3d852bbcd7183983a6373bf393bc",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/mail/bounces.py",
       "line": 40,
       "end_line": 40,
@@ -103308,8 +103399,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 42,
-      "end_line": 42,
+      "line": 44,
+      "end_line": 44,
       "owner": "<module>",
       "conditions": [],
       "name": "KEY_RE",
@@ -103325,8 +103416,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 43,
-      "end_line": 43,
+      "line": 45,
+      "end_line": 45,
       "owner": "<module>",
       "conditions": [],
       "name": "OWN_HOSTS",
@@ -103429,8 +103520,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 365,
+      "end_line": 365,
       "owner": "<module>",
       "conditions": [],
       "name": "ACTION_KINDS",
@@ -126873,6 +126964,73 @@
       "expression_chars": 24,
       "ast_sha256": "d44e7d02687cdbf8fc79685a0d804e563813f4a84f2eb0ac60318cd0b1739a48",
       "runtime_expansion": true
+    },
+    {
+      "path": "backend/scripts/mail.py",
+      "line": 47,
+      "end_line": 54,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SAMPLE_LABEL",
+      "symbol": "scripts.mail.SAMPLE_LABEL",
+      "kind": "Dict",
+      "literal_keys": [
+        "'verify_email'",
+        "'password_reset'",
+        "'newsletter'",
+        "'oauth_hint'",
+        "'reconfirm'",
+        "'watch_digest'"
+      ],
+      "entries": [
+        {
+          "key": "'verify_email'",
+          "expression": "'подтверждение почты после регистрации'",
+          "expression_truncated": false,
+          "expression_chars": 39,
+          "ast_sha256": "9e6387b9f6f2ff829181a80b3c9947c50a4f56e06515c52d00d3166d1d4e45c9"
+        },
+        {
+          "key": "'password_reset'",
+          "expression": "'сброс пароля'",
+          "expression_truncated": false,
+          "expression_chars": 14,
+          "ast_sha256": "03b4f65c38b011dbafac6d367d13127fd082a63c8b48a86ff57fe310d65e23ac"
+        },
+        {
+          "key": "'newsletter'",
+          "expression": "'проверка вида рассылки'",
+          "expression_truncated": false,
+          "expression_chars": 24,
+          "ast_sha256": "14ffe6dc34ef4b76dda9d253d42b1f9c3bcbaebddcd609c30c62904ebc8f4e10"
+        },
+        {
+          "key": "'oauth_hint'",
+          "expression": "'«Забыли пароль?» при входе через Яндекс'",
+          "expression_truncated": false,
+          "expression_chars": 41,
+          "ast_sha256": "47ba8644f2609d40fd94e264870705ace9828e2b989daed3a26656c327d976a8"
+        },
+        {
+          "key": "'reconfirm'",
+          "expression": "'подтверждение почты для давних аккаунтов'",
+          "expression_truncated": false,
+          "expression_chars": 42,
+          "ast_sha256": "cac3f70288eec26f0da1be02d17fe409aaa9113eb389707f8510a0ec4991c60a"
+        },
+        {
+          "key": "'watch_digest'",
+          "expression": "'новые значения по «колокольчику»'",
+          "expression_truncated": false,
+          "expression_chars": 34,
+          "ast_sha256": "8400bc43f3cda9620fd3fa768ba9d35f02a7d4e31a5decc184c1f59bb1b6ba3a"
+        }
+      ],
+      "expression": "{'verify_email': 'подтверждение почты после регистрации', 'password_reset': 'сброс пароля', 'newsletter': 'проверка вида рассылки', 'oauth_hint': '«Забыли пароль?» при входе через Яндекс', 'reconfirm': 'подтверждение почты для давних аккаунтов', 'watch_digest': 'новые значения по «колокольчику»'}",
+      "expression_truncated": false,
+      "expression_chars": 297,
+      "ast_sha256": "689d8442fe34199eb862015c135643b181e2389d1193e2eb136faead25982237",
+      "runtime_expansion": false
     },
     {
       "path": "backend/scripts/metrika-goals-redesign.py",
@@ -151987,6 +152145,22 @@
       "ast_sha256": "0678c9850e1bfe5de7cbfe8c0d33ae7c03515cdcbe69a49afbabd7bb70396a8c"
     },
     {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 44,
+      "end_line": 44,
+      "owner": "validate_block",
+      "conditions": [
+        "kind == 'forecast'"
+      ],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.mail.blocks.set",
+      "expression": "set(b)",
+      "expression_truncated": false,
+      "expression_chars": 6,
+      "ast_sha256": "8e0c4a742e7b7c72f79eedca2d08546bbb7be809563b9cfac47499bc94dc7a2c"
+    },
+    {
       "path": "backend/app/services/mail/bounces.py",
       "line": 191,
       "end_line": 191,
@@ -152078,8 +152252,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 256,
+      "end_line": 256,
       "owner": "run",
       "conditions": [],
       "operation": "commit",
@@ -152092,8 +152266,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 267,
-      "end_line": 267,
+      "line": 319,
+      "end_line": 319,
       "owner": "run_reconfirm",
       "conditions": [],
       "operation": "commit",
@@ -152106,8 +152280,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 253,
+      "end_line": 253,
       "owner": "run",
       "conditions": [],
       "operation": "commit",
@@ -152120,8 +152294,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 316,
+      "end_line": 316,
       "owner": "run_reconfirm",
       "conditions": [],
       "operation": "commit",
@@ -230134,8 +230308,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 223,
+      "end_line": 223,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage.campaign",
@@ -230143,8 +230317,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 223,
+      "end_line": 223,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage.user_id",
@@ -230152,8 +230326,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 292,
+      "end_line": 292,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage.campaign",
@@ -230161,8 +230335,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 292,
+      "end_line": 292,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage.user_id",
@@ -230170,8 +230344,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 303,
+      "end_line": 303,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -230179,8 +230353,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 176,
-      "end_line": 176,
+      "line": 222,
+      "end_line": 222,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230188,8 +230362,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 223,
+      "end_line": 223,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230197,8 +230371,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 223,
+      "end_line": 223,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230206,8 +230380,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 291,
+      "end_line": 291,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230215,8 +230389,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 292,
+      "end_line": 292,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230224,8 +230398,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 292,
+      "end_line": 292,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230233,8 +230407,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 302,
+      "end_line": 302,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email_verified",
@@ -230242,8 +230416,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 303,
+      "end_line": 303,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -230251,8 +230425,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 302,
+      "end_line": 302,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -309900,6 +310074,186 @@
       "kind": "AsyncFunctionDef"
     },
     {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 28,
+      "end_line": 29,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "BlockError",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 32,
+      "end_line": 33,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_l",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 36,
+      "end_line": 54,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "validate_block",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 59,
+      "end_line": 64,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_kicker",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 67,
+      "end_line": 73,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_title",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 76,
+      "end_line": 80,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_text",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 83,
+      "end_line": 87,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_source",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 90,
+      "end_line": 93,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_layer",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 96,
+      "end_line": 107,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_with_value",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 110,
+      "end_line": 116,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_value",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 121,
+      "end_line": 148,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_bars",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 151,
+      "end_line": 153,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_fmt_num",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 156,
+      "end_line": 169,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "lead",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 172,
+      "end_line": 175,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "story",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 178,
+      "end_line": 185,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "forecast",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 188,
+      "end_line": 205,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "table",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 208,
+      "end_line": 225,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "calendar",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 228,
+      "end_line": 240,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "visible_entries",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 243,
+      "end_line": 247,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "render",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 250,
+      "end_line": 282,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "as_text",
+      "kind": "FunctionDef"
+    },
+    {
       "path": "backend/app/services/mail/bounces.py",
       "line": 45,
       "end_line": 50,
@@ -309973,8 +310327,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 46,
-      "end_line": 47,
+      "line": 48,
+      "end_line": 49,
       "owner": "<module>",
       "conditions": [],
       "name": "CampaignError",
@@ -309982,8 +310336,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 51,
-      "end_line": 53,
+      "line": 53,
+      "end_line": 55,
       "owner": "<module>",
       "conditions": [],
       "name": "Issue",
@@ -309991,8 +310345,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 57,
-      "end_line": 75,
+      "line": 59,
+      "end_line": 77,
       "owner": "<module>",
       "conditions": [],
       "name": "RunReport",
@@ -310000,8 +310354,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 78,
-      "end_line": 90,
+      "line": 80,
+      "end_line": 95,
       "owner": "<module>",
       "conditions": [],
       "name": "with_utm",
@@ -310009,8 +310363,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 93,
-      "end_line": 117,
+      "line": 98,
+      "end_line": 138,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_issue",
@@ -310018,8 +310372,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 120,
-      "end_line": 121,
+      "line": 141,
+      "end_line": 152,
       "owner": "<module>",
       "conditions": [],
       "name": "load_issue",
@@ -310027,8 +310381,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 124,
-      "end_line": 128,
+      "line": 155,
+      "end_line": 159,
       "owner": "<module>",
       "conditions": [],
       "name": "unsubscribe_links",
@@ -310036,8 +310390,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 131,
-      "end_line": 137,
+      "line": 162,
+      "end_line": 170,
       "owner": "<module>",
       "conditions": [],
       "name": "render_for",
@@ -310045,8 +310399,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 140,
-      "end_line": 150,
+      "line": 173,
+      "end_line": 183,
       "owner": "<module>",
       "conditions": [],
       "name": "send_test",
@@ -310054,8 +310408,17 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 153,
-      "end_line": 208,
+      "line": 192,
+      "end_line": 195,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "personal_digest",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/campaign.py",
+      "line": 198,
+      "end_line": 260,
       "owner": "<module>",
       "conditions": [],
       "name": "run",
@@ -310063,8 +310426,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 214,
-      "end_line": 271,
+      "line": 266,
+      "end_line": 323,
       "owner": "<module>",
       "conditions": [],
       "name": "run_reconfirm",
@@ -310072,8 +310435,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 274,
-      "end_line": 285,
+      "line": 326,
+      "end_line": 337,
       "owner": "<module>",
       "conditions": [],
       "name": "send_reconfirm_test",
@@ -310081,8 +310444,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 69,
-      "end_line": 75,
+      "line": 71,
+      "end_line": 77,
       "owner": "RunReport",
       "conditions": [],
       "name": "as_dict",
@@ -310262,7 +310625,7 @@
     {
       "path": "backend/app/services/mail/templates.py",
       "line": 180,
-      "end_line": 189,
+      "end_line": 192,
       "owner": "<module>",
       "conditions": [],
       "name": "Digest",
@@ -310270,8 +310633,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 194,
-      "end_line": 196,
+      "line": 197,
+      "end_line": 199,
       "owner": "<module>",
       "conditions": [],
       "name": "_p",
@@ -310279,8 +310642,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 199,
-      "end_line": 209,
+      "line": 202,
+      "end_line": 212,
       "owner": "<module>",
       "conditions": [],
       "name": "_button",
@@ -310288,8 +310651,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 212,
-      "end_line": 216,
+      "line": 215,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "_fallback_link",
@@ -310297,8 +310660,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 219,
-      "end_line": 223,
+      "line": 222,
+      "end_line": 226,
       "owner": "<module>",
       "conditions": [],
       "name": "_note",
@@ -310306,8 +310669,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 226,
-      "end_line": 245,
+      "line": 229,
+      "end_line": 248,
       "owner": "<module>",
       "conditions": [],
       "name": "_item",
@@ -310315,8 +310678,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 248,
-      "end_line": 263,
+      "line": 251,
+      "end_line": 266,
       "owner": "<module>",
       "conditions": [],
       "name": "_footer",
@@ -310324,8 +310687,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 266,
-      "end_line": 287,
+      "line": 269,
+      "end_line": 290,
       "owner": "<module>",
       "conditions": [],
       "name": "_hero",
@@ -310333,8 +310696,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 290,
-      "end_line": 337,
+      "line": 293,
+      "end_line": 343,
       "owner": "<module>",
       "conditions": [],
       "name": "layout",
@@ -310342,8 +310705,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 340,
-      "end_line": 342,
+      "line": 346,
+      "end_line": 348,
       "owner": "<module>",
       "conditions": [],
       "name": "_h1",
@@ -310351,8 +310714,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 345,
-      "end_line": 354,
+      "line": 351,
+      "end_line": 360,
       "owner": "<module>",
       "conditions": [],
       "name": "_text_footer",
@@ -310360,8 +310723,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 362,
-      "end_line": 383,
+      "line": 368,
+      "end_line": 389,
       "owner": "<module>",
       "conditions": [],
       "name": "render_action",
@@ -310369,8 +310732,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 386,
-      "end_line": 395,
+      "line": 392,
+      "end_line": 401,
       "owner": "<module>",
       "conditions": [],
       "name": "_list_text",
@@ -310378,8 +310741,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 398,
-      "end_line": 403,
+      "line": 404,
+      "end_line": 409,
       "owner": "<module>",
       "conditions": [],
       "name": "_ru_plural",
@@ -310387,8 +310750,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 406,
-      "end_line": 415,
+      "line": 412,
+      "end_line": 421,
       "owner": "<module>",
       "conditions": [],
       "name": "watch_subject",
@@ -310396,8 +310759,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 418,
-      "end_line": 434,
+      "line": 424,
+      "end_line": 440,
       "owner": "<module>",
       "conditions": [],
       "name": "render_watch",
@@ -310405,8 +310768,26 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 437,
-      "end_line": 463,
+      "line": 443,
+      "end_line": 445,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_paragraphs",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/templates.py",
+      "line": 448,
+      "end_line": 456,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "preheader_of",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/templates.py",
+      "line": 459,
+      "end_line": 506,
       "owner": "<module>",
       "conditions": [],
       "name": "render_digest",
@@ -310414,8 +310795,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 466,
-      "end_line": 484,
+      "line": 509,
+      "end_line": 527,
       "owner": "<module>",
       "conditions": [],
       "name": "sample_digest",
@@ -310423,8 +310804,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 370,
-      "end_line": 371,
+      "line": 376,
+      "end_line": 377,
       "owner": "render_action",
       "conditions": [],
       "name": "tx",
@@ -334076,8 +334457,17 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 48,
-      "end_line": 49,
+      "line": 57,
+      "end_line": 58,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "sample_subject",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/scripts/mail.py",
+      "line": 61,
+      "end_line": 62,
       "owner": "<module>",
       "conditions": [],
       "name": "_yes",
@@ -334085,8 +334475,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 52,
-      "end_line": 85,
+      "line": 65,
+      "end_line": 98,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_check",
@@ -334094,8 +334484,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 88,
-      "end_line": 104,
+      "line": 101,
+      "end_line": 117,
       "owner": "<module>",
       "conditions": [],
       "name": "_test_mails",
@@ -334103,8 +334493,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 107,
-      "end_line": 134,
+      "line": 120,
+      "end_line": 147,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_test",
@@ -334112,8 +334502,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 137,
-      "end_line": 159,
+      "line": 150,
+      "end_line": 172,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_render",
@@ -334121,8 +334511,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 162,
-      "end_line": 174,
+      "line": 175,
+      "end_line": 187,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_audience",
@@ -334130,8 +334520,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 177,
-      "end_line": 189,
+      "line": 190,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_campaign",
@@ -334139,8 +334529,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 192,
-      "end_line": 203,
+      "line": 222,
+      "end_line": 233,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_reconfirm",
@@ -334148,8 +334538,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 206,
-      "end_line": 213,
+      "line": 236,
+      "end_line": 243,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_bounces",
@@ -334157,8 +334547,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 216,
-      "end_line": 228,
+      "line": 246,
+      "end_line": 258,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_watch_digest",
@@ -334166,8 +334556,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 231,
-      "end_line": 270,
+      "line": 261,
+      "end_line": 302,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -354312,6 +354702,42 @@
       "symbol": "app.services.identity.consents.NEWSLETTER_KINDS"
     },
     {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 39,
+      "end_line": 39,
+      "owner": "validate_block",
+      "conditions": [],
+      "symbol": "app.services.mail.blocks.TYPES"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 33,
+      "end_line": 33,
+      "owner": "_l",
+      "conditions": [],
+      "symbol": "app.services.mail.blocks.LABELS"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 44,
+      "end_line": 44,
+      "owner": "validate_block",
+      "conditions": [
+        "kind == 'forecast'"
+      ],
+      "symbol": "app.services.mail.blocks.RANGE_FIELDS"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 45,
+      "end_line": 45,
+      "owner": "validate_block",
+      "conditions": [
+        "kind == 'forecast'"
+      ],
+      "symbol": "app.services.mail.blocks._RANGE_RE"
+    },
+    {
       "path": "backend/app/services/mail/bounces.py",
       "line": 57,
       "end_line": 57,
@@ -354329,24 +354755,24 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 95,
-      "end_line": 95,
+      "line": 100,
+      "end_line": 100,
       "owner": "parse_issue",
       "conditions": [],
       "symbol": "app.services.mail.campaign.KEY_RE"
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 84,
-      "end_line": 84,
+      "line": 87,
+      "end_line": 87,
       "owner": "with_utm",
       "conditions": [],
       "symbol": "app.services.mail.campaign.OWN_HOSTS"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 367,
-      "end_line": 367,
+      "line": 373,
+      "end_line": 373,
       "owner": "render_action",
       "conditions": [],
       "symbol": "app.services.mail.templates.ACTION_KINDS"
@@ -354361,16 +354787,16 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 262,
-      "end_line": 262,
+      "line": 265,
+      "end_line": 265,
       "owner": "_footer",
       "conditions": [],
       "symbol": "app.services.mail.templates.OPERATOR"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 353,
-      "end_line": 353,
+      "line": 359,
+      "end_line": 359,
       "owner": "_text_footer",
       "conditions": [],
       "symbol": "app.services.mail.templates.OPERATOR"
@@ -365566,6 +365992,14 @@
       "owner": "<module>",
       "conditions": [],
       "symbol": "scripts.mail.HERE"
+    },
+    {
+      "path": "backend/scripts/mail.py",
+      "line": 132,
+      "end_line": 132,
+      "owner": "cmd_test",
+      "conditions": [],
+      "symbol": "scripts.mail.SAMPLE_LABEL"
     },
     {
       "path": "backend/scripts/metrika-goals-redesign.py",
