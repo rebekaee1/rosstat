@@ -13,10 +13,10 @@
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1350**
-- Registry references: **2547**
+- Registry declarations: **1351**
+- Registry references: **2548**
 - Migration operations: **480**
-- Candidate effects: **2818**
+- Candidate effects: **2822**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2362,16 +2362,17 @@ Relationships: `[]`
 | app.services.alerting.API_INTEREST_USE_CASES | Dict | 'analytics_treasury', 'planning_contracts', 'consulting', 'research', 'study', 'journalism', 'other' | [backend/app/services/alerting.py:373](../backend/app/services/alerting.py#L373) |
 | app.services.alerting._API_INTEREST_SOURCES | Dict | 'indicator', 'limit_modal' | [backend/app/services/alerting.py:382](../backend/app/services/alerting.py#L382) |
 | app.services.alerting._DEGRADED_LABELS | Dict | 'parsed_zero', 'fallback_used', 'deadline_skipped' | [backend/app/services/alerting.py:466](../backend/app/services/alerting.py#L466) |
-| app.services.analytics_alerts._ALERT_COOLDOWN | Dict | 'signup_drop', 'auth_error_spike', 'js_error_spike', 'memory_pressure', 'webmaster_sitemap_errors', 'webmaster_crawl_drop', 'webmaster_in_search_drop', 'webmaster_data_missing', 'metrika_goals_stray' | [backend/app/services/analytics_alerts.py:41](../backend/app/services/analytics_alerts.py#L41) |
-| app.services.analytics_alerts._NIGHT_MSK_HOURS | Call | computed source expression | [backend/app/services/analytics_alerts.py:59](../backend/app/services/analytics_alerts.py#L59) |
-| app.services.analytics_alerts._MSK_OFFSET | Call | computed source expression | [backend/app/services/analytics_alerts.py:60](../backend/app/services/analytics_alerts.py#L60) |
-| app.services.analytics_alerts.COLLECTION_SILENCE_AFTER | Call | computed source expression | [backend/app/services/analytics_alerts.py:61](../backend/app/services/analytics_alerts.py#L61) |
-| app.services.analytics_alerts._COLLECTION_PROBE_WINDOW | Call | computed source expression | [backend/app/services/analytics_alerts.py:62](../backend/app/services/analytics_alerts.py#L62) |
-| app.services.analytics_alerts._THIRD_PARTY_HOST_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/analytics_alerts.py:75](../backend/app/services/analytics_alerts.py#L75) |
-| app.services.analytics_alerts._JS_URL_RE | Call | computed source expression | [backend/app/services/analytics_alerts.py:78](../backend/app/services/analytics_alerts.py#L78) |
-| app.services.analytics_alerts._STALE_TAB_RE | Call | computed source expression | [backend/app/services/analytics_alerts.py:80](../backend/app/services/analytics_alerts.py#L80) |
-| app.services.analytics_alerts.SIGNUP_DROP_AFTER | Call | computed source expression | [backend/app/services/analytics_alerts.py:88](../backend/app/services/analytics_alerts.py#L88) |
-| app.services.analytics_alerts.AUTH_ERROR_BENIGN_CODES | Tuple | sequence/source expression | [backend/app/services/analytics_alerts.py:92](../backend/app/services/analytics_alerts.py#L92) |
+| app.services.analytics_alerts._ALERT_COOLDOWN | Dict | 'counter_mismatch', 'signup_drop', 'auth_error_spike', 'js_error_spike', 'memory_pressure', 'webmaster_sitemap_errors', 'webmaster_crawl_drop', 'webmaster_in_search_drop', 'webmaster_data_missing', 'metrika_goals_stray' | [backend/app/services/analytics_alerts.py:41](../backend/app/services/analytics_alerts.py#L41) |
+| app.services.analytics_alerts._NIGHT_MSK_HOURS | Call | computed source expression | [backend/app/services/analytics_alerts.py:61](../backend/app/services/analytics_alerts.py#L61) |
+| app.services.analytics_alerts._MSK_OFFSET | Call | computed source expression | [backend/app/services/analytics_alerts.py:62](../backend/app/services/analytics_alerts.py#L62) |
+| app.services.analytics_alerts.COLLECTION_SILENCE_AFTER | Call | computed source expression | [backend/app/services/analytics_alerts.py:63](../backend/app/services/analytics_alerts.py#L63) |
+| app.services.analytics_alerts._COLLECTION_PROBE_WINDOW | Call | computed source expression | [backend/app/services/analytics_alerts.py:64](../backend/app/services/analytics_alerts.py#L64) |
+| app.services.analytics_alerts._THIRD_PARTY_HOST_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/analytics_alerts.py:77](../backend/app/services/analytics_alerts.py#L77) |
+| app.services.analytics_alerts._JS_URL_RE | Call | computed source expression | [backend/app/services/analytics_alerts.py:80](../backend/app/services/analytics_alerts.py#L80) |
+| app.services.analytics_alerts._STALE_TAB_RE | Call | computed source expression | [backend/app/services/analytics_alerts.py:82](../backend/app/services/analytics_alerts.py#L82) |
+| app.services.analytics_alerts.SIGNUP_DROP_AFTER | Call | computed source expression | [backend/app/services/analytics_alerts.py:90](../backend/app/services/analytics_alerts.py#L90) |
+| app.services.analytics_alerts.AUTH_ERROR_BENIGN_CODES | Tuple | sequence/source expression | [backend/app/services/analytics_alerts.py:94](../backend/app/services/analytics_alerts.py#L94) |
+| app.services.analytics_alerts._METRIKA_ENGINE_NAMES | Dict | 'yandex', 'google', 'bing', 'duckduckgo', 'mail', 'rambler' | [backend/app/services/analytics_alerts.py:599](../backend/app/services/analytics_alerts.py#L599) |
 | app.services.analytics_marts.METRIKA_DEVICE | Dict | '1', '2', '3', '4' | [backend/app/services/analytics_marts.py:58](../backend/app/services/analytics_marts.py#L58) |
 | app.services.analytics_marts.METRIKA_BROWSER | Dict | 'yandex_browser', 'yandexsearch', 'yandexbrowsercorp', 'chrome', 'chromemobile', 'safari', 'safari_mobile', 'mobile_safari', 'firefox', 'firefox_mobile', 'edge', 'edgin', 'opera', 'opera_mobile', 'samsung_internet', 'android_browser', 'mi_browser', 'huawei_browser' | [backend/app/services/analytics_marts.py:62](../backend/app/services/analytics_marts.py#L62) |
 | app.services.analytics_marts.METRIKA_OS | Dict | 'windows', 'android', 'ios', 'ios_double', 'mac_os', 'macos', 'gnu_linux', 'linux' | [backend/app/services/analytics_marts.py:82](../backend/app/services/analytics_marts.py#L82) |
@@ -2408,7 +2409,7 @@ Relationships: `[]`
 | app.services.bot_chart.COMPARE | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:33](../backend/app/services/bot_chart.py#L33) |
 | app.services.bot_chart._MONTHS_SHORT | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:35](../backend/app/services/bot_chart.py#L35) |
 | app.services.bot_score._BOT_UA_RE | Call | computed source expression | [backend/app/services/bot_score.py:29](../backend/app/services/bot_score.py#L29) |
-| app.services.bot_score.HEURISTICS | Tuple | sequence/source expression | [backend/app/services/bot_score.py:135](../backend/app/services/bot_score.py#L135) |
+| app.services.bot_score.HEURISTICS | Tuple | sequence/source expression | [backend/app/services/bot_score.py:155](../backend/app/services/bot_score.py#L155) |
 | app.services.bot_traffic.CLASSES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:30](../backend/app/services/bot_traffic.py#L30) |
 | app.services.bot_traffic.OUTCOMES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:31](../backend/app/services/bot_traffic.py#L31) |
 | app.services.bot_traffic._LINE_RE | Call | computed source expression | [backend/app/services/bot_traffic.py:39](../backend/app/services/bot_traffic.py#L39) |
@@ -2995,15 +2996,15 @@ Relationships: `[]`
 | app.services.telegram_bot._RETRY_METHODS | Call | computed source expression | [backend/app/services/telegram_bot.py:99](../backend/app/services/telegram_bot.py#L99) |
 | app.services.telegram_calm.MSK | Call | computed source expression | [backend/app/services/telegram_calm.py:35](../backend/app/services/telegram_calm.py#L35) |
 | app.services.telegram_calm.HELD_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:42](../backend/app/services/telegram_calm.py#L42) |
-| app.services.telegram_calm.ACTION_KINDS | Dict | 'data_sanity' | [backend/app/services/telegram_calm.py:55](../backend/app/services/telegram_calm.py#L55) |
-| app.services.telegram_calm.URGENT_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:59](../backend/app/services/telegram_calm.py#L59) |
-| app.services.telegram_calm._MONTHS_GENITIVE | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:163](../backend/app/services/telegram_calm.py#L163) |
-| app.services.telegram_calm._TAG_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:165](../backend/app/services/telegram_calm.py#L165) |
-| app.services.telegram_calm._EMOJI_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:166](../backend/app/services/telegram_calm.py#L166) |
-| app.services.telegram_calm.GROUPS | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:169](../backend/app/services/telegram_calm.py#L169) |
-| app.services.telegram_calm._KIND_GROUP | DictComp | computed source expression | [backend/app/services/telegram_calm.py:177](../backend/app/services/telegram_calm.py#L177) |
-| app.services.telegram_calm.KIND_LABELS | Dict | 'http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert', 'etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'alert' | [backend/app/services/telegram_calm.py:180](../backend/app/services/telegram_calm.py#L180) |
-| app.services.telegram_calm._RECOVERY_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:207](../backend/app/services/telegram_calm.py#L207) |
+| app.services.telegram_calm.ACTION_KINDS | Dict | 'data_sanity' | [backend/app/services/telegram_calm.py:56](../backend/app/services/telegram_calm.py#L56) |
+| app.services.telegram_calm.URGENT_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:60](../backend/app/services/telegram_calm.py#L60) |
+| app.services.telegram_calm._MONTHS_GENITIVE | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:164](../backend/app/services/telegram_calm.py#L164) |
+| app.services.telegram_calm._TAG_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:166](../backend/app/services/telegram_calm.py#L166) |
+| app.services.telegram_calm._EMOJI_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:167](../backend/app/services/telegram_calm.py#L167) |
+| app.services.telegram_calm.GROUPS | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:170](../backend/app/services/telegram_calm.py#L170) |
+| app.services.telegram_calm._KIND_GROUP | DictComp | computed source expression | [backend/app/services/telegram_calm.py:178](../backend/app/services/telegram_calm.py#L178) |
+| app.services.telegram_calm.KIND_LABELS | Dict | 'http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert', 'etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch', 'alert' | [backend/app/services/telegram_calm.py:181](../backend/app/services/telegram_calm.py#L181) |
+| app.services.telegram_calm._RECOVERY_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:209](../backend/app/services/telegram_calm.py#L209) |
 | app.services.telegram_missed_summary.MSK | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:34](../backend/app/services/telegram_missed_summary.py#L34) |
 | app.services.telegram_missed_summary.DELIVERY_WINDOW | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:39](../backend/app/services/telegram_missed_summary.py#L39) |
 | app.services.telegram_missed_summary.SKIPPED_KINDS | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:43](../backend/app/services/telegram_missed_summary.py#L43) |

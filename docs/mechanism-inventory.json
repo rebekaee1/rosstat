@@ -810,8 +810,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "sha256": "d3c9bdeedb09e01e5b5b9efb48fd9df206595259be4d382c1c8eca87713ae7dc",
-      "lines": 586
+      "sha256": "7c59d7c90780bc758cd559eb8fadf12d8525fd5f1315c15b41dc84eb512bee4a",
+      "lines": 664
     },
     {
       "path": "backend/app/services/analytics_backfill.py",
@@ -885,8 +885,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "sha256": "50221862531a55fb7460771a6d1c72de41f6ff69e0792e222a347b86cccb700f",
-      "lines": 177
+      "sha256": "77830f276008d3613ec06e6c9e22eb08f4a37772908c87c9f9a3795e11854b40",
+      "lines": 199
     },
     {
       "path": "backend/app/services/bot_traffic.py",
@@ -1825,8 +1825,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "3e747a60b31aa9565c8328e0330684e0990a106329a30a89896feeee28f292fe",
-      "lines": 352
+      "sha256": "81f420dcc9a108ad93b693f755b97f6d869abbe672ebe2a6a4134a123370a863",
+      "lines": 354
     },
     {
       "path": "backend/app/services/telegram_missed_summary.py",
@@ -2185,13 +2185,13 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "sha256": "02c7862500cc66324a133a539a7e50ff7319b1bc0a502c658434d5305d3a70a5",
-      "lines": 1240
+      "sha256": "1b3b0dd2a1ab033320af31ac9895d4d22eead60f91543c1b6a6cb4fc6f3eb365",
+      "lines": 1242
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "sha256": "6ff9c8e45f5b242c39edeb4b4bb6411b3fecce215771c3e0d40a26c82d7beaef",
-      "lines": 438
+      "sha256": "9479260c036c626d780fd5a67015582cfc7f3fe64c1862fa1bb53aa872412c8e",
+      "lines": 445
     },
     {
       "path": "backend/app/tasks/freshness_watchdog.py",
@@ -36039,8 +36039,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 420,
-      "end_line": 420,
+      "line": 422,
+      "end_line": 422,
       "owner": "check_anomalies",
       "conditions": [],
       "name": "telegram_new_alerts_enabled",
@@ -36048,8 +36048,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 429,
+      "end_line": 429,
       "owner": "check_anomalies",
       "conditions": [],
       "name": "clickhouse_enabled",
@@ -36057,8 +36057,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 500,
-      "end_line": 500,
+      "line": 502,
+      "end_line": 502,
       "owner": "_check_host_pressure",
       "conditions": [],
       "name": "db_max_overflow",
@@ -36066,8 +36066,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 503,
+      "end_line": 503,
       "owner": "_check_host_pressure",
       "conditions": [],
       "name": "analytics_db_max_overflow",
@@ -38369,8 +38369,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 102,
-      "end_line": 102,
+      "line": 103,
+      "end_line": 103,
       "owner": "note_error_spike",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -38379,8 +38379,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 130,
-      "end_line": 130,
+      "line": 131,
+      "end_line": 131,
       "owner": "check_site_recovered",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -38389,8 +38389,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 332,
+      "end_line": 332,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -38399,8 +38399,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 72,
+      "end_line": 72,
       "owner": "should_hold",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -38409,8 +38409,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 73,
-      "end_line": 73,
+      "line": 74,
+      "end_line": 74,
       "owner": "should_hold",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -38418,8 +38418,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 82,
-      "end_line": 82,
+      "line": 83,
+      "end_line": 83,
       "owner": "hold",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -38957,8 +38957,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1072,
-      "end_line": 1072,
+      "line": 1074,
+      "end_line": 1074,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -38966,8 +38966,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1076,
-      "end_line": 1076,
+      "line": 1078,
+      "end_line": 1078,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "name": "analytics_allowed_counter_ids",
@@ -38975,8 +38975,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 350,
+      "end_line": 350,
       "owner": "behavior_retention_job",
       "conditions": [],
       "name": "behavior_raw_retention_days",
@@ -38984,8 +38984,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 369,
-      "end_line": 369,
+      "line": 376,
+      "end_line": 376,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_digest_v2_enabled",
@@ -39002,8 +39002,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 332,
+      "end_line": 332,
       "owner": "webmaster_queries_daily_job",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -39011,8 +39011,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 390,
-      "end_line": 390,
+      "line": 397,
+      "end_line": 397,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -39020,8 +39020,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 390,
-      "end_line": 390,
+      "line": 397,
+      "end_line": 397,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -39029,8 +39029,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 416,
-      "end_line": 416,
+      "line": 423,
+      "end_line": 423,
       "owner": "analytics_daily_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -39056,8 +39056,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 360,
-      "end_line": 360,
+      "line": 367,
+      "end_line": 367,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -39065,8 +39065,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 360,
-      "end_line": 360,
+      "line": 367,
+      "end_line": 367,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -89217,13 +89217,14 @@
     {
       "path": "backend/app/services/analytics_alerts.py",
       "line": 41,
-      "end_line": 55,
+      "end_line": 57,
       "owner": "<module>",
       "conditions": [],
       "name": "_ALERT_COOLDOWN",
       "symbol": "app.services.analytics_alerts._ALERT_COOLDOWN",
       "kind": "Dict",
       "literal_keys": [
+        "'counter_mismatch'",
         "'signup_drop'",
         "'auth_error_spike'",
         "'js_error_spike'",
@@ -89235,6 +89236,13 @@
         "'metrika_goals_stray'"
       ],
       "entries": [
+        {
+          "key": "'counter_mismatch'",
+          "expression": "2 * 24 * 3600",
+          "expression_truncated": false,
+          "expression_chars": 13,
+          "ast_sha256": "0df207005499b170d70df36c50590b22af7a5f985f6f3f4e689b58de66147515"
+        },
         {
           "key": "'signup_drop'",
           "expression": "24 * 3600",
@@ -89299,16 +89307,16 @@
           "ast_sha256": "ca736e6629d4bc18dd8ac2d16cc4f836da5b68156880ff65431d8240d1f2b23b"
         }
       ],
-      "expression": "{'signup_drop': 24 * 3600, 'auth_error_spike': 3 * 3600, 'js_error_spike': 3 * 3600, 'memory_pressure': 6 * 3600, 'webmaster_sitemap_errors': 24 * 3600, 'webmaster_crawl_drop': 24 * 3600, 'webmaster_in_search_drop': 24 * 3600, 'webmaster_data_missing': 7 * 24 * 3600, 'metrika_goals_stray': 7 * 24 * 3600}",
+      "expression": "{'counter_mismatch': 2 * 24 * 3600, 'signup_drop': 24 * 3600, 'auth_error_spike': 3 * 3600, 'js_error_spike': 3 * 3600, 'memory_pressure': 6 * 3600, 'webmaster_sitemap_errors': 24 * 3600, 'webmaster_crawl_drop': 24 * 3600, 'webmaster_in_search_drop': 24 * 3600, 'webmaster_data_missing': 7 * 24 * 3600, 'metrika_goals_stray': 7 * 24 * 3600}",
       "expression_truncated": false,
-      "expression_chars": 305,
-      "ast_sha256": "9662caa32a601106bb56aeb13463d2aa3255a7be73de602158bf83ffda8c6880",
+      "expression_chars": 340,
+      "ast_sha256": "bdf85cf251cdb7c6a77055061b14566b4ad91bedf16b857c05dee4e632185cd8",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 59,
-      "end_line": 59,
+      "line": 61,
+      "end_line": 61,
       "owner": "<module>",
       "conditions": [],
       "name": "_NIGHT_MSK_HOURS",
@@ -89324,8 +89332,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 60,
-      "end_line": 60,
+      "line": 62,
+      "end_line": 62,
       "owner": "<module>",
       "conditions": [],
       "name": "_MSK_OFFSET",
@@ -89341,8 +89349,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 61,
-      "end_line": 61,
+      "line": 63,
+      "end_line": 63,
       "owner": "<module>",
       "conditions": [],
       "name": "COLLECTION_SILENCE_AFTER",
@@ -89358,8 +89366,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 64,
+      "end_line": 64,
       "owner": "<module>",
       "conditions": [],
       "name": "_COLLECTION_PROBE_WINDOW",
@@ -89375,8 +89383,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 75,
-      "end_line": 77,
+      "line": 77,
+      "end_line": 79,
       "owner": "<module>",
       "conditions": [],
       "name": "_THIRD_PARTY_HOST_SUFFIXES",
@@ -89392,8 +89400,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 78,
-      "end_line": 78,
+      "line": 80,
+      "end_line": 80,
       "owner": "<module>",
       "conditions": [],
       "name": "_JS_URL_RE",
@@ -89409,8 +89417,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 80,
-      "end_line": 84,
+      "line": 82,
+      "end_line": 86,
       "owner": "<module>",
       "conditions": [],
       "name": "_STALE_TAB_RE",
@@ -89426,8 +89434,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 88,
-      "end_line": 88,
+      "line": 90,
+      "end_line": 90,
       "owner": "<module>",
       "conditions": [],
       "name": "SIGNUP_DROP_AFTER",
@@ -89443,8 +89451,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 92,
-      "end_line": 92,
+      "line": 94,
+      "end_line": 94,
       "owner": "<module>",
       "conditions": [],
       "name": "AUTH_ERROR_BENIGN_CODES",
@@ -89456,6 +89464,73 @@
       "expression_truncated": false,
       "expression_chars": 62,
       "ast_sha256": "423b99d242891f4dbae258ca4977b8a3fd8abe9fed9b957d9e2ea624e8ad6af2",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 599,
+      "end_line": 600,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_METRIKA_ENGINE_NAMES",
+      "symbol": "app.services.analytics_alerts._METRIKA_ENGINE_NAMES",
+      "kind": "Dict",
+      "literal_keys": [
+        "'yandex'",
+        "'google'",
+        "'bing'",
+        "'duckduckgo'",
+        "'mail'",
+        "'rambler'"
+      ],
+      "entries": [
+        {
+          "key": "'yandex'",
+          "expression": "'Яндекс'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "b43282cd4acda4e6cda0f5b75e719ae1a8d619411056cd693e67606e76d6eb59"
+        },
+        {
+          "key": "'google'",
+          "expression": "'Google'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "7c315254a9aa237eabf27bde1e3a5a2ced1ec55948932347c87ce852b8d5e784"
+        },
+        {
+          "key": "'bing'",
+          "expression": "'Bing'",
+          "expression_truncated": false,
+          "expression_chars": 6,
+          "ast_sha256": "251cde28b92a297de3c6a9a35e908deed9316c6a92f0ab99348a94af716191e8"
+        },
+        {
+          "key": "'duckduckgo'",
+          "expression": "'DuckDuckGo'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "27673d299a5d486b1ba5aec6c14741e94420c5d6cd0d06a9cbea627e9f410a12"
+        },
+        {
+          "key": "'mail'",
+          "expression": "'Поиск Mail.ru'",
+          "expression_truncated": false,
+          "expression_chars": 15,
+          "ast_sha256": "ab032e1e61aea2672227754a5ff9076f2601cbcb4456811586836f041d4a6420"
+        },
+        {
+          "key": "'rambler'",
+          "expression": "'Рамблер'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "d690dfa931cfc7212d5501f70759e88306cef7bb75e0e642b2d56b86a2f97d81"
+        }
+      ],
+      "expression": "{'yandex': 'Яндекс', 'google': 'Google', 'bing': 'Bing', 'duckduckgo': 'DuckDuckGo', 'mail': 'Поиск Mail.ru', 'rambler': 'Рамблер'}",
+      "expression_truncated": false,
+      "expression_chars": 131,
+      "ast_sha256": "e214c7ad38006d772ede8be7a51a41146eb053ed008d57067afdd76f5061124e",
       "runtime_expansion": false
     },
     {
@@ -90552,8 +90627,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 135,
-      "end_line": 158,
+      "line": 155,
+      "end_line": 180,
       "owner": "<module>",
       "conditions": [],
       "name": "HEURISTICS",
@@ -90561,10 +90636,10 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "(('webdriver', 100, lambda s: s.is_webdriver), ('bot_ua', 100, lambda s: is_known_bot_ua(s.ua_raw)), ('no_human_traces', 20, _no_human_traces), ('ghost_crawl', 40, _ghost_crawl), ('synthetic_clicks', 60, lambda s: s.synthetic_clicks > 0 and s.synthetic_clicks >= s.clicks), ('visitor_flood', 40, lambda s: s.visitor_sessions > VISITOR_SESSION_FLOOD), ('square_desktop_screen', 60, _square_desktop_screen), ('server_cpu', 60, lambda s: s.cpu_cores is not None and s.cpu_cores > SERVER_CPU_CORES), ('portrait_cluster', 60, lambda s: s.portrait_cluster >= PORTRAIT_CLUSTER_MIN and _no_input_traces(s)), ('device_mismatch', 20, lambda s: s.has_portrait and (s.device_type == 'mobile' and s.touch is False or (s.screen_w is not None and s.screen_w <= 0))))",
+      "expression": "(('webdriver', 100, lambda s: s.is_webdriver), ('bot_ua', 100, lambda s: is_known_bot_ua(s.ua_raw)), ('no_human_traces', 20, _no_human_traces), ('ghost_crawl', 40, _ghost_crawl), ('synthetic_clicks', 60, lambda s: s.synthetic_clicks > 0 and s.synthetic_clicks >= s.clicks), ('visitor_flood', 40, lambda s: s.visitor_sessions > VISITOR_SESSION_FLOOD), ('square_desktop_screen', 60, _square_desktop_screen), ('server_cpu', 60, lambda s: s.cpu_cores is not None and s.cpu_cores > SERVER_CPU_CORES), ('portrait_cluster', 60, lambda s: s.portrait_cluster >= PORTRAIT_CLUSTER_MIN and _no_input_traces(s)), ('google_root_linux_us', 40, _google_root_linux_us), ('device_mismatch', 20, lambda s: s.has_portrait and (s.device_type == 'mobile' and s.touch is False or (s.screen_w is not None and s.screen_w <= 0))))",
       "expression_truncated": false,
-      "expression_chars": 751,
-      "ast_sha256": "db9f5bcc0cdb93f89d434f657f2a327a4602a59a64887e2eb38a537b9ef7ab5d",
+      "expression_chars": 804,
+      "ast_sha256": "de30edf41a832a940a8433d70c164c275ef69decdf46159a7258e4a63ee709c8",
       "runtime_expansion": false
     },
     {
@@ -114191,7 +114266,7 @@
     {
       "path": "backend/app/services/telegram_calm.py",
       "line": 42,
-      "end_line": 51,
+      "end_line": 52,
       "owner": "<module>",
       "conditions": [],
       "name": "HELD_KINDS",
@@ -114199,16 +114274,16 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "frozenset({'alert', 'etl_failure', 'etl_alert', 'etl_summary', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'http_5xx_spike', 'load_shed', 'rate_limit_alert', 'host_pressure', 'host_memory', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired'})",
+      "expression": "frozenset({'alert', 'etl_failure', 'etl_alert', 'etl_summary', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'http_5xx_spike', 'load_shed', 'rate_limit_alert', 'host_pressure', 'host_memory', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch'})",
       "expression_truncated": false,
-      "expression_chars": 413,
-      "ast_sha256": "61b13b6b6ff6fff50d07833ce62a351a6abd137f630097e7fb2ed39472a7f0f3",
+      "expression_chars": 433,
+      "ast_sha256": "8626e64ee94fa535516f53d6e02bac6a8172bcfb86a76f3d1c1033ed83fbe8fc",
       "runtime_expansion": true
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 55,
-      "end_line": 57,
+      "line": 56,
+      "end_line": 58,
       "owner": "<module>",
       "conditions": [],
       "name": "ACTION_KINDS",
@@ -114234,8 +114309,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 59,
-      "end_line": 59,
+      "line": 60,
+      "end_line": 60,
       "owner": "<module>",
       "conditions": [],
       "name": "URGENT_KINDS",
@@ -114251,8 +114326,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 163,
-      "end_line": 164,
+      "line": 164,
+      "end_line": 165,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTHS_GENITIVE",
@@ -114268,8 +114343,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 166,
+      "end_line": 166,
       "owner": "<module>",
       "conditions": [],
       "name": "_TAG_RE",
@@ -114285,8 +114360,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 166,
-      "end_line": 166,
+      "line": 167,
+      "end_line": 167,
       "owner": "<module>",
       "conditions": [],
       "name": "_EMOJI_RE",
@@ -114302,8 +114377,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 169,
-      "end_line": 176,
+      "line": 170,
+      "end_line": 177,
       "owner": "<module>",
       "conditions": [],
       "name": "GROUPS",
@@ -114311,16 +114386,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "(('site', 'Сайт', ('http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert')), ('data', 'Данные', ('etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity')), ('jobs', 'Фоновые задачи', ('scheduler_alert', 'job_lease_lost', 'ticker_stale')), ('stats', 'Статистика и поиск', ('acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired')))",
+      "expression": "(('site', 'Сайт', ('http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert')), ('data', 'Данные', ('etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity')), ('jobs', 'Фоновые задачи', ('scheduler_alert', 'job_lease_lost', 'ticker_stale')), ('stats', 'Статистика и поиск', ('acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch')))",
       "expression_truncated": false,
-      "expression_chars": 500,
-      "ast_sha256": "72476199caf3b83f943ee238a2e262838f9ec504f87ab3af7667282e7ccfebc8",
+      "expression_chars": 520,
+      "ast_sha256": "cd4aa7c345680e23aa2c9cf8398389076477ca590914f400526557eddf93213b",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 178,
+      "end_line": 178,
       "owner": "<module>",
       "conditions": [],
       "name": "_KIND_GROUP",
@@ -114336,8 +114411,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 180,
-      "end_line": 205,
+      "line": 181,
+      "end_line": 207,
       "owner": "<module>",
       "conditions": [],
       "name": "KIND_LABELS",
@@ -114367,6 +114442,7 @@
         "'analytics_anomaly'",
         "'audience_alert'",
         "'token_expired'",
+        "'counter_mismatch'",
         "'alert'"
       ],
       "entries": [
@@ -114532,6 +114608,13 @@
           "ast_sha256": "41e2ee75043d7360f4bb6cc56f00c2adbd3d6aa98a3f39035ac664174d6196f2"
         },
         {
+          "key": "'counter_mismatch'",
+          "expression": "'наш счётчик и Метрика расходятся по поисковикам'",
+          "expression_truncated": false,
+          "expression_chars": 49,
+          "ast_sha256": "30409674b8de9eb82c3440fc969b8bbafcedcb3a28b5f19cd8190f463dcbf3ea"
+        },
+        {
           "key": "'alert'",
           "expression": "'прочие технические заметки'",
           "expression_truncated": false,
@@ -114539,16 +114622,16 @@
           "ast_sha256": "e085bdad16cf5c12da6988e70ab6364167ab7ae2737140ee11a3389ac2bceca3"
         }
       ],
-      "expression": "{'http_5xx_spike': 'короткие всплески ошибок сервера', 'load_shed': 'сервер отбивал лишнюю нагрузку (роботы)', 'host_pressure': 'диск сервера притормаживал', 'host_memory': 'серверу не хватало памяти', 'rate_limit_alert': 'защита от флуда ненадолго отключалась', 'etl_summary': 'плановые обновления данных', 'etl_failure': 'показатели не обновились', 'etl_alert': 'сбои у отдельных источников', 'world_ingest_summary': 'обновления мировых данных', 'zero_parse': 'источник вернул пустой ответ', 'staleness': 'показатели давно не обновлялись', 'freshness_watchdog': 'проверка свежести данных', 'forecast_issue': 'заминки с прогнозами', 'data_guard': 'сторож не пустил в базу невозможные точки', 'data_sanity': 'ежедневная проверка нашла странные точки в базе', 'scheduler_alert': 'сбои фоновых задач', 'job_lease_lost': 'задача запускалась дважды', 'ticker_stale': 'бегущая строка котировок обновлялась с задержкой', 'acquisition_alert': 'неполная выгрузка из Метрики', 'recrawl_alert': 'заминки с переобходом Вебмастера', 'analytics_anomaly': 'необычные колебания в аналитике', 'audience_alert': 'необычные колебания аудитории', 'token_expired': 'истёк доступ к Яндексу', 'alert': 'прочие технические заметки'}",
+      "expression": "{'http_5xx_spike': 'короткие всплески ошибок сервера', 'load_shed': 'сервер отбивал лишнюю нагрузку (роботы)', 'host_pressure': 'диск сервера притормаживал', 'host_memory': 'серверу не хватало памяти', 'rate_limit_alert': 'защита от флуда ненадолго отключалась', 'etl_summary': 'плановые обновления данных', 'etl_failure': 'показатели не обновились', 'etl_alert': 'сбои у отдельных источников', 'world_ingest_summary': 'обновления мировых данных', 'zero_parse': 'источник вернул пустой ответ', 'staleness': 'показатели давно не обновлялись', 'freshness_watchdog': 'проверка свежести данных', 'forecast_issue': 'заминки с прогнозами', 'data_guard': 'сторож не пустил в базу невозможные точки', 'data_sanity': 'ежедневная проверка нашла странные точки в базе', 'scheduler_alert': 'сбои фоновых задач', 'job_lease_lost': 'задача запускалась дважды', 'ticker_stale': 'бегущая строка котировок обновлялась с задержкой', 'acquisition_alert': 'неполная выгрузка из Метрики', 'recrawl_alert': 'заминки с переобходом Вебмастера', 'analytics_anomaly': 'необычные колебания в аналитике', 'audience_alert': 'необычные колебания аудитории', 'token_expired': 'истёк доступ к Яндексу', 'counter_mismatch': 'наш счётчик и Метрика расходятся по поисковикам', 'alert': 'прочие технические заметки'}",
       "expression_truncated": false,
-      "expression_chars": 1209,
-      "ast_sha256": "7ec6d3d6d05de29bde1916d6e5e454d68ca9b9e8ba21771871c3899405e940d5",
+      "expression_chars": 1280,
+      "ast_sha256": "98affaedc24d3d0485151643e8b981a729557bd839edc26d3789ec220a954549",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 207,
-      "end_line": 207,
+      "line": 209,
+      "end_line": 209,
       "owner": "<module>",
       "conditions": [],
       "name": "_RECOVERY_RE",
@@ -139794,8 +139877,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 227,
+      "end_line": 227,
       "owner": "note_behavior_ingest",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139808,8 +139891,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 228,
+      "end_line": 228,
       "owner": "note_behavior_ingest",
       "conditions": [],
       "operation": "set",
@@ -139822,8 +139905,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 235,
-      "end_line": 235,
+      "line": 237,
+      "end_line": 237,
       "owner": "_last_collection_seen",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139836,8 +139919,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 262,
-      "end_line": 262,
+      "line": 264,
+      "end_line": 264,
       "owner": "_memory_sticky",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139850,8 +139933,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 271,
-      "end_line": 271,
+      "line": 273,
+      "end_line": 273,
       "owner": "_set_memory_sticky",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139864,8 +139947,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 283,
-      "end_line": 283,
+      "line": 285,
+      "end_line": 285,
       "owner": "_episode_sticky",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139878,8 +139961,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 294,
+      "end_line": 294,
       "owner": "_set_episode_sticky",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139892,8 +139975,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 304,
-      "end_line": 304,
+      "line": 306,
+      "end_line": 306,
       "owner": "_muted",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139906,8 +139989,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 317,
+      "end_line": 317,
       "owner": "_clear_mute",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139920,8 +140003,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 318,
+      "end_line": 318,
       "owner": "_clear_mute",
       "conditions": [],
       "operation": "delete",
@@ -139934,8 +140017,36 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 273,
-      "end_line": 273,
+      "line": 606,
+      "end_line": 606,
+      "owner": "engine_mismatches",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.analytics_alerts.set",
+      "expression": "set(own)",
+      "expression_truncated": false,
+      "expression_chars": 8,
+      "ast_sha256": "d8e925e54840c457dd80c37bc3c63a1224fc2dbd57f7267b8e8eec4d54671445"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 606,
+      "end_line": 606,
+      "owner": "engine_mismatches",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.analytics_alerts.set",
+      "expression": "set(metrika)",
+      "expression_truncated": false,
+      "expression_chars": 12,
+      "ast_sha256": "aaab2bf7174f682ccf9434cf059651cb938281afdf93c831aab7074b04d2acb5"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 275,
+      "end_line": 275,
       "owner": "_set_memory_sticky",
       "conditions": [
         "active"
@@ -139950,8 +140061,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 275,
-      "end_line": 275,
+      "line": 277,
+      "end_line": 277,
       "owner": "_set_memory_sticky",
       "conditions": [
         "not (active)"
@@ -139966,8 +140077,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 296,
+      "end_line": 296,
       "owner": "_set_episode_sticky",
       "conditions": [
         "active"
@@ -139982,8 +140093,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 298,
+      "end_line": 298,
       "owner": "_set_episode_sticky",
       "conditions": [
         "not (active)"
@@ -139998,8 +140109,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 254,
+      "end_line": 254,
       "owner": "_last_collection_seen",
       "conditions": [],
       "operation": "rollback",
@@ -140012,8 +140123,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 308,
+      "end_line": 308,
       "owner": "_muted",
       "conditions": [],
       "operation": "set",
@@ -140026,8 +140137,36 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 378,
-      "end_line": 378,
+      "line": 635,
+      "end_line": 640,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.analytics_alerts.db.execute",
+      "expression": "db.execute(select(BehaviorSession.referrer_host, func.count()).where(BehaviorSession.started_at >= start, BehaviorSession.started_at < start + timedelta(days=1), BehaviorSession.channel == 'search', *human).group_by(BehaviorSession.referrer_host))",
+      "expression_truncated": false,
+      "expression_chars": 247,
+      "ast_sha256": "c4d6f50856686ded08212eef8d83ea376f7301392d2349a0c8e21eb9a2dcb1ee"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 641,
+      "end_line": 646,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.analytics_alerts.db.execute",
+      "expression": "db.execute(select(RawMetrikaVisit.search_engine, func.count()).where(RawMetrikaVisit.visit_date == day, RawMetrikaVisit.traffic_source == 'organic', metrika_visit_not_headless()).group_by(RawMetrikaVisit.search_engine))",
+      "expression_truncated": false,
+      "expression_chars": 219,
+      "ast_sha256": "473eccc8a4bf90aa037cb36032020055fc3dce641d4de4a3dc20300db6740691"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 380,
+      "end_line": 380,
       "owner": "check_anomalies",
       "conditions": [],
       "operation": "execute",
@@ -156091,8 +156230,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 107,
-      "end_line": 107,
+      "line": 108,
+      "end_line": 108,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "get_state_redis",
@@ -156105,8 +156244,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 118,
-      "end_line": 118,
+      "line": 119,
+      "end_line": 119,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "set",
@@ -156119,8 +156258,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 136,
+      "end_line": 136,
       "owner": "check_site_recovered",
       "conditions": [],
       "operation": "get_state_redis",
@@ -156133,8 +156272,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 139,
-      "end_line": 139,
+      "line": 140,
+      "end_line": 140,
       "owner": "check_site_recovered",
       "conditions": [],
       "operation": "delete",
@@ -156147,8 +156286,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 123,
-      "end_line": 123,
+      "line": 124,
+      "end_line": 124,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "set",
@@ -156161,8 +156300,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 336,
-      "end_line": 340,
+      "line": 338,
+      "end_line": 342,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "operation": "execute",
@@ -156175,8 +156314,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 341,
-      "end_line": 346,
+      "line": 343,
+      "end_line": 348,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "operation": "execute",
@@ -160165,8 +160304,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1087,
-      "end_line": 1087,
+      "line": 1089,
+      "end_line": 1089,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "operation": "set",
@@ -160207,8 +160346,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 859,
+      "end_line": 859,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "operation": "execute",
@@ -160221,8 +160360,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 868,
-      "end_line": 868,
+      "line": 870,
+      "end_line": 870,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "operation": "commit",
@@ -160235,8 +160374,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 897,
-      "end_line": 897,
+      "line": 899,
+      "end_line": 899,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "operation": "execute",
@@ -160249,8 +160388,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 908,
-      "end_line": 908,
+      "line": 910,
+      "end_line": 910,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "operation": "commit",
@@ -160263,8 +160402,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
+      "line": 980,
+      "end_line": 980,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "operation": "execute",
@@ -160277,8 +160416,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 986,
-      "end_line": 986,
+      "line": 988,
+      "end_line": 988,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "operation": "commit",
@@ -160291,8 +160430,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1039,
-      "end_line": 1039,
+      "line": 1041,
+      "end_line": 1041,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "execute",
@@ -160305,8 +160444,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1055,
-      "end_line": 1055,
+      "line": 1057,
+      "end_line": 1057,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "commit",
@@ -160319,8 +160458,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1093,
-      "end_line": 1093,
+      "line": 1095,
+      "end_line": 1095,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "operation": "add",
@@ -160333,8 +160472,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1124,
-      "end_line": 1124,
+      "line": 1126,
+      "end_line": 1126,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "operation": "commit",
@@ -160449,8 +160588,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "rows"
@@ -160465,8 +160604,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 907,
-      "end_line": 907,
+      "line": 909,
+      "end_line": 909,
       "owner": "rollup_daily_goals",
       "conditions": [
         "out"
@@ -160481,8 +160620,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 960,
-      "end_line": 960,
+      "line": 962,
+      "end_line": 962,
       "owner": "rollup_daily_goal_dims.bump",
       "conditions": [
         "sid"
@@ -160497,8 +160636,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 985,
-      "end_line": 985,
+      "line": 987,
+      "end_line": 987,
       "owner": "rollup_daily_goal_dims",
       "conditions": [
         "rows"
@@ -160513,8 +160652,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1054,
-      "end_line": 1054,
+      "line": 1056,
+      "end_line": 1056,
       "owner": "rollup_daily_pages",
       "conditions": [
         "out"
@@ -160529,8 +160668,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1114,
-      "end_line": 1114,
+      "line": 1116,
+      "end_line": 1116,
       "owner": "sync_metrika_goals",
       "conditions": [
         "not (existing)"
@@ -160545,8 +160684,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1119,
-      "end_line": 1123,
+      "line": 1121,
+      "end_line": 1125,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -160619,8 +160758,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "rows"
@@ -160635,8 +160774,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 885,
-      "end_line": 895,
+      "line": 887,
+      "end_line": 897,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "operation": "execute",
@@ -160649,8 +160788,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 907,
-      "end_line": 907,
+      "line": 909,
+      "end_line": 909,
       "owner": "rollup_daily_goals",
       "conditions": [
         "out"
@@ -160665,8 +160804,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 957,
-      "end_line": 957,
+      "line": 959,
+      "end_line": 959,
       "owner": "rollup_daily_goal_dims.bump",
       "conditions": [],
       "operation": "set",
@@ -160679,8 +160818,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 985,
-      "end_line": 985,
+      "line": 987,
+      "end_line": 987,
       "owner": "rollup_daily_goal_dims",
       "conditions": [
         "rows"
@@ -160695,8 +160834,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 997,
-      "end_line": 1007,
+      "line": 999,
+      "end_line": 1009,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "execute",
@@ -160709,8 +160848,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1054,
-      "end_line": 1054,
+      "line": 1056,
+      "end_line": 1056,
       "owner": "rollup_daily_pages",
       "conditions": [
         "out"
@@ -160725,8 +160864,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1131,
-      "end_line": 1131,
+      "line": 1133,
+      "end_line": 1133,
       "owner": "sync_metrika_goals",
       "conditions": [
         "stray_events"
@@ -160801,8 +160940,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 853,
-      "end_line": 853,
+      "line": 855,
+      "end_line": 855,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "client_id_hash"
@@ -160817,8 +160956,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 859,
+      "end_line": 859,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "operation": "delete",
@@ -160831,8 +160970,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 897,
-      "end_line": 897,
+      "line": 899,
+      "end_line": 899,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "operation": "delete",
@@ -160845,8 +160984,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
+      "line": 980,
+      "end_line": 980,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "operation": "delete",
@@ -160859,8 +160998,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1039,
-      "end_line": 1039,
+      "line": 1041,
+      "end_line": 1041,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "delete",
@@ -160995,8 +161134,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1009,
-      "end_line": 1015,
+      "line": 1011,
+      "end_line": 1017,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "operation": "execute",
@@ -161025,8 +161164,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1120,
-      "end_line": 1120,
+      "line": 1122,
+      "end_line": 1122,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -161069,8 +161208,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 355,
+      "end_line": 355,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "execute",
@@ -161083,8 +161222,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 349,
-      "end_line": 349,
+      "line": 356,
+      "end_line": 356,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "commit",
@@ -161097,8 +161236,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 434,
+      "end_line": 434,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -161125,8 +161264,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 440,
+      "end_line": 440,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -161195,8 +161334,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 443,
+      "end_line": 443,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "rollback",
@@ -161209,8 +161348,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 438,
-      "end_line": 438,
+      "line": 445,
+      "end_line": 445,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -161237,8 +161376,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 355,
+      "end_line": 355,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "delete",
@@ -194879,8 +195018,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 202,
+      "end_line": 202,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.ServerSession.day.in_",
@@ -194888,45 +195027,27 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 204,
-      "end_line": 204,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 205,
-      "end_line": 205,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
       "line": 206,
       "end_line": 206,
       "owner": "human_pageviews_query",
       "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 335,
-      "end_line": 335,
-      "owner": "_own_js_error_params_query",
-      "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
       "expression": "BehaviorEvent.event_type"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 336,
-      "end_line": 336,
-      "owner": "_own_js_error_params_query",
+      "line": 207,
+      "end_line": 207,
+      "owner": "human_pageviews_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 208,
+      "end_line": 208,
+      "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
       "expression": "BehaviorEvent.occurred_at"
@@ -194935,6 +195056,24 @@
       "path": "backend/app/services/analytics_alerts.py",
       "line": 337,
       "end_line": 337,
+      "owner": "_own_js_error_params_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 338,
+      "end_line": 338,
+      "owner": "_own_js_error_params_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 339,
+      "end_line": 339,
       "owner": "_own_js_error_params_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.params_json['kind'].as_string().in_",
@@ -194942,8 +195081,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 456,
-      "end_line": 456,
+      "line": 458,
+      "end_line": 458,
       "owner": "check_audience_alerts",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json['code'].as_string",
@@ -194951,8 +195090,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 199,
-      "end_line": 199,
+      "line": 201,
+      "end_line": 201,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -194960,8 +195099,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 202,
+      "end_line": 202,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.ServerSession.day",
@@ -194969,8 +195108,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 203,
+      "end_line": 203,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_bot.is_",
@@ -194978,30 +195117,12 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 201,
-      "end_line": 201,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.is_internal.is_",
-      "expression": "ServerSession.is_internal.is_"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
       "line": 203,
       "end_line": 203,
       "owner": "human_pageviews_query",
       "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 204,
-      "end_line": 204,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
+      "symbol": "app.models.ServerSession.is_internal.is_",
+      "expression": "ServerSession.is_internal.is_"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -195027,13 +195148,31 @@
       "end_line": 207,
       "owner": "human_pageviews_query",
       "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 208,
+      "end_line": 208,
+      "owner": "human_pageviews_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 209,
+      "end_line": 209,
+      "owner": "human_pageviews_query",
+      "conditions": [],
       "symbol": "app.models.BehaviorEvent.visitor_id_hash.is_",
       "expression": "BehaviorEvent.visitor_id_hash.is_"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 207,
-      "end_line": 207,
+      "line": 209,
+      "end_line": 209,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.visitor_id_hash.not_in",
@@ -195041,8 +195180,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 336,
+      "end_line": 336,
       "owner": "_own_js_error_params_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.params_json",
@@ -195050,12 +195189,75 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 337,
+      "end_line": 337,
       "owner": "_own_js_error_params_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
       "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 338,
+      "end_line": 338,
+      "owner": "_own_js_error_params_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 201,
+      "end_line": 201,
+      "owner": "human_pageviews_query",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 202,
+      "end_line": 202,
+      "owner": "human_pageviews_query",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 203,
+      "end_line": 203,
+      "owner": "human_pageviews_query",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_bot",
+      "expression": "ServerSession.is_bot"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 203,
+      "end_line": 203,
+      "owner": "human_pageviews_query",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_internal",
+      "expression": "ServerSession.is_internal"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 209,
+      "end_line": 209,
+      "owner": "human_pageviews_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.visitor_id_hash",
+      "expression": "BehaviorEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 209,
+      "end_line": 209,
+      "owner": "human_pageviews_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.visitor_id_hash",
+      "expression": "BehaviorEvent.visitor_id_hash"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -195068,71 +195270,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 199,
-      "end_line": 199,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 200,
-      "end_line": 200,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.ServerSession",
-      "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 201,
-      "end_line": 201,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.is_bot",
-      "expression": "ServerSession.is_bot"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 201,
-      "end_line": 201,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.is_internal",
-      "expression": "ServerSession.is_internal"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 207,
-      "end_line": 207,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.visitor_id_hash",
-      "expression": "BehaviorEvent.visitor_id_hash"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 207,
-      "end_line": 207,
-      "owner": "human_pageviews_query",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.visitor_id_hash",
-      "expression": "BehaviorEvent.visitor_id_hash"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 334,
-      "end_line": 334,
-      "owner": "_own_js_error_params_query",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 339,
+      "end_line": 339,
       "owner": "_own_js_error_params_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.params_json['kind'].as_string",
@@ -195140,8 +195279,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 456,
-      "end_line": 456,
+      "line": 458,
+      "end_line": 458,
       "owner": "check_audience_alerts",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -195149,8 +195288,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 203,
+      "end_line": 203,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -195158,8 +195297,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 203,
+      "end_line": 203,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -195167,8 +195306,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 207,
-      "end_line": 207,
+      "line": 209,
+      "end_line": 209,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -195176,8 +195315,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 207,
-      "end_line": 207,
+      "line": 209,
+      "end_line": 209,
       "owner": "human_pageviews_query",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -195185,8 +195324,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 245,
-      "end_line": 245,
+      "line": 247,
+      "end_line": 247,
       "owner": "_last_collection_seen",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -195194,8 +195333,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 248,
+      "end_line": 248,
       "owner": "_last_collection_seen",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -195203,174 +195342,12 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 446,
+      "end_line": 446,
       "owner": "check_audience_alerts",
       "conditions": [],
       "symbol": "app.models.User.created_at",
       "expression": "User.created_at"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 456,
-      "end_line": 456,
-      "owner": "check_audience_alerts",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 553,
-      "end_line": 553,
-      "owner": "check_bot_calibration",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit.visit_date",
-      "expression": "RawMetrikaVisit.visit_date"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 245,
-      "end_line": 245,
-      "owner": "_last_collection_seen",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 246,
-      "end_line": 246,
-      "owner": "_last_collection_seen",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 337,
-      "end_line": 337,
-      "owner": "_own_js_error_params_query",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.params_json",
-      "expression": "BehaviorEvent.params_json"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 444,
-      "end_line": 444,
-      "owner": "check_audience_alerts",
-      "conditions": [],
-      "symbol": "app.models.User",
-      "expression": "User"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 553,
-      "end_line": 553,
-      "owner": "check_bot_calibration",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 244,
-      "end_line": 244,
-      "owner": "_last_collection_seen",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 337,
-      "end_line": 337,
-      "owner": "_own_js_error_params_query",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 459,
-      "end_line": 459,
-      "owner": "check_audience_alerts",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 460,
-      "end_line": 460,
-      "owner": "check_audience_alerts",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.occurred_at",
-      "expression": "FrontendEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 552,
-      "end_line": 552,
-      "owner": "check_bot_calibration",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit.visit_date",
-      "expression": "RawMetrikaVisit.visit_date"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 559,
-      "end_line": 559,
-      "owner": "check_bot_calibration",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit.visit_date",
-      "expression": "RawMetrikaVisit.visit_date"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 563,
-      "end_line": 563,
-      "owner": "check_bot_calibration",
-      "conditions": [],
-      "symbol": "app.models.ServerSession.day",
-      "expression": "ServerSession.day"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 244,
-      "end_line": 244,
-      "owner": "_last_collection_seen",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 349,
-      "end_line": 349,
-      "owner": "check_anomalies._count_pv",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 350,
-      "end_line": 350,
-      "owner": "check_anomalies._count_pv",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 351,
-      "end_line": 351,
-      "owner": "check_anomalies._count_pv",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -195383,12 +195360,192 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 555,
+      "end_line": 555,
+      "owner": "check_bot_calibration",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit.visit_date",
+      "expression": "RawMetrikaVisit.visit_date"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 247,
+      "end_line": 247,
+      "owner": "_last_collection_seen",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 248,
+      "end_line": 248,
+      "owner": "_last_collection_seen",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 339,
+      "end_line": 339,
+      "owner": "_own_js_error_params_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.params_json",
+      "expression": "BehaviorEvent.params_json"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 446,
+      "end_line": 446,
       "owner": "check_audience_alerts",
       "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
+      "symbol": "app.models.User",
+      "expression": "User"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 555,
+      "end_line": 555,
+      "owner": "check_bot_calibration",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 639,
+      "end_line": 639,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.referrer_host",
+      "expression": "BehaviorSession.referrer_host"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 645,
+      "end_line": 645,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit.search_engine",
+      "expression": "RawMetrikaVisit.search_engine"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 246,
+      "end_line": 246,
+      "owner": "_last_collection_seen",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 339,
+      "end_line": 339,
+      "owner": "_own_js_error_params_query",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 461,
+      "end_line": 461,
+      "owner": "check_audience_alerts",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 462,
+      "end_line": 462,
+      "owner": "check_audience_alerts",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 554,
+      "end_line": 554,
+      "owner": "check_bot_calibration",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit.visit_date",
+      "expression": "RawMetrikaVisit.visit_date"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 561,
+      "end_line": 561,
+      "owner": "check_bot_calibration",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit.visit_date",
+      "expression": "RawMetrikaVisit.visit_date"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 565,
+      "end_line": 565,
+      "owner": "check_bot_calibration",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.day",
+      "expression": "ServerSession.day"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 639,
+      "end_line": 639,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 645,
+      "end_line": 645,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 246,
+      "end_line": 246,
+      "owner": "_last_collection_seen",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 351,
+      "end_line": 351,
+      "owner": "check_anomalies._count_pv",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 352,
+      "end_line": 352,
+      "owner": "check_anomalies._count_pv",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 353,
+      "end_line": 353,
+      "owner": "check_anomalies._count_pv",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -195401,8 +195558,26 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 461,
+      "end_line": 461,
+      "owner": "check_audience_alerts",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 462,
+      "end_line": 462,
+      "owner": "check_audience_alerts",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 554,
+      "end_line": 554,
       "owner": "check_bot_calibration",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -195410,8 +195585,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 558,
-      "end_line": 558,
+      "line": 560,
+      "end_line": 560,
       "owner": "check_bot_calibration",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -195419,8 +195594,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 559,
-      "end_line": 559,
+      "line": 561,
+      "end_line": 561,
       "owner": "check_bot_calibration",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -195428,8 +195603,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 562,
-      "end_line": 562,
+      "line": 564,
+      "end_line": 564,
       "owner": "check_bot_calibration",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -195437,30 +195612,12 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 563,
-      "end_line": 563,
+      "line": 565,
+      "end_line": 565,
       "owner": "check_bot_calibration",
       "conditions": [],
       "symbol": "app.models.ServerSession",
       "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 348,
-      "end_line": 348,
-      "owner": "check_anomalies._count_pv",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/analytics_alerts.py",
-      "line": 349,
-      "end_line": 349,
-      "owner": "check_anomalies._count_pv",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -195479,6 +195636,150 @@
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
       "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 352,
+      "end_line": 352,
+      "owner": "check_anomalies._count_pv",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 353,
+      "end_line": 353,
+      "owner": "check_anomalies._count_pv",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 637,
+      "end_line": 637,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 637,
+      "end_line": 637,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 638,
+      "end_line": 638,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.channel",
+      "expression": "BehaviorSession.channel"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 643,
+      "end_line": 643,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit.visit_date",
+      "expression": "RawMetrikaVisit.visit_date"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 643,
+      "end_line": 643,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit.traffic_source",
+      "expression": "RawMetrikaVisit.traffic_source"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 636,
+      "end_line": 636,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.referrer_host",
+      "expression": "BehaviorSession.referrer_host"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 637,
+      "end_line": 637,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 637,
+      "end_line": 637,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 638,
+      "end_line": 638,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 642,
+      "end_line": 642,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit.search_engine",
+      "expression": "RawMetrikaVisit.search_engine"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 643,
+      "end_line": 643,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 643,
+      "end_line": 643,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 636,
+      "end_line": 636,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 642,
+      "end_line": 642,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
     },
     {
       "path": "backend/app/services/analytics_backfill.py",
@@ -255541,8 +255842,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 341,
+      "end_line": 341,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -255550,8 +255851,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 341,
+      "end_line": 341,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -255559,8 +255860,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 345,
+      "end_line": 345,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.method",
@@ -255568,8 +255869,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 345,
+      "end_line": 345,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok.is_",
@@ -255577,8 +255878,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 346,
+      "end_line": 346,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind.in_",
@@ -255586,8 +255887,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 347,
+      "end_line": 347,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.sent_at",
@@ -255595,8 +255896,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 342,
-      "end_line": 342,
+      "line": 344,
+      "end_line": 344,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -255604,8 +255905,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 345,
+      "end_line": 345,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -255613,8 +255914,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 345,
+      "end_line": 345,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok",
@@ -255622,12 +255923,48 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 346,
+      "end_line": 346,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
       "expression": "TelegramOutbox.kind"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 347,
+      "end_line": 347,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 340,
+      "end_line": 340,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox.method",
+      "expression": "TelegramOutbox.method"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 340,
+      "end_line": 340,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox.sent_at",
+      "expression": "TelegramOutbox.sent_at"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 344,
+      "end_line": 344,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -255640,26 +255977,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 338,
-      "end_line": 338,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox.method",
-      "expression": "TelegramOutbox.method"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 338,
-      "end_line": 338,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox.sent_at",
-      "expression": "TelegramOutbox.sent_at"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 342,
-      "end_line": 342,
+      "line": 346,
+      "end_line": 346,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -255667,26 +255986,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 343,
-      "end_line": 343,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 344,
-      "end_line": 344,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 339,
+      "end_line": 339,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
@@ -255694,8 +255995,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 339,
+      "end_line": 339,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.text",
@@ -255703,8 +256004,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 340,
+      "end_line": 340,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -255712,8 +256013,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 340,
+      "end_line": 340,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -255721,8 +256022,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 339,
+      "end_line": 339,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -255730,8 +256031,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 339,
+      "end_line": 339,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -263080,8 +263381,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 761,
-      "end_line": 761,
+      "line": 763,
+      "end_line": 763,
       "owner": "_visit_raw",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -263089,8 +263390,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 765,
-      "end_line": 765,
+      "line": 767,
+      "end_line": 767,
       "owner": "_metrika_device",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -263098,8 +263399,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 771,
-      "end_line": 771,
+      "line": 773,
+      "end_line": 773,
       "owner": "_metrika_channel",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -263107,8 +263408,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 792,
-      "end_line": 792,
+      "line": 794,
+      "end_line": 794,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.visit_date",
@@ -263116,8 +263417,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 793,
-      "end_line": 793,
+      "line": 795,
+      "end_line": 795,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.client_id_hash",
@@ -263125,8 +263426,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 794,
-      "end_line": 794,
+      "line": 796,
+      "end_line": 796,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.duration_seconds",
@@ -263134,8 +263435,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 795,
-      "end_line": 795,
+      "line": 797,
+      "end_line": 797,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.goals_json",
@@ -263143,8 +263444,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 796,
-      "end_line": 796,
+      "line": 798,
+      "end_line": 798,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.traffic_source",
@@ -263152,8 +263453,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 883,
-      "end_line": 883,
+      "line": 885,
+      "end_line": 885,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -263161,8 +263462,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 941,
-      "end_line": 941,
+      "line": 943,
+      "end_line": 943,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json['surface'].as_string",
@@ -263170,8 +263471,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 995,
-      "end_line": 995,
+      "line": 997,
+      "end_line": 997,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -263343,24 +263644,6 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 792,
-      "end_line": 792,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 793,
-      "end_line": 793,
-      "owner": "rollup_daily_traffic",
-      "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
       "line": 794,
       "end_line": 794,
       "owner": "rollup_daily_traffic",
@@ -263388,8 +263671,26 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 805,
-      "end_line": 805,
+      "line": 797,
+      "end_line": 797,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 798,
+      "end_line": 798,
+      "owner": "rollup_daily_traffic",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 807,
+      "end_line": 807,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "not (pg)"
@@ -263399,8 +263700,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 883,
-      "end_line": 883,
+      "line": 885,
+      "end_line": 885,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -263408,8 +263709,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 995,
-      "end_line": 995,
+      "line": 997,
+      "end_line": 997,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -263576,8 +263877,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 801,
-      "end_line": 801,
+      "line": 803,
+      "end_line": 803,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -263587,8 +263888,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 805,
-      "end_line": 805,
+      "line": 807,
+      "end_line": 807,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "not (pg)"
@@ -263598,8 +263899,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 941,
-      "end_line": 941,
+      "line": 943,
+      "end_line": 943,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -263607,8 +263908,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1102,
-      "end_line": 1102,
+      "line": 1104,
+      "end_line": 1104,
       "owner": "sync_metrika_goals",
       "conditions": [],
       "symbol": "app.models.MetrikaGoal",
@@ -263850,8 +264151,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 826,
-      "end_line": 826,
+      "line": 828,
+      "end_line": 828,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -263859,8 +264160,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 859,
+      "end_line": 859,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.DailyTraffic.day",
@@ -263868,8 +264169,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "rows"
@@ -263879,8 +264180,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 897,
-      "end_line": 897,
+      "line": 899,
+      "end_line": 899,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.DailyGoal.day",
@@ -263888,8 +264189,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 907,
-      "end_line": 907,
+      "line": 909,
+      "end_line": 909,
       "owner": "rollup_daily_goals",
       "conditions": [
         "out"
@@ -263899,8 +264200,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 941,
-      "end_line": 941,
+      "line": 943,
+      "end_line": 943,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -263908,8 +264209,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
+      "line": 980,
+      "end_line": 980,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.DailyGoalDim.day",
@@ -263917,8 +264218,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 985,
-      "end_line": 985,
+      "line": 987,
+      "end_line": 987,
       "owner": "rollup_daily_goal_dims",
       "conditions": [
         "rows"
@@ -263928,8 +264229,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1039,
-      "end_line": 1039,
+      "line": 1041,
+      "end_line": 1041,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.DailyPage.day",
@@ -263937,8 +264238,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1054,
-      "end_line": 1054,
+      "line": 1056,
+      "end_line": 1056,
       "owner": "rollup_daily_pages",
       "conditions": [
         "out"
@@ -263948,8 +264249,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1114,
-      "end_line": 1114,
+      "line": 1116,
+      "end_line": 1116,
       "owner": "sync_metrika_goals",
       "conditions": [
         "not (existing)"
@@ -263959,8 +264260,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1120,
-      "end_line": 1122,
+      "line": 1122,
+      "end_line": 1124,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -264152,8 +264453,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 801,
-      "end_line": 801,
+      "line": 803,
+      "end_line": 803,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -264163,8 +264464,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 859,
+      "end_line": 859,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.DailyTraffic",
@@ -264172,8 +264473,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 859,
+      "end_line": 859,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.DailyTraffic",
@@ -264181,8 +264482,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "rows"
@@ -264192,8 +264493,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 894,
-      "end_line": 894,
+      "line": 896,
+      "end_line": 896,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -264201,8 +264502,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 897,
-      "end_line": 897,
+      "line": 899,
+      "end_line": 899,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -264210,8 +264511,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 897,
-      "end_line": 897,
+      "line": 899,
+      "end_line": 899,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -264219,8 +264520,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 907,
-      "end_line": 907,
+      "line": 909,
+      "end_line": 909,
       "owner": "rollup_daily_goals",
       "conditions": [
         "out"
@@ -264230,8 +264531,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
+      "line": 980,
+      "end_line": 980,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.DailyGoalDim",
@@ -264239,8 +264540,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 978,
-      "end_line": 978,
+      "line": 980,
+      "end_line": 980,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.DailyGoalDim",
@@ -264248,8 +264549,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 985,
-      "end_line": 985,
+      "line": 987,
+      "end_line": 987,
       "owner": "rollup_daily_goal_dims",
       "conditions": [
         "rows"
@@ -264259,8 +264560,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1006,
-      "end_line": 1006,
+      "line": 1008,
+      "end_line": 1008,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -264268,8 +264569,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1039,
-      "end_line": 1039,
+      "line": 1041,
+      "end_line": 1041,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.DailyPage",
@@ -264277,8 +264578,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1039,
-      "end_line": 1039,
+      "line": 1041,
+      "end_line": 1041,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.DailyPage",
@@ -264286,8 +264587,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1054,
-      "end_line": 1054,
+      "line": 1056,
+      "end_line": 1056,
       "owner": "rollup_daily_pages",
       "conditions": [
         "out"
@@ -264447,8 +264748,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 808,
-      "end_line": 808,
+      "line": 810,
+      "end_line": 810,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.visit_date",
@@ -264456,8 +264757,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "rows"
@@ -264467,8 +264768,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 894,
-      "end_line": 894,
+      "line": 896,
+      "end_line": 896,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -264476,8 +264777,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 907,
-      "end_line": 907,
+      "line": 909,
+      "end_line": 909,
       "owner": "rollup_daily_goals",
       "conditions": [
         "out"
@@ -264487,8 +264788,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 950,
-      "end_line": 950,
+      "line": 952,
+      "end_line": 952,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name.in_",
@@ -264496,8 +264797,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 951,
-      "end_line": 951,
+      "line": 953,
+      "end_line": 953,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -264505,8 +264806,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 985,
-      "end_line": 985,
+      "line": 987,
+      "end_line": 987,
       "owner": "rollup_daily_goal_dims",
       "conditions": [
         "rows"
@@ -264516,8 +264817,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1006,
-      "end_line": 1006,
+      "line": 1008,
+      "end_line": 1008,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -264525,8 +264826,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1024,
+      "end_line": 1024,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -264534,8 +264835,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1024,
+      "end_line": 1024,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -264543,8 +264844,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1024,
+      "end_line": 1024,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page.isnot",
@@ -264552,8 +264853,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1054,
-      "end_line": 1054,
+      "line": 1056,
+      "end_line": 1056,
       "owner": "rollup_daily_pages",
       "conditions": [
         "out"
@@ -264563,8 +264864,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1120,
-      "end_line": 1121,
+      "line": 1122,
+      "end_line": 1123,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -264648,8 +264949,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 801,
-      "end_line": 801,
+      "line": 803,
+      "end_line": 803,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -264659,8 +264960,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 808,
-      "end_line": 808,
+      "line": 810,
+      "end_line": 810,
       "owner": "rollup_daily_traffic",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -264668,8 +264969,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 949,
-      "end_line": 949,
+      "line": 951,
+      "end_line": 951,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -264677,8 +264978,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 950,
-      "end_line": 950,
+      "line": 952,
+      "end_line": 952,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -264686,8 +264987,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 951,
-      "end_line": 951,
+      "line": 953,
+      "end_line": 953,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -264695,8 +264996,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1021,
-      "end_line": 1021,
+      "line": 1023,
+      "end_line": 1023,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -264704,44 +265005,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1021,
-      "end_line": 1021,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1021,
-      "end_line": 1021,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.params_json",
-      "expression": "BehaviorEvent.params_json"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1022,
-      "end_line": 1022,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1022,
-      "end_line": 1022,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1023,
+      "end_line": 1023,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -264753,13 +265018,49 @@
       "end_line": 1023,
       "owner": "rollup_daily_pages",
       "conditions": [],
+      "symbol": "app.models.BehaviorEvent.params_json",
+      "expression": "BehaviorEvent.params_json"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1024,
+      "end_line": 1024,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1024,
+      "end_line": 1024,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1024,
+      "end_line": 1024,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1025,
+      "end_line": 1025,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
       "symbol": "app.models.BehaviorEvent.page.like",
       "expression": "BehaviorEvent.page.like"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1121,
-      "end_line": 1121,
+      "line": 1123,
+      "end_line": 1123,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -264769,8 +265070,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1121,
-      "end_line": 1121,
+      "line": 1123,
+      "end_line": 1123,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -264834,8 +265135,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 801,
-      "end_line": 801,
+      "line": 803,
+      "end_line": 803,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -264845,8 +265146,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 893,
-      "end_line": 893,
+      "line": 895,
+      "end_line": 895,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -264854,8 +265155,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 949,
-      "end_line": 949,
+      "line": 951,
+      "end_line": 951,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash",
@@ -264863,8 +265164,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 949,
-      "end_line": 949,
+      "line": 951,
+      "end_line": 951,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash",
@@ -264872,8 +265173,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 950,
-      "end_line": 950,
+      "line": 952,
+      "end_line": 952,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -264881,8 +265182,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1004,
-      "end_line": 1004,
+      "line": 1006,
+      "end_line": 1006,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -264890,8 +265191,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1004,
-      "end_line": 1004,
+      "line": 1006,
+      "end_line": 1006,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -264899,8 +265200,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1004,
-      "end_line": 1004,
+      "line": 1006,
+      "end_line": 1006,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page.isnot",
@@ -264908,8 +265209,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1014,
-      "end_line": 1014,
+      "line": 1016,
+      "end_line": 1016,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -264917,35 +265218,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1021,
-      "end_line": 1021,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1021,
-      "end_line": 1021,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1021,
-      "end_line": 1021,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1023,
+      "end_line": 1023,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -264957,13 +265231,40 @@
       "end_line": 1023,
       "owner": "rollup_daily_pages",
       "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1023,
+      "end_line": 1023,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1024,
+      "end_line": 1024,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1025,
+      "end_line": 1025,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
       "expression": "BehaviorEvent.page"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1120,
-      "end_line": 1120,
+      "line": 1122,
+      "end_line": 1122,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -264973,8 +265274,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1121,
-      "end_line": 1121,
+      "line": 1123,
+      "end_line": 1123,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -264984,8 +265285,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1121,
-      "end_line": 1121,
+      "line": 1123,
+      "end_line": 1123,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -265015,8 +265316,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 890,
+      "end_line": 890,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -265024,8 +265325,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 893,
-      "end_line": 893,
+      "line": 895,
+      "end_line": 895,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -265033,8 +265334,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 948,
-      "end_line": 948,
+      "line": 950,
+      "end_line": 950,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -265042,8 +265343,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 949,
-      "end_line": 949,
+      "line": 951,
+      "end_line": 951,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -265051,8 +265352,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 949,
-      "end_line": 949,
+      "line": 951,
+      "end_line": 951,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -265060,8 +265361,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1000,
-      "end_line": 1000,
+      "line": 1002,
+      "end_line": 1002,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -265069,8 +265370,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1004,
-      "end_line": 1004,
+      "line": 1006,
+      "end_line": 1006,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -265078,8 +265379,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1004,
-      "end_line": 1004,
+      "line": 1006,
+      "end_line": 1006,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -265087,8 +265388,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1004,
-      "end_line": 1004,
+      "line": 1006,
+      "end_line": 1006,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -265096,8 +265397,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1005,
-      "end_line": 1005,
+      "line": 1007,
+      "end_line": 1007,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page.like",
@@ -265105,8 +265406,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1014,
-      "end_line": 1014,
+      "line": 1016,
+      "end_line": 1016,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -265114,8 +265415,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1023,
-      "end_line": 1023,
+      "line": 1025,
+      "end_line": 1025,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -265123,8 +265424,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1120,
-      "end_line": 1120,
+      "line": 1122,
+      "end_line": 1122,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -265134,8 +265435,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1121,
-      "end_line": 1121,
+      "line": 1123,
+      "end_line": 1123,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -265145,8 +265446,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1121,
-      "end_line": 1121,
+      "line": 1123,
+      "end_line": 1123,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -265212,8 +265513,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 890,
+      "end_line": 890,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -265221,8 +265522,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1000,
-      "end_line": 1000,
+      "line": 1002,
+      "end_line": 1002,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -265230,8 +265531,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1004,
-      "end_line": 1004,
+      "line": 1006,
+      "end_line": 1006,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -265239,8 +265540,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1005,
-      "end_line": 1005,
+      "line": 1007,
+      "end_line": 1007,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -265248,8 +265549,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1120,
-      "end_line": 1120,
+      "line": 1122,
+      "end_line": 1122,
       "owner": "sync_metrika_goals",
       "conditions": [
         "live_ids"
@@ -265322,8 +265623,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 944,
-      "end_line": 944,
+      "line": 946,
+      "end_line": 946,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -265331,8 +265632,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 944,
-      "end_line": 944,
+      "line": 946,
+      "end_line": 946,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -265340,8 +265641,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 944,
-      "end_line": 944,
+      "line": 946,
+      "end_line": 946,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash",
@@ -265349,8 +265650,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 945,
-      "end_line": 945,
+      "line": 947,
+      "end_line": 947,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.url",
@@ -265358,8 +265659,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 946,
-      "end_line": 946,
+      "line": 948,
+      "end_line": 948,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.device_type",
@@ -265367,8 +265668,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 946,
-      "end_line": 946,
+      "line": 948,
+      "end_line": 948,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.channel",
@@ -265376,8 +265677,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 946,
-      "end_line": 946,
+      "line": 948,
+      "end_line": 948,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.country",
@@ -265385,8 +265686,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1005,
-      "end_line": 1005,
+      "line": 1007,
+      "end_line": 1007,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -265394,8 +265695,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1011,
-      "end_line": 1011,
+      "line": 1013,
+      "end_line": 1013,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -265403,8 +265704,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1011,
-      "end_line": 1011,
+      "line": 1013,
+      "end_line": 1013,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -265412,8 +265713,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1012,
-      "end_line": 1012,
+      "line": 1014,
+      "end_line": 1014,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.is_dead.is_",
@@ -265421,8 +265722,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1012,
-      "end_line": 1012,
+      "line": 1014,
+      "end_line": 1014,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page.isnot",
@@ -265484,35 +265785,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 944,
-      "end_line": 944,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 944,
-      "end_line": 944,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 944,
-      "end_line": 944,
-      "owner": "rollup_daily_goal_dims",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 945,
-      "end_line": 945,
+      "line": 946,
+      "end_line": 946,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -265524,8 +265798,8 @@
       "end_line": 946,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
@@ -265533,13 +265807,22 @@
       "end_line": 946,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 946,
-      "end_line": 946,
+      "line": 947,
+      "end_line": 947,
+      "owner": "rollup_daily_goal_dims",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 948,
+      "end_line": 948,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -265547,39 +265830,21 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1010,
-      "end_line": 1010,
-      "owner": "rollup_daily_pages",
+      "line": 948,
+      "end_line": 948,
+      "owner": "rollup_daily_goal_dims",
       "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1011,
-      "end_line": 1011,
-      "owner": "rollup_daily_pages",
+      "line": 948,
+      "end_line": 948,
+      "owner": "rollup_daily_goal_dims",
       "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1011,
-      "end_line": 1011,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1012,
-      "end_line": 1012,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.is_dead",
-      "expression": "BehaviorEvent.is_dead"
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
@@ -265594,6 +265859,42 @@
       "path": "backend/app/tasks/analytics_rollups.py",
       "line": 1013,
       "end_line": 1013,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1013,
+      "end_line": 1013,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1014,
+      "end_line": 1014,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.is_dead",
+      "expression": "BehaviorEvent.is_dead"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1014,
+      "end_line": 1014,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1015,
+      "end_line": 1015,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page.like",
@@ -265871,8 +266172,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 890,
-      "end_line": 890,
+      "line": 892,
+      "end_line": 892,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash",
@@ -265880,15 +266181,6 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1010,
-      "end_line": 1010,
-      "owner": "rollup_daily_pages",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/tasks/analytics_rollups.py",
       "line": 1012,
       "end_line": 1012,
       "owner": "rollup_daily_pages",
@@ -265898,8 +266190,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1012,
-      "end_line": 1012,
+      "line": 1014,
+      "end_line": 1014,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -265907,8 +266199,17 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1013,
-      "end_line": 1013,
+      "line": 1014,
+      "end_line": 1014,
+      "owner": "rollup_daily_pages",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "line": 1015,
+      "end_line": 1015,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -266150,8 +266451,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 890,
-      "end_line": 890,
+      "line": 892,
+      "end_line": 892,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -266159,8 +266460,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1002,
-      "end_line": 1002,
+      "line": 1004,
+      "end_line": 1004,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.visitor_id_hash",
@@ -266168,8 +266469,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1002,
-      "end_line": 1002,
+      "line": 1004,
+      "end_line": 1004,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash",
@@ -266177,8 +266478,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1013,
-      "end_line": 1013,
+      "line": 1015,
+      "end_line": 1015,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -266186,8 +266487,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 891,
-      "end_line": 891,
+      "line": 893,
+      "end_line": 893,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed.is_",
@@ -266195,8 +266496,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1002,
-      "end_line": 1002,
+      "line": 1004,
+      "end_line": 1004,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -266204,8 +266505,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1002,
-      "end_line": 1002,
+      "line": 1004,
+      "end_line": 1004,
       "owner": "rollup_daily_pages",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -266213,8 +266514,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 891,
-      "end_line": 891,
+      "line": 893,
+      "end_line": 893,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed",
@@ -266222,8 +266523,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 891,
-      "end_line": 891,
+      "line": 893,
+      "end_line": 893,
       "owner": "rollup_daily_goals",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -266231,8 +266532,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 355,
+      "end_line": 355,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -266249,8 +266550,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 355,
+      "end_line": 355,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -266258,8 +266559,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 355,
+      "end_line": 355,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -288847,8 +289148,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 95,
-      "end_line": 105,
+      "line": 97,
+      "end_line": 107,
       "owner": "<module>",
       "conditions": [],
       "name": "signup_drop_due",
@@ -288856,8 +289157,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 108,
-      "end_line": 109,
+      "line": 110,
+      "end_line": 111,
       "owner": "<module>",
       "conditions": [],
       "name": "auth_error_spike_due",
@@ -288865,8 +289166,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 112,
-      "end_line": 113,
+      "line": 114,
+      "end_line": 115,
       "owner": "<module>",
       "conditions": [],
       "name": "_alert_cooldown",
@@ -288874,8 +289175,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 116,
-      "end_line": 121,
+      "line": 118,
+      "end_line": 123,
       "owner": "<module>",
       "conditions": [],
       "name": "_error_host",
@@ -288883,8 +289184,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 124,
-      "end_line": 141,
+      "line": 126,
+      "end_line": 143,
       "owner": "<module>",
       "conditions": [],
       "name": "js_error_counts_for_alert",
@@ -288892,8 +289193,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 144,
-      "end_line": 151,
+      "line": 146,
+      "end_line": 153,
       "owner": "<module>",
       "conditions": [],
       "name": "memory_pressure_episode",
@@ -288901,8 +289202,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 154,
-      "end_line": 160,
+      "line": 156,
+      "end_line": 162,
       "owner": "<module>",
       "conditions": [],
       "name": "js_error_episode",
@@ -288910,8 +289211,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 163,
-      "end_line": 173,
+      "line": 165,
+      "end_line": 175,
       "owner": "<module>",
       "conditions": [],
       "name": "js_error_top_messages",
@@ -288919,8 +289220,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 176,
-      "end_line": 193,
+      "line": 178,
+      "end_line": 195,
       "owner": "<module>",
       "conditions": [],
       "name": "traffic_drop_due",
@@ -288928,8 +289229,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 196,
-      "end_line": 208,
+      "line": 198,
+      "end_line": 210,
       "owner": "<module>",
       "conditions": [],
       "name": "human_pageviews_query",
@@ -288937,8 +289238,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 211,
-      "end_line": 217,
+      "line": 213,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "collection_silence_due",
@@ -288946,8 +289247,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 220,
-      "end_line": 228,
+      "line": 222,
+      "end_line": 230,
       "owner": "<module>",
       "conditions": [],
       "name": "note_behavior_ingest",
@@ -288955,8 +289256,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 231,
-      "end_line": 256,
+      "line": 233,
+      "end_line": 258,
       "owner": "<module>",
       "conditions": [],
       "name": "_last_collection_seen",
@@ -288964,8 +289265,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 259,
-      "end_line": 265,
+      "line": 261,
+      "end_line": 267,
       "owner": "<module>",
       "conditions": [],
       "name": "_memory_sticky",
@@ -288973,8 +289274,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 268,
-      "end_line": 277,
+      "line": 270,
+      "end_line": 279,
       "owner": "<module>",
       "conditions": [],
       "name": "_set_memory_sticky",
@@ -288982,8 +289283,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 280,
-      "end_line": 286,
+      "line": 282,
+      "end_line": 288,
       "owner": "<module>",
       "conditions": [],
       "name": "_episode_sticky",
@@ -288991,8 +289292,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 289,
-      "end_line": 298,
+      "line": 291,
+      "end_line": 300,
       "owner": "<module>",
       "conditions": [],
       "name": "_set_episode_sticky",
@@ -289000,8 +289301,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 301,
-      "end_line": 308,
+      "line": 303,
+      "end_line": 310,
       "owner": "<module>",
       "conditions": [],
       "name": "_muted",
@@ -289009,8 +289310,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 311,
-      "end_line": 318,
+      "line": 313,
+      "end_line": 320,
       "owner": "<module>",
       "conditions": [],
       "name": "_clear_mute",
@@ -289018,8 +289319,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 321,
-      "end_line": 330,
+      "line": 323,
+      "end_line": 332,
       "owner": "<module>",
       "conditions": [],
       "name": "_alert",
@@ -289027,8 +289328,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 333,
-      "end_line": 338,
+      "line": 335,
+      "end_line": 340,
       "owner": "<module>",
       "conditions": [],
       "name": "_own_js_error_params_query",
@@ -289036,8 +289337,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 341,
-      "end_line": 436,
+      "line": 343,
+      "end_line": 438,
       "owner": "<module>",
       "conditions": [],
       "name": "check_anomalies",
@@ -289045,8 +289346,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 439,
-      "end_line": 469,
+      "line": 441,
+      "end_line": 471,
       "owner": "<module>",
       "conditions": [],
       "name": "check_audience_alerts",
@@ -289054,8 +289355,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 472,
-      "end_line": 526,
+      "line": 474,
+      "end_line": 528,
       "owner": "<module>",
       "conditions": [],
       "name": "_check_host_pressure",
@@ -289063,8 +289364,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 532,
-      "end_line": 586,
+      "line": 534,
+      "end_line": 588,
       "owner": "<module>",
       "conditions": [],
       "name": "check_bot_calibration",
@@ -289072,8 +289373,35 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 188,
-      "end_line": 189,
+      "line": 603,
+      "end_line": 611,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "engine_mismatches",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 614,
+      "end_line": 620,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "counter_mismatch_text",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 623,
+      "end_line": 664,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "check_engine_counter_mismatch",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 190,
+      "end_line": 191,
       "owner": "traffic_drop_due",
       "conditions": [],
       "name": "min_base",
@@ -289081,8 +289409,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 346,
-      "end_line": 353,
+      "line": 348,
+      "end_line": 355,
       "owner": "check_anomalies",
       "conditions": [],
       "name": "_count_pv",
@@ -289090,8 +289418,8 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 355,
-      "end_line": 356,
+      "line": 357,
+      "end_line": 358,
       "owner": "check_anomalies",
       "conditions": [],
       "name": "_count_human_pv",
@@ -290648,7 +290976,7 @@
     {
       "path": "backend/app/services/bot_score.py",
       "line": 41,
-      "end_line": 61,
+      "end_line": 64,
       "owner": "<module>",
       "conditions": [],
       "name": "SessionSignals",
@@ -290656,8 +290984,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 69,
-      "end_line": 79,
+      "line": 72,
+      "end_line": 82,
       "owner": "<module>",
       "conditions": [],
       "name": "_square_desktop_screen",
@@ -290665,8 +290993,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 90,
-      "end_line": 108,
+      "line": 93,
+      "end_line": 111,
       "owner": "<module>",
       "conditions": [],
       "name": "portrait_fingerprint",
@@ -290674,8 +291002,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 111,
-      "end_line": 119,
+      "line": 114,
+      "end_line": 122,
       "owner": "<module>",
       "conditions": [],
       "name": "_no_input_traces",
@@ -290683,8 +291011,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 122,
-      "end_line": 126,
+      "line": 125,
+      "end_line": 129,
       "owner": "<module>",
       "conditions": [],
       "name": "_no_human_traces",
@@ -290692,8 +291020,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 129,
-      "end_line": 131,
+      "line": 132,
+      "end_line": 134,
       "owner": "<module>",
       "conditions": [],
       "name": "_ghost_crawl",
@@ -290701,8 +291029,17 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 161,
-      "end_line": 163,
+      "line": 145,
+      "end_line": 151,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_google_root_linux_us",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_score.py",
+      "line": 183,
+      "end_line": 185,
       "owner": "<module>",
       "conditions": [],
       "name": "is_known_bot_ua",
@@ -290710,8 +291047,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 166,
-      "end_line": 172,
+      "line": 188,
+      "end_line": 194,
       "owner": "<module>",
       "conditions": [],
       "name": "score_session",
@@ -290719,8 +291056,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 175,
-      "end_line": 177,
+      "line": 197,
+      "end_line": 199,
       "owner": "<module>",
       "conditions": [],
       "name": "signal_breakdown",
@@ -290728,8 +291065,8 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 99,
-      "end_line": 100,
+      "line": 102,
+      "end_line": 103,
       "owner": "portrait_fingerprint",
       "conditions": [],
       "name": "num",
@@ -310619,8 +310956,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 69,
-      "end_line": 74,
+      "line": 70,
+      "end_line": 75,
       "owner": "<module>",
       "conditions": [],
       "name": "should_hold",
@@ -310628,8 +310965,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 77,
-      "end_line": 86,
+      "line": 78,
+      "end_line": 87,
       "owner": "<module>",
       "conditions": [],
       "name": "hold",
@@ -310637,8 +310974,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 97,
-      "end_line": 125,
+      "line": 98,
+      "end_line": 126,
       "owner": "<module>",
       "conditions": [],
       "name": "note_error_spike",
@@ -310646,8 +310983,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 128,
-      "end_line": 141,
+      "line": 129,
+      "end_line": 142,
       "owner": "<module>",
       "conditions": [],
       "name": "check_site_recovered",
@@ -310655,8 +310992,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 144,
-      "end_line": 152,
+      "line": 145,
+      "end_line": 153,
       "owner": "<module>",
       "conditions": [],
       "name": "site_down_text",
@@ -310664,8 +311001,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 155,
-      "end_line": 156,
+      "line": 156,
+      "end_line": 157,
       "owner": "<module>",
       "conditions": [],
       "name": "site_up_text",
@@ -310673,8 +311010,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 210,
-      "end_line": 211,
+      "line": 212,
+      "end_line": 213,
       "owner": "<module>",
       "conditions": [],
       "name": "_plain",
@@ -310682,8 +311019,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 214,
-      "end_line": 217,
+      "line": 216,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "_headline",
@@ -310691,8 +311028,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 220,
-      "end_line": 226,
+      "line": 222,
+      "end_line": 228,
       "owner": "<module>",
       "conditions": [],
       "name": "_plural",
@@ -310700,8 +311037,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 229,
-      "end_line": 230,
+      "line": 231,
+      "end_line": 232,
       "owner": "<module>",
       "conditions": [],
       "name": "_times",
@@ -310709,8 +311046,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 233,
-      "end_line": 246,
+      "line": 235,
+      "end_line": 248,
       "owner": "<module>",
       "conditions": [],
       "name": "_etl_line",
@@ -310718,8 +311055,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 249,
-      "end_line": 319,
+      "line": 251,
+      "end_line": 321,
       "owner": "<module>",
       "conditions": [],
       "name": "build_summary",
@@ -310727,8 +311064,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 322,
-      "end_line": 352,
+      "line": 324,
+      "end_line": 354,
       "owner": "<module>",
       "conditions": [],
       "name": "calm_morning_summary_job",
@@ -319566,7 +319903,7 @@
     {
       "path": "backend/app/tasks/analytics_rollups.py",
       "line": 637,
-      "end_line": 754,
+      "end_line": 756,
       "owner": "<module>",
       "conditions": [],
       "name": "_finalize_session",
@@ -319574,8 +319911,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 761,
-      "end_line": 762,
+      "line": 763,
+      "end_line": 764,
       "owner": "<module>",
       "conditions": [],
       "name": "_visit_raw",
@@ -319583,8 +319920,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 765,
-      "end_line": 768,
+      "line": 767,
+      "end_line": 770,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_device",
@@ -319592,8 +319929,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 771,
-      "end_line": 772,
+      "line": 773,
+      "end_line": 774,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_channel",
@@ -319601,8 +319938,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 775,
-      "end_line": 869,
+      "line": 777,
+      "end_line": 871,
       "owner": "<module>",
       "conditions": [],
       "name": "rollup_daily_traffic",
@@ -319610,8 +319947,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 872,
-      "end_line": 909,
+      "line": 874,
+      "end_line": 911,
       "owner": "<module>",
       "conditions": [],
       "name": "rollup_daily_goals",
@@ -319619,8 +319956,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 917,
-      "end_line": 923,
+      "line": 919,
+      "end_line": 925,
       "owner": "<module>",
       "conditions": [],
       "name": "_dim_event_names",
@@ -319628,8 +319965,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 926,
-      "end_line": 987,
+      "line": 928,
+      "end_line": 989,
       "owner": "<module>",
       "conditions": [],
       "name": "rollup_daily_goal_dims",
@@ -319637,8 +319974,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 990,
-      "end_line": 1056,
+      "line": 992,
+      "end_line": 1058,
       "owner": "<module>",
       "conditions": [],
       "name": "rollup_daily_pages",
@@ -319646,8 +319983,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1063,
-      "end_line": 1143,
+      "line": 1065,
+      "end_line": 1145,
       "owner": "<module>",
       "conditions": [],
       "name": "sync_metrika_goals",
@@ -319655,8 +319992,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1150,
-      "end_line": 1195,
+      "line": 1152,
+      "end_line": 1197,
       "owner": "<module>",
       "conditions": [],
       "name": "run_rollups",
@@ -319664,8 +320001,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1198,
-      "end_line": 1209,
+      "line": 1200,
+      "end_line": 1211,
       "owner": "<module>",
       "conditions": [],
       "name": "rollups_15min_job",
@@ -319673,8 +320010,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 1212,
-      "end_line": 1240,
+      "line": 1214,
+      "end_line": 1242,
       "owner": "<module>",
       "conditions": [],
       "name": "rollups_daily_job",
@@ -319718,8 +320055,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 956,
-      "end_line": 960,
+      "line": 958,
+      "end_line": 962,
       "owner": "rollup_daily_goal_dims",
       "conditions": [],
       "name": "bump",
@@ -319818,7 +320155,7 @@
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
       "line": 288,
-      "end_line": 300,
+      "end_line": 307,
       "owner": "<module>",
       "conditions": [],
       "name": "acquisition_daily_job",
@@ -319826,8 +320163,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 303,
-      "end_line": 315,
+      "line": 310,
+      "end_line": 322,
       "owner": "<module>",
       "conditions": [],
       "name": "partner_revenue_daily_job",
@@ -319835,8 +320172,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 318,
-      "end_line": 332,
+      "line": 325,
+      "end_line": 339,
       "owner": "<module>",
       "conditions": [],
       "name": "webmaster_queries_daily_job",
@@ -319844,8 +320181,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 335,
-      "end_line": 350,
+      "line": 342,
+      "end_line": 357,
       "owner": "<module>",
       "conditions": [],
       "name": "behavior_retention_job",
@@ -319853,8 +320190,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 357,
-      "end_line": 412,
+      "line": 364,
+      "end_line": 419,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_daily_digest_job",
@@ -319862,8 +320199,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 415,
-      "end_line": 438,
+      "line": 422,
+      "end_line": 445,
       "owner": "<module>",
       "conditions": [],
       "name": "analytics_daily_job",
@@ -319898,8 +320235,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 401,
-      "end_line": 403,
+      "line": 408,
+      "end_line": 410,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "_inventory_block",
@@ -337469,96 +337806,106 @@
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 575,
-      "end_line": 575,
+      "line": 577,
+      "end_line": 577,
       "owner": "check_bot_calibration",
       "conditions": [],
       "symbol": "app.services.analytics_marts.CALIBRATION_CORRIDOR_PCT"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 105,
-      "end_line": 105,
+      "line": 107,
+      "end_line": 107,
       "owner": "signup_drop_due",
       "conditions": [],
       "symbol": "app.services.analytics_alerts.SIGNUP_DROP_AFTER"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 113,
-      "end_line": 113,
+      "line": 115,
+      "end_line": 115,
       "owner": "_alert_cooldown",
       "conditions": [],
       "symbol": "app.services.analytics_alerts._ALERT_COOLDOWN"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 138,
+      "end_line": 138,
       "owner": "js_error_counts_for_alert",
       "conditions": [],
       "symbol": "app.services.analytics_alerts._STALE_TAB_RE"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 219,
+      "end_line": 219,
       "owner": "collection_silence_due",
       "conditions": [],
       "symbol": "app.services.analytics_alerts.COLLECTION_SILENCE_AFTER"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 118,
-      "end_line": 118,
+      "line": 120,
+      "end_line": 120,
       "owner": "_error_host",
       "conditions": [],
       "symbol": "app.services.analytics_alerts._JS_URL_RE"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 189,
-      "end_line": 189,
+      "line": 191,
+      "end_line": 191,
       "owner": "traffic_drop_due.min_base",
       "conditions": [],
       "symbol": "app.services.analytics_alerts._NIGHT_MSK_HOURS"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 447,
+      "end_line": 447,
       "owner": "check_audience_alerts",
       "conditions": [],
       "symbol": "app.services.analytics_alerts.SIGNUP_DROP_AFTER"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 141,
-      "end_line": 141,
+      "line": 143,
+      "end_line": 143,
       "owner": "js_error_counts_for_alert",
       "conditions": [],
       "symbol": "app.services.analytics_alerts._THIRD_PARTY_HOST_SUFFIXES"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 369,
-      "end_line": 369,
+      "line": 371,
+      "end_line": 371,
       "owner": "check_anomalies",
       "conditions": [],
       "symbol": "app.services.analytics_alerts._MSK_OFFSET"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 657,
+      "end_line": 657,
+      "owner": "check_engine_counter_mismatch",
+      "conditions": [
+        "engine"
+      ],
+      "symbol": "app.services.analytics_alerts._METRIKA_ENGINE_NAMES"
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "line": 248,
+      "end_line": 248,
       "owner": "_last_collection_seen",
       "conditions": [],
       "symbol": "app.services.analytics_alerts._COLLECTION_PROBE_WINDOW"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 463,
+      "end_line": 463,
       "owner": "check_audience_alerts",
       "conditions": [],
       "symbol": "app.services.analytics_alerts.AUTH_ERROR_BENIGN_CODES"
@@ -338171,24 +338518,24 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 169,
-      "end_line": 169,
+      "line": 191,
+      "end_line": 191,
       "owner": "score_session",
       "conditions": [],
       "symbol": "app.services.bot_score.HEURISTICS"
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 199,
+      "end_line": 199,
       "owner": "signal_breakdown",
       "conditions": [],
       "symbol": "app.services.bot_score.HEURISTICS"
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 185,
+      "end_line": 185,
       "owner": "is_known_bot_ua",
       "conditions": [],
       "symbol": "app.services.bot_score._BOT_UA_RE"
@@ -347795,112 +348142,112 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 275,
-      "end_line": 275,
+      "line": 277,
+      "end_line": 277,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.GROUPS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 61,
-      "end_line": 61,
+      "line": 62,
+      "end_line": 62,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.telegram_calm.HELD_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 61,
-      "end_line": 61,
+      "line": 62,
+      "end_line": 62,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.telegram_calm.URGENT_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 178,
+      "end_line": 178,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.telegram_calm.GROUPS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 72,
+      "end_line": 72,
       "owner": "should_hold",
       "conditions": [],
       "symbol": "app.services.telegram_calm.HELD_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 216,
-      "end_line": 216,
+      "line": 218,
+      "end_line": 218,
       "owner": "_headline",
       "conditions": [],
       "symbol": "app.services.telegram_calm._TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.HELD_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 258,
+      "end_line": 258,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._MONTHS_GENITIVE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 307,
+      "end_line": 307,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._KIND_GROUP"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 350,
-      "end_line": 350,
+      "line": 352,
+      "end_line": 352,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.services.telegram_calm.MSK"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 219,
+      "end_line": 219,
       "owner": "_headline",
       "conditions": [],
       "symbol": "app.services.telegram_calm._EMOJI_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 259,
+      "end_line": 259,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.ACTION_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 211,
-      "end_line": 211,
+      "line": 213,
+      "end_line": 213,
       "owner": "_plain",
       "conditions": [],
       "symbol": "app.services.telegram_calm._TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 309,
+      "end_line": 309,
       "owner": "build_summary",
       "conditions": [
         "other"
@@ -347909,24 +348256,24 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 286,
+      "end_line": 286,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._RECOVERY_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 294,
+      "end_line": 294,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.KIND_LABELS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 298,
+      "end_line": 298,
       "owner": "build_summary",
       "conditions": [
         "h"
@@ -347935,8 +348282,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 346,
+      "end_line": 346,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.services.telegram_calm.URGENT_KINDS"
@@ -350230,16 +350577,16 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 768,
-      "end_line": 768,
+      "line": 770,
+      "end_line": 770,
       "owner": "_metrika_device",
       "conditions": [],
       "symbol": "app.services.analytics_marts.METRIKA_DEVICE"
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 772,
-      "end_line": 772,
+      "line": 774,
+      "end_line": 774,
       "owner": "_metrika_channel",
       "conditions": [],
       "symbol": "app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL"
@@ -350280,8 +350627,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 802,
-      "end_line": 802,
+      "line": 804,
+      "end_line": 804,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
@@ -350316,8 +350663,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "line": 822,
-      "end_line": 822,
+      "line": 824,
+      "end_line": 824,
       "owner": "rollup_daily_traffic",
       "conditions": [
         "pg"
