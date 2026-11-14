@@ -244,6 +244,11 @@
       "lines": 82
     },
     {
+      "path": "backend/alembic/versions/20261114_pulse_context.py",
+      "sha256": "dccb403d5ddbd449c649b91ac1ce2262eb4c64582914a7c81eb7ae9922dd510b",
+      "lines": 31
+    },
+    {
       "path": "backend/alembic/versions/8524e35ba1ee_init_schema.py",
       "sha256": "a62f187e83558a320ee3edea0a81fc61ee252df0fb1b55651bfe75500d53b7ca",
       "lines": 98
@@ -574,6 +579,11 @@
       "lines": 650
     },
     {
+      "path": "backend/app/data/pulse_context.yaml",
+      "sha256": "5cdcffca6d0f033ae4f5792f563c38d248e32ab552badf5d36206a1661a95f89",
+      "lines": 108
+    },
+    {
       "path": "backend/app/data/region_indicator_polarity.py",
       "sha256": "944512fd347d6e075d96054fc9ba5ab6b8d5c7e04a6b0665d32edc60bb464090",
       "lines": 131
@@ -750,8 +760,8 @@
     },
     {
       "path": "backend/app/models.py",
-      "sha256": "45218313a64e4328b21c5d13dd584f3013038bac48d1c9a42a14a84a70d1de38",
-      "lines": 1920
+      "sha256": "481f1f8341942b36ee497ac98ec6f263b8c677d2c4e1a3b2ec7715530af7e59f",
+      "lines": 1933
     },
     {
       "path": "backend/app/schemas.py",
@@ -1444,9 +1454,14 @@
       "lines": 898
     },
     {
+      "path": "backend/app/services/pulse_context.py",
+      "sha256": "0a72e21a1be812c84c425984706b1f7e389d6514a3ba044eb9efa8fb4c6c6174",
+      "lines": 359
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "cfbe9af5b2ed3f94fe8c0b3c34ce2e6bad5d653c559ec315f1bc191da33a3ebc",
-      "lines": 624
+      "sha256": "0170f31f4b84c002442286624a84920a288523a789f94185cdc4bf72370ba544",
+      "lines": 656
     },
     {
       "path": "backend/app/services/r4a_price_compare.py",
@@ -1820,8 +1835,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "sha256": "c1caffd16052a1517afa9afa63f43add63d4ecf973b47e53e2e5843930545daa",
-      "lines": 581
+      "sha256": "535906ed4479cb53f461170aedf0e7a11d059d20050a6c708e74bff549b311bc",
+      "lines": 596
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -2564,6 +2579,11 @@
       "lines": 523
     },
     {
+      "path": "scripts/check-pulse-context.py",
+      "sha256": "b05158619dafe25a793164f52a52a43ef2190f42878c66d40a2688c28ae67613",
+      "lines": 81
+    },
+    {
       "path": "scripts/classify-graph-omissions.py",
       "sha256": "209042984ccb36fd6fcd87fc34173beecb42d267947d125bc21917ed4ce79357",
       "lines": 168
@@ -2637,6 +2657,11 @@
       "path": "scripts/refresh-search-crawler-ranges.py",
       "sha256": "a59f2af50a22b5383a18b990fc0d0e829400bb7760a228568255cc2191e706ce",
       "lines": 211
+    },
+    {
+      "path": "scripts/release-log.py",
+      "sha256": "b47f485be5e9ab06400c98426342c257f5f439df8d03c01713692154f082d339",
+      "lines": 68
     },
     {
       "path": "scripts/repo-inventory.py",
@@ -5990,6 +6015,12 @@
         "VKM",
         "YR"
       ],
+      "meaning": "JSON top-level identity; YAML source is fingerprinted, not semantically parsed"
+    },
+    {
+      "path": "backend/app/data/pulse_context.yaml",
+      "format": "yaml",
+      "top_level_keys": null,
       "meaning": "JSON top-level identity; YAML source is fingerprinted, not semantically parsed"
     },
     {
@@ -30159,7 +30190,113 @@
     {
       "path": "backend/app/models.py",
       "line": 1905,
-      "end_line": 1919,
+      "end_line": 1915,
+      "owner": "<module>",
+      "conditions": [],
+      "model": "app.models.PulseContextNote",
+      "table": "pulse_context_notes",
+      "bases": [
+        "Base"
+      ],
+      "fields": [
+        {
+          "path": "backend/app/models.py",
+          "line": 1911,
+          "end_line": 1911,
+          "owner": "PulseContextNote",
+          "conditions": [],
+          "attribute": "id",
+          "sql_name": "id",
+          "annotation": "Mapped[int]",
+          "arguments": [],
+          "options": {
+            "primary_key": "True"
+          },
+          "nullable": false,
+          "nullable_basis": "Mapped annotation inference (SQLAlchemy runtime not imported)"
+        },
+        {
+          "path": "backend/app/models.py",
+          "line": 1912,
+          "end_line": 1912,
+          "owner": "PulseContextNote",
+          "conditions": [],
+          "attribute": "created_at",
+          "sql_name": "created_at",
+          "annotation": "Mapped[datetime]",
+          "arguments": [
+            "DateTime"
+          ],
+          "options": {
+            "nullable": "False"
+          },
+          "nullable": false,
+          "nullable_basis": "explicit"
+        },
+        {
+          "path": "backend/app/models.py",
+          "line": 1913,
+          "end_line": 1913,
+          "owner": "PulseContextNote",
+          "conditions": [],
+          "attribute": "text",
+          "sql_name": "text",
+          "annotation": "Mapped[str]",
+          "arguments": [
+            "String(600)"
+          ],
+          "options": {
+            "nullable": "False"
+          },
+          "nullable": false,
+          "nullable_basis": "explicit"
+        },
+        {
+          "path": "backend/app/models.py",
+          "line": 1914,
+          "end_line": 1914,
+          "owner": "PulseContextNote",
+          "conditions": [],
+          "attribute": "until",
+          "sql_name": "until",
+          "annotation": "Mapped[date | None]",
+          "arguments": [
+            "Date"
+          ],
+          "options": {
+            "nullable": "True"
+          },
+          "nullable": true,
+          "nullable_basis": "explicit"
+        },
+        {
+          "path": "backend/app/models.py",
+          "line": 1915,
+          "end_line": 1915,
+          "owner": "PulseContextNote",
+          "conditions": [],
+          "attribute": "deleted",
+          "sql_name": "deleted",
+          "annotation": "Mapped[bool]",
+          "arguments": [
+            "Boolean"
+          ],
+          "options": {
+            "nullable": "False",
+            "default": "False",
+            "server_default": "'false'"
+          },
+          "nullable": false,
+          "nullable_basis": "explicit"
+        }
+      ],
+      "relationships": [],
+      "table_constraints": []
+    },
+    {
+      "path": "backend/app/models.py",
+      "line": 1918,
+      "end_line": 1932,
       "owner": "<module>",
       "conditions": [],
       "model": "app.models.ResearchDownload",
@@ -30170,8 +30307,8 @@
       "fields": [
         {
           "path": "backend/app/models.py",
-          "line": 1914,
-          "end_line": 1914,
+          "line": 1927,
+          "end_line": 1927,
           "owner": "ResearchDownload",
           "conditions": [],
           "attribute": "id",
@@ -30186,8 +30323,8 @@
         },
         {
           "path": "backend/app/models.py",
-          "line": 1915,
-          "end_line": 1915,
+          "line": 1928,
+          "end_line": 1928,
           "owner": "ResearchDownload",
           "conditions": [],
           "attribute": "slug",
@@ -30204,8 +30341,8 @@
         },
         {
           "path": "backend/app/models.py",
-          "line": 1916,
-          "end_line": 1916,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "ResearchDownload",
           "conditions": [],
           "attribute": "date",
@@ -30222,8 +30359,8 @@
         },
         {
           "path": "backend/app/models.py",
-          "line": 1918,
-          "end_line": 1918,
+          "line": 1931,
+          "end_line": 1931,
           "owner": "ResearchDownload",
           "conditions": [],
           "attribute": "source",
@@ -30242,8 +30379,8 @@
         },
         {
           "path": "backend/app/models.py",
-          "line": 1919,
-          "end_line": 1919,
+          "line": 1932,
+          "end_line": 1932,
           "owner": "ResearchDownload",
           "conditions": [],
           "attribute": "count",
@@ -30264,8 +30401,8 @@
       "table_constraints": [
         {
           "path": "backend/app/models.py",
-          "line": 1912,
-          "end_line": 1912,
+          "line": 1925,
+          "end_line": 1925,
           "owner": "ResearchDownload",
           "conditions": [],
           "definition": "(UniqueConstraint('slug', 'date', 'source', name='uq_research_downloads_slug_date_src'),)"
@@ -37698,9 +37835,46 @@
       "expression": "settings.analytics_allowed_counter_ids"
     },
     {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 131,
+      "end_line": 131,
+      "owner": "flag_lines",
+      "conditions": [],
+      "name": null,
+      "expression": "getattr(settings, name, None)",
+      "dynamic": true
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 140,
+      "end_line": 140,
+      "owner": "openrouter_balance",
+      "conditions": [],
+      "name": "openrouter_api_key",
+      "expression": "settings.openrouter_api_key"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 145,
+      "end_line": 145,
+      "owner": "openrouter_balance",
+      "conditions": [],
+      "name": "openrouter_proxy_url",
+      "expression": "settings.openrouter_proxy_url"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 147,
+      "end_line": 147,
+      "owner": "openrouter_balance",
+      "conditions": [],
+      "name": "openrouter_api_key",
+      "expression": "settings.openrouter_api_key"
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
-      "line": 357,
-      "end_line": 357,
+      "line": 370,
+      "end_line": 370,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -37708,8 +37882,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 366,
-      "end_line": 366,
+      "line": 390,
+      "end_line": 390,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_model",
@@ -37717,8 +37891,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 622,
+      "end_line": 622,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37726,8 +37900,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 556,
-      "end_line": 556,
+      "line": 588,
+      "end_line": 588,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -37735,8 +37909,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 556,
-      "end_line": 556,
+      "line": 588,
+      "end_line": 588,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37744,8 +37918,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 622,
+      "end_line": 622,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37753,8 +37927,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 401,
+      "end_line": 401,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -37762,8 +37936,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 406,
+      "end_line": 406,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -38322,8 +38496,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 535,
+      "end_line": 535,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -38331,8 +38505,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 535,
+      "end_line": 535,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_token",
@@ -38340,8 +38514,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 539,
-      "end_line": 539,
+      "line": 554,
+      "end_line": 554,
       "owner": "telegram_poll_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -41212,6 +41386,17 @@
       "conditions": [],
       "call": "asyncio.ensure_future(_api('sendChatAction', {'chat_id': chat_id, 'action': 'typing'}, token=bot_token(), timeout=6))",
       "symbol": "asyncio.ensure_future"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 284,
+      "end_line": 284,
+      "owner": "parse_command",
+      "conditions": [
+        "u"
+      ],
+      "call": "u.start()",
+      "symbol": "app.services.pulse_context.u.start"
     },
     {
       "path": "backend/app/services/pulse_report.py",
@@ -102493,6 +102678,40 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 49,
+      "end_line": 59,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "FLAG_WHITELIST",
+      "symbol": "app.services.pulse_context.FLAG_WHITELIST",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('telegram_calm_mode', 'public_bot_enabled', 'public_bot_llm_enabled', 'ru_google_short_sitemap', 'ru_google_noindex_world_years', 'ru_google_disallow_world_years', 'apex_google_short_sitemap', 'apex_google_noindex_years_without_demand', 'analytics_sessionize_incremental_enabled')",
+      "expression_truncated": false,
+      "expression_chars": 281,
+      "ast_sha256": "19c7b50d643a7d67475e43e0e1add6b451cc28772ad0ad02ee42c36e3e426124",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 60,
+      "end_line": 60,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_SECRET_HINTS",
+      "symbol": "app.services.pulse_context._SECRET_HINTS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('secret', 'token', 'key', 'password', 'dsn', 'url')",
+      "expression_truncated": false,
+      "expression_chars": 52,
+      "ast_sha256": "bdc2d49b18e2a2f9b630c5e3ae4392d6b0e9e54865601cb9fbe33211e2ffb42d",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
       "line": 44,
       "end_line": 47,
@@ -102528,8 +102747,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 202,
-      "end_line": 202,
+      "line": 211,
+      "end_line": 211,
       "owner": "<module>",
       "conditions": [],
       "name": "_HYP_WORD_RE",
@@ -102545,8 +102764,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 351,
+      "end_line": 351,
       "owner": "<module>",
       "conditions": [],
       "name": "_AFFORD_RE",
@@ -126208,6 +126427,23 @@
       "runtime_expansion": false
     },
     {
+      "path": "scripts/check-pulse-context.py",
+      "line": 21,
+      "end_line": 33,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "METRIC_PATHS",
+      "symbol": "scripts.check-pulse-context.METRIC_PATHS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('backend/app/tasks/analytics_rollups.py', 'backend/app/services/analytics_marts.py', 'backend/app/services/admin_bi.py', 'backend/app/services/bot_score.py', 'backend/app/services/bot_traffic.py', 'backend/app/services/pulse.py', 'frontend/nginx.conf', 'backend/app/services/index_policy.py', 'backend/app/services/sitemap_priority.py', 'backend/app/services/sitemap_static.py', 'backend/app/api/sitemap.py')",
+      "expression_truncated": false,
+      "expression_chars": 409,
+      "ast_sha256": "4167f97464c2bfe6ae68feecf2b5ef0e38c924f49267da632c5dd9acadf87ba4",
+      "runtime_expansion": false
+    },
+    {
       "path": "scripts/completeness.py",
       "line": 49,
       "end_line": 49,
@@ -127875,6 +128111,40 @@
       "expression_chars": 102,
       "ast_sha256": "dd45b2a7ac8814c332bd1bb0b54451599c7b3c3189e847f70b51ec707975d162",
       "runtime_expansion": false
+    },
+    {
+      "path": "scripts/release-log.py",
+      "line": 23,
+      "end_line": 23,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_SKIP",
+      "symbol": "scripts.release-log._SKIP",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('^(?:chore\\\\(deploy\\\\): одобрить|docs\\\\(knowledge\\\\)|merge[:( ]|Merge )', re.IGNORECASE)",
+      "expression_truncated": false,
+      "expression_chars": 99,
+      "ast_sha256": "c24ee25f920852021aa8f2ee361c1098fc39010ba057b324ebb17e60098da1e7",
+      "runtime_expansion": true
+    },
+    {
+      "path": "scripts/release-log.py",
+      "line": 24,
+      "end_line": 24,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_EMAIL",
+      "symbol": "scripts.release-log._EMAIL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('[\\\\w.+-]+@[\\\\w-]+\\\\.[\\\\w.-]+')",
+      "expression_truncated": false,
+      "expression_chars": 42,
+      "ast_sha256": "04b1c3938b111c0acac8547d4ce37d06a4642140423edcb8fc7caf3f2f140195",
+      "runtime_expansion": true
     },
     {
       "path": "scripts/repo-inventory.py",
@@ -149512,9 +149782,65 @@
       "ast_sha256": "9ef7493c0133ed21570861abd1b7eb0be6e4bacd9e1277a437a1e321c481176e"
     },
     {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 298,
+      "end_line": 298,
+      "owner": "add_note",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "db",
+      "symbol": "app.services.pulse_context.db.add",
+      "expression": "db.add(note)",
+      "expression_truncated": false,
+      "expression_chars": 12,
+      "ast_sha256": "f31e01391764bb356f7cdee2ecefdc3b5a36fd3b4a08b81d5074acc4bca375fb"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 299,
+      "end_line": 299,
+      "owner": "add_note",
+      "conditions": [],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.services.pulse_context.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 324,
+      "end_line": 324,
+      "owner": "delete_note",
+      "conditions": [],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.services.pulse_context.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 308,
+      "end_line": 313,
+      "owner": "active_notes",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.pulse_context.db.execute",
+      "expression": "db.execute(select(PulseContextNote).where(PulseContextNote.deleted.is_(False), or_(PulseContextNote.until.is_(None), PulseContextNote.until >= today)).order_by(PulseContextNote.id.desc()).limit(limit))",
+      "expression_truncated": false,
+      "expression_chars": 201,
+      "ast_sha256": "c4142c7004397673c0edec3ee038bc55f303720fac1472d709ca88b80007841b"
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
-      "line": 591,
-      "end_line": 591,
+      "line": 623,
+      "end_line": 623,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -149527,8 +149853,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 622,
+      "end_line": 622,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -149541,8 +149867,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 295,
-      "end_line": 295,
+      "line": 304,
+      "end_line": 304,
       "owner": "_apply_hypothesis_updates",
       "conditions": [],
       "operation": "commit",
@@ -149555,8 +149881,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 288,
-      "end_line": 288,
+      "line": 297,
+      "end_line": 297,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -149571,8 +149897,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 242,
-      "end_line": 245,
+      "line": 251,
+      "end_line": 254,
       "owner": "_open_hypotheses",
       "conditions": [],
       "operation": "execute",
@@ -149585,8 +149911,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 280,
-      "end_line": 282,
+      "line": 289,
+      "end_line": 291,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -156262,8 +156588,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 544,
-      "end_line": 544,
+      "line": 559,
+      "end_line": 559,
       "owner": "telegram_poll_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -156322,8 +156648,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 594,
+      "end_line": 594,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -169566,6 +169892,20 @@
       "expression_truncated": false,
       "expression_chars": 10,
       "ast_sha256": "0349bc0c3724a45499f6c084b7d1d7a1dd08bcb9f20a2ec4d09067df6a82bbe1"
+    },
+    {
+      "path": "scripts/release-log.py",
+      "line": 61,
+      "end_line": 61,
+      "owner": "main",
+      "conditions": [],
+      "operation": "update",
+      "receiver": null,
+      "symbol": "scripts.release-log.update",
+      "expression": "update(path, argv[1], argv[2], today)",
+      "expression_truncated": false,
+      "expression_chars": 37,
+      "ast_sha256": "646eab041524ad8814b884b8562790463b88054acaeea58463c8798ee3197830"
     },
     {
       "path": "scripts/repo-inventory.py",
@@ -227685,9 +228025,135 @@
       "expression": "WebmasterSearchQuery"
     },
     {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "add_note",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote",
+      "expression": "PulseContextNote"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 320,
+      "end_line": 320,
+      "owner": "delete_note",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote",
+      "expression": "PulseContextNote"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 312,
+      "end_line": 312,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote.id.desc",
+      "expression": "PulseContextNote.id.desc"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 312,
+      "end_line": 312,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote.id",
+      "expression": "PulseContextNote.id"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 310,
+      "end_line": 310,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote.deleted.is_",
+      "expression": "PulseContextNote.deleted.is_"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 312,
+      "end_line": 312,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote",
+      "expression": "PulseContextNote"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 309,
+      "end_line": 309,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote",
+      "expression": "PulseContextNote"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 310,
+      "end_line": 310,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote.deleted",
+      "expression": "PulseContextNote.deleted"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote.until.is_",
+      "expression": "PulseContextNote.until.is_"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote.until",
+      "expression": "PulseContextNote.until"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 310,
+      "end_line": 310,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote",
+      "expression": "PulseContextNote"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote.until",
+      "expression": "PulseContextNote.until"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote",
+      "expression": "PulseContextNote"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "active_notes",
+      "conditions": [],
+      "symbol": "app.models.PulseContextNote",
+      "expression": "PulseContextNote"
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
-      "line": 287,
-      "end_line": 287,
+      "line": 296,
+      "end_line": 296,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -227697,8 +228163,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 272,
-      "end_line": 272,
+      "line": 281,
+      "end_line": 281,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "upd.get('id') is not None"
@@ -227708,8 +228174,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 285,
-      "end_line": 285,
+      "line": 294,
+      "end_line": 294,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -227719,8 +228185,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 253,
+      "end_line": 253,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at.desc",
@@ -227728,8 +228194,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 253,
+      "end_line": 253,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.id.desc",
@@ -227737,8 +228203,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 253,
+      "end_line": 253,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at",
@@ -227746,8 +228212,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 253,
+      "end_line": 253,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.id",
@@ -227755,8 +228221,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 290,
+      "end_line": 290,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -227767,8 +228233,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 252,
+      "end_line": 252,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict.is_",
@@ -227776,8 +228242,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 253,
+      "end_line": 253,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -227785,8 +228251,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 253,
+      "end_line": 253,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -227794,8 +228260,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 290,
+      "end_line": 290,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -227806,8 +228272,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 290,
+      "end_line": 290,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -227818,8 +228284,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 252,
+      "end_line": 252,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -227827,8 +228293,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 252,
+      "end_line": 252,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict",
@@ -227836,8 +228302,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 290,
+      "end_line": 290,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -227848,8 +228314,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 252,
+      "end_line": 252,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -279305,6 +279771,24 @@
       "kind": "FunctionDef"
     },
     {
+      "path": "backend/alembic/versions/20261114_pulse_context.py",
+      "line": 19,
+      "end_line": 27,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "upgrade",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/alembic/versions/20261114_pulse_context.py",
+      "line": 30,
+      "end_line": 31,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "downgrade",
+      "kind": "FunctionDef"
+    },
+    {
       "path": "backend/alembic/versions/8524e35ba1ee_init_schema.py",
       "line": 18,
       "end_line": 85,
@@ -288502,7 +288986,16 @@
     {
       "path": "backend/app/models.py",
       "line": 1905,
-      "end_line": 1919,
+      "end_line": 1915,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "PulseContextNote",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/models.py",
+      "line": 1918,
+      "end_line": 1932,
       "owner": "<module>",
       "conditions": [],
       "name": "ResearchDownload",
@@ -301507,6 +302000,168 @@
       "kind": "FunctionDef"
     },
     {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 64,
+      "end_line": 71,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "Entry",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 74,
+      "end_line": 79,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_as_date",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 82,
+      "end_line": 98,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "load_entries",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 101,
+      "end_line": 107,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "load_release_log",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 110,
+      "end_line": 118,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "release_date_of",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 121,
+      "end_line": 123,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_clip",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 126,
+      "end_line": 135,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "flag_lines",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 138,
+      "end_line": 155,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "openrouter_balance",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 158,
+      "end_line": 183,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_release_lines",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 186,
+      "end_line": 240,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "build_block",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 243,
+      "end_line": 248,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "count_active",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 257,
+      "end_line": 287,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "parse_command",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 290,
+      "end_line": 300,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "add_note",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 303,
+      "end_line": 314,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "active_notes",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 317,
+      "end_line": 325,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "delete_note",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 328,
+      "end_line": 330,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "note_lines",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 333,
+      "end_line": 359,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "handle_owner_command",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 166,
+      "end_line": 173,
+      "owner": "_release_lines",
+      "conditions": [],
+      "name": "render",
+      "kind": "FunctionDef"
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
       "line": 51,
       "end_line": 60,
@@ -301535,8 +302190,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 205,
-      "end_line": 207,
+      "line": 214,
+      "end_line": 216,
       "owner": "<module>",
       "conditions": [],
       "name": "_hypothesis_stems",
@@ -301544,8 +302199,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 210,
-      "end_line": 236,
+      "line": 219,
+      "end_line": 245,
       "owner": "<module>",
       "conditions": [],
       "name": "similar_open_hypothesis",
@@ -301553,8 +302208,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 239,
-      "end_line": 249,
+      "line": 248,
+      "end_line": 258,
       "owner": "<module>",
       "conditions": [],
       "name": "_open_hypotheses",
@@ -301562,8 +302217,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 252,
-      "end_line": 296,
+      "line": 261,
+      "end_line": 305,
       "owner": "<module>",
       "conditions": [],
       "name": "_apply_hypothesis_updates",
@@ -301571,8 +302226,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 299,
-      "end_line": 313,
+      "line": 308,
+      "end_line": 322,
       "owner": "<module>",
       "conditions": [],
       "name": "_split_llm_output",
@@ -301580,8 +302235,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 316,
-      "end_line": 330,
+      "line": 325,
+      "end_line": 343,
       "owner": "<module>",
       "conditions": [],
       "name": "build_llm_user_content",
@@ -301589,8 +302244,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 344,
-      "end_line": 349,
+      "line": 357,
+      "end_line": 362,
       "owner": "<module>",
       "conditions": [],
       "name": "llm_failure_note",
@@ -301598,8 +302253,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 352,
-      "end_line": 416,
+      "line": 365,
+      "end_line": 440,
       "owner": "<module>",
       "conditions": [],
       "name": "_llm_summary",
@@ -301607,8 +302262,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 419,
-      "end_line": 464,
+      "line": 443,
+      "end_line": 488,
       "owner": "<module>",
       "conditions": [],
       "name": "_acquisition_lines",
@@ -301616,8 +302271,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 467,
-      "end_line": 488,
+      "line": 491,
+      "end_line": 520,
       "owner": "<module>",
       "conditions": [],
       "name": "_fallback_summary",
@@ -301625,8 +302280,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 491,
-      "end_line": 498,
+      "line": 523,
+      "end_line": 530,
       "owner": "<module>",
       "conditions": [],
       "name": "_etl_line",
@@ -301634,8 +302289,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 501,
-      "end_line": 551,
+      "line": 533,
+      "end_line": 583,
       "owner": "<module>",
       "conditions": [],
       "name": "_raw_digits_block",
@@ -301643,8 +302298,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 554,
-      "end_line": 600,
+      "line": 586,
+      "end_line": 632,
       "owner": "<module>",
       "conditions": [],
       "name": "send_pulse_report",
@@ -301652,8 +302307,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 603,
-      "end_line": 615,
+      "line": 635,
+      "end_line": 647,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_snapshot_job",
@@ -301661,8 +302316,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 618,
-      "end_line": 624,
+      "line": 650,
+      "end_line": 656,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_report_job",
@@ -301670,8 +302325,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 224,
-      "end_line": 227,
+      "line": 233,
+      "end_line": 236,
       "owner": "similar_open_hypothesis",
       "conditions": [],
       "name": "weights",
@@ -311237,7 +311892,16 @@
     {
       "path": "backend/app/services/telegram_bot.py",
       "line": 502,
-      "end_line": 515,
+      "end_line": 505,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_is_context_command",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 508,
+      "end_line": 528,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_message",
@@ -311245,8 +311909,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 518,
-      "end_line": 522,
+      "line": 531,
+      "end_line": 535,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_shared",
@@ -311254,8 +311918,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 525,
-      "end_line": 533,
+      "line": 538,
+      "end_line": 548,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_public_message",
@@ -311263,8 +311927,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 536,
-      "end_line": 581,
+      "line": 551,
+      "end_line": 596,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_poll_job",
@@ -324285,6 +324949,33 @@
       "kind": "FunctionDef"
     },
     {
+      "path": "scripts/check-pulse-context.py",
+      "line": 36,
+      "end_line": 37,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "git",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/check-pulse-context.py",
+      "line": 40,
+      "end_line": 46,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "default_base",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/check-pulse-context.py",
+      "line": 49,
+      "end_line": 77,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "main",
+      "kind": "FunctionDef"
+    },
+    {
       "path": "scripts/classify-graph-omissions.py",
       "line": 16,
       "end_line": 18,
@@ -325332,6 +326023,33 @@
       "path": "scripts/refresh-search-crawler-ranges.py",
       "line": 179,
       "end_line": 207,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "main",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/release-log.py",
+      "line": 27,
+      "end_line": 36,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "subjects",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/release-log.py",
+      "line": 39,
+      "end_line": 52,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "update",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/release-log.py",
+      "line": 55,
+      "end_line": 64,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -329953,6 +330671,24 @@
       "conditions": [],
       "operation": "get_bind",
       "definition": "op.get_bind()"
+    },
+    {
+      "path": "backend/alembic/versions/20261114_pulse_context.py",
+      "line": 20,
+      "end_line": 27,
+      "owner": "upgrade",
+      "conditions": [],
+      "operation": "create_table",
+      "definition": "op.create_table('pulse_context_notes', sa.Column('id', sa.Integer(), primary_key=True), sa.Column('created_at', sa.DateTime(), nullable=False), sa.Column('text', sa.String(600), nullable=False), sa.Column('until', sa.Date(), nullable=True), sa.Column('deleted', sa.Boolean(), nullable=False, server_default=sa.false()))"
+    },
+    {
+      "path": "backend/alembic/versions/20261114_pulse_context.py",
+      "line": 31,
+      "end_line": 31,
+      "owner": "downgrade",
+      "conditions": [],
+      "operation": "drop_table",
+      "definition": "op.drop_table('pulse_context_notes')"
     },
     {
       "path": "backend/alembic/versions/8524e35ba1ee_init_schema.py",
@@ -343901,6 +344637,22 @@
       "symbol": "app.services.pulse.ETL_ERROR_STATUSES"
     },
     {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 128,
+      "end_line": 128,
+      "owner": "flag_lines",
+      "conditions": [],
+      "symbol": "app.services.pulse_context.FLAG_WHITELIST"
+    },
+    {
+      "path": "backend/app/services/pulse_context.py",
+      "line": 129,
+      "end_line": 129,
+      "owner": "flag_lines",
+      "conditions": [],
+      "symbol": "app.services.pulse_context._SECRET_HINTS"
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
       "line": 55,
       "end_line": 55,
@@ -343918,16 +344670,16 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 206,
-      "end_line": 206,
+      "line": 215,
+      "end_line": 215,
       "owner": "_hypothesis_stems",
       "conditions": [],
       "symbol": "app.services.pulse_report._HYP_WORD_RE"
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 410,
+      "end_line": 410,
       "owner": "_llm_summary",
       "conditions": [
         "resp.status_code == 402"
@@ -348484,16 +349236,16 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 547,
-      "end_line": 547,
+      "line": 562,
+      "end_line": 562,
       "owner": "telegram_poll_job",
       "conditions": [],
       "symbol": "app.services.telegram_bot._REDIS_TRANSIENT"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 595,
+      "end_line": 595,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -353840,6 +354592,14 @@
       "symbol": "scripts.catalog-harvest._ONS_FREQ"
     },
     {
+      "path": "scripts/check-pulse-context.py",
+      "line": 54,
+      "end_line": 54,
+      "owner": "main",
+      "conditions": [],
+      "symbol": "scripts.check-pulse-context.METRIC_PATHS"
+    },
+    {
       "path": "scripts/completeness.py",
       "line": 218,
       "end_line": 218,
@@ -354596,6 +355356,22 @@
       "owner": "render",
       "conditions": [],
       "symbol": "scripts.refresh-search-crawler-ranges.GOOD_BOTS"
+    },
+    {
+      "path": "scripts/release-log.py",
+      "line": 33,
+      "end_line": 33,
+      "owner": "subjects",
+      "conditions": [],
+      "symbol": "scripts.release-log._SKIP"
+    },
+    {
+      "path": "scripts/release-log.py",
+      "line": 35,
+      "end_line": 35,
+      "owner": "subjects",
+      "conditions": [],
+      "symbol": "scripts.release-log._EMAIL"
     },
     {
       "path": "scripts/repo-inventory.py",

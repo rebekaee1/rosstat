@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2465,
-    "code_files": 1993,
-    "current_reviews": 2465,
+    "files": 2471,
+    "code_files": 1998,
+    "current_reviews": 2471,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2195
+      "reviewed": 2201
     },
-    "definitions": 16036,
-    "annotated_definitions": 16036,
+    "definitions": 16091,
+    "annotated_definitions": 16091,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -232,9 +232,9 @@
     },
     {
       "path": ".gitignore",
-      "sha256": "fb92ec8a20d4128f1305f62f1c2fbbb5fa1ce1e5fe1860cb0eae7891ef021d08",
-      "bytes": 2490,
-      "lines": 119,
+      "sha256": "3302cae7862e56b1591857014d06bb0bb997eb29e79fd625cc5c2c5b09300554",
+      "bytes": 2696,
+      "lines": 122,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -1008,6 +1008,19 @@
       "issues": [],
       "definitions": 3,
       "annotated_definitions": 3,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/alembic/versions/20261114_pulse_context.py",
+      "sha256": "dccb403d5ddbd449c649b91ac1ce2262eb4c64582914a7c81eb7ae9922dd510b",
+      "bytes": 1368,
+      "lines": 31,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
       "missing_definitions": []
     },
     {
@@ -2168,6 +2181,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/data/pulse_context.yaml",
+      "sha256": "5cdcffca6d0f033ae4f5792f563c38d248e32ab552badf5d36206a1661a95f89",
+      "bytes": 8554,
+      "lines": 108,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/data/region_indicator_polarity.py",
       "sha256": "944512fd347d6e075d96054fc9ba5ab6b8d5c7e04a6b0665d32edc60bb464090",
       "bytes": 7107,
@@ -2702,15 +2728,15 @@
     },
     {
       "path": "backend/app/models.py",
-      "sha256": "45218313a64e4328b21c5d13dd584f3013038bac48d1c9a42a14a84a70d1de38",
-      "bytes": 109742,
-      "lines": 1920,
+      "sha256": "481f1f8341942b36ee497ac98ec6f263b8c677d2c4e1a3b2ec7715530af7e59f",
+      "bytes": 110700,
+      "lines": 1933,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 76,
-      "annotated_definitions": 76,
+      "definitions": 77,
+      "annotated_definitions": 77,
       "missing_definitions": []
     },
     {
@@ -4508,10 +4534,23 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/services/pulse_context.py",
+      "sha256": "0a72e21a1be812c84c425984706b1f7e389d6514a3ba044eb9efa8fb4c6c6174",
+      "bytes": 16456,
+      "lines": 359,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 18,
+      "annotated_definitions": 18,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "cfbe9af5b2ed3f94fe8c0b3c34ce2e6bad5d653c559ec315f1bc191da33a3ebc",
-      "bytes": 40255,
-      "lines": 624,
+      "sha256": "0170f31f4b84c002442286624a84920a288523a789f94185cdc4bf72370ba544",
+      "bytes": 42564,
+      "lines": 656,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5484,15 +5523,15 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "sha256": "c1caffd16052a1517afa9afa63f43add63d4ecf973b47e53e2e5843930545daa",
-      "bytes": 30299,
-      "lines": 581,
+      "sha256": "535906ed4479cb53f461170aedf0e7a11d059d20050a6c708e74bff549b311bc",
+      "bytes": 31026,
+      "lines": 596,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 15,
-      "annotated_definitions": 15,
+      "definitions": 16,
+      "annotated_definitions": 16,
       "missing_definitions": []
     },
     {
@@ -9968,6 +10007,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_pulse_context.py",
+      "sha256": "80756bbe6ee9dee2751f53a33ff1ed35a982974e9f41cfcb4c8a75bb27709633",
+      "bytes": 11797,
+      "lines": 235,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 27,
+      "annotated_definitions": 27,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_pulse_llm_payload_no_pii.py",
       "sha256": "1dbda8f9f69a9fc1afe67cdf55e7dc635a38f21a28491aa870a1c711ce109b60",
       "bytes": 5200,
@@ -13115,9 +13167,9 @@
     },
     {
       "path": "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md",
-      "sha256": "a71e77f775375cec872c498481f25e8edda8f2205dab92a3ccbc769bf8c6f2d2",
-      "bytes": 31530,
-      "lines": 323,
+      "sha256": "d72aed125915cb8c633d8ba42cca62c7959fec3bf47673187fd83b0ae66f5647",
+      "bytes": 33318,
+      "lines": 334,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13648,9 +13700,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "1a1ef411c866ab794c2482c308900c6c946a629a22efe93b486d4ac825d9579f",
-      "bytes": 772284,
-      "lines": 3578,
+      "sha256": "76eb54b7459fc41435d3434306596ac35bdd489f43f115b7ddaf5a5974cab7be",
+      "bytes": 774475,
+      "lines": 3590,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14246,7 +14298,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "a27603da2c5cba21dd4a668dbb32187b4bb67ca3b9bbc2602ecc32556007f7ae",
+      "sha256": "e8f9670c9e40bd4138129e1e31c9d58fd36e29bac97123aca958c99a621c70a6",
       "bytes": 3853208,
       "lines": 136353,
       "code": false,
@@ -14285,9 +14337,9 @@
     },
     {
       "path": "docs/knowledge-workflow.md",
-      "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a",
-      "bytes": 11467,
-      "lines": 107,
+      "sha256": "850a062686dbafd8c6047c9f015043ada0378d27d6c2f89ea3ed2026416f1a97",
+      "bytes": 11924,
+      "lines": 111,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14298,9 +14350,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "d412591b1d2615cc11199fb62f8135188f4a9ef8e02e70f6a0a787d5af52b28f",
-      "bytes": 12209328,
-      "lines": 366010,
+      "sha256": "463cc96f6318c98b3bcb074e11cb846d6224ae303d3799b65fcf1ef78ea7963f",
+      "bytes": 12232025,
+      "lines": 366786,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14311,9 +14363,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "75e06307128c458bffb1677c38310375ef5daa3096849e3dc6411539847eca20",
-      "bytes": 628578,
-      "lines": 3396,
+      "sha256": "d8fc7b1040da6f5bd2c206a2ad4704ac21526b1c81f99e89f1328e99e668f56d",
+      "bytes": 630275,
+      "lines": 3415,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -15065,8 +15117,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "a2bfed299797b0f7dcfc038ac6e637e2cbec2843185b6ac272f24d18533229b5",
-      "bytes": 141051,
+      "sha256": "e20b80dd95d8c51d29e97a95056a45229b296a372b91f165079e2eed2b496556",
+      "bytes": 141465,
       "lines": 672,
       "code": false,
       "status": "reviewed",
@@ -30613,9 +30665,9 @@
     },
     {
       "path": "scripts/check-all.sh",
-      "sha256": "b3b3151c27ddfe0cc88af707b004cdc6d5b5c09958addd024bdaff3eb93d9cd6",
-      "bytes": 3796,
-      "lines": 68,
+      "sha256": "4b53c1342183b72daeac2e17b6ce88c83fb4cfee1abbd1d2d699b4bc3e08fcff",
+      "bytes": 4071,
+      "lines": 72,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -30635,6 +30687,19 @@
       "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "scripts/check-pulse-context.py",
+      "sha256": "b05158619dafe25a793164f52a52a43ef2190f42878c66d40a2688c28ae67613",
+      "bytes": 3587,
+      "lines": 81,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 3,
+      "annotated_definitions": 3,
       "missing_definitions": []
     },
     {
@@ -30717,9 +30782,9 @@
     },
     {
       "path": "scripts/deploy.sh",
-      "sha256": "981ee82d15e4b116bcc3808814736aa3e1e3b05da4c873534f926d31e5ae51dc",
-      "bytes": 39857,
-      "lines": 710,
+      "sha256": "b4c4fee8b8ebfd6466849a9b938fad64bd81867da3eeed69cea78838ac7f1923",
+      "bytes": 40306,
+      "lines": 713,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -31795,6 +31860,19 @@
       "missing_definitions": []
     },
     {
+      "path": "scripts/release-log.py",
+      "sha256": "b47f485be5e9ab06400c98426342c257f5f439df8d03c01713692154f082d339",
+      "bytes": 3329,
+      "lines": 68,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 3,
+      "annotated_definitions": 3,
+      "missing_definitions": []
+    },
+    {
       "path": "scripts/render-generic-og.mjs",
       "sha256": "c5e0b44496d5affe8cc110f2651fb985f23fdf8185ed33c0bf1eb2cbc5354a4d",
       "bytes": 3946,
@@ -32082,9 +32160,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "85caa38e38ecbb2acc9058749fc33ebcd18f7edcc7b1592ae1d0e4343e7cbdae",
+  "ledger_sha256": "8f5f884955d2263607e7c5a6488ec2fdd06abde8ade8d52f68391bcc81bba386",
   "javascript_inventory_sha256": "ff07e771d69de4817e88614a86a53747aafd3122d75b0bbe7982760f87d81c5d",
-  "baseline_commit": "556fbcb5ba37b7ac4b9ca786c94003196f5f35da",
+  "baseline_commit": "c4868836c361c0cc9de852f7d8a0833e43d67a7c",
   "branch": "fix/counter-google-farm-2026-11-14",
   "unstaged_at_capture": []
 }
