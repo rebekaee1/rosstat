@@ -1,23 +1,14 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "a0e23806e40267f884d657147d863e874eae6de8",
+  "baseline_commit": "83e4df8862685f85ab775b21523163d1d3a2b988",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
     "backend/app/services/telegram_bot.py",
     "docs/code-review/coverage.json",
-    "docs/code-review/coverage.json",
-    "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
     "docs/code-review/reviews.jsonl",
     "docs/indicator-index.json",
-    "docs/indicator-index.json",
     "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
     "docs/mechanism-inventory.md"
   ],
   "untracked_at_capture": [],
@@ -25,16 +16,16 @@
     "files": 2502,
     "attempted": 2137,
     "files_with_nodes": 2043,
-    "nodes": 25407,
-    "symbol_edges": 79778,
-    "file_edges": 18323,
+    "nodes": 25409,
+    "symbol_edges": 79784,
+    "file_edges": 18325,
     "projection_omissions": {
       "external_or_unresolved_file": 3043,
       "missing_endpoint": 4495,
-      "within_file": 34698
+      "within_file": 34702
     },
     "confidence": {
-      "EXTRACTED": 72330,
+      "EXTRACTED": 72336,
       "INFERRED": 7448
     }
   },
@@ -604,8 +595,8 @@
       {
         "source": "services",
         "target": "services",
-        "file_relations": 2031,
-        "symbol_relations": 4384
+        "file_relations": 2033,
+        "symbol_relations": 4386
       },
       {
         "source": "services",
@@ -1179,7 +1170,7 @@
     {"path": "backend/app/services/ssr_swr.py", "kind": "code", "bytes": 9745, "lines": 204, "sha256": "626ef9fe5abe4fae1397815f620bfa899bea9f891c269679da2446cfe602f33d", "symlink": false, "nodes": 21, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/ssr_warm.py", "kind": "code", "bytes": 11936, "lines": 244, "sha256": "40a86cd6afb2f0007095fab2e9a242aa28321a7a67ffb59dce02fd1fc4d46df0", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/staleness.py", "kind": "code", "bytes": 16187, "lines": 358, "sha256": "015178c342c9f258b698939708d5d1ddf05d69111de6712d5ed06d3fa59d8129", "symlink": false, "nodes": 23, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/app/services/telegram_bot.py", "kind": "code", "bytes": 46572, "lines": 864, "sha256": "34222452c381d09780009bdc581744d14fc5e606817ab04a8a434becba05db9a", "symlink": false, "nodes": 48, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/app/services/telegram_bot.py", "kind": "code", "bytes": 47299, "lines": 879, "sha256": "f0b57920851e273ff85ada6795abfcecaf383a4ea43502032d11793834aea7eb", "symlink": false, "nodes": 50, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/telegram_calm.py", "kind": "code", "bytes": 20431, "lines": 356, "sha256": "50bba7ad182621b4afa3bbab966e78a75f25923474405cfc514675a12c3a7333", "symlink": false, "nodes": 23, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/telegram_missed_summary.py", "kind": "code", "bytes": 20829, "lines": 423, "sha256": "90eaf4e6aba9e8e3dc5c2ae721138b2d82adbeb3d76df5ccacf7c5d9c9048d39", "symlink": false, "nodes": 33, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/telegram_outbox.py", "kind": "code", "bytes": 7064, "lines": 163, "sha256": "bfcf753277e0aa14a1ba60ce416d136192604704fb312701ed8176bfda6beabe", "symlink": false, "nodes": 13, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
@@ -1874,12 +1865,12 @@
     {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 87646, "lines": 367, "sha256": "1b5658dfb97f5494afe4dd9d217dfd8b3bbd10acce2f7e5b9de06326babeec3e", "symlink": false, "nodes": 24, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3872167, "lines": 137073, "sha256": "443035bcf2375bd769e4e211c9ee7d3a06f110ec0b8120b350eb7e52e337d206", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3872167, "lines": 137073, "sha256": "19151e23c5aa168b5bb86185aa59cdb3607e769ceeaf798a68ff446d21647f1f", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 160576, "lines": 1824, "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 78988, "lines": 201, "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11924, "lines": 111, "sha256": "850a062686dbafd8c6047c9f015043ada0378d27d6c2f89ea3ed2026416f1a97", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12423791, "lines": 372801, "sha256": "1b95055fee0baa20b2b0f1332edef3a2b49c917159fc9680975d620b3eb46ff3", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 637500, "lines": 3453, "sha256": "e142b5c3233f8fffa7a42aa1a351970101bd2526ae766352092716cdef6cb854", "symlink": false, "nodes": 85, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12424016, "lines": 372810, "sha256": "d00daef28e00beb0299aa5a2170cd80fe263954c64499d8e03a5b5b6d2ae26f9", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 637500, "lines": 3453, "sha256": "55d0c79541ba0266ee378fd3636554c2aaa2225438e0e09f1d80ef787a7e0b0e", "symlink": false, "nodes": 85, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/offsite-backup-runbook.md", "kind": "document", "bytes": 8720, "lines": 74, "sha256": "96fb520148401f8994a2f2eaf202f547e5b136cdc0a5874ef6203b3500b25ef9", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/planet-view.md", "kind": "document", "bytes": 96534, "lines": 594, "sha256": "734f228d975268e7c0eade45272be4df6549d4df43d9ae9bbfaa2661ce241a92", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -6849,7 +6840,7 @@
     {"source": "backend/app/services/staleness.py", "target": "backend/app/services/session_analysis.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/staleness.py", "line": "L29", "source": "staleness.py", "target": "_datetime()"}]},
     {"source": "backend/app/services/staleness.py", "target": "backend/app/services/session_analysis.py", "relation": "references", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/app/services/staleness.py", "line": "L181", "source": "_fetch_unhealthy()", "target": "_datetime()"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/config.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L43", "source": "telegram_bot.py", "target": "config.py"}]},
-    {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/core/cache.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L827", "source": "telegram_poll_job()", "target": "get_state_redis()"}]},
+    {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/core/cache.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L842", "source": "telegram_poll_job()", "target": "get_state_redis()"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/core/cache.py", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L57", "source": "telegram_bot.py", "target": "get_state_redis()"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/core/cache.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L57", "source": "telegram_bot.py", "target": "cache.py"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/database.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L58", "source": "telegram_bot.py", "target": "database.py"}]},
@@ -6873,6 +6864,8 @@
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/services/public_bot.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L620", "source": "telegram_bot.py", "target": "public_bot.py"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/services/pulse.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L640", "source": "_handle_callback()", "target": "build_snapshot()"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/services/pulse.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L638", "source": "telegram_bot.py", "target": "pulse.py"}]},
+    {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/services/pulse_context.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L751", "source": "_handle_message()", "target": "handle_owner_command()"}]},
+    {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/services/pulse_context.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L749", "source": "telegram_bot.py", "target": "pulse_context.py"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/services/session_replay.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L138", "source": "_once()", "target": "url()"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/services/telegram_outbox.py", "relation": "calls", "confidence": "EXTRACTED", "count": 6, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L181", "source": "send_message()", "target": "archive_begin()"}]},
     {"source": "backend/app/services/telegram_bot.py", "target": "backend/app/services/telegram_outbox.py", "relation": "imports", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "backend/app/services/telegram_bot.py", "line": "L169", "source": "telegram_bot.py", "target": "archive_begin()"}]},

@@ -29,8 +29,8 @@
       "data_schema_reviewed": 8,
       "reviewed": 2232
     },
-    "definitions": 16423,
-    "annotated_definitions": 16423,
+    "definitions": 16424,
+    "annotated_definitions": 16424,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -5575,15 +5575,15 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "sha256": "34222452c381d09780009bdc581744d14fc5e606817ab04a8a434becba05db9a",
-      "bytes": 46572,
-      "lines": 864,
+      "sha256": "f0b57920851e273ff85ada6795abfcecaf383a4ea43502032d11793834aea7eb",
+      "bytes": 47299,
+      "lines": 879,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 32,
-      "annotated_definitions": 32,
+      "definitions": 33,
+      "annotated_definitions": 33,
       "missing_definitions": []
     },
     {
@@ -14610,7 +14610,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "443035bcf2375bd769e4e211c9ee7d3a06f110ec0b8120b350eb7e52e337d206",
+      "sha256": "19151e23c5aa168b5bb86185aa59cdb3607e769ceeaf798a68ff446d21647f1f",
       "bytes": 3872167,
       "lines": 137073,
       "code": false,
@@ -14662,9 +14662,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "1b95055fee0baa20b2b0f1332edef3a2b49c917159fc9680975d620b3eb46ff3",
-      "bytes": 12423791,
-      "lines": 372801,
+      "sha256": "d00daef28e00beb0299aa5a2170cd80fe263954c64499d8e03a5b5b6d2ae26f9",
+      "bytes": 12424016,
+      "lines": 372810,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14675,7 +14675,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "e142b5c3233f8fffa7a42aa1a351970101bd2526ae766352092716cdef6cb854",
+      "sha256": "55d0c79541ba0266ee378fd3636554c2aaa2225438e0e09f1d80ef787a7e0b0e",
       "bytes": 637500,
       "lines": 3453,
       "code": false,
@@ -32563,17 +32563,14 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "d945b6bdd066b63ce06852a1471829c99b07b48aa10f766ad162fe57948b1d5a",
+  "ledger_sha256": "3ab28f8255a8fee7464dbab55c93da54b8423055dfe1e802254a1fdee768f3ec",
   "javascript_inventory_sha256": "e6d36e5cf4fe983b42f453b607a62c9154502ef66bda37bf4168c488d2c3f73b",
-  "baseline_commit": "a0e23806e40267f884d657147d863e874eae6de8",
+  "baseline_commit": "83e4df8862685f85ab775b21523163d1d3a2b988",
   "branch": "int/2026-11-14",
   "unstaged_at_capture": [
     "backend/app/services/telegram_bot.py",
     "docs/indicator-index.json",
-    "docs/indicator-index.json",
     "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
     "docs/mechanism-inventory.md"
   ]
 }

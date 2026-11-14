@@ -1855,8 +1855,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "sha256": "34222452c381d09780009bdc581744d14fc5e606817ab04a8a434becba05db9a",
-      "lines": 864
+      "sha256": "f0b57920851e273ff85ada6795abfcecaf383a4ea43502032d11793834aea7eb",
+      "lines": 879
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -38665,8 +38665,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 804,
-      "end_line": 804,
+      "line": 817,
+      "end_line": 817,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -38674,8 +38674,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 804,
-      "end_line": 804,
+      "line": 817,
+      "end_line": 817,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_token",
@@ -38683,8 +38683,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 822,
-      "end_line": 822,
+      "line": 837,
+      "end_line": 837,
       "owner": "telegram_poll_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -38692,8 +38692,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 789,
-      "end_line": 789,
+      "line": 802,
+      "end_line": 802,
       "owner": "service_command_calls",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -115645,8 +115645,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 764,
-      "end_line": 764,
+      "line": 777,
+      "end_line": 777,
       "owner": "<module>",
       "conditions": [],
       "name": "_DOWNLOAD_COMMANDS",
@@ -115662,8 +115662,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 765,
-      "end_line": 765,
+      "line": 778,
+      "end_line": 778,
       "owner": "<module>",
       "conditions": [],
       "name": "_EXPORT_COMMANDS",
@@ -115679,8 +115679,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 766,
-      "end_line": 766,
+      "line": 779,
+      "end_line": 779,
       "owner": "<module>",
       "conditions": [],
       "name": "_ADMIN_TEXTS",
@@ -115696,8 +115696,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 772,
-      "end_line": 777,
+      "line": 785,
+      "end_line": 790,
       "owner": "<module>",
       "conditions": [],
       "name": "OWNER_COMMANDS",
@@ -115713,8 +115713,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 778,
-      "end_line": 782,
+      "line": 791,
+      "end_line": 795,
       "owner": "<module>",
       "conditions": [],
       "name": "REPORTS_ONLY_COMMANDS",
@@ -158528,8 +158528,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 827,
-      "end_line": 827,
+      "line": 842,
+      "end_line": 842,
       "owner": "telegram_poll_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -158588,8 +158588,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 862,
-      "end_line": 862,
+      "line": 877,
+      "end_line": 877,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -316934,7 +316934,16 @@
     {
       "path": "backend/app/services/telegram_bot.py",
       "line": 739,
-      "end_line": 761,
+      "end_line": 742,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_is_context_command",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 745,
+      "end_line": 774,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_message",
@@ -316942,8 +316951,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 785,
-      "end_line": 797,
+      "line": 798,
+      "end_line": 810,
       "owner": "<module>",
       "conditions": [],
       "name": "service_command_calls",
@@ -316951,8 +316960,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 800,
-      "end_line": 804,
+      "line": 813,
+      "end_line": 817,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_shared",
@@ -316960,8 +316969,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 807,
-      "end_line": 816,
+      "line": 820,
+      "end_line": 831,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_public_message",
@@ -316969,8 +316978,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 819,
-      "end_line": 864,
+      "line": 834,
+      "end_line": 879,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_poll_job",
@@ -354944,8 +354953,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 830,
-      "end_line": 830,
+      "line": 845,
+      "end_line": 845,
       "owner": "telegram_poll_job",
       "conditions": [],
       "symbol": "app.services.telegram_bot._REDIS_TRANSIENT"
@@ -354960,16 +354969,16 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 816,
-      "end_line": 816,
+      "line": 831,
+      "end_line": 831,
       "owner": "_is_public_message",
       "conditions": [],
       "symbol": "app.services.telegram_bot._DOWNLOAD_COMMANDS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 863,
-      "end_line": 863,
+      "line": 878,
+      "end_line": 878,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -355007,24 +355016,24 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 791,
-      "end_line": 791,
+      "line": 804,
+      "end_line": 804,
       "owner": "service_command_calls",
       "conditions": [],
       "symbol": "app.services.telegram_bot.REPORTS_ONLY_COMMANDS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 816,
-      "end_line": 816,
+      "line": 831,
+      "end_line": 831,
       "owner": "_is_public_message",
       "conditions": [],
       "symbol": "app.services.telegram_bot._ADMIN_TEXTS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 816,
-      "end_line": 816,
+      "line": 831,
+      "end_line": 831,
       "owner": "_is_public_message",
       "conditions": [],
       "symbol": "app.services.telegram_bot._EXPORT_COMMANDS"
@@ -355039,8 +355048,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 755,
-      "end_line": 755,
+      "line": 768,
+      "end_line": 768,
       "owner": "_handle_message",
       "conditions": [
         "not (text in ('/start', '/menu', 'меню'))",
@@ -355050,8 +355059,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 760,
-      "end_line": 760,
+      "line": 773,
+      "end_line": 773,
       "owner": "_handle_message",
       "conditions": [
         "not (text in ('/start', '/menu', 'меню'))",
@@ -355062,8 +355071,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 790,
-      "end_line": 790,
+      "line": 803,
+      "end_line": 803,
       "owner": "service_command_calls",
       "conditions": [],
       "symbol": "app.services.telegram_bot.OWNER_COMMANDS"
