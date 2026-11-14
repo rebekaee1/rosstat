@@ -174,6 +174,15 @@ users.new_list): имён и почт новых людей в данных не
 темы новой записью запрещён. Если тема повторяется много дней подряд и данных
 достаточно, закрой её вердиктом, а не переписывай заново.
 
+Блок «Контекст проекта» в начале входа — что происходит в проекте: последние выпуски
+(заголовки изменений), режимы и флаги, события и решения с id, датой и тем, что ждать
+в цифрах, остаток счёта OpenRouter. Прежде чем назвать изменение метрики обвалом,
+ростом или поломкой, сверь его с контекстом: если запись объясняет изменение (смена
+счёта, фильтр роботов, выпуск, авария источника, эксперимент), прямо назови её [id] и
+не выдавай за новость. Если запись контекста объясняет открытую гипотезу, закрой
+гипотезу вердиктом со ссылкой на [id] в rationale, а не заводи новую. Перед датами
+замеров экспериментов из контекста не делай выводов о их исходе.
+
 Цифры — только из данных, ничего не выдумывай и не округляй заметно.
 
 Формат — Telegram HTML: <b>, <i>, <code>, <blockquote>. Markdown и списки через
@@ -313,15 +322,19 @@ def _split_llm_output(content: str) -> tuple[str, list[dict]]:
     return text.strip(), updates
 
 
-def build_llm_user_content(snapshot: dict, memory: list[dict], hypotheses: list[dict]) -> str:
+def build_llm_user_content(snapshot: dict, memory: list[dict], hypotheses: list[dict],
+                           context: str = "") -> str:
     """Текст пользовательского сообщения для модели.
 
     152-ФЗ (круг 11): всё, что уходит в OpenRouter через зарубежный прокси, проходит
     очистку: без имён и почт новых пользователей, без почт и телефонов в строках
     поиска, копирования и фраз. Чистая функция (проверяется тестом без сети).
+    14.11.2026: первым идёт «Контекст проекта» (`pulse_context.build_block`, уже очищен).
     """
+    head = f"Контекст проекта:\n{context}\n\n" if context else ""
     return (
-        "Память за прошлые дни (старые → новые):\n"
+        head
+        + "Память за прошлые дни (старые → новые):\n"
         + json.dumps(sanitize_memory_for_llm(memory), ensure_ascii=False)
         + "\n\nСнапшот за отчётный день:\n"
         + json.dumps(sanitize_snapshot_for_llm(snapshot), ensure_ascii=False)
@@ -357,6 +370,13 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
     if not settings.openrouter_api_key:
         return None
     hypotheses = await _open_hypotheses()
+    try:
+        from app.services import pulse_context
+
+        context = pulse_context.build_block(today_msk(), balance=await pulse_context.openrouter_balance())
+    except Exception:  # noqa: BLE001 - без контекста отчёт всё равно уходит
+        logger.warning("Pulse context build failed", exc_info=True)
+        context = ""
     payload = {
         # Без max_tokens: модель отвечает сколько нужно (директива владельца
         # 2026-07-05 «освободи его»; подтверждено 2026-08-04 — лимит не ставить).
@@ -368,7 +388,7 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
             {"role": "system", "content": _SYSTEM_PROMPT},
             {
                 "role": "user",
-                "content": build_llm_user_content(snapshot, memory, hypotheses),
+                "content": build_llm_user_content(snapshot, memory, hypotheses, context),
             },
         ],
     }
@@ -484,6 +504,14 @@ def _fallback_summary(snapshot: dict) -> str:
         _etl_line(etl),
         f"➕ Новых точек данных: {snapshot.get('data', {}).get('new_points', 0)}",
     ]
+    try:
+        from app.services import pulse_context
+
+        n_ctx = pulse_context.count_active(today_msk())
+        if n_ctx:
+            lines.append(f"🧭 Контекст проекта: действующих событий и решений {n_ctx} (app/data/pulse_context.yaml)")
+    except Exception:  # noqa: BLE001
+        pass
     lines.extend(escape(line) for line in _acquisition_lines(snapshot))
     return "\n".join(lines)
 
