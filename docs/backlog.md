@@ -3465,3 +3465,21 @@ Telegram delivery 09.10: реализован dedicated proxy route в двух 
   в группе Googlebot, на apex их нет; `ru.…/sitemap.xml` с User-Agent Googlebot — `priority-google`
   первым, `ru.…/sitemap-priority-google.xml` — без годовых страниц других стран.
 
+## 2026-11-14 — английский хост для Google (ADR-0031)
+
+Статус: код и тесты в ветке `worktree-agent-a60cd3db86caaa5f2`, не выпущено. Затронуто:
+`index_policy.py`, `api/sitemap.py`, `sitemap_priority.py`, `config.py`, `docker-compose.yml`,
+`.env.example`, `tests/test_apex_google_years.py`, `tests/test_ru_google_short_sitemap.py`,
+[ADR-0031](adr/0031-apex-google-demand-only-years.md), [контракт](data-contracts.md#английский-хост-для-google--2026-11-14).
+
+Остаток после выпуска:
+
+- Дождаться ночной сборки sitemap (новый потолок и источник `gsc_pages`); проверить в
+  `/sitemap-stats.json` размер `priority` apex и число годовых путей в нём (≥ 1 000).
+- Живая проверка: `forecasteconomy.com/sitemap.xml` с `User-Agent` Googlebot — ~70 файлов,
+  первым `sitemap-priority.xml`, без трёх годовых семейств; с YandexBot — полный.
+  Годовая страница без спроса с `User-Agent` Googlebot — строка `meta googlebot`; годовая из
+  шарда, `/russia/indicator/key-rate/2025`, карточка — без неё; `ru.` без изменений.
+- Search Console: отправить `forecasteconomy.com/sitemap.xml` заново; запросить индексирование
+  10 английских карточек и сравнений с наибольшими показами 21.09–11.10.
+- Замер раз в неделю по таблице ADR-0031; первый — 25.11.

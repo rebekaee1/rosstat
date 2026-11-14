@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `d742846c627ea41cdc6f05cb80966969fb40de77`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `e4049dca93a88ceb80409fa3781fc5201ca8fd4c`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2457 |
-| Код, шаблоны и стили | 1985 |
-| Актуальные рецензии без пропусков guard | 2457 |
-| Именованные определения Python/JS: с аннотацией / всего | 15975 / 15975 |
+| Файлы в явно определённом scope | 2459 |
+| Код, шаблоны и стили | 1986 |
+| Актуальные рецензии без пропусков guard | 2459 |
+| Именованные определения Python/JS: с аннотацией / всего | 16013 / 16013 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -354,7 +354,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/identity/service.py](../backend/app/services/identity/service.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/imf_weo_adapter.py](../backend/app/services/imf_weo_adapter.py) | reviewed | 32/32 | актуально |
 | [backend/app/services/imf_weo_parser.py](../backend/app/services/imf_weo_parser.py) | reviewed | 2/2 | актуально |
-| [backend/app/services/index_policy.py](../backend/app/services/index_policy.py) | reviewed | 15/15 | актуально |
+| [backend/app/services/index_policy.py](../backend/app/services/index_policy.py) | reviewed | 19/19 | актуально |
 | [backend/app/services/indexnow.py](../backend/app/services/indexnow.py) | reviewed | 34/34 | актуально |
 | [backend/app/services/ingest_freshness.py](../backend/app/services/ingest_freshness.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/job_lease.py](../backend/app/services/job_lease.py) | reviewed | 9/9 | актуально |
@@ -452,7 +452,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/site_paths.py](../backend/app/services/site_paths.py) | reviewed | 52/52 | актуально |
 | [backend/app/services/site_urls.py](../backend/app/services/site_urls.py) | reviewed | 87/87 | актуально |
 | [backend/app/services/sitemap_images.py](../backend/app/services/sitemap_images.py) | reviewed | 4/4 | актуально |
-| [backend/app/services/sitemap_priority.py](../backend/app/services/sitemap_priority.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/sitemap_priority.py](../backend/app/services/sitemap_priority.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/sitemap_static.py](../backend/app/services/sitemap_static.py) | reviewed | 22/22 | актуально |
 | [backend/app/services/ssr_swr.py](../backend/app/services/ssr_swr.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/ssr_warm.py](../backend/app/services/ssr_warm.py) | reviewed | 8/8 | актуально |
@@ -640,6 +640,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_analytics_batch_delivery.py](../backend/tests/test_analytics_batch_delivery.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_analytics_engine.py](../backend/tests/test_analytics_engine.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_analytics_policy.py](../backend/tests/test_analytics_policy.py) | reviewed | 6/6 | актуально |
+| [backend/tests/test_apex_google_years.py](../backend/tests/test_apex_google_years.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_api_i18n_errors.py](../backend/tests/test_api_i18n_errors.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_api_interest.py](../backend/tests/test_api_interest.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_attribution_query.py](../backend/tests/test_attribution_query.py) | reviewed | 10/10 | актуально |
@@ -1060,6 +1061,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0028-research-reports-section.md](../docs/adr/0028-research-reports-section.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0029-ru-google-recovery.md](../docs/adr/0029-ru-google-recovery.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0030-ru-google-short-sitemap.md](../docs/adr/0030-ru-google-short-sitemap.md) | reviewed | 0/0 | актуально |
+| [docs/adr/0031-apex-google-demand-only-years.md](../docs/adr/0031-apex-google-demand-only-years.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/README.md](../docs/agent-briefs/README.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/hotfix-brief.md](../docs/agent-briefs/hotfix-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/integration-brief.md](../docs/agent-briefs/integration-brief.md) | reviewed | 0/0 | актуально |

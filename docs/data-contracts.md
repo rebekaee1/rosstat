@@ -1210,3 +1210,14 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 **Порядок выпуска.** Любой: код без миграции работает по-старому, миграция без кода ничего не меняет в ответах. Построение `CREATE INDEX CONCURRENTLY` в `autocommit_block` — один проход по таблице 867 МБ без блокировки чтения и записи, затем проверка годности и `ANALYZE world_indicators`. На боевом время не измерялось; запись в `world_indicators` при каждом обновлении ряда станет дороже на одно обновление маленького индекса.
 
 **Откат.** `alembic downgrade 20261109_research_downloads`: снимает индекс (`DROP INDEX CONCURRENTLY`), ждёт 65 с (работающий поиск до минуты считает индекс живым и вызывает функцию), затем снимает функцию. Поиск возвращается к полному проходу каталога, ответы те же. Проверено на пустой локальной базе: `upgrade head` → `downgrade -1` → `upgrade head`.
+
+## Английский хост для Google — 2026-11-14
+
+Решение по плану владельца 14.11.2026; основания и замер — [ADR-0031](adr/0031-apex-google-demand-only-years.md). Не выпущено.
+
+- **Короткий индекс на apex.** `GET|HEAD /sitemap.xml` на apex при `apex_locale_en=true` и `apex_google_short_sitemap` (env `RUSTATS_APEX_GOOGLE_SHORT_SITEMAP`, по умолчанию `true`) для `User-Agent` с `googlebot` / `google-inspectiontool` — те же правила отбора, что на `ru.` (`google_short_sitemap_names`). Замены `priority` → `priority-google` на apex нет (`ru_google_crawl_block_rules(ru_host=False)` пуст). Ключ кэша `…:google-short:{host}`; оба варианта ответа apex несут `Vary: User-Agent`.
+- **Метка на apex.** `googlebot_meta_for_path(path, "en")` возвращает `<meta name="googlebot" content="noindex, follow">`, если `apex_google_noindex_years_without_demand` (env `RUSTATS_APEX_GOOGLE_NOINDEX_YEARS_WITHOUT_DEMAND`, по умолчанию `true`), путь без query совпадает с `is_apex_google_year_path` (`/{страна}/indicator/{код}/{ГГГГ}` или `/{страна}/region/{регион}/{код}/{ГГГГ}`, страна не `currencies`/`world`, не `/russia/indicator/…`) и его нет в списке спроса. `meta robots` не меняется.
+- **Список спроса.** `apex_google_demand_paths()`: годовые пути из опубликованного `sitemap-priority.xml` хоста `public_base_url` (`sitemap_static.section_file`). Кэш в процессе: ключ — путь файла и `mtime_ns`, проверка не чаще 300 с. `None` (метки нет нигде): нет генерации или файла, ошибка чтения, годовых путей меньше `APEX_DEMAND_MIN_YEARS` = 1 000.
+- **Источник спроса шарда.** `sitemap_priority._load_gsc_pages`: `gsc_page_daily` за 90 дней, балл `показы + 25 × клики`, до 30 000 страниц, вес как у GSC; `plan.sources["gsc_pages"]`. `sitemap_priority_max_urls` по умолчанию 40 000 (env и compose).
+- **Что не меняется.** `robots.txt` apex, файлы шардов, реестр, ответ Яндексу, Bing и людям, `ru.` (ADR-0029/0030).
+- **Откат.** Обе настройки `false`, пересоздание backend; кэш SSR годовых страниц — до 24 часов.
