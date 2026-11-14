@@ -765,6 +765,37 @@ _DOWNLOAD_COMMANDS = ("/downloads", "скачивания")
 _EXPORT_COMMANDS = ("/export", "выгрузки", "выгрузка")
 _ADMIN_TEXTS = ("/start", "/menu", "меню", "/users")
 
+# Меню команд служебного бота (14.11.2026): только в чате владельца и чатах роли «только отчёты»
+# (`BotCommandScopeChat`), не для всех личных чатов — служебный бот остаётся без публичных команд
+# (снятых 08.11.2026), публичный @ForecastEconomyBot — другой токен, его команды не трогаются.
+# Задаёт `backend/scripts/service-bot-commands.py` (по умолчанию показ без отправки).
+OWNER_COMMANDS = [
+    {"command": "menu", "description": "Меню: пользователи, Пульс, скачивания, выгрузки"},
+    {"command": "downloads", "description": "Что скачивают и где упираются в лимит (/downloads 30)"},
+    {"command": "export", "description": "Выгрузки файлом: скачивания, регистрации, действия"},
+    {"command": "users", "description": "Пользователи"},
+]
+REPORTS_ONLY_COMMANDS = [
+    {"command": "menu", "description": "Меню отчётов"},
+    {"command": "downloads", "description": "Что скачивают и где упираются в лимит (/downloads 30)"},
+    {"command": "export", "description": "Выгрузки файлом без персональных данных"},
+]
+
+
+def service_command_calls(*, reset: bool = False) -> list[tuple[str, dict]]:
+    """Вызовы Bot API для меню команд служебного бота по чатам. `reset` — снять те же меню."""
+    from app.services.alerting import reports_only_ids
+
+    owner = str(settings.telegram_chat_id or "").strip()
+    targets = ([(owner, OWNER_COMMANDS)] if owner else []) + [
+        (cid, REPORTS_ONLY_COMMANDS) for cid in sorted(reports_only_ids())]
+    calls = []
+    for chat_id, commands in targets:
+        scope = {"type": "chat", "chat_id": int(chat_id) if chat_id.lstrip("-").isdigit() else chat_id}
+        calls.append(("deleteMyCommands", {"scope": scope}) if reset
+                     else ("setMyCommands", {"commands": commands, "scope": scope}))
+    return calls
+
 
 def _public_shared() -> bool:
     """Публичный режим живёт в этом же (служебном) боте — только пока нет своего токена.
