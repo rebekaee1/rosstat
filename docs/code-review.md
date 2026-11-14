@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `85b5ff9a2e64edd15c2c780d21f559237764e833`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `8af2bbf866e98ceedc808add8bda1fc48840983f`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2483 |
-| Код, шаблоны и стили | 2009 |
-| Актуальные рецензии без пропусков guard | 2482 |
+| Файлы в явно определённом scope | 2484 |
+| Код, шаблоны и стили | 2010 |
+| Актуальные рецензии без пропусков guard | 2483 |
 | Именованные определения Python/JS: с аннотацией / всего | 16263 / 16264 |
 | Файлы, требующие внимания | 1 |
 
@@ -1042,6 +1042,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [deploy/test-anon-cold-limit.sh](../deploy/test-anon-cold-limit.sh) | reviewed | 0/0 | актуально |
 | [deploy/test-bot-classes.sh](../deploy/test-bot-classes.sh) | reviewed | 0/0 | актуально |
 | [deploy/test-fail2ban-filters.py](../deploy/test-fail2ban-filters.py) | reviewed | 5/5 | актуально |
+| [deploy/test-nginx-all.sh](../deploy/test-nginx-all.sh) | reviewed | 0/0 | актуально |
 | [deploy/test-nginx-config.sh](../deploy/test-nginx-config.sh) | reviewed | 0/0 | актуально |
 | [deploy/test-og-crawler-limit.sh](../deploy/test-og-crawler-limit.sh) | reviewed | 0/0 | актуально |
 | [deploy/tor-http-bridge/README.md](../deploy/tor-http-bridge/README.md) | reviewed | 0/0 | актуально |

@@ -19,15 +19,15 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2483,
-    "code_files": 2009,
-    "current_reviews": 2482,
+    "files": 2484,
+    "code_files": 2010,
+    "current_reviews": 2483,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2213
+      "reviewed": 2214
     },
     "definitions": 16264,
     "annotated_definitions": 16263,
@@ -193,9 +193,9 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "2a066a2470a234747aee25f6a8cc027d32894f0774d8513ff6a700d7626ddb1a",
-      "bytes": 7397,
-      "lines": 185,
+      "sha256": "1c496e236998ec9624270933bbbe75b5b5409445caec16f681b3121586e53f6d",
+      "bytes": 8131,
+      "lines": 200,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13088,6 +13088,19 @@
       "missing_definitions": []
     },
     {
+      "path": "deploy/test-nginx-all.sh",
+      "sha256": "8a3462bb474381c828969c783aafc15d8cd06cdd98edcceb4aabdd9487261bf2",
+      "bytes": 2210,
+      "lines": 40,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "deploy/test-nginx-config.sh",
       "sha256": "f4c1ce43204c0ce7380a1b8dfbfa2bd5c04b0dd6ef7e9d538ef855878acf1325",
       "bytes": 1531,
@@ -14428,7 +14441,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "28bbda4efbd4d549e360bebbefeb98e01186e896cabe4310aad8db1c2c48ed35",
+      "sha256": "330cfb37fd31e79f525007050dab24cc0fe57baba8b001d469de564763e8b351",
       "bytes": 3863997,
       "lines": 136768,
       "code": false,
@@ -15247,8 +15260,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "fc3e47520b69a451b2851f4d4633c81f7416a72c6f04c490d936fd96090bf2fa",
-      "bytes": 142011,
+      "sha256": "801cf1edadb2b0ff6ecee9d360e8111ca34dcc69583826f55605efab844fe39a",
+      "bytes": 142720,
       "lines": 680,
       "code": false,
       "status": "reviewed",
@@ -30856,9 +30869,9 @@
     },
     {
       "path": "scripts/check-all.sh",
-      "sha256": "47186b67442a2b7acabec3c12c93ebb0d8d4dc21e038bf42fdbef2806c48bb8b",
-      "bytes": 1881,
-      "lines": 47,
+      "sha256": "efaf69c141862f83637c2343480e2a1781b29fa807d5838d292e3a61b2115307",
+      "bytes": 2386,
+      "lines": 56,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -32325,20 +32338,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "74a667ad5e8bd1c4e8260feab6141fa07f40fb8bb2ba5a57c7db17264bfdd8e2",
+  "ledger_sha256": "48267ee94150329258559451ceefac4e5ca79867a338c771a1c427c8db414ee5",
   "javascript_inventory_sha256": "173cfd4555ce8d4ff8fb491a75ab441424b95957dae8ddb3b3d78b2c80747db6",
-  "baseline_commit": "85b5ff9a2e64edd15c2c780d21f559237764e833",
+  "baseline_commit": "8af2bbf866e98ceedc808add8bda1fc48840983f",
   "branch": "int/2026-11-14",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
