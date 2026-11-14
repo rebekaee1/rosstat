@@ -200,6 +200,10 @@ nav.fe-navbar a.fe-nav-account,
 }
 nav.fe-navbar a.fe-nav-account.is-current,
 .fe-bsheet a.fe-nav-account.is-current { background: rgb(30 38 56 / 0.12); }
+/* 14.11.2026: общая метка текущей страницы (`index.css`, золотая чёрточка после ссылки) у кнопки «Кабинет» вставала
+   внутрь плиты справа от слова. Текущий раздел здесь уже показан светлотой плиты: чёрточка не нужна. */
+nav.fe-navbar a.fe-nav-account::after,
+.fe-bsheet a.fe-nav-account::after { content: none; display: none; }
 @media (hover: hover) {
   nav.fe-navbar a.fe-nav-account:hover,
   .fe-bsheet a.fe-nav-account:hover { background: rgb(30 38 56 / 0.1); }
