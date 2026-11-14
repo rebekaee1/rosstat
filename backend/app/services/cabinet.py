@@ -280,7 +280,12 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
             select(RegionIndicator.code, RegionIndicator.name, RegionIndicator.unit, RegionIndicator.year_max)
             .where(RegionIndicator.code.in_(keys), RegionIndicator.is_listed.is_(True))
         )).all()
+        from app.services.seo_i18n import region_indicator_copy
+
         for code, name, unit, year_max in rows:
+            # Название и единица на языке страницы (на английском хосте — из перевода региональных рядов, 14.11.2026).
+            copy = region_indicator_copy(code, name_ru=name, unit_ru=unit or "")
+            name, unit = copy["name"] or name, copy["unit"] or unit
             # Слежение за региональным показателем — по всем регионам (новый год у ряда); подпись говорит об этом.
             out[("region", code)] = SeriesInfo(
                 "region", code, name, localize_unit(unit) or None, "annual",

@@ -723,3 +723,16 @@ def test_region_watch_says_it_covers_all_regions(auth_client, auth_env, on):
     h = csrf_headers(auth_client)
     item = auth_client.post(f"{C}/watches", json={"subject_kind": "region", "subject_key": "reg-wage"}, headers=h).json()["item"]
     assert item["country_name"] == "Регионы России" and item["country_slug"] is None
+
+
+def test_region_watch_english_name_from_translation(auth_client, auth_env, on):
+    """На английском хосте строка регионального слежения — по-английски (перевод региональных рядов), не по-русски."""
+    async def run(s):
+        s.add(RegionIndicator(code="chislennost-naseleniya", table_code="1.1", section_num=1, section_name="Население",
+                              name="Численность населения", unit="тыс. человек", year_max=2024, is_listed=True))
+    seed(auth_client, auth_env, run)
+    reg(auth_client)
+    h = {**csrf_headers(auth_client), "X-FE-Locale": "en"}
+    item = auth_client.post(f"{C}/watches", json={"subject_kind": "region", "subject_key": "chislennost-naseleniya"},
+                            headers=h).json()["item"]
+    assert item["title"] == "Population" and item["country_name"] == "Russian regions"
