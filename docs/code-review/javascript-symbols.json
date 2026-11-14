@@ -17361,60 +17361,66 @@
     "anonymous_functions": 27
   },
   "frontend/src/components/calendar/CalendarEventCard.jsx": {
-    "sha256": "a460078b650221994b3e4e7915f9b86f0844c9c5a03fbd2d8fbfd14a44c62503",
+    "sha256": "c0a63f3e9998e776859aadacd8c451b183f09ea46a38dd918d6b9f647c1e803b",
     "definitions": [
       {
         "name": "ImportanceBadge",
-        "line": 45,
-        "end_line": 56,
+        "line": 49,
+        "end_line": 60,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "localTodayIso",
-        "line": 58,
-        "end_line": 61,
+        "line": 62,
+        "end_line": 65,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "dayMonth",
-        "line": 64,
-        "end_line": 68,
+        "line": 68,
+        "end_line": 72,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "eventStatus",
-        "line": 79,
-        "end_line": 93,
+        "line": 83,
+        "end_line": 99,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DateStatus",
-        "line": 95,
-        "end_line": 128,
+        "line": 101,
+        "end_line": 137,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ValueCell",
-        "line": 130,
-        "end_line": 138,
+        "line": 139,
+        "end_line": 147,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ActualValueCell",
-        "line": 140,
-        "end_line": 173,
+        "line": 149,
+        "end_line": 182,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarEventCard",
-        "line": 175,
-        "end_line": 365,
+        "line": 184,
+        "end_line": 381,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarEventCard.addToCalendar",
-        "line": 191,
-        "end_line": 198,
+        "line": 200,
+        "end_line": 207,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "CalendarEventCard.pathOf",
+        "line": 217,
+        "end_line": 217,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -17485,19 +17491,19 @@
         "names": [
           "eventStatus"
         ],
-        "line": 79
+        "line": 83
       },
       {
         "names": [
           "default"
         ],
-        "line": 175
+        "line": 184
       }
     ],
     "anonymous_functions": 1
   },
   "frontend/src/components/calendar/CalendarEventCard.status.test.js": {
-    "sha256": "0914a814fc6a5c9176ad9086f298cc3e9f6704172a825b14881f9481eae846ad",
+    "sha256": "e6e2e05591b1773e58970a44691cc88da58c708950c6e6cb615fe3526d3784af",
     "definitions": [],
     "imports": [
       {
@@ -17510,7 +17516,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 5
+    "anonymous_functions": 6
   },
   "frontend/src/components/calendar/CalendarFilters.jsx": {
     "sha256": "8a1672307c3c6c408ddb2cfb8f4ca90cfdebfcd21e28134cb2d0654215727b36",
@@ -17563,24 +17569,24 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/calendar/CalendarGrid.jsx": {
-    "sha256": "354fa2169669ced00821b7c64b53431eeab672bbfb51835e3384cd17d5ff6ff6",
+    "sha256": "f84256b1d7168b7076e886a682461e0dbee210f65f738486d60fbb1ef3028855",
     "definitions": [
       {
         "name": "buildGrid",
-        "line": 25,
-        "end_line": 36,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "fmt",
-        "line": 38,
+        "line": 31,
         "end_line": 42,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "CalendarGrid",
+        "name": "fmt",
         "line": 44,
-        "end_line": 245,
+        "end_line": 48,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "CalendarGrid",
+        "line": 50,
+        "end_line": 253,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -17635,7 +17641,7 @@
         "names": [
           "default"
         ],
-        "line": 44
+        "line": 50
       }
     ],
     "anonymous_functions": 17
@@ -23800,7 +23806,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "0b7059104866ed08e64cdf7662abeb805bbbf0cb07c1af5e23c1e2880ab366c9",
+    "sha256": "4d7dc0def65c99a40ada01368644d41c1a781701e268b9910c3fce3dc7af11f2",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23908,7 +23914,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "ed13ed560b53b61ab3be7acf090bc7af777a4073890145906dcd85291e4a6300",
+    "sha256": "2d13fa7c033c81ec7ac6973560b5757e549bf699d35d5b497f50ff08a742d1b4",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -54816,36 +54822,36 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/CalendarPage.jsx": {
-    "sha256": "8d9a8fcd40837bb6b9cb0c4148d5374c395dd86aa2854e986ee54d48cfb519f5",
+    "sha256": "24020e95702b99e47387bd9e8b91b3056e6d49583d06b080ba63170a106ea89e",
     "definitions": [
       {
         "name": "formatDayLabel",
-        "line": 40,
-        "end_line": 57,
+        "line": 43,
+        "end_line": 60,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "monthRange",
-        "line": 59,
-        "end_line": 64,
+        "line": 62,
+        "end_line": 67,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarSkeleton",
-        "line": 66,
-        "end_line": 76,
+        "line": 69,
+        "end_line": 79,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DayEvents",
-        "line": 88,
-        "end_line": 113,
+        "line": 91,
+        "end_line": 116,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarPage",
-        "line": 115,
-        "end_line": 475,
+        "line": 118,
+        "end_line": 478,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -54856,103 +54862,103 @@
       },
       {
         "source": "react-router-dom",
-        "line": 2
-      },
-      {
-        "source": "lucide-react",
-        "line": 3
-      },
-      {
-        "source": "../lib/useMeta",
-        "line": 4
-      },
-      {
-        "source": "../lib/pageMeta",
         "line": 5
       },
       {
-        "source": "../lib/hooks",
+        "source": "lucide-react",
         "line": 6
       },
       {
-        "source": "../lib/format",
+        "source": "../lib/useMeta",
         "line": 7
       },
       {
-        "source": "../lib/uiTokens",
+        "source": "../lib/pageMeta",
         "line": 8
       },
       {
-        "source": "../components/calendar/CalendarHero",
+        "source": "../lib/hooks",
         "line": 9
       },
       {
-        "source": "../components/calendar/CalendarGrid",
+        "source": "../lib/format",
         "line": 10
       },
       {
-        "source": "../components/calendar/CalendarEventCard",
+        "source": "../lib/uiTokens",
         "line": 11
       },
       {
-        "source": "../components/calendar/CalendarUpcoming",
+        "source": "../components/calendar/CalendarHero",
         "line": 12
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/calendar/CalendarGrid",
         "line": 13
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../components/calendar/CalendarEventCard",
         "line": 14
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/calendar/CalendarUpcoming",
         "line": 15
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../components/Skeleton",
         "line": 16
       },
       {
-        "source": "../lib/track",
+        "source": "../components/ApiRetryBanner",
         "line": 17
       },
       {
-        "source": "../lib/calendarText",
+        "source": "../components/LoadingNote",
         "line": 18
       },
       {
-        "source": "../lib/calendarGrouping",
+        "source": "../components/Breadcrumbs",
         "line": 19
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../lib/track",
         "line": 20
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/calendarText",
         "line": 21
       },
       {
-        "source": "../i18n",
+        "source": "../lib/calendarGrouping",
+        "line": 22
+      },
+      {
+        "source": "../lib/breadcrumbs",
+        "line": 23
+      },
+      {
+        "source": "../lib/sitePaths",
         "line": 24
       },
       {
-        "source": "../styles/indicator-russia.css",
-        "line": 25
-      },
-      {
-        "source": "../styles/regions-w4.css",
-        "line": 26
-      },
-      {
-        "source": "../styles/w5-pages.css",
+        "source": "../i18n",
         "line": 27
       },
       {
-        "source": "../styles/w6f-pages.css",
+        "source": "../styles/indicator-russia.css",
         "line": 28
+      },
+      {
+        "source": "../styles/regions-w4.css",
+        "line": 29
+      },
+      {
+        "source": "../styles/w5-pages.css",
+        "line": 30
+      },
+      {
+        "source": "../styles/w6f-pages.css",
+        "line": 31
       }
     ],
     "exports": [
@@ -54960,7 +54966,7 @@
         "names": [
           "default"
         ],
-        "line": 115
+        "line": 118
       }
     ],
     "anonymous_functions": 45
@@ -60416,7 +60422,7 @@
     "anonymous_functions": 22
   },
   "frontend/src/pages/RussiaPages.w3.component.test.jsx": {
-    "sha256": "3a2040a5411bdd1ab94a3f6085f0c4014bc73a4d818fb8eccbf644677586c4a7",
+    "sha256": "821492be7247d967e699ca5a532aa9b8bc3938af005675e61c389801b3899a7f",
     "definitions": [
       {
         "name": "seriesRoute",
@@ -60468,7 +60474,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 21
+    "anonymous_functions": 22
   },
   "frontend/src/pages/Terms.jsx": {
     "sha256": "579997b8275f7fac61abbedd47287b09cc7f110befc15988c8b51c490d2687a0",
@@ -63729,7 +63735,7 @@
     "anonymous_functions": 17
   },
   "frontend/src/styles/no-borders.test.js": {
-    "sha256": "aab0ac1842d208c96c0136a21b2e56449f3f7944982449c67b84d593ec1da1ab",
+    "sha256": "1c58f55d9a62d10427c17141de68ddd14b22394cd1a13591bc7578d4420c704e",
     "definitions": [
       {
         "name": "walk",

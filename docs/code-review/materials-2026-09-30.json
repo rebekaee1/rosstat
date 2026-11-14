@@ -4554,8 +4554,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "eb00dc08f6cfbb07cdeabc4a8d1c19e2e1f0d81e8cf0327b9b4f53c0c2768ff7",
-        "bytes": 12270
+        "sha256": "83fd22129f8a3b81b552da0b281bb65780c72ced615adb08a37cfd4809569af5",
+        "bytes": 14736
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -4564,12 +4564,12 @@
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         },
         "status_in_review": "reviewed",
-        "sha256": "eb00dc08f6cfbb07cdeabc4a8d1c19e2e1f0d81e8cf0327b9b4f53c0c2768ff7"
+        "sha256": "83fd22129f8a3b81b552da0b281bb65780c72ced615adb08a37cfd4809569af5"
       },
       "canonical_source": "docs/adr/0005-official-calendar-source-bound.md",
       "linked_mechanisms": null,
@@ -9955,8 +9955,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "8e26720590617bbe977ade39224dae725d0927fd4003cebb7e9e1cf17eeb5565",
-        "bytes": 98223
+        "sha256": "93d312d6793b2b15f1cdbaaf354b8271ed34440d91974c1e267378da13d3f7d0",
+        "bytes": 98346
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -9965,12 +9965,12 @@
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         },
         "status_in_review": "reviewed",
-        "sha256": "8e26720590617bbe977ade39224dae725d0927fd4003cebb7e9e1cf17eeb5565"
+        "sha256": "93d312d6793b2b15f1cdbaaf354b8271ed34440d91974c1e267378da13d3f7d0"
       },
       "canonical_source": "docs/architecture.md",
       "linked_mechanisms": "system topology/scenarios",
@@ -10725,8 +10725,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "88d6a71e7a65063ecead882be2405384817877375f30ab494f84ceace1dc029d",
-        "bytes": 790096
+        "sha256": "84400e006ab1b74cbdaf70e502aa532e7ae647283c4682d955aa025ebb21aeb6",
+        "bytes": 791271
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
@@ -10735,12 +10735,12 @@
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         },
         "status_in_review": "reviewed",
-        "sha256": "88d6a71e7a65063ecead882be2405384817877375f30ab494f84ceace1dc029d"
+        "sha256": "84400e006ab1b74cbdaf70e502aa532e7ae647283c4682d955aa025ebb21aeb6"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
@@ -13167,12 +13167,12 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "67c2ae63b6d49d086d0b40503194a87538f407cafc6e24d7ef37869b296b2cb0",
+        "sha256": "8e588dd140abc1ce1a75ceb594e1415c2766c6b4a26774c7bdc4067760154073",
         "canonical_source": "docs/client-mechanism-inventory.json",
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         }
@@ -13182,8 +13182,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "67c2ae63b6d49d086d0b40503194a87538f407cafc6e24d7ef37869b296b2cb0",
-        "bytes": 7316647
+        "sha256": "8e588dd140abc1ce1a75ceb594e1415c2766c6b4a26774c7bdc4067760154073",
+        "bytes": 7317530
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -13996,12 +13996,12 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "5fe37de78df2c892b20ba0c18199b814b8211ced3ea2433db47f04d54470ef1e",
+        "sha256": "cfeb13203dbc79fa1d79297aeefe04d98b65606a4785344abe3d363ee2550909",
         "canonical_source": "docs/client-mechanism-inventory.md",
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         }
@@ -14011,7 +14011,7 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "5fe37de78df2c892b20ba0c18199b814b8211ced3ea2433db47f04d54470ef1e",
+        "sha256": "cfeb13203dbc79fa1d79297aeefe04d98b65606a4785344abe3d363ee2550909",
         "bytes": 14011
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -16004,19 +16004,19 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "c659273a5dd30bf9e8f7b8e644a56510ac8b03f9223e884099b0d665dfb67a30",
-        "bytes": 964126
+        "sha256": "e2b975e35814a73e0d1f9fba400076d8498f87739fcce5babeb1e2b96220a194",
+        "bytes": 966835
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "c659273a5dd30bf9e8f7b8e644a56510ac8b03f9223e884099b0d665dfb67a30",
+        "sha256": "e2b975e35814a73e0d1f9fba400076d8498f87739fcce5babeb1e2b96220a194",
         "canonical_source": "scripts/audit-code-documentation.py",
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         }
@@ -18686,12 +18686,12 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "370fcc2d67ae164cc5e738fe767238de300ec287d5dfaa213d277ac892d186f0",
+        "sha256": "42c7dbd1d0018117bb55f5eb61936f7e198cafd62c2ac294e87265727a9b35c7",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json",
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         }
@@ -18701,8 +18701,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "370fcc2d67ae164cc5e738fe767238de300ec287d5dfaa213d277ac892d186f0",
-        "bytes": 8108224
+        "sha256": "42c7dbd1d0018117bb55f5eb61936f7e198cafd62c2ac294e87265727a9b35c7",
+        "bytes": 8150018
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -22093,19 +22093,19 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "a4c60a8be9a8649eb6b8f60e5854cbd32a05c64d99a02b93d750de17ddb1070e",
-        "bytes": 1341069
+        "sha256": "830ae63263ee475715b2d0679d8c42362b10a0e8765965bd1c733383b2eee717",
+        "bytes": 1341222
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "a4c60a8be9a8649eb6b8f60e5854cbd32a05c64d99a02b93d750de17ddb1070e",
+        "sha256": "830ae63263ee475715b2d0679d8c42362b10a0e8765965bd1c733383b2eee717",
         "canonical_source": "scripts/code-review-symbols.mjs",
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         }
@@ -23938,19 +23938,19 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "569e62c12d415ac3c020c3c747f0c80b7e1f192a76f81e14ece83eae0cf29ff4",
-        "bytes": 23639098
+        "sha256": "6dd7723ebf0c35a92c49583909c1c75996e92288969aeb50aa20ed97982284b7",
+        "bytes": 23549785
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "569e62c12d415ac3c020c3c747f0c80b7e1f192a76f81e14ece83eae0cf29ff4",
+        "sha256": "6dd7723ebf0c35a92c49583909c1c75996e92288969aeb50aa20ed97982284b7",
         "canonical_source": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         }
@@ -26580,8 +26580,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "43bc935a5ac9ce28852029f8840c15354fd26d6ddd48608a1e43f23aae9be6a0",
-        "bytes": 406531
+        "sha256": "d45d7dd71ec860c24285bb7cff271d9119385ca1540c1b9a7ed5bd0c51b3cf55",
+        "bytes": 410437
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
@@ -26590,12 +26590,12 @@
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         },
         "status_in_review": "reviewed",
-        "sha256": "43bc935a5ac9ce28852029f8840c15354fd26d6ddd48608a1e43f23aae9be6a0"
+        "sha256": "d45d7dd71ec860c24285bb7cff271d9119385ca1540c1b9a7ed5bd0c51b3cf55"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -28479,8 +28479,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "cde28dc5ce166199ce83aefec54166a82adb3742d9e933de7845df3cd57bf9a9",
-        "bytes": 122689
+        "sha256": "263e38c405c05cf21c12061c243913423053d246c40ec38ab4567ae773f02ff6",
+        "bytes": 123861
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
@@ -28489,12 +28489,12 @@
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         },
         "status_in_review": "reviewed",
-        "sha256": "cde28dc5ce166199ce83aefec54166a82adb3742d9e933de7845df3cd57bf9a9"
+        "sha256": "263e38c405c05cf21c12061c243913423053d246c40ec38ab4567ae773f02ff6"
       },
       "canonical_source": "docs/data_sources.md",
       "linked_mechanisms": "official source mappings",
@@ -29460,25 +29460,22 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "eceeace4d513b97b2cdd06adccacf663e88c52fcc6395052220d23708690e8da",
-          "prior_commit": "d002e0063bd471f2638ad7383aa1e4506213606f",
-          "delta": "Коммит 24a40bcd: мост на платформу и холодная кожа быстрых SSR-страниц (раздел 4 п. 6, строка в таблице страниц), обновлены остатки золота.",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент календаря)",
+          "head": "218b4bf9",
+          "branch": "feat/calendar-actuality-2026-11-14",
+          "mode": "полное чтение после изменения"
         },
         "status_in_review": "reviewed",
-        "sha256": "a5f94d1ea1000f31d5e3720be748ae969f603831e5cf001b24742cacd78dc23f"
+        "sha256": "5fd05652a7155c9cec6f11b1dedd24188476a6577c2b9a94f26e9e52521c4225"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "a5f94d1ea1000f31d5e3720be748ae969f603831e5cf001b24742cacd78dc23f",
-        "bytes": 250832
+        "date": "2026-11-14",
+        "sha256": "5fd05652a7155c9cec6f11b1dedd24188476a6577c2b9a94f26e9e52521c4225",
+        "bytes": 251943
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -42871,12 +42868,12 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "8e3e9be275942b2c9fffcb05963a5348069586dfe02a2bce046f2678a6179dea",
+        "sha256": "f3adf94684daefc53160b9c4b764d7ee6da7de49dafed1f9e8833aca7260962a",
         "canonical_source": "docs/mechanism-inventory.json",
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         }
@@ -42886,8 +42883,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "8e3e9be275942b2c9fffcb05963a5348069586dfe02a2bce046f2678a6179dea",
-        "bytes": 12674168
+        "sha256": "f3adf94684daefc53160b9c4b764d7ee6da7de49dafed1f9e8833aca7260962a",
+        "bytes": 12760677
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -44176,12 +44173,12 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "805d2159e5329489a816b29e20324c106009f074f50c8a8a705809ae535c9abc",
+        "sha256": "d91dfc9b549337b7796ea8e54fe4179e7ffe1073ddff6162fd2450c934de9b85",
         "canonical_source": "docs/mechanism-inventory.md",
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         }
@@ -44191,8 +44188,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "805d2159e5329489a816b29e20324c106009f074f50c8a8a705809ae535c9abc",
-        "bytes": 647977
+        "sha256": "d91dfc9b549337b7796ea8e54fe4179e7ffe1073ddff6162fd2450c934de9b85",
+        "bytes": 651567
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -55435,8 +55432,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "0b7059104866ed08e64cdf7662abeb805bbbf0cb07c1af5e23c1e2880ab366c9",
-        "bytes": 235285
+        "sha256": "4d7dc0def65c99a40ada01368644d41c1a781701e268b9910c3fce3dc7af11f2",
+        "bytes": 235745
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -55445,12 +55442,12 @@
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         },
         "status_in_review": "reviewed",
-        "sha256": "0b7059104866ed08e64cdf7662abeb805bbbf0cb07c1af5e23c1e2880ab366c9"
+        "sha256": "4d7dc0def65c99a40ada01368644d41c1a781701e268b9910c3fce3dc7af11f2"
       },
       "canonical_source": "frontend/src/i18n/messages.en.js",
       "linked_mechanisms": "English UI dictionary fully read: navigation, data/forecast states, comparison controls, auth/consent, calculators, country/region surfaces and methodology. New shared-base, official-cadence and loading wording matches changed consumers.",
@@ -57315,8 +57312,8 @@
         "main": "e8fa2b633e95d199089b59074420b2a9166a5528",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "ed13ed560b53b61ab3be7acf090bc7af777a4073890145906dcd85291e4a6300",
-        "bytes": 333894
+        "sha256": "2d13fa7c033c81ec7ac6973560b5757e549bf699d35d5b497f50ff08a742d1b4",
+        "bytes": 334497
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -57325,12 +57322,12 @@
         "review_provenance": {
           "date": "2026-11-14",
           "reviewer": "Claude Opus 5.5 (агент календаря)",
-          "head": "e3b384a4",
+          "head": "218b4bf9",
           "branch": "feat/calendar-actuality-2026-11-14",
           "mode": "полное чтение после изменения"
         },
         "status_in_review": "reviewed",
-        "sha256": "ed13ed560b53b61ab3be7acf090bc7af777a4073890145906dcd85291e4a6300"
+        "sha256": "2d13fa7c033c81ec7ac6973560b5757e549bf699d35d5b497f50ff08a742d1b4"
       },
       "canonical_source": "frontend/src/i18n/messages.ru.js",
       "linked_mechanisms": "Russian UI delta updates Russia-only regional scope and comparison shared-date/official-frequency/HICP/empty/loading explanations alongside English keys.",

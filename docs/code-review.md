@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `e3b384a4fe0dac8cf2b1b274be7f6cb37b04f44b`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `218b4bf9970c8d64116b47e3f3d950d24f1dbfcd`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2530 |
-| Код, шаблоны и стили | 2052 |
-| Актуальные рецензии без пропусков guard | 2530 |
-| Именованные определения Python/JS: с аннотацией / всего | 16682 / 16682 |
+| Файлы в явно определённом scope | 2537 |
+| Код, шаблоны и стили | 2057 |
+| Актуальные рецензии без пропусков guard | 2537 |
+| Именованные определения Python/JS: с аннотацией / всего | 16722 / 16722 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -124,7 +124,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/api/api_interest.py](../backend/app/api/api_interest.py) | reviewed | 10/10 | актуально |
 | [backend/app/api/auth.py](../backend/app/api/auth.py) | reviewed | 43/43 | актуально |
 | [backend/app/api/cabinet.py](../backend/app/api/cabinet.py) | reviewed | 40/40 | актуально |
-| [backend/app/api/calendar.py](../backend/app/api/calendar.py) | reviewed | 14/14 | актуально |
+| [backend/app/api/calendar.py](../backend/app/api/calendar.py) | reviewed | 18/18 | актуально |
 | [backend/app/api/dashboard.py](../backend/app/api/dashboard.py) | reviewed | 2/2 | актуально |
 | [backend/app/api/demographics.py](../backend/app/api/demographics.py) | reviewed | 1/1 | актуально |
 | [backend/app/api/embed.py](../backend/app/api/embed.py) | reviewed | 17/17 | актуально |
@@ -284,16 +284,19 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/brent_fred_parser.py](../backend/app/services/brent_fred_parser.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/cabinet.py](../backend/app/services/cabinet.py) | reviewed | 31/31 | актуально |
 | [backend/app/services/calculation_engine.py](../backend/app/services/calculation_engine.py) | reviewed | 13/13 | актуально |
+| [backend/app/services/calendar_digest.py](../backend/app/services/calendar_digest.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/calendar_i18n.py](../backend/app/services/calendar_i18n.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/calendar_seed.py](../backend/app/services/calendar_seed.py) | reviewed | 17/17 | актуально |
 | [backend/app/services/calendar_sources/__init__.py](../backend/app/services/calendar_sources/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/services/calendar_sources/cbr_key_rate.py](../backend/app/services/calendar_sources/cbr_key_rate.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/calendar_sources/common.py](../backend/app/services/calendar_sources/common.py) | reviewed | 16/16 | актуально |
-| [backend/app/services/calendar_sources/enrichment.py](../backend/app/services/calendar_sources/enrichment.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/calendar_sources/enrichment.py](../backend/app/services/calendar_sources/enrichment.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/calendar_sources/official_calendar.py](../backend/app/services/calendar_sources/official_calendar.py) | reviewed | 29/29 | актуально |
 | [backend/app/services/calendar_sources/rosstat_oper_plan.py](../backend/app/services/calendar_sources/rosstat_oper_plan.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/calendar_sources/rosstat_plan.py](../backend/app/services/calendar_sources/rosstat_plan.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/calendar_sources/working_calendar.py](../backend/app/services/calendar_sources/working_calendar.py) | reviewed | 4/4 | актуально |
+| [backend/app/services/calendar_sources/world_calendar.py](../backend/app/services/calendar_sources/world_calendar.py) | reviewed | 11/11 | актуально |
+| [backend/app/services/calendar_sources/world_enrichment.py](../backend/app/services/calendar_sources/world_enrichment.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/cbr_bop_parser.py](../backend/app/services/cbr_bop_parser.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/cbr_dataservice_parser.py](../backend/app/services/cbr_dataservice_parser.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/cbr_dataservice_sum_parser.py](../backend/app/services/cbr_dataservice_sum_parser.py) | reviewed | 2/2 | актуально |
@@ -615,7 +618,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/seed_data.py](../backend/seed_data.py) | reviewed | 13/13 | актуально |
 | [backend/seed_regional.py](../backend/seed_regional.py) | reviewed | 7/7 | актуально |
 | [backend/tests/conftest.py](../backend/tests/conftest.py) | reviewed | 18/18 | актуально |
+| [backend/tests/fixtures/calendar/bea_schedule_2026-11-14.ics](../backend/tests/fixtures/calendar/bea_schedule_2026-11-14.ics) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/calendar/cbr_cal_mp_2026-11-14.html](../backend/tests/fixtures/calendar/cbr_cal_mp_2026-11-14.html) | reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/calendar/eurostat_euroind_2026-11-14.json](../backend/tests/fixtures/calendar/eurostat_euroind_2026-11-14.json) | reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/calendar/fomc_calendar_2026-11-14.html](../backend/tests/fixtures/calendar/fomc_calendar_2026-11-14.html) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/calendar/rosstat_grafic_oper_public_2026.doc](../backend/tests/fixtures/calendar/rosstat_grafic_oper_public_2026.doc) | binary_asset | 0/0 | актуально |
 | [backend/tests/fixtures/calendar/rosstat_plans_type52_2026-11-14.html](../backend/tests/fixtures/calendar/rosstat_plans_type52_2026-11-14.html) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/census_nst_est2025_alldata.csv](../backend/tests/fixtures/census_nst_est2025_alldata.csv) | artifact_schema_reviewed | 0/0 | актуально |
@@ -698,6 +704,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_calendar_i18n.py](../backend/tests/test_calendar_i18n.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_calendar_seed.py](../backend/tests/test_calendar_seed.py) | reviewed | 26/26 | актуально |
 | [backend/tests/test_calendar_truth.py](../backend/tests/test_calendar_truth.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_calendar_world.py](../backend/tests/test_calendar_world.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_cbr_bop.py](../backend/tests/test_cbr_bop.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_cbr_currencies.py](../backend/tests/test_cbr_currencies.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_cbr_dataservice.py](../backend/tests/test_cbr_dataservice.py) | reviewed | 7/7 | актуально |
@@ -1685,7 +1692,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/cabinet/WatchList.jsx](../frontend/src/components/cabinet/WatchList.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/cabinet/cabinet.c13.component.test.jsx](../frontend/src/components/cabinet/cabinet.c13.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/cabinet/cabinet.component.test.jsx](../frontend/src/components/cabinet/cabinet.component.test.jsx) | reviewed | 2/2 | актуально |
-| [frontend/src/components/calendar/CalendarEventCard.jsx](../frontend/src/components/calendar/CalendarEventCard.jsx) | reviewed | 9/9 | актуально |
+| [frontend/src/components/calendar/CalendarEventCard.jsx](../frontend/src/components/calendar/CalendarEventCard.jsx) | reviewed | 10/10 | актуально |
 | [frontend/src/components/calendar/CalendarEventCard.status.test.js](../frontend/src/components/calendar/CalendarEventCard.status.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/components/calendar/CalendarFilters.jsx](../frontend/src/components/calendar/CalendarFilters.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/calendar/CalendarGrid.jsx](../frontend/src/components/calendar/CalendarGrid.jsx) | reviewed | 3/3 | актуально |
