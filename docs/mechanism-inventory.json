@@ -1050,8 +1050,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "sha256": "b93a8fe0d640b17a770e5a412bbbfd8309f47acdfb07da86f13e732bcdfdb96c",
-      "lines": 306
+      "sha256": "75190e72674abe73ee1072511d2f4f9e8b1cc7fd81fc26de3ad3cbdf6314ae3c",
+      "lines": 312
     },
     {
       "path": "backend/app/services/demand_router.py",
@@ -2330,8 +2330,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "sha256": "28c32b2e54c753455c5d4438b101a2100bafdd7f41c3445d7eabafad6b6ca907",
-      "lines": 787
+      "sha256": "1d2a91af776938432c849d5ff94c310b3acfb0eb508aef98c1fc89db82868599",
+      "lines": 795
     },
     {
       "path": "backend/scripts/load-world-national.py",
@@ -144927,8 +144927,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 95,
-      "end_line": 95,
+      "line": 101,
+      "end_line": 101,
       "owner": "_json_keys",
       "conditions": [],
       "operation": "set",
@@ -144941,8 +144941,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 311,
+      "end_line": 311,
       "owner": "format_inventory_html",
       "conditions": [
         "b['from']"
@@ -144957,8 +144957,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 98,
-      "end_line": 98,
+      "line": 104,
+      "end_line": 104,
       "owner": "_json_keys",
       "conditions": [
         "isinstance(payload, dict)"
@@ -144973,8 +144973,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 109,
+      "end_line": 109,
       "owner": "_time_range",
       "conditions": [],
       "operation": "execute",
@@ -144987,8 +144987,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 224,
-      "end_line": 226,
+      "line": 230,
+      "end_line": 232,
       "owner": "build_inventory",
       "conditions": [],
       "operation": "execute",
@@ -145001,8 +145001,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 158,
-      "end_line": 161,
+      "line": 164,
+      "end_line": 167,
       "owner": "build_inventory",
       "conditions": [],
       "operation": "execute",
@@ -145015,8 +145015,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 92,
-      "end_line": 94,
+      "line": 98,
+      "end_line": 100,
       "owner": "_json_keys",
       "conditions": [],
       "operation": "execute",
@@ -145029,8 +145029,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 121,
-      "end_line": 125,
+      "line": 127,
+      "end_line": 131,
       "owner": "_behavior_by_type",
       "conditions": [],
       "operation": "execute",
@@ -145043,8 +145043,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 203,
-      "end_line": 206,
+      "line": 209,
+      "end_line": 212,
       "owner": "build_inventory",
       "conditions": [],
       "operation": "execute",
@@ -145057,8 +145057,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 216,
-      "end_line": 218,
+      "line": 222,
+      "end_line": 224,
       "owner": "build_inventory",
       "conditions": [],
       "operation": "execute",
@@ -165103,8 +165103,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 641,
-      "end_line": 641,
+      "line": 656,
+      "end_line": 656,
       "owner": "run",
       "conditions": [],
       "operation": "set",
@@ -165257,8 +165257,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 700,
-      "end_line": 700,
+      "line": 715,
+      "end_line": 715,
       "owner": "run",
       "conditions": [],
       "operation": "set",
@@ -165271,8 +165271,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 700,
-      "end_line": 700,
+      "line": 715,
+      "end_line": 715,
       "owner": "run",
       "conditions": [],
       "operation": "set",
@@ -165285,8 +165285,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 703,
-      "end_line": 703,
+      "line": 718,
+      "end_line": 718,
       "owner": "run",
       "conditions": [
         "missing"
@@ -165298,48 +165298,6 @@
       "expression_truncated": false,
       "expression_chars": 25,
       "ast_sha256": "fc4ee6b4066b1df30fe21a5af1079bc60730db24d20c41b3e220946a45616f38"
-    },
-    {
-      "path": "backend/scripts/load-world-eurostat.py",
-      "line": 723,
-      "end_line": 725,
-      "owner": "run",
-      "conditions": [],
-      "operation": "execute",
-      "receiver": "db",
-      "symbol": "scripts.load-world-eurostat.db.execute",
-      "expression": "db.execute(text('SELECT COUNT(*) FROM world_countries WHERE is_active'))",
-      "expression_truncated": false,
-      "expression_chars": 72,
-      "ast_sha256": "d3f2f4ecbbf78fd81936f87fd3a8dbc2757ab4db2fec409b84eef151bfef7b2f"
-    },
-    {
-      "path": "backend/scripts/load-world-eurostat.py",
-      "line": 727,
-      "end_line": 727,
-      "owner": "run",
-      "conditions": [],
-      "operation": "execute",
-      "receiver": "db",
-      "symbol": "scripts.load-world-eurostat.db.execute",
-      "expression": "db.execute(text('SELECT COUNT(*) FROM world_indicators'))",
-      "expression_truncated": false,
-      "expression_chars": 57,
-      "ast_sha256": "61d5432a3a84e2919c39ffb88789e7d0acdb01793d368ab36759253b9f753fec"
-    },
-    {
-      "path": "backend/scripts/load-world-eurostat.py",
-      "line": 728,
-      "end_line": 728,
-      "owner": "run",
-      "conditions": [],
-      "operation": "execute",
-      "receiver": "db",
-      "symbol": "scripts.load-world-eurostat.db.execute",
-      "expression": "db.execute(text('SELECT COUNT(*) FROM world_data_points'))",
-      "expression_truncated": false,
-      "expression_chars": 58,
-      "ast_sha256": "6fac66a298284234f0a0a3bfaed41e65674224a7b117b06e4279250139ee737a"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
@@ -165390,6 +165348,20 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
+      "line": 637,
+      "end_line": 638,
+      "owner": "_db_totals",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "scripts.load-world-eurostat.db.execute",
+      "expression": "db.execute(text('SELECT COUNT(*) FROM world_countries WHERE is_active'))",
+      "expression_truncated": false,
+      "expression_chars": 72,
+      "ast_sha256": "d3f2f4ecbbf78fd81936f87fd3a8dbc2757ab4db2fec409b84eef151bfef7b2f"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
       "line": 186,
       "end_line": 186,
       "owner": "select_datasets",
@@ -165434,8 +165406,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 643,
-      "end_line": 643,
+      "line": 658,
+      "end_line": 658,
       "owner": "run",
       "conditions": [],
       "operation": "execute",
@@ -217397,48 +217369,12 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 142,
-      "end_line": 142,
+      "line": 148,
+      "end_line": 148,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
       "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 144,
-      "end_line": 144,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 144,
-      "end_line": 144,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.params_json",
-      "expression": "BehaviorEvent.params_json"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 144,
-      "end_line": 144,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.id",
-      "expression": "BehaviorEvent.id"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 145,
-      "end_line": 145,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -217451,8 +217387,44 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 157,
-      "end_line": 157,
+      "line": 150,
+      "end_line": 150,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.params_json",
+      "expression": "BehaviorEvent.params_json"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 150,
+      "end_line": 150,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.id",
+      "expression": "BehaviorEvent.id"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 151,
+      "end_line": 151,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 156,
+      "end_line": 156,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 163,
+      "end_line": 163,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -217460,8 +217432,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 168,
+      "end_line": 168,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.started_at",
@@ -217469,57 +217441,12 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 166,
-      "end_line": 166,
+      "line": 172,
+      "end_line": 172,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
       "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 171,
-      "end_line": 171,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 173,
-      "end_line": 173,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 173,
-      "end_line": 173,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.params_json",
-      "expression": "FrontendEvent.params_json"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 173,
-      "end_line": 173,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.id",
-      "expression": "FrontendEvent.id"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 174,
-      "end_line": 174,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.occurred_at",
-      "expression": "FrontendEvent.occurred_at"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -217532,12 +217459,39 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 182,
-      "end_line": 182,
+      "line": 179,
+      "end_line": 179,
       "owner": "build_inventory",
       "conditions": [],
-      "symbol": "app.models.RawMetrikaVisit",
-      "expression": "RawMetrikaVisit"
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 179,
+      "end_line": 179,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.params_json",
+      "expression": "FrontendEvent.params_json"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 179,
+      "end_line": 179,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.id",
+      "expression": "FrontendEvent.id"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 180,
+      "end_line": 180,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -217545,13 +217499,31 @@
       "end_line": 183,
       "owner": "build_inventory",
       "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 188,
+      "end_line": 188,
+      "owner": "build_inventory",
+      "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
       "expression": "RawMetrikaVisit"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 183,
-      "end_line": 183,
+      "line": 189,
+      "end_line": 189,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.RawMetrikaVisit",
+      "expression": "RawMetrikaVisit"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 189,
+      "end_line": 189,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.raw_json",
@@ -217559,8 +217531,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 183,
-      "end_line": 183,
+      "line": 189,
+      "end_line": 189,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.id",
@@ -217568,8 +217540,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 190,
+      "end_line": 190,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.visit_date",
@@ -217577,21 +217549,12 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 186,
-      "end_line": 186,
+      "line": 192,
+      "end_line": 192,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
       "expression": "RawMetrikaVisit"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 193,
-      "end_line": 193,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.MetrikaSearchPhrase",
-      "expression": "MetrikaSearchPhrase"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -217599,13 +217562,22 @@
       "end_line": 199,
       "owner": "build_inventory",
       "conditions": [],
+      "symbol": "app.models.MetrikaSearchPhrase",
+      "expression": "MetrikaSearchPhrase"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 205,
+      "end_line": 205,
+      "owner": "build_inventory",
+      "conditions": [],
       "symbol": "app.models.MetrikaDailyPageMetric",
       "expression": "MetrikaDailyPageMetric"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 216,
+      "end_line": 216,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery",
@@ -217613,8 +217585,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 219,
-      "end_line": 219,
+      "line": 225,
+      "end_line": 225,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -217622,8 +217594,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 244,
+      "end_line": 244,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -217631,8 +217603,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 248,
+      "end_line": 248,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -217640,8 +217612,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 252,
+      "end_line": 252,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaGoal",
@@ -217649,8 +217621,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 150,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -217658,8 +217630,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 150,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -217667,8 +217639,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 145,
-      "end_line": 145,
+      "line": 151,
+      "end_line": 151,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -217676,8 +217648,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 168,
+      "end_line": 168,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -217685,8 +217657,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 173,
-      "end_line": 173,
+      "line": 179,
+      "end_line": 179,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -217694,8 +217666,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 173,
-      "end_line": 173,
+      "line": 179,
+      "end_line": 179,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -217703,8 +217675,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 174,
-      "end_line": 174,
+      "line": 180,
+      "end_line": 180,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -217712,8 +217684,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 183,
-      "end_line": 183,
+      "line": 189,
+      "end_line": 189,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -217721,8 +217693,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 183,
-      "end_line": 183,
+      "line": 189,
+      "end_line": 189,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -217730,8 +217702,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 190,
+      "end_line": 190,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -217739,30 +217711,12 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 237,
-      "end_line": 237,
+      "line": 243,
+      "end_line": 243,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.ServerSession",
       "expression": "ServerSession"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 254,
-      "end_line": 254,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.DailyPage",
-      "expression": "DailyPage"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 259,
-      "end_line": 259,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.User",
-      "expression": "User"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -217770,13 +217724,31 @@
       "end_line": 260,
       "owner": "build_inventory",
       "conditions": [],
+      "symbol": "app.models.DailyPage",
+      "expression": "DailyPage"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 265,
+      "end_line": 265,
+      "owner": "build_inventory",
+      "conditions": [],
+      "symbol": "app.models.User",
+      "expression": "User"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 266,
+      "end_line": 266,
+      "owner": "build_inventory",
+      "conditions": [],
       "symbol": "app.models.IndicatorData",
       "expression": "IndicatorData"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 261,
-      "end_line": 261,
+      "line": 267,
+      "end_line": 267,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -217784,8 +217756,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 260,
+      "end_line": 260,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyTraffic",
@@ -217793,8 +217765,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 260,
+      "end_line": 260,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -217802,8 +217774,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 231,
+      "end_line": 231,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict",
@@ -217811,8 +217783,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 166,
+      "end_line": 166,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.device_type",
@@ -217820,8 +217792,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 172,
-      "end_line": 172,
+      "line": 178,
+      "end_line": 178,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -217829,8 +217801,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 198,
+      "end_line": 198,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.id",
@@ -217838,8 +217810,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 198,
-      "end_line": 198,
+      "line": 204,
+      "end_line": 204,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaDailyPageMetric.id",
@@ -217847,8 +217819,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 202,
-      "end_line": 202,
+      "line": 208,
+      "end_line": 208,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.id",
@@ -217856,8 +217828,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 215,
+      "end_line": 215,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery.id",
@@ -217865,8 +217837,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 221,
+      "end_line": 221,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -217874,8 +217846,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 231,
+      "end_line": 231,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -217883,8 +217855,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 247,
+      "end_line": 247,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.IdentityLink.id",
@@ -217892,8 +217864,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 245,
-      "end_line": 245,
+      "line": 251,
+      "end_line": 251,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaGoal.goal_id",
@@ -217901,8 +217873,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 130,
+      "end_line": 130,
       "owner": "_behavior_by_type",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -217910,8 +217882,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 166,
+      "end_line": 166,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -217919,8 +217891,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 172,
-      "end_line": 172,
+      "line": 178,
+      "end_line": 178,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -217928,8 +217900,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 198,
+      "end_line": 198,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase",
@@ -217937,8 +217909,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 201,
+      "end_line": 201,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.phrase",
@@ -217946,8 +217918,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 198,
-      "end_line": 198,
+      "line": 204,
+      "end_line": 204,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaDailyPageMetric",
@@ -217955,8 +217927,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 202,
-      "end_line": 202,
+      "line": 208,
+      "end_line": 208,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -217964,21 +217936,12 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 205,
-      "end_line": 205,
+      "line": 211,
+      "end_line": 211,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.report_type",
       "expression": "MetrikaReportSnapshot.report_type"
-    },
-    {
-      "path": "backend/app/services/dataset_inventory.py",
-      "line": 209,
-      "end_line": 209,
-      "owner": "build_inventory",
-      "conditions": [],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
@@ -217986,13 +217949,22 @@
       "end_line": 215,
       "owner": "build_inventory",
       "conditions": [],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 221,
+      "end_line": 221,
+      "owner": "build_inventory",
+      "conditions": [],
       "symbol": "app.models.TelegramOutbox",
       "expression": "TelegramOutbox"
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 223,
+      "end_line": 223,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
@@ -218000,8 +217972,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 231,
+      "end_line": 231,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict",
@@ -218009,8 +217981,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 247,
+      "end_line": 247,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -218018,8 +217990,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 245,
-      "end_line": 245,
+      "line": 251,
+      "end_line": 251,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaGoal",
@@ -218027,8 +217999,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 258,
+      "end_line": 258,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyPage.id",
@@ -218036,8 +218008,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 130,
+      "end_line": 130,
       "owner": "_behavior_by_type",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -218045,8 +218017,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 165,
+      "end_line": 165,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.device_type",
@@ -218054,8 +218026,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 201,
+      "end_line": 201,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase",
@@ -218063,8 +218035,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 205,
-      "end_line": 205,
+      "line": 211,
+      "end_line": 211,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -218072,8 +218044,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 223,
+      "end_line": 223,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -218081,8 +218053,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 231,
+      "end_line": 231,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -218090,8 +218062,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 256,
+      "end_line": 256,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyTraffic.id",
@@ -218099,8 +218071,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 257,
+      "end_line": 257,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyGoal.id",
@@ -218108,8 +218080,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 258,
+      "end_line": 258,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyPage",
@@ -218117,8 +218089,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 165,
+      "end_line": 165,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -218126,8 +218098,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 210,
+      "end_line": 210,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.report_type",
@@ -218135,8 +218107,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 223,
+      "end_line": 223,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
@@ -218144,8 +218116,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 256,
+      "end_line": 256,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyTraffic",
@@ -218153,8 +218125,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 257,
+      "end_line": 257,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -218162,8 +218134,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 123,
-      "end_line": 123,
+      "line": 129,
+      "end_line": 129,
       "owner": "_behavior_by_type",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -218171,8 +218143,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 210,
+      "end_line": 210,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -218180,8 +218152,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 223,
+      "end_line": 223,
       "owner": "build_inventory",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -218189,8 +218161,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 122,
-      "end_line": 122,
+      "line": 128,
+      "end_line": 128,
       "owner": "_behavior_by_type",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -218198,8 +218170,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 123,
-      "end_line": 123,
+      "line": 129,
+      "end_line": 129,
       "owner": "_behavior_by_type",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -218207,8 +218179,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 122,
-      "end_line": 122,
+      "line": 128,
+      "end_line": 128,
       "owner": "_behavior_by_type",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -272227,6 +272199,24 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
+      "line": 639,
+      "end_line": 639,
+      "owner": "_db_totals",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
+      "line": 639,
+      "end_line": 639,
+      "owner": "_db_totals",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
       "line": 279,
       "end_line": 279,
       "owner": "reconcile_points",
@@ -272649,8 +272639,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 643,
-      "end_line": 643,
+      "line": 658,
+      "end_line": 658,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -279975,32 +279965,12 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 724,
-      "end_line": 724,
-      "owner": "run",
+      "line": 638,
+      "end_line": 638,
+      "owner": "_db_totals",
       "conditions": [],
       "literal": "SELECT COUNT(*) FROM world_countries WHERE is_active",
       "expression": "'SELECT COUNT(*) FROM world_countries WHERE is_active'",
-      "resolved_text_constructor": "sqlalchemy.text"
-    },
-    {
-      "path": "backend/scripts/load-world-eurostat.py",
-      "line": 727,
-      "end_line": 727,
-      "owner": "run",
-      "conditions": [],
-      "literal": "SELECT COUNT(*) FROM world_indicators",
-      "expression": "'SELECT COUNT(*) FROM world_indicators'",
-      "resolved_text_constructor": "sqlalchemy.text"
-    },
-    {
-      "path": "backend/scripts/load-world-eurostat.py",
-      "line": 728,
-      "end_line": 728,
-      "owner": "run",
-      "conditions": [],
-      "literal": "SELECT COUNT(*) FROM world_data_points",
-      "expression": "'SELECT COUNT(*) FROM world_data_points'",
       "resolved_text_constructor": "sqlalchemy.text"
     },
     {
@@ -296245,7 +296215,16 @@
     {
       "path": "backend/app/services/dataset_inventory.py",
       "line": 91,
-      "end_line": 99,
+      "end_line": 94,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "row_count",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/dataset_inventory.py",
+      "line": 97,
+      "end_line": 105,
       "owner": "<module>",
       "conditions": [],
       "name": "_json_keys",
@@ -296253,8 +296232,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 102,
-      "end_line": 108,
+      "line": 108,
+      "end_line": 114,
       "owner": "<module>",
       "conditions": [],
       "name": "_time_range",
@@ -296262,8 +296241,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 111,
-      "end_line": 129,
+      "line": 117,
+      "end_line": 135,
       "owner": "<module>",
       "conditions": [],
       "name": "_behavior_by_type",
@@ -296271,8 +296250,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 132,
-      "end_line": 276,
+      "line": 138,
+      "end_line": 282,
       "owner": "<module>",
       "conditions": [],
       "name": "build_inventory",
@@ -296280,8 +296259,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 279,
-      "end_line": 281,
+      "line": 285,
+      "end_line": 287,
       "owner": "<module>",
       "conditions": [],
       "name": "_n",
@@ -296289,8 +296268,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 284,
-      "end_line": 306,
+      "line": 290,
+      "end_line": 312,
       "owner": "<module>",
       "conditions": [],
       "name": "format_inventory_html",
@@ -296298,8 +296277,8 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "line": 104,
-      "end_line": 107,
+      "line": 110,
+      "end_line": 113,
       "owner": "_time_range",
       "conditions": [],
       "name": "_fmt",
@@ -324481,7 +324460,16 @@
     {
       "path": "backend/scripts/load-world-eurostat.py",
       "line": 627,
-      "end_line": 755,
+      "end_line": 639,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_db_totals",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
+      "line": 642,
+      "end_line": 763,
       "owner": "<module>",
       "conditions": [],
       "name": "run",
@@ -324489,8 +324477,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 758,
-      "end_line": 783,
+      "line": 766,
+      "end_line": 791,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -355001,8 +354989,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 748,
-      "end_line": 748,
+      "line": 756,
+      "end_line": 756,
       "owner": "run",
       "conditions": [],
       "symbol": "app.services.eurostat_rebase.REBASE_EVENTS"
@@ -355033,16 +355021,16 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 647,
-      "end_line": 647,
+      "line": 662,
+      "end_line": 662,
       "owner": "run",
       "conditions": [],
       "symbol": "app.services.eurostat_parser.WORLD_COUNTRIES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 641,
-      "end_line": 641,
+      "line": 656,
+      "end_line": 656,
       "owner": "run",
       "conditions": [],
       "symbol": "app.services.eurostat_parser.WORLD_COUNTRIES"
@@ -355075,8 +355063,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 705,
-      "end_line": 705,
+      "line": 720,
+      "end_line": 720,
       "owner": "run",
       "conditions": [
         "missing"

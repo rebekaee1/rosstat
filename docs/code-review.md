@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `6b7e7a360aec39a20b063f1f3d52d791eeb449b8`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `df4eb06fb041ec37c64fd59c06add9134aa511c6`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2470 |
-| Код, шаблоны и стили | 1998 |
-| Актуальные рецензии без пропусков guard | 2470 |
-| Именованные определения Python/JS: с аннотацией / всего | 16125 / 16125 |
+| Файлы в явно определённом scope | 2471 |
+| Код, шаблоны и стили | 1999 |
+| Актуальные рецензии без пропусков guard | 2471 |
+| Именованные определения Python/JS: с аннотацией / всего | 16139 / 16139 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -303,7 +303,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/clickhouse_sync.py](../backend/app/services/clickhouse_sync.py) | reviewed | 28/28 | актуально |
 | [backend/app/services/data_sanity.py](../backend/app/services/data_sanity.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/data_validator.py](../backend/app/services/data_validator.py) | reviewed | 1/1 | актуально |
-| [backend/app/services/dataset_inventory.py](../backend/app/services/dataset_inventory.py) | reviewed | 9/9 | актуально |
+| [backend/app/services/dataset_inventory.py](../backend/app/services/dataset_inventory.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/demand_router.py](../backend/app/services/demand_router.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/demographics.py](../backend/app/services/demographics.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/derived_ops.py](../backend/app/services/derived_ops.py) | reviewed | 31/31 | актуально |
@@ -568,7 +568,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/scripts/load-world-auto-deep.py](../backend/scripts/load-world-auto-deep.py) | reviewed | 6/6 | актуально |
 | [backend/scripts/load-world-bea-regional.py](../backend/scripts/load-world-bea-regional.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/load-world-deep-slices.py](../backend/scripts/load-world-deep-slices.py) | reviewed | 1/1 | актуально |
-| [backend/scripts/load-world-eurostat.py](../backend/scripts/load-world-eurostat.py) | reviewed | 14/14 | актуально |
+| [backend/scripts/load-world-eurostat.py](../backend/scripts/load-world-eurostat.py) | reviewed | 15/15 | актуально |
 | [backend/scripts/load-world-national.py](../backend/scripts/load-world-national.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/load-world-subnational.py](../backend/scripts/load-world-subnational.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/metrika-goals-redesign.py](../backend/scripts/metrika-goals-redesign.py) | reviewed | 3/3 | актуально |
@@ -722,6 +722,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_eurostat_deep_expand.py](../backend/tests/test_eurostat_deep_expand.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_eurostat_headline_pins.py](../backend/tests/test_eurostat_headline_pins.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_eurostat_listing_modes.py](../backend/tests/test_eurostat_listing_modes.py) | reviewed | 6/6 | актуально |
+| [backend/tests/test_eurostat_loader_totals.py](../backend/tests/test_eurostat_loader_totals.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_eurostat_publication.py](../backend/tests/test_eurostat_publication.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_eurostat_publication_pg.py](../backend/tests/test_eurostat_publication_pg.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_eurostat_rebase.py](../backend/tests/test_eurostat_rebase.py) | reviewed | 25/25 | актуально |

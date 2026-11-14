@@ -1,25 +1,25 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "6b7e7a360aec39a20b063f1f3d52d791eeb449b8",
+  "baseline_commit": "df4eb06fb041ec37c64fd59c06add9134aa511c6",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
   "stats": {
-    "files": 2470,
-    "attempted": 2106,
-    "files_with_nodes": 2014,
-    "nodes": 24951,
-    "symbol_edges": 78457,
-    "file_edges": 18058,
+    "files": 2471,
+    "attempted": 2107,
+    "files_with_nodes": 2015,
+    "nodes": 24965,
+    "symbol_edges": 78508,
+    "file_edges": 18071,
     "projection_omissions": {
-      "external_or_unresolved_file": 3007,
-      "missing_endpoint": 4409,
-      "within_file": 34057
+      "external_or_unresolved_file": 3009,
+      "missing_endpoint": 4413,
+      "within_file": 34076
     },
     "confidence": {
-      "EXTRACTED": 71226,
-      "INFERRED": 7231
+      "EXTRACTED": 71265,
+      "INFERRED": 7243
     }
   },
   "overview": {
@@ -136,9 +136,9 @@
       {
         "id": "tests",
         "label": "Тесты и fixtures",
-        "files": 830,
-        "code": 798,
-        "with_nodes": 797,
+        "files": 831,
+        "code": 799,
+        "with_nodes": 798,
         "file_node_only": 117,
         "semantic_evidence": 0
       },
@@ -271,7 +271,7 @@
         "source": "docs",
         "target": "api",
         "file_relations": 64,
-        "symbol_relations": 135
+        "symbol_relations": 136
       },
       {
         "source": "docs",
@@ -330,8 +330,8 @@
       {
         "source": "docs",
         "target": "operations",
-        "file_relations": 22,
-        "symbol_relations": 28
+        "file_relations": 23,
+        "symbol_relations": 29
       },
       {
         "source": "docs",
@@ -342,8 +342,8 @@
       {
         "source": "docs",
         "target": "services",
-        "file_relations": 383,
-        "symbol_relations": 873
+        "file_relations": 384,
+        "symbol_relations": 874
       },
       {
         "source": "docs",
@@ -511,7 +511,7 @@
         "source": "operations",
         "target": "model",
         "file_relations": 190,
-        "symbol_relations": 298
+        "symbol_relations": 300
       },
       {
         "source": "operations",
@@ -528,14 +528,14 @@
       {
         "source": "operations",
         "target": "services",
-        "file_relations": 247,
-        "symbol_relations": 411
+        "file_relations": 249,
+        "symbol_relations": 413
       },
       {
         "source": "operations",
         "target": "tests",
         "file_relations": 30,
-        "symbol_relations": 33
+        "symbol_relations": 34
       },
       {
         "source": "registry",
@@ -636,8 +636,8 @@
       {
         "source": "tests",
         "target": "model",
-        "file_relations": 552,
-        "symbol_relations": 2367
+        "file_relations": 556,
+        "symbol_relations": 2380
       },
       {
         "source": "tests",
@@ -660,8 +660,8 @@
       {
         "source": "tests",
         "target": "tests",
-        "file_relations": 488,
-        "symbol_relations": 943
+        "file_relations": 493,
+        "symbol_relations": 948
       }
     ],
     "semantic_files": 68,
@@ -725,8 +725,8 @@
       "scripts/deploy.sh",
       "scripts/pg-backup.sh"
     ],
-    "code_files": 1998,
-    "code_with_nodes": 1903,
+    "code_files": 1999,
+    "code_with_nodes": 1904,
     "code_file_node_only": 131
   },
   "input_scope": "tracked",
@@ -996,7 +996,7 @@
     {"path": "backend/app/services/clickhouse_sync.py", "kind": "code", "bytes": 39387, "lines": 796, "sha256": "13020d7eb03703f34c4c617173b8dd6ee3116bd8c26692d503c290908fa92f4a", "symlink": false, "nodes": 45, "extraction": "nodes", "layer": "services", "semantic_evidence": true, "semantic_current": false},
     {"path": "backend/app/services/data_sanity.py", "kind": "code", "bytes": 4034, "lines": 69, "sha256": "987a29110f6844417a259cb52a3ae248cbf997a57f8e4fe7dd8ea6aa45a5294c", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/data_validator.py", "kind": "code", "bytes": 1127, "lines": 41, "sha256": "bf76740ec00300f0f1cd2df90a96be6e4110f86428955c096b302ccd878b14f8", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/app/services/dataset_inventory.py", "kind": "code", "bytes": 15698, "lines": 306, "sha256": "b93a8fe0d640b17a770e5a412bbbfd8309f47acdfb07da86f13e732bcdfdb96c", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/app/services/dataset_inventory.py", "kind": "code", "bytes": 16045, "lines": 312, "sha256": "75190e72674abe73ee1072511d2f4f9e8b1cc7fd81fc26de3ad3cbdf6314ae3c", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/demand_router.py", "kind": "code", "bytes": 13262, "lines": 263, "sha256": "4939fe54787858b05e92158b70829daa14619ccc04a598e46b746f104c5923c5", "symlink": false, "nodes": 12, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/demographics.py", "kind": "code", "bytes": 3136, "lines": 81, "sha256": "2b99be0608c4488f91951dc470a38e93c238e8cc40dac05ee1b77246f5e54f3d", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/derived_ops.py", "kind": "code", "bytes": 41800, "lines": 840, "sha256": "e234d58a20c105443c569d8b7ace647c1af2dd4ff08818aae7c6427a150aa7b5", "symlink": false, "nodes": 64, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
@@ -1261,7 +1261,7 @@
     {"path": "backend/scripts/load-world-auto-deep.py", "kind": "code", "bytes": 7351, "lines": 222, "sha256": "c8e14d316820043cf29624335880d2733f6e6ea79321bcd207b2bccfe33ad724", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/load-world-bea-regional.py", "kind": "code", "bytes": 2524, "lines": 62, "sha256": "eb5ad97b16e6d9d514f9941f14b31aed1a647784268e464e9fcd8e056ac7e927", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/load-world-deep-slices.py", "kind": "code", "bytes": 3521, "lines": 106, "sha256": "f8917912a5aee0c05bf1b1eb7d4b8d17b2181bbce36b4dd5e622ace88e8f5b68", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/scripts/load-world-eurostat.py", "kind": "code", "bytes": 31490, "lines": 787, "sha256": "28c32b2e54c753455c5d4438b101a2100bafdd7f41c3445d7eabafad6b6ca907", "symlink": false, "nodes": 25, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/scripts/load-world-eurostat.py", "kind": "code", "bytes": 32351, "lines": 795, "sha256": "1d2a91af776938432c849d5ff94c310b3acfb0eb508aef98c1fc89db82868599", "symlink": false, "nodes": 27, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/load-world-national.py", "kind": "code", "bytes": 4869, "lines": 143, "sha256": "7ff314f683fce386db5e84c8fca0e35b2e9bca426b984c60fa180d3d94512a26", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/load-world-subnational.py", "kind": "code", "bytes": 4072, "lines": 112, "sha256": "832719d5e94846ba0bd8075aad247dc5a966cb4e26554db874099500268fdcca", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/scripts/metrika-goals-redesign.py", "kind": "code", "bytes": 8101, "lines": 182, "sha256": "556dc882537d75a71f805e2053773d6a672069a34551f7e6741bdeeda73a70b8", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
@@ -1415,6 +1415,7 @@
     {"path": "backend/tests/test_eurostat_deep_expand.py", "kind": "code", "bytes": 4028, "lines": 84, "sha256": "fdb2abff8169bcd7c87a352bdde3cf48da933ae2a1b9da245310f6dff15fa52c", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_eurostat_headline_pins.py", "kind": "code", "bytes": 4257, "lines": 84, "sha256": "ce7b846c3cde66b5a0d1a827fdd058fe77dc574f35e6221c3318a4540dfa51c5", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_eurostat_listing_modes.py", "kind": "code", "bytes": 4699, "lines": 109, "sha256": "31324306453aebc255af06e36d54c5e37e71be3466aedd5028bea10a65718347", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/tests/test_eurostat_loader_totals.py", "kind": "code", "bytes": 2437, "lines": 71, "sha256": "ab10ec0fdd907f8b724efbdcf19fdce0c7a2c99ec2855f5186c0bb2cd094e44a", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_eurostat_publication.py", "kind": "code", "bytes": 8295, "lines": 192, "sha256": "c8bc133c8f89b137edac62e0c827392696bd84c894fea25339b25e607c201953", "symlink": false, "nodes": 21, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_eurostat_publication_pg.py", "kind": "code", "bytes": 10777, "lines": 190, "sha256": "38ce48686707680c8e46453573068beeb6c50edd1d77c984c5c3c8f07ff43921", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_eurostat_rebase.py", "kind": "code", "bytes": 16342, "lines": 347, "sha256": "50c9e998582043cffe4c73f361617f168a1cdef86291fede47da8e5d2e63225f", "symlink": false, "nodes": 30, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
@@ -1826,15 +1827,15 @@
     {"path": "docs/design/local-acceptance/unit-build-checks.json", "kind": "asset/data/config", "bytes": 1488, "lines": 46, "sha256": "290e39cad4d9c57916c5d504702af518674b76ec327eda282bed317ee86d7498", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/design/local-acceptance/year-contract.json", "kind": "asset/data/config", "bytes": 1912, "lines": 54, "sha256": "8022f4aa7b6221ce87227155b9d6c382cc8c4cfd666937b5404be86dbdab4d2e", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/design/requirements-coverage.md", "kind": "document", "bytes": 5330, "lines": 16, "sha256": "f84b8138719d58a594280e1f068fafd8aceaa62f30b7c64ba8878ccd920b39b5", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 71833, "lines": 329, "sha256": "147b05690e456e8661c25d38bcf253fabae3b72f9e7855d50e1e3b53cffb908d", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 74171, "lines": 337, "sha256": "cd626c649fc59a9078293a5b0ddded3d953ead06a0afa408957e6b21e7d8fb21", "symlink": false, "nodes": 23, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3861874, "lines": 136683, "sha256": "05bb36e057d48a6b52aa7cec5155a3d47f9ec4fa03f50a1c065bc7113072890c", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3861874, "lines": 136683, "sha256": "091550e4fe3db3cb45bccc231388ac2416f7567b94977c18cb405499880d0846", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 160576, "lines": 1824, "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 78988, "lines": 201, "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12305140, "lines": 369150, "sha256": "c34109f282f24ceaa42d5a537b354f8e79230e55efd53d9eaeb704be74620a20", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 631401, "lines": 3410, "sha256": "c0033cc036560bea20f7020a4cf8512435cd7ae2a47776a9ae9166a617260aee", "symlink": false, "nodes": 84, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12304425, "lines": 369138, "sha256": "09d28f86716f20e4c56906d4ad858471e03f096aa099776dc0239c7968d70778", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 631401, "lines": 3410, "sha256": "b984c78277d3b095dc24b5ab0a1d9dd7d08ed701259a6ff8606a5159d33e35c3", "symlink": false, "nodes": 84, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/offsite-backup-runbook.md", "kind": "document", "bytes": 8720, "lines": 74, "sha256": "96fb520148401f8994a2f2eaf202f547e5b136cdc0a5874ef6203b3500b25ef9", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/planet-view.md", "kind": "document", "bytes": 96534, "lines": 594, "sha256": "734f228d975268e7c0eade45272be4df6549d4df43d9ae9bbfaa2661ce241a92", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -4985,7 +4986,7 @@
     {"source": "backend/app/services/data_validator.py", "target": "backend/app/services/parser.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/data_validator.py", "line": "L9", "source": "data_validator.py", "target": "parser.py"}]},
     {"source": "backend/app/services/dataset_inventory.py", "target": "backend/app/models.py", "relation": "imports", "confidence": "EXTRACTED", "count": 19, "evidence": [{"file": "backend/app/services/dataset_inventory.py", "line": "L33", "source": "dataset_inventory.py", "target": "BehaviorEvent"}]},
     {"source": "backend/app/services/dataset_inventory.py", "target": "backend/app/models.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/dataset_inventory.py", "line": "L33", "source": "dataset_inventory.py", "target": "models.py"}]},
-    {"source": "backend/app/services/dataset_inventory.py", "target": "backend/app/models.py", "relation": "uses", "confidence": "INFERRED", "count": 20, "evidence": [{"file": "backend/app/services/dataset_inventory.py", "line": "L122", "source": "_behavior_by_type()", "target": "BehaviorEvent"}]},
+    {"source": "backend/app/services/dataset_inventory.py", "target": "backend/app/models.py", "relation": "uses", "confidence": "INFERRED", "count": 20, "evidence": [{"file": "backend/app/services/dataset_inventory.py", "line": "L128", "source": "_behavior_by_type()", "target": "BehaviorEvent"}]},
     {"source": "backend/app/services/dataset_inventory.py", "target": "backend/app/services/og_image.py", "relation": "calls", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/app/services/dataset_inventory.py", "line": "L79", "source": "_row_count()", "target": ".text()"}]},
     {"source": "backend/app/services/demand_router.py", "target": "backend/app/models.py", "relation": "imports", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/app/services/demand_router.py", "line": "L25", "source": "demand_router.py", "target": "Indicator"}]},
     {"source": "backend/app/services/demand_router.py", "target": "backend/app/models.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/app/services/demand_router.py", "line": "L25", "source": "demand_router.py", "target": "models.py"}]},
@@ -7816,13 +7817,15 @@
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/models.py", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L238", "source": "ensure_countries()", "target": "WorldCountry"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/models.py", "relation": "imports", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L34", "source": "load-world-eurostat.py", "target": "WorldCountry"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/models.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L34", "source": "load-world-eurostat.py", "target": "models.py"}]},
-    {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/models.py", "relation": "uses", "confidence": "INFERRED", "count": 13, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L214", "source": "ensure_countries()", "target": "WorldCountry"}]},
+    {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/models.py", "relation": "uses", "confidence": "INFERRED", "count": 15, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L214", "source": "ensure_countries()", "target": "WorldCountry"}]},
+    {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/dataset_inventory.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L639", "source": "_db_totals()", "target": "row_count()"}]},
+    {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/dataset_inventory.py", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L635", "source": "load-world-eurostat.py", "target": "row_count()"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_parser.py", "relation": "calls", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L327", "source": "upsert_indicator_meta()", "target": "make_indicator_code()"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_parser.py", "relation": "imports", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L60", "source": "load-world-eurostat.py", "target": "DatasetParseResult"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_parser.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L60", "source": "load-world-eurostat.py", "target": "eurostat_parser.py"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_parser.py", "relation": "references", "confidence": "EXTRACTED", "count": 4, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L315", "source": "upsert_indicator_meta()", "target": "DatasetParseResult"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_parser.py", "relation": "uses", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L321", "source": "upsert_indicator_meta()", "target": "DatasetParseResult"}]},
-    {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_rebase.py", "relation": "calls", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L748", "source": "run()", "target": "summarize_events()"}]},
+    {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_rebase.py", "relation": "calls", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L756", "source": "run()", "target": "summarize_events()"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_rebase.py", "relation": "imports", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L76", "source": "load-world-eurostat.py", "target": "RebaseContext"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_rebase.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L76", "source": "load-world-eurostat.py", "target": "eurostat_rebase.py"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_rebase.py", "relation": "uses", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L502", "source": "persist_result()", "target": "RebaseContext"}]},
@@ -7832,7 +7835,7 @@
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_structure.py", "relation": "references", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L569", "source": "check_structure()", "target": "StructureVerdict"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/eurostat_structure.py", "relation": "uses", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L592", "source": "check_structure()", "target": "ExistingSlice"}]},
     {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/app/services/og_image.py", "relation": "calls", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L186", "source": "select_datasets()", "target": ".text()"}]},
-    {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/tests/test_analytics_batch_delivery.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L503", "source": "persist_result()", "target": "db()"}]},
+    {"source": "backend/scripts/load-world-eurostat.py", "target": "backend/tests/test_analytics_batch_delivery.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "backend/scripts/load-world-eurostat.py", "line": "L503", "source": "persist_result()", "target": "db()"}]},
     {"source": "backend/scripts/load-world-national.py", "target": "backend/app/core/cache.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-national.py", "line": "L93", "source": "run()", "target": "bump_namespaces()"}]},
     {"source": "backend/scripts/load-world-national.py", "target": "backend/app/core/cache.py", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-national.py", "line": "L36", "source": "load-world-national.py", "target": "bump_namespaces()"}]},
     {"source": "backend/scripts/load-world-national.py", "target": "backend/app/core/cache.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/scripts/load-world-national.py", "line": "L36", "source": "load-world-national.py", "target": "cache.py"}]},
@@ -8756,6 +8759,15 @@
     {"source": "backend/tests/test_eurostat_listing_modes.py", "target": "backend/app/data/eurostat_listing.py", "relation": "calls", "confidence": "EXTRACTED", "count": 12, "evidence": [{"file": "backend/tests/test_eurostat_listing_modes.py", "line": "L16", "source": "test_listing_decisions_loaded()", "target": "load_listing_decisions()"}]},
     {"source": "backend/tests/test_eurostat_listing_modes.py", "target": "backend/app/data/eurostat_listing.py", "relation": "imports", "confidence": "EXTRACTED", "count": 6, "evidence": [{"file": "backend/tests/test_eurostat_listing_modes.py", "line": "L5", "source": "test_eurostat_listing_modes.py", "target": "is_derived_change_unit()"}]},
     {"source": "backend/tests/test_eurostat_listing_modes.py", "target": "backend/app/data/eurostat_listing.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_eurostat_listing_modes.py", "line": "L5", "source": "test_eurostat_listing_modes.py", "target": "eurostat_listing.py"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/app/models.py", "relation": "calls", "confidence": "EXTRACTED", "count": 6, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L27", "source": "test_totals_are_exact_on_small_tables()", "target": "WorldCountry"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/app/models.py", "relation": "imports", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L7", "source": "test_eurostat_loader_totals.py", "target": "WorldCountry"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/app/models.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L7", "source": "test_eurostat_loader_totals.py", "target": "models.py"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/app/models.py", "relation": "uses", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L27", "source": "test_totals_are_exact_on_small_tables()", "target": "WorldCountry"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/tests/test_analytics2.py", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L37", "source": "test_totals_are_exact_on_small_tables()", "target": "_run_with_db()"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/tests/test_analytics2.py", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L9", "source": "test_eurostat_loader_totals.py", "target": "_run_with_db()"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/tests/test_analytics2.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L9", "source": "test_eurostat_loader_totals.py", "target": "test_analytics2.py"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/tests/test_analytics_batch_delivery.py", "relation": "indirect_call", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L35", "source": "scenario()", "target": "db()"}]},
+    {"source": "backend/tests/test_eurostat_loader_totals.py", "target": "backend/tests/test_webmaster_failure_trace.py", "relation": "calls", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "backend/tests/test_eurostat_loader_totals.py", "line": "L68", "source": "test_big_tables_use_postgres_estimate_not_full_count()", "target": "FakeDb"}]},
     {"source": "backend/tests/test_eurostat_publication.py", "target": "backend/app/models.py", "relation": "calls", "confidence": "EXTRACTED", "count": 8, "evidence": [{"file": "backend/tests/test_eurostat_publication.py", "line": "L38", "source": "test_committed_remap_is_published_before_later_slice_error()", "target": "WorldCountry"}]},
     {"source": "backend/tests/test_eurostat_publication.py", "target": "backend/app/models.py", "relation": "imports", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "backend/tests/test_eurostat_publication.py", "line": "L15", "source": "test_eurostat_publication.py", "target": "Base"}]},
     {"source": "backend/tests/test_eurostat_publication.py", "target": "backend/app/models.py", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "backend/tests/test_eurostat_publication.py", "line": "L15", "source": "test_eurostat_publication.py", "target": "models.py"}]},
@@ -12397,7 +12409,7 @@
     {"source": "docs/design/README.md", "target": "scripts/build-design-review.mjs", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/design/README.md", "line": "L9", "source": "ForecastEconomy — реализация утверждённого дизайна", "target": "html()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "AGENTS.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L6", "source": "enterprise_resilience.md", "target": "AGENTS.md"}]},
     {"source": "docs/enterprise_resilience.md", "target": "CONTEXT.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L6", "source": "enterprise_resilience.md", "target": "CONTEXT.md"}]},
-    {"source": "docs/enterprise_resilience.md", "target": "backend/app/api/world.py", "relation": "references", "confidence": "INFERRED", "count": 13, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L24", "source": "API и backend", "target": "indicator_data()"}]},
+    {"source": "docs/enterprise_resilience.md", "target": "backend/app/api/world.py", "relation": "references", "confidence": "INFERRED", "count": 14, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L24", "source": "API и backend", "target": "indicator_data()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/core/cache.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L73", "source": "Производительность", "target": "bump_namespaces()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/data/cbr_currencies.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L280", "source": "Вынос описаний и SEO-текстов из `world_indicators`: оценка 13.11.2026", "target": "seo_keywords()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/data/emiss_labor.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L32", "source": "База данных и ETL", "target": ".source_url()"}]},
@@ -12410,6 +12422,7 @@
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/base_parser.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L28", "source": "База данных и ETL", "target": ".run()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/calendar_sources/common.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L32", "source": "База данных и ETL", "target": ".source_hash()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/data_sanity.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L24", "source": "API и backend", "target": "data_sanity_job()"}]},
+    {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/dataset_inventory.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L335", "source": "Топ чтения диска по `pg_stat_statements` и итог загрузчика Eurostat — 2026-11-14", "target": "row_count()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/forecast_pipeline.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L96", "source": "Деплой-инцидент trap: forecast retrain не пробрасывается", "target": "catch_up_empty_forecasts()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/freshness.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L78", "source": "Мониторинг", "target": ".stale()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/http_client.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L37", "source": "Парсеры и источники", "target": "create_session()"}]},
@@ -12418,6 +12431,7 @@
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/upsert.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L24", "source": "API и backend", "target": "point_rejection()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/world_country_rows.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L220", "source": "Узкое чтение рядов страны: карточка и сравнение — 13.11.2026", "target": "card_dataset_pairs()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/tasks/scheduler.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L40", "source": "Парсеры и источники", "target": "daily_update_job()"}]},
+    {"source": "docs/enterprise_resilience.md", "target": "backend/scripts/load-world-eurostat.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L335", "source": "Топ чтения диска по `pg_stat_statements` и итог загрузчика Eurostat — 2026-11-14", "target": "_db_totals()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/tests/test_home_popular_block.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L51", "source": "Frontend и кэш", "target": "always()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/tests/test_og_webp.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L78", "source": "Мониторинг", "target": "missing()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "docs/adr/0003-seo-single-source-server-rendered.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L7", "source": "enterprise_resilience.md", "target": "0003-seo-single-source-server-rendered.md"}]},

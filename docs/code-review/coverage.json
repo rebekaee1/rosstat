@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2470,
-    "code_files": 1998,
-    "current_reviews": 2470,
+    "files": 2471,
+    "code_files": 1999,
+    "current_reviews": 2471,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2200
+      "reviewed": 2201
     },
-    "definitions": 16125,
-    "annotated_definitions": 16125,
+    "definitions": 16139,
+    "annotated_definitions": 16139,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -3482,15 +3482,15 @@
     },
     {
       "path": "backend/app/services/dataset_inventory.py",
-      "sha256": "b93a8fe0d640b17a770e5a412bbbfd8309f47acdfb07da86f13e732bcdfdb96c",
-      "bytes": 15698,
-      "lines": 306,
+      "sha256": "75190e72674abe73ee1072511d2f4f9e8b1cc7fd81fc26de3ad3cbdf6314ae3c",
+      "bytes": 16045,
+      "lines": 312,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 9,
-      "annotated_definitions": 9,
+      "definitions": 10,
+      "annotated_definitions": 10,
       "missing_definitions": []
     },
     {
@@ -6927,15 +6927,15 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "sha256": "28c32b2e54c753455c5d4438b101a2100bafdd7f41c3445d7eabafad6b6ca907",
-      "bytes": 31490,
-      "lines": 787,
+      "sha256": "1d2a91af776938432c849d5ff94c310b3acfb0eb508aef98c1fc89db82868599",
+      "bytes": 32351,
+      "lines": 795,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 14,
-      "annotated_definitions": 14,
+      "definitions": 15,
+      "annotated_definitions": 15,
       "missing_definitions": []
     },
     {
@@ -8925,6 +8925,19 @@
       "issues": [],
       "definitions": 6,
       "annotated_definitions": 6,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_eurostat_loader_totals.py",
+      "sha256": "ab10ec0fdd907f8b724efbdcf19fdce0c7a2c99ec2855f5186c0bb2cd094e44a",
+      "bytes": 2437,
+      "lines": 71,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 12,
+      "annotated_definitions": 12,
       "missing_definitions": []
     },
     {
@@ -14272,9 +14285,9 @@
     },
     {
       "path": "docs/enterprise_resilience.md",
-      "sha256": "147b05690e456e8661c25d38bcf253fabae3b72f9e7855d50e1e3b53cffb908d",
-      "bytes": 71833,
-      "lines": 329,
+      "sha256": "cd626c649fc59a9078293a5b0ddded3d953ead06a0afa408957e6b21e7d8fb21",
+      "bytes": 74171,
+      "lines": 337,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14311,7 +14324,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "05bb36e057d48a6b52aa7cec5155a3d47f9ec4fa03f50a1c065bc7113072890c",
+      "sha256": "091550e4fe3db3cb45bccc231388ac2416f7567b94977c18cb405499880d0846",
       "bytes": 3861874,
       "lines": 136683,
       "code": false,
@@ -14363,9 +14376,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "c34109f282f24ceaa42d5a537b354f8e79230e55efd53d9eaeb704be74620a20",
-      "bytes": 12305140,
-      "lines": 369150,
+      "sha256": "09d28f86716f20e4c56906d4ad858471e03f096aa099776dc0239c7968d70778",
+      "bytes": 12304425,
+      "lines": 369138,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14376,7 +14389,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "c0033cc036560bea20f7020a4cf8512435cd7ae2a47776a9ae9166a617260aee",
+      "sha256": "b984c78277d3b095dc24b5ab0a1d9dd7d08ed701259a6ff8606a5159d33e35c3",
       "bytes": 631401,
       "lines": 3410,
       "code": false,
@@ -32147,9 +32160,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "9ea6bf27caf5c54b38e87dba3098e663d1f5447d52d57773e1982a1f9a99132e",
+  "ledger_sha256": "0c47c9e008ce3a248cb3916c29719a48cb0b56862a1285534d01916796f16b19",
   "javascript_inventory_sha256": "84d9570419dfeb23d776e1b8e0e409c0a444ba520ef2fd120c370f57a4e3425b",
-  "baseline_commit": "6b7e7a360aec39a20b063f1f3d52d791eeb449b8",
+  "baseline_commit": "df4eb06fb041ec37c64fd59c06add9134aa511c6",
   "branch": "worktree-agent-a4879bc09991f03fb",
   "unstaged_at_capture": []
 }

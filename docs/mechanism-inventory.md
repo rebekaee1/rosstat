@@ -16,7 +16,7 @@
 - Registry declarations: **1367**
 - Registry references: **2591**
 - Migration operations: **480**
-- Candidate effects: **2851**
+- Candidate effects: **2849**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
