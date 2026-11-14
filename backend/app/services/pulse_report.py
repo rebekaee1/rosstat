@@ -330,9 +330,30 @@ def build_llm_user_content(snapshot: dict, memory: list[dict], hypotheses: list[
     )
 
 
+# 14.11.2026: Пульс ушёл без аналитика - OpenRouter ответил 402 «You requested up to 65536 tokens, but can only afford
+# 36268»: без max_tokens сервис резервирует весь возможный ответ модели, и при остатке на счёте меньше этого резерва
+# запрос отклоняется, хотя на сам отчёт денег хватает. Лимит в обычной работе по-прежнему не ставим (директива
+# 2026-07-05); только при таком отказе повторяем один раз с max_tokens по остатку, если остаток не меньше
+# _MIN_AFFORDABLE_TOKENS (отчёт с гипотезами занимает несколько тысяч токенов). Причину сбоя пишем в шапку отчёта.
+_AFFORD_RE = re.compile(r"can only afford (\d+)")
+_MIN_AFFORDABLE_TOKENS = 6000
+_AFFORD_MARGIN_TOKENS = 512
+_last_llm_failure: str | None = None
+
+
+def llm_failure_note() -> str:
+    """Причина последнего сбоя аналитика для шапки отчёта, простыми словами."""
+    if _last_llm_failure == "credits":
+        return ("LLM-аналитик недоступен: на счёте OpenRouter почти нет денег — пополнить на "
+                "openrouter.ai/settings/credits")
+    return "LLM-аналитик недоступен"
+
+
 async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
     """Сводка дня через OpenRouter (+ ведение гипотез). None при сбое —
     отчёт уйдёт без LLM."""
+    global _last_llm_failure
+    _last_llm_failure = None
     if not settings.openrouter_api_key:
         return None
     hypotheses = await _open_hypotheses()
@@ -352,18 +373,24 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
         ],
     }
     try:
+        headers = {
+            "Authorization": f"Bearer {settings.openrouter_api_key}",
+            "HTTP-Referer": "https://forecasteconomy.com",
+            "X-Title": "Forecast Economy Pulse",
+        }
         async with httpx.AsyncClient(
             timeout=90, proxy=settings.openrouter_proxy_url or None
         ) as client:
-            resp = await client.post(
-                _OPENROUTER_URL,
-                json=payload,
-                headers={
-                    "Authorization": f"Bearer {settings.openrouter_api_key}",
-                    "HTTP-Referer": "https://forecasteconomy.com",
-                    "X-Title": "Forecast Economy Pulse",
-                },
-            )
+            resp = await client.post(_OPENROUTER_URL, json=payload, headers=headers)
+            if resp.status_code == 402:
+                m = _AFFORD_RE.search(resp.text)
+                affordable = int(m.group(1)) - _AFFORD_MARGIN_TOKENS if m else 0
+                if affordable >= _MIN_AFFORDABLE_TOKENS:
+                    logger.warning("OpenRouter 402: retry with max_tokens=%d (balance is low)", affordable)
+                    resp = await client.post(
+                        _OPENROUTER_URL, json={**payload, "max_tokens": affordable}, headers=headers)
+                if resp.status_code == 402:
+                    _last_llm_failure = "credits"
         if resp.status_code != 200:
             logger.warning("OpenRouter HTTP %d: %s", resp.status_code, resp.text[:300])
             return None
@@ -548,7 +575,7 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
     # читал детерминированную сводку, думая, что это аналитик (и гипотезы
     # молча не обновлялись).
     body = sanitize_llm_html(summary) if summary else (
-        "⚠️ <i>LLM-аналитик недоступен — детерминированная сводка без гипотез.</i>\n\n"
+        f"⚠️ <i>{escape(llm_failure_note())} — детерминированная сводка без гипотез.</i>\n\n"
         + _fallback_summary(snapshot)
     )
 
