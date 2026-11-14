@@ -506,6 +506,7 @@ export default {
   'calc.compound.doubling': 'Doubling time',
 
   'auth.login.title': 'Sign in',
+  'auth.login.subtitleCabinet': 'Sign in: unlimited downloads, favourites and following new data on any device.',
   'auth.login.subtitle': 'Sign in to download data without limits.',
   'auth.login.submit': 'Sign in',
   'auth.login.busy': 'Signing in…',
@@ -3023,6 +3024,7 @@ export default {
   'w7p.reg.benefitsAria': 'What an account gives you',
   'w7p.reg.b1': 'Download data for any period: Excel, CSV and image',
   'w7p.reg.b2': 'Compare three or more indicators on one chart',
+  'w7p.reg.bCabinet': 'Favourites and a “New” mark when data you follow is published, on any device',
   'w7p.reg.b3': 'Free. You can browse the data without an account too',
   'w7p.reg.legalBefore': 'I accept the',
   'w7p.reg.legalTerms': 'terms of use',

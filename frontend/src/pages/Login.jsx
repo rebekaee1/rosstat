@@ -12,12 +12,14 @@ import { safeReturnTo, authLink } from '../lib/authReturn';
 import { authErrorCode, authErrorField, loginParams, oauthReturnError } from '../lib/authTrigger';
 import { cn } from '../lib/format';
 import Button from '../components/Button';
+import { useCabinetConfig } from '../lib/useCabinet';
 import '../styles/w5-pages.css';
 import '../styles/k8-tools.css';
 
 export default function Login() {
   const t = useT();
   useDocumentMeta({ title: t('auth.login.metaTitle'), path: '/login', robots: 'noindex, nofollow' });
+  const cabinet = useCabinetConfig();
   const navigate = useNavigate();
   const { setUser } = useAuth();
   const [params] = useSearchParams();
@@ -80,7 +82,7 @@ export default function Login() {
     <div className="fe-data-page max-w-md mx-auto px-4 pt-28 pb-24">
       <div className="fe-panel fe-auth-card fe-reveal p-5 sm:p-8">
       <h1 className="text-2xl font-display font-bold text-text-primary mb-1 text-center">{t('auth.login.title')}</h1>
-      <p className="text-sm text-text-secondary mb-6 text-center">{t('auth.login.subtitle')}</p>
+      <p className="text-sm text-text-secondary mb-6 text-center">{t(cabinet.enabled ? 'auth.login.subtitleCabinet' : 'auth.login.subtitle')}</p>
 
       <OAuthButtons
         next={next}
