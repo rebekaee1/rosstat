@@ -103,6 +103,12 @@ function RotatingHint({ lead, items }) {
  * ⌘K / Ctrl+K на любой раскладке. При русской раскладке `event.key` у этой клавиши «л», поэтому сочетание не срабатывало;
  * физическую клавишу (`code`) берём только когда `key` не латинская буква (Dvorak и подобные остаются на `key`).
  */
+/** Слова запроса, без которых нашлись ряды «Ближайшего»: «структура», «кормовых» (ru) / “structure” (en). */
+export function quotedWords(words, locale) {
+  const list = Array.isArray(words) ? words.filter(Boolean) : [];
+  return list.map((word) => (locale === 'en' ? `“${word}”` : `«${word}»`)).join(', ');
+}
+
 function isKKey(event) {
   const key = String(event.key || '');
   if (key === 'k' || key === 'K') return true;
@@ -772,7 +778,7 @@ export default function IndicatorSearch({
                               <EmptyState variant="no-results" size={nearestRows.length ? 56 : 80} title={nearestRows.length ? t('r8a.nearest.title', { query: qTrim }) : t('search.nothingFound', { query: qTrim })} />
                               {nearestRows.length ? (
                                 <div className="r8a-nearest" data-testid="search-nearest">
-                                  <p className="r8a-nearest__note">{t(`r8a.nearest.${globalSearch.data.nearest.note}`)}</p>
+                                  <p className="r8a-nearest__note">{t(`r8a.nearest.${globalSearch.data.nearest.note}`, { words: quotedWords(globalSearch.data.nearest.words, locale) })}</p>
                                   {nearestRows.map((item, k) => (
                                     <SearchRow
                                       key={item.key}

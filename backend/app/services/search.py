@@ -1509,4 +1509,16 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
             if near:
                 sort_cheapest_first(raw, near)
                 response["nearest"] = {"note": note, "results": near[:MAX_NEAREST]}
+        elif _nearest and _reading is None:
+            # 14.11.2026: слово, которого нет ни в одном названии ряда, — основная выдача пуста (ADR-0016), а в
+            # «Ближайшем» ряды без этого слова и пояснение, каких слов у нас нет (search_unknown_word).
+            from app.services.search_unknown_word import readings_without_words
+
+            for reading, words in await readings_without_words(db, intent):
+                found = await federated_search(db, raw, limit=MAX_NEAREST, _nearest=False,
+                                               _reading=(reading, geometry, countries))
+                if found["results"]:
+                    response["nearest"] = {"note": "without_word" if len(words) == 1 else "without_words",
+                                           "words": words, "results": found["results"][:MAX_NEAREST]}
+                    break
     return response
