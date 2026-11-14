@@ -1480,8 +1480,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "0170f31f4b84c002442286624a84920a288523a789f94185cdc4bf72370ba544",
-      "lines": 656
+      "sha256": "9119888ca1cebfe2883070dbbf5829ca91102eb9ad6c4f46529fb46dc96314b1",
+      "lines": 696
     },
     {
       "path": "backend/app/services/r4a_price_compare.py",
@@ -38042,8 +38042,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 370,
-      "end_line": 370,
+      "line": 410,
+      "end_line": 410,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -38051,8 +38051,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 390,
-      "end_line": 390,
+      "line": 430,
+      "end_line": 430,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_model",
@@ -38060,8 +38060,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 622,
-      "end_line": 622,
+      "line": 662,
+      "end_line": 662,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -38069,8 +38069,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 588,
-      "end_line": 588,
+      "line": 628,
+      "end_line": 628,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -38078,8 +38078,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 588,
-      "end_line": 588,
+      "line": 628,
+      "end_line": 628,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -38087,8 +38087,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 622,
-      "end_line": 622,
+      "line": 662,
+      "end_line": 662,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -38096,8 +38096,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 441,
+      "end_line": 441,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -38105,8 +38105,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 406,
-      "end_line": 406,
+      "line": 446,
+      "end_line": 446,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -103743,8 +103743,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 211,
-      "end_line": 211,
+      "line": 213,
+      "end_line": 213,
       "owner": "<module>",
       "conditions": [],
       "name": "_HYP_WORD_RE",
@@ -103760,8 +103760,25 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 351,
-      "end_line": 351,
+      "line": 267,
+      "end_line": 267,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_CONTEXT_REF_RE",
+      "symbol": "app.services.pulse_report._CONTEXT_REF_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('\\\\[([a-z0-9-]+|заметка \\\\d+)\\\\]')",
+      "expression_truncated": false,
+      "expression_chars": 45,
+      "ast_sha256": "c44153357406bd02b794d80a580e26a0a1ff6f1a6fd105ad00ede44bfb6d1670",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 391,
+      "end_line": 391,
       "owner": "<module>",
       "conditions": [],
       "name": "_AFFORD_RE",
@@ -151695,8 +151712,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 623,
-      "end_line": 623,
+      "line": 663,
+      "end_line": 663,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -151709,8 +151726,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 622,
-      "end_line": 622,
+      "line": 662,
+      "end_line": 662,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -151723,8 +151740,22 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 304,
-      "end_line": 304,
+      "line": 276,
+      "end_line": 276,
+      "owner": "_context_ids",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.pulse_report.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 344,
+      "end_line": 344,
       "owner": "_apply_hypothesis_updates",
       "conditions": [],
       "operation": "commit",
@@ -151737,8 +151768,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 337,
+      "end_line": 337,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -151753,8 +151784,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 251,
-      "end_line": 254,
+      "line": 253,
+      "end_line": 256,
       "owner": "_open_hypotheses",
       "conditions": [],
       "operation": "execute",
@@ -151767,8 +151798,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 289,
-      "end_line": 291,
+      "line": 329,
+      "end_line": 331,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -231991,8 +232022,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 336,
+      "end_line": 336,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -232002,8 +232033,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 321,
+      "end_line": 321,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "upd.get('id') is not None"
@@ -232013,8 +232044,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 334,
+      "end_line": 334,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -232024,8 +232055,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at.desc",
@@ -232033,8 +232064,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.id.desc",
@@ -232042,8 +232073,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at",
@@ -232051,8 +232082,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.id",
@@ -232060,8 +232091,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 330,
+      "end_line": 330,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -232072,8 +232103,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 254,
+      "end_line": 254,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict.is_",
@@ -232081,8 +232112,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -232090,8 +232121,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -232099,8 +232130,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 330,
+      "end_line": 330,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -232111,8 +232142,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 330,
+      "end_line": 330,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -232123,8 +232154,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 254,
+      "end_line": 254,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -232132,8 +232163,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 254,
+      "end_line": 254,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict",
@@ -232141,8 +232172,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 330,
+      "end_line": 330,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -232153,8 +232184,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 254,
+      "end_line": 254,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -307017,8 +307048,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 214,
-      "end_line": 216,
+      "line": 216,
+      "end_line": 218,
       "owner": "<module>",
       "conditions": [],
       "name": "_hypothesis_stems",
@@ -307026,8 +307057,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 219,
-      "end_line": 245,
+      "line": 221,
+      "end_line": 247,
       "owner": "<module>",
       "conditions": [],
       "name": "similar_open_hypothesis",
@@ -307035,8 +307066,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 248,
-      "end_line": 258,
+      "line": 250,
+      "end_line": 260,
       "owner": "<module>",
       "conditions": [],
       "name": "_open_hypotheses",
@@ -307044,8 +307075,35 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 261,
-      "end_line": 305,
+      "line": 270,
+      "end_line": 276,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_context_ids",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 279,
+      "end_line": 284,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "is_context_closure",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 287,
+      "end_line": 298,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "select_hypothesis_updates",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 301,
+      "end_line": 345,
       "owner": "<module>",
       "conditions": [],
       "name": "_apply_hypothesis_updates",
@@ -307053,8 +307111,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 308,
-      "end_line": 322,
+      "line": 348,
+      "end_line": 362,
       "owner": "<module>",
       "conditions": [],
       "name": "_split_llm_output",
@@ -307062,8 +307120,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 325,
-      "end_line": 343,
+      "line": 365,
+      "end_line": 383,
       "owner": "<module>",
       "conditions": [],
       "name": "build_llm_user_content",
@@ -307071,8 +307129,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 357,
-      "end_line": 362,
+      "line": 397,
+      "end_line": 402,
       "owner": "<module>",
       "conditions": [],
       "name": "llm_failure_note",
@@ -307080,8 +307138,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 365,
-      "end_line": 440,
+      "line": 405,
+      "end_line": 480,
       "owner": "<module>",
       "conditions": [],
       "name": "_llm_summary",
@@ -307089,8 +307147,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 443,
-      "end_line": 488,
+      "line": 483,
+      "end_line": 528,
       "owner": "<module>",
       "conditions": [],
       "name": "_acquisition_lines",
@@ -307098,8 +307156,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 491,
-      "end_line": 520,
+      "line": 531,
+      "end_line": 560,
       "owner": "<module>",
       "conditions": [],
       "name": "_fallback_summary",
@@ -307107,8 +307165,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 523,
-      "end_line": 530,
+      "line": 563,
+      "end_line": 570,
       "owner": "<module>",
       "conditions": [],
       "name": "_etl_line",
@@ -307116,8 +307174,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 533,
-      "end_line": 583,
+      "line": 573,
+      "end_line": 623,
       "owner": "<module>",
       "conditions": [],
       "name": "_raw_digits_block",
@@ -307125,8 +307183,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 586,
-      "end_line": 632,
+      "line": 626,
+      "end_line": 672,
       "owner": "<module>",
       "conditions": [],
       "name": "send_pulse_report",
@@ -307134,8 +307192,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 635,
-      "end_line": 647,
+      "line": 675,
+      "end_line": 687,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_snapshot_job",
@@ -307143,8 +307201,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 650,
-      "end_line": 656,
+      "line": 690,
+      "end_line": 696,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_report_job",
@@ -307152,8 +307210,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 233,
-      "end_line": 236,
+      "line": 235,
+      "end_line": 238,
       "owner": "similar_open_hypothesis",
       "conditions": [],
       "name": "weights",
@@ -350350,16 +350408,24 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 217,
+      "end_line": 217,
       "owner": "_hypothesis_stems",
       "conditions": [],
       "symbol": "app.services.pulse_report._HYP_WORD_RE"
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 410,
-      "end_line": 410,
+      "line": 283,
+      "end_line": 283,
+      "owner": "is_context_closure",
+      "conditions": [],
+      "symbol": "app.services.pulse_report._CONTEXT_REF_RE"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 450,
+      "end_line": 450,
       "owner": "_llm_summary",
       "conditions": [
         "resp.status_code == 402"

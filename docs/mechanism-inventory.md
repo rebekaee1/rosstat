@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1393**
-- Registry references: **2631**
+- Registry declarations: **1394**
+- Registry references: **2632**
 - Migration operations: **482**
-- Candidate effects: **2900**
+- Candidate effects: **2901**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -2743,8 +2743,9 @@ Relationships: `[]`
 | app.services.pulse_context._SECRET_HINTS | Tuple | sequence/source expression | [backend/app/services/pulse_context.py:60](../backend/app/services/pulse_context.py#L60) |
 | app.services.pulse_report._TG_ALLOWED_TAG_RE | Call | computed source expression | [backend/app/services/pulse_report.py:44](../backend/app/services/pulse_report.py#L44) |
 | app.services.pulse_report._HTML_ENTITY_RE | Call | computed source expression | [backend/app/services/pulse_report.py:48](../backend/app/services/pulse_report.py#L48) |
-| app.services.pulse_report._HYP_WORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:211](../backend/app/services/pulse_report.py#L211) |
-| app.services.pulse_report._AFFORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:351](../backend/app/services/pulse_report.py#L351) |
+| app.services.pulse_report._HYP_WORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:213](../backend/app/services/pulse_report.py#L213) |
+| app.services.pulse_report._CONTEXT_REF_RE | Call | computed source expression | [backend/app/services/pulse_report.py:267](../backend/app/services/pulse_report.py#L267) |
+| app.services.pulse_report._AFFORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:391](../backend/app/services/pulse_report.py#L391) |
 | app.services.r4a_price_compare.BASKET | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:21](../backend/app/services/r4a_price_compare.py#L21) |
 | app.services.r4a_price_compare._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:35](../backend/app/services/r4a_price_compare.py#L35) |
 | app.services.r4a_price_compare._MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:37](../backend/app/services/r4a_price_compare.py#L37) |
