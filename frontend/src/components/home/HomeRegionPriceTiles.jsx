@@ -24,6 +24,15 @@ function unitParts(unit) {
   return { sign: '\u00a0₽', per };
 }
 
+/** «Бензин АИ-95, л» над «за л»: единица в названии повторяет подпись под ценой — убираем хвост названия. */
+function tileName(name, per) {
+  const text = String(name || '');
+  const unit = String(per || '').replace(/^за\s+/i, '').trim();
+  if (!unit) return text;
+  const tail = `, ${unit}`;
+  return text.toLowerCase().endsWith(tail.toLowerCase()) ? text.slice(0, -tail.length) : text;
+}
+
 function Trend({ pct, locale, label }) {
   if (pct == null) return <span className="r9a-tile__trend" aria-hidden="true">{'\u00a0'}</span>;
   const flat = Math.abs(pct) < 0.05;
@@ -69,7 +78,7 @@ export default function HomeRegionPriceTiles({ region, regionName }) {
                 className="r9a-tile fe-press"
                 onClick={() => track(events.HOME_CATEGORY_CLICK, { category: 'price-tile', surface: 'home-r9a', code: it.code, region })}
               >
-                <span className="r9a-tile__name">{en ? enTileName(it) : (it.short_name || it.name)}</span>
+                <span className="r9a-tile__name">{en ? enTileName(it) : tileName(it.short_name || it.name, per)}</span>
                 <span className="r9a-tile__val">{en ? enMoney(valText) : `${valText}${sign}`}</span>
                 <span className="r9a-tile__per">{per}</span>
                 <Trend pct={it.yoy_pct} locale={locale} label={t('r9a.tiles.year')} />
@@ -131,7 +140,7 @@ export function HomePriceStrip() {
               className="r9a-chip fe-press"
               onClick={() => track(events.HOME_CATEGORY_CLICK, { category: 'price-strip', surface: 'home-r9a', code: it.code, region })}
             >
-              <span className="r9a-chip__name">{en ? enTileName(it) : (it.short_name || it.name)}</span>
+              <span className="r9a-chip__name">{en ? enTileName(it) : tileName(it.short_name || it.name, per)}</span>
               <span className="r9a-chip__val">{en ? enMoney(valText) : `${valText}${sign}`}</span>
               <span className="r9a-chip__per">{per}</span>
             </Link>
