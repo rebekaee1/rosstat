@@ -345,8 +345,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "sha256": "99e069afb36fdc53618965919a1851e4191981bb356bb2a383f793b541fe81b6",
-      "lines": 133
+      "sha256": "ba4daea8ee21e27de96e802e575479f6659ab8e3fdf0137aedaa5ad71fa084c5",
+      "lines": 160
     },
     {
       "path": "backend/app/api/oauth.py",
@@ -1390,8 +1390,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "sha256": "692807c72300a6a7b6c97e5a5d8a294badc0048c2ddb8341a9180e19a9031105",
-      "lines": 282
+      "sha256": "72e2db90047f51a9d294300f99144dccb674fae2b20d70e1f77f8b632a25394b",
+      "lines": 305
     },
     {
       "path": "backend/app/services/mail/bounces.py",
@@ -1400,8 +1400,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "sha256": "9cfae207bbc633373c91e10a1ab085bce1ccfae816d5eaf9ee8bbb38855a8545",
-      "lines": 337
+      "sha256": "509a71bab7edfa433586454377980890ec83cbc77a3094ac6ea824ca78b76bef",
+      "lines": 355
     },
     {
       "path": "backend/app/services/mail/service.py",
@@ -1410,18 +1410,18 @@
     },
     {
       "path": "backend/app/services/mail/stats.py",
-      "sha256": "ef2594da74943fe88ecb277bf84e072ae78a7bbaf8539202a1beb58767ff6dce",
-      "lines": 81
+      "sha256": "815772930731de0c433eeb915176a27c342f84c0e78127dbb588282c929e609f",
+      "lines": 92
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "sha256": "af420b3b920f7baae6c6c3c9d7de0cd49161f42c98608b7ad66067c90f812baf",
-      "lines": 527
+      "sha256": "498a1731a12bc672fd9efc9b4c22bb708555874ff21cc186d40751dbc3b77467",
+      "lines": 547
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "sha256": "cb1e09c86cc257980c3a9db58d712a5b92b42405704b80a9be378df494b2b2d3",
-      "lines": 104
+      "sha256": "69291074c8e0d8c08e4cecd2ef1155cb1739620eb0fc41024ce53c9a9c6833bc",
+      "lines": 105
     },
     {
       "path": "backend/app/services/mail/transport.py",
@@ -10833,8 +10833,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 114,
-      "end_line": 114,
+      "line": 141,
+      "end_line": 141,
       "owner": "unsubscribe_state",
       "conditions": [],
       "handler": "app.api.mail.unsubscribe_state",
@@ -10845,8 +10845,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 115,
-      "handler_end_line": 117,
+      "handler_line": 142,
+      "handler_end_line": 144,
       "parameters": [
         {
           "name": "t",
@@ -10863,8 +10863,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 120,
-      "end_line": 120,
+      "line": 147,
+      "end_line": 147,
       "owner": "unsubscribe",
       "conditions": [],
       "handler": "app.api.mail.unsubscribe",
@@ -10875,8 +10875,8 @@
         "POST"
       ],
       "options": {},
-      "handler_line": 121,
-      "handler_end_line": 125,
+      "handler_line": 148,
+      "handler_end_line": 152,
       "parameters": [
         {
           "name": "request",
@@ -10898,8 +10898,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 128,
-      "end_line": 128,
+      "line": 155,
+      "end_line": 155,
       "owner": "resubscribe",
       "conditions": [],
       "handler": "app.api.mail.resubscribe",
@@ -10910,8 +10910,8 @@
         "POST"
       ],
       "options": {},
-      "handler_line": 129,
-      "handler_end_line": 133,
+      "handler_line": 156,
+      "handler_end_line": 160,
       "parameters": [
         {
           "name": "body",
@@ -38642,8 +38642,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 219,
+      "end_line": 219,
       "owner": "run",
       "conditions": [],
       "name": "mail_campaign_max_per_run",
@@ -38651,8 +38651,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 220,
+      "end_line": 220,
       "owner": "run",
       "conditions": [],
       "name": "mail_campaign_pause_seconds",
@@ -38660,8 +38660,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 285,
-      "end_line": 285,
+      "line": 303,
+      "end_line": 303,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_campaign_max_per_run",
@@ -38669,8 +38669,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 286,
-      "end_line": 286,
+      "line": 304,
+      "end_line": 304,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_campaign_pause_seconds",
@@ -38678,8 +38678,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 202,
-      "end_line": 202,
+      "line": 212,
+      "end_line": 212,
       "owner": "run",
       "conditions": [],
       "name": "mail_allow_all_recipients",
@@ -38687,8 +38687,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 214,
+      "end_line": 214,
       "owner": "run",
       "conditions": [],
       "name": "mail_enabled",
@@ -38696,8 +38696,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 278,
-      "end_line": 278,
+      "line": 296,
+      "end_line": 296,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_allow_all_recipients",
@@ -38705,8 +38705,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 298,
+      "end_line": 298,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_enabled",
@@ -38828,8 +38828,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 56,
-      "end_line": 56,
+      "line": 57,
+      "end_line": 57,
       "owner": "_secret",
       "conditions": [],
       "name": "mail_token_secret",
@@ -44790,7 +44790,7 @@
     {
       "path": "backend/app/api/mail.py",
       "line": 49,
-      "end_line": 52,
+      "end_line": 54,
       "owner": "<module>",
       "conditions": [],
       "name": "LISTS",
@@ -44798,7 +44798,8 @@
       "kind": "Dict",
       "literal_keys": [
         "'unsub'",
-        "'unsub_watch'"
+        "'unsub_watch'",
+        "'unpers'"
       ],
       "entries": [
         {
@@ -44814,12 +44815,36 @@
           "expression_truncated": false,
           "expression_chars": 45,
           "ast_sha256": "03fd405e65850dd8ed11e34e778d0148491c79614124fbf648c3e5e3fa8812b9"
+        },
+        {
+          "key": "'unpers'",
+          "expression": "('personal', 'mail_personal', 'mail_personal_revoked')",
+          "expression_truncated": false,
+          "expression_chars": 54,
+          "ast_sha256": "c939134c536e0eadee861b1d599d25950badc67b4b553878902cd589396d4467"
         }
       ],
-      "expression": "{'unsub': ('newsletter', 'newsletter', 'newsletter_revoked'), 'unsub_watch': ('watch', 'watch_mail', 'watch_mail_revoked')}",
+      "expression": "{'unsub': ('newsletter', 'newsletter', 'newsletter_revoked'), 'unsub_watch': ('watch', 'watch_mail', 'watch_mail_revoked'), 'unpers': ('personal', 'mail_personal', 'mail_personal_revoked')}",
       "expression_truncated": false,
-      "expression_chars": 123,
-      "ast_sha256": "5e35f73d47790f1efa966a10002dcd6e5b567d4d22a7a469efb7ba8684457e0e",
+      "expression_chars": 189,
+      "ast_sha256": "31323d0aa761e1aa963ac981b5d1aefc6a923439303aa237a36c1b22c836625b",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 55,
+      "end_line": 55,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "PERSONAL_KINDS",
+      "symbol": "app.api.mail.PERSONAL_KINDS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('mail_personal', 'mail_personal_revoked')",
+      "expression_truncated": false,
+      "expression_chars": 42,
+      "ast_sha256": "69257500b2571e6f6636a8a16b881a3d9eab409621d5b10b14d20315369d4ddb",
       "runtime_expansion": false
     },
     {
@@ -103391,10 +103416,10 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "('lead', 'story', 'forecast', 'table', 'calendar')",
+      "expression": "('lead', 'story', 'forecast', 'table', 'calendar', 'section')",
       "expression_truncated": false,
-      "expression_chars": 50,
-      "ast_sha256": "70edcb0c1e80f6b0dd5eb12df657c2018e5754f1e7525aff04231c06770feb51",
+      "expression_chars": 61,
+      "ast_sha256": "2ae28ee55089718c6da7b1b0a13acd7a5e05cc3d349288c250e8cbbc44632bc8",
       "runtime_expansion": false
     },
     {
@@ -103535,6 +103560,23 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/mail/campaign.py",
+      "line": 196,
+      "end_line": 196,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "DEFER",
+      "symbol": "app.services.mail.campaign.DEFER",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "object()",
+      "expression_truncated": false,
+      "expression_chars": 8,
+      "ast_sha256": "955303ab53d92723ca8969d85d36d62c3621a266a67a578582bc5928c32de4dc",
+      "runtime_expansion": true
+    },
+    {
       "path": "backend/app/services/mail/templates.py",
       "line": 40,
       "end_line": 40,
@@ -103589,7 +103631,7 @@
     {
       "path": "backend/app/services/mail/templates.py",
       "line": 49,
-      "end_line": 148,
+      "end_line": 150,
       "owner": "<module>",
       "conditions": [],
       "name": "STRINGS",
@@ -103604,27 +103646,27 @@
           "key": "'ru'",
           "expression": "{'tagline': 'Данные и прогнозы экономики', 'verify.subject': 'Подтвердите почту для Forecast Economy', 'verify.preheader': 'Одно нажатие — и аккаунт закреплён за этим адресом.', 'verify.title': 'Подтвердите почту', 'verify.lead': 'Вы создали аккаунт на Forecast Economy. Подтвердите, что этот адрес в",
           "expression_truncated": true,
-          "expression_chars": 3428,
-          "ast_sha256": "6fb9f5a01c00828db1e55874af55069dc9461fcc8913bcb5eb1acb1b186bfa61"
+          "expression_chars": 3481,
+          "ast_sha256": "17a6492309a7d153b02452ffd56c3b6477080a793bdb722f97860ead2b38d101"
         },
         {
           "key": "'en'",
           "expression": "{'tagline': 'Economic data and forecasts', 'verify.subject': 'Confirm your email for Forecast Economy', 'verify.preheader': 'One click and your account is tied to this address.', 'verify.title': 'Confirm your email', 'verify.lead': 'You created an account on Forecast Economy. Please confirm this add",
           "expression_truncated": true,
-          "expression_chars": 3411,
-          "ast_sha256": "4b252a6d85bf84b5c571c135de39376896dd5d80364a6552663a8e8ec1002a95"
+          "expression_chars": 3461,
+          "ast_sha256": "dfa1a9a79dde875ae1c86a94c9162dc6de6630a24bef66cde9cb069d2e764553"
         }
       ],
       "expression": "{'ru': {'tagline': 'Данные и прогнозы экономики', 'verify.subject': 'Подтвердите почту для Forecast Economy', 'verify.preheader': 'Одно нажатие — и аккаунт закреплён за этим адресом.', 'verify.title': 'Подтвердите почту', 'verify.lead': 'Вы создали аккаунт на Forecast Economy. Подтвердите, что этот адрес ваш: через него мы вернём доступ, если пароль забудется, и будем присылать только то, что вы выберете сами.', 'verify.button': 'Подтвердить почту', 'verify.note': 'Ссылка действует 7 дней. Если аккаунт создавали не вы, ничего делать не нужно: без подтверждения адрес не используется.', 'reset.subject': 'Новый пароль для Forecast Economy', 'reset.preheader': 'Ссылка действует один час.', 'reset.title': 'Новый пароль', 'reset.lead': 'Мы получили запрос на смену пароля для аккаунта с этой почтой. Нажмите кнопку и задайте новый пароль.', 'reset.button': 'Задать пароль', 'reset.note': 'Ссылка действует один час и срабатывает один раз. Если вы не запрашивали смену, ничего делать не нужно: пароль останется прежним.', 'oauth.subject': 'Как войти в Forecast Economy', 'oauth.preheader': 'Пароля нет: вы входите через {provider}.', 'oauth.title': 'Вы входите через {provider}', 'oauth.lead': 'Мы получили запрос на смену пароля, но пароля у вашего аккаунта нет: вы входите через {provider}. Откройте страницу входа и выберите {provider}. Пароль можно задать позже в личном кабинете.', 'oauth.button': 'Перейти ко входу', 'oauth.note': 'Если вы не запрашивали смену пароля, ничего делать не нужно.', 'reconfirm.subject': 'Подтвердите почту, чтобы получать письма Forecast Economy', 'reconfirm.preheader': 'Одно нажатие — и письма будут приходить на этот адрес.', 'reconfirm.title': 'Подтвердите почту', 'reconfirm.lead': 'У вас есть аккаунт на Forecast Economy. Мы начинаем присылать письма: новые значения показателей, за которыми вы следите, восстановление пароля и, если вы подписаны, обзоры. Подтвердите, что этот адрес ваш.', 'reconfirm.button': 'Подтвердить почту', 'reconfirm.note': 'Ссылк",
       "expression_truncated": true,
-      "expression_chars": 6855,
-      "ast_sha256": "760bbdd7f7541bd219945b1c1d2aa0d77a890063ec909604b4c1aaa517d39210",
+      "expression_chars": 6958,
+      "ast_sha256": "9d3bcbdaa8f43e001dd5265ac39d9dc20405babb516dd126a8c3875cbf6b6a28",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 365,
-      "end_line": 365,
+      "line": 381,
+      "end_line": 381,
       "owner": "<module>",
       "conditions": [],
       "name": "ACTION_KINDS",
@@ -103640,8 +103682,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 25,
-      "end_line": 25,
+      "line": 26,
+      "end_line": 26,
       "owner": "<module>",
       "conditions": [],
       "name": "PURPOSES",
@@ -103649,16 +103691,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "('unsub', 'unsub_watch', 'verify', 'reset')",
+      "expression": "('unsub', 'unsub_watch', 'unpers', 'verify', 'reset')",
       "expression_truncated": false,
-      "expression_chars": 43,
-      "ast_sha256": "80551cf5662a06e554f8c6024f9804ec460364d39aa4210f256781eef1776c52",
+      "expression_chars": 53,
+      "ast_sha256": "e821bd8164a4273a961bd7292eeb0284f412d5f996f7cc23c83d8e0abf2a90fc",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 26,
-      "end_line": 26,
+      "line": 27,
+      "end_line": 27,
       "owner": "<module>",
       "conditions": [],
       "name": "TTL_SECONDS",
@@ -103667,6 +103709,7 @@
       "literal_keys": [
         "'unsub'",
         "'unsub_watch'",
+        "'unpers'",
         "'verify'",
         "'reset'"
       ],
@@ -103680,6 +103723,13 @@
         },
         {
           "key": "'unsub_watch'",
+          "expression": "None",
+          "expression_truncated": false,
+          "expression_chars": 4,
+          "ast_sha256": "8f2cda988d9ca73053c7f508ff6d429ab1df0a26a6352507088f780e596b398c"
+        },
+        {
+          "key": "'unpers'",
           "expression": "None",
           "expression_truncated": false,
           "expression_chars": 4,
@@ -103700,10 +103750,10 @@
           "ast_sha256": "05190392463390863bd0a68736f124aaeb6e827a497020b36861ca695f8d992f"
         }
       ],
-      "expression": "{'unsub': None, 'unsub_watch': None, 'verify': 7 * 24 * 3600, 'reset': 3600}",
+      "expression": "{'unsub': None, 'unsub_watch': None, 'unpers': None, 'verify': 7 * 24 * 3600, 'reset': 3600}",
       "expression_truncated": false,
-      "expression_chars": 76,
-      "ast_sha256": "ed2b9370d8d616e7561a50be09b877b82dc11f2bfb06db6a6cb016fb71c2b845",
+      "expression_chars": 92,
+      "ast_sha256": "c847949c00bf87d91fa11f006dfe800d9f60996f485ad5ebcccf4932e6d29eaa",
       "runtime_expansion": false
     },
     {
@@ -137184,8 +137234,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 93,
-      "end_line": 94,
+      "line": 119,
+      "end_line": 120,
       "owner": "_write",
       "conditions": [],
       "operation": "add",
@@ -137198,10 +137248,27 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 98,
-      "end_line": 98,
+      "line": 125,
+      "end_line": 125,
       "owner": "_write",
       "conditions": [],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.api.mail.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 116,
+      "end_line": 116,
+      "owner": "_write",
+      "conditions": [
+        "kind in PERSONAL_KINDS",
+        "set_mail_personalization is not None"
+      ],
       "operation": "commit",
       "receiver": "db",
       "symbol": "app.api.mail.db.commit",
@@ -152548,8 +152615,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 274,
+      "end_line": 274,
       "owner": "run",
       "conditions": [],
       "operation": "commit",
@@ -152562,8 +152629,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 337,
+      "end_line": 337,
       "owner": "run_reconfirm",
       "conditions": [],
       "operation": "commit",
@@ -152576,8 +152643,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 271,
+      "end_line": 271,
       "owner": "run",
       "conditions": [],
       "operation": "commit",
@@ -152590,8 +152657,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 334,
+      "end_line": 334,
       "owner": "run_reconfirm",
       "conditions": [],
       "operation": "commit",
@@ -183201,8 +183268,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 74,
-      "end_line": 74,
+      "line": 86,
+      "end_line": 86,
       "owner": "_subscribed",
       "conditions": [],
       "symbol": "app.models.User",
@@ -183210,8 +183277,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 90,
-      "end_line": 90,
+      "line": 104,
+      "end_line": 104,
       "owner": "_write",
       "conditions": [],
       "symbol": "app.models.User",
@@ -183219,8 +183286,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 55,
-      "end_line": 55,
+      "line": 58,
+      "end_line": 58,
       "owner": "_user_from",
       "conditions": [],
       "symbol": "app.models.User",
@@ -183228,8 +183295,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 81,
-      "end_line": 81,
+      "line": 95,
+      "end_line": 95,
       "owner": "_state",
       "conditions": [],
       "symbol": "app.models.User",
@@ -183237,8 +183304,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 93,
-      "end_line": 93,
+      "line": 119,
+      "end_line": 119,
       "owner": "_write",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -183246,12 +183313,129 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 74,
+      "end_line": 74,
       "owner": "_user_from",
       "conditions": [],
       "symbol": "app.models.User",
       "expression": "User"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 82,
+      "end_line": 82,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent.granted_at.desc",
+      "expression": "Consent.granted_at.desc"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 82,
+      "end_line": 82,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent.id.desc",
+      "expression": "Consent.id.desc"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 82,
+      "end_line": 82,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent.granted_at",
+      "expression": "Consent.granted_at"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 82,
+      "end_line": 82,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent.id",
+      "expression": "Consent.id"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 81,
+      "end_line": 81,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent.user_id",
+      "expression": "Consent.user_id"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 81,
+      "end_line": 81,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent.kind.in_",
+      "expression": "Consent.kind.in_"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 82,
+      "end_line": 82,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 82,
+      "end_line": 82,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 81,
+      "end_line": 81,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent.kind",
+      "expression": "Consent.kind"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 81,
+      "end_line": 81,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 81,
+      "end_line": 81,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent.kind",
+      "expression": "Consent.kind"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 81,
+      "end_line": 81,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 81,
+      "end_line": 81,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
     },
     {
       "path": "backend/app/api/oauth.py",
@@ -230908,8 +231092,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 223,
-      "end_line": 223,
+      "line": 233,
+      "end_line": 233,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage.campaign",
@@ -230917,8 +231101,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 223,
-      "end_line": 223,
+      "line": 233,
+      "end_line": 233,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage.user_id",
@@ -230926,8 +231110,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 310,
+      "end_line": 310,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage.campaign",
@@ -230935,8 +231119,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 310,
+      "end_line": 310,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage.user_id",
@@ -230944,8 +231128,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 321,
+      "end_line": 321,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -230953,8 +231137,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 232,
+      "end_line": 232,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230962,8 +231146,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 223,
-      "end_line": 223,
+      "line": 233,
+      "end_line": 233,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230971,8 +231155,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 223,
-      "end_line": 223,
+      "line": 233,
+      "end_line": 233,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230980,8 +231164,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 291,
-      "end_line": 291,
+      "line": 309,
+      "end_line": 309,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230989,8 +231173,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 310,
+      "end_line": 310,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -230998,8 +231182,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 310,
+      "end_line": 310,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -231007,8 +231191,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 320,
+      "end_line": 320,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email_verified",
@@ -231016,8 +231200,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 321,
+      "end_line": 321,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -231025,8 +231209,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 320,
+      "end_line": 320,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -293192,8 +293376,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 55,
-      "end_line": 71,
+      "line": 58,
+      "end_line": 74,
       "owner": "<module>",
       "conditions": [],
       "name": "_user_from",
@@ -293201,8 +293385,17 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 74,
-      "end_line": 78,
+      "line": 77,
+      "end_line": 83,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_personal_on",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 86,
+      "end_line": 92,
       "owner": "<module>",
       "conditions": [],
       "name": "_subscribed",
@@ -293210,8 +293403,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 81,
-      "end_line": 87,
+      "line": 95,
+      "end_line": 101,
       "owner": "<module>",
       "conditions": [],
       "name": "_state",
@@ -293219,8 +293412,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 90,
-      "end_line": 98,
+      "line": 104,
+      "end_line": 125,
       "owner": "<module>",
       "conditions": [],
       "name": "_write",
@@ -293228,8 +293421,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 101,
-      "end_line": 111,
+      "line": 128,
+      "end_line": 138,
       "owner": "<module>",
       "conditions": [],
       "name": "_token_from",
@@ -293237,8 +293430,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 115,
-      "end_line": 117,
+      "line": 142,
+      "end_line": 144,
       "owner": "<module>",
       "conditions": [],
       "name": "unsubscribe_state",
@@ -293246,8 +293439,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 121,
-      "end_line": 125,
+      "line": 148,
+      "end_line": 152,
       "owner": "<module>",
       "conditions": [],
       "name": "unsubscribe",
@@ -293255,8 +293448,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 129,
-      "end_line": 133,
+      "line": 156,
+      "end_line": 160,
       "owner": "<module>",
       "conditions": [],
       "name": "resubscribe",
@@ -311622,7 +311815,16 @@
     {
       "path": "backend/app/services/mail/blocks.py",
       "line": 83,
-      "end_line": 87,
+      "end_line": 88,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_why",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 91,
+      "end_line": 95,
       "owner": "<module>",
       "conditions": [],
       "name": "_source",
@@ -311630,8 +311832,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 90,
-      "end_line": 93,
+      "line": 98,
+      "end_line": 101,
       "owner": "<module>",
       "conditions": [],
       "name": "_layer",
@@ -311639,8 +311841,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 96,
-      "end_line": 107,
+      "line": 104,
+      "end_line": 115,
       "owner": "<module>",
       "conditions": [],
       "name": "_with_value",
@@ -311648,8 +311850,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 110,
-      "end_line": 116,
+      "line": 118,
+      "end_line": 124,
       "owner": "<module>",
       "conditions": [],
       "name": "_value",
@@ -311657,8 +311859,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 121,
-      "end_line": 148,
+      "line": 129,
+      "end_line": 156,
       "owner": "<module>",
       "conditions": [],
       "name": "_bars",
@@ -311666,8 +311868,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 151,
-      "end_line": 153,
+      "line": 159,
+      "end_line": 161,
       "owner": "<module>",
       "conditions": [],
       "name": "_fmt_num",
@@ -311675,8 +311877,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 156,
-      "end_line": 169,
+      "line": 164,
+      "end_line": 178,
       "owner": "<module>",
       "conditions": [],
       "name": "lead",
@@ -311684,8 +311886,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 172,
-      "end_line": 175,
+      "line": 181,
+      "end_line": 184,
       "owner": "<module>",
       "conditions": [],
       "name": "story",
@@ -311693,8 +311895,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 178,
-      "end_line": 185,
+      "line": 187,
+      "end_line": 194,
       "owner": "<module>",
       "conditions": [],
       "name": "forecast",
@@ -311702,8 +311904,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 188,
-      "end_line": 205,
+      "line": 197,
+      "end_line": 214,
       "owner": "<module>",
       "conditions": [],
       "name": "table",
@@ -311711,8 +311913,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 208,
-      "end_line": 225,
+      "line": 217,
+      "end_line": 234,
       "owner": "<module>",
       "conditions": [],
       "name": "calendar",
@@ -311720,8 +311922,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 228,
-      "end_line": 240,
+      "line": 237,
+      "end_line": 249,
       "owner": "<module>",
       "conditions": [],
       "name": "visible_entries",
@@ -311729,8 +311931,17 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 243,
-      "end_line": 247,
+      "line": 252,
+      "end_line": 257,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "section",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/blocks.py",
+      "line": 260,
+      "end_line": 266,
       "owner": "<module>",
       "conditions": [],
       "name": "render",
@@ -311738,8 +311949,8 @@
     },
     {
       "path": "backend/app/services/mail/blocks.py",
-      "line": 250,
-      "end_line": 282,
+      "line": 269,
+      "end_line": 305,
       "owner": "<module>",
       "conditions": [],
       "name": "as_text",
@@ -311856,7 +312067,7 @@
     {
       "path": "backend/app/services/mail/campaign.py",
       "line": 98,
-      "end_line": 138,
+      "end_line": 139,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_issue",
@@ -311864,8 +312075,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 141,
-      "end_line": 152,
+      "line": 142,
+      "end_line": 153,
       "owner": "<module>",
       "conditions": [],
       "name": "load_issue",
@@ -311873,8 +312084,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 155,
-      "end_line": 159,
+      "line": 156,
+      "end_line": 160,
       "owner": "<module>",
       "conditions": [],
       "name": "unsubscribe_links",
@@ -311882,8 +312093,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 162,
-      "end_line": 170,
+      "line": 163,
+      "end_line": 176,
       "owner": "<module>",
       "conditions": [],
       "name": "render_for",
@@ -311891,8 +312102,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 173,
-      "end_line": 183,
+      "line": 179,
+      "end_line": 189,
       "owner": "<module>",
       "conditions": [],
       "name": "send_test",
@@ -311900,8 +312111,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 192,
-      "end_line": 195,
+      "line": 200,
+      "end_line": 203,
       "owner": "<module>",
       "conditions": [],
       "name": "personal_digest",
@@ -311909,8 +312120,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 198,
-      "end_line": 260,
+      "line": 206,
+      "end_line": 278,
       "owner": "<module>",
       "conditions": [],
       "name": "run",
@@ -311918,8 +312129,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 266,
-      "end_line": 323,
+      "line": 284,
+      "end_line": 341,
       "owner": "<module>",
       "conditions": [],
       "name": "run_reconfirm",
@@ -311927,8 +312138,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 326,
-      "end_line": 337,
+      "line": 344,
+      "end_line": 355,
       "owner": "<module>",
       "conditions": [],
       "name": "send_reconfirm_test",
@@ -312072,16 +312283,25 @@
     {
       "path": "backend/app/services/mail/stats.py",
       "line": 13,
-      "end_line": 81,
+      "end_line": 84,
       "owner": "<module>",
       "conditions": [],
       "name": "mail_summary",
       "kind": "AsyncFunctionDef"
     },
     {
+      "path": "backend/app/services/mail/stats.py",
+      "line": 87,
+      "end_line": 92,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_blocks_effect",
+      "kind": "AsyncFunctionDef"
+    },
+    {
       "path": "backend/app/services/mail/templates.py",
-      "line": 151,
-      "end_line": 152,
+      "line": 153,
+      "end_line": 154,
       "owner": "<module>",
       "conditions": [],
       "name": "t",
@@ -312089,8 +312309,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 155,
-      "end_line": 160,
+      "line": 157,
+      "end_line": 162,
       "owner": "<module>",
       "conditions": [],
       "name": "inline_images",
@@ -312098,8 +312318,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 164,
-      "end_line": 168,
+      "line": 166,
+      "end_line": 170,
       "owner": "<module>",
       "conditions": [],
       "name": "RenderedMail",
@@ -312107,8 +312327,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 172,
-      "end_line": 176,
+      "line": 174,
+      "end_line": 178,
       "owner": "<module>",
       "conditions": [],
       "name": "DigestItem",
@@ -312116,8 +312336,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 180,
-      "end_line": 192,
+      "line": 182,
+      "end_line": 195,
       "owner": "<module>",
       "conditions": [],
       "name": "Digest",
@@ -312125,8 +312345,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 197,
-      "end_line": 199,
+      "line": 200,
+      "end_line": 202,
       "owner": "<module>",
       "conditions": [],
       "name": "_p",
@@ -312134,8 +312354,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 202,
-      "end_line": 212,
+      "line": 205,
+      "end_line": 215,
       "owner": "<module>",
       "conditions": [],
       "name": "_button",
@@ -312143,8 +312363,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 215,
-      "end_line": 219,
+      "line": 218,
+      "end_line": 222,
       "owner": "<module>",
       "conditions": [],
       "name": "_fallback_link",
@@ -312152,8 +312372,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 222,
-      "end_line": 226,
+      "line": 225,
+      "end_line": 229,
       "owner": "<module>",
       "conditions": [],
       "name": "_note",
@@ -312161,8 +312381,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 229,
-      "end_line": 248,
+      "line": 232,
+      "end_line": 251,
       "owner": "<module>",
       "conditions": [],
       "name": "_item",
@@ -312170,8 +312390,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 251,
-      "end_line": 266,
+      "line": 254,
+      "end_line": 276,
       "owner": "<module>",
       "conditions": [],
       "name": "_footer",
@@ -312179,8 +312399,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 269,
-      "end_line": 290,
+      "line": 279,
+      "end_line": 300,
       "owner": "<module>",
       "conditions": [],
       "name": "_hero",
@@ -312188,8 +312408,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 293,
-      "end_line": 343,
+      "line": 303,
+      "end_line": 359,
       "owner": "<module>",
       "conditions": [],
       "name": "layout",
@@ -312197,8 +312417,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 346,
-      "end_line": 348,
+      "line": 362,
+      "end_line": 364,
       "owner": "<module>",
       "conditions": [],
       "name": "_h1",
@@ -312206,8 +312426,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 351,
-      "end_line": 360,
+      "line": 367,
+      "end_line": 376,
       "owner": "<module>",
       "conditions": [],
       "name": "_text_footer",
@@ -312215,8 +312435,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 368,
-      "end_line": 389,
+      "line": 384,
+      "end_line": 405,
       "owner": "<module>",
       "conditions": [],
       "name": "render_action",
@@ -312224,8 +312444,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 392,
-      "end_line": 401,
+      "line": 408,
+      "end_line": 417,
       "owner": "<module>",
       "conditions": [],
       "name": "_list_text",
@@ -312233,8 +312453,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 404,
-      "end_line": 409,
+      "line": 420,
+      "end_line": 425,
       "owner": "<module>",
       "conditions": [],
       "name": "_ru_plural",
@@ -312242,8 +312462,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 412,
-      "end_line": 421,
+      "line": 428,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "name": "watch_subject",
@@ -312251,8 +312471,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 424,
-      "end_line": 440,
+      "line": 440,
+      "end_line": 456,
       "owner": "<module>",
       "conditions": [],
       "name": "render_watch",
@@ -312260,8 +312480,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 443,
-      "end_line": 445,
+      "line": 459,
+      "end_line": 461,
       "owner": "<module>",
       "conditions": [],
       "name": "_paragraphs",
@@ -312269,8 +312489,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 448,
-      "end_line": 456,
+      "line": 464,
+      "end_line": 472,
       "owner": "<module>",
       "conditions": [],
       "name": "preheader_of",
@@ -312278,8 +312498,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 459,
-      "end_line": 506,
+      "line": 475,
+      "end_line": 526,
       "owner": "<module>",
       "conditions": [],
       "name": "render_digest",
@@ -312287,8 +312507,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 509,
-      "end_line": 527,
+      "line": 529,
+      "end_line": 547,
       "owner": "<module>",
       "conditions": [],
       "name": "sample_digest",
@@ -312296,8 +312516,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 376,
-      "end_line": 377,
+      "line": 392,
+      "end_line": 393,
       "owner": "render_action",
       "conditions": [],
       "name": "tx",
@@ -312305,8 +312525,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 30,
-      "end_line": 31,
+      "line": 31,
+      "end_line": 32,
       "owner": "<module>",
       "conditions": [],
       "name": "TokenError",
@@ -312314,8 +312534,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 34,
-      "end_line": 35,
+      "line": 35,
+      "end_line": 36,
       "owner": "<module>",
       "conditions": [],
       "name": "TokenSecretMissing",
@@ -312323,8 +312543,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 39,
-      "end_line": 43,
+      "line": 40,
+      "end_line": 44,
       "owner": "<module>",
       "conditions": [],
       "name": "MailToken",
@@ -312332,8 +312552,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 46,
-      "end_line": 47,
+      "line": 47,
+      "end_line": 48,
       "owner": "<module>",
       "conditions": [],
       "name": "_b64",
@@ -312341,8 +312561,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 50,
-      "end_line": 52,
+      "line": 51,
+      "end_line": 53,
       "owner": "<module>",
       "conditions": [],
       "name": "_unb64",
@@ -312350,8 +312570,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 55,
-      "end_line": 59,
+      "line": 56,
+      "end_line": 60,
       "owner": "<module>",
       "conditions": [],
       "name": "_secret",
@@ -312359,8 +312579,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 62,
-      "end_line": 64,
+      "line": 63,
+      "end_line": 65,
       "owner": "<module>",
       "conditions": [],
       "name": "fingerprint",
@@ -312368,8 +312588,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 67,
-      "end_line": 69,
+      "line": 68,
+      "end_line": 70,
       "owner": "<module>",
       "conditions": [],
       "name": "_sign",
@@ -312377,8 +312597,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 72,
-      "end_line": 81,
+      "line": 73,
+      "end_line": 82,
       "owner": "<module>",
       "conditions": [],
       "name": "issue",
@@ -312386,8 +312606,8 @@
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 84,
-      "end_line": 104,
+      "line": 85,
+      "end_line": 105,
       "owner": "<module>",
       "conditions": [],
       "name": "verify",
@@ -348975,24 +349195,32 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 57,
-      "end_line": 57,
+      "line": 60,
+      "end_line": 60,
       "owner": "_user_from",
       "conditions": [],
       "symbol": "app.api.mail.LISTS"
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 82,
-      "end_line": 82,
+      "line": 107,
+      "end_line": 107,
+      "owner": "_write",
+      "conditions": [],
+      "symbol": "app.api.mail.PERSONAL_KINDS"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 96,
+      "end_line": 96,
       "owner": "_state",
       "conditions": [],
       "symbol": "app.api.mail.LISTS"
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 151,
+      "end_line": 151,
       "owner": "unsubscribe",
       "conditions": [
         "user is not None and await _subscribed(db, purpose, user)"
@@ -349001,13 +349229,21 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 132,
-      "end_line": 132,
+      "line": 159,
+      "end_line": 159,
       "owner": "resubscribe",
       "conditions": [
         "user is not None and user.status == 'active' and (not await _subscribed(db, purpose, user))"
       ],
       "symbol": "app.api.mail.LISTS"
+    },
+    {
+      "path": "backend/app/api/mail.py",
+      "line": 81,
+      "end_line": 81,
+      "owner": "_personal_on",
+      "conditions": [],
+      "symbol": "app.api.mail.PERSONAL_KINDS"
     },
     {
       "path": "backend/app/api/oauth.py",
@@ -356677,11 +356913,29 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
+      "line": 201,
+      "end_line": 201,
+      "owner": "personal_digest",
+      "conditions": [],
+      "symbol": "app.services.mail.campaign.DEFER"
+    },
+    {
+      "path": "backend/app/services/mail/campaign.py",
       "line": 100,
       "end_line": 100,
       "owner": "parse_issue",
       "conditions": [],
       "symbol": "app.services.mail.campaign.KEY_RE"
+    },
+    {
+      "path": "backend/app/services/mail/campaign.py",
+      "line": 254,
+      "end_line": 254,
+      "owner": "run",
+      "conditions": [
+        "per_recipient is not None"
+      ],
+      "symbol": "app.services.mail.campaign.DEFER"
     },
     {
       "path": "backend/app/services/mail/campaign.py",
@@ -356692,73 +356946,84 @@
       "symbol": "app.services.mail.campaign.OWN_HOSTS"
     },
     {
+      "path": "backend/app/services/mail/campaign.py",
+      "line": 241,
+      "end_line": 241,
+      "owner": "run",
+      "conditions": [
+        "not send",
+        "per_recipient is not None and count_personal"
+      ],
+      "symbol": "app.services.mail.campaign.DEFER"
+    },
+    {
       "path": "backend/app/services/mail/templates.py",
-      "line": 373,
-      "end_line": 373,
+      "line": 389,
+      "end_line": 389,
       "owner": "render_action",
       "conditions": [],
       "symbol": "app.services.mail.templates.ACTION_KINDS"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 152,
-      "end_line": 152,
+      "line": 154,
+      "end_line": 154,
       "owner": "t",
       "conditions": [],
       "symbol": "app.services.mail.templates.STRINGS"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 275,
+      "end_line": 275,
       "owner": "_footer",
       "conditions": [],
       "symbol": "app.services.mail.templates.OPERATOR"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 375,
+      "end_line": 375,
       "owner": "_text_footer",
       "conditions": [],
       "symbol": "app.services.mail.templates.OPERATOR"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 158,
-      "end_line": 158,
+      "line": 160,
+      "end_line": 160,
       "owner": "inline_images",
       "conditions": [],
       "symbol": "app.services.mail.templates.ASSETS"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 161,
+      "end_line": 161,
       "owner": "inline_images",
       "conditions": [],
       "symbol": "app.services.mail.templates.ASSETS"
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 73,
-      "end_line": 73,
+      "line": 74,
+      "end_line": 74,
       "owner": "issue",
       "conditions": [],
       "symbol": "app.services.mail.tokens.PURPOSES"
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 76,
+      "end_line": 76,
       "owner": "issue",
       "conditions": [],
       "symbol": "app.services.mail.tokens.TTL_SECONDS"
     },
     {
       "path": "backend/app/services/mail/tokens.py",
-      "line": 85,
-      "end_line": 85,
+      "line": 86,
+      "end_line": 86,
       "owner": "verify",
       "conditions": [],
       "symbol": "app.services.mail.tokens.PURPOSES"
@@ -378869,8 +379134,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 114,
-      "end_line": 114,
+      "line": 141,
+      "end_line": 141,
       "owner": "unsubscribe_state",
       "conditions": [],
       "handler": "app.api.mail.unsubscribe_state",
@@ -378881,8 +379146,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 115,
-      "handler_end_line": 117,
+      "handler_line": 142,
+      "handler_end_line": 144,
       "parameters": [
         {
           "name": "t",
@@ -378924,8 +379189,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 120,
-      "end_line": 120,
+      "line": 147,
+      "end_line": 147,
       "owner": "unsubscribe",
       "conditions": [],
       "handler": "app.api.mail.unsubscribe",
@@ -378936,8 +379201,8 @@
         "POST"
       ],
       "options": {},
-      "handler_line": 121,
-      "handler_end_line": 125,
+      "handler_line": 148,
+      "handler_end_line": 152,
       "parameters": [
         {
           "name": "request",
@@ -378984,8 +379249,8 @@
     },
     {
       "path": "backend/app/api/mail.py",
-      "line": 128,
-      "end_line": 128,
+      "line": 155,
+      "end_line": 155,
       "owner": "resubscribe",
       "conditions": [],
       "handler": "app.api.mail.resubscribe",
@@ -378996,8 +379261,8 @@
         "POST"
       ],
       "options": {},
-      "handler_line": 129,
-      "handler_end_line": 133,
+      "handler_line": 156,
+      "handler_end_line": 160,
       "parameters": [
         {
           "name": "body",

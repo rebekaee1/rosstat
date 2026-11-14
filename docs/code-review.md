@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `9dde8fe55ea23f5c8c82d458dc5da4ac5ba1930d`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `4c3e8f4db27a67d0d75530f6fe3e62f1cc4b48c0`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2543 |
 | Код, шаблоны и стили | 2062 |
 | Актуальные рецензии без пропусков guard | 2543 |
-| Именованные определения Python/JS: с аннотацией / всего | 16763 / 16763 |
+| Именованные определения Python/JS: с аннотацией / всего | 16776 / 16776 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -133,7 +133,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/api/forecasts.py](../backend/app/api/forecasts.py) | reviewed | 5/5 | актуально |
 | [backend/app/api/human_pass.py](../backend/app/api/human_pass.py) | reviewed | 4/4 | актуально |
 | [backend/app/api/indicators.py](../backend/app/api/indicators.py) | reviewed | 15/15 | актуально |
-| [backend/app/api/mail.py](../backend/app/api/mail.py) | reviewed | 10/10 | актуально |
+| [backend/app/api/mail.py](../backend/app/api/mail.py) | reviewed | 11/11 | актуально |
 | [backend/app/api/oauth.py](../backend/app/api/oauth.py) | reviewed | 22/22 | актуально |
 | [backend/app/api/push.py](../backend/app/api/push.py) | reviewed | 13/13 | актуально |
 | [backend/app/api/pwa.py](../backend/app/api/pwa.py) | reviewed | 7/7 | актуально |
@@ -373,11 +373,11 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/mail/assets/f-glass.png](../backend/app/services/mail/assets/f-glass.png) | asset_metadata_reviewed | 0/0 | актуально |
 | [backend/app/services/mail/assets/hero-crystal.jpg](../backend/app/services/mail/assets/hero-crystal.jpg) | asset_metadata_reviewed | 0/0 | актуально |
 | [backend/app/services/mail/audience.py](../backend/app/services/mail/audience.py) | reviewed | 7/7 | актуально |
-| [backend/app/services/mail/blocks.py](../backend/app/services/mail/blocks.py) | reviewed | 20/20 | актуально |
+| [backend/app/services/mail/blocks.py](../backend/app/services/mail/blocks.py) | reviewed | 22/22 | актуально |
 | [backend/app/services/mail/bounces.py](../backend/app/services/mail/bounces.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/mail/campaign.py](../backend/app/services/mail/campaign.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/mail/service.py](../backend/app/services/mail/service.py) | reviewed | 14/14 | актуально |
-| [backend/app/services/mail/stats.py](../backend/app/services/mail/stats.py) | reviewed | 1/1 | актуально |
+| [backend/app/services/mail/stats.py](../backend/app/services/mail/stats.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/mail/templates.py](../backend/app/services/mail/templates.py) | reviewed | 25/25 | актуально |
 | [backend/app/services/mail/tokens.py](../backend/app/services/mail/tokens.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/mail/transport.py](../backend/app/services/mail/transport.py) | reviewed | 13/13 | актуально |
@@ -807,8 +807,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_load_priority.py](../backend/tests/test_load_priority.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_locale_vary.py](../backend/tests/test_locale_vary.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_mac_backup_pull.py](../backend/tests/test_mac_backup_pull.py) | reviewed | 9/9 | актуально |
-| [backend/tests/test_mail.py](../backend/tests/test_mail.py) | reviewed | 30/30 | актуально |
-| [backend/tests/test_mail_blocks.py](../backend/tests/test_mail_blocks.py) | reviewed | 9/9 | актуально |
+| [backend/tests/test_mail.py](../backend/tests/test_mail.py) | reviewed | 36/36 | актуально |
+| [backend/tests/test_mail_blocks.py](../backend/tests/test_mail_blocks.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_mail_lifecycle.py](../backend/tests/test_mail_lifecycle.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_market_history_backfill.py](../backend/tests/test_market_history_backfill.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_marts_signup_funnel.py](../backend/tests/test_marts_signup_funnel.py) | reviewed | 26/26 | актуально |

@@ -78,6 +78,7 @@ STRINGS = {
         "service_footer": "Письмо пришло, потому что с этим адресом связан аккаунт на Forecast Economy.",
         "news_footer": "Вы получаете это письмо, потому что подписались на обзоры Forecast Economy.",
         "unsubscribe": "Отписаться",
+        "unpersonalize": "Письма без персональной подборки",
         "manage": "Настройки",
         "reply": "Ответьте на это письмо — его прочитает человек.",
         "test.subject": "Проверка почты Forecast Economy",
@@ -127,6 +128,7 @@ STRINGS = {
         "service_footer": "You received this email because an account on Forecast Economy uses this address.",
         "news_footer": "You receive this email because you subscribed to Forecast Economy reviews.",
         "unsubscribe": "Unsubscribe",
+        "unpersonalize": "Emails without personal picks",
         "manage": "Settings",
         "reply": "Reply to this email — a person will read it.",
         "test.subject": "Forecast Economy mail check",
@@ -190,6 +192,7 @@ class Digest:
     masthead: str = ""  # «Неделя в цифрах · № 1 · данные на 14 ноября 2026» над заголовком
     signoff: str = ""   # «Редакция Forecast Economy» после последнего абзаца
     blocks: list[dict] = field(default_factory=list)  # блоки редактора (mail/blocks.py); иначе items
+    personal_note: str = ""  # подвал персонального выпуска: «Подборка составлена по вашим действиям…»
 
 
 # --- части HTML ---------------------------------------------------------------
@@ -248,9 +251,13 @@ def _item(item: DigestItem) -> str:
     )
 
 
-def _footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: str | None) -> str:
+def _footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: str | None,
+            personal_note: str = "", unpersonalize_url: str | None = None) -> str:
     why = t(locale, {"newsletter": "news_footer", "watch": "watch.footer"}.get(kind, "service_footer"))
     links = []
+    if personal_note and unpersonalize_url:
+        links.append(f'<a href="{escape(unpersonalize_url, quote=True)}" style="color:{MUTED};'
+                     f'text-decoration:underline;">{escape(t(locale, "unpersonalize"))}</a>')
     if unsubscribe_url:
         label = t(locale, "watch.unsubscribe" if kind == "watch" else "unsubscribe")
         links.append(f'<a href="{escape(unsubscribe_url, quote=True)}" style="color:{MUTED};'
@@ -258,7 +265,10 @@ def _footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: 
     if manage_url:
         links.append(f'<a href="{escape(manage_url, quote=True)}" style="color:{MUTED};'
                      f'text-decoration:underline;">{escape(t(locale, "manage"))}</a>')
-    out = _p(why + " " + t(locale, "reply"), color=MUTED, size=12, margin="0 0 10px", line=1.6)
+    out = ""
+    if personal_note:
+        out += _p(personal_note, color=MUTED, size=12, margin="0 0 10px", line=1.6)
+    out += _p(why + " " + t(locale, "reply"), color=MUTED, size=12, margin="0 0 10px", line=1.6)
     if links:
         out += (f'<p style="margin:0 0 10px;font-family:{FONT};font-size:12px;line-height:1.6;color:{MUTED};">'
                 + "&nbsp;&nbsp;&nbsp;".join(links) + "</p>")
@@ -277,10 +287,10 @@ def _hero(locale: str, site_url: str) -> str:
         f'<img src="cid:{CID_F}" width="84" height="93" alt="" '
         'style="display:block;width:84px;height:93px;border:0;outline:none;margin:-16px 0 -16px -18px;"></a></td>'
         f'<td valign="middle"><a href="{escape(site_url, quote=True)}" target="_blank" '
-        f'style="text-decoration:none;color:{ON_DARK};font-family:{FONT};font-size:25px;line-height:1;'
+        f'class="fe-mark" style="text-decoration:none;color:{ON_DARK};font-family:{FONT};font-size:25px;line-height:1;'
         'letter-spacing:-.04em;"><span style="font-weight:700;color:#FFFFFF;">forecast</span>'
         f'<span style="font-weight:300;color:{ON_DARK};">economy</span></a>'
-        f'<div style="margin-top:7px;font-family:{FONT};font-size:12.5px;line-height:1.2;font-weight:400;'
+        f'<div class="fe-tag" style="margin-top:7px;font-family:{FONT};font-size:12.5px;line-height:1.2;font-weight:400;'
         f'color:{ON_DARK_MUTED};text-decoration:none;">'
         f'<span style="text-decoration:none;color:{ON_DARK_MUTED};">{escape(t(locale, "tagline"))}</span></div></td>'
         '</tr></table></td></tr>'
@@ -303,12 +313,18 @@ def layout(locale: str, *, preheader: str, body_html: str, footer_html: str, sit
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="only light">
 <meta name="supported-color-schemes" content="light">
 <meta name="x-apple-disable-message-reformatting">
 <title>Forecast Economy</title>
 <style>
-  :root {{ color-scheme: light; supported-color-schemes: light; }}
+  /* Письмо светлое: просим почту не перекрашивать (Apple Mail, iOS, браузеры с автотёмной темой). */
+  :root {{ color-scheme: light only; supported-color-schemes: light; }}
+  /* Outlook.com / Outlook в тёмной теме перекрашивает цвета, помечая элементы data-ogsc/ogsb:
+     шапка остаётся сапфировой, знак — белым. */
+  [data-ogsb] .fe-hero {{ background-color:{SAPPHIRE} !important; }}
+  [data-ogsc] .fe-mark, [data-ogsc] .fe-mark span {{ color:#FFFFFF !important; }}
+  [data-ogsc] .fe-tag, [data-ogsc] .fe-tag span {{ color:{ON_DARK_MUTED} !important; }}
   @media (max-width:620px) {{
     .fe-wrap {{ padding:14px 8px 28px !important; }}
     .fe-hero {{ padding:26px 24px 22px !important; border-radius:20px 20px 0 0 !important; }}
@@ -457,7 +473,7 @@ def preheader_of(digest: Digest) -> str:
 
 
 def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url: str,
-                  manage_url: str | None = None, today=None) -> RenderedMail:
+                  manage_url: str | None = None, today=None, unpersonalize_url: str | None = None) -> RenderedMail:
     """Письмо рассылки: строка выпуска, заголовок, вступление, блоки, кнопка, конец, подпись."""
     from app.services.mail import blocks as blk
 
@@ -482,7 +498,8 @@ def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url
     preheader = preheader_of(digest)
     html = layout(locale, preheader=preheader, body_html=body,
                   footer_html=_footer(locale, kind="newsletter", unsubscribe_url=unsubscribe_url,
-                                      manage_url=manage_url),
+                                      manage_url=manage_url, personal_note=digest.personal_note,
+                                      unpersonalize_url=unpersonalize_url),
                   site_url=site_url)
     # Первая строка простого текста — то, что почта покажет рядом с темой в списке писем.
     lines = [preheader or digest.title]
@@ -501,6 +518,9 @@ def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url
         lines.append(digest.outro)
     if digest.signoff:
         lines.append(digest.signoff)
+    if digest.personal_note:
+        lines.append(digest.personal_note + (f"\n{t(locale, 'unpersonalize')}: {unpersonalize_url}"
+                                              if unpersonalize_url else ""))
     lines.append(_text_footer(locale, kind="newsletter", unsubscribe_url=unsubscribe_url, manage_url=manage_url))
     return RenderedMail(subject=digest.subject, html=html, text="\n\n".join(x for x in lines if x),
                         images=inline_images())

@@ -78,4 +78,15 @@ async def mail_summary(db: AsyncSession, *, days: int = 30) -> dict:
         },
         "consent_events": consent_events,
         "suppressions": suppressions,
+        # Эффект блоков по генераторам персонального выпуска: данные даёт агент персонализации
+        # (функция block_effect_summary, если есть); до тех пор — None, вкладка пишет «нет данных».
+        "blocks_effect": await _blocks_effect(db, days),
     }
+
+
+async def _blocks_effect(db: AsyncSession, days: int):
+    try:
+        from app.services.personalization import block_effect_summary  # type: ignore
+    except ImportError:
+        return None
+    return await block_effect_summary(db, days=days)

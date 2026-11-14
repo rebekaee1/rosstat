@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **61**
 - Middleware: **6**
-- Registry declarations: **1423**
-- Registry references: **2684**
+- Registry declarations: **1425**
+- Registry references: **2689**
 - Migration operations: **490**
-- Candidate effects: **2961**
+- Candidate effects: **2962**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -155,9 +155,9 @@
 | POST | /api/v1/human-pass | app.api.human_pass.human_pass | [backend/app/api/human_pass.py:63](../backend/app/api/human_pass.py#L63) |
 | GET | /api/v1/research | app.api.research.research_list | [backend/app/api/research.py:66](../backend/app/api/research.py#L66) |
 | GET | /api/v1/research/{slug}/download | app.api.research.research_download | [backend/app/api/research.py:147](../backend/app/api/research.py#L147) |
-| GET | /api/v1/mail/unsubscribe | app.api.mail.unsubscribe_state | [backend/app/api/mail.py:114](../backend/app/api/mail.py#L114) |
-| POST | /api/v1/mail/unsubscribe | app.api.mail.unsubscribe | [backend/app/api/mail.py:120](../backend/app/api/mail.py#L120) |
-| POST | /api/v1/mail/resubscribe | app.api.mail.resubscribe | [backend/app/api/mail.py:128](../backend/app/api/mail.py#L128) |
+| GET | /api/v1/mail/unsubscribe | app.api.mail.unsubscribe_state | [backend/app/api/mail.py:141](../backend/app/api/mail.py#L141) |
+| POST | /api/v1/mail/unsubscribe | app.api.mail.unsubscribe | [backend/app/api/mail.py:147](../backend/app/api/mail.py#L147) |
+| POST | /api/v1/mail/resubscribe | app.api.mail.resubscribe | [backend/app/api/mail.py:155](../backend/app/api/mail.py#L155) |
 | GET | /api/auth/{provider}/start | app.api.oauth.oauth_start | [backend/app/api/oauth.py:494](../backend/app/api/oauth.py#L494) |
 | GET | /api/auth/{provider}/callback | app.api.oauth.oauth_callback | [backend/app/api/oauth.py:495](../backend/app/api/oauth.py#L495) |
 | GET/HEAD | /sitemap.xml | app.api.sitemap.sitemap_index | [backend/app/api/sitemap.py:271](../backend/app/api/sitemap.py#L271) |
@@ -2137,7 +2137,8 @@ Relationships: `[]`
 | app.api.indicators._YOY_TOLERANCE | Call | computed source expression | [backend/app/api/indicators.py:43](../backend/app/api/indicators.py#L43) |
 | app.api.indicators._HERO_FROM_YOY_SIBLING | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services' | [backend/app/api/indicators.py:206](../backend/app/api/indicators.py#L206) |
 | app.api.indicators._CODE_RE | Call | computed source expression | [backend/app/api/indicators.py:412](../backend/app/api/indicators.py#L412) |
-| app.api.mail.LISTS | Dict | 'unsub', 'unsub_watch' | [backend/app/api/mail.py:49](../backend/app/api/mail.py#L49) |
+| app.api.mail.LISTS | Dict | 'unsub', 'unsub_watch', 'unpers' | [backend/app/api/mail.py:49](../backend/app/api/mail.py#L49) |
+| app.api.mail.PERSONAL_KINDS | Tuple | sequence/source expression | [backend/app/api/mail.py:55](../backend/app/api/mail.py#L55) |
 | app.api.oauth._REDIRECT_OVERRIDES | Dict | 'google', 'yandex', 'vk' | [backend/app/api/oauth.py:109](../backend/app/api/oauth.py#L109) |
 | app.api.push._B64URL | Call | computed source expression | [backend/app/api/push.py:36](../backend/app/api/push.py#L36) |
 | app.api.pwa._COPY | Dict | 'ru', 'en' | [backend/app/api/pwa.py:26](../backend/app/api/pwa.py#L26) |
@@ -2724,12 +2725,13 @@ Relationships: `[]`
 | app.services.mail.bounces._STATUS_RE | Call | computed source expression | [backend/app/services/mail/bounces.py:41](../backend/app/services/mail/bounces.py#L41) |
 | app.services.mail.campaign.KEY_RE | Call | computed source expression | [backend/app/services/mail/campaign.py:44](../backend/app/services/mail/campaign.py#L44) |
 | app.services.mail.campaign.OWN_HOSTS | Tuple | sequence/source expression | [backend/app/services/mail/campaign.py:45](../backend/app/services/mail/campaign.py#L45) |
+| app.services.mail.campaign.DEFER | Call | computed source expression | [backend/app/services/mail/campaign.py:196](../backend/app/services/mail/campaign.py#L196) |
 | app.services.mail.templates.ASSETS | Call | computed source expression | [backend/app/services/mail/templates.py:40](../backend/app/services/mail/templates.py#L40) |
 | app.services.mail.templates.OPERATOR | Dict | 'ru', 'en' | [backend/app/services/mail/templates.py:44](../backend/app/services/mail/templates.py#L44) |
 | app.services.mail.templates.STRINGS | Dict | 'ru', 'en' | [backend/app/services/mail/templates.py:49](../backend/app/services/mail/templates.py#L49) |
-| app.services.mail.templates.ACTION_KINDS | Tuple | sequence/source expression | [backend/app/services/mail/templates.py:365](../backend/app/services/mail/templates.py#L365) |
-| app.services.mail.tokens.PURPOSES | Tuple | sequence/source expression | [backend/app/services/mail/tokens.py:25](../backend/app/services/mail/tokens.py#L25) |
-| app.services.mail.tokens.TTL_SECONDS | Dict | 'unsub', 'unsub_watch', 'verify', 'reset' | [backend/app/services/mail/tokens.py:26](../backend/app/services/mail/tokens.py#L26) |
+| app.services.mail.templates.ACTION_KINDS | Tuple | sequence/source expression | [backend/app/services/mail/templates.py:381](../backend/app/services/mail/templates.py#L381) |
+| app.services.mail.tokens.PURPOSES | Tuple | sequence/source expression | [backend/app/services/mail/tokens.py:26](../backend/app/services/mail/tokens.py#L26) |
+| app.services.mail.tokens.TTL_SECONDS | Dict | 'unsub', 'unsub_watch', 'unpers', 'verify', 'reset' | [backend/app/services/mail/tokens.py:27](../backend/app/services/mail/tokens.py#L27) |
 | app.services.mail.transport.BULK_KINDS | Call | computed source expression | [backend/app/services/mail/transport.py:57](../backend/app/services/mail/transport.py#L57) |
 | app.services.mail.transport._POLICY | Call | computed source expression | [backend/app/services/mail/transport.py:99](../backend/app/services/mail/transport.py#L99) |
 | app.services.mail.watch_digest.WATCH_KINDS | Tuple | sequence/source expression | [backend/app/services/mail/watch_digest.py:32](../backend/app/services/mail/watch_digest.py#L32) |

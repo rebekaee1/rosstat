@@ -226,7 +226,9 @@ export function Unsubscribe() {
       {!info && !error && <Note testId="unsub-pending">{t('mail.unsub.pending')}</Note>}
       {info && (
         <Note testId={info.subscribed ? 'unsub-subscribed' : 'unsub-done'}>
-          {info.subscribed ? t('mail.unsub.resubscribed') : t(info.list === 'watch' ? 'mail.unsub.doneWatch' : 'mail.unsub.done')}
+          {info.subscribed
+            ? t(info.list === 'personal' ? 'mail.unsub.resubscribedPersonal' : 'mail.unsub.resubscribed')
+            : t({ watch: 'mail.unsub.doneWatch', personal: 'mail.unsub.donePersonal' }[info.list] || 'mail.unsub.done')}
           {info.email ? <span className="block mt-1 text-text-tertiary">{info.email}</span> : null}
         </Note>
       )}
@@ -234,7 +236,9 @@ export function Unsubscribe() {
       {info && (
         <Button onClick={toggle} loading={busy} variant="secondary" className="w-full mb-3"
           data-testid="unsub-toggle">
-          {info.subscribed ? t('mail.unsub.again') : t('mail.unsub.resubscribe')}
+          {info.list === 'personal'
+            ? t(info.subscribed ? 'mail.unsub.personalOff' : 'mail.unsub.personalOn')
+            : t(info.subscribed ? 'mail.unsub.again' : 'mail.unsub.resubscribe')}
         </Button>
       )}
       <Button as={Link} to="/" variant="secondary" className="w-full">{t('mail.toSite')}</Button>

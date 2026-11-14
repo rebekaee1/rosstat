@@ -3008,6 +3008,31 @@ function MailTab() {
             </table>
           ) : <Empty note="Выпусков ещё не было." />}
         </Card>
+        <Card title="Эффект блоков персонального выпуска" icon={Target} source="own" span="lg:col-span-2"
+          insight="Переходы из писем по генераторам блоков персонального выпуска: что люди открывают.">
+          {(data.blocks_effect || []).length ? (
+            <table className="w-full text-[13px]">
+              <thead>
+                <tr className="text-text-tertiary text-[11px]">
+                  <td className="py-1 pr-3">Генератор</td><td className="py-1 pr-3 text-right">Показано</td>
+                  <td className="py-1 pr-3 text-right">Переходы</td><td className="py-1 text-right">Доля</td>
+                </tr>
+              </thead>
+              <tbody>
+                {data.blocks_effect.map((r) => (
+                  <tr key={r.generator}>
+                    <td className="py-1.5 pr-3 text-text-primary">{r.label || r.generator}</td>
+                    <td className="py-1.5 pr-3 text-right tabular-nums">{fmtInt(r.shown || 0)}</td>
+                    <td className="py-1.5 pr-3 text-right tabular-nums">{fmtInt(r.clicks || 0)}</td>
+                    <td className="py-1.5 text-right tabular-nums">
+                      {r.shown ? `${((100 * (r.clicks || 0)) / r.shown).toFixed(1).replace('.', ',')} %` : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : <Empty note="Появится после первого персонального выпуска." />}
+        </Card>
         <Card title="Стоп-лист адресов" icon={ShieldCheck} source="own"
           insight="Постоянные отказы и жалобы из ящика отправителя: на эти адреса письма больше не уходят.">
           <div className="grid grid-cols-2 gap-3">
