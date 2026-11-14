@@ -29,6 +29,9 @@ vi.mock('../lib/track', () => ({
 vi.mock('../lib/api', () => ({
   submitApiInterest: vi.fn(),
   exportTable: vi.fn(),
+  // Окно стены рисует кнопки входа через сервисы по списку сервера (кабинет, 14.11.2026).
+  fetchOAuthProviders: vi.fn(async () => ['yandex', 'vk']),
+  oauthStartUrl: vi.fn(() => '#'),
 }));
 vi.mock('../context/authContext', () => ({ useAuth: () => ({ isAuthed: false }) }));
 
@@ -112,8 +115,8 @@ describe('вторичная ссылка в окне лимита скачив�
     mockFlag(false);
     renderWithLocale(<DownloadLimitModal />);
     openLimit();
-    expect(await screen.findByRole('link', { name: ru('common.login') })).toBeTruthy();
-    expect(screen.getByRole('link', { name: ru('auth.register.submitAlt') })).toBeTruthy();
+    expect(await screen.findByRole('link', { name: ru('download.limit.haveAccount') })).toBeTruthy();
+    expect(screen.getByRole('link', { name: ru('download.limit.email') })).toBeTruthy();
     await new Promise((r) => setTimeout(r, 0));
     expect(screen.queryByRole('button', { name: ru('apiInterest.limitLink') })).toBeNull();
   });
@@ -125,7 +128,7 @@ describe('вторичная ссылка в окне лимита скачив�
     renderWithLocale(<DownloadLimitModal />);
     openLimit();
     const link = await screen.findByRole('button', { name: ru('apiInterest.limitLink') });
-    const login = screen.getByRole('link', { name: ru('common.login') });
+    const login = screen.getByRole('link', { name: ru('download.limit.haveAccount') });
     // Ссылка следует в DOM после кнопки входа (вторичная, под основным CTA).
     expect(login.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(calls('api_interest_view')).toEqual([['api_interest_view', { source: 'limit_modal' }]]);

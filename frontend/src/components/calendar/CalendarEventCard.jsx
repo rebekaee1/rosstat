@@ -295,7 +295,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
 
         {period && (
           <p className="text-sm text-text-secondary mb-2">
-            {event.country ? `${event.country} · ` : ''}{t('z1.cal.period', { period })}
+            {event.country ? `${event.country}, ` : ''}{t('z1.cal.period', { period })}
           </p>
         )}
         {!period && event.country && (

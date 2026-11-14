@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2376  ·  **Строк:** 1 490 664  ·  **Токенов (≈):** 14 261 920
+**Файлов:** 2376  ·  **Строк:** 1 490 683  ·  **Токенов (≈):** 14 262 092
 
 ## По верхним папкам
 
@@ -19,8 +19,8 @@
 | `backend` | 1007 | 344 437 | 3 792 598 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 565 | 25 195 |
-| `docs` | 149 | 929 043 | 8 004 042 |
-| `frontend` | 1040 | 186 824 | 2 052 560 |
+| `docs` | 149 | 929 059 | 8 004 148 |
+| `frontend` | 1040 | 186 827 | 2 052 626 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 142 | 25 358 | 315 080 |
 
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 402 505 | 3 283 417 |
-| `docs/client-mechanism-inventory.json` | 259 739 | 1 832 940 |
+| `docs/client-mechanism-inventory.json` | 259 755 | 1 833 046 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -420,7 +420,7 @@
 | `frontend/src/lib/biLabels.js` | 382 | 4 036 |
 | `frontend/src/styles/w6d.css` | 222 | 4 031 |
 | `frontend/src/lib/api.js` | 380 | 4 020 |
-| `frontend/src/components/calendar/CalendarEventCard.jsx` | 381 | 4 019 |
+| `frontend/src/components/calendar/CalendarEventCard.jsx` | 381 | 4 018 |
 | `frontend/src/lib/planetLabels.test.js` | 272 | 4 016 |
 | `backend/app/services/newsletter_personal/signals.py` | 329 | 3 969 |
 | `backend/app/data/world_concepts.py` | 386 | 3 964 |
@@ -473,8 +473,8 @@
 | `frontend/src/components/CookieConsent.jsx` | 332 | 3 605 |
 | `backend/app/services/seo_weekly_report.py` | 331 | 3 594 |
 | `frontend/src/lib/countryKeyFigures.js` | 326 | 3 587 |
+| `frontend/src/pages/W6F.component.test.jsx` | 267 | 3 586 |
 | `backend/tests/test_analytics_alert_hygiene.py` | 365 | 3 581 |
-| `frontend/src/pages/W6F.component.test.jsx` | 267 | 3 572 |
 | `backend/app/services/pulse_context.py` | 359 | 3 567 |
 | `frontend/src/components/regions/RegionPrices.jsx` | 277 | 3 562 |
 | `scripts/regional/parse_pril_2025.py` | 359 | 3 558 |
@@ -558,6 +558,7 @@
 | `frontend/src/components/regions/R4PriceCompare.jsx` | 255 | 3 053 |
 | `frontend/src/pages/RegionComparePage.jsx` | 278 | 3 043 |
 | `backend/tests/test_calendar_world.py` | 218 | 3 035 |
+| `frontend/src/components/ApiInterest.component.test.jsx` | 261 | 3 021 |
 | `backend/tests/test_sitemap_public_coverage.py` | 229 | 3 019 |
 | `frontend/src/lib/behavior.browser.test.js` | 226 | 3 018 |
 | `frontend/src/styles/w5-tools.css` | 323 | 3 017 |
@@ -569,7 +570,6 @@
 | `backend/scripts/newsletter_personal.py` | 277 | 2 986 |
 | `backend/tests/test_search_intent_roles.py` | 237 | 2 980 |
 | `docs/design/local-acceptance/baseline-world-rating-target/browser.json` | 460 | 2 970 |
-| `frontend/src/components/ApiInterest.component.test.jsx` | 258 | 2 968 |
 | `frontend/src/lib/worldMapColors.test.js` | 249 | 2 964 |
 | `backend/tests/test_world_compare_frequency.py` | 236 | 2 962 |
 | `frontend/src/lib/planetLabels.js` | 233 | 2 958 |

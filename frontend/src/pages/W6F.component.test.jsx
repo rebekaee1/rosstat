@@ -94,9 +94,9 @@ describe('календарь России', () => {
     // Клетки без разовых событий не «событийные»: у них нет оттенка и нет точек.
     const heated = container.querySelectorAll('.fe-cal-day[data-heat]');
     expect(heated.length).toBe(1);
-    // Карточка дня: одна фраза «что это» без жаргона и подпись «Ожидание».
+    // Карточка дня: одна фраза «что это» без жаргона и подпись «Прогноз Forecast Economy» (календарь 14.11.2026).
     expect(await screen.findByText(/Инфляция показывает, как меняются цены\./)).toBeTruthy();
-    expect(screen.getByText('Ожидание')).toBeTruthy();
+    expect(screen.getByText('Прогноз Forecast Economy')).toBeTruthy();
     expect(screen.getAllByText('по Москве').length).toBeGreaterThan(0);
     // Ежедневные курсы собраны одной строкой, когда выбран весь месяц.
     fireEvent.click(screen.getByRole('button', { name: 'Показать весь месяц' }));

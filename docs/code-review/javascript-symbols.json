@@ -568,72 +568,72 @@
     "anonymous_functions": 11
   },
   "frontend/src/components/ApiInterest.component.test.jsx": {
-    "sha256": "f9511ebcfac071442f0e8caff03954590135f1a5b6bce8ab9815132f36011e45",
+    "sha256": "4690066622859f96034824b0e2411acd97582ed4bf96d21fbe3189ed446db0c4",
     "definitions": [
       {
         "name": "useAuth",
-        "line": 33,
-        "end_line": 33,
+        "line": 36,
+        "end_line": 36,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ru",
-        "line": 35,
-        "end_line": 35,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "mockFlag",
-        "line": 37,
-        "end_line": 39,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "mockFlag.json",
         "line": 38,
         "end_line": 38,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "renderWithLocale",
+        "name": "mockFlag",
+        "line": 40,
+        "end_line": 42,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "mockFlag.json",
         "line": 41,
-        "end_line": 49,
+        "end_line": 41,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "renderWithLocale",
+        "line": 44,
+        "end_line": 52,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "renderWithLocale.setPreviewLocale",
-        "line": 44,
-        "end_line": 44,
+        "line": 47,
+        "end_line": 47,
         "kind": "ObjectMethod"
       },
       {
         "name": "calls",
-        "line": 51,
-        "end_line": 51,
+        "line": 54,
+        "end_line": 54,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "openLimit",
-        "line": 109,
-        "end_line": 109,
+        "line": 112,
+        "end_line": 112,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "open",
-        "line": 143,
-        "end_line": 145,
+        "line": 146,
+        "end_line": 148,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fill",
-        "line": 146,
-        "end_line": 150,
+        "line": 149,
+        "end_line": 153,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "keys",
-        "line": 234,
-        "end_line": 234,
+        "line": 237,
+        "end_line": 237,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -696,7 +696,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 37
+    "anonymous_functions": 39
   },
   "frontend/src/components/ApiInterestLink.jsx": {
     "sha256": "3677bb70fee6fe817558a999e9338c5dbce7f6ed2705a8f80905b52628ce932c",
@@ -17485,7 +17485,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/components/calendar/CalendarEventCard.jsx": {
-    "sha256": "c0a63f3e9998e776859aadacd8c451b183f09ea46a38dd918d6b9f647c1e803b",
+    "sha256": "c7ecb7a8222053f80f61ceaf209af0c6893657e6b315f1c0525bc1077abab5b7",
     "definitions": [
       {
         "name": "ImportanceBadge",
@@ -61265,7 +61265,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/W6F.component.test.jsx": {
-    "sha256": "aea6eb4795fb2603fd188d395fef054983e93aaf36b391cef9f9443cb4bb4947",
+    "sha256": "c85fd710b81e1b0b866f9c2d5cf15e3ede529e17147ecae096e6a36793b7046e",
     "definitions": [
       {
         "name": "default",

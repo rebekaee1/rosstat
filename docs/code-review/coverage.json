@@ -14884,9 +14884,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "d1e59eee904dee3bbe42ae71fa264642fda7df3f351a59af2ec00bf14912dddd",
-      "bytes": 7368062,
-      "lines": 259739,
+      "sha256": "0eeaeb1f7228ab90554753700bf3a4fd7c1a4c75cbf2f08fa9324e91eb3f8211",
+      "bytes": 7368486,
+      "lines": 259755,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14897,7 +14897,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "995c3bace63ffa5ca387837d22040b7bb622a4c9732e0f66148278733c19e4ba",
+      "sha256": "1d8b2adc082d8de0a5f58bbfd30eacf2d88c04962e6350bbf26b7806563797b8",
       "bytes": 14011,
       "lines": 142,
       "code": false,
@@ -15456,8 +15456,8 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "d5bebb102e42d7bce1888f636e1a66d9b8c95568f7cd37ef3d029416f4b1dee8",
-      "bytes": 3919949,
+      "sha256": "f455af6a24cef01d6096b6a61f1dfd037cd255dc67ee82ce8a772e1aee220840",
+      "bytes": 3919950,
       "lines": 138903,
       "code": false,
       "status": "data_schema_reviewed",
@@ -18732,9 +18732,9 @@
     },
     {
       "path": "frontend/src/components/ApiInterest.component.test.jsx",
-      "sha256": "f9511ebcfac071442f0e8caff03954590135f1a5b6bce8ab9815132f36011e45",
-      "bytes": 13069,
-      "lines": 258,
+      "sha256": "4690066622859f96034824b0e2411acd97582ed4bf96d21fbe3189ed446db0c4",
+      "bytes": 13340,
+      "lines": 261,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -22073,8 +22073,8 @@
     },
     {
       "path": "frontend/src/components/calendar/CalendarEventCard.jsx",
-      "sha256": "c0a63f3e9998e776859aadacd8c451b183f09ea46a38dd918d6b9f647c1e803b",
-      "bytes": 17215,
+      "sha256": "c7ecb7a8222053f80f61ceaf209af0c6893657e6b315f1c0525bc1077abab5b7",
+      "bytes": 17213,
       "lines": 381,
       "code": true,
       "status": "reviewed",
@@ -30094,8 +30094,8 @@
     },
     {
       "path": "frontend/src/pages/W6F.component.test.jsx",
-      "sha256": "aea6eb4795fb2603fd188d395fef054983e93aaf36b391cef9f9443cb4bb4947",
-      "bytes": 17011,
+      "sha256": "c85fd710b81e1b0b866f9c2d5cf15e3ede529e17147ecae096e6a36793b7046e",
+      "bytes": 17073,
       "lines": 267,
       "code": true,
       "status": "reviewed",
@@ -33708,12 +33708,16 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "f1d9c938938a1538efbfddc0f2f074cbca4ba319be268bd296e14b53c4d809c5",
-  "javascript_inventory_sha256": "d200dc0d5b2beedaeba195cc2e528db1dd9541eea2b8736e62a7ddec9d3bbd12",
-  "baseline_commit": "6b002b33c6cf79194f7fb4685a4430a226058b90",
+  "ledger_sha256": "78e0f197622884054835f958b62a1f5a484d9f5d81e2ff9ee2e5a1488628d2c1",
+  "javascript_inventory_sha256": "662361675e87355e39dfdcdf266c50e46aeb464eaa1ff645470fbf8df65827d1",
+  "baseline_commit": "1012b5c07d353bf55b2765fb7a767e561196182a",
   "branch": "int/2026-11-14",
   "unstaged_at_capture": [
-    "backend/tests/test_sessionize_increment.py",
-    "docs/indicator-index.json"
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "docs/indicator-index.json",
+    "frontend/src/components/ApiInterest.component.test.jsx",
+    "frontend/src/components/calendar/CalendarEventCard.jsx",
+    "frontend/src/pages/W6F.component.test.jsx"
   ]
 }
