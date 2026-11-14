@@ -48,6 +48,7 @@ HELD_KINDS = frozenset({
     "host_pressure", "host_memory",
     "acquisition_alert", "recrawl_alert", "analytics_anomaly", "audience_alert",
     "token_expired",
+    "counter_mismatch",  # 14.11.2026: наш счётчик и Метрика по поисковику расходятся в 3+ раза
 })
 # Отложенное, которое ждёт человека (09.11.2026): сводка с ним не может начинаться с «ничего делать не нужно».
 # Значение - что сказать в первой строке.
@@ -172,7 +173,7 @@ GROUPS = (
                         "staleness", "freshness_watchdog", "forecast_issue", "data_guard", "data_sanity")),
     ("jobs", "Фоновые задачи", ("scheduler_alert", "job_lease_lost", "ticker_stale")),
     ("stats", "Статистика и поиск", ("acquisition_alert", "recrawl_alert", "analytics_anomaly", "audience_alert",
-                                     "token_expired")),
+                                     "token_expired", "counter_mismatch")),
 )
 _KIND_GROUP = {kind: key for key, _, kinds in GROUPS for kind in kinds}
 
@@ -201,6 +202,7 @@ KIND_LABELS = {
     "analytics_anomaly": "необычные колебания в аналитике",
     "audience_alert": "необычные колебания аудитории",
     "token_expired": "истёк доступ к Яндексу",
+    "counter_mismatch": "наш счётчик и Метрика расходятся по поисковикам",
     "alert": "прочие технические заметки",
 }
 # «Хорошие» отложенные сообщения (всё вернулось в норму) не считаем проблемой.
