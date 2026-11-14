@@ -206,6 +206,9 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
       const hit = byYear.get(y);
       if (hit != null) ticks.push(hit);
     }
+    // Последняя подпись ближе половины шага к предыдущей («2024 2025» вплотную) рвёт ритм оси: соседнюю убираем, крайняя остаётся.
+    const prevYear = ticks.length > 1 ? parseUtcParts(ticks[ticks.length - 1])?.year : null;
+    if (step > 1 && prevYear != null && ticks[ticks.length - 1] !== last && b.year - prevYear <= step / 2) ticks.pop();
     if (ticks[ticks.length - 1] !== last) ticks.push(last);
     return {
       values: ticks,
@@ -234,6 +237,8 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
     const hit = byQ.get(q);
     if (hit != null) ticks.push(hit);
   }
+  const prevQ = ticks.length > 1 ? toQ(parseUtcParts(ticks[ticks.length - 1])) : null;
+  if (step > 1 && prevQ != null && ticks[ticks.length - 1] !== last && q1 - prevQ <= step / 2) ticks.pop();
   if (ticks[ticks.length - 1] !== last) ticks.push(last);
   return {
     values: ticks,

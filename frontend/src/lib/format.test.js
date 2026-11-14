@@ -109,6 +109,14 @@ describe('format', () => {
     expect(ticks).toEqual([2000, 2008, 2015, 2023]);
   });
 
+  it('pickChartAxisTicks annual: крайний год не стоит вплотную к соседнему («2024 2025»)', () => {
+    const points = Array.from({ length: 26 }, (_, i) => ({ date: `${2000 + i}-01-01` }));
+    const ticks = pickChartAxisTicks(points, 13, { cadence: 'annual' });
+    expect(ticks[0]).toBe('2000-01-01');
+    expect(ticks[ticks.length - 1]).toBe('2025-01-01');
+    expect(ticks).not.toContain('2024-01-01');
+  });
+
   it('pickChartAxisTicks annual: desktop budget → все годы 2015–2025', () => {
     const points = Array.from({ length: 11 }, (_, i) => ({
       date: `${2015 + i}-12-31`,
