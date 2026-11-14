@@ -23726,7 +23726,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "c202722d01a527825ac5c7bd44e03eb3d8013c6a10e20904a08d0a8607cbe2f7",
+    "sha256": "c53c5686255ed7927052cd695abbd4ef63dbcfe13af613c2d99494a3500524e6",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23834,7 +23834,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "7f897a44c92f4dae58cee5faa6c58ed2ab5ac2f76b2e251ac73c584c787ddde1",
+    "sha256": "7e6261c41090d3f0788726c1ddedc849bf0699443a7612c8a50d4725ae428c41",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -53113,7 +53113,7 @@
     "anonymous_functions": 42
   },
   "frontend/src/pages/AccountMail.component.test.jsx": {
-    "sha256": "8afec2ef7dc49191558e770958189278bd22e1e4866dbd952f263b73b3ac1b8f",
+    "sha256": "7bfdb1cce2e39ac180bcbb0f3a93b7c1c2c6832f9ad9d2475e59598c3bf3336f",
     "definitions": [
       {
         "name": "useT",
@@ -53151,10 +53151,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 19
+    "anonymous_functions": 20
   },
   "frontend/src/pages/AccountMail.jsx": {
-    "sha256": "ebe8874ba62e881fbee391c1eeb2c1b0f6ffaf7f0c2414ce1ff5bab832f9c141",
+    "sha256": "c6fe3a7c0f7336c2697637bb5f6306c5ddc019489f38503586c1800a7b88a829",
     "definitions": [
       {
         "name": "inputClass",
@@ -53213,7 +53213,7 @@
       {
         "name": "Unsubscribe",
         "line": 196,
-        "end_line": 243,
+        "end_line": 247,
         "kind": "FunctionDeclaration"
       },
       {
@@ -53298,7 +53298,7 @@
         "names": [
           "default"
         ],
-        "line": 245
+        "line": 249
       }
     ],
     "anonymous_functions": 10
@@ -53341,7 +53341,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/pages/AdminBI.jsx": {
-    "sha256": "31156e32a0c681b07c8be1de7b763c83f8791a6d35ea83e28e293e874f8d59b6",
+    "sha256": "6e3d9727a9cede1fca44b5f142b2ae7cc4d64f98773dab9ad866dea99807c3f4",
     "definitions": [
       {
         "name": "eventLabel",
@@ -53748,7 +53748,7 @@
       {
         "name": "MailTab",
         "line": 2915,
-        "end_line": 3021,
+        "end_line": 3046,
         "kind": "FunctionDeclaration"
       },
       {
@@ -53771,32 +53771,32 @@
       },
       {
         "name": "AdminBI",
-        "line": 3038,
-        "end_line": 3184,
+        "line": 3063,
+        "end_line": 3209,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminBI.queryFn",
-        "line": 3058,
-        "end_line": 3062,
+        "line": 3083,
+        "end_line": 3087,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refetchInterval",
-        "line": 3064,
-        "end_line": 3069,
+        "line": 3089,
+        "end_line": 3094,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refreshNow",
-        "line": 3077,
-        "end_line": 3081,
+        "line": 3102,
+        "end_line": 3106,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.openSlices",
-        "line": 3094,
-        "end_line": 3094,
+        "line": 3119,
+        "end_line": 3119,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -53851,10 +53851,10 @@
         "names": [
           "default"
         ],
-        "line": 3038
+        "line": 3063
       }
     ],
-    "anonymous_functions": 215
+    "anonymous_functions": 216
   },
   "frontend/src/pages/AdminBI.mail.component.test.jsx": {
     "sha256": "6017d545e7e5d0746a7291ed909098767b98b745c7b92619946cc13eed617115",
