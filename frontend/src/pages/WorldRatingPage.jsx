@@ -1277,10 +1277,10 @@ export default function WorldRatingPage({ renderActions = null } = {}) {
                       <div className="flex flex-wrap gap-2">
                         <Button
                           as={Link}
-                          variant="ghost"
+                          variant="secondary"
                           size="sm"
                           to={russiaLinks.countryHref}
-                          className="gap-1.5 bg-champagne/15!"
+                          className="gap-1.5"
                         >
                           <Globe2 size={13} aria-hidden="true" />
                           {russiaIndicatorCode

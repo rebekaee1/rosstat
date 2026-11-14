@@ -291,9 +291,12 @@
 .w6d-shifts--compact .w6d-shifts__lead { margin: 0 0 12px; }
 .w6d-shifts--compact .w6d-shifts__cols { grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .w6d-shifts--compact .w6d-shifts__head { display: flex; align-items: center; gap: 8px; font-weight: 700; }
-.w6d-shifts--compact .w6d-shifts__head::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px 1px currentColor; }
-.w6d-shifts--compact .w6d-shifts__col.is-up .w6d-shifts__head { color: var(--color-positive, #16a34a); }
-.w6d-shifts--compact .w6d-shifts__col.is-down .w6d-shifts__head { color: var(--color-negative, #dc2626); }
+/* Проход дизайна 15.11: заголовок графитом, цвет несёт только плоская точка 6 px (без свечения «светодиода»); зелёные и красные
+   стрелки и числа в строках ниже и так говорят направление, кричащий цветной заголовок над ними лишний. */
+.w6d-shifts--compact .w6d-shifts__head { color: var(--color-text-primary); }
+.w6d-shifts--compact .w6d-shifts__head::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.w6d-shifts--compact .w6d-shifts__col.is-up .w6d-shifts__head::before { background: var(--color-positive, #16a34a); }
+.w6d-shifts--compact .w6d-shifts__col.is-down .w6d-shifts__head::before { background: var(--color-negative, #dc2626); }
 .w6d-shifts--compact .w6d-shifts__list { gap: 6px; }
 .w6d-shifts--compact .w6d-shift {
   min-height: 40px; padding: 2px 10px; border-radius: 12px;

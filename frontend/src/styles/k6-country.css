@@ -206,6 +206,18 @@
   box-shadow: none;
 }
 :root .z6-table-card .w6d-bar > span::after { content: none; }
+/* Проход дизайна 15.11: та же полоса в карточках рейтинга на телефоне (.w2-rank-bar). Круг 6 перевёл только таблицу компьютера,
+   и на телефоне под каждой из 12+ строк оставалась «жидкая золотая трубка» с бликом и свечением: золото заливкой большой площади. */
+:root .w2-rank-bar {
+  height: 4px;
+  background: var(--k6-groove);
+  box-shadow: none;
+}
+:root .w2-rank-bar::after {
+  background: linear-gradient(90deg, #2C4A8A, #1E3A6E);
+  box-shadow: none;
+  min-width: 4px;
+}
 :root .z6-ribbon .w2-fact:not([data-place='last']) {
   --k6-place-light: rgba(190, 206, 232, 0.5);
   --k6-place-glow: rgba(30, 58, 110, 0.28);
