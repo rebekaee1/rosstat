@@ -1491,6 +1491,26 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
 
     # Каталог = карточки (primary частоты), не ряды M/Q/A.
     inds = _pick_card_primaries(list(inds))
+    # Замороженный у источника дубль, у которого в каталоге есть живая карточка-преемник, отвечает 301
+    # на неё (legacy_redirects.resolve_world_superseded): ссылка на него — лишний переход для робота
+    # (аудит ссылок 14.11.2026: at-prc_hicp_cind → at-prc_hicp_minr). Карточка-преемник уже в списке.
+    from app.data.world_superseded import is_superseded_dataset, superseded_target
+
+    listed_codes = {i.code for i in listed_rows}
+
+    def _redirects_to_listed(ind: WorldIndicator) -> bool:
+        if not is_superseded_dataset(ind.dataset_id):
+            return False
+        target = superseded_target(ind.dataset_id, ind.code, ind.slice_json, ind.unit)
+        return target is not None and target[0] in listed_codes
+
+    inds = [i for i in inds if not _redirects_to_listed(i)]
+    # Неосновные версии точных дублей (world_canonical) — canonical на основную: в каталоге только основная.
+    from app.services.world_canonical import non_primary_codes
+
+    hidden = non_primary_codes(slug)
+    if hidden:
+        inds = [i for i in inds if i.code not in hidden]
     inds.sort(key=lambda i: (
         listing_category_ru(
             i.dataset_id, i.category_ru, provider=getattr(i, "provider", None),
@@ -2068,7 +2088,10 @@ async def render_world_indicator_html(
     )
 
     # Тот же срез у других стран (dataset + slice_hash); список на срез кэшируется (14.11.2026).
-    peers = await _same_series_peers(db, indicator, country.id)
+    from app.services.world_canonical import non_primary_codes
+
+    # Ссылки только на основные версии точных дублей (world_canonical, аудит ссылок 14.11.2026).
+    peers = [p for p in await _same_series_peers(db, indicator, country.id) if p[3] not in non_primary_codes(p[0])]
     peers_html = ""
     if peers:
         items = "".join(
@@ -2082,7 +2105,8 @@ async def render_world_indicator_html(
             f"<ul>{items}</ul></section>"
         )
 
-    cat_siblings = await _category_siblings(db, country.id, indicator)
+    cat_siblings = [s for s in await _category_siblings(db, country.id, indicator)
+                    if s.code not in non_primary_codes(slug)]
     siblings_html = ""
     if cat_siblings:
         items = "".join(
@@ -2113,6 +2137,10 @@ async def render_world_indicator_html(
         if year_last:
             from app.data.eurostat_listing import normalize_frequency
             from app.services.seo_year_ui import all_years_block
+            from app.services.world_canonical import primary_code as _primary_for_years
+
+            # Неосновная версия точного дубля: годы ведут на годовые страницы основной (данные те же).
+            year_link_code = _primary_for_years(slug, indicator.code) or indicator.code
 
             annual = normalize_frequency(indicator.frequency) == "annual"
             yh2 = (f"{display} by year" if loc == "en" else f"{display} по годам")
@@ -2124,7 +2152,7 @@ async def render_world_indicator_html(
                 f'<section class="seo-section"><h2>{escape(yh2)}</h2>'
                 + all_years_block(
                     [
-                        (y, paths.indicator_year(slug, indicator.code, y), _fmt_series(year_last[y]))
+                        (y, paths.indicator_year(slug, year_link_code, y), _fmt_series(year_last[y]))
                         for y in sorted(year_last, reverse=True)
                     ],
                     head_year="Year" if loc == "en" else "Год",

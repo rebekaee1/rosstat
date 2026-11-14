@@ -223,6 +223,13 @@ def published_map() -> dict[str, dict[str, str]]:
     return _cache["map"] or {}
 
 
+def non_primary_codes(slug: str) -> frozenset[str]:
+    """Коды неосновных версий страны — ссылки на них не ставятся (каталог, соседи, «в других странах»)."""
+    if not enabled():
+        return frozenset()
+    return frozenset(published_map().get(slug, {}))
+
+
 def primary_code(slug: str, code: str) -> str | None:
     """Код основной версии для неосновного ряда; None — ряд сам основной или правило выключено."""
     if not enabled():

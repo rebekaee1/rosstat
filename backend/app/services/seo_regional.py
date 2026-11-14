@@ -226,6 +226,7 @@ async def render_regions_home_html(db: AsyncSession) -> tuple[int, str]:
                RegionIndicator.is_listed.is_(True))
         .order_by(RegionIndicator.section_num)
     )).scalars().all()
+    rating_inds = await _with_region_years(db, list(rating_inds))
     ratings_html = ""
     if rating_inds:
         rating_items = "".join(
@@ -374,8 +375,9 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
             RegionIndicator.is_listed.is_(True),
         )
         .order_by(RegionIndicator.section_num)
-        .limit(6)
+        .limit(12)
     )).scalars().all()
+    flagship = (await _with_region_years(db, list(flagship)))[:6]
     cross_items = [
         f'<li><a href="{paths.region_hub()}">'
         f'{escape(_rt("region_profile.all_regions") or "Все регионы России")}</a></li>',
@@ -594,6 +596,25 @@ def _rating_copy(*, achievement: bool) -> dict[str, str]:
     }
 
 
+async def _with_region_years(db: AsyncSession, inds: list) -> list:
+    """Только показатели с годовыми данными по субъектам: у остальных рейтинг и карта отвечают 404.
+
+    Аудит ссылок 14.11.2026 (scripts/ssr-link-audit.py): хаб регионов, профиль региона и «другие
+    рейтинги» ссылались на /russia/region-rating/ceni-* и /russia/region/map/ceni-* — у цен (таблицы
+    20.m*) годовых данных по субъектам нет, страницы 404. Тот же признак, что у самого рейтинга.
+    """
+    if not inds:
+        return []
+    ids = [ind.id for ind in inds]
+    with_data = set((await db.execute(
+        select(RegionDataPoint.indicator_id)
+        .join(Region, Region.id == RegionDataPoint.region_id)
+        .where(RegionDataPoint.indicator_id.in_(ids), Region.kind == "region")
+        .distinct()
+    )).scalars().all())
+    return [ind for ind in inds if ind.id in with_data]
+
+
 async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, str]:
     """Рейтинг всех регионов по показателю: /russia/region-rating/{code}."""
     indicator = (await db.execute(
@@ -708,8 +729,9 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
                RegionIndicator.code != code,
                RegionIndicator.is_listed.is_(True))
         .order_by(RegionIndicator.code)
-        .limit(12)
+        .limit(24)
     )).scalars().all()
+    siblings = (await _with_region_years(db, list(siblings)))[:12]
     siblings_html = ""
     if siblings:
         sib_h2 = (
