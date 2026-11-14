@@ -645,6 +645,11 @@ html[data-fe-motion='off'] .fe-dashboard [data-block='home-data-scope'] .fe-scop
 @media (min-width: 640px) {
   .fe-dashboard [data-block='home-data-scope'].fe-scope { padding: 16px 22px 14px; }
 }
+/* Проход дизайна 15.11: короткая полоса перебивала поле справа под стеклянную F из раздела 7, и F ложилась на подпись
+   «…по регионам России». Возвращаем поле по ширине самой F (она ростом с полосу, ~90 px) с запасом. */
+@media (min-width: 1024px) {
+  .fe-dashboard [data-block='home-data-scope'].fe-scope { padding-right: 140px; }
+}
 
 /* Конвертер: на узкой карточке (измеряем саму карточку, а не окно) сумма на всю ширину, «Из ⇄ В» ниже; названия валют читаются целиком. */
 .fe-dashboard .fe-tool { container: fe-tool / inline-size; }
