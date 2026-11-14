@@ -310,8 +310,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "sha256": "fa8ea29a22787d3903b35e6908f3d745f0f5c22e04ea2acae9e4635786eb9c6f",
-      "lines": 598
+      "sha256": "bf80c631c3e8394d52628bd68fd9b1a86d1c057c62d567967ba62d33888d171b",
+      "lines": 607
     },
     {
       "path": "backend/app/api/forecast_showcase.py",
@@ -405,8 +405,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "cb930af69d81ec2d1418689b7fc47e864ae5504e4b84f4c20444f128e096d9cb",
-      "lines": 621
+      "sha256": "7e87f3a80717a36daba5c1dfa46dd63a2d4f32cd2624e72a26ab05e8bf2ecd5a",
+      "lines": 627
     },
     {
       "path": "backend/app/core/__init__.py",
@@ -805,8 +805,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "sha256": "18301b1e72dade990c7abe3b77b2aa7a9fa2a1cc7eef63bdefb83bef1657b23c",
-      "lines": 557
+      "sha256": "f392d8a244d21923b3ac8cc586bca3332414d739292575a0e0e04b1c5c32359b",
+      "lines": 566
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -885,8 +885,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "sha256": "43f1261de288372b667bc99cdf3754638ad3b996fb3fbdede918f135e386e124",
-      "lines": 123
+      "sha256": "ca417c9fc2cb94656cc505176929c003e9688dac9dc7a18d692a76853b4170a0",
+      "lines": 124
     },
     {
       "path": "backend/app/services/bot_score.py",
@@ -1075,8 +1075,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "sha256": "25b577ed87653bd59bbd32ae0e25d5a8b9605c54c6200367213ad9c29656317f",
-      "lines": 717
+      "sha256": "b5e874ee6f73a99e28937a9cf40e82440048cbe270aac7876ac757431efb4d79",
+      "lines": 968
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -1830,8 +1830,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "sha256": "f880243865b9fbf0bde96054c1d68e32aaa26a87f372b074512a15142299aba3",
-      "lines": 764
+      "sha256": "34222452c381d09780009bdc581744d14fc5e606817ab04a8a434becba05db9a",
+      "lines": 864
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -1907,6 +1907,11 @@
       "path": "backend/app/services/us_pop_adapter.py",
       "sha256": "afb7293b197936953273d8d0d158d557db10bbe7946622cd46745d248cfe1e70",
       "lines": 304
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "sha256": "ae341af0d32d8de25beb5df5fd83cf3301f96936e8d19fc404f388a12cd37216",
+      "lines": 84
     },
     {
       "path": "backend/app/services/web_push.py",
@@ -2200,8 +2205,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "sha256": "f40cec3c5558d50023e86ae4e82160d991dcba4b40a3e26fef0f2d84faa75f1a",
-      "lines": 458
+      "sha256": "a43885c9596ff010728c03fe23ba202318db3697ad1b8d0b3a5e0b536456cde9",
+      "lines": 475
     },
     {
       "path": "backend/app/tasks/freshness_watchdog.py",
@@ -2407,6 +2412,11 @@
       "path": "backend/scripts/seo-register-hypotheses.py",
       "sha256": "661789ccb7b82aa2b6233ff84ac48df85bc280a52a473abbd70aa37e62f6a5a2",
       "lines": 84
+    },
+    {
+      "path": "backend/scripts/service-bot-commands.py",
+      "sha256": "6c3c3695b3a999eab69a46254695fc4971e42f8690adf26f4f1ccb662b780e41",
+      "lines": 43
     },
     {
       "path": "backend/scripts/unlist-superseded-world.py",
@@ -10052,8 +10062,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 531,
+      "end_line": 531,
       "owner": "export_quota",
       "conditions": [],
       "handler": "app.api.export.export_quota",
@@ -10064,8 +10074,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 523,
-      "handler_end_line": 537,
+      "handler_line": 532,
+      "handler_end_line": 546,
       "parameters": [
         {
           "name": "request",
@@ -10082,8 +10092,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 540,
-      "end_line": 540,
+      "line": 549,
+      "end_line": 549,
       "owner": "export_table",
       "conditions": [],
       "handler": "app.api.export.export_table",
@@ -10094,8 +10104,8 @@
         "POST"
       ],
       "options": {},
-      "handler_line": 541,
-      "handler_end_line": 558,
+      "handler_line": 550,
+      "handler_end_line": 567,
       "parameters": [
         {
           "name": "body",
@@ -10127,8 +10137,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 561,
-      "end_line": 561,
+      "line": 570,
+      "end_line": 570,
       "owner": "export_grid_file",
       "conditions": [],
       "handler": "app.api.export.export_grid_file",
@@ -10139,8 +10149,8 @@
         "POST"
       ],
       "options": {},
-      "handler_line": 562,
-      "handler_end_line": 598,
+      "handler_line": 571,
+      "handler_end_line": 607,
       "parameters": [
         {
           "name": "body",
@@ -32508,8 +32518,30 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 462,
+      "end_line": 462,
+      "owner": "Settings",
+      "conditions": [],
+      "name": "telegram_reports_only_enabled",
+      "env_name": "RUSTATS_TELEGRAM_REPORTS_ONLY_ENABLED",
+      "annotation": "bool",
+      "default": "False"
+    },
+    {
+      "path": "backend/app/config.py",
+      "line": 463,
+      "end_line": 463,
+      "owner": "Settings",
+      "conditions": [],
+      "name": "telegram_reports_only_chat_ids",
+      "env_name": "RUSTATS_TELEGRAM_REPORTS_ONLY_CHAT_IDS",
+      "annotation": "str",
+      "default": "''"
+    },
+    {
+      "path": "backend/app/config.py",
+      "line": 465,
+      "end_line": 465,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_enabled",
@@ -32519,8 +32551,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 466,
+      "end_line": 466,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_cron_hour",
@@ -32530,8 +32562,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 467,
+      "end_line": 467,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_cron_minute",
@@ -32541,8 +32573,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 470,
+      "end_line": 470,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_enabled",
@@ -32552,8 +32584,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 471,
+      "end_line": 471,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_cron_hour",
@@ -32563,8 +32595,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 466,
-      "end_line": 466,
+      "line": 472,
+      "end_line": 472,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_cron_minute",
@@ -32574,8 +32606,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 473,
+      "end_line": 473,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_enabled",
@@ -32585,8 +32617,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 468,
-      "end_line": 468,
+      "line": 474,
+      "end_line": 474,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_cron_hour",
@@ -32596,8 +32628,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 475,
+      "end_line": 475,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_cron_minute",
@@ -32607,8 +32639,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 478,
+      "end_line": 478,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_new_alerts_enabled",
@@ -32618,8 +32650,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 482,
+      "end_line": 482,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_max_attempts",
@@ -32629,8 +32661,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 477,
-      "end_line": 477,
+      "line": 483,
+      "end_line": 483,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_retry_base_seconds",
@@ -32640,8 +32672,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 478,
-      "end_line": 478,
+      "line": 484,
+      "end_line": 484,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_retry_budget_seconds",
@@ -32651,8 +32683,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 482,
-      "end_line": 482,
+      "line": 488,
+      "end_line": 488,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_enabled",
@@ -32662,8 +32694,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 483,
-      "end_line": 483,
+      "line": 489,
+      "end_line": 489,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_min_age_minutes",
@@ -32673,8 +32705,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 484,
-      "end_line": 484,
+      "line": 490,
+      "end_line": 490,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_window_hours",
@@ -32684,8 +32716,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 491,
+      "end_line": 491,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_max_per_run",
@@ -32695,8 +32727,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 486,
-      "end_line": 486,
+      "line": 492,
+      "end_line": 492,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_max_tries",
@@ -32706,8 +32738,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 496,
+      "end_line": 496,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_enabled",
@@ -32717,8 +32749,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 497,
+      "end_line": 497,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -32728,8 +32760,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 498,
+      "end_line": 498,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_report_cron_hour",
@@ -32739,8 +32771,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 499,
+      "end_line": 499,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_report_cron_minute",
@@ -32750,8 +32782,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 501,
+      "end_line": 501,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -32761,8 +32793,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 499,
-      "end_line": 499,
+      "line": 505,
+      "end_line": 505,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_enabled",
@@ -32772,8 +32804,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 500,
-      "end_line": 500,
+      "line": 506,
+      "end_line": 506,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_ai_enabled",
@@ -32783,8 +32815,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 507,
+      "end_line": 507,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_batch_size",
@@ -32794,8 +32826,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 508,
+      "end_line": 508,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_enabled",
@@ -32805,8 +32837,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 509,
+      "end_line": 509,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_retention_days",
@@ -32816,8 +32848,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 504,
-      "end_line": 504,
+      "line": 510,
+      "end_line": 510,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_max_recording_bytes",
@@ -32827,8 +32859,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 511,
+      "end_line": 511,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_model",
@@ -32838,8 +32870,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 517,
+      "end_line": 517,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -32849,8 +32881,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 515,
-      "end_line": 515,
+      "line": 521,
+      "end_line": 521,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_http_proxy_url",
@@ -32860,8 +32892,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 518,
-      "end_line": 518,
+      "line": 524,
+      "end_line": 524,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_socks_proxy_url",
@@ -32871,8 +32903,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 528,
+      "end_line": 528,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_job_max_seconds",
@@ -32882,8 +32914,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 527,
-      "end_line": 527,
+      "line": 533,
+      "end_line": 533,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_enabled",
@@ -32893,8 +32925,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 528,
-      "end_line": 528,
+      "line": 534,
+      "end_line": 534,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_min_stale",
@@ -32904,8 +32936,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 529,
-      "end_line": 529,
+      "line": 535,
+      "end_line": 535,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_cron_hour",
@@ -32915,8 +32947,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 530,
-      "end_line": 530,
+      "line": 536,
+      "end_line": 536,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_cron_minute",
@@ -32926,8 +32958,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 532,
-      "end_line": 532,
+      "line": 538,
+      "end_line": 538,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_poller_enabled",
@@ -32937,8 +32969,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 536,
-      "end_line": 536,
+      "line": 542,
+      "end_line": 542,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -32948,8 +32980,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 539,
-      "end_line": 539,
+      "line": 545,
+      "end_line": 545,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_token",
@@ -32959,8 +32991,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 541,
-      "end_line": 541,
+      "line": 547,
+      "end_line": 547,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_username",
@@ -32970,8 +33002,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 544,
-      "end_line": 544,
+      "line": 550,
+      "end_line": 550,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_group_url",
@@ -32981,8 +33013,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 547,
-      "end_line": 547,
+      "line": 553,
+      "end_line": 553,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_llm_enabled",
@@ -32992,8 +33024,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 550,
-      "end_line": 550,
+      "line": 556,
+      "end_line": 556,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_llm_model",
@@ -33003,8 +33035,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 551,
-      "end_line": 551,
+      "line": 557,
+      "end_line": 557,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_llm_daily_limit",
@@ -33014,8 +33046,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 559,
+      "end_line": 559,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_notify_from_hour",
@@ -33025,8 +33057,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 554,
-      "end_line": 554,
+      "line": 560,
+      "end_line": 560,
       "owner": "Settings",
       "conditions": [],
       "name": "public_bot_notify_to_hour",
@@ -33036,8 +33068,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 560,
-      "end_line": 560,
+      "line": 566,
+      "end_line": 566,
       "owner": "Settings",
       "conditions": [],
       "name": "api_interest_enabled",
@@ -33047,8 +33079,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 568,
-      "end_line": 568,
+      "line": 574,
+      "end_line": 574,
       "owner": "Settings",
       "conditions": [],
       "name": "cabinet_enabled",
@@ -33058,8 +33090,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 575,
-      "end_line": 575,
+      "line": 581,
+      "end_line": 581,
       "owner": "Settings",
       "conditions": [],
       "name": "pwa_enabled",
@@ -33069,8 +33101,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 576,
-      "end_line": 576,
+      "line": 582,
+      "end_line": 582,
       "owner": "Settings",
       "conditions": [],
       "name": "pwa_install_prompt_enabled",
@@ -33080,8 +33112,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 587,
-      "end_line": 587,
+      "line": 593,
+      "end_line": 593,
       "owner": "Settings",
       "conditions": [],
       "name": "push_subscribe_enabled",
@@ -33091,8 +33123,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 588,
-      "end_line": 588,
+      "line": 594,
+      "end_line": 594,
       "owner": "Settings",
       "conditions": [],
       "name": "push_send_enabled",
@@ -33102,8 +33134,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 589,
-      "end_line": 589,
+      "line": 595,
+      "end_line": 595,
       "owner": "Settings",
       "conditions": [],
       "name": "push_dry_run",
@@ -33113,8 +33145,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 596,
+      "end_line": 596,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_public_key",
@@ -33124,8 +33156,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 591,
-      "end_line": 591,
+      "line": 597,
+      "end_line": 597,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_private_key",
@@ -33135,8 +33167,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 592,
-      "end_line": 592,
+      "line": 598,
+      "end_line": 598,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_subject",
@@ -33146,8 +33178,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 602,
+      "end_line": 602,
       "owner": "Settings",
       "conditions": [],
       "name": "admin_emails",
@@ -33385,8 +33417,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 480,
+      "end_line": 480,
       "owner": "decorate_download",
       "conditions": [
         "set_cookie_id is not None"
@@ -33396,8 +33428,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 536,
-      "end_line": 536,
+      "line": 545,
+      "end_line": 545,
       "owner": "export_quota",
       "conditions": [],
       "name": "download_anon_limit",
@@ -33405,8 +33437,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 537,
-      "end_line": 537,
+      "line": 546,
+      "end_line": 546,
       "owner": "export_quota",
       "conditions": [],
       "name": "download_anon_history_years",
@@ -33414,8 +33446,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 584,
-      "end_line": 584,
+      "line": 593,
+      "end_line": 593,
       "owner": "export_grid_file",
       "conditions": [],
       "name": "cabinet_enabled",
@@ -33423,8 +33455,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 470,
-      "end_line": 470,
+      "line": 479,
+      "end_line": 479,
       "owner": "decorate_download",
       "conditions": [
         "set_cookie_id is not None"
@@ -33434,8 +33466,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 481,
+      "end_line": 481,
       "owner": "decorate_download",
       "conditions": [
         "set_cookie_id is not None",
@@ -33446,8 +33478,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 484,
-      "end_line": 484,
+      "line": 493,
+      "end_line": 493,
       "owner": "record_history_safe",
       "conditions": [],
       "name": "cabinet_enabled",
@@ -33455,8 +33487,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 499,
-      "end_line": 499,
+      "line": 508,
+      "end_line": 508,
       "owner": "_record_history_safe",
       "conditions": [],
       "name": "cabinet_enabled",
@@ -33464,8 +33496,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 532,
-      "end_line": 532,
+      "line": 541,
+      "end_line": 541,
       "owner": "export_quota",
       "conditions": [
         "user is not None"
@@ -33475,8 +33507,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 482,
+      "end_line": 482,
       "owner": "decorate_download",
       "conditions": [
         "set_cookie_id is not None"
@@ -34008,8 +34040,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 613,
-      "end_line": 613,
+      "line": 619,
+      "end_line": 619,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -34017,8 +34049,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 613,
-      "end_line": 613,
+      "line": 619,
+      "end_line": 619,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "public_host",
@@ -34026,8 +34058,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 603,
-      "end_line": 603,
+      "line": 609,
+      "end_line": 609,
       "owner": "Settings.public_origin",
       "conditions": [],
       "name": "public_base_url",
@@ -34035,8 +34067,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 608,
-      "end_line": 608,
+      "line": 614,
+      "end_line": 614,
       "owner": "Settings.public_host",
       "conditions": [],
       "name": "public_base_url",
@@ -35984,8 +36016,17 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 294,
+      "end_line": 294,
+      "owner": "reports_only_ids",
+      "conditions": [],
+      "name": "telegram_reports_only_enabled",
+      "expression": "settings.telegram_reports_only_enabled"
+    },
+    {
+      "path": "backend/app/services/alerting.py",
+      "line": 307,
+      "end_line": 307,
       "owner": "notify_new_user",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -35993,8 +36034,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 338,
+      "end_line": 338,
       "owner": "notify_login",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -36002,8 +36043,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 351,
-      "end_line": 351,
+      "line": 360,
+      "end_line": 360,
       "owner": "notify_feedback",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -36046,6 +36087,15 @@
       "conditions": [],
       "name": "telegram_reports_chat_ids",
       "expression": "settings.telegram_reports_chat_ids"
+    },
+    {
+      "path": "backend/app/services/alerting.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "reports_only_ids",
+      "conditions": [],
+      "name": "telegram_reports_only_chat_ids",
+      "expression": "settings.telegram_reports_only_chat_ids"
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -38312,8 +38362,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 704,
-      "end_line": 704,
+      "line": 804,
+      "end_line": 804,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -38321,8 +38371,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 704,
-      "end_line": 704,
+      "line": 804,
+      "end_line": 804,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_token",
@@ -38330,12 +38380,21 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 722,
-      "end_line": 722,
+      "line": 822,
+      "end_line": 822,
       "owner": "telegram_poll_job",
       "conditions": [],
       "name": "telegram_bot_token",
       "expression": "settings.telegram_bot_token"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 789,
+      "end_line": 789,
+      "owner": "service_command_calls",
+      "conditions": [],
+      "name": "telegram_chat_id",
+      "expression": "settings.telegram_chat_id"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -38348,8 +38407,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 643,
-      "end_line": 643,
+      "line": 679,
+      "end_line": 679,
       "owner": "_handle_callback",
       "conditions": [
         "not (data == 'users')",
@@ -38363,8 +38422,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 652,
-      "end_line": 652,
+      "line": 688,
+      "end_line": 688,
       "owner": "_handle_callback",
       "conditions": [
         "not (data == 'users')",
@@ -38985,8 +39044,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 376,
+      "end_line": 376,
       "owner": "behavior_retention_job",
       "conditions": [],
       "name": "behavior_raw_retention_days",
@@ -38994,8 +39053,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 402,
+      "end_line": 402,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_digest_v2_enabled",
@@ -39012,8 +39071,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 358,
+      "end_line": 358,
       "owner": "webmaster_queries_daily_job",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -39021,8 +39080,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 410,
-      "end_line": 410,
+      "line": 427,
+      "end_line": 427,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -39030,8 +39089,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 410,
-      "end_line": 410,
+      "line": 427,
+      "end_line": 427,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -39039,8 +39098,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 453,
+      "end_line": 453,
       "owner": "analytics_daily_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -39048,8 +39107,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 326,
+      "end_line": 326,
       "owner": "acquisition_daily_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -39057,8 +39116,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 326,
+      "end_line": 326,
       "owner": "acquisition_daily_job",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -39066,8 +39125,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 376,
-      "end_line": 376,
+      "line": 393,
+      "end_line": 393,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -39075,8 +39134,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 376,
-      "end_line": 376,
+      "line": 393,
+      "end_line": 393,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -89073,8 +89132,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 373,
-      "end_line": 381,
+      "line": 382,
+      "end_line": 390,
       "owner": "<module>",
       "conditions": [],
       "name": "API_INTEREST_USE_CASES",
@@ -89148,8 +89207,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 391,
+      "end_line": 391,
       "owner": "<module>",
       "conditions": [],
       "name": "_API_INTEREST_SOURCES",
@@ -89183,8 +89242,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 466,
-      "end_line": 470,
+      "line": 475,
+      "end_line": 479,
       "owner": "<module>",
       "conditions": [],
       "name": "_DEGRADED_LABELS",
@@ -95979,8 +96038,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 58,
-      "end_line": 58,
+      "line": 61,
+      "end_line": 61,
       "owner": "<module>",
       "conditions": [],
       "name": "WALL_EVENTS",
@@ -95996,8 +96055,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 61,
-      "end_line": 71,
+      "line": 64,
+      "end_line": 74,
       "owner": "<module>",
       "conditions": [],
       "name": "FORMAT_LABELS",
@@ -96087,8 +96146,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 72,
-      "end_line": 78,
+      "line": 75,
+      "end_line": 81,
       "owner": "<module>",
       "conditions": [],
       "name": "WALL_LABELS",
@@ -96146,8 +96205,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 79,
-      "end_line": 84,
+      "line": 82,
+      "end_line": 87,
       "owner": "<module>",
       "conditions": [],
       "name": "SECTION_LABELS",
@@ -96261,8 +96320,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 85,
-      "end_line": 88,
+      "line": 88,
+      "end_line": 91,
       "owner": "<module>",
       "conditions": [],
       "name": "CHANNEL_LABELS",
@@ -96344,8 +96403,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 89,
-      "end_line": 91,
+      "line": 92,
+      "end_line": 94,
       "owner": "<module>",
       "conditions": [],
       "name": "DEVICE_LABELS",
@@ -96395,8 +96454,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 94,
-      "end_line": 94,
+      "line": 97,
+      "end_line": 97,
       "owner": "<module>",
       "conditions": [],
       "name": "WINDOWS",
@@ -96454,8 +96513,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 98,
-      "end_line": 98,
+      "line": 101,
+      "end_line": 101,
       "owner": "<module>",
       "conditions": [],
       "name": "_SIGNUP_SLACK",
@@ -96471,8 +96530,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 101,
-      "end_line": 104,
+      "line": 104,
+      "end_line": 107,
       "owner": "<module>",
       "conditions": [],
       "name": "_RESERVED_FIRST",
@@ -114843,8 +114902,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 695,
-      "end_line": 695,
+      "line": 764,
+      "end_line": 764,
       "owner": "<module>",
       "conditions": [],
       "name": "_DOWNLOAD_COMMANDS",
@@ -114860,8 +114919,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 696,
-      "end_line": 696,
+      "line": 765,
+      "end_line": 765,
       "owner": "<module>",
       "conditions": [],
       "name": "_EXPORT_COMMANDS",
@@ -114877,8 +114936,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 697,
-      "end_line": 697,
+      "line": 766,
+      "end_line": 766,
       "owner": "<module>",
       "conditions": [],
       "name": "_ADMIN_TEXTS",
@@ -114890,6 +114949,40 @@
       "expression_truncated": false,
       "expression_chars": 37,
       "ast_sha256": "2f985816e7c475b1c55404ddc4a178d47259f1c78e5dec45839c37f58e836d21",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 772,
+      "end_line": 777,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "OWNER_COMMANDS",
+      "symbol": "app.services.telegram_bot.OWNER_COMMANDS",
+      "kind": "List",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "[{'command': 'menu', 'description': 'Меню: пользователи, Пульс, скачивания, выгрузки'}, {'command': 'downloads', 'description': 'Что скачивают и где упираются в лимит (/downloads 30)'}, {'command': 'export', 'description': 'Выгрузки файлом: скачивания, регистрации, действия'}, {'command': 'users', 'description': 'Пользователи'}]",
+      "expression_truncated": false,
+      "expression_chars": 330,
+      "ast_sha256": "d1a667c4365e5ae36f528db2c344be0a8be5043035dac140126e53e45831f9f8",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 778,
+      "end_line": 782,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "REPORTS_ONLY_COMMANDS",
+      "symbol": "app.services.telegram_bot.REPORTS_ONLY_COMMANDS",
+      "kind": "List",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "[{'command': 'menu', 'description': 'Меню отчётов'}, {'command': 'downloads', 'description': 'Что скачивают и где упираются в лимит (/downloads 30)'}, {'command': 'export', 'description': 'Выгрузки файлом без персональных данных'}]",
+      "expression_truncated": false,
+      "expression_chars": 231,
+      "ast_sha256": "f8633c00ee928e828bf95b069d04a70cdd161563a1d317a44532302f87284c20",
       "runtime_expansion": false
     },
     {
@@ -117760,6 +117853,23 @@
       "expression_chars": 51,
       "ast_sha256": "b0f2ce954a41ed749535eef1195584177a9468628c0c31bc1e5d172245bc763a",
       "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 27,
+      "end_line": 27,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "FORMATS",
+      "symbol": "app.services.wall_counter.FORMATS",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "frozenset({'csv', 'xlsx'})",
+      "expression_truncated": false,
+      "expression_chars": 26,
+      "ast_sha256": "c6529a89739c55d5685caa8782a3237123e3b05e2f0703248f0a2c1eba4757b4",
+      "runtime_expansion": true
     },
     {
       "path": "backend/app/services/world_adapters/__init__.py",
@@ -122692,8 +122802,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 294,
+      "end_line": 294,
       "owner": "<module>",
       "conditions": [],
       "name": "_METRIKA_DIGEST_RETRY_PAUSES_S",
@@ -132346,8 +132456,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 515,
-      "end_line": 515,
+      "line": 524,
+      "end_line": 524,
       "owner": "_record_history_safe",
       "conditions": [
         "hint and hint.params"
@@ -132362,8 +132472,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 593,
-      "end_line": 593,
+      "line": 602,
+      "end_line": 602,
       "owner": "export_grid_file",
       "conditions": [
         "user is not None and settings.cabinet_enabled",
@@ -132379,8 +132489,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 502,
+      "end_line": 502,
       "owner": "record_history_safe",
       "conditions": [],
       "operation": "rollback",
@@ -140424,8 +140534,24 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 366,
-      "end_line": 366,
+      "line": 295,
+      "end_line": 295,
+      "owner": "reports_only_ids",
+      "conditions": [
+        "not settings.telegram_reports_only_enabled"
+      ],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.alerting.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/alerting.py",
+      "line": 375,
+      "end_line": 375,
       "owner": "notify_feedback",
       "conditions": [
         "contact"
@@ -143466,8 +143592,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 72,
-      "end_line": 72,
+      "line": 73,
+      "end_line": 73,
       "owner": "events_csv",
       "conditions": [],
       "operation": "set",
@@ -143480,8 +143606,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 61,
-      "end_line": 68,
+      "line": 62,
+      "end_line": 69,
       "owner": "events_csv",
       "conditions": [],
       "operation": "execute",
@@ -143494,8 +143620,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 102,
-      "end_line": 105,
+      "line": 103,
+      "end_line": 106,
       "owner": "signups_csv",
       "conditions": [],
       "operation": "execute",
@@ -145101,8 +145227,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 427,
+      "end_line": 427,
       "owner": "_excluded_visitors",
       "conditions": [],
       "operation": "set",
@@ -145115,8 +145241,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 447,
+      "end_line": 447,
       "owner": "_signup_times",
       "conditions": [],
       "operation": "set",
@@ -145129,8 +145255,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 384,
-      "end_line": 389,
+      "line": 429,
+      "end_line": 434,
       "owner": "_excluded_visitors",
       "conditions": [],
       "operation": "set",
@@ -145143,8 +145269,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 494,
+      "end_line": 494,
       "owner": "collect",
       "conditions": [],
       "operation": "set",
@@ -145157,8 +145283,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 266,
-      "end_line": 266,
+      "line": 309,
+      "end_line": 309,
       "owner": "load_names",
       "conditions": [],
       "operation": "set",
@@ -145171,8 +145297,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 405,
-      "end_line": 405,
+      "line": 450,
+      "end_line": 450,
       "owner": "_signup_times",
       "conditions": [],
       "operation": "add",
@@ -145185,8 +145311,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 440,
-      "end_line": 447,
+      "line": 485,
+      "end_line": 492,
       "owner": "collect",
       "conditions": [],
       "operation": "execute",
@@ -145199,8 +145325,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 566,
+      "end_line": 566,
       "owner": "summarize.by_content",
       "conditions": [
         "r['person']"
@@ -145215,8 +145341,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 569,
+      "end_line": 569,
       "owner": "summarize.by_content",
       "conditions": [
         "walls and r['signed_up_after']"
@@ -145231,8 +145357,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 263,
-      "end_line": 264,
+      "line": 306,
+      "end_line": 307,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145245,8 +145371,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 267,
-      "end_line": 270,
+      "line": 310,
+      "end_line": 313,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145259,8 +145385,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 273,
-      "end_line": 274,
+      "line": 316,
+      "end_line": 317,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145273,8 +145399,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145287,8 +145413,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 280,
-      "end_line": 282,
+      "line": 323,
+      "end_line": 325,
       "owner": "load_names",
       "conditions": [],
       "operation": "execute",
@@ -145301,8 +145427,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 411,
-      "end_line": 412,
+      "line": 456,
+      "end_line": 457,
       "owner": "_signup_times",
       "conditions": [],
       "operation": "execute",
@@ -145315,8 +145441,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 426,
-      "end_line": 429,
+      "line": 471,
+      "end_line": 474,
       "owner": "_session_portraits",
       "conditions": [],
       "operation": "execute",
@@ -145329,8 +145455,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 499,
-      "end_line": 499,
+      "line": 563,
+      "end_line": 563,
       "owner": "summarize.by_content",
       "conditions": [],
       "operation": "set",
@@ -145343,8 +145469,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 499,
-      "end_line": 499,
+      "line": 563,
+      "end_line": 563,
       "owner": "summarize.by_content",
       "conditions": [],
       "operation": "set",
@@ -145357,8 +145483,22 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 295,
-      "end_line": 297,
+      "line": 851,
+      "end_line": 851,
+      "owner": "collect_paths",
+      "conditions": [],
+      "operation": "rollback",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.rollback",
+      "expression": "db.rollback()",
+      "expression_truncated": false,
+      "expression_chars": 13,
+      "ast_sha256": "aa3e7e65c178776f8f1c40cd84fbccf3f33f4fa33bb1ac644d5e5ac26ac08089"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 338,
+      "end_line": 340,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -145373,8 +145513,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 300,
-      "end_line": 302,
+      "line": 343,
+      "end_line": 345,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -145389,8 +145529,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 384,
-      "end_line": 389,
+      "line": 429,
+      "end_line": 434,
       "owner": "_excluded_visitors",
       "conditions": [],
       "operation": "execute",
@@ -145403,8 +145543,22 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 399,
-      "end_line": 401,
+      "line": 837,
+      "end_line": 843,
+      "owner": "collect_paths",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.download_content.db.execute",
+      "expression": "db.execute(select(BehaviorEvent.session_id_hash, BehaviorEvent.page, BehaviorEvent.occurred_at).where(BehaviorEvent.session_id_hash.in_(part), BehaviorEvent.event_type == 'pageview', BehaviorEvent.occurred_at >= period.start - timedelta(hours=6), BehaviorEvent.occurred_at < period.end).limit(PATH_ROW_CAP - len(pageviews) + 1))",
+      "expression_truncated": false,
+      "expression_chars": 328,
+      "ast_sha256": "42028f33b57a86c96b2682ee708b2a9de4c05bcbabdcab0815e147c32801a232"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 444,
+      "end_line": 446,
       "owner": "_signup_times",
       "conditions": [],
       "operation": "execute",
@@ -156923,8 +157077,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 727,
-      "end_line": 727,
+      "line": 827,
+      "end_line": 827,
       "owner": "telegram_poll_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -156983,8 +157137,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 762,
-      "end_line": 762,
+      "line": 862,
+      "end_line": 862,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -157730,6 +157884,62 @@
       "expression_truncated": false,
       "expression_chars": 41,
       "ast_sha256": "451b846f5931d1234c3cb18a8bf25e4f4b3d2019f982563a8ff09fd77b3acd29"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "record_wall",
+      "conditions": [],
+      "operation": "expire",
+      "receiver": "pipe",
+      "symbol": "app.services.wall_counter.pipe.expire",
+      "expression": "pipe.expire(key, TTL_SECONDS)",
+      "expression_truncated": false,
+      "expression_chars": 29,
+      "ast_sha256": "3db8f1bb0fef0eadba30622481c81d1bd24cbb8b84f1af84c783b27b3170d53d"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 59,
+      "end_line": 59,
+      "owner": "record_wall",
+      "conditions": [],
+      "operation": "get_state_redis",
+      "receiver": null,
+      "symbol": "app.core.cache.get_state_redis",
+      "expression": "get_state_redis()",
+      "expression_truncated": false,
+      "expression_chars": 17,
+      "ast_sha256": "b2457ea95abbb631ab6701e5e71f326861aeebba7b8e33ae72d319dafda57331"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "record_wall",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "pipe",
+      "symbol": "app.services.wall_counter.pipe.execute",
+      "expression": "pipe.execute()",
+      "expression_truncated": false,
+      "expression_chars": 14,
+      "ast_sha256": "8905a89ab83d46c71f6c0701a1c7bb2a2a1828f4913b89f10242639c614f813d"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 74,
+      "end_line": 74,
+      "owner": "read_walls",
+      "conditions": [],
+      "operation": "get_state_redis",
+      "receiver": null,
+      "symbol": "app.core.cache.get_state_redis",
+      "expression": "get_state_redis()",
+      "expression_truncated": false,
+      "expression_chars": 17,
+      "ast_sha256": "b2457ea95abbb631ab6701e5e71f326861aeebba7b8e33ae72d319dafda57331"
     },
     {
       "path": "backend/app/services/web_push.py",
@@ -162131,8 +162341,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 381,
+      "end_line": 381,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "execute",
@@ -162145,8 +162355,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 365,
-      "end_line": 365,
+      "line": 382,
+      "end_line": 382,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "commit",
@@ -162159,8 +162369,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 447,
-      "end_line": 447,
+      "line": 464,
+      "end_line": 464,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -162187,8 +162397,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 470,
+      "end_line": 470,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -162257,8 +162467,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 456,
-      "end_line": 456,
+      "line": 473,
+      "end_line": 473,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "rollback",
@@ -162271,8 +162481,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 475,
+      "end_line": 475,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -162299,8 +162509,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 381,
+      "end_line": 381,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "delete",
@@ -166881,6 +167091,20 @@
       "expression_truncated": false,
       "expression_chars": 77,
       "ast_sha256": "3c0995b8deba1b7e7b3bbda5f45cf2dc6ae1390b397e7ccf32f4443684869111"
+    },
+    {
+      "path": "backend/scripts/service-bot-commands.py",
+      "line": 18,
+      "end_line": 18,
+      "owner": "<module>",
+      "conditions": [],
+      "operation": "insert",
+      "receiver": "sys.path",
+      "symbol": "sys.path.insert",
+      "expression": "sys.path.insert(0, '.')",
+      "expression_truncated": false,
+      "expression_chars": 23,
+      "ast_sha256": "4e3821ceaa0073749c9bea576ef6325ff2865915362653eefab4e961963fe0f9"
     },
     {
       "path": "backend/scripts/unlist-superseded-world.py",
@@ -175296,8 +175520,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 435,
-      "end_line": 435,
+      "line": 436,
+      "end_line": 436,
       "owner": "consume_anon_quota",
       "conditions": [],
       "symbol": "app.models.User",
@@ -175305,8 +175529,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 463,
-      "end_line": 463,
+      "line": 472,
+      "end_line": 472,
       "owner": "decorate_download",
       "conditions": [],
       "symbol": "app.models.User",
@@ -175314,8 +175538,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 477,
-      "end_line": 477,
+      "line": 486,
+      "end_line": 486,
       "owner": "record_history_safe",
       "conditions": [],
       "symbol": "app.models.User",
@@ -175323,8 +175547,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 498,
-      "end_line": 498,
+      "line": 507,
+      "end_line": 507,
       "owner": "_record_history_safe",
       "conditions": [],
       "symbol": "app.models.User",
@@ -175332,8 +175556,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 525,
-      "end_line": 525,
+      "line": 534,
+      "end_line": 534,
       "owner": "export_quota",
       "conditions": [],
       "symbol": "app.models.User",
@@ -175341,8 +175565,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 544,
-      "end_line": 544,
+      "line": 553,
+      "end_line": 553,
       "owner": "export_table",
       "conditions": [],
       "symbol": "app.models.User",
@@ -175350,8 +175574,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 565,
-      "end_line": 565,
+      "line": 574,
+      "end_line": 574,
       "owner": "export_grid_file",
       "conditions": [],
       "symbol": "app.models.User",
@@ -211795,8 +212019,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 66,
-      "end_line": 66,
+      "line": 67,
+      "end_line": 67,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -211804,8 +212028,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 104,
-      "end_line": 104,
+      "line": 105,
+      "end_line": 105,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.models.UserSignup.created_at",
@@ -211813,8 +212037,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 66,
-      "end_line": 66,
+      "line": 67,
+      "end_line": 67,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -211822,8 +212046,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 104,
-      "end_line": 104,
+      "line": 105,
+      "end_line": 105,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.models.UserSignup",
@@ -211831,8 +212055,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 65,
-      "end_line": 65,
+      "line": 66,
+      "end_line": 66,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -211840,8 +212064,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 65,
-      "end_line": 65,
+      "line": 66,
+      "end_line": 66,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -211849,8 +212073,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 104,
+      "end_line": 104,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.models.UserSignup.created_at",
@@ -211858,8 +212082,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 104,
+      "end_line": 104,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.models.UserSignup.created_at",
@@ -211867,8 +212091,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 63,
+      "end_line": 63,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -211876,8 +212100,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 63,
+      "end_line": 63,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -211885,8 +212109,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 63,
+      "end_line": 63,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.visitor_id_hash",
@@ -211894,8 +212118,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 64,
+      "end_line": 64,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash",
@@ -211903,8 +212127,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 64,
+      "end_line": 64,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.user_id",
@@ -211912,8 +212136,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 64,
+      "end_line": 64,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed",
@@ -211921,8 +212145,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 64,
-      "end_line": 64,
+      "line": 65,
+      "end_line": 65,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.url",
@@ -211930,8 +212154,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 64,
-      "end_line": 64,
+      "line": 65,
+      "end_line": 65,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -211939,8 +212163,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 65,
-      "end_line": 65,
+      "line": 66,
+      "end_line": 66,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -211948,8 +212172,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 65,
-      "end_line": 65,
+      "line": 66,
+      "end_line": 66,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -211957,8 +212181,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 104,
+      "end_line": 104,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.models.UserSignup",
@@ -211966,8 +212190,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 104,
+      "end_line": 104,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.models.UserSignup",
@@ -211975,39 +212199,12 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 104,
+      "end_line": 104,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.models.UserSignup",
       "expression": "UserSignup"
-    },
-    {
-      "path": "backend/app/services/bot_exports.py",
-      "line": 62,
-      "end_line": 62,
-      "owner": "events_csv",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/bot_exports.py",
-      "line": 62,
-      "end_line": 62,
-      "owner": "events_csv",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/bot_exports.py",
-      "line": 62,
-      "end_line": 62,
-      "owner": "events_csv",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
     },
     {
       "path": "backend/app/services/bot_exports.py",
@@ -212049,6 +212246,33 @@
       "path": "backend/app/services/bot_exports.py",
       "line": 64,
       "end_line": 64,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "events_csv",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 65,
+      "end_line": 65,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -218311,8 +218535,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 491,
+      "end_line": 491,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -218320,8 +218544,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 491,
+      "end_line": 491,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -218329,8 +218553,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 307,
+      "end_line": 307,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -218338,8 +218562,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 313,
+      "end_line": 313,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code.in_",
@@ -218347,8 +218571,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 317,
+      "end_line": 317,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.in_",
@@ -218356,8 +218580,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region.slug.in_",
@@ -218365,8 +218589,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 282,
-      "end_line": 282,
+      "line": 325,
+      "end_line": 325,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug.in_",
@@ -218374,8 +218598,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 457,
+      "end_line": 457,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User.id.in_",
@@ -218383,8 +218607,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 429,
-      "end_line": 429,
+      "line": 474,
+      "end_line": 474,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash.in_",
@@ -218392,8 +218616,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 307,
+      "end_line": 307,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -218401,8 +218625,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 307,
+      "end_line": 307,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator.name",
@@ -218410,8 +218634,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 307,
+      "end_line": 307,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -218419,8 +218643,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 312,
+      "end_line": 312,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -218428,8 +218652,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 313,
+      "end_line": 313,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -218437,8 +218661,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 317,
+      "end_line": 317,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -218446,8 +218670,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 317,
+      "end_line": 317,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.name",
@@ -218455,8 +218679,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 317,
+      "end_line": 317,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -218464,8 +218688,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -218473,8 +218697,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region.name",
@@ -218482,8 +218706,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -218491,8 +218715,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -218500,8 +218724,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.code",
@@ -218509,8 +218733,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -218518,8 +218742,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 282,
-      "end_line": 282,
+      "line": 325,
+      "end_line": 325,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -218527,8 +218751,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 340,
+      "end_line": 340,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218538,8 +218762,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 345,
+      "end_line": 345,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218549,8 +218773,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 457,
+      "end_line": 457,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User.id",
@@ -218558,8 +218782,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 457,
+      "end_line": 457,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -218567,8 +218791,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 457,
+      "end_line": 457,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User.id",
@@ -218576,8 +218800,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 472,
+      "end_line": 472,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash",
@@ -218585,8 +218809,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 472,
+      "end_line": 472,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.channel",
@@ -218594,8 +218818,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 428,
-      "end_line": 428,
+      "line": 473,
+      "end_line": 473,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.device_type",
@@ -218603,8 +218827,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 428,
-      "end_line": 428,
+      "line": 473,
+      "end_line": 473,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.country",
@@ -218612,8 +218836,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 429,
-      "end_line": 429,
+      "line": 474,
+      "end_line": 474,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.session_id_hash",
@@ -218621,8 +218845,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 489,
+      "end_line": 489,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name.in_",
@@ -218630,8 +218854,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 490,
+      "end_line": 490,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -218639,8 +218863,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 490,
+      "end_line": 490,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -218648,8 +218872,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 307,
+      "end_line": 307,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -218657,8 +218881,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 307,
+      "end_line": 307,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -218666,8 +218890,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 307,
+      "end_line": 307,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -218675,8 +218899,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 312,
+      "end_line": 312,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -218684,8 +218908,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 312,
+      "end_line": 312,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -218693,8 +218917,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 313,
+      "end_line": 313,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -218702,8 +218926,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 317,
+      "end_line": 317,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -218711,8 +218935,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 317,
+      "end_line": 317,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -218720,8 +218944,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 317,
+      "end_line": 317,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -218729,8 +218953,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -218738,8 +218962,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -218747,8 +218971,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 320,
+      "end_line": 320,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -218756,8 +218980,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -218765,8 +218989,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -218774,8 +218998,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 324,
+      "end_line": 324,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -218783,8 +219007,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 282,
-      "end_line": 282,
+      "line": 325,
+      "end_line": 325,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -218792,8 +219016,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 339,
+      "end_line": 339,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218803,8 +219027,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 339,
+      "end_line": 339,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218814,8 +219038,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 339,
+      "end_line": 339,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218825,8 +219049,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 340,
+      "end_line": 340,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218836,8 +219060,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 344,
+      "end_line": 344,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218847,8 +219071,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 344,
+      "end_line": 344,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218858,8 +219082,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 344,
+      "end_line": 344,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218869,8 +219093,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 345,
+      "end_line": 345,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -218880,8 +219104,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 446,
+      "end_line": 446,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink.visitor_id_hash.in_",
@@ -218889,8 +219113,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 457,
+      "end_line": 457,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User",
@@ -218898,8 +219122,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 457,
+      "end_line": 457,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User",
@@ -218907,8 +219131,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 457,
+      "end_line": 457,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.User",
@@ -218916,8 +219140,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 472,
+      "end_line": 472,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -218925,8 +219149,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 472,
+      "end_line": 472,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -218934,8 +219158,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 428,
-      "end_line": 428,
+      "line": 473,
+      "end_line": 473,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -218943,8 +219167,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 428,
-      "end_line": 428,
+      "line": 473,
+      "end_line": 473,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -218952,8 +219176,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 429,
-      "end_line": 429,
+      "line": 474,
+      "end_line": 474,
       "owner": "_session_portraits",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -218961,8 +219185,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 486,
+      "end_line": 486,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -218970,8 +219194,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 486,
+      "end_line": 486,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -218979,8 +219203,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 486,
+      "end_line": 486,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash",
@@ -218988,8 +219212,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 487,
+      "end_line": 487,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.visitor_id_hash",
@@ -218997,8 +219221,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 487,
+      "end_line": 487,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.user_id",
@@ -219006,8 +219230,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 487,
+      "end_line": 487,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed",
@@ -219015,8 +219239,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 488,
+      "end_line": 488,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.url",
@@ -219024,8 +219248,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 488,
+      "end_line": 488,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -219033,8 +219257,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 489,
+      "end_line": 489,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -219042,8 +219266,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 490,
+      "end_line": 490,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219051,8 +219275,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 490,
+      "end_line": 490,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219060,8 +219284,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 268,
-      "end_line": 268,
+      "line": 311,
+      "end_line": 311,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -219069,8 +219293,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 268,
-      "end_line": 268,
+      "line": 311,
+      "end_line": 311,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_ru",
@@ -219078,8 +219302,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 268,
-      "end_line": 268,
+      "line": 311,
+      "end_line": 311,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -219087,8 +219311,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 312,
+      "end_line": 312,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -219096,8 +219320,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 312,
+      "end_line": 312,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -219105,8 +219329,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 339,
+      "end_line": 339,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219116,8 +219340,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 339,
+      "end_line": 339,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219127,8 +219351,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 339,
+      "end_line": 339,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219138,8 +219362,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 340,
+      "end_line": 340,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219149,8 +219373,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 344,
+      "end_line": 344,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219160,8 +219384,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 344,
+      "end_line": 344,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219171,8 +219395,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 344,
+      "end_line": 344,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219182,8 +219406,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 345,
+      "end_line": 345,
       "owner": "load_names",
       "conditions": [
         "sub_pairs"
@@ -219193,8 +219417,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 431,
+      "end_line": 431,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash.in_",
@@ -219202,8 +219426,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 432,
+      "end_line": 432,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.day",
@@ -219211,8 +219435,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 432,
+      "end_line": 432,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.day",
@@ -219220,8 +219444,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 445,
+      "end_line": 445,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink.visitor_id_hash",
@@ -219229,8 +219453,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 445,
+      "end_line": 445,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink.user_id",
@@ -219238,8 +219462,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 446,
+      "end_line": 446,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink.visitor_id_hash",
@@ -219247,8 +219471,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 486,
+      "end_line": 486,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219256,8 +219480,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 486,
+      "end_line": 486,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219265,8 +219489,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 486,
+      "end_line": 486,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219274,8 +219498,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 487,
+      "end_line": 487,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219283,8 +219507,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 487,
+      "end_line": 487,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219292,8 +219516,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 487,
+      "end_line": 487,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219301,8 +219525,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 488,
+      "end_line": 488,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219310,8 +219534,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 488,
+      "end_line": 488,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219319,8 +219543,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 489,
+      "end_line": 489,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -219328,8 +219552,44 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 268,
-      "end_line": 268,
+      "line": 839,
+      "end_line": 839,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.session_id_hash.in_",
+      "expression": "BehaviorEvent.session_id_hash.in_"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 839,
+      "end_line": 839,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 840,
+      "end_line": 840,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 841,
+      "end_line": 841,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 311,
+      "end_line": 311,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -219337,8 +219597,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 268,
-      "end_line": 268,
+      "line": 311,
+      "end_line": 311,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -219346,8 +219606,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 268,
-      "end_line": 268,
+      "line": 311,
+      "end_line": 311,
       "owner": "load_names",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -219355,8 +219615,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 430,
+      "end_line": 430,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -219364,8 +219624,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 431,
+      "end_line": 431,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -219373,8 +219633,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 432,
+      "end_line": 432,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -219382,8 +219642,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 432,
+      "end_line": 432,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -219391,8 +219651,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 433,
+      "end_line": 433,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_bot.is_",
@@ -219400,8 +219660,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 433,
+      "end_line": 433,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_internal.is_",
@@ -219409,8 +219669,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 445,
+      "end_line": 445,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -219418,8 +219678,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 445,
+      "end_line": 445,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -219427,8 +219687,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 446,
+      "end_line": 446,
       "owner": "_signup_times",
       "conditions": [],
       "symbol": "app.models.IdentityLink",
@@ -219436,8 +219696,71 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 838,
+      "end_line": 838,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.session_id_hash",
+      "expression": "BehaviorEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 838,
+      "end_line": 838,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 838,
+      "end_line": 838,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 839,
+      "end_line": 839,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.session_id_hash",
+      "expression": "BehaviorEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 839,
+      "end_line": 839,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 840,
+      "end_line": 840,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 841,
+      "end_line": 841,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 430,
+      "end_line": 430,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -219445,8 +219768,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 431,
+      "end_line": 431,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -219454,8 +219777,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 433,
+      "end_line": 433,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_bot",
@@ -219463,8 +219786,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 433,
+      "end_line": 433,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_internal",
@@ -219472,8 +219795,44 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 838,
+      "end_line": 838,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 838,
+      "end_line": 838,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 838,
+      "end_line": 838,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 839,
+      "end_line": 839,
+      "owner": "collect_paths",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 433,
+      "end_line": 433,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -219481,8 +219840,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 433,
+      "end_line": 433,
       "owner": "_excluded_visitors",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -268679,8 +269038,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 381,
+      "end_line": 381,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -268697,8 +269056,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 381,
+      "end_line": 381,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -268706,8 +269065,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 381,
+      "end_line": 381,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -282875,7 +283234,7 @@
     {
       "path": "backend/app/api/export.py",
       "line": 435,
-      "end_line": 460,
+      "end_line": 469,
       "owner": "<module>",
       "conditions": [],
       "name": "consume_anon_quota",
@@ -282883,8 +283242,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 463,
-      "end_line": 473,
+      "line": 472,
+      "end_line": 482,
       "owner": "<module>",
       "conditions": [],
       "name": "decorate_download",
@@ -282892,8 +283251,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 476,
-      "end_line": 495,
+      "line": 485,
+      "end_line": 504,
       "owner": "<module>",
       "conditions": [],
       "name": "record_history_safe",
@@ -282901,8 +283260,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 498,
-      "end_line": 519,
+      "line": 507,
+      "end_line": 528,
       "owner": "<module>",
       "conditions": [],
       "name": "_record_history_safe",
@@ -282910,8 +283269,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 523,
-      "end_line": 537,
+      "line": 532,
+      "end_line": 546,
       "owner": "<module>",
       "conditions": [],
       "name": "export_quota",
@@ -282919,8 +283278,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 541,
-      "end_line": 558,
+      "line": 550,
+      "end_line": 567,
       "owner": "<module>",
       "conditions": [],
       "name": "export_table",
@@ -282928,8 +283287,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 562,
-      "end_line": 598,
+      "line": 571,
+      "end_line": 607,
       "owner": "<module>",
       "conditions": [],
       "name": "export_grid_file",
@@ -286055,7 +286414,7 @@
     {
       "path": "backend/app/config.py",
       "line": 6,
-      "end_line": 618,
+      "end_line": 624,
       "owner": "<module>",
       "conditions": [],
       "name": "Settings",
@@ -286063,8 +286422,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 601,
-      "end_line": 603,
+      "line": 607,
+      "end_line": 609,
       "owner": "Settings",
       "conditions": [],
       "name": "public_origin",
@@ -286072,8 +286431,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 606,
-      "end_line": 608,
+      "line": 612,
+      "end_line": 614,
       "owner": "Settings",
       "conditions": [],
       "name": "public_host",
@@ -286081,8 +286440,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 611,
-      "end_line": 613,
+      "line": 617,
+      "end_line": 619,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id",
@@ -286090,8 +286449,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 615,
-      "end_line": 618,
+      "line": 621,
+      "end_line": 624,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -291170,7 +291529,16 @@
     {
       "path": "backend/app/services/alerting.py",
       "line": 291,
-      "end_line": 319,
+      "end_line": 297,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "reports_only_ids",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/alerting.py",
+      "line": 300,
+      "end_line": 328,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_new_user",
@@ -291178,8 +291546,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 322,
-      "end_line": 346,
+      "line": 331,
+      "end_line": 355,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_login",
@@ -291187,8 +291555,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 349,
-      "end_line": 368,
+      "line": 358,
+      "end_line": 377,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_feedback",
@@ -291196,8 +291564,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 385,
-      "end_line": 407,
+      "line": 394,
+      "end_line": 416,
       "owner": "<module>",
       "conditions": [],
       "name": "format_api_interest_message",
@@ -291205,8 +291573,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 410,
-      "end_line": 423,
+      "line": 419,
+      "end_line": 432,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_api_interest",
@@ -291214,8 +291582,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 426,
-      "end_line": 433,
+      "line": 435,
+      "end_line": 442,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_forecast_issue",
@@ -291223,8 +291591,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 436,
-      "end_line": 449,
+      "line": 445,
+      "end_line": 458,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_etl_failure",
@@ -291232,8 +291600,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 452,
-      "end_line": 463,
+      "line": 461,
+      "end_line": 472,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_zero_parse",
@@ -291241,8 +291609,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 473,
-      "end_line": 516,
+      "line": 482,
+      "end_line": 525,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_etl_summary",
@@ -291250,8 +291618,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 523,
-      "end_line": 557,
+      "line": 532,
+      "end_line": 566,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_world_ingest_summary",
@@ -291259,8 +291627,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 300,
-      "end_line": 301,
+      "line": 309,
+      "end_line": 310,
       "owner": "notify_new_user",
       "conditions": [],
       "name": "esc",
@@ -291268,8 +291636,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 332,
-      "end_line": 333,
+      "line": 341,
+      "end_line": 342,
       "owner": "notify_login",
       "conditions": [],
       "name": "esc",
@@ -291277,8 +291645,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 353,
-      "end_line": 354,
+      "line": 362,
+      "end_line": 363,
       "owner": "notify_feedback",
       "conditions": [],
       "name": "esc",
@@ -291286,8 +291654,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 392,
-      "end_line": 393,
+      "line": 401,
+      "end_line": 402,
       "owner": "format_api_interest_message",
       "conditions": [],
       "name": "esc",
@@ -293105,7 +293473,7 @@
     {
       "path": "backend/app/services/bot_exports.py",
       "line": 55,
-      "end_line": 95,
+      "end_line": 96,
       "owner": "<module>",
       "conditions": [],
       "name": "events_csv",
@@ -293113,8 +293481,8 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 98,
-      "end_line": 123,
+      "line": 99,
+      "end_line": 124,
       "owner": "<module>",
       "conditions": [],
       "name": "signups_csv",
@@ -296470,8 +296838,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 112,
-      "end_line": 124,
+      "line": 115,
+      "end_line": 127,
       "owner": "<module>",
       "conditions": [],
       "name": "ContentRef",
@@ -296479,8 +296847,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 127,
-      "end_line": 135,
+      "line": 130,
+      "end_line": 138,
       "owner": "<module>",
       "conditions": [],
       "name": "_path_parts",
@@ -296488,8 +296856,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 138,
-      "end_line": 161,
+      "line": 141,
+      "end_line": 168,
       "owner": "<module>",
       "conditions": [],
       "name": "_from_params",
@@ -296497,8 +296865,26 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 164,
-      "end_line": 177,
+      "line": 171,
+      "end_line": 172,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_split",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 175,
+      "end_line": 202,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_from_subject",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 205,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "content_ref",
@@ -296506,8 +296892,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 180,
-      "end_line": 228,
+      "line": 222,
+      "end_line": 270,
       "owner": "<module>",
       "conditions": [],
       "name": "_from_path",
@@ -296515,8 +296901,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 236,
-      "end_line": 244,
+      "line": 278,
+      "end_line": 286,
       "owner": "<module>",
       "conditions": [],
       "name": "Names",
@@ -296524,8 +296910,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 247,
-      "end_line": 250,
+      "line": 289,
+      "end_line": 292,
       "owner": "<module>",
       "conditions": [],
       "name": "_chunks",
@@ -296533,8 +296919,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 253,
-      "end_line": 308,
+      "line": 295,
+      "end_line": 351,
       "owner": "<module>",
       "conditions": [],
       "name": "load_names",
@@ -296542,8 +296928,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 311,
-      "end_line": 317,
+      "line": 354,
+      "end_line": 360,
       "owner": "<module>",
       "conditions": [],
       "name": "_series_name",
@@ -296551,8 +296937,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 320,
-      "end_line": 357,
+      "line": 363,
+      "end_line": 402,
       "owner": "<module>",
       "conditions": [],
       "name": "content_title",
@@ -296560,8 +296946,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 364,
-      "end_line": 375,
+      "line": 409,
+      "end_line": 420,
       "owner": "<module>",
       "conditions": [],
       "name": "period_for_window",
@@ -296569,8 +296955,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 378,
-      "end_line": 391,
+      "line": 423,
+      "end_line": 436,
       "owner": "<module>",
       "conditions": [],
       "name": "_excluded_visitors",
@@ -296578,8 +296964,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 394,
-      "end_line": 420,
+      "line": 439,
+      "end_line": 465,
       "owner": "<module>",
       "conditions": [],
       "name": "_signup_times",
@@ -296587,8 +296973,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 423,
-      "end_line": 431,
+      "line": 468,
+      "end_line": 476,
       "owner": "<module>",
       "conditions": [],
       "name": "_session_portraits",
@@ -296596,8 +296982,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 434,
-      "end_line": 435,
+      "line": 479,
+      "end_line": 480,
       "owner": "<module>",
       "conditions": [],
       "name": "_person",
@@ -296605,8 +296991,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 438,
-      "end_line": 487,
+      "line": 483,
+      "end_line": 541,
       "owner": "<module>",
       "conditions": [],
       "name": "collect",
@@ -296614,8 +297000,17 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 490,
-      "end_line": 534,
+      "line": 544,
+      "end_line": 551,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "server_summary",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 554,
+      "end_line": 598,
       "owner": "<module>",
       "conditions": [],
       "name": "summarize",
@@ -296623,8 +297018,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 541,
-      "end_line": 542,
+      "line": 605,
+      "end_line": 606,
       "owner": "<module>",
       "conditions": [],
       "name": "_n",
@@ -296632,8 +297027,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 545,
-      "end_line": 546,
+      "line": 609,
+      "end_line": 610,
       "owner": "<module>",
       "conditions": [],
       "name": "_pct",
@@ -296641,8 +297036,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 549,
-      "end_line": 559,
+      "line": 613,
+      "end_line": 623,
       "owner": "<module>",
       "conditions": [],
       "name": "_people",
@@ -296650,8 +297045,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 562,
-      "end_line": 564,
+      "line": 626,
+      "end_line": 628,
       "owner": "<module>",
       "conditions": [],
       "name": "_mix",
@@ -296659,8 +297054,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 570,
-      "end_line": 572,
+      "line": 634,
+      "end_line": 636,
       "owner": "<module>",
       "conditions": [],
       "name": "_short",
@@ -296668,8 +297063,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 575,
-      "end_line": 579,
+      "line": 639,
+      "end_line": 643,
       "owner": "<module>",
       "conditions": [],
       "name": "_times",
@@ -296677,8 +297072,17 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 582,
-      "end_line": 629,
+      "line": 646,
+      "end_line": 655,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_server_line",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 658,
+      "end_line": 710,
       "owner": "<module>",
       "conditions": [],
       "name": "format_report",
@@ -296686,8 +297090,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 632,
-      "end_line": 646,
+      "line": 713,
+      "end_line": 727,
       "owner": "<module>",
       "conditions": [],
       "name": "digest_lines",
@@ -296695,8 +297099,71 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 653,
-      "end_line": 716,
+      "line": 730,
+      "end_line": 734,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_delta",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 737,
+      "end_line": 761,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "week_digest_lines",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 781,
+      "end_line": 785,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_page_label",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 788,
+      "end_line": 815,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "build_paths",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 818,
+      "end_line": 859,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "collect_paths",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 862,
+      "end_line": 874,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_paths_sheet_rows",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 877,
+      "end_line": 879,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_who",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 882,
+      "end_line": 959,
       "owner": "<module>",
       "conditions": [],
       "name": "build_xlsx",
@@ -296704,8 +297171,17 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 123,
-      "end_line": 124,
+      "line": 962,
+      "end_line": 967,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_server_rows",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 126,
+      "end_line": 127,
       "owner": "ContentRef",
       "conditions": [],
       "name": "key",
@@ -296713,8 +297189,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 495,
-      "end_line": 511,
+      "line": 559,
+      "end_line": 575,
       "owner": "summarize",
       "conditions": [],
       "name": "by_content",
@@ -296722,8 +297198,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 663,
-      "end_line": 671,
+      "line": 893,
+      "end_line": 901,
       "owner": "build_xlsx",
       "conditions": [],
       "name": "sheet",
@@ -313302,7 +313778,7 @@
     {
       "path": "backend/app/services/telegram_bot.py",
       "line": 450,
-      "end_line": 460,
+      "end_line": 459,
       "owner": "<module>",
       "conditions": [],
       "name": "export_keyboard",
@@ -313310,8 +313786,17 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 476,
-      "end_line": 482,
+      "line": 462,
+      "end_line": 467,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "reports_only_keyboard",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 491,
+      "end_line": 497,
       "owner": "<module>",
       "conditions": [],
       "name": "_window_or_none",
@@ -313319,8 +313804,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 485,
-      "end_line": 501,
+      "line": 500,
+      "end_line": 516,
       "owner": "<module>",
       "conditions": [],
       "name": "_downloads_data",
@@ -313328,8 +313813,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 504,
-      "end_line": 510,
+      "line": 519,
+      "end_line": 525,
       "owner": "<module>",
       "conditions": [],
       "name": "_period_label",
@@ -313337,8 +313822,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 513,
-      "end_line": 522,
+      "line": 528,
+      "end_line": 537,
       "owner": "<module>",
       "conditions": [],
       "name": "_send_downloads_report",
@@ -313346,8 +313831,17 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 525,
-      "end_line": 538,
+      "line": 540,
+      "end_line": 555,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_download_paths",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 558,
+      "end_line": 572,
       "owner": "<module>",
       "conditions": [],
       "name": "_send_downloads_file",
@@ -313355,8 +313849,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 541,
-      "end_line": 574,
+      "line": 575,
+      "end_line": 608,
       "owner": "<module>",
       "conditions": [],
       "name": "_send_export_file",
@@ -313364,8 +313858,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 581,
-      "end_line": 669,
+      "line": 615,
+      "end_line": 705,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_callback",
@@ -313373,8 +313867,26 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 672,
-      "end_line": 692,
+      "line": 708,
+      "end_line": 723,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_handle_reports_only_callback",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 726,
+      "end_line": 736,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_handle_reports_only_message",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 739,
+      "end_line": 761,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_message",
@@ -313382,8 +313894,17 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 700,
-      "end_line": 704,
+      "line": 785,
+      "end_line": 797,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "service_command_calls",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 800,
+      "end_line": 804,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_shared",
@@ -313391,8 +313912,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 707,
-      "end_line": 716,
+      "line": 807,
+      "end_line": 816,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_public_message",
@@ -313400,8 +313921,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 719,
-      "end_line": 764,
+      "line": 819,
+      "end_line": 864,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_poll_job",
@@ -313418,8 +313939,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 451,
-      "end_line": 452,
+      "line": 452,
+      "end_line": 453,
       "owner": "export_keyboard",
       "conditions": [],
       "name": "row",
@@ -313427,8 +313948,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 493,
-      "end_line": 495,
+      "line": 508,
+      "end_line": 510,
       "owner": "_downloads_data",
       "conditions": [],
       "name": "run",
@@ -313436,8 +313957,17 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 551,
-      "end_line": 555,
+      "line": 547,
+      "end_line": 549,
+      "owner": "_download_paths",
+      "conditions": [],
+      "name": "run",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 585,
+      "end_line": 589,
       "owner": "_send_export_file",
       "conditions": [],
       "name": "run",
@@ -314891,6 +315421,51 @@
       "conditions": [],
       "name": "_merged_points",
       "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 30,
+      "end_line": 41,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "normalize_path",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 44,
+      "end_line": 46,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "field_for",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 49,
+      "end_line": 50,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "key_for",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 53,
+      "end_line": 66,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "record_wall",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 69,
+      "end_line": 84,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "read_walls",
+      "kind": "AsyncFunctionDef"
     },
     {
       "path": "backend/app/services/web_push.py",
@@ -322625,8 +323200,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 215,
-      "end_line": 225,
+      "line": 216,
+      "end_line": 242,
       "owner": "<module>",
       "conditions": [],
       "name": "_download_content_lines",
@@ -322634,8 +323209,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 228,
-      "end_line": 272,
+      "line": 245,
+      "end_line": 289,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_goal_lines",
@@ -322643,8 +323218,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 280,
-      "end_line": 288,
+      "line": 297,
+      "end_line": 305,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_temporary_failure",
@@ -322652,8 +323227,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 291,
-      "end_line": 301,
+      "line": 308,
+      "end_line": 318,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_goal_lines_with_retry",
@@ -322661,8 +323236,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 304,
-      "end_line": 316,
+      "line": 321,
+      "end_line": 333,
       "owner": "<module>",
       "conditions": [],
       "name": "acquisition_daily_job",
@@ -322670,8 +323245,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 319,
-      "end_line": 331,
+      "line": 336,
+      "end_line": 348,
       "owner": "<module>",
       "conditions": [],
       "name": "partner_revenue_daily_job",
@@ -322679,8 +323254,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 334,
-      "end_line": 348,
+      "line": 351,
+      "end_line": 365,
       "owner": "<module>",
       "conditions": [],
       "name": "webmaster_queries_daily_job",
@@ -322688,8 +323263,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 351,
-      "end_line": 366,
+      "line": 368,
+      "end_line": 383,
       "owner": "<module>",
       "conditions": [],
       "name": "behavior_retention_job",
@@ -322697,8 +323272,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 373,
-      "end_line": 432,
+      "line": 390,
+      "end_line": 449,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_daily_digest_job",
@@ -322706,8 +323281,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 435,
-      "end_line": 458,
+      "line": 452,
+      "end_line": 475,
       "owner": "<module>",
       "conditions": [],
       "name": "analytics_daily_job",
@@ -322724,8 +323299,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 220,
-      "end_line": 223,
+      "line": 237,
+      "end_line": 240,
       "owner": "_download_content_lines",
       "conditions": [],
       "name": "run",
@@ -322733,8 +323308,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 240,
-      "end_line": 250,
+      "line": 257,
+      "end_line": 267,
       "owner": "_metrika_goal_lines",
       "conditions": [],
       "name": "_totals",
@@ -322742,8 +323317,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 252,
-      "end_line": 253,
+      "line": 269,
+      "end_line": 270,
       "owner": "_metrika_goal_lines",
       "conditions": [],
       "name": "_int",
@@ -322751,8 +323326,19 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 421,
-      "end_line": 423,
+      "line": 228,
+      "end_line": 233,
+      "owner": "_download_content_lines",
+      "conditions": [
+        "report_date.weekday() == 6"
+      ],
+      "name": "run_week",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/analytics_scheduler.py",
+      "line": 438,
+      "end_line": 440,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "_inventory_block",
@@ -324601,6 +325187,15 @@
       "owner": "<module>",
       "conditions": [],
       "name": "run",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/scripts/service-bot-commands.py",
+      "line": 23,
+      "end_line": 39,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "main",
       "kind": "AsyncFunctionDef"
     },
     {
@@ -340298,24 +340893,24 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 514,
-      "end_line": 514,
+      "line": 523,
+      "end_line": 523,
       "owner": "alert_etl_summary",
       "conditions": [],
       "symbol": "app.services.alerting._DEGRADED_LABELS"
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 399,
-      "end_line": 399,
+      "line": 408,
+      "end_line": 408,
       "owner": "format_api_interest_message",
       "conditions": [],
       "symbol": "app.services.alerting.API_INTEREST_USE_CASES"
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 409,
+      "end_line": 409,
       "owner": "format_api_interest_message",
       "conditions": [],
       "symbol": "app.services.alerting._API_INTEREST_SOURCES"
@@ -341032,27 +341627,19 @@
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 107,
-      "end_line": 107,
+      "line": 108,
+      "end_line": 108,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.services.telegram_reports.METHOD_LABELS"
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 110,
-      "end_line": 110,
+      "line": 111,
+      "end_line": 111,
       "owner": "signups_csv",
       "conditions": [],
       "symbol": "app.services.telegram_reports.CHANNEL_LABELS"
-    },
-    {
-      "path": "backend/app/services/bot_exports.py",
-      "line": 112,
-      "end_line": 112,
-      "owner": "signups_csv",
-      "conditions": [],
-      "symbol": "app.services.telegram_reports.DEVICE_LABELS"
     },
     {
       "path": "backend/app/services/bot_exports.py",
@@ -341060,20 +341647,28 @@
       "end_line": 113,
       "owner": "signups_csv",
       "conditions": [],
+      "symbol": "app.services.telegram_reports.DEVICE_LABELS"
+    },
+    {
+      "path": "backend/app/services/bot_exports.py",
+      "line": 114,
+      "end_line": 114,
+      "owner": "signups_csv",
+      "conditions": [],
       "symbol": "app.services.bot_exports.TRIGGER_LABELS_RU"
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 90,
-      "end_line": 90,
+      "line": 91,
+      "end_line": 91,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.services.bot_exports.TIER_LABELS_RU"
     },
     {
       "path": "backend/app/services/bot_exports.py",
-      "line": 90,
-      "end_line": 90,
+      "line": 91,
+      "end_line": 91,
       "owner": "events_csv",
       "conditions": [],
       "symbol": "app.services.goal_taxonomy.GROUP_LABELS_RU"
@@ -342244,32 +342839,32 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 59,
-      "end_line": 59,
+      "line": 62,
+      "end_line": 62,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.download_content.WALL_EVENTS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 203,
-      "end_line": 203,
+      "line": 245,
+      "end_line": 245,
       "owner": "_from_path",
       "conditions": [],
       "symbol": "app.services.download_content._RESERVED_FIRST"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 463,
-      "end_line": 463,
+      "line": 512,
+      "end_line": 512,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.services.download_content.WALL_EVENTS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 350,
+      "end_line": 350,
       "owner": "load_names",
       "conditions": [
         "any((r.kind == 'world_rating' for r in refs))"
@@ -342278,24 +342873,32 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 356,
-      "end_line": 356,
+      "line": 401,
+      "end_line": 401,
       "owner": "content_title",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 457,
-      "end_line": 457,
+      "line": 506,
+      "end_line": 506,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.services.download_content.WALL_EVENTS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 869,
+      "end_line": 869,
+      "owner": "_paths_sheet_rows",
+      "conditions": [],
+      "symbol": "app.services.download_content.CHANNEL_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 699,
+      "end_line": 699,
       "owner": "format_report",
       "conditions": [
         "d['by_section']"
@@ -342304,8 +342907,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 620,
-      "end_line": 620,
+      "line": 701,
+      "end_line": 701,
       "owner": "format_report",
       "conditions": [
         "d['by_channel']"
@@ -342314,8 +342917,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 624,
-      "end_line": 624,
+      "line": 705,
+      "end_line": 705,
       "owner": "format_report",
       "conditions": [
         "w['by_channel']"
@@ -342324,48 +342927,56 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 868,
+      "end_line": 868,
+      "owner": "_paths_sheet_rows",
+      "conditions": [],
+      "symbol": "app.services.analytics_period.MSK_OFFSET"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 923,
+      "end_line": 923,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 698,
-      "end_line": 698,
+      "line": 929,
+      "end_line": 929,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 708,
-      "end_line": 708,
+      "line": 939,
+      "end_line": 939,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 710,
-      "end_line": 710,
+      "line": 941,
+      "end_line": 941,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.CHANNEL_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 710,
-      "end_line": 710,
+      "line": 941,
+      "end_line": 941,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.DEVICE_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 516,
+      "end_line": 516,
       "owner": "collect",
       "conditions": [
         "is_wall and r.visitor_id_hash"
@@ -342374,40 +342985,40 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 524,
+      "end_line": 524,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.services.download_content.WALL_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 524,
+      "end_line": 524,
       "owner": "collect",
       "conditions": [],
       "symbol": "app.services.download_content.FORMAT_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 706,
-      "end_line": 706,
+      "line": 937,
+      "end_line": 937,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.analytics_period.MSK_OFFSET"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 686,
-      "end_line": 686,
+      "line": 916,
+      "end_line": 916,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 687,
-      "end_line": 687,
+      "line": 917,
+      "end_line": 917,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.CHANNEL_LABELS"
@@ -350848,40 +351459,40 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 452,
+      "end_line": 452,
       "owner": "export_keyboard.row",
       "conditions": [],
       "symbol": "app.services.telegram_bot._EXPORT_WINDOWS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 730,
-      "end_line": 730,
+      "line": 830,
+      "end_line": 830,
       "owner": "telegram_poll_job",
       "conditions": [],
       "symbol": "app.services.telegram_bot._REDIS_TRANSIENT"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 479,
-      "end_line": 479,
+      "line": 494,
+      "end_line": 494,
       "owner": "_window_or_none",
       "conditions": [],
       "symbol": "app.services.download_content.WINDOWS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 716,
-      "end_line": 716,
+      "line": 816,
+      "end_line": 816,
       "owner": "_is_public_message",
       "conditions": [],
       "symbol": "app.services.telegram_bot._DOWNLOAD_COMMANDS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 763,
-      "end_line": 763,
+      "line": 863,
+      "end_line": 863,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -350890,24 +351501,53 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 522,
+      "end_line": 522,
       "owner": "_period_label",
       "conditions": [],
       "symbol": "app.services.download_content.WINDOWS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 716,
-      "end_line": 716,
+      "line": 730,
+      "end_line": 730,
+      "owner": "_handle_reports_only_message",
+      "conditions": [
+        "not (text in ('/start', '/menu', 'меню'))"
+      ],
+      "symbol": "app.services.telegram_bot._DOWNLOAD_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 734,
+      "end_line": 734,
+      "owner": "_handle_reports_only_message",
+      "conditions": [
+        "not (text in ('/start', '/menu', 'меню'))",
+        "not (text and text.split()[0] in _DOWNLOAD_COMMANDS)"
+      ],
+      "symbol": "app.services.telegram_bot._EXPORT_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 791,
+      "end_line": 791,
+      "owner": "service_command_calls",
+      "conditions": [],
+      "symbol": "app.services.telegram_bot.REPORTS_ONLY_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 816,
+      "end_line": 816,
       "owner": "_is_public_message",
       "conditions": [],
       "symbol": "app.services.telegram_bot._ADMIN_TEXTS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 716,
-      "end_line": 716,
+      "line": 816,
+      "end_line": 816,
       "owner": "_is_public_message",
       "conditions": [],
       "symbol": "app.services.telegram_bot._EXPORT_COMMANDS"
@@ -350922,8 +351562,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 686,
-      "end_line": 686,
+      "line": 755,
+      "end_line": 755,
       "owner": "_handle_message",
       "conditions": [
         "not (text in ('/start', '/menu', 'меню'))",
@@ -350933,8 +351573,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 691,
-      "end_line": 691,
+      "line": 760,
+      "end_line": 760,
       "owner": "_handle_message",
       "conditions": [
         "not (text in ('/start', '/menu', 'меню'))",
@@ -350942,6 +351582,26 @@
         "not (text and text.split()[0] in _DOWNLOAD_COMMANDS)"
       ],
       "symbol": "app.services.telegram_bot._EXPORT_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 790,
+      "end_line": 790,
+      "owner": "service_command_calls",
+      "conditions": [],
+      "symbol": "app.services.telegram_bot.OWNER_COMMANDS"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 718,
+      "end_line": 718,
+      "owner": "_handle_reports_only_callback",
+      "conditions": [
+        "not (data.startswith('dl:') and (w := _window_or_none(data[3:])))",
+        "not (data.startswith('dlx:') and (w := _window_or_none(data[4:])))",
+        "not (data == 'export')"
+      ],
+      "symbol": "app.services.telegram_bot._EXPORT_WINDOWS"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -350961,8 +351621,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 661,
-      "end_line": 661,
+      "line": 697,
+      "end_line": 697,
       "owner": "_handle_callback",
       "conditions": [
         "not (data == 'users')",
@@ -351874,6 +352534,14 @@
       "owner": "UsCensusPopAdapter.__init__",
       "conditions": [],
       "symbol": "app.services.us_pop_adapter.NATIONAL_ROWS_URLS"
+    },
+    {
+      "path": "backend/app/services/wall_counter.py",
+      "line": 46,
+      "end_line": 46,
+      "owner": "field_for",
+      "conditions": [],
+      "symbol": "app.services.wall_counter.FORMATS"
     },
     {
       "path": "backend/app/services/world_adapters/__init__.py",
@@ -353529,8 +354197,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 309,
+      "end_line": 309,
       "owner": "_metrika_goal_lines_with_retry",
       "conditions": [],
       "symbol": "app.tasks.analytics_scheduler._METRIKA_DIGEST_RETRY_PAUSES_S"
@@ -360564,8 +361232,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 531,
+      "end_line": 531,
       "owner": "export_quota",
       "conditions": [],
       "handler": "app.api.export.export_quota",
@@ -360576,8 +361244,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 523,
-      "handler_end_line": 537,
+      "handler_line": 532,
+      "handler_end_line": 546,
       "parameters": [
         {
           "name": "request",
@@ -360619,8 +361287,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 540,
-      "end_line": 540,
+      "line": 549,
+      "end_line": 549,
       "owner": "export_table",
       "conditions": [],
       "handler": "app.api.export.export_table",
@@ -360631,8 +361299,8 @@
         "POST"
       ],
       "options": {},
-      "handler_line": 541,
-      "handler_end_line": 558,
+      "handler_line": 550,
+      "handler_end_line": 567,
       "parameters": [
         {
           "name": "body",
@@ -360689,8 +361357,8 @@
     },
     {
       "path": "backend/app/api/export.py",
-      "line": 561,
-      "end_line": 561,
+      "line": 570,
+      "end_line": 570,
       "owner": "export_grid_file",
       "conditions": [],
       "handler": "app.api.export.export_grid_file",
@@ -360701,8 +361369,8 @@
         "POST"
       ],
       "options": {},
-      "handler_line": 562,
-      "handler_end_line": 598,
+      "handler_line": 571,
+      "handler_end_line": 607,
       "parameters": [
         {
           "name": "body",
