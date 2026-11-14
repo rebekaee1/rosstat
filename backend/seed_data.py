@@ -1505,6 +1505,8 @@ INDICATORS = [
                 "source_code": "cpi",
                 "operation": "cpi_mom_yoy",
                 "model_name": "CPI-YoY-Derived",
+                # Одно число с карточкой ИПЦ и витриной: прогноз модели Inflation-12M-MW (14.11.2026).
+                "source_model": "Inflation-12M-MW",
             },
         },
         "is_active": True,
@@ -1527,6 +1529,8 @@ INDICATORS = [
                 "source_code": "cpi-food",
                 "operation": "cpi_mom_yoy",
                 "model_name": "CPI-Food-YoY-Derived",
+                # Одно число с карточкой ИПЦ и витриной: прогноз модели Inflation-12M-MW (14.11.2026).
+                "source_model": "Inflation-12M-MW",
             },
         },
         "is_active": True,
@@ -1549,6 +1553,8 @@ INDICATORS = [
                 "source_code": "cpi-nonfood",
                 "operation": "cpi_mom_yoy",
                 "model_name": "CPI-Nonfood-YoY-Derived",
+                # Одно число с карточкой ИПЦ и витриной: прогноз модели Inflation-12M-MW (14.11.2026).
+                "source_model": "Inflation-12M-MW",
             },
         },
         "is_active": True,
@@ -1571,6 +1577,8 @@ INDICATORS = [
                 "source_code": "cpi-services",
                 "operation": "cpi_mom_yoy",
                 "model_name": "CPI-Services-YoY-Derived",
+                # Одно число с карточкой ИПЦ и витриной: прогноз модели Inflation-12M-MW (14.11.2026).
+                "source_model": "Inflation-12M-MW",
             },
         },
         "is_active": True,

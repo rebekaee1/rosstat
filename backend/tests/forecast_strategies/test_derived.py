@@ -348,6 +348,42 @@ def test_cpi_mom_yoy_emits_only_future_months():
     assert len(points) == 3
 
 
+def test_cpi_yoy_takes_forecast_from_source_model_when_given():
+    """14.11.2026: витрина давала 6,33 % на декабрь (Inflation-12M-MW), карточка cpi-yoy — 6,41 % (цепочка месячного
+    прогноза). С `source_model` прогнозные точки cpi-yoy берутся из той же модели — одно число на сайте."""
+    actuals = [(date(2024, m, 1), 100.5) for m in range(1, 13)]
+    forecast = [(date(2025, m, 1), 100.4) for m in range(1, 4)]
+    model_fc = [(date(2025, 1, 1), 6.26), (date(2025, 2, 1), 6.16), (date(2025, 3, 1), 6.33)]
+    ctx = _make_ctx(
+        indicator_code="cpi-yoy",
+        frequency="monthly",
+        cfg={
+            "derived_forecast": {"operation": "cpi_mom_yoy", "model_name": "CPI-YoY-Derived",
+                                 "source_model": "Inflation-12M-MW"},
+            "_source_data": actuals + forecast,
+            "_source_model_forecast": model_fc,
+        },
+    )
+    points = derived_from_source_strategy([d for d, _ in actuals], [8.0] * 12, ctx)[0].result.points
+    assert [(p.date, p.value) for p in points] == model_fc
+    # Модели нет (не обучилась) - прежняя формула, прогноз не пропадает.
+    ctx.cfg["_source_model_forecast"] = []
+    fallback = derived_from_source_strategy([d for d, _ in actuals], [8.0] * 12, ctx)[0].result.points
+    assert len(fallback) == 3 and all(abs(p.value - 6.33) > 0.01 for p in fallback[:1])
+
+
+def test_cpi_yoy_seed_configs_use_inflation_12m_model():
+    import importlib.util
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location("seed_data", Path(__file__).resolve().parents[2] / "seed_data.py")
+    seed = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(seed)
+    rows = {r["code"]: r for r in seed.INDICATORS}
+    for code in ("cpi-yoy", "cpi-food-yoy", "cpi-nonfood-yoy", "cpi-services-yoy"):
+        assert rows[code]["model_config_json"]["derived_forecast"]["source_model"] == "Inflation-12M-MW"
+
+
 def test_monthly_tail_extrapolate_eop_year_from_last_forecast_month():
     """Ставка/уровень: последний месяц прогноза → годовой прогноз тем же значением.
 
@@ -552,3 +588,34 @@ def test_weekly_inflation_by_calendar_month_forecast():
     points = outputs[0].result.points
     assert len(points) >= 1
     assert all(p.date > date(2025, 2, 10) for p in points)
+
+
+def test_pipeline_injects_source_model_forecast():
+    """Одно число (14.11.2026): пайплайн кладёт прогноз выбранной модели источника отдельно от цепочки."""
+    from app.models import Forecast, ForecastValue, Indicator
+    from app.services.forecast_pipeline import _maybe_inject_source_for_derived
+    from tests.test_analytics2 import _run_with_db
+
+    async def scenario(maker):
+        async with maker() as db:
+            ind = Indicator(code="cpi", name="ИПЦ")
+            db.add(ind)
+            await db.flush()
+            monthly = Forecast(indicator_id=ind.id, model_name="CPI-Monthly-MW", is_current=True)
+            yoy = Forecast(indicator_id=ind.id, model_name="Inflation-12M-MW", is_current=True)
+            old = Forecast(indicator_id=ind.id, model_name="Inflation-12M-MW", is_current=False)
+            db.add_all([monthly, yoy, old])
+            await db.flush()
+            db.add_all([
+                ForecastValue(forecast_id=monthly.id, date=date(2026, 12, 1), value=100.44),
+                ForecastValue(forecast_id=yoy.id, date=date(2026, 12, 1), value=6.3263),
+                ForecastValue(forecast_id=old.id, date=date(2026, 12, 1), value=9.99),
+            ])
+            await db.commit()
+        async with maker() as db:
+            return await _maybe_inject_source_for_derived(db, {"derived_forecast": {
+                "source_code": "cpi", "source_model": "Inflation-12M-MW"}})
+
+    cfg = _run_with_db(scenario)
+    assert cfg["_source_model_forecast"] == [(date(2026, 12, 1), 6.3263)]
+    assert dict(cfg["_source_data"])[date(2026, 12, 1)] == 100.44
