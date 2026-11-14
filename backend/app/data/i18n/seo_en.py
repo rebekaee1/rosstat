@@ -1176,6 +1176,7 @@ CALENDAR_TEMPLATES_EN: dict[str, object] = {
     "th_status": "Status",
     "status_expected": "expected",
     "status_dash": "—",
+    "status_moved": "moved from {date}",
     "actual_prefix": " Actual: {value}.",
     "interactive": "Interactive calendar",
     "source_rosstat": "Rosstat",

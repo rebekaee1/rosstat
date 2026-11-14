@@ -411,8 +411,12 @@ def test_returning_start_greeting_thanks_and_next_release(env):
             db.add(dep)
             await db.flush()
             db.add(IndicatorData(indicator_id=dep.id, date=date(2026, 8, 1), value=12.84))
+            # Бот берёт только события, видимые в календаре сайта (с источником и ключом).
             db.add(EconomicEvent(title="Ставки", event_type="data_release", source="cbr", indicator_id=dep.id,
-                                 scheduled_date=date(2099, 12, 8), is_estimated=False))
+                                 scheduled_date=date(2099, 12, 8), is_estimated=False,
+                                 date_confidence="official_explicit", event_key="cbr:ics:deposit-rate:2099-12-08",
+                                 source_url="https://www.cbr.ru/", source_hash="a" * 64,
+                                 last_seen_at=datetime(2026, 11, 14)))
             await db.commit()
     asyncio.run(seed())
     asyncio.run(pb.handle_message(_msg("/start")))

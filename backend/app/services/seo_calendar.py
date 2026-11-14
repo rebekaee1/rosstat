@@ -85,7 +85,9 @@ async def render_calendar_month_html(
     }
     status_expected = calendar_template("status_expected") or "ожидается"
     status_dash = calendar_template("status_dash") or "—"
+    status_moved = calendar_template("status_moved") or "перенесено с {date}"
     actual_prefix = calendar_template("actual_prefix")
+    from app.api.calendar import _rescheduled_from
 
     rows_html = []
     for ev in events:
@@ -103,11 +105,18 @@ async def render_calendar_month_html(
             f"{d.day} {escape(en_month)}" if en_month else f"{d.day} {escape(month_gen)}"
         )
         pub_title = event_public_title(ev.title, ev.title_en)
+        # Статус по дню события, а не по месяцу: прошедший день текущего месяца — не «ожидается».
+        status = status_expected if d >= today else status_dash
+        moved = _rescheduled_from(ev)
+        if moved and not value:
+            moved_label = (moved.strftime("%d.%m.%Y") if en_month
+                           else f"{moved.day} {_MONTHS_GEN[moved.month - 1]}")
+            status = escape(status_moved.format(date=moved_label))
         rows_html.append(
             f"<tr><td>{day_label}</td>"
             f"<td>{escape(pub_title)}{period}</td>"
             f"<td>{escape(src)}</td>"
-            f"<td>{value or (status_expected if is_future else status_dash)}</td></tr>"
+            f"<td>{value or status}</td></tr>"
         )
 
     verb = "выйдут" if is_future else "вышли"

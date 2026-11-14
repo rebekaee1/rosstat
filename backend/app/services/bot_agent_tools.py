@@ -347,8 +347,12 @@ async def _rank_regions(db, code: str, year: int | None = None, place: str | Non
 async def _calendar(db, days: int | None = 30, query: str | None = None) -> str:
     days = max(1, min(int(days or 30), 90))
     today = date.today()
+    from app.api.calendar import _public_calendar_conditions
+
+    # Только события календаря сайта: скрытые оценки дат (14.11.2026 — еженедельные заготовки ИПЦ) не отвечаем.
     q = select(EconomicEvent.scheduled_date, EconomicEvent.title, EconomicEvent.is_estimated).where(
-        EconomicEvent.scheduled_date >= today, EconomicEvent.scheduled_date <= today + timedelta(days=days))
+        EconomicEvent.scheduled_date >= today, EconomicEvent.scheduled_date <= today + timedelta(days=days),
+        *_public_calendar_conditions())
     for s in _stems(query or ""):
         q = q.where(or_(*[func.lower(EconomicEvent.title).like(f"%{a}%") for a in _alts(s)]))
     seen: set = set()

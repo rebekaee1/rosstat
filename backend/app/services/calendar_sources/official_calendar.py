@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 CBR_CALENDAR_PAGE = "https://www.cbr.ru/statistics/indcalendar/"
 CBR_ICS_URL = "https://www.cbr.ru/Queries/FileSource/105732/vCalendar.ics?inline=True"
-CBR_MONETARY_POLICY_CALENDAR_URL = "https://cbr.ru/dkp/cal_mp/"
+from app.services.calendar_sources.cbr_key_rate import CBR_MONETARY_POLICY_CALENDAR_URL  # noqa: E402
 MINFIN_SCHEDULE_URL = "https://minfin.gov.ru/ru/statistics/schedule"
 ROSSTAT_CPI_RULE_URL = "https://rosstat.gov.ru/statistics/price"
 ROSSTAT_PRICE_URL = "https://rosstat.gov.ru/statistics/price"
@@ -34,6 +34,10 @@ ROSSTAT_TRADE_URL = "https://rosstat.gov.ru/folder/10705"
 # Строительство / ввод жилья — не путать с торговлей (folder/10705).
 ROSSTAT_CONSTRUCTION_URL = "https://rosstat.gov.ru/folder/14458"
 ROSSTAT_CONSTRUCTION_KEP_URL = "https://rosstat.gov.ru/compendium/document/50802"
+
+
+# Москва живёт по UTC+3 без перехода на летнее время с 26.10.2014.
+MSK_UTC_OFFSET = timedelta(hours=3)
 
 
 MONTH_NAMES_RU = [
@@ -249,16 +253,8 @@ MINFIN_RULES = [
     },
 ]
 
-CBR_KEY_RATE_MEETINGS_2026 = [
-    {"date": date(2026, 2, 13), "has_forecast": True, "summary_date": date(2026, 2, 26)},
-    {"date": date(2026, 3, 20), "has_forecast": False, "summary_date": date(2026, 4, 1)},
-    {"date": date(2026, 4, 24), "has_forecast": True, "summary_date": date(2026, 5, 12)},
-    {"date": date(2026, 6, 19), "has_forecast": False, "summary_date": date(2026, 7, 1)},
-    {"date": date(2026, 7, 24), "has_forecast": True, "summary_date": date(2026, 8, 5)},
-    {"date": date(2026, 9, 11), "has_forecast": False, "summary_date": date(2026, 9, 23)},
-    {"date": date(2026, 10, 23), "has_forecast": True, "summary_date": date(2026, 11, 4)},
-    {"date": date(2026, 12, 18), "has_forecast": False, "summary_date": date(2026, 12, 29)},
-]
+# Даты заседаний по ключевой ставке читаются со страницы ЦБ (calendar_sources/cbr_key_rate.py);
+# там же запасной список на случай недоступности страницы.
 
 CBR_DAILY_RULES = [
     {
@@ -353,6 +349,10 @@ CBR_EVENT_RULES = [
      (("внешняя торговля", "услугами по месяцам"),)),
     (("current-account",), "Счёт текущих операций платёжного баланса", "Current Account", "data_release", 2,
      (("счет текущих операций",), ("счёт текущих операций",), ("current account",))),
+    # Ежемесячная оценка платёжного баланса (с 14.11.2026): ЦБ публикует её около 15-го числа,
+    # это главная оперативная цифра по счёту текущих операций между квартальными выпусками.
+    (("current-account",), "Оценка платёжного баланса", "Balance of Payments Estimate", "data_release", 2,
+     (("платежный баланс – оценка",), ("оценка платежного баланса российской федерации",))),
     (("external-debt",), "Внешний долг РФ", "External Debt of the Russian Federation", "data_release", 1,
      (("внешний долг российской федерации",), ("external debt",))),
     (("fdi-net",), "Прямые инвестиции РФ", "Foreign Direct Investment", "data_release", 1,
@@ -371,19 +371,41 @@ async def refresh_official_calendar(
     from app.services.display import today_msk
 
     today = today or today_msk()
-    candidates = await run_in_threadpool(_collect_calendar_candidates, today, months_ahead)
+    collected = await run_in_threadpool(_collect_calendar_feeds, today, months_ahead)
+    candidates = collected.candidates
 
     async def _persist(session: AsyncSession) -> int:
+        from app.services.calendar_sources.common import sweep_unseen_feed_events
         from app.services.calendar_sources.enrichment import (
+            confirm_releases_from_loads,
             enrich_events_from_indicator_data,
             filter_speculative_rosstat_monthly,
             prune_persisted_speculative_rosstat_monthly,
         )
 
+        from app.services.calendar_sources.common import prune_legacy_keyless_estimates
+
+        await prune_legacy_keyless_estimates(session)
         filtered = await filter_speculative_rosstat_monthly(session, candidates)
         changed = await upsert_calendar_candidates(session, filtered)
+        start = today - timedelta(days=14)
+        end = today + timedelta(days=months_ahead * 31)
+        for feed in collected.complete_feeds:
+            feed_candidates = [c for c in candidates if (c.metadata or {}).get("feed") == feed]
+            seen = {c.event_key for c in feed_candidates}
+            feed_end = end
+            if feed in ("rosstat_plan", "rosstat_oper"):
+                # Граница — конец последнего прочитанного годового графика: если файл следующего
+                # года не скачался, его ранее сохранённые события не считаются исчезнувшими.
+                years = [int((c.metadata or {}).get("schedule_year") or 0) for c in feed_candidates]
+                feed_end = min(end, date(max(years), 12, 31)) if years and max(years) else start
+            await sweep_unseen_feed_events(session, feed=feed, seen_keys=seen, start=start, end=feed_end)
+        from app.services.calendar_sources.common import repair_legacy_cbr_ics_times
+
+        await repair_legacy_cbr_ics_times(session)
         await prune_persisted_speculative_rosstat_monthly(session)
         await enrich_events_from_indicator_data(session)
+        await confirm_releases_from_loads(session)
         return changed
 
     if db is not None:
@@ -392,16 +414,50 @@ async def refresh_official_calendar(
         return await _persist(session)
 
 
+class CollectedCalendar:
+    """Кандидаты всех источников и список источников, ответивших полным списком."""
+
+    def __init__(self, candidates: list[CalendarCandidate], complete_feeds: list[str]):
+        self.candidates = candidates
+        self.complete_feeds = complete_feeds
+
+
 def _collect_calendar_candidates(today: date, months_ahead: int) -> list[CalendarCandidate]:
     """Synchronous source HTTP/parsing must not block the serving event loop."""
+    return _collect_calendar_feeds(today, months_ahead).candidates
+
+
+def _collect_calendar_feeds(today: date, months_ahead: int) -> CollectedCalendar:
+    from app.services.calendar_sources.cbr_key_rate import fetch_key_rate_calendar
+
+    complete: list[str] = []
     candidates = build_rule_candidates(today=today, months_ahead=months_ahead)
     candidates.extend(build_cbr_daily_rule_candidates(today=today, months_ahead=months_ahead))
-    candidates.extend(build_cbr_monetary_policy_candidates(today=today, months_ahead=months_ahead))
-    candidates.extend(fetch_cbr_calendar_candidates(today=today, months_ahead=months_ahead))
-    candidates.extend(fetch_rosstat_plan_candidates_safe(today=today, months_ahead=months_ahead))
-    candidates = prefer_explicit_plan_candidates(candidates)
 
-    return candidates
+    meetings = fetch_key_rate_calendar()
+    if meetings:
+        complete.append("cbr_key_rate")
+    candidates.extend(build_cbr_monetary_policy_candidates(
+        today=today, months_ahead=months_ahead, meetings=meetings,
+    ))
+
+    cbr_ics = fetch_cbr_calendar_candidates(today=today, months_ahead=months_ahead)
+    if cbr_ics:
+        complete.append("cbr_ics")
+    candidates.extend(cbr_ics)
+
+    plan = fetch_rosstat_plan_candidates_safe(today=today, months_ahead=months_ahead)
+    if plan:
+        complete.append("rosstat_plan")
+    candidates.extend(plan)
+
+    oper = fetch_rosstat_oper_candidates_safe(today=today, months_ahead=months_ahead)
+    if oper:
+        complete.append("rosstat_oper")
+    candidates.extend(oper)
+
+    candidates = prefer_explicit_plan_candidates(candidates)
+    return CollectedCalendar(candidates, complete)
 
 
 def build_rule_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
@@ -470,6 +526,21 @@ def fetch_rosstat_plan_candidates_safe(*, today: date, months_ahead: int) -> lis
         return []
 
 
+def fetch_rosstat_oper_candidates_safe(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
+    """Даты доклада «Социально-экономическое положение России» и «Краткосрочных показателей»."""
+    from app.config import settings
+
+    if not settings.calendar_rosstat_plan_enabled:
+        return []
+    from app.services.calendar_sources.rosstat_oper_plan import fetch_rosstat_oper_candidates
+
+    try:
+        return fetch_rosstat_oper_candidates(today=today, months_ahead=months_ahead)
+    except Exception:
+        logger.exception("Rosstat operative schedule candidates fetch failed")
+        return []
+
+
 def build_rosstat_rule_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
     candidates: list[CalendarCandidate] = []
     horizon = today + timedelta(days=months_ahead * 31)
@@ -480,7 +551,12 @@ def build_rosstat_rule_candidates(*, today: date, months_ahead: int) -> list[Cal
         if not calendar_source_url(release_year):
             continue
         for rule in ROSSTAT_MONTHLY_RULES:
-            scheduled = nth_working_day(release_year, release_month, rule["nth_workday"])
+            try:
+                scheduled = nth_working_day(release_year, release_month, rule["nth_workday"])
+            except ValueError:
+                # В январе 2027 года 15 рабочих дней: «18-й рабочий день» не существует. Оценка
+                # по правилу скрыта с витрины — пропускаем, а не роняем весь проход календаря.
+                continue
             if not (cutoff <= scheduled <= horizon):
                 continue
             candidates.append(CalendarCandidate(
@@ -538,7 +614,10 @@ def build_minfin_rule_candidates(*, today: date, months_ahead: int) -> list[Cale
         release_year, release_month = next_month(ref_year, ref_month)
         if not calendar_source_url(release_year):
             continue
-        scheduled = nth_working_day(release_year, release_month, 14)
+        try:
+            scheduled = nth_working_day(release_year, release_month, 14)
+        except ValueError:
+            continue
         if not (cutoff <= scheduled <= horizon):
             continue
         for rule in MINFIN_RULES:
@@ -566,18 +645,33 @@ def build_minfin_rule_candidates(*, today: date, months_ahead: int) -> list[Cale
     return candidates
 
 
-def build_cbr_monetary_policy_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
+def build_cbr_monetary_policy_candidates(
+    *,
+    today: date,
+    months_ahead: int,
+    meetings: list | tuple | None = None,
+) -> list[CalendarCandidate]:
+    """Заседания и резюме по ключевой ставке.
+
+    ``meetings`` — разобранная страница cbr.ru/dkp/cal_mp/; без неё — запасной список
+    ``cbr_key_rate.FALLBACK_MEETINGS``. Ключ резюме привязан к заседанию, а не к своей дате:
+    если ЦБ сдвинет резюме, событие переедет с отметкой о переносе, а не раздвоится.
+    """
+    from app.services.calendar_sources.cbr_key_rate import FALLBACK_MEETINGS
+
+    source_meetings = list(meetings) if meetings else list(FALLBACK_MEETINGS)
     candidates: list[CalendarCandidate] = []
     horizon = today + timedelta(days=months_ahead * 31)
     cutoff = today - timedelta(days=14)
-    for meeting in CBR_KEY_RATE_MEETINGS_2026:
-        meeting_date = meeting["date"]
+    for meeting in source_meetings:
+        meeting_date = meeting.date
+        has_forecast = meeting.has_forecast
         if cutoff <= meeting_date <= horizon:
-            label = "опорное" if meeting["has_forecast"] else "промежуточное"
+            label = "опорное" if has_forecast else "промежуточное"
             candidates.append(CalendarCandidate(
                 event_key=stable_key("cbr", "key-rate-decision", meeting_date.isoformat()),
                 title=f"Заседание ЦБ по ключевой ставке ({label})",
-                title_en=f"CBR Key Rate Decision ({'core' if meeting['has_forecast'] else 'interim'})",
+                title_en=f"CBR Key Rate Decision ({'core' if has_forecast else 'interim'})",
                 event_type="rate_decision",
                 source="cbr",
                 indicator_code="key-rate",
@@ -590,25 +684,27 @@ def build_cbr_monetary_policy_candidates(*, today: date, months_ahead: int) -> l
                 description=_event_description(
                     "key-rate",
                     "Пресс-релиз в 13:30 МСК, пресс-конференция в 15:00 МСК."
-                    + (" С публикацией среднесрочного прогноза." if meeting["has_forecast"] else ""),
+                    + (" С публикацией среднесрочного прогноза." if has_forecast else ""),
                 ),
                 metadata={
+                    "feed": "cbr_key_rate",
                     "calendar_url": CBR_MONETARY_POLICY_CALENDAR_URL,
-                    "has_forecast": meeting["has_forecast"],
-                    "schedule_year": 2026,
+                    "has_forecast": has_forecast,
+                    "schedule_year": meeting_date.year,
                 },
             ))
 
-        summary_date = meeting["summary_date"]
-        if cutoff <= summary_date <= horizon:
+        summary_date = meeting.summary_date
+        if summary_date and cutoff <= summary_date <= horizon:
             candidates.append(CalendarCandidate(
-                event_key=stable_key("cbr", "key-rate-summary", summary_date.isoformat()),
+                event_key=stable_key("cbr", "key-rate-summary", "meeting", meeting_date.isoformat()),
                 title="Резюме обсуждения ключевой ставки",
                 title_en="Key Rate Discussion Summary",
                 event_type="report",
                 source="cbr",
                 indicator_code="key-rate",
                 scheduled_date=summary_date,
+                scheduled_time=None,
                 date_confidence="official_explicit",
                 importance=2,
                 source_url=CBR_MONETARY_POLICY_CALENDAR_URL,
@@ -618,8 +714,10 @@ def build_cbr_monetary_policy_candidates(*, today: date, months_ahead: int) -> l
                     "Публикация резюме обсуждения ключевой ставки Советом директоров Банка России.",
                 ),
                 metadata={
+                    "feed": "cbr_key_rate",
                     "calendar_url": CBR_MONETARY_POLICY_CALENDAR_URL,
-                    "schedule_year": 2026,
+                    "meeting_date": meeting_date.isoformat(),
+                    "schedule_year": summary_date.year,
                 },
             ))
     return candidates
@@ -679,12 +777,24 @@ def parse_cbr_ics(
     today: date,
     months_ahead: int,
 ) -> list[CalendarCandidate]:
+    """Файл календаря ЦБ → по одному событию на (показатель, тип, дату).
+
+    14.11.2026: время в файле ЦБ записано в UTC (``DTSTART:20261119T130000Z``), а сайт
+    подписывал его «МСК» — международные резервы стояли на 13:00 вместо 16:00 МСК, ставки
+    по кредитам на 07:00 вместо 10:00. Теперь дата и время переводятся в московское время.
+    В один день ЦБ кладёт несколько таблиц одной темы (внешний долг — 4 записи); раньше каждая
+    давала свой ключ события и строки перетирали друг друга по естественному ключу базы.
+    Теперь одна запись на показатель и день, время — самое раннее, ключ не зависит от UID таблицы.
+    """
     horizon = today + timedelta(days=months_ahead * 31)
     cutoff = today - timedelta(days=14)
-    candidates: list[CalendarCandidate] = []
+    chosen: dict[tuple[str, str, date], CalendarCandidate] = {}
     for event in _parse_ics_events(text):
-        scheduled = _parse_ics_date(event.get("DTSTART"))
-        if not scheduled or not (cutoff <= scheduled <= horizon):
+        moment = _parse_ics_moment_msk(event.get("DTSTART"))
+        if moment is None:
+            continue
+        scheduled, scheduled_time = moment
+        if not (cutoff <= scheduled <= horizon):
             continue
         blob = " ".join([
             event.get("SUMMARY", ""),
@@ -694,11 +804,19 @@ def parse_cbr_ics(
         matches = _match_cbr_events(blob)
         if not matches:
             continue
-        uid = _compact_source_uid(event.get("UID") or stable_key(event.get("SUMMARY", ""), scheduled.isoformat()))
-        scheduled_time = _parse_ics_time(event.get("DTSTART"))
+        raw_uid = _compact_source_uid(event.get("UID") or stable_key(event.get("SUMMARY", ""), scheduled.isoformat()))
+        seen_codes: set[str] = set()
         for code, title, title_en, event_type, importance in matches:
-            candidates.append(CalendarCandidate(
-                event_key=stable_key("cbr", code, uid, scheduled.isoformat()),
+            # Первое совпавшее правило для показателя — главное (порядок CBR_EVENT_RULES значим).
+            if code in seen_codes:
+                continue
+            seen_codes.add(code)
+            slot = (code, event_type, scheduled)
+            current = chosen.get(slot)
+            if current is not None and (current.scheduled_time or "99:99") <= (scheduled_time or "99:99"):
+                continue
+            chosen[slot] = CalendarCandidate(
+                event_key=stable_key("cbr", "ics", code, event_type, scheduled.isoformat()),
                 title=title,
                 title_en=title_en,
                 event_type=event_type,
@@ -710,11 +828,15 @@ def parse_cbr_ics(
                 reference_period=_reference_from_text(event.get("SUMMARY", "") + " " + event.get("DESCRIPTION", "")),
                 importance=importance,
                 source_url=event.get("URL") or source_url,
-                source_event_uid=uid,
+                source_event_uid=raw_uid,
                 description=_event_description(code) or event.get("SUMMARY"),
-                metadata={"calendar_url": source_url, "raw_summary": event.get("SUMMARY")},
-            ))
-    return candidates
+                metadata={
+                    "feed": "cbr_ics",
+                    "calendar_url": source_url,
+                    "raw_summary": event.get("SUMMARY"),
+                },
+            )
+    return sorted(chosen.values(), key=lambda c: (c.scheduled_date, c.indicator_code or "", c.event_type))
 
 
 def _extract_cbr_ics_url(html: str) -> str | None:
@@ -773,6 +895,24 @@ def _parse_ics_date(value: str | None) -> date | None:
         return datetime.strptime(compact[:8], "%Y%m%d").date()
     except ValueError:
         return None
+
+
+def _parse_ics_moment_msk(value: str | None) -> tuple[date, str | None] | None:
+    """DTSTART → (дата, «ЧЧ:ММ») по Москве. ``Z`` — UTC, сдвиг +3 ч; без ``Z`` — время уже местное."""
+    if not value:
+        return None
+    raw = value.strip()
+    if "T" not in raw:
+        day = _parse_ics_date(raw)
+        return (day, None) if day else None
+    try:
+        moment = datetime.strptime(raw.rstrip("Z")[:15], "%Y%m%dT%H%M%S")
+    except ValueError:
+        day = _parse_ics_date(raw)
+        return (day, _parse_ics_time(raw)) if day else None
+    if raw.endswith("Z"):
+        moment = moment + MSK_UTC_OFFSET
+    return moment.date(), moment.strftime("%H:%M")
 
 
 def _parse_ics_time(value: str | None) -> str | None:
