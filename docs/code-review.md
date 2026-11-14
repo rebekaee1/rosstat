@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `d742846c627ea41cdc6f05cb80966969fb40de77`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `a5d7194056189df1b8ec0287bc63ef5a3c7cfbb2`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2457 |
-| Код, шаблоны и стили | 1985 |
-| Актуальные рецензии без пропусков guard | 2457 |
-| Именованные определения Python/JS: с аннотацией / всего | 15975 / 15975 |
+| Файлы в явно определённом scope | 2458 |
+| Код, шаблоны и стили | 1986 |
+| Актуальные рецензии без пропусков guard | 2458 |
+| Именованные определения Python/JS: с аннотацией / всего | 15985 / 15985 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -260,7 +260,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/analytics_dims.py](../backend/app/services/analytics_dims.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/analytics_features.py](../backend/app/services/analytics_features.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/analytics_ingestion.py](../backend/app/services/analytics_ingestion.py) | reviewed | 7/7 | актуально |
-| [backend/app/services/analytics_marts.py](../backend/app/services/analytics_marts.py) | reviewed | 62/62 | актуально |
+| [backend/app/services/analytics_marts.py](../backend/app/services/analytics_marts.py) | reviewed | 63/63 | актуально |
 | [backend/app/services/analytics_period.py](../backend/app/services/analytics_period.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/analytics_repair.py](../backend/app/services/analytics_repair.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/analytics_report_bundle.py](../backend/app/services/analytics_report_bundle.py) | reviewed | 4/4 | актуально |
@@ -652,6 +652,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_auto_loan_rate.py](../backend/tests/test_auto_loan_rate.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_backup_readiness.py](../backend/tests/test_backup_readiness.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_bank_credit_seo.py](../backend/tests/test_bank_credit_seo.py) | reviewed | 5/5 | актуально |
+| [backend/tests/test_bi_portrait_humans.py](../backend/tests/test_bi_portrait_humans.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_boot_splash.py](../backend/tests/test_boot_splash.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_bot_defense.py](../backend/tests/test_bot_defense.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_bot_portrait_cluster_and_calibration.py](../backend/tests/test_bot_portrait_cluster_and_calibration.py) | reviewed | 20/20 | актуально |
@@ -905,7 +906,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_session_change_log_ch.py](../backend/tests/test_session_change_log_ch.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_session_change_log_pg.py](../backend/tests/test_session_change_log_pg.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_session_replay.py](../backend/tests/test_session_replay.py) | reviewed | 36/36 | актуально |
-| [backend/tests/test_sessionize_boundaries.py](../backend/tests/test_sessionize_boundaries.py) | reviewed | 31/31 | актуально |
+| [backend/tests/test_sessionize_boundaries.py](../backend/tests/test_sessionize_boundaries.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_sessionize_boundaries_pg.py](../backend/tests/test_sessionize_boundaries_pg.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_signup_attribution.py](../backend/tests/test_signup_attribution.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_site_path_collisions.py](../backend/tests/test_site_path_collisions.py) | reviewed | 6/6 | актуально |

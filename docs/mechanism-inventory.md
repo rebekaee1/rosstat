@@ -13,8 +13,8 @@
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1349**
-- Registry references: **2545**
+- Registry declarations: **1350**
+- Registry references: **2547**
 - Migration operations: **480**
 - Candidate effects: **2818**
 - Unresolved syntax: **1**
@@ -2378,13 +2378,13 @@ Relationships: `[]`
 | app.services.analytics_marts.SECTION_RULES | List | sequence/source expression | [backend/app/services/analytics_marts.py:94](../backend/app/services/analytics_marts.py#L94) |
 | app.services.analytics_marts.CALIBRATION_EXCLUDED_CHANNELS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:175](../backend/app/services/analytics_marts.py#L175) |
 | app.services.analytics_marts.CALIBRATION_CORRIDOR_PCT | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:176](../backend/app/services/analytics_marts.py#L176) |
-| app.services.analytics_marts.HUMAN_ACTION_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:802](../backend/app/services/analytics_marts.py#L802) |
-| app.services.analytics_marts._SPIKE_PATH_RE | Call | computed source expression | [backend/app/services/analytics_marts.py:966](../backend/app/services/analytics_marts.py#L966) |
-| app.services.analytics_marts.PWA_INSTALL_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1518](../backend/app/services/analytics_marts.py#L1518) |
-| app.services.analytics_marts.PWA_DISMISS_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1519](../backend/app/services/analytics_marts.py#L1519) |
-| app.services.analytics_marts._PWA_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1521](../backend/app/services/analytics_marts.py#L1521) |
-| app.services.analytics_marts.FUNNEL_STEPS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:2120](../backend/app/services/analytics_marts.py#L2120) |
-| app.services.analytics_marts._FUNNEL_REGISTRATION_STEPS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:2130](../backend/app/services/analytics_marts.py#L2130) |
+| app.services.analytics_marts.HUMAN_ACTION_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:819](../backend/app/services/analytics_marts.py#L819) |
+| app.services.analytics_marts._SPIKE_PATH_RE | Call | computed source expression | [backend/app/services/analytics_marts.py:983](../backend/app/services/analytics_marts.py#L983) |
+| app.services.analytics_marts.PWA_INSTALL_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1536](../backend/app/services/analytics_marts.py#L1536) |
+| app.services.analytics_marts.PWA_DISMISS_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1537](../backend/app/services/analytics_marts.py#L1537) |
+| app.services.analytics_marts._PWA_EVENTS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:1539](../backend/app/services/analytics_marts.py#L1539) |
+| app.services.analytics_marts.FUNNEL_STEPS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:2138](../backend/app/services/analytics_marts.py#L2138) |
+| app.services.analytics_marts._FUNNEL_REGISTRATION_STEPS | Tuple | sequence/source expression | [backend/app/services/analytics_marts.py:2148](../backend/app/services/analytics_marts.py#L2148) |
 | app.services.analytics_period.MSK | Call | computed source expression | [backend/app/services/analytics_period.py:20](../backend/app/services/analytics_period.py#L20) |
 | app.services.analytics_period.MSK_OFFSET | Call | computed source expression | [backend/app/services/analytics_period.py:21](../backend/app/services/analytics_period.py#L21) |
 | app.services.analytics_period.PRESETS | Tuple | sequence/source expression | [backend/app/services/analytics_period.py:23](../backend/app/services/analytics_period.py#L23) |
@@ -3187,10 +3187,11 @@ Relationships: `[]`
 | app.services.yandex_token_alert.SERVICE_LABELS | Dict | 'webmaster', 'metrika' | [backend/app/services/yandex_token_alert.py:24](../backend/app/services/yandex_token_alert.py#L24) |
 | app.services.yandex_token_alert.SERVICE_EFFECTS | Dict | 'webmaster', 'metrika' | [backend/app/services/yandex_token_alert.py:28](../backend/app/services/yandex_token_alert.py#L28) |
 | app.tasks.analytics_rollups._SESSION_EVENT_TYPES | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:54](../backend/app/tasks/analytics_rollups.py#L54) |
-| app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:58](../backend/app/tasks/analytics_rollups.py#L58) |
-| app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:65](../backend/app/tasks/analytics_rollups.py#L65) |
-| app.tasks.analytics_rollups._RAW_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:104](../backend/app/tasks/analytics_rollups.py#L104) |
-| app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:435](../backend/app/tasks/analytics_rollups.py#L435) |
+| app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:66](../backend/app/tasks/analytics_rollups.py#L66) |
+| app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:73](../backend/app/tasks/analytics_rollups.py#L73) |
+| app.tasks.analytics_rollups._PORTRAIT_LATE_MARGIN | Call | computed source expression | [backend/app/tasks/analytics_rollups.py:96](../backend/app/tasks/analytics_rollups.py#L96) |
+| app.tasks.analytics_rollups._RAW_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:115](../backend/app/tasks/analytics_rollups.py#L115) |
+| app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:448](../backend/app/tasks/analytics_rollups.py#L448) |
 | app.tasks.analytics_scheduler._METRIKA_DIGEST_RETRY_PAUSES_S | Tuple | sequence/source expression | [backend/app/tasks/analytics_scheduler.py:261](../backend/app/tasks/analytics_scheduler.py#L261) |
 | app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:43](../backend/app/tasks/scheduler.py#L43) |
 | app.tasks.session_analysis._INACTIVE | Call | computed source expression | [backend/app/tasks/session_analysis.py:27](../backend/app/tasks/session_analysis.py#L27) |

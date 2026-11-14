@@ -2,12 +2,12 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-11-13
+**Сгенерировано:** 2026-11-14
 
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2246  ·  **Строк:** 1 419 252  ·  **Токенов (≈):** 13 531 387
+**Файлов:** 2247  ·  **Строк:** 1 419 519  ·  **Токенов (≈):** 13 535 160
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 797 | 64 788 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 917 | 320 205 | 3 503 938 |
+| `backend` | 918 | 320 341 | 3 505 837 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 146 | 17 427 |
-| `docs` | 144 | 885 465 | 7 612 111 |
+| `docs` | 144 | 885 596 | 7 613 985 |
 | `frontend` | 1014 | 184 423 | 2 020 294 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 365 199 | 2 991 079 |
+| `docs/mechanism-inventory.json` | 365 295 | 2 991 855 |
 | `docs/client-mechanism-inventory.json` | 255 286 | 1 803 159 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -36,11 +36,11 @@
 | `docs/design/local-acceptance/baseline-paced/http.json` | 23 844 | 219 383 |
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
-| `docs/mechanism-inventory.md` | 3 390 | 155 403 |
+| `docs/mechanism-inventory.md` | 3 391 | 155 448 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
-| `docs/backlog.md` | 3 467 | 123 833 |
+| `docs/backlog.md` | 3 483 | 124 558 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/data-contracts.md` | 1 212 | 61 165 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
@@ -63,7 +63,7 @@
 | `backend/app/api/world.py` | 2 905 | 28 850 |
 | `backend/app/api/sitemap.py` | 2 641 | 27 795 |
 | `backend/app/services/public_bot.py` | 2 063 | 27 394 |
-| `backend/app/services/analytics_marts.py` | 2 386 | 26 705 |
+| `backend/app/services/analytics_marts.py` | 2 404 | 26 945 |
 | `backend/app/models.py` | 1 920 | 25 109 |
 | `docs/search.md` | 986 | 24 225 |
 | `docs/workflow.md` | 670 | 24 111 |
@@ -91,15 +91,15 @@
 | `backend/app/data/research_catalog.json` | 1 221 | 15 986 |
 | `docs/planet-view.md` | 594 | 15 198 |
 | `frontend/src/components/IndicatorSearch.jsx` | 1 141 | 15 102 |
+| `backend/app/tasks/analytics_rollups.py` | 1 240 | 14 914 |
 | `backend/app/data/view_model_families.py` | 1 238 | 14 854 |
-| `backend/app/tasks/analytics_rollups.py` | 1 227 | 14 653 |
 | `backend/app/data/world_national_core/us.yaml` | 1 498 | 14 637 |
 | `frontend/src/components/PlanetView.jsx` | 843 | 14 421 |
 | `frontend/src/pages/CalculatorPage.jsx` | 1 263 | 13 946 |
 | `frontend/src/components/PlanetView.css` | 556 | 13 913 |
 | `backend/tests/test_seo_growth_pages.py` | 1 406 | 13 545 |
+| `backend/app/services/admin_bi.py` | 1 341 | 13 252 |
 | `backend/app/services/world_national_ingest.py` | 1 457 | 13 238 |
-| `backend/app/services/admin_bi.py` | 1 335 | 13 106 |
 | `docs/research/our-state-2026-10-05.md` | 431 | 12 982 |
 | `backend/app/api/seo_pages.py` | 1 132 | 12 640 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
@@ -286,6 +286,7 @@
 | `docs/research/_fpsr_raw/agent10.json` | 336 | 5 087 |
 | `frontend/src/pages/CalendarPage.jsx` | 469 | 5 067 |
 | `backend/tests/test_search_pulse_gaps.py` | 344 | 5 066 |
+| `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 313 | 5 055 |
 | `scripts/catalog-harvest.py` | 523 | 5 054 |
 | `frontend/src/lib/searchSynonyms.js` | 417 | 5 047 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 247 | 5 034 |
@@ -313,7 +314,6 @@
 | `backend/app/tasks/analytics_scheduler.py` | 438 | 4 751 |
 | `frontend/src/components/DataTable.jsx` | 433 | 4 740 |
 | `frontend/src/components/brand/flagArt.js` | 238 | 4 728 |
-| `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 295 | 4 727 |
 | `frontend/src/lib/currencyRates.js` | 437 | 4 722 |
 | `backend/tests/test_rosstat_weekly_inflation.py` | 444 | 4 701 |
 | `backend/app/services/session_replay.py` | 378 | 4 696 |
@@ -360,6 +360,7 @@
 | `frontend/src/styles/world.css` | 347 | 4 320 |
 | `frontend/src/components/CurrencyDesk.component.test.jsx` | 310 | 4 319 |
 | `frontend/src/lib/searchView.test.js` | 313 | 4 314 |
+| `backend/tests/test_sessionize_boundaries.py` | 331 | 4 302 |
 | `backend/app/services/seo_indicator_month.py` | 456 | 4 282 |
 | `frontend/src/lib/compareRepresentation.test.js` | 366 | 4 272 |
 | `docs/adr/0013-country-first-url-architecture.md` | 311 | 4 267 |
@@ -394,7 +395,6 @@
 | `frontend/src/lib/planetLabels.test.js` | 272 | 4 016 |
 | `backend/app/services/telegram_calm.py` | 352 | 3 969 |
 | `backend/app/data/world_concepts.py` | 386 | 3 964 |
-| `backend/tests/test_sessionize_boundaries.py` | 309 | 3 964 |
 | `frontend/src/components/PwaInstall.component.test.jsx` | 351 | 3 961 |
 | `frontend/src/components/CurrencyPairChart.jsx` | 328 | 3 959 |
 | `backend/app/services/signup_attribution.py` | 390 | 3 933 |
@@ -929,6 +929,7 @@
 | `frontend/src/components/home/HomeRegionPriceTiles.jsx` | 144 | 1 602 |
 | `frontend/src/lib/ratingInsights.js` | 152 | 1 601 |
 | `frontend/src/pages/Register.component.test.jsx` | 138 | 1 595 |
+| `backend/tests/test_sessionize_boundaries_pg.py` | 128 | 1 593 |
 | `backend/app/services/world_bank_pink_sheet_parser.py` | 194 | 1 591 |
 | `frontend/src/lib/authTrigger.js` | 175 | 1 586 |
 | `backend/app/services/cbr_dataservice_parser.py` | 181 | 1 585 |
@@ -937,7 +938,6 @@
 | `backend/tests/test_country_in_phrase.py` | 167 | 1 579 |
 | `frontend/src/lib/indicatorSummary.test.js` | 173 | 1 579 |
 | `frontend/src/lib/planetView.test.js` | 132 | 1 577 |
-| `backend/tests/test_sessionize_boundaries_pg.py` | 127 | 1 573 |
 | `frontend/src/lib/russiaHomeCards.test.js` | 148 | 1 571 |
 | `backend/app/tasks/session_analysis.py` | 126 | 1 569 |
 | `frontend/src/lib/housingViewModeContent.jsx` | 152 | 1 566 |
@@ -1383,6 +1383,7 @@
 | `backend/app/data/world_country_population.py` | 94 | 899 |
 | `backend/app/services/cbr_monetary_parser.py` | 104 | 898 |
 | `frontend/src/components/calendar/CalendarFilters.jsx` | 115 | 897 |
+| `backend/tests/test_bi_portrait_humans.py` | 76 | 894 |
 | `frontend/src/lib/planetAtlas.test.js` | 84 | 894 |
 | `frontend/src/components/brand/EmptyState.jsx` | 78 | 893 |
 | `backend/tests/test_uvicorn_supervisor_config.py` | 67 | 892 |
