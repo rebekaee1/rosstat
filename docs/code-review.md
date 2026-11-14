@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `468e02ee1db86f28623df7a6d3329a97fe1158e8`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `d98eca36bba4395bafd5efc34d9b56409ce8f53f`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2463 |
-| Код, шаблоны и стили | 1989 |
-| Актуальные рецензии без пропусков guard | 2463 |
-| Именованные определения Python/JS: с аннотацией / всего | 16055 / 16055 |
+| Файлы в явно определённом scope | 2464 |
+| Код, шаблоны и стили | 1990 |
+| Актуальные рецензии без пропусков guard | 2464 |
+| Именованные определения Python/JS: с аннотацией / всего | 16061 / 16061 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -433,7 +433,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/seo_region_compare.py](../backend/app/services/seo_region_compare.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/seo_regional.py](../backend/app/services/seo_regional.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/seo_regional_year.py](../backend/app/services/seo_regional_year.py) | reviewed | 10/10 | актуально |
-| [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 99/99 | актуально |
+| [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 100/100 | актуально |
 | [backend/app/services/seo_research.py](../backend/app/services/seo_research.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/seo_today.py](../backend/app/services/seo_today.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/seo_weekly_report.py](../backend/app/services/seo_weekly_report.py) | reviewed | 16/16 | актуально |
@@ -442,7 +442,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/seo_world_subnational.py](../backend/app/services/seo_world_subnational.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/seo_world_subnational_compare.py](../backend/app/services/seo_world_subnational_compare.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/seo_world_subnational_year.py](../backend/app/services/seo_world_subnational_year.py) | reviewed | 2/2 | актуально |
-| [backend/app/services/seo_world_year.py](../backend/app/services/seo_world_year.py) | reviewed | 5/5 | актуально |
+| [backend/app/services/seo_world_year.py](../backend/app/services/seo_world_year.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/seo_year_ui.py](../backend/app/services/seo_year_ui.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/session.py](../backend/app/services/session.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/session_analysis.py](../backend/app/services/session_analysis.py) | reviewed | 18/18 | актуально |
@@ -1006,6 +1006,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_us_bls_bea_adapters.py](../backend/tests/test_world_us_bls_bea_adapters.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_world_value_digits.py](../backend/tests/test_world_value_digits.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_world_vs_yoy_kind.py](../backend/tests/test_world_vs_yoy_kind.py) | reviewed | 12/12 | актуально |
+| [backend/tests/test_world_year_units.py](../backend/tests/test_world_year_units.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_yandex_clean_param.py](../backend/tests/test_yandex_clean_param.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_yandex_partner_stats.py](../backend/tests/test_yandex_partner_stats.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_yandex_token_alert.py](../backend/tests/test_yandex_token_alert.py) | reviewed | 14/14 | актуально |

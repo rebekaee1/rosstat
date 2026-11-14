@@ -12,6 +12,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import re
 from datetime import date
 from html import escape
@@ -309,8 +311,12 @@ def year_range_note(
     en: bool,
     last_is_partial: bool = False,
     min_points: int = 3,
+    value_fmt: Callable[[float], str] | None = None,
 ) -> str:
     """Короткая фраза для description годовой страницы ряда с несколькими точками.
+
+    ``value_fmt`` — готовый формат числа с единицей (страны мира, 14.11.2026: точность ряда
+    и единица справа от числа); без него — прежний формат с полной единицей.
 
     Запросы вида «максимальная ключевая ставка в 2025», «курс доллара в 2010»
     ищут именно крайние значения и значение на конец периода; прежний текст
@@ -330,6 +336,8 @@ def year_range_note(
     sfx = f" {unit}" if unit else ""
 
     def fmt(v: float) -> str:
+        if value_fmt is not None:
+            return value_fmt(v)
         return f"{format_number_ru(v, locale=loc)}{sfx}"
 
     if en:

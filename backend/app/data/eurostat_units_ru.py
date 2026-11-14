@@ -540,6 +540,23 @@ _NON_APPENDABLE_PREFIXES: tuple[str, ...] = (
     "с сезонной",
     "среднегодов",
     "на душу населения",
+    # Английские двойники тех же описаний (14.11.2026): «annual change, %» → «%», а не «3.58 annual change».
+    "annual change",
+    "monthly change",
+    "quarterly change",
+    "year-over-year change",
+    "change",
+    "rate of change",
+    "average change",
+    "balance",
+    "probability",
+    "in constant prices",
+    "in current prices",
+    "constant prices",
+    "seasonally",
+    "annual average",
+    "in 19",  # «in 2015 prices, million EUR» → «million EUR» (английский двойник «в постоянных ценах»)
+    "in 20",
 )
 
 
@@ -561,7 +578,11 @@ def unit_suffix(unit_ru: str | None) -> str:
     raw = (unit_ru or "").strip()
     if not raw:
         return ""
-    for segment in raw.split(","):
+    # Запятая внутри числа («per 1,000 people») — не разделитель сегментов.
+    for segment in _SEGMENT_SPLIT.split(raw):
         if _is_appendable_segment(segment):
             return segment.strip()
     return ""
+
+
+_SEGMENT_SPLIT = re.compile(r",(?!\d{3}\b)")
