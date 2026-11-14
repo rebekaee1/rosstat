@@ -32,8 +32,8 @@ export default function RegionCrossLink({ macroCode }) {
   return (
     <section className="mt-12">
       <div className="rounded-2xl p-5 fe-glass-lite">
-        <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-          <MapPin size={13} />
+        <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-text-secondary">
+          <MapPin size={13} className="text-champagne-ink" aria-hidden="true" />
           {t('indicator.regionCross.eyebrow')}
         </div>
         <p className="text-sm text-text-secondary leading-relaxed mb-3 max-w-2xl">
@@ -46,7 +46,7 @@ export default function RegionCrossLink({ macroCode }) {
           <Link
             to={regionMapPath(regionInd.code)}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: 'regions-map' })}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne text-[13px] font-medium hover:bg-champagne/20 transition-colors"
+            className="inline-flex min-h-9 items-center gap-1 px-3.5 py-1.5 rounded-full text-text-primary text-[13px] font-semibold transition-colors fe-glass-2 fe-press"
           >
             {t('indicator.regionCross.map')} <ArrowUpRight size={13} />
           </Link>

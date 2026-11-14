@@ -61,7 +61,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
       style={{ '--fe-duration': '0.28s', '--fe-rise': '8px' }}
     >
       <div className="p-5 flex items-center justify-between flex-wrap gap-3">
-        <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+        <h3 className="text-base font-semibold text-text-primary">
           {title}
         </h3>
       </div>
@@ -70,11 +70,11 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
         <table className="fe-fc-table w-full text-sm">
           <thead>
             <tr>
-              <th scope="col" className="text-left px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
+              <th scope="col" className="text-left px-5 py-3 text-[13px] font-medium text-text-secondary">
                 {t('forecast.asOf')}
               </th>
               <th scope="col" className="fe-fc-bar-col" aria-hidden="true" />
-              <th scope="col" className="text-right px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
+              <th scope="col" className="text-right px-5 py-3 text-[13px] font-medium text-text-secondary">
                 {valueLabel}
               </th>
             </tr>
@@ -82,13 +82,13 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
           <tbody>
             {rows.map(row => (
               <tr key={row.date} className="transition-colors">
-                <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
+                <td className="px-5 py-2.5 text-[13px] text-text-secondary">
                   {formatDate(row.date, dateFormat)}
                 </td>
                 <td className="fe-fc-bar-col" aria-hidden="true">
                   <span className="fe-fc-bar" style={{ '--fe-fc-share': barShare(row.value).toFixed(3) }} />
                 </td>
-                <td className="px-5 py-2.5 text-right font-mono font-medium text-champagne">
+                <td className="fe-num px-5 py-2.5 text-right font-semibold tabular-nums text-text-primary">
                   {formatValueWithUnit(row.value, unit, valueDigits)}
                 </td>
               </tr>
