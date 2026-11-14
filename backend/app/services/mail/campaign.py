@@ -35,6 +35,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.models import MailMessage
 from app.services.mail import audience, service, tokens, transport
+from app.services.mail.blocks import BlockError, validate_block
 from app.services.mail.templates import Digest, DigestItem, render_digest
 
 logger = logging.getLogger(__name__)
@@ -106,19 +107,45 @@ def parse_issue(data: dict) -> Issue:
                        url=with_utm(str(i.get("url") or ""), key), value=str(i.get("value") or ""))
             for i in (raw.get("items") or [])
         ]
+        blocks = []
+        for b in raw.get("blocks") or []:
+            try:
+                validate_block(b)
+            except BlockError as exc:
+                raise CampaignError(f"{loc}: {exc}") from None
+            b = dict(b)
+            if b.get("url"):
+                b["url"] = with_utm(str(b["url"]), key)
+            blocks.append(b)
+        signoff = str(raw.get("signoff") or "").strip()
+        outro = str(raw.get("outro") or "").strip()
+        if signoff and outro.rstrip(".").endswith(signoff):
+            # Подпись отдельной строкой — из конца последнего абзаца её убираем.
+            outro = outro.rstrip(".")[: -len(signoff)].rstrip(" .")
+            outro = outro + "." if outro and not outro.endswith(("?", "!", ".")) else outro
         by_locale[loc] = Digest(
             subject=str(raw["subject"]), title=str(raw["title"]), intro=str(raw.get("intro") or ""),
             preheader=str(raw.get("preheader") or ""), items=items,
             cta_label=str(raw.get("cta_label") or ""), cta_url=with_utm(str(raw.get("cta_url") or ""), key),
-            outro=str(raw.get("outro") or ""),
+            outro=outro, masthead=str(raw.get("masthead") or ""), signoff=signoff, blocks=blocks,
         )
     if not by_locale:
         raise CampaignError("нет ни ru, ни en")
     return Issue(key=key, by_locale=by_locale)
 
 
-def load_issue(path: str | Path) -> Issue:
-    return parse_issue(json.loads(Path(path).read_text(encoding="utf-8")))
+def load_issue(*paths: str | Path, key: str | None = None) -> Issue:
+    """Один файл со всеми языками или несколько файлов по языку (ключ — первый или ``key``)."""
+    merged: dict = {}
+    for path in paths:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        for loc in ("ru", "en"):
+            if data.get(loc):
+                merged[loc] = data[loc]
+        merged.setdefault("key", data.get("key"))
+    if key:
+        merged["key"] = key
+    return parse_issue(merged)
 
 
 def unsubscribe_links(user_id, locale: str) -> tuple[str, str]:
@@ -130,9 +157,11 @@ def unsubscribe_links(user_id, locale: str) -> tuple[str, str]:
 
 def render_for(issue: Issue, locale: str, user_id) -> tuple:
     page_url, one_click = unsubscribe_links(user_id, locale)
+    from app.services.display import today_msk
+
     rendered = render_digest(
         issue.by_locale[locale], locale, site_url=service.site_origin(locale) + "/",
-        unsubscribe_url=page_url, manage_url=service.site_link(locale, "/account"),
+        unsubscribe_url=page_url, manage_url=service.site_link(locale, "/account"), today=today_msk(),
     )
     return rendered, one_click
 

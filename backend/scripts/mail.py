@@ -43,6 +43,19 @@ from app.services.mail.account import oauth_hint_mail, reconfirm_mail, reset_mai
 from app.services.mail.templates import DigestItem, render_digest, render_watch, sample_digest  # noqa: E402
 
 DUMMY_USER = "00000000-0000-0000-0000-000000000000"
+# Понятная пометка в теме проверочного письма: какое это письмо и на каком языке.
+SAMPLE_LABEL = {
+    "verify_email": "подтверждение почты после регистрации",
+    "password_reset": "сброс пароля",
+    "newsletter": "проверка вида рассылки",
+    "oauth_hint": "«Забыли пароль?» при входе через Яндекс",
+    "reconfirm": "подтверждение почты для давних аккаунтов",
+    "watch_digest": "новые значения по «колокольчику»",
+}
+
+
+def sample_subject(label: str, loc: str, subject: str) -> str:
+    return f"[образец · {label} · {loc}] {subject}"
 
 
 def _yes(v) -> str:
@@ -116,7 +129,7 @@ async def cmd_test(args) -> int:
         for kind, rendered, one_click in _test_mails(loc):
             if args.only and kind not in args.only.split(","):
                 continue
-            rendered.subject = f"[test] {rendered.subject}"
+            rendered.subject = sample_subject(SAMPLE_LABEL.get(kind, kind), loc, rendered.subject)
             if args.no_db:
                 try:
                     mid = await transport.send(transport.OutgoingMail(
@@ -137,13 +150,13 @@ async def cmd_test(args) -> int:
 def cmd_render(args) -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    if args.source == "sample":
+    if args.source == ["sample"]:
         items = []
         for loc in ("ru", "en"):
             for kind, rendered, one_click in _test_mails(loc):
                 items.append((f"{loc}-{kind}", kind, rendered, one_click))
     else:
-        issue = campaign.load_issue(args.source)
+        issue = campaign.load_issue(*args.source)
         items = []
         for loc in issue.by_locale:
             rendered, one_click = campaign.render_for(issue, loc, DUMMY_USER)
@@ -175,7 +188,24 @@ async def cmd_audience(_args) -> int:
 
 
 async def cmd_campaign(args) -> int:
-    issue = campaign.load_issue(args.file)
+    issue = campaign.load_issue(*args.file, key=args.key)
+    if args.test_to and args.no_db:
+        if not service.recipient_allowed(args.test_to):
+            print("адрес не в списке допуска (RUSTATS_MAIL_ALLOWLIST) — не отправляю")
+            return 1
+        code = 0
+        for loc in issue.by_locale:
+            rendered, one_click = campaign.render_for(issue, loc, DUMMY_USER)
+            try:
+                mid = await transport.send(transport.OutgoingMail(
+                    to=args.test_to, subject=sample_subject(f"выпуск {issue.key}", loc, rendered.subject),
+                    html=rendered.html, text=rendered.text,
+                    images=rendered.images, kind="newsletter", unsubscribe_url=one_click, campaign=issue.key))
+                print(f"{loc}: sent {mid}")
+            except (transport.SendError, transport.MailConfigError) as exc:
+                print(f"{loc}: ОШИБКА {getattr(exc, 'code', type(exc).__name__)}")
+                code = 2
+        return code
     if args.test_to:
         res = await campaign.send_test(issue, args.test_to)
         print(json.dumps(res, ensure_ascii=False))
@@ -238,11 +268,13 @@ def main() -> int:
     t.add_argument("--no-db", action="store_true", help="без журнала: прямая отправка (локальная проверка)")
     t.add_argument("--only", default="", help="виды через запятую: verify_email,password_reset,newsletter,oauth_hint,reconfirm,watch_digest")
     r = sub.add_parser("render")
-    r.add_argument("source", help="sample или путь к JSON выпуска")
+    r.add_argument("source", nargs="+", help="sample или файлы выпуска (по языку или один на все языки)")
     r.add_argument("--out", required=True)
     sub.add_parser("audience")
     c = sub.add_parser("campaign")
-    c.add_argument("file")
+    c.add_argument("file", nargs="+", help="файл выпуска со всеми языками или по файлу на язык")
+    c.add_argument("--key", help="ключ выпуска (если файлы по языкам с разными ключами)")
+    c.add_argument("--no-db", action="store_true", help="с --test-to: без журнала, прямая отправка")
     c.add_argument("--test-to")
     c.add_argument("--send", action="store_true")
     c.add_argument("--include-unverified", action="store_true")

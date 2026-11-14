@@ -187,6 +187,9 @@ class Digest:
     cta_label: str = ""
     cta_url: str = ""
     outro: str = ""
+    masthead: str = ""  # «Неделя в цифрах · № 1 · данные на 14 ноября 2026» над заголовком
+    signoff: str = ""   # «Редакция Forecast Economy» после последнего абзаца
+    blocks: list[dict] = field(default_factory=list)  # блоки редактора (mail/blocks.py); иначе items
 
 
 # --- части HTML ---------------------------------------------------------------
@@ -315,6 +318,9 @@ def layout(locale: str, *, preheader: str, body_html: str, footer_html: str, sit
     h1 {{ font-size:24px !important; }}
     .fe-btn {{ width:100% !important; }}
     .fe-btn a {{ display:block !important; text-align:center !important; }}
+    .fe-val {{ display:none !important; }}
+    .fe-val-m {{ display:block !important; max-height:none !important; overflow:visible !important; }}
+    .fe-lead-num {{ font-size:38px !important; }}
   }}
 </style>
 </head>
@@ -434,33 +440,70 @@ def render_watch(items: list[DigestItem], locale: str, *, site_url: str, cabinet
     return RenderedMail(subject=subject[:300], html=html, text="\n\n".join(lines), images=inline_images())
 
 
+def _paragraphs(text: str, *, margin_last: str = "0 0 24px") -> str:
+    parts = [x.strip() for x in (text or "").split("\n\n") if x.strip()]
+    return "".join(_p(x, margin=(margin_last if i == len(parts) - 1 else "0 0 14px")) for i, x in enumerate(parts))
+
+
+def preheader_of(digest: Digest) -> str:
+    """Прехедер выпуска; без него — начало вступления по границе слова с многоточием."""
+    if digest.preheader:
+        return digest.preheader
+    intro = " ".join((digest.intro or "").split())
+    if len(intro) <= 110:
+        return intro
+    cut = intro[:110].rsplit(" ", 1)[0].rstrip(",.;:—-")
+    return cut + "…"
+
+
 def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url: str,
-                  manage_url: str | None = None) -> RenderedMail:
-    """Письмо рассылки: заголовок, вступление, блоки, кнопка, подвал с отпиской."""
-    body = _h1(digest.title)
-    if digest.intro:
-        body += _p(digest.intro, margin="0 0 24px")
-    body += "".join(_item(i) for i in digest.items)
+                  manage_url: str | None = None, today=None) -> RenderedMail:
+    """Письмо рассылки: строка выпуска, заголовок, вступление, блоки, кнопка, конец, подпись."""
+    from app.services.mail import blocks as blk
+
+    body = ""
+    if digest.masthead:
+        body += (f'<div style="margin:0 0 10px;font-family:{FONT};font-size:12px;font-weight:600;line-height:1.3;'
+                 f'color:{MUTED};">{escape(digest.masthead)}</div>')
+    body += _h1(digest.title)
+    body += _paragraphs(digest.intro)
+    if digest.blocks:
+        body += "".join(blk.render(b, locale, today) for b in digest.blocks)
+    else:
+        body += "".join(_item(i) for i in digest.items)
     if digest.cta_label and digest.cta_url:
-        body += '<div style="height:16px;line-height:16px;font-size:16px;">&nbsp;</div>'
+        body += '<div style="height:12px;line-height:12px;font-size:12px;">&nbsp;</div>'
         body += _button(digest.cta_label, digest.cta_url)
     if digest.outro:
-        body += _p(digest.outro, margin="4px 0 0")
-    html = layout(locale, preheader=digest.preheader or digest.intro[:120], body_html=body,
+        body += _paragraphs(digest.outro, margin_last="0 0 6px")
+    if digest.signoff:
+        body += (f'<p style="margin:6px 0 0;font-family:{FONT};font-size:14px;font-weight:600;color:{INK};">'
+                 f'{escape(digest.signoff)}</p>')
+    preheader = preheader_of(digest)
+    html = layout(locale, preheader=preheader, body_html=body,
                   footer_html=_footer(locale, kind="newsletter", unsubscribe_url=unsubscribe_url,
                                       manage_url=manage_url),
                   site_url=site_url)
     # Первая строка простого текста — то, что почта покажет рядом с темой в списке писем.
-    lines = [digest.preheader or digest.title, digest.title]
+    lines = [preheader or digest.title]
+    if digest.masthead:
+        lines.append(digest.masthead)
+    lines.append(digest.title)
     if digest.intro:
         lines.append(digest.intro)
-    lines += _list_text(digest.items)
+    if digest.blocks:
+        lines += [blk.as_text(b, locale, today) for b in digest.blocks]
+    else:
+        lines += _list_text(digest.items)
     if digest.cta_label and digest.cta_url:
         lines.append(f"{digest.cta_label}: {digest.cta_url}")
     if digest.outro:
         lines.append(digest.outro)
+    if digest.signoff:
+        lines.append(digest.signoff)
     lines.append(_text_footer(locale, kind="newsletter", unsubscribe_url=unsubscribe_url, manage_url=manage_url))
-    return RenderedMail(subject=digest.subject, html=html, text="\n\n".join(lines), images=inline_images())
+    return RenderedMail(subject=digest.subject, html=html, text="\n\n".join(x for x in lines if x),
+                        images=inline_images())
 
 
 def sample_digest(locale: str, site_url: str) -> Digest:
