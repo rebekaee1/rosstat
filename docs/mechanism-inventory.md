@@ -13,8 +13,8 @@
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1353**
-- Registry references: **2550**
+- Registry declarations: **1354**
+- Registry references: **2551**
 - Migration operations: **480**
 - Candidate effects: **2833**
 - Unresolved syntax: **1**
@@ -2709,6 +2709,7 @@ Relationships: `[]`
 | app.services.pulse_report._TG_ALLOWED_TAG_RE | Call | computed source expression | [backend/app/services/pulse_report.py:44](../backend/app/services/pulse_report.py#L44) |
 | app.services.pulse_report._HTML_ENTITY_RE | Call | computed source expression | [backend/app/services/pulse_report.py:48](../backend/app/services/pulse_report.py#L48) |
 | app.services.pulse_report._HYP_WORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:202](../backend/app/services/pulse_report.py#L202) |
+| app.services.pulse_report._AFFORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:338](../backend/app/services/pulse_report.py#L338) |
 | app.services.r4a_price_compare.BASKET | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:21](../backend/app/services/r4a_price_compare.py#L21) |
 | app.services.r4a_price_compare._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:35](../backend/app/services/r4a_price_compare.py#L35) |
 | app.services.r4a_price_compare._MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:37](../backend/app/services/r4a_price_compare.py#L37) |

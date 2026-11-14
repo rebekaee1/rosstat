@@ -1445,8 +1445,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "f5a4a7413f47aa2826de92ab1d67147fe0f956e6892f5a933b878846273bdae1",
-      "lines": 597
+      "sha256": "cfbe9af5b2ed3f94fe8c0b3c34ce2e6bad5d653c559ec315f1bc191da33a3ebc",
+      "lines": 624
     },
     {
       "path": "backend/app/services/r4a_price_compare.py",
@@ -37699,8 +37699,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 336,
-      "end_line": 336,
+      "line": 357,
+      "end_line": 357,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -37708,8 +37708,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 366,
+      "end_line": 366,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_model",
@@ -37717,8 +37717,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 563,
-      "end_line": 563,
+      "line": 590,
+      "end_line": 590,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37726,8 +37726,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 529,
-      "end_line": 529,
+      "line": 556,
+      "end_line": 556,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -37735,8 +37735,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 529,
-      "end_line": 529,
+      "line": 556,
+      "end_line": 556,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37744,8 +37744,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 563,
-      "end_line": 563,
+      "line": 590,
+      "end_line": 590,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37753,21 +37753,21 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 356,
-      "end_line": 356,
-      "owner": "_llm_summary",
-      "conditions": [],
-      "name": "openrouter_proxy_url",
-      "expression": "settings.openrouter_proxy_url"
-    },
-    {
-      "path": "backend/app/services/pulse_report.py",
-      "line": 362,
-      "end_line": 362,
+      "line": 377,
+      "end_line": 377,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
       "expression": "settings.openrouter_api_key"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 382,
+      "end_line": 382,
+      "owner": "_llm_summary",
+      "conditions": [],
+      "name": "openrouter_proxy_url",
+      "expression": "settings.openrouter_proxy_url"
     },
     {
       "path": "backend/app/services/rosstat_demo_parser.py",
@@ -102544,6 +102544,23 @@
       "runtime_expansion": true
     },
     {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 338,
+      "end_line": 338,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_AFFORD_RE",
+      "symbol": "app.services.pulse_report._AFFORD_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('can only afford (\\\\d+)')",
+      "expression_truncated": false,
+      "expression_chars": 36,
+      "ast_sha256": "a14adbde0c85038510d19aab3b44071e0ed8eb8ca0a0423ffe01bd70d3537c0e",
+      "runtime_expansion": true
+    },
+    {
       "path": "backend/app/services/r4a_price_compare.py",
       "line": 21,
       "end_line": 33,
@@ -149479,8 +149496,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 564,
-      "end_line": 564,
+      "line": 591,
+      "end_line": 591,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -149493,8 +149510,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 563,
-      "end_line": 563,
+      "line": 590,
+      "end_line": 590,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -301555,8 +301572,17 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 333,
-      "end_line": 389,
+      "line": 344,
+      "end_line": 349,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "llm_failure_note",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 352,
+      "end_line": 416,
       "owner": "<module>",
       "conditions": [],
       "name": "_llm_summary",
@@ -301564,8 +301590,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 392,
-      "end_line": 437,
+      "line": 419,
+      "end_line": 464,
       "owner": "<module>",
       "conditions": [],
       "name": "_acquisition_lines",
@@ -301573,8 +301599,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 440,
-      "end_line": 461,
+      "line": 467,
+      "end_line": 488,
       "owner": "<module>",
       "conditions": [],
       "name": "_fallback_summary",
@@ -301582,8 +301608,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 464,
-      "end_line": 471,
+      "line": 491,
+      "end_line": 498,
       "owner": "<module>",
       "conditions": [],
       "name": "_etl_line",
@@ -301591,8 +301617,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 474,
-      "end_line": 524,
+      "line": 501,
+      "end_line": 551,
       "owner": "<module>",
       "conditions": [],
       "name": "_raw_digits_block",
@@ -301600,8 +301626,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 527,
-      "end_line": 573,
+      "line": 554,
+      "end_line": 600,
       "owner": "<module>",
       "conditions": [],
       "name": "send_pulse_report",
@@ -301609,8 +301635,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 576,
-      "end_line": 588,
+      "line": 603,
+      "end_line": 615,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_snapshot_job",
@@ -301618,8 +301644,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 591,
-      "end_line": 597,
+      "line": 618,
+      "end_line": 624,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_report_job",
@@ -343871,6 +343897,16 @@
       "owner": "_hypothesis_stems",
       "conditions": [],
       "symbol": "app.services.pulse_report._HYP_WORD_RE"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 386,
+      "end_line": 386,
+      "owner": "_llm_summary",
+      "conditions": [
+        "resp.status_code == 402"
+      ],
+      "symbol": "app.services.pulse_report._AFFORD_RE"
     },
     {
       "path": "backend/app/services/r4a_price_compare.py",
