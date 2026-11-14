@@ -97,8 +97,10 @@ case "$cp" in *429*) ;; *) echo "FAIL: скопированный пропуск
 # (5) выдача пропуска проходит до backend
 m=$(docker run --rm --network bcnet curlimages/curl -s -m 30 -X POST -H 'X-Forwarded-For: 96.1.1.1' -H 'X-FE-Pass-Request: 1' -A "$B" http://bcngx/api/v1/human-pass)
 [ "$m" = "minted:anon" ] || { echo "FAIL: выдача пропуска: $m"; exit 1; }
-# (6) ферма с подставленным Referer Google (14.11.2026): Linux Chrome + Referer ровно корень google.com + нет _ym_uid -> anon;
-#     cookie Метрики, путь в Referer, Windows, Edge, Googlebot -> как раньше; флаг FE_GOOGLE_FARM_LIMIT=0 -> referred.
+# (6) ферма с подставленным Referer Google (14.11.2026): Linux Chrome + Referer ровно корень google.com + нет _ym_uid ->
+#     класс gfarm со СВОИМ бюджетом gfarmcold (backend видит anon); cookie Метрики, путь в Referer, Windows, Edge -> referred;
+#     с пропуском -> human; Googlebot -> crawler. Ферма шумит ~20 зап/с - прямой посетитель без Referer получает 200;
+#     человек с отпечатком фермы после 429 получает пропуск (запрос страницы 429) и проходит; флаг 0 -> referred.
 clsr() {  # $1 XFF, $2 UA, $3 Referer или пусто, $4 Cookie или пусто
   docker run --rm --network bcnet -e XFF="$1" -e UA="$2" -e REF="$3" -e CK="$4" -e URL="$URL" curlimages/curl sh -c '
     set -- -s -m 30 -A "$UA" -H "X-Forwarded-For: $XFF"
@@ -106,25 +108,54 @@ clsr() {  # $1 XFF, $2 UA, $3 Referer или пусто, $4 Cookie или пус
     [ -z "$CK" ] || set -- "$@" -b "$CK"
     curl "$@" "$URL"'
 }
+logcls() {  # класс nginx в security.log для адреса $1 (последняя строка)
+  docker exec bcngx sh -c "grep ' $1 ' /var/log/nginx/security/security.log | tail -1 | sed 's/.*cls=//'"
+}
 LX='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36'
 EDGE_LX="$LX Edg/157.0.0.0"
 G='https://www.google.com/'
 GB_IP=$(python3 -c 'import re,ipaddress;t=open("frontend/search-crawlers.conf").read();m=re.search(r"^\s+(66\.249\.[0-9.]+/\d+) 1;",t,re.M);print(ipaddress.ip_network(m.group(1)).network_address+1)')
 sleep 12
-g1=$(clsr 97.1.1.1 "$LX" "$G" '')
-g2=$(clsr 97.1.1.2 "$LX" "$G" '_ym_uid=1731500000123456789')
-g3=$(clsr 97.1.1.3 "$LX" 'https://www.google.com/search?q=x' '')
-g4=$(clsr 97.1.1.4 "$B" "$G" '')
-g5=$(clsr 97.1.1.5 "$EDGE_LX" "$G" '')
-g6=$(clsr 97.1.1.6 "$LX" "$G" "fe_pass=$GOOD")
-g7=$(clsr "$GB_IP" 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' '' '')
-gg="$g1 $g2 $g3 $g4 $g5 $g6 $g7"
+clsr 97.1.1.1 "$LX" "$G" '' >/dev/null
+clsr 97.1.1.2 "$LX" "$G" '_ym_uid=1731500000123456789' >/dev/null
+clsr 97.1.1.3 "$LX" 'https://www.google.com/search?q=x' '' >/dev/null
+clsr 97.1.1.4 "$B" "$G" '' >/dev/null
+clsr 97.1.1.5 "$EDGE_LX" "$G" '' >/dev/null
+clsr 97.1.1.6 "$LX" "$G" "fe_pass=$GOOD" >/dev/null
+clsr "$GB_IP" 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' '' '' >/dev/null
+gg="$(logcls 97.1.1.1) $(logcls 97.1.1.2) $(logcls 97.1.1.3) $(logcls 97.1.1.4) $(logcls 97.1.1.5) $(logcls 97.1.1.6) $(logcls "$GB_IP")"
 echo "ферма с Referer Google        : $gg"
-[ "$gg" = "anon referred referred referred referred human crawler" ] || { echo "FAIL: классы фермы с Referer Google"; exit 1; }
-gf=$(docker run --rm --network bcnet -e UA="$LX" -e URL="$URL" curlimages/curl sh -c '
-  for i in $(seq 1 60); do curl -s -o /dev/null -w "%{http_code}\n" -m 30 -A "$UA" -e "https://www.google.com/" -H "X-Forwarded-For: 99.40.1.$i" "$URL" & done; wait' | sort | uniq -c | tr '\n' ' ')
-echo "ферма с Referer Google (60)   : $gf"
-case "$gf" in *429*) ;; *) echo "FAIL: ферма с Referer Google не в общем бюджете"; exit 1;; esac
+[ "$gg" = "gfarm referred referred referred referred human crawler" ] || { echo "FAIL: классы фермы с Referer Google"; exit 1; }
+[ "$(clsr 97.1.1.7 "$LX" "$G" '')" = "anon" ] || { echo "FAIL: backend должен видеть ферму как anon"; exit 1; }
+# Ферма шумит ~20 зап/с 4 секунды с разных адресов; в те же секунды прямой посетитель (без Referer) - раз в 0,6 с.
+sleep 6
+docker run --rm --network bcnet -e UA="$LX" -e URL="$URL" curlimages/curl sh -c '
+  for i in $(seq 1 80); do curl -s -o /dev/null -w "%{http_code}\n" -m 30 -A "$UA" -e "https://www.google.com/" -H "X-Forwarded-For: 99.40.$((i / 200)).$((i % 200 + 1))" "$URL" & sleep 0.05; done; wait' \
+  | sort | uniq -c | tr '\n' ' ' > "$T/gfarm.txt" &
+FARM_PID=$!
+direct=$(docker run --rm --network bcnet -e UA="$B" -e URL="$URL" curlimages/curl sh -c '
+  for i in 1 2 3 4 5 6; do curl -s -o /dev/null -w "%{http_code}\n" -m 30 -A "$UA" -H "X-Forwarded-For: 98.50.1.$i" "$URL"; sleep 0.6; done' | sort | uniq -c | tr '\n' ' ')
+wait $FARM_PID
+gf=$(cat "$T/gfarm.txt")
+echo "ферма ~20 зап/с (80)          : $gf"
+echo "прямой посетитель в те же сек.: $direct"
+case "$gf" in *429*) ;; *) echo "FAIL: ферма с Referer Google не ограничена своим бюджетом"; exit 1;; esac
+case "$direct" in *429*) echo "FAIL: ферма вытеснила прямого посетителя"; exit 1;; esac
+# Человек с Linux Chrome из Google без cookie Метрики (первый заход) под шумом фермы: 429 -> страница отказа сама берёт
+# пропуск (POST /api/v1/human-pass, Referer - адрес нашей страницы) -> перезагрузка с пропуском -> human, 200.
+sleep 6
+hc=$(docker run --rm --network bcnet -e UA="$LX" -e URL="$URL" curlimages/curl sh -c '
+  ( for i in $(seq 1 60); do curl -s -o /dev/null -m 30 -A "$UA" -e "https://www.google.com/" -H "X-Forwarded-For: 99.41.1.$i" "$URL" & sleep 0.05; done; wait ) &
+  sleep 1.5
+  for t in 1 2 3; do curl -s -o /dev/null -w "%{http_code} " -m 30 -A "$UA" -e "https://www.google.com/" -H "X-Forwarded-For: 97.2.2.2" "$URL"; sleep 0.3; done
+  wait')
+mint=$(docker run --rm --network bcnet curlimages/curl -s -m 30 -X POST -H 'X-Forwarded-For: 97.2.2.2' -H 'X-FE-Pass-Request: 1' -A "$LX" -e "$URL" http://bcngx/api/v1/human-pass)
+after=$(clsr 97.2.2.2 "$LX" "$G" "fe_pass=$GOOD")
+echo "человек с отпечатком фермы    : первый заход $hc, выдача пропуска $mint, после пропуска $after"
+# Три попытки в разгар шума: свободный слот бюджета появляется раз в 0,5 с, его может перехватить и человек.
+case "$hc" in *429*) ;; *) echo "FAIL: под шумом фермы ожидался 429 у первого захода, получено $hc"; exit 1;; esac
+case "$mint" in minted:*) ;; *) echo "FAIL: выдача пропуска не дошла до backend: $mint"; exit 1;; esac
+[ "$after" = "human" ] || { echo "FAIL: с пропуском человек не прошёл: $after"; exit 1; }
 # Флаг: FE_GOOGLE_FARM_LIMIT=0 -> entrypoint пишет переопределение, после reload правило выключено.
 docker run --rm -e FE_GOOGLE_FARM_LIMIT=0 -v "$PWD/frontend/41-fe-google-farm.sh:/s.sh:ro" -v "$T/fe-pass:/etc/nginx/fe-pass" "$IMAGE" sh /s.sh >/dev/null
 grep -q 'set $fe_google_farm_limit "0";' "$T/fe-pass/google-farm.conf" || { echo "FAIL: флаг не записан"; exit 1; }

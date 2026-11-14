@@ -27,7 +27,7 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-CLASSES = ("anon", "human", "referred", "crawler", "goodbot", "robot", "fake", "preview", "internal")
+CLASSES = ("anon", "gfarm", "human", "referred", "crawler", "goodbot", "robot", "fake", "preview", "internal")
 OUTCOMES = ("ok", "403", "429", "5xx", "other")
 _KEY_PREFIX = "bot_traffic"
 _TTL_SECONDS = 9 * 86400
@@ -224,6 +224,10 @@ def format_lines(counts: dict[str, int], genuine_fakes: list[tuple[str, str]], d
     if farm:
         cut = get("anon", "429") + get("anon", "403")
         lines.append(f"• без источника перехода (так ходит ферма): {_req(farm)}, отрезано {_pct(cut, farm)}")
+    gfarm = get("gfarm")
+    if gfarm:  # 14.11.2026: ферма с подставленным переходом из Google, свой бюджет в nginx
+        cut = get("gfarm", "429") + get("gfarm", "403")
+        lines.append(f"• с поддельным переходом из Google (ферма): {_req(gfarm)}, отрезано {_pct(cut, gfarm)}")
     for cls, title in (("crawler", "поисковики Google, Яндекс, Bing"), ("goodbot", "полезные роботы (Apple, OpenAI, Perplexity, DuckDuckGo, Telegram)")):
         total = get(cls)
         if not total:

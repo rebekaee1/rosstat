@@ -158,6 +158,19 @@ def test_format_lines_plain_words():
     assert "parser" not in text.lower() and "nginx" not in text.lower()
 
 
+def test_google_referer_farm_has_its_own_summary_line():
+    """14.11.2026: класс gfarm (ферма с подставленным Referer Google) считается отдельно от anon."""
+    batch = bot_traffic.Batch()
+    line = ('2026-11-14T08:48:28+00:00 170.23.19.211 429 "GET /finland/indicator/x HTTP/1.1" '
+            '"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36" '
+            'cls=gfarm')
+    assert batch.add_line(line)
+    assert batch.counts["2026-11-14"] == {"gfarm:429": 1}
+    text = "\n".join(bot_traffic.format_lines({"gfarm:429": 90, "gfarm:ok": 10}, [],
+                                              __import__("datetime").date(2026, 11, 14)))
+    assert "с поддельным переходом из Google (ферма): 100 запросов, отрезано 90 %" in text
+
+
 def test_format_lines_warns_about_genuine_robot_outside_lists():
     lines = bot_traffic.format_lines({"fake:ok": 5}, [("1.2.3.4", "crawl-1-2-3-4.googlebot.com")],
                                      __import__("datetime").date(2026, 11, 7))
