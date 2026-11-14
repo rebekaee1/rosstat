@@ -6,6 +6,11 @@ import ru from '../i18n/messages.ru';
 const t = (key) => ru[key] ?? key;
 
 describe('tryTheseExamples', () => {
+  it('соседи по разделу и региону от сервера — первыми', () => {
+    const suggest = ['Валовой сбор картофеля Воронежская область', 'Валовой сбор овощей Воронежская область'];
+    expect(tryTheseExamples({ suggest, regionName: 'Воронежская область', popular: ['Курс доллара'], t })).toEqual(suggest);
+  });
+
   it('регион назван — подсказки по этому региону, без курсов валют', () => {
     const out = tryTheseExamples({ regionName: 'Воронежская область', popular: ['Курс узбекского сума'], t });
     expect(out[0]).toBe('Инфляция Воронежская область');

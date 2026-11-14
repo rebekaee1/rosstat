@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from datetime import date
 
 from sqlalchemy import and_, literal_column, select
@@ -177,3 +178,63 @@ def demote_stale_region_rows(results: list[dict]) -> list[dict]:
     for i, row in zip(slots, ordered):
         out[i] = row
     return out
+
+
+# «Попробуйте, например» по разделу и региону (14.11.2026). Под «Ближайшим» для посевных площадей Воронежской
+# области предлагались «Курс узбекского сума» и «Цены на яйца в Москве». Теперь — 2–3 других ряда того же раздела
+# Росстата и региона: сначала из той же таблицы (общее начало `table_code`, «13.21» ближе к «13.21», чем «13.4»),
+# только со свежим ненулевым значением (правило свежести выше). Без новых словарей.
+SECTION_SUGGESTIONS = 3
+_SECTION_CANDIDATES = 12
+_SUGGESTION_NAME_MAX = 40
+
+
+def _table_closeness(code_a: str | None, code_b: str | None) -> int:
+    parts_a, parts_b = str(code_a or "").split("."), str(code_b or "").split(".")
+    same = 0
+    for left, right in zip(parts_a, parts_b):
+        if left != right:
+            break
+        same += 1
+    return same
+
+
+async def section_suggestions(db: AsyncSession, item: dict, exclude: set[str], locale: str) -> list[str]:
+    """Строки запроса «название ряда + регион» для 2–3 соседей по разделу; пусто, если подходящих нет."""
+    from app.data.i18n.region_indicators_en import REGION_INDICATORS_EN
+
+    code, slug, place = item.get("code"), item.get("region_slug"), item.get("region_name")
+    if not code or not slug or slug == "russia" or not place:
+        return []
+    base = (await db.execute(select(RegionIndicator.section_name, RegionIndicator.table_code)
+                             .where(RegionIndicator.code == code))).first()
+    if base is None:
+        return []
+    rows = (await db.execute(
+        select(RegionIndicator.code, RegionIndicator.name, RegionIndicator.table_code)
+        .where(RegionIndicator.section_name == base.section_name, RegionIndicator.is_listed.is_(True),
+               RegionIndicator.code.notin_(exclude | {code}))
+    )).all()
+
+    def title(row) -> str:
+        # Подсказка — короткий запрос: уточнение в скобках («(в весе после доработки)») не нужно, чтобы найти ряд,
+        # и переносило подсказку на две строки на телефоне.
+        name = (REGION_INDICATORS_EN.get(row.code) or {}).get("name") if locale == "en" else None
+        return re.sub(r"\s*\([^)]*\)", "", name or row.name).strip()
+
+    ranked = sorted((row for row in rows if len(title(row)) <= _SUGGESTION_NAME_MAX),
+                    key=lambda row: (-_table_closeness(row.table_code, base.table_code), row.name, row.code))  # порядок один для ru и en
+    found = []
+    for row in ranked[:_SECTION_CANDIDATES]:
+        latest = (await _latest_by_region(db, row.code, monthly=False, slugs=(slug,))).get(slug)
+        if latest is None:
+            latest = (await _latest_by_region(db, row.code, monthly=True, slugs=(slug,))).get(slug)
+        if latest is not None:
+            found.append((row, latest))
+    shown_year = _latest_year(item)
+    years = [int(latest[1][:4]) for _row, latest in found] + ([shown_year] if shown_year else [])
+    if not years:
+        return []
+    newest = max(years)
+    fresh = [row for row, latest in found if latest[0] != 0 and newest - int(latest[1][:4]) <= STALE_YEARS]
+    return [f"{title(row)} {place}" for row in fresh[:SECTION_SUGGESTIONS]]

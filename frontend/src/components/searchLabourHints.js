@@ -44,7 +44,10 @@ export function labourSuggestions(query, t, regionName) {
  * («Инфляция Воронежская область», «Зарплата …»), а не курсы валют и популярное по сайту («Курс узбекского сума»
  * под запросом о посевных площадях). Без региона — как раньше: три курса и популярные запросы, без повторов.
  */
-export function tryTheseExamples({ regionName, popular = [], t }) {
+export function tryTheseExamples({ suggest = [], regionName, popular = [], t }) {
+  // Сервер подобрал соседей по разделу Росстата и региону («Валовой сбор картофеля Воронежская область») — они ближе всего.
+  const near = (Array.isArray(suggest) ? suggest : []).filter(Boolean).map(String);
+  if (near.length) return near.slice(0, 6);
   const local = localSuggestions(regionName, t);
   if (local.length) return local.slice(0, 6);
   return [...new Set([

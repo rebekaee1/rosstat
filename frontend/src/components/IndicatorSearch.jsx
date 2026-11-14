@@ -821,6 +821,7 @@ export default function IndicatorSearch({
                               {/* R2-Z4: один ряд подсказок без повторов: курсы валют и домашние темы вместе, без второго заголовка. */}
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">
                                 {tryTheseExamples({
+                                  suggest: nearestRows.length ? globalSearch.data?.suggest : [],
                                   // Без «Ближайшего» подсказки по региону уже стоят выше (r7a) — здесь их не повторяем.
                                   regionName: nearestRows.length ? globalSearch.data?.intent?.region_name : '',
                                   popular,
