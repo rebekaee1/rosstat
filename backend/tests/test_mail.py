@@ -343,6 +343,59 @@ def test_campaign_personal_issue_per_recipient(mail_env, auth_client, monkeypatc
     assert again.already_sent == 1 and len(mail_env["sent"]) == 1
 
 
+def test_campaign_defer_and_dry_run_coverage(mail_env, auth_client, monkeypatch):
+    """«Отложить» (тихие часы) — не пропуск: строки журнала нет, следующий запуск отправит."""
+    from app.config import settings
+    from app.services.mail import campaign
+
+    _subscribe(auth_client, "allowed@example.com")
+    _verify_all(mail_env)
+    monkeypatch.setattr(settings, "mail_allow_all_recipients", True)
+    mail_env["sent"].clear()
+    state = {"defer": True}
+
+    async def builder(db, rec, issue):
+        if state["defer"]:
+            return campaign.DEFER
+        return {"subject": "Ваш выпуск", "title": "Т", "personal_note": "Подборка по вашим действиям.",
+                "blocks": [{"type": "section", "title": "Для вас"}]}
+
+    async def _q(**kw):
+        async with mail_env["session_maker"]() as db:
+            return await campaign.run(db, campaign.parse_issue(ISSUE), per_recipient=builder, **kw)
+    dry = asyncio.run(_q(send=False, count_personal=True))
+    assert dry.statuses["deferred"] == 1 and mail_env["sent"] == []
+    rep = asyncio.run(_q(send=True))
+    assert rep.statuses["deferred"] == 1 and "no_personal_content" not in rep.statuses
+    assert all(r.kind != "newsletter" for r in _rows(mail_env))
+    state["defer"] = False
+    rep2 = asyncio.run(_q(send=True))
+    assert rep2.statuses["sent"] == 1
+    # «Письма без персональной подборки» выключает подборку и не трогает рассылку.
+    unpers = [t for t in _all_tokens(mail_env["sent"][0]) if _purpose(t) == "unpers"][0]
+    r = auth_client.post("/api/v1/mail/unsubscribe", json={"t": unpers}).json()
+    assert r["list"] == "personal" and r["subscribed"] is False
+    assert auth_client.get("/api/v1/auth/me").json()["user"]["newsletter"] is True
+    assert auth_client.post("/api/v1/mail/resubscribe", json={"t": unpers}).json()["subscribed"] is True
+
+
+def _all_tokens(msg):
+    body = msg.get_body(("plain",)).get_content()
+    return [line.split("t=", 1)[1].strip() for line in body.splitlines() if "/account/unsubscribe?t=" in line]
+
+
+def _purpose(tok):
+    from app.services.mail import tokens
+
+    for p in tokens.PURPOSES:
+        try:
+            tokens.verify(p, tok)
+            return p
+        except tokens.TokenError:
+            continue
+    return None
+
+
 def test_campaign_stops_on_server_limit(mail_env, auth_client, monkeypatch):
     import smtplib
     from app.config import settings

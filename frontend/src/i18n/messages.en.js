@@ -4182,4 +4182,8 @@ export default {
   "mail.unsub.resubscribe": "Subscribe again",
   "mail.unsub.again": "Unsubscribe",
   "mail.unsub.doneWatch": "No more emails about new values. The “New” badge in your account works as before; the news subscription is unchanged.",
+  "mail.unsub.donePersonal": "Personal picks are off: issues will be the same for all subscribers, without blocks based on your activity on the site.",
+  "mail.unsub.resubscribedPersonal": "Personal picks are on again.",
+  "mail.unsub.personalOn": "Turn personal picks back on",
+  "mail.unsub.personalOff": "Turn personal picks off",
 };

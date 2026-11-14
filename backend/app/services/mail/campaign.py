@@ -132,6 +132,7 @@ def parse_issue(data: dict) -> Issue:
             preheader=str(raw.get("preheader") or ""), items=items,
             cta_label=str(raw.get("cta_label") or ""), cta_url=with_utm(str(raw.get("cta_url") or ""), key),
             outro=outro, masthead=str(raw.get("masthead") or ""), signoff=signoff, blocks=blocks,
+            personal_note=str(raw.get("personal_note") or ""),
         )
     if not by_locale:
         raise CampaignError("нет ни ru, ни en")
@@ -163,9 +164,14 @@ def render_for(issue: Issue, locale: str, user_id, digest: Digest | None = None)
     page_url, one_click = unsubscribe_links(user_id, locale)
     from app.services.display import today_msk
 
+    d = digest or issue.by_locale[locale]
+    unpers = None
+    if d.personal_note:
+        unpers = service.site_link(locale, "/account/unsubscribe", t=tokens.issue("unpers", str(user_id)))
     rendered = render_digest(
-        digest or issue.by_locale[locale], locale, site_url=service.site_origin(locale) + "/",
+        d, locale, site_url=service.site_origin(locale) + "/",
         unsubscribe_url=page_url, manage_url=service.site_link(locale, "/account"), today=today_msk(),
+        unpersonalize_url=unpers,
     )
     return rendered, one_click
 
@@ -184,20 +190,24 @@ async def send_test(issue: Issue, to: str) -> dict[str, str]:
 
 
 # Персональный выпуск: функция (db, получатель, выпуск) → содержимое на языке получателя —
-# Digest, словарь языка в формате файла выпуска ({"subject", "title", "blocks", …}) или None
-# (человеку нечего отправить — пропуск). Ключ выпуска, лимиты, повтор без дублей — общие.
+# Digest, словарь языка в формате файла выпуска ({"subject", "title", "blocks", …}), None
+# (человеку нечего отправить — пропуск) или DEFER (отложить: тихие часы и т. п. — не пропуск,
+# строка журнала не создаётся, следующий запуск попробует снова). Ключ, лимиты, повтор — общие.
+DEFER = object()
 PersonalBuilder = Callable[[AsyncSession, "audience.Recipient", Issue], Awaitable["Digest | dict | None"]]
 
 
 def personal_digest(issue: Issue, locale: str, built) -> Digest | None:
-    if built is None or isinstance(built, Digest):
+    if built is None or built is DEFER or isinstance(built, Digest):
         return built
     return parse_issue({"key": issue.key, locale: built}).by_locale[locale]
 
 
 async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified: bool = False,
               max_per_run: int | None = None, pause_seconds: float | None = None,
-              per_recipient: PersonalBuilder | None = None) -> RunReport:
+              per_recipient: PersonalBuilder | None = None, count_personal: bool = False) -> RunReport:
+    """``count_personal`` — в сухом прогоне вызвать генератор и посчитать покрытие
+    (``personal_ready`` / ``no_personal_content`` / ``deferred``)."""
     report = RunReport(key=issue.key, dry_run=not send)
     if send and not settings.mail_allow_all_recipients:
         raise CampaignError("отправка людям выключена (RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=false)")
@@ -226,6 +236,10 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
             continue
         report.by_locale[rec.locale] += 1
         if not send:
+            if per_recipient is not None and count_personal:
+                built = await per_recipient(db, rec, issue)
+                report.statuses["deferred" if built is DEFER else
+                                "no_personal_content" if built is None else "personal_ready"] += 1
             continue
         if sent_now >= limit:
             report.stopped = "max_per_run"
@@ -236,7 +250,11 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
             continue
         digest = None
         if per_recipient is not None:
-            digest = personal_digest(issue, rec.locale, await per_recipient(db, rec, issue))
+            built = await per_recipient(db, rec, issue)
+            if built is DEFER:
+                report.statuses["deferred"] += 1
+                continue
+            digest = personal_digest(issue, rec.locale, built)
             if digest is None:
                 report.statuses["no_personal_content"] += 1
                 continue

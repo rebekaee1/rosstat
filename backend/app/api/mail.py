@@ -49,7 +49,10 @@ def _bad() -> HTTPException:
 LISTS = {
     "unsub": ("newsletter", "newsletter", "newsletter_revoked"),
     "unsub_watch": ("watch", "watch_mail", "watch_mail_revoked"),
+    # «Письма без персональной подборки»: выпуск остаётся, подборка по действиям выключается.
+    "unpers": ("personal", "mail_personal", "mail_personal_revoked"),
 }
+PERSONAL_KINDS = ("mail_personal", "mail_personal_revoked")
 
 
 async def _user_from(token: str | None, db: AsyncSession) -> tuple[str, User | None]:
@@ -71,7 +74,18 @@ async def _user_from(token: str | None, db: AsyncSession) -> tuple[str, User | N
     return purpose, await db.get(User, uid)
 
 
+async def _personal_on(db: AsyncSession, user_id) -> bool:
+    """Персональная подборка включена, пока последняя запись не отзыв (по умолчанию — включена)."""
+    from sqlalchemy import select
+
+    last = await db.scalar(select(Consent.kind).where(Consent.user_id == user_id, Consent.kind.in_(PERSONAL_KINDS))
+                           .order_by(Consent.granted_at.desc(), Consent.id.desc()).limit(1))
+    return last != "mail_personal_revoked"
+
+
 async def _subscribed(db: AsyncSession, purpose: str, user: User) -> bool:
+    if purpose == "unpers":
+        return await _personal_on(db, user.id)
     if purpose == "unsub_watch":
         from app.services.mail.watch_digest import watch_mail_on
         return await watch_mail_on(db, user.id)
@@ -90,10 +104,23 @@ async def _state(db: AsyncSession, purpose: str, user: User | None) -> dict:
 async def _write(db: AsyncSession, request: Request, user: User, kind: str) -> None:
     from app.api.auth import AUTH_CONSENT_VERSION, _client_ip, audit
 
+    if kind in PERSONAL_KINDS:
+        # Журнал персонализации ведёт агент персонализации; если его функция есть — пишем через неё.
+        try:
+            from app.services.personalization import set_mail_personalization  # type: ignore
+        except ImportError:
+            set_mail_personalization = None
+        if set_mail_personalization is not None:
+            await set_mail_personalization(db, user.id, enabled=(kind == "mail_personal"), request=request,
+                                           source="mail_link")
+            await db.commit()
+            return
+
     db.add(Consent(user_id=user.id, kind=kind, version=AUTH_CONSENT_VERSION, ip=_client_ip(request),
                    user_agent=(request.headers.get("user-agent") or "")[:500]))
     event = {"newsletter_revoked": "newsletter_off", "newsletter": "newsletter_on",
-             "watch_mail_revoked": "watch_mail_off", "watch_mail": "watch_mail_on"}[kind]
+             "watch_mail_revoked": "watch_mail_off", "watch_mail": "watch_mail_on",
+             "mail_personal_revoked": "mail_personal_off", "mail_personal": "mail_personal_on"}[kind]
     await audit(db, user.id, event, request, detail="mail_link")
     await db.commit()
 

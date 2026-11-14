@@ -82,4 +82,11 @@ describe('ссылки из писем (ADR-0032)', () => {
     at('/account/unsubscribe?t=w.s', <Unsubscribe />);
     expect((await screen.findByTestId('unsub-done')).textContent).toContain('mail.unsub.doneWatch');
   });
+
+  it('unsubscribe: a «personal picks» link says issues stay, only picks are off', async () => {
+    unsubscribeByLink.mockResolvedValueOnce({ ok: true, subscribed: false, email: '', list: 'personal' });
+    at('/account/unsubscribe?t=p.s', <Unsubscribe />);
+    expect((await screen.findByTestId('unsub-done')).textContent).toContain('mail.unsub.donePersonal');
+    expect(screen.getByTestId('unsub-toggle').textContent).toContain('mail.unsub.personalOn');
+  });
 });

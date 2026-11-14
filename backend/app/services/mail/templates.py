@@ -78,6 +78,7 @@ STRINGS = {
         "service_footer": "Письмо пришло, потому что с этим адресом связан аккаунт на Forecast Economy.",
         "news_footer": "Вы получаете это письмо, потому что подписались на обзоры Forecast Economy.",
         "unsubscribe": "Отписаться",
+        "unpersonalize": "Письма без персональной подборки",
         "manage": "Настройки",
         "reply": "Ответьте на это письмо — его прочитает человек.",
         "test.subject": "Проверка почты Forecast Economy",
@@ -127,6 +128,7 @@ STRINGS = {
         "service_footer": "You received this email because an account on Forecast Economy uses this address.",
         "news_footer": "You receive this email because you subscribed to Forecast Economy reviews.",
         "unsubscribe": "Unsubscribe",
+        "unpersonalize": "Emails without personal picks",
         "manage": "Settings",
         "reply": "Reply to this email — a person will read it.",
         "test.subject": "Forecast Economy mail check",
@@ -190,6 +192,7 @@ class Digest:
     masthead: str = ""  # «Неделя в цифрах · № 1 · данные на 14 ноября 2026» над заголовком
     signoff: str = ""   # «Редакция Forecast Economy» после последнего абзаца
     blocks: list[dict] = field(default_factory=list)  # блоки редактора (mail/blocks.py); иначе items
+    personal_note: str = ""  # подвал персонального выпуска: «Подборка составлена по вашим действиям…»
 
 
 # --- части HTML ---------------------------------------------------------------
@@ -248,9 +251,13 @@ def _item(item: DigestItem) -> str:
     )
 
 
-def _footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: str | None) -> str:
+def _footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: str | None,
+            personal_note: str = "", unpersonalize_url: str | None = None) -> str:
     why = t(locale, {"newsletter": "news_footer", "watch": "watch.footer"}.get(kind, "service_footer"))
     links = []
+    if personal_note and unpersonalize_url:
+        links.append(f'<a href="{escape(unpersonalize_url, quote=True)}" style="color:{MUTED};'
+                     f'text-decoration:underline;">{escape(t(locale, "unpersonalize"))}</a>')
     if unsubscribe_url:
         label = t(locale, "watch.unsubscribe" if kind == "watch" else "unsubscribe")
         links.append(f'<a href="{escape(unsubscribe_url, quote=True)}" style="color:{MUTED};'
@@ -258,7 +265,10 @@ def _footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: 
     if manage_url:
         links.append(f'<a href="{escape(manage_url, quote=True)}" style="color:{MUTED};'
                      f'text-decoration:underline;">{escape(t(locale, "manage"))}</a>')
-    out = _p(why + " " + t(locale, "reply"), color=MUTED, size=12, margin="0 0 10px", line=1.6)
+    out = ""
+    if personal_note:
+        out += _p(personal_note, color=MUTED, size=12, margin="0 0 10px", line=1.6)
+    out += _p(why + " " + t(locale, "reply"), color=MUTED, size=12, margin="0 0 10px", line=1.6)
     if links:
         out += (f'<p style="margin:0 0 10px;font-family:{FONT};font-size:12px;line-height:1.6;color:{MUTED};">'
                 + "&nbsp;&nbsp;&nbsp;".join(links) + "</p>")
@@ -463,7 +473,7 @@ def preheader_of(digest: Digest) -> str:
 
 
 def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url: str,
-                  manage_url: str | None = None, today=None) -> RenderedMail:
+                  manage_url: str | None = None, today=None, unpersonalize_url: str | None = None) -> RenderedMail:
     """Письмо рассылки: строка выпуска, заголовок, вступление, блоки, кнопка, конец, подпись."""
     from app.services.mail import blocks as blk
 
@@ -488,7 +498,8 @@ def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url
     preheader = preheader_of(digest)
     html = layout(locale, preheader=preheader, body_html=body,
                   footer_html=_footer(locale, kind="newsletter", unsubscribe_url=unsubscribe_url,
-                                      manage_url=manage_url),
+                                      manage_url=manage_url, personal_note=digest.personal_note,
+                                      unpersonalize_url=unpersonalize_url),
                   site_url=site_url)
     # Первая строка простого текста — то, что почта покажет рядом с темой в списке писем.
     lines = [preheader or digest.title]
@@ -507,6 +518,9 @@ def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url
         lines.append(digest.outro)
     if digest.signoff:
         lines.append(digest.signoff)
+    if digest.personal_note:
+        lines.append(digest.personal_note + (f"\n{t(locale, 'unpersonalize')}: {unpersonalize_url}"
+                                              if unpersonalize_url else ""))
     lines.append(_text_footer(locale, kind="newsletter", unsubscribe_url=unsubscribe_url, manage_url=manage_url))
     return RenderedMail(subject=digest.subject, html=html, text="\n\n".join(x for x in lines if x),
                         images=inline_images())
