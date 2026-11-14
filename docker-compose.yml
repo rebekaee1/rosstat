@@ -351,7 +351,7 @@ services:
       RUSTATS_TELEGRAM_WEEKLY_ENABLED: ${RUSTATS_TELEGRAM_WEEKLY_ENABLED:-false}
       RUSTATS_TELEGRAM_MONTHLY_ENABLED: ${RUSTATS_TELEGRAM_MONTHLY_ENABLED:-false}
       RUSTATS_SEO_WEEKLY_REPORT_ENABLED: ${RUSTATS_SEO_WEEKLY_REPORT_ENABLED:-false}
-      RUSTATS_SITEMAP_PRIORITY_MAX_URLS: ${RUSTATS_SITEMAP_PRIORITY_MAX_URLS:-20000}
+      RUSTATS_SITEMAP_PRIORITY_MAX_URLS: ${RUSTATS_SITEMAP_PRIORITY_MAX_URLS:-40000}
       RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED: ${RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED:-false}
       RUSTATS_PULSE_ENABLED: ${RUSTATS_PULSE_ENABLED:-false}
       RUSTATS_PULSE_CHAT_ID: ${RUSTATS_PULSE_CHAT_ID:-}
@@ -481,6 +481,11 @@ services:
     environment:
       # Пропуск человека (08.11.2026, frontend/40-fe-human-pass.sh): пусто = выключено.
       FE_HUMAN_PASS_SECRET: ${FE_HUMAN_PASS_SECRET:-}
+      # Ферма с подставленным Referer Google (14.11.2026, frontend/41-fe-google-farm.sh): 0 = правило выключено.
+      FE_GOOGLE_FARM_LIMIT: ${FE_GOOGLE_FARM_LIMIT:-1}
+      # Привязка пропуска fe_pass к сети /24 и UA (14.11.2026, frontend/42-fe-pass-bind.sh): observe = только журнал
+      # pass-observe.log (по умолчанию), 1 = привязка действует, 0 = прежняя подпись без наблюдения.
+      FE_PASS_BIND: ${FE_PASS_BIND:-observe}
     ports:
       - "127.0.0.1:3000:80"
     volumes:

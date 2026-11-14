@@ -112,6 +112,7 @@ def test_real_pg_caller_windows_repair_content_and_keep_session_ownership(monkey
     'test_empty_window_preserves_older_and_future_unrelated_rows_and_removes_stage',
     'test_failed_source_aggregation_rolls_back_and_cleans_temporary_stage',
     'test_failed_commit_restores_previous_logical_sessions',
+    'test_own_portrait_written_after_single_pageview_still_scores_the_session',
 ])
 def test_real_pg_literal_edge_contracts_and_atomic_cleanup(monkeypatch, contract):
     """Reuse literal expectations through a real-PG DB seam, never SQLite SQL."""

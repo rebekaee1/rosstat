@@ -101,6 +101,84 @@ async def _query_window(db, table: str, host_clause: str, window: tuple[date, da
     return {"imp": float(row.imp), "clk": float(row.clk), "pos": float(row.pos)}
 
 
+# --- Замер ADR-0031 (английский хост для Google), база 14.11.2026 ----------------------------
+# Строки таблицы «Как мерить» ADR-0031, которые есть в базе приложения. Индекс Search Console
+# («Проиндексировано», «noindex») и доля обхода годовых страниц (журнал nginx) сюда не попадают.
+_APEX = "https://forecasteconomy.com/"
+_RU = "https://ru.forecasteconomy.com/"
+_EN_QUERY = "AND page LIKE :apex AND query !~ '[а-яА-ЯёЁ]'"
+_YEAR_PAGE = "AND page ~ '^https://forecasteconomy\\.com/[a-z0-9-]+/(indicator/[^/]+|region/[^/]+/[^/]+)/[0-9]{4}$'"
+ADR31_BASE = {
+    "en_imp": (325, 5000), "apex_clk": (75, 150), "ru_clk": (0, 10),
+}
+
+
+async def _window_sum(db, table: str, clause: str, window: tuple[date, date], **params) -> dict:
+    sql = text(
+        f"SELECT COALESCE(SUM(impressions),0) AS imp, COALESCE(SUM(clicks),0) AS clk "
+        f"FROM {table} WHERE date BETWEEN :a AND :b {clause}"
+    )
+    row = (await db.execute(sql, {"a": window[0], "b": window[1], **params})).one()
+    return {"imp": float(row.imp), "clk": float(row.clk)}
+
+
+async def _collect_adr31(db, last_query_day: date | None) -> dict | None:
+    """Недельные показатели ADR-0031: английские запросы apex, клики apex (из них годовые), клики ru."""
+    last_page_day = (await db.execute(text("SELECT MAX(date) FROM gsc_page_daily"))).scalar()
+    if last_query_day is None and last_page_day is None:
+        return None
+    out: dict = {}
+    if last_query_day:
+        cur_w, prev_w = week_windows(last_query_day)
+        out["en_window"] = cur_w
+        out["en"] = tuple([
+            await _window_sum(db, "gsc_search_queries", _EN_QUERY, w, apex=f"{_APEX}%")
+            for w in (cur_w, prev_w)
+        ])
+    if last_page_day:
+        cur_w, prev_w = week_windows(last_page_day)
+        out["pages_window"] = cur_w
+        for key, clause, params in (
+            ("apex", "AND page LIKE :host", {"host": f"{_APEX}%"}),
+            ("apex_years", f"AND page LIKE :host {_YEAR_PAGE}", {"host": f"{_APEX}%"}),
+            ("ru", "AND page LIKE :host", {"host": f"{_RU}%"}),
+        ):
+            out[key] = tuple([await _window_sum(db, "gsc_page_daily", clause, w, **params) for w in (cur_w, prev_w)])
+    return out
+
+
+def format_adr31(data: dict | None) -> list[str]:
+    """Блок отчёта «Google, английский хост (ADR-0031)»: неделя, прошлая неделя, база и цель."""
+    if not data:
+        return []
+    lines = ["\n<b>Google, английский хост (ADR-0031)</b>"]
+    if data.get("en"):
+        cur, prev = data["en"]
+        a, b = data["en_window"]
+        base, goal = ADR31_BASE["en_imp"]
+        lines.append(
+            f"Английские запросы ({a:%d.%m}–{b:%d.%m}): показы {_fmt_int(cur['imp'])}"
+            f"{delta_text(cur['imp'], prev['imp'])}, клики {_fmt_int(cur['clk'])}; "
+            f"база {_fmt_int(base)}, цель > {_fmt_int(goal)}"
+        )
+    if data.get("apex"):
+        cur, prev = data["apex"]
+        years = data.get("apex_years") or ({"clk": 0}, {"clk": 0})
+        a, b = data["pages_window"]
+        base, goal = ADR31_BASE["apex_clk"]
+        lines.append(
+            f"Клики forecasteconomy.com ({a:%d.%m}–{b:%d.%m}): {_fmt_int(cur['clk'])}"
+            f"{delta_text(cur['clk'], prev['clk'])}, из них годовые страницы {_fmt_int(years[0]['clk'])}; "
+            f"база ~{_fmt_int(base)}, цель > {_fmt_int(goal)}"
+        )
+    if data.get("ru"):
+        cur, prev = data["ru"]
+        base, goal = ADR31_BASE["ru_clk"]
+        lines.append(f"Клики ru.: {_fmt_int(cur['clk'])} (было {_fmt_int(prev['clk'])}); цель > {_fmt_int(goal)}")
+    lines.append("Индекс и доля обхода годовых страниц — в кабинете Search Console и журнале nginx.")
+    return lines
+
+
 async def collect_seo_week(today: date | None = None) -> dict:
     today = today or today_msk()
     out: dict = {"today": today, "yandex": {}, "google": None, "sitemap": {}, "bots": {}}
@@ -127,6 +205,11 @@ async def collect_seo_week(today: date | None = None) -> dict:
                 await _query_window(db, "gsc_search_queries", "", cur_w),
                 await _query_window(db, "gsc_search_queries", "", prev_w),
             )
+        try:
+            out["adr31"] = await _collect_adr31(db, last_g)
+        except Exception:
+            logger.warning("ADR-0031 weekly measure unavailable", exc_info=True)
+            await db.rollback()
         rows = (await db.execute(text(
             "SELECT DISTINCT ON (host) host, day, sitemap_errors, in_search FROM webmaster_indexing_daily "
             "WHERE sitemap_errors IS NOT NULL ORDER BY host, day DESC"
@@ -195,6 +278,7 @@ def format_seo_week(data: dict) -> str:
         lines.append(_engine_line("Все страницы", cur, prev))
     if g_day is None or (today - g_day).days > STALE_AFTER_DAYS:
         stale_notes.append(f"данные Google последние за {g_day:%d.%m}" if g_day else "данных Google нет")
+    lines.extend(format_adr31(data.get("adr31")))
     if data.get("sitemap"):
         lines.append("\n<b>Ошибки sitemap (Вебмастер)</b>")
         for host, (day, errors, in_search) in sorted(data["sitemap"].items()):

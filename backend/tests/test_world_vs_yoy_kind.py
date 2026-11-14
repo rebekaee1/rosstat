@@ -110,7 +110,68 @@ def test_vs_page_answers_in_words_and_titles_the_pair_first(frequency_client):  
     ru = frequency_client.get("/seo/world-vs/germany-vs-japan/hicp-index",
         headers={"Host": "ru.forecasteconomy.com", "X-FE-Locale": "ru"}).text
     assert "Германия: максимум — 12 % (январь 2024), минимум — 10,62 % (февраль 2025)." in ru
-    assert "сравнение данных" in re.search(r"<title>(.*?)</title>", ru, re.S).group(1)
+    ru_title = re.search(r"<title>(.*?)</title>", ru, re.S).group(1)
+    assert ru_title.startswith("Германия против Японии: ") and ru_title.endswith(", 2025")
+
+
+def test_vs_snippet_answers_who_is_higher_in_both_languages(frequency_client):  # noqa: F811
+    """Описание — шаблон семейства (14.11.2026): значения без ложной точности, у кого выше и на сколько, год."""
+    pages = {
+        "en": frequency_client.get("/seo/world-vs/germany-vs-japan/hicp-index",
+            headers={"Host": "forecasteconomy.com", "X-FE-Locale": "en"}).text,
+        "ru": frequency_client.get("/seo/world-vs/germany-vs-japan/hicp-index",
+            headers={"Host": "ru.forecasteconomy.com", "X-FE-Locale": "ru"}).text,
+    }
+    for locale, html in pages.items():
+        desc = re.search(r'<meta name="description" content="([^"]*)"', html).group(1)
+        assert ", 2025: Germany — " in desc if locale == "en" else ", 2025: Германия — " in desc
+        assert ("Higher in " in desc) if locale == "en" else ("Выше у " in desc)
+        assert ("Source: " in desc) if locale == "en" else ("Источник: " in desc)
+        # Не больше одного знака после запятой у чисел от 1 до 100.
+        assert not re.search(r"\d[.,]\d{2,}\s?%", desc), desc
+
+
+def test_snippet_number_has_no_false_precision():
+    from app.services.locale import _locale_var
+    from app.services.seo_world_compare import _snippet_description, _snippet_number
+
+    token = _locale_var.set("en")
+    try:
+        assert _snippet_number(204.7753) == "205"
+        assert _snippet_number(4.7183) == "4.7"
+        assert _snippet_number(0.012345) == "0.0123"
+        assert _snippet_number(10311623) == "10,311,623"
+        assert _snippet_number(-3.24) == "\u22123.2"
+        text = _snippet_description(
+            en=True, name="General government gross debt", year=2025, label_a="Japan",
+            label_b="United States", value_a=204.7753, value_b=124.3767, vsfx_a=" %", vsfx_b=" %",
+            diff=80.3986, diff_sfx=" pp", higher="Japan", sources="International Monetary Fund",
+        )
+        assert text == (
+            "General government gross debt, 2025: Japan — 205 %, United States — 124 %. "
+            "Higher in Japan by 80.4 pp. Official data, history and live comparison. "
+            "Source: International Monetary Fund."
+        )
+        equal = _snippet_description(
+            en=True, name="Population", year=2026, label_a="A", label_b="B", value_a=5.0,
+            value_b=5.0, vsfx_a="", vsfx_b="", diff=0.0, diff_sfx="", higher="B", sources="S",
+        )
+        assert "The values are equal." in equal
+    finally:
+        _locale_var.reset(token)
+    token = _locale_var.set("ru")
+    try:
+        text = _snippet_description(
+            en=False, name="Государственный долг", year=2025, label_a="Япония", label_b="США",
+            value_a=204.7753, value_b=124.3767, vsfx_a=" %", vsfx_b=" %", diff=80.3986,
+            diff_sfx=" п.п.", higher="Японии", sources="Международный валютный фонд",
+        )
+        assert text == (
+            "Государственный долг, 2025: Япония — 205 %, США — 124 %. Выше у Японии на 80,4 п.п. "
+            "Официальные данные, история и живое сравнение. Источник: Международный валютный фонд."
+        )
+    finally:
+        _locale_var.reset(token)
 
 
 def test_vs_history_counts_periods_for_one_frequency():

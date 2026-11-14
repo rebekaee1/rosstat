@@ -119146,7 +119146,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/biLabels.js": {
-      "sha256": "783a0fb3663e693a72ea6f61480ebd5d862f089889ed54479bae8dd3f11ff6c4",
+      "sha256": "6d4d42ff0f92cef76240a8458aaeab9453e62c59d348f6938d757c6e3170cc89",
       "imports": [],
       "routes": [],
       "functions": [
@@ -119175,128 +119175,160 @@
           "callback_context": null
         },
         {
-          "line": 67,
-          "end_line": 74,
+          "line": 60,
+          "end_line": 72,
+          "owner": "<module>",
+          "name": "engineReconcileRows",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 68,
+          "end_line": 68,
+          "owner": "engineReconcileRows",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[...names]\n    .filter"
+        },
+        {
+          "line": 69,
+          "end_line": 69,
+          "owner": "engineReconcileRows",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[...names]\n    .filter((name) => name !== '(не определён)')\n    .map"
+        },
+        {
+          "line": 70,
+          "end_line": 70,
+          "owner": "engineReconcileRows",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[...names]\n    .filter((name) => name !== '(не определён)')\n    .map((name) => ({ name, own: Number(own?.[name]) || 0, metrika: m[name] || 0 }))\n    .sort"
+        },
+        {
+          "line": 83,
+          "end_line": 90,
           "owner": "<module>",
           "name": "languageLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 100,
-          "end_line": 111,
+          "line": 116,
+          "end_line": 127,
           "owner": "<module>",
           "name": "timezoneLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 158,
-          "end_line": 163,
+          "line": 174,
+          "end_line": 179,
           "owner": "<module>",
           "name": "cityLabel",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 204,
-          "end_line": 210,
+          "line": 220,
+          "end_line": 226,
           "owner": "<module>",
           "name": "geoRegionLabel",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 257,
-          "end_line": 265,
+          "line": 273,
+          "end_line": 281,
           "owner": "<module>",
           "name": "blockLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 299,
-          "end_line": 306,
+          "line": 315,
+          "end_line": 322,
           "owner": "<module>",
           "name": "pageSectionRu",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 338,
-          "end_line": 338,
+          "line": 354,
+          "end_line": 354,
           "owner": "<module>",
           "name": "sliceMetricLabel",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 339,
-          "end_line": 339,
+          "line": 355,
+          "end_line": 355,
           "owner": "<module>",
           "name": "sliceDimLabel",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 348,
-          "end_line": 366,
+          "line": 364,
+          "end_line": 382,
           "owner": "<module>",
           "name": "collapsePhrases",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 350,
-          "end_line": 350,
+          "line": 366,
+          "end_line": 366,
           "owner": "collapsePhrases",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(dict || {})\n    .map"
         },
         {
-          "line": 351,
-          "end_line": 351,
+          "line": 367,
+          "end_line": 367,
           "owner": "collapsePhrases",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(dict || {})\n    .map(([k, v]) => [String(k).trim(), Number(v) || 0])\n    .filter"
         },
         {
-          "line": 353,
-          "end_line": 353,
+          "line": 369,
+          "end_line": 369,
           "owner": "collapsePhrases",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "entries.sort"
         },
         {
-          "line": 357,
-          "end_line": 357,
+          "line": 373,
+          "end_line": 373,
           "owner": "collapsePhrases",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "kept\n      .filter"
         },
         {
-          "line": 358,
-          "end_line": 358,
+          "line": 374,
+          "end_line": 374,
           "owner": "collapsePhrases",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "kept\n      .filter(([k]) => k.startsWith(phrase) && k !== phrase)\n      .sort"
         },
         {
-          "line": 363,
-          "end_line": 363,
+          "line": 379,
+          "end_line": 379,
           "owner": "collapsePhrases",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "kept\n    .sort"
         },
         {
-          "line": 365,
-          "end_line": 365,
+          "line": 381,
+          "end_line": 381,
           "owner": "collapsePhrases",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -119379,8 +119411,8 @@
           "initializer": null
         },
         {
-          "line": 78,
-          "end_line": 98,
+          "line": 94,
+          "end_line": 114,
           "owner": "<module>",
           "name": "TZ_CITY_RU",
           "kind": "ObjectExpression",
@@ -119452,8 +119484,8 @@
           "initializer": null
         },
         {
-          "line": 115,
-          "end_line": 156,
+          "line": 131,
+          "end_line": 172,
           "owner": "<module>",
           "name": "CITY_RU",
           "kind": "ObjectExpression",
@@ -119580,8 +119612,8 @@
           "initializer": null
         },
         {
-          "line": 167,
-          "end_line": 200,
+          "line": 183,
+          "end_line": 216,
           "owner": "<module>",
           "name": "GEO_REGION_RU",
           "kind": "ObjectExpression",
@@ -119642,8 +119674,8 @@
           "initializer": null
         },
         {
-          "line": 216,
-          "end_line": 225,
+          "line": 232,
+          "end_line": 241,
           "owner": "<module>",
           "name": "REGION_SECTION_RU",
           "kind": "ObjectExpression",
@@ -119674,8 +119706,8 @@
           "initializer": null
         },
         {
-          "line": 227,
-          "end_line": 255,
+          "line": 243,
+          "end_line": 271,
           "owner": "<module>",
           "name": "BLOCK_RU",
           "kind": "ObjectExpression",
@@ -119709,8 +119741,8 @@
           "initializer": null
         },
         {
-          "line": 269,
-          "end_line": 297,
+          "line": 285,
+          "end_line": 313,
           "owner": "<module>",
           "name": "SECTION_RULES",
           "kind": "ArrayExpression",
@@ -119746,8 +119778,8 @@
           "initializer": null
         },
         {
-          "line": 310,
-          "end_line": 320,
+          "line": 326,
+          "end_line": 336,
           "owner": "<module>",
           "name": "SLICE_METRIC_RU",
           "kind": "ObjectExpression",
@@ -119765,8 +119797,8 @@
           "initializer": null
         },
         {
-          "line": 322,
-          "end_line": 336,
+          "line": 338,
+          "end_line": 352,
           "owner": "<module>",
           "name": "SLICE_DIM_RU",
           "kind": "ObjectExpression",
@@ -119791,7 +119823,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/biLabels.test.js": {
-      "sha256": "f42ab63eee5452dd9f4fe12ad90d1dac49a792fa1e49debf306325c7bf0f8bb1",
+      "sha256": "f23d4ec531594fce0cc54be0734560bdcf11ce679ef1d251ed1fa623f61c396e",
       "imports": [
         {
           "line": 1,
@@ -119821,6 +119853,7 @@
             "cityLabel",
             "collapsePhrases",
             "engineLabel",
+            "engineReconcileRows",
             "languageLabel",
             "pageSectionRu",
             "timezoneLabel"
@@ -119932,6 +119965,30 @@
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rows.find"
+        },
+        {
+          "line": 65,
+          "end_line": 78,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 66,
+          "end_line": 73,
+          "owner": "<callback@65>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 74,
+          "end_line": 77,
+          "owner": "<callback@65>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
         }
       ],
       "hooks": [],
@@ -192163,7 +192220,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/AdminBI.jsx": {
-      "sha256": "07c1b918e52aa4b121850fb400096c97df22d4c1550f4b305bb564fb6cbe2681",
+      "sha256": "229c717f206d4ed1d0e164beaa07a0765900f662ce9a5ff76bcc1d7a0b1f7ffe",
       "imports": [
         {
           "line": 11,
@@ -192343,6 +192400,7 @@
             "channelLabel",
             "deviceLabel",
             "engineLabel",
+            "engineReconcileRows",
             "languageLabel",
             "timezoneLabel",
             "cityLabel",
@@ -192927,7 +192985,7 @@
         },
         {
           "line": 763,
-          "end_line": 890,
+          "end_line": 905,
           "owner": "<module>",
           "name": "AcquisitionTab",
           "kind": "FunctionDeclaration",
@@ -192982,284 +193040,228 @@
           "callback_context": "(a.ad_campaigns || []).filter((c) => c.visits > 0)\n    .map"
         },
         {
-          "line": 815,
-          "end_line": 822,
+          "line": 807,
+          "end_line": 814,
+          "owner": "AcquisitionTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "engineReconcile.map"
+        },
+        {
+          "line": 830,
+          "end_line": 837,
           "owner": "AcquisitionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ads.map"
         },
         {
-          "line": 835,
-          "end_line": 845,
+          "line": 850,
+          "end_line": 860,
           "owner": "AcquisitionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 847,
-          "end_line": 847,
+          "line": 862,
+          "end_line": 862,
           "owner": "AcquisitionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ads.map"
         },
         {
-          "line": 848,
-          "end_line": 848,
+          "line": 863,
+          "end_line": 863,
           "owner": "AcquisitionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 892,
-          "end_line": 990,
+          "line": 907,
+          "end_line": 1005,
           "owner": "<module>",
           "name": "FunnelTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 894,
-          "end_line": 894,
+          "line": 909,
+          "end_line": 909,
           "owner": "FunnelTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(f.by_source || []).filter"
         },
         {
-          "line": 896,
-          "end_line": 904,
+          "line": 911,
+          "end_line": 919,
           "owner": "FunnelTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "bySource.map"
         },
         {
-          "line": 908,
-          "end_line": 908,
+          "line": 923,
+          "end_line": 923,
           "owner": "FunnelTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(f.top_landings || []).map"
         },
         {
-          "line": 921,
-          "end_line": 921,
+          "line": 936,
+          "end_line": 936,
           "owner": "FunnelTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 923,
-          "end_line": 934,
+          "line": 938,
+          "end_line": 949,
           "owner": "FunnelTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 952,
-          "end_line": 976,
+          "line": 967,
+          "end_line": 991,
           "owner": "FunnelTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "landings.map"
         },
         {
-          "line": 993,
-          "end_line": 1031,
+          "line": 1008,
+          "end_line": 1046,
           "owner": "<module>",
           "name": "CohortTable",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1002,
-          "end_line": 1002,
+          "line": 1017,
+          "end_line": 1017,
           "owner": "CohortTable",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "cols.map"
         },
         {
-          "line": 1006,
-          "end_line": 1026,
+          "line": 1021,
+          "end_line": 1041,
           "owner": "CohortTable",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rows.map"
         },
         {
-          "line": 1010,
-          "end_line": 1024,
-          "owner": "CohortTable.<callback@1006>",
+          "line": 1025,
+          "end_line": 1039,
+          "owner": "CohortTable.<callback@1021>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "cols.map"
         },
         {
-          "line": 1033,
-          "end_line": 1100,
+          "line": 1048,
+          "end_line": 1115,
           "owner": "<module>",
           "name": "RetentionTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1035,
-          "end_line": 1035,
+          "line": 1050,
+          "end_line": 1050,
           "owner": "RetentionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 1036,
-          "end_line": 1036,
-          "owner": "RetentionTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 1039,
-          "end_line": 1052,
-          "owner": "RetentionTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 1048,
+          "line": 1051,
           "end_line": 1051,
-          "owner": "RetentionTab.<callback@1039>",
+          "owner": "RetentionTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 1054,
+          "end_line": 1067,
+          "owner": "RetentionTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 1063,
+          "end_line": 1066,
+          "owner": "RetentionTab.<callback@1054>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from"
         },
         {
-          "line": 1053,
-          "end_line": 1053,
+          "line": 1068,
+          "end_line": 1068,
           "owner": "RetentionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from"
         },
         {
-          "line": 1055,
-          "end_line": 1055,
+          "line": 1070,
+          "end_line": 1070,
           "owner": "RetentionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "cohorts.some"
         },
         {
-          "line": 1079,
-          "end_line": 1079,
+          "line": 1094,
+          "end_line": 1094,
           "owner": "RetentionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1081,
-          "end_line": 1081,
+          "line": 1096,
+          "end_line": 1096,
           "owner": "RetentionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1102,
-          "end_line": 1229,
+          "line": 1117,
+          "end_line": 1244,
           "owner": "<module>",
           "name": "PagesTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1103,
-          "end_line": 1107,
-          "owner": "PagesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 1103,
-          "end_line": 1107,
-          "owner": "PagesTab.<callback@1103>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "(d.pages || []).map"
-        },
-        {
-          "line": 1108,
-          "end_line": 1108,
-          "owner": "PagesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "pages.map"
-        },
-        {
-          "line": 1109,
-          "end_line": 1109,
-          "owner": "PagesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "pages.filter"
-        },
-        {
-          "line": 1109,
-          "end_line": 1109,
-          "owner": "PagesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "pages.filter((p) => p.dwell > 0).map"
-        },
-        {
-          "line": 1112,
-          "end_line": 1120,
-          "owner": "PagesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 1113,
-          "end_line": 1113,
-          "owner": "PagesTab.<callback@1112>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "[...pages].sort"
-        },
-        {
-          "line": 1114,
-          "end_line": 1114,
-          "owner": "PagesTab.<callback@1112>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "sorted.reduce"
-        },
-        {
-          "line": 1115,
-          "end_line": 1119,
-          "owner": "PagesTab.<callback@1112>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "sorted.reduce"
-        },
-        {
-          "line": 1122,
+          "line": 1118,
           "end_line": 1122,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "(d.content_structure?.sections || []).filter"
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 1118,
+          "end_line": 1122,
+          "owner": "PagesTab.<callback@1118>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(d.pages || []).map"
         },
         {
           "line": 1123,
@@ -193267,927 +193269,959 @@
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "sections.reduce"
+          "callback_context": "pages.map"
         },
         {
           "line": 1124,
-          "end_line": 1126,
-          "owner": "PagesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "sections.map"
-        },
-        {
-          "line": 1128,
-          "end_line": 1128,
+          "end_line": 1124,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "pages.filter"
         },
         {
+          "line": 1124,
+          "end_line": 1124,
+          "owner": "PagesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "pages.filter((p) => p.dwell > 0).map"
+        },
+        {
+          "line": 1127,
+          "end_line": 1135,
+          "owner": "PagesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 1128,
+          "end_line": 1128,
+          "owner": "PagesTab.<callback@1127>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[...pages].sort"
+        },
+        {
           "line": 1129,
           "end_line": 1129,
+          "owner": "PagesTab.<callback@1127>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "sorted.reduce"
+        },
+        {
+          "line": 1130,
+          "end_line": 1134,
+          "owner": "PagesTab.<callback@1127>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "sorted.reduce"
+        },
+        {
+          "line": 1137,
+          "end_line": 1137,
+          "owner": "PagesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(d.content_structure?.sections || []).filter"
+        },
+        {
+          "line": 1138,
+          "end_line": 1138,
+          "owner": "PagesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "sections.reduce"
+        },
+        {
+          "line": 1139,
+          "end_line": 1141,
+          "owner": "PagesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "sections.map"
+        },
+        {
+          "line": 1143,
+          "end_line": 1143,
+          "owner": "PagesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "pages.filter"
+        },
+        {
+          "line": 1144,
+          "end_line": 1144,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "pages.filter((p) => p.problems > 0)\n    .sort"
         },
         {
-          "line": 1130,
-          "end_line": 1130,
+          "line": 1145,
+          "end_line": 1145,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "pages.filter((p) => p.problems > 0)\n    .sort((a, b) => b.problems - a.problems).slice(0, 10)\n    .map"
         },
         {
-          "line": 1142,
-          "end_line": 1155,
+          "line": 1157,
+          "end_line": 1170,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1145,
-          "end_line": 1145,
-          "owner": "PagesTab.<callback@1142>",
+          "line": 1160,
+          "end_line": 1160,
+          "owner": "PagesTab.<callback@1157>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "sections.find"
         },
         {
-          "line": 1150,
-          "end_line": 1152,
-          "owner": "PagesTab.<callback@1142>",
+          "line": 1165,
+          "end_line": 1167,
+          "owner": "PagesTab.<callback@1157>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "sec?.top_pages?.slice(0, 3).map"
         },
         {
-          "line": 1159,
-          "end_line": 1165,
+          "line": 1174,
+          "end_line": 1180,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "sections.slice(0, 6).map"
         },
         {
-          "line": 1178,
-          "end_line": 1178,
+          "line": 1193,
+          "end_line": 1193,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1181,
-          "end_line": 1181,
+          "line": 1196,
+          "end_line": 1196,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1204,
-          "end_line": 1215,
+          "line": 1219,
+          "end_line": 1230,
           "owner": "PagesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1231,
-          "end_line": 1338,
+          "line": 1246,
+          "end_line": 1353,
           "owner": "<module>",
           "name": "DemandTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1234,
-          "end_line": 1234,
+          "line": 1249,
+          "end_line": 1249,
           "owner": "DemandTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(dem.webmaster_queries || []).filter"
         },
         {
-          "line": 1259,
-          "end_line": 1269,
+          "line": 1274,
+          "end_line": 1284,
           "owner": "DemandTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1290,
-          "end_line": 1300,
+          "line": 1305,
+          "end_line": 1315,
           "owner": "DemandTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(dem.webmaster_by_host || []).map"
         },
         {
-          "line": 1316,
-          "end_line": 1316,
+          "line": 1331,
+          "end_line": 1331,
           "owner": "DemandTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(dem.metrika_phrases || []).map"
         },
         {
-          "line": 1327,
-          "end_line": 1332,
+          "line": 1342,
+          "end_line": 1347,
           "owner": "DemandTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(s.by_context || {}).map"
         },
         {
-          "line": 1340,
-          "end_line": 1394,
+          "line": 1355,
+          "end_line": 1409,
           "owner": "<module>",
           "name": "NavigationTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1363,
-          "end_line": 1371,
+          "line": 1378,
+          "end_line": 1386,
           "owner": "NavigationTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(b.dead || []).map"
         },
         {
-          "line": 1379,
-          "end_line": 1387,
+          "line": 1394,
+          "end_line": 1402,
           "owner": "NavigationTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(b.rage || []).map"
         },
         {
-          "line": 1399,
-          "end_line": 1415,
+          "line": 1414,
+          "end_line": 1430,
           "owner": "<module>",
           "name": "PairedBars",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1399,
-          "end_line": 1399,
+          "line": 1414,
+          "end_line": 1414,
           "owner": "PairedBars",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1400,
-          "end_line": 1400,
+          "line": 1415,
+          "end_line": 1415,
           "owner": "PairedBars",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "dictToBars(own, n).map"
         },
         {
-          "line": 1401,
-          "end_line": 1401,
+          "line": 1416,
+          "end_line": 1416,
           "owner": "PairedBars",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "dictToBars(metrika, n).map"
         },
         {
-          "line": 1417,
-          "end_line": 1509,
+          "line": 1432,
+          "end_line": 1524,
           "owner": "<module>",
           "name": "AudienceTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1420,
-          "end_line": 1420,
+          "line": 1435,
+          "end_line": 1435,
           "owner": "AudienceTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(a.devices || {}).filter"
         },
         {
-          "line": 1421,
-          "end_line": 1421,
+          "line": 1436,
+          "end_line": 1436,
           "owner": "AudienceTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(a.devices || {}).filter(([k]) => k !== 'bot')\n    .map"
         },
         {
-          "line": 1422,
-          "end_line": 1422,
+          "line": 1437,
+          "end_line": 1437,
           "owner": "AudienceTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(ref.devices || {}).map"
         },
         {
-          "line": 1465,
-          "end_line": 1470,
+          "line": 1480,
+          "end_line": 1485,
           "owner": "AudienceTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(a.browser_versions).map"
         },
         {
-          "line": 1511,
-          "end_line": 1550,
+          "line": 1526,
+          "end_line": 1565,
           "owner": "<module>",
           "name": "EventsTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1513,
-          "end_line": 1513,
+          "line": 1528,
+          "end_line": 1528,
           "owner": "EventsTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(d.events || {})\n    .map"
         },
         {
-          "line": 1514,
-          "end_line": 1514,
+          "line": 1529,
+          "end_line": 1529,
           "owner": "EventsTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(d.events || {})\n    .map(([name, v]) => ({ name, label: eventLabel(name), authed: v.authed, guest: v.guest, total: v.total }))\n    .sort"
         },
         {
-          "line": 1525,
-          "end_line": 1525,
+          "line": 1540,
+          "end_line": 1540,
           "owner": "EventsTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1527,
-          "end_line": 1537,
+          "line": 1542,
+          "end_line": 1552,
           "owner": "EventsTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1538,
-          "end_line": 1538,
+          "line": 1553,
+          "end_line": 1553,
           "owner": "EventsTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1552,
-          "end_line": 1587,
+          "line": 1567,
+          "end_line": 1602,
           "owner": "<module>",
           "name": "EventsRegistryCard",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1571,
-          "end_line": 1579,
+          "line": 1586,
+          "end_line": 1594,
           "owner": "EventsRegistryCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "pager.slice.map"
         },
         {
-          "line": 1589,
-          "end_line": 1630,
+          "line": 1604,
+          "end_line": 1645,
           "owner": "<module>",
           "name": "HypothesesTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1597,
-          "end_line": 1627,
+          "line": 1612,
+          "end_line": 1642,
           "owner": "HypothesesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rows.map"
         },
         {
-          "line": 1658,
-          "end_line": 1722,
+          "line": 1673,
+          "end_line": 1737,
           "owner": "<module>",
           "name": "DatasetTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1673,
-          "end_line": 1717,
+          "line": 1688,
+          "end_line": 1732,
           "owner": "DatasetTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(sections).map"
         },
         {
-          "line": 1675,
-          "end_line": 1675,
-          "owner": "DatasetTab.<callback@1673>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "Object.entries(s).filter"
-        },
-        {
-          "line": 1676,
-          "end_line": 1676,
-          "owner": "DatasetTab.<callback@1673>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "Object.entries(s).filter"
-        },
-        {
-          "line": 1677,
-          "end_line": 1677,
-          "owner": "DatasetTab.<callback@1673>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "Object.entries(s).filter"
-        },
-        {
-          "line": 1683,
+          "line": 1690,
           "end_line": 1690,
-          "owner": "DatasetTab.<callback@1673>",
+          "owner": "DatasetTab.<callback@1688>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Object.entries(s).filter"
+        },
+        {
+          "line": 1691,
+          "end_line": 1691,
+          "owner": "DatasetTab.<callback@1688>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Object.entries(s).filter"
+        },
+        {
+          "line": 1692,
+          "end_line": 1692,
+          "owner": "DatasetTab.<callback@1688>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Object.entries(s).filter"
+        },
+        {
+          "line": 1698,
+          "end_line": 1705,
+          "owner": "DatasetTab.<callback@1688>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "scalars.map"
         },
         {
-          "line": 1692,
-          "end_line": 1704,
-          "owner": "DatasetTab.<callback@1673>",
+          "line": 1707,
+          "end_line": 1719,
+          "owner": "DatasetTab.<callback@1688>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "dicts.map"
         },
         {
-          "line": 1696,
-          "end_line": 1701,
-          "owner": "DatasetTab.<callback@1673>.<callback@1692>",
+          "line": 1711,
+          "end_line": 1716,
+          "owner": "DatasetTab.<callback@1688>.<callback@1707>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(obj).map"
         },
         {
-          "line": 1705,
-          "end_line": 1714,
-          "owner": "DatasetTab.<callback@1673>",
+          "line": 1720,
+          "end_line": 1729,
+          "owner": "DatasetTab.<callback@1688>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "lists.map"
         },
         {
-          "line": 1709,
-          "end_line": 1711,
-          "owner": "DatasetTab.<callback@1673>.<callback@1705>",
+          "line": 1724,
+          "end_line": 1726,
+          "owner": "DatasetTab.<callback@1688>.<callback@1720>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "arr.map"
         },
         {
-          "line": 1731,
-          "end_line": 1734,
+          "line": 1746,
+          "end_line": 1749,
           "owner": "<module>",
           "name": "fmtDriverValue",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1745,
-          "end_line": 1816,
+          "line": 1760,
+          "end_line": 1831,
           "owner": "<module>",
           "name": "DriverNode",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1752,
-          "end_line": 1752,
+          "line": 1767,
+          "end_line": 1767,
           "owner": "DriverNode",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1752,
-          "end_line": 1752,
-          "owner": "DriverNode.<callback@1752>",
+          "line": 1767,
+          "end_line": 1767,
+          "owner": "DriverNode.<callback@1767>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setOpen"
         },
         {
-          "line": 1777,
-          "end_line": 1777,
+          "line": 1792,
+          "end_line": 1792,
           "owner": "DriverNode",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(det.channels || {}).sort"
         },
         {
-          "line": 1777,
-          "end_line": 1779,
+          "line": 1792,
+          "end_line": 1794,
           "owner": "DriverNode",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(det.channels || {}).sort((a, b) => b[1] - a[1]).map"
         },
         {
-          "line": 1804,
-          "end_line": 1809,
+          "line": 1819,
+          "end_line": 1824,
           "owner": "DriverNode",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "['d1', 'd7', 'd30'].map"
         },
         {
-          "line": 1819,
-          "end_line": 1928,
+          "line": 1834,
+          "end_line": 1943,
           "owner": "<module>",
           "name": "MetricTreeTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1825,
-          "end_line": 1825,
+          "line": 1840,
+          "end_line": 1840,
           "owner": "MetricTreeTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(ns.series || []).map"
         },
         {
-          "line": 1829,
-          "end_line": 1850,
+          "line": 1844,
+          "end_line": 1865,
           "owner": "MetricTreeTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    const src = tree.calendar || ns.series || [];\n    const calData = src.map((x) => [x.day, x.visits]);\n    const calMax = Math.max(1, ...src.map((x) => x.visits));\n    const year = calData.length ? calData[calData.length - 1][0].slice(0, 4) : String(new Date().getFullYear());\n    return {\n      tooltip: { formatter: (p) => `${p.value[0]}: ${Number(p.value[1]).toLocaleString('ru-RU')} сессий` },\n      visualMap: {\n        min: 0, max: calMax, orient: 'horizontal', left: 'center', bottom: 0,\n        inRange: { color: ['#F2F5FA', GOLD, INK] }, textStyle: { fontSize: 10 },\n      },\n      calendar: {\n        range: year, cellSize: ['auto', 14], left: 40, right: 10, top: 24,\n        itemStyle: { borderWidth: 2, borderColor: '#fff', color: '#FAF8F2' },\n        splitLine: { lineStyle: { color: 'rgba(26,26,46,0.15)' } },\n        dayLabel: { fontSize: 9, nameMap: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'] },\n        monthLabel: { fontSize: 10, nameMap: ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'] },\n        yearLabel: { show: false },\n      },\n      series: [{ type: 'heatmap', coordinateSystem: 'calendar', data: calData }],\n    };\n  }"
         },
         {
-          "line": 1831,
-          "end_line": 1831,
-          "owner": "MetricTreeTab.<callback@1829>",
+          "line": 1846,
+          "end_line": 1846,
+          "owner": "MetricTreeTab.<callback@1844>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "src.map"
         },
         {
-          "line": 1832,
-          "end_line": 1832,
-          "owner": "MetricTreeTab.<callback@1829>",
+          "line": 1847,
+          "end_line": 1847,
+          "owner": "MetricTreeTab.<callback@1844>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "src.map"
         },
         {
-          "line": 1835,
-          "end_line": 1835,
-          "owner": "MetricTreeTab.<callback@1829>",
+          "line": 1850,
+          "end_line": 1850,
+          "owner": "MetricTreeTab.<callback@1844>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1897,
-          "end_line": 1899,
+          "line": 1912,
+          "end_line": 1914,
           "owner": "MetricTreeTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(ns.milestones || []).map"
         },
         {
-          "line": 1916,
-          "end_line": 1916,
+          "line": 1931,
+          "end_line": 1931,
           "owner": "MetricTreeTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(tree.drivers || []).map"
         },
         {
-          "line": 1931,
-          "end_line": 1956,
+          "line": 1946,
+          "end_line": 1971,
           "owner": "<module>",
           "name": "FunnelSteps",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1932,
-          "end_line": 1932,
+          "line": 1947,
+          "end_line": 1947,
           "owner": "FunnelSteps",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(steps || []).filter"
         },
         {
-          "line": 1937,
-          "end_line": 1953,
+          "line": 1952,
+          "end_line": 1968,
           "owner": "FunnelSteps",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rows.map"
         },
         {
-          "line": 1960,
-          "end_line": 2019,
+          "line": 1975,
+          "end_line": 2034,
           "owner": "<module>",
           "name": "GoalReconciliationCard",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1981,
-          "end_line": 2001,
+          "line": 1996,
+          "end_line": 2016,
           "owner": "GoalReconciliationCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "pager.slice.map"
         },
         {
-          "line": 2008,
-          "end_line": 2008,
+          "line": 2023,
+          "end_line": 2023,
           "owner": "GoalReconciliationCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "gr.metrika_only.map"
         },
         {
-          "line": 2022,
-          "end_line": 2067,
+          "line": 2037,
+          "end_line": 2082,
           "owner": "<module>",
           "name": "ConversionTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2046,
-          "end_line": 2053,
+          "line": 2061,
+          "end_line": 2068,
           "owner": "ConversionTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(mk.by_goal || []).slice(0, 10).map"
         },
         {
-          "line": 2070,
-          "end_line": 2186,
+          "line": 2085,
+          "end_line": 2201,
           "owner": "<module>",
           "name": "BehaviorTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2071,
-          "end_line": 2110,
+          "line": 2086,
+          "end_line": 2125,
           "owner": "BehaviorTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2085,
-          "end_line": 2085,
-          "owner": "BehaviorTab.<callback@2071>",
+          "line": 2100,
+          "end_line": 2100,
+          "owner": "BehaviorTab.<callback@2086>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...flows.entries()]\n      .map"
         },
         {
-          "line": 2086,
-          "end_line": 2086,
-          "owner": "BehaviorTab.<callback@2071>",
+          "line": 2101,
+          "end_line": 2101,
+          "owner": "BehaviorTab.<callback@2086>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...flows.entries()]\n      .map(([key, count]) => { const [from, to] = key.split('→'); return { from, to, count }; })\n      .filter"
         },
         {
-          "line": 2087,
-          "end_line": 2087,
-          "owner": "BehaviorTab.<callback@2071>",
+          "line": 2102,
+          "end_line": 2102,
+          "owner": "BehaviorTab.<callback@2086>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...flows.entries()]\n      .map(([key, count]) => { const [from, to] = key.split('→'); return { from, to, count }; })\n      .filter((f) => f.count >= 2)\n      .sort"
         },
         {
-          "line": 2093,
-          "end_line": 2099,
-          "owner": "BehaviorTab.<callback@2071>",
+          "line": 2108,
+          "end_line": 2114,
+          "owner": "BehaviorTab.<callback@2086>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "top.map"
         },
         {
-          "line": 2105,
-          "end_line": 2105,
-          "owner": "BehaviorTab.<callback@2071>",
+          "line": 2120,
+          "end_line": 2120,
+          "owner": "BehaviorTab.<callback@2086>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2112,
-          "end_line": 2136,
+          "line": 2127,
+          "end_line": 2151,
           "owner": "BehaviorTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2115,
-          "end_line": 2115,
-          "owner": "BehaviorTab.<callback@2112>",
+          "line": 2130,
+          "end_line": 2130,
+          "owner": "BehaviorTab.<callback@2127>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "sections.reduce"
         },
         {
-          "line": 2117,
-          "end_line": 2117,
-          "owner": "BehaviorTab.<callback@2112>",
+          "line": 2132,
+          "end_line": 2132,
+          "owner": "BehaviorTab.<callback@2127>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2120,
-          "end_line": 2126,
-          "owner": "BehaviorTab.<callback@2112>",
+          "line": 2135,
+          "end_line": 2141,
+          "owner": "BehaviorTab.<callback@2127>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "sections.slice(0, 10).map"
         },
         {
-          "line": 2123,
-          "end_line": 2125,
-          "owner": "BehaviorTab.<callback@2112>.<callback@2120>",
+          "line": 2138,
+          "end_line": 2140,
+          "owner": "BehaviorTab.<callback@2127>.<callback@2135>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(s.top_pages || []).slice(0, 5).map"
         },
         {
-          "line": 2131,
-          "end_line": 2131,
-          "owner": "BehaviorTab.<callback@2112>",
+          "line": 2146,
+          "end_line": 2146,
+          "owner": "BehaviorTab.<callback@2127>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2168,
-          "end_line": 2175,
+          "line": 2183,
+          "end_line": 2190,
           "owner": "BehaviorTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(d.blocks.blocks || []).slice(0, 25).map"
         },
         {
-          "line": 2190,
-          "end_line": 2241,
+          "line": 2205,
+          "end_line": 2256,
           "owner": "<module>",
           "name": "PeopleCard",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2193,
-          "end_line": 2193,
+          "line": 2208,
+          "end_line": 2208,
           "owner": "PeopleCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "people.some"
         },
         {
-          "line": 2194,
-          "end_line": 2194,
+          "line": 2209,
+          "end_line": 2209,
           "owner": "PeopleCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "people.some"
         },
         {
-          "line": 2215,
-          "end_line": 2233,
+          "line": 2230,
+          "end_line": 2248,
           "owner": "PeopleCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "pager.slice.map"
         },
         {
-          "line": 2244,
-          "end_line": 2266,
+          "line": 2259,
+          "end_line": 2281,
           "owner": "<module>",
           "name": "AudienceFullTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2273,
-          "end_line": 2390,
+          "line": 2288,
+          "end_line": 2405,
           "owner": "<module>",
           "name": "ProductLoopTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2277,
-          "end_line": 2277,
+          "line": 2292,
+          "end_line": 2292,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(q.sections || []).map"
         },
         {
-          "line": 2279,
-          "end_line": 2279,
+          "line": 2294,
+          "end_line": 2294,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...items].sort"
         },
         {
-          "line": 2279,
-          "end_line": 2279,
+          "line": 2294,
+          "end_line": 2294,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...items].sort((a, b) => b.x - a.x).slice(0, 8).map"
         },
         {
-          "line": 2281,
-          "end_line": 2281,
+          "line": 2296,
+          "end_line": 2296,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items.map"
         },
         {
-          "line": 2283,
-          "end_line": 2283,
+          "line": 2298,
+          "end_line": 2298,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(fa.features || []).filter"
         },
         {
-          "line": 2301,
-          "end_line": 2311,
+          "line": 2316,
+          "end_line": 2326,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2313,
-          "end_line": 2313,
+          "line": 2328,
+          "end_line": 2328,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "quadrantItems.map"
         },
         {
-          "line": 2320,
-          "end_line": 2324,
+          "line": 2335,
+          "end_line": 2339,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(QUADRANT_COLOR).map"
         },
         {
-          "line": 2334,
-          "end_line": 2341,
+          "line": 2349,
+          "end_line": 2356,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "features.slice(0, 18).map"
         },
         {
-          "line": 2350,
-          "end_line": 2355,
+          "line": 2365,
+          "end_line": 2370,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "fa.top_copied.map"
         },
         {
-          "line": 2366,
-          "end_line": 2382,
+          "line": 2381,
+          "end_line": 2397,
           "owner": "ProductLoopTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "d.experiments.experiments.map"
         },
         {
-          "line": 2370,
-          "end_line": 2379,
-          "owner": "ProductLoopTab.<callback@2366>",
+          "line": 2385,
+          "end_line": 2394,
+          "owner": "ProductLoopTab.<callback@2381>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "exp.variants.map"
         },
         {
-          "line": 2393,
-          "end_line": 2511,
+          "line": 2408,
+          "end_line": 2526,
           "owner": "<module>",
           "name": "SlicesTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2401,
-          "end_line": 2401,
+          "line": 2416,
+          "end_line": 2416,
           "owner": "SlicesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2401,
-          "end_line": 2401,
-          "owner": "SlicesTab.<callback@2401>",
+          "line": 2416,
+          "end_line": 2416,
+          "owner": "SlicesTab.<callback@2416>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "api.get('/admin/bi/slices/meta').then"
         },
         {
-          "line": 2409,
-          "end_line": 2409,
+          "line": 2424,
+          "end_line": 2424,
           "owner": "SlicesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2409,
-          "end_line": 2409,
-          "owner": "SlicesTab.<callback@2409>",
+          "line": 2424,
+          "end_line": 2424,
+          "owner": "SlicesTab.<callback@2424>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "api.get(`/admin/bi/slices?metric=${metric}&dims=${dims}&days=${days}`).then"
         },
         {
-          "line": 2423,
-          "end_line": 2428,
+          "line": 2438,
+          "end_line": 2443,
           "owner": "SlicesTab",
           "name": "dimValue",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2429,
-          "end_line": 2432,
+          "line": 2444,
+          "end_line": 2447,
           "owner": "SlicesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rows.slice(0, 14).map"
-        },
-        {
-          "line": 2442,
-          "end_line": 2442,
-          "owner": "SlicesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 2444,
-          "end_line": 2444,
-          "owner": "SlicesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "metricNames.map"
-        },
-        {
-          "line": 2449,
-          "end_line": 2449,
-          "owner": "SlicesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 2452,
-          "end_line": 2452,
-          "owner": "SlicesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "dimOptions.map"
         },
         {
           "line": 2457,
@@ -194198,24 +194232,16 @@
           "callback_context": null
         },
         {
-          "line": 2460,
-          "end_line": 2460,
+          "line": 2459,
+          "end_line": 2459,
           "owner": "SlicesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "dimOptions.filter"
+          "callback_context": "metricNames.map"
         },
         {
-          "line": 2460,
-          "end_line": 2460,
-          "owner": "SlicesTab",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "dimOptions.filter((x) => x !== dim1).map"
-        },
-        {
-          "line": 2465,
-          "end_line": 2465,
+          "line": 2464,
+          "end_line": 2464,
           "owner": "SlicesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -194227,324 +194253,364 @@
           "owner": "SlicesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "[7, 30, 90, 365].map"
+          "callback_context": "dimOptions.map"
+        },
+        {
+          "line": 2472,
+          "end_line": 2472,
+          "owner": "SlicesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2475,
+          "end_line": 2475,
+          "owner": "SlicesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "dimOptions.filter"
+        },
+        {
+          "line": 2475,
+          "end_line": 2475,
+          "owner": "SlicesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "dimOptions.filter((x) => x !== dim1).map"
         },
         {
           "line": 2480,
-          "end_line": 2484,
+          "end_line": 2480,
+          "owner": "SlicesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2482,
+          "end_line": 2482,
+          "owner": "SlicesTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[7, 30, 90, 365].map"
+        },
+        {
+          "line": 2495,
+          "end_line": 2499,
           "owner": "SlicesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.keys(rows[0]).map"
         },
         {
-          "line": 2488,
-          "end_line": 2500,
+          "line": 2503,
+          "end_line": 2515,
           "owner": "SlicesTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "tablePager.slice.map"
         },
         {
-          "line": 2490,
-          "end_line": 2498,
-          "owner": "SlicesTab.<callback@2488>",
+          "line": 2505,
+          "end_line": 2513,
+          "owner": "SlicesTab.<callback@2503>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(r).map"
         },
         {
-          "line": 2514,
-          "end_line": 2633,
+          "line": 2529,
+          "end_line": 2648,
           "owner": "<module>",
           "name": "ReliabilityTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2520,
-          "end_line": 2524,
+          "line": 2535,
+          "end_line": 2539,
           "owner": "ReliabilityTab",
           "name": "vitalStatus",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2529,
-          "end_line": 2537,
+          "line": 2544,
+          "end_line": 2552,
           "owner": "ReliabilityTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "['LCP', 'INP', 'CLS', 'FCP', 'TTFB'].map"
         },
         {
-          "line": 2550,
-          "end_line": 2555,
+          "line": 2565,
+          "end_line": 2570,
           "owner": "ReliabilityTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "r.js_errors_own.map"
         },
         {
-          "line": 2564,
-          "end_line": 2569,
+          "line": 2579,
+          "end_line": 2584,
           "owner": "ReliabilityTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "r.js_errors_third_party.map"
         },
         {
-          "line": 2592,
-          "end_line": 2602,
+          "line": 2607,
+          "end_line": 2617,
           "owner": "ReliabilityTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "apiPager.slice.map"
         },
         {
-          "line": 2637,
-          "end_line": 2682,
+          "line": 2652,
+          "end_line": 2697,
           "owner": "<module>",
           "name": "BotnessCard",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2641,
-          "end_line": 2641,
+          "line": 2656,
+          "end_line": 2656,
           "owner": "BotnessCard",
           "name": "inCorridor",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2664,
-          "end_line": 2675,
+          "line": 2679,
+          "end_line": 2690,
           "owner": "BotnessCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "days.map"
         },
         {
-          "line": 2685,
-          "end_line": 2792,
+          "line": 2700,
+          "end_line": 2807,
           "owner": "<module>",
           "name": "AcquisitionFullTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2692,
-          "end_line": 2692,
+          "line": 2707,
+          "end_line": 2707,
           "owner": "AcquisitionFullTab",
           "name": "fmtRub",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2717,
-          "end_line": 2728,
+          "line": 2732,
+          "end_line": 2743,
           "owner": "AcquisitionFullTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "segPager.slice.map"
         },
         {
-          "line": 2745,
-          "end_line": 2745,
+          "line": 2760,
+          "end_line": 2760,
           "owner": "AcquisitionFullTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "revDays.map"
         },
         {
-          "line": 2749,
-          "end_line": 2749,
+          "line": 2764,
+          "end_line": 2764,
           "owner": "AcquisitionFullTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2749,
-          "end_line": 2749,
+          "line": 2764,
+          "end_line": 2764,
           "owner": "AcquisitionFullTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2765,
-          "end_line": 2772,
+          "line": 2780,
+          "end_line": 2787,
           "owner": "AcquisitionFullTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "revPager.slice.map"
         },
         {
-          "line": 2787,
-          "end_line": 2787,
+          "line": 2802,
+          "end_line": 2802,
           "owner": "AcquisitionFullTab",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "costs.campaigns.map"
         },
         {
-          "line": 2799,
-          "end_line": 2831,
+          "line": 2814,
+          "end_line": 2846,
           "owner": "<module>",
           "name": "TermsLegend",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2809,
-          "end_line": 2809,
+          "line": 2824,
+          "end_line": 2824,
           "owner": "TermsLegend",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2809,
-          "end_line": 2809,
-          "owner": "TermsLegend.<callback@2809>",
+          "line": 2824,
+          "end_line": 2824,
+          "owner": "TermsLegend.<callback@2824>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setOpen"
         },
         {
-          "line": 2817,
-          "end_line": 2826,
+          "line": 2832,
+          "end_line": 2841,
           "owner": "TermsLegend",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TERMS.map"
         },
         {
-          "line": 2835,
-          "end_line": 2880,
+          "line": 2850,
+          "end_line": 2895,
           "owner": "<module>",
           "name": "AdminLogin",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2841,
-          "end_line": 2853,
+          "line": 2856,
+          "end_line": 2868,
           "owner": "AdminLogin",
           "name": "submit",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2862,
-          "end_line": 2862,
+          "line": 2877,
+          "end_line": 2877,
           "owner": "AdminLogin",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2867,
-          "end_line": 2867,
+          "line": 2882,
+          "end_line": 2882,
           "owner": "AdminLogin",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2900,
-          "end_line": 3045,
+          "line": 2915,
+          "end_line": 3060,
           "owner": "<module>",
           "name": "AdminBI",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 2919,
-          "end_line": 2923,
+          "line": 2934,
+          "end_line": 2938,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2925,
-          "end_line": 2930,
+          "line": 2940,
+          "end_line": 2945,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2938,
-          "end_line": 2942,
+          "line": 2953,
+          "end_line": 2957,
           "owner": "AdminBI",
           "name": "refreshNow",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2954,
-          "end_line": 2954,
+          "line": 2969,
+          "end_line": 2969,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TABS.find"
         },
         {
-          "line": 2955,
-          "end_line": 2955,
+          "line": 2970,
+          "end_line": 2970,
           "owner": "AdminBI",
           "name": "openSlices",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2962,
-          "end_line": 2971,
+          "line": 2977,
+          "end_line": 2986,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "PERIODS.map"
         },
         {
-          "line": 2964,
-          "end_line": 2964,
-          "owner": "AdminBI.<callback@2962>",
+          "line": 2979,
+          "end_line": 2979,
+          "owner": "AdminBI.<callback@2977>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2977,
-          "end_line": 2977,
+          "line": 2992,
+          "end_line": 2992,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2983,
-          "end_line": 2983,
+          "line": 2998,
+          "end_line": 2998,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3013,
-          "end_line": 3025,
+          "line": 3028,
+          "end_line": 3040,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TABS.map"
         },
         {
-          "line": 3015,
-          "end_line": 3015,
-          "owner": "AdminBI.<callback@3013>",
+          "line": 3030,
+          "end_line": 3030,
+          "owner": "AdminBI.<callback@3028>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -194638,21 +194704,12 @@
           ]
         },
         {
-          "line": 777,
-          "end_line": 777,
-          "owner": "AcquisitionTab",
-          "callee": "useMetrikaCompare",
-          "arguments": [
-            "'sources-acq'"
-          ]
-        },
-        {
           "line": 778,
           "end_line": 778,
           "owner": "AcquisitionTab",
           "callee": "useMetrikaCompare",
           "arguments": [
-            "'engines-acq'"
+            "'sources-acq'"
           ]
         },
         {
@@ -194661,7 +194718,7 @@
           "owner": "AcquisitionTab",
           "callee": "useMetrikaCompare",
           "arguments": [
-            "'devices-acq'"
+            "'engines-acq'"
           ]
         },
         {
@@ -194670,12 +194727,21 @@
           "owner": "AcquisitionTab",
           "callee": "useMetrikaCompare",
           "arguments": [
+            "'devices-acq'"
+          ]
+        },
+        {
+          "line": 781,
+          "end_line": 781,
+          "owner": "AcquisitionTab",
+          "callee": "useMetrikaCompare",
+          "arguments": [
             "'geo-acq'"
           ]
         },
         {
-          "line": 906,
-          "end_line": 906,
+          "line": 921,
+          "end_line": 921,
           "owner": "FunnelTab",
           "callee": "usePager",
           "arguments": [
@@ -194684,8 +194750,8 @@
           ]
         },
         {
-          "line": 1035,
-          "end_line": 1035,
+          "line": 1050,
+          "end_line": 1050,
           "owner": "RetentionTab",
           "callee": "useMemo",
           "arguments": [
@@ -194694,8 +194760,8 @@
           ]
         },
         {
-          "line": 1036,
-          "end_line": 1036,
+          "line": 1051,
+          "end_line": 1051,
           "owner": "RetentionTab",
           "callee": "useMemo",
           "arguments": [
@@ -194704,8 +194770,8 @@
           ]
         },
         {
-          "line": 1039,
-          "end_line": 1052,
+          "line": 1054,
+          "end_line": 1067,
           "owner": "RetentionTab",
           "callee": "useMemo",
           "arguments": [
@@ -194714,8 +194780,8 @@
           ]
         },
         {
-          "line": 1103,
-          "end_line": 1107,
+          "line": 1118,
+          "end_line": 1122,
           "owner": "PagesTab",
           "callee": "useMemo",
           "arguments": [
@@ -194724,8 +194790,8 @@
           ]
         },
         {
-          "line": 1112,
-          "end_line": 1120,
+          "line": 1127,
+          "end_line": 1135,
           "owner": "PagesTab",
           "callee": "useMemo",
           "arguments": [
@@ -194734,8 +194800,8 @@
           ]
         },
         {
-          "line": 1553,
-          "end_line": 1553,
+          "line": 1568,
+          "end_line": 1568,
           "owner": "EventsRegistryCard",
           "callee": "usePager",
           "arguments": [
@@ -194744,8 +194810,8 @@
           ]
         },
         {
-          "line": 1746,
-          "end_line": 1746,
+          "line": 1761,
+          "end_line": 1761,
           "owner": "DriverNode",
           "callee": "useState",
           "arguments": [
@@ -194753,8 +194819,8 @@
           ]
         },
         {
-          "line": 1963,
-          "end_line": 1963,
+          "line": 1978,
+          "end_line": 1978,
           "owner": "GoalReconciliationCard",
           "callee": "usePager",
           "arguments": [
@@ -194763,8 +194829,8 @@
           ]
         },
         {
-          "line": 2071,
-          "end_line": 2110,
+          "line": 2086,
+          "end_line": 2125,
           "owner": "BehaviorTab",
           "callee": "useMemo",
           "arguments": [
@@ -194773,8 +194839,8 @@
           ]
         },
         {
-          "line": 2112,
-          "end_line": 2136,
+          "line": 2127,
+          "end_line": 2151,
           "owner": "BehaviorTab",
           "callee": "useMemo",
           "arguments": [
@@ -194783,8 +194849,8 @@
           ]
         },
         {
-          "line": 2192,
-          "end_line": 2192,
+          "line": 2207,
+          "end_line": 2207,
           "owner": "PeopleCard",
           "callee": "usePager",
           "arguments": [
@@ -194793,8 +194859,8 @@
           ]
         },
         {
-          "line": 2394,
-          "end_line": 2394,
+          "line": 2409,
+          "end_line": 2409,
           "owner": "SlicesTab",
           "callee": "useState",
           "arguments": [
@@ -194802,8 +194868,8 @@
           ]
         },
         {
-          "line": 2395,
-          "end_line": 2395,
+          "line": 2410,
+          "end_line": 2410,
           "owner": "SlicesTab",
           "callee": "useState",
           "arguments": [
@@ -194811,8 +194877,8 @@
           ]
         },
         {
-          "line": 2396,
-          "end_line": 2396,
+          "line": 2411,
+          "end_line": 2411,
           "owner": "SlicesTab",
           "callee": "useState",
           "arguments": [
@@ -194820,8 +194886,8 @@
           ]
         },
         {
-          "line": 2397,
-          "end_line": 2397,
+          "line": 2412,
+          "end_line": 2412,
           "owner": "SlicesTab",
           "callee": "useState",
           "arguments": [
@@ -194829,8 +194895,8 @@
           ]
         },
         {
-          "line": 2399,
-          "end_line": 2404,
+          "line": 2414,
+          "end_line": 2419,
           "owner": "SlicesTab",
           "callee": "useQuery",
           "arguments": [
@@ -194838,8 +194904,8 @@
           ]
         },
         {
-          "line": 2407,
-          "end_line": 2412,
+          "line": 2422,
+          "end_line": 2427,
           "owner": "SlicesTab",
           "callee": "useQuery",
           "arguments": [
@@ -194847,8 +194913,8 @@
           ]
         },
         {
-          "line": 2414,
-          "end_line": 2414,
+          "line": 2429,
+          "end_line": 2429,
           "owner": "SlicesTab",
           "callee": "usePager",
           "arguments": [
@@ -194857,8 +194923,8 @@
           ]
         },
         {
-          "line": 2517,
-          "end_line": 2517,
+          "line": 2532,
+          "end_line": 2532,
           "owner": "ReliabilityTab",
           "callee": "usePager",
           "arguments": [
@@ -194867,8 +194933,8 @@
           ]
         },
         {
-          "line": 2687,
-          "end_line": 2687,
+          "line": 2702,
+          "end_line": 2702,
           "owner": "AcquisitionFullTab",
           "callee": "usePager",
           "arguments": [
@@ -194877,8 +194943,8 @@
           ]
         },
         {
-          "line": 2691,
-          "end_line": 2691,
+          "line": 2706,
+          "end_line": 2706,
           "owner": "AcquisitionFullTab",
           "callee": "usePager",
           "arguments": [
@@ -194887,8 +194953,8 @@
           ]
         },
         {
-          "line": 2800,
-          "end_line": 2800,
+          "line": 2815,
+          "end_line": 2815,
           "owner": "TermsLegend",
           "callee": "useState",
           "arguments": [
@@ -194896,8 +194962,8 @@
           ]
         },
         {
-          "line": 2836,
-          "end_line": 2836,
+          "line": 2851,
+          "end_line": 2851,
           "owner": "AdminLogin",
           "callee": "useState",
           "arguments": [
@@ -194905,8 +194971,8 @@
           ]
         },
         {
-          "line": 2837,
-          "end_line": 2837,
+          "line": 2852,
+          "end_line": 2852,
           "owner": "AdminLogin",
           "callee": "useState",
           "arguments": [
@@ -194914,8 +194980,8 @@
           ]
         },
         {
-          "line": 2838,
-          "end_line": 2838,
+          "line": 2853,
+          "end_line": 2853,
           "owner": "AdminLogin",
           "callee": "useState",
           "arguments": [
@@ -194923,8 +194989,8 @@
           ]
         },
         {
-          "line": 2839,
-          "end_line": 2839,
+          "line": 2854,
+          "end_line": 2854,
           "owner": "AdminLogin",
           "callee": "useState",
           "arguments": [
@@ -194932,15 +194998,15 @@
           ]
         },
         {
-          "line": 2901,
-          "end_line": 2901,
+          "line": 2916,
+          "end_line": 2916,
           "owner": "AdminBI",
           "callee": "useAuth",
           "arguments": []
         },
         {
-          "line": 2902,
-          "end_line": 2902,
+          "line": 2917,
+          "end_line": 2917,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -194948,8 +195014,8 @@
           ]
         },
         {
-          "line": 2903,
-          "end_line": 2903,
+          "line": 2918,
+          "end_line": 2918,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -194957,8 +195023,8 @@
           ]
         },
         {
-          "line": 2904,
-          "end_line": 2904,
+          "line": 2919,
+          "end_line": 2919,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -194966,8 +195032,8 @@
           ]
         },
         {
-          "line": 2905,
-          "end_line": 2905,
+          "line": 2920,
+          "end_line": 2920,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -194975,8 +195041,8 @@
           ]
         },
         {
-          "line": 2907,
-          "end_line": 2907,
+          "line": 2922,
+          "end_line": 2922,
           "owner": "AdminBI",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -194984,8 +195050,8 @@
           ]
         },
         {
-          "line": 2916,
-          "end_line": 2916,
+          "line": 2931,
+          "end_line": 2931,
           "owner": "AdminBI",
           "callee": "useRef",
           "arguments": [
@@ -194993,8 +195059,8 @@
           ]
         },
         {
-          "line": 2917,
-          "end_line": 2933,
+          "line": 2932,
+          "end_line": 2948,
           "owner": "AdminBI",
           "callee": "useQuery",
           "arguments": [
@@ -195013,18 +195079,18 @@
           ]
         },
         {
-          "line": 2401,
-          "end_line": 2401,
-          "owner": "SlicesTab.<callback@2401>",
+          "line": 2416,
+          "end_line": 2416,
+          "owner": "SlicesTab.<callback@2416>",
           "callee": "api.get",
           "arguments": [
             "'/admin/bi/slices/meta'"
           ]
         },
         {
-          "line": 2409,
-          "end_line": 2409,
-          "owner": "SlicesTab.<callback@2409>",
+          "line": 2424,
+          "end_line": 2424,
+          "owner": "SlicesTab.<callback@2424>",
           "callee": "api.get",
           "arguments": [
             "`/admin/bi/slices?metric=${metric}&dims=${dims}&days=${days}`"
@@ -195087,44 +195153,28 @@
           "expression": "{() => p.setPage(p.cur + 1)}"
         },
         {
-          "line": 1617,
-          "end_line": 1621,
-          "owner": "HypothesesTab.<callback@1597>",
+          "line": 1632,
+          "end_line": 1636,
+          "owner": "HypothesesTab.<callback@1612>",
           "component": "button",
           "event": "onClick",
           "expression": "{onOpenSlices}"
         },
         {
-          "line": 1752,
-          "end_line": 1752,
+          "line": 1767,
+          "end_line": 1767,
           "owner": "DriverNode",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setOpen((v) => !v)}"
         },
         {
-          "line": 2387,
-          "end_line": 2387,
+          "line": 2402,
+          "end_line": 2402,
           "owner": "ProductLoopTab",
           "component": "HypothesesTab",
           "event": "onOpenSlices",
           "expression": "{onOpenSlices}"
-        },
-        {
-          "line": 2442,
-          "end_line": 2443,
-          "owner": "SlicesTab",
-          "component": "select",
-          "event": "onChange",
-          "expression": "{(e) => { setMetric(e.target.value); setDim1(''); setDim2(''); }}"
-        },
-        {
-          "line": 2449,
-          "end_line": 2450,
-          "owner": "SlicesTab",
-          "component": "select",
-          "event": "onChange",
-          "expression": "{(e) => setDim1(e.target.value)}"
         },
         {
           "line": 2457,
@@ -195132,99 +195182,115 @@
           "owner": "SlicesTab",
           "component": "select",
           "event": "onChange",
+          "expression": "{(e) => { setMetric(e.target.value); setDim1(''); setDim2(''); }}"
+        },
+        {
+          "line": 2464,
+          "end_line": 2465,
+          "owner": "SlicesTab",
+          "component": "select",
+          "event": "onChange",
+          "expression": "{(e) => setDim1(e.target.value)}"
+        },
+        {
+          "line": 2472,
+          "end_line": 2473,
+          "owner": "SlicesTab",
+          "component": "select",
+          "event": "onChange",
           "expression": "{(e) => setDim2(e.target.value)}"
         },
         {
-          "line": 2465,
-          "end_line": 2466,
+          "line": 2480,
+          "end_line": 2481,
           "owner": "SlicesTab",
           "component": "select",
           "event": "onChange",
           "expression": "{(e) => setDays(Number(e.target.value))}"
         },
         {
-          "line": 2809,
-          "end_line": 2810,
+          "line": 2824,
+          "end_line": 2825,
           "owner": "TermsLegend",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setOpen((v) => !v)}"
         },
         {
-          "line": 2857,
-          "end_line": 2857,
+          "line": 2872,
+          "end_line": 2872,
           "owner": "AdminLogin",
           "component": "form",
           "event": "onSubmit",
           "expression": "{submit}"
         },
         {
-          "line": 2860,
-          "end_line": 2864,
+          "line": 2875,
+          "end_line": 2879,
           "owner": "AdminLogin",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setEmail(e.target.value)}"
         },
         {
-          "line": 2865,
-          "end_line": 2869,
+          "line": 2880,
+          "end_line": 2884,
           "owner": "AdminLogin",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setPassword(e.target.value)}"
         },
         {
-          "line": 2945,
-          "end_line": 2945,
+          "line": 2960,
+          "end_line": 2960,
           "owner": "AdminBI",
           "component": "AdminLogin",
           "event": "onSuccess",
           "expression": "{setUser}"
         },
         {
-          "line": 2963,
-          "end_line": 2968,
-          "owner": "AdminBI.<callback@2962>",
+          "line": 2978,
+          "end_line": 2983,
+          "owner": "AdminBI.<callback@2977>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setPeriod(p.id)}"
         },
         {
-          "line": 2975,
-          "end_line": 2979,
+          "line": 2990,
+          "end_line": 2994,
           "owner": "AdminBI",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setCustomFrom(e.target.value)}"
         },
         {
-          "line": 2981,
-          "end_line": 2985,
+          "line": 2996,
+          "end_line": 3000,
           "owner": "AdminBI",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setCustomTo(e.target.value)}"
         },
         {
-          "line": 2996,
-          "end_line": 3001,
+          "line": 3011,
+          "end_line": 3016,
           "owner": "AdminBI",
           "component": "button",
           "event": "onClick",
           "expression": "{refreshNow}"
         },
         {
-          "line": 3014,
-          "end_line": 3021,
-          "owner": "AdminBI.<callback@3013>",
+          "line": 3029,
+          "end_line": 3036,
+          "owner": "AdminBI.<callback@3028>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setTab(t.id)}"
         },
         {
-          "line": 3042,
-          "end_line": 3042,
+          "line": 3057,
+          "end_line": 3057,
           "owner": "AdminBI",
           "component": "Active",
           "event": "onOpenSlices",
@@ -195434,8 +195500,8 @@
           "initializer": null
         },
         {
-          "line": 1235,
-          "end_line": 1240,
+          "line": 1250,
+          "end_line": 1255,
           "owner": "DemandTab",
           "name": "CTX_RU",
           "kind": "ObjectExpression",
@@ -195448,8 +195514,8 @@
           "initializer": null
         },
         {
-          "line": 1633,
-          "end_line": 1643,
+          "line": 1648,
+          "end_line": 1658,
           "owner": "<module>",
           "name": "DATASET_FIELD_RU",
           "kind": "ObjectExpression",
@@ -195467,8 +195533,8 @@
           "initializer": null
         },
         {
-          "line": 1644,
-          "end_line": 1656,
+          "line": 1659,
+          "end_line": 1671,
           "owner": "<module>",
           "name": "DATASET_TITLE_RU",
           "kind": "ObjectExpression",
@@ -195488,8 +195554,8 @@
           "initializer": null
         },
         {
-          "line": 1726,
-          "end_line": 1726,
+          "line": 1741,
+          "end_line": 1741,
           "owner": "<module>",
           "name": "STATUS_COLOR",
           "kind": "ObjectExpression",
@@ -195501,8 +195567,8 @@
           "initializer": null
         },
         {
-          "line": 1727,
-          "end_line": 1727,
+          "line": 1742,
+          "end_line": 1742,
           "owner": "<module>",
           "name": "STATUS_RU",
           "kind": "ObjectExpression",
@@ -195514,8 +195580,8 @@
           "initializer": null
         },
         {
-          "line": 1728,
-          "end_line": 1728,
+          "line": 1743,
+          "end_line": 1743,
           "owner": "<module>",
           "name": "TIER_RU",
           "kind": "ObjectExpression",
@@ -195529,8 +195595,8 @@
           "initializer": null
         },
         {
-          "line": 1729,
-          "end_line": 1729,
+          "line": 1744,
+          "end_line": 1744,
           "owner": "<module>",
           "name": "TIER_COLOR",
           "kind": "ObjectExpression",
@@ -195544,8 +195610,8 @@
           "initializer": null
         },
         {
-          "line": 1737,
-          "end_line": 1742,
+          "line": 1752,
+          "end_line": 1757,
           "owner": "<module>",
           "name": "DRIVER_HINTS",
           "kind": "ObjectExpression",
@@ -195558,8 +195624,8 @@
           "initializer": null
         },
         {
-          "line": 2268,
-          "end_line": 2270,
+          "line": 2283,
+          "end_line": 2285,
           "owner": "<module>",
           "name": "QUADRANT_COLOR",
           "kind": "ObjectExpression",
@@ -195572,8 +195638,8 @@
           "initializer": null
         },
         {
-          "line": 2519,
-          "end_line": 2519,
+          "line": 2534,
+          "end_line": 2534,
           "owner": "ReliabilityTab",
           "name": "VITAL_BUDGET",
           "kind": "ObjectExpression",
@@ -195587,8 +195653,8 @@
           "initializer": null
         },
         {
-          "line": 2801,
-          "end_line": 2806,
+          "line": 2816,
+          "end_line": 2821,
           "owner": "TermsLegend",
           "name": "TERMS",
           "kind": "ArrayExpression",
@@ -195601,8 +195667,8 @@
           "initializer": null
         },
         {
-          "line": 2886,
-          "end_line": 2898,
+          "line": 2901,
+          "end_line": 2913,
           "owner": "<module>",
           "name": "TABS",
           "kind": "ArrayExpression",
@@ -255946,7 +256012,7 @@
   "totals": {
     "imports": 4810,
     "routes": 95,
-    "functions": 15320,
+    "functions": 15328,
     "hooks": 2830,
     "http": 119,
     "storage": 244,

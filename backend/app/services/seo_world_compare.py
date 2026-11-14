@@ -273,6 +273,51 @@ def _pair_history(series_a: list[tuple[date, float]], series_b: list[tuple[date,
     return " ".join(parts)
 
 
+def _snippet_number(value: float) -> str:
+    """Число для title/description: без ложной точности (204,8 вместо 204,7753).
+
+    От 100 по модулю — целое, от 1 — один знак, меньше 1 — три значащих цифры. Таблица
+    страницы показывает опубликованную точность; сниппет отвечает на вопрос «у кого больше».
+    """
+    magnitude = abs(value)
+    if magnitude >= 100:
+        rounded = round(value)
+    elif magnitude >= 1:
+        rounded = round(value, 1)
+    else:
+        rounded = float(f"{value:.3g}")
+    return _fmt(rounded)
+
+
+def _snippet_description(
+    *, en: bool, name: str, year: int, label_a: str, label_b: str, value_a: float,
+    value_b: float, vsfx_a: str, vsfx_b: str, diff: float, diff_sfx: str, higher: str,
+    sources: str,
+) -> str:
+    """Описание сравнения стран — один шаблон семейства на оба языка (14.11.2026).
+
+    Запросы Search Console к этим страницам (15.08–10.11.2026) — пара стран и показатель
+    («netherlands vs germany gdp per capita», «us versus japan national debt») и вопросы
+    «is israel bigger than ireland». Описание даёт ответ: значения обеих стран, у кого выше
+    и на сколько, год. Без перечня ключевых слов и без строк под отдельные запросы.
+    """
+    va = f"{_snippet_number(value_a)}{vsfx_a}"
+    vb = f"{_snippet_number(value_b)}{vsfx_b}"
+    same = abs(diff) < 5e-9
+    gap = f" {_snippet_number(abs(diff)).lstrip(chr(0x2212))}{diff_sfx}" if diff_sfx else ""
+    if en:
+        answer = "The values are equal." if same else f"Higher in {higher}{(' by' + gap) if gap else ''}".rstrip(".") + "."
+        return (
+            f"{name}, {year}: {label_a} — {va}, {label_b} — {vb}. {answer} "
+            f"Official data, history and live comparison. Source: {sources}."
+        )
+    answer = "Значения совпадают." if same else f"Выше у {higher}{(' на' + gap) if gap else ''}".rstrip(".") + "."
+    return (
+        f"{name}, {year}: {label_a} — {va}, {label_b} — {vb}. {answer} "
+        f"Официальные данные, история и живое сравнение. Источник: {sources}."
+    )
+
+
 async def render_world_vs_html(
     slug_a: str, slug_b: str, concept_slug: str, db: AsyncSession
 ) -> tuple[int, str]:
@@ -489,15 +534,15 @@ async def render_world_vs_html(
         f"/compare?codes=w:{canon_a}:{concept.slug},w:{canon_b}:{concept.slug}"
     )
 
+    snippet_year = max(last_a_date, last_b_date).year
     if en:
         h1_text = f"{name}: {label_a_name} vs {label_b_name}"
         # Так спрашивают в Google: «netherlands vs germany gdp per capita» — пара стран впереди, год в конце.
-        title = f"{label_a_name} vs {label_b_name}: {name}, {max(last_a_date, last_b_date).year}"
-        desc = (
-            f"{name}: {label_a_name} — {_fmt(value_a)}{vsfx_a}, {label_b_name} — "
-            f"{_fmt(value_b)}{vsfx_b} by the latest published data. "
-            f"Difference — {(diff_text + diff_sfx).rstrip('.')}. Table of the latest values and "
-            f"live comparison. Source: {sources}."
+        title = f"{label_a_name} vs {label_b_name}: {name}, {snippet_year}"
+        desc = _snippet_description(
+            en=True, name=name, year=snippet_year, label_a=label_a_name, label_b=label_b_name,
+            value_a=value_a, value_b=value_b, vsfx_a=vsfx_a, vsfx_b=vsfx_b, diff=diff,
+            diff_sfx=diff_sfx, higher=label_a_name if diff > 0 else label_b_name, sources=sources,
         )
         eyebrow = "Country comparison"
         h2_table = "Latest values"
@@ -526,12 +571,12 @@ async def render_world_vs_html(
         )
     else:
         h1_text = f"{name}: {label_a_name} против {gen_b}"
-        title = f"{h1_text} — сравнение данных"
-        desc = (
-            f"{name}: {label_a_name} — {_fmt(value_a)}{vsfx_a}, {label_b_name} — "
-            f"{_fmt(value_b)}{vsfx_b} по последним опубликованным данным. "
-            f"Разница — {(diff_text + diff_sfx).rstrip('.')}. Таблица последних значений и "
-            f"живое сравнение. Источник: {sources}."
+        # Паритет с английским (14.11.2026): пара стран впереди, год в конце.
+        title = f"{label_a_name} против {gen_b}: {name}, {snippet_year}"
+        desc = _snippet_description(
+            en=False, name=name, year=snippet_year, label_a=label_a_name, label_b=label_b_name,
+            value_a=value_a, value_b=value_b, vsfx_a=vsfx_a, vsfx_b=vsfx_b, diff=diff,
+            diff_sfx=diff_sfx, higher=gen_a if diff > 0 else gen_b, sources=sources,
         )
         eyebrow = "Сравнение стран"
         h2_table = "Последние значения"

@@ -124,6 +124,8 @@ def refresh(manifest: dict, assertions: dict) -> dict:
         elif proof:
             proposal, evidence = proof
             provenance = evidence.get("review_provenance") or evidence.get("review_basis")
+            if isinstance(provenance, str):  # рецензии 11-13.11.2026 пишут основание строкой
+                provenance = {"note": provenance}
             mode = (provenance or {}).get("mode", "exact_version_review_in_ledger")
             if row.get("review_basis") is not None and row.get("review_status") != mode:
                 preserve_prior(row)

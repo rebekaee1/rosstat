@@ -59,6 +59,9 @@ class SessionSignals:
     # Сколько клиентских сессий в тот же МСК-день имели ТОЧНО такой же портрет
     # устройства (`portrait_fingerprint`) — считает сессионизация по окну.
     portrait_cluster: int = 0
+    # Переход и пояс из портрета (14.11.2026, сигнал google_root_linux_us).
+    referrer: str | None = None
+    timezone: str | None = None
 
 
 # Больше стольких логических ядер у потребительских устройств не бывает
@@ -131,6 +134,23 @@ def _ghost_crawl(s: SessionSignals) -> bool:
     return s.pageviews >= 4 and _no_input_traces(s)
 
 
+# Ферма 13-14.11.2026: Referer ровно корень google.com, Linux X11, американский пояс, Метрика не грузится.
+# Замер 60 дней (до 14.11.2026, десктоп с этим Referer): Linux + America/* — 4 172 сессии, из них с Метрикой 0
+# (у не-Linux с тем же Referer Метрика есть в 14 %), 4 101 уже с серверными «ядрами». Поисковой фразы Google
+# не передаёт, поэтому порог включения проверялся по доле сессий с Метрикой (< 1 %). Сигнал — только добавка
+# к счёту (40): сам по себе не делает сессию роботом, вместе с «нет следов человека» (20) — делает.
+GOOGLE_ROOT_REFERRER = "https://www.google.com/"
+
+
+def _google_root_linux_us(s: SessionSignals) -> bool:
+    return bool(
+        s.has_portrait and s.device_type == "desktop"
+        and s.referrer == GOOGLE_ROOT_REFERRER
+        and s.ua_raw and "(X11; Linux x86_64)" in s.ua_raw
+        and (s.timezone or "").startswith("America/")
+    )
+
+
 # (имя сигнала, вес, предикат) — единая точка калибровки и разложения счёта.
 HEURISTICS: tuple[tuple[str, int, Any], ...] = (
     ("webdriver", 100, lambda s: s.is_webdriver),
@@ -147,6 +167,8 @@ HEURISTICS: tuple[tuple[str, int, Any], ...] = (
     # Тот же портрет ≥10 раз за день и ни одного следа ввода: клонированный
     # профиль. Сигнал не зависит от UA и IP; ввод (даже один клик) его снимает.
     ("portrait_cluster", 60, lambda s: s.portrait_cluster >= PORTRAIT_CLUSTER_MIN and _no_input_traces(s)),
+    # Отпечаток фермы с подставленным Referer Google (добавка, не приговор).
+    ("google_root_linux_us", 40, _google_root_linux_us),
     # Неконсистентность устройства: мобильный UA без touch или нулевой экран.
     ("device_mismatch", 20, lambda s: s.has_portrait and (
         (s.device_type == "mobile" and s.touch is False)

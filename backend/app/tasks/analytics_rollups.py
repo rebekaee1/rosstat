@@ -52,6 +52,14 @@ SESSION_GAP_MIN = 30  # правило Метрики: разрыв ≥ 30 ми�
 # укладывается в одно окно; ночной 60-дневный — в ~20 окон с ограниченной памятью.
 SESSIONIZE_WINDOW_DAYS = 3
 _SESSION_EVENT_TYPES = ("pageview", "dwell", "click", "move")
+# Портрет устройства (session_start -> behavior_sessions.started_at) пишется на десятки миллисекунд ПОЗЖЕ первого
+# pageview той же вкладки (прод 12.11.2026: медиана 0,04 с, 99 % до 0,8 с). У сессии из одного pageview без
+# dwell/click/move конец логической сессии = этот pageview, и условие «портрет не позже конца» отбрасывало её
+# собственный портрет: без экрана, ядер и кластера счёт оставался 20 из 100. Ферма 13-14.11.2026 (Chrome 157 Linux,
+# 640 ядер, Referer https://www.google.com/) так прошла в «людей» ~2 400 сессиями. Запас тот же, что у целей
+# (5 минут): следующий логический сеанс начинается не раньше чем через SESSION_GAP_MIN, будущий портрет
+# другого окна по-прежнему не попадает.
+PORTRAIT_LATE_MARGIN_MIN = 5
 # Потоковое чтение длинных окон (визиты Метрики, dwell) — строк за раз.
 _STREAM_BATCH = 5_000
 # Ключи raw_json визита, которые читает rollup_daily_traffic.
@@ -84,6 +92,9 @@ def _utcnow() -> datetime:
 # ---------------------------------------------------------------------------
 # Серверная сессионизация
 # ---------------------------------------------------------------------------
+
+_PORTRAIT_LATE_MARGIN = timedelta(minutes=PORTRAIT_LATE_MARGIN_MIN)
+
 
 def _session_epoch_us(column):
     """Exact fixture timestamps; julianday rounds a30min boundary incorrectly."""
@@ -299,10 +310,12 @@ def _session_goals_select(sids, dialect: str):
 
 def _session_details_select(bounds, goals, dialect: str):
     """Bounds with the portrait fallback, newness and goal counters."""
+    late_us = PORTRAIT_LATE_MARGIN_MIN * 60 * 1_000_000
     fallback = select(BehaviorSession.session_id_hash).where(
         BehaviorSession.visitor_id_hash == bounds.c.visitor,
         and_(
-            BehaviorSession.started_at <= bounds.c.logical_end,
+            (_session_epoch_us(BehaviorSession.started_at) <= _session_epoch_us(bounds.c.logical_end) + late_us
+             if dialect == "sqlite" else BehaviorSession.started_at <= bounds.c.logical_end + _PORTRAIT_LATE_MARGIN),
             (_session_epoch_us(BehaviorSession.started_at) >= _session_epoch_us(bounds.c.logical_start) - 86_400_000_000
              if dialect == "sqlite" else BehaviorSession.started_at >= bounds.c.logical_start - timedelta(days=1)),
         ),
@@ -404,7 +417,7 @@ class _SessionAccumulator:
             if event.event_type == "pageview" and self.first_pv is None:
                 self.first_pv = params
         candidate = portraits.get(event.session_id_hash)
-        if self.own is None and candidate is not None and candidate.started_at <= self.ended:
+        if self.own is None and candidate is not None and candidate.started_at <= self.ended + _PORTRAIT_LATE_MARGIN:
             self.own = candidate
         if event.page:
             self.entry = self.entry or event.page
@@ -713,6 +726,8 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
         screen_h=portrait.screen_h if portrait else None,
         cpu_cores=portrait.cpu_cores if portrait else None,
         portrait_cluster=_portrait_cluster_for(portrait, portrait_clusters, portrait_fingerprint),
+        referrer=getattr(portrait, "referrer", None) if portrait else None,
+        timezone=getattr(portrait, "timezone", None) if portrait else None,
     ))
     return {
         "day": msk_day(started),  # день сессии — МСК (BI 2.1)

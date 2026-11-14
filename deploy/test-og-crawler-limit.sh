@@ -6,6 +6,9 @@
 # Ожидание: (1) все 200, (2) и (3) в основном 429 (общий потолок картинок
 # остаётся для всех, кроме проверенного индексирующего робота).
 # Контекст: 12.10.2026 Googlebot-Image получал 429 (113 из 1365).
+# 14.11.2026: с 05.10 отказ 429 отдаёт брендированную страницу (error_page 429 =429 /__branded-429 -> /429.html);
+# в голом образе nginx:alpine её нет, и отказ превращался в 404 — тест падал «подделка не ограничена», хотя лимит
+# срабатывал. Страница-заглушка кладётся в контейнер, как в deploy/test-bot-classes.sh; 404 теперь — провал теста.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 IMAGE="${IMAGE:-nginx:alpine}"
@@ -25,7 +28,7 @@ docker run -d --rm --name ogup --network ognet --network-alias backend -v "$T/up
 docker run -d --rm --name ogngx --network ognet \
   -v "$PWD/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
   -v "$PWD/frontend/search-crawlers.conf:/etc/nginx/search-crawlers.conf:ro" \
-  "$IMAGE" sh -c 'mkdir -p /usr/share/nginx/html /var/log/nginx/security; touch /var/log/nginx/security/security.log /var/log/nginx/security/honeypot.log; nginx -g "daemon off;"' >/dev/null
+  "$IMAGE" sh -c 'mkdir -p /usr/share/nginx/html /var/log/nginx/security; echo busy > /usr/share/nginx/html/429.html; touch /var/log/nginx/security/security.log /var/log/nginx/security/honeypot.log; nginx -g "daemon off;"' >/dev/null
 sleep 3
 docker exec ogngx nginx -t
 burst() {  # $1 ip, $2 user-agent
@@ -38,4 +41,6 @@ sleep 12
 h=$(burst 5.6.7.8 'Mozilla/5.0 Safari'); echo "ordinary visitor        : $h"
 case "$g" in *429*) echo "FAIL: проверенный робот получил 429"; exit 1;; esac
 case "$f" in *429*) ;; *) echo "FAIL: подделка не ограничена"; exit 1;; esac
+case "$h" in *429*) ;; *) echo "FAIL: обычный посетитель не ограничен общим потолком картинок"; exit 1;; esac
+case "$g $f $h" in *404*) echo "FAIL: 404 вместо ответа или 429 (нет страницы отказа?)"; exit 1;; esac
 echo "OK"

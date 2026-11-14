@@ -27,6 +27,13 @@ class Settings(BaseSettings):
     # Google об обходе метка noindex обход не экономит. Россия, валюты, OG-картинки, остальные
     # роботы и apex не затронуты. Откат — false. См. index_policy.ru_google_crawl_block_rules.
     ru_google_disallow_world_years: bool = True
+    # 14.11.2026 (ADR-0031): на apex робот Google получает тот же короткий индекс sitemap, что на
+    # ru. (без world-years, world-region-years, regional-years). Откат — false.
+    apex_google_short_sitemap: bool = True
+    # 14.11.2026 (ADR-0031): на apex годовые страницы стран мира, регионов мира и регионов России
+    # без спроса (нет в опубликованном sitemap-priority.xml) — meta googlebot noindex, follow.
+    # Нет шарда или спроса — метки нет. Откат — false. См. index_policy.is_apex_google_noindex_path.
+    apex_google_noindex_years_without_demand: bool = True
     # Кто географически считается русской аудиторией для geo-редиректа.
     geo_ru_country_codes: str = (
         "RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD"
@@ -69,7 +76,9 @@ class Settings(BaseSettings):
     # Круг 13 (SEO): размер приоритетного шарда sitemap-priority.xml (первым в
     # sitemap.xml); 0 = шард не публиковать. Не флаг: без него шард только
     # добавляет порядок обхода, остальные шарды не меняются.
-    sitemap_priority_max_urls: int = 20_000
+    # 14.11.2026: 40 000 — шард держит все страницы с показами в Google (страницы из
+    # gsc_page_daily) и служит списком спроса для метки googlebot на apex (ADR-0031).
+    sitemap_priority_max_urls: int = 40_000
     # Google Search Console: meta google-site-verification (пусто = не эмитить).
     google_site_verification: str = ""
     # Bing Webmaster meta msvalidate.01.

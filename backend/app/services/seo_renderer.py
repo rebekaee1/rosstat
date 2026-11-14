@@ -731,6 +731,8 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,san
 .seo-pills li{margin:0}
 .seo-pills a{display:inline-block;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:999px;padding:.35rem .9rem;font-size:.8125rem;text-decoration:none!important;color:rgba(26,26,46,.75)}
 .seo-pills a:hover{border-color:#B8942F;color:#B8942F}
+.seo-years{display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin:.6rem 0;padding:0;list-style:none}
+.seo-years li{margin:0}
 .seo-faq{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:.9rem;padding:.35rem 1.1rem .6rem;margin:.75rem 0}
 .seo-cta{max-width:56rem;margin:2.5rem auto 0;padding:0 1rem}
 .seo-cta-in{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:1rem;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
@@ -4227,13 +4229,22 @@ def _indicator_body(
     # Пары (year, month) готовит async-вызывающий (data_month_pairs).
     years_section = ""
     if data_years:
-        year_links = _links_list(tuple(
+        # Все годы (14.11.2026, ADR-0031): 12 последних видны, остальные — в «Все годы» внутри <details>.
+        from app.services.seo_year_ui import TABLE_SHOWN_ROWS, all_years_block
+
+        ordered = sorted(data_years, reverse=True)
+        shown_links = _links_list(tuple(
             (paths.russia_indicator_year(indicator.code, y), year_link_tpl.format(name=name, year=y))
-            for y in sorted(data_years, reverse=True)[:12]
+            for y in ordered[:TABLE_SHOWN_ROWS]
         ))
+        rest = ordered[TABLE_SHOWN_ROWS:]
+        rest_html = all_years_block(
+            [(y, paths.russia_indicator_year(indicator.code, y), "") for y in rest],
+            head_year="", head_value=None, collapse_above=0, shown=0,
+        ) if rest else ""
         years_section = (
             f"<section><h2>{escape(years_h2_tpl.format(name=name))}</h2>"
-            f"{year_links}</section>\n"
+            f"{shown_links}{rest_html}</section>\n"
         )
     months_section = ""
     if (indicator.frequency or "").startswith("month") and data_month_pairs:

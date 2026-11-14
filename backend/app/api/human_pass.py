@@ -37,15 +37,27 @@ def _secret() -> str | None:
     return value if _SECRET_RE.match(value) else None
 
 
-def sign(expires: int, pass_id: str, secret: str) -> str:
-    digest = hashlib.md5(f"{expires}{pass_id} {secret}".encode()).digest()
+# Привязка (14.11.2026): nginx передаёт в X-FE-Pass-Bind ровно ту строку, что вписывает в secure_link_md5
+# ("<сеть /24>|<UA> " или пусто при FE_PASS_BIND=0). Заголовок Starlette декодирует как latin-1: обратное кодирование
+# даёт исходные байты, как их видит nginx.
+BIND_HEADER = "x-fe-pass-bind"
+# Наблюдение (приёмка 14.11.2026): nginx передаёт сеть выдачи (IPv4 /24 или четыре группы IPv6) в X-FE-Pass-Net;
+# backend кладёт её в cookie fe_pass_net, nginx пишет в pass-observe.log, совпала бы привязка по сети на каждом запросе.
+NET_HEADER = "x-fe-pass-net"
+NET_COOKIE = "fe_pass_net"
+_NET_RE = re.compile(r"^[0-9A-Fa-f.:]{1,45}$")
+
+
+def sign(expires: int, pass_id: str, secret: str, bind: str = "") -> str:
+    raw = f"{expires}{pass_id} ".encode() + bind.encode("latin-1", "replace") + secret.encode()
+    digest = hashlib.md5(raw).digest()
     return base64.urlsafe_b64encode(digest).decode().rstrip("=")
 
 
-def issue(secret: str, now: float | None = None) -> str:
+def issue(secret: str, now: float | None = None, bind: str = "") -> str:
     expires = int(now if now is not None else time.time()) + max(1, settings.fe_human_pass_days) * 86400
     pass_id = secrets.token_hex(8)
-    return f"{sign(expires, pass_id, secret)}.{expires}.{pass_id}"
+    return f"{sign(expires, pass_id, secret, bind)}.{expires}.{pass_id}"
 
 
 @router.post("/human-pass", status_code=204, include_in_schema=False)
@@ -61,11 +73,21 @@ async def human_pass(request: Request) -> Response:
     host = (request.headers.get("host") or "").split(":")[0]
     response.set_cookie(
         COOKIE,
-        issue(secret),
+        issue(secret, bind=request.headers.get(BIND_HEADER, "")),
         max_age=max(1, settings.fe_human_pass_days) * 86400,
         path="/",
         secure=host not in {"localhost", "127.0.0.1"},
         httponly=True,
         samesite="lax",
     )
+    net = request.headers.get(NET_HEADER, "")
+    if _NET_RE.match(net):
+        response.set_cookie(
+            NET_COOKIE, net,
+            max_age=max(1, settings.fe_human_pass_days) * 86400,
+            path="/",
+            secure=host not in {"localhost", "127.0.0.1"},
+            httponly=True,
+            samesite="lax",
+        )
     return response

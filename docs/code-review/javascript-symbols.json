@@ -26547,7 +26547,7 @@
     "anonymous_functions": 13
   },
   "frontend/src/lib/biLabels.js": {
-    "sha256": "783a0fb3663e693a72ea6f61480ebd5d862f089889ed54479bae8dd3f11ff6c4",
+    "sha256": "6d4d42ff0f92cef76240a8458aaeab9453e62c59d348f6938d757c6e3170cc89",
     "definitions": [
       {
         "name": "channelLabel",
@@ -26568,57 +26568,63 @@
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "engineReconcileRows",
+        "line": 60,
+        "end_line": 72,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "languageLabel",
-        "line": 67,
-        "end_line": 74,
+        "line": 83,
+        "end_line": 90,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "timezoneLabel",
-        "line": 100,
-        "end_line": 111,
+        "line": 116,
+        "end_line": 127,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "cityLabel",
-        "line": 158,
-        "end_line": 163,
+        "line": 174,
+        "end_line": 179,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "geoRegionLabel",
-        "line": 204,
-        "end_line": 210,
+        "line": 220,
+        "end_line": 226,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "blockLabel",
-        "line": 257,
-        "end_line": 265,
+        "line": 273,
+        "end_line": 281,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pageSectionRu",
-        "line": 299,
-        "end_line": 306,
+        "line": 315,
+        "end_line": 322,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "sliceMetricLabel",
-        "line": 338,
-        "end_line": 338,
+        "line": 354,
+        "end_line": 354,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "sliceDimLabel",
-        "line": 339,
-        "end_line": 339,
+        "line": 355,
+        "end_line": 355,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "collapsePhrases",
-        "line": 348,
-        "end_line": 366,
+        "line": 364,
+        "end_line": 382,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -26656,75 +26662,81 @@
       },
       {
         "names": [
+          "engineReconcileRows"
+        ],
+        "line": 60
+      },
+      {
+        "names": [
           "languageLabel"
         ],
-        "line": 67
+        "line": 83
       },
       {
         "names": [
           "timezoneLabel"
         ],
-        "line": 100
+        "line": 116
       },
       {
         "names": [
           "cityLabel"
         ],
-        "line": 158
+        "line": 174
       },
       {
         "names": [
           "geoRegionLabel"
         ],
-        "line": 204
+        "line": 220
       },
       {
         "names": [
           "blockLabel"
         ],
-        "line": 257
+        "line": 273
       },
       {
         "names": [
           "pageSectionRu"
         ],
-        "line": 299
+        "line": 315
       },
       {
         "names": [
           "SLICE_METRIC_RU"
         ],
-        "line": 310
+        "line": 326
       },
       {
         "names": [
           "SLICE_DIM_RU"
         ],
-        "line": 322
+        "line": 338
       },
       {
         "names": [
           "sliceMetricLabel"
         ],
-        "line": 338
+        "line": 354
       },
       {
         "names": [
           "sliceDimLabel"
         ],
-        "line": 339
+        "line": 355
       },
       {
         "names": [
           "collapsePhrases"
         ],
-        "line": 348
+        "line": 364
       }
     ],
-    "anonymous_functions": 7
+    "anonymous_functions": 10
   },
   "frontend/src/lib/biLabels.test.js": {
-    "sha256": "f42ab63eee5452dd9f4fe12ad90d1dac49a792fa1e49debf306325c7bf0f8bb1",
+    "sha256": "f23d4ec531594fce0cc54be0734560bdcf11ce679ef1d251ed1fa623f61c396e",
     "definitions": [],
     "imports": [
       {
@@ -26737,7 +26749,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 13
+    "anonymous_functions": 16
   },
   "frontend/src/lib/breadcrumbs.js": {
     "sha256": "07b2397d793ea812c074be0d72e7620c89ce51e50be8b64ed6bd3e0196804d9f",
@@ -52997,7 +53009,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/pages/AdminBI.jsx": {
-    "sha256": "07c1b918e52aa4b121850fb400096c97df22d4c1550f4b305bb564fb6cbe2681",
+    "sha256": "229c717f206d4ed1d0e164beaa07a0765900f662ce9a5ff76bcc1d7a0b1f7ffe",
     "definitions": [
       {
         "name": "eventLabel",
@@ -53164,271 +53176,271 @@
       {
         "name": "AcquisitionTab",
         "line": 763,
-        "end_line": 890,
+        "end_line": 905,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "FunnelTab",
-        "line": 892,
-        "end_line": 990,
+        "line": 907,
+        "end_line": 1005,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CohortTable",
-        "line": 993,
-        "end_line": 1031,
+        "line": 1008,
+        "end_line": 1046,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RetentionTab",
-        "line": 1033,
-        "end_line": 1100,
+        "line": 1048,
+        "end_line": 1115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PagesTab",
-        "line": 1102,
-        "end_line": 1229,
+        "line": 1117,
+        "end_line": 1244,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DemandTab",
-        "line": 1231,
-        "end_line": 1338,
+        "line": 1246,
+        "end_line": 1353,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NavigationTab",
-        "line": 1340,
-        "end_line": 1394,
+        "line": 1355,
+        "end_line": 1409,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PairedBars",
-        "line": 1399,
-        "end_line": 1415,
+        "line": 1414,
+        "end_line": 1430,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AudienceTab",
-        "line": 1417,
-        "end_line": 1509,
+        "line": 1432,
+        "end_line": 1524,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EventsTab",
-        "line": 1511,
-        "end_line": 1550,
+        "line": 1526,
+        "end_line": 1565,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EventsRegistryCard",
-        "line": 1552,
-        "end_line": 1587,
+        "line": 1567,
+        "end_line": 1602,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HypothesesTab",
-        "line": 1589,
-        "end_line": 1630,
+        "line": 1604,
+        "end_line": 1645,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DatasetTab",
-        "line": 1658,
-        "end_line": 1722,
+        "line": 1673,
+        "end_line": 1737,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fmtDriverValue",
-        "line": 1731,
-        "end_line": 1734,
+        "line": 1746,
+        "end_line": 1749,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DriverNode",
-        "line": 1745,
-        "end_line": 1816,
+        "line": 1760,
+        "end_line": 1831,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MetricTreeTab",
-        "line": 1819,
-        "end_line": 1928,
+        "line": 1834,
+        "end_line": 1943,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MetricTreeTab.formatter",
-        "line": 1835,
-        "end_line": 1835,
+        "line": 1850,
+        "end_line": 1850,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "FunnelSteps",
-        "line": 1931,
-        "end_line": 1956,
+        "line": 1946,
+        "end_line": 1971,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "GoalReconciliationCard",
-        "line": 1960,
-        "end_line": 2019,
+        "line": 1975,
+        "end_line": 2034,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ConversionTab",
-        "line": 2022,
-        "end_line": 2067,
+        "line": 2037,
+        "end_line": 2082,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BehaviorTab",
-        "line": 2070,
-        "end_line": 2186,
+        "line": 2085,
+        "end_line": 2201,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2105,
-        "end_line": 2105,
+        "line": 2120,
+        "end_line": 2120,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2117,
-        "end_line": 2117,
+        "line": 2132,
+        "end_line": 2132,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2131,
-        "end_line": 2131,
+        "line": 2146,
+        "end_line": 2146,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PeopleCard",
-        "line": 2190,
-        "end_line": 2241,
+        "line": 2205,
+        "end_line": 2256,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AudienceFullTab",
-        "line": 2244,
-        "end_line": 2266,
+        "line": 2259,
+        "end_line": 2281,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ProductLoopTab",
-        "line": 2273,
-        "end_line": 2390,
+        "line": 2288,
+        "end_line": 2405,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SlicesTab",
-        "line": 2393,
-        "end_line": 2511,
+        "line": 2408,
+        "end_line": 2526,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SlicesTab.queryFn",
-        "line": 2401,
-        "end_line": 2401,
+        "line": 2416,
+        "end_line": 2416,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SlicesTab.queryFn",
-        "line": 2409,
-        "end_line": 2409,
+        "line": 2424,
+        "end_line": 2424,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SlicesTab.dimValue",
-        "line": 2423,
-        "end_line": 2428,
+        "line": 2438,
+        "end_line": 2443,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ReliabilityTab",
-        "line": 2514,
-        "end_line": 2633,
+        "line": 2529,
+        "end_line": 2648,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ReliabilityTab.vitalStatus",
-        "line": 2520,
-        "end_line": 2524,
+        "line": 2535,
+        "end_line": 2539,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BotnessCard",
-        "line": 2637,
-        "end_line": 2682,
+        "line": 2652,
+        "end_line": 2697,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BotnessCard.inCorridor",
-        "line": 2641,
-        "end_line": 2641,
+        "line": 2656,
+        "end_line": 2656,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AcquisitionFullTab",
-        "line": 2685,
-        "end_line": 2792,
+        "line": 2700,
+        "end_line": 2807,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AcquisitionFullTab.fmtRub",
-        "line": 2692,
-        "end_line": 2692,
+        "line": 2707,
+        "end_line": 2707,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "TermsLegend",
-        "line": 2799,
-        "end_line": 2831,
+        "line": 2814,
+        "end_line": 2846,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminLogin",
-        "line": 2835,
-        "end_line": 2880,
+        "line": 2850,
+        "end_line": 2895,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminLogin.submit",
-        "line": 2841,
-        "end_line": 2853,
+        "line": 2856,
+        "end_line": 2868,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI",
-        "line": 2900,
-        "end_line": 3045,
+        "line": 2915,
+        "end_line": 3060,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminBI.queryFn",
-        "line": 2919,
-        "end_line": 2923,
+        "line": 2934,
+        "end_line": 2938,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refetchInterval",
-        "line": 2925,
-        "end_line": 2930,
+        "line": 2940,
+        "end_line": 2945,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refreshNow",
-        "line": 2938,
-        "end_line": 2942,
+        "line": 2953,
+        "end_line": 2957,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.openSlices",
-        "line": 2955,
-        "end_line": 2955,
+        "line": 2970,
+        "end_line": 2970,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -53483,10 +53495,10 @@
         "names": [
           "default"
         ],
-        "line": 2900
+        "line": 2915
       }
     ],
-    "anonymous_functions": 202
+    "anonymous_functions": 203
   },
   "frontend/src/pages/AuthForms.analytics.component.test.jsx": {
     "sha256": "d10ed5126ab70d5831a9c2fbd17961f21672de06d82c8afe7e6424ffb3ea1d73",

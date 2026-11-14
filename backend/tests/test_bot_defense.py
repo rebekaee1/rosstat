@@ -124,6 +124,38 @@ def test_pass_cookie_matches_nginx_secure_link(monkeypatch):
     assert digest == want
 
 
+def test_bound_pass_signs_exactly_what_nginx_passes(monkeypatch):
+    """14.11.2026: secure_link_md5 "$fe_pass_expires$fe_pass_id $fe_pass_bind$fe_pass_secret", bind = "<сеть>|<UA> "."""
+    bind = "93.1.1|Mozilla/5.0 (X11; Linux x86_64) Chrome/157.0.0.0 Safari/537.36 "
+    resp = _client(monkeypatch, SECRET).post("/api/v1/human-pass",
+                                             headers={"X-FE-Pass-Request": "1", "X-FE-Pass-Bind": bind})
+    assert resp.status_code == 204
+    value = resp.cookies.get("fe_pass") or resp.headers["set-cookie"].split("fe_pass=", 1)[1].split(";", 1)[0]
+    digest, expires, pass_id = value.split(".")
+    raw = f"{expires}{pass_id} {bind}{SECRET}".encode()
+    assert digest == base64.urlsafe_b64encode(hashlib.md5(raw).digest()).decode().rstrip("=")
+    # Без заголовка (FE_PASS_BIND=0) - прежняя подпись; не-ASCII байты UA подписываются как их видит nginx.
+    assert human_pass.sign(1, "a" * 16, SECRET) == human_pass.sign(1, "a" * 16, SECRET, "")
+    raw_ua = "1.2.3|Mozilla \xe9 "
+    expected = hashlib.md5(b"1" + b"a" * 16 + b" " + raw_ua.encode("latin-1") + SECRET.encode()).digest()
+    assert human_pass.sign(1, "a" * 16, SECRET, raw_ua) == base64.urlsafe_b64encode(expected).decode().rstrip("=")
+
+
+def test_observe_mode_remembers_issue_network_in_cookie(monkeypatch):
+    """Приёмка 14.11.2026: при наблюдении nginx шлёт сеть выдачи, backend кладёт её в cookie fe_pass_net."""
+    client = _client(monkeypatch, SECRET)
+    resp = client.post("/api/v1/human-pass", headers={"X-FE-Pass-Request": "1", "X-FE-Pass-Net": "93.1.1"})
+    cookies = resp.headers.get_list("set-cookie")
+    net = [c for c in cookies if c.startswith("fe_pass_net=")]
+    assert len(net) == 1 and net[0].startswith("fe_pass_net=93.1.1;") and "HttpOnly" in net[0]
+    ipv6 = client.post("/api/v1/human-pass", headers={"X-FE-Pass-Request": "1", "X-FE-Pass-Net": "2a00:1fa0:4:a1b2"})
+    assert any(c.startswith("fe_pass_net=2a00:1fa0:4:a1b2;") for c in ipv6.headers.get_list("set-cookie"))
+    # Нет заголовка (FE_PASS_BIND=0) или мусор - cookie сети нет.
+    for headers in ({}, {"X-FE-Pass-Net": "1.2.3; evil=1"}):
+        r = client.post("/api/v1/human-pass", headers={"X-FE-Pass-Request": "1", **headers})
+        assert not any(c.startswith("fe_pass_net=") for c in r.headers.get_list("set-cookie"))
+
+
 # --- сводка по роботам -------------------------------------------------------------------------------------------
 
 LINES = [
@@ -156,6 +188,19 @@ def test_format_lines_plain_words():
     assert "полезные роботы" in text and "без отказов" in text
     assert "люди по пропуску (страница отказа сама пропустила): 3 запроса" in text
     assert "parser" not in text.lower() and "nginx" not in text.lower()
+
+
+def test_google_referer_farm_has_its_own_summary_line():
+    """14.11.2026: класс gfarm (ферма с подставленным Referer Google) считается отдельно от anon."""
+    batch = bot_traffic.Batch()
+    line = ('2026-11-14T08:48:28+00:00 170.23.19.211 429 "GET /finland/indicator/x HTTP/1.1" '
+            '"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36" '
+            'cls=gfarm')
+    assert batch.add_line(line)
+    assert batch.counts["2026-11-14"] == {"gfarm:429": 1}
+    text = "\n".join(bot_traffic.format_lines({"gfarm:429": 90, "gfarm:ok": 10}, [],
+                                              __import__("datetime").date(2026, 11, 14)))
+    assert "с поддельным переходом из Google (ферма): 100 запросов, отрезано 90 %" in text
 
 
 def test_format_lines_warns_about_genuine_robot_outside_lists():

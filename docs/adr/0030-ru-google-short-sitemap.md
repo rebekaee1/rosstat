@@ -2,6 +2,7 @@
 
 **Status:** Accepted 13.11.2026 по слову владельца («Да, составь план», затем «доделай до конца в самом лучшем виде»). Код в репозитории; выпуск на боевой — по отдельной команде владельца.
 **Date:** 2026-11-13.
+**Update 2026-11-14:** пункт 3 («Apex не меняется — контрольная группа») и решение по apex 23.12 заменены [ADR-0031](0031-apex-google-demand-only-years.md): робот Google на apex получает тот же короткий индекс, годовые без спроса там несут метку `googlebot`. `ru.` не меняется.
 **Part of:** [`../data-contracts.md`](../data-contracts.md#короткий-sitemap-для-google-на-ru--2026-11-13).
 **Related:** [ADR-0022](0022-priority-sitemap-and-index-control.md) (приоритетный шард; вариант B — «Google получает не полный индекс» — был рекомендован 12.10 для одного типа и ждал решения владельца), [ADR-0029](0029-ru-google-recovery.md) (метка `googlebot` на годовых страницах стран мира на `ru.`), [ADR-0013](0013-country-first-url-architecture.md) (язык = хост), решение 20.09 «все canonical в sitemap» (CONTEXT, «История и индекс»).
 **Code anchors:** `backend/app/services/index_policy.py` (`google_short_sitemap_names`, `is_google_short_sitemap_excluded`, `is_google_sitemap_agent`, `ru_google_short_sitemap_enabled`), `backend/app/api/sitemap.py` (`sitemap_index`, `_index_304_or_full`), `backend/app/config.py` (`ru_google_short_sitemap`), `backend/tests/test_ru_google_short_sitemap.py`.

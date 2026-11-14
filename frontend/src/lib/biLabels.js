@@ -55,6 +55,22 @@ const ENGINE_RU = {
 export const engineLabel = (k) =>
   ENGINE_RU[String(k || '').toLowerCase()] || (k ? k : '(не определён)');
 
+// Сверка «наш счётчик / Метрика» по поисковикам (14.11.2026): наши ключи — уже имена («Google»),
+// у Метрики — коды Logs API («google»). Строки по убыванию большего из двух чисел.
+export function engineReconcileRows(own = {}, metrika = {}, limit = 4) {
+  const m = {};
+  for (const [k, v] of Object.entries(metrika || {})) {
+    const name = engineLabel(k);
+    m[name] = (m[name] || 0) + (Number(v) || 0);
+  }
+  const names = new Set([...Object.keys(own || {}), ...Object.keys(m)]);
+  return [...names]
+    .filter((name) => name !== '(не определён)')
+    .map((name) => ({ name, own: Number(own?.[name]) || 0, metrika: m[name] || 0 }))
+    .sort((a, b) => Math.max(b.own, b.metrika) - Math.max(a.own, a.metrika))
+    .slice(0, limit);
+}
+
 /* ---------- Языки браузера ---------- */
 
 // Intl.DisplayNames покрывает любой BCP-47-код («ru-RU» → «русский»)

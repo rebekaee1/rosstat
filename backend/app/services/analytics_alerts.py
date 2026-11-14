@@ -39,6 +39,8 @@ logger = logging.getLogger(__name__)
 _MUTE_TTL = 2 * 3600  # один алерт типа — раз в 2 часа
 # Шумные виды охлаждаются дольше (ключ — часть alert_key до первого «:»).
 _ALERT_COOLDOWN = {
+    # Ключ содержит день: одна заметка на день, повторные выгрузки 14:20/20:20 её не дублируют.
+    "counter_mismatch": 2 * 24 * 3600,
     "signup_drop": 24 * 3600,
     "auth_error_spike": 3 * 3600,
     "js_error_spike": 3 * 3600,
@@ -584,3 +586,79 @@ async def check_bot_calibration() -> dict | None:
         )
     logger.info("Bot calibration: %s", out)
     return out
+
+
+# Расхождение счётчиков по поисковикам (14.11.2026). Партнёр на созвоне увидел у нас «Google 1 790» при единицах в
+# Метрике: ферма с подставленным Referer Google. Сверка раз в сутки после выгрузки визитов Метрики за вчера: если по
+# одному поисковику большее из двух чисел не меньше COUNTER_MISMATCH_MIN_VISITS и отличается от меньшего не меньше
+# чем в COUNTER_MISMATCH_RATIO раз — заметка в утреннюю сводку 09:10 (вид counter_mismatch в спокойном режиме,
+# не мгновенный алерт). Наша сторона — портреты без роботов и своих (`human_portrait_conditions`), сторона Метрики —
+# органика без headless.
+COUNTER_MISMATCH_MIN_VISITS = 30
+COUNTER_MISMATCH_RATIO = 3.0
+_METRIKA_ENGINE_NAMES = {"yandex": "Яндекс", "google": "Google", "bing": "Bing", "duckduckgo": "DuckDuckGo",
+                         "mail": "Поиск Mail.ru", "rambler": "Рамблер"}
+
+
+def engine_mismatches(own: dict[str, int], metrika: dict[str, int]) -> list[tuple[str, int, int]]:
+    """(поисковик, наш счётчик, Метрика) для пар, где расхождение выше порога."""
+    out = []
+    for name in sorted(set(own) | set(metrika)):
+        a, b = int(own.get(name, 0)), int(metrika.get(name, 0))
+        hi, lo = max(a, b), min(a, b)
+        if hi >= COUNTER_MISMATCH_MIN_VISITS and hi >= COUNTER_MISMATCH_RATIO * max(lo, 1):
+            out.append((name, a, b))
+    return out
+
+
+def counter_mismatch_text(day, rows: list[tuple[str, int, int]]) -> str:
+    parts = [f"{name}: у нас {a}, в Метрике {b}" for name, a, b in rows]
+    return (
+        f"Счётчики расходятся по поисковикам за {day:%d.%m}: " + "; ".join(parts) + ".\n"
+        "Чаще всего это роботы, которых не отсеяли мы или Метрика. Если повторится несколько дней подряд, "
+        "напиши Claude «разберись с расхождением счётчиков»."
+    )
+
+
+async def check_engine_counter_mismatch(day) -> list[tuple[str, int, int]]:
+    """Сверка переходов из поисковиков за МСК-день `day`; заметка в утреннюю сводку при расхождении."""
+    from collections import Counter
+
+    from app.models import BehaviorSession
+    from app.services.analytics_marts import human_portrait_conditions, metrika_visit_not_headless
+    from app.services.analytics_period import msk_day_start_utc
+    from app.services.traffic_channel import search_engine_name
+
+    start = msk_day_start_utc(day)
+    async with analytics_session() as db:
+        human = await human_portrait_conditions(db, day, day)
+        own_rows = (await db.execute(
+            select(BehaviorSession.referrer_host, func.count())
+            .where(BehaviorSession.started_at >= start, BehaviorSession.started_at < start + timedelta(days=1),
+                   BehaviorSession.channel == "search", *human)
+            .group_by(BehaviorSession.referrer_host)
+        )).all()
+        m_rows = (await db.execute(
+            select(RawMetrikaVisit.search_engine, func.count())
+            .where(RawMetrikaVisit.visit_date == day, RawMetrikaVisit.traffic_source == "organic",
+                   metrika_visit_not_headless())
+            .group_by(RawMetrikaVisit.search_engine)
+        )).all()
+    if not m_rows:
+        return []  # Метрика за день ещё не выгружена — сравнивать не с чем
+    own: Counter = Counter()
+    for host, n in own_rows:
+        name = search_engine_name(host)
+        if name:
+            own[name] += int(n or 0)
+    metrika: Counter = Counter()
+    for engine, n in m_rows:
+        if engine:
+            metrika[_METRIKA_ENGINE_NAMES.get(engine.lower(), engine)] += int(n or 0)
+    rows = engine_mismatches(own, metrika)
+    logger.info("Counter mismatch %s: own=%s metrika=%s -> %s", day, dict(own), dict(metrika), rows)
+    if rows and not await _muted(f"counter_mismatch:{day}"):
+        from app.services.alerting import send_telegram
+        if not await send_telegram(counter_mismatch_text(day, rows), kind="counter_mismatch"):
+            await _clear_mute(f"counter_mismatch:{day}")
+    return rows

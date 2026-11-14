@@ -331,6 +331,13 @@ async def acquisition_daily_job() -> None:
     async with analytics_session() as db:
         out = await sync_acquisition_for_day(db, yesterday)
     logger.info("Acquisition sync %s: %s", yesterday, out)
+    # 14.11.2026: сверка переходов из поисковиков с Метрикой за вчера -> строка утренней сводки 09:10.
+    # Повторные прогоны 14:20/20:20 не дублируют заметку (охлаждение по дню в analytics_alerts._muted).
+    try:
+        from app.services.analytics_alerts import check_engine_counter_mismatch
+        await check_engine_counter_mismatch(yesterday)
+    except Exception:  # noqa: BLE001 - сверка не должна ронять выгрузку
+        logger.warning("Counter mismatch check failed", exc_info=True)
 
 
 async def partner_revenue_daily_job() -> None:

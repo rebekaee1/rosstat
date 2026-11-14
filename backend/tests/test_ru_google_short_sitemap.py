@@ -91,6 +91,8 @@ class TestPolicy:
         assert not is_google_sitemap_agent(agent)
 
     def test_enabled_only_on_ru_after_split_with_flag(self, monkeypatch):
+        # apex с 14.11.2026 включается своей настройкой (ADR-0031, test_apex_google_years.py).
+        monkeypatch.setattr(settings, "apex_google_short_sitemap", False)
         monkeypatch.setattr(settings, "apex_locale_en", True)
         monkeypatch.setattr(settings, "ru_google_short_sitemap", True)
         assert ru_google_short_sitemap_enabled(ru_host=True)
@@ -109,6 +111,8 @@ def publication(tmp_path, monkeypatch):
     monkeypatch.setattr(settings, "sitemap_dir", str(tmp_path))
     monkeypatch.setattr(settings, "apex_locale_en", True)
     monkeypatch.setattr(settings, "ru_google_short_sitemap", True)
+    # Здесь apex — контроль с выключенной настройкой; включённую проверяет test_apex_google_years.py.
+    monkeypatch.setattr(settings, "apex_google_short_sitemap", False)
     monkeypatch.setattr(settings, "sitemap_priority_max_urls", 0)
     monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
 
@@ -212,7 +216,7 @@ class TestIndexOverHttp:
         ]
         assert sum("google-short" in key for key in index_keys) == 1
 
-    def test_apex_is_untouched_for_googlebot(self, publication, client):
+    def test_apex_is_untouched_for_googlebot_when_its_flag_is_off(self, publication, client):
         response = _index(client, APEX, GOOGLEBOT)
         assert set(MASS_YEARS) <= set(_names(response))
         assert "User-Agent" not in response.headers.get("Vary", "")
