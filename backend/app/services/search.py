@@ -1531,7 +1531,8 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
         if _reading is None and near_rows and near_rows[0].get("kind") == "region_indicator":
             # «Попробуйте, например»: соседи первого ряда «Ближайшего» по разделу и региону (search_regional_groups).
             try:
-                suggest = await section_suggestions(db, near_rows[0], {row.get("code") for row in near_rows}, locale)
+                suggest = await section_suggestions(db, near_rows[0], {row.get("code") for row in near_rows}, locale,
+                                                    region_in_query=bool(intent.regions))
             except Exception:  # noqa: BLE001 - подсказки не важнее ответа
                 logger.warning("section suggestions skipped", exc_info=True)
                 suggest = []

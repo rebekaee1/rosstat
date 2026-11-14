@@ -40,13 +40,18 @@ def test_neighbours_same_table_first_fresh_nonzero_only():
                 "region_name": "Воронежская область", "latest": {"value": 26.9, "date": "2024-01-01"}}
         async with maker() as db:
             ru = await section_suggestions(db, item, set(), "ru")
+            short = await section_suggestions(db, item, set(), "ru", region_in_query=True)
             shown = await section_suggestions(db, item, {"posevnye-ploschadi-ovoschey"}, "ru")
             russia = await section_suggestions(db, {**item, "region_slug": "russia"}, set(), "ru")
-        return ru, shown, russia
+        return ru, short, shown, russia
 
-    ru, shown, russia = _run_with_db(scenario)
+    ru, short, shown, russia = _run_with_db(scenario)
     # Та же таблица первой; лён (0, 2010), рожь (2015) и ряд без данных отсеяны; цены из другого раздела не идут.
-    assert ru == ["Посевные площади овощей Воронежская область", "Валовой сбор картофеля Воронежская область",
-                  "Лесные ресурсы Воронежская область"]
-    assert "Посевные площади овощей Воронежская область" not in shown  # уже показан в «Ближайшем»
+    queries = ["Посевные площади овощей Воронежская область", "Валовой сбор картофеля Воронежская область",
+               "Лесные ресурсы Воронежская область"]
+    assert [s["query"] for s in ru] == queries and [s["label"] for s in ru] == queries
+    # Регион уже в запросе: подпись короткая, действие — полный запрос с регионом.
+    assert [s["label"] for s in short] == ["Посевные площади овощей", "Валовой сбор картофеля", "Лесные ресурсы"]
+    assert [s["query"] for s in short] == queries
+    assert queries[0] not in [s["query"] for s in shown]  # уже показан в «Ближайшем»
     assert russia == []  # строка-группа «Россия» подсказок не даёт

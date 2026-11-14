@@ -199,8 +199,10 @@ def _table_closeness(code_a: str | None, code_b: str | None) -> int:
     return same
 
 
-async def section_suggestions(db: AsyncSession, item: dict, exclude: set[str], locale: str) -> list[str]:
-    """Строки запроса «название ряда + регион» для 2–3 соседей по разделу; пусто, если подходящих нет."""
+async def section_suggestions(db: AsyncSession, item: dict, exclude: set[str], locale: str, *,
+                              region_in_query: bool = False) -> list[dict[str, str]]:
+    """2–3 соседа по разделу: `{"label", "query"}`. Запрос — всегда «название ряда + регион» (действие точное);
+    подпись без региона, если регион уже назван в запросе (14.11.2026: на 390 px подсказка вставала в две строки)."""
     from app.data.i18n.region_indicators_en import REGION_INDICATORS_EN
 
     code, slug, place = item.get("code"), item.get("region_slug"), item.get("region_name")
@@ -237,4 +239,5 @@ async def section_suggestions(db: AsyncSession, item: dict, exclude: set[str], l
         return []
     newest = max(years)
     fresh = [row for row, latest in found if latest[0] != 0 and newest - int(latest[1][:4]) <= STALE_YEARS]
-    return [f"{title(row)} {place}" for row in fresh[:SECTION_SUGGESTIONS]]
+    return [{"label": title(row) if region_in_query else f"{title(row)} {place}", "query": f"{title(row)} {place}"}
+            for row in fresh[:SECTION_SUGGESTIONS]]

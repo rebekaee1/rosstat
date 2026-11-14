@@ -45,13 +45,18 @@ export function labourSuggestions(query, t, regionName) {
  * под запросом о посевных площадях). Без региона — как раньше: три курса и популярные запросы, без повторов.
  */
 export function tryTheseExamples({ suggest = [], regionName, popular = [], t }) {
-  // Сервер подобрал соседей по разделу Росстата и региону («Валовой сбор картофеля Воронежская область») — они ближе всего.
-  const near = (Array.isArray(suggest) ? suggest : []).filter(Boolean).map(String);
+  // Подсказка — `{ label, query }`: короткая подпись на кнопке и точный запрос по нажатию.
+  // Сервер подобрал соседей по разделу Росстата и региону: подпись без региона, если регион уже в запросе
+  // («Валовой сбор картофеля»), запрос — с регионом («Валовой сбор картофеля Воронежская область»).
+  const near = (Array.isArray(suggest) ? suggest : []).map((item) => (
+    typeof item === 'string' ? { label: item, query: item } : { label: String(item?.label || item?.query || ''), query: String(item?.query || item?.label || '') }
+  )).filter((item) => item.label && item.query);
   if (near.length) return near.slice(0, 6);
+  const same = (text) => ({ label: String(text), query: String(text) });
   const local = localSuggestions(regionName, t);
-  if (local.length) return local.slice(0, 6);
+  if (local.length) return local.slice(0, 6).map(same);
   return [...new Set([
     ...['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => t(key)),
     ...popular.slice(0, 6),
-  ].map((text) => String(text)))].slice(0, 6);
+  ].map((text) => String(text)))].slice(0, 6).map(same);
 }

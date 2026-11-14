@@ -827,8 +827,8 @@ export default function IndicatorSearch({
                                   popular,
                                   t,
                                 }).map((example) => (
-                                  <li key={example}>
-                                    <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
+                                  <li key={example.query}>
+                                    <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example.query); inputRef.current?.focus(); }}>{example.label}</Chip>
                                   </li>
                                 ))}
                               </ul>
