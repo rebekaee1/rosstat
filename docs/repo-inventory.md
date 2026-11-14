@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2261  ·  **Строк:** 1 426 903  ·  **Токенов (≈):** 13 606 293
+**Файлов:** 2261  ·  **Строк:** 1 426 919  ·  **Токенов (≈):** 13 607 149
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 929 | 322 799 | 3 534 839 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 146 | 17 427 |
-| `docs` | 144 | 890 277 | 7 652 785 |
+| `docs` | 144 | 890 293 | 7 653 641 |
 | `frontend` | 1017 | 184 664 | 2 023 563 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -97,11 +97,11 @@
 | `frontend/src/components/PlanetView.jsx` | 843 | 14 421 |
 | `frontend/src/pages/CalculatorPage.jsx` | 1 263 | 13 946 |
 | `frontend/src/components/PlanetView.css` | 556 | 13 913 |
+| `docs/enterprise_resilience.md` | 355 | 13 585 |
 | `backend/tests/test_seo_growth_pages.py` | 1 406 | 13 545 |
 | `backend/app/services/world_national_ingest.py` | 1 457 | 13 238 |
 | `backend/app/services/admin_bi.py` | 1 335 | 13 106 |
 | `docs/research/our-state-2026-10-05.md` | 431 | 12 982 |
-| `docs/enterprise_resilience.md` | 339 | 12 729 |
 | `backend/app/api/seo_pages.py` | 1 132 | 12 640 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
 | `docs/knowledge-unknowns.md` | 201 | 12 429 |

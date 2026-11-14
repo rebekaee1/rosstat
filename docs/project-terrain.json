@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "09f0831e33dd45eb56d06e03ee1db665a8840683",
+  "baseline_commit": "002b1cfa89ee5f710f2e0d7b35a2e15d01537173",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
@@ -9,17 +9,17 @@
     "files": 2472,
     "attempted": 2108,
     "files_with_nodes": 2016,
-    "nodes": 24983,
-    "symbol_edges": 78565,
-    "file_edges": 18082,
+    "nodes": 24984,
+    "symbol_edges": 78568,
+    "file_edges": 18083,
     "projection_omissions": {
       "external_or_unresolved_file": 3011,
       "missing_endpoint": 4415,
-      "within_file": 34103
+      "within_file": 34104
     },
     "confidence": {
-      "EXTRACTED": 71307,
-      "INFERRED": 7258
+      "EXTRACTED": 71308,
+      "INFERRED": 7260
     }
   },
   "overview": {
@@ -312,8 +312,8 @@
       {
         "source": "docs",
         "target": "jobs",
-        "file_relations": 29,
-        "symbol_relations": 67
+        "file_relations": 30,
+        "symbol_relations": 69
       },
       {
         "source": "docs",
@@ -1828,7 +1828,7 @@
     {"path": "docs/design/local-acceptance/unit-build-checks.json", "kind": "asset/data/config", "bytes": 1488, "lines": 46, "sha256": "290e39cad4d9c57916c5d504702af518674b76ec327eda282bed317ee86d7498", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/design/local-acceptance/year-contract.json", "kind": "asset/data/config", "bytes": 1912, "lines": 54, "sha256": "8022f4aa7b6221ce87227155b9d6c382cc8c4cfd666937b5404be86dbdab4d2e", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/design/requirements-coverage.md", "kind": "document", "bytes": 5330, "lines": 16, "sha256": "f84b8138719d58a594280e1f068fafd8aceaa62f30b7c64ba8878ccd920b39b5", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 75889, "lines": 339, "sha256": "93cba8eb8388668a92f0a8eee95f0b07567d3bfa3dcb8e9349685871ad87b8f0", "symlink": false, "nodes": 23, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 81405, "lines": 355, "sha256": "c8125959a33818259ce543a015c9b7ec663750403d426d67978ff709662f4da1", "symlink": false, "nodes": 24, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3861874, "lines": 136683, "sha256": "aec4a62a866752541dd6728f824450ee30fca8a87fcb4c50a1580912de6e9ab5", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
@@ -12442,6 +12442,7 @@
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/seo_world.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L199", "source": "«Диск хоста тормозит» — это чтение Postgres, а не диск: замер 13.11.2026", "target": "_category_siblings()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/upsert.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L24", "source": "API и backend", "target": "point_rejection()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/services/world_country_rows.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L220", "source": "Узкое чтение рядов страны: карточка и сравнение — 13.11.2026", "target": "card_dataset_pairs()"}]},
+    {"source": "docs/enterprise_resilience.md", "target": "backend/app/tasks/analytics_rollups.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L345", "source": "Сессионизация каждые 15 минут: замер и план — 2026-11-14 (только замер, код не менялся)", "target": "rollups_15min_job()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/app/tasks/scheduler.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L40", "source": "Парсеры и источники", "target": "daily_update_job()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/scripts/load-world-eurostat.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L335", "source": "Топ чтения диска по `pg_stat_statements` и итог загрузчика Eurostat — 2026-11-14", "target": "_db_totals()"}]},
     {"source": "docs/enterprise_resilience.md", "target": "backend/tests/test_home_popular_block.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/enterprise_resilience.md", "line": "L51", "source": "Frontend и кэш", "target": "always()"}]},

@@ -14298,9 +14298,9 @@
     },
     {
       "path": "docs/enterprise_resilience.md",
-      "sha256": "93cba8eb8388668a92f0a8eee95f0b07567d3bfa3dcb8e9349685871ad87b8f0",
-      "bytes": 75889,
-      "lines": 339,
+      "sha256": "c8125959a33818259ce543a015c9b7ec663750403d426d67978ff709662f4da1",
+      "bytes": 81405,
+      "lines": 355,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -32173,9 +32173,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "957e4b1d6e87b1c431fc2c88025376d55bbeb6fe019c81a0e21b6531963c53cc",
+  "ledger_sha256": "4f65877d608821b670e2b2e5cf86e6b392e3981817be40393cceb81da97834e0",
   "javascript_inventory_sha256": "84d9570419dfeb23d776e1b8e0e409c0a444ba520ef2fd120c370f57a4e3425b",
-  "baseline_commit": "09f0831e33dd45eb56d06e03ee1db665a8840683",
+  "baseline_commit": "002b1cfa89ee5f710f2e0d7b35a2e15d01537173",
   "branch": "worktree-agent-a4879bc09991f03fb",
   "unstaged_at_capture": []
 }
