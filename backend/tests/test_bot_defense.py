@@ -141,6 +141,21 @@ def test_bound_pass_signs_exactly_what_nginx_passes(monkeypatch):
     assert human_pass.sign(1, "a" * 16, SECRET, raw_ua) == base64.urlsafe_b64encode(expected).decode().rstrip("=")
 
 
+def test_observe_mode_remembers_issue_network_in_cookie(monkeypatch):
+    """Приёмка 14.11.2026: при наблюдении nginx шлёт сеть выдачи, backend кладёт её в cookie fe_pass_net."""
+    client = _client(monkeypatch, SECRET)
+    resp = client.post("/api/v1/human-pass", headers={"X-FE-Pass-Request": "1", "X-FE-Pass-Net": "93.1.1"})
+    cookies = resp.headers.get_list("set-cookie")
+    net = [c for c in cookies if c.startswith("fe_pass_net=")]
+    assert len(net) == 1 and net[0].startswith("fe_pass_net=93.1.1;") and "HttpOnly" in net[0]
+    ipv6 = client.post("/api/v1/human-pass", headers={"X-FE-Pass-Request": "1", "X-FE-Pass-Net": "2a00:1fa0:4:a1b2"})
+    assert any(c.startswith("fe_pass_net=2a00:1fa0:4:a1b2;") for c in ipv6.headers.get_list("set-cookie"))
+    # Нет заголовка (FE_PASS_BIND=0) или мусор - cookie сети нет.
+    for headers in ({}, {"X-FE-Pass-Net": "1.2.3; evil=1"}):
+        r = client.post("/api/v1/human-pass", headers={"X-FE-Pass-Request": "1", **headers})
+        assert not any(c.startswith("fe_pass_net=") for c in r.headers.get_list("set-cookie"))
+
+
 # --- сводка по роботам -------------------------------------------------------------------------------------------
 
 LINES = [

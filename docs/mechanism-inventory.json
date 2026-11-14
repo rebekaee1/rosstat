@@ -325,8 +325,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "sha256": "f0b3ffcb4d5c596829647c49a59425ccfd99db0abaf869096d97194686a3b25d",
-      "lines": 78
+      "sha256": "16aa486a605e298245070467788f5e0aeb55ab17e852a8d825242af39f3dded6",
+      "lines": 93
     },
     {
       "path": "backend/app/api/indicators.py",
@@ -10271,8 +10271,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 58,
-      "end_line": 58,
+      "line": 63,
+      "end_line": 63,
       "owner": "human_pass",
       "conditions": [],
       "handler": "app.api.human_pass.human_pass",
@@ -10286,8 +10286,8 @@
         "status_code": "204",
         "include_in_schema": "False"
       },
-      "handler_line": 59,
-      "handler_end_line": 78,
+      "handler_line": 64,
+      "handler_end_line": 93,
       "parameters": [
         {
           "name": "request",
@@ -33587,8 +33587,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 53,
-      "end_line": 53,
+      "line": 58,
+      "end_line": 58,
       "owner": "issue",
       "conditions": [],
       "name": "fe_human_pass_days",
@@ -33596,10 +33596,21 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 72,
-      "end_line": 72,
+      "line": 77,
+      "end_line": 77,
       "owner": "human_pass",
       "conditions": [],
+      "name": "fe_human_pass_days",
+      "expression": "settings.fe_human_pass_days"
+    },
+    {
+      "path": "backend/app/api/human_pass.py",
+      "line": 87,
+      "end_line": 87,
+      "owner": "human_pass",
+      "conditions": [
+        "_NET_RE.match(net)"
+      ],
       "name": "fe_human_pass_days",
       "expression": "settings.fe_human_pass_days"
     },
@@ -42304,6 +42315,23 @@
       "expression_truncated": false,
       "expression_chars": 34,
       "ast_sha256": "910986f9548f66ce9898cd5543c567ad58e6044b28439c1bc8fb4c034c114a98",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/api/human_pass.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_NET_RE",
+      "symbol": "app.api.human_pass._NET_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('^[0-9A-Fa-f.:]{1,45}$')",
+      "expression_truncated": false,
+      "expression_chars": 35,
+      "ast_sha256": "4bed43025fbb7f4b6e252c11e74e7a6bc0e6d646b00fb673b696dbbb12d54db5",
       "runtime_expansion": true
     },
     {
@@ -284228,8 +284256,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 46,
-      "end_line": 49,
+      "line": 51,
+      "end_line": 54,
       "owner": "<module>",
       "conditions": [],
       "name": "sign",
@@ -284237,8 +284265,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 52,
-      "end_line": 55,
+      "line": 57,
+      "end_line": 60,
       "owner": "<module>",
       "conditions": [],
       "name": "issue",
@@ -284246,8 +284274,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 59,
-      "end_line": 78,
+      "line": 64,
+      "end_line": 93,
       "owner": "<module>",
       "conditions": [],
       "name": "human_pass",
@@ -337504,6 +337532,14 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
+      "line": 84,
+      "end_line": 84,
+      "owner": "human_pass",
+      "conditions": [],
+      "symbol": "app.api.human_pass._NET_RE"
+    },
+    {
+      "path": "backend/app/api/human_pass.py",
       "line": 37,
       "end_line": 37,
       "owner": "_secret",
@@ -366287,8 +366323,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 58,
-      "end_line": 58,
+      "line": 63,
+      "end_line": 63,
       "owner": "human_pass",
       "conditions": [],
       "handler": "app.api.human_pass.human_pass",
@@ -366302,8 +366338,8 @@
         "status_code": "204",
         "include_in_schema": "False"
       },
-      "handler_line": 59,
-      "handler_end_line": 78,
+      "handler_line": 64,
+      "handler_end_line": 93,
       "parameters": [
         {
           "name": "request",

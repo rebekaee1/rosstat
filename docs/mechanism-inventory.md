@@ -9,12 +9,12 @@
 - ORM tables: **74**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **265**
-- Settings reads: **656**
+- Settings reads: **657**
 - Direct environment reads: **35**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1371**
-- Registry references: **2599**
+- Registry declarations: **1372**
+- Registry references: **2600**
 - Migration operations: **480**
 - Candidate effects: **2864**
 - Unresolved syntax: **1**
@@ -147,7 +147,7 @@
 | POST | /api/v1/cabinet/calendar-feed | app.api.cabinet.calendar_feed_rotate | [backend/app/api/cabinet.py:458](../backend/app/api/cabinet.py#L458) |
 | DELETE | /api/v1/cabinet/calendar-feed | app.api.cabinet.calendar_feed_revoke | [backend/app/api/cabinet.py:468](../backend/app/api/cabinet.py#L468) |
 | GET | /api/v1/cabinet/calendar.ics | app.api.cabinet.calendar_ics | [backend/app/api/cabinet.py:475](../backend/app/api/cabinet.py#L475) |
-| POST | /api/v1/human-pass | app.api.human_pass.human_pass | [backend/app/api/human_pass.py:58](../backend/app/api/human_pass.py#L58) |
+| POST | /api/v1/human-pass | app.api.human_pass.human_pass | [backend/app/api/human_pass.py:63](../backend/app/api/human_pass.py#L63) |
 | GET | /api/v1/research | app.api.research.research_list | [backend/app/api/research.py:66](../backend/app/api/research.py#L66) |
 | GET | /api/v1/research/{slug}/download | app.api.research.research_download | [backend/app/api/research.py:147](../backend/app/api/research.py#L147) |
 | GET | /api/auth/{provider}/start | app.api.oauth.oauth_start | [backend/app/api/oauth.py:494](../backend/app/api/oauth.py#L494) |
@@ -1859,7 +1859,7 @@ Relationships: `[]`
 | RUSTATS_SSR_LOW_PRIORITY_QUEUE_TIMEOUT_SECONDS | float = 4.0 | 1 | [backend/app/config.py:277](../backend/app/config.py#L277) |
 | RUSTATS_SSR_GOODBOT_RENDER_SLOTS | int = 2 | 2 | [backend/app/config.py:280](../backend/app/config.py#L280) |
 | RUSTATS_FE_HUMAN_PASS_SECRET | str = '' | 1 | [backend/app/config.py:283](../backend/app/config.py#L283) |
-| RUSTATS_FE_HUMAN_PASS_DAYS | int = 30 | 2 | [backend/app/config.py:284](../backend/app/config.py#L284) |
+| RUSTATS_FE_HUMAN_PASS_DAYS | int = 30 | 3 | [backend/app/config.py:284](../backend/app/config.py#L284) |
 | RUSTATS_BOT_TRAFFIC_LOG_PATH | str = '/var/log/rosstat-nginx/security.log' | 1 | [backend/app/config.py:286](../backend/app/config.py#L286) |
 | RUSTATS_HOST_BROWNOUT_IO_FULL_PCT | float = 40.0 | 2 | [backend/app/config.py:289](../backend/app/config.py#L289) |
 | RUSTATS_HOST_ALERT_IO_FULL_PCT | float = 25.0 | 1 | [backend/app/config.py:292](../backend/app/config.py#L292) |
@@ -2041,6 +2041,7 @@ Relationships: `[]`
 | app.api.forecasts._CODE_RE | Call | computed source expression | [backend/app/api/forecasts.py:21](../backend/app/api/forecasts.py#L21) |
 | app.api.forecasts.DERIVED_CPI_FORECASTS | Set | sequence/source expression | [backend/app/api/forecasts.py:23](../backend/app/api/forecasts.py#L23) |
 | app.api.human_pass._SECRET_RE | Call | computed source expression | [backend/app/api/human_pass.py:32](../backend/app/api/human_pass.py#L32) |
+| app.api.human_pass._NET_RE | Call | computed source expression | [backend/app/api/human_pass.py:48](../backend/app/api/human_pass.py#L48) |
 | app.api.indicators._YOY_TARGET | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/api/indicators.py:36](../backend/app/api/indicators.py#L36) |
 | app.api.indicators._YOY_TOLERANCE | Call | computed source expression | [backend/app/api/indicators.py:43](../backend/app/api/indicators.py#L43) |
 | app.api.indicators._HERO_FROM_YOY_SIBLING | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services' | [backend/app/api/indicators.py:206](../backend/app/api/indicators.py#L206) |
