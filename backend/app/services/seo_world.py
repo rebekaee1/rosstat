@@ -234,24 +234,15 @@ _KEY_CATEGORY_ORDER = (
 
 
 def _display_name(ind: WorldIndicator) -> str:
+    """Название ряда на языке страницы с уточнением среза — то же, что отдаёт API карточки.
+
+    14.11.2026: одинаковые названия разных рядов одной страны (171 970 рядов на ru) различаются
+    уточнением среза — `world_series_title` (один источник с `api/world._indicator_display_name`).
+    """
     from app.services.locale import get_locale
+    from app.services.world_series_title import world_series_title
 
-    from app.data.world_indicator_titles_ru import (
-        public_indicator_name,
-        title_override_en_for_code,
-    )
-
-    if get_locale() == "en" and (ind.name_en or "").strip():
-        from app.data.eurostat_dim_labels_en import append_en_slice_to_title
-
-        override = title_override_en_for_code(ind.code)
-        if override:
-            return override
-        base = strip_world_frequency_suffix(ind.name_en) or ind.name_en
-        return append_en_slice_to_title(base, ind.slice_json)
-    # То же имя, что отдаёт API карточки (display_name): точечные переименования рядов
-    # (первые публикации, постоянные налоги) обязаны совпасть в SSR и на странице.
-    return public_indicator_name(ind.name_ru, ind.code) or ind.name_ru
+    return world_series_title(ind, "en" if get_locale() == "en" else "ru")
 
 
 def _category_label(category_ru: str | None, *, fallback: str | None = None) -> str:
@@ -1485,6 +1476,10 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     # Те же listed-ряды нужны блоку «Главное» (обзор по понятиям): передаём их ему, чтобы не читать 8,5 тыс.
     # строк второй раз (круг 12, SPEED2).
     listed_rows = list(inds)
+    # Уточнение среза в названиях каталога — из уже прочитанных рядов страны (14.11.2026).
+    from app.services.world_series_title import bind_title_axes, differing_axes
+
+    bind_title_axes(differing_axes(listed_rows))
     inds = filter_weo_shadowed_from_country_listing(list(inds), country.code)
 
     # Каталог = карточки (primary частоты), не ряды M/Q/A.
@@ -1873,6 +1868,10 @@ async def render_world_indicator_html(
     unit = _unit_of(indicator)
     unit_sfx = _unit_sfx_of(indicator)
     source = _source_label(indicator.source, indicator.provider)
+    # Уточнение среза в названии — по рядам страны с тем же именем (14.11.2026, world_series_title).
+    from app.services.world_series_title import load_title_axes
+
+    await load_title_axes(db, country.id)
     display = _display_name(indicator)
     period = _date_range_ru(first_date, last_date) or (
         f"{first_date.year}–{last_date.year}"

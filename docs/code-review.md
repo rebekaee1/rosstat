@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `1b6fe449aa36e114178233cd5bbf8200cc111cb2`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `d3233da5ad8a4e9eee76ca638b68aebcbabf6193`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2490 |
-| Код, шаблоны и стили | 2016 |
-| Актуальные рецензии без пропусков guard | 2490 |
-| Именованные определения Python/JS: с аннотацией / всего | 16321 / 16321 |
+| Файлы в явно определённом scope | 2496 |
+| Код, шаблоны и стили | 2021 |
+| Актуальные рецензии без пропусков guard | 2496 |
+| Именованные определения Python/JS: с аннотацией / всего | 16349 / 16349 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -177,10 +177,12 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/cpi_provenance.py](../backend/app/data/cpi_provenance.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/emiss_labor.py](../backend/app/data/emiss_labor.py) | body_reviewed | 4/4 | актуально |
 | [backend/app/data/emiss_price_goods.py](../backend/app/data/emiss_price_goods.py) | reviewed | 18/18 | актуально |
+| [backend/app/data/eurostat_codelists_en.json](../backend/app/data/eurostat_codelists_en.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/eurostat_country_visibility.py](../backend/app/data/eurostat_country_visibility.py) | reviewed | 5/5 | актуально |
 | [backend/app/data/eurostat_deep_expand.py](../backend/app/data/eurostat_deep_expand.py) | reviewed | 9/9 | актуально |
-| [backend/app/data/eurostat_dim_labels_en.py](../backend/app/data/eurostat_dim_labels_en.py) | reviewed | 4/4 | актуально |
+| [backend/app/data/eurostat_dim_labels_en.py](../backend/app/data/eurostat_dim_labels_en.py) | reviewed | 6/6 | актуально |
 | [backend/app/data/eurostat_dim_labels_ru.py](../backend/app/data/eurostat_dim_labels_ru.py) | reviewed | 5/5 | актуально |
+| [backend/app/data/eurostat_dim_labels_ru_official.py](../backend/app/data/eurostat_dim_labels_ru_official.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/eurostat_headline.py](../backend/app/data/eurostat_headline.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/eurostat_listing.py](../backend/app/data/eurostat_listing.py) | reviewed | 33/33 | актуально |
 | [backend/app/data/eurostat_listing_decisions.json](../backend/app/data/eurostat_listing_decisions.json) | reviewed | 0/0 | актуально |
@@ -518,6 +520,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_pop_ingest.py](../backend/app/services/world_pop_ingest.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/world_rank_values.py](../backend/app/services/world_rank_values.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/world_russia_rank.py](../backend/app/services/world_russia_rank.py) | reviewed | 15/15 | актуально |
+| [backend/app/services/world_series_title.py](../backend/app/services/world_series_title.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/world_source_adapter.py](../backend/app/services/world_source_adapter.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/world_subnational_forecast.py](../backend/app/services/world_subnational_forecast.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/world_subnational_ingest.py](../backend/app/services/world_subnational_ingest.py) | reviewed | 27/27 | актуально |
@@ -1016,6 +1019,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_rba_adapter.py](../backend/tests/test_world_rba_adapter.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_world_russia_rank.py](../backend/tests/test_world_russia_rank.py) | reviewed | 13/13 | актуально |
 | [backend/tests/test_world_search_compare_national.py](../backend/tests/test_world_search_compare_national.py) | reviewed | 24/24 | актуально |
+| [backend/tests/test_world_series_title.py](../backend/tests/test_world_series_title.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_world_simple_names.py](../backend/tests/test_world_simple_names.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_world_statcan_adapter.py](../backend/tests/test_world_statcan_adapter.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_world_subnational.py](../backend/tests/test_world_subnational.py) | reviewed | 43/43 | актуально |
@@ -2473,6 +2477,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/etl-key-rate.sh](../scripts/etl-key-rate.sh) | reviewed | 0/0 | актуально |
 | [scripts/export-page-meta.py](../scripts/export-page-meta.py) | reviewed | 2/2 | актуально |
 | [scripts/export-view-models.py](../scripts/export-view-models.py) | reviewed | 1/1 | актуально |
+| [scripts/fetch-eurostat-codelists.py](../scripts/fetch-eurostat-codelists.py) | reviewed | 4/4 | актуально |
 | [scripts/frontend-asset-archive.py](../scripts/frontend-asset-archive.py) | reviewed | 4/4 | актуально |
 | [scripts/generate-vapid-keys.py](../scripts/generate-vapid-keys.py) | reviewed | 3/3 | актуально |
 | [scripts/host-firewall-ufw.sh](../scripts/host-firewall-ufw.sh) | reviewed | 0/0 | актуально |
@@ -2528,3 +2533,4 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/tests/test_tor_http_bridge.py](../scripts/tests/test_tor_http_bridge.py) | reviewed | 13/13 | актуально |
 | [scripts/verify-data-loaded.py](../scripts/verify-data-loaded.py) | reviewed | 1/1 | актуально |
 | [scripts/verify-derived-incremental.py](../scripts/verify-derived-incremental.py) | reviewed | 4/4 | актуально |
+| [scripts/world-title-duplicates.py](../scripts/world-title-duplicates.py) | reviewed | 4/4 | актуально |
