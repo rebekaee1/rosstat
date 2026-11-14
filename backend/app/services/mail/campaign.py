@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import asyncio
+from typing import Awaitable, Callable
 import json
 import logging
 import re
@@ -76,8 +77,9 @@ class RunReport:
         }
 
 
-def with_utm(url: str, key: str) -> str:
-    """Метки перехода на ссылки своего сайта: в аналитике видно, что человек пришёл из письма."""
+def with_utm(url: str, key: str, content: str | None = None) -> str:
+    """Метки перехода на ссылки своего сайта: в аналитике видно, что человек пришёл из письма
+    (и из какого блока — ``utm_content``)."""
     if not url:
         return url
     parts = urlsplit(url)
@@ -88,6 +90,8 @@ def with_utm(url: str, key: str) -> str:
     q.setdefault("utm_source", "email")
     q.setdefault("utm_medium", "newsletter")
     q.setdefault("utm_campaign", key)
+    if content:
+        q.setdefault("utm_content", content)
     return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(q), parts.fragment))
 
 
@@ -115,7 +119,7 @@ def parse_issue(data: dict) -> Issue:
                 raise CampaignError(f"{loc}: {exc}") from None
             b = dict(b)
             if b.get("url"):
-                b["url"] = with_utm(str(b["url"]), key)
+                b["url"] = with_utm(str(b["url"]), key, f"b{len(blocks) + 1}-{b.get('type')}")
             blocks.append(b)
         signoff = str(raw.get("signoff") or "").strip()
         outro = str(raw.get("outro") or "").strip()
@@ -155,12 +159,12 @@ def unsubscribe_links(user_id, locale: str) -> tuple[str, str]:
             service.api_link(locale, "/mail/unsubscribe", t=tok))
 
 
-def render_for(issue: Issue, locale: str, user_id) -> tuple:
+def render_for(issue: Issue, locale: str, user_id, digest: Digest | None = None) -> tuple:
     page_url, one_click = unsubscribe_links(user_id, locale)
     from app.services.display import today_msk
 
     rendered = render_digest(
-        issue.by_locale[locale], locale, site_url=service.site_origin(locale) + "/",
+        digest or issue.by_locale[locale], locale, site_url=service.site_origin(locale) + "/",
         unsubscribe_url=page_url, manage_url=service.site_link(locale, "/account"), today=today_msk(),
     )
     return rendered, one_click
@@ -179,8 +183,21 @@ async def send_test(issue: Issue, to: str) -> dict[str, str]:
     return out
 
 
+# Персональный выпуск: функция (db, получатель, выпуск) → содержимое на языке получателя —
+# Digest, словарь языка в формате файла выпуска ({"subject", "title", "blocks", …}) или None
+# (человеку нечего отправить — пропуск). Ключ выпуска, лимиты, повтор без дублей — общие.
+PersonalBuilder = Callable[[AsyncSession, "audience.Recipient", Issue], Awaitable["Digest | dict | None"]]
+
+
+def personal_digest(issue: Issue, locale: str, built) -> Digest | None:
+    if built is None or isinstance(built, Digest):
+        return built
+    return parse_issue({"key": issue.key, locale: built}).by_locale[locale]
+
+
 async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified: bool = False,
-              max_per_run: int | None = None, pause_seconds: float | None = None) -> RunReport:
+              max_per_run: int | None = None, pause_seconds: float | None = None,
+              per_recipient: PersonalBuilder | None = None) -> RunReport:
     report = RunReport(key=issue.key, dry_run=not send)
     if send and not settings.mail_allow_all_recipients:
         raise CampaignError("отправка людям выключена (RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=false)")
@@ -199,7 +216,7 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         if not rec.verified and not include_unverified:
             report.unverified_skipped += 1
             continue
-        if rec.locale not in issue.by_locale:
+        if rec.locale not in issue.by_locale and per_recipient is None:
             report.no_locale_skipped += 1
             continue
         existing = await db.scalar(select(MailMessage).where(
@@ -217,7 +234,13 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         if not await audience.is_subscribed(db, rec.user_id):
             report.statuses["unsubscribed_meanwhile"] += 1
             continue
-        rendered, one_click = render_for(issue, rec.locale, rec.user_id)
+        digest = None
+        if per_recipient is not None:
+            digest = personal_digest(issue, rec.locale, await per_recipient(db, rec, issue))
+            if digest is None:
+                report.statuses["no_personal_content"] += 1
+                continue
+        rendered, one_click = render_for(issue, rec.locale, rec.user_id, digest)
         row = existing or await service.record(
             db, kind="newsletter", to=rec.email, locale=rec.locale, subject=rendered.subject,
             user_id=rec.user_id, campaign=issue.key)

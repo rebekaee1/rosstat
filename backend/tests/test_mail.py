@@ -301,6 +301,38 @@ def test_campaign_guards_and_idempotency(mail_env, auth_client, monkeypatch):
     assert "utm_source=email" in html and "utm_campaign=2026-11-test" in html
 
 
+def test_campaign_personal_issue_per_recipient(mail_env, auth_client, monkeypatch):
+    """Выпуск на получателя: свой заголовок каждому, «нечего отправить» — пропуск, повтор без дублей."""
+    from app.config import settings
+    from app.services.mail import campaign
+
+    _subscribe(auth_client, "allowed@example.com")
+    auth_client.cookies.clear()
+    _subscribe(auth_client, "rebeka.ee@yandex.ru")
+    _verify_all(mail_env)
+    monkeypatch.setattr(settings, "mail_allow_all_recipients", True)
+    mail_env["sent"].clear()
+
+    async def builder(db, rec, issue):
+        if rec.email.startswith("rebeka"):
+            return None
+        return {"subject": f"Для вас: {rec.email.split('@')[0]}", "title": "Ваш выпуск",
+                "blocks": [{"type": "story", "title": "Инфляция", "value": "7,7 %",
+                            "url": "https://ru.forecasteconomy.com/russia/indicator/cpi"}]}
+
+    async def _q():
+        async with mail_env["session_maker"]() as db:
+            return await campaign.run(db, campaign.parse_issue(ISSUE), send=True, per_recipient=builder)
+    rep = asyncio.run(_q())
+    assert rep.statuses["sent"] == 1 and rep.statuses["no_personal_content"] == 1
+    msg = mail_env["sent"][0]
+    assert msg["Subject"] == "Для вас: allowed"
+    html = msg.get_body(("html",)).get_content()
+    assert "utm_content=b1-story" in html
+    again = asyncio.run(_q())
+    assert again.already_sent == 1 and len(mail_env["sent"]) == 1
+
+
 def test_campaign_stops_on_server_limit(mail_env, auth_client, monkeypatch):
     import smtplib
     from app.config import settings
