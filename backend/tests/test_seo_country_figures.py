@@ -115,7 +115,7 @@ def test_country_html_uses_redis_catalog_when_cached(world_seo_client, monkeypat
     real_cache_get = cache_mod.cache_get
 
     async def _cache_get(key, *args, **kwargs):
-        if ":country:v19:germany:" in str(key):
+        if ":country:v20:germany:" in str(key):
             return catalog
         return await real_cache_get(key, *args, **kwargs)
 

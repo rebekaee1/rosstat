@@ -207,19 +207,14 @@ def _region_display(region_ru: str | None) -> str:
 
 
 def _indicator_display_name(ind: WorldIndicator) -> str:
-    """Locale-facing indicator title for country catalog / card."""
-    from app.data.legacy_redirects import strip_world_frequency_suffix
-    from app.data.world_indicator_titles_ru import title_override_en_for_code
+    """Locale-facing indicator title for country catalog / card.
 
-    if get_locale() == "en" and (ind.name_en or "").strip():
-        from app.data.eurostat_dim_labels_en import append_en_slice_to_title
+    14.11.2026: с уточнением среза — `world_series_title`, тот же источник, что серверная страница
+    (`seo_world._display_name`); одинаковые названия разных рядов одной страны больше не совпадают.
+    """
+    from app.services.world_series_title import world_series_title
 
-        override = title_override_en_for_code(ind.code)
-        if override:
-            return override
-        base = strip_world_frequency_suffix(ind.name_en) or ind.name_en
-        return append_en_slice_to_title(base, ind.slice_json)
-    return display_name(ind.name_ru, ind.code)
+    return world_series_title(ind, "en" if get_locale() == "en" else "ru")
 
 
 def _indicator_name_en(ind: WorldIndicator) -> str:
@@ -1966,7 +1961,8 @@ def _price_chip_basis(concept_slug: str, indicator: WorldIndicator) -> dict | No
 
 async def country_detail_cache_key(slug: str) -> str:
     """Ключ Redis каталога страны (тот же читает серверный HTML страны)."""
-    return await versioned_key("world", f"country:v19:{slug}:{get_locale()}")
+    # v20 (14.11.2026): названия рядов с уточнением среза (world_series_title).
+    return await versioned_key("world", f"country:v20:{slug}:{get_locale()}")
 
 
 # Круг 12 (SPEED2): сжатая форма каталога страны (`?slim=1`). У страны Евростата 8 тыс. карточек по ~730 байт: категория
@@ -2047,6 +2043,10 @@ async def _country_detail_payload(slug: str, db: AsyncSession) -> dict:
 
     country = await _country_by_slug(db, slug)
     all_inds = await _country_indicators_for_listing(db, country.id)
+    from app.services.world_series_title import bind_title_axes, differing_axes
+
+    # Уточнение среза в названиях — по листинговым рядам страны (14.11.2026, как серверный HTML страны).
+    bind_title_axes(differing_axes([i for i in all_inds if i.is_listed]))
     groups = _card_members_map(all_inds)
 
     # Только primary с is_listed (после repair — совпадает с pick_primary)
@@ -2274,7 +2274,8 @@ async def _card_context(
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key(
-        "world", f"ind:v23:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{get_locale()}"
+        # v24 (14.11.2026): название ряда с уточнением среза (world_series_title).
+        "world", f"ind:v24:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -2282,6 +2283,9 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
 
     country = await _country_by_slug(db, slug)
     ind = await _indicator_by_code(db, country.id, code)
+    from app.services.world_series_title import load_title_axes
+
+    await load_title_axes(db, country.id)
     # Круг 12: замороженный у источника дубль (HICP cind) → живая каноническая
     # карточка; SPA уже понимает redirect_to (тот же контракт, что у слитых частот).
     from urllib.parse import urlparse

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `4c268b4ee9200664e66808d9eb8f341f596ff214`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `1d93e084a3748f46be0c295c8063b4a1d4ed4bf8`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2489 |
-| Код, шаблоны и стили | 2015 |
-| Актуальные рецензии без пропусков guard | 2489 |
-| Именованные определения Python/JS: с аннотацией / всего | 16316 / 16316 |
+| Файлы в явно определённом scope | 2496 |
+| Код, шаблоны и стили | 2021 |
+| Актуальные рецензии без пропусков guard | 2496 |
+| Именованные определения Python/JS: с аннотацией / всего | 16349 / 16349 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -177,10 +177,12 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/cpi_provenance.py](../backend/app/data/cpi_provenance.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/emiss_labor.py](../backend/app/data/emiss_labor.py) | body_reviewed | 4/4 | актуально |
 | [backend/app/data/emiss_price_goods.py](../backend/app/data/emiss_price_goods.py) | reviewed | 18/18 | актуально |
+| [backend/app/data/eurostat_codelists_en.json](../backend/app/data/eurostat_codelists_en.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/eurostat_country_visibility.py](../backend/app/data/eurostat_country_visibility.py) | reviewed | 5/5 | актуально |
 | [backend/app/data/eurostat_deep_expand.py](../backend/app/data/eurostat_deep_expand.py) | reviewed | 9/9 | актуально |
-| [backend/app/data/eurostat_dim_labels_en.py](../backend/app/data/eurostat_dim_labels_en.py) | reviewed | 4/4 | актуально |
+| [backend/app/data/eurostat_dim_labels_en.py](../backend/app/data/eurostat_dim_labels_en.py) | reviewed | 6/6 | актуально |
 | [backend/app/data/eurostat_dim_labels_ru.py](../backend/app/data/eurostat_dim_labels_ru.py) | reviewed | 5/5 | актуально |
+| [backend/app/data/eurostat_dim_labels_ru_official.py](../backend/app/data/eurostat_dim_labels_ru_official.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/eurostat_headline.py](../backend/app/data/eurostat_headline.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/eurostat_listing.py](../backend/app/data/eurostat_listing.py) | reviewed | 33/33 | актуально |
 | [backend/app/data/eurostat_listing_decisions.json](../backend/app/data/eurostat_listing_decisions.json) | reviewed | 0/0 | актуально |
@@ -518,6 +520,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_pop_ingest.py](../backend/app/services/world_pop_ingest.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/world_rank_values.py](../backend/app/services/world_rank_values.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/world_russia_rank.py](../backend/app/services/world_russia_rank.py) | reviewed | 15/15 | актуально |
+| [backend/app/services/world_series_title.py](../backend/app/services/world_series_title.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/world_source_adapter.py](../backend/app/services/world_source_adapter.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/world_subnational_forecast.py](../backend/app/services/world_subnational_forecast.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/world_subnational_ingest.py](../backend/app/services/world_subnational_ingest.py) | reviewed | 27/27 | актуально |
@@ -911,6 +914,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_seo_og.py](../backend/tests/test_seo_og.py) | reviewed | 77/77 | актуально |
 | [backend/tests/test_seo_regional_year.py](../backend/tests/test_seo_regional_year.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_seo_source_link.py](../backend/tests/test_seo_source_link.py) | reviewed | 2/2 | актуально |
+| [backend/tests/test_seo_ssr_audit.py](../backend/tests/test_seo_ssr_audit.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_seo_text_defects.py](../backend/tests/test_seo_text_defects.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_seo_ticker.py](../backend/tests/test_seo_ticker.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_seo_weekly_report.py](../backend/tests/test_seo_weekly_report.py) | reviewed | 14/14 | актуально |
@@ -1015,6 +1019,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_rba_adapter.py](../backend/tests/test_world_rba_adapter.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_world_russia_rank.py](../backend/tests/test_world_russia_rank.py) | reviewed | 13/13 | актуально |
 | [backend/tests/test_world_search_compare_national.py](../backend/tests/test_world_search_compare_national.py) | reviewed | 24/24 | актуально |
+| [backend/tests/test_world_series_title.py](../backend/tests/test_world_series_title.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_world_simple_names.py](../backend/tests/test_world_simple_names.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_world_statcan_adapter.py](../backend/tests/test_world_statcan_adapter.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_world_subnational.py](../backend/tests/test_world_subnational.py) | reviewed | 43/43 | актуально |
@@ -1968,7 +1973,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/pageImage.js](../frontend/src/lib/pageImage.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/pageImage.test.js](../frontend/src/lib/pageImage.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/pageMeta.generated.json](../frontend/src/lib/pageMeta.generated.json) | artifact_schema_reviewed | 0/0 | актуально |
-| [frontend/src/lib/pageMeta.js](../frontend/src/lib/pageMeta.js) | reviewed | 8/8 | актуально |
+| [frontend/src/lib/pageMeta.js](../frontend/src/lib/pageMeta.js) | reviewed | 9/9 | актуально |
 | [frontend/src/lib/pageMeta.test.js](../frontend/src/lib/pageMeta.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/periodPhrase.js](../frontend/src/lib/periodPhrase.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/periodPhrase.test.js](../frontend/src/lib/periodPhrase.test.js) | reviewed | 1/1 | актуально |
@@ -2472,6 +2477,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/etl-key-rate.sh](../scripts/etl-key-rate.sh) | reviewed | 0/0 | актуально |
 | [scripts/export-page-meta.py](../scripts/export-page-meta.py) | reviewed | 2/2 | актуально |
 | [scripts/export-view-models.py](../scripts/export-view-models.py) | reviewed | 1/1 | актуально |
+| [scripts/fetch-eurostat-codelists.py](../scripts/fetch-eurostat-codelists.py) | reviewed | 4/4 | актуально |
 | [scripts/frontend-asset-archive.py](../scripts/frontend-asset-archive.py) | reviewed | 4/4 | актуально |
 | [scripts/generate-vapid-keys.py](../scripts/generate-vapid-keys.py) | reviewed | 3/3 | актуально |
 | [scripts/host-firewall-ufw.sh](../scripts/host-firewall-ufw.sh) | reviewed | 0/0 | актуально |
@@ -2527,3 +2533,4 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/tests/test_tor_http_bridge.py](../scripts/tests/test_tor_http_bridge.py) | reviewed | 13/13 | актуально |
 | [scripts/verify-data-loaded.py](../scripts/verify-data-loaded.py) | reviewed | 1/1 | актуально |
 | [scripts/verify-derived-incremental.py](../scripts/verify-derived-incremental.py) | reviewed | 4/4 | актуально |
+| [scripts/world-title-duplicates.py](../scripts/world-title-duplicates.py) | reviewed | 4/4 | актуально |

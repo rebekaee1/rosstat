@@ -10,14 +10,14 @@
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **266**
 - Settings reads: **660**
-- Direct environment reads: **35**
+- Direct environment reads: **36**
 - Jobs: **59**
 - Middleware: **6**
-- Registry declarations: **1380**
-- Registry references: **2612**
+- Registry declarations: **1385**
+- Registry references: **2624**
 - Migration operations: **480**
-- Candidate effects: **2879**
-- Unresolved syntax: **1**
+- Candidate effects: **2895**
+- Unresolved syntax: **2**
 - MCP tools: **7**
 
 ## Routes
@@ -103,17 +103,17 @@
 | GET | /api/v1/analytics/replay/config | app.api.session_replay.replay_config | [backend/app/api/session_replay.py:102](../backend/app/api/session_replay.py#L102) |
 | POST | /api/v1/analytics/replay | app.api.session_replay.collect_replay | [backend/app/api/session_replay.py:109](../backend/app/api/session_replay.py#L109) |
 | GET | /api/v1/admin/bi/session-analysis/sessions/{session_id}/replay | app.api.session_replay.read_replay | [backend/app/api/session_replay.py:171](../backend/app/api/session_replay.py#L171) |
-| GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:1022](../backend/app/api/world.py#L1022) |
-| GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:1123](../backend/app/api/world.py#L1123) |
-| GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1155](../backend/app/api/world.py#L1155) |
-| GET | /api/v1/world/compare/series/{country_slug}/{concept_slug} | app.api.world.world_compare_series | [backend/app/api/world.py:1387](../backend/app/api/world.py#L1387) |
-| GET | /api/v1/world/compare/snapshot/{concept_slug} | app.api.world.world_compare_snapshot | [backend/app/api/world.py:1474](../backend/app/api/world.py#L1474) |
-| GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1561](../backend/app/api/world.py#L1561) |
-| GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1653](../backend/app/api/world.py#L1653) |
-| GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:2014](../backend/app/api/world.py#L2014) |
+| GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:1017](../backend/app/api/world.py#L1017) |
+| GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:1118](../backend/app/api/world.py#L1118) |
+| GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1150](../backend/app/api/world.py#L1150) |
+| GET | /api/v1/world/compare/series/{country_slug}/{concept_slug} | app.api.world.world_compare_series | [backend/app/api/world.py:1382](../backend/app/api/world.py#L1382) |
+| GET | /api/v1/world/compare/snapshot/{concept_slug} | app.api.world.world_compare_snapshot | [backend/app/api/world.py:1469](../backend/app/api/world.py#L1469) |
+| GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1556](../backend/app/api/world.py#L1556) |
+| GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1648](../backend/app/api/world.py#L1648) |
+| GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:2010](../backend/app/api/world.py#L2010) |
 | GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2274](../backend/app/api/world.py#L2274) |
-| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2527](../backend/app/api/world.py#L2527) |
-| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2729](../backend/app/api/world.py#L2729) |
+| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2531](../backend/app/api/world.py#L2531) |
+| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2733](../backend/app/api/world.py#L2733) |
 | GET | /api/v1/world/{country_slug}/regions | app.api.world_subnational.list_regions | [backend/app/api/world_subnational.py:192](../backend/app/api/world_subnational.py#L192) |
 | GET | /api/v1/world/{country_slug}/regions/map/{code} | app.api.world_subnational.map_values | [backend/app/api/world_subnational.py:270](../backend/app/api/world_subnational.py#L270) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug} | app.api.world_subnational.region_profile | [backend/app/api/world_subnational.py:368](../backend/app/api/world_subnational.py#L368) |
@@ -2073,14 +2073,14 @@ Relationships: `[]`
 | app.api.ticker.TICKER_CODES | Call | computed source expression | [backend/app/api/ticker.py:91](../backend/app/api/ticker.py#L91) |
 | app.api.ticker.STALE_AFTER_DAYS_BY_CODE | Dict | 'brent' | [backend/app/api/ticker.py:103](../backend/app/api/ticker.py#L103) |
 | app.api.ticker._RUB_PAIRS | Dict | 'usd-rub', 'eur-rub', 'cny-rub' | [backend/app/api/ticker.py:148](../backend/app/api/ticker.py#L148) |
-| app.api.world._RATING_CATALOG_ORDER | Tuple | sequence/source expression | [backend/app/api/world.py:754](../backend/app/api/world.py#L754) |
-| app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:799](../backend/app/api/world.py#L799) |
-| app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:806](../backend/app/api/world.py#L806) |
-| app.api.world._AGGREGATION_SOURCE_TO_TARGET | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/api/world.py:868](../backend/app/api/world.py#L868) |
-| app.api.world._OVERVIEW_PRIORITY | Tuple | sequence/source expression | [backend/app/api/world.py:1939](../backend/app/api/world.py#L1939) |
-| app.api.world._PRICE_BASIS | Dict | 'year_on_year_month', 'annual_average' | [backend/app/api/world.py:1941](../backend/app/api/world.py#L1941) |
-| app.api.world._SLIM_ITEM_DROP | Call | computed source expression | [backend/app/api/world.py:1976](../backend/app/api/world.py#L1976) |
-| app.api.world._SLIM_ITEM_DEFAULTS | Dict | 'simple_name', 'aggregated_frequencies', 'merged_slices', 'last_value', 'last_date', 'prev_value', 'change', 'archived' | [backend/app/api/world.py:1977](../backend/app/api/world.py#L1977) |
+| app.api.world._RATING_CATALOG_ORDER | Tuple | sequence/source expression | [backend/app/api/world.py:749](../backend/app/api/world.py#L749) |
+| app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:794](../backend/app/api/world.py#L794) |
+| app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:801](../backend/app/api/world.py#L801) |
+| app.api.world._AGGREGATION_SOURCE_TO_TARGET | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/api/world.py:863](../backend/app/api/world.py#L863) |
+| app.api.world._OVERVIEW_PRIORITY | Tuple | sequence/source expression | [backend/app/api/world.py:1934](../backend/app/api/world.py#L1934) |
+| app.api.world._PRICE_BASIS | Dict | 'year_on_year_month', 'annual_average' | [backend/app/api/world.py:1936](../backend/app/api/world.py#L1936) |
+| app.api.world._SLIM_ITEM_DROP | Call | computed source expression | [backend/app/api/world.py:1972](../backend/app/api/world.py#L1972) |
+| app.api.world._SLIM_ITEM_DEFAULTS | Dict | 'simple_name', 'aggregated_frequencies', 'merged_slices', 'last_value', 'last_date', 'prev_value', 'change', 'archived' | [backend/app/api/world.py:1973](../backend/app/api/world.py#L1973) |
 | app.core.cache._WORLD_COUNTRIES_KEY_RE | Call | computed source expression | [backend/app/core/cache.py:495](../backend/app/core/cache.py#L495) |
 | app.data.bi_targets.NORTH_STAR_MILESTONES | List | sequence/source expression | [backend/app/data/bi_targets.py:12](../backend/app/data/bi_targets.py#L12) |
 | app.data.bi_targets.TARGETS | Dict | 'visits_per_day', 'acquisition_search_share', 'engagement_rate', 'micro_conversion_rate', 'macro_conversion_rate', 'retention_7d' | [backend/app/data/bi_targets.py:14](../backend/app/data/bi_targets.py#L14) |
@@ -2125,18 +2125,18 @@ Relationships: `[]`
 | app.data.eurostat_deep_expand.NEVER_EXPAND_DIMS | Call | computed source expression | [backend/app/data/eurostat_deep_expand.py:15](../backend/app/data/eurostat_deep_expand.py#L15) |
 | app.data.eurostat_deep_expand.EXPANDABLE_DIMS | Call | computed source expression | [backend/app/data/eurostat_deep_expand.py:20](../backend/app/data/eurostat_deep_expand.py#L20) |
 | app.data.eurostat_deep_expand.TOTALISH_BASE | Call | computed source expression | [backend/app/data/eurostat_deep_expand.py:30](../backend/app/data/eurostat_deep_expand.py#L30) |
-| app.data.eurostat_dim_labels_en.NACE_EN | Dict | 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'G47', 'G47_FOOD', 'G47_NFOOD', 'G47_NFOOD_X_G473', 'G47_X_G473', 'G473', 'M_STS', 'H-N_X_K', 'F_CC11_X_CC113', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'B-D', 'B-E', 'B-E36', 'B-S_X_O', 'B-S_X_O_S94', 'B-N', 'B-S', 'G-J', 'G-N', 'K-N', 'O-S', 'P-S_X_S94', 'C10', 'C10-C12', 'C13-C15', 'C16-C18', 'C19', 'C20', 'C21', 'C22-C23', 'C24-C25', 'C26', 'C27', 'C28', 'C29-C30', 'C31-C33', 'D35', 'E36', 'F41', 'F42', 'F43', 'G45', 'G46', 'H49', 'H50', 'H51', 'H52', 'H53', 'I55', 'I56', 'J58', 'J59-J60', 'J61', 'J62-J63', 'K64', 'K65', 'K66', 'M69-M71', 'M72', 'M73-M75', 'N77', 'N78', 'N79', 'N80-N82' | [backend/app/data/eurostat_dim_labels_en.py:13](../backend/app/data/eurostat_dim_labels_en.py#L13) |
-| app.data.eurostat_dim_labels_en.INDIC_BT_EN | Dict | 'REG', 'BKRT', 'BPRM_DW', 'BPRM_SQM', 'EMP', 'PRD', 'HW', 'WAGE', 'COST', 'NETTUR', 'NETTUR_DOM', 'NETTUR_NDOM', 'NETTUR_NDOM_EU', 'PRC_PRR', 'PRC_PRR_DOM', 'PRC_PRR_NDOM', 'PRC_PRR_B2B', 'PRC_IMP', 'VOL_SLS' | [backend/app/data/eurostat_dim_labels_en.py:101](../backend/app/data/eurostat_dim_labels_en.py#L101) |
-| app.data.eurostat_dim_labels_en.SEX_EN | Dict | 'M', 'F' | [backend/app/data/eurostat_dim_labels_en.py:123](../backend/app/data/eurostat_dim_labels_en.py#L123) |
-| app.data.eurostat_dim_labels_en.AGE_EN | Dict | 'Y15-24', 'Y15-74', 'Y25-74', 'Y15-64', 'Y20-64', 'Y_LT25', 'Y25-54', 'Y55-64', 'Y65-74' | [backend/app/data/eurostat_dim_labels_en.py:128](../backend/app/data/eurostat_dim_labels_en.py#L128) |
-| app.data.eurostat_dim_labels_en.CPA2_1_EN | Dict | 'CPA_F41001', 'CPA_F41001_41002', 'CPA_F41001_X_410014', 'CPA_F410011', 'CPA_F410012_410013', 'CPA_F410014', 'CPA_F41002', 'CPA_F41002_X_410023', 'CPA_F410023', 'CPA_B-E36' | [backend/app/data/eurostat_dim_labels_en.py:140](../backend/app/data/eurostat_dim_labels_en.py#L140) |
-| app.data.eurostat_dim_labels_en.LABELS_BY_DIM | Dict | 'nace_r2', 'nace_r1', 'indic_bt', 'sex', 'age', 'cpa2_1' | [backend/app/data/eurostat_dim_labels_en.py:153](../backend/app/data/eurostat_dim_labels_en.py#L153) |
-| app.data.eurostat_dim_labels_en._TOTALISH | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:162](../backend/app/data/eurostat_dim_labels_en.py#L162) |
-| app.data.eurostat_dim_labels_en._NACE_BY_ACTIVITY_TAIL | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:164](../backend/app/data/eurostat_dim_labels_en.py#L164) |
-| app.data.eurostat_dim_labels_en._AGE_RANGE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:169](../backend/app/data/eurostat_dim_labels_en.py#L169) |
-| app.data.eurostat_dim_labels_en._AGE_GE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:170](../backend/app/data/eurostat_dim_labels_en.py#L170) |
-| app.data.eurostat_dim_labels_en._AGE_LT | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:171](../backend/app/data/eurostat_dim_labels_en.py#L171) |
-| app.data.eurostat_dim_labels_en._AGE_YEAR | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:172](../backend/app/data/eurostat_dim_labels_en.py#L172) |
+| app.data.eurostat_dim_labels_en.NACE_EN | Dict | 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'G47', 'G47_FOOD', 'G47_NFOOD', 'G47_NFOOD_X_G473', 'G47_X_G473', 'G473', 'M_STS', 'H-N_X_K', 'F_CC11_X_CC113', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'B-D', 'B-E', 'B-E36', 'B-S_X_O', 'B-S_X_O_S94', 'B-N', 'B-S', 'G-J', 'G-N', 'K-N', 'O-S', 'P-S_X_S94', 'C10', 'C10-C12', 'C13-C15', 'C16-C18', 'C19', 'C20', 'C21', 'C22-C23', 'C24-C25', 'C26', 'C27', 'C28', 'C29-C30', 'C31-C33', 'D35', 'E36', 'F41', 'F42', 'F43', 'G45', 'G46', 'H49', 'H50', 'H51', 'H52', 'H53', 'I55', 'I56', 'J58', 'J59-J60', 'J61', 'J62-J63', 'K64', 'K65', 'K66', 'M69-M71', 'M72', 'M73-M75', 'N77', 'N78', 'N79', 'N80-N82' | [backend/app/data/eurostat_dim_labels_en.py:16](../backend/app/data/eurostat_dim_labels_en.py#L16) |
+| app.data.eurostat_dim_labels_en.INDIC_BT_EN | Dict | 'REG', 'BKRT', 'BPRM_DW', 'BPRM_SQM', 'EMP', 'PRD', 'HW', 'WAGE', 'COST', 'NETTUR', 'NETTUR_DOM', 'NETTUR_NDOM', 'NETTUR_NDOM_EU', 'PRC_PRR', 'PRC_PRR_DOM', 'PRC_PRR_NDOM', 'PRC_PRR_B2B', 'PRC_IMP', 'VOL_SLS' | [backend/app/data/eurostat_dim_labels_en.py:104](../backend/app/data/eurostat_dim_labels_en.py#L104) |
+| app.data.eurostat_dim_labels_en.SEX_EN | Dict | 'M', 'F' | [backend/app/data/eurostat_dim_labels_en.py:126](../backend/app/data/eurostat_dim_labels_en.py#L126) |
+| app.data.eurostat_dim_labels_en.AGE_EN | Dict | 'Y15-24', 'Y15-74', 'Y25-74', 'Y15-64', 'Y20-64', 'Y_LT25', 'Y25-54', 'Y55-64', 'Y65-74' | [backend/app/data/eurostat_dim_labels_en.py:131](../backend/app/data/eurostat_dim_labels_en.py#L131) |
+| app.data.eurostat_dim_labels_en.CPA2_1_EN | Dict | 'CPA_F41001', 'CPA_F41001_41002', 'CPA_F41001_X_410014', 'CPA_F410011', 'CPA_F410012_410013', 'CPA_F410014', 'CPA_F41002', 'CPA_F41002_X_410023', 'CPA_F410023', 'CPA_B-E36' | [backend/app/data/eurostat_dim_labels_en.py:143](../backend/app/data/eurostat_dim_labels_en.py#L143) |
+| app.data.eurostat_dim_labels_en.LABELS_BY_DIM | Dict | 'nace_r2', 'nace_r1', 'indic_bt', 'sex', 'age', 'cpa2_1' | [backend/app/data/eurostat_dim_labels_en.py:156](../backend/app/data/eurostat_dim_labels_en.py#L156) |
+| app.data.eurostat_dim_labels_en._TOTALISH | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:165](../backend/app/data/eurostat_dim_labels_en.py#L165) |
+| app.data.eurostat_dim_labels_en._NACE_BY_ACTIVITY_TAIL | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:167](../backend/app/data/eurostat_dim_labels_en.py#L167) |
+| app.data.eurostat_dim_labels_en._AGE_RANGE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:172](../backend/app/data/eurostat_dim_labels_en.py#L172) |
+| app.data.eurostat_dim_labels_en._AGE_GE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:173](../backend/app/data/eurostat_dim_labels_en.py#L173) |
+| app.data.eurostat_dim_labels_en._AGE_LT | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:174](../backend/app/data/eurostat_dim_labels_en.py#L174) |
+| app.data.eurostat_dim_labels_en._AGE_YEAR | Call | computed source expression | [backend/app/data/eurostat_dim_labels_en.py:175](../backend/app/data/eurostat_dim_labels_en.py#L175) |
 | app.data.eurostat_dim_labels_ru.SEX_RU | Dict | 'M', 'F' | [backend/app/data/eurostat_dim_labels_ru.py:15](../backend/app/data/eurostat_dim_labels_ru.py#L15) |
 | app.data.eurostat_dim_labels_ru.HHCOMP_RU | Dict | 'A1', 'A1_DCH', 'A1_LT64', 'A1_GE65', 'A2', 'A2_DCH1', 'A2_DCH2', 'A2_DCH_GE3', 'A2_2LT65', 'A2_GE1_GE65', 'A_GE2_DCH', 'A_GE2_NDCH', 'A_GE3', 'A_GE3_DCH', 'DCH', 'NDCH', 'M1', 'F1', 'HH_NOCHILD', 'HH_CHILD' | [backend/app/data/eurostat_dim_labels_ru.py:24](../backend/app/data/eurostat_dim_labels_ru.py#L24) |
 | app.data.eurostat_dim_labels_ru.AGE_RU | Dict | 'Y15-24', 'Y15-74', 'Y25-74', 'Y15-64', 'Y20-64', 'Y_GT20', 'UNK', 'Y18-24', 'Y18-64', 'Y18-74', 'Y16-64', 'Y16-74', 'Y25-64', 'Y25-54', 'Y25-49', 'Y35-49', 'Y50-64', 'Y55-64', 'Y65-74', 'Y15-19', 'Y16-19', 'Y20-24', 'Y25-29', 'Y25-34', 'Y30-34', 'Y35-39', 'Y40-44', 'Y45-49', 'Y50-54', 'Y55-59', 'Y60-64', 'Y0-4', 'Y0-14', 'Y0-15', 'Y0-17', 'Y0-29', 'Y5-9', 'Y5-14', 'Y5-29', 'Y10-14', 'Y15-29', 'Y15-34', 'Y16-18', 'Y_LT1', 'Y_LT5', 'Y_LT6', 'Y_LT15', 'Y_LT18', 'Y_LT20', 'Y_LT25', 'Y_GE15', 'Y_GE18', 'Y_GE25', 'Y_GE45', 'Y_GE50', 'Y_GE55', 'Y_GE60', 'Y_GE65', 'Y_GE75', 'Y_GE80', 'Y_GE85', 'Y1', 'Y4', 'Y14', 'Y15', 'Y16', 'Y17', 'Y18', 'Y19', 'Y20', 'Y21', 'Y22', 'Y23', 'Y24', 'Y25', 'Y26', 'D0', 'D1', 'D1-6', 'D7-27', 'D28-364', 'D_LT7', 'D_LT28', 'LFD' | [backend/app/data/eurostat_dim_labels_ru.py:51](../backend/app/data/eurostat_dim_labels_ru.py#L51) |
@@ -2182,6 +2182,7 @@ Relationships: `[]`
 | app.data.eurostat_dim_labels_ru._AGE_SINGLE_RE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_ru.py:1116](../backend/app/data/eurostat_dim_labels_ru.py#L1116) |
 | app.data.eurostat_dim_labels_ru._DAY_RANGE_RE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_ru.py:1117](../backend/app/data/eurostat_dim_labels_ru.py#L1117) |
 | app.data.eurostat_dim_labels_ru._DAY_SINGLE_RE | Call | computed source expression | [backend/app/data/eurostat_dim_labels_ru.py:1118](../backend/app/data/eurostat_dim_labels_ru.py#L1118) |
+| app.data.eurostat_dim_labels_ru_official.RU_FROM_OFFICIAL_EN | Dict | 'stk_flow', 'hhcomp', 'wstatus', 'isced11', 'na_item', 'duration', 'nace_r2', 'siec', 'indic_nrg', 'statinfo', 'indic_is' | [backend/app/data/eurostat_dim_labels_ru_official.py:14](../backend/app/data/eurostat_dim_labels_ru_official.py#L14) |
 | app.data.eurostat_headline.HEADLINE_MEMBER_OVERRIDES | Dict | 'gov_10dd_edpt1', 'gov_10a_main', 'gov_10dd_slgd', 'nama_10_gdp', 'namq_10_gdp', 'nrg_cb_sffm', 'nrg_cb_sff', 'nrg_cb_em', 'nrg_cb_h', 'nrg_cb_oil', 'nrg_cb_gas', 'nrg_te_bio', 'nrg_te_gas', 'nrg_te_gasm', 'nrg_te_sff', 'nrg_ti_bio', 'nrg_ti_gas', 'nrg_inf_lbpc', 'prc_hpi_q', 'prc_hpi_ooq', 'prc_hpi_hsnq', 'prc_hpi_hsvq', 'tour_dem_exac' | [backend/app/data/eurostat_headline.py:16](../backend/app/data/eurostat_headline.py#L16) |
 | app.data.eurostat_listing.LISTING_MIN_POINTS_BY_FREQUENCY | Dict | 'monthly', 'quarterly', 'annual', 'yearly', 'weekly', 'daily' | [backend/app/data/eurostat_listing.py:24](../backend/app/data/eurostat_listing.py#L24) |
 | app.data.eurostat_listing.LISTING_MIN_HISTORY_END | Call | computed source expression | [backend/app/data/eurostat_listing.py:37](../backend/app/data/eurostat_listing.py#L37) |
@@ -2957,13 +2958,13 @@ Relationships: `[]`
 | app.services.seo_world._WORLD_RATING_LOW_FIRST | Call | computed source expression | [backend/app/services/seo_world.py:94](../backend/app/services/seo_world.py#L94) |
 | app.services.seo_world._WORLD_RATING_MONEY_CONCEPTS | Call | computed source expression | [backend/app/services/seo_world.py:95](../backend/app/services/seo_world.py#L95) |
 | app.services.seo_world.COUNTRY_GENITIVE | Dict | 'austria', 'belgium', 'bulgaria', 'croatia', 'cyprus', 'czechia', 'denmark', 'estonia', 'finland', 'france', 'germany', 'greece', 'hungary', 'ireland', 'italy', 'latvia', 'lithuania', 'luxembourg', 'malta', 'netherlands', 'poland', 'portugal', 'romania', 'slovakia', 'slovenia', 'spain', 'sweden', 'iceland', 'norway', 'switzerland', 'united-kingdom', 'turkey', 'serbia', 'montenegro', 'north-macedonia', 'albania', 'bosnia', 'kosovo', 'ukraine', 'moldova', 'georgia', 'armenia', 'azerbaijan', 'united-states', 'canada', 'japan', 'south-korea', 'china', 'india', 'brazil', 'mexico', 'australia', 'new-zealand', 'south-africa', 'israel' | [backend/app/services/seo_world.py:106](../backend/app/services/seo_world.py#L106) |
-| app.services.seo_world._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:206](../backend/app/services/seo_world.py#L206) |
-| app.services.seo_world._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:214](../backend/app/services/seo_world.py#L214) |
-| app.services.seo_world._KEY_CATEGORY_ORDER | Tuple | sequence/source expression | [backend/app/services/seo_world.py:223](../backend/app/services/seo_world.py#L223) |
-| app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:424](../backend/app/services/seo_world.py#L424) |
-| app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:432](../backend/app/services/seo_world.py#L432) |
-| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:559](../backend/app/services/seo_world.py#L559) |
-| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:653](../backend/app/services/seo_world.py#L653) |
+| app.services.seo_world._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:207](../backend/app/services/seo_world.py#L207) |
+| app.services.seo_world._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:215](../backend/app/services/seo_world.py#L215) |
+| app.services.seo_world._KEY_CATEGORY_ORDER | Tuple | sequence/source expression | [backend/app/services/seo_world.py:224](../backend/app/services/seo_world.py#L224) |
+| app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:416](../backend/app/services/seo_world.py#L416) |
+| app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:424](../backend/app/services/seo_world.py#L424) |
+| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:551](../backend/app/services/seo_world.py#L551) |
+| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:645](../backend/app/services/seo_world.py#L645) |
 | app.services.seo_world_subnational._NOT_FOUND | Tuple | sequence/source expression | [backend/app/services/seo_world_subnational.py:37](../backend/app/services/seo_world_subnational.py#L37) |
 | app.services.seo_year_ui._SHORT_CELL_UNITS | Call | computed source expression | [backend/app/services/seo_year_ui.py:26](../backend/app/services/seo_year_ui.py#L26) |
 | app.services.session_analysis._PARAM_KEYS | Call | computed source expression | [backend/app/services/session_analysis.py:33](../backend/app/services/session_analysis.py#L33) |
@@ -3208,6 +3209,9 @@ Relationships: `[]`
 | app.services.world_rank_values._WORLD_REGION_EN | Dict | 'Европа', 'Азия', 'Америка', 'Африка', 'Океания' | [backend/app/services/world_rank_values.py:263](../backend/app/services/world_rank_values.py#L263) |
 | app.services.world_russia_rank._GDP_USD_METHOD_CONCEPTS | Call | computed source expression | [backend/app/services/world_russia_rank.py:42](../backend/app/services/world_russia_rank.py#L42) |
 | app.services.world_russia_rank._NATIVE_COMPARE_FREQUENCIES | Call | computed source expression | [backend/app/services/world_russia_rank.py:242](../backend/app/services/world_russia_rank.py#L242) |
+| app.services.world_series_title._TITLE_AXES | Call | computed source expression | [backend/app/services/world_series_title.py:25](../backend/app/services/world_series_title.py#L25) |
+| app.services.world_series_title.SLICE_AXES | Tuple | sequence/source expression | [backend/app/services/world_series_title.py:28](../backend/app/services/world_series_title.py#L28) |
+| app.services.world_series_title._NOT_QUALIFIERS | Call | computed source expression | [backend/app/services/world_series_title.py:37](../backend/app/services/world_series_title.py#L37) |
 | app.services.world_subnational_forecast.FREQUENCIES | Dict | 'annual', 'quarterly', 'monthly' | [backend/app/services/world_subnational_forecast.py:19](../backend/app/services/world_subnational_forecast.py#L19) |
 | app.services.world_subnational_ingest._REAL_INCOME_UNITS_RE | Call | computed source expression | [backend/app/services/world_subnational_ingest.py:47](../backend/app/services/world_subnational_ingest.py#L47) |
 | app.services.world_view_modes._TRANSFORMS | Dict | 'level', 'mom', 'mom_abs', 'qoq', 'qoq_abs', 'yoy', 'yoy_abs', 'index_first', 'avg_quarter', 'avg_year' | [backend/app/services/world_view_modes.py:139](../backend/app/services/world_view_modes.py#L139) |
@@ -3395,6 +3399,7 @@ Relationships: `[]`
 | scripts.sync-local-from-prod._HERE | Call | computed source expression | [scripts/sync-local-from-prod.py:32](../scripts/sync-local-from-prod.py#L32) |
 | scripts.sync-local-from-prod._CANDIDATES | List | sequence/source expression | [scripts/sync-local-from-prod.py:33](../scripts/sync-local-from-prod.py#L33) |
 | scripts.verify-data-loaded.KNOWN_STRUCTURAL_EMPTY | Set | sequence/source expression | [scripts/verify-data-loaded.py:47](../scripts/verify-data-loaded.py#L47) |
+| scripts.world-title-duplicates.TECHNICAL_AXES | Call | computed source expression | [scripts/world-title-duplicates.py:27](../scripts/world-title-duplicates.py#L27) |
 
 ## MCP tools
 
@@ -3413,6 +3418,7 @@ Relationships: `[]`
 | Kind | Source / symbol | Expression |
 | --- | --- | --- |
 | import_alias_collision | backend/app/services/session_analysis.py | ['sqlalchemy.dialects.postgresql.insert', 'sqlalchemy.dialects.sqlite.insert'] |
+| import_alias_collision | backend/app/services/world_series_title.py | ['app.data.eurostat_dim_labels_en.label_for_dim_member', 'app.data.eurostat_dim_labels_ru.label_for_dim_member'] |
 
 ## Limits
 

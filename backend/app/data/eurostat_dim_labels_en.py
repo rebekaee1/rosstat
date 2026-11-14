@@ -7,7 +7,10 @@ Official NACE / STS wording (Eurostat). Used for:
 
 from __future__ import annotations
 
+import json
 import re
+from functools import lru_cache
+from pathlib import Path
 
 # NACE Rev. 2 sections + frequent STS / industry aggregates (EN, Eurostat).
 NACE_EN: dict[str, str] = {
@@ -209,8 +212,33 @@ def label_for_dim_member(dim: str, code: str | None) -> str | None:
         if hit is not None:
             return hit
     if d == "age":
-        return _age_label_fallback_en(c)
-    return None
+        fallback = _age_label_fallback_en(c)
+        if fallback:
+            return fallback
+    return official_label_en(d, c)
+
+
+@lru_cache(maxsize=1)
+def _official_codelists() -> dict[str, dict[str, str]]:
+    """Снимок официальных подписей кодлистов Евростата (scripts/fetch-eurostat-codelists.py, 14.11.2026)."""
+    path = Path(__file__).with_name("eurostat_codelists_en.json")
+    try:
+        return json.loads(path.read_text(encoding="utf-8")).get("labels", {})
+    except (OSError, ValueError):
+        return {}
+
+
+def official_label_en(dim: str, code: str) -> str | None:
+    """Официальная английская подпись значения из кодлиста Евростата, со строчной буквы для уточнения.
+
+    «Employed persons» → «employed persons»; аббревиатуры («EU27», «ICT») не трогаются.
+    """
+    label = _official_codelists().get(dim, {}).get(code)
+    if not label:
+        return None
+    if len(label) > 1 and label[0].isupper() and label[1].islower():
+        label = label[0].lower() + label[1:]
+    return label
 
 
 def append_en_slice_to_title(name_en: str, slice_json: dict | None) -> str:

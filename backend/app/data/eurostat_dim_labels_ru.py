@@ -1154,7 +1154,8 @@ def _age_label_fallback(code: str) -> str | None:
     m = _AGE_LT_RE.match(code)
     if m:
         n = int(m.group(1))
-        return f"младше {n} {_years_word(n)}"
+        # «младше» требует родительного падежа: «младше 1 года», «младше 2 лет», «младше 21 года».
+        return f"младше {n} {'года' if n % 10 == 1 and n % 100 != 11 else 'лет'}"
 
     m = _AGE_GE_RE.match(code)
     if m:
@@ -1201,9 +1202,14 @@ def label_for_dim_member(dim: str, code: str | None) -> str | None:
             return hit
 
     if d == "age":
-        return _age_label_fallback(c)
+        fallback = _age_label_fallback(c)
+        if fallback:
+            return fallback
 
-    return None
+    # Перевод официальной английской подписи Евростата (14.11.2026, eurostat_dim_labels_ru_official).
+    from app.data.eurostat_dim_labels_ru_official import official_translation_ru
+
+    return official_translation_ru(d, c)
 
 
 def is_dim_totalish(dim: str, code: str | None) -> bool:
