@@ -169,6 +169,13 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   gap: 10px;
   margin-top: 22px;
 }
+/* Проход дизайна 15.11: на телефоне «Сравнить с …» и «Сохранить» делят одну строку под главной кнопкой,
+   а не стоят третьей ступенькой с одинокой короткой кнопкой у левого края. */
+@media (max-width: 639px) {
+  .z5-hero__actions > .fe-btn--secondary { flex: 1 1 auto; width: auto; } /* длинная подпись (EN на 360 px) переносит «Сохранить» строкой ниже, а не обрезается */
+  .z5-hero__actions > .fe-cabinet-actions { flex: none; }
+  .z5-hero__actions > .fe-cabinet-actions .c11b-act { min-height: 44px; }
+}
 @media (min-width: 1024px) {
   .z5-hero__grid { flex-direction: row; align-items: stretch; gap: 36px; }
   /* G6.1: заголовок и лид не шире 58 % плиты, пока профиль грузится и колонка пуста: текст не ложится на кристаллы героя (K1). */
@@ -522,14 +529,13 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .z5-topic__name { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
-/* Счётчик мелким капсом. */
+/* Счётчик мелким шрифтом. 15.11: без капса — у цифр он ничего не меняет, а «2,2 тыс.» превращал в кричащее «2,2 ТЫС.». */
 .z5-topic__count {
   flex: none;
   color: var(--fe-text-muted, #5b6578);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
 }
 .z5-topics .z5-topic.is-active .z5-topic__count { color: rgba(35, 27, 11, 0.8); }
