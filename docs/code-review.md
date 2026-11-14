@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `785a3b13a283b4a7e1a52ebb92d260646c4e4e70`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `bb04bbeaf2249093f75eea7df92d2db83e920982`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2492 |
+| Файлы в явно определённом scope | 2493 |
 | Код, шаблоны и стили | 2019 |
-| Актуальные рецензии без пропусков guard | 2492 |
+| Актуальные рецензии без пропусков guard | 2493 |
 | Именованные определения Python/JS: с аннотацией / всего | 16320 / 16320 |
 | Файлы, требующие внимания | 0 |
 
@@ -1204,6 +1204,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/ui-review-2026-10-04.md](../docs/research/ui-review-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/research/uk-official-sources.xlsx](../docs/research/uk-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/usa-official-sources.xlsx](../docs/research/usa-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/research/wall-funnel-2026-11-14.md](../docs/research/wall-funnel-2026-11-14.md) | reviewed | 0/0 | актуально |
 | [docs/runtime-inventory.json](../docs/runtime-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/search.md](../docs/search.md) | reviewed | 0/0 | актуально |
 | [docs/server-hardening-runbook-2026-10-04.md](../docs/server-hardening-runbook-2026-10-04.md) | reviewed | 0/0 | актуально |

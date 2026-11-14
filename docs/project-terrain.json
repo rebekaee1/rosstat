@@ -1,25 +1,25 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "785a3b13a283b4a7e1a52ebb92d260646c4e4e70",
+  "baseline_commit": "bb04bbeaf2249093f75eea7df92d2db83e920982",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
   "stats": {
-    "files": 2492,
-    "attempted": 2128,
-    "files_with_nodes": 2036,
-    "nodes": 25237,
-    "symbol_edges": 79345,
-    "file_edges": 18267,
+    "files": 2493,
+    "attempted": 2129,
+    "files_with_nodes": 2037,
+    "nodes": 25247,
+    "symbol_edges": 79355,
+    "file_edges": 18268,
     "projection_omissions": {
       "external_or_unresolved_file": 3026,
       "missing_endpoint": 4436,
-      "within_file": 34474
+      "within_file": 34483
     },
     "confidence": {
-      "EXTRACTED": 71956,
-      "INFERRED": 7389
+      "EXTRACTED": 71965,
+      "INFERRED": 7390
     }
   },
   "overview": {
@@ -145,9 +145,9 @@
       {
         "id": "docs",
         "label": "Документация и правила",
-        "files": 120,
+        "files": 121,
         "code": 0,
-        "with_nodes": 108,
+        "with_nodes": 109,
         "file_node_only": 0,
         "semantic_evidence": 21
       },
@@ -342,8 +342,8 @@
       {
         "source": "docs",
         "target": "services",
-        "file_relations": 393,
-        "symbol_relations": 915
+        "file_relations": 394,
+        "symbol_relations": 916
       },
       {
         "source": "docs",
@@ -1897,6 +1897,7 @@
     {"path": "docs/research/ui-review-2026-10-04.md", "kind": "document", "bytes": 5535, "lines": 39, "sha256": "11fdb17535e5acc8baf776359cda94f16a1c33552770ed3f26f94d4ab3620cb3", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/uk-official-sources.xlsx", "kind": "asset/data/config", "bytes": 15777, "lines": null, "sha256": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/usa-official-sources.xlsx", "kind": "asset/data/config", "bytes": 17255, "lines": null, "sha256": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/research/wall-funnel-2026-11-14.md", "kind": "document", "bytes": 9446, "lines": 99, "sha256": "da5d66bbff8bac6afcee0e52000db64450e0b5ea7346eb8bc8c340f42c121e50", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/runtime-inventory.json", "kind": "asset/data/config", "bytes": 248779, "lines": 7349, "sha256": "53fbc68ec8abec4c469a0077cd0f35b82078981ba2c1a079c52b2403ce3c2241", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/search.md", "kind": "document", "bytes": 172711, "lines": 1057, "sha256": "61e48b54111935bf432d2f2a353a1f46da446189578d58a16057392d93f36953", "symlink": false, "nodes": 50, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/server-hardening-runbook-2026-10-04.md", "kind": "document", "bytes": 14120, "lines": 93, "sha256": "e55ccbf2f242c6687f8e32047fbd9fad9f3efa6a8caa3a8346bac2d32dfde4d8", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -12809,6 +12810,7 @@
     {"source": "docs/research/ui-review-2026-10-04.md", "target": "docs/research/capacity-measurement-2026-10-04.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/research/ui-review-2026-10-04.md", "line": "L32", "source": "ui-review-2026-10-04.md", "target": "capacity-measurement-2026-10-04.md"}]},
     {"source": "docs/research/ui-review-2026-10-04.md", "target": "docs/research/ui-brainstorm-planet-2026-10-04.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/research/ui-review-2026-10-04.md", "line": "L6", "source": "ui-review-2026-10-04.md", "target": "ui-brainstorm-planet-2026-10-04.md"}]},
     {"source": "docs/research/ui-review-2026-10-04.md", "target": "docs/research/ui-brainstorm-scenarios-2026-10-04.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/research/ui-review-2026-10-04.md", "line": "L5", "source": "ui-review-2026-10-04.md", "target": "ui-brainstorm-scenarios-2026-10-04.md"}]},
+    {"source": "docs/research/wall-funnel-2026-11-14.md", "target": "backend/app/services/download_content.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/research/wall-funnel-2026-11-14.md", "line": "L93", "source": "Источники и ограничения", "target": "collect()"}]},
     {"source": "docs/search.md", "target": "backend/app/data/cbr_currencies.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/search.md", "line": "L53", "source": "Глобальный API", "target": ".name_en()"}]},
     {"source": "docs/search.md", "target": "backend/app/data/legacy_redirects.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/search.md", "line": "L197", "source": "Методы и границы ранжирования", "target": "_bespoke_mode_index()"}]},
     {"source": "docs/search.md", "target": "backend/app/models.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/search.md", "line": "L54", "source": "Глобальный API", "target": "Indicator"}]},

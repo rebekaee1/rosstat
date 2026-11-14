@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2281  ·  **Строк:** 1 432 551  ·  **Токенов (≈):** 13 676 197
+**Файлов:** 2282  ·  **Строк:** 1 432 650  ·  **Токенов (≈):** 13 677 623
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 940 | 324 830 | 3 560 184 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 279 | 20 406 |
-| `docs` | 145 | 893 344 | 7 688 511 |
+| `docs` | 146 | 893 443 | 7 689 937 |
 | `frontend` | 1025 | 185 066 | 2 028 923 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -1016,6 +1016,7 @@
 | `backend/tests/test_forecaster.py` | 174 | 1 431 |
 | `backend/app/data/world_concept_national.py` | 153 | 1 429 |
 | `scripts/build-rid-listing.py` | 172 | 1 428 |
+| `docs/research/wall-funnel-2026-11-14.md` | 99 | 1 426 |
 | `frontend/src/lib/cpiViewModeContent.test.js` | 161 | 1 426 |
 | `docs/design/local-acceptance/baseline-api/http.json` | 230 | 1 425 |
 | `scripts/test-server/loadtest.py` | 120 | 1 425 |

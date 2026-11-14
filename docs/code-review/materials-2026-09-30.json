@@ -15273,8 +15273,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "7507d5a064375e53f441793cbed9a67d8b5402179b13c7853be7d139e4e09917",
-        "bytes": 949500
+        "sha256": "ae908d98359c8abb370e9626325e16cb1d690da0fa20c4b3474702711205688a",
+        "bytes": 949876
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -17701,7 +17701,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "e1c4ba7615625054f3d7ff0458b51006a8b3bc198889caf9d00b2ac6a30fe561",
+        "sha256": "fa4473c2682532429c4007db29fece92b026de6908156e75a6b44d721d6e0178",
         "bytes": 7847898
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -22404,8 +22404,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "d06e230267894f2b4cbef518aa74d8ee16aa155966af898b60a345b3942ed943",
-        "bytes": 23561281
+        "sha256": "32edd4cddb8a8d59f5504cc0c8a7f241eb9a3c40d456b83d22e18f60e8bccce3",
+        "bytes": 23562701
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -56873,6 +56873,80 @@
         }
       ],
       "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/research/wall-funnel-2026-11-14.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/.claude/worktrees/agent-a4879bc09991f03fb/docs/research/wall-funnel-2026-11-14.md",
+      "repository_path": "docs/research/wall-funnel-2026-11-14.md",
+      "format": ".md",
+      "role": "authored funnel evidence for owner decision",
+      "classification": "current_task_evidence",
+      "canonical_source": "docs/research/wall-funnel-2026-11-14.md",
+      "linked_mechanisms": null,
+      "review_status": "exact_version_review_in_ledger",
+      "body_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": false,
+      "review_basis": {
+        "proposal": "docs/code-review/reviews.jsonl",
+        "review_provenance": null,
+        "status_in_review": "reviewed",
+        "sha256": "da5d66bbff8bac6afcee0e52000db64450e0b5ea7346eb8bc8c340f42c121e50"
+      },
+      "source_version": {
+        "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
+        "scope": "tracked/index",
+        "date": "2026-11-14",
+        "sha256": "da5d66bbff8bac6afcee0e52000db64450e0b5ea7346eb8bc8c340f42c121e50",
+        "bytes": 9446
+      },
+      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "c1fa4bf51e94b9513e17570f55c4b46552ce4bde",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a",
+            "bytes": 21234
+          },
+          "review_status": "authored_review_evidence",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "date_msk": "2026-09-30",
+            "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+            "proposal": "docs/code-review/reviews.jsonl",
+            "ledger_line": 771,
+            "status_in_review": "reviewed",
+            "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a",
+            "summary": "Dated aggregate-only public report: retained search coverage, 150 actual technical client paths, missing typing history and ML evidence limits.",
+            "baseline_sha256": null,
+            "baseline_commit": null,
+            "baseline_matches_previous_material": false,
+            "changed_ranges_read": [],
+            "read_ranges_in_ledger": [
+              [
+                1,
+                231
+              ]
+            ],
+            "ledger_review_provenance": null,
+            "ledger_review_basis": null,
+            "contracts": [
+              "All historical queries means all actually retained rows in verified stores, not all keys ever typed.",
+              "Client session, server session, visitor and person remain distinct.",
+              "Raw query text and pseudonymous identifiers stay in ignored analytics/; public report contains aggregates and selected nonpersonal economic examples."
+            ],
+            "recorded_tests": [
+              "2026-09-30: successful read-only production snapshot and private filesystem permissions; gzip row counts/checksums independently reread.",
+              "2026-09-30: CH unique-id/event/params reconciliation and all 15 retained nginx rotations inspected.",
+              "2026-09-30: offline analysis all 919 sessions; 150 actual human_supported paths plus condensed sequence review; no synthetic substitute.",
+              "Python AST/syntax parsed; generated SQL contains READ ONLY and no data/schema mutation keywords."
+            ],
+            "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
+          }
+        }
+      ]
     }
   ],
   "external_sources": [
