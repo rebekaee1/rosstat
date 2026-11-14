@@ -895,8 +895,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "sha256": "191941afa5f32773acc502de89d18346e3f8db4c8331fbbc5d2621b04a538d09",
-      "lines": 266
+      "sha256": "7e04fcefacdd590539e98c5eae93c5c5c27e9c31c9378df8717988e6c29335d2",
+      "lines": 348
     },
     {
       "path": "backend/app/services/br_pop_adapter.py",
@@ -1835,8 +1835,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "81f420dcc9a108ad93b693f755b97f6d869abbe672ebe2a6a4134a123370a863",
-      "lines": 354
+      "sha256": "50bba7ad182621b4afa3bbab966e78a75f25923474405cfc514675a12c3a7333",
+      "lines": 356
     },
     {
       "path": "backend/app/services/telegram_missed_summary.py",
@@ -36298,8 +36298,17 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 146,
-      "end_line": 146,
+      "line": 185,
+      "end_line": 185,
+      "owner": "collect_job",
+      "conditions": [],
+      "name": "bot_traffic_log_path",
+      "expression": "settings.bot_traffic_log_path"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 201,
+      "end_line": 201,
       "owner": "collect_job",
       "conditions": [],
       "name": "bot_traffic_log_path",
@@ -38522,8 +38531,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 104,
+      "end_line": 104,
       "owner": "note_error_spike",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -38532,8 +38541,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 131,
-      "end_line": 131,
+      "line": 132,
+      "end_line": 132,
       "owner": "check_site_recovered",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -38542,8 +38551,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 334,
+      "end_line": 334,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -38552,8 +38561,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 72,
-      "end_line": 72,
+      "line": 73,
+      "end_line": 73,
       "owner": "should_hold",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -38562,8 +38571,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 74,
-      "end_line": 74,
+      "line": 75,
+      "end_line": 75,
       "owner": "should_hold",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -38571,8 +38580,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 84,
+      "end_line": 84,
       "owner": "hold",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -90966,8 +90975,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 30,
-      "end_line": 30,
+      "line": 36,
+      "end_line": 36,
       "owner": "<module>",
       "conditions": [],
       "name": "CLASSES",
@@ -90983,8 +90992,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 31,
-      "end_line": 31,
+      "line": 37,
+      "end_line": 37,
       "owner": "<module>",
       "conditions": [],
       "name": "OUTCOMES",
@@ -91000,8 +91009,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 39,
-      "end_line": 41,
+      "line": 45,
+      "end_line": 47,
       "owner": "<module>",
       "conditions": [],
       "name": "_LINE_RE",
@@ -91017,8 +91026,25 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 43,
-      "end_line": 47,
+      "line": 49,
+      "end_line": 49,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_HUMAN_RE",
+      "symbol": "app.services.bot_traffic._HUMAN_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('^(?P<day>\\\\d{4}-\\\\d{2}-\\\\d{2})T\\\\S+ st=(?P<st>\\\\d{3}) pass=(?P<pass>[01]) ym=(?P<ym>\\\\d{8}) cls=(?P<cls>[a-z]+)\\\\s*$')",
+      "expression_truncated": false,
+      "expression_chars": 130,
+      "ast_sha256": "ee4083f01de08faf5d1e7da98d7c658ebc45d5ab8609f172340100d7a3b8a59d",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 54,
+      "end_line": 58,
       "owner": "<module>",
       "conditions": [],
       "name": "_GENUINE_HOST_RE",
@@ -115259,7 +115285,7 @@
     {
       "path": "backend/app/services/telegram_calm.py",
       "line": 42,
-      "end_line": 52,
+      "end_line": 53,
       "owner": "<module>",
       "conditions": [],
       "name": "HELD_KINDS",
@@ -115267,16 +115293,16 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "frozenset({'alert', 'etl_failure', 'etl_alert', 'etl_summary', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'http_5xx_spike', 'load_shed', 'rate_limit_alert', 'host_pressure', 'host_memory', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch'})",
+      "expression": "frozenset({'alert', 'etl_failure', 'etl_alert', 'etl_summary', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'http_5xx_spike', 'load_shed', 'rate_limit_alert', 'host_pressure', 'host_memory', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch', 'bot_traffic'})",
       "expression_truncated": false,
-      "expression_chars": 433,
-      "ast_sha256": "8626e64ee94fa535516f53d6e02bac6a8172bcfb86a76f3d1c1033ed83fbe8fc",
+      "expression_chars": 448,
+      "ast_sha256": "1e12c701b1cde9940c111f5350b16eabab7008f0e6cbee294b184200cd004bdb",
       "runtime_expansion": true
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 56,
-      "end_line": 58,
+      "line": 57,
+      "end_line": 59,
       "owner": "<module>",
       "conditions": [],
       "name": "ACTION_KINDS",
@@ -115302,8 +115328,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 60,
-      "end_line": 60,
+      "line": 61,
+      "end_line": 61,
       "owner": "<module>",
       "conditions": [],
       "name": "URGENT_KINDS",
@@ -115319,8 +115345,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 164,
-      "end_line": 165,
+      "line": 165,
+      "end_line": 166,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTHS_GENITIVE",
@@ -115336,8 +115362,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 166,
-      "end_line": 166,
+      "line": 167,
+      "end_line": 167,
       "owner": "<module>",
       "conditions": [],
       "name": "_TAG_RE",
@@ -115353,8 +115379,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 168,
+      "end_line": 168,
       "owner": "<module>",
       "conditions": [],
       "name": "_EMOJI_RE",
@@ -115370,8 +115396,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 170,
-      "end_line": 177,
+      "line": 171,
+      "end_line": 178,
       "owner": "<module>",
       "conditions": [],
       "name": "GROUPS",
@@ -115379,16 +115405,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "(('site', 'Сайт', ('http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert')), ('data', 'Данные', ('etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity')), ('jobs', 'Фоновые задачи', ('scheduler_alert', 'job_lease_lost', 'ticker_stale')), ('stats', 'Статистика и поиск', ('acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch')))",
+      "expression": "(('site', 'Сайт', ('http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert', 'bot_traffic')), ('data', 'Данные', ('etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity')), ('jobs', 'Фоновые задачи', ('scheduler_alert', 'job_lease_lost', 'ticker_stale')), ('stats', 'Статистика и поиск', ('acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'token_expired', 'counter_mismatch')))",
       "expression_truncated": false,
-      "expression_chars": 520,
-      "ast_sha256": "cd4aa7c345680e23aa2c9cf8398389076477ca590914f400526557eddf93213b",
+      "expression_chars": 535,
+      "ast_sha256": "3466d9697dba3629e3579c7a711645b5ded18260622f8da9cd0f2bd9e6ada0b1",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 178,
-      "end_line": 178,
+      "line": 179,
+      "end_line": 179,
       "owner": "<module>",
       "conditions": [],
       "name": "_KIND_GROUP",
@@ -115404,8 +115430,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 181,
-      "end_line": 207,
+      "line": 182,
+      "end_line": 209,
       "owner": "<module>",
       "conditions": [],
       "name": "KIND_LABELS",
@@ -115436,6 +115462,7 @@
         "'audience_alert'",
         "'token_expired'",
         "'counter_mismatch'",
+        "'bot_traffic'",
         "'alert'"
       ],
       "entries": [
@@ -115608,6 +115635,13 @@
           "ast_sha256": "30409674b8de9eb82c3440fc969b8bbafcedcb3a28b5f19cd8190f463dcbf3ea"
         },
         {
+          "key": "'bot_traffic'",
+          "expression": "'роботы и отказы «подождите» людям (цифры в подробностях)'",
+          "expression_truncated": false,
+          "expression_chars": 58,
+          "ast_sha256": "ca738817d96b4d69ecb207e5115e745f609fca7d000a591758ab4255e8cb110d"
+        },
+        {
           "key": "'alert'",
           "expression": "'прочие технические заметки'",
           "expression_truncated": false,
@@ -115615,16 +115649,16 @@
           "ast_sha256": "e085bdad16cf5c12da6988e70ab6364167ab7ae2737140ee11a3389ac2bceca3"
         }
       ],
-      "expression": "{'http_5xx_spike': 'короткие всплески ошибок сервера', 'load_shed': 'сервер отбивал лишнюю нагрузку (роботы)', 'host_pressure': 'диск сервера притормаживал', 'host_memory': 'серверу не хватало памяти', 'rate_limit_alert': 'защита от флуда ненадолго отключалась', 'etl_summary': 'плановые обновления данных', 'etl_failure': 'показатели не обновились', 'etl_alert': 'сбои у отдельных источников', 'world_ingest_summary': 'обновления мировых данных', 'zero_parse': 'источник вернул пустой ответ', 'staleness': 'показатели давно не обновлялись', 'freshness_watchdog': 'проверка свежести данных', 'forecast_issue': 'заминки с прогнозами', 'data_guard': 'сторож не пустил в базу невозможные точки', 'data_sanity': 'ежедневная проверка нашла странные точки в базе', 'scheduler_alert': 'сбои фоновых задач', 'job_lease_lost': 'задача запускалась дважды', 'ticker_stale': 'бегущая строка котировок обновлялась с задержкой', 'acquisition_alert': 'неполная выгрузка из Метрики', 'recrawl_alert': 'заминки с переобходом Вебмастера', 'analytics_anomaly': 'необычные колебания в аналитике', 'audience_alert': 'необычные колебания аудитории', 'token_expired': 'истёк доступ к Яндексу', 'counter_mismatch': 'наш счётчик и Метрика расходятся по поисковикам', 'alert': 'прочие технические заметки'}",
+      "expression": "{'http_5xx_spike': 'короткие всплески ошибок сервера', 'load_shed': 'сервер отбивал лишнюю нагрузку (роботы)', 'host_pressure': 'диск сервера притормаживал', 'host_memory': 'серверу не хватало памяти', 'rate_limit_alert': 'защита от флуда ненадолго отключалась', 'etl_summary': 'плановые обновления данных', 'etl_failure': 'показатели не обновились', 'etl_alert': 'сбои у отдельных источников', 'world_ingest_summary': 'обновления мировых данных', 'zero_parse': 'источник вернул пустой ответ', 'staleness': 'показатели давно не обновлялись', 'freshness_watchdog': 'проверка свежести данных', 'forecast_issue': 'заминки с прогнозами', 'data_guard': 'сторож не пустил в базу невозможные точки', 'data_sanity': 'ежедневная проверка нашла странные точки в базе', 'scheduler_alert': 'сбои фоновых задач', 'job_lease_lost': 'задача запускалась дважды', 'ticker_stale': 'бегущая строка котировок обновлялась с задержкой', 'acquisition_alert': 'неполная выгрузка из Метрики', 'recrawl_alert': 'заминки с переобходом Вебмастера', 'analytics_anomaly': 'необычные колебания в аналитике', 'audience_alert': 'необычные колебания аудитории', 'token_expired': 'истёк доступ к Яндексу', 'counter_mismatch': 'наш счётчик и Метрика расходятся по поисковикам', 'bot_traffic': 'роботы и отказы «подождите» людям (цифры в подробностях)', 'alert': 'прочие технические заметки'}",
       "expression_truncated": false,
-      "expression_chars": 1280,
-      "ast_sha256": "98affaedc24d3d0485151643e8b981a729557bd839edc26d3789ec220a954549",
+      "expression_chars": 1355,
+      "ast_sha256": "56feeca4e4de50fc531ee3668176273e66d92d8d5cead584fede4fbc5ea90998",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 211,
+      "end_line": 211,
       "owner": "<module>",
       "conditions": [],
       "name": "_RECOVERY_RE",
@@ -144073,8 +144107,40 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 106,
+      "end_line": 106,
+      "owner": "HumanBatch.add_line",
+      "conditions": [
+        "m['st'] == '429'"
+      ],
+      "operation": "add",
+      "receiver": "self.refused.setdefault(m['day'], set())",
+      "symbol": "app.services.bot_traffic.self.refused.setdefault(m['day'], set()).add",
+      "expression": "self.refused.setdefault(m['day'], set()).add(m['ym'])",
+      "expression_truncated": false,
+      "expression_chars": 53,
+      "ast_sha256": "d391c9fdd2b859a2e1d14b0846a41f621027a1d47fa3ae3e98da8f2be9f5be7e"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 108,
+      "end_line": 108,
+      "owner": "HumanBatch.add_line",
+      "conditions": [
+        "m['pass'] == '1'"
+      ],
+      "operation": "add",
+      "receiver": "self.passed.setdefault(m['day'], set())",
+      "symbol": "app.services.bot_traffic.self.passed.setdefault(m['day'], set()).add",
+      "expression": "self.passed.setdefault(m['day'], set()).add(m['ym'])",
+      "expression_truncated": false,
+      "expression_chars": 52,
+      "ast_sha256": "0849086b23f130427392791b4998a4fadcd666aa190dad087e5512b30df7db43"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 183,
+      "end_line": 183,
       "owner": "collect_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -144087,8 +144153,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 153,
-      "end_line": 153,
+      "line": 192,
+      "end_line": 192,
       "owner": "collect_job",
       "conditions": [],
       "operation": "expire",
@@ -144101,8 +144167,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 198,
+      "end_line": 198,
       "owner": "collect_job",
       "conditions": [],
       "operation": "expire",
@@ -144115,8 +144181,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 200,
+      "end_line": 200,
       "owner": "collect_job",
       "conditions": [
         "new_state"
@@ -144131,8 +144197,24 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 213,
+      "end_line": 213,
+      "owner": "collect_job",
+      "conditions": [
+        "new_hstate"
+      ],
+      "operation": "set",
+      "receiver": "pipe",
+      "symbol": "app.services.bot_traffic.pipe.set",
+      "expression": "pipe.set(f'{_KEY_PREFIX}:human_offset', new_hstate)",
+      "expression_truncated": false,
+      "expression_chars": 51,
+      "ast_sha256": "4e1828d3042577b3ac0cc21caaabeda1a4ab35d9e82bfd38d3f9d0ebf6fe788b"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 214,
+      "end_line": 214,
       "owner": "collect_job",
       "conditions": [],
       "operation": "execute",
@@ -144145,8 +144227,38 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 236,
+      "end_line": 236,
+      "owner": "_maybe_report",
+      "conditions": [],
+      "operation": "set",
+      "receiver": "redis",
+      "symbol": "app.services.bot_traffic.redis.set",
+      "expression": "redis.set(f'{_KEY_PREFIX}:reported:{day.isoformat()}', '1', nx=True, ex=_TTL_SECONDS)",
+      "expression_truncated": false,
+      "expression_chars": 85,
+      "ast_sha256": "f557cfb8a55531207a5203aa891450f1ef8ebc5684385fbbce5865e01a5167b2"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 246,
+      "end_line": 246,
+      "owner": "_maybe_report",
+      "conditions": [
+        "not await send_telegram(text, kind='bot_traffic')"
+      ],
+      "operation": "delete",
+      "receiver": "redis",
+      "symbol": "app.services.bot_traffic.redis.delete",
+      "expression": "redis.delete(f'{_KEY_PREFIX}:reported:{day.isoformat()}')",
+      "expression_truncated": false,
+      "expression_chars": 57,
+      "ast_sha256": "020af38b09dae7df3c3f8b015939d6ebbc5de60fc9508f09e06ed4a65714420a"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 339,
+      "end_line": 339,
       "owner": "summary_lines",
       "conditions": [],
       "operation": "get_state_redis",
@@ -144156,6 +144268,94 @@
       "expression_truncated": false,
       "expression_chars": 17,
       "ast_sha256": "b2457ea95abbb631ab6701e5e71f326861aeebba7b8e33ae72d319dafda57331"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 210,
+      "end_line": 210,
+      "owner": "collect_job",
+      "conditions": [],
+      "operation": "sadd",
+      "receiver": "pipe",
+      "symbol": "app.services.bot_traffic.pipe.sadd",
+      "expression": "pipe.sadd(key, *ids)",
+      "expression_truncated": false,
+      "expression_chars": 20,
+      "ast_sha256": "be1a1c9ceb30f990dd84f84a59bf6bf7f660c3f2ac76f85d07f1cb6cd0c64ff5"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 211,
+      "end_line": 211,
+      "owner": "collect_job",
+      "conditions": [],
+      "operation": "expire",
+      "receiver": "pipe",
+      "symbol": "app.services.bot_traffic.pipe.expire",
+      "expression": "pipe.expire(key, _TTL_SECONDS)",
+      "expression_truncated": false,
+      "expression_chars": 30,
+      "ast_sha256": "ce3ec5c1d0afc54cb9c49941b3d156fcb80afb64e67d7bd54a010e37b6581da1"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 227,
+      "end_line": 227,
+      "owner": "human_counts",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.bot_traffic.set",
+      "expression": "set(refused)",
+      "expression_truncated": false,
+      "expression_chars": 12,
+      "ast_sha256": "6f363b8e61635b6a4a2e96b4a7b70923e049cfd84a0dc4f73bf0cff9c4d43bd9"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 227,
+      "end_line": 227,
+      "owner": "human_counts",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.bot_traffic.set",
+      "expression": "set(passed)",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "15ae9398db4498ea1c1f9f64e003644f99f201128e70da4ca05128ec57ed521e"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 106,
+      "end_line": 106,
+      "owner": "HumanBatch.add_line",
+      "conditions": [
+        "m['st'] == '429'"
+      ],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.bot_traffic.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 108,
+      "end_line": 108,
+      "owner": "HumanBatch.add_line",
+      "conditions": [
+        "m['pass'] == '1'"
+      ],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.bot_traffic.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
     },
     {
       "path": "backend/app/services/brent_fred_parser.py",
@@ -157921,8 +158121,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 108,
-      "end_line": 108,
+      "line": 109,
+      "end_line": 109,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "get_state_redis",
@@ -157935,8 +158135,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 119,
-      "end_line": 119,
+      "line": 120,
+      "end_line": 120,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "set",
@@ -157949,8 +158149,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 137,
+      "end_line": 137,
       "owner": "check_site_recovered",
       "conditions": [],
       "operation": "get_state_redis",
@@ -157963,8 +158163,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 140,
-      "end_line": 140,
+      "line": 141,
+      "end_line": 141,
       "owner": "check_site_recovered",
       "conditions": [],
       "operation": "delete",
@@ -157977,8 +158177,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 125,
+      "end_line": 125,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "set",
@@ -157991,8 +158191,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 338,
-      "end_line": 342,
+      "line": 340,
+      "end_line": 344,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "operation": "execute",
@@ -158005,8 +158205,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 343,
-      "end_line": 348,
+      "line": 345,
+      "end_line": 350,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "operation": "execute",
@@ -259318,8 +259518,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 343,
+      "end_line": 343,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -259327,8 +259527,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 343,
+      "end_line": 343,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -259336,8 +259536,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 347,
+      "end_line": 347,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.method",
@@ -259345,8 +259545,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 347,
+      "end_line": 347,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok.is_",
@@ -259354,8 +259554,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 348,
+      "end_line": 348,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind.in_",
@@ -259363,8 +259563,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 349,
+      "end_line": 349,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.sent_at",
@@ -259372,8 +259572,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 346,
+      "end_line": 346,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -259381,8 +259581,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 347,
+      "end_line": 347,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -259390,8 +259590,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 347,
+      "end_line": 347,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok",
@@ -259399,12 +259599,48 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 348,
+      "end_line": 348,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
       "expression": "TelegramOutbox.kind"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 349,
+      "end_line": 349,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 342,
+      "end_line": 342,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox.method",
+      "expression": "TelegramOutbox.method"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 342,
+      "end_line": 342,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox.sent_at",
+      "expression": "TelegramOutbox.sent_at"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 346,
+      "end_line": 346,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -259417,26 +259653,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 340,
-      "end_line": 340,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox.method",
-      "expression": "TelegramOutbox.method"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 340,
-      "end_line": 340,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox.sent_at",
-      "expression": "TelegramOutbox.sent_at"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 348,
+      "end_line": 348,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -259444,26 +259662,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 345,
-      "end_line": 345,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 346,
-      "end_line": 346,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 341,
+      "end_line": 341,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
@@ -259471,8 +259671,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 341,
+      "end_line": 341,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.text",
@@ -259480,8 +259680,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 340,
-      "end_line": 340,
+      "line": 342,
+      "end_line": 342,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -259489,8 +259689,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 340,
-      "end_line": 340,
+      "line": 342,
+      "end_line": 342,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -259498,8 +259698,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 341,
+      "end_line": 341,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -259507,8 +259707,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 341,
+      "end_line": 341,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -294700,8 +294900,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 50,
-      "end_line": 59,
+      "line": 61,
+      "end_line": 70,
       "owner": "<module>",
       "conditions": [],
       "name": "outcome",
@@ -294709,8 +294909,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 63,
-      "end_line": 80,
+      "line": 74,
+      "end_line": 91,
       "owner": "<module>",
       "conditions": [],
       "name": "Batch",
@@ -294718,8 +294918,26 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 83,
+      "line": 95,
+      "end_line": 109,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "HumanBatch",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 112,
       "end_line": 119,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "human_line",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 122,
+      "end_line": 158,
       "owner": "<module>",
       "conditions": [],
       "name": "read_new",
@@ -294727,8 +294945,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 122,
-      "end_line": 132,
+      "line": 161,
+      "end_line": 171,
       "owner": "<module>",
       "conditions": [],
       "name": "_read_from",
@@ -294736,8 +294954,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 135,
-      "end_line": 136,
+      "line": 174,
+      "end_line": 175,
       "owner": "<module>",
       "conditions": [],
       "name": "_day_key",
@@ -294745,8 +294963,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 139,
-      "end_line": 166,
+      "line": 178,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "collect_job",
@@ -294754,8 +294972,26 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 169,
-      "end_line": 179,
+      "line": 222,
+      "end_line": 227,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "human_counts",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 230,
+      "end_line": 248,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_maybe_report",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 251,
+      "end_line": 261,
       "owner": "<module>",
       "conditions": [],
       "name": "_genuine_robot",
@@ -294763,8 +294999,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 182,
-      "end_line": 193,
+      "line": 264,
+      "end_line": 275,
       "owner": "<module>",
       "conditions": [],
       "name": "check_genuine",
@@ -294772,8 +295008,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 196,
-      "end_line": 197,
+      "line": 278,
+      "end_line": 279,
       "owner": "<module>",
       "conditions": [],
       "name": "_n",
@@ -294781,8 +295017,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 200,
-      "end_line": 203,
+      "line": 282,
+      "end_line": 285,
       "owner": "<module>",
       "conditions": [],
       "name": "_req",
@@ -294790,8 +295026,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 206,
-      "end_line": 210,
+      "line": 288,
+      "end_line": 292,
       "owner": "<module>",
       "conditions": [],
       "name": "_pct",
@@ -294799,8 +295035,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 213,
-      "end_line": 249,
+      "line": 295,
+      "end_line": 331,
       "owner": "<module>",
       "conditions": [],
       "name": "format_lines",
@@ -294808,8 +295044,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 252,
-      "end_line": 266,
+      "line": 334,
+      "end_line": 348,
       "owner": "<module>",
       "conditions": [],
       "name": "summary_lines",
@@ -294817,8 +295053,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 69,
-      "end_line": 80,
+      "line": 80,
+      "end_line": 91,
       "owner": "Batch",
       "conditions": [],
       "name": "add_line",
@@ -294826,8 +295062,17 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 215,
-      "end_line": 218,
+      "line": 101,
+      "end_line": 109,
+      "owner": "HumanBatch",
+      "conditions": [],
+      "name": "add_line",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 297,
+      "end_line": 300,
       "owner": "format_lines",
       "conditions": [],
       "name": "get",
@@ -315293,8 +315538,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 70,
-      "end_line": 75,
+      "line": 71,
+      "end_line": 76,
       "owner": "<module>",
       "conditions": [],
       "name": "should_hold",
@@ -315302,8 +315547,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 78,
-      "end_line": 87,
+      "line": 79,
+      "end_line": 88,
       "owner": "<module>",
       "conditions": [],
       "name": "hold",
@@ -315311,8 +315556,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 98,
-      "end_line": 126,
+      "line": 99,
+      "end_line": 127,
       "owner": "<module>",
       "conditions": [],
       "name": "note_error_spike",
@@ -315320,8 +315565,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 129,
-      "end_line": 142,
+      "line": 130,
+      "end_line": 143,
       "owner": "<module>",
       "conditions": [],
       "name": "check_site_recovered",
@@ -315329,8 +315574,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 145,
-      "end_line": 153,
+      "line": 146,
+      "end_line": 154,
       "owner": "<module>",
       "conditions": [],
       "name": "site_down_text",
@@ -315338,8 +315583,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 156,
-      "end_line": 157,
+      "line": 157,
+      "end_line": 158,
       "owner": "<module>",
       "conditions": [],
       "name": "site_up_text",
@@ -315347,8 +315592,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 212,
-      "end_line": 213,
+      "line": 214,
+      "end_line": 215,
       "owner": "<module>",
       "conditions": [],
       "name": "_plain",
@@ -315356,8 +315601,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 216,
-      "end_line": 219,
+      "line": 218,
+      "end_line": 221,
       "owner": "<module>",
       "conditions": [],
       "name": "_headline",
@@ -315365,8 +315610,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 222,
-      "end_line": 228,
+      "line": 224,
+      "end_line": 230,
       "owner": "<module>",
       "conditions": [],
       "name": "_plural",
@@ -315374,8 +315619,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 231,
-      "end_line": 232,
+      "line": 233,
+      "end_line": 234,
       "owner": "<module>",
       "conditions": [],
       "name": "_times",
@@ -315383,8 +315628,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 235,
-      "end_line": 248,
+      "line": 237,
+      "end_line": 250,
       "owner": "<module>",
       "conditions": [],
       "name": "_etl_line",
@@ -315392,8 +315637,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 251,
-      "end_line": 321,
+      "line": 253,
+      "end_line": 323,
       "owner": "<module>",
       "conditions": [],
       "name": "build_summary",
@@ -315401,8 +315646,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 324,
-      "end_line": 354,
+      "line": 326,
+      "end_line": 356,
       "owner": "<module>",
       "conditions": [],
       "name": "calm_morning_summary_job",
@@ -343089,32 +343334,40 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 70,
-      "end_line": 70,
+      "line": 81,
+      "end_line": 81,
       "owner": "Batch.add_line",
       "conditions": [],
       "symbol": "app.services.bot_traffic._LINE_RE"
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 82,
+      "end_line": 82,
       "owner": "Batch.add_line",
       "conditions": [],
       "symbol": "app.services.bot_traffic.CLASSES"
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 173,
-      "end_line": 173,
+      "line": 102,
+      "end_line": 102,
+      "owner": "HumanBatch.add_line",
+      "conditions": [],
+      "symbol": "app.services.bot_traffic._HUMAN_RE"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 255,
+      "end_line": 255,
       "owner": "_genuine_robot",
       "conditions": [],
       "symbol": "app.services.bot_traffic._GENUINE_HOST_RE"
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 218,
-      "end_line": 218,
+      "line": 300,
+      "end_line": 300,
       "owner": "format_lines.get",
       "conditions": [],
       "symbol": "app.services.bot_traffic.OUTCOMES"
@@ -353076,112 +353329,112 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 279,
+      "end_line": 279,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.GROUPS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 63,
+      "end_line": 63,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.telegram_calm.HELD_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 63,
+      "end_line": 63,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.telegram_calm.URGENT_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 178,
-      "end_line": 178,
+      "line": 179,
+      "end_line": 179,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.telegram_calm.GROUPS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 72,
-      "end_line": 72,
+      "line": 73,
+      "end_line": 73,
       "owner": "should_hold",
       "conditions": [],
       "symbol": "app.services.telegram_calm.HELD_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 218,
-      "end_line": 218,
+      "line": 220,
+      "end_line": 220,
       "owner": "_headline",
       "conditions": [],
       "symbol": "app.services.telegram_calm._TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 257,
+      "end_line": 257,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.HELD_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 260,
+      "end_line": 260,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._MONTHS_GENITIVE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 309,
+      "end_line": 309,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._KIND_GROUP"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 352,
-      "end_line": 352,
+      "line": 354,
+      "end_line": 354,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.services.telegram_calm.MSK"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 219,
-      "end_line": 219,
+      "line": 221,
+      "end_line": 221,
       "owner": "_headline",
       "conditions": [],
       "symbol": "app.services.telegram_calm._EMOJI_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 261,
+      "end_line": 261,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.ACTION_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 213,
-      "end_line": 213,
+      "line": 215,
+      "end_line": 215,
       "owner": "_plain",
       "conditions": [],
       "symbol": "app.services.telegram_calm._TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 311,
+      "end_line": 311,
       "owner": "build_summary",
       "conditions": [
         "other"
@@ -353190,24 +353443,24 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 286,
-      "end_line": 286,
+      "line": 288,
+      "end_line": 288,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._RECOVERY_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 296,
+      "end_line": 296,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.KIND_LABELS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 300,
+      "end_line": 300,
       "owner": "build_summary",
       "conditions": [
         "h"
@@ -353216,8 +353469,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 348,
+      "end_line": 348,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.services.telegram_calm.URGENT_KINDS"

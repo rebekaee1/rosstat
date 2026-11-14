@@ -486,6 +486,8 @@ services:
       # Привязка пропуска fe_pass к сети /24 и UA (14.11.2026, frontend/42-fe-pass-bind.sh): observe = только журнал
       # pass-observe.log (по умолчанию), 1 = привязка действует, 0 = прежняя подпись без наблюдения.
       FE_PASS_BIND: ${FE_PASS_BIND:-observe}
+      # Лимит выдачи пропуска на сеть клиента 3 в минуту (14.11.2026, frontend/43-fe-pass-mint.sh): 0 = выключен.
+      FE_PASS_MINT_NET_LIMIT: ${FE_PASS_MINT_NET_LIMIT:-1}
     ports:
       - "127.0.0.1:3000:80"
     volumes:

@@ -225,3 +225,75 @@ def test_read_new_starts_at_end_then_follows_and_handles_rotation(tmp_path):
     lines, state = bot_traffic.read_new(str(log), state)
     assert lines == ["half-written line", LINES[2]], "хвост старого файла дочитан после ротации"
     assert bot_traffic.read_new(str(tmp_path / "missing.log"), state) == ([], state)
+
+
+# --- люди, получившие 429, и пропуск (14.11.2026) --------------------------------------------------------------------
+
+HUMAN_LINES = [
+    "2026-11-13T08:00:00+00:00 st=429 pass=0 ym=11111111 cls=anon",     # отказ, потом прошёл по пропуску
+    "2026-11-13T08:00:05+00:00 st=200 pass=1 ym=11111111 cls=human",
+    "2026-11-13T08:01:00+00:00 st=429 pass=0 ym=22222222 cls=anon",     # отказ, не прошёл
+    "2026-11-13T08:02:00+00:00 st=429 pass=0 ym=33333333 cls=gfarm",    # ферма с подставленным Referer - не считаем
+    "2026-11-13T08:03:00+00:00 st=200 pass=1 ym=44444444 cls=human",    # с пропуском без отказа - не в знаменателе
+    "garbage",
+]
+
+
+def test_human_batch_counts_refused_and_passed_without_farm():
+    batch = bot_traffic.HumanBatch()
+    assert [batch.add_line(line) for line in HUMAN_LINES] == [True, True, True, False, True, False]
+    assert batch.refused == {"2026-11-13": {"11111111", "22222222"}}
+    assert batch.passed == {"2026-11-13": {"11111111", "44444444"}}
+
+
+def test_human_line_shows_numerator_and_denominator():
+    from datetime import date
+    line = bot_traffic.human_line(2, 1, date(2026, 11, 13))
+    assert line == "Отказ «подождите» у людей за 13.11: 2, прошли по пропуску 1, не прошли 1 (50 %)"
+    assert len(line) < 140
+    assert bot_traffic.human_line(0, 0, date(2026, 11, 13)).endswith("не было")
+
+
+def test_collect_and_morning_note_once_per_day(tmp_path, monkeypatch):
+    import fakeredis.aioredis
+    from datetime import datetime, timezone
+
+    from app.core import cache as cache_mod
+    from app.services import telegram_calm
+
+    sec = tmp_path / "security.log"
+    hum = tmp_path / "human429.log"
+    sec.write_text("")
+    hum.write_text("")
+    monkeypatch.setattr(bot_traffic.settings, "bot_traffic_log_path", str(sec))
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+    monkeypatch.setattr(cache_mod, "_state_redis", redis)
+    sent = []
+
+    async def fake_send(message, chat_id=None, reply_markup=None, kind="alert"):
+        sent.append((kind, message))
+        return True
+
+    monkeypatch.setattr("app.services.alerting.send_telegram", fake_send)
+    monkeypatch.setattr(bot_traffic, "check_genuine", lambda ips, timeout=3.0: [])
+    # collect_job сам зовёт отчёт по текущему времени - здесь время задаём явно.
+    monkeypatch.setattr(bot_traffic, "REPORT_AFTER_UTC_HOUR", 25)
+
+    async def scenario():
+        await bot_traffic.collect_job()                      # первый прогон: запоминает конец файлов
+        hum.write_text("\n".join(HUMAN_LINES) + "\n")
+        await bot_traffic.collect_job()
+        monkeypatch.setattr(bot_traffic, "REPORT_AFTER_UTC_HOUR", 5.75)
+        early = await bot_traffic._maybe_report(redis, datetime(2026, 11, 14, 5, 0, tzinfo=timezone.utc))
+        first = await bot_traffic._maybe_report(redis, datetime(2026, 11, 14, 5, 50, tzinfo=timezone.utc))
+        again = await bot_traffic._maybe_report(redis, datetime(2026, 11, 14, 6, 0, tzinfo=timezone.utc))
+        return early, first, again
+
+    early, first, again = asyncio.run(scenario())
+    assert (early, first, again) == (False, True, False)
+    assert [k for k, _ in sent] == ["bot_traffic"]
+    text = sent[0][1]
+    assert text.startswith("Отказ «подождите» у людей за 13.11: 2, прошли по пропуску 1, не прошли 1 (50 %)")
+    assert "bot_traffic" in telegram_calm.HELD_KINDS
+    summary = telegram_calm.build_summary([("bot_traffic", text)], day=datetime(2026, 11, 14).date())
+    assert "не прошли 1 (50 %)" in summary

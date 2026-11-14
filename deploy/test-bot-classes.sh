@@ -43,7 +43,7 @@ docker run -d --rm --name bcngx --network bcnet \
   -v "$PWD/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
   -v "$PWD/frontend/search-crawlers.conf:/etc/nginx/search-crawlers.conf:ro" \
   -v "$T/fe-pass:/etc/nginx/fe-pass:ro" \
-  "$IMAGE" sh -c 'mkdir -p /usr/share/nginx/html /var/log/nginx/security; echo busy > /usr/share/nginx/html/429.html; touch /var/log/nginx/security/security.log /var/log/nginx/security/honeypot.log; nginx -g "daemon off;"' >/dev/null
+  "$IMAGE" sh -c 'mkdir -p /usr/share/nginx/html /var/log/nginx/security; echo busy > /usr/share/nginx/html/429.html; echo {} > /usr/share/nginx/html/429.json; touch /var/log/nginx/security/security.log /var/log/nginx/security/honeypot.log; nginx -g "daemon off;"' >/dev/null
 sleep 3
 docker exec bcngx nginx -t 2>&1 | grep -q "test is successful"
 # Подпись так же, как backend (app/api/human_pass.py): base64url(md5("<срок><id> <привязка><секрет>")) без '=';
@@ -225,4 +225,54 @@ echo "журнал наблюдения             : $obs"
 if docker exec bcngx sh -c 'grep -E "93\.7\.7\.8|94\.1\.1\.1" /var/log/nginx/security/pass-observe.log' >/dev/null; then
   echo "FAIL: в журнал наблюдения попал IP целиком"; exit 1
 fi
+# (8) журнал людей human429.log для сводки роботов (14.11.2026): только браузер с cookie Метрики; отказ 429 или запрос
+#     с действующим пропуском; вместо id Метрики - последние 8 цифр, IP нет.
+sleep 6
+YM='_ym_uid=1731500000123456789'
+h429=$(docker run --rm --network bcnet -e UA="$B" -e URL="$URL" -e YM="$YM" curlimages/curl sh -c '
+  for i in $(seq 1 40); do curl -s -o /dev/null -m 30 -A "$UA" -H "X-Forwarded-For: 99.60.1.$i" "$URL" & done
+  sleep 0.3
+  curl -s -o /dev/null -w "%{http_code}" -m 30 -A "$UA" -b "$YM" -H "X-Forwarded-For: 93.60.6.6" "$URL"
+  wait')
+hp=$(cls 93.60.6.7 "$B" "$OBS; $YM")             # с пропуском и cookie Метрики
+hn=$(cls 93.60.6.8 "$B" "$OBS")                  # с пропуском без cookie Метрики - не человек по признаку
+hlog=$(docker exec bcngx sh -c 'cat /var/log/nginx/security/human429.log' | sed 's/^[^ ]* //' | tr '\n' ',')
+echo "журнал людей                  : отказ $h429, пропуск $hp/$hn; $hlog"
+[ "$h429" = "429" ] || { echo "FAIL: под шумом ожидался 429 у человека, получено $h429"; exit 1; }
+[ "$hlog" = "st=429 pass=0 ym=23456789 cls=anon,st=200 pass=1 ym=23456789 cls=human," ] || { echo "FAIL: журнал людей"; exit 1; }
+if docker exec bcngx sh -c 'grep -E "93\.60\.6\.|1731500000" /var/log/nginx/security/human429.log' >/dev/null; then
+  echo "FAIL: в журнал людей попал IP или id Метрики целиком"; exit 1
+fi
+# (9) выдача пропуска (14.11.2026): лимит на сеть клиента 3 в минуту (burst 3) и общий потолок 20 в секунду (burst 40).
+#     Отказ /api/ отдаёт брендированный 429.json - заглушка положена в контейнер, иначе он превращается в 404.
+mintburst() {  # $1 префикс адресов (первые три октета или «spread» - каждая выдача из своей /24), $2 число
+  docker run --rm --network bcnet -e P="$1" -e N="$2" -e UA="$B" curlimages/curl sh -c '
+    for i in $(seq 1 $N); do
+      if [ "$P" = spread ]; then ip="99.$((80 + i / 200)).$((i % 200)).1"; else ip="$P.$i"; fi
+      curl -s -o /dev/null -w "%{http_code}\n" -m 30 -X POST -A "$UA" -H "X-Forwarded-For: $ip" -H "X-FE-Pass-Request: 1" http://bcngx/api/v1/human-pass &
+    done; wait' | sort | uniq -c | tr '\n' ' '
+}
+one=$(mintburst 99.70.1 10)
+echo "10 выдач из одной сети /24    : $one"
+# burst 3 + один по скорости = 4 сразу (у людей из выборки - не больше 1 в минуту на сеть).
+case "$one" in *" 4 200"*" 6 429"*|*" 6 429"*" 4 200"*) ;; *) echo "FAIL: лимит выдачи на сеть (ожидалось 4 x 200, 6 x 429)"; exit 1;; esac
+sleep 3
+# Ферма шумит выдачей с 60 разных сетей разом, через 0,3 с человек из своей сети просит пропуск.
+storm=$(docker run --rm --network bcnet -e UA="$B" curlimages/curl sh -c '
+  for i in $(seq 1 60); do curl -s -o /dev/null -w "F%{http_code} " -m 30 -X POST -A "$UA" -H "X-Forwarded-For: 99.90.$i.1" -H "X-FE-Pass-Request: 1" http://bcngx/api/v1/human-pass >&2 & done
+  sleep 0.3
+  curl -s -o /dev/null -w "%{http_code}" -m 30 -X POST -A "$UA" -H "X-Forwarded-For: 93.91.1.1" -H "X-FE-Pass-Request: 1" http://bcngx/api/v1/human-pass
+  wait' 2> "$T/storm.txt")
+echo "человек во время шторма выдачи: $storm (ферма: $(tr ' ' '\n' < "$T/storm.txt" | grep -c F200) x 200, $(tr ' ' '\n' < "$T/storm.txt" | grep -c F429) x 429)"
+grep -q F429 "$T/storm.txt" || { echo "FAIL: шторм не упёрся в общий потолок выдачи - проверка пустая"; exit 1; }
+[ "$storm" = "200" ] || { echo "FAIL: человек не получил пропуск во время шторма выдачи: $storm"; exit 1; }
+# Флаг FE_PASS_MINT_NET_LIMIT=0: из одной сети выдаётся всё (остаются общий потолок и лимит по IP).
+docker run --rm -e FE_PASS_MINT_NET_LIMIT=0 -v "$PWD/frontend/43-fe-pass-mint.sh:/s.sh:ro" -v "$T/fe-pass:/etc/nginx/fe-pass" "$IMAGE" sh /s.sh >/dev/null
+grep -q 'set $fe_pass_mint_net_on "0";' "$T/fe-pass/pass-mint.conf" || { echo "FAIL: флаг лимита выдачи не записан"; exit 1; }
+docker exec bcngx nginx -s reload >/dev/null 2>&1; sleep 2
+off=$(mintburst 99.71.1 10)
+echo "лимит на сеть выключен (10)   : $off"
+case "$off" in *429*) echo "FAIL: флаг выключения лимита выдачи не действует"; exit 1;; esac
+docker run --rm -e FE_PASS_MINT_NET_LIMIT=1 -v "$PWD/frontend/43-fe-pass-mint.sh:/s.sh:ro" -v "$T/fe-pass:/etc/nginx/fe-pass" "$IMAGE" sh /s.sh >/dev/null
+[ ! -e "$T/fe-pass/pass-mint.conf" ] || { echo "FAIL: включённый лимит выдачи оставил файл"; exit 1; }
 echo "OK"
