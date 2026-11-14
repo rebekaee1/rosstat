@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `e8fa2b633e95d199089b59074420b2a9166a5528`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `624cc8d27d49bec2f87af20b7557f17298077ebe`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2522 |
-| Код, шаблоны и стили | 2045 |
-| Актуальные рецензии без пропусков guard | 2522 |
-| Именованные определения Python/JS: с аннотацией / всего | 16609 / 16609 |
+| Файлы в явно определённом scope | 2528 |
+| Код, шаблоны и стили | 2051 |
+| Актуальные рецензии без пропусков guard | 2528 |
+| Именованные определения Python/JS: с аннотацией / всего | 16629 / 16629 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -433,7 +433,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/search_r7a.py](../backend/app/services/search_r7a.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/search_r8a.py](../backend/app/services/search_r8a.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/search_region_hint.py](../backend/app/services/search_region_hint.py) | reviewed | 3/3 | актуально |
-| [backend/app/services/search_regional_groups.py](../backend/app/services/search_regional_groups.py) | reviewed | 8/8 | актуально |
+| [backend/app/services/search_regional_groups.py](../backend/app/services/search_regional_groups.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/search_units.py](../backend/app/services/search_units.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/search_unknown_word.py](../backend/app/services/search_unknown_word.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/search_variants.py](../backend/app/services/search_variants.py) | reviewed | 6/6 | актуально |
@@ -908,9 +908,11 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_search_r6a_labour.py](../backend/tests/test_search_r6a_labour.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_search_r7a_local.py](../backend/tests/test_search_r7a_local.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_search_r8a_student.py](../backend/tests/test_search_r8a_student.py) | reviewed | 7/7 | актуально |
+| [backend/tests/test_search_region_freshness.py](../backend/tests/test_search_region_freshness.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_search_regional_product.py](../backend/tests/test_search_regional_product.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_search_registered_semantics.py](../backend/tests/test_search_registered_semantics.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_search_relationship_roles.py](../backend/tests/test_search_relationship_roles.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_search_section_suggestions.py](../backend/tests/test_search_section_suggestions.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_search_single_letter.py](../backend/tests/test_search_single_letter.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_search_speed.py](../backend/tests/test_search_speed.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_search_subject_roles.py](../backend/tests/test_search_subject_roles.py) | reviewed | 11/11 | актуально |
@@ -1740,8 +1742,9 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/russia/LaborIndicatorGroups.jsx](../frontend/src/components/russia/LaborIndicatorGroups.jsx) | body_reviewed | 1/1 | актуально |
 | [frontend/src/components/russia/RussiaCategorySection.jsx](../frontend/src/components/russia/RussiaCategorySection.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/russia/RussiaKeyFigures.jsx](../frontend/src/components/russia/RussiaKeyFigures.jsx) | reviewed | 7/7 | актуально |
-| [frontend/src/components/searchLabourHints.js](../frontend/src/components/searchLabourHints.js) | reviewed | 6/6 | актуально |
+| [frontend/src/components/searchLabourHints.js](../frontend/src/components/searchLabourHints.js) | reviewed | 8/8 | актуально |
 | [frontend/src/components/searchLabourHints.test.js](../frontend/src/components/searchLabourHints.test.js) | reviewed | 2/2 | актуально |
+| [frontend/src/components/searchTryThese.test.js](../frontend/src/components/searchTryThese.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/components/shellScrollOffset.component.test.jsx](../frontend/src/components/shellScrollOffset.component.test.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/viewModesContext.js](../frontend/src/components/viewModesContext.js) | reviewed | 2/2 | актуально |
 | [frontend/src/context/AuthProvider.analytics.component.test.jsx](../frontend/src/context/AuthProvider.analytics.component.test.jsx) | reviewed | 2/2 | актуально |
@@ -2056,7 +2059,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/regionUi.js](../frontend/src/lib/regionUi.js) | reviewed | 15/15 | актуально |
 | [frontend/src/lib/regionUi.points.test.js](../frontend/src/lib/regionUi.points.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/regionUi.test.js](../frontend/src/lib/regionUi.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/regionsApi.js](../frontend/src/lib/regionsApi.js) | reviewed | 27/27 | актуально |
+| [frontend/src/lib/regionsApi.js](../frontend/src/lib/regionsApi.js) | reviewed | 26/26 | актуально |
 | [frontend/src/lib/regionsApi.test.js](../frontend/src/lib/regionsApi.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/regionsBubbles.js](../frontend/src/lib/regionsBubbles.js) | reviewed | 4/4 | актуально |
 | [frontend/src/lib/regionsMap.json](../frontend/src/lib/regionsMap.json) | reviewed | 0/0 | актуально |
@@ -2067,6 +2070,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/regionsMapUrl.js](../frontend/src/lib/regionsMapUrl.js) | reviewed | 9/9 | актуально |
 | [frontend/src/lib/regionsMapUrl.test.js](../frontend/src/lib/regionsMapUrl.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/registerNudge.js](../frontend/src/lib/registerNudge.js) | reviewed | 8/8 | актуально |
+| [frontend/src/lib/rowUnit.js](../frontend/src/lib/rowUnit.js) | reviewed | 2/2 | актуально |
+| [frontend/src/lib/rowUnit.test.js](../frontend/src/lib/rowUnit.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/rsyFloorAd.js](../frontend/src/lib/rsyFloorAd.js) | reviewed | 12/12 | актуально |
 | [frontend/src/lib/russiaHomeCards.js](../frontend/src/lib/russiaHomeCards.js) | reviewed | 10/10 | актуально |
 | [frontend/src/lib/russiaHomeCards.test.js](../frontend/src/lib/russiaHomeCards.test.js) | reviewed | 0/0 | актуально |
@@ -2089,6 +2094,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/serviceWorker.test.js](../frontend/src/lib/serviceWorker.test.js) | reviewed | 25/25 | актуально |
 | [frontend/src/lib/sessionReplay.js](../frontend/src/lib/sessionReplay.js) | reviewed | 19/19 | актуально |
 | [frontend/src/lib/sessionReplay.test.js](../frontend/src/lib/sessionReplay.test.js) | reviewed | 12/12 | актуально |
+| [frontend/src/lib/shortUnit.js](../frontend/src/lib/shortUnit.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/siteOrigin.js](../frontend/src/lib/siteOrigin.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/siteOrigin.test.js](../frontend/src/lib/siteOrigin.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/sitePaths.js](../frontend/src/lib/sitePaths.js) | reviewed | 38/38 | актуально |
