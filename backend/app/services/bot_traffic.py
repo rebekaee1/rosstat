@@ -11,6 +11,12 @@ other) и самые частые адреса «самозванцев» (`fake
 обратная и прямая проверка DNS у самых частых адресов: если среди них настоящий робот (новая сеть, которой ещё нет
 в search-crawlers.conf), строка просит обновить списки (`scripts/refresh-search-crawler-ranges.py`).
 
+Люди и отказы (14.11.2026). nginx пишет в `human429.log` (тот же каталог) отказы 429 и запросы с действующим пропуском,
+но только у браузеров с cookie Метрики `_ym_uid` (признак человека, как в наблюдении за привязкой пропуска; ферма без
+JavaScript её не имеет); вместо id - последние 8 цифр. `collect_job` складывает их в множества по суткам UTC: кто получил
+429 и кто ходил с пропуском. Раз в сутки (первый прогон после 05:45 UTC) за вчера кладётся отложенная заметка вида
+`bot_traffic` в утреннюю сводку 09:10: сколько людей получили отказ, сколько прошли по пропуску, сколько нет.
+
 Ошибки чтения/Redis не роняют задачу: нет файла (локально, тесты) - сводка просто пустая.
 """
 from __future__ import annotations
@@ -21,7 +27,7 @@ import os
 import re
 import socket
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 
 from app.config import settings
 
@@ -39,6 +45,11 @@ _RDNS_CHECK = 20
 _LINE_RE = re.compile(
     r'^(?P<day>\d{4}-\d{2}-\d{2})T\S+ (?P<ip>\S+) (?P<status>\d{3}) "(?:[^"\\]|\\.)*" "(?:[^"\\]|\\.)*" cls=(?P<cls>[a-z]+)\s*$'
 )
+# 2026-11-14T08:48:28+00:00 st=429 pass=0 ym=12345678 cls=anon
+_HUMAN_RE = re.compile(r"^(?P<day>\d{4}-\d{2}-\d{2})T\S+ st=(?P<st>\d{3}) pass=(?P<pass>[01]) ym=(?P<ym>\d{8}) cls=(?P<cls>[a-z]+)\s*$")
+HUMAN_LOG_NAME = "human429.log"
+# Утренняя заметка за вчера - не раньше этого часа UTC (05:45 UTC = 08:45 МСК, до сводки 09:10).
+REPORT_AFTER_UTC_HOUR = 5.75
 # Настоящие роботы по обратному DNS (официальные способы проверки Google, Bing, Яндекса, Apple, DuckDuckGo).
 _GENUINE_HOST_RE = re.compile(
     r"\.(?:googlebot\.com|google\.com|googleusercontent\.com|search\.msn\.com|yandex\.(?:ru|net|com)|"
@@ -78,6 +89,34 @@ class Batch:
             ips = self.fake_ips.setdefault(day, {})
             ips[m["ip"]] = ips.get(m["ip"], 0) + 1
         return True
+
+
+@dataclass
+class HumanBatch:
+    """Кто из людей (последние 8 цифр id Метрики) получил 429 и кто ходил с пропуском - по суткам UTC."""
+
+    refused: dict[str, set[str]] = field(default_factory=dict)
+    passed: dict[str, set[str]] = field(default_factory=dict)
+
+    def add_line(self, line: str) -> bool:
+        m = _HUMAN_RE.match(line)
+        if not m or m["cls"] == "gfarm":  # ферма с подставленным Referer Google - не человек, даже с cookie
+            return False
+        if m["st"] == "429":
+            self.refused.setdefault(m["day"], set()).add(m["ym"])
+        if m["pass"] == "1":
+            self.passed.setdefault(m["day"], set()).add(m["ym"])
+        return True
+
+
+def human_line(refused: int, passed_of_refused: int, day: date) -> str:
+    """Строка для владельца: числитель и знаменатель видны."""
+    if refused <= 0:
+        return f"Отказ «подождите» у людей за {day:%d.%m}: не было"
+    stuck = refused - passed_of_refused
+    # Первая строка короче 140 знаков: столько утренняя сводка показывает в подробностях.
+    return (f"Отказ «подождите» у людей за {day:%d.%m}: {_n(refused)}, прошли по пропуску {_n(passed_of_refused)}, "
+            f"не прошли {_n(stuck)} ({_pct(stuck, refused)})")
 
 
 def read_new(path: str, state: str | None, max_bytes: int = _MAX_READ_BYTES) -> tuple[list[str], str | None]:
@@ -159,11 +198,54 @@ async def collect_job() -> int:
             pipe.expire(zkey, _TTL_SECONDS)
         if new_state:
             pipe.set(f"{_KEY_PREFIX}:offset", new_state)
+        human_path = os.path.join(os.path.dirname(settings.bot_traffic_log_path), HUMAN_LOG_NAME)
+        hstate = await redis.get(f"{_KEY_PREFIX}:human_offset")
+        hlines, new_hstate = await asyncio.to_thread(read_new, human_path, hstate)
+        hbatch = HumanBatch()
+        for line in hlines:
+            hbatch.add_line(line)
+        for kind, sets in (("refused", hbatch.refused), ("passed", hbatch.passed)):
+            for day, ids in sets.items():
+                key = f"{_day_key(day)}:h_{kind}"
+                pipe.sadd(key, *ids)
+                pipe.expire(key, _TTL_SECONDS)
+        if new_hstate:
+            pipe.set(f"{_KEY_PREFIX}:human_offset", new_hstate)
         await pipe.execute()
+        await _maybe_report(redis)
         return counted
     except Exception:  # noqa: BLE001 - сводка не должна мешать остальному планировщику
         logger.warning("bot_traffic collect failed", exc_info=True)
         return 0
+
+
+async def human_counts(redis, day: date) -> tuple[int, int]:
+    """(получили 429, из них ходили с пропуском) за сутки UTC `day`."""
+    key = _day_key(day.isoformat())
+    refused = await redis.smembers(f"{key}:h_refused")
+    passed = await redis.smembers(f"{key}:h_passed")
+    return len(refused), len(set(refused) & set(passed))
+
+
+async def _maybe_report(redis, now: datetime | None = None) -> bool:
+    """Раз в сутки после 05:45 UTC - отложенная заметка за вчера в утреннюю сводку (вид bot_traffic)."""
+    now = now or datetime.now(timezone.utc)
+    if now.hour + now.minute / 60 < REPORT_AFTER_UTC_HOUR:
+        return False
+    day = (now - timedelta(days=1)).date()
+    if not await redis.set(f"{_KEY_PREFIX}:reported:{day.isoformat()}", "1", nx=True, ex=_TTL_SECONDS):
+        return False
+    refused, passed = await human_counts(redis, day)
+    robot_lines = await summary_lines(day)
+    if not refused and not robot_lines:
+        return False
+    from app.services.alerting import send_telegram
+
+    text = "\n".join([human_line(refused, passed, day), "Человек здесь - браузер с cookie Метрики.", *robot_lines])
+    if not await send_telegram(text, kind="bot_traffic"):
+        await redis.delete(f"{_KEY_PREFIX}:reported:{day.isoformat()}")
+        return False
+    return True
 
 
 def _genuine_robot(ip: str) -> str | None:

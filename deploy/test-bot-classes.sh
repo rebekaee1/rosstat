@@ -225,4 +225,22 @@ echo "журнал наблюдения             : $obs"
 if docker exec bcngx sh -c 'grep -E "93\.7\.7\.8|94\.1\.1\.1" /var/log/nginx/security/pass-observe.log' >/dev/null; then
   echo "FAIL: в журнал наблюдения попал IP целиком"; exit 1
 fi
+# (8) журнал людей human429.log для сводки роботов (14.11.2026): только браузер с cookie Метрики; отказ 429 или запрос
+#     с действующим пропуском; вместо id Метрики - последние 8 цифр, IP нет.
+sleep 6
+YM='_ym_uid=1731500000123456789'
+h429=$(docker run --rm --network bcnet -e UA="$B" -e URL="$URL" -e YM="$YM" curlimages/curl sh -c '
+  for i in $(seq 1 40); do curl -s -o /dev/null -m 30 -A "$UA" -H "X-Forwarded-For: 99.60.1.$i" "$URL" & done
+  sleep 0.3
+  curl -s -o /dev/null -w "%{http_code}" -m 30 -A "$UA" -b "$YM" -H "X-Forwarded-For: 93.60.6.6" "$URL"
+  wait')
+hp=$(cls 93.60.6.7 "$B" "$OBS; $YM")             # с пропуском и cookie Метрики
+hn=$(cls 93.60.6.8 "$B" "$OBS")                  # с пропуском без cookie Метрики - не человек по признаку
+hlog=$(docker exec bcngx sh -c 'cat /var/log/nginx/security/human429.log' | sed 's/^[^ ]* //' | tr '\n' ',')
+echo "журнал людей                  : отказ $h429, пропуск $hp/$hn; $hlog"
+[ "$h429" = "429" ] || { echo "FAIL: под шумом ожидался 429 у человека, получено $h429"; exit 1; }
+[ "$hlog" = "st=429 pass=0 ym=23456789 cls=anon,st=200 pass=1 ym=23456789 cls=human," ] || { echo "FAIL: журнал людей"; exit 1; }
+if docker exec bcngx sh -c 'grep -E "93\.60\.6\.|1731500000" /var/log/nginx/security/human429.log' >/dev/null; then
+  echo "FAIL: в журнал людей попал IP или id Метрики целиком"; exit 1
+fi
 echo "OK"
