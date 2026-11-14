@@ -43,7 +43,8 @@ export function worldIndicatorSubject(countrySlug, code, title) {
 /** Страна. */
 export function countrySubject(slug, title) {
   if (!slug) return null;
-  return { kind: 'country', itemKey: String(slug), title: clean(title), payload: { path: countryPath(slug) }, watch: null };
+  // Звезда страны стоит в ряду кнопок героя; одна иконка на телефоне висела отдельной строкой — с подписью «Сохранить» (14.11.2026).
+  return { kind: 'country', itemKey: String(slug), title: clean(title), payload: { path: countryPath(slug) }, watch: null, variant: 'button' };
 }
 
 /** Регион России (профиль). */

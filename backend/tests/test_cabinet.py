@@ -23,6 +23,12 @@ def on(monkeypatch):
     monkeypatch.setattr(settings, "cabinet_enabled", True)
 
 
+@pytest.fixture
+def off(monkeypatch):
+    """Аварийный выключатель RUSTATS_CABINET_ENABLED=false (с 14.11.2026 по умолчанию кабинет включён)."""
+    monkeypatch.setattr(settings, "cabinet_enabled", False)
+
+
 def reg(tc, email="a@example.com"):
     tc.cookies.clear()
     r = tc.post("/api/v1/auth/register", json={"email": email, "password": "supersecret1", "consent": True})
@@ -68,7 +74,7 @@ async def _seed_series(s, last=date(2026, 8, 1)):
 
 # ── флаг ──
 
-def test_flag_off_everything_404_except_config(auth_client):
+def test_flag_off_everything_404_except_config(auth_client, off):
     reg(auth_client)
     h = csrf_headers(auth_client)
     assert auth_client.get(f"{C}/config").json() == {"enabled": False, "features": {}, "limits": {}}
@@ -82,12 +88,13 @@ def test_flag_off_everything_404_except_config(auth_client):
         assert r.status_code == 404, (method, path, r.status_code)
 
 
-def test_flag_off_even_for_guest_is_404_not_401(auth_client):
+def test_flag_off_even_for_guest_is_404_not_401(auth_client, off):
     assert auth_client.get(f"{C}/saved").status_code == 404
 
 
-def test_flag_default_is_off():
-    assert type(settings).model_fields["cabinet_enabled"].default is False
+def test_flag_default_is_on():
+    # Решение владельца 14.11.2026 «включаем. доделываем»: выпуск кода включает кабинет; выключатель остаётся в .env.
+    assert type(settings).model_fields["cabinet_enabled"].default is True
 
 
 def test_config_when_on(auth_client, on):
@@ -369,6 +376,42 @@ def test_watches_isolated_between_users(auth_client, auth_env, on):
     assert auth_client.delete(f"{C}/watches/{wid}", headers=csrf_headers(auth_client)).status_code == 404
 
 
+async def _seed_cpi_index(s, *, with_yoy=True):
+    """Индекс цен Росстата (около 100, месяц к месяцу) и его годовой близнец, как в боевой базе."""
+    base = Indicator(code="cpi", name="Индекс потребительских цен на товары и услуги", name_en="Consumer price index",
+                     unit="%", frequency="monthly", is_active=True, is_listed=True)
+    yoy = Indicator(code="cpi-yoy", name="Инфляция год к году", name_en="Inflation YoY", unit="%",
+                    frequency="monthly", is_active=True, is_listed=False)
+    s.add_all([base, yoy])
+    await s.flush()
+    s.add_all([IndicatorData(indicator_id=base.id, date=date(2026, 8, 1), value=99.92),
+               IndicatorData(indicator_id=base.id, date=date(2026, 9, 1), value=100.35)])
+    if with_yoy:
+        s.add_all([IndicatorData(indicator_id=yoy.id, date=date(2026, 8, 1), value=6.34),
+                   IndicatorData(indicator_id=yoy.id, date=date(2026, 9, 1), value=6.35)])
+
+
+def test_watch_cpi_index_shows_yoy_not_index(auth_client, auth_env, on):
+    """14.11.2026: у индекса цен в кабинете (и в письме «колокольчика») то же число, что в шапке страницы: 6,35 % за год,
+    а не «100,35 %». Нет близнеца на дату — числа нет, только дата."""
+    seed(auth_client, auth_env, _seed_cpi_index)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    item = auth_client.post(f"{C}/watches", json={"subject_kind": "indicator", "subject_key": "cpi"}, headers=h).json()["item"]
+    assert item["latest_value"] == 6.35 and item["unit"] == "%" and item["value_basis"] == "yoy"
+    assert item["latest_date"] == "2026-09-01"
+
+
+def test_watch_cpi_index_without_yoy_has_no_number(auth_client, auth_env, on):
+    async def run(s):
+        await _seed_cpi_index(s, with_yoy=False)
+    seed(auth_client, auth_env, run)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    item = auth_client.post(f"{C}/watches", json={"subject_kind": "indicator", "subject_key": "cpi"}, headers=h).json()["item"]
+    assert item["latest_value"] is None and item["value_basis"] is None and item["latest_date"] == "2026-09-01"
+
+
 def test_feed_is_batched_not_per_watch(auth_client, auth_env, on):
     """Лента — пакетные запросы по типам рядов, а не запрос на каждое слежение."""
     seed(auth_client, auth_env, _seed_series)
@@ -419,6 +462,7 @@ def test_export_history_defaults_without_hint(auth_client, on):
 
 
 def test_export_history_not_written_when_flag_off_or_guest(auth_client, auth_env, monkeypatch):
+    monkeypatch.setattr(settings, "cabinet_enabled", False)
     reg(auth_client)
     assert auth_client.post("/api/v1/export/table", json=TABLE).status_code == 200   # флаг выключен
     assert count(auth_client, auth_env, UserExport) == 0
@@ -557,8 +601,12 @@ def test_calendar_feed_token_lifecycle_and_content(auth_client, auth_env, on):
     assert text.startswith("BEGIN:VCALENDAR\r\n") and text.endswith("END:VCALENDAR\r\n")
     assert r"Инфляция\, мой выход\; с запятой (сентябрь)" in text.replace("\r\n ", "")
     assert "Не моё" not in text and text.count("BEGIN:VEVENT") == 1
-    assert "DTSTART;VALUE=DATE:" in text and "DTSTAMP:" in text
+    assert "DTSTART;VALUE=DATE:" in text and "DTEND;VALUE=DATE:" in text and "DTSTAMP:" in text
     assert all(len(line.encode()) <= 75 for line in text.split("\r\n"))
+    # 14.11.2026: источник словами, ссылка на страницу показателя на сайте, а не на файл источника
+    flat = text.replace("\r\n ", "")
+    assert "Источник: Росстат" in flat and "ROSSTAT" not in flat
+    assert "URL:" in flat and "/russia/indicator/cpi_yoy" in flat and "rosstat.gov.ru/x" not in flat
 
     assert auth_client.get(f"{C}/calendar.ics?token={'x' * 40}").status_code == 404
     assert auth_client.get(f"{C}/calendar.ics").status_code == 422
@@ -584,7 +632,24 @@ def test_calendar_feed_revoke_and_empty(auth_client, on):
     assert auth_client.delete(f"{C}/calendar-feed", headers=h).json()["removed"] is False
 
 
-def test_calendar_ics_flag_off_404(auth_client):
+def test_calendar_ics_timed_event_in_moscow_time(auth_client, auth_env, on):
+    """Событие со временем источника встаёт в календарь телефона на это время (МСК → UTC), не на весь день."""
+    async def run(s):
+        await _seed_event(s)
+        ev = await s.scalar(select(EconomicEvent).where(EconomicEvent.event_key == "k1"))
+        ev.scheduled_time = "19:00"
+    seed(auth_client, auth_env, run)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    auth_client.post(f"{C}/watches", json={"subject_kind": "indicator", "subject_key": "cpi_yoy"}, headers=h)
+    token = auth_client.post(f"{C}/calendar-feed", headers=h).json()["token"]
+    text = auth_client.get(f"{C}/calendar.ics?token={token}").text.replace("\r\n ", "")
+    day = (date.today() + timedelta(days=3)).strftime("%Y%m%d")
+    assert f"DTSTART:{day}T160000Z" in text and f"DTEND:{day}T163000Z" in text
+    assert "Время: 19:00 по Москве" in text
+
+
+def test_calendar_ics_flag_off_404(auth_client, off):
     assert auth_client.get(f"{C}/calendar.ics?token={'a' * 40}").status_code == 404
 
 
@@ -640,3 +705,34 @@ def test_account_export_cabinet_sections_empty_when_nothing_saved(auth_client):
     data = auth_client.get("/api/v1/auth/account/export").json()
     assert data["saved_items"] == [] and data["watches"] == [] and data["exports"] == []
     assert data["preferences"] == {"data": {}, "calendar_feed_active": False}
+
+
+def test_user_payload_says_if_site_mail_is_available(auth_client, monkeypatch):
+    """14.11.2026: кабинет показывает «Подтвердите почту: письмо мы отправили» только если письма реально уходят."""
+    reg(auth_client)
+    assert auth_client.get("/api/v1/auth/me").json()["user"]["mail_available"] is False
+    monkeypatch.setattr(settings, "mail_enabled", True)
+    monkeypatch.setattr(settings, "mail_token_secret", "x" * 32)
+    assert auth_client.get("/api/v1/auth/me").json()["user"]["mail_available"] is True
+
+
+def test_region_watch_says_it_covers_all_regions(auth_client, auth_env, on):
+    """Слежение за региональным показателем — по всем регионам: строка подписана «Регионы России» (14.11.2026)."""
+    seed(auth_client, auth_env, _seed_series)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    item = auth_client.post(f"{C}/watches", json={"subject_kind": "region", "subject_key": "reg-wage"}, headers=h).json()["item"]
+    assert item["country_name"] == "Регионы России" and item["country_slug"] is None
+
+
+def test_region_watch_english_name_from_translation(auth_client, auth_env, on):
+    """На английском хосте строка регионального слежения — по-английски (перевод региональных рядов), не по-русски."""
+    async def run(s):
+        s.add(RegionIndicator(code="chislennost-naseleniya", table_code="1.1", section_num=1, section_name="Население",
+                              name="Численность населения", unit="тыс. человек", year_max=2024, is_listed=True))
+    seed(auth_client, auth_env, run)
+    reg(auth_client)
+    h = {**csrf_headers(auth_client), "X-FE-Locale": "en"}
+    item = auth_client.post(f"{C}/watches", json={"subject_kind": "region", "subject_key": "chislennost-naseleniya"},
+                            headers=h).json()["item"]
+    assert item["title"] == "Population" and item["country_name"] == "Russian regions"

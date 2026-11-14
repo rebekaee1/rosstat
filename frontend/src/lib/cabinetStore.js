@@ -88,6 +88,8 @@ export function subscribe(fn) {
 /** Только для тестов: вернуть хранилище в исходное состояние. */
 export function __resetCabinetStore() {
   state = null;
+  savedEdits.length = 0;
+  loadsInFlight = 0;
   configPromise = null;
   savedPromise = null;
   watchPromise = null;
@@ -205,6 +207,26 @@ function maybeLoad() {
 // --- Сохранённое -----------------------------------------------------------------------------------
 
 const same = (row, kind, key) => row.kind === kind && (row.item_key ?? row.itemKey) === key;
+
+// Звезда, нажатая, пока список кабинета ещё грузится (14.11.2026, телефон): ответ списка был снят до нажатия и затирал
+// только что сохранённое — звезда гасла, хотя запись на сервере была. Правки, сделанные за время загрузки, пишутся сюда
+// и накладываются на пришедший список.
+const savedEdits = [];
+let loadsInFlight = 0;
+function noteEdit(op, kind, key) {
+  if (loadsInFlight) savedEdits.push({ op, kind, key });
+}
+function replayEdits(list, edits) {
+  let out = list;
+  for (const e of edits) {
+    out = out.filter((r) => !same(r, e.kind, e.key));
+    if (e.op === 'add') {
+      const mine = current().saved.find((r) => same(r, e.kind, e.key));
+      if (mine) out = [mine, ...out];
+    }
+  }
+  return edits.length ? out.slice().sort(byNewest) : out;
+}
 const byNewest = (a, b) => String(b.created_at || '').localeCompare(String(a.created_at || ''));
 
 /** Есть ли запись: у вошедшего сервер плюс то, что ещё ждёт переноса из браузера; у гостя браузер. */
@@ -222,13 +244,20 @@ export function loadSaved(force = false, { sync = true } = {}) {
     if (s.savedStatus === 'error' && Date.now() - s.savedAt < RETRY_AFTER_ERROR_MS) return Promise.resolve();
   }
   const who = s.authKey;
+  const since = savedEdits.length;
+  loadsInFlight += 1;
   set({ savedStatus: 'loading' });
   savedPromise = Promise.resolve()
     .then(() => cabinetApi.listSaved())
     .then((res) => {
       if (current().authKey !== who) return undefined;
-      set({ saved: Array.isArray(res?.items) ? res.items : [], savedStatus: 'ready', savedAt: Date.now() });
+      const fromServer = Array.isArray(res?.items) ? res.items : [];
+      set({ saved: replayEdits(fromServer, savedEdits.slice(since)), savedStatus: 'ready', savedAt: Date.now() });
       return sync ? syncGuest() : undefined;
+    })
+    .finally(() => {
+      loadsInFlight -= 1;
+      if (!loadsInFlight) savedEdits.length = 0;
     })
     .catch(() => {
       if (current().authKey === who) set({ savedStatus: 'error', savedAt: Date.now() });
@@ -240,6 +269,12 @@ export function loadSaved(force = false, { sync = true } = {}) {
 export async function syncGuest() {
   const s = current();
   if (syncing || !canUseServer() || !s.guest.length) return;
+  // Кабинет уже полон: не слать пачку, которую сервер всё равно не примет (иначе запрос на каждой загрузке страницы).
+  const cap = s.config?.limits?.saved;
+  if (cap && s.saved.length >= cap) {
+    set({ importResult: { imported: 0, skipped: 0, limitReached: true } });
+    return;
+  }
   syncing = true;
   const who = s.authKey;
   const batch = s.guest.slice();
@@ -309,6 +344,7 @@ export async function saveItem(raw) {
     return { ok: true, local: true, created: at < 0, persisted };
   }
 
+  noteEdit('add', input.kind, input.itemKey);
   const tempId = `tmp-${Math.random().toString(36).slice(2)}`;
   const known = current().saved.some((r) => same(r, input.kind, input.itemKey));
   if (!known) {
@@ -340,6 +376,7 @@ export async function removeSaved(kind, key) {
     set({ guest: guestLeft });
   }
   if (!canUseServer()) return { ok: true, local: true };
+  noteEdit('remove', kind, key);
   const removed = current().saved.filter((r) => same(r, kind, key));
   if (!removed.length) return { ok: true };
   set({ saved: current().saved.filter((r) => !same(r, kind, key)) });
@@ -348,6 +385,7 @@ export async function removeSaved(kind, key) {
     return { ok: true };
   } catch (err) {
     set({ saved: [...removed, ...current().saved].sort(byNewest) });
+    noteEdit('add', kind, key);
     return { ok: false, reason: cabinetErrorCode(err) };
   }
 }
@@ -356,6 +394,7 @@ export async function removeSaved(kind, key) {
 export async function removeSavedById(id) {
   const row = current().saved.find((r) => r.id === id);
   if (!row || !canUseServer()) return { ok: false, reason: 'not_found' };
+  noteEdit('remove', row.kind, row.item_key);
   set({ saved: current().saved.filter((r) => r.id !== id) });
   try {
     await cabinetApi.deleteSavedById(id);
@@ -364,6 +403,7 @@ export async function removeSavedById(id) {
     const code = cabinetErrorCode(err);
     if (code === 'not_found') return { ok: true };
     set({ saved: [row, ...current().saved].sort(byNewest) });
+    noteEdit('add', row.kind, row.item_key);
     return { ok: false, reason: code };
   }
 }

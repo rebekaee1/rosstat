@@ -56,7 +56,10 @@ export default function WatchButton({
       const text = res.reason === 'limit_reached' ? t('c11b.watch.limit', { n: limit ?? 50 })
         : res.reason === 'subject_not_found' ? t('c11b.err.subjectGone')
           : res.reason === 'network' ? t('c11b.err.network') : t('c11b.err.generic');
-      setTip({ tone: 'warn', text });
+      // У предела — сразу путь туда, где можно снять лишнее слежение.
+      setTip(res.reason === 'limit_reached'
+        ? { tone: 'warn', text, to: '/account?tab=watches', toLabel: t('c11b.tip.openCabinet') }
+        : { tone: 'warn', text });
       return;
     }
     onChange?.(!was);

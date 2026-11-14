@@ -9676,7 +9676,7 @@
     "anonymous_functions": 28
   },
   "frontend/src/components/Navbar.jsx": {
-    "sha256": "a7ccf6ac0ee62cb14c8e4d259b41e2b29a5e51dc569eecd0a7075bf98f917935",
+    "sha256": "736c47513ca46d75ca361a175ec082394a77e25e3a16f7672c90b23ee78acf4e",
     "definitions": [
       {
         "name": "revealWhenRendered",
@@ -9703,75 +9703,81 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "BurgerFeedBadge",
+        "line": 193,
+        "end_line": 196,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "Navbar",
-        "line": 192,
-        "end_line": 623,
+        "line": 198,
+        "end_line": 631,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Navbar.setMobileOpen",
-        "line": 231,
-        "end_line": 231,
+        "line": 237,
+        "end_line": 237,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.setCalcOpen",
-        "line": 232,
-        "end_line": 235,
+        "line": 238,
+        "end_line": 241,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.open",
-        "line": 244,
-        "end_line": 244,
+        "line": 250,
+        "end_line": 250,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.apply",
-        "line": 258,
-        "end_line": 262,
+        "line": 264,
+        "end_line": 268,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.onDoc",
-        "line": 281,
-        "end_line": 289,
+        "line": 287,
+        "end_line": 295,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.onKey",
-        "line": 290,
-        "end_line": 296,
+        "line": 296,
+        "end_line": 302,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.navItemClass",
-        "line": 318,
-        "end_line": 324,
+        "line": 324,
+        "end_line": 330,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.openMega",
-        "line": 335,
-        "end_line": 338,
+        "line": 341,
+        "end_line": 344,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.closeMega",
-        "line": 339,
-        "end_line": 342,
+        "line": 345,
+        "end_line": 348,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.renderPrimaryLink",
-        "line": 344,
-        "end_line": 381,
+        "line": 350,
+        "end_line": 387,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.renderLink",
-        "line": 530,
-        "end_line": 548,
+        "line": 538,
+        "end_line": 556,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -9886,7 +9892,7 @@
         "names": [
           "default"
         ],
-        "line": 192
+        "line": 198
       }
     ],
     "anonymous_functions": 40
@@ -10023,7 +10029,7 @@
     "anonymous_functions": 12
   },
   "frontend/src/components/OAuthButtons.component.test.jsx": {
-    "sha256": "1158bfe5da9dcc0acfd305a1b776f587388cc00c83e609e27b16e06f33c92933",
+    "sha256": "a3ced1e96a52fa74ae4a1be7546494e4a5ab621442e229caeaa1d5d81e4653a4",
     "definitions": [
       {
         "name": "useLocale",
@@ -10057,15 +10063,15 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 12
+    "anonymous_functions": 13
   },
   "frontend/src/components/OAuthButtons.jsx": {
-    "sha256": "35155faa6c128da5bd29c3ac01df058489b733a5113bc3bf3915c7fe4b30ad56",
+    "sha256": "7210333ffcf86f61b040771e30d22b0e0977eca292b98ff2f5f2bab1788f14d0",
     "definitions": [
       {
         "name": "OAuthButtons",
         "line": 51,
-        "end_line": 227,
+        "end_line": 230,
         "kind": "FunctionDeclaration"
       },
       {
@@ -10082,14 +10088,14 @@
       },
       {
         "name": "OAuthButtons.openConsent",
-        "line": 108,
-        "end_line": 114,
+        "line": 111,
+        "end_line": 117,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "OAuthButtons.proceed",
-        "line": 116,
-        "end_line": 127,
+        "line": 119,
+        "end_line": 130,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -16479,7 +16485,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/components/cabinet/CabinetWiring.component.test.jsx": {
-    "sha256": "688ea9985e5a8cf0c7538f45fad8a97da2df9187bbec0a0edf4b5265d7f8a130",
+    "sha256": "24d4f51401715fd9204560f229fbdc64963d2fcdf2c2df4e7e2cf24ef0631e5f",
     "definitions": [
       {
         "name": "useAuth",
@@ -16537,14 +16543,14 @@
       },
       {
         "name": "navAt",
-        "line": 186,
-        "end_line": 186,
+        "line": 187,
+        "end_line": 187,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "accountLinks",
-        "line": 187,
-        "end_line": 187,
+        "line": 188,
+        "end_line": 188,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -16563,10 +16569,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 48
+    "anonymous_functions": 51
   },
   "frontend/src/components/cabinet/CabinetWiring.jsx": {
-    "sha256": "f3213a1513375103c34478751deb91d25ef462165a98c37efa194b5c2397cace",
+    "sha256": "1bbcdf0c14f67f8c2b0f14c4a89d1fc9cce4af4ad6b92541e9a82f8b2cc2c2b9",
     "definitions": [
       {
         "name": "CabinetSubjectActions",
@@ -16908,12 +16914,12 @@
     "anonymous_functions": 17
   },
   "frontend/src/components/cabinet/ProfilePanel.jsx": {
-    "sha256": "98bec5c9405b286dfe046b1a46085d3a66ff9e471f69abf4b0a4e399581eeee8",
+    "sha256": "7bdf491cb27dc94401c7162f96574ec66395ff002d6422aeb67ba4e3c0ee8cc7",
     "definitions": [
       {
         "name": "ProfilePanel",
         "line": 21,
-        "end_line": 406,
+        "end_line": 407,
         "kind": "FunctionDeclaration"
       },
       {
@@ -17030,18 +17036,18 @@
     "anonymous_functions": 14
   },
   "frontend/src/components/cabinet/SaveButton.jsx": {
-    "sha256": "4ff44b36c1f999fb79f7cc45494e920cb6b20b3773f42d148dc622f1347706d8",
+    "sha256": "a81f6306dfb4ae5bf30d3b46cbf751b447f4243dd6c5074fcf29a4c9439f1ba0",
     "definitions": [
       {
         "name": "SaveButton",
         "line": 27,
-        "end_line": 89,
+        "end_line": 92,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SaveButton.onClick",
         "line": 44,
-        "end_line": 67,
+        "end_line": 70,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -17090,7 +17096,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/cabinet/SavedList.jsx": {
-    "sha256": "e3ded342623aaf461bbc503e2344212fce5dc118d3bbf22ec9e3689904c4cd57",
+    "sha256": "8ae0dc3f5ba8ce14c6f9677c7803c71e5c120e78a43c2d74855c8842b494238b",
     "definitions": [
       {
         "name": "rowTitle",
@@ -17131,13 +17137,13 @@
       {
         "name": "ImportNotice",
         "line": 109,
-        "end_line": 121,
+        "end_line": 122,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SavedList",
-        "line": 128,
-        "end_line": 190,
+        "line": 129,
+        "end_line": 200,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -17188,24 +17194,24 @@
         "names": [
           "default"
         ],
-        "line": 128
+        "line": 129
       }
     ],
     "anonymous_functions": 10
   },
   "frontend/src/components/cabinet/WatchButton.jsx": {
-    "sha256": "a89dfc098f80f154ab74575a9c84249bb5be0456aa434398849f46889d4f4a9d",
+    "sha256": "ddc1b6790f5111b5cf7d2f9ef073c0e4a15450df2c0925ccd8e9c4d319877a6b",
     "definitions": [
       {
         "name": "WatchButton",
         "line": 24,
-        "end_line": 86,
+        "end_line": 89,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WatchButton.onClick",
         "line": 42,
-        "end_line": 64,
+        "end_line": 67,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -17254,42 +17260,42 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/cabinet/WatchList.jsx": {
-    "sha256": "f7884825beb12bc4bf35fa194debef8b498bc63c0ef47f8ff96bb9202fb07ad4",
+    "sha256": "5113f9d5daf149562ecc7fc048aed5aec5441ce492020a2df65136be972c7a9b",
     "definitions": [
       {
         "name": "latestText",
         "line": 14,
-        "end_line": 20,
+        "end_line": 22,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WatchRow",
-        "line": 22,
-        "end_line": 61,
+        "line": 24,
+        "end_line": 63,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WatchRow.run",
-        "line": 27,
-        "end_line": 33,
+        "line": 29,
+        "end_line": 35,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WatchList",
-        "line": 67,
-        "end_line": 125,
+        "line": 69,
+        "end_line": 129,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WatchList.markAll",
-        "line": 85,
-        "end_line": 89,
+        "line": 87,
+        "end_line": 91,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WatchList.stop",
-        "line": 90,
-        "end_line": 90,
+        "line": 92,
+        "end_line": 92,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -17344,10 +17350,10 @@
         "names": [
           "default"
         ],
-        "line": 67
+        "line": 69
       }
     ],
-    "anonymous_functions": 7
+    "anonymous_functions": 8
   },
   "frontend/src/components/cabinet/cabinet.c13.component.test.jsx": {
     "sha256": "f4cc7bb76b4c83cb6e16fd611d56bdc49da7ff1ac12ce5fdd1cc270fbe2d7ec7",
@@ -17399,6 +17405,51 @@
     ],
     "exports": [],
     "anonymous_functions": 27
+  },
+  "frontend/src/components/cabinet/cabinet.c14.component.test.jsx": {
+    "sha256": "b1e7d4b641827f8622b31b6c861714a4e4bf17cbba780f4fd418aaacab6dfac4",
+    "definitions": [
+      {
+        "name": "useAuth",
+        "line": 22,
+        "end_line": 22,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useLocale",
+        "line": 29,
+        "end_line": 29,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useT",
+        "line": 29,
+        "end_line": 29,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "inRouter",
+        "line": 47,
+        "end_line": 47,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "react-router-dom",
+        "line": 4
+      },
+      {
+        "source": "vitest",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 19
   },
   "frontend/src/components/cabinet/cabinet.component.test.jsx": {
     "sha256": "d5fc454c76f7ec11c793451f3938cf6c98283b1d96f5d74e238944476cae65b3",
@@ -23928,7 +23979,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "047460a8082377f2b1f2fbcdb5074b08dada061c944c33bfe897917ce7621bec",
+    "sha256": "aa032b41f2b76c3fae8b75bb16315f8bf7bce2382b2949f3273eaca5255dbcc7",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -24036,7 +24087,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "2f2248e7dedb50aa34673d793b1d53f913a86c341c7a57e72882efa603f11b24",
+    "sha256": "7b2faeb236a71e9f552a68f1990363d403d9ee7aed58d15de85f980f44b78165",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -28182,7 +28233,7 @@
     "anonymous_functions": 7
   },
   "frontend/src/lib/cabinetStore.js": {
-    "sha256": "81334c16855c6070b32a4ba49b15a49764487661db5308098a52ef990fe2ca02",
+    "sha256": "c50bcf8cd73f3e1061f6e9c4d4c4d573480abd1b1286061b3b4215ee65e73590",
     "definitions": [
       {
         "name": "freshState",
@@ -28223,175 +28274,187 @@
       {
         "name": "__resetCabinetStore",
         "line": 89,
-        "end_line": 96,
+        "end_line": 98,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "readGuest",
-        "line": 100,
-        "end_line": 110,
+        "line": 102,
+        "end_line": 112,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "writeGuest",
-        "line": 112,
-        "end_line": 120,
+        "line": 114,
+        "end_line": 122,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "readConfigCache",
-        "line": 122,
-        "end_line": 128,
+        "line": 124,
+        "end_line": 130,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "writeConfigCache",
-        "line": 130,
-        "end_line": 132,
+        "line": 132,
+        "end_line": 134,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "wire",
-        "line": 134,
-        "end_line": 147,
+        "line": 136,
+        "end_line": 149,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "normalizeConfig",
-        "line": 151,
-        "end_line": 154,
+        "line": 153,
+        "end_line": 156,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ensureConfig",
-        "line": 157,
-        "end_line": 182,
+        "line": 159,
+        "end_line": 184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "bindAuth",
-        "line": 185,
-        "end_line": 193,
+        "line": 187,
+        "end_line": 195,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isEnabled",
-        "line": 195,
-        "end_line": 195,
+        "line": 197,
+        "end_line": 197,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "canUseServer",
-        "line": 196,
-        "end_line": 199,
+        "line": 198,
+        "end_line": 201,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "maybeLoad",
-        "line": 201,
-        "end_line": 203,
+        "line": 203,
+        "end_line": 205,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "same",
-        "line": 207,
-        "end_line": 207,
+        "line": 209,
+        "end_line": 209,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "noteEdit",
+        "line": 216,
+        "end_line": 218,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "replayEdits",
+        "line": 219,
+        "end_line": 229,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "byNewest",
-        "line": 208,
-        "end_line": 208,
+        "line": 230,
+        "end_line": 230,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "findSavedIn",
-        "line": 211,
-        "end_line": 214,
+        "line": 233,
+        "end_line": 236,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "loadSaved",
-        "line": 216,
-        "end_line": 237,
+        "line": 238,
+        "end_line": 266,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "syncGuest",
-        "line": 240,
-        "end_line": 282,
+        "line": 269,
+        "end_line": 317,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "dismissImportResult",
-        "line": 284,
-        "end_line": 286,
+        "line": 319,
+        "end_line": 321,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "saveItem",
-        "line": 289,
-        "end_line": 331,
+        "line": 324,
+        "end_line": 367,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "removeSaved",
-        "line": 334,
-        "end_line": 353,
+        "line": 370,
+        "end_line": 391,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "removeSavedById",
-        "line": 356,
-        "end_line": 369,
+        "line": 394,
+        "end_line": 409,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "renameSaved",
-        "line": 371,
-        "end_line": 384,
+        "line": 411,
+        "end_line": 424,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "findWatchIn",
-        "line": 388,
-        "end_line": 389,
+        "line": 428,
+        "end_line": 429,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "newCountOf",
-        "line": 391,
-        "end_line": 391,
+        "line": 431,
+        "end_line": 431,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "loadWatches",
-        "line": 393,
-        "end_line": 418,
+        "line": 433,
+        "end_line": 458,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "addWatch",
-        "line": 420,
-        "end_line": 433,
+        "line": 460,
+        "end_line": 473,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "removeWatch",
-        "line": 435,
-        "end_line": 446,
+        "line": 475,
+        "end_line": 486,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "markSeen",
-        "line": 449,
-        "end_line": 461,
+        "line": 489,
+        "end_line": 501,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "markSeen.hit",
-        "line": 452,
-        "end_line": 452,
+        "line": 492,
+        "end_line": 492,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -28452,109 +28515,109 @@
         "names": [
           "ensureConfig"
         ],
-        "line": 157
+        "line": 159
       },
       {
         "names": [
           "bindAuth"
         ],
-        "line": 185
+        "line": 187
       },
       {
         "names": [
           "isEnabled"
         ],
-        "line": 195
+        "line": 197
       },
       {
         "names": [
           "findSavedIn"
         ],
-        "line": 211
+        "line": 233
       },
       {
         "names": [
           "loadSaved"
         ],
-        "line": 216
+        "line": 238
       },
       {
         "names": [
           "syncGuest"
         ],
-        "line": 240
+        "line": 269
       },
       {
         "names": [
           "dismissImportResult"
         ],
-        "line": 284
+        "line": 319
       },
       {
         "names": [
           "saveItem"
         ],
-        "line": 289
+        "line": 324
       },
       {
         "names": [
           "removeSaved"
         ],
-        "line": 334
+        "line": 370
       },
       {
         "names": [
           "removeSavedById"
         ],
-        "line": 356
+        "line": 394
       },
       {
         "names": [
           "renameSaved"
         ],
-        "line": 371
+        "line": 411
       },
       {
         "names": [
           "findWatchIn"
         ],
-        "line": 388
+        "line": 428
       },
       {
         "names": [
           "newCountOf"
         ],
-        "line": 391
+        "line": 431
       },
       {
         "names": [
           "loadWatches"
         ],
-        "line": 393
+        "line": 433
       },
       {
         "names": [
           "addWatch"
         ],
-        "line": 420
+        "line": 460
       },
       {
         "names": [
           "removeWatch"
         ],
-        "line": 435
+        "line": 475
       },
       {
         "names": [
           "markSeen"
         ],
-        "line": 449
+        "line": 489
       }
     ],
-    "anonymous_functions": 38
+    "anonymous_functions": 41
   },
   "frontend/src/lib/cabinetStore.test.js": {
-    "sha256": "b3da395d6e028f3fda38348eea1d0e3ae09875b29dba8b2ea35b07f3c0721b03",
+    "sha256": "58b3146ad94f55d30be4f52304a7e8b210d4e3828f562f11b9263ccac006e1b3",
     "definitions": [
       {
         "name": "flush",
@@ -28576,14 +28639,14 @@
       },
       {
         "name": "seedGuest",
-        "line": 148,
-        "end_line": 150,
+        "line": 169,
+        "end_line": 171,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "watch",
-        "line": 200,
-        "end_line": 202,
+        "line": 232,
+        "end_line": 234,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -28594,10 +28657,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 31
+    "anonymous_functions": 37
   },
   "frontend/src/lib/cabinetSubjects.js": {
-    "sha256": "a0aa65ee4abbdcf2aea6fb7e8a16f42fb30ae2e8d73885758f1f0f4d8c2a186b",
+    "sha256": "61fbf260bc578f2288598580bfc87e718d8371d6cb7e9cd921574dcb7506fc24",
     "definitions": [
       {
         "name": "clean",
@@ -28620,25 +28683,25 @@
       {
         "name": "countrySubject",
         "line": 44,
-        "end_line": 47,
+        "end_line": 48,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionSubject",
-        "line": 50,
-        "end_line": 53,
+        "line": 51,
+        "end_line": 54,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionIndicatorSubject",
-        "line": 61,
-        "end_line": 72,
+        "line": 62,
+        "end_line": 73,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ratingViewSubject",
-        "line": 78,
-        "end_line": 93,
+        "line": 79,
+        "end_line": 94,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -28671,19 +28734,19 @@
         "names": [
           "regionSubject"
         ],
-        "line": 50
+        "line": 51
       },
       {
         "names": [
           "regionIndicatorSubject"
         ],
-        "line": 61
+        "line": 62
       },
       {
         "names": [
           "ratingViewSubject"
         ],
-        "line": 78
+        "line": 79
       }
     ],
     "anonymous_functions": 0
@@ -53386,18 +53449,18 @@
     "anonymous_functions": 3
   },
   "frontend/src/pages/Account.jsx": {
-    "sha256": "2b0000089ae6d18e7529b34f6fd52567f4b31ccba37834d3f7ddcec44041f77b",
+    "sha256": "432f9ad362f60b3ab9de38bf37a2c663db1ed84751cb382b9d57cdfee806d423",
     "definitions": [
       {
         "name": "Account",
         "line": 24,
-        "end_line": 118,
+        "end_line": 128,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Account.go",
-        "line": 64,
-        "end_line": 68,
+        "line": 74,
+        "end_line": 78,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -53483,7 +53546,7 @@
         "line": 24
       }
     ],
-    "anonymous_functions": 6
+    "anonymous_functions": 7
   },
   "frontend/src/pages/Account.test.jsx": {
     "sha256": "9274c65531361843f709ebaae4e96bee0e6489496191f1ba32b3447829092756",
@@ -58096,7 +58159,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/Login.component.test.jsx": {
-    "sha256": "362cf07c2d14066c987535f5390e108ea9a4edb71314f6a9277b8bd67d328832",
+    "sha256": "535d09819b6b12d10cae3ef2aa212b7d9586ff1469e9537f7b52907758159fc8",
     "definitions": [
       {
         "name": "useAuth",
@@ -58152,33 +58215,33 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 17
+    "anonymous_functions": 18
   },
   "frontend/src/pages/Login.jsx": {
-    "sha256": "b7b5afe7af1821d16fbc4cef8b68e31e8ace027af95d39c41a5df50b351a8d1c",
+    "sha256": "8981c7ae95b5ffa91bd6ebc704222052d35946381ddf8d7f264a547177194325",
     "definitions": [
       {
         "name": "Login",
-        "line": 18,
-        "end_line": 154,
+        "line": 19,
+        "end_line": 156,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Login.switchToEmailLogin",
-        "line": 46,
-        "end_line": 51,
+        "line": 48,
+        "end_line": 53,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Login.submit",
-        "line": 53,
-        "end_line": 71,
+        "line": 55,
+        "end_line": 73,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Login.fieldClass",
-        "line": 74,
-        "end_line": 77,
+        "line": 76,
+        "end_line": 79,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -58240,12 +58303,16 @@
         "line": 14
       },
       {
-        "source": "../styles/w5-pages.css",
+        "source": "../lib/useCabinet",
         "line": 15
       },
       {
-        "source": "../styles/k8-tools.css",
+        "source": "../styles/w5-pages.css",
         "line": 16
+      },
+      {
+        "source": "../styles/k8-tools.css",
+        "line": 17
       }
     ],
     "exports": [
@@ -58253,7 +58320,7 @@
         "names": [
           "default"
         ],
-        "line": 18
+        "line": 19
       }
     ],
     "anonymous_functions": 3
@@ -60235,7 +60302,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/Register.component.test.jsx": {
-    "sha256": "9a540d91781a916d210ac715cca87f95a6d7b7b148645e8ebc851fe214dd2cb7",
+    "sha256": "08e506c46a34b3c66d8e22e904d5183bd17d74b1a78d7034870ac0cff24293fc",
     "definitions": [
       {
         "name": "useAuth",
@@ -60245,38 +60312,38 @@
       },
       {
         "name": "useT",
-        "line": 16,
-        "end_line": 16,
+        "line": 17,
+        "end_line": 17,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useLocale",
-        "line": 17,
-        "end_line": 17,
+        "line": 18,
+        "end_line": 18,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useLocale.t",
-        "line": 17,
-        "end_line": 17,
+        "line": 18,
+        "end_line": 18,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CurrentLocation",
-        "line": 22,
-        "end_line": 25,
+        "line": 23,
+        "end_line": 26,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fill",
-        "line": 67,
-        "end_line": 71,
+        "line": 68,
+        "end_line": 72,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "renderRegister",
-        "line": 72,
-        "end_line": 74,
+        "line": 73,
+        "end_line": 75,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -60302,30 +60369,30 @@
     "anonymous_functions": 23
   },
   "frontend/src/pages/Register.jsx": {
-    "sha256": "c0a432006b8c959c33286be546b497b8c156edb55ddd177f60ea7a5d0b7bc41b",
+    "sha256": "0a23b5a80a27a4a3d7438edaf147f882e00cf19cb371f925d68fc4fd8f2f8d85",
     "definitions": [
       {
         "name": "Register",
-        "line": 19,
-        "end_line": 202,
+        "line": 20,
+        "end_line": 206,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Register.useEmailRegistration",
-        "line": 45,
-        "end_line": 54,
+        "line": 47,
+        "end_line": 56,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Register.submit",
-        "line": 56,
-        "end_line": 83,
+        "line": 58,
+        "end_line": 85,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Register.fieldClass",
-        "line": 91,
-        "end_line": 94,
+        "line": 93,
+        "end_line": 96,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -60391,12 +60458,16 @@
         "line": 15
       },
       {
-        "source": "../styles/w5-pages.css",
+        "source": "../lib/useCabinet",
         "line": 16
       },
       {
-        "source": "../styles/k8-tools.css",
+        "source": "../styles/w5-pages.css",
         "line": 17
+      },
+      {
+        "source": "../styles/k8-tools.css",
+        "line": 18
       }
     ],
     "exports": [
@@ -60404,7 +60475,7 @@
         "names": [
           "default"
         ],
-        "line": 19
+        "line": 20
       }
     ],
     "anonymous_functions": 10

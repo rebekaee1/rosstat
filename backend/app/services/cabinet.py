@@ -31,7 +31,7 @@ from app.models import (
     UserPreference, UserSavedItem, UserWatch, WorldCountry, WorldDataPoint,
     WorldIndicator, _utcnow_naive,
 )
-from app.services.display import localize_unit
+from app.services.display import is_cpi_index, localize_unit
 from app.services.locale import get_locale
 
 logger = logging.getLogger(__name__)
@@ -204,6 +204,9 @@ class SeriesInfo:
     latest_value: float | None = None
     country_slug: str | None = None
     country_name: str | None = None
+    # Что за число в `latest_value`: None — значение ряда как есть; "yoy" — изменение за год в % (индексы цен,
+    # 14.11.2026): человек видит то же число, что в шапке страницы показателя, а не «106,10 %».
+    value_basis: str | None = None
 
 
 def _pick(ru: str | None, en: str | None) -> str:
@@ -238,9 +241,17 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
                 .where(tuple_(IndicatorData.indicator_id, IndicatorData.date).in_(ids_dates))
             )).all():
                 values[iid] = float(val)
+        yoy = await _cpi_yoy_values(db, [(code, latest) for _iid, code, *_rest, latest in rows if latest is not None])
         for iid, code, name, name_en, unit, freq, latest in rows:
-            out[("indicator", code)] = SeriesInfo(
+            info = SeriesInfo(
                 "indicator", code, _pick(name, name_en), localize_unit(unit) or None, freq, latest, values.get(iid))
+            if is_cpi_index(code):
+                # Индекс цен (около 100) людям не показываем: годовое изменение из ряда-близнеца за тот же период,
+                # как в шапке страницы показателя; нет близнеца на эту дату — только дата, без числа.
+                info.latest_value = yoy.get(code)
+                info.unit = "%"
+                info.value_basis = "yoy" if info.latest_value is not None else None
+            out[("indicator", code)] = info
 
     if keys := by_kind.get("world"):
         from app.api.world import _indicator_public_unit
@@ -269,10 +280,45 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
             select(RegionIndicator.code, RegionIndicator.name, RegionIndicator.unit, RegionIndicator.year_max)
             .where(RegionIndicator.code.in_(keys), RegionIndicator.is_listed.is_(True))
         )).all()
+        from app.services.seo_i18n import region_indicator_copy
+
         for code, name, unit, year_max in rows:
+            # Название и единица на языке страницы (на английском хосте — из перевода региональных рядов, 14.11.2026).
+            copy = region_indicator_copy(code, name_ru=name, unit_ru=unit or "")
+            name, unit = copy["name"] or name, copy["unit"] or unit
+            # Слежение за региональным показателем — по всем регионам (новый год у ряда); подпись говорит об этом.
             out[("region", code)] = SeriesInfo(
                 "region", code, name, localize_unit(unit) or None, "annual",
-                date(year_max, 1, 1) if year_max else None)
+                date(year_max, 1, 1) if year_max else None, country_name=_pick("Регионы России", "Russian regions"))
+    return out
+
+
+async def _cpi_yoy_values(db: AsyncSession, pairs: list[tuple[str, date]]) -> dict[str, float]:
+    """Годовое изменение (%) для индексов цен из их годовых близнецов на ту же дату: код → значение.
+
+    Два запроса на все слежения (id близнецов, точки близнецов), не по запросу на ряд. Близнецы те же, что у шапки
+    страницы показателя (`api/indicators._HERO_FROM_YOY_SIBLING`).
+    """
+    from app.api.indicators import _HERO_FROM_YOY_SIBLING
+
+    wanted = {code: (_HERO_FROM_YOY_SIBLING[code], latest) for code, latest in pairs if code in _HERO_FROM_YOY_SIBLING}
+    if not wanted:
+        return {}
+    ids = dict((await db.execute(
+        select(Indicator.code, Indicator.id).where(Indicator.code.in_({sib for sib, _ in wanted.values()}))
+    )).all())
+    keys = [(ids[sib], latest) for sib, latest in wanted.values() if sib in ids]
+    if not keys:
+        return {}
+    got = {(iid, d): float(v) for iid, d, v in (await db.execute(
+        select(IndicatorData.indicator_id, IndicatorData.date, IndicatorData.value)
+        .where(tuple_(IndicatorData.indicator_id, IndicatorData.date).in_(keys))
+    )).all()}
+    out: dict[str, float] = {}
+    for code, (sib, latest) in wanted.items():
+        val = got.get((ids.get(sib), latest))
+        if val is not None:
+            out[code] = round(val, 2)
     return out
 
 
@@ -297,6 +343,7 @@ def watch_out(row: UserWatch, info: SeriesInfo | None) -> dict:
         "available": info is not None,
         "latest_date": latest.isoformat() if latest else None,
         "latest_value": info.latest_value if info else None,
+        "value_basis": info.value_basis if info else None,
         "last_seen_date": row.last_seen_date.isoformat() if row.last_seen_date else None,
         "is_new": bool(info) and is_new(latest, row.last_seen_date),
         "created_at": iso_utc(row.created_at),
@@ -489,6 +536,61 @@ def _ics_fold(line: str) -> str:
     return "\r\n ".join(parts) + "\r\n"
 
 
+# Имена источников для людей (принцип 7: без кодов «CBR», «ROSSTAT»); те же, что на страницах календаря.
+_ICS_SOURCE_NAMES = {
+    "rosstat": ("Росстат", "Rosstat"),
+    "cbr": ("Банк России", "Bank of Russia"),
+    "minfin": ("Минфин России", "Ministry of Finance of Russia"),
+}
+_MSK_OFFSET = timedelta(hours=3)
+
+
+def _personal_event_lines(ev: EconomicEvent, code: str, stamp: str, en: bool) -> list[str]:
+    """Событие личного календаря (14.11.2026): как в общем календаре сайта — время МСК, если оно известно
+    (иначе событие на весь день), перенос даты сдвигает событие (UID и SEQUENCE), имя источника словами,
+    ссылка ведёт на страницу показателя на сайте, а не на файл источника. Язык — по хосту ссылки."""
+    from app.api.calendar import _ics_uid, _rescheduled_from
+    from app.services import site_paths
+    from app.services.mail.service import site_link
+    from app.services.seo_i18n import event_public_title, localize_reference_period
+
+    loc = "en" if en else "ru"
+    title = event_public_title(ev.title, ev.title_en, locale=loc)
+    period = localize_reference_period(ev.reference_period, locale=loc)
+    if period:
+        title += f" ({period})"
+    src = _ICS_SOURCE_NAMES.get((ev.source or "").lower())
+    desc = []
+    moved = _rescheduled_from(ev)
+    if moved:
+        desc.append(f"The source moved the date from {moved:%d.%m.%Y}." if en
+                    else f"Источник перенёс дату с {moved:%d.%m.%Y}.")
+    if ev.scheduled_time:
+        desc.append(("Time: " if en else "Время: ") + f"{ev.scheduled_time} " + ("Moscow time" if en else "по Москве"))
+    if ev.previous_value:
+        desc.append(("Previous: " if en else "Предыдущее: ") + ev.previous_value)
+    if src:
+        desc.append(("Source: " if en else "Источник: ") + src[1 if en else 0])
+    lines = ["BEGIN:VEVENT", f"UID:{_ics_uid(ev)}", f"DTSTAMP:{stamp}"]
+    hhmm = ev.scheduled_time or ""
+    if len(hhmm) == 5 and hhmm[2] == ":" and hhmm[:2].isdigit() and hhmm[3:].isdigit():
+        start = datetime(ev.scheduled_date.year, ev.scheduled_date.month, ev.scheduled_date.day,
+                         int(hhmm[:2]), int(hhmm[3:])) - _MSK_OFFSET
+        lines += [f"DTSTART:{start:%Y%m%dT%H%M%SZ}", f"DTEND:{start + timedelta(minutes=30):%Y%m%dT%H%M%SZ}"]
+    else:
+        lines += [f"DTSTART;VALUE=DATE:{ev.scheduled_date:%Y%m%d}",
+                  f"DTEND;VALUE=DATE:{ev.scheduled_date + timedelta(days=1):%Y%m%d}"]
+    lines += [
+        f"SEQUENCE:{len((ev.metadata_json or {}).get('reschedule_audit') or [])}",
+        f"SUMMARY:{_ics_escape(title)}",
+        f"DESCRIPTION:{_ics_escape(chr(10).join(desc))}",
+        f"URL:{site_link(loc, site_paths.russia_indicator(code))}",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+    ]
+    return lines
+
+
 async def build_personal_ics(db: AsyncSession, user_id: uuid.UUID, *, today: date) -> str:
     """Календарь выходов значений по рядам, за которыми следит человек.
 
@@ -496,7 +598,7 @@ async def build_personal_ics(db: AsyncSession, user_id: uuid.UUID, *, today: dat
     /calendar/export/ical) и только федеральные показатели (EconomicEvent
     привязан к `indicators`). Отправки нет: календарь телефона сам читает ленту.
     """
-    from app.api.calendar import _ics_uid, _public_calendar_conditions  # единое определение «публичного» события
+    from app.api.calendar import _public_calendar_conditions  # единое определение «публичного» события
 
     codes = list((await db.scalars(
         select(UserWatch.subject_key).where(
@@ -526,26 +628,7 @@ async def build_personal_ics(db: AsyncSession, user_id: uuid.UUID, *, today: dat
         f"X-WR-CALNAME:{_ics_escape(name)}", "X-WR-TIMEZONE:Europe/Moscow",
         "REFRESH-INTERVAL;VALUE=DURATION:PT12H", "X-PUBLISHED-TTL:PT12H",
     ]
-    for ev, _code in events:
-        title = (ev.title_en if en and ev.title_en else ev.title) or ""
-        if ev.reference_period:
-            title += f" ({ev.reference_period})"
-        desc = [("Source: " if en else "Источник: ") + (ev.source or "").upper()]
-        if ev.previous_value:
-            desc.append(("Previous: " if en else "Предыдущее: ") + ev.previous_value)
-        if ev.scheduled_time:
-            desc.append(("Time: " if en else "Время: ") + f"{ev.scheduled_time} " + ("MSK" if en else "МСК"))
-        lines += [
-            "BEGIN:VEVENT",
-            f"UID:{_ics_uid(ev)}",
-            f"DTSTAMP:{stamp}",
-            f"DTSTART;VALUE=DATE:{ev.scheduled_date.strftime('%Y%m%d')}",
-            f"SEQUENCE:{len((ev.metadata_json or {}).get('reschedule_audit') or [])}",
-            f"SUMMARY:{_ics_escape(title)}",
-            f"DESCRIPTION:{_ics_escape(chr(10).join(desc))}",
-        ]
-        if ev.source_url:
-            lines.append(f"URL:{ev.source_url}")
-        lines.append("END:VEVENT")
+    for ev, code in events:
+        lines += _personal_event_lines(ev, code, stamp, en)
     lines.append("END:VCALENDAR")
     return "".join(_ics_fold(line) for line in lines)

@@ -35,11 +35,12 @@ describe('Login wave 6: forgot password, remember note, Google', () => {
     expect(screen.getByTestId('login-remember').textContent).toBe('w6a.login.remember');
   });
 
-  it('shows a Google button; while Google is not connected it says so and moves to the email field', async () => {
+  it('без подключённых провайдеров кнопки Google нет: «Войти через Google» больше не ведёт на форму почты (14.11.2026)', async () => {
     renderLogin();
+    await screen.findByRole('button', { name: 'auth.login.submit' });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(screen.queryByRole('button', { name: 'auth.oauth.google' })).toBeNull();
     expect(screen.queryByTestId('login-google-unavailable')).toBeNull();
-    fireEvent.click(await screen.findByRole('button', { name: 'auth.oauth.google' }));
-    expect(screen.getByTestId('login-google-unavailable').textContent).toBe('w6a.login.googleUnavailable');
   });
 });
 

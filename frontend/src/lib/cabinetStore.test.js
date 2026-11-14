@@ -144,6 +144,27 @@ describe('вошедший', () => {
   });
 });
 
+describe('звезда, нажатая до прихода списка кабинета (14.11.2026)', () => {
+  it('пришедший позже список не гасит только что сохранённое и не возвращает только что убранное', async () => {
+    let release;
+    api.listSaved.mockReturnValue(new Promise((r) => { release = r; }));
+    api.saveItem.mockResolvedValue({ item: { id: 'n1', kind: 'country', item_key: 'turkey', title: 'Турция', created_at: '2026-11-14T10:00:00Z' }, created: true });
+    api.deleteSavedByKey.mockResolvedValue({ ok: true });
+    api.fetchCabinetConfig.mockResolvedValue(ENABLED);
+    await store.ensureConfig();
+    store.bindAuth('u1');
+    expect(store.getState().savedStatus).toBe('loading');
+    await store.saveItem({ kind: 'country', itemKey: 'turkey', title: 'Турция' });
+    // Список снят до нажатия: в нём нет Турции, зато есть Германия, которую человек тут же убирает.
+    store.getState().saved.push({ id: 'g', kind: 'country', item_key: 'germany', created_at: '2026-11-01T00:00:00Z' });
+    await store.removeSaved('country', 'germany');
+    release({ items: [{ id: 'g', kind: 'country', item_key: 'germany', created_at: '2026-11-01T00:00:00Z' }] });
+    await flush();
+    const keys = store.getState().saved.map((r) => r.item_key);
+    expect(keys).toEqual(['turkey']);
+  });
+});
+
 describe('перенос избранного гостя при входе', () => {
   const seedGuest = (n) => window.localStorage.setItem(store.GUEST_KEY, JSON.stringify(
     Array.from({ length: n }, (_, i) => ({ kind: 'country', item_key: `g${i}`, title: `G${i}`, payload: null, created_at: '2026-10-01T00:00:00Z' })),
@@ -185,6 +206,17 @@ describe('перенос избранного гостя при входе', () 
     const left = JSON.parse(window.localStorage.getItem(store.GUEST_KEY));
     expect(left.map((r) => r.item_key)).toEqual(['g2', 'g3', 'g4']);
     expect(store.getState().importResult).toMatchObject({ imported: 2, limitReached: true });
+  });
+
+  it('кабинет уже полон: пачка не отправляется на каждой загрузке, остаток ждёт в браузере (14.11.2026)', async () => {
+    seedGuest(3);
+    store.__resetCabinetStore();
+    api.listSaved.mockResolvedValue({ items: Array.from({ length: 2 }, (_, i) => ({ id: `s${i}`, kind: 'country', item_key: `s${i}`, created_at: '2026-10-01T00:00:00Z' })) });
+    await boot({ config: { enabled: true, features: {}, limits: { saved: 2, watches: 50 } }, auth: 'u1' });
+    await flush();
+    expect(api.importSaved).not.toHaveBeenCalled();
+    expect(JSON.parse(window.localStorage.getItem(store.GUEST_KEY))).toHaveLength(3);
+    expect(store.getState().importResult).toMatchObject({ imported: 0, limitReached: true });
   });
 
   it('гостю ничего не отправляется', async () => {

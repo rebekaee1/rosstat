@@ -189,6 +189,12 @@ function CountriesMega({ locale, t, onNavigate }) {
   );
 }
 
+/** Отметка «Новое» на кнопке меню телефона: только вошедшему (гостю кабинет не спрашивается). */
+function BurgerFeedBadge() {
+  const { isAuthed } = useAuth();
+  return isAuthed ? <FeedBadge corner /> : null;
+}
+
 export default function Navbar() {
   const t = useT();
   const { locale } = useLocale();
@@ -488,13 +494,15 @@ export default function Navbar() {
           onClick={() => { setMobileOpen(!mobileOpen); track(events.NAV_MOBILE_TOGGLE); }}
           className={cn(
             FOCUS_RING,
-            'fe-nav-round'
+            'fe-nav-round relative'
           )}
           aria-expanded={mobileOpen}
           aria-controls={mobileOpen ? 'fe-nav-mobile-menu' : undefined}
           aria-label={mobileOpen ? t('nav.closeMenu') : t('nav.openMenu')}
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {/* 14.11.2026: на телефоне кнопка «Кабинет» спрятана в меню — отметка «Новое» видна на самой кнопке меню. */}
+          {mobileOpen ? null : <BurgerFeedBadge />}
         </button>
       </div>
 

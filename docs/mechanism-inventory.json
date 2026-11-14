@@ -425,8 +425,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "c7404f3bd289e7ad9d5438ecb3ae92335df98ea757c92adbd4939de257581d61",
-      "lines": 737
+      "sha256": "df12a597537873fffa88bd9d29ca74a48f8757bc964d91355244b1e8886aa926",
+      "lines": 738
     },
     {
       "path": "backend/app/core/__init__.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "a9fb7f934067f0657e4e38b5d9ac61f917ef9575050b8e8e3dc20721754b5c0d",
-      "lines": 203
+      "sha256": "94ee374739919d7540eb66d8bf7ff6f32ec4df40a87c7bbff3acf80de31c25df",
+      "lines": 210
     },
     {
       "path": "backend/app/data/region_indicator_polarity.py",
@@ -950,8 +950,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "sha256": "8906d6373ebe74008b3499f5e9d91c1b2a892c8455306caabcbfe7011bb2e1e9",
-      "lines": 551
+      "sha256": "c59c09006d60d5168cfaa47134966ea5189d798a6f498fe55a1bbc2c3a03fa4f",
+      "lines": 634
     },
     {
       "path": "backend/app/services/calculation_engine.py",
@@ -1365,8 +1365,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "sha256": "3bb740138979f1bdcedef5d588029c11a353c059ee6521769c4a05bd7a3c9996",
-      "lines": 114
+      "sha256": "9d4ee8fa1eb3b9bbcd4c1ae4f4f1c042010591cd4ae8bef60c1ca2c7bce6712a",
+      "lines": 118
     },
     {
       "path": "backend/app/services/imf_weo_adapter.py",
@@ -34902,23 +34902,12 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 597,
+      "end_line": 597,
       "owner": "Settings",
       "conditions": [],
       "name": "cabinet_enabled",
       "env_name": "RUSTATS_CABINET_ENABLED",
-      "annotation": "bool",
-      "default": "False"
-    },
-    {
-      "path": "backend/app/config.py",
-      "line": 603,
-      "end_line": 603,
-      "owner": "Settings",
-      "conditions": [],
-      "name": "pwa_enabled",
-      "env_name": "RUSTATS_PWA_ENABLED",
       "annotation": "bool",
       "default": "True"
     },
@@ -34928,6 +34917,17 @@
       "end_line": 604,
       "owner": "Settings",
       "conditions": [],
+      "name": "pwa_enabled",
+      "env_name": "RUSTATS_PWA_ENABLED",
+      "annotation": "bool",
+      "default": "True"
+    },
+    {
+      "path": "backend/app/config.py",
+      "line": 605,
+      "end_line": 605,
+      "owner": "Settings",
+      "conditions": [],
       "name": "pwa_install_prompt_enabled",
       "env_name": "RUSTATS_PWA_INSTALL_PROMPT_ENABLED",
       "annotation": "bool",
@@ -34935,8 +34935,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 615,
-      "end_line": 615,
+      "line": 616,
+      "end_line": 616,
       "owner": "Settings",
       "conditions": [],
       "name": "push_subscribe_enabled",
@@ -34946,8 +34946,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 617,
+      "end_line": 617,
       "owner": "Settings",
       "conditions": [],
       "name": "push_send_enabled",
@@ -34957,8 +34957,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 618,
+      "end_line": 618,
       "owner": "Settings",
       "conditions": [],
       "name": "push_dry_run",
@@ -34968,8 +34968,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 619,
+      "end_line": 619,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_public_key",
@@ -34979,8 +34979,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 619,
-      "end_line": 619,
+      "line": 620,
+      "end_line": 620,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_private_key",
@@ -34990,8 +34990,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 620,
-      "end_line": 620,
+      "line": 621,
+      "end_line": 621,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_subject",
@@ -35001,8 +35001,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 632,
-      "end_line": 632,
+      "line": 633,
+      "end_line": 633,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_enabled",
@@ -35012,8 +35012,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 633,
-      "end_line": 633,
+      "line": 634,
+      "end_line": 634,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_host",
@@ -35023,8 +35023,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 634,
-      "end_line": 634,
+      "line": 635,
+      "end_line": 635,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_port",
@@ -35034,8 +35034,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 635,
-      "end_line": 635,
+      "line": 636,
+      "end_line": 636,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_security",
@@ -35045,8 +35045,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 636,
-      "end_line": 636,
+      "line": 637,
+      "end_line": 637,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_user",
@@ -35056,8 +35056,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 638,
+      "end_line": 638,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_password",
@@ -35067,8 +35067,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 638,
-      "end_line": 638,
+      "line": 639,
+      "end_line": 639,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_smtp_timeout_seconds",
@@ -35078,8 +35078,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 639,
-      "end_line": 639,
+      "line": 640,
+      "end_line": 640,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_from_address",
@@ -35089,8 +35089,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 640,
-      "end_line": 640,
+      "line": 641,
+      "end_line": 641,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_from_name",
@@ -35100,8 +35100,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 641,
-      "end_line": 641,
+      "line": 642,
+      "end_line": 642,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_reply_to",
@@ -35111,8 +35111,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 642,
-      "end_line": 642,
+      "line": 643,
+      "end_line": 643,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_allowlist",
@@ -35122,8 +35122,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 643,
-      "end_line": 643,
+      "line": 644,
+      "end_line": 644,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_allow_all_recipients",
@@ -35133,8 +35133,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 646,
-      "end_line": 646,
+      "line": 647,
+      "end_line": 647,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_token_secret",
@@ -35144,8 +35144,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 649,
-      "end_line": 649,
+      "line": 650,
+      "end_line": 650,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_campaign_max_per_run",
@@ -35155,8 +35155,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 650,
-      "end_line": 650,
+      "line": 651,
+      "end_line": 651,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_campaign_pause_seconds",
@@ -35166,8 +35166,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 653,
-      "end_line": 653,
+      "line": 654,
+      "end_line": 654,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_link_origin_ru",
@@ -35177,8 +35177,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 654,
-      "end_line": 654,
+      "line": 655,
+      "end_line": 655,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_link_origin_en",
@@ -35188,8 +35188,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 659,
+      "end_line": 659,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_host",
@@ -35199,8 +35199,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 659,
-      "end_line": 659,
+      "line": 660,
+      "end_line": 660,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_port",
@@ -35210,8 +35210,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 660,
-      "end_line": 660,
+      "line": 661,
+      "end_line": 661,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_security",
@@ -35221,8 +35221,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 661,
-      "end_line": 661,
+      "line": 662,
+      "end_line": 662,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_user",
@@ -35232,8 +35232,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 662,
-      "end_line": 662,
+      "line": 663,
+      "end_line": 663,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_smtp_password",
@@ -35243,8 +35243,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 663,
-      "end_line": 663,
+      "line": 664,
+      "end_line": 664,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bulk_from_address",
@@ -35254,8 +35254,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 667,
-      "end_line": 667,
+      "line": 668,
+      "end_line": 668,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_bounce_poll_enabled",
@@ -35265,8 +35265,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 668,
-      "end_line": 668,
+      "line": 669,
+      "end_line": 669,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_imap_host",
@@ -35276,8 +35276,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 669,
-      "end_line": 669,
+      "line": 670,
+      "end_line": 670,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_imap_port",
@@ -35287,8 +35287,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 672,
-      "end_line": 672,
+      "line": 673,
+      "end_line": 673,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_watch_digest_enabled",
@@ -35298,8 +35298,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 673,
-      "end_line": 673,
+      "line": 674,
+      "end_line": 674,
       "owner": "Settings",
       "conditions": [],
       "name": "mail_watch_digest_hour_msk",
@@ -35309,8 +35309,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 681,
-      "end_line": 681,
+      "line": 682,
+      "end_line": 682,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_enabled",
@@ -35320,8 +35320,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 682,
-      "end_line": 682,
+      "line": 683,
+      "end_line": 683,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_behavior_signals",
@@ -35331,8 +35331,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 684,
+      "end_line": 684,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_click_token",
@@ -35342,8 +35342,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 686,
+      "end_line": 686,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_holdout_pct",
@@ -35353,8 +35353,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 687,
-      "end_line": 687,
+      "line": 688,
+      "end_line": 688,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_subject_ab_pct",
@@ -35364,8 +35364,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 689,
-      "end_line": 689,
+      "line": 690,
+      "end_line": 690,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_build_enabled",
@@ -35375,8 +35375,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 690,
-      "end_line": 690,
+      "line": 691,
+      "end_line": 691,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_build_weekday",
@@ -35386,8 +35386,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 691,
-      "end_line": 691,
+      "line": 692,
+      "end_line": 692,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_build_hour_msk",
@@ -35397,8 +35397,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 693,
+      "end_line": 693,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_build_minute",
@@ -35408,8 +35408,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 694,
-      "end_line": 694,
+      "line": 695,
+      "end_line": 695,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_issue_path",
@@ -35419,8 +35419,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 696,
-      "end_line": 696,
+      "line": 697,
+      "end_line": 697,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_aggregates_hour_msk",
@@ -35430,8 +35430,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 697,
-      "end_line": 697,
+      "line": 698,
+      "end_line": 698,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_aggregates_minute",
@@ -35441,8 +35441,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 699,
-      "end_line": 699,
+      "line": 700,
+      "end_line": 700,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_send_start_hour",
@@ -35452,8 +35452,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 700,
-      "end_line": 700,
+      "line": 701,
+      "end_line": 701,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_send_end_hour",
@@ -35463,8 +35463,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 702,
-      "end_line": 702,
+      "line": 703,
+      "end_line": 703,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_min_days_between",
@@ -35474,8 +35474,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 704,
-      "end_line": 704,
+      "line": 705,
+      "end_line": 705,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_dormant_enabled",
@@ -35485,8 +35485,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 705,
-      "end_line": 705,
+      "line": 706,
+      "end_line": 706,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_dormant_days",
@@ -35496,8 +35496,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 707,
-      "end_line": 707,
+      "line": 708,
+      "end_line": 708,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_batch_size",
@@ -35507,8 +35507,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 708,
-      "end_line": 708,
+      "line": 709,
+      "end_line": 709,
       "owner": "Settings",
       "conditions": [],
       "name": "newsletter_personal_batch_pause_seconds",
@@ -35518,8 +35518,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 712,
-      "end_line": 712,
+      "line": 713,
+      "end_line": 713,
       "owner": "Settings",
       "conditions": [],
       "name": "admin_emails",
@@ -36391,8 +36391,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 729,
-      "end_line": 729,
+      "line": 730,
+      "end_line": 730,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -36400,8 +36400,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 729,
-      "end_line": 729,
+      "line": 730,
+      "end_line": 730,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "public_host",
@@ -36409,8 +36409,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 719,
-      "end_line": 719,
+      "line": 720,
+      "end_line": 720,
       "owner": "Settings.public_origin",
       "conditions": [],
       "name": "public_base_url",
@@ -36418,8 +36418,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 724,
-      "end_line": 724,
+      "line": 725,
+      "end_line": 725,
       "owner": "Settings.public_host",
       "conditions": [],
       "name": "public_base_url",
@@ -39382,6 +39382,24 @@
       "conditions": [],
       "name": "etl_socks_proxy_url",
       "expression": "settings.etl_socks_proxy_url"
+    },
+    {
+      "path": "backend/app/services/identity/service.py",
+      "line": 115,
+      "end_line": 115,
+      "owner": "serialize_user",
+      "conditions": [],
+      "name": "mail_enabled",
+      "expression": "settings.mail_enabled"
+    },
+    {
+      "path": "backend/app/services/identity/service.py",
+      "line": 115,
+      "end_line": 115,
+      "owner": "serialize_user",
+      "conditions": [],
+      "name": "mail_token_secret",
+      "expression": "settings.mail_token_secret"
     },
     {
       "path": "backend/app/services/index_policy.py",
@@ -95477,6 +95495,66 @@
       "expression_truncated": false,
       "expression_chars": 36,
       "ast_sha256": "9655c721a4bf7f3af715996ec6e483c832e38a40fc4e9c78ec218754ec18c490",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 540,
+      "end_line": 544,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_ICS_SOURCE_NAMES",
+      "symbol": "app.services.cabinet._ICS_SOURCE_NAMES",
+      "kind": "Dict",
+      "literal_keys": [
+        "'rosstat'",
+        "'cbr'",
+        "'minfin'"
+      ],
+      "entries": [
+        {
+          "key": "'rosstat'",
+          "expression": "('Росстат', 'Rosstat')",
+          "expression_truncated": false,
+          "expression_chars": 22,
+          "ast_sha256": "08b58f35a20090a7f8720c9ad3d5bb8b5d4ed50a16894f013b8421b3fa2d9901"
+        },
+        {
+          "key": "'cbr'",
+          "expression": "('Банк России', 'Bank of Russia')",
+          "expression_truncated": false,
+          "expression_chars": 33,
+          "ast_sha256": "4da24fff79b435b5191f5380db98e5baa5b3bccb60d98fe8d3cfe934f10b540a"
+        },
+        {
+          "key": "'minfin'",
+          "expression": "('Минфин России', 'Ministry of Finance of Russia')",
+          "expression_truncated": false,
+          "expression_chars": 50,
+          "ast_sha256": "051a5116e72534bc7c8fc1d35473e634b12bf2f6d161b87d19b05de57108f4fc"
+        }
+      ],
+      "expression": "{'rosstat': ('Росстат', 'Rosstat'), 'cbr': ('Банк России', 'Bank of Russia'), 'minfin': ('Минфин России', 'Ministry of Finance of Russia')}",
+      "expression_truncated": false,
+      "expression_chars": 139,
+      "ast_sha256": "adb92db293f4dc0a30fd3d57549414953157764900dbb689d72ced79f8bf030b",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 545,
+      "end_line": 545,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_MSK_OFFSET",
+      "symbol": "app.services.cabinet._MSK_OFFSET",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "timedelta(hours=3)",
+      "expression_truncated": false,
+      "expression_chars": 18,
+      "ast_sha256": "df0c46c5f49cadf36f6e05becffa68bcf6886ad4420a23922f037225e7eec649",
       "runtime_expansion": true
     },
     {
@@ -153401,8 +153479,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 396,
-      "end_line": 399,
+      "line": 443,
+      "end_line": 446,
       "owner": "record_export",
       "conditions": [],
       "operation": "add",
@@ -153415,8 +153493,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 224,
+      "end_line": 224,
       "owner": "resolve_series",
       "conditions": [],
       "operation": "add",
@@ -153429,8 +153507,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 411,
+      "end_line": 411,
       "owner": "mark_seen",
       "conditions": [],
       "operation": "flush",
@@ -153443,8 +153521,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 447,
+      "end_line": 447,
       "owner": "record_export",
       "conditions": [],
       "operation": "flush",
@@ -153457,8 +153535,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 408,
-      "end_line": 408,
+      "line": 455,
+      "end_line": 455,
       "owner": "record_export",
       "conditions": [],
       "operation": "commit",
@@ -153471,8 +153549,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 422,
-      "end_line": 422,
+      "line": 469,
+      "end_line": 469,
       "owner": "put_prefs",
       "conditions": [
         "row is None"
@@ -153487,8 +153565,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 473,
+      "end_line": 473,
       "owner": "put_prefs",
       "conditions": [],
       "operation": "flush",
@@ -153501,8 +153579,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 489,
+      "end_line": 489,
       "owner": "rotate_feed_token",
       "conditions": [
         "row is None"
@@ -153517,8 +153595,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 493,
+      "end_line": 493,
       "owner": "rotate_feed_token",
       "conditions": [],
       "operation": "flush",
@@ -153531,8 +153609,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 456,
-      "end_line": 456,
+      "line": 503,
+      "end_line": 503,
       "owner": "revoke_feed_token",
       "conditions": [],
       "operation": "flush",
@@ -153559,8 +153637,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 342,
-      "end_line": 342,
+      "line": 389,
+      "end_line": 389,
       "owner": "add_watch",
       "conditions": [],
       "operation": "add",
@@ -153573,8 +153651,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 454,
+      "end_line": 454,
       "owner": "record_export",
       "conditions": [
         "stale"
@@ -153620,8 +153698,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 390,
+      "end_line": 390,
       "owner": "add_watch",
       "conditions": [],
       "operation": "flush",
@@ -153634,8 +153712,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 224,
+      "end_line": 224,
       "owner": "resolve_series",
       "conditions": [],
       "operation": "set",
@@ -153648,8 +153726,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 225,
-      "end_line": 232,
+      "line": 228,
+      "end_line": 235,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -153664,8 +153742,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 248,
-      "end_line": 252,
+      "line": 259,
+      "end_line": 263,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -153680,8 +153758,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 268,
-      "end_line": 271,
+      "line": 279,
+      "end_line": 282,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -153696,8 +153774,22 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 236,
-      "end_line": 239,
+      "line": 307,
+      "end_line": 309,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.cabinet.db.execute",
+      "expression": "db.execute(select(Indicator.code, Indicator.id).where(Indicator.code.in_({sib for sib, _ in wanted.values()})))",
+      "expression_truncated": false,
+      "expression_chars": 111,
+      "ast_sha256": "e1055a8aed7d2fc8d9630a5ce50bd333462eb6a275f9d5ed26f2e75ad5307fae"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 239,
+      "end_line": 242,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -153713,8 +153805,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 256,
-      "end_line": 259,
+      "line": 267,
+      "end_line": 270,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -153730,8 +153822,22 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 313,
+      "end_line": 316,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.cabinet.db.execute",
+      "expression": "db.execute(select(IndicatorData.indicator_id, IndicatorData.date, IndicatorData.value).where(tuple_(IndicatorData.indicator_id, IndicatorData.date).in_(keys)))",
+      "expression_truncated": false,
+      "expression_chars": 159,
+      "ast_sha256": "385aa9c7a0771dc30cfea816050391c68588f76e64549439a4b0547394da1f84"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 454,
+      "end_line": 454,
       "owner": "record_export",
       "conditions": [
         "stale"
@@ -153746,8 +153852,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 507,
-      "end_line": 518,
+      "line": 609,
+      "end_line": 620,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -157889,8 +157995,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 34,
-      "end_line": 34,
+      "line": 35,
+      "end_line": 35,
       "owner": "register_email",
       "conditions": [],
       "operation": "add",
@@ -157903,8 +158009,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 42,
-      "end_line": 42,
+      "line": 43,
+      "end_line": 43,
       "owner": "register_email",
       "conditions": [],
       "operation": "add",
@@ -157917,8 +158023,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 35,
-      "end_line": 35,
+      "line": 36,
+      "end_line": 36,
       "owner": "register_email",
       "conditions": [],
       "operation": "flush",
@@ -157931,8 +158037,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 43,
-      "end_line": 43,
+      "line": 44,
+      "end_line": 44,
       "owner": "register_email",
       "conditions": [],
       "operation": "flush",
@@ -157945,8 +158051,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 58,
-      "end_line": 58,
+      "line": 59,
+      "end_line": 59,
       "owner": "authenticate_email",
       "conditions": [
         "needs_rehash(cred.password_hash)"
@@ -226170,8 +226276,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 417,
-      "end_line": 417,
+      "line": 464,
+      "end_line": 464,
       "owner": "put_prefs",
       "conditions": [],
       "symbol": "app.models.UserPreference",
@@ -226188,8 +226294,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 353,
+      "end_line": 353,
       "owner": "list_watches",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226197,8 +226303,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 413,
-      "end_line": 413,
+      "line": 460,
+      "end_line": 460,
       "owner": "get_prefs_row",
       "conditions": [],
       "symbol": "app.models.UserPreference",
@@ -226233,8 +226339,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 285,
-      "end_line": 285,
+      "line": 331,
+      "end_line": 331,
       "owner": "watch_out",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226242,8 +226348,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 385,
+      "end_line": 385,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226251,8 +226357,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 365,
+      "end_line": 365,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226260,8 +226366,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 370,
-      "end_line": 370,
+      "line": 417,
+      "end_line": 417,
       "owner": "export_out",
       "conditions": [],
       "symbol": "app.models.UserExport",
@@ -226269,8 +226375,17 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 312,
-      "end_line": 312,
+      "line": 548,
+      "end_line": 548,
+      "owner": "_personal_event_lines",
+      "conditions": [],
+      "symbol": "app.models.EconomicEvent",
+      "expression": "EconomicEvent"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 359,
+      "end_line": 359,
       "owner": "watches_with_info",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226278,8 +226393,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 443,
+      "end_line": 443,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport",
@@ -226287,8 +226402,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 414,
-      "end_line": 414,
+      "line": 461,
+      "end_line": 461,
       "owner": "get_prefs_row",
       "conditions": [],
       "symbol": "app.models.UserPreference",
@@ -226296,8 +226411,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 419,
-      "end_line": 419,
+      "line": 466,
+      "end_line": 466,
       "owner": "put_prefs",
       "conditions": [],
       "symbol": "app.models.UserPreference",
@@ -226305,8 +226420,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 421,
-      "end_line": 421,
+      "line": 468,
+      "end_line": 468,
       "owner": "put_prefs",
       "conditions": [
         "row is None"
@@ -226316,8 +226431,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 486,
+      "end_line": 486,
       "owner": "rotate_feed_token",
       "conditions": [],
       "symbol": "app.models.UserPreference",
@@ -226325,8 +226440,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 488,
+      "end_line": 488,
       "owner": "rotate_feed_token",
       "conditions": [
         "row is None"
@@ -226336,8 +226451,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 498,
+      "end_line": 498,
       "owner": "revoke_feed_token",
       "conditions": [],
       "symbol": "app.models.UserPreference",
@@ -226372,8 +226487,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 376,
+      "end_line": 376,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.user_id",
@@ -226381,8 +226496,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 376,
+      "end_line": 376,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.subject_kind",
@@ -226390,8 +226505,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 377,
+      "end_line": 377,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.subject_key",
@@ -226399,8 +226514,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 377,
+      "end_line": 377,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.channel",
@@ -226408,8 +226523,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 511,
+      "end_line": 511,
       "owner": "user_id_by_feed_token",
       "conditions": [],
       "symbol": "app.models.UserPreference.feed_token_hash",
@@ -226453,8 +226568,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 328,
-      "end_line": 328,
+      "line": 375,
+      "end_line": 375,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226462,8 +226577,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 376,
+      "end_line": 376,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226471,8 +226586,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 376,
+      "end_line": 376,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226480,8 +226595,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 377,
+      "end_line": 377,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226489,8 +226604,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 377,
+      "end_line": 377,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226498,8 +226613,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 454,
+      "end_line": 454,
       "owner": "record_export",
       "conditions": [
         "stale"
@@ -226509,8 +226624,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 511,
+      "end_line": 511,
       "owner": "user_id_by_feed_token",
       "conditions": [],
       "symbol": "app.models.UserPreference.user_id",
@@ -226518,8 +226633,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 511,
+      "end_line": 511,
       "owner": "user_id_by_feed_token",
       "conditions": [],
       "symbol": "app.models.UserPreference",
@@ -226536,8 +226651,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226547,8 +226662,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226558,8 +226673,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226569,8 +226684,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226580,8 +226695,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 231,
-      "end_line": 231,
+      "line": 234,
+      "end_line": 234,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226591,8 +226706,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 231,
-      "end_line": 231,
+      "line": 234,
+      "end_line": 234,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226602,8 +226717,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 381,
+      "end_line": 381,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.user_id",
@@ -226611,8 +226726,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 393,
+      "end_line": 393,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.user_id",
@@ -226620,8 +226735,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 393,
+      "end_line": 393,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.subject_kind",
@@ -226629,8 +226744,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 394,
+      "end_line": 394,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.subject_key",
@@ -226638,8 +226753,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 394,
+      "end_line": 394,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch.channel",
@@ -226647,8 +226762,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 454,
+      "end_line": 454,
       "owner": "record_export",
       "conditions": [
         "stale"
@@ -226658,8 +226773,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 454,
+      "end_line": 454,
       "owner": "record_export",
       "conditions": [
         "stale"
@@ -226669,8 +226784,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 511,
+      "end_line": 511,
       "owner": "user_id_by_feed_token",
       "conditions": [],
       "symbol": "app.models.UserPreference",
@@ -226696,8 +226811,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226707,8 +226822,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226718,8 +226833,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226729,8 +226844,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226740,8 +226855,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 231,
-      "end_line": 231,
+      "line": 234,
+      "end_line": 234,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226751,8 +226866,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 231,
-      "end_line": 231,
+      "line": 234,
+      "end_line": 234,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -226762,8 +226877,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 262,
+      "end_line": 262,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -226773,8 +226888,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 262,
+      "end_line": 262,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -226784,8 +226899,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 281,
+      "end_line": 281,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -226795,8 +226910,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 281,
+      "end_line": 281,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -226808,6 +226923,15 @@
       "path": "backend/app/services/cabinet.py",
       "line": 308,
       "end_line": 308,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code.in_",
+      "expression": "Indicator.code.in_"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 355,
+      "end_line": 355,
       "owner": "list_watches",
       "conditions": [],
       "symbol": "app.models.UserWatch.created_at.desc",
@@ -226815,8 +226939,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 381,
+      "end_line": 381,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226824,8 +226948,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 381,
+      "end_line": 381,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226833,8 +226957,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 392,
+      "end_line": 392,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226842,8 +226966,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 393,
+      "end_line": 393,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226851,8 +226975,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 393,
+      "end_line": 393,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226860,8 +226984,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 394,
+      "end_line": 394,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226869,8 +226993,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 394,
+      "end_line": 394,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -226878,8 +227002,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 454,
+      "end_line": 454,
       "owner": "record_export",
       "conditions": [
         "stale"
@@ -226889,8 +227013,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 605,
+      "end_line": 605,
       "owner": "build_personal_ics",
       "conditions": [],
       "symbol": "app.models.UserWatch.user_id",
@@ -226898,8 +227022,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 605,
+      "end_line": 605,
       "owner": "build_personal_ics",
       "conditions": [],
       "symbol": "app.models.UserWatch.subject_kind",
@@ -226907,8 +227031,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 261,
+      "end_line": 261,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -226918,8 +227042,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 262,
+      "end_line": 262,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -226929,8 +227053,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 262,
+      "end_line": 262,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -226940,8 +227064,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 280,
+      "end_line": 280,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -226951,8 +227075,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 280,
+      "end_line": 280,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -226962,8 +227086,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 280,
+      "end_line": 280,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -226973,8 +227097,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 280,
+      "end_line": 280,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -226984,8 +227108,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 281,
+      "end_line": 281,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -226995,8 +227119,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 281,
+      "end_line": 281,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -227008,6 +227132,33 @@
       "path": "backend/app/services/cabinet.py",
       "line": 308,
       "end_line": 308,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 308,
+      "end_line": 308,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.Indicator.id",
+      "expression": "Indicator.id"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 308,
+      "end_line": 308,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 355,
+      "end_line": 355,
       "owner": "list_watches",
       "conditions": [],
       "symbol": "app.models.UserWatch.created_at",
@@ -227015,8 +227166,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 450,
+      "end_line": 450,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport.created_at.desc",
@@ -227024,8 +227175,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 450,
+      "end_line": 450,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport.id.desc",
@@ -227033,8 +227184,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 604,
+      "end_line": 604,
       "owner": "build_personal_ics",
       "conditions": [],
       "symbol": "app.models.UserWatch.subject_key",
@@ -227042,8 +227193,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 605,
+      "end_line": 605,
       "owner": "build_personal_ics",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -227051,8 +227202,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 605,
+      "end_line": 605,
       "owner": "build_personal_ics",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -227060,8 +227211,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227071,8 +227222,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227082,8 +227233,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227093,8 +227244,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 237,
-      "end_line": 237,
+      "line": 240,
+      "end_line": 240,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -227105,8 +227256,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 237,
-      "end_line": 237,
+      "line": 240,
+      "end_line": 240,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -227117,8 +227268,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 261,
+      "end_line": 261,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227128,8 +227279,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 261,
+      "end_line": 261,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227139,8 +227290,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 262,
+      "end_line": 262,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227150,8 +227301,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 262,
+      "end_line": 262,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227161,8 +227312,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 268,
+      "end_line": 268,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -227173,8 +227324,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 268,
+      "end_line": 268,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -227185,8 +227336,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 280,
+      "end_line": 280,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -227196,8 +227347,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 280,
+      "end_line": 280,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -227207,8 +227358,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 280,
+      "end_line": 280,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -227218,8 +227369,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 280,
+      "end_line": 280,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -227229,8 +227380,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 281,
+      "end_line": 281,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -227240,8 +227391,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 270,
-      "end_line": 270,
+      "line": 281,
+      "end_line": 281,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('region'))"
@@ -227253,6 +227404,60 @@
       "path": "backend/app/services/cabinet.py",
       "line": 308,
       "end_line": 308,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 308,
+      "end_line": 308,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 308,
+      "end_line": 308,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 314,
+      "end_line": 314,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 314,
+      "end_line": 314,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 314,
+      "end_line": 314,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.value",
+      "expression": "IndicatorData.value"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 355,
+      "end_line": 355,
       "owner": "list_watches",
       "conditions": [],
       "symbol": "app.models.UserWatch.user_id",
@@ -227260,8 +227465,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 355,
+      "end_line": 355,
       "owner": "list_watches",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -227269,8 +227474,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 450,
+      "end_line": 450,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport.created_at",
@@ -227278,8 +227483,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 450,
+      "end_line": 450,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport.id",
@@ -227287,8 +227492,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 604,
+      "end_line": 604,
       "owner": "build_personal_ics",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -227296,8 +227501,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 516,
-      "end_line": 516,
+      "line": 618,
+      "end_line": 618,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227307,8 +227512,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 231,
+      "end_line": 231,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227318,8 +227523,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227329,8 +227534,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227340,8 +227545,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227351,8 +227556,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 237,
-      "end_line": 237,
+      "line": 240,
+      "end_line": 240,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -227363,8 +227568,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 237,
-      "end_line": 237,
+      "line": 240,
+      "end_line": 240,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -227375,8 +227580,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 241,
+      "end_line": 241,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -227387,8 +227592,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 241,
+      "end_line": 241,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -227399,8 +227604,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 260,
+      "end_line": 260,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227410,8 +227615,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 260,
+      "end_line": 260,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227421,8 +227626,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 260,
+      "end_line": 260,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227432,8 +227637,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 260,
+      "end_line": 260,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227443,8 +227648,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 261,
+      "end_line": 261,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227454,8 +227659,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 261,
+      "end_line": 261,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227465,8 +227670,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 268,
+      "end_line": 268,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -227477,8 +227682,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 268,
+      "end_line": 268,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -227489,8 +227694,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 269,
+      "end_line": 269,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -227501,8 +227706,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 269,
+      "end_line": 269,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -227513,8 +227718,53 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 314,
+      "end_line": 314,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 314,
+      "end_line": 314,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 314,
+      "end_line": 314,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 315,
+      "end_line": 315,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 315,
+      "end_line": 315,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 355,
+      "end_line": 355,
       "owner": "list_watches",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -227522,8 +227772,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 355,
+      "end_line": 355,
       "owner": "list_watches",
       "conditions": [],
       "symbol": "app.models.UserWatch",
@@ -227531,8 +227781,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 449,
+      "end_line": 449,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport.user_id",
@@ -227540,8 +227790,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 450,
+      "end_line": 450,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport",
@@ -227549,8 +227799,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 450,
+      "end_line": 450,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport",
@@ -227558,8 +227808,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 516,
-      "end_line": 516,
+      "line": 618,
+      "end_line": 618,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227569,8 +227819,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 231,
+      "end_line": 231,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227580,8 +227830,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 231,
+      "end_line": 231,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227591,8 +227841,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227602,8 +227852,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227613,8 +227863,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 232,
+      "end_line": 232,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227624,8 +227874,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 241,
+      "end_line": 241,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -227636,8 +227886,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 241,
+      "end_line": 241,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))",
@@ -227648,8 +227898,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 260,
+      "end_line": 260,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227659,8 +227909,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 260,
+      "end_line": 260,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227670,8 +227920,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 260,
+      "end_line": 260,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))"
@@ -227681,8 +227931,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 269,
+      "end_line": 269,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -227693,8 +227943,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 269,
+      "end_line": 269,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('world'))",
@@ -227705,8 +227955,26 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 315,
+      "end_line": 315,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 315,
+      "end_line": 315,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 449,
+      "end_line": 449,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport.id",
@@ -227714,8 +227982,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 449,
+      "end_line": 449,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport",
@@ -227723,8 +227991,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 229,
+      "end_line": 229,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227734,8 +228002,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 229,
+      "end_line": 229,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227745,8 +228013,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 229,
+      "end_line": 229,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227756,8 +228024,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 229,
+      "end_line": 229,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227767,8 +228035,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 230,
+      "end_line": 230,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227778,8 +228046,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 230,
+      "end_line": 230,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227789,8 +228057,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 231,
+      "end_line": 231,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227800,8 +228068,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 231,
+      "end_line": 231,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227811,8 +228079,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 449,
+      "end_line": 449,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.models.UserExport",
@@ -227820,8 +228088,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 613,
+      "end_line": 613,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227831,8 +228099,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 512,
-      "end_line": 512,
+      "line": 614,
+      "end_line": 614,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227842,8 +228110,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 513,
-      "end_line": 513,
+      "line": 615,
+      "end_line": 615,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227853,8 +228121,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 229,
+      "end_line": 229,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227864,8 +228132,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 229,
+      "end_line": 229,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227875,8 +228143,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 229,
+      "end_line": 229,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227886,8 +228154,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 229,
+      "end_line": 229,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227897,8 +228165,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 230,
+      "end_line": 230,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227908,8 +228176,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 230,
+      "end_line": 230,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227919,8 +228187,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 230,
+      "end_line": 230,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227930,8 +228198,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 611,
+      "end_line": 611,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227941,8 +228209,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 613,
+      "end_line": 613,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227952,8 +228220,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 512,
-      "end_line": 512,
+      "line": 614,
+      "end_line": 614,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227963,8 +228231,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 513,
-      "end_line": 513,
+      "line": 615,
+      "end_line": 615,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227974,8 +228242,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 230,
+      "end_line": 230,
       "owner": "resolve_series",
       "conditions": [
         "(keys := by_kind.get('indicator'))"
@@ -227985,8 +228253,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 611,
+      "end_line": 611,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -227996,8 +228264,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 611,
+      "end_line": 611,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -228007,8 +228275,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 613,
+      "end_line": 613,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -228018,8 +228286,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 610,
+      "end_line": 610,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -228029,8 +228297,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 610,
+      "end_line": 610,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -228040,8 +228308,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 611,
+      "end_line": 611,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -228051,8 +228319,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 611,
+      "end_line": 611,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -228062,8 +228330,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 610,
+      "end_line": 610,
       "owner": "build_personal_ics",
       "conditions": [
         "codes"
@@ -241056,8 +241324,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 26,
-      "end_line": 26,
+      "line": 27,
+      "end_line": 27,
       "owner": "register_email",
       "conditions": [],
       "symbol": "app.models.User",
@@ -241065,8 +241333,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 47,
-      "end_line": 47,
+      "line": 48,
+      "end_line": 48,
       "owner": "authenticate_email",
       "conditions": [],
       "symbol": "app.models.User",
@@ -241074,8 +241342,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 63,
+      "end_line": 63,
       "owner": "get_user",
       "conditions": [],
       "symbol": "app.models.User",
@@ -241083,8 +241351,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 33,
-      "end_line": 33,
+      "line": 34,
+      "end_line": 34,
       "owner": "register_email",
       "conditions": [],
       "symbol": "app.models.User",
@@ -241092,8 +241360,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 36,
-      "end_line": 36,
+      "line": 37,
+      "end_line": 37,
       "owner": "register_email",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -241101,8 +241369,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 72,
+      "end_line": 72,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.User",
@@ -241110,8 +241378,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 59,
-      "end_line": 59,
+      "line": 60,
+      "end_line": 60,
       "owner": "authenticate_email",
       "conditions": [],
       "symbol": "app.models.User",
@@ -241119,8 +241387,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 68,
-      "end_line": 68,
+      "line": 69,
+      "end_line": 69,
       "owner": "get_user",
       "conditions": [],
       "symbol": "app.models.User",
@@ -241128,8 +241396,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 29,
-      "end_line": 29,
+      "line": 30,
+      "end_line": 30,
       "owner": "register_email",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -241137,8 +241405,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 50,
-      "end_line": 50,
+      "line": 51,
+      "end_line": 51,
       "owner": "authenticate_email",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -241146,8 +241414,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 80,
+      "end_line": 80,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -241155,8 +241423,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 29,
-      "end_line": 29,
+      "line": 30,
+      "end_line": 30,
       "owner": "register_email",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -241164,8 +241432,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 29,
-      "end_line": 29,
+      "line": 30,
+      "end_line": 30,
       "owner": "register_email",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -241173,8 +241441,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 50,
-      "end_line": 50,
+      "line": 51,
+      "end_line": 51,
       "owner": "authenticate_email",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -241182,8 +241450,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 50,
-      "end_line": 50,
+      "line": 51,
+      "end_line": 51,
       "owner": "authenticate_email",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -241191,8 +241459,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 80,
+      "end_line": 80,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -241200,8 +241468,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 80,
+      "end_line": 80,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -241209,8 +241477,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 76,
+      "end_line": 76,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -241218,8 +241486,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 98,
+      "end_line": 98,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent.granted_at.desc",
@@ -241227,8 +241495,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 98,
+      "end_line": 98,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent.id.desc",
@@ -241236,8 +241504,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 76,
+      "end_line": 76,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -241245,8 +241513,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 76,
+      "end_line": 76,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -241254,8 +241522,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 98,
+      "end_line": 98,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent.granted_at",
@@ -241263,8 +241531,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 98,
+      "end_line": 98,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent.id",
@@ -241272,8 +241540,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 96,
-      "end_line": 96,
+      "line": 97,
+      "end_line": 97,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent.user_id",
@@ -241281,8 +241549,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 96,
-      "end_line": 96,
+      "line": 97,
+      "end_line": 97,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent.kind.in_",
@@ -241290,8 +241558,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 98,
+      "end_line": 98,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -241299,17 +241567,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 97,
-      "end_line": 97,
-      "owner": "serialize_user",
-      "conditions": [],
-      "symbol": "app.models.Consent",
-      "expression": "Consent"
-    },
-    {
-      "path": "backend/app/services/identity/service.py",
-      "line": 95,
-      "end_line": 95,
+      "line": 98,
+      "end_line": 98,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -241326,8 +241585,17 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 96,
-      "end_line": 96,
+      "line": 97,
+      "end_line": 97,
+      "owner": "serialize_user",
+      "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
+    },
+    {
+      "path": "backend/app/services/identity/service.py",
+      "line": 97,
+      "end_line": 97,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent.kind",
@@ -241335,8 +241603,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 96,
-      "end_line": 96,
+      "line": 97,
+      "end_line": 97,
       "owner": "serialize_user",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -312033,7 +312301,7 @@
     {
       "path": "backend/app/config.py",
       "line": 6,
-      "end_line": 734,
+      "end_line": 735,
       "owner": "<module>",
       "conditions": [],
       "name": "Settings",
@@ -312041,8 +312309,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 717,
-      "end_line": 719,
+      "line": 718,
+      "end_line": 720,
       "owner": "Settings",
       "conditions": [],
       "name": "public_origin",
@@ -312050,8 +312318,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 722,
-      "end_line": 724,
+      "line": 723,
+      "end_line": 725,
       "owner": "Settings",
       "conditions": [],
       "name": "public_host",
@@ -312059,8 +312327,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 727,
-      "end_line": 729,
+      "line": 728,
+      "end_line": 730,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id",
@@ -312068,8 +312336,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 731,
-      "end_line": 734,
+      "line": 732,
+      "end_line": 735,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -320100,7 +320368,7 @@
     {
       "path": "backend/app/services/cabinet.py",
       "line": 197,
-      "end_line": 206,
+      "end_line": 209,
       "owner": "<module>",
       "conditions": [],
       "name": "SeriesInfo",
@@ -320108,8 +320376,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 209,
-      "end_line": 210,
+      "line": 212,
+      "end_line": 213,
       "owner": "<module>",
       "conditions": [],
       "name": "_pick",
@@ -320117,8 +320385,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 213,
-      "end_line": 276,
+      "line": 216,
+      "end_line": 293,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_series",
@@ -320126,8 +320394,17 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 281,
-      "end_line": 282,
+      "line": 296,
+      "end_line": 322,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_cpi_yoy_values",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 327,
+      "end_line": 328,
       "owner": "<module>",
       "conditions": [],
       "name": "is_new",
@@ -320135,8 +320412,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 285,
-      "end_line": 303,
+      "line": 331,
+      "end_line": 350,
       "owner": "<module>",
       "conditions": [],
       "name": "watch_out",
@@ -320144,8 +320421,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 306,
-      "end_line": 309,
+      "line": 353,
+      "end_line": 356,
       "owner": "<module>",
       "conditions": [],
       "name": "list_watches",
@@ -320153,8 +320430,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 312,
-      "end_line": 315,
+      "line": 359,
+      "end_line": 362,
       "owner": "<module>",
       "conditions": [],
       "name": "watches_with_info",
@@ -320162,8 +320439,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 318,
-      "end_line": 351,
+      "line": 365,
+      "end_line": 398,
       "owner": "<module>",
       "conditions": [],
       "name": "add_watch",
@@ -320171,8 +320448,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 354,
-      "end_line": 365,
+      "line": 401,
+      "end_line": 412,
       "owner": "<module>",
       "conditions": [],
       "name": "mark_seen",
@@ -320180,8 +320457,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 370,
-      "end_line": 379,
+      "line": 417,
+      "end_line": 426,
       "owner": "<module>",
       "conditions": [],
       "name": "export_out",
@@ -320189,8 +320466,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 382,
-      "end_line": 408,
+      "line": 429,
+      "end_line": 455,
       "owner": "<module>",
       "conditions": [],
       "name": "record_export",
@@ -320198,8 +320475,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 413,
-      "end_line": 414,
+      "line": 460,
+      "end_line": 461,
       "owner": "<module>",
       "conditions": [],
       "name": "get_prefs_row",
@@ -320207,8 +320484,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 417,
-      "end_line": 427,
+      "line": 464,
+      "end_line": 474,
       "owner": "<module>",
       "conditions": [],
       "name": "put_prefs",
@@ -320216,8 +320493,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 432,
-      "end_line": 433,
+      "line": 479,
+      "end_line": 480,
       "owner": "<module>",
       "conditions": [],
       "name": "hash_token",
@@ -320225,8 +320502,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 436,
-      "end_line": 447,
+      "line": 483,
+      "end_line": 494,
       "owner": "<module>",
       "conditions": [],
       "name": "rotate_feed_token",
@@ -320234,8 +320511,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 450,
-      "end_line": 457,
+      "line": 497,
+      "end_line": 504,
       "owner": "<module>",
       "conditions": [],
       "name": "revoke_feed_token",
@@ -320243,8 +320520,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 460,
-      "end_line": 464,
+      "line": 507,
+      "end_line": 511,
       "owner": "<module>",
       "conditions": [],
       "name": "user_id_by_feed_token",
@@ -320252,8 +320529,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 467,
-      "end_line": 469,
+      "line": 514,
+      "end_line": 516,
       "owner": "<module>",
       "conditions": [],
       "name": "_ics_escape",
@@ -320261,8 +320538,8 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 472,
-      "end_line": 489,
+      "line": 519,
+      "end_line": 536,
       "owner": "<module>",
       "conditions": [],
       "name": "_ics_fold",
@@ -320270,8 +320547,17 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 492,
-      "end_line": 551,
+      "line": 548,
+      "end_line": 591,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_personal_event_lines",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 594,
+      "end_line": 634,
       "owner": "<module>",
       "conditions": [],
       "name": "build_personal_ics",
@@ -326777,8 +327063,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 18,
-      "end_line": 19,
+      "line": 19,
+      "end_line": 20,
       "owner": "<module>",
       "conditions": [],
       "name": "EmailAlreadyExists",
@@ -326786,8 +327072,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 22,
-      "end_line": 23,
+      "line": 23,
+      "end_line": 24,
       "owner": "<module>",
       "conditions": [],
       "name": "_utcnow",
@@ -326795,8 +327081,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 26,
-      "end_line": 44,
+      "line": 27,
+      "end_line": 45,
       "owner": "<module>",
       "conditions": [],
       "name": "register_email",
@@ -326804,8 +327090,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 47,
-      "end_line": 59,
+      "line": 48,
+      "end_line": 60,
       "owner": "<module>",
       "conditions": [],
       "name": "authenticate_email",
@@ -326813,8 +327099,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 62,
-      "end_line": 68,
+      "line": 63,
+      "end_line": 69,
       "owner": "<module>",
       "conditions": [],
       "name": "get_user",
@@ -326822,8 +327108,8 @@
     },
     {
       "path": "backend/app/services/identity/service.py",
-      "line": 71,
-      "end_line": 114,
+      "line": 72,
+      "end_line": 118,
       "owner": "<module>",
       "conditions": [],
       "name": "serialize_user",
@@ -372581,19 +372867,37 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 366,
+      "end_line": 366,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.services.cabinet.WATCH_KINDS"
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 368,
+      "end_line": 368,
       "owner": "add_watch",
       "conditions": [],
       "symbol": "app.services.cabinet.WATCH_CHANNELS"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 562,
+      "end_line": 562,
+      "owner": "_personal_event_lines",
+      "conditions": [],
+      "symbol": "app.services.cabinet._ICS_SOURCE_NAMES"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 578,
+      "end_line": 578,
+      "owner": "_personal_event_lines",
+      "conditions": [
+        "len(hhmm) == 5 and hhmm[2] == ':' and hhmm[:2].isdigit() and hhmm[3:].isdigit()"
+      ],
+      "symbol": "app.services.cabinet._MSK_OFFSET"
     },
     {
       "path": "backend/app/services/cabinet.py",
@@ -372615,8 +372919,24 @@
     },
     {
       "path": "backend/app/services/cabinet.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 304,
+      "end_line": 304,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.api.indicators._HERO_FROM_YOY_SIBLING"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 304,
+      "end_line": 304,
+      "owner": "_cpi_yoy_values",
+      "conditions": [],
+      "symbol": "app.api.indicators._HERO_FROM_YOY_SIBLING"
+    },
+    {
+      "path": "backend/app/services/cabinet.py",
+      "line": 438,
+      "end_line": 438,
       "owner": "record_export",
       "conditions": [],
       "symbol": "app.services.cabinet._SOURCE_RE"

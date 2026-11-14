@@ -218,8 +218,9 @@ export default function ProfilePanel() {
           {fieldRow(t('common.email'), user.email)}
           {user.phone && fieldRow(t('account.phone'), user.phone)}
         </dl>
-        {user.has_password && user.email && user.email_verified === false && (
-          <div data-testid="account-verify-email" className="mt-3 rounded-xl bg-champagne/10 px-3.5 py-3 text-sm text-text-secondary fe-shadow-2">
+        {/* Плашка только если письма сайта реально уходят (`mail_available`, 14.11.2026); подложка холодная, не золотая (принцип 3). */}
+        {user.has_password && user.email && user.email_verified === false && user.mail_available !== false && (
+          <div data-testid="account-verify-email" className="mt-3 rounded-xl bg-[rgb(44_74_138/0.06)] px-3.5 py-3 text-sm text-text-secondary fe-shadow-2">
             <p role="status">{verifyState === 'sent' ? t('mail.verify.resent') : t('mail.verify.banner')}</p>
             {verifyState !== 'sent' && (
               <Button variant="ghost" size="sm" className="mt-1 -ml-2 px-2" loading={verifyState === 'busy'}

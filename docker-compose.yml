@@ -376,6 +376,8 @@ services:
       RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED: ${RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED:-false}
       # Личный кабинет: false = /api/v1/cabinet/* отвечает 404 (кроме /cabinet/config); ничего не отправляется.
       RUSTATS_CABINET_ENABLED: ${RUSTATS_CABINET_ENABLED:-false}
+      # Личный кабинет: включён с 14.11.2026; false в .env = аварийно выключить (/api/v1/cabinet/* → 404, кроме /cabinet/config).
+      RUSTATS_CABINET_ENABLED: ${RUSTATS_CABINET_ENABLED:-true}
       # PWA: аварийные выключатели без пересборки фронта (по умолчанию включено).
       RUSTATS_PWA_ENABLED: ${RUSTATS_PWA_ENABLED:-true}
       RUSTATS_PWA_INSTALL_PROMPT_ENABLED: ${RUSTATS_PWA_INSTALL_PROMPT_ENABLED:-true}

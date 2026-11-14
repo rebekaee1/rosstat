@@ -9,14 +9,14 @@
 - ORM tables: **81**
 - DTO schemas (own fields + resolved inherited bases): **53**
 - Settings fields: **316**
-- Settings reads: **791**
+- Settings reads: **793**
 - Direct environment reads: **36**
 - Jobs: **63**
 - Middleware: **6**
-- Registry declarations: **1504**
-- Registry references: **2811**
+- Registry declarations: **1506**
+- Registry references: **2815**
 - Migration operations: **500**
-- Candidate effects: **3102**
+- Candidate effects: **3104**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -2135,63 +2135,63 @@ Relationships: `[]`
 | RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:581](../backend/app/config.py#L581) |
 | RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:582](../backend/app/config.py#L582) |
 | RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:588](../backend/app/config.py#L588) |
-| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:596](../backend/app/config.py#L596) |
-| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:603](../backend/app/config.py#L603) |
-| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:604](../backend/app/config.py#L604) |
-| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:615](../backend/app/config.py#L615) |
-| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:616](../backend/app/config.py#L616) |
-| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:617](../backend/app/config.py#L617) |
-| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:618](../backend/app/config.py#L618) |
-| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:619](../backend/app/config.py#L619) |
-| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:620](../backend/app/config.py#L620) |
-| RUSTATS_MAIL_ENABLED | bool = False | 11 | [backend/app/config.py:632](../backend/app/config.py#L632) |
-| RUSTATS_MAIL_SMTP_HOST | str = 'smtp.yandex.ru' | 5 | [backend/app/config.py:633](../backend/app/config.py#L633) |
-| RUSTATS_MAIL_SMTP_PORT | int = 465 | 4 | [backend/app/config.py:634](../backend/app/config.py#L634) |
-| RUSTATS_MAIL_SMTP_SECURITY | str = 'ssl' | 3 | [backend/app/config.py:635](../backend/app/config.py#L635) |
-| RUSTATS_MAIL_SMTP_USER | str = '' | 11 | [backend/app/config.py:636](../backend/app/config.py#L636) |
-| RUSTATS_MAIL_SMTP_PASSWORD | str = '' | 7 | [backend/app/config.py:637](../backend/app/config.py#L637) |
-| RUSTATS_MAIL_SMTP_TIMEOUT_SECONDS | float = 20.0 | 1 | [backend/app/config.py:638](../backend/app/config.py#L638) |
-| RUSTATS_MAIL_FROM_ADDRESS | str = '' | 2 | [backend/app/config.py:639](../backend/app/config.py#L639) |
-| RUSTATS_MAIL_FROM_NAME | str = 'Forecast Economy' | 2 | [backend/app/config.py:640](../backend/app/config.py#L640) |
-| RUSTATS_MAIL_REPLY_TO | str = 'info@forecasteconomy.com' | 4 | [backend/app/config.py:641](../backend/app/config.py#L641) |
-| RUSTATS_MAIL_ALLOWLIST | str = 'rebeka.ee@yandex.ru' | 1 | [backend/app/config.py:642](../backend/app/config.py#L642) |
-| RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 5 | [backend/app/config.py:643](../backend/app/config.py#L643) |
-| RUSTATS_MAIL_TOKEN_SECRET | str = '' | 6 | [backend/app/config.py:646](../backend/app/config.py#L646) |
-| RUSTATS_MAIL_CAMPAIGN_MAX_PER_RUN | int = 250 | 2 | [backend/app/config.py:649](../backend/app/config.py#L649) |
-| RUSTATS_MAIL_CAMPAIGN_PAUSE_SECONDS | float = 4.0 | 2 | [backend/app/config.py:650](../backend/app/config.py#L650) |
-| RUSTATS_MAIL_LINK_ORIGIN_RU | str = '' | 2 | [backend/app/config.py:653](../backend/app/config.py#L653) |
-| RUSTATS_MAIL_LINK_ORIGIN_EN | str = '' | 1 | [backend/app/config.py:654](../backend/app/config.py#L654) |
-| RUSTATS_MAIL_BULK_SMTP_HOST | str = '' | 3 | [backend/app/config.py:658](../backend/app/config.py#L658) |
-| RUSTATS_MAIL_BULK_SMTP_PORT | int = 587 | 1 | [backend/app/config.py:659](../backend/app/config.py#L659) |
-| RUSTATS_MAIL_BULK_SMTP_SECURITY | str = 'starttls' | 1 | [backend/app/config.py:660](../backend/app/config.py#L660) |
-| RUSTATS_MAIL_BULK_SMTP_USER | str = '' | 1 | [backend/app/config.py:661](../backend/app/config.py#L661) |
-| RUSTATS_MAIL_BULK_SMTP_PASSWORD | str = '' | 1 | [backend/app/config.py:662](../backend/app/config.py#L662) |
-| RUSTATS_MAIL_BULK_FROM_ADDRESS | str = '' | 1 | [backend/app/config.py:663](../backend/app/config.py#L663) |
-| RUSTATS_MAIL_BOUNCE_POLL_ENABLED | bool = False | 4 | [backend/app/config.py:667](../backend/app/config.py#L667) |
-| RUSTATS_MAIL_IMAP_HOST | str = 'imap.yandex.ru' | 2 | [backend/app/config.py:668](../backend/app/config.py#L668) |
-| RUSTATS_MAIL_IMAP_PORT | int = 993 | 2 | [backend/app/config.py:669](../backend/app/config.py#L669) |
-| RUSTATS_MAIL_WATCH_DIGEST_ENABLED | bool = False | 5 | [backend/app/config.py:672](../backend/app/config.py#L672) |
-| RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK | int = 10 | 3 | [backend/app/config.py:673](../backend/app/config.py#L673) |
-| RUSTATS_NEWSLETTER_PERSONAL_ENABLED | bool = False | 1 | [backend/app/config.py:681](../backend/app/config.py#L681) |
-| RUSTATS_NEWSLETTER_PERSONAL_BEHAVIOR_SIGNALS | bool = False | 2 | [backend/app/config.py:682](../backend/app/config.py#L682) |
-| RUSTATS_NEWSLETTER_PERSONAL_CLICK_TOKEN | bool = False | 1 | [backend/app/config.py:683](../backend/app/config.py#L683) |
-| RUSTATS_NEWSLETTER_PERSONAL_HOLDOUT_PCT | int = 0 | 1 | [backend/app/config.py:685](../backend/app/config.py#L685) |
-| RUSTATS_NEWSLETTER_PERSONAL_SUBJECT_AB_PCT | int = 50 | 1 | [backend/app/config.py:687](../backend/app/config.py#L687) |
-| RUSTATS_NEWSLETTER_PERSONAL_BUILD_ENABLED | bool = False | 1 | [backend/app/config.py:689](../backend/app/config.py#L689) |
-| RUSTATS_NEWSLETTER_PERSONAL_BUILD_WEEKDAY | str = 'thu' | 2 | [backend/app/config.py:690](../backend/app/config.py#L690) |
-| RUSTATS_NEWSLETTER_PERSONAL_BUILD_HOUR_MSK | int = 7 | 2 | [backend/app/config.py:691](../backend/app/config.py#L691) |
-| RUSTATS_NEWSLETTER_PERSONAL_BUILD_MINUTE | int = 40 | 2 | [backend/app/config.py:692](../backend/app/config.py#L692) |
-| RUSTATS_NEWSLETTER_PERSONAL_ISSUE_PATH | str = '' | 1 | [backend/app/config.py:694](../backend/app/config.py#L694) |
-| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_HOUR_MSK | int = 0 | 2 | [backend/app/config.py:696](../backend/app/config.py#L696) |
-| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_MINUTE | int = 40 | 2 | [backend/app/config.py:697](../backend/app/config.py#L697) |
-| RUSTATS_NEWSLETTER_PERSONAL_SEND_START_HOUR | int = 8 | 1 | [backend/app/config.py:699](../backend/app/config.py#L699) |
-| RUSTATS_NEWSLETTER_PERSONAL_SEND_END_HOUR | int = 21 | 1 | [backend/app/config.py:700](../backend/app/config.py#L700) |
-| RUSTATS_NEWSLETTER_PERSONAL_MIN_DAYS_BETWEEN | int = 6 | 1 | [backend/app/config.py:702](../backend/app/config.py#L702) |
-| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED | bool = False | 1 | [backend/app/config.py:704](../backend/app/config.py#L704) |
-| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_DAYS | int = 60 | 1 | [backend/app/config.py:705](../backend/app/config.py#L705) |
-| RUSTATS_NEWSLETTER_PERSONAL_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:707](../backend/app/config.py#L707) |
-| RUSTATS_NEWSLETTER_PERSONAL_BATCH_PAUSE_SECONDS | float = 0.5 | 1 | [backend/app/config.py:708](../backend/app/config.py#L708) |
-| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:712](../backend/app/config.py#L712) |
+| RUSTATS_CABINET_ENABLED | bool = True | 5 | [backend/app/config.py:597](../backend/app/config.py#L597) |
+| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:604](../backend/app/config.py#L604) |
+| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:605](../backend/app/config.py#L605) |
+| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:616](../backend/app/config.py#L616) |
+| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:617](../backend/app/config.py#L617) |
+| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:618](../backend/app/config.py#L618) |
+| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:619](../backend/app/config.py#L619) |
+| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:620](../backend/app/config.py#L620) |
+| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:621](../backend/app/config.py#L621) |
+| RUSTATS_MAIL_ENABLED | bool = False | 12 | [backend/app/config.py:633](../backend/app/config.py#L633) |
+| RUSTATS_MAIL_SMTP_HOST | str = 'smtp.yandex.ru' | 5 | [backend/app/config.py:634](../backend/app/config.py#L634) |
+| RUSTATS_MAIL_SMTP_PORT | int = 465 | 4 | [backend/app/config.py:635](../backend/app/config.py#L635) |
+| RUSTATS_MAIL_SMTP_SECURITY | str = 'ssl' | 3 | [backend/app/config.py:636](../backend/app/config.py#L636) |
+| RUSTATS_MAIL_SMTP_USER | str = '' | 11 | [backend/app/config.py:637](../backend/app/config.py#L637) |
+| RUSTATS_MAIL_SMTP_PASSWORD | str = '' | 7 | [backend/app/config.py:638](../backend/app/config.py#L638) |
+| RUSTATS_MAIL_SMTP_TIMEOUT_SECONDS | float = 20.0 | 1 | [backend/app/config.py:639](../backend/app/config.py#L639) |
+| RUSTATS_MAIL_FROM_ADDRESS | str = '' | 2 | [backend/app/config.py:640](../backend/app/config.py#L640) |
+| RUSTATS_MAIL_FROM_NAME | str = 'Forecast Economy' | 2 | [backend/app/config.py:641](../backend/app/config.py#L641) |
+| RUSTATS_MAIL_REPLY_TO | str = 'info@forecasteconomy.com' | 4 | [backend/app/config.py:642](../backend/app/config.py#L642) |
+| RUSTATS_MAIL_ALLOWLIST | str = 'rebeka.ee@yandex.ru' | 1 | [backend/app/config.py:643](../backend/app/config.py#L643) |
+| RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 5 | [backend/app/config.py:644](../backend/app/config.py#L644) |
+| RUSTATS_MAIL_TOKEN_SECRET | str = '' | 7 | [backend/app/config.py:647](../backend/app/config.py#L647) |
+| RUSTATS_MAIL_CAMPAIGN_MAX_PER_RUN | int = 250 | 2 | [backend/app/config.py:650](../backend/app/config.py#L650) |
+| RUSTATS_MAIL_CAMPAIGN_PAUSE_SECONDS | float = 4.0 | 2 | [backend/app/config.py:651](../backend/app/config.py#L651) |
+| RUSTATS_MAIL_LINK_ORIGIN_RU | str = '' | 2 | [backend/app/config.py:654](../backend/app/config.py#L654) |
+| RUSTATS_MAIL_LINK_ORIGIN_EN | str = '' | 1 | [backend/app/config.py:655](../backend/app/config.py#L655) |
+| RUSTATS_MAIL_BULK_SMTP_HOST | str = '' | 3 | [backend/app/config.py:659](../backend/app/config.py#L659) |
+| RUSTATS_MAIL_BULK_SMTP_PORT | int = 587 | 1 | [backend/app/config.py:660](../backend/app/config.py#L660) |
+| RUSTATS_MAIL_BULK_SMTP_SECURITY | str = 'starttls' | 1 | [backend/app/config.py:661](../backend/app/config.py#L661) |
+| RUSTATS_MAIL_BULK_SMTP_USER | str = '' | 1 | [backend/app/config.py:662](../backend/app/config.py#L662) |
+| RUSTATS_MAIL_BULK_SMTP_PASSWORD | str = '' | 1 | [backend/app/config.py:663](../backend/app/config.py#L663) |
+| RUSTATS_MAIL_BULK_FROM_ADDRESS | str = '' | 1 | [backend/app/config.py:664](../backend/app/config.py#L664) |
+| RUSTATS_MAIL_BOUNCE_POLL_ENABLED | bool = False | 4 | [backend/app/config.py:668](../backend/app/config.py#L668) |
+| RUSTATS_MAIL_IMAP_HOST | str = 'imap.yandex.ru' | 2 | [backend/app/config.py:669](../backend/app/config.py#L669) |
+| RUSTATS_MAIL_IMAP_PORT | int = 993 | 2 | [backend/app/config.py:670](../backend/app/config.py#L670) |
+| RUSTATS_MAIL_WATCH_DIGEST_ENABLED | bool = False | 5 | [backend/app/config.py:673](../backend/app/config.py#L673) |
+| RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK | int = 10 | 3 | [backend/app/config.py:674](../backend/app/config.py#L674) |
+| RUSTATS_NEWSLETTER_PERSONAL_ENABLED | bool = False | 1 | [backend/app/config.py:682](../backend/app/config.py#L682) |
+| RUSTATS_NEWSLETTER_PERSONAL_BEHAVIOR_SIGNALS | bool = False | 2 | [backend/app/config.py:683](../backend/app/config.py#L683) |
+| RUSTATS_NEWSLETTER_PERSONAL_CLICK_TOKEN | bool = False | 1 | [backend/app/config.py:684](../backend/app/config.py#L684) |
+| RUSTATS_NEWSLETTER_PERSONAL_HOLDOUT_PCT | int = 0 | 1 | [backend/app/config.py:686](../backend/app/config.py#L686) |
+| RUSTATS_NEWSLETTER_PERSONAL_SUBJECT_AB_PCT | int = 50 | 1 | [backend/app/config.py:688](../backend/app/config.py#L688) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_ENABLED | bool = False | 1 | [backend/app/config.py:690](../backend/app/config.py#L690) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_WEEKDAY | str = 'thu' | 2 | [backend/app/config.py:691](../backend/app/config.py#L691) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_HOUR_MSK | int = 7 | 2 | [backend/app/config.py:692](../backend/app/config.py#L692) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_MINUTE | int = 40 | 2 | [backend/app/config.py:693](../backend/app/config.py#L693) |
+| RUSTATS_NEWSLETTER_PERSONAL_ISSUE_PATH | str = '' | 1 | [backend/app/config.py:695](../backend/app/config.py#L695) |
+| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_HOUR_MSK | int = 0 | 2 | [backend/app/config.py:697](../backend/app/config.py#L697) |
+| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_MINUTE | int = 40 | 2 | [backend/app/config.py:698](../backend/app/config.py#L698) |
+| RUSTATS_NEWSLETTER_PERSONAL_SEND_START_HOUR | int = 8 | 1 | [backend/app/config.py:700](../backend/app/config.py#L700) |
+| RUSTATS_NEWSLETTER_PERSONAL_SEND_END_HOUR | int = 21 | 1 | [backend/app/config.py:701](../backend/app/config.py#L701) |
+| RUSTATS_NEWSLETTER_PERSONAL_MIN_DAYS_BETWEEN | int = 6 | 1 | [backend/app/config.py:703](../backend/app/config.py#L703) |
+| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED | bool = False | 1 | [backend/app/config.py:705](../backend/app/config.py#L705) |
+| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_DAYS | int = 60 | 1 | [backend/app/config.py:706](../backend/app/config.py#L706) |
+| RUSTATS_NEWSLETTER_PERSONAL_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:708](../backend/app/config.py#L708) |
+| RUSTATS_NEWSLETTER_PERSONAL_BATCH_PAUSE_SECONDS | float = 0.5 | 1 | [backend/app/config.py:709](../backend/app/config.py#L709) |
+| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:713](../backend/app/config.py#L713) |
 
 ## Registries and declarations
 
@@ -2619,6 +2619,8 @@ Relationships: `[]`
 | app.services.cabinet.FORBIDDEN_KEYS | Call | computed source expression | [backend/app/services/cabinet.py:55](../backend/app/services/cabinet.py#L55) |
 | app.services.cabinet._CTRL_RE | Call | computed source expression | [backend/app/services/cabinet.py:57](../backend/app/services/cabinet.py#L57) |
 | app.services.cabinet._SOURCE_RE | Call | computed source expression | [backend/app/services/cabinet.py:58](../backend/app/services/cabinet.py#L58) |
+| app.services.cabinet._ICS_SOURCE_NAMES | Dict | 'rosstat', 'cbr', 'minfin' | [backend/app/services/cabinet.py:540](../backend/app/services/cabinet.py#L540) |
+| app.services.cabinet._MSK_OFFSET | Call | computed source expression | [backend/app/services/cabinet.py:545](../backend/app/services/cabinet.py#L545) |
 | app.services.calculation_engine.DERIVED_SPECS | List | sequence/source expression | [backend/app/services/calculation_engine.py:66](../backend/app/services/calculation_engine.py#L66) |
 | app.services.calendar_digest.FEEDS | Tuple | sequence/source expression | [backend/app/services/calendar_digest.py:24](../backend/app/services/calendar_digest.py#L24) |
 | app.services.calendar_digest.KEY_CODES | Dict | 'cpi', 'key-rate', 'ipi', 'ppi', 'unemployment', 'wages-nominal', 'retail-trade', 'gdp-real', 'budget-revenue' | [backend/app/services/calendar_digest.py:35](../backend/app/services/calendar_digest.py#L35) |

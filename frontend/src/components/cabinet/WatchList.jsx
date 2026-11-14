@@ -16,7 +16,9 @@ function latestText(w, t, locale) {
   if (!w.latest_date) return t('c11b.watch.noData');
   const period = formatPeriodShort(w.latest_date, w.frequency || 'annual', locale);
   if (w.latest_value == null) return t('c11b.watch.latestDate', { period });
-  return t('c11b.watch.latest', { value: formatValueWithUnit(w.latest_value, w.unit || '', undefined, locale), period });
+  const value = formatValueWithUnit(w.latest_value, w.unit || '', undefined, locale);
+  // Индекс цен сервер отдаёт годовым изменением (как в шапке страницы показателя), подпись говорит об этом прямо.
+  return t(w.value_basis === 'yoy' ? 'c11b.watch.latestYoy' : 'c11b.watch.latest', { value, period });
 }
 
 function WatchRow({ w, t, locale, onSeen, onStop }) {
@@ -88,6 +90,7 @@ export default function WatchList() {
     setSeenBusy(false);
   };
   const stop = (w) => removeWatch(w.subject_kind, w.subject_key);
+  const rest = feed.watches.filter((w) => !w.is_new);
 
   return (
     <div>
@@ -104,12 +107,13 @@ export default function WatchList() {
       ) : null}
 
       <section className="c11b-group" aria-label={t('c11b.watch.title')}>
-        <h3 className="c11b-group__title">{t('c11b.watch.title')}</h3>
-        {feed.watches.length ? (
+        {rest.length || !feed.watches.length ? <h3 className="c11b-group__title">{t('c11b.watch.title')}</h3> : null}
+        {/* Новое уже стоит строкой выше: второй раз тот же ряд не показываем (круг 13, «ряд виден дважды»). */}
+        {rest.length ? (
           <ul className="c11b-list">
-            {feed.watches.map((w) => <WatchRow key={w.id} w={w} t={t} locale={locale} onSeen={feed.markSeen} onStop={stop} />)}
+            {rest.map((w) => <WatchRow key={w.id} w={w} t={t} locale={locale} onSeen={feed.markSeen} onStop={stop} />)}
           </ul>
-        ) : (
+        ) : feed.watches.length ? null : (
           <div className="c11b-empty">
             <p>{t('c11b.watch.empty')}</p>
             <Button as={Link} to="/russia" variant="secondary" size="sm">{t('c11b.watch.emptyCta')}</Button>

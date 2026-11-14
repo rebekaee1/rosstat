@@ -7,7 +7,8 @@ import Register from './Register';
 vi.mock('../context/authContext', () => ({ useAuth: () => ({ setUser: vi.fn() }) }));
 vi.mock('../lib/api', () => ({
   registerUser: vi.fn(),
-  fetchOAuthProviders: vi.fn(async () => ['yandex', 'vk']),
+  // Google подключён (как на боевом): регистрация через него пока ведёт на форму почты (решение волны 6).
+  fetchOAuthProviders: vi.fn(async () => ['yandex', 'vk', 'google']),
   oauthStartUrl: vi.fn(() => '/oauth'),
 }));
 vi.mock('../lib/useMeta', () => ({ default: vi.fn() }));

@@ -862,6 +862,14 @@ SSR-страницы страны и рейтинга вставляют `<pictu
 
 `lib/cabinetPrefs.js` применяет сохранённые `number_format`, `currency`, `home_country` (источник — `GET /cabinet/prefs`, схема `user_preferences` не менялась). `locale`, `units`, `newsletter_topics` по-прежнему только хранятся. Перенос избранного гостя (`cabinetStore.syncGuest`) убирает из браузера только подтверждённое сервером; при `limit_reached` остаются запись, упёршаяся в предел, остаток порции и непосланные порции. Запись `region` + `slug:код` — звезда на показателе региона, ключ профиля региона не менялся; миграции записей нет. Выгрузка диапазона мировых показателей называется `{страна}_{код}_{режим}_{с}_{по}` и содержит название, источник, ссылку на источник, частоту.
 
+### Кабинет 14.11.2026: включён по умолчанию, уточнения контракта
+
+- `RUSTATS_CABINET_ENABLED` по умолчанию `true` (код, compose, `.env.example`); `false` — аварийное выключение, поведение выключенного кабинета прежнее ([ADR-0019](adr/0019-personal-cabinet-behind-flag.md)).
+- `GET /cabinet/watches`, `/feed`, `POST /watches`: у строки новое поле `value_basis` (`null` — значение ряда как есть; `"yoy"` — годовое изменение, %). Для кодов `CPI_INDEX_CODES` с близнецом из `api/indicators._HERO_FROM_YOY_SIBLING` `latest_value` — значение близнеца на ту же дату, `unit="%"`; нет точки близнеца — `latest_value=null`. Это же число получает письмо «колокольчика» (`mail/watch_digest` читает `resolve_series`). У `subject_kind="region"` `country_name` = «Регионы России» / «Russian regions» (слежение по всем регионам).
+- `GET /cabinet/calendar.ics`: события со временем — `DTSTART`/`DTEND` (30 мин) в UTC от МСК, без времени — `VALUE=DATE` с `DTEND`; `TRANSP:TRANSPARENT`; `UID`/`SEQUENCE` как у общего календаря (перенос сдвигает событие); описание: перенос даты, время «по Москве», «Источник: Росстат / Банк России / Минфин России»; `URL` — страница показателя на сайте (`mail.service.site_link` по языку хоста), не файл источника. Журналы nginx пишут этот путь без query.
+- `GET /auth/me` (`identity.service.user_payload`): новое поле `mail_available` (`mail_enabled` и `mail_token_secret`); кабинет показывает «Подтвердите почту» только при `true`.
+- Клиент: правки избранного, сделанные пока список кабинета грузится, накладываются на пришедший список (`cabinetStore.savedEdits`); при полном кабинете (`saved.length >= limits.saved`) `syncGuest` пачку не отправляет и ставит `importResult {imported: 0, limitReached: true}`.
+
 <a id="c13-2026-10-12"></a>
 
 ## 2026-10-12 — круг 13: контракты (локально, `circle13/int`, не выпущено)

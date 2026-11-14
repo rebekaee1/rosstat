@@ -13,12 +13,14 @@ import { authErrorCode, authErrorField, clearAuthTrigger, signupParams } from '.
 import { cn } from '../lib/format';
 import Button from '../components/Button';
 import { usePrefersReducedMotion } from '../lib/chartHooks';
+import { useCabinetConfig } from '../lib/useCabinet';
 import '../styles/w5-pages.css';
 import '../styles/k8-tools.css';
 
 export default function Register() {
   const t = useT();
   useDocumentMeta({ title: t('auth.register.metaTitle'), path: '/register', robots: 'noindex, nofollow' });
+  const cabinet = useCabinetConfig();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { setUser } = useAuth();
@@ -121,6 +123,8 @@ export default function Register() {
       <ul className="fe-w7p-benefits" aria-label={t('w7p.reg.benefitsAria')}>
         <li>{t('w7p.reg.b1')}</li>
         <li>{t('w7p.reg.b2')}</li>
+        {/* Кабинет включён (14.11.2026): аккаунт даёт ещё избранное и слежение за выходом данных. */}
+        {cabinet.enabled ? <li>{t('w7p.reg.bCabinet')}</li> : null}
         <li>{t('w7p.reg.b3')}</li>
       </ul>
 
