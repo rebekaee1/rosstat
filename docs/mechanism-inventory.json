@@ -1065,8 +1065,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "sha256": "18645b54e208c2fb33ab277a8551833678b48883132939e63e0126f867c3393d",
-      "lines": 675
+      "sha256": "f06930cf3cb8ef7310327e082598eb4f77010b5de3cc78bb1b51d34db459a983",
+      "lines": 674
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -95805,8 +95805,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 536,
-      "end_line": 550,
+      "line": 535,
+      "end_line": 549,
       "owner": "<module>",
       "conditions": [],
       "name": "_EN_MONTHS_NOM",
@@ -95822,8 +95822,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 638,
-      "end_line": 641,
+      "line": 637,
+      "end_line": 640,
       "owner": "<module>",
       "conditions": [],
       "name": "_TEMPLATE_ANNUAL_KIND",
@@ -294196,8 +294196,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 412,
-      "end_line": 422,
+      "line": 411,
+      "end_line": 421,
       "owner": "<module>",
       "conditions": [],
       "name": "_decimals_in",
@@ -294205,8 +294205,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 425,
-      "end_line": 431,
+      "line": 424,
+      "end_line": 430,
       "owner": "<module>",
       "conditions": [],
       "name": "world_series_digits",
@@ -294214,8 +294214,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 434,
-      "end_line": 456,
+      "line": 433,
+      "end_line": 455,
       "owner": "<module>",
       "conditions": [],
       "name": "format_fixed",
@@ -294223,8 +294223,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 459,
-      "end_line": 501,
+      "line": 458,
+      "end_line": 500,
       "owner": "<module>",
       "conditions": [],
       "name": "format_number_ru",
@@ -294232,8 +294232,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 504,
-      "end_line": 526,
+      "line": 503,
+      "end_line": 525,
       "owner": "<module>",
       "conditions": [],
       "name": "display_value_text",
@@ -294241,8 +294241,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 529,
-      "end_line": 533,
+      "line": 528,
+      "end_line": 532,
       "owner": "<module>",
       "conditions": [],
       "name": "format_date_ru",
@@ -294250,8 +294250,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 553,
-      "end_line": 588,
+      "line": 552,
+      "end_line": 587,
       "owner": "<module>",
       "conditions": [],
       "name": "value_period_phrase",
@@ -294259,8 +294259,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 591,
-      "end_line": 595,
+      "line": 590,
+      "end_line": 594,
       "owner": "<module>",
       "conditions": [],
       "name": "format_month_ru",
@@ -294268,8 +294268,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 598,
-      "end_line": 609,
+      "line": 597,
+      "end_line": 608,
       "owner": "<module>",
       "conditions": [],
       "name": "format_month_year",
@@ -294277,8 +294277,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 612,
-      "end_line": 628,
+      "line": 611,
+      "end_line": 627,
       "owner": "<module>",
       "conditions": [],
       "name": "format_date_locale",
@@ -294286,8 +294286,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 644,
-      "end_line": 655,
+      "line": 643,
+      "end_line": 654,
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary_kind",
@@ -294295,8 +294295,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 658,
-      "end_line": 675,
+      "line": 657,
+      "end_line": 674,
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary",
@@ -339670,32 +339670,32 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 533,
-      "end_line": 533,
+      "line": 532,
+      "end_line": 532,
       "owner": "format_date_ru",
       "conditions": [],
       "symbol": "app.services.display._RU_MONTHS_GEN"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 595,
-      "end_line": 595,
+      "line": 594,
+      "end_line": 594,
       "owner": "format_month_ru",
       "conditions": [],
       "symbol": "app.services.display._RU_MONTHS_NOM"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 650,
-      "end_line": 650,
+      "line": 649,
+      "end_line": 649,
       "owner": "annual_summary_kind",
       "conditions": [],
       "symbol": "app.data.view_model_families.FAMILY_BY_BASE"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 654,
-      "end_line": 654,
+      "line": 653,
+      "end_line": 653,
       "owner": "annual_summary_kind",
       "conditions": [
         "fam is not None"
@@ -339720,8 +339720,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 587,
-      "end_line": 587,
+      "line": 586,
+      "end_line": 586,
       "owner": "value_period_phrase",
       "conditions": [
         "freq.startswith('month')"
@@ -339730,8 +339730,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 608,
-      "end_line": 608,
+      "line": 607,
+      "end_line": 607,
       "owner": "format_month_year",
       "conditions": [
         "loc == 'en'"
@@ -339740,8 +339740,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 626,
+      "end_line": 626,
       "owner": "format_date_locale",
       "conditions": [
         "loc == 'en'"
@@ -339750,8 +339750,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 579,
+      "end_line": 579,
       "owner": "value_period_phrase",
       "conditions": [
         "loc == 'en'",

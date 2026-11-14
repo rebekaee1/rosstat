@@ -49922,7 +49922,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/worldApi.js": {
-    "sha256": "2c73d7212d43d3781c7c0224a6c47dcb691e8bbbcb10510726c20b4a8c32561c",
+    "sha256": "d321614acde2518752975db9873ab20a93d00f520873571664b5c38803fe1770",
     "definitions": [
       {
         "name": "localeKey",
@@ -50183,57 +50183,63 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "decimalsIn",
+        "line": 435,
+        "end_line": 441,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "worldValueDigits",
-        "line": 439,
-        "end_line": 444,
+        "line": 448,
+        "end_line": 453,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatWorldValue",
-        "line": 450,
-        "end_line": 460,
+        "line": 459,
+        "end_line": 469,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyUnitEn",
-        "line": 484,
-        "end_line": 492,
+        "line": 493,
+        "end_line": 501,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyUnitRu",
-        "line": 511,
-        "end_line": 518,
+        "line": 520,
+        "end_line": 527,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "localizeWorldUnit",
-        "line": 521,
-        "end_line": 526,
+        "line": 530,
+        "end_line": 535,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pluralRu",
-        "line": 529,
-        "end_line": 536,
+        "line": 538,
+        "end_line": 545,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionId",
-        "line": 565,
-        "end_line": 569,
+        "line": 574,
+        "end_line": 578,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupCountriesByRegion",
-        "line": 576,
-        "end_line": 599,
+        "line": 585,
+        "end_line": 608,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupCountriesByRegion.rank",
-        "line": 588,
-        "end_line": 591,
+        "line": 597,
+        "end_line": 600,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -50416,40 +50422,40 @@
         "names": [
           "worldValueDigits"
         ],
-        "line": 439
+        "line": 448
       },
       {
         "names": [
           "formatWorldValue"
         ],
-        "line": 450
+        "line": 459
       },
       {
         "names": [
           "localizeWorldUnit"
         ],
-        "line": 521
+        "line": 530
       },
       {
         "names": [
           "pluralRu"
         ],
-        "line": 529
+        "line": 538
       },
       {
         "names": [
           "countryRegionId"
         ],
-        "line": 565
+        "line": 574
       },
       {
         "names": [
           "groupCountriesByRegion"
         ],
-        "line": 576
+        "line": 585
       }
     ],
-    "anonymous_functions": 19
+    "anonymous_functions": 18
   },
   "frontend/src/lib/worldApi.test.js": {
     "sha256": "b7194785d0cc84b58d5710e0bc4cc278242a4667f203061a24a2c296623e5354",

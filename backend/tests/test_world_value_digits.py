@@ -1,7 +1,7 @@
 """Точность чисел ряда страны мира на сервере — правило SPA (14.11.2026).
 
 Случаи общие с фронтендом: ``frontend/src/lib/worldValueDigits.cases.json`` читает и
-``worldValueDigits.test.js``. Сервер отступает только для рядов меньше единицы по модулю.
+``worldValueDigits.test.js``. Ряд меньше единицы по модулю — до четырёх знаков с обеих сторон.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ def _plain(text: str) -> str:
     return text.replace("\u00a0", " ").replace("\u202f", " ").replace("\u2212", "-")
 
 
-@pytest.mark.parametrize("case", CASES["cases"] + CASES["server_only"], ids=lambda c: str(c["values"]))
+@pytest.mark.parametrize("case", CASES["cases"], ids=lambda c: str(c["values"]))
 def test_same_digits_and_text_as_spa(case):
     digits = world_series_digits(case["values"])
     assert digits == case["digits"]

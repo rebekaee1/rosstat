@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "fc49fb00048c1d9b687b86b877c754ce0719e07d",
+  "baseline_commit": "8d1d6514943b9a89c87ef97ae8b92a4d42105eb3",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
@@ -9,17 +9,17 @@
     "files": 2463,
     "attempted": 2099,
     "files_with_nodes": 2006,
-    "nodes": 24836,
-    "symbol_edges": 77946,
+    "nodes": 24837,
+    "symbol_edges": 77950,
     "file_edges": 17928,
     "projection_omissions": {
       "external_or_unresolved_file": 2987,
       "missing_endpoint": 4377,
-      "within_file": 33817
+      "within_file": 33819
     },
     "confidence": {
-      "EXTRACTED": 70777,
-      "INFERRED": 7169
+      "EXTRACTED": 70778,
+      "INFERRED": 7172
     }
   },
   "overview": {
@@ -289,7 +289,7 @@
         "source": "docs",
         "target": "client",
         "file_relations": 189,
-        "symbol_relations": 272
+        "symbol_relations": 273
       },
       {
         "source": "docs",
@@ -343,7 +343,7 @@
         "source": "docs",
         "target": "services",
         "file_relations": 386,
-        "symbol_relations": 883
+        "symbol_relations": 884
       },
       {
         "source": "docs",
@@ -999,7 +999,7 @@
     {"path": "backend/app/services/demand_router.py", "kind": "code", "bytes": 13262, "lines": 263, "sha256": "4939fe54787858b05e92158b70829daa14619ccc04a598e46b746f104c5923c5", "symlink": false, "nodes": 12, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/demographics.py", "kind": "code", "bytes": 3136, "lines": 81, "sha256": "2b99be0608c4488f91951dc470a38e93c238e8cc40dac05ee1b77246f5e54f3d", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/derived_ops.py", "kind": "code", "bytes": 41800, "lines": 840, "sha256": "e234d58a20c105443c569d8b7ace647c1af2dd4ff08818aae7c6427a150aa7b5", "symlink": false, "nodes": 64, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/app/services/display.py", "kind": "code", "bytes": 31331, "lines": 675, "sha256": "18645b54e208c2fb33ab277a8551833678b48883132939e63e0126f867c3393d", "symlink": false, "nodes": 45, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/app/services/display.py", "kind": "code", "bytes": 31210, "lines": 674, "sha256": "f06930cf3cb8ef7310327e082598eb4f77010b5de3cc78bb1b51d34db459a983", "symlink": false, "nodes": 45, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/ecb_fx_parser.py", "kind": "code", "bytes": 5995, "lines": 145, "sha256": "d5644302324249a3f8f400a3bf944bcdd63cba491d3a3c3d4a44a3d7e0c051e6", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/emiss_labor_parser.py", "kind": "code", "bytes": 4309, "lines": 95, "sha256": "df73ac114c37e767e750df444b5114943480846a1b673a01700b079da2c4d8cc", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/emiss_regional_parser.py", "kind": "code", "bytes": 27021, "lines": 535, "sha256": "99d97a1aa8a5b8eba45892280cb08c9b50d892356f64c900370c037c7b4b09aa", "symlink": false, "nodes": 29, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
@@ -1697,7 +1697,7 @@
     {"path": "backend/tests/test_world_superseded.py", "kind": "code", "bytes": 9646, "lines": 190, "sha256": "0d4dcfc20530d5cf2f50811dea14526585d90562e2f4be32ea7332c278121fd5", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_world_truthfulness.py", "kind": "code", "bytes": 12253, "lines": 338, "sha256": "7c43e163c88564b9ddda832e93f2ff02cb2c8fb4439915967f8a44c49d5f8df8", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_world_us_bls_bea_adapters.py", "kind": "code", "bytes": 5698, "lines": 194, "sha256": "4247171b5c11c330f067af7dbdaf8523c3501dc3f15ddc7d56c81b0323e2e593", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/tests/test_world_value_digits.py", "kind": "code", "bytes": 2646, "lines": 56, "sha256": "60081463c095351d2bc4f317c9c0683f2daf306d60c7b236f3040d14a771b025", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/tests/test_world_value_digits.py", "kind": "code", "bytes": 2631, "lines": 56, "sha256": "36608cf4b710d7989fd260d4a9b26da39174e39ae7f6cc3a44f7755a48165fb4", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_world_vs_yoy_kind.py", "kind": "code", "bytes": 12019, "lines": 204, "sha256": "7022d041cd7cdd15cac85e4fdd66c43c9a9bd72f3877f31be6e6297bdea0880d", "symlink": false, "nodes": 19, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_yandex_clean_param.py", "kind": "code", "bytes": 1686, "lines": 45, "sha256": "65698d672dd6e9fb746556f098a4180f5860fa972f7d4148937cf9f39e7afb86", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/tests/test_yandex_partner_stats.py", "kind": "code", "bytes": 4699, "lines": 158, "sha256": "070a073e39d53cd0df4b56724a98b3c1074c21e563f1706312fd893dc564f907", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
@@ -1779,10 +1779,10 @@
     {"path": "docs/architecture.md", "kind": "document", "bytes": 97723, "lines": 468, "sha256": "2ac4f63b944117233d2ee2bd629aefecf437d8cb370373f5aeeb722302998ec5", "symlink": false, "nodes": 32, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/backlog.md", "kind": "document", "bytes": 747188, "lines": 3502, "sha256": "e68a5f6eaa03f71c184b17b68c99e1a091fb63bca7668f4ad221386bd352c6fb", "symlink": false, "nodes": 190, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/circle-playbook.md", "kind": "document", "bytes": 26180, "lines": 124, "sha256": "157a0677237f20afde22faf1bb85e95c88802c3a9bbb30742831a68485bc7daf", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7251008, "lines": 255382, "sha256": "319e253dc769a07c2da6227eea1f3a7e8ec191c35ac8353cf36fc8dca9d7b474", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7250996, "lines": 255382, "sha256": "0673f2c4e16ddc9d080f48f8d039830ebfec58e39f1845e8700d6f76fc46d7f2", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 13421, "lines": 137, "sha256": "0cad696a18c3243d7f5d3ad960313940ee830f7b7ee9304567e31f77a7a58308", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 31882, "lines": 161, "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/data-contracts.md", "kind": "document", "bytes": 368074, "lines": 1227, "sha256": "c5abc96dd7735a857d681fa27f0a9bc5380f97a18adbe3d29501cb02b34297bf", "symlink": false, "nodes": 101, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/data-contracts.md", "kind": "document", "bytes": 368256, "lines": 1227, "sha256": "6ea2264bb29aa37318b98eed63a6c526fbd12c0a074922176017a8a5ccc79ed3", "symlink": false, "nodes": 101, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/data_sources.md", "kind": "document", "bytes": 118834, "lines": 760, "sha256": "8a376ca1985fb7ccacaebcd1e1d2ecdf6959dcf9c0ecb8fec8b7456cd58e1a74", "symlink": false, "nodes": 39, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/dead-code-report.md", "kind": "document", "bytes": 12346, "lines": 82, "sha256": "18766a1f5a124b7a6279d793bdf19ca132aceef8c06f22408776eba440aa1d8c", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/design-system.md", "kind": "document", "bytes": 250832, "lines": 499, "sha256": "a5f94d1ea1000f31d5e3720be748ae969f603831e5cf001b24742cacd78dc23f", "symlink": false, "nodes": 20, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1823,12 +1823,12 @@
     {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 71833, "lines": 329, "sha256": "147b05690e456e8661c25d38bcf253fabae3b72f9e7855d50e1e3b53cffb908d", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3853696, "lines": 136368, "sha256": "c9d4292d70825292778f98c993899dea3a94c0b3f06e0291005ba56f660fa5fe", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3853696, "lines": 136368, "sha256": "770935c65d70edccc8a25f9b0fde0b07f3dd979a0075394620bc8091cce1d709", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 160576, "lines": 1824, "sha256": "fbc8ec18bd24efd490f8f5ca7174a630a641eb406c088266d4229acca9a9c734", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 78988, "lines": 201, "sha256": "a5670704d34f7972eab4841833474f7bf7df9d8929596f1524097545e4561b30", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12199351, "lines": 365751, "sha256": "4b773050e5aec8b14dddf04f2c6451aeb9cf3c2c8d1cbe8e27dff03c4ea42dce", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 628082, "lines": 3394, "sha256": "880bd3437bb2ab57f40d0e6ebbaf4b804fcb527c6fb9d85092ef2bb773b53c0d", "symlink": false, "nodes": 84, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12199351, "lines": 365751, "sha256": "06790f1254b95baa4370b9c4464ee7845c7c8d5285dc72dd1c6a46b026d2aa29", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 628082, "lines": 3394, "sha256": "d41d510dde2659cda40f07d562b20d8476e7b7200d38f001227b14e15b5330fd", "symlink": false, "nodes": 84, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/offsite-backup-runbook.md", "kind": "document", "bytes": 8720, "lines": 74, "sha256": "96fb520148401f8994a2f2eaf202f547e5b136cdc0a5874ef6203b3500b25ef9", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/planet-view.md", "kind": "document", "bytes": 96534, "lines": 594, "sha256": "734f228d975268e7c0eade45272be4df6549d4df43d9ae9bbfaa2661ce241a92", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -2810,7 +2810,7 @@
     {"path": "frontend/src/lib/w6f.test.js", "kind": "code", "bytes": 8924, "lines": 128, "sha256": "fca9b70b788e127735808377573eba1bfc2b8455a619736d0a9726d0ce15946b", "symlink": false, "nodes": 1, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/w6g-libs.test.js", "kind": "code", "bytes": 23005, "lines": 418, "sha256": "5e7a9da602dd52bd449306190bb66395525b5322d9c98726f4ff9f72bc500b8b", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldApi.cached.test.jsx", "kind": "code", "bytes": 1863, "lines": 39, "sha256": "e4583bc8f8176084db936072f510f2974233b2badbe5b2574983e0c83f6408cb", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
-    {"path": "frontend/src/lib/worldApi.js", "kind": "code", "bytes": 24611, "lines": 599, "sha256": "2c73d7212d43d3781c7c0224a6c47dcb691e8bbbcb10510726c20b4a8c32561c", "symlink": false, "nodes": 44, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
+    {"path": "frontend/src/lib/worldApi.js", "kind": "code", "bytes": 25199, "lines": 608, "sha256": "d321614acde2518752975db9873ab20a93d00f520873571664b5c38803fe1770", "symlink": false, "nodes": 45, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldApi.test.js", "kind": "code", "bytes": 6622, "lines": 143, "sha256": "b7194785d0cc84b58d5710e0bc4cc278242a4667f203061a24a2c296623e5354", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldCompareSearch.js", "kind": "code", "bytes": 2464, "lines": 49, "sha256": "320970a9507e5950d8846b31e48db1141766394a3728a59a13e89bea53b521de", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldCompareSearch.test.js", "kind": "code", "bytes": 1367, "lines": 28, "sha256": "668b65d94b79d06c55f6ac47848d20e99bcfe96c9e8c6c6c26380510121e373c", "symlink": false, "nodes": 1, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
@@ -2826,7 +2826,7 @@
     {"path": "frontend/src/lib/worldMocks.test.js", "kind": "code", "bytes": 759, "lines": 17, "sha256": "1d70ff004c849d96355d30ffd55548cc84eeb55ea23f7ff70ef59497ed1fb94a", "symlink": false, "nodes": 1, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldSubnationalApi.js", "kind": "code", "bytes": 2831, "lines": 80, "sha256": "e19fb4d30be75a6adebfb867af735a3c1107f4ceef982f3749cce1f0d1fd397d", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldTopology.js", "kind": "code", "bytes": 2556, "lines": 57, "sha256": "4493b882f3405a65580775ffdcf02bb633946672c76ba83db02bfaba77c116aa", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
-    {"path": "frontend/src/lib/worldValueDigits.cases.json", "kind": "asset/data/config", "bytes": 1333, "lines": 17, "sha256": "a2245497fef319a2877698cc723f5f0ce5168e278cd1b3581925265c59d6de13", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
+    {"path": "frontend/src/lib/worldValueDigits.cases.json", "kind": "asset/data/config", "bytes": 1426, "lines": 16, "sha256": "477419adc374a6270c5b7321cdde6ba9d14f9c190fd1894eaa7abe5dcdc4e9a7", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldValueDigits.test.js", "kind": "code", "bytes": 887, "lines": 17, "sha256": "1d62ad548617a9f9e9ce1df642a517b6bd2c2ebc007f3b98661180ed7e1cd22b", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldViewModes.js", "kind": "code", "bytes": 21660, "lines": 606, "sha256": "2344da4c9da646dfda761639dd594f0cfafd44653b280fdf7681ca78f4223c77", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "client", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/lib/worldViewModes.test.js", "kind": "code", "bytes": 15059, "lines": 348, "sha256": "7218ec359d152690da36f6971061a7be1bf142a424cc2546694159ffb1d1e5d7", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
@@ -12010,7 +12010,7 @@
     {"source": "docs/data-contracts.md", "target": "backend/app/services/clickhouse_sync.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/data-contracts.md", "line": "L71", "source": "ClickHouse: append event-копия", "target": "resync()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/derived_ops.py", "relation": "references", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "docs/data-contracts.md", "line": "L325", "source": "3. Мировые ряды и актуальность источника", "target": "yoy()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/display.py", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L487", "source": "Круг 08.10.2026: инфляция России, единица процентных рядов, лента, рейтинги (локально, не выпущено)", "target": "plain_unit_en()"}]},
-    {"source": "docs/data-contracts.md", "target": "backend/app/services/display.py", "relation": "references", "confidence": "INFERRED", "count": 5, "evidence": [{"file": "docs/data-contracts.md", "line": "L465", "source": "Язык ответов API и кэш: `Vary: X-FE-Locale`", "target": "public_unit_en()"}]},
+    {"source": "docs/data-contracts.md", "target": "backend/app/services/display.py", "relation": "references", "confidence": "INFERRED", "count": 6, "evidence": [{"file": "docs/data-contracts.md", "line": "L465", "source": "Язык ответов API и кэш: `Vary: X-FE-Locale`", "target": "public_unit_en()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/fetcher.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L548", "source": "Круг 11 (09.10.2026): аналитика и отчёты Telegram — `user_signups`, `daily_goal_dims`, `site_locale`, приватность (локально, не выпущено)", "target": ".download()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/forecast_showcase.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/data-contracts.md", "line": "L339", "source": "4. Субнациональные данные вне России", "target": "rank()"}]},
     {"source": "docs/data-contracts.md", "target": "backend/app/services/fred_parser.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/data-contracts.md", "line": "L513", "source": "Круг 10 (08.10.2026, правки из звонка «НА ПРАВКИ 23»): лента курсов, сравнение, поиск (локально, не выпущено)", "target": "_fetch_eia_brent()"}]},
@@ -12156,7 +12156,7 @@
     {"source": "docs/data-contracts.md", "target": "frontend/src/lib/track.js", "relation": "references", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "docs/data-contracts.md", "line": "L533", "source": "Круг 11 (09.10.2026): личный кабинет за флагом, `POST /export/grid`, браузерные ключи (локально, не выпущено)", "target": "track()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/lib/useIndicatorViewModeData.js", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L498", "source": "Круг 9 (08.10.2026, волна 2): курсы ЦБ лира и тенге, «Главное» страны, поиск, ЕЦБ (локально, не выпущено)", "target": "useIndicatorViewModeData()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/lib/worldApi.js", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L769", "source": "Каталог страны мира: `GET /api/v1/world/countries/{slug}?slim=1`", "target": "useWorldCountry()"}]},
-    {"source": "docs/data-contracts.md", "target": "frontend/src/lib/worldApi.js", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/data-contracts.md", "line": "L769", "source": "Каталог страны мира: `GET /api/v1/world/countries/{slug}?slim=1`", "target": "expandSlimCountry()"}]},
+    {"source": "docs/data-contracts.md", "target": "frontend/src/lib/worldApi.js", "relation": "references", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "docs/data-contracts.md", "line": "L769", "source": "Каталог страны мира: `GET /api/v1/world/countries/{slug}?slim=1`", "target": "expandSlimCountry()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/lib/z2Price.js", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/data-contracts.md", "line": "L1108", "source": "2026-11-09 — круг 5: соседи цены, клиентские инструменты (локально, не выпущено)", "target": "pairKey()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/pages/C9E.component.test.jsx", "relation": "references", "confidence": "INFERRED", "count": 5, "evidence": [{"file": "docs/data-contracts.md", "line": "L325", "source": "3. Мировые ряды и актуальность источника", "target": "cpi()"}]},
     {"source": "docs/data-contracts.md", "target": "frontend/src/pages/CalculatorsC11e.component.test.jsx", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/data-contracts.md", "line": "L1013", "source": "Публичный Telegram-бот — 2026-11-08", "target": "inflation()"}]},
@@ -18276,7 +18276,7 @@
     {"source": "frontend/src/lib/worldApi.js", "target": "frontend/src/lib/api.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/lib/worldApi.js", "line": "L252", "source": "useWorldSearch()", "target": "fetchWorldSearch()"}]},
     {"source": "frontend/src/lib/worldApi.js", "target": "frontend/src/lib/api.js", "relation": "imports", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "frontend/src/lib/worldApi.js", "line": "L5", "source": "worldApi.js", "target": "fetchWorldSearch()"}]},
     {"source": "frontend/src/lib/worldApi.js", "target": "frontend/src/lib/api.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/lib/worldApi.js", "line": "L5", "source": "worldApi.js", "target": "api.js"}]},
-    {"source": "frontend/src/lib/worldApi.js", "target": "frontend/src/lib/format.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/lib/worldApi.js", "line": "L459", "source": "formatWorldValue()", "target": "formatValue()"}]},
+    {"source": "frontend/src/lib/worldApi.js", "target": "frontend/src/lib/format.js", "relation": "calls", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/lib/worldApi.js", "line": "L468", "source": "formatWorldValue()", "target": "formatValue()"}]},
     {"source": "frontend/src/lib/worldApi.js", "target": "frontend/src/lib/format.js", "relation": "imports", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/lib/worldApi.js", "line": "L6", "source": "worldApi.js", "target": "formatValue()"}]},
     {"source": "frontend/src/lib/worldApi.js", "target": "frontend/src/lib/format.js", "relation": "imports_from", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "frontend/src/lib/worldApi.js", "line": "L6", "source": "worldApi.js", "target": "format.js"}]},
     {"source": "frontend/src/lib/worldApi.js", "target": "frontend/src/lib/sitePaths.js", "relation": "calls", "confidence": "EXTRACTED", "count": 3, "evidence": [{"file": "frontend/src/lib/worldApi.js", "line": "L294", "source": "ratingHref()", "target": "worldRatingPath()"}]},

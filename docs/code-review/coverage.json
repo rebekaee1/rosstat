@@ -29,8 +29,8 @@
       "data_schema_reviewed": 8,
       "reviewed": 2193
     },
-    "definitions": 16050,
-    "annotated_definitions": 16050,
+    "definitions": 16051,
+    "annotated_definitions": 16051,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -3521,9 +3521,9 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "sha256": "18645b54e208c2fb33ab277a8551833678b48883132939e63e0126f867c3393d",
-      "bytes": 31331,
-      "lines": 675,
+      "sha256": "f06930cf3cb8ef7310327e082598eb4f77010b5de3cc78bb1b51d34db459a983",
+      "bytes": 31210,
+      "lines": 674,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -12595,8 +12595,8 @@
     },
     {
       "path": "backend/tests/test_world_value_digits.py",
-      "sha256": "60081463c095351d2bc4f317c9c0683f2daf306d60c7b236f3040d14a771b025",
-      "bytes": 2646,
+      "sha256": "36608cf4b710d7989fd260d4a9b26da39174e39ae7f6cc3a44f7755a48165fb4",
+      "bytes": 2631,
       "lines": 56,
       "code": true,
       "status": "reviewed",
@@ -13661,8 +13661,8 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "319e253dc769a07c2da6227eea1f3a7e8ec191c35ac8353cf36fc8dca9d7b474",
-      "bytes": 7251008,
+      "sha256": "0673f2c4e16ddc9d080f48f8d039830ebfec58e39f1845e8700d6f76fc46d7f2",
+      "bytes": 7250996,
       "lines": 255382,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -13700,8 +13700,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "c5abc96dd7735a857d681fa27f0a9bc5380f97a18adbe3d29501cb02b34297bf",
-      "bytes": 368074,
+      "sha256": "6ea2264bb29aa37318b98eed63a6c526fbd12c0a074922176017a8a5ccc79ed3",
+      "bytes": 368256,
       "lines": 1227,
       "code": false,
       "status": "reviewed",
@@ -14233,7 +14233,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "c9d4292d70825292778f98c993899dea3a94c0b3f06e0291005ba56f660fa5fe",
+      "sha256": "770935c65d70edccc8a25f9b0fde0b07f3dd979a0075394620bc8091cce1d709",
       "bytes": 3853696,
       "lines": 136368,
       "code": false,
@@ -14285,7 +14285,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "4b773050e5aec8b14dddf04f2c6451aeb9cf3c2c8d1cbe8e27dff03c4ea42dce",
+      "sha256": "06790f1254b95baa4370b9c4464ee7845c7c8d5285dc72dd1c6a46b026d2aa29",
       "bytes": 12199351,
       "lines": 365751,
       "code": false,
@@ -14298,7 +14298,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "880bd3437bb2ab57f40d0e6ebbaf4b804fcb527c6fb9d85092ef2bb773b53c0d",
+      "sha256": "d41d510dde2659cda40f07d562b20d8476e7b7200d38f001227b14e15b5330fd",
       "bytes": 628082,
       "lines": 3394,
       "code": false,
@@ -27064,15 +27064,15 @@
     },
     {
       "path": "frontend/src/lib/worldApi.js",
-      "sha256": "2c73d7212d43d3781c7c0224a6c47dcb691e8bbbcb10510726c20b4a8c32561c",
-      "bytes": 24611,
-      "lines": 599,
+      "sha256": "d321614acde2518752975db9873ab20a93d00f520873571664b5c38803fe1770",
+      "bytes": 25199,
+      "lines": 608,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 52,
-      "annotated_definitions": 52,
+      "definitions": 53,
+      "annotated_definitions": 53,
       "missing_definitions": []
     },
     {
@@ -27272,9 +27272,9 @@
     },
     {
       "path": "frontend/src/lib/worldValueDigits.cases.json",
-      "sha256": "a2245497fef319a2877698cc723f5f0ce5168e278cd1b3581925265c59d6de13",
-      "bytes": 1333,
-      "lines": 17,
+      "sha256": "477419adc374a6270c5b7321cdde6ba9d14f9c190fd1894eaa7abe5dcdc4e9a7",
+      "bytes": 1426,
+      "lines": 16,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -32056,9 +32056,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "d7a9fe3cf6155201c9ce10a160813ce31a0851b4932f460416cfe32bd25d3234",
-  "javascript_inventory_sha256": "0a6aa61a57976704924aba499cbb07db53c63041f4f25972adcd407dd1dcbff5",
-  "baseline_commit": "fc49fb00048c1d9b687b86b877c754ce0719e07d",
+  "ledger_sha256": "4c1ba78e97e831a37ddba6159c097e3af5d1a647a6418be99efcf3f3002b279f",
+  "javascript_inventory_sha256": "cef0653318d4af6db5c8bec62e5b489cf5a094aaaedaccd7a5f0ac34c6dbee8d",
+  "baseline_commit": "8d1d6514943b9a89c87ef97ae8b92a4d42105eb3",
   "branch": "worktree-agent-a60cd3db86caaa5f2",
   "unstaged_at_capture": []
 }

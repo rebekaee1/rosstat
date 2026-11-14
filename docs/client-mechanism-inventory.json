@@ -183303,7 +183303,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/worldApi.js": {
-      "sha256": "2c73d7212d43d3781c7c0224a6c47dcb691e8bbbcb10510726c20b4a8c32561c",
+      "sha256": "d321614acde2518752975db9873ab20a93d00f520873571664b5c38803fe1770",
       "imports": [
         {
           "line": 4,
@@ -183871,104 +183871,104 @@
           "callback_context": null
         },
         {
-          "line": 439,
-          "end_line": 444,
+          "line": 435,
+          "end_line": 441,
+          "owner": "<module>",
+          "name": "decimalsIn",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 448,
+          "end_line": 453,
           "owner": "<module>",
           "name": "worldValueDigits",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 440,
-          "end_line": 443,
-          "owner": "worldValueDigits",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "values.map"
-        },
-        {
-          "line": 450,
-          "end_line": 460,
+          "line": 459,
+          "end_line": 469,
           "owner": "<module>",
           "name": "formatWorldValue",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 484,
-          "end_line": 492,
+          "line": 493,
+          "end_line": 501,
           "owner": "<module>",
           "name": "tidyUnitEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 511,
-          "end_line": 518,
+          "line": 520,
+          "end_line": 527,
           "owner": "<module>",
           "name": "tidyUnitRu",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 521,
-          "end_line": 526,
+          "line": 530,
+          "end_line": 535,
           "owner": "<module>",
           "name": "localizeWorldUnit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 529,
-          "end_line": 536,
+          "line": 538,
+          "end_line": 545,
           "owner": "<module>",
           "name": "pluralRu",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 565,
-          "end_line": 569,
+          "line": 574,
+          "end_line": 578,
           "owner": "<module>",
           "name": "countryRegionId",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 576,
-          "end_line": 599,
+          "line": 585,
+          "end_line": 608,
           "owner": "<module>",
           "name": "groupCountriesByRegion",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 588,
-          "end_line": 591,
+          "line": 597,
+          "end_line": 600,
           "owner": "groupCountriesByRegion",
           "name": "rank",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 593,
-          "end_line": 597,
+          "line": 602,
+          "end_line": 606,
           "owner": "groupCountriesByRegion",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...map.values()]\n    .map"
         },
         {
-          "line": 596,
-          "end_line": 596,
-          "owner": "groupCountriesByRegion.<callback@593>",
+          "line": 605,
+          "end_line": 605,
+          "owner": "groupCountriesByRegion.<callback@602>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...group.countries].sort"
         },
         {
-          "line": 598,
-          "end_line": 598,
+          "line": 607,
+          "end_line": 607,
           "owner": "groupCountriesByRegion",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -184295,8 +184295,8 @@
       "jsx_handlers": [],
       "registries": [
         {
-          "line": 462,
-          "end_line": 481,
+          "line": 471,
+          "end_line": 490,
           "owner": "<module>",
           "name": "WORLD_UNIT_EN",
           "kind": "CallExpression",
@@ -184304,8 +184304,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 495,
-          "end_line": 509,
+          "line": 504,
+          "end_line": 518,
           "owner": "<module>",
           "name": "WORLD_UNIT_RU",
           "kind": "CallExpression",
@@ -184313,8 +184313,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 543,
-          "end_line": 554,
+          "line": 552,
+          "end_line": 563,
           "owner": "<module>",
           "name": "REGION_ID_BY_LABEL",
           "kind": "CallExpression",
@@ -184322,8 +184322,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 557,
-          "end_line": 557,
+          "line": 566,
+          "end_line": 566,
           "owner": "<module>",
           "name": "REGION_ORDER",
           "kind": "CallExpression",
@@ -184331,8 +184331,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 563,
-          "end_line": 563,
+          "line": 572,
+          "end_line": 572,
           "owner": "<module>",
           "name": "REGION_ID_BY_CODE",
           "kind": "CallExpression",
