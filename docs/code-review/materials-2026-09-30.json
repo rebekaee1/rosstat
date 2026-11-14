@@ -819,11 +819,11 @@
       "role": "domain glossary and dated invariants",
       "classification": "current",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "0b16a83cfa1831fb27632e39105f430c9758005c5cf88a1212b4033cf0999dce",
-        "bytes": 251306
+        "sha256": "23d13bc1d237bcf12f687f1bc035144cbd5e4d37d126bca53055f46599cf0916",
+        "bytes": 252012
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
@@ -831,13 +831,13 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-14",
-          "reviewer": "Claude Opus 5.5 (английский хост для Google, ADR-0031, 14.11.2026)",
-          "head": "e4049dca",
-          "branch": "worktree-agent-a60cd3db86caaa5f2",
-          "mode": "полное чтение после изменения"
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
         },
         "status_in_review": "reviewed",
-        "sha256": "0b16a83cfa1831fb27632e39105f430c9758005c5cf88a1212b4033cf0999dce"
+        "sha256": "23d13bc1d237bcf12f687f1bc035144cbd5e4d37d126bca53055f46599cf0916"
       },
       "canonical_source": "CONTEXT.md",
       "linked_mechanisms": "domain glossary and dated invariants",
@@ -4621,31 +4621,25 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "4677cd7dd60d8e84f8d239739d37fc7eee5ee6a632a3572762e285c21845f809",
-        "bytes": 32950
+        "sha256": "60307dc31a55caa74185ceefdbebf781b15175e7b141d549828fcf7392416224",
+        "bytes": 34139
       },
       "review_status": "прежнее полное чтение + содержательная дельта: diff 0dc13727..2b489e3d прочитан по изменённым диапазонам, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению текста",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-09",
-          "reviewer": "Claude Sonnet 5.5 (рецензент-субагент цикла знаний после круга 11)",
-          "head": "2b489e3d",
-          "branch": "circle11/int",
-          "mode": "прежнее полное чтение + содержательная дельта: diff 0dc13727..2b489e3d прочитан по изменённым диапазонам, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению текста",
-          "previous_sha256": "f8fc88dbd27343f0c1973bc971a33e15d36499c15d9c360f09fb3a934f3ec18d",
-          "old_commit": "0dc13727",
-          "delta_evidence": "Автор правки (оркестратор цикла знаний круга 11) написал добавленные блоки по отчётам impl4-a…impl4-h, impl4-t, impl4-int, PLAN3.md и PLAN3-analytics.md и сверил утверждения с кодом ветки circle11/int (2b489e3d: config.py, models.py, services/cabinet.py, event_params.py, searchFilters.js, docker-compose.yml, alembic-ревизии); прежнее содержимое не менялось, диапазоны разделов пересчитаны по смещению хантов.",
-          "freshly_read_definitions": 0,
-          "reanchored_definitions": 0,
-          "reanchored_nondefinition_blocks": 23
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
         },
         "status_in_review": "reviewed",
-        "sha256": "4677cd7dd60d8e84f8d239739d37fc7eee5ee6a632a3572762e285c21845f809"
+        "sha256": "60307dc31a55caa74185ceefdbebf781b15175e7b141d549828fcf7392416224"
       },
       "canonical_source": "docs/adr/0007-identity-user-accounts.md",
       "linked_mechanisms": null,
@@ -10569,11 +10563,11 @@
       "role": "one execution backlog",
       "classification": "current",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "0871be520d45da3c91d3a5ad23cb3a33597675c0c404952b3b2bc9825d6ad636",
-        "bytes": 769020
+        "sha256": "97dccbc98531f78be53e726a70d92d458455f2e9d397be4fc76ac885c372474c",
+        "bytes": 772905
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
@@ -10581,13 +10575,13 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-14",
-          "reviewer": "Claude Opus 5.5 (Google, пункт 5 утверждённого списка, 14.11.2026)",
-          "head": "b63b2c42",
-          "branch": "worktree-agent-a60cd3db86caaa5f2",
-          "mode": "полное чтение после изменения"
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
         },
         "status_in_review": "reviewed",
-        "sha256": "0871be520d45da3c91d3a5ad23cb3a33597675c0c404952b3b2bc9825d6ad636"
+        "sha256": "97dccbc98531f78be53e726a70d92d458455f2e9d397be4fc76ac885c372474c"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
@@ -12837,16 +12831,23 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "3122cb6ef0818bd000075d31cbd8e7fd2bf957b380ee3cfa664f0175bbd70227",
-        "canonical_source": "docs/client-mechanism-inventory.json"
+        "sha256": "64e167e21f8753bca5517182b0107141cde09edcc7b630691b627cda8d51bb60",
+        "canonical_source": "docs/client-mechanism-inventory.json",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "3122cb6ef0818bd000075d31cbd8e7fd2bf957b380ee3cfa664f0175bbd70227",
-        "bytes": 7270894
+        "sha256": "64e167e21f8753bca5517182b0107141cde09edcc7b630691b627cda8d51bb60",
+        "bytes": 7304319
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -13608,16 +13609,23 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "b88c3733d85eb15b3c044fdc726ecfd1641900ffe80aaaa468a93169c7ef6a1f",
-        "canonical_source": "docs/client-mechanism-inventory.md"
+        "sha256": "1b693c1d8a96ded23dd0e6d55d5f44af157fdd3c0606f6e004c43b17a0bf403c",
+        "canonical_source": "docs/client-mechanism-inventory.md",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "b88c3733d85eb15b3c044fdc726ecfd1641900ffe80aaaa468a93169c7ef6a1f",
-        "bytes": 13421
+        "sha256": "1b693c1d8a96ded23dd0e6d55d5f44af157fdd3c0606f6e004c43b17a0bf403c",
+        "bytes": 14011
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -15555,18 +15563,25 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "305dafb23ace8f66b79e0d73bac0dd21fb6259606eeee68290c843d8ebb10620",
-        "bytes": 948337
+        "sha256": "c7967373ca367f18686ad59fd3c18e76a7ff2dda210d6e26c7c744335e9f7e46",
+        "bytes": 954170
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "305dafb23ace8f66b79e0d73bac0dd21fb6259606eeee68290c843d8ebb10620",
-        "canonical_source": "scripts/audit-code-documentation.py"
+        "sha256": "c7967373ca367f18686ad59fd3c18e76a7ff2dda210d6e26c7c744335e9f7e46",
+        "canonical_source": "scripts/audit-code-documentation.py",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "canonical_source": "scripts/audit-code-documentation.py",
       "linked_mechanisms": null,
@@ -18131,16 +18146,23 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "97103d848a3ebe152f9d2430a1c9129ffa1ac2b1fcce2c386fea7253bd20607d",
-        "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
+        "sha256": "e347cd94aedb656c32031637b7d5e220034829995c9d5d4c8a64ce581372be47",
+        "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "97103d848a3ebe152f9d2430a1c9129ffa1ac2b1fcce2c386fea7253bd20607d",
-        "bytes": 7852785
+        "sha256": "e347cd94aedb656c32031637b7d5e220034829995c9d5d4c8a64ce581372be47",
+        "bytes": 7975570
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -21358,18 +21380,25 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "173cfd4555ce8d4ff8fb491a75ab441424b95957dae8ddb3b3d78b2c80747db6",
-        "bytes": 1332147
+        "sha256": "8f07ee98c3015992b72fd48d02937be38d325d45806f716f5670a5450584b040",
+        "bytes": 1337786
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "173cfd4555ce8d4ff8fb491a75ab441424b95957dae8ddb3b3d78b2c80747db6",
-        "canonical_source": "scripts/code-review-symbols.mjs"
+        "sha256": "8f07ee98c3015992b72fd48d02937be38d325d45806f716f5670a5450584b040",
+        "canonical_source": "scripts/code-review-symbols.mjs",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "canonical_source": "scripts/code-review-symbols.mjs",
       "linked_mechanisms": null,
@@ -23145,18 +23174,25 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "generated",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "781a8315da2b8774009f422de0af5afe8ca867e94ffb71d2fd2fdadd844af606",
-        "bytes": 23678521
+        "sha256": "e29d5a085cd3594967ad7bea1e0a0745d566e7ac4c693c07f5d8efed00e4d5f0",
+        "bytes": 23718529
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "781a8315da2b8774009f422de0af5afe8ca867e94ffb71d2fd2fdadd844af606",
-        "canonical_source": "docs/code-review/reviews.jsonl"
+        "sha256": "e29d5a085cd3594967ad7bea1e0a0745d566e7ac4c693c07f5d8efed00e4d5f0",
+        "canonical_source": "docs/code-review/reviews.jsonl",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
       "linked_mechanisms": null,
@@ -25678,11 +25714,11 @@
       "role": "data and boundary contracts",
       "classification": "current",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "eb2c3ee7e482b1a5fc75c960e46e339e7d94ae0e64af3d0e2713d73a869d2a9c",
-        "bytes": 387397
+        "sha256": "816acf1bb089f77cc64a9833c8a98a1dd80647acb5431b89ca3e720d75323399",
+        "bytes": 393353
       },
       "review_status": "полное чтение после изменения",
       "body_reviewed_in_this_pass": false,
@@ -25690,13 +25726,13 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
           "date": "2026-11-14",
-          "reviewer": "Claude Opus 5.5 (линия «description английского хоста», 14.11.2026)",
-          "head": "292f6940",
-          "branch": "worktree-agent-a60cd3db86caaa5f2",
-          "mode": "полное чтение после изменения"
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
         },
         "status_in_review": "reviewed",
-        "sha256": "eb2c3ee7e482b1a5fc75c960e46e339e7d94ae0e64af3d0e2713d73a869d2a9c"
+        "sha256": "816acf1bb089f77cc64a9833c8a98a1dd80647acb5431b89ca3e720d75323399"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -31420,18 +31456,25 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "2d44a27bf5322674c114b98a5fe4fbd75391b491fab403439d1e624c7235a4b7",
-        "bytes": 3864130
+        "sha256": "ffe80a7c76dd87564b925629ebc14a680860fdc8a37efadaaf871e029d7be4ac",
+        "bytes": 3864408
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "2d44a27bf5322674c114b98a5fe4fbd75391b491fab403439d1e624c7235a4b7",
-        "canonical_source": "scripts/build-indicator-index.py"
+        "sha256": "ffe80a7c76dd87564b925629ebc14a680860fdc8a37efadaaf871e029d7be4ac",
+        "canonical_source": "scripts/build-indicator-index.py",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "canonical_source": "scripts/build-indicator-index.py",
       "linked_mechanisms": "Generated map schema and semantic delta inspected: 194 annual forecast horizons shrink 2 to1; remaining changes are file reference membership/line shifts. Individual observations are outside this artifact.",
@@ -41673,16 +41716,23 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "3c123c38b0d029eb9f07b06d801aa0d0f0362e928a7fdf9539e96feea0d98e5c",
-        "canonical_source": "docs/mechanism-inventory.json"
+        "sha256": "b25c68a4f8aaea83f190224f4d04237bd9cc10b10ba7a0df3eda12a4f8cf8643",
+        "canonical_source": "docs/mechanism-inventory.json",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "3c123c38b0d029eb9f07b06d801aa0d0f0362e928a7fdf9539e96feea0d98e5c",
-        "bytes": 12365720
+        "sha256": "b25c68a4f8aaea83f190224f4d04237bd9cc10b10ba7a0df3eda12a4f8cf8643",
+        "bytes": 12482599
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -42869,16 +42919,23 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "f473e61beb5ab39791752b1f9ff31ca19ebd9ae7ffa0c39d2001da2e419fb2d4",
-        "canonical_source": "docs/mechanism-inventory.md"
+        "sha256": "af1731cb02042551056dc4dfa4843894ba730833cc1c93b65d76581c473d5d16",
+        "canonical_source": "docs/mechanism-inventory.md",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
+        }
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "f473e61beb5ab39791752b1f9ff31ca19ebd9ae7ffa0c39d2001da2e419fb2d4",
-        "bytes": 634228
+        "sha256": "af1731cb02042551056dc4dfa4843894ba730833cc1c93b65d76581c473d5d16",
+        "bytes": 641120
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -49250,28 +49307,25 @@
       "role": "dev/release procedures",
       "classification": "current_document",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "f0fd29daa2c410c5848f7bf412f719a9a24d81570526fd65346ad4ee4e3cd203",
-        "bytes": 146297
+        "sha256": "ba6c838f7779577628a2b66c9165bd800d9ada4e225fb39dbda693117f6d6f95",
+        "bytes": 150888
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после дизайн-раундов 2-4)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые диапазоны прочитаны и сверены с кодом, неизменные разделы перенесены по совпадению текста",
-          "prior_sha256": "97e2508be6fa0f09acc9e5f2d9134f141c21b00eb764fcbbf4e9b5b14ceae25d",
-          "prior_commit": "324c8cbbe4921949fce9e2a5bc117a78a0d0fd5e",
-          "delta": "2026-10-06: изменён при актуализации знаний после дизайн-раундов 2-4 (дизайн-система, ADR-0018, контракты /forecasts, ticker, SSR «Главное», 404, лимиты).",
-          "head": "0ad80ce4",
-          "branch": "integration/all-20261002"
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
         },
         "status_in_review": "reviewed",
-        "sha256": "f0fd29daa2c410c5848f7bf412f719a9a24d81570526fd65346ad4ee4e3cd203"
+        "sha256": "ba6c838f7779577628a2b66c9165bd800d9ada4e225fb39dbda693117f6d6f95"
       },
       "canonical_source": "docs/workflow.md",
       "linked_mechanisms": "dev/release procedures",
@@ -53935,25 +53989,25 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "102134c154539f5148016e9066a3a7eeaec6739672d744fd1215adadacff8704",
-        "bytes": 232511
+        "sha256": "0026cfa06f8f9702b61e91dd2f8010d697306b40ba79ac9eaa7e37df5dac4806",
+        "bytes": 234194
       },
       "review_status": "полное чтение файла; для изменённых файлов — прежний разбор определений по имени с новой строкой плюс содержательная дельта 97615779..6809f6f5 и разбор новых определений",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-11-09",
-          "reviewer": "Claude Sonnet 5.5 (исполнитель цикла знаний после десятого круга правок данных)",
-          "head": "6809f6f5",
-          "branch": "circle-data/int",
-          "mode": "полное чтение файла; для изменённых файлов — прежний разбор определений по имени с новой строкой плюс содержательная дельта 97615779..6809f6f5 и разбор новых определений"
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
         },
         "status_in_review": "reviewed",
-        "sha256": "102134c154539f5148016e9066a3a7eeaec6739672d744fd1215adadacff8704"
+        "sha256": "0026cfa06f8f9702b61e91dd2f8010d697306b40ba79ac9eaa7e37df5dac4806"
       },
       "canonical_source": "frontend/src/i18n/messages.en.js",
       "linked_mechanisms": "English UI dictionary fully read: navigation, data/forecast states, comparison controls, auth/consent, calculators, country/region surfaces and methodology. New shared-base, official-cadence and loading wording matches changed consumers.",
@@ -55693,25 +55747,25 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "4c268b4ee9200664e66808d9eb8f341f596ff214",
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "198381ea5169ed52c67667a83c1cbbe467b4cc7d7d06eff4d06481b51e3d8f81",
-        "bytes": 329917
+        "sha256": "2448bd2e2777768203c6da71561ac1684950cac23567bb8f5bf4173073ea472c",
+        "bytes": 332432
       },
       "review_status": "полное чтение файла; для изменённых файлов — прежний разбор определений по имени с новой строкой плюс содержательная дельта 97615779..6809f6f5 и разбор новых определений",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-11-09",
-          "reviewer": "Claude Sonnet 5.5 (исполнитель цикла знаний после десятого круга правок данных)",
-          "head": "6809f6f5",
-          "branch": "circle-data/int",
-          "mode": "полное чтение файла; для изменённых файлов — прежний разбор определений по имени с новой строкой плюс содержательная дельта 97615779..6809f6f5 и разбор новых определений"
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "содержательная дельта автора; генерируемые файлы — выход генератора"
         },
         "status_in_review": "reviewed",
-        "sha256": "198381ea5169ed52c67667a83c1cbbe467b4cc7d7d06eff4d06481b51e3d8f81"
+        "sha256": "2448bd2e2777768203c6da71561ac1684950cac23567bb8f5bf4173073ea472c"
       },
       "canonical_source": "frontend/src/i18n/messages.ru.js",
       "linked_mechanisms": "Russian UI delta updates Russia-only regional scope and comparison shared-date/official-frequency/HICP/empty/loading explanations alongside English keys.",
@@ -58583,6 +58637,39 @@
           }
         }
       ],
+      "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/adr/0032-email-channel-service-mail-and-newsletter.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/.claude/worktrees/agent-ac64d35e8ddbf65a5/docs/adr/0032-email-channel-service-mail-and-newsletter.md",
+      "repository_path": "docs/adr/0032-email-channel-service-mail-and-newsletter.md",
+      "format": ".md",
+      "role": "project material",
+      "classification": "current",
+      "canonical_source": "docs/adr/0032-email-channel-service-mail-and-newsletter.md",
+      "linked_mechanisms": null,
+      "review_status": "полное чтение после изменения",
+      "body_reviewed_in_this_pass": false,
+      "review_basis": {
+        "proposal": "docs/code-review/reviews.jsonl",
+        "review_provenance": {
+          "date": "2026-11-14",
+          "reviewer": "Claude Opus 5.5 (агент почты, ADR-0032)",
+          "head": "7a6fac5a",
+          "branch": "worktree-agent-ac64d35e8ddbf65a5",
+          "mode": "полное чтение нового файла автором"
+        },
+        "status_in_review": "reviewed",
+        "sha256": "48105549fd96a192435cf2d9cd05da0defc5412994fde8b0de1c4f9a881764e4"
+      },
+      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "source_version": {
+        "main": "7a6fac5a2d24312c47f3b3011b518a432eab1615",
+        "scope": "tracked/index",
+        "date": "2026-09-30",
+        "sha256": "48105549fd96a192435cf2d9cd05da0defc5412994fde8b0de1c4f9a881764e4",
+        "bytes": 13539
+      },
       "current_delta_reviewed_in_this_pass": false
     }
   ],

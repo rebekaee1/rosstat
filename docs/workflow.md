@@ -671,6 +671,37 @@ Telegram-only route: заполнить RUSTATS_TELEGRAM_PROXY_URL в серве
 
 Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).
 
+## Почта сайта (ADR-0032)
+
+Решение — [ADR-0032](adr/0032-email-channel-service-mail-and-newsletter.md), контракт — [data-contracts](data-contracts.md#почта-сайта--2026-11-14). На 14.11.2026 код в ветке агента, не выпущен; пароля SMTP нет ни на сервере, ни на Mac.
+
+**Пароль приложения (делает владелец; агент пароль не создаёт, не видит и не вводит).**
+1. Ящик-отправитель. Предложение: существующий `info@forecasteconomy.com` (ответы людей придут туда же, отдельное место в Яндекс 360 не нужно). Отдельный `noreply@` — новый сотрудник в Яндекс 360 (возможно, платное место).
+2. Под этим ящиком: mail.yandex.ru → «Все настройки» → «Почтовые программы» → включить «С сервера imap.yandex.ru по протоколу IMAP» и «Пароли приложений и OAuth-токены» → «Сохранить». Если пункта нет — в admin.yandex.ru администратор разрешает пароли приложений для организации.
+3. id.yandex.ru → «Безопасность» → «Пароли приложений» → «Создать» → «Почта» → имя `forecasteconomy-site` → скопировать (показывается один раз).
+4. Сразу в Терминале Mac (пароль берётся из буфера, на экран не выводится, буфер очищается):
+   ```bash
+   mkdir -p ~/.config && umask 077 && printf 'RUSTATS_MAIL_SMTP_USER=info@forecasteconomy.com\nRUSTATS_MAIL_SMTP_PASSWORD=%s\n' "$(pbpaste)" > ~/.config/fe-mail.env && pbcopy </dev/null && echo готово
+   ```
+
+**Проверочное письмо с Mac (до выпуска; ссылки в письме ведут на боевой сайт и до выпуска открывают 404).**
+```bash
+cd backend && set -a && . ~/.config/fe-mail.env && set +a && export RUSTATS_MAIL_ENABLED=true RUSTATS_MAIL_TOKEN_SECRET=$(openssl rand -hex 32)
+.venv/bin/python scripts/mail.py check                                   # вход на SMTP без письма
+.venv/bin/python scripts/mail.py test --to rebeka.ee@yandex.ru --no-db  # 6 писем: ru/en × подтверждение, сброс, рассылка
+```
+В Яндекс Почте у полученного письма «⋯» → «Свойства письма»: в `Authentication-Results` ждём `spf=pass`, `dkim=pass header.d=forecasteconomy.com`, `dmarc=pass`.
+
+**Включение на сервере (по команде владельца, после выпуска с миграцией `20261114_mail_outbox`).**
+```bash
+ssh fe-prod 'cd /opt/rosstat && cp .env .env.bak-mail-$(date +%Y%m%d) && cat >> .env' < ~/.config/fe-mail.env
+ssh fe-prod 'cd /opt/rosstat && printf "RUSTATS_MAIL_TOKEN_SECRET=%s\nRUSTATS_MAIL_ENABLED=true\n" "$(openssl rand -hex 32)" >> .env && docker compose up -d --force-recreate backend scheduler'
+ssh fe-prod 'cd /opt/rosstat && docker compose exec -T backend python /app/scripts/mail.py check && docker compose exec -T backend python /app/scripts/mail.py test --to rebeka.ee@yandex.ru'
+```
+Секрет ссылок после первой рассылки не менять: ссылки отписки в отправленных письмах перестанут работать. Список допуска (`RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=true`) снимается отдельной командой владельца: с этого момента письма подтверждения и сброса пароля уходят всем.
+
+**Выпуск рассылки.** `scripts/mail.py audience` (счёт, без адресов) → `campaign issue.json` (сухой прогон) → `campaign issue.json --test-to rebeka.ee@yandex.ru` → `campaign issue.json --send` только по команде владельца. Запуск повторяем, пока отчёт не перестанет показывать `stopped: max_per_run`; `server_limit` — остановиться и разобрать (лимит или подозрение на спам у почтового сервиса). Журнал: `select status, error, count(*) from mail_outbox where campaign='…' group by 1, 2`.
+
 ## Выпуск «Скачиваний» и «Выгрузок» служебного бота — 2026-11-14
 
 Ветка `worktree-agent-a4879bc09991f03fb` (не выпущено). Миграций нет. Порядок — по команде владельца, без сообщений в живой Telegram со стороны агента.
