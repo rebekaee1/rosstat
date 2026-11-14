@@ -1332,6 +1332,32 @@ async def lifespan(app: FastAPI):
                 )
                 logger.info("Public bot notify enabled: every 30 min")
 
+        # Почта (ADR-0032): разбор отказов и сводка «колокольчика» — только при включённой почте и своём флаге.
+        if settings.mail_enabled and settings.mail_bounce_poll_enabled:
+            from app.services.mail.bounces import bounce_poll_job
+            scheduler.add_job(
+                bounce_poll_job,
+                trigger=IntervalTrigger(minutes=30),
+                id="mail_bounce_poll",
+                name="Mail: bounce and complaint reports from the sender mailbox (IMAP, read-only)",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Mail bounce poll enabled: every 30 min")
+        if settings.mail_enabled and settings.mail_watch_digest_enabled:
+            from app.services.mail.watch_digest import watch_digest_job
+            scheduler.add_job(
+                watch_digest_job,
+                trigger=CronTrigger(hour=int(settings.mail_watch_digest_hour_msk), minute=15, timezone="Europe/Moscow"),
+                id="mail_watch_digest",
+                name="Mail: daily digest of new values for watched series",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Mail watch digest enabled: daily %02d:15 MSK", int(settings.mail_watch_digest_hour_msk))
+
         # Досылка недоставленного из telegram_outbox: только если Telegram-
         # уведомления реально включены (токен + чат + дайджест или realtime).
         if (

@@ -4183,4 +4183,5 @@ export default {
   "mail.unsub.resubscribed": "Your subscription is on again.",
   "mail.unsub.resubscribe": "Subscribe again",
   "mail.unsub.again": "Unsubscribe",
+  "mail.unsub.doneWatch": "No more emails about new values. The “New” badge in your account works as before; the news subscription is unchanged.",
 };

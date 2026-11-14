@@ -76,4 +76,10 @@ describe('ссылки из писем (ADR-0032)', () => {
     await waitFor(() => expect(screen.getByTestId('unsub-subscribed')).toBeTruthy());
     expect(resubscribeByLink).toHaveBeenCalledWith('u.s');
   });
+
+  it('unsubscribe: a link from a «bell» email says the news subscription is untouched', async () => {
+    unsubscribeByLink.mockResolvedValueOnce({ ok: true, subscribed: false, email: '', list: 'watch' });
+    at('/account/unsubscribe?t=w.s', <Unsubscribe />);
+    expect((await screen.findByTestId('unsub-done')).textContent).toContain('mail.unsub.doneWatch');
+  });
 });

@@ -7420,96 +7420,96 @@
     "anonymous_functions": 48
   },
   "frontend/src/components/IndicatorSearch.jsx": {
-    "sha256": "5244547758686084e0efa651c0fff89b8cb04e826fe8d85fa39f00180aedd23f",
+    "sha256": "719e4a3d2fd44f87bca9371cb50293b161f8dad79137fb7bbcb84b0b4c597a64",
     "definitions": [
       {
         "name": "RotatingHint",
-        "line": 69,
-        "end_line": 101,
+        "line": 68,
+        "end_line": 100,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isKKey",
-        "line": 107,
-        "end_line": 111,
+        "line": 106,
+        "end_line": 110,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch",
-        "line": 113,
-        "end_line": 889,
+        "line": 112,
+        "end_line": 888,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch.shownTitle",
-        "line": 245,
-        "end_line": 245,
+        "line": 244,
+        "end_line": 244,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onKey",
-        "line": 359,
-        "end_line": 389,
+        "line": 358,
+        "end_line": 388,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.focusInput",
-        "line": 405,
-        "end_line": 405,
+        "line": 404,
+        "end_line": 404,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onQueryChange",
-        "line": 443,
-        "end_line": 448,
+        "line": 442,
+        "end_line": 447,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.handleListKey",
-        "line": 457,
-        "end_line": 469,
+        "line": 456,
+        "end_line": 468,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.renderRow",
-        "line": 488,
-        "end_line": 508,
+        "line": 487,
+        "end_line": 507,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "regionValueText",
-        "line": 894,
-        "end_line": 903,
+        "line": 893,
+        "end_line": 902,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionGroupChips",
-        "line": 906,
-        "end_line": 936,
+        "line": 905,
+        "end_line": 935,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "latestText",
-        "line": 939,
-        "end_line": 956,
+        "line": 938,
+        "end_line": 955,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchRow",
-        "line": 962,
-        "end_line": 1079,
+        "line": 961,
+        "end_line": 1078,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "filterValueLabel",
-        "line": 1084,
-        "end_line": 1089,
+        "line": 1083,
+        "end_line": 1088,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchFilters",
-        "line": 1095,
-        "end_line": 1142,
+        "line": 1094,
+        "end_line": 1141,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -7547,108 +7547,104 @@
         "line": 11
       },
       {
-        "source": "../lib/quotedWords",
+        "source": "../i18n",
         "line": 12
       },
       {
-        "source": "../i18n",
+        "source": "../lib/useGlobalSearch",
         "line": 13
       },
       {
-        "source": "../lib/useGlobalSearch",
+        "source": "../lib/worldApi",
         "line": 14
       },
       {
-        "source": "../lib/worldApi",
+        "source": "../lib/searchExamples",
         "line": 15
       },
       {
-        "source": "../lib/searchExamples",
+        "source": "../lib/searchGroups",
         "line": 16
       },
       {
-        "source": "../lib/searchGroups",
+        "source": "../lib/searchRecent",
         "line": 17
       },
       {
-        "source": "../lib/searchRecent",
-        "line": 18
-      },
-      {
         "source": "../lib/homeContinue",
-        "line": 21
+        "line": 20
       },
       {
         "source": "../lib/searchFilters",
-        "line": 22
+        "line": 21
       },
       {
         "source": "../lib/searchView",
-        "line": 25
+        "line": 24
       },
       {
         "source": "../lib/searchText",
-        "line": 26
+        "line": 25
       },
       {
         "source": "../lib/homeWorkbench",
-        "line": 27
+        "line": 26
       },
       {
         "source": "../lib/countryFlag",
-        "line": 28
+        "line": 27
       },
       {
         "source": "./Chip",
-        "line": 29
+        "line": 28
       },
       {
         "source": "./CountryFlag",
-        "line": 30
+        "line": 29
       },
       {
         "source": "./brand/EmptyState",
-        "line": 31
+        "line": 30
       },
       {
         "source": "./RatingExtras",
-        "line": 32
+        "line": 31
       },
       {
         "source": "../styles/shell.css",
-        "line": 33
+        "line": 32
       },
       {
         "source": "../styles/w6d.css",
-        "line": 34
+        "line": 33
       },
       {
         "source": "../styles/z8-tools.css",
-        "line": 35
+        "line": 34
       },
       {
         "source": "../styles/k8-tools.css",
-        "line": 36
+        "line": 35
       },
       {
         "source": "../styles/z4s-search.css",
-        "line": 37
+        "line": 36
       },
       {
         "source": "../styles/r6a-search.css",
-        "line": 38
+        "line": 37
       },
       {
         "source": "../styles/r7a-search.css",
-        "line": 39
+        "line": 38
       },
       {
         "source": "../styles/r8a-search.css",
-        "line": 40
+        "line": 39
       },
       {
         "source": "./searchLabourHints",
-        "line": 41
+        "line": 40
       }
     ],
     "exports": [
@@ -7656,7 +7652,7 @@
         "names": [
           "default"
         ],
-        "line": 113
+        "line": 112
       }
     ],
     "anonymous_functions": 126
@@ -13557,7 +13553,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/Sparkline.component.test.jsx": {
-    "sha256": "9e303acc69be83ae328093ea7baa30a2be99b843160655e88b29a9fa74cd6df6",
+    "sha256": "f6a0193b5ac523e8f5c50b4cdc4a3c02588c19fc0b9c7322bea7540058f50320",
     "definitions": [
       {
         "name": "observe",
@@ -13584,57 +13580,27 @@
         "kind": "ObjectMethod"
       },
       {
-        "name": "constructor",
+        "name": "observe",
+        "line": 27,
+        "end_line": 27,
+        "kind": "ClassMethod"
+      },
+      {
+        "name": "disconnect",
         "line": 28,
         "end_line": 28,
         "kind": "ClassMethod"
       },
       {
-        "name": "observe",
-        "line": 29,
-        "end_line": 29,
-        "kind": "ClassMethod"
-      },
-      {
-        "name": "disconnect",
+        "name": "addEventListener",
         "line": 30,
         "end_line": 30,
-        "kind": "ClassMethod"
-      },
-      {
-        "name": "addEventListener",
-        "line": 32,
-        "end_line": 32,
         "kind": "ObjectMethod"
       },
       {
         "name": "removeEventListener",
-        "line": 32,
-        "end_line": 32,
-        "kind": "ObjectMethod"
-      },
-      {
-        "name": "observe",
-        "line": 45,
-        "end_line": 45,
-        "kind": "ClassMethod"
-      },
-      {
-        "name": "disconnect",
-        "line": 46,
-        "end_line": 46,
-        "kind": "ClassMethod"
-      },
-      {
-        "name": "addEventListener",
-        "line": 48,
-        "end_line": 48,
-        "kind": "ObjectMethod"
-      },
-      {
-        "name": "removeEventListener",
-        "line": 48,
-        "end_line": 48,
+        "line": 30,
+        "end_line": 30,
         "kind": "ObjectMethod"
       }
     ],
@@ -13653,10 +13619,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 8
+    "anonymous_functions": 6
   },
   "frontend/src/components/Sparkline.jsx": {
-    "sha256": "6c7ecdb65370ca5b40a517563f69fe054990a4409a22121a11cb60e55f7e4246",
+    "sha256": "302e4c84d96e70fa0ca25b8490a39dac8ee8b74589ae017ade8cffc7d627acf7",
     "definitions": [
       {
         "name": "resolveColor",
@@ -13685,31 +13651,31 @@
       {
         "name": "Sparkline",
         "line": 81,
-        "end_line": 259,
+        "end_line": 253,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Sparkline.computePoints",
-        "line": 148,
-        "end_line": 157,
+        "line": 142,
+        "end_line": 151,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Sparkline.renderContent",
-        "line": 159,
-        "end_line": 252,
+        "line": 153,
+        "end_line": 246,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SparklineResizer",
-        "line": 261,
-        "end_line": 280,
+        "line": 255,
+        "end_line": 274,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SparklineSkeleton",
-        "line": 283,
-        "end_line": 285,
+        "line": 277,
+        "end_line": 279,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -13742,7 +13708,7 @@
         "names": [
           "SparklineSkeleton"
         ],
-        "line": 283
+        "line": 277
       }
     ],
     "anonymous_functions": 12
@@ -23760,7 +23726,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "c9be9bf78a8d3074de5e679a1452d770b4863220ff7b1e2363848d30dc01db68",
+    "sha256": "c202722d01a527825ac5c7bd44e03eb3d8013c6a10e20904a08d0a8607cbe2f7",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23868,7 +23834,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "7658d420e0e075a6478b80fdd84266c2f448dc18bbb870d8a140cbe868dfc1d6",
+    "sha256": "7f897a44c92f4dae58cee5faa6c58ed2ab5ac2f76b2e251ac73c584c787ddde1",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -41535,58 +41501,6 @@
     "exports": [],
     "anonymous_functions": 20
   },
-  "frontend/src/lib/quotedWords.js": {
-    "sha256": "52b89e455e0fcb745f926afa09a14b63062bd59120fc65e0ed923a258b6343f2",
-    "definitions": [
-      {
-        "name": "quotedWords",
-        "line": 2,
-        "end_line": 5,
-        "kind": "FunctionDeclaration"
-      }
-    ],
-    "imports": [],
-    "exports": [
-      {
-        "names": [
-          "quotedWords"
-        ],
-        "line": 2
-      }
-    ],
-    "anonymous_functions": 1
-  },
-  "frontend/src/lib/quotedWords.test.js": {
-    "sha256": "2d77493e9cafe34a633bb410cb3208794398cb90980c264722e2d0d9baf8377a",
-    "definitions": [
-      {
-        "name": "fill",
-        "line": 7,
-        "end_line": 9,
-        "kind": "FunctionDeclaration"
-      }
-    ],
-    "imports": [
-      {
-        "source": "vitest",
-        "line": 2
-      },
-      {
-        "source": "./quotedWords",
-        "line": 3
-      },
-      {
-        "source": "../i18n/messages.ru",
-        "line": 4
-      },
-      {
-        "source": "../i18n/messages.en",
-        "line": 5
-      }
-    ],
-    "exports": [],
-    "anonymous_functions": 3
-  },
   "frontend/src/lib/r10aUnits.js": {
     "sha256": "b3e62d98e9789a6ca2505d823d44e066a4905566c59b95f8f02a82d1f3a30678",
     "definitions": [
@@ -53199,7 +53113,7 @@
     "anonymous_functions": 42
   },
   "frontend/src/pages/AccountMail.component.test.jsx": {
-    "sha256": "c9cd56f50e2c1a25efbfb0ef1f6a0b6913d7c013b6b32451fd70587f561c24b5",
+    "sha256": "8afec2ef7dc49191558e770958189278bd22e1e4866dbd952f263b73b3ac1b8f",
     "definitions": [
       {
         "name": "useT",
@@ -53237,10 +53151,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 18
+    "anonymous_functions": 19
   },
   "frontend/src/pages/AccountMail.jsx": {
-    "sha256": "134266a18fb5f4d134979fff970aa2b8d54d15ad715ef9eb4f101d5c2d8fc3b4",
+    "sha256": "ebe8874ba62e881fbee391c1eeb2c1b0f6ffaf7f0c2414ce1ff5bab832f9c141",
     "definitions": [
       {
         "name": "inputClass",
@@ -53427,7 +53341,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/pages/AdminBI.jsx": {
-    "sha256": "229c717f206d4ed1d0e164beaa07a0765900f662ce9a5ff76bcc1d7a0b1f7ffe",
+    "sha256": "31156e32a0c681b07c8be1de7b763c83f8791a6d35ea83e28e293e874f8d59b6",
     "definitions": [
       {
         "name": "eventLabel",
@@ -53832,33 +53746,57 @@
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "AdminBI",
+        "name": "MailTab",
         "line": 2915,
-        "end_line": 3060,
+        "end_line": 3021,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "MailTab.queryFn",
+        "line": 2919,
+        "end_line": 2919,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "MailTab.total",
+        "line": 2927,
+        "end_line": 2927,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "MailTab.flag",
+        "line": 2932,
+        "end_line": 2936,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "AdminBI",
+        "line": 3038,
+        "end_line": 3184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminBI.queryFn",
-        "line": 2934,
-        "end_line": 2938,
+        "line": 3058,
+        "end_line": 3062,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refetchInterval",
-        "line": 2940,
-        "end_line": 2945,
+        "line": 3064,
+        "end_line": 3069,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refreshNow",
-        "line": 2953,
-        "end_line": 2957,
+        "line": 3077,
+        "end_line": 3081,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.openSlices",
-        "line": 2970,
-        "end_line": 2970,
+        "line": 3094,
+        "end_line": 3094,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -53913,10 +53851,41 @@
         "names": [
           "default"
         ],
-        "line": 2915
+        "line": 3038
       }
     ],
-    "anonymous_functions": 203
+    "anonymous_functions": 215
+  },
+  "frontend/src/pages/AdminBI.mail.component.test.jsx": {
+    "sha256": "6017d545e7e5d0746a7291ed909098767b98b745c7b92619946cc13eed617115",
+    "definitions": [
+      {
+        "name": "default",
+        "line": 7,
+        "end_line": 7,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "./AdminBI",
+        "line": 4
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
   },
   "frontend/src/pages/AuthForms.analytics.component.test.jsx": {
     "sha256": "d10ed5126ab70d5831a9c2fbd17961f21672de06d82c8afe7e6424ffb3ea1d73",

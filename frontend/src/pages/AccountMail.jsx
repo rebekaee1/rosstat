@@ -226,7 +226,7 @@ export function Unsubscribe() {
       {!info && !error && <Note testId="unsub-pending">{t('mail.unsub.pending')}</Note>}
       {info && (
         <Note testId={info.subscribed ? 'unsub-subscribed' : 'unsub-done'}>
-          {info.subscribed ? t('mail.unsub.resubscribed') : t('mail.unsub.done')}
+          {info.subscribed ? t('mail.unsub.resubscribed') : t(info.list === 'watch' ? 'mail.unsub.doneWatch' : 'mail.unsub.done')}
           {info.email ? <span className="block mt-1 text-text-tertiary">{info.email}</span> : null}
         </Note>
       )}

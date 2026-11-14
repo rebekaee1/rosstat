@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import asyncio
+from typing import Awaitable, Callable
 import json
 import logging
 import re
@@ -35,6 +36,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.models import MailMessage
 from app.services.mail import audience, service, tokens, transport
+from app.services.mail.blocks import BlockError, validate_block
 from app.services.mail.templates import Digest, DigestItem, render_digest
 
 logger = logging.getLogger(__name__)
@@ -75,8 +77,9 @@ class RunReport:
         }
 
 
-def with_utm(url: str, key: str) -> str:
-    """Метки перехода на ссылки своего сайта: в аналитике видно, что человек пришёл из письма."""
+def with_utm(url: str, key: str, content: str | None = None) -> str:
+    """Метки перехода на ссылки своего сайта: в аналитике видно, что человек пришёл из письма
+    (и из какого блока — ``utm_content``)."""
     if not url:
         return url
     parts = urlsplit(url)
@@ -87,6 +90,8 @@ def with_utm(url: str, key: str) -> str:
     q.setdefault("utm_source", "email")
     q.setdefault("utm_medium", "newsletter")
     q.setdefault("utm_campaign", key)
+    if content:
+        q.setdefault("utm_content", content)
     return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(q), parts.fragment))
 
 
@@ -106,19 +111,45 @@ def parse_issue(data: dict) -> Issue:
                        url=with_utm(str(i.get("url") or ""), key), value=str(i.get("value") or ""))
             for i in (raw.get("items") or [])
         ]
+        blocks = []
+        for b in raw.get("blocks") or []:
+            try:
+                validate_block(b)
+            except BlockError as exc:
+                raise CampaignError(f"{loc}: {exc}") from None
+            b = dict(b)
+            if b.get("url"):
+                b["url"] = with_utm(str(b["url"]), key, f"b{len(blocks) + 1}-{b.get('type')}")
+            blocks.append(b)
+        signoff = str(raw.get("signoff") or "").strip()
+        outro = str(raw.get("outro") or "").strip()
+        if signoff and outro.rstrip(".").endswith(signoff):
+            # Подпись отдельной строкой — из конца последнего абзаца её убираем.
+            outro = outro.rstrip(".")[: -len(signoff)].rstrip(" .")
+            outro = outro + "." if outro and not outro.endswith(("?", "!", ".")) else outro
         by_locale[loc] = Digest(
             subject=str(raw["subject"]), title=str(raw["title"]), intro=str(raw.get("intro") or ""),
             preheader=str(raw.get("preheader") or ""), items=items,
             cta_label=str(raw.get("cta_label") or ""), cta_url=with_utm(str(raw.get("cta_url") or ""), key),
-            outro=str(raw.get("outro") or ""),
+            outro=outro, masthead=str(raw.get("masthead") or ""), signoff=signoff, blocks=blocks,
         )
     if not by_locale:
         raise CampaignError("нет ни ru, ни en")
     return Issue(key=key, by_locale=by_locale)
 
 
-def load_issue(path: str | Path) -> Issue:
-    return parse_issue(json.loads(Path(path).read_text(encoding="utf-8")))
+def load_issue(*paths: str | Path, key: str | None = None) -> Issue:
+    """Один файл со всеми языками или несколько файлов по языку (ключ — первый или ``key``)."""
+    merged: dict = {}
+    for path in paths:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        for loc in ("ru", "en"):
+            if data.get(loc):
+                merged[loc] = data[loc]
+        merged.setdefault("key", data.get("key"))
+    if key:
+        merged["key"] = key
+    return parse_issue(merged)
 
 
 def unsubscribe_links(user_id, locale: str) -> tuple[str, str]:
@@ -128,11 +159,13 @@ def unsubscribe_links(user_id, locale: str) -> tuple[str, str]:
             service.api_link(locale, "/mail/unsubscribe", t=tok))
 
 
-def render_for(issue: Issue, locale: str, user_id) -> tuple:
+def render_for(issue: Issue, locale: str, user_id, digest: Digest | None = None) -> tuple:
     page_url, one_click = unsubscribe_links(user_id, locale)
+    from app.services.display import today_msk
+
     rendered = render_digest(
-        issue.by_locale[locale], locale, site_url=service.site_origin(locale) + "/",
-        unsubscribe_url=page_url, manage_url=service.site_link(locale, "/account"),
+        digest or issue.by_locale[locale], locale, site_url=service.site_origin(locale) + "/",
+        unsubscribe_url=page_url, manage_url=service.site_link(locale, "/account"), today=today_msk(),
     )
     return rendered, one_click
 
@@ -150,8 +183,21 @@ async def send_test(issue: Issue, to: str) -> dict[str, str]:
     return out
 
 
+# Персональный выпуск: функция (db, получатель, выпуск) → содержимое на языке получателя —
+# Digest, словарь языка в формате файла выпуска ({"subject", "title", "blocks", …}) или None
+# (человеку нечего отправить — пропуск). Ключ выпуска, лимиты, повтор без дублей — общие.
+PersonalBuilder = Callable[[AsyncSession, "audience.Recipient", Issue], Awaitable["Digest | dict | None"]]
+
+
+def personal_digest(issue: Issue, locale: str, built) -> Digest | None:
+    if built is None or isinstance(built, Digest):
+        return built
+    return parse_issue({"key": issue.key, locale: built}).by_locale[locale]
+
+
 async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified: bool = False,
-              max_per_run: int | None = None, pause_seconds: float | None = None) -> RunReport:
+              max_per_run: int | None = None, pause_seconds: float | None = None,
+              per_recipient: PersonalBuilder | None = None) -> RunReport:
     report = RunReport(key=issue.key, dry_run=not send)
     if send and not settings.mail_allow_all_recipients:
         raise CampaignError("отправка людям выключена (RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=false)")
@@ -159,7 +205,7 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         raise CampaignError("почта выключена (RUSTATS_MAIL_ENABLED=false)")
     if send:
         tokens._secret()  # без секрета ссылок отписки рассылка не уходит
-        transport.ensure_configured()
+        transport.ensure_configured("newsletter")
     limit = settings.mail_campaign_max_per_run if max_per_run is None else max_per_run
     pause = settings.mail_campaign_pause_seconds if pause_seconds is None else pause_seconds
 
@@ -170,7 +216,7 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         if not rec.verified and not include_unverified:
             report.unverified_skipped += 1
             continue
-        if rec.locale not in issue.by_locale:
+        if rec.locale not in issue.by_locale and per_recipient is None:
             report.no_locale_skipped += 1
             continue
         existing = await db.scalar(select(MailMessage).where(
@@ -188,7 +234,13 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         if not await audience.is_subscribed(db, rec.user_id):
             report.statuses["unsubscribed_meanwhile"] += 1
             continue
-        rendered, one_click = render_for(issue, rec.locale, rec.user_id)
+        digest = None
+        if per_recipient is not None:
+            digest = personal_digest(issue, rec.locale, await per_recipient(db, rec, issue))
+            if digest is None:
+                report.statuses["no_personal_content"] += 1
+                continue
+        rendered, one_click = render_for(issue, rec.locale, rec.user_id, digest)
         row = existing or await service.record(
             db, kind="newsletter", to=rec.email, locale=rec.locale, subject=rendered.subject,
             user_id=rec.user_id, campaign=issue.key)
@@ -206,3 +258,80 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         if pause > 0:
             await asyncio.sleep(pause)
     return report
+
+
+RECONFIRM_KEY = "2026-11-reconfirm"
+
+
+async def run_reconfirm(db: AsyncSession, *, send: bool, key: str = RECONFIRM_KEY,
+                        max_per_run: int | None = None, pause_seconds: float | None = None) -> RunReport:
+    """Письмо «подтвердите почту» всем со входом по паролю и неподтверждённым адресом.
+
+    Те же защиты, что у выпуска: без ``send`` — сухой прогон; людям — только при снятом
+    списке допуска; один раз на человека (уникальность выпуска); лимит за запуск; остановка
+    по лимиту сервера; адрес, подтверждённый во время выпуска, пропускается.
+    """
+    from app.models import EmailCredential
+    from app.services.mail.account import reconfirm_mail
+
+    report = RunReport(key=key, dry_run=not send)
+    if send and not settings.mail_allow_all_recipients:
+        raise CampaignError("отправка людям выключена (RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=false)")
+    if send and not settings.mail_enabled:
+        raise CampaignError("почта выключена (RUSTATS_MAIL_ENABLED=false)")
+    if send:
+        tokens._secret()
+        transport.ensure_configured("reconfirm")
+    limit = settings.mail_campaign_max_per_run if max_per_run is None else max_per_run
+    pause = settings.mail_campaign_pause_seconds if pause_seconds is None else pause_seconds
+    recipients = await audience.unverified_password_accounts(db)
+    report.audience = len(recipients)
+    sent_now = 0
+    for rec in recipients:
+        existing = await db.scalar(select(MailMessage).where(
+            MailMessage.campaign == key, MailMessage.user_id == rec.user_id))
+        if existing is not None and existing.status == "sent":
+            report.already_sent += 1
+            continue
+        report.by_locale[rec.locale] += 1
+        if not send:
+            continue
+        if sent_now >= limit:
+            report.stopped = "max_per_run"
+            break
+        verified = await db.scalar(select(EmailCredential.email_verified).where(
+            EmailCredential.user_id == rec.user_id))
+        if verified:
+            report.statuses["verified_meanwhile"] += 1
+            continue
+        rendered = reconfirm_mail(rec.user_id, rec.email, rec.locale)
+        row = existing or await service.record(
+            db, kind="reconfirm", to=rec.email, locale=rec.locale, subject=rendered.subject,
+            user_id=rec.user_id, campaign=key)
+        try:
+            await service.attempt(db, row, rendered)
+        except transport.SendError as err:
+            report.statuses[row.status] += 1
+            report.stopped = f"server_limit:{err.code}"
+            await db.commit()
+            break
+        report.statuses[row.status] += 1
+        await db.commit()
+        sent_now += 1
+        if pause > 0:
+            await asyncio.sleep(pause)
+    return report
+
+
+async def send_reconfirm_test(to: str) -> dict[str, str]:
+    """Письмо «подтвердите почту» на проверочный адрес, по одному на язык."""
+    from app.services.mail.account import reconfirm_mail
+
+    if not service.recipient_allowed(to):
+        raise CampaignError("проверочный адрес не в списке допуска (RUSTATS_MAIL_ALLOWLIST)")
+    out = {}
+    for loc in ("ru", "en"):
+        rendered = reconfirm_mail("00000000-0000-0000-0000-000000000000", to, loc)
+        rendered.subject = f"[test] {rendered.subject}"
+        out[loc] = await service.send_now(kind="reconfirm", to=to, locale=loc, rendered=rendered)
+    return out

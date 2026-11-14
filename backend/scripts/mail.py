@@ -10,6 +10,10 @@
     python /app/scripts/mail.py audience               # сколько подписчиков, с каким адресом и языком
     python /app/scripts/mail.py campaign issue.json --test-to rebeka.ee@yandex.ru   # выпуск на проверочный адрес
     python /app/scripts/mail.py campaign issue.json    # сухой прогон: кому ушло бы, ничего не отправляет
+    python /app/scripts/mail.py reconfirm [--test-to rebeka.ee@yandex.ru | --send [--max 50]]
+                                                       # «подтвердите почту» неподтверждённым адресам
+    python /app/scripts/mail.py bounces                # один проход разбора отказов (IMAP, только чтение)
+    python /app/scripts/mail.py watch-digest [--send]  # сводка «колокольчика»: без --send только счёт
     python /app/scripts/mail.py campaign issue.json --send [--include-unverified] [--max 50]
                                                        # ЛЮДЯМ; только по команде владельца и при
                                                        # RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=true
@@ -35,10 +39,23 @@ for candidate in ("/app", str(HERE.parents[1])):
 
 from app.config import settings  # noqa: E402
 from app.services.mail import campaign, service, tokens, transport  # noqa: E402
-from app.services.mail.account import reset_mail, verify_mail  # noqa: E402
-from app.services.mail.templates import render_digest, sample_digest  # noqa: E402
+from app.services.mail.account import oauth_hint_mail, reconfirm_mail, reset_mail, verify_mail  # noqa: E402
+from app.services.mail.templates import DigestItem, render_digest, render_watch, sample_digest  # noqa: E402
 
 DUMMY_USER = "00000000-0000-0000-0000-000000000000"
+# Понятная пометка в теме проверочного письма: какое это письмо и на каком языке.
+SAMPLE_LABEL = {
+    "verify_email": "подтверждение почты после регистрации",
+    "password_reset": "сброс пароля",
+    "newsletter": "проверка вида рассылки",
+    "oauth_hint": "«Забыли пароль?» при входе через Яндекс",
+    "reconfirm": "подтверждение почты для давних аккаунтов",
+    "watch_digest": "новые значения по «колокольчику»",
+}
+
+
+def sample_subject(label: str, loc: str, subject: str) -> str:
+    return f"[образец · {label} · {loc}] {subject}"
 
 
 def _yes(v) -> str:
@@ -55,8 +72,14 @@ def cmd_check(_args) -> int:
     print(f"секрет ссылок (MAIL_TOKEN_SECRET):  {_yes(len(settings.mail_token_secret or '') >= 16)}")
     print(f"только список допуска:              {not settings.mail_allow_all_recipients} -> {sorted(service.allowlist())}")
     print(f"ссылки ru / en:                     {service.site_origin('ru')} / {service.site_origin('en')}")
-    if settings.mail_smtp_user and transport.from_address() != settings.mail_smtp_user:
+    if ("yandex.ru" in settings.mail_smtp_host and settings.mail_smtp_user
+            and transport.from_address() != settings.mail_smtp_user):
         print("ВНИМАНИЕ: отправитель не совпадает с ящиком входа — Яндекс 360 такое письмо отклонит")
+    bulk = transport.profile_for("newsletter")
+    print(f"рассылка идёт через:                {bulk.name} {bulk.host}:{bulk.port} ({bulk.security}), "
+          f"от {bulk.from_addr or '—'}, пароль {_yes(bulk.password)}")
+    print(f"разбор отказов (IMAP):              {settings.mail_bounce_poll_enabled} -> {settings.mail_imap_host}:{settings.mail_imap_port}")
+    print(f"письма «колокольчика»:              {settings.mail_watch_digest_enabled}, {settings.mail_watch_digest_hour_msk}:15 МСК")
     if not (settings.mail_smtp_user and settings.mail_smtp_password):
         return 1
     try:
@@ -82,6 +105,16 @@ def _test_mails(locale: str):
     yield "password_reset", reset_mail(DUMMY_USER, "test-hash", locale), None
     yield "newsletter", render_digest(sample_digest(locale, site), locale, site_url=site, unsubscribe_url=page,
                                       manage_url=service.site_link(locale, "/account")), one_click
+    yield "oauth_hint", oauth_hint_mail("yandex", locale), None
+    yield "reconfirm", reconfirm_mail(DUMMY_USER, "test@example.com", locale), None
+    watch_unsub = service.site_link(locale, "/account/unsubscribe", t=tokens.issue("unsub_watch", DUMMY_USER))
+    sample = ([DigestItem("Инфляция в России", "на 01.10.2026", site, "7,7 %"),
+               DigestItem("США: ВВП", "на 01.07.2026", site, "2,1 %")] if locale != "en" else
+              [DigestItem("Inflation in Russia", "as of 1 Oct 2026", site, "7.7 %"),
+               DigestItem("United States: GDP", "as of 1 Jul 2026", site, "2.1 %")])
+    yield "watch_digest", render_watch(sample, locale, site_url=site, cabinet_url=service.site_link(locale, "/account"),
+                                       unsubscribe_url=watch_unsub), service.api_link(
+        locale, "/mail/unsubscribe", t=tokens.issue("unsub_watch", DUMMY_USER))
 
 
 async def cmd_test(args) -> int:
@@ -94,11 +127,13 @@ async def cmd_test(args) -> int:
     code = 0
     for loc in locales:
         for kind, rendered, one_click in _test_mails(loc):
-            rendered.subject = f"[test] {rendered.subject}"
+            if args.only and kind not in args.only.split(","):
+                continue
+            rendered.subject = sample_subject(SAMPLE_LABEL.get(kind, kind), loc, rendered.subject)
             if args.no_db:
                 try:
                     mid = await transport.send(transport.OutgoingMail(
-                        to=args.to, subject=rendered.subject, html=rendered.html, text=rendered.text,
+                        to=args.to, subject=rendered.subject, html=rendered.html, text=rendered.text, images=rendered.images,
                         kind=kind, unsubscribe_url=one_click, campaign="test"))
                     print(f"{loc} {kind}: sent {mid}")
                 except (transport.SendError, transport.MailConfigError) as exc:
@@ -115,13 +150,13 @@ async def cmd_test(args) -> int:
 def cmd_render(args) -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    if args.source == "sample":
+    if args.source == ["sample"]:
         items = []
         for loc in ("ru", "en"):
             for kind, rendered, one_click in _test_mails(loc):
                 items.append((f"{loc}-{kind}", kind, rendered, one_click))
     else:
-        issue = campaign.load_issue(args.source)
+        issue = campaign.load_issue(*args.source)
         items = []
         for loc in issue.by_locale:
             rendered, one_click = campaign.render_for(issue, loc, DUMMY_USER)
@@ -130,7 +165,7 @@ def cmd_render(args) -> int:
         (out / f"{name}.html").write_text(rendered.html, encoding="utf-8")
         (out / f"{name}.txt").write_text(f"Subject: {rendered.subject}\n\n{rendered.text}", encoding="utf-8")
         msg = transport.build_message(transport.OutgoingMail(
-            to="preview@example.com", subject=rendered.subject, html=rendered.html, text=rendered.text,
+            to="preview@example.com", subject=rendered.subject, html=rendered.html, text=rendered.text, images=rendered.images,
             kind=kind, unsubscribe_url=one_click, campaign="preview"))
         (out / f"{name}.eml").write_bytes(bytes(msg))
         print(out / f"{name}.html")
@@ -153,7 +188,24 @@ async def cmd_audience(_args) -> int:
 
 
 async def cmd_campaign(args) -> int:
-    issue = campaign.load_issue(args.file)
+    issue = campaign.load_issue(*args.file, key=args.key)
+    if args.test_to and args.no_db:
+        if not service.recipient_allowed(args.test_to):
+            print("адрес не в списке допуска (RUSTATS_MAIL_ALLOWLIST) — не отправляю")
+            return 1
+        code = 0
+        for loc in issue.by_locale:
+            rendered, one_click = campaign.render_for(issue, loc, DUMMY_USER)
+            try:
+                mid = await transport.send(transport.OutgoingMail(
+                    to=args.test_to, subject=sample_subject(f"выпуск {issue.key}", loc, rendered.subject),
+                    html=rendered.html, text=rendered.text,
+                    images=rendered.images, kind="newsletter", unsubscribe_url=one_click, campaign=issue.key))
+                print(f"{loc}: sent {mid}")
+            except (transport.SendError, transport.MailConfigError) as exc:
+                print(f"{loc}: ОШИБКА {getattr(exc, 'code', type(exc).__name__)}")
+                code = 2
+        return code
     if args.test_to:
         res = await campaign.send_test(issue, args.test_to)
         print(json.dumps(res, ensure_ascii=False))
@@ -167,6 +219,45 @@ async def cmd_campaign(args) -> int:
     return 0 if not report.stopped or report.stopped == "max_per_run" else 3
 
 
+async def cmd_reconfirm(args) -> int:
+    """Письмо «подтвердите почту» всем со входом по паролю и неподтверждённым адресом."""
+    if args.test_to:
+        res = await campaign.send_reconfirm_test(args.test_to)
+        print(json.dumps(res, ensure_ascii=False))
+        return 0 if all(v in ("sent", "disabled") for v in res.values()) else 2
+    from app.database import async_session
+
+    async with async_session() as db:
+        report = await campaign.run_reconfirm(db, send=args.send, max_per_run=args.max)
+    print(json.dumps(report.as_dict(), ensure_ascii=False, indent=2))
+    return 0 if not report.stopped or report.stopped == "max_per_run" else 3
+
+
+async def cmd_bounces(_args) -> int:
+    """Один проход разбора отказов (тот же, что задача планировщика; нужен флаг)."""
+    from app.services.mail.bounces import bounce_poll_job
+
+    res = await bounce_poll_job()
+    print(json.dumps(res, ensure_ascii=False) if res is not None
+          else "выключено (RUSTATS_MAIL_ENABLED / RUSTATS_MAIL_BOUNCE_POLL_ENABLED) или нет ящика")
+    return 0
+
+
+async def cmd_watch_digest(args) -> int:
+    """Сводка «колокольчика»: без --send только счёт (кому ушло бы сегодня)."""
+    from app.database import async_session
+    from app.services.display import today_msk
+    from app.services.mail import watch_digest
+
+    if args.send and not (settings.mail_enabled and settings.mail_watch_digest_enabled):
+        print("выключено: RUSTATS_MAIL_ENABLED и RUSTATS_MAIL_WATCH_DIGEST_ENABLED")
+        return 1
+    async with async_session() as db:
+        report = await watch_digest.run(db, today=today_msk(), send=args.send)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="Почта Forecast Economy")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -175,16 +266,26 @@ def main() -> int:
     t.add_argument("--to", required=True)
     t.add_argument("--locale", choices=("ru", "en", "all"), default="all")
     t.add_argument("--no-db", action="store_true", help="без журнала: прямая отправка (локальная проверка)")
+    t.add_argument("--only", default="", help="виды через запятую: verify_email,password_reset,newsletter,oauth_hint,reconfirm,watch_digest")
     r = sub.add_parser("render")
-    r.add_argument("source", help="sample или путь к JSON выпуска")
+    r.add_argument("source", nargs="+", help="sample или файлы выпуска (по языку или один на все языки)")
     r.add_argument("--out", required=True)
     sub.add_parser("audience")
     c = sub.add_parser("campaign")
-    c.add_argument("file")
+    c.add_argument("file", nargs="+", help="файл выпуска со всеми языками или по файлу на язык")
+    c.add_argument("--key", help="ключ выпуска (если файлы по языкам с разными ключами)")
+    c.add_argument("--no-db", action="store_true", help="с --test-to: без журнала, прямая отправка")
     c.add_argument("--test-to")
     c.add_argument("--send", action="store_true")
     c.add_argument("--include-unverified", action="store_true")
     c.add_argument("--max", type=int)
+    rc = sub.add_parser("reconfirm", help="письмо «подтвердите почту» неподтверждённым (сухой прогон без --send)")
+    rc.add_argument("--test-to")
+    rc.add_argument("--send", action="store_true")
+    rc.add_argument("--max", type=int)
+    sub.add_parser("bounces", help="один проход разбора отказов по IMAP")
+    wd = sub.add_parser("watch-digest", help="сводка «колокольчика» (без --send — только счёт)")
+    wd.add_argument("--send", action="store_true")
     args = p.parse_args()
     try:
         tokens._secret()
@@ -196,7 +297,9 @@ def main() -> int:
         return cmd_check(args)
     if args.cmd == "render":
         return cmd_render(args)
-    return asyncio.run({"test": cmd_test, "audience": cmd_audience, "campaign": cmd_campaign}[args.cmd](args))
+    return asyncio.run({"test": cmd_test, "audience": cmd_audience, "campaign": cmd_campaign,
+                        "reconfirm": cmd_reconfirm, "bounces": cmd_bounces,
+                        "watch-digest": cmd_watch_digest}[args.cmd](args))
 
 
 if __name__ == "__main__":
