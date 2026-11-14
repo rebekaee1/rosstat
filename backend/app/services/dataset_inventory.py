@@ -227,11 +227,15 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
 
     # --- Булев слой знаний -----------------------------------------------------
     h_by_verdict = {"open": 0, "true": 0, "false": 0}
-    for verdict, n in (await db.execute(
-        select(Hypothesis.verdict, func.count()).group_by(Hypothesis.verdict)
+    for verdict, source, n in (await db.execute(
+        select(Hypothesis.verdict, Hypothesis.source, func.count()).group_by(Hypothesis.verdict, Hypothesis.source)
     )).all():
-        key = "open" if verdict is None else ("true" if verdict else "false")
-        h_by_verdict[key] = n
+        # 14.11.2026: дубли, закрытые расчисткой (source = triage_merge), - «объединено», а не «опровергнуто».
+        if source == "triage_merge" and verdict is not None:
+            key = "merged"
+        else:
+            key = "open" if verdict is None else ("true" if verdict else "false")
+        h_by_verdict[key] = h_by_verdict.get(key, 0) + n
     sections["hypotheses"] = {
         "rows": sum(h_by_verdict.values()), "by_verdict": h_by_verdict,
     }
@@ -303,7 +307,8 @@ def format_inventory_html(inv: dict[str, Any]) -> str:
         f"🧲 Визиты Метрики: строк {_n(v['rows'])}, полей {len(v['json_keys'])}",
         f"🔍 Поисковые фразы: строк {_n(ph['rows'])}, уникальных {_n(ph['distinct_phrases'])}",
         f"🧠 Гипотезы: открытых {hy['by_verdict']['open']}, "
-        f"подтверждено {hy['by_verdict']['true']}, опровергнуто {hy['by_verdict']['false']}",
+        f"подтверждено {hy['by_verdict']['true']}, опровергнуто {hy['by_verdict']['false']}"
+        + (f", объединено {hy['by_verdict']['merged']}" if hy['by_verdict'].get('merged') else ""),
         f"🏛 Ядро: пользователей {_n(core['users'])}, точек макро {_n(core['indicator_points'])}, "
         f"точек регионов {_n(core['region_points'])}",
     ]
