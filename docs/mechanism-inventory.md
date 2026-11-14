@@ -170,17 +170,17 @@
 | GET | /api/v1/og-image/world/{slug}.png | app.api.sitemap.og_image_world_country | [backend/app/api/sitemap.py:1611](../backend/app/api/sitemap.py#L1611) |
 | GET | /api/v1/og-image/world-rating/{concept_slug}.png | app.api.sitemap.og_image_world_rating | [backend/app/api/sitemap.py:1743](../backend/app/api/sitemap.py#L1743) |
 | GET | /api/v1/og-image/world-rating/{concept_slug}/{year}.png | app.api.sitemap.og_image_world_rating_year | [backend/app/api/sitemap.py:1798](../backend/app/api/sitemap.py#L1798) |
-| GET | /api/v1/og-image/world/{slug}/{code}.png | app.api.sitemap.og_image_world_indicator | [backend/app/api/sitemap.py:1865](../backend/app/api/sitemap.py#L1865) |
-| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1958](../backend/app/api/sitemap.py#L1958) |
-| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2116](../backend/app/api/sitemap.py#L2116) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2188](../backend/app/api/sitemap.py#L2188) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2268](../backend/app/api/sitemap.py#L2268) |
-| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2354](../backend/app/api/sitemap.py#L2354) |
-| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2490](../backend/app/api/sitemap.py#L2490) |
-| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2596](../backend/app/api/sitemap.py#L2596) |
-| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2603](../backend/app/api/sitemap.py#L2603) |
-| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2610](../backend/app/api/sitemap.py#L2610) |
-| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2619](../backend/app/api/sitemap.py#L2619) |
+| GET | /api/v1/og-image/world/{slug}/{code}.png | app.api.sitemap.og_image_world_indicator | [backend/app/api/sitemap.py:1878](../backend/app/api/sitemap.py#L1878) |
+| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1978](../backend/app/api/sitemap.py#L1978) |
+| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2132](../backend/app/api/sitemap.py#L2132) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2204](../backend/app/api/sitemap.py#L2204) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2284](../backend/app/api/sitemap.py#L2284) |
+| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2370](../backend/app/api/sitemap.py#L2370) |
+| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2506](../backend/app/api/sitemap.py#L2506) |
+| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2612](../backend/app/api/sitemap.py#L2612) |
+| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2619](../backend/app/api/sitemap.py#L2619) |
+| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2626](../backend/app/api/sitemap.py#L2626) |
+| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2635](../backend/app/api/sitemap.py#L2635) |
 | GET/HEAD | /manifest.webmanifest | app.api.pwa.manifest | [backend/app/api/pwa.py:87](../backend/app/api/pwa.py#L87) |
 | GET/HEAD | /offline.html | app.api.pwa.offline_page | [backend/app/api/pwa.py:133](../backend/app/api/pwa.py#L133) |
 | GET/HEAD | /seo/not-found | app.api.seo_pages.seo_not_found | [backend/app/api/seo_pages.py:497](../backend/app/api/seo_pages.py#L497) |
@@ -2519,8 +2519,8 @@ Relationships: `[]`
 | app.services.display._CHAIN_LINKED_YEAR_RE | Call | computed source expression | [backend/app/services/display.py:302](../backend/app/services/display.py#L302) |
 | app.services.display._CHAIN_LINKED_RE | Call | computed source expression | [backend/app/services/display.py:305](../backend/app/services/display.py#L305) |
 | app.services.display._CYRILLIC_RE | Call | computed source expression | [backend/app/services/display.py:349](../backend/app/services/display.py#L349) |
-| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:479](../backend/app/services/display.py#L479) |
-| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:581](../backend/app/services/display.py#L581) |
+| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:535](../backend/app/services/display.py#L535) |
+| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:637](../backend/app/services/display.py#L637) |
 | app.services.download_content.WALL_EVENTS | Call | computed source expression | [backend/app/services/download_content.py:61](../backend/app/services/download_content.py#L61) |
 | app.services.download_content.FORMAT_LABELS | Dict | 'download_excel', 'download_csv', 'demographics_csv', 'download_ical', 'chart_image_download', 'compare_image_download', 'regions_map_gif_download', 'export_run', 'research_download' | [backend/app/services/download_content.py:64](../backend/app/services/download_content.py#L64) |
 | app.services.download_content.WALL_LABELS | Dict | 'download_limit', 'chart_image_blocked', 'compare_image_blocked', 'compare_limit_hit', 'regions_map_gif_blocked' | [backend/app/services/download_content.py:75](../backend/app/services/download_content.py#L75) |
