@@ -149,6 +149,10 @@ class NationalSeriesSpec:
     value_scale: float = 1.0
     # mean|sum|last для расчётных квартал/год; невалидное/пустое → None.
     aggregation: str | None = None
+    # Ведомство-первоисточник, когда provider — транспорт (FRED): публичный источник карточки
+    # «Бюро трудовой статистики США (через FRED)», а не «ФРБ Сент-Луиса» (14.11.2026, data_sources: агрегатор
+    # не может быть источником).
+    origin_ru: str | None = None
 
 
 @dataclass(frozen=True)
@@ -325,6 +329,7 @@ def _parse_series_row(row: Mapping[str, Any], *, index: int) -> NationalSeriesSp
         is_listed=is_listed,
         value_scale=float(row.get("value_scale") or 1.0),
         aggregation=aggregation,
+        origin_ru=_collapse_ws(row.get("origin_ru")),
     )
 
 
@@ -381,6 +386,18 @@ def series_ref_from_spec(
         title=spec.name_en or spec.name_ru,
         source_url=spec.source_url,
     )
+
+
+# Провайдеры-транспорты: сами ряд не составляют, пересылают ряд ведомства.
+TRANSPORT_LABEL: dict[str, str] = {"fred": "FRED"}
+
+
+def public_source_for_spec(spec: NationalSeriesSpec, adapter: WorldSourceAdapter | None = None) -> str:
+    """Публичный источник ряда: ведомство-первоисточник, а транспорт — в скобках («… (через FRED)»)."""
+    transport = TRANSPORT_LABEL.get(spec.provider.strip().lower())
+    if transport and spec.origin_ru:
+        return f"{spec.origin_ru} (через {transport})"
+    return public_source_for_provider(spec.provider, adapter)
 
 
 def public_source_for_provider(
@@ -940,7 +957,7 @@ async def ingest_series(
     )
     try:
         adapter_obj = adapter or resolve_adapter(spec.provider)
-        source_ru = public_source_for_provider(spec.provider, adapter_obj)
+        source_ru = public_source_for_spec(spec, adapter_obj)
         if dry_run:
             result.observations = 0
             return result

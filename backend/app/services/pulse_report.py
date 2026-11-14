@@ -191,7 +191,9 @@ users.new_list): имён и почт новых людей в данных не
 В конце ответа, после строки ---HYPOTHESES---, выведи JSON-массив изменений
 гипотез (может быть пустым []): [{"id": число или null для новой, "statement":
 "утверждение", "verdict": true|false|null, "confidence": 0.0-1.0, "rationale":
-"на чём основано"}]. Не более 5 изменений за день. Всё до разделителя — текст
+"на чём основано"}]. Не более 5 новых или обновлённых гипотез за день; закрытия
+существующих гипотез вердиктом (true/false) со ссылкой на [id] записи контекста в rationale
+идут отдельно — до 15 за день, ими расчищай завал открытых гипотез. Всё до разделителя — текст
 сообщения владельцу, без преамбул."""
 
 
@@ -258,13 +260,51 @@ async def _open_hypotheses() -> list[dict]:
     ]
 
 
+# 14.11.2026: открытых гипотез 266, а лимит 5 изменений в день не даёт их расчищать. Закрытие существующей гипотезы
+# вердиктом со ссылкой на запись контекста проекта ([id] из pulse_context.yaml или [заметка N]) считается отдельно.
+MAX_HYPOTHESIS_CHANGES = 5
+MAX_CONTEXT_CLOSURES = 15
+_CONTEXT_REF_RE = re.compile(r"\[([a-z0-9-]+|заметка \d+)\]")
+
+
+def _context_ids() -> set[str]:
+    try:
+        from app.services import pulse_context
+
+        return {e.id for e in pulse_context.load_entries()}
+    except Exception:  # noqa: BLE001
+        return set()
+
+
+def is_context_closure(upd: dict, context_ids: set[str]) -> bool:
+    """Закрытие существующей гипотезы вердиктом со ссылкой на запись контекста проекта."""
+    if not isinstance(upd, dict) or upd.get("id") is None or not isinstance(upd.get("verdict"), bool):
+        return False
+    refs = _CONTEXT_REF_RE.findall(str(upd.get("rationale") or ""))
+    return any(r in context_ids or r.startswith("заметка ") for r in refs)
+
+
+def select_hypothesis_updates(updates: list, context_ids: set[str]) -> list[dict]:
+    """До MAX_HYPOTHESIS_CHANGES обычных изменений и отдельно до MAX_CONTEXT_CLOSURES закрытий по контексту."""
+    regular, closures = [], []
+    for upd in updates or []:
+        if not isinstance(upd, dict):
+            continue
+        if is_context_closure(upd, context_ids):
+            if len(closures) < MAX_CONTEXT_CLOSURES:
+                closures.append(upd)
+        elif len(regular) < MAX_HYPOTHESIS_CHANGES:
+            regular.append(upd)
+    return regular + closures
+
+
 async def _apply_hypothesis_updates(updates: list[dict]) -> int:
     """Изменения гипотез от LLM → таблица hypotheses. Возвращает число применённых."""
     applied = 0
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     open_statements: dict[int, str] | None = None
     async with analytics_session() as db:
-        for upd in updates[:5]:
+        for upd in select_hypothesis_updates(updates, _context_ids()):
             if not isinstance(upd, dict) or not str(upd.get("statement") or "").strip():
                 continue
             verdict = upd.get("verdict")

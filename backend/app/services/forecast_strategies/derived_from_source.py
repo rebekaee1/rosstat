@@ -416,6 +416,13 @@ def derived_from_source_strategy(
         logger.error("derived_from_source: unknown operation '%s'", operation)
         return []
 
+    # 14.11.2026: `source_model` — прогнозные точки берутся из указанной модели источника (у ИПЦ это
+    # `Inflation-12M-MW`, её показывают карточка ИПЦ и витрина); прежде витрина давала 6,33 %, а `cpi-yoy` — 6,41 %
+    # на декабрь. Прошлые точки и запасной путь (модели нет) — прежняя формула.
+    model_fc = dict(ctx.cfg.get("_source_model_forecast") or [])
+    if model_fc:
+        derived_full = sorted({**dict(derived_full), **model_fc}.items())
+
     src_actual_dates = ctx.cfg.get("_source_actual_dates") or ()
     source_last_actual = max(src_actual_dates) if src_actual_dates else None
     future_only = _select_forecast_points(

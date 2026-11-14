@@ -30,7 +30,7 @@ import IndicatorSeoBlocks from '../components/IndicatorSeoBlocks';
 import RegionCrossLink from '../components/RegionCrossLink';
 import RelatedIndicators from '../components/RelatedIndicators';
 import { findVariantGroup } from '../lib/indicatorVariants';
-import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
+import { chartSeriesForViewMode, heroDeltaSuffixKey } from '../lib/chartSeriesForViewMode';
 import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { resolveDateFormat } from '../lib/format';
@@ -565,15 +565,14 @@ export default function IndicatorDetail() {
     chartMode, frequency: effectiveIndicator?.frequency, safeViewMode,
   });
   // Частота точек в режиме, а не исходного ряда: «по кварталам» сравнивается с прошлым кварталом, «по годам» с прошлым годом.
-  const heroFreq = chartMode === 'quarterly' || chartMode === 'qoq' ? 'quarterly'
-    : chartMode === 'annual' ? 'annual'
-      : effectiveIndicator?.frequency;
-  const heroDeltaSuffix = heroFreq === 'quarterly' ? t('w3.tele.delta.prevQuarter')
-    : heroFreq === 'daily' && heroPoints === dataPoints ? t('c12u.delta.prevDay')
-    : heroFreq === 'weekly' ? t('w3.tele.delta.prevWeek')
-      : heroFreq === 'annual' ? t('w3.tele.delta.prevYear')
-        : heroFreq === 'monthly' ? t('w3.tele.delta.prevMonth')
-          : t('w3.tele.delta.prevValue');
+  // Недельный ИПЦ («Н/н») живёт на месячном `cpi` — сравнивается с прошлой неделей (14.11.2026).
+  const heroFreq = chartMode === 'weekly' || chartMode === 'period-weekly' ? 'weekly'
+    : chartMode === 'quarterly' || chartMode === 'qoq' ? 'quarterly'
+      : chartMode === 'annual' ? 'annual'
+        : effectiveIndicator?.frequency;
+  const heroDeltaSuffix = t(heroDeltaSuffixKey({
+    chartMode, frequency: effectiveIndicator?.frequency, dailyFromRawSeries: heroPoints === dataPoints,
+  }));
   const heroPolarity = indicatorPolarity(indicator?.name, indicator?.name_en, indicator?.code);
 
   const genericFamily = getViewModeFamily(code);

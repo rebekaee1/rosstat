@@ -58,6 +58,11 @@ GLOSSARY_EN: dict[str, str] = {
     "Европейский центральный банк": "European Central Bank",
     "Министерство финансов США": "U.S. Department of the Treasury",
     "Совет управляющих Федеральной резервной системы США": "Board of Governors of the Federal Reserve System",
+    # Первоисточники рядов, которые приходят через FRED (14.11.2026): «… (через FRED)» → «… (via FRED)».
+    "Министерство труда США": "U.S. Department of Labor",
+    "Федеральное агентство по жилищному финансированию США": "Federal Housing Finance Agency",
+    "Административно-бюджетное управление США": "U.S. Office of Management and Budget",
+    "через FRED": "via FRED",
     "Россия": "Russia",
     "Регионы": "Regions",
     "Регионы России": "Regions of Russia",

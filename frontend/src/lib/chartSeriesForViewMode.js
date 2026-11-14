@@ -31,3 +31,23 @@ export function chartSeriesForViewMode({
   if (chartMode === 'mom') return momDataPoints;
   return dataPoints;
 }
+
+/**
+ * Ключ подписи изменения в шапке («к прошлой неделе / месяцу / …») — по частоте точек выбранного режима, а не
+ * исходного ряда. Недельный ИПЦ живёт на месячном индикаторе `cpi`: без этой ветки шапка «Н/н» писала «к прошлому
+ * месяцу» (находка редактора рассылки 14.11.2026). «Рост за период» по неделям сравнивается с прошлым отчётом, как в
+ * плитках телеметрии.
+ */
+export function heroDeltaSuffixKey({ chartMode, frequency, dailyFromRawSeries = false }) {
+  if (chartMode === 'weekly') return 'w3.tele.delta.prevWeek';
+  if (chartMode === 'period-weekly') return 'w3.tele.delta.prevReport';
+  const freq = chartMode === 'quarterly' || chartMode === 'qoq' ? 'quarterly'
+    : chartMode === 'annual' ? 'annual'
+      : frequency;
+  if (freq === 'quarterly') return 'w3.tele.delta.prevQuarter';
+  if (freq === 'daily' && dailyFromRawSeries) return 'c12u.delta.prevDay';
+  if (freq === 'weekly') return 'w3.tele.delta.prevWeek';
+  if (freq === 'annual') return 'w3.tele.delta.prevYear';
+  if (freq === 'monthly') return 'w3.tele.delta.prevMonth';
+  return 'w3.tele.delta.prevValue';
+}

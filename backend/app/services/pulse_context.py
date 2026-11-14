@@ -35,7 +35,7 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 ENTRIES_PATH = DATA_DIR / "pulse_context.yaml"
 RELEASE_LOG_PATH = DATA_DIR / "release_log.json"
 
-MAX_BLOCK_CHARS = 5200
+MAX_BLOCK_CHARS = 7500
 MAX_ENTRY_CHARS = 260
 LOOKBACK_DAYS = 45
 MAX_RELEASES = 2

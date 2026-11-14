@@ -2,9 +2,9 @@
 
 Источник: Babel AST текущих tracked frontend/MCP файлов. Генератор не исполняет приложение и не присваивает reviewed.
 
-- imports: 4856
+- imports: 4858
 - routes: 100
-- functions: 15458
+- functions: 15464
 - hooks: 2865
 - http: 127
 - storage: 244

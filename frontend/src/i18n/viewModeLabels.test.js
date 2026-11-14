@@ -60,4 +60,14 @@ describe('источники каталога по-английски (пари�
     }
     expect(localizeSource('Управление энергетической информации США (EIA)', 'en')).toBe('U.S. Energy Information Administration (EIA)');
   });
+
+  it('ряды США через FRED: первоисточник и транспорт на обоих языках (рассылка 14.11.2026)', () => {
+    const ru = 'Бюро трудовой статистики США (через FRED)';
+    expect(localizeSource(ru, 'en')).toBe('U.S. Bureau of Labor Statistics (via FRED)');
+    expect(localizeSource(ru, 'ru')).toBe(ru);
+    for (const origin of ['Бюро переписи населения США', 'Министерство труда США', 'Freddie Mac',
+      'Федеральное агентство по жилищному финансированию США', 'Административно-бюджетное управление США']) {
+      expect(/[А-Яа-яЁё]/.test(localizeSource(`${origin} (через FRED)`, 'en')), origin).toBe(false);
+    }
+  });
 });

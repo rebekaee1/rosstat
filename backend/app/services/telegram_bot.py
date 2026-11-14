@@ -777,6 +777,8 @@ async def _handle_message(msg: dict) -> None:
 _DOWNLOAD_COMMANDS = ("/downloads", "скачивания")
 _EXPORT_COMMANDS = ("/export", "выгрузки", "выгрузка")
 _ADMIN_TEXTS = ("/start", "/menu", "меню", "/users")
+# Заметки для аналитика Пульса (14.11.2026, `pulse_context.handle_owner_command`): только чат владельца.
+_CONTEXT_COMMANDS = ("/context",)
 
 # Меню команд служебного бота (14.11.2026): только в чате владельца и чатах роли «только отчёты»
 # (`BotCommandScopeChat`), не для всех личных чатов — служебный бот остаётся без публичных команд
@@ -787,6 +789,7 @@ OWNER_COMMANDS = [
     {"command": "downloads", "description": "Что скачивают и где упираются в лимит (/downloads 30)"},
     {"command": "export", "description": "Выгрузки файлом: скачивания, регистрации, действия"},
     {"command": "users", "description": "Пользователи"},
+    {"command": "context", "description": "Заметки для аналитика Пульса (/context текст до 25.11)"},
 ]
 REPORTS_ONLY_COMMANDS = [
     {"command": "menu", "description": "Меню отчётов"},

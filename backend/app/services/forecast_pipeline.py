@@ -232,6 +232,18 @@ async def _maybe_inject_source_for_derived(
     new_cfg = dict(ctx_cfg)
     new_cfg["_source_data"] = series
     new_cfg["_source_actual_dates"] = sorted(actual_dates)
+    # Одно число на сайте (14.11.2026): годовая инфляция `cpi*-yoy` берёт прогноз той модели источника, которую
+    # показывают карточка ИПЦ и витрина «Прогнозы» (`Inflation-12M-MW`), а не цепочку месячного прогноза.
+    source_model = derived_cfg.get("source_model")
+    if source_model:
+        fc_q = await db.execute(
+            select(ForecastValue.date, ForecastValue.value)
+            .join(Forecast, Forecast.id == ForecastValue.forecast_id)
+            .join(Indicator, Indicator.id == Forecast.indicator_id)
+            .where(Indicator.code == source_code, Forecast.is_current, Forecast.model_name == source_model)
+            .order_by(ForecastValue.date)
+        )
+        new_cfg["_source_model_forecast"] = [(d, float(v)) for d, v in fc_q.all()]
     # Второй источник — для тождеств из двух рядов (subtract): trade-balance
     # = exports − imports. Грузим его факт+прогноз отдельным ключом.
     source_code_2 = derived_cfg.get("source_code_2")

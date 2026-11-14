@@ -583,6 +583,9 @@ def _source_label(raw: str | None, provider: str | None = None) -> str:
     from app.services.seo_i18n import translate_source
 
     prov = (provider or "").strip().lower()
+    # FRED — транспорт: в базе уже записан первоисточник «… (через FRED)» (14.11.2026); имя провайдера его не заменяет.
+    if prov == "fred" and raw and "FRED" in raw:
+        return translate_source(raw.strip()) or raw.strip()
     if prov:
         mapped = _SOURCE_BY_PROVIDER.get(prov)
         if mapped:

@@ -24406,18 +24406,18 @@
     "anonymous_functions": 8
   },
   "frontend/src/i18n/viewModeLabels.js": {
-    "sha256": "587d5f7e31c422d29ac01af94937d97df398273745dba9ede5e1535556516623",
+    "sha256": "d5d95c813c1b27c39748e9e92e83846c7f109fcb44ff3c9eb2129c65b03ddc2b",
     "definitions": [
       {
         "name": "localizeViewModeLabel",
-        "line": 106,
-        "end_line": 109,
+        "line": 112,
+        "end_line": 115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "localizeSource",
-        "line": 120,
-        "end_line": 138,
+        "line": 126,
+        "end_line": 144,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -24427,19 +24427,19 @@
         "names": [
           "localizeViewModeLabel"
         ],
-        "line": 106
+        "line": 112
       },
       {
         "names": [
           "localizeSource"
         ],
-        "line": 120
+        "line": 126
       }
     ],
     "anonymous_functions": 3
   },
   "frontend/src/i18n/viewModeLabels.test.js": {
-    "sha256": "282c3c3f6cd2604b66da67f142f434e92cba69fead632ea9723a112d2dcdb918",
+    "sha256": "9f7d077ad03766321e85d01f8ef3b4f03fb26e1741deb0e680946db76f97d4c3",
     "definitions": [],
     "imports": [
       {
@@ -24464,7 +24464,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 12
+    "anonymous_functions": 13
   },
   "frontend/src/lib/absoluteAuthNext.test.js": {
     "sha256": "1d7dcf2e37342d39e39a2f8e644efe949101c62b72f91a87a3b85e5d9f91490e",
@@ -30283,12 +30283,18 @@
     "anonymous_functions": 8
   },
   "frontend/src/lib/chartSeriesForViewMode.js": {
-    "sha256": "53a38c71829ba910e4db6e92dde85efa57fea489d6a623daf1b4591839266283",
+    "sha256": "6a5e325f7f69c423552a69792f423b81e34913464af1b05b0349965d3bd3f2cb",
     "definitions": [
       {
         "name": "chartSeriesForViewMode",
         "line": 8,
         "end_line": 33,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "heroDeltaSuffixKey",
+        "line": 41,
+        "end_line": 53,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -30299,12 +30305,18 @@
           "chartSeriesForViewMode"
         ],
         "line": 8
+      },
+      {
+        "names": [
+          "heroDeltaSuffixKey"
+        ],
+        "line": 41
       }
     ],
     "anonymous_functions": 0
   },
   "frontend/src/lib/chartSeriesForViewMode.test.js": {
-    "sha256": "4290d8c74d713c3f7f35393e261096a597fcdc2e045ac2b83a1b81a08169ce09",
+    "sha256": "ad5ae74e196cd3eca3cf414956d93f1b88991b5cf6d70c91214bd7155d4dfdde",
     "definitions": [],
     "imports": [
       {
@@ -30314,10 +30326,18 @@
       {
         "source": "./chartSeriesForViewMode",
         "line": 2
+      },
+      {
+        "source": "../i18n/messages.ru",
+        "line": 3
+      },
+      {
+        "source": "../i18n/messages.en",
+        "line": 4
       }
     ],
     "exports": [],
-    "anonymous_functions": 6
+    "anonymous_functions": 10
   },
   "frontend/src/lib/chartTheme.js": {
     "sha256": "19a5eff70f589a7f815b6db764ac3e25f9bead20953b56ac6092660438c1b804",
@@ -57556,7 +57576,7 @@
     "anonymous_functions": 4
   },
   "frontend/src/pages/IndicatorDetail.jsx": {
-    "sha256": "e1d966f2c1dd76fbb0ba6113b1b370eb766a546054a8cd20f41066052974c2e8",
+    "sha256": "1aedc7fe9a63b24da4a445ff9659e3c46571c82e7ab6b2030d7c783045f60bef",
     "definitions": [
       {
         "name": "readSavedViewMode",
@@ -57573,7 +57593,7 @@
       {
         "name": "IndicatorDetail",
         "line": 110,
-        "end_line": 889,
+        "end_line": 888,
         "kind": "FunctionDeclaration"
       }
     ],
