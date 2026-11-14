@@ -2,6 +2,7 @@
 // Файл собирает сервер: числа в Excel настоящие, в CSV русский формат. Гость получает отказ `download_limit`
 // (как у `/export/table`): тогда открывается окно входа, а не файл.
 import { exportGrid } from './api';
+import { subjectParams } from './downloadSubject';
 import { track, trackFile, events } from './track';
 import { trackBusy } from './chunkRecovery';
 
@@ -63,18 +64,20 @@ function saveBlob(blob, filename) {
 
 /**
  * Скачивание файла сетки. Возвращает true, если файл сохранён; false при лимите гостя (окно входа открыто).
- * В аналитику уходит только тип выгрузки и источник, без названий рядов.
+ * В аналитику уходят тип выгрузки, источник и содержание (`subject`: код, страна, регион — без названий рядов).
  */
-async function downloadGridImpl(spec, { source = 'grid' } = {}) {
+async function downloadGridImpl(spec, { source = 'grid', subject } = {}) {
+  const about = { source, ...subjectParams(subject) };
+  if (subject?.indicator) about.indicator = String(subject.indicator);
   try {
     const { blob, remaining } = await requestGrid(spec);
     saveBlob(blob, spec.filename);
     window.dispatchEvent(new CustomEvent('fe:download-done', { detail: { remaining } }));
-    track(spec.format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { source });
+    track(spec.format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, about);
     return true;
   } catch (err) {
     if (err?.code === 'download_limit') {
-      track(events.DOWNLOAD_LIMIT_HIT, { source });
+      track(events.DOWNLOAD_LIMIT_HIT, about);
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return false;
     }

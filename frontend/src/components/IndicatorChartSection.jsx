@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { HelpCircle } from 'lucide-react';
 import { resolveDateFormat } from '../lib/format';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
@@ -135,7 +136,7 @@ export default function IndicatorChartSection({
   // у зарегистрированных тоже, решение развёрнуто владельцем.
   const handleDownloadImage = async () => {
     if (!downloadAuthed) {
-      track(events.CHART_IMAGE_BLOCKED, { indicator: code, indicatorCategory: indicator?.category });
+      track(events.CHART_IMAGE_BLOCKED, { indicator: code, indicatorCategory: indicator?.category, ...subjectParams({ code }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -154,6 +155,7 @@ export default function IndicatorChartSection({
     if (ok) {
       track(events.CHART_IMAGE_DOWNLOAD, {
         indicator: code,
+        ...subjectParams({ code }),
         indicatorCategory: indicator?.category,
         mode: safeViewMode || chartMode,
         forecast: forecastEnabled && showForecast,

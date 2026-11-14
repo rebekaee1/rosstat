@@ -7,6 +7,7 @@ import '../styles/x2-indicator.css';
 import '../styles/y2-indicator.css';
 import '../styles/w6e-indicator.css';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
@@ -143,7 +144,7 @@ export default function WorldChartSection({
 
   const handleDownloadImage = async () => {
     if (!downloadAuthed) {
-      track(events.CHART_IMAGE_BLOCKED, { indicator: code, world: true });
+      track(events.CHART_IMAGE_BLOCKED, { indicator: code, world: true, ...subjectParams({ code, country: country?.slug }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -164,6 +165,7 @@ export default function WorldChartSection({
         indicator: code,
         mode: modeMeta?.id,
         world: true,
+        ...subjectParams({ code, country: country?.slug }),
       });
     }
   };
