@@ -139442,13 +139442,21 @@
       "mcp_tools": []
     },
     "frontend/src/lib/downloadSubject.js": {
-      "sha256": "a45fb6a07bd7d103d54aefb9bd2520fdf9d7a5c65eeb77fd4644a4e76edd855f",
+      "sha256": "65a1e3e88a9b20eb4961170683ff9910a3af176a4864cc233d294f34bc129642",
       "imports": [],
       "routes": [],
       "functions": [
         {
-          "line": 12,
-          "end_line": 22,
+          "line": 11,
+          "end_line": 24,
+          "owner": "<module>",
+          "name": "joinWhole",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 30,
+          "end_line": 38,
           "owner": "<module>",
           "name": "subjectParams",
           "kind": "FunctionDeclaration",
@@ -139464,7 +139472,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/downloadSubject.test.js": {
-      "sha256": "52d1910f7d6574030e659907eccdebb06239e110cd3f99ffbedb2ade1365cf2e",
+      "sha256": "a9b225717c380ea2ca6da5b796eb51cd16a2be3f2fb14b3fa77f585f0082e6e0",
       "imports": [
         {
           "line": 3,
@@ -139526,6 +139534,7 @@
             "frontend/src/lib/downloadSubject.js"
           ],
           "bindings": [
+            "MAX_LIST_CHARS",
             "subjectParams"
           ]
         }
@@ -139534,7 +139543,7 @@
       "functions": [
         {
           "line": 9,
-          "end_line": 19,
+          "end_line": 31,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -139542,7 +139551,7 @@
         },
         {
           "line": 10,
-          "end_line": 18,
+          "end_line": 20,
           "owner": "<callback@9>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -139557,89 +139566,105 @@
           "callback_context": "Array.from"
         },
         {
-          "line": 36,
-          "end_line": 42,
+          "line": 22,
+          "end_line": 30,
+          "owner": "<callback@9>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 23,
+          "end_line": 23,
+          "owner": "<callback@9>.<callback@22>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Array.from"
+        },
+        {
+          "line": 48,
+          "end_line": 54,
           "owner": "<module>",
           "name": "sources",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 37,
-          "end_line": 41,
+          "line": 49,
+          "end_line": 53,
           "owner": "sources",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "readdirSync(dir).flatMap"
         },
         {
-          "line": 45,
-          "end_line": 52,
+          "line": 57,
+          "end_line": 64,
           "owner": "<module>",
           "name": "callAt",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 54,
-          "end_line": 62,
+          "line": 66,
+          "end_line": 74,
           "owner": "<module>",
           "name": "trackCalls",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 64,
-          "end_line": 97,
+          "line": 76,
+          "end_line": 109,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "describe"
         },
         {
-          "line": 72,
-          "end_line": 72,
-          "owner": "<callback@64>",
+          "line": 84,
+          "end_line": 84,
+          "owner": "<callback@76>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "SUBJECT_EVENTS.some"
         },
         {
-          "line": 78,
-          "end_line": 80,
-          "owner": "<callback@64>",
+          "line": 90,
+          "end_line": 92,
+          "owner": "<callback@76>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 79,
-          "end_line": 79,
-          "owner": "<callback@64>.<callback@78>",
+          "line": 91,
+          "end_line": 91,
+          "owner": "<callback@76>.<callback@90>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "found.map"
         },
         {
-          "line": 82,
-          "end_line": 82,
-          "owner": "<callback@64>",
+          "line": 94,
+          "end_line": 94,
+          "owner": "<callback@76>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "found.map"
         },
         {
-          "line": 83,
-          "end_line": 88,
-          "owner": "<callback@64>",
+          "line": 95,
+          "end_line": 100,
+          "owner": "<callback@76>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it.each(found.map((f) => [f.rel, f.call.slice(0, 90).replace(/\\s+/g, ' '), f.call]))"
         },
         {
-          "line": 91,
-          "end_line": 96,
-          "owner": "<callback@64>",
+          "line": 103,
+          "end_line": 108,
+          "owner": "<callback@76>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
@@ -139652,8 +139677,8 @@
       "jsx_handlers": [],
       "registries": [
         {
-          "line": 22,
-          "end_line": 26,
+          "line": 34,
+          "end_line": 38,
           "owner": "<module>",
           "name": "SUBJECT_EVENTS",
           "kind": "ArrayExpression",
@@ -139672,8 +139697,8 @@
           "initializer": null
         },
         {
-          "line": 32,
-          "end_line": 32,
+          "line": 44,
+          "end_line": 44,
           "owner": "<module>",
           "name": "VARIABLE_EVENT_FILES",
           "kind": "ArrayExpression",
@@ -139684,8 +139709,8 @@
           "initializer": null
         },
         {
-          "line": 34,
-          "end_line": 34,
+          "line": 46,
+          "end_line": 46,
           "owner": "<module>",
           "name": "SRC",
           "kind": "CallExpression",
@@ -255921,7 +255946,7 @@
   "totals": {
     "imports": 4810,
     "routes": 95,
-    "functions": 15317,
+    "functions": 15320,
     "hooks": 2830,
     "http": 119,
     "storage": 244,

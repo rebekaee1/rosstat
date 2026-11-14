@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `b99e440691ccef4c359de11f0df48d4e9543f2aa`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `6b7e7a360aec39a20b063f1f3d52d791eeb449b8`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2470 |
 | Код, шаблоны и стили | 1998 |
 | Актуальные рецензии без пропусков guard | 2470 |
-| Именованные определения Python/JS: с аннотацией / всего | 16122 / 16122 |
+| Именованные определения Python/JS: с аннотацией / всего | 16125 / 16125 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -308,7 +308,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/demographics.py](../backend/app/services/demographics.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/derived_ops.py](../backend/app/services/derived_ops.py) | reviewed | 31/31 | актуально |
 | [backend/app/services/display.py](../backend/app/services/display.py) | reviewed | 19/19 | актуально |
-| [backend/app/services/download_content.py](../backend/app/services/download_content.py) | reviewed | 41/41 | актуально |
+| [backend/app/services/download_content.py](../backend/app/services/download_content.py) | reviewed | 43/43 | актуально |
 | [backend/app/services/ecb_fx_parser.py](../backend/app/services/ecb_fx_parser.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/emiss_labor_parser.py](../backend/app/services/emiss_labor_parser.py) | body_reviewed | 3/3 | актуально |
 | [backend/app/services/emiss_regional_parser.py](../backend/app/services/emiss_regional_parser.py) | reviewed | 14/14 | актуально |
@@ -1878,7 +1878,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/dockSuppress.component.test.jsx](../frontend/src/lib/dockSuppress.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/dockSuppress.js](../frontend/src/lib/dockSuppress.js) | reviewed | 9/9 | актуально |
 | [frontend/src/lib/downloadSubject.flow.test.js](../frontend/src/lib/downloadSubject.flow.test.js) | reviewed | 1/1 | актуально |
-| [frontend/src/lib/downloadSubject.js](../frontend/src/lib/downloadSubject.js) | reviewed | 1/1 | актуально |
+| [frontend/src/lib/downloadSubject.js](../frontend/src/lib/downloadSubject.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/downloadSubject.test.js](../frontend/src/lib/downloadSubject.test.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/excel.js](../frontend/src/lib/excel.js) | reviewed | 11/11 | актуально |
 | [frontend/src/lib/excelProvenance.test.js](../frontend/src/lib/excelProvenance.test.js) | reviewed | 0/0 | актуально |

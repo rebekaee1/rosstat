@@ -34604,12 +34604,18 @@
     "anonymous_functions": 12
   },
   "frontend/src/lib/downloadSubject.js": {
-    "sha256": "a45fb6a07bd7d103d54aefb9bd2520fdf9d7a5c65eeb77fd4644a4e76edd855f",
+    "sha256": "65a1e3e88a9b20eb4961170683ff9910a3af176a4864cc233d294f34bc129642",
     "definitions": [
       {
+        "name": "joinWhole",
+        "line": 11,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "subjectParams",
-        "line": 12,
-        "end_line": 22,
+        "line": 30,
+        "end_line": 38,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -34617,32 +34623,38 @@
     "exports": [
       {
         "names": [
+          "MAX_LIST_CHARS"
+        ],
+        "line": 9
+      },
+      {
+        "names": [
           "subjectParams"
         ],
-        "line": 12
+        "line": 30
       }
     ],
     "anonymous_functions": 0
   },
   "frontend/src/lib/downloadSubject.test.js": {
-    "sha256": "52d1910f7d6574030e659907eccdebb06239e110cd3f99ffbedb2ade1365cf2e",
+    "sha256": "a9b225717c380ea2ca6da5b796eb51cd16a2be3f2fb14b3fa77f585f0082e6e0",
     "definitions": [
       {
         "name": "sources",
-        "line": 36,
-        "end_line": 42,
+        "line": 48,
+        "end_line": 54,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "callAt",
-        "line": 45,
-        "end_line": 52,
+        "line": 57,
+        "end_line": 64,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "trackCalls",
-        "line": 54,
-        "end_line": 62,
+        "line": 66,
+        "end_line": 74,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -34669,7 +34681,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 11
+    "anonymous_functions": 13
   },
   "frontend/src/lib/excel.js": {
     "sha256": "772b0b1374b433c700e106f997213b3b0d71b3ddceea37b4ee32246cbbbd4708",
