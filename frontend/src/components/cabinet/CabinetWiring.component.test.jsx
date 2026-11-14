@@ -86,7 +86,8 @@ describe('слот страниц (показатель, страна, реги�
 
   it('у страны и рейтинга только «Сохранить» (за страной не следят)', async () => {
     withContext(<CabinetActionsSlot subject={subjects.countrySubject('turkey', 'Турция')} />);
-    expect(await screen.findByRole('button', { name: 'c11b.save.addAria' })).toBeTruthy();
+    // У страны кнопка с подписью «Сохранить» (14.11.2026): имя кнопки — сама подпись.
+    expect(await screen.findByRole('button', { name: 'c11b.save.add' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: /c11b\.watch/ })).toBeNull();
   });
 
@@ -98,7 +99,7 @@ describe('слот страниц (показатель, страна, реги�
     ['вид рейтинга', () => subjects.ratingViewSubject({ concept: 'gdp-usd', group: 'g7', cols: ['population'], title: 'ВВП' }), { kind: 'rating_view', item_key: 'gdp-usd|group=g7|cols=population' }],
   ])('ключ записи по договорённости: %s', async (_name, make, expected) => {
     withContext(<CabinetActionsSlot subject={make()} />);
-    fireEvent.click(await screen.findByRole('button', { name: 'c11b.save.addAria' }));
+    fireEvent.click(await screen.findByRole('button', { name: /^c11b\.save\.add/ }));
     await waitFor(() => expect(guestSaved()).toHaveLength(1));
     const [row] = guestSaved();
     expect(row).toMatchObject({ kind: expected.kind, item_key: expected.item_key });

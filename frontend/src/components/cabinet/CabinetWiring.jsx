@@ -16,7 +16,7 @@ export function CabinetSubjectActions({ subject }) {
   if (subject.only === 'watch') return watch;
   return (
     <>
-      <SaveButton kind={subject.kind} itemKey={subject.itemKey} title={subject.title} payload={subject.payload} />
+      <SaveButton kind={subject.kind} itemKey={subject.itemKey} title={subject.title} payload={subject.payload} variant={subject.variant === 'button' ? 'button' : 'icon'} />
       {watch}
     </>
   );
