@@ -144,6 +144,27 @@ describe('вошедший', () => {
   });
 });
 
+describe('звезда, нажатая до прихода списка кабинета (14.11.2026)', () => {
+  it('пришедший позже список не гасит только что сохранённое и не возвращает только что убранное', async () => {
+    let release;
+    api.listSaved.mockReturnValue(new Promise((r) => { release = r; }));
+    api.saveItem.mockResolvedValue({ item: { id: 'n1', kind: 'country', item_key: 'turkey', title: 'Турция', created_at: '2026-11-14T10:00:00Z' }, created: true });
+    api.deleteSavedByKey.mockResolvedValue({ ok: true });
+    api.fetchCabinetConfig.mockResolvedValue(ENABLED);
+    await store.ensureConfig();
+    store.bindAuth('u1');
+    expect(store.getState().savedStatus).toBe('loading');
+    await store.saveItem({ kind: 'country', itemKey: 'turkey', title: 'Турция' });
+    // Список снят до нажатия: в нём нет Турции, зато есть Германия, которую человек тут же убирает.
+    store.getState().saved.push({ id: 'g', kind: 'country', item_key: 'germany', created_at: '2026-11-01T00:00:00Z' });
+    await store.removeSaved('country', 'germany');
+    release({ items: [{ id: 'g', kind: 'country', item_key: 'germany', created_at: '2026-11-01T00:00:00Z' }] });
+    await flush();
+    const keys = store.getState().saved.map((r) => r.item_key);
+    expect(keys).toEqual(['turkey']);
+  });
+});
+
 describe('перенос избранного гостя при входе', () => {
   const seedGuest = (n) => window.localStorage.setItem(store.GUEST_KEY, JSON.stringify(
     Array.from({ length: n }, (_, i) => ({ kind: 'country', item_key: `g${i}`, title: `G${i}`, payload: null, created_at: '2026-10-01T00:00:00Z' })),
