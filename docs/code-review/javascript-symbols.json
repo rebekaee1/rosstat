@@ -4928,37 +4928,98 @@
     ],
     "anonymous_functions": 0
   },
+  "frontend/src/components/DownloadLimitModal.guest.test.jsx": {
+    "sha256": "e98b13162426411c6f86099ac983142aeb0d2ee0384ea76b3714cd538fae2a3c",
+    "definitions": [
+      {
+        "name": "useAuth",
+        "line": 7,
+        "end_line": 7,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useT",
+        "line": 15,
+        "end_line": 15,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useLocale",
+        "line": 16,
+        "end_line": 16,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useLocale.t",
+        "line": 16,
+        "end_line": 16,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "openWall",
+        "line": 25,
+        "end_line": 28,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "href",
+        "line": 49,
+        "end_line": 49,
+        "kind": "ObjectMethod"
+      }
+    ],
+    "imports": [
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "react-router-dom",
+        "line": 4
+      },
+      {
+        "source": "vitest",
+        "line": 5
+      },
+      {
+        "source": "./DownloadLimitModal",
+        "line": 19
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 13
+  },
   "frontend/src/components/DownloadLimitModal.jsx": {
-    "sha256": "6e4ec06d094224c22c29e347cc23be9fb0767536a5ab79f6edb0c225e687cf8c",
+    "sha256": "078f5865e539990e6bcd7a77bfc6f79e9055c486d0adc40e207cf5369d0b45cf",
     "definitions": [
       {
         "name": "DownloadLimitModal",
-        "line": 16,
-        "end_line": 108,
+        "line": 18,
+        "end_line": 130,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DownloadLimitModal.close",
-        "line": 28,
-        "end_line": 28,
+        "line": 30,
+        "end_line": 30,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "DownloadLimitModal.resume",
-        "line": 29,
-        "end_line": 34,
+        "line": 31,
+        "end_line": 36,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "DownloadLimitModal.handler",
-        "line": 37,
-        "end_line": 37,
+        "line": 39,
+        "end_line": 39,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "DownloadLimitModal.onKey",
-        "line": 44,
-        "end_line": 44,
+        "line": 46,
+        "end_line": 46,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -5008,8 +5069,16 @@
         "line": 11
       },
       {
-        "source": "../styles/k8-tools.css",
+        "source": "./OAuthButtons",
         "line": 12
+      },
+      {
+        "source": "../styles/k8-tools.css",
+        "line": 13
+      },
+      {
+        "source": "../styles/w5-pages.css",
+        "line": 14
       }
     ],
     "exports": [
@@ -5017,7 +5086,7 @@
         "names": [
           "default"
         ],
-        "line": 16
+        "line": 18
       }
     ],
     "anonymous_functions": 9
@@ -9991,36 +10060,36 @@
     "anonymous_functions": 12
   },
   "frontend/src/components/OAuthButtons.jsx": {
-    "sha256": "77e5021954f0e32021ccbf919359eaf698fa0ebde7f2760783b69997cd89abab",
+    "sha256": "35155faa6c128da5bd29c3ac01df058489b733a5113bc3bf3915c7fe4b30ad56",
     "definitions": [
       {
         "name": "OAuthButtons",
         "line": 51,
-        "end_line": 224,
+        "end_line": 227,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "OAuthButtons.cancelConsent",
-        "line": 75,
-        "end_line": 79,
+        "line": 76,
+        "end_line": 80,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "OAuthButtons.onKey",
-        "line": 83,
-        "end_line": 87,
+        "line": 84,
+        "end_line": 88,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "OAuthButtons.openConsent",
-        "line": 107,
-        "end_line": 113,
+        "line": 108,
+        "end_line": 114,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "OAuthButtons.proceed",
-        "line": 115,
-        "end_line": 124,
+        "line": 116,
+        "end_line": 127,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -23855,7 +23924,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "2866d4a516d49b17aac20c8e9f317c77f16bc232b3f040be8826185e53aa28c7",
+    "sha256": "047460a8082377f2b1f2fbcdb5074b08dada061c944c33bfe897917ce7621bec",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23963,7 +24032,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "841d5a6c119d9c0af57da655e99bcafb3f92fb3cc726b25ebdd0721c8dd04229",
+    "sha256": "2f2248e7dedb50aa34673d793b1d53f913a86c341c7a57e72882efa603f11b24",
     "definitions": [],
     "imports": [],
     "exports": [

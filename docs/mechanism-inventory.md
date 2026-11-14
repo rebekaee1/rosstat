@@ -14,9 +14,9 @@
 - Jobs: **61**
 - Middleware: **6**
 - Registry declarations: **1467**
-- Registry references: **2746**
+- Registry references: **2748**
 - Migration operations: **490**
-- Candidate effects: **3016**
+- Candidate effects: **3020**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 

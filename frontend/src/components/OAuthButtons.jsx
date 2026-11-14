@@ -53,6 +53,7 @@ export default function OAuthButtons({
   showGoogleEmailFallback = false, onGoogleEmailFallback,
   googleFallbackLabelKey = 'auth.oauth.googleRegister',
   preferRealGoogle = false,
+  onBeforeRedirect,
 }) {
   const { locale, t } = useLocale();
   const [providers, setProviders] = useState(null); // null = ещё грузим
@@ -119,6 +120,8 @@ export default function OAuthButtons({
     // Круг 11 (E8): подписка считается не на старте входа, а по факту регистрации. Выбор
     // запоминаем; `newsletter_opt_in` и `signup` отправит AuthProvider после возврата.
     markOAuthPending(pending, intent, { newsletter });
+    // Окно стены скачивания (14.11.2026): запомнить, куда вернуть человека после входа (как перед переходом на /register).
+    onBeforeRedirect?.();
     // Полностраничный редирект: согласие пробрасываем параметром newsletter.
     window.location.href = oauthStartUrl(pending, { intent, next, newsletter, consent: policy });
   };

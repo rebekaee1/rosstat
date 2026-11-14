@@ -564,6 +564,29 @@ def server_summary(counts: dict[str, int] | None, titles: dict[str, str], *, bro
     return {"count": None if counts is None else sum(counts.values()), "browser": browser, "items": items}
 
 
+def _walls_by_device(walls: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
+    """Упёрлись и зарегистрировались потом — по устройству (14.11.2026: телефон 7 % против компьютера 29 %;
+    замер после окна стены с входом в одно касание). Человек считается один раз на устройство."""
+    people: dict[str, dict[str, set]] = {}
+    for r in walls:
+        if not r.get("person"):
+            continue
+        cell = people.setdefault(r.get("device") or "unknown", {"people": set(), "signed": set()})
+        cell["people"].add(r["person"])
+        if r.get("signed_up_after"):
+            cell["signed"].add(r["person"])
+    order = sorted(people.items(), key=lambda kv: -len(kv[1]["people"]))
+    return {device: {"people": len(c["people"]), "signed": len(c["signed"])} for device, c in order}
+
+
+def _device_line(by_device: dict[str, dict[str, int]] | None) -> str:
+    if not by_device:
+        return ""
+    parts = [f"{DEVICE_LABELS.get(d, d)} {_n(c['signed'])} из {_n(c['people'])} ({_pct(c['signed'], c['people'])})"
+             for d, c in by_device.items() if c["people"]]
+    return "Со стены зарегистрировались: " + " · ".join(parts) if parts else ""
+
+
 def summarize(rows: list[dict[str, Any]], top: int = 10) -> dict[str, Any]:
     """Сводка по строкам `collect` (чистая функция: тестируется без базы)."""
     dl = [r for r in rows if not r["wall"]]
@@ -605,6 +628,7 @@ def summarize(rows: list[dict[str, Any]], top: int = 10) -> dict[str, Any]:
             "count": len(wl), "people": len(wall_people), "signed_up": len(signed_people),
             "by_what": dict(Counter(r["what"] for r in wl).most_common()),
             "by_channel": dict(Counter(r["channel"] for r in wl).most_common()),
+            "by_device": _walls_by_device(wl),
             "top": by_content(wl, walls=True)[:top],
             "contents": len({r["key"] for r in wl}),
         },
@@ -716,6 +740,9 @@ def format_report(summary: dict[str, Any], period_label: str, *, top: int = 10) 
         details.append(f"Что не дал лимит: {_mix(w['by_what'])}")
     if w["by_channel"]:
         details.append(f"Откуда пришли упёршиеся: {_mix(w['by_channel'], CHANNEL_LABELS)}")
+    device_line = _device_line(w.get("by_device"))
+    if device_line:
+        details.append(device_line)
     details.append(f"Разных страниц: скачивали {_n(d['contents'])}, упирались {_n(w['contents'])}")
     lines.append("")
     lines.append(f"<blockquote expandable>{chr(10).join(details)}</blockquote>")
@@ -929,6 +956,8 @@ def build_xlsx(data: dict[str, Any], *, anonymous: bool = False) -> bytes:
         *[[f"Раздел: {SECTION_LABELS.get(k, k)}", v] for k, v in d["by_section"].items()],
         *[[f"Откуда пришли скачавшие: {CHANNEL_LABELS.get(k, k)}", v] for k, v in d["by_channel"].items()],
         *[[f"Не дал лимит: {k}", v] for k, v in w["by_what"].items()],
+        *[[f"Со стены зарегистрировались, {DEVICE_LABELS.get(d, d)}", f"{c['signed']} из {c['people']}"]
+          for d, c in (w.get("by_device") or {}).items()],
         *_server_rows(data["summary"].get("server") if "summary" in data else None),
         ["Примечание", "Роботы и собственные заходы исключены. Человек = посетитель сайта (браузер)."],
     ], [48, 60])

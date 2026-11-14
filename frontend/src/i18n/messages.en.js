@@ -1249,6 +1249,9 @@ export default {
   'download.resume.action': 'Download selected file',
   'download.resume.error': 'Download failed. Please try again.',
   'download.limit.title': 'Available after registration',
+  'download.limit.lead': 'Sign in with one tap — and you will come back to this file.',
+  'download.limit.email': 'Sign up with email',
+  'download.limit.haveAccount': 'Already have an account? Log in',
   'download.limit.body':
     'Downloading data and charts is available to registered users. '
     + 'Registration is free and unlocks unlimited exports for any historical period, '
