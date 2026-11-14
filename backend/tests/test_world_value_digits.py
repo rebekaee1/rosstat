@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 from app.services.display import format_fixed, world_series_digits
-from tests.test_seo_world_year import CODE_ANNUAL, world_year_client  # noqa: F401
+from tests.test_seo_world_year import CODE_ANNUAL, CODE_MONTHLY, world_year_client  # noqa: F401
 
 CASES = json.loads(
     (Path(__file__).resolve().parents[2] / "frontend/src/lib/worldValueDigits.cases.json").read_text("utf-8")
@@ -54,3 +54,38 @@ def test_world_card_uses_series_precision(world_year_client):  # noqa: F811
     ).text
     cells = re.findall(r"<td>([0-9][0-9,.  ]*)</td>", html)
     assert cells and all("." not in cell for cell in cells), cells  # численность — целые числа
+
+
+@pytest.mark.parametrize("code, host, locale, expected", [
+    (CODE_ANNUAL, "forecasteconomy.com", "en", re.compile(r"^\d{4}$")),
+    (CODE_ANNUAL, "ru.forecasteconomy.com", "ru", re.compile(r"^\d{4}$")),
+    (CODE_MONTHLY, "forecasteconomy.com", "en", re.compile(r"^[A-Z][a-z]+ \d{4}$")),
+])
+def test_world_og_period_follows_frequency(world_year_client, monkeypatch, code, host, locale, expected):  # noqa: F811
+    """OG-картинка карточки страны мира (14.11.2026): у годового ряда «2025», а не «January 2025»; месяц — как был."""
+    from app.api import sitemap
+
+    captured = {}
+    monkeypatch.setattr("app.services.og_image.cached_og", lambda *_args, **_kwargs: None)
+
+    async def capture_render(_renderer, **kwargs):
+        captured.update(kwargs)
+        return b"\x89PNG\r\n\x1a\n"
+
+    async def skip_store(*_args, **_kwargs):
+        return None
+
+    monkeypatch.setattr(sitemap, "render_og_async", capture_render)
+    monkeypatch.setattr("app.services.og_image.store_og_async", skip_store)
+    response = world_year_client.get(
+        f"/api/v1/og-image/world/germany/{code}.png", headers={"Host": host, "X-FE-Locale": locale},
+    )
+    assert response.status_code == 200
+    assert expected.match(captured["date_text"]), captured["date_text"]
+    assert captured["code"].startswith("fe3:world:")
+    # Единица на языке картинки: до 14.11 русская картинка брала английскую («annual change», «people»).
+    tail = captured["value_text"].split(" ", 1)[1] if " " in captured["value_text"] else ""
+    if locale == "ru":
+        assert not re.search(r"[A-Za-z]", tail), captured["value_text"]
+    else:
+        assert not re.search(r"[А-Яа-яЁё]", tail), captured["value_text"]

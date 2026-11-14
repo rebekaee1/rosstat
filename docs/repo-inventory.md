@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2252  ·  **Строк:** 1 421 016  ·  **Токенов (≈):** 13 552 629
+**Файлов:** 2252  ·  **Строк:** 1 421 074  ·  **Токенов (≈):** 13 553 474
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 798 | 64 987 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 920 | 321 132 | 3 514 690 |
+| `backend` | 920 | 321 180 | 3 515 299 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 146 | 17 427 |
-| `docs` | 145 | 886 250 | 7 621 651 |
+| `docs` | 145 | 886 260 | 7 621 887 |
 | `frontend` | 1016 | 184 474 | 2 021 045 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 365 751 | 2 995 270 |
+| `docs/mechanism-inventory.json` | 365 760 | 2 995 323 |
 | `docs/client-mechanism-inventory.json` | 255 382 | 1 803 770 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -42,7 +42,7 @@
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `docs/backlog.md` | 3 502 | 124 382 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
-| `docs/data-contracts.md` | 1 227 | 62 777 |
+| `docs/data-contracts.md` | 1 228 | 62 960 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `backend/seed_data.py` | 5 732 | 59 343 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
@@ -61,7 +61,7 @@
 | `backend/app/data/i18n/region_indicators_en.py` | 2 962 | 32 847 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 104 |
 | `backend/app/api/world.py` | 2 905 | 28 850 |
-| `backend/app/api/sitemap.py` | 2 645 | 27 890 |
+| `backend/app/api/sitemap.py` | 2 658 | 28 072 |
 | `backend/app/services/public_bot.py` | 2 063 | 27 394 |
 | `backend/app/services/analytics_marts.py` | 2 386 | 26 705 |
 | `backend/app/models.py` | 1 920 | 25 109 |
@@ -1290,6 +1290,7 @@
 | `frontend/src/lib/cpiViewModeContent.audit.test.js` | 115 | 1 010 |
 | `backend/tests/test_world_ecos_adapter.py` | 137 | 1 008 |
 | `frontend/src/lib/jsonLd.test.js` | 88 | 1 008 |
+| `backend/tests/test_world_value_digits.py` | 91 | 1 007 |
 | `frontend/src/lib/authTrigger.test.js` | 104 | 1 007 |
 | `frontend/src/components/country/CountryTopicNav.jsx` | 100 | 1 004 |
 | `frontend/src/lib/cabinetItems.test.js` | 80 | 1 004 |
@@ -1691,7 +1692,6 @@
 | `backend/app/data/global_market_indicators.py` | 67 | 582 |
 | `backend/app/data/world_simple_names.py` | 53 | 580 |
 | `backend/tests/test_ssr_analytics_entry.py` | 59 | 580 |
-| `backend/tests/test_world_value_digits.py` | 56 | 580 |
 | `backend/scripts/retrain-all-monthly-auto.py` | 71 | 579 |
 | `frontend/src/lib/ppiViewModeGroups.js` | 73 | 578 |
 | `backend/app/services/analytics_repair.py` | 46 | 576 |

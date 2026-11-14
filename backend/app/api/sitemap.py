@@ -1862,18 +1862,31 @@ async def og_image_world_rating_year(
     )
 
 
+def _world_og_unit(indicator) -> str:
+    """Единица справа от значения на OG-картинке ряда страны мира — та же, что на его странице.
+
+    До 14.11.2026 картинка брала английскую единицу на обоих языках («3,58 annual change» на русской,
+    «135 индекс 2015=100» на английской). Теперь — ``seo_world._unit_sfx_of`` страницы: на языке
+    картинки, у безразмерных величин пусто, кириллицы на английской нет.
+    """
+    # Язык задаёт контекст запроса (get_locale), как у страницы.
+    from app.services.seo_world import _unit_sfx_of
+
+    return _unit_sfx_of(indicator).strip()
+
+
 @router.get("/api/v1/og-image/world/{slug}/{code}.png", include_in_schema=False)
 async def og_image_world_indicator(
     slug: str, code: str, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG-график мирового показателя: og:image + видимый <img> SSR-страницы."""
-    from app.data.eurostat_units_ru import unit_suffix
     from app.data.legacy_redirects import is_retired_world_hicp
     from app.models import WorldCountry, WorldDataPoint, WorldIndicator
     from app.services.og_image import cached_og, render_indicator_og, store_og_async
 
     loc = get_locale()
-    cache_key = f"fe2:world:{loc}:{slug}:{code}"  # fe2: точность по правилу SPA (14.11.2026)
+    # fe3: подпись периода по частоте и русская единица на ru (fe2 — точность по правилу SPA), 14.11.2026.
+    cache_key = f"fe3:world:{loc}:{slug}:{code}"
     cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
@@ -1909,17 +1922,21 @@ async def og_image_world_indicator(
         if not rows:
             return Response(status_code=404)
         values = [float(v) for _d, v in rows]
-        from app.services.display import public_unit_en
-
-        unit = public_unit_en(indicator.unit_ru, unit_storage=indicator.unit)
-        unit = unit_suffix(unit) or unit
+        unit = _world_og_unit(indicator)
         from app.services.display import format_fixed, world_series_digits
 
         # Точность — та же, что у страницы и SPA (display.world_series_digits, 14.11.2026).
         value_text = f"{format_fixed(values[-1], world_series_digits(values), locale=loc)} {unit}".strip()
         last_date = rows[-1][0]
         first_date = rows[0][0]
-        date_text = format_month_year(last_date, locale=loc) or last_date.isoformat()
+        # Подпись периода по частоте ряда (14.11.2026): у годового ряда «2025», а не «January 2025»;
+        # квартал — «1 кв. 2025» / «2025 Q1»; месяц — как раньше. Та же подпись у регионов мира.
+        from app.data.eurostat_listing import normalize_frequency
+        from app.services.world_subnational_ingest import period_label as world_period_label
+
+        date_text = world_period_label(
+            last_date, normalize_frequency(indicator.frequency) or "", loc,
+        ) or last_date.isoformat()
 
         if loc == "en":
             # EN: предложный падеж не нужен — просто «in {Name}»; имя берём
@@ -1975,14 +1992,13 @@ async def og_image_world_indicator_year(
         return Response(status_code=404)
     from app.data.eurostat_titles_ru import country_in
     from app.data.legacy_redirects import is_retired_world_hicp
-    from app.data.eurostat_units_ru import unit_suffix
     from app.models import WorldCountry, WorldDataPoint, WorldIndicator
     from app.services.og_image import cached_og, render_indicator_og, store_og_async
     from app.services.seo_renderer import neighbor_year_window
     from app.services.site_urls import WORLD_YEAR_LANDING_MIN_POINTS
 
     loc = get_locale()
-    cache_key = f"fe1:wyear:{loc}:{country_slug}:{code}:{year}"
+    cache_key = f"fe2:wyear:{loc}:{country_slug}:{code}:{year}"  # fe2: русская единица на ru (14.11.2026)
     cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key, historical=_og_historical(year))
     if png is None:
@@ -2022,10 +2038,7 @@ async def og_image_world_indicator_year(
         if len(rows) < WORLD_YEAR_LANDING_MIN_POINTS:
             return Response(status_code=404)
 
-        from app.services.display import public_unit_en
-
-        unit = public_unit_en(indicator.unit_ru, unit_storage=indicator.unit)
-        unit = unit_suffix(unit) or unit
+        unit = _world_og_unit(indicator)
         from app.services.seo_world_year import _observation_summary
         from app.data.eurostat_listing import normalize_frequency
         summary_label, value_text = _observation_summary(rows, normalize_frequency(indicator.frequency) or "", unit, en=loc == "en")
