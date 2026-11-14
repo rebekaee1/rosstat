@@ -151,6 +151,30 @@ def main() -> int:
     expect(matched_ip(volume, HEALTH) is None,
            "nginx-volume: /health не матч", fail)
 
+    # 15.11.2026: служебный пропуск наших агентов (cls=staff) не банится ни отказами, ни объёмом; пропуск человека
+    # (cls=human) не банится отказами (свой бюджет в nginx), но объём считается как раньше. Подделать класс через UA
+    # нельзя: проверяется только конец строки.
+    _, ignore_429 = parse_filter("nginx-429")
+
+    def banned(fail_re, ignore_re, line: str) -> bool:
+        return matched_ip(fail_re, line) is not None and not (ignore_re and ignore_re.search(after_date(line)))
+
+    expect(not banned(nginx_429, ignore_429, SECURITY_429_HTML + " cls=staff"),
+           "nginx-429: отказ со служебным пропуском (cls=staff) не считается", fail)
+    expect(not banned(nginx_429, ignore_429, SECURITY_429_HTML + " cls=human"),
+           "nginx-429: отказ с пропуском человека (cls=human) не считается", fail)
+    expect(banned(nginx_429, ignore_429, SECURITY_429_HTML + " cls=anon"),
+           "nginx-429: отказ без пропуска (cls=anon) считается", fail)
+    spoof = SECURITY_429_HTML.replace('research/1.0"', 'research/1.0 cls=staff"') + " cls=anon"
+    expect(banned(nginx_429, ignore_429, spoof),
+           "nginx-429: «cls=staff» внутри UA не спасает от счёта", fail)
+    expect(not banned(volume, volume_ignore, CATALOG + " cls=staff"),
+           "nginx-volume: страница со служебным пропуском не считается", fail)
+    expect(banned(volume, volume_ignore, CATALOG + " cls=human"),
+           "nginx-volume: страница с пропуском человека считается как раньше", fail)
+    expect(banned(volume, volume_ignore, CATALOG.replace('Chrome/120.0.0.0"', 'Chrome/120.0.0.0 cls=staff"') + " cls=anon"),
+           "nginx-volume: «cls=staff» внутри UA не спасает от счёта", fail)
+
     yandex_vol_hit = matched_ip(volume, CATALOG_YANDEX) == "9.9.9.9"
     yandex_vol_ignored = bool(volume_ignore and volume_ignore.search(CATALOG_YANDEX))
     expect(yandex_vol_hit and yandex_vol_ignored,

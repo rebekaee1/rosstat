@@ -60,6 +60,53 @@ def issue(secret: str, now: float | None = None, bind: str = "") -> str:
     return f"{sign(expires, pass_id, secret, bind)}.{expires}.{pass_id}"
 
 
+# Служебный пропуск наших агентов (15.11.2026, дополнение ADR-0026). Редактор рассылки и проверка писем перед выпуском -
+# агенты без JavaScript: страница отказа не может выдать им пропуск, а без Referer они делили с фермой общий бюджет и
+# получали 429. Служебный пропуск - тот же формат и та же подпись, но id начинается с STAFF_ID_PREFIX: nginx относит
+# такой запрос к классу staff (бюджет как у человека, fail2ban его не считает). Выдаёт только тот, у кого есть секрет
+# (scripts/ops/staff-pass.sh на сервере). Срок короткий: по умолчанию 7 суток, не больше 30.
+STAFF_ID_PREFIX = "57aff000"
+STAFF_DAYS_DEFAULT = 7
+STAFF_DAYS_MAX = 30
+
+
+def issue_staff(secret: str, days: int = STAFF_DAYS_DEFAULT, bind: str = "", now: float | None = None) -> str:
+    if not 1 <= days <= STAFF_DAYS_MAX:
+        raise ValueError(f"срок служебного пропуска 1..{STAFF_DAYS_MAX} суток, получено {days}")
+    expires = int(now if now is not None else time.time()) + days * 86400
+    pass_id = STAFF_ID_PREFIX + secrets.token_hex(4)
+    return f"{sign(expires, pass_id, secret, bind)}.{expires}.{pass_id}"
+
+
+def _staff_main(argv: list[str] | None = None) -> int:
+    """python -m app.api.human_pass --days 7 [--net 1.2.3 --ua "..."] - печатает cookie служебного пропуска."""
+    import argparse
+    from datetime import datetime, timezone
+
+    ap = argparse.ArgumentParser(description="Служебный пропуск fe_pass для наших агентов (класс staff в nginx)")
+    ap.add_argument("--days", type=int, default=STAFF_DAYS_DEFAULT)
+    ap.add_argument("--net", default="", help="сеть агента, как её видит nginx: IPv4 /24 (1.2.3) или 4 группы IPv6")
+    ap.add_argument("--ua", default="", help="точная строка User-Agent агента (нужна вместе с --net)")
+    args = ap.parse_args(argv)
+    secret = _secret()
+    if secret is None:
+        print("секрет FE_HUMAN_PASS_SECRET не задан или неверного вида: пропуск не выдан")
+        return 2
+    if bool(args.net) != bool(args.ua):
+        print("--net и --ua задаются вместе (привязка FE_PASS_BIND=1) или не задаются вовсе")
+        return 2
+    bind = f"{args.net}|{args.ua} " if args.net else ""
+    try:
+        value = issue_staff(secret, args.days, bind)
+    except ValueError as exc:
+        print(exc)
+        return 2
+    until = datetime.fromtimestamp(int(value.split(".")[1]), timezone.utc)
+    print(f"fe_pass={value}")
+    print(f"действует до {until:%Y-%m-%d %H:%M} UTC; привязка: {'сеть ' + args.net if bind else 'нет'}")
+    return 0
+
+
 @router.post("/human-pass", status_code=204, include_in_schema=False)
 async def human_pass(request: Request) -> Response:
     secret = _secret()
@@ -91,3 +138,7 @@ async def human_pass(request: Request) -> Response:
             samesite="lax",
         )
     return response
+
+
+if __name__ == "__main__":  # служебный пропуск: scripts/ops/staff-pass.sh
+    raise SystemExit(_staff_main())

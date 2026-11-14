@@ -525,6 +525,9 @@ services:
       FE_PASS_BIND: ${FE_PASS_BIND:-observe}
       # Лимит выдачи пропуска на сеть клиента 3 в минуту (14.11.2026, frontend/43-fe-pass-mint.sh): 0 = выключен.
       FE_PASS_MINT_NET_LIMIT: ${FE_PASS_MINT_NET_LIMIT:-1}
+      # Служебный пропуск наших агентов, класс staff (15.11.2026, frontend/44-fe-staff-pass.sh, scripts/ops/staff-pass.sh):
+      # 0 = такие пропуска действуют как обычный пропуск человека.
+      FE_STAFF_PASS: ${FE_STAFF_PASS:-1}
     ports:
       - "127.0.0.1:3000:80"
     volumes:

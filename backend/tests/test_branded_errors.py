@@ -56,6 +56,22 @@ def test_branded_pages_exist_and_speak_both_languages_without_a_backend():
     assert (PUBLIC / "50x.json").read_text(encoding="utf-8").strip().startswith('{"detail"')
 
 
+def test_429_page_says_opening_while_it_gets_the_pass_and_falls_back_to_refusal():
+    """15.11.2026: человек с JavaScript видит «Открываем страницу…», а не «Слишком много запросов» (замер 08-14.11:
+    все такие люди проходили по пропуску меньше чем за секунду). Без JavaScript и при неудаче - прежний текст отказа."""
+    html = (PUBLIC / "429.html").read_text(encoding="utf-8")
+    head, body = html.split("</head>", 1)
+    assert "Открываем страницу…" in body and "Opening the page…" in body
+    assert 'class="wait" role="status"' in body and 'class="refuse"' in body
+    # Состояние ставится в <head> до первой отрисовки и только если вкладка не пробовала пропуск 2 минуты.
+    assert "documentElement.className='opening'" in head and "120000" in head and "fe_pass_try" in head
+    assert "html.opening .refuse{display:none}" in head and ".wait{display:none}" in head
+    assert "prefers-reduced-motion" in head
+    # Неудача (не 204, ошибка сети, 6 секунд без ответа) возвращает текст отказа с кнопкой «Обновить».
+    assert "if(r.status===204)location.reload();else refuse()" in body and ".catch(refuse)" in body
+    assert "setTimeout(refuse,6000)" in body
+
+
 def test_test_server_sed_keeps_the_new_blocks_untouched():
     """deploy.sh тестового сервера умножает rate= и burst=: в блоках ошибок таких токенов быть не должно."""
     for name in ("__branded-429", "__branded-50x"):

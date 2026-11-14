@@ -340,8 +340,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "sha256": "16aa486a605e298245070467788f5e0aeb55ab17e852a8d825242af39f3dded6",
-      "lines": 93
+      "sha256": "fdef1012d5a929aa988e531bf719423073758b3866bd944d143ff973a0f705f2",
+      "lines": 144
     },
     {
       "path": "backend/app/api/indicators.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "95e877036732307067b4db859e52e71dd1afe65f8877024dfe9dea34bdcd58c8",
-      "lines": 196
+      "sha256": "a9fb7f934067f0657e4e38b5d9ac61f917ef9575050b8e8e3dc20721754b5c0d",
+      "lines": 203
     },
     {
       "path": "backend/app/data/region_indicator_polarity.py",
@@ -930,8 +930,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "sha256": "7e04fcefacdd590539e98c5eae93c5c5c27e9c31c9378df8717988e6c29335d2",
-      "lines": 348
+      "sha256": "c11ac2857df11f54765acbac319d35e913c3ec897d56e7f478370ee4670db6aa",
+      "lines": 393
     },
     {
       "path": "backend/app/services/br_pop_adapter.py",
@@ -2040,7 +2040,7 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "4650613e94ff2cf5af59e30a3938aca7f71dc0ce06e4d0d46d21da6864028d3b",
+      "sha256": "b3b2984258c71aa542dd36495e51539d51899ce20e8212d776d0778c672cbe4e",
       "lines": 362
     },
     {
@@ -10782,8 +10782,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 110,
+      "end_line": 110,
       "owner": "human_pass",
       "conditions": [],
       "handler": "app.api.human_pass.human_pass",
@@ -10797,8 +10797,8 @@
         "status_code": "204",
         "include_in_schema": "False"
       },
-      "handler_line": 64,
-      "handler_end_line": 93,
+      "handler_line": 111,
+      "handler_end_line": 140,
       "parameters": [
         {
           "name": "request",
@@ -35914,8 +35914,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 77,
-      "end_line": 77,
+      "line": 124,
+      "end_line": 124,
       "owner": "human_pass",
       "conditions": [],
       "name": "fe_human_pass_days",
@@ -35923,8 +35923,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 87,
-      "end_line": 87,
+      "line": 134,
+      "end_line": 134,
       "owner": "human_pass",
       "conditions": [
         "_NET_RE.match(net)"
@@ -38804,8 +38804,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 185,
-      "end_line": 185,
+      "line": 205,
+      "end_line": 205,
       "owner": "collect_job",
       "conditions": [],
       "name": "bot_traffic_log_path",
@@ -38813,8 +38813,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 225,
+      "end_line": 225,
       "owner": "collect_job",
       "conditions": [],
       "name": "bot_traffic_log_path",
@@ -95277,8 +95277,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 36,
-      "end_line": 36,
+      "line": 42,
+      "end_line": 42,
       "owner": "<module>",
       "conditions": [],
       "name": "CLASSES",
@@ -95286,16 +95286,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "('anon', 'gfarm', 'human', 'referred', 'crawler', 'goodbot', 'robot', 'fake', 'preview', 'internal')",
+      "expression": "('anon', 'gfarm', 'human', 'staff', 'referred', 'crawler', 'goodbot', 'robot', 'fake', 'preview', 'internal')",
       "expression_truncated": false,
-      "expression_chars": 100,
-      "ast_sha256": "e60c749e1283f15c71cc18f0ac0cc4aa6a694b7499e352a5bfa034b3d788318c",
+      "expression_chars": 109,
+      "ast_sha256": "3a1262e2ac4fee5b403208e0e0c25322de8a31d16483fb949403d6eebf3d856f",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 37,
-      "end_line": 37,
+      "line": 43,
+      "end_line": 43,
       "owner": "<module>",
       "conditions": [],
       "name": "OUTCOMES",
@@ -95311,8 +95311,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 45,
-      "end_line": 47,
+      "line": 51,
+      "end_line": 53,
       "owner": "<module>",
       "conditions": [],
       "name": "_LINE_RE",
@@ -95320,16 +95320,16 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "re.compile('^(?P<day>\\\\d{4}-\\\\d{2}-\\\\d{2})T\\\\S+ (?P<ip>\\\\S+) (?P<status>\\\\d{3}) \"(?:[^\"\\\\\\\\]|\\\\\\\\.)*\" \"(?:[^\"\\\\\\\\]|\\\\\\\\.)*\" cls=(?P<cls>[a-z]+)\\\\s*$')",
+      "expression": "re.compile('^(?P<day>\\\\d{4}-\\\\d{2}-\\\\d{2})T\\\\S+ (?P<ip>\\\\S+) (?P<status>\\\\d{3}) \"(?P<req>(?:[^\"\\\\\\\\]|\\\\\\\\.)*)\" \"(?:[^\"\\\\\\\\]|\\\\\\\\.)*\" cls=(?P<cls>[a-z]+)\\\\s*$')",
       "expression_truncated": false,
-      "expression_chars": 150,
-      "ast_sha256": "55be47f09c05dc1fcb5d3f7d0e993ba3f457450b526b98fdf74bc614270d7261",
+      "expression_chars": 159,
+      "ast_sha256": "54ca6d026f14353ecb87d58e8b0949e34a6350740cac4d4ddcabf2a85b7fc456",
       "runtime_expansion": true
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 49,
-      "end_line": 49,
+      "line": 55,
+      "end_line": 55,
       "owner": "<module>",
       "conditions": [],
       "name": "_HUMAN_RE",
@@ -95345,8 +95345,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 54,
-      "end_line": 58,
+      "line": 60,
+      "end_line": 64,
       "owner": "<module>",
       "conditions": [],
       "name": "_GENUINE_HOST_RE",
@@ -153087,8 +153087,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 106,
-      "end_line": 106,
+      "line": 117,
+      "end_line": 117,
       "owner": "HumanBatch.add_line",
       "conditions": [
         "m['st'] == '429'"
@@ -153103,8 +153103,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 108,
-      "end_line": 108,
+      "line": 119,
+      "end_line": 119,
       "owner": "HumanBatch.add_line",
       "conditions": [
         "m['pass'] == '1'"
@@ -153119,8 +153119,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 183,
-      "end_line": 183,
+      "line": 203,
+      "end_line": 203,
       "owner": "collect_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -153133,8 +153133,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 212,
+      "end_line": 212,
       "owner": "collect_job",
       "conditions": [],
       "operation": "expire",
@@ -153147,8 +153147,22 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 198,
-      "end_line": 198,
+      "line": 216,
+      "end_line": 216,
+      "owner": "collect_job",
+      "conditions": [],
+      "operation": "expire",
+      "receiver": "pipe",
+      "symbol": "app.services.bot_traffic.pipe.expire",
+      "expression": "pipe.expire(hkey, _TTL_SECONDS)",
+      "expression_truncated": false,
+      "expression_chars": 31,
+      "ast_sha256": "3a51459af1f68eb52faf224e82349c805181422156593d3c4c13f7c2595f4e57"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 222,
+      "end_line": 222,
       "owner": "collect_job",
       "conditions": [],
       "operation": "expire",
@@ -153161,8 +153175,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 224,
+      "end_line": 224,
       "owner": "collect_job",
       "conditions": [
         "new_state"
@@ -153177,8 +153191,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 213,
-      "end_line": 213,
+      "line": 237,
+      "end_line": 237,
       "owner": "collect_job",
       "conditions": [
         "new_hstate"
@@ -153193,8 +153207,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 214,
-      "end_line": 214,
+      "line": 238,
+      "end_line": 238,
       "owner": "collect_job",
       "conditions": [],
       "operation": "execute",
@@ -153207,8 +153221,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 236,
-      "end_line": 236,
+      "line": 269,
+      "end_line": 269,
       "owner": "_maybe_report",
       "conditions": [],
       "operation": "set",
@@ -153221,8 +153235,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 280,
+      "end_line": 280,
       "owner": "_maybe_report",
       "conditions": [
         "not await send_telegram(text, kind='bot_traffic')"
@@ -153237,8 +153251,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 384,
+      "end_line": 384,
       "owner": "summary_lines",
       "conditions": [],
       "operation": "get_state_redis",
@@ -153251,8 +153265,25 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 99,
+      "end_line": 99,
+      "owner": "Batch.add_line",
+      "conditions": [
+        "not (cls == 'fake')",
+        "cls == 'human'"
+      ],
+      "operation": "add",
+      "receiver": "self.pass_ips.setdefault(day, set())",
+      "symbol": "app.services.bot_traffic.self.pass_ips.setdefault(day, set()).add",
+      "expression": "self.pass_ips.setdefault(day, set()).add(m['ip'])",
+      "expression_truncated": false,
+      "expression_chars": 49,
+      "ast_sha256": "f6f8b8293bb4c50e67db2f025472e04e1d8ae2f2da38652c789c8fbd8a3f6c0c"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 234,
+      "end_line": 234,
       "owner": "collect_job",
       "conditions": [],
       "operation": "sadd",
@@ -153265,8 +153296,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 211,
-      "end_line": 211,
+      "line": 235,
+      "end_line": 235,
       "owner": "collect_job",
       "conditions": [],
       "operation": "expire",
@@ -153279,8 +153310,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 260,
+      "end_line": 260,
       "owner": "human_counts",
       "conditions": [],
       "operation": "set",
@@ -153293,8 +153324,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 260,
+      "end_line": 260,
       "owner": "human_counts",
       "conditions": [],
       "operation": "set",
@@ -153307,8 +153338,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 106,
-      "end_line": 106,
+      "line": 117,
+      "end_line": 117,
       "owner": "HumanBatch.add_line",
       "conditions": [
         "m['st'] == '429'"
@@ -153323,11 +153354,28 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 108,
-      "end_line": 108,
+      "line": 119,
+      "end_line": 119,
       "owner": "HumanBatch.add_line",
       "conditions": [
         "m['pass'] == '1'"
+      ],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.bot_traffic.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 99,
+      "end_line": 99,
+      "owner": "Batch.add_line",
+      "conditions": [
+        "not (cls == 'fake')",
+        "cls == 'human'"
       ],
       "operation": "set",
       "receiver": null,
@@ -308957,8 +309005,26 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 64,
-      "end_line": 93,
+      "line": 73,
+      "end_line": 78,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "issue_staff",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/api/human_pass.py",
+      "line": 81,
+      "end_line": 107,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_staff_main",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/api/human_pass.py",
+      "line": 111,
+      "end_line": 140,
       "owner": "<module>",
       "conditions": [],
       "name": "human_pass",
@@ -319268,8 +319334,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 61,
-      "end_line": 70,
+      "line": 67,
+      "end_line": 76,
       "owner": "<module>",
       "conditions": [],
       "name": "outcome",
@@ -319277,8 +319343,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 74,
-      "end_line": 91,
+      "line": 80,
+      "end_line": 102,
       "owner": "<module>",
       "conditions": [],
       "name": "Batch",
@@ -319286,8 +319352,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 95,
-      "end_line": 109,
+      "line": 106,
+      "end_line": 120,
       "owner": "<module>",
       "conditions": [],
       "name": "HumanBatch",
@@ -319295,8 +319361,17 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 112,
-      "end_line": 119,
+      "line": 123,
+      "end_line": 130,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "pass_line",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 133,
+      "end_line": 139,
       "owner": "<module>",
       "conditions": [],
       "name": "human_line",
@@ -319304,8 +319379,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 122,
-      "end_line": 158,
+      "line": 142,
+      "end_line": 178,
       "owner": "<module>",
       "conditions": [],
       "name": "read_new",
@@ -319313,8 +319388,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 161,
-      "end_line": 171,
+      "line": 181,
+      "end_line": 191,
       "owner": "<module>",
       "conditions": [],
       "name": "_read_from",
@@ -319322,8 +319397,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 174,
-      "end_line": 175,
+      "line": 194,
+      "end_line": 195,
       "owner": "<module>",
       "conditions": [],
       "name": "_day_key",
@@ -319331,8 +319406,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 178,
-      "end_line": 219,
+      "line": 198,
+      "end_line": 243,
       "owner": "<module>",
       "conditions": [],
       "name": "collect_job",
@@ -319340,8 +319415,17 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 222,
-      "end_line": 227,
+      "line": 246,
+      "end_line": 252,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "pass_counts",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 255,
+      "end_line": 260,
       "owner": "<module>",
       "conditions": [],
       "name": "human_counts",
@@ -319349,8 +319433,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 230,
-      "end_line": 248,
+      "line": 263,
+      "end_line": 282,
       "owner": "<module>",
       "conditions": [],
       "name": "_maybe_report",
@@ -319358,8 +319442,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 251,
-      "end_line": 261,
+      "line": 285,
+      "end_line": 295,
       "owner": "<module>",
       "conditions": [],
       "name": "_genuine_robot",
@@ -319367,8 +319451,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 264,
-      "end_line": 275,
+      "line": 298,
+      "end_line": 309,
       "owner": "<module>",
       "conditions": [],
       "name": "check_genuine",
@@ -319376,8 +319460,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 278,
-      "end_line": 279,
+      "line": 312,
+      "end_line": 313,
       "owner": "<module>",
       "conditions": [],
       "name": "_n",
@@ -319385,8 +319469,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 282,
-      "end_line": 285,
+      "line": 316,
+      "end_line": 319,
       "owner": "<module>",
       "conditions": [],
       "name": "_req",
@@ -319394,8 +319478,17 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 288,
-      "end_line": 292,
+      "line": 322,
+      "end_line": 325,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_addr",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/bot_traffic.py",
+      "line": 328,
+      "end_line": 332,
       "owner": "<module>",
       "conditions": [],
       "name": "_pct",
@@ -319403,8 +319496,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 295,
-      "end_line": 331,
+      "line": 335,
+      "end_line": 376,
       "owner": "<module>",
       "conditions": [],
       "name": "format_lines",
@@ -319412,8 +319505,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 334,
-      "end_line": 348,
+      "line": 379,
+      "end_line": 393,
       "owner": "<module>",
       "conditions": [],
       "name": "summary_lines",
@@ -319421,8 +319514,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 80,
-      "end_line": 91,
+      "line": 87,
+      "end_line": 102,
       "owner": "Batch",
       "conditions": [],
       "name": "add_line",
@@ -319430,8 +319523,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 101,
-      "end_line": 109,
+      "line": 112,
+      "end_line": 120,
       "owner": "HumanBatch",
       "conditions": [],
       "name": "add_line",
@@ -319439,8 +319532,8 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 297,
-      "end_line": 300,
+      "line": 337,
+      "end_line": 340,
       "owner": "format_lines",
       "conditions": [],
       "name": "get",
@@ -367230,8 +367323,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 84,
-      "end_line": 84,
+      "line": 131,
+      "end_line": 131,
       "owner": "human_pass",
       "conditions": [],
       "symbol": "app.api.human_pass._NET_RE"
@@ -372432,40 +372525,40 @@
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 81,
-      "end_line": 81,
+      "line": 88,
+      "end_line": 88,
       "owner": "Batch.add_line",
       "conditions": [],
       "symbol": "app.services.bot_traffic._LINE_RE"
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 82,
-      "end_line": 82,
+      "line": 89,
+      "end_line": 89,
       "owner": "Batch.add_line",
       "conditions": [],
       "symbol": "app.services.bot_traffic.CLASSES"
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 102,
-      "end_line": 102,
+      "line": 113,
+      "end_line": 113,
       "owner": "HumanBatch.add_line",
       "conditions": [],
       "symbol": "app.services.bot_traffic._HUMAN_RE"
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 289,
+      "end_line": 289,
       "owner": "_genuine_robot",
       "conditions": [],
       "symbol": "app.services.bot_traffic._GENUINE_HOST_RE"
     },
     {
       "path": "backend/app/services/bot_traffic.py",
-      "line": 300,
-      "end_line": 300,
+      "line": 340,
+      "end_line": 340,
       "owner": "format_lines.get",
       "conditions": [],
       "symbol": "app.services.bot_traffic.OUTCOMES"
@@ -398095,8 +398188,8 @@
     },
     {
       "path": "backend/app/api/human_pass.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 110,
+      "end_line": 110,
       "owner": "human_pass",
       "conditions": [],
       "handler": "app.api.human_pass.human_pass",
@@ -398110,8 +398203,8 @@
         "status_code": "204",
         "include_in_schema": "False"
       },
-      "handler_line": 64,
-      "handler_end_line": 93,
+      "handler_line": 111,
+      "handler_end_line": 140,
       "parameters": [
         {
           "name": "request",

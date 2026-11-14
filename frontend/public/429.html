@@ -23,11 +23,38 @@ p{margin:0 0 1.5rem;font-size:1rem;line-height:1.55;color:#465369}
 .btn.primary{border-color:#80642F;color:#fff;background:linear-gradient(120deg,#80642F,#AD8A48)}
 .btn:focus-visible{outline:2px solid #80642F;outline-offset:3px}
 html[lang="en"] .ru,html[lang="ru"] .en{display:none}
+/* 15.11.2026: пока страница сама получает пропуск человека, вместо «Слишком много запросов» - «Открываем страницу…».
+   Состояние ставит скрипт в <head> (класс opening у <html>) до первой отрисовки; без JavaScript или при неудаче
+   выдачи пропуска остаётся прежний текст отказа. */
+.wait{display:none}
+html.opening .wait{display:block}
+html.opening .refuse{display:none}
+.wait h1{margin:1.7rem 0 .55rem}
+.wait p{margin:0}
+.wait .line{display:block;width:28px;height:2px;margin:1.4rem auto 0;border-radius:1px;background:#AD8A48;opacity:.35;animation:fe-wait 1.4s ease-in-out infinite alternate}
+@keyframes fe-wait{to{opacity:1;transform:scaleX(1.6)}}
+@media (prefers-reduced-motion:reduce){.wait .line{animation:none;opacity:.8}}
 </style>
+<script>
+// Пропуск человека не чаще раза в 2 минуты на вкладку (как и раньше): если отказ вернулся и с пропуском (лимит по
+// адресу), показывается обычный текст отказа, а не «Открываем страницу…» по кругу.
+(function(){try{
+var t=+sessionStorage.getItem('fe_pass_try')||0;
+if(Date.now()-t>120000&&window.fetch)document.documentElement.className='opening';
+}catch(e){}})();
+</script>
 </head>
 <body>
 <main class="card">
   <a class="brand" href="/" aria-label="Forecast Economy"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<i>economy</i></span></a>
+  <div class="wait" role="status">
+    <h1 class="ru">Открываем страницу…</h1>
+    <h1 class="en">Opening the page…</h1>
+    <p class="ru">Ещё мгновение.</p>
+    <p class="en">Just a moment.</p>
+    <span class="line" aria-hidden="true"></span>
+  </div>
+  <div class="refuse">
   <p class="code" aria-hidden="true">429</p>
   <h1 class="ru">Слишком много запросов</h1>
   <h1 class="en">Too many requests</h1>
@@ -37,6 +64,7 @@ html[lang="en"] .ru,html[lang="ru"] .en{display:none}
     <button class="btn primary" type="button" id="reload"><span class="ru">Обновить</span><span class="en">Reload</span></button>
     <a class="btn" href="/"><span class="ru">На главную</span><span class="en">Home page</span></a>
   </div>
+  </div>
 </main>
 <script>
 (function(){try{
@@ -44,19 +72,23 @@ var h=location.hostname,q=location.search,en=/^(www\.)?forecasteconomy\.com$/i.t
 if(/^ru\./i.test(h)||/[?&]preview_locale=ru/.test(q))en=false;
 if(/[?&]preview_locale=en/.test(q))en=true;
 document.documentElement.lang=en?'en':'ru';
-document.title=en?'429 — Too many requests | Forecast Economy':'429 — Слишком много запросов | Forecast Economy';
+var op=document.documentElement.className==='opening';
+document.title=op?(en?'Opening the page… | Forecast Economy':'Открываем страницу… | Forecast Economy')
+  :(en?'429 — Too many requests | Forecast Economy':'429 — Слишком много запросов | Forecast Economy');
 }catch(e){}
 document.getElementById('reload').addEventListener('click',function(){location.reload()});
 // Пропуск человека (08.11.2026): ферма без JavaScript сюда не доходит, человек получает пропуск и страницу сразу.
-// Не чаще раза в 2 минуты на вкладку: если 429 вернулся и с пропуском (лимит по IP), страница не перезагружается по кругу.
+// Не получилось (нет ответа 204 за 6 секунд, ошибка сети) - на экране прежний текст отказа с кнопкой «Обновить».
+function refuse(){var r=document.documentElement;if(r.className!=='opening')return;r.className='';
+try{document.title=r.lang==='en'?'429 — Too many requests | Forecast Economy':'429 — Слишком много запросов | Forecast Economy'}catch(e){}}
+if(document.documentElement.className==='opening'){
 try{
-var k='fe_pass_try',t=+sessionStorage.getItem(k)||0;
-if(Date.now()-t>120000&&window.fetch){
-sessionStorage.setItem(k,String(Date.now()));
+sessionStorage.setItem('fe_pass_try',String(Date.now()));
+setTimeout(refuse,6000);
 fetch('/api/v1/human-pass',{method:'POST',credentials:'same-origin',headers:{'X-FE-Pass-Request':'1'}})
-.then(function(r){if(r.status===204)location.reload()}).catch(function(){});
+.then(function(r){if(r.status===204)location.reload();else refuse()}).catch(refuse);
+}catch(e){refuse()}
 }
-}catch(e){}
 })();
 </script>
 </body>

@@ -36,6 +36,8 @@ COPY --chmod=755 41-fe-google-farm.sh /docker-entrypoint.d/41-fe-google-farm.sh
 COPY --chmod=755 42-fe-pass-bind.sh /docker-entrypoint.d/42-fe-pass-bind.sh
 # Лимит выдачи пропуска на сеть клиента: FE_PASS_MINT_NET_LIMIT=0 пишет переопределение в /etc/nginx/fe-pass/.
 COPY --chmod=755 43-fe-pass-mint.sh /docker-entrypoint.d/43-fe-pass-mint.sh
+# Служебный пропуск наших агентов (класс staff): FE_STAFF_PASS=0 пишет переопределение в /etc/nginx/fe-pass/.
+COPY --chmod=755 44-fe-staff-pass.sh /docker-entrypoint.d/44-fe-staff-pass.sh
 
 # security/ is bind-mounted in prod for fail2ban; create it in-image so
 # nginx -t / local runs without the host mount still succeed. CI prepares the
