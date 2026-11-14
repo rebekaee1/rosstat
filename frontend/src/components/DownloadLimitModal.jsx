@@ -9,7 +9,9 @@ import { authLink, prepareAuthReturn, pendingExport, clearPendingExport, current
 import { resumeExport } from '../lib/excel';
 import Button from './Button';
 import ApiInterestLink from './ApiInterestLink';
+import OAuthButtons from './OAuthButtons';
 import '../styles/k8-tools.css';
+import '../styles/w5-pages.css';
 
 // Открывается по window-событию 'fe:download-limit' (диспатчится из excel.js,
 // когда бэкенд вернул 403 download_limit). Перенаправляет гостя на регистрацию.
@@ -54,7 +56,7 @@ export default function DownloadLimitModal() {
       onClick={close}
     >
       <div
-        className="w-full max-w-md rounded-3xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
+        className="w-full max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain rounded-3xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -76,30 +78,50 @@ export default function DownloadLimitModal() {
             <X className="w-5 h-5" />
           </button>
         </div>
-        <p className="text-sm text-text-secondary leading-relaxed mb-5">
-          {t(canResume ? (pending.payload ? 'download.resume.body' : 'download.resume.retryOnPage') : 'download.limit.body')}
-        </p>
-        {failed && <p role="alert" className="mb-4 text-sm text-negative">{t('download.resume.error')}</p>}
-        <div className="flex items-center gap-3">
-          {canResume ? <Button loading={busy} onClick={pending.payload ? resume : close} className="w-full">{t(pending.payload ? 'download.resume.action' : 'download.resume.back')}</Button> : <>
-          <Button
-            as={Link}
-            to={authLink('/register')}
-            onClick={() => { prepareAuthReturn(); setOpen(false); }}
-            className="flex-1"
-          >
-            {t('auth.register.submitAlt')}
-          </Button>
-          <Button
-            as={Link}
-            variant="secondary"
-            to={authLink('/login')}
-            onClick={() => { prepareAuthReturn(); setOpen(false); }}
-            className="flex-1"
-          >
-            {t('common.login')}
-          </Button></>}
-        </div>
+        {canResume ? (
+          <>
+            <p className="text-sm text-text-secondary leading-relaxed mb-5">
+              {t(pending.payload ? 'download.resume.body' : 'download.resume.retryOnPage')}
+            </p>
+            {failed && <p role="alert" className="mb-4 text-sm text-negative">{t('download.resume.error')}</p>}
+            <Button loading={busy} onClick={pending.payload ? resume : close} className="w-full">{t(pending.payload ? 'download.resume.action' : 'download.resume.back')}</Button>
+          </>
+        ) : (
+          <>
+            {/* 14.11.2026: на телефоне со стены регистрировались 7 % против 29 % на компьютере — вход через
+                Яндекс/VK теперь прямо здесь, одной кнопкой сверху, без перехода на страницу регистрации. */}
+            <p className="text-sm text-text-secondary leading-relaxed mb-3">{t('download.limit.lead')}</p>
+            <ul className="fe-w7p-benefits mb-4" aria-label={t('w7p.reg.benefitsAria')} data-testid="download-limit-benefits">
+              <li>{t('w7p.reg.b1')}</li>
+              <li>{t('w7p.reg.b2')}</li>
+              <li>{t('w7p.reg.b3')}</li>
+            </ul>
+            <OAuthButtons
+              next={currentReturnTo()}
+              intent="login"
+              dividerLabel={t('auth.oauth.divider')}
+              onBeforeRedirect={prepareAuthReturn}
+            />
+            <div className="flex flex-col gap-2.5">
+              <Button
+                as={Link}
+                variant="secondary"
+                to={authLink('/register')}
+                onClick={() => { prepareAuthReturn(); setOpen(false); }}
+                className="w-full"
+              >
+                {t('download.limit.email')}
+              </Button>
+              <Link
+                to={authLink('/login')}
+                onClick={() => { prepareAuthReturn(); setOpen(false); }}
+                className={cn(FOCUS_RING, 'self-center rounded-md px-2 py-1.5 text-sm text-text-secondary hover:text-text-primary')}
+              >
+                {t('download.limit.haveAccount')}
+              </Link>
+            </div>
+          </>
+        )}
         {/* Вторичная точка входа «фальшивой двери» API: только при api_interest_enabled. */}
         {!canResume && <ApiInterestLink source="limit_modal" variant="inline" onActivate={() => setOpen(false)} />}
       </div>
