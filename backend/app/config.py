@@ -379,6 +379,10 @@ class Settings(BaseSettings):
     analytics_scheduler_enabled: bool = False
     analytics_scheduler_cron_hour: int = 7
     analytics_scheduler_cron_minute: int = 20
+    # Инкрементная сессионизация в задаче каждые 15 минут (14.11.2026): пересчитываются только посетители,
+    # у которых после прошлого прогона что-то поступило (по id), полный прогон — не реже раза в 55 минут.
+    # Выключено = всё как раньше (полный прогон каждые 15 минут). Включать после сверки на копии данных.
+    analytics_sessionize_incremental_enabled: bool = False
     analytics_api_token: str = ""
     # По умолчанию совпадает с public_base_url; отдельный override — если
     # аналитический crawl ходит на другой origin (стейджинг и т.п.).
