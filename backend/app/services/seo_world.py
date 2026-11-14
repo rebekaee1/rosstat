@@ -2280,10 +2280,14 @@ async def render_world_indicator_html(
 <p>{russia_p}</p></section>
 </div>"""
 
+    # Неосновная версия одинакового ряда (world_canonical, 14.11.2026): canonical и hreflang — на основную.
+    from app.services.world_canonical import primary_code as _primary_code
+
+    canonical_code = _primary_code(slug, code) or code
     html = await build_document(
         title=title,
         description=meta_desc,
-        canonical_path=paths.indicator(slug, code),
+        canonical_path=paths.indicator(slug, canonical_code),
         body=body,
         json_ld=json_ld,
         keywords=(

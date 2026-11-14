@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `57caa696fc8b894e33de0e1f965cc4ca21f0e4b2`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `1491249e006a2cdff3dc32da407dc42079b4c89e`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2502 |
-| Код, шаблоны и стили | 2026 |
-| Актуальные рецензии без пропусков guard | 2502 |
-| Именованные определения Python/JS: с аннотацией / всего | 16438 / 16438 |
+| Файлы в явно определённом scope | 2505 |
+| Код, шаблоны и стили | 2029 |
+| Актуальные рецензии без пропусков guard | 2505 |
+| Именованные определения Python/JS: с аннотацией / всего | 16472 / 16472 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -460,7 +460,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/site_urls.py](../backend/app/services/site_urls.py) | reviewed | 87/87 | актуально |
 | [backend/app/services/sitemap_images.py](../backend/app/services/sitemap_images.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/sitemap_priority.py](../backend/app/services/sitemap_priority.py) | reviewed | 15/15 | актуально |
-| [backend/app/services/sitemap_static.py](../backend/app/services/sitemap_static.py) | reviewed | 22/22 | актуально |
+| [backend/app/services/sitemap_static.py](../backend/app/services/sitemap_static.py) | reviewed | 23/23 | актуально |
 | [backend/app/services/ssr_swr.py](../backend/app/services/ssr_swr.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/ssr_warm.py](../backend/app/services/ssr_warm.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/staleness.py](../backend/app/services/staleness.py) | reviewed | 17/17 | актуально |
@@ -507,6 +507,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_adapters/statcan_wds.py](../backend/app/services/world_adapters/statcan_wds.py) | reviewed | 25/25 | актуально |
 | [backend/app/services/world_bank_pink_sheet_parser.py](../backend/app/services/world_bank_pink_sheet_parser.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/world_bea_regional.py](../backend/app/services/world_bea_regional.py) | reviewed | 18/18 | актуально |
+| [backend/app/services/world_canonical.py](../backend/app/services/world_canonical.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/world_cards.py](../backend/app/services/world_cards.py) | reviewed | 29/29 | актуально |
 | [backend/app/services/world_compare.py](../backend/app/services/world_compare.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/world_country_rows.py](../backend/app/services/world_country_rows.py) | reviewed | 7/7 | актуально |
@@ -985,6 +986,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_boc_valet_adapter.py](../backend/tests/test_world_boc_valet_adapter.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_world_boe_iadb_adapter.py](../backend/tests/test_world_boe_iadb_adapter.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_world_boj_adapter.py](../backend/tests/test_world_boj_adapter.py) | reviewed | 8/8 | актуально |
+| [backend/tests/test_world_canonical.py](../backend/tests/test_world_canonical.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_world_cards.py](../backend/tests/test_world_cards.py) | reviewed | 38/38 | актуально |
 | [backend/tests/test_world_catalog_cache.py](../backend/tests/test_world_catalog_cache.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_world_catalog_merge.py](../backend/tests/test_world_catalog_merge.py) | reviewed | 19/19 | актуально |
@@ -2539,4 +2541,5 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/tests/test_tor_http_bridge.py](../scripts/tests/test_tor_http_bridge.py) | reviewed | 13/13 | актуально |
 | [scripts/verify-data-loaded.py](../scripts/verify-data-loaded.py) | reviewed | 1/1 | актуально |
 | [scripts/verify-derived-incremental.py](../scripts/verify-derived-incremental.py) | reviewed | 4/4 | актуально |
+| [scripts/world-duplicate-canonical.py](../scripts/world-duplicate-canonical.py) | reviewed | 2/2 | актуально |
 | [scripts/world-title-duplicates.py](../scripts/world-title-duplicates.py) | reviewed | 4/4 | актуально |

@@ -358,6 +358,12 @@ async def build_static_sitemaps() -> dict:
             collector = PriorityCollector(
                 await _load_priority_plan(), today_msk(), settings.sitemap_priority_max_urls
             )
+            # Неосновные версии одинаковых рядов стран мира (world_canonical, 14.11.2026): canonical на
+            # основную, в sitemap только основная. Сбой — пустой список, сборка идёт как раньше.
+            duplicate_map = await _load_duplicate_map()
+            from app.services.world_canonical import drop_from_sitemap, excluded_pairs, write_map
+
+            excluded = excluded_pairs(duplicate_map)
             async with analytics_session() as db:
                 # Ночной билд — пакетная задача: чанк US-штатов на хосте с 2 vCPU (тестовый
                 # сервер, 2026-10-04) не укладывался в 60 с analytics-пула. Транзакция одна на
@@ -366,6 +372,7 @@ async def build_static_sitemaps() -> dict:
                 async for name, urls in iter_url_sections(db):
                     if not _SECTION.fullmatch(name):
                         raise ValueError(f"Invalid sitemap section: {name}")
+                    urls = drop_from_sitemap(urls, excluded)
                     if not urls:
                         continue  # Empty chunks must not be advertised.
                     collector.feed(name, urls)
@@ -444,6 +451,8 @@ async def build_static_sitemaps() -> dict:
                 "hosts": hosts, "published_urls_total": sum(h["urls_total"] for h in hosts.values()),
                 "errors": [],
             }
+            stats["world_canonical_pairs"] = len(excluded)
+            await asyncio.to_thread(write_map, generation, duplicate_map)
             await asyncio.to_thread(_publish_generation, root, generation, stats)
         except Exception:
             await asyncio.to_thread(shutil.rmtree, generation)
@@ -456,6 +465,21 @@ async def build_static_sitemaps() -> dict:
             generation.name, stats["published_urls_total"], len(hosts), reused, rewritten,
         )
         return stats
+
+
+async def _load_duplicate_map() -> dict[str, dict[str, str]]:
+    """Список «неосновная → основная» (world_canonical); выключено или сбой — пусто."""
+    if not settings.world_duplicate_canonical:
+        return {}
+    from app.services.world_canonical import build_duplicate_map
+
+    try:
+        async with analytics_session() as db:
+            await set_local_statement_timeout(db, _SECTION_STATEMENT_TIMEOUT_MS)
+            return await build_duplicate_map(db)
+    except Exception:  # noqa: BLE001
+        logger.warning("World duplicate canonical map failed; sitemap without it", exc_info=True)
+        return {}
 
 
 async def _load_priority_plan():
