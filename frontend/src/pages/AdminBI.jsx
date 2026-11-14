@@ -802,8 +802,16 @@ function AcquisitionTab({ d }) {
           : <HBars data={dictToBars(metrikaEngines, 8, engineLabel)} color={BLUE} />}
         {engineBars.length > 0 && engineReconcile.length > 0 && (
           <p className="text-[11.5px] text-text-tertiary mt-3 tabular-nums" data-testid="engine-reconcile">
-            Без роботов. Сверка с Метрикой (у нас / в Метрике):{' '}
-            {engineReconcile.map((r) => `${r.name} ${fmtInt(r.own)} / ${fmtInt(r.metrika)}`).join('; ')}
+            Без роботов. Сверка с Метрикой <span className="whitespace-nowrap">(у нас / в Метрике):</span>
+            {/* Пара «поисковик у нас / в Метрике» не рвётся между строками (снимок 390 px, 14.11.2026). */}
+            {engineReconcile.map((r, i) => (
+              <span key={r.name}>
+                {' '}
+                <span className="whitespace-nowrap">
+                  {`${r.name} ${fmtInt(r.own)} / ${fmtInt(r.metrika)}${i < engineReconcile.length - 1 ? ';' : ''}`}
+                </span>
+              </span>
+            ))}
           </p>
         )}
         {cmpEng && engineBars.length > 0 && (
