@@ -3473,6 +3473,7 @@ export default {
   'c11b.watch.gone': 'The series is no longer published',
   'c11b.watch.noData': 'No values yet',
   'c11b.watch.latest': 'Latest: {value} for {period}',
+  'c11b.watch.latestYoy': 'Latest: {value} year on year for {period}',
   'c11b.watch.latestDate': 'Latest value for {period}',
   'c11b.watch.untitled': 'Unnamed series',
   'c11b.watch.stop': 'Stop following',

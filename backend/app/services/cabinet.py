@@ -31,7 +31,7 @@ from app.models import (
     UserPreference, UserSavedItem, UserWatch, WorldCountry, WorldDataPoint,
     WorldIndicator, _utcnow_naive,
 )
-from app.services.display import localize_unit
+from app.services.display import is_cpi_index, localize_unit
 from app.services.locale import get_locale
 
 logger = logging.getLogger(__name__)
@@ -204,6 +204,9 @@ class SeriesInfo:
     latest_value: float | None = None
     country_slug: str | None = None
     country_name: str | None = None
+    # Что за число в `latest_value`: None — значение ряда как есть; "yoy" — изменение за год в % (индексы цен,
+    # 14.11.2026): человек видит то же число, что в шапке страницы показателя, а не «106,10 %».
+    value_basis: str | None = None
 
 
 def _pick(ru: str | None, en: str | None) -> str:
@@ -238,9 +241,17 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
                 .where(tuple_(IndicatorData.indicator_id, IndicatorData.date).in_(ids_dates))
             )).all():
                 values[iid] = float(val)
+        yoy = await _cpi_yoy_values(db, [(code, latest) for _iid, code, *_rest, latest in rows if latest is not None])
         for iid, code, name, name_en, unit, freq, latest in rows:
-            out[("indicator", code)] = SeriesInfo(
+            info = SeriesInfo(
                 "indicator", code, _pick(name, name_en), localize_unit(unit) or None, freq, latest, values.get(iid))
+            if is_cpi_index(code):
+                # Индекс цен (около 100) людям не показываем: годовое изменение из ряда-близнеца за тот же период,
+                # как в шапке страницы показателя; нет близнеца на эту дату — только дата, без числа.
+                info.latest_value = yoy.get(code)
+                info.unit = "%"
+                info.value_basis = "yoy" if info.latest_value is not None else None
+            out[("indicator", code)] = info
 
     if keys := by_kind.get("world"):
         from app.api.world import _indicator_public_unit
@@ -276,6 +287,35 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
     return out
 
 
+async def _cpi_yoy_values(db: AsyncSession, pairs: list[tuple[str, date]]) -> dict[str, float]:
+    """Годовое изменение (%) для индексов цен из их годовых близнецов на ту же дату: код → значение.
+
+    Два запроса на все слежения (id близнецов, точки близнецов), не по запросу на ряд. Близнецы те же, что у шапки
+    страницы показателя (`api/indicators._HERO_FROM_YOY_SIBLING`).
+    """
+    from app.api.indicators import _HERO_FROM_YOY_SIBLING
+
+    wanted = {code: (_HERO_FROM_YOY_SIBLING[code], latest) for code, latest in pairs if code in _HERO_FROM_YOY_SIBLING}
+    if not wanted:
+        return {}
+    ids = dict((await db.execute(
+        select(Indicator.code, Indicator.id).where(Indicator.code.in_({sib for sib, _ in wanted.values()}))
+    )).all())
+    keys = [(ids[sib], latest) for sib, latest in wanted.values() if sib in ids]
+    if not keys:
+        return {}
+    got = {(iid, d): float(v) for iid, d, v in (await db.execute(
+        select(IndicatorData.indicator_id, IndicatorData.date, IndicatorData.value)
+        .where(tuple_(IndicatorData.indicator_id, IndicatorData.date).in_(keys))
+    )).all()}
+    out: dict[str, float] = {}
+    for code, (sib, latest) in wanted.items():
+        val = got.get((ids.get(sib), latest))
+        if val is not None:
+            out[code] = round(val, 2)
+    return out
+
+
 # ── Слежения и лента ────────────────────────────────────────────────────────
 
 def is_new(latest: date | None, seen: date | None) -> bool:
@@ -297,6 +337,7 @@ def watch_out(row: UserWatch, info: SeriesInfo | None) -> dict:
         "available": info is not None,
         "latest_date": latest.isoformat() if latest else None,
         "latest_value": info.latest_value if info else None,
+        "value_basis": info.value_basis if info else None,
         "last_seen_date": row.last_seen_date.isoformat() if row.last_seen_date else None,
         "is_new": bool(info) and is_new(latest, row.last_seen_date),
         "created_at": iso_utc(row.created_at),

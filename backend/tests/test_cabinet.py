@@ -376,6 +376,42 @@ def test_watches_isolated_between_users(auth_client, auth_env, on):
     assert auth_client.delete(f"{C}/watches/{wid}", headers=csrf_headers(auth_client)).status_code == 404
 
 
+async def _seed_cpi_index(s, *, with_yoy=True):
+    """Индекс цен Росстата (около 100, месяц к месяцу) и его годовой близнец, как в боевой базе."""
+    base = Indicator(code="cpi", name="Индекс потребительских цен на товары и услуги", name_en="Consumer price index",
+                     unit="%", frequency="monthly", is_active=True, is_listed=True)
+    yoy = Indicator(code="cpi-yoy", name="Инфляция год к году", name_en="Inflation YoY", unit="%",
+                    frequency="monthly", is_active=True, is_listed=False)
+    s.add_all([base, yoy])
+    await s.flush()
+    s.add_all([IndicatorData(indicator_id=base.id, date=date(2026, 8, 1), value=99.92),
+               IndicatorData(indicator_id=base.id, date=date(2026, 9, 1), value=100.35)])
+    if with_yoy:
+        s.add_all([IndicatorData(indicator_id=yoy.id, date=date(2026, 8, 1), value=6.34),
+                   IndicatorData(indicator_id=yoy.id, date=date(2026, 9, 1), value=6.35)])
+
+
+def test_watch_cpi_index_shows_yoy_not_index(auth_client, auth_env, on):
+    """14.11.2026: у индекса цен в кабинете (и в письме «колокольчика») то же число, что в шапке страницы: 6,35 % за год,
+    а не «100,35 %». Нет близнеца на дату — числа нет, только дата."""
+    seed(auth_client, auth_env, _seed_cpi_index)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    item = auth_client.post(f"{C}/watches", json={"subject_kind": "indicator", "subject_key": "cpi"}, headers=h).json()["item"]
+    assert item["latest_value"] == 6.35 and item["unit"] == "%" and item["value_basis"] == "yoy"
+    assert item["latest_date"] == "2026-09-01"
+
+
+def test_watch_cpi_index_without_yoy_has_no_number(auth_client, auth_env, on):
+    async def run(s):
+        await _seed_cpi_index(s, with_yoy=False)
+    seed(auth_client, auth_env, run)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    item = auth_client.post(f"{C}/watches", json={"subject_kind": "indicator", "subject_key": "cpi"}, headers=h).json()["item"]
+    assert item["latest_value"] is None and item["value_basis"] is None and item["latest_date"] == "2026-09-01"
+
+
 def test_feed_is_batched_not_per_watch(auth_client, auth_env, on):
     """Лента — пакетные запросы по типам рядов, а не запрос на каждое слежение."""
     seed(auth_client, auth_env, _seed_series)
@@ -648,3 +684,12 @@ def test_account_export_cabinet_sections_empty_when_nothing_saved(auth_client):
     data = auth_client.get("/api/v1/auth/account/export").json()
     assert data["saved_items"] == [] and data["watches"] == [] and data["exports"] == []
     assert data["preferences"] == {"data": {}, "calendar_feed_active": False}
+
+
+def test_user_payload_says_if_site_mail_is_available(auth_client, monkeypatch):
+    """14.11.2026: кабинет показывает «Подтвердите почту: письмо мы отправили» только если письма реально уходят."""
+    reg(auth_client)
+    assert auth_client.get("/api/v1/auth/me").json()["user"]["mail_available"] is False
+    monkeypatch.setattr(settings, "mail_enabled", True)
+    monkeypatch.setattr(settings, "mail_token_secret", "x" * 32)
+    assert auth_client.get("/api/v1/auth/me").json()["user"]["mail_available"] is True

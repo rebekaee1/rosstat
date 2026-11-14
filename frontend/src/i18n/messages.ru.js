@@ -3478,6 +3478,7 @@ export default {
   'c11b.watch.gone': 'Ряд больше не публикуется',
   'c11b.watch.noData': 'Значений пока нет',
   'c11b.watch.latest': 'Последнее: {value} за {period}',
+  'c11b.watch.latestYoy': 'Последнее: {value} год к году за {period}',
   'c11b.watch.latestDate': 'Последнее значение за {period}',
   'c11b.watch.untitled': 'Ряд без названия',
   'c11b.watch.stop': 'Не следить',
