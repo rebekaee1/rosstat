@@ -187,6 +187,17 @@ describe('перенос избранного гостя при входе', () 
     expect(store.getState().importResult).toMatchObject({ imported: 2, limitReached: true });
   });
 
+  it('кабинет уже полон: пачка не отправляется на каждой загрузке, остаток ждёт в браузере (14.11.2026)', async () => {
+    seedGuest(3);
+    store.__resetCabinetStore();
+    api.listSaved.mockResolvedValue({ items: Array.from({ length: 2 }, (_, i) => ({ id: `s${i}`, kind: 'country', item_key: `s${i}`, created_at: '2026-10-01T00:00:00Z' })) });
+    await boot({ config: { enabled: true, features: {}, limits: { saved: 2, watches: 50 } }, auth: 'u1' });
+    await flush();
+    expect(api.importSaved).not.toHaveBeenCalled();
+    expect(JSON.parse(window.localStorage.getItem(store.GUEST_KEY))).toHaveLength(3);
+    expect(store.getState().importResult).toMatchObject({ imported: 0, limitReached: true });
+  });
+
   it('гостю ничего не отправляется', async () => {
     seedGuest(2);
     store.__resetCabinetStore();

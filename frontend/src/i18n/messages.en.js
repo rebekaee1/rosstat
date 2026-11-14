@@ -3440,6 +3440,7 @@ export default {
   'c11b.compare.emptyCta': 'Open comparison',
   'c11b.import.done': 'Moved from this browser to your account: {n}.',
   'c11b.import.limit': 'Not everything fit: the account has a limit on saved items.',
+  'c11b.import.pendingFull': 'Items saved in this browser that did not fit into your account: {n}. The account already holds {max}. Remove some, and the rest will move on the next load.',
   'c11b.import.pending': 'Some items saved in this browser are not moved yet: {n}. We will move them on the next load.',
   'c11b.err.generic': 'That did not work. Please try again.',
   'c11b.err.network': 'No connection to the server. Please try again.',

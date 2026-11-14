@@ -116,6 +116,8 @@
 }
 .c11b-empty > p { flex-basis: 100%; margin: 0; }
 .c11b-hint { margin: 8px 0 0; color: var(--color-text-tertiary); font-size: 12.5px; line-height: 1.5; }
+/* Подсказка над списком (остаток в браузере): отступ снизу, чтобы не прилипала к заголовку группы. */
+.c11b-hint--lead { margin: 0 0 14px; }
 .c11b-note {
   display: flex;
   align-items: center;

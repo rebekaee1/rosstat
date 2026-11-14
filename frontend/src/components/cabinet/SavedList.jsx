@@ -106,14 +106,15 @@ function SavedRow({ item, onRename, onRemove, t, locale }) {
   );
 }
 
-function ImportNotice({ t }) {
+function ImportNotice({ t, full }) {
   const { result, dismiss } = useImportNotice();
-  if (!result || (!result.imported && !result.limitReached)) return null;
+  // При полном кабинете об остатке в браузере говорит подсказка ниже; одна и та же новость дважды не нужна.
+  if (!result || (!result.imported && (!result.limitReached || full))) return null;
   return (
     <div role="status" className="c11b-note">
       <span>
         {result.imported ? t('c11b.import.done', { n: result.imported }) : ''}
-        {result.limitReached ? ` ${t('c11b.import.limit')}` : ''}
+        {result.limitReached && !full ? ` ${t('c11b.import.limit')}` : ''}
       </span>
       <button type="button" className="c11b-icon-btn" onClick={dismiss} aria-label={t('common.close')}><X size={14} aria-hidden="true" /></button>
     </div>
@@ -140,10 +141,16 @@ export default function SavedList({ mode = 'favorites' }) {
     return <div role="alert" className="c11b-empty">{t('c11b.err.generic')}</div>;
   }
 
+  // Остаток в браузере при полном кабинете сам не переедет: сказать прямо, что нужно освободить место.
+  const full = Boolean(limit) && items.length >= limit;
   const head = (
     <>
-      <ImportNotice t={t} />
-      {pendingLocal > 0 ? <p className="c11b-hint">{t('c11b.import.pending', { n: pendingLocal })}</p> : null}
+      <ImportNotice t={t} full={full && pendingLocal > 0} />
+      {pendingLocal > 0 ? (
+        <p className="c11b-hint c11b-hint--lead">
+          {full ? t('c11b.import.pendingFull', { n: pendingLocal, max: limit }) : t('c11b.import.pending', { n: pendingLocal })}
+        </p>
+      ) : null}
     </>
   );
 

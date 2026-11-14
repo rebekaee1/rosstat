@@ -31,6 +31,7 @@ vi.mock('../../i18n', () => ({ useT: () => (key, vars) => (vars ? `${key} ${JSON
 const store = await import('../../lib/cabinetStore');
 const { default: WatchList } = await import('./WatchList');
 const { default: ProfilePanel } = await import('./ProfilePanel');
+const { default: SavedList } = await import('./SavedList');
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -102,5 +103,20 @@ describe('Профиль: плашка «Подтвердите почту» т�
     inRouter(<ProfilePanel />);
     const plate = screen.getByTestId('account-verify-email');
     expect(plate.className).not.toMatch(/champagne|gold/);
+  });
+});
+
+describe('«Избранное»: кабинет полон, в браузере остались записи гостя', () => {
+  it('одна понятная подсказка: сколько осталось и что сделать; без повторной плашки «не всё поместилось»', async () => {
+    window.localStorage.setItem(store.GUEST_KEY, JSON.stringify([
+      { kind: 'country', item_key: 'g1', title: 'G1', created_at: '2026-10-01T00:00:00Z' },
+    ]));
+    store.__resetCabinetStore();
+    api.fetchCabinetConfig.mockResolvedValue({ enabled: true, features: {}, limits: { saved: 1, watches: 50 } });
+    api.listSaved.mockResolvedValue({ items: [{ id: 's1', kind: 'country', item_key: 's1', title: 'Турция', created_at: '2026-10-01T00:00:00Z' }] });
+    inRouter(<SavedList />);
+    expect(await screen.findByText(/c11b\.import\.pendingFull/)).toBeTruthy();
+    expect(screen.queryByText(/c11b\.import\.limit/)).toBeNull();
+    expect(api.importSaved).not.toHaveBeenCalled();
   });
 });

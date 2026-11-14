@@ -240,6 +240,12 @@ export function loadSaved(force = false, { sync = true } = {}) {
 export async function syncGuest() {
   const s = current();
   if (syncing || !canUseServer() || !s.guest.length) return;
+  // Кабинет уже полон: не слать пачку, которую сервер всё равно не примет (иначе запрос на каждой загрузке страницы).
+  const cap = s.config?.limits?.saved;
+  if (cap && s.saved.length >= cap) {
+    set({ importResult: { imported: 0, skipped: 0, limitReached: true } });
+    return;
+  }
   syncing = true;
   const who = s.authKey;
   const batch = s.guest.slice();
