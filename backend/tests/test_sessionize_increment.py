@@ -39,7 +39,8 @@ def first_batch():
         _ev("b", "b1", 1500), _ev("b", "b1", 1490, "click"),
         _ev("d", "d1", 120), _portrait("a", "a1", 200), _portrait("b", "b1", 1500),
         _ev("e", "e1", 100), _ev("e", "e1", 95, "dwell"), _portrait("e", "e1", 100),
-        _ev("f", "f1", 300), _ev("f", "f1", 280, "click"), _portrait("f", "f1", 300),  # ничего нового не получит
+        # «f» ничего нового не получит; телефон — вне кластеров десктопных портретов.
+        _ev("f", "f1", 300), _ev("f", "f1", 280, "click"), _portrait("f", "f1", 300, device="mobile"),
     ]
 
 
@@ -173,3 +174,52 @@ def test_15min_runner_switches_between_full_and_increment(monkeypatch):
         assert calls[0] is None and calls[1] is None and calls[3] is None
 
     asyncio.run(scenario())
+
+
+def test_cluster_growth_reaches_untouched_visitors(monkeypatch):
+    """Девять одинаковых десктопов — кластер ниже порога; десятый приходит позже. У девяти нетронутых
+    посетителей меняется bot_score: инкремент должен пересчитать и их (сверка на копии боевого 14.11)."""
+    from app.services.bot_score import PORTRAIT_CLUSTER_MIN
+
+    monkeypatch.setattr(rollups, "INCREMENT_SLACK_ROWS", {k: 0 for k in rollups.INCREMENT_SLACK_ROWS})
+    monkeypatch.setattr(rollups, "PORTRAIT_INCREMENT_MARGIN", timedelta(0))
+    n = PORTRAIT_CLUSTER_MIN
+
+    def clone(i, minutes_ago):
+        return [_ev(f"x{i}", f"x{i}s", minutes_ago), _portrait(f"x{i}", f"x{i}s", minutes_ago)]
+
+    def first():
+        return [row for i in range(n - 1) for row in clone(i, 150 + i)]
+
+    def late():
+        return clone(n - 1, 20)
+
+    async def incremental(maker):
+        async with maker() as db:
+            db.add_all(first())
+            await db.commit()
+        async with maker() as db:
+            marks = await rollups.current_marks(db)
+            marks["at"] = (NOW - timedelta(minutes=60)).isoformat()
+            await rollups.sessionize(db, SINCE)
+        async with maker() as db:
+            db.add_all(late())
+            await db.commit()
+        before = [r for r in await _sessions(maker) if r[1] == "x0"]
+        async with maker() as db:
+            await rollups.sessionize(db, SINCE, changed=marks)
+        return await _sessions(maker), before
+
+    async def full(maker):
+        async with maker() as db:
+            db.add_all(first() + late())
+            await db.commit()
+        async with maker() as db:
+            await rollups.sessionize(db, SINCE)
+        return await _sessions(maker)
+
+    (inc, before), ref = _run_with_db(incremental), _run_with_db(full)
+    assert inc == ref
+    score = [c.name for c in FIELDS].index("bot_score")
+    after = [r for r in inc if r[1] == "x0"]
+    assert before[0][score] != after[0][score]  # нетронутый x0 действительно получил другой счёт

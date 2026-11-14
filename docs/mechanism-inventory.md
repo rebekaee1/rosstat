@@ -14,7 +14,7 @@
 - Jobs: **59**
 - Middleware: **6**
 - Registry declarations: **1378**
-- Registry references: **2607**
+- Registry references: **2610**
 - Migration operations: **480**
 - Candidate effects: **2879**
 - Unresolved syntax: **1**
@@ -3215,16 +3215,16 @@ Relationships: `[]`
 | app.services.yandex_token_alert._EXPIRED_CODES | Tuple | sequence/source expression | [backend/app/services/yandex_token_alert.py:22](../backend/app/services/yandex_token_alert.py#L22) |
 | app.services.yandex_token_alert.SERVICE_LABELS | Dict | 'webmaster', 'metrika' | [backend/app/services/yandex_token_alert.py:24](../backend/app/services/yandex_token_alert.py#L24) |
 | app.services.yandex_token_alert.SERVICE_EFFECTS | Dict | 'webmaster', 'metrika' | [backend/app/services/yandex_token_alert.py:28](../backend/app/services/yandex_token_alert.py#L28) |
-| app.tasks.analytics_rollups._SESSION_EVENT_TYPES | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:54](../backend/app/tasks/analytics_rollups.py#L54) |
-| app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:66](../backend/app/tasks/analytics_rollups.py#L66) |
-| app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:73](../backend/app/tasks/analytics_rollups.py#L73) |
-| app.tasks.analytics_rollups._PORTRAIT_LATE_MARGIN | Call | computed source expression | [backend/app/tasks/analytics_rollups.py:96](../backend/app/tasks/analytics_rollups.py#L96) |
-| app.tasks.analytics_rollups._RAW_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:115](../backend/app/tasks/analytics_rollups.py#L115) |
-| app.tasks.analytics_rollups.INCREMENT_SLACK_ROWS | Dict | 'behavior_events', 'frontend_events' | [backend/app/tasks/analytics_rollups.py:263](../backend/app/tasks/analytics_rollups.py#L263) |
-| app.tasks.analytics_rollups.PORTRAIT_INCREMENT_MARGIN | Call | computed source expression | [backend/app/tasks/analytics_rollups.py:264](../backend/app/tasks/analytics_rollups.py#L264) |
-| app.tasks.analytics_rollups._INCREMENT_MODELS | Dict | 'behavior_events', 'frontend_events' | [backend/app/tasks/analytics_rollups.py:265](../backend/app/tasks/analytics_rollups.py#L265) |
-| app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:499](../backend/app/tasks/analytics_rollups.py#L499) |
-| app.tasks.analytics_rollups.FULL_SESSIONIZE_EVERY | Call | computed source expression | [backend/app/tasks/analytics_rollups.py:1262](../backend/app/tasks/analytics_rollups.py#L1262) |
+| app.tasks.analytics_rollups._SESSION_EVENT_TYPES | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:55](../backend/app/tasks/analytics_rollups.py#L55) |
+| app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:67](../backend/app/tasks/analytics_rollups.py#L67) |
+| app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:74](../backend/app/tasks/analytics_rollups.py#L74) |
+| app.tasks.analytics_rollups._PORTRAIT_LATE_MARGIN | Call | computed source expression | [backend/app/tasks/analytics_rollups.py:97](../backend/app/tasks/analytics_rollups.py#L97) |
+| app.tasks.analytics_rollups._RAW_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:116](../backend/app/tasks/analytics_rollups.py#L116) |
+| app.tasks.analytics_rollups.INCREMENT_SLACK_ROWS | Dict | 'behavior_events', 'frontend_events' | [backend/app/tasks/analytics_rollups.py:264](../backend/app/tasks/analytics_rollups.py#L264) |
+| app.tasks.analytics_rollups.PORTRAIT_INCREMENT_MARGIN | Call | computed source expression | [backend/app/tasks/analytics_rollups.py:265](../backend/app/tasks/analytics_rollups.py#L265) |
+| app.tasks.analytics_rollups._INCREMENT_MODELS | Dict | 'behavior_events', 'frontend_events' | [backend/app/tasks/analytics_rollups.py:266](../backend/app/tasks/analytics_rollups.py#L266) |
+| app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:516](../backend/app/tasks/analytics_rollups.py#L516) |
+| app.tasks.analytics_rollups.FULL_SESSIONIZE_EVERY | Call | computed source expression | [backend/app/tasks/analytics_rollups.py:1279](../backend/app/tasks/analytics_rollups.py#L1279) |
 | app.tasks.analytics_scheduler._METRIKA_DIGEST_RETRY_PAUSES_S | Tuple | sequence/source expression | [backend/app/tasks/analytics_scheduler.py:294](../backend/app/tasks/analytics_scheduler.py#L294) |
 | app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:43](../backend/app/tasks/scheduler.py#L43) |
 | app.tasks.session_analysis._INACTIVE | Call | computed source expression | [backend/app/tasks/session_analysis.py:27](../backend/app/tasks/session_analysis.py#L27) |
