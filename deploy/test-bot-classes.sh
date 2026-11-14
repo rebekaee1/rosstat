@@ -97,4 +97,40 @@ case "$cp" in *429*) ;; *) echo "FAIL: скопированный пропуск
 # (5) выдача пропуска проходит до backend
 m=$(docker run --rm --network bcnet curlimages/curl -s -m 30 -X POST -H 'X-Forwarded-For: 96.1.1.1' -H 'X-FE-Pass-Request: 1' -A "$B" http://bcngx/api/v1/human-pass)
 [ "$m" = "minted:anon" ] || { echo "FAIL: выдача пропуска: $m"; exit 1; }
+# (6) ферма с подставленным Referer Google (14.11.2026): Linux Chrome + Referer ровно корень google.com + нет _ym_uid -> anon;
+#     cookie Метрики, путь в Referer, Windows, Edge, Googlebot -> как раньше; флаг FE_GOOGLE_FARM_LIMIT=0 -> referred.
+clsr() {  # $1 XFF, $2 UA, $3 Referer или пусто, $4 Cookie или пусто
+  docker run --rm --network bcnet -e XFF="$1" -e UA="$2" -e REF="$3" -e CK="$4" -e URL="$URL" curlimages/curl sh -c '
+    set -- -s -m 30 -A "$UA" -H "X-Forwarded-For: $XFF"
+    [ -z "$REF" ] || set -- "$@" -e "$REF"
+    [ -z "$CK" ] || set -- "$@" -b "$CK"
+    curl "$@" "$URL"'
+}
+LX='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36'
+EDGE_LX="$LX Edg/157.0.0.0"
+G='https://www.google.com/'
+GB_IP=$(python3 -c 'import re,ipaddress;t=open("frontend/search-crawlers.conf").read();m=re.search(r"^\s+(66\.249\.[0-9.]+/\d+) 1;",t,re.M);print(ipaddress.ip_network(m.group(1)).network_address+1)')
+sleep 12
+g1=$(clsr 97.1.1.1 "$LX" "$G" '')
+g2=$(clsr 97.1.1.2 "$LX" "$G" '_ym_uid=1731500000123456789')
+g3=$(clsr 97.1.1.3 "$LX" 'https://www.google.com/search?q=x' '')
+g4=$(clsr 97.1.1.4 "$B" "$G" '')
+g5=$(clsr 97.1.1.5 "$EDGE_LX" "$G" '')
+g6=$(clsr 97.1.1.6 "$LX" "$G" "fe_pass=$GOOD")
+g7=$(clsr "$GB_IP" 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' '' '')
+gg="$g1 $g2 $g3 $g4 $g5 $g6 $g7"
+echo "ферма с Referer Google        : $gg"
+[ "$gg" = "anon referred referred referred referred human crawler" ] || { echo "FAIL: классы фермы с Referer Google"; exit 1; }
+gf=$(docker run --rm --network bcnet -e UA="$LX" -e URL="$URL" curlimages/curl sh -c '
+  for i in $(seq 1 60); do curl -s -o /dev/null -w "%{http_code}\n" -m 30 -A "$UA" -e "https://www.google.com/" -H "X-Forwarded-For: 99.40.1.$i" "$URL" & done; wait' | sort | uniq -c | tr '\n' ' ')
+echo "ферма с Referer Google (60)   : $gf"
+case "$gf" in *429*) ;; *) echo "FAIL: ферма с Referer Google не в общем бюджете"; exit 1;; esac
+# Флаг: FE_GOOGLE_FARM_LIMIT=0 -> entrypoint пишет переопределение, после reload правило выключено.
+docker run --rm -e FE_GOOGLE_FARM_LIMIT=0 -v "$PWD/frontend/41-fe-google-farm.sh:/s.sh:ro" -v "$T/fe-pass:/etc/nginx/fe-pass" "$IMAGE" sh /s.sh >/dev/null
+grep -q 'set $fe_google_farm_limit "0";' "$T/fe-pass/google-farm.conf" || { echo "FAIL: флаг не записан"; exit 1; }
+docker exec bcngx nginx -s reload >/dev/null 2>&1; sleep 2
+off=$(clsr 97.1.1.9 "$LX" "$G" '')
+[ "$off" = "referred" ] || { echo "FAIL: флаг выключения не действует: $off"; exit 1; }
+docker run --rm -e FE_GOOGLE_FARM_LIMIT=1 -v "$PWD/frontend/41-fe-google-farm.sh:/s.sh:ro" -v "$T/fe-pass:/etc/nginx/fe-pass" "$IMAGE" sh /s.sh >/dev/null
+[ ! -e "$T/fe-pass/google-farm.conf" ] || { echo "FAIL: включённый флаг оставил файл"; exit 1; }
 echo "OK"
