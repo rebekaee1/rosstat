@@ -36,6 +36,19 @@ describe('chartGeometry', () => {
     expect(Object.keys(withBounds)).not.toContain('bandPath');
   });
 
+  it('подпись начала встаёт с той стороны, куда линия не уходит (линия не перечёркивает число)', () => {
+    const rising = {
+      history: [
+        { date: '2023-10-01', value: 6.7 }, { date: '2023-11-01', value: 7.5 }, { date: '2023-12-01', value: 8.5 },
+        { date: '2024-06-01', value: 9 }, { date: '2025-06-01', value: 5 }, { date: '2026-09-01', value: 6.3 },
+      ],
+      forecast: [{ date: '2027-08-01', value: 5.7 }],
+    };
+    expect(chartGeometry(rising).start.place).toBe('below');
+    const falling = { ...rising, history: rising.history.map((row) => ({ ...row, value: 20 - row.value })) };
+    expect(chartGeometry(falling).start.place).toBe('above');
+  });
+
   it('плоский ряд не делит на ноль', () => {
     const flat = {
       history: [{ date: '2026-01-01', value: 5 }, { date: '2026-02-01', value: 5 }],

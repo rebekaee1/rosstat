@@ -108,14 +108,14 @@ function MiniChart({ item, label, startText, endText, startDate, endDate, nowLab
         </svg>
         <span
           className="zb-fc__tag zb-fc__tag--start"
-          data-place={place(geo.start)}
+          data-place={geo.start.place || place(geo.start)}
           style={{ left: pct(geo.start.x, geo.width), top: pct(geo.start.y, geo.height) }}
         >
           {startText}
         </span>
         <span
           className="zb-fc__tag zb-fc__tag--end"
-          data-place={place(geo.end)}
+          data-place={geo.end.place || place(geo.end)}
           style={{ left: pct(geo.end.x, geo.width), top: pct(geo.end.y, geo.height) }}
         >
           {endText}

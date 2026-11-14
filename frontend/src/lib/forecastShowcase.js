@@ -90,6 +90,26 @@ export function chartGeometry(item, { width = 320, height = 132, pad } = {}) {
     .concat(forecast.map((row) => `L${round(x(row.date))} ${round(y(row.value))}`))
     .join(' ');
 
+  // Подпись значения у начала и конца встаёт с той стороны, куда линия рядом НЕ уходит: иначе линия перечёркивает число
+  // (подпись «6,7 %» на карточках /forecasts). Окно — ширина подписи (~56 из 320) вправо от начала и влево от конца.
+  const pts = [...history, ...forecast].map((row) => ({ x: x(row.date), y: y(row.value) }));
+  const LABEL_W = 56;
+  const sideFor = (px, py, inWindow) => {
+    const near = pts.filter((pt) => inWindow(pt.x));
+    if (!near.length) return py / height > 0.45 ? 'above' : 'below';
+    const up = Math.max(0, py - Math.min(...near.map((pt) => pt.y)));
+    const down = Math.max(0, Math.max(...near.map((pt) => pt.y)) - py);
+    const roomAbove = py > 8;
+    const roomBelow = py < height - 8;
+    if (up > down + 1 && roomBelow) return 'below';
+    if (down > up + 1 && roomAbove) return 'above';
+    return py / height > 0.45 ? 'above' : 'below';
+  };
+  const startX = x(first.date);
+  const endX = x(end.date);
+  const startPlace = sideFor(startX, y(first.value), (px) => px > startX && px <= startX + LABEL_W);
+  const endPlace = sideFor(endX, y(end.value), (px) => px < endX && px >= endX - LABEL_W);
+
   return {
     width,
     height,
@@ -97,8 +117,8 @@ export function chartGeometry(item, { width = 320, height = 132, pad } = {}) {
     forePath,
     splitX: round(lastX),
     zone: { x: round(lastX), width: round(width - lastX) },
-    start: { x: round(x(first.date)), y: round(y(first.value)), date: first.date, value: first.value },
+    start: { x: round(x(first.date)), y: round(y(first.value)), date: first.date, value: first.value, place: startPlace },
     now: { x: round(lastX), y: round(lastY) },
-    end: { x: round(x(end.date)), y: round(y(end.value)) },
+    end: { x: round(x(end.date)), y: round(y(end.value)), place: endPlace },
   };
 }
