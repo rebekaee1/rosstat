@@ -13609,9 +13609,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "2f76a40831db87d674d0139f09a1bc8342b87310808b915e1b63dd067f51f945",
-      "bytes": 745681,
-      "lines": 3485,
+      "sha256": "e68a5f6eaa03f71c184b17b68c99e1a091fb63bca7668f4ad221386bd352c6fb",
+      "bytes": 747188,
+      "lines": 3502,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -32004,9 +32004,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "a12a62e4b3acc1232e826a437d5e0eaff0a172b06d48f18d03b372034ea54f76",
+  "ledger_sha256": "b916074b60b6d5a608d338c89239e812706281558dd637a85f7a8620dfb76a2e",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
+  "baseline_commit": "b63b2c422c96d5265e4b84f9a14011e5c4045953",
   "branch": "worktree-agent-a60cd3db86caaa5f2",
   "unstaged_at_capture": []
 }

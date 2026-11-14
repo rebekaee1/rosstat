@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
+  "baseline_commit": "b63b2c422c96d5265e4b84f9a14011e5c4045953",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
@@ -9,16 +9,16 @@
     "files": 2459,
     "attempted": 2095,
     "files_with_nodes": 2003,
-    "nodes": 24781,
-    "symbol_edges": 77813,
+    "nodes": 24782,
+    "symbol_edges": 77814,
     "file_edges": 17913,
     "projection_omissions": {
       "external_or_unresolved_file": 2983,
       "missing_endpoint": 4370,
-      "within_file": 33750
+      "within_file": 33751
     },
     "confidence": {
-      "EXTRACTED": 70652,
+      "EXTRACTED": 70653,
       "INFERRED": 7161
     }
   },
@@ -1775,7 +1775,7 @@
     {"path": "docs/architecture-history.md", "kind": "document", "bytes": 63789, "lines": 299, "sha256": "625258d8fdfca3d0082dcb83d7241ecb045fcb4b32a575097a565b7441ee865b", "symlink": false, "nodes": 25, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/architecture-knowledge.json", "kind": "asset/data/config", "bytes": 89676, "lines": 2436, "sha256": "86587255fded212e1a67835787614a9bd9c2b64ce583c57da2d64088dd5dbc2c", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/architecture.md", "kind": "document", "bytes": 97723, "lines": 468, "sha256": "2ac4f63b944117233d2ee2bd629aefecf437d8cb370373f5aeeb722302998ec5", "symlink": false, "nodes": 32, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/backlog.md", "kind": "document", "bytes": 745681, "lines": 3485, "sha256": "2f76a40831db87d674d0139f09a1bc8342b87310808b915e1b63dd067f51f945", "symlink": false, "nodes": 189, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/backlog.md", "kind": "document", "bytes": 747188, "lines": 3502, "sha256": "e68a5f6eaa03f71c184b17b68c99e1a091fb63bca7668f4ad221386bd352c6fb", "symlink": false, "nodes": 190, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/circle-playbook.md", "kind": "document", "bytes": 26180, "lines": 124, "sha256": "157a0677237f20afde22faf1bb85e95c88802c3a9bbb30742831a68485bc7daf", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7248552, "lines": 255286, "sha256": "8558d0c419f392e3ef2ae03712871c6aa9f9a437c37d108e5d0ec983846db757", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 13421, "lines": 137, "sha256": "7ccb4e89ad4fad5bf7d811dc6a7af4f00fcefda31acc9edc52ea32fe4ff474b3", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
