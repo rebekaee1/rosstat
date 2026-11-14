@@ -1669,6 +1669,99 @@ class MailSuppression(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
 
 
+class NewsletterProfile(Base):
+    """Профиль интересов подписчика для персонального выпуска (ADR-0033, 15.11.2026).
+
+    Одна строка на человека, пересчитывается перед сборкой выпуска. Содержит только
+    ключи предметов (ряд, регион, страна, тема) с весами и число сигналов по видам —
+    без адреса, текста поисковых запросов и сырых событий. ПДн (производные от действий
+    человека): удаляется вместе с аккаунтом, входит в выгрузку «Мои данные».
+    """
+    __tablename__ = "newsletter_profiles"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    # rich / light / cold
+    tier: Mapped[str] = mapped_column(String(10), nullable=False, default="cold")
+    locale: Mapped[str] = mapped_column(String(2), nullable=False, default="ru")
+    timezone: Mapped[str | None] = mapped_column(String(60))
+    # {тема: вес}
+    topics: Mapped[dict | None] = mapped_column(JSON)
+    # [{"key": "ru:cpi", "score": 4.2, "signals": {"view": 3, "download": 1}, "last": "2026-11-10"}]
+    subjects: Mapped[list | None] = mapped_column(JSON)
+    # {"country": "russia", "region": "sverdlovskaya-oblast", "region_source": "explicit"}
+    geo: Mapped[dict | None] = mapped_column(JSON)
+    # {"events": 37, "behavior": true, "explicit": 0, "last_visit": "2026-11-12"}
+    stats: Mapped[dict | None] = mapped_column(JSON)
+
+
+class NewsletterPersonalIssue(Base):
+    """Снимок персонального выпуска на человека (ADR-0033): ровно то, что уйдёт в письме.
+
+    `payload` — содержимое на языке человека в формате файла выпуска (ADR-0032);
+    `blocks_meta` — по каждому блоку генератор, предмет, причина, балл, дата данных и
+    метка `utm_content` (для метрик и объяснения). Адреса нет. Удаляется с аккаунтом;
+    задача обслуживания удаляет снимки старше 180 дней.
+    """
+    __tablename__ = "newsletter_personal_issues"
+    __table_args__ = (
+        UniqueConstraint("campaign", "user_id", name="uq_newsletter_personal_issue"),
+        Index("ix_newsletter_personal_issue_user", "user_id", "built_at"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    campaign: Mapped[str] = mapped_column(String(80), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    locale: Mapped[str] = mapped_column(String(2), nullable=False, default="ru")
+    # personal / control (контрольная группа) — и группа темы письма: subj_personal / subj_base
+    arm: Mapped[str] = mapped_column(String(20), nullable=False, default="personal")
+    subject_arm: Mapped[str | None] = mapped_column(String(20))
+    tier: Mapped[str] = mapped_column(String(10), nullable=False, default="cold")
+    # built (личные блоки есть) / general (честный общий выпуск) / fallback (ошибка → общий) /
+    # skipped (не слать в этот раз: частота) / deferred (тихие часы)
+    status: Mapped[str] = mapped_column(String(12), nullable=False, default="built")
+    error: Mapped[str | None] = mapped_column(String(120))
+    payload: Mapped[dict | None] = mapped_column(JSON)
+    blocks_meta: Mapped[list | None] = mapped_column(JSON)
+    data_as_of: Mapped[date | None] = mapped_column(Date)
+    built_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+class NewsletterRelated(Base):
+    """Связанные ряды по совместным просмотрам всех посетителей (обезличено, ADR-0033).
+
+    Пара хранится, только если оба ряда смотрели не меньше `MIN_PAIR_VISITORS` разных
+    посетителей; связи с людьми нет.
+    """
+    __tablename__ = "newsletter_related"
+
+    subject: Mapped[str] = mapped_column(String(200), primary_key=True)
+    related: Mapped[str] = mapped_column(String(200), primary_key=True)
+    score: Mapped[float] = mapped_column(Numeric(8, 4), nullable=False)
+    visitors: Mapped[int] = mapped_column(Integer, nullable=False)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+class NewsletterQueryMap(Base):
+    """Нормализованный поисковый запрос (только хэш) → ряд, который по нему выбирают чаще всего.
+
+    Строится из выборов в поиске всех посетителей (ADR-0033); текста запроса и связи с
+    людьми нет.
+    """
+    __tablename__ = "newsletter_query_map"
+
+    q_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    subject: Mapped[str] = mapped_column(String(200), nullable=False)
+    selects: Mapped[int] = mapped_column(Integer, nullable=False)
+    share: Mapped[float] = mapped_column(Numeric(5, 4), nullable=False)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
 class AuthAudit(Base):
     __tablename__ = "auth_audit"
     __table_args__ = (

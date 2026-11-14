@@ -32,6 +32,8 @@ from app.security.auth import (
 from app.services.api_i18n import api_detail
 
 logger = logging.getLogger(__name__)
+from app.services.newsletter_personal import store as newsletter_store  # noqa: E402
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 # Версия согласия = дата действующей редакции политики (152-ФЗ).
@@ -516,6 +518,8 @@ async def export_account(user: User = Depends(get_current_user), db: AsyncSessio
             "data": (prefs.data if prefs else {}) or {},
             "calendar_feed_active": bool(prefs and prefs.feed_token_hash),
         },
+        # ADR-0033: профиль интересов для персонального выпуска и что в личных выпусках было подобрано.
+        "newsletter_personal": await newsletter_store.account_export(db, user.id),
     }
     return JSONResponse(
         payload,
@@ -541,6 +545,8 @@ async def delete_account(request: Request, response: Response, user: User = Depe
     # ADR-0032: журнал писем хранит адрес получателя — тоже ПДн.
     await db.execute(delete(MailMessage).where(MailMessage.user_id == uid))
     await db.execute(delete(MailSuppression).where(MailSuppression.user_id == uid))
+    # ADR-0033: профиль интересов и снимки личных выпусков — производные от действий человека.
+    await newsletter_store.account_erase(db, uid)
     # Круг 11 (152-ФЗ): аналитические следы — user_signups, identity_links, user_id в
     # frontend_events сразу; большие таблицы без индекса обнулит ночная уборка.
     from app.services.account_erasure import erase_analytics_now

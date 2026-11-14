@@ -1358,6 +1358,36 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Mail watch digest enabled: daily %02d:15 MSK", int(settings.mail_watch_digest_hour_msk))
 
+        # Персональный выпуск (ADR-0033): ночные обезличенные таблицы и снимки личных выпусков в четверг
+        # после окна ETL. Ничего не отправляют; отправка — только командой владельца.
+        if settings.newsletter_personal_build_enabled:
+            from app.services.newsletter_personal.jobs import aggregates_job, build_job
+            scheduler.add_job(
+                locked_job(aggregates_job, "newsletter_personal_aggregates", ttl_seconds=1800),
+                trigger=CronTrigger(hour=int(settings.newsletter_personal_aggregates_hour_msk),
+                                    minute=int(settings.newsletter_personal_aggregates_minute), timezone="Europe/Moscow"),
+                id="newsletter_personal_aggregates",
+                name="Newsletter: anonymous query map and related series",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            scheduler.add_job(
+                locked_job(build_job, "newsletter_personal_build", ttl_seconds=3600),
+                trigger=CronTrigger(day_of_week=settings.newsletter_personal_build_weekday,
+                                    hour=int(settings.newsletter_personal_build_hour_msk),
+                                    minute=int(settings.newsletter_personal_build_minute), timezone="Europe/Moscow"),
+                id="newsletter_personal_build",
+                name="Newsletter: personal issue snapshots (no sending)",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Newsletter personal jobs enabled: aggregates %02d:%02d, build %s %02d:%02d MSK",
+                        int(settings.newsletter_personal_aggregates_hour_msk),
+                        int(settings.newsletter_personal_aggregates_minute), settings.newsletter_personal_build_weekday,
+                        int(settings.newsletter_personal_build_hour_msk), int(settings.newsletter_personal_build_minute))
+
         # Досылка недоставленного из telegram_outbox: только если Telegram-
         # уведомления реально включены (токен + чат + дайджест или realtime).
         if (
