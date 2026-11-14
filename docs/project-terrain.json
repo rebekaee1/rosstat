@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "ec05340d73c29b1abbb56c9e4ad19c8b84cd51a7",
+  "baseline_commit": "150a342fc50a3b534b9bd375702d40eaf0143767",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
     "docs/code-review/coverage.json",
@@ -11,27 +11,23 @@
     "docs/code-review/materials-2026-09-30.json",
     "docs/code-review/materials-2026-09-30.json",
     "docs/code-review/reviews.jsonl",
-    "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.md",
-    "docs/mechanism-inventory.md"
+    "docs/code-review/reviews.jsonl"
   ],
   "untracked_at_capture": [],
   "stats": {
-    "files": 2487,
-    "attempted": 2123,
-    "files_with_nodes": 2030,
-    "nodes": 25222,
-    "symbol_edges": 79240,
+    "files": 2488,
+    "attempted": 2124,
+    "files_with_nodes": 2031,
+    "nodes": 25224,
+    "symbol_edges": 79241,
     "file_edges": 18215,
     "projection_omissions": {
       "external_or_unresolved_file": 3024,
       "missing_endpoint": 4438,
-      "within_file": 34440
+      "within_file": 34441
     },
     "confidence": {
-      "EXTRACTED": 71872,
+      "EXTRACTED": 71873,
       "INFERRED": 7368
     }
   },
@@ -140,9 +136,9 @@
       {
         "id": "infra",
         "label": "Инфраструктура и конфигурация",
-        "files": 54,
-        "code": 19,
-        "with_nodes": 19,
+        "files": 55,
+        "code": 20,
+        "with_nodes": 20,
         "file_node_only": 2,
         "semantic_evidence": 1
       },
@@ -738,8 +734,8 @@
       "scripts/deploy.sh",
       "scripts/pg-backup.sh"
     ],
-    "code_files": 2013,
-    "code_with_nodes": 1918,
+    "code_files": 2014,
+    "code_with_nodes": 1919,
     "code_file_node_only": 131
   },
   "input_scope": "tracked",
@@ -1756,6 +1752,7 @@
     {"path": "deploy/tor-http-bridge/README.md", "kind": "document", "bytes": 5046, "lines": 50, "sha256": "1d1c4a4ae55810486de3b279f644af740d7045a752a96d7a253332205d8f39ab", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/tor-http-bridge/tor-http-bridge.service", "kind": "asset/data/config", "bytes": 789, "lines": 25, "sha256": "cfdbd3377fe177d4542cb5847d01dffd293d72b8e8b3de4050b5fba8d4894acc", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/tor-http-bridge/tor_http_bridge.py", "kind": "code", "bytes": 5979, "lines": 160, "sha256": "d91f97a2f078821687ff96e7654ff40baa2780347248072c2780bf4c03349b25", "symlink": false, "nodes": 13, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
+    {"path": "deploy/verify-bot-defense-live.sh", "kind": "code", "bytes": 6917, "lines": 92, "sha256": "23c20a060aeccca29b1c16eb750f42a597847c178c38b7705247d2746ff0155c", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "docker-compose.yml", "kind": "asset/data/config", "bytes": 39253, "lines": 568, "sha256": "d925f99ad0f69504aa3a432a4d6c41cae2bd6e73df1bd6e7de26017c74be47e5", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/adr/0001-derived-indicators-engine-shape.md", "kind": "document", "bytes": 21518, "lines": 158, "sha256": "9162d486eb7855105951ac04a901a00924889ea74f80ac31d38277ca226f9f35", "symlink": false, "nodes": 13, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/adr/0002-derived-always-reflects-source.md", "kind": "document", "bytes": 15266, "lines": 136, "sha256": "477aecee55c0a5ed9ef663dc6901eeb8d3f593c450449b53395e4a951310587b", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
@@ -1808,7 +1805,7 @@
     {"path": "docs/architecture-history.md", "kind": "document", "bytes": 63789, "lines": 299, "sha256": "625258d8fdfca3d0082dcb83d7241ecb045fcb4b32a575097a565b7441ee865b", "symlink": false, "nodes": 25, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/architecture-knowledge.json", "kind": "asset/data/config", "bytes": 89676, "lines": 2436, "sha256": "86587255fded212e1a67835787614a9bd9c2b64ce583c57da2d64088dd5dbc2c", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/architecture.md", "kind": "document", "bytes": 97723, "lines": 468, "sha256": "2ac4f63b944117233d2ee2bd629aefecf437d8cb370373f5aeeb722302998ec5", "symlink": false, "nodes": 32, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/backlog.md", "kind": "document", "bytes": 768803, "lines": 3584, "sha256": "d298f7911c5961d60bc54e0177bf1afeed06c298d5a84f80417cb0c74b5d4d66", "symlink": false, "nodes": 194, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/backlog.md", "kind": "document", "bytes": 769020, "lines": 3584, "sha256": "0871be520d45da3c91d3a5ad23cb3a33597675c0c404952b3b2bc9825d6ad636", "symlink": false, "nodes": 194, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/circle-playbook.md", "kind": "document", "bytes": 26180, "lines": 124, "sha256": "157a0677237f20afde22faf1bb85e95c88802c3a9bbb30742831a68485bc7daf", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7270894, "lines": 256122, "sha256": "3122cb6ef0818bd000075d31cbd8e7fd2bf957b380ee3cfa664f0175bbd70227", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 13421, "lines": 137, "sha256": "b88c3733d85eb15b3c044fdc726ecfd1641900ffe80aaaa468a93169c7ef6a1f", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1917,7 +1914,7 @@
     {"path": "docs/verification/us-eu-source-audit-2026-09-24.md", "kind": "document", "bytes": 10885, "lines": 114, "sha256": "e0548dcf2b4155648fe21c8924efa9752b0b174fb96160f89843db1a924c66d2", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/verification/us-indicators-2026-09-24.md", "kind": "document", "bytes": 12298, "lines": 41, "sha256": "42181870d6129e325dcb37782a9ccd24f6a57186ec5e945564e80bcc5c366ebf", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/verification/world-forecast-v2-2026-09-24.md", "kind": "document", "bytes": 5952, "lines": 64, "sha256": "54e63895a8275fe3aafdd3dd6c5b673ebe1280a738ad82d06128f0958f5e8275", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/workflow.md", "kind": "document", "bytes": 144633, "lines": 688, "sha256": "1558377e18e9940f16bb43f974ba23b13f9de9b125aa7773632dc2808ebd3bf0", "symlink": false, "nodes": 46, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/workflow.md", "kind": "document", "bytes": 144812, "lines": 688, "sha256": "62bfeeb16edb388f0d7ffd846e7db9eaa6932cbbd9378bcc4f9068555f32d1a8", "symlink": false, "nodes": 46, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "frontend/.dockerignore", "kind": "asset/data/config", "bytes": 29, "lines": 4, "sha256": "7c315a50e9bffd071480765e53d9e0c1def00a54bfb1eff15ff24351f8a56d04", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/.env.example", "kind": "asset/data/config", "bytes": 605, "lines": 9, "sha256": "9c227a3dde548088648605e2c401bf0b8901ba512a892655ac467bc448bde1ed", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/.gitignore", "kind": "asset/data/config", "bytes": 253, "lines": 24, "sha256": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},

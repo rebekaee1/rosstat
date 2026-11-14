@@ -19,15 +19,15 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2487,
-    "code_files": 2013,
-    "current_reviews": 2487,
+    "files": 2488,
+    "code_files": 2014,
+    "current_reviews": 2488,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2217
+      "reviewed": 2218
     },
     "definitions": 16303,
     "annotated_definitions": 16303,
@@ -13192,6 +13192,19 @@
       "missing_definitions": []
     },
     {
+      "path": "deploy/verify-bot-defense-live.sh",
+      "sha256": "23c20a060aeccca29b1c16eb750f42a597847c178c38b7705247d2746ff0155c",
+      "bytes": 6917,
+      "lines": 92,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "docker-compose.yml",
       "sha256": "d925f99ad0f69504aa3a432a4d6c41cae2bd6e73df1bd6e7de26017c74be47e5",
       "bytes": 39253,
@@ -13869,8 +13882,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "d298f7911c5961d60bc54e0177bf1afeed06c298d5a84f80417cb0c74b5d4d66",
-      "bytes": 768803,
+      "sha256": "0871be520d45da3c91d3a5ad23cb3a33597675c0c404952b3b2bc9825d6ad636",
+      "bytes": 769020,
       "lines": 3584,
       "code": false,
       "status": "reviewed",
@@ -15286,8 +15299,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "1558377e18e9940f16bb43f974ba23b13f9de9b125aa7773632dc2808ebd3bf0",
-      "bytes": 144633,
+      "sha256": "62bfeeb16edb388f0d7ffd846e7db9eaa6932cbbd9378bcc4f9068555f32d1a8",
+      "bytes": 144812,
       "lines": 688,
       "code": false,
       "status": "reviewed",
@@ -32368,14 +32381,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "1d3344d6caf026492b8ac5521d677bbf2f4560602df44448d11c92ae088aec04",
+  "ledger_sha256": "224e3c2a1b077cf43ad54d8c52b72488a94dbddb092a441f2dfce5ef2ebc5725",
   "javascript_inventory_sha256": "173cfd4555ce8d4ff8fb491a75ab441424b95957dae8ddb3b3d78b2c80747db6",
-  "baseline_commit": "ec05340d73c29b1abbb56c9e4ad19c8b84cd51a7",
+  "baseline_commit": "150a342fc50a3b534b9bd375702d40eaf0143767",
   "branch": "int/2026-11-14",
-  "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.md",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
