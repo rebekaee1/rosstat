@@ -25,6 +25,7 @@
 from __future__ import annotations
 
 import io
+import logging
 import uuid
 from collections import Counter
 from dataclasses import dataclass, field
@@ -52,6 +53,8 @@ from app.models import (
 )
 from app.services.analytics_period import MSK_OFFSET, Period, resolve_period
 from app.services.goal_taxonomy import GROUP_DOWNLOAD, GROUP_WALL, events_in_group
+
+logger = logging.getLogger(__name__)
 
 # Скачанное: группа «выгрузки» и PDF-отчёты раздела «Исследования».
 DOWNLOAD_EVENTS: frozenset[str] = events_in_group(GROUP_DOWNLOAD) | {"research_download"}
@@ -525,6 +528,7 @@ async def collect(db: AsyncSession, period: Period) -> dict[str, Any]:
             "page": "/" + "/".join(segs) + (f"?mode={mode}" if mode else ""),
             "authed": bool(r.authed),
             "person": _person(r.visitor_id_hash, r.session_id_hash),
+            "session": r.session_id_hash,  # только для «Пути до упора», в файлы не выводится
             "signed_up_after": signed,
             "channel": channel,
             "device": device,
@@ -761,6 +765,115 @@ def week_digest_lines(summary: dict[str, Any], prev: dict[str, Any] | None, labe
 # Файл Excel
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Путь до упора (утверждено 14.11.2026: окно ≤ 30 дней, лёгкий ограниченный запрос)
+# ---------------------------------------------------------------------------
+
+PATH_MAX_DAYS = 30
+PATH_TIMEOUT_MS = 10_000
+PATH_ROW_CAP = 20_000
+PATH_STEPS = 6
+PATH_TOO_LONG = (f"Слишком большой период: путь до упора строится не больше чем за {PATH_MAX_DAYS} дней. "
+                 "Возьмите срок короче.")
+PATH_TIMEOUT = "База не успела ответить за 10 секунд — путь до упора не построен. Повторите позже или возьмите срок короче."
+
+
+def _page_label(page: str, titles: dict[str, str]) -> str:
+    path = (page or "").split("?")[0].split("#")[0] or "/"
+    if path == "/":
+        return "главная"
+    return titles.get(path) or path
+
+
+def build_paths(rows: list[dict[str, Any]], pageviews: list[tuple[str, str, datetime]],
+                titles: dict[str, str]) -> list[dict[str, Any]]:
+    """Чистая сборка: для каждого упора — страницы той же сессии до него (последние PATH_STEPS без повторов
+    подряд), зарегистрировался ли потом, скачал ли то же содержание после упора."""
+    by_session: dict[str, list[tuple[datetime, str]]] = {}
+    for session, page, at in pageviews:
+        by_session.setdefault(session, []).append((at, page))
+    for views in by_session.values():
+        views.sort()
+    out = []
+    for r in rows:
+        if not r["wall"]:
+            continue
+        views = [p for at, p in by_session.get(r.get("session") or "", []) if at <= r["at"]]
+        labels: list[str] = []
+        for page in views:
+            label = _page_label(page, titles)
+            if not labels or labels[-1] != label:
+                labels.append(label)
+        same_after = any(
+            o["person"] == r["person"] and not o["wall"] and o["key"] == r["key"] and o["at"] > r["at"]
+            for o in rows) if r["person"] else False
+        out.append({
+            "at": r["at"], "person": r["person"], "title": r["title"], "what": r["what"], "channel": r["channel"],
+            "pages_before": len(views), "path": labels[-PATH_STEPS:], "signed_up_after": r["signed_up_after"],
+            "same_after": same_after,
+        })
+    return out
+
+
+async def collect_paths(db: AsyncSession, data: dict[str, Any]) -> dict[str, Any]:
+    """Просмотры страниц в сессиях упоров (`behavior_events`, индекс по сессии), с потолком времени запроса
+    и числа строк. Период длиннее 30 дней не считается: `status="too_long"`."""
+    from app.database import set_local_statement_timeout
+    from app.models import BehaviorEvent
+
+    period: Period = data["period"]
+    if period.days > PATH_MAX_DAYS:
+        return {"status": "too_long", "items": []}
+    walls = [r for r in data["rows"] if r["wall"]]
+    sessions = sorted({r["session"] for r in walls if r.get("session")})
+    if not sessions:
+        return {"status": "ok", "items": build_paths(data["rows"], [], {}), "cut": False}
+    pageviews: list[tuple[str, str, datetime]] = []
+    cut = False
+    try:
+        await set_local_statement_timeout(db, PATH_TIMEOUT_MS)
+        for i in range(0, len(sessions), _IN_CHUNK):
+            part = sessions[i:i + _IN_CHUNK]
+            got = (await db.execute(
+                select(BehaviorEvent.session_id_hash, BehaviorEvent.page, BehaviorEvent.occurred_at)
+                .where(BehaviorEvent.session_id_hash.in_(part), BehaviorEvent.event_type == "pageview",
+                       BehaviorEvent.occurred_at >= period.start - timedelta(hours=6),
+                       BehaviorEvent.occurred_at < period.end)
+                .limit(PATH_ROW_CAP - len(pageviews) + 1)
+            )).all()
+            pageviews += [(s, p or "/", at) for s, p, at in got]
+            if len(pageviews) > PATH_ROW_CAP:
+                pageviews, cut = pageviews[:PATH_ROW_CAP], True
+                break
+    except Exception:  # noqa: BLE001 — в т.ч. statement timeout: лист скажет словами, файл уйдёт
+        logger.warning("download paths query failed", exc_info=True)
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+        return {"status": "timeout", "items": []}
+    paths = {(p or "/").split("?")[0].split("#")[0] for _s, p, _a in pageviews}
+    refs = {p: content_ref("download_limit", {}, p) for p in paths if p != "/"}
+    names = await load_names(db, refs.values())
+    titles = {p: content_title(ref, names) for p, ref in refs.items() if ref.kind != "page"}
+    return {"status": "ok", "items": build_paths(data["rows"], pageviews, titles), "cut": cut}
+
+
+def _paths_sheet_rows(paths: dict[str, Any]) -> list[list[Any]]:
+    if paths["status"] == "too_long":
+        return [[PATH_TOO_LONG, "", "", "", "", "", "", ""]]
+    if paths["status"] == "timeout":
+        return [[PATH_TIMEOUT, "", "", "", "", "", "", ""]]
+    yes_no = {True: "да", False: "нет", None: ""}
+    out = [[(i["at"] + MSK_OFFSET).strftime("%d.%m.%Y %H:%M"), (i["person"] or "")[:10], i["title"], i["what"],
+            CHANNEL_LABELS.get(i["channel"], i["channel"]), i["pages_before"], " → ".join(i["path"]),
+            yes_no[i["signed_up_after"]], yes_no[i["same_after"]]] for i in paths["items"]]
+    if paths.get("cut"):
+        out.append([f"Показаны первые {PATH_ROW_CAP} просмотров страниц — возьмите срок короче.",
+                    "", "", "", "", "", "", "", ""])
+    return out
+
+
 def build_xlsx(data: dict[str, Any]) -> bytes:
     """Книга: «Сводка», «Что скачивали», «Где упёрлись», «Все события» (время МСК)."""
     from openpyxl import Workbook
@@ -823,6 +936,11 @@ def build_xlsx(data: dict[str, Any]) -> bytes:
          r["country"]]
         for r in data["rows"]
     ], [17, 15, 24, 60, 16, 50, 9, 12, 12, 16, 12, 14])
+    if data.get("paths") is not None:
+        sheet(wb.create_sheet("Путь до упора"), [
+            "Время упора (МСК)", "Посетитель", "Где упёрся", "Что не дал лимит", "Откуда пришёл",
+            "Страниц до упора", "Последние страницы до упора", "Зарегистрировался потом", "Скачал то же потом",
+        ], _paths_sheet_rows(data["paths"]), [17, 12, 60, 24, 16, 10, 90, 14, 14])
     server = (data.get("summary") or {}).get("server")
     if server is not None:
         sheet(wb.create_sheet("Сервер — упоры"), ["Что", "Страница", "Формат", "Отказов"], [

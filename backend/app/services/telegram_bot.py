@@ -522,6 +522,24 @@ async def _send_downloads_report(chat_id: str, window: str) -> None:
     await send_message(chat_id, text, reply_markup=downloads_keyboard(window), kind="bot_report")
 
 
+async def _download_paths(data: dict) -> dict:
+    """Лист «Путь до упора»: своя сессия и общий потолок; сбой — лист говорит словами, файл уходит."""
+    import asyncio
+
+    from app.database import analytics_session
+    from app.services import download_content as dc
+
+    async def run() -> dict:
+        async with analytics_session() as db:
+            return await dc.collect_paths(db, data)
+
+    try:
+        return await asyncio.wait_for(run(), dc.PATH_TIMEOUT_MS / 1000 + 20)
+    except Exception:  # noqa: BLE001
+        logger.warning("Telegram downloads: paths failed", exc_info=True)
+        return {"status": "timeout", "items": []}
+
+
 async def _send_downloads_file(chat_id: str, window: str) -> None:
     from app.services import download_content as dc
 
@@ -530,6 +548,7 @@ async def _send_downloads_file(chat_id: str, window: str) -> None:
         await send_message(chat_id, "⏳ Не успел собрать файл — база занята. Нажмите ещё раз через минуту.",
                            reply_markup=downloads_keyboard(window), kind="bot_report")
         return
+    data["paths"] = await _download_paths(data)
     p = data["period"]
     s = data["summary"]
     name = f"skachivaniya-{p.start_date.isoformat()}_{p.end_date.isoformat()}.xlsx"
