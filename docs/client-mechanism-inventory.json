@@ -111627,7 +111627,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "c202722d01a527825ac5c7bd44e03eb3d8013c6a10e20904a08d0a8607cbe2f7",
+      "sha256": "c53c5686255ed7927052cd695abbd4ef63dbcfe13af613c2d99494a3500524e6",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -112050,7 +112050,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "7f897a44c92f4dae58cee5faa6c58ed2ab5ac2f76b2e251ac73c584c787ddde1",
+      "sha256": "7e6261c41090d3f0788726c1ddedc849bf0699443a7612c8a50d4725ae428c41",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -192502,7 +192502,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/AccountMail.component.test.jsx": {
-      "sha256": "8afec2ef7dc49191558e770958189278bd22e1e4866dbd952f263b73b3ac1b8f",
+      "sha256": "7bfdb1cce2e39ac180bcbb0f3a93b7c1c2c6832f9ad9d2475e59598c3bf3336f",
       "imports": [
         {
           "line": 2,
@@ -192692,7 +192692,7 @@
         },
         {
           "line": 30,
-          "end_line": 85,
+          "end_line": 92,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -192761,6 +192761,14 @@
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
+        },
+        {
+          "line": 86,
+          "end_line": 91,
+          "owner": "<callback@30>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
         }
       ],
       "hooks": [],
@@ -192772,7 +192780,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/AccountMail.jsx": {
-      "sha256": "ebe8874ba62e881fbee391c1eeb2c1b0f6ffaf7f0c2414ce1ff5bab832f9c141",
+      "sha256": "c6fe3a7c0f7336c2697637bb5f6306c5ddc019489f38503586c1800a7b88a829",
       "imports": [
         {
           "line": 7,
@@ -193058,7 +193066,7 @@
         },
         {
           "line": 196,
-          "end_line": 243,
+          "end_line": 247,
           "owner": "<module>",
           "name": "Unsubscribe",
           "kind": "FunctionDeclaration",
@@ -193409,8 +193417,8 @@
           "expression": "{(e) => setPassword(e.target.value)}"
         },
         {
-          "line": 235,
-          "end_line": 236,
+          "line": 237,
+          "end_line": 238,
           "owner": "Unsubscribe",
           "component": "Button",
           "event": "onClick",
@@ -193593,7 +193601,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/AdminBI.jsx": {
-      "sha256": "31156e32a0c681b07c8be1de7b763c83f8791a6d35ea83e28e293e874f8d59b6",
+      "sha256": "6e3d9727a9cede1fca44b5f142b2ae7cc4d64f98773dab9ad866dea99807c3f4",
       "imports": [
         {
           "line": 11,
@@ -195895,7 +195903,7 @@
         },
         {
           "line": 2915,
-          "end_line": 3021,
+          "end_line": 3046,
           "owner": "<module>",
           "name": "MailTab",
           "kind": "FunctionDeclaration",
@@ -196022,97 +196030,105 @@
           "callback_context": "Object.entries(c.statuses).map"
         },
         {
-          "line": 3038,
-          "end_line": 3184,
+          "line": 3022,
+          "end_line": 3031,
+          "owner": "MailTab",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "data.blocks_effect.map"
+        },
+        {
+          "line": 3063,
+          "end_line": 3209,
           "owner": "<module>",
           "name": "AdminBI",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 3058,
-          "end_line": 3062,
+          "line": 3083,
+          "end_line": 3087,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3064,
-          "end_line": 3069,
+          "line": 3089,
+          "end_line": 3094,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3077,
-          "end_line": 3081,
+          "line": 3102,
+          "end_line": 3106,
           "owner": "AdminBI",
           "name": "refreshNow",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3093,
-          "end_line": 3093,
+          "line": 3118,
+          "end_line": 3118,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TABS.find"
         },
         {
-          "line": 3094,
-          "end_line": 3094,
+          "line": 3119,
+          "end_line": 3119,
           "owner": "AdminBI",
           "name": "openSlices",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3101,
-          "end_line": 3110,
+          "line": 3126,
+          "end_line": 3135,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "PERIODS.map"
         },
         {
-          "line": 3103,
-          "end_line": 3103,
-          "owner": "AdminBI.<callback@3101>",
+          "line": 3128,
+          "end_line": 3128,
+          "owner": "AdminBI.<callback@3126>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3116,
-          "end_line": 3116,
+          "line": 3141,
+          "end_line": 3141,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3122,
-          "end_line": 3122,
+          "line": 3147,
+          "end_line": 3147,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3152,
-          "end_line": 3164,
+          "line": 3177,
+          "end_line": 3189,
           "owner": "AdminBI",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "TABS.map"
         },
         {
-          "line": 3154,
-          "end_line": 3154,
-          "owner": "AdminBI.<callback@3152>",
+          "line": 3179,
+          "end_line": 3179,
+          "owner": "AdminBI.<callback@3177>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -196518,15 +196534,15 @@
           ]
         },
         {
-          "line": 3039,
-          "end_line": 3039,
+          "line": 3064,
+          "end_line": 3064,
           "owner": "AdminBI",
           "callee": "useAuth",
           "arguments": []
         },
         {
-          "line": 3040,
-          "end_line": 3040,
+          "line": 3065,
+          "end_line": 3065,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -196534,8 +196550,8 @@
           ]
         },
         {
-          "line": 3041,
-          "end_line": 3041,
+          "line": 3066,
+          "end_line": 3066,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -196543,8 +196559,8 @@
           ]
         },
         {
-          "line": 3042,
-          "end_line": 3042,
+          "line": 3067,
+          "end_line": 3067,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -196552,8 +196568,8 @@
           ]
         },
         {
-          "line": 3043,
-          "end_line": 3043,
+          "line": 3068,
+          "end_line": 3068,
           "owner": "AdminBI",
           "callee": "useState",
           "arguments": [
@@ -196561,8 +196577,8 @@
           ]
         },
         {
-          "line": 3045,
-          "end_line": 3045,
+          "line": 3070,
+          "end_line": 3070,
           "owner": "AdminBI",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -196570,8 +196586,8 @@
           ]
         },
         {
-          "line": 3055,
-          "end_line": 3055,
+          "line": 3080,
+          "end_line": 3080,
           "owner": "AdminBI",
           "callee": "useRef",
           "arguments": [
@@ -196579,8 +196595,8 @@
           ]
         },
         {
-          "line": 3056,
-          "end_line": 3072,
+          "line": 3081,
+          "end_line": 3097,
           "owner": "AdminBI",
           "callee": "useQuery",
           "arguments": [
@@ -196778,56 +196794,56 @@
           "expression": "{() => setDays(n)}"
         },
         {
-          "line": 3084,
-          "end_line": 3084,
+          "line": 3109,
+          "end_line": 3109,
           "owner": "AdminBI",
           "component": "AdminLogin",
           "event": "onSuccess",
           "expression": "{setUser}"
         },
         {
-          "line": 3102,
-          "end_line": 3107,
-          "owner": "AdminBI.<callback@3101>",
+          "line": 3127,
+          "end_line": 3132,
+          "owner": "AdminBI.<callback@3126>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setPeriod(p.id)}"
         },
         {
-          "line": 3114,
-          "end_line": 3118,
+          "line": 3139,
+          "end_line": 3143,
           "owner": "AdminBI",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setCustomFrom(e.target.value)}"
         },
         {
-          "line": 3120,
-          "end_line": 3124,
+          "line": 3145,
+          "end_line": 3149,
           "owner": "AdminBI",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setCustomTo(e.target.value)}"
         },
         {
-          "line": 3135,
-          "end_line": 3140,
+          "line": 3160,
+          "end_line": 3165,
           "owner": "AdminBI",
           "component": "button",
           "event": "onClick",
           "expression": "{refreshNow}"
         },
         {
-          "line": 3153,
-          "end_line": 3160,
-          "owner": "AdminBI.<callback@3152>",
+          "line": 3178,
+          "end_line": 3185,
+          "owner": "AdminBI.<callback@3177>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setTab(t.id)}"
         },
         {
-          "line": 3181,
-          "end_line": 3181,
+          "line": 3206,
+          "end_line": 3206,
           "owner": "AdminBI",
           "component": "Active",
           "event": "onOpenSlices",
@@ -197255,8 +197271,8 @@
           "initializer": null
         },
         {
-          "line": 3023,
-          "end_line": 3036,
+          "line": 3048,
+          "end_line": 3061,
           "owner": "<module>",
           "name": "TABS",
           "kind": "ArrayExpression",
@@ -257711,7 +257727,7 @@
   "totals": {
     "imports": 4837,
     "routes": 100,
-    "functions": 15420,
+    "functions": 15422,
     "hooks": 2865,
     "http": 127,
     "storage": 244,

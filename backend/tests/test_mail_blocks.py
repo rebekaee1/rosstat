@@ -90,3 +90,29 @@ def test_editor_issue_files_parse(tmp_path):
         pytest.skip("материалы редактора вне репозитория")
     for f in files:
         parse_issue(json.loads(f.read_text(encoding="utf-8")))
+
+
+def test_why_and_section_blocks():
+    story = {"type": "story", "title": "Ипотека", "source": "Банк России", "why": "Вы смотрели ипотечный калькулятор"}
+    html = blocks.render(story, "ru")
+    assert html.index("Источник: Банк России") < html.index("Вы смотрели ипотечный калькулятор")
+    assert blocks.as_text(story, "ru").endswith("Вы смотрели ипотечный калькулятор")
+    sec = {"type": "section", "title": "Для вас", "text": "По вашим слежениям"}
+    blocks.validate_block(sec)
+    html = blocks.render(sec, "ru")
+    assert "Для вас" in html and "background:#F3F5F9" not in html
+    assert blocks.as_text(sec, "ru").startswith("ДЛЯ ВАС")
+
+
+def test_with_utm_keeps_existing_tags():
+    from app.services.mail.campaign import with_utm
+
+    url = with_utm("https://ru.forecasteconomy.com/x?utm_campaign=own&utm_content=hero", "fe-weekly-01", "b1-lead")
+    assert "utm_campaign=own" in url and "utm_content=hero" in url and "utm_source=email" in url
+    assert with_utm("https://example.com/x", "k", "b1") == "https://example.com/x"
+
+
+def test_personal_note_footer_has_unpersonalize_link():
+    d = Digest(subject="s", title="t", personal_note="Подборка составлена по вашим действиям на сайте.")
+    r = render_digest(d, "ru", site_url="https://x/", unsubscribe_url="https://x/u", unpersonalize_url="https://x/p")
+    assert "Подборка составлена" in r.html and "Письма без персональной подборки" in r.html and "https://x/p" in r.text

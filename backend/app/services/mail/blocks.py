@@ -16,7 +16,7 @@ from html import escape
 from app.services.mail.templates import BLUE, BLUE_DEEP, FONT, GOLD, INK, LAYER, MUTED, TEXT
 
 NUM = "font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;"
-TYPES = ("lead", "story", "forecast", "table", "calendar")
+TYPES = ("lead", "story", "forecast", "table", "calendar", "section")
 RANGE_FIELDS = {"lower", "upper", "range", "min", "max", "interval", "ci", "low", "high"}
 _RANGE_RE = re.compile(r"\d[\d\s .,]*\s*[–—-]\s*[−-]?\d|(?<!\w)от\s.+\sдо\s|(?<!\w)from\s.+\sto\s", re.I)
 LABELS = {
@@ -77,6 +77,14 @@ def _text(text: str) -> str:
     if not text:
         return ""
     return (f'<div style="margin-top:6px;font-family:{FONT};font-size:14px;line-height:1.58;color:{TEXT};">'
+            f'{escape(text)}</div>')
+
+
+def _why(text: str) -> str:
+    """«Почему этот блок вам» (персональный выпуск): 12 px, приглушённо, под источником."""
+    if not text:
+        return ""
+    return (f'<div style="margin-top:6px;font-family:{FONT};font-size:12px;line-height:1.45;color:{MUTED};">'
             f'{escape(text)}</div>')
 
 
@@ -166,12 +174,13 @@ def lead(b: dict, locale: str) -> str:
             f'font-size:2px;background:{GOLD};">&nbsp;</td></tr></table>')
     return ('<div style="margin:6px 0 28px;">' + _kicker(b.get("kicker") or "") + value + delta + gold
             + _title(b["title"], b.get("url") or "", 17) + _text(b.get("text") or "")
-            + _source(b.get("source") or "", locale) + (_bars(b["bars"]) if b.get("bars") else "") + "</div>")
+            + _source(b.get("source") or "", locale) + _why(b.get("why") or "")
+            + (_bars(b["bars"]) if b.get("bars") else "") + "</div>")
 
 
 def story(b: dict, locale: str) -> str:
     head = _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-    rest = _text(b.get("text") or "") + _source(b.get("source") or "", locale)
+    rest = _text(b.get("text") or "") + _source(b.get("source") or "", locale) + _why(b.get("why") or "")
     return _layer(_with_value(head, rest, _value(b.get("value") or "")))
 
 
@@ -181,7 +190,7 @@ def forecast(b: dict, locale: str) -> str:
         last = (f'<div style="margin-top:4px;font-family:{FONT};font-size:13px;color:{MUTED};{NUM}">'
                 f'{escape(_l(locale, "last"))}: {escape(b["last_actual"])}</div>')
     head = _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-    rest = last + _text(b.get("text") or "") + _source(b.get("source") or "", locale)
+    rest = last + _text(b.get("text") or "") + _source(b.get("source") or "", locale) + _why(b.get("why") or "")
     return _layer(_with_value(head, rest, _value(b.get("value") or "", BLUE_DEEP, dot=True)))
 
 
@@ -202,7 +211,7 @@ def table(b: dict, locale: str) -> str:
     tbl = ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;">'
            f'<tr>{head}</tr>' + "".join(body) + "</table>")
     return ('<div style="margin:6px 0 22px;">' + _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-            + tbl + _source(b.get("source") or "", locale) + "</div>")
+            + tbl + _source(b.get("source") or "", locale) + _why(b.get("why") or "") + "</div>")
 
 
 def calendar(b: dict, locale: str, today: date | None = None) -> str:
@@ -240,8 +249,18 @@ def visible_entries(b: dict, today: date | None) -> list[dict]:
     return out
 
 
+def section(b: dict, locale: str) -> str:
+    """Заголовок раздела выпуска («Для вас»): без подложки, крупнее заголовка блока."""
+    text = (f'<div style="margin-top:4px;font-family:{FONT};font-size:14px;line-height:1.55;color:{TEXT};">'
+            f'{escape(b["text"])}</div>') if b.get("text") else ""
+    return (f'<div style="margin:22px 0 12px;"><div style="font-family:{FONT};font-size:19px;font-weight:700;'
+            f'letter-spacing:-.01em;line-height:1.3;color:{INK};">{escape(b["title"])}</div>{text}</div>')
+
+
 def render(b: dict, locale: str, today: date | None = None) -> str:
     kind = b.get("type")
+    if kind == "section":
+        return section(b, locale)
     if kind == "calendar":
         return calendar(b, locale, today)
     return {"lead": lead, "story": story, "forecast": forecast, "table": table}[kind](b, locale)
@@ -275,8 +294,12 @@ def as_text(b: dict, locale: str, today: date | None = None) -> str:
             if pts:
                 lines.append(f"{_l(locale, 'chart')}: " + " → ".join(_fmt_num(float(p[1])) for p in pts)
                              + f" {b['bars'].get('unit') or ''} ({pts[0][0]} — {pts[-1][0]})")
+    if kind == "section":
+        return "\n".join(x for x in (str(b.get("title") or "").upper(), str(b.get("text") or "")) if x)
     if b.get("source"):
         lines.append(f"{_l(locale, 'source')}: {b['source']}")
+    if b.get("why"):
+        lines.append(str(b["why"]))
     if b.get("url"):
         lines.append(str(b["url"]))
     return "\n".join(x for x in lines if x)
