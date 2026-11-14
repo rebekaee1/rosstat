@@ -726,6 +726,8 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
         screen_h=portrait.screen_h if portrait else None,
         cpu_cores=portrait.cpu_cores if portrait else None,
         portrait_cluster=_portrait_cluster_for(portrait, portrait_clusters, portrait_fingerprint),
+        referrer=getattr(portrait, "referrer", None) if portrait else None,
+        timezone=getattr(portrait, "timezone", None) if portrait else None,
     ))
     return {
         "day": msk_day(started),  # день сессии — МСК (BI 2.1)

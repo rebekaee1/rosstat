@@ -329,3 +329,23 @@ def test_own_portrait_written_after_single_pageview_still_scores_the_session(mon
         assert row['channel'] == 'search' and row['device'] == 'desktop'
         assert row['bot_score'] >= 60 and row['is_bot'] is True
     _run_with_db(scenario)
+
+
+def test_google_root_linux_us_portrait_reaches_the_score(monkeypatch):
+    """Сигнал google_root_linux_us (14.11.2026) получает Referer и пояс из портрета сессии."""
+    async def scenario(maker):
+        await _put(maker, [(-2, 'pageview', '/finland/indicator/x', {'ref': 'https://www.google.com/'})])
+        async with maker() as db:
+            db.add(BehaviorSession(session_id_hash='client', visitor_id_hash='boundary-visitor',
+                                   started_at=BOUNDARY - timedelta(minutes=2) + timedelta(milliseconds=30),
+                                   channel='search', referrer='https://www.google.com/', referrer_host='google.com',
+                                   ua_raw='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                                          'Chrome/157.0.0.0 Safari/537.36',
+                                   timezone='America/New_York', device_type='desktop',
+                                   screen_w=1920, screen_h=1080, cpu_cores=8))
+            await db.commit()
+        reference, chunked = await _continuous_then_chunked(maker, monkeypatch)
+        assert chunked == reference and len(chunked) == 1
+        row = _fields(chunked[0])
+        assert row['bot_score'] == 60 and row['is_bot'] is True
+    _run_with_db(scenario)
