@@ -41,6 +41,11 @@ def _secret() -> str | None:
 # ("<сеть /24>|<UA> " или пусто при FE_PASS_BIND=0). Заголовок Starlette декодирует как latin-1: обратное кодирование
 # даёт исходные байты, как их видит nginx.
 BIND_HEADER = "x-fe-pass-bind"
+# Наблюдение (приёмка 14.11.2026): nginx передаёт сеть выдачи (IPv4 /24 или четыре группы IPv6) в X-FE-Pass-Net;
+# backend кладёт её в cookie fe_pass_net, nginx пишет в pass-observe.log, совпала бы привязка по сети на каждом запросе.
+NET_HEADER = "x-fe-pass-net"
+NET_COOKIE = "fe_pass_net"
+_NET_RE = re.compile(r"^[0-9A-Fa-f.:]{1,45}$")
 
 
 def sign(expires: int, pass_id: str, secret: str, bind: str = "") -> str:
@@ -75,4 +80,14 @@ async def human_pass(request: Request) -> Response:
         httponly=True,
         samesite="lax",
     )
+    net = request.headers.get(NET_HEADER, "")
+    if _NET_RE.match(net):
+        response.set_cookie(
+            NET_COOKIE, net,
+            max_age=max(1, settings.fe_human_pass_days) * 86400,
+            path="/",
+            secure=host not in {"localhost", "127.0.0.1"},
+            httponly=True,
+            samesite="lax",
+        )
     return response
