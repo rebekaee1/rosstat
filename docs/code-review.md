@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `bb04bbeaf2249093f75eea7df92d2db83e920982`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `24baad869c9204f801cd016679e3e1dfee34c803`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2493 |
-| Код, шаблоны и стили | 2019 |
-| Актуальные рецензии без пропусков guard | 2493 |
-| Именованные определения Python/JS: с аннотацией / всего | 16320 / 16320 |
+| Файлы в явно определённом scope | 2494 |
+| Код, шаблоны и стили | 2020 |
+| Актуальные рецензии без пропусков guard | 2494 |
+| Именованные определения Python/JS: с аннотацией / всего | 16329 / 16329 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -308,7 +308,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/demographics.py](../backend/app/services/demographics.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/derived_ops.py](../backend/app/services/derived_ops.py) | reviewed | 31/31 | актуально |
 | [backend/app/services/display.py](../backend/app/services/display.py) | reviewed | 19/19 | актуально |
-| [backend/app/services/download_content.py](../backend/app/services/download_content.py) | reviewed | 43/43 | актуально |
+| [backend/app/services/download_content.py](../backend/app/services/download_content.py) | reviewed | 45/45 | актуально |
 | [backend/app/services/ecb_fx_parser.py](../backend/app/services/ecb_fx_parser.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/emiss_labor_parser.py](../backend/app/services/emiss_labor_parser.py) | body_reviewed | 3/3 | актуально |
 | [backend/app/services/emiss_regional_parser.py](../backend/app/services/emiss_regional_parser.py) | reviewed | 14/14 | актуально |
@@ -709,7 +709,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_derived_specs_execution.py](../backend/tests/test_derived_specs_execution.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_digest_period.py](../backend/tests/test_digest_period.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_display_adapter.py](../backend/tests/test_display_adapter.py) | reviewed | 18/18 | актуально |
-| [backend/tests/test_download_content.py](../backend/tests/test_download_content.py) | reviewed | 17/17 | актуально |
+| [backend/tests/test_download_content.py](../backend/tests/test_download_content.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_download_paths.py](../backend/tests/test_download_paths.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_download_week_digest.py](../backend/tests/test_download_week_digest.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_dual_host_release_gate.py](../backend/tests/test_dual_host_release_gate.py) | reviewed | 8/8 | актуально |
@@ -1473,6 +1473,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/DeathsIndicatorControls.jsx](../frontend/src/components/DeathsIndicatorControls.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/DeathsViewModePicker.jsx](../frontend/src/components/DeathsViewModePicker.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/DeltaBadge.jsx](../frontend/src/components/DeltaBadge.jsx) | reviewed | 1/1 | актуально |
+| [frontend/src/components/DownloadLimitModal.guest.test.jsx](../frontend/src/components/DownloadLimitModal.guest.test.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/DownloadLimitModal.jsx](../frontend/src/components/DownloadLimitModal.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/DownloadLimitModal.test.jsx](../frontend/src/components/DownloadLimitModal.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/EChart.jsx](../frontend/src/components/EChart.jsx) | reviewed | 1/1 | актуально |

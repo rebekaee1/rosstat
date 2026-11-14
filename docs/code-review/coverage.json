@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2493,
-    "code_files": 2019,
-    "current_reviews": 2493,
+    "files": 2494,
+    "code_files": 2020,
+    "current_reviews": 2494,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2223
+      "reviewed": 2224
     },
-    "definitions": 16320,
-    "annotated_definitions": 16320,
+    "definitions": 16329,
+    "annotated_definitions": 16329,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -3547,15 +3547,15 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "sha256": "497214514971015f014eead6ca2bb53dcca6fb8e3fb8863af61c8894c5c9768c",
-      "bytes": 52760,
-      "lines": 981,
+      "sha256": "fc99138935fb9c6b54ebfecc68848ae26d969c2231df0dc77396c069c3329f16",
+      "bytes": 54440,
+      "lines": 1010,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 43,
-      "annotated_definitions": 43,
+      "definitions": 45,
+      "annotated_definitions": 45,
       "missing_definitions": []
     },
     {
@@ -8760,15 +8760,15 @@
     },
     {
       "path": "backend/tests/test_download_content.py",
-      "sha256": "93f46c805f916b00588da65db1dfb68c22ce176f45bb9b3161f3f8b87626c197",
-      "bytes": 18801,
-      "lines": 295,
+      "sha256": "d5f45ca33035a59292f1137cbeed947380b4a1a856e49eaecc47f931d1796378",
+      "bytes": 19745,
+      "lines": 308,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 17,
-      "annotated_definitions": 17,
+      "definitions": 18,
+      "annotated_definitions": 18,
       "missing_definitions": []
     },
     {
@@ -13921,9 +13921,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "73f586e13a30fe9df96f3022ec9a565445a0556cafea855eacd2db7e3a808445",
-      "bytes": 7284433,
-      "lines": 256618,
+      "sha256": "778aabbbb55f513a7f7505593a2dd9a9c299b3a36eca0c4526fd898cc636b61e",
+      "bytes": 7291722,
+      "lines": 256899,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13934,7 +13934,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "f2e86c96e56fe2e4b390c93b6ce1b704742368fc2ef9d921326629b27aa15e8a",
+      "sha256": "989bb0757c1a84b9dc65a8280c718b0cecbfd8bdd9edbaea4258e405a57503f6",
       "bytes": 13421,
       "lines": 137,
       "code": false,
@@ -13960,9 +13960,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "5f1fe353c5c8f9c6bec5729b1d9c95990e6068e516d1001f0fd207ce74938256",
-      "bytes": 380900,
-      "lines": 1265,
+      "sha256": "e7bb0edbba33d615956f87a9b894eb74288c4b5d43b323632ea51c0afca757ed",
+      "bytes": 381411,
+      "lines": 1267,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14493,9 +14493,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "c6c0b7d967b39dd9f136e2ad5139e36e7f6c901764af1c7f5d5396c9f9d74dc1",
-      "bytes": 3864292,
-      "lines": 136778,
+      "sha256": "0e1046b28fbec31a0f1e1ba3a12ae4d619ec0f0ee6ca13630faa599f44800e92",
+      "bytes": 3864719,
+      "lines": 136793,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -14545,9 +14545,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "eb533c4f3089e86f44d26c6d41630d3d6aa6b12bcbd40db4e34dc5be93bcd1df",
-      "bytes": 12371234,
-      "lines": 371287,
+      "sha256": "0426eb5e0e9abea8740d453b0320237a1fe494a3d56728c8f537a35dc52c7363",
+      "bytes": 12374122,
+      "lines": 371379,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14558,7 +14558,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "29b9c488d6fa23849125a5ad63af44f2c2ba4a1474f35862b41be83e691c7186",
+      "sha256": "996dba926de697b65d0d6a8bbd9e02bdeae21693863704774b67dcf57e645e0e",
       "bytes": 633855,
       "lines": 3424,
       "code": false,
@@ -15195,9 +15195,9 @@
     },
     {
       "path": "docs/research/wall-funnel-2026-11-14.md",
-      "sha256": "da5d66bbff8bac6afcee0e52000db64450e0b5ea7346eb8bc8c340f42c121e50",
-      "bytes": 9446,
-      "lines": 99,
+      "sha256": "35d73690a3891a5d14e394df757e418738f05ba7df9e2683b152591f826d496d",
+      "bytes": 10499,
+      "lines": 105,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -18691,10 +18691,23 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/src/components/DownloadLimitModal.guest.test.jsx",
+      "sha256": "e98b13162426411c6f86099ac983142aeb0d2ee0384ea76b3714cd538fae2a3c",
+      "bytes": 3294,
+      "lines": 60,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 6,
+      "annotated_definitions": 6,
+      "missing_definitions": []
+    },
+    {
       "path": "frontend/src/components/DownloadLimitModal.jsx",
-      "sha256": "6e4ec06d094224c22c29e347cc23be9fb0767536a5ab79f6edb0c225e687cf8c",
-      "bytes": 4841,
-      "lines": 108,
+      "sha256": "078f5865e539990e6bcd7a77bfc6f79e9055c486d0adc40e207cf5369d0b45cf",
+      "bytes": 6121,
+      "lines": 130,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -19641,9 +19654,9 @@
     },
     {
       "path": "frontend/src/components/OAuthButtons.jsx",
-      "sha256": "77e5021954f0e32021ccbf919359eaf698fa0ebde7f2760783b69997cd89abab",
-      "bytes": 9903,
-      "lines": 224,
+      "sha256": "35155faa6c128da5bd29c3ac01df058489b733a5113bc3bf3915c7fe4b30ad56",
+      "bytes": 10149,
+      "lines": 227,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -22202,9 +22215,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.en.js",
-      "sha256": "33d8b890efe0651b247485f923cbade2bc8839745ac0e64014c2fde1c751e48a",
-      "bytes": 232717,
-      "lines": 4159,
+      "sha256": "8c77c938d635cc4ad7354577cab5869add3d9c5e21b34cb9d1cd1c4fea5bff90",
+      "bytes": 232922,
+      "lines": 4162,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -22241,9 +22254,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.ru.js",
-      "sha256": "7b540061e76ca922d0cbe0901dff2299acaeee481213a9dda0d3a289d5b9b84c",
-      "bytes": 330184,
-      "lines": 4164,
+      "sha256": "29ce9ddce47de91c8f66377e132e56c11f37cf146b9328c3b41a7ecba1ea86e8",
+      "bytes": 330465,
+      "lines": 4167,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -32446,9 +32459,17 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "32edd4cddb8a8d59f5504cc0c8a7f241eb9a3c40d456b83d22e18f60e8bccce3",
-  "javascript_inventory_sha256": "711d86e690d3c8c3a04b943e9afdaf340c2db1f8cc1579abebbacaa47fd63351",
-  "baseline_commit": "bb04bbeaf2249093f75eea7df92d2db83e920982",
+  "ledger_sha256": "e8349138a03eb24be3388d1a38bd10282e13fbf769f55698a54d3f6fc066deee",
+  "javascript_inventory_sha256": "150cd799a7b37c6b243d9f67709b833046a0a81797fa548abd243f83ca46ab8c",
+  "baseline_commit": "24baad869c9204f801cd016679e3e1dfee34c803",
   "branch": "worktree-agent-a4879bc09991f03fb",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "docs/data-contracts.md",
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md",
+    "docs/research/wall-funnel-2026-11-14.md"
+  ]
 }

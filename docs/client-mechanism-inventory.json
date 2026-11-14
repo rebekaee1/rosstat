@@ -22804,8 +22804,257 @@
       ],
       "mcp_tools": []
     },
+    "frontend/src/components/DownloadLimitModal.guest.test.jsx": {
+      "sha256": "e98b13162426411c6f86099ac983142aeb0d2ee0384ea76b3714cd538fae2a3c",
+      "imports": [
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "@testing-library/react",
+          "category": "external_package",
+          "target": "@testing-library/react",
+          "bindings": [
+            "act",
+            "fireEvent",
+            "render",
+            "screen"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "react-router-dom",
+          "category": "external_package",
+          "target": "react-router-dom",
+          "bindings": [
+            "MemoryRouter"
+          ]
+        },
+        {
+          "line": 5,
+          "end_line": 5,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "beforeEach",
+            "expect",
+            "it",
+            "vi"
+          ]
+        },
+        {
+          "line": 19,
+          "end_line": 19,
+          "owner": "<module>",
+          "specifier": "./DownloadLimitModal",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/DownloadLimitModal.jsx"
+          ],
+          "bindings": [
+            "DownloadLimitModal"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<callback@7>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 8,
+          "end_line": 12,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 10,
+          "end_line": 10,
+          "owner": "<callback@8>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.fn"
+        },
+        {
+          "line": 11,
+          "end_line": 11,
+          "owner": "<callback@8>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.fn"
+        },
+        {
+          "line": 13,
+          "end_line": 13,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 14,
+          "end_line": 17,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 15,
+          "end_line": 15,
+          "owner": "<callback@14>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 15,
+          "end_line": 15,
+          "owner": "<callback@14>.<callback@15>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 16,
+          "end_line": 16,
+          "owner": "<callback@14>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 16,
+          "end_line": 16,
+          "owner": "<callback@14>.<callback@16>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 21,
+          "end_line": 23,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "beforeEach"
+        },
+        {
+          "line": 25,
+          "end_line": 28,
+          "owner": "<module>",
+          "name": "openWall",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 27,
+          "end_line": 27,
+          "owner": "openWall",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "act"
+        },
+        {
+          "line": 30,
+          "end_line": 42,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 44,
+          "end_line": 60,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 49,
+          "end_line": 49,
+          "owner": "<callback@44>",
+          "name": "href",
+          "kind": "ObjectMethod",
+          "callback_context": null
+        },
+        {
+          "line": 53,
+          "end_line": 53,
+          "owner": "<callback@44>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "boxes.find"
+        },
+        {
+          "line": 55,
+          "end_line": 55,
+          "owner": "<callback@44>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "boxes.find"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [
+        {
+          "line": 27,
+          "end_line": 27,
+          "owner": "openWall.<callback@27>",
+          "callee": "window.dispatchEvent",
+          "arguments": [
+            "new Event('fe:download-limit')"
+          ]
+        },
+        {
+          "line": 47,
+          "end_line": 47,
+          "owner": "<callback@44>",
+          "callee": "window.addEventListener",
+          "arguments": [
+            "'fe:auth-leave'",
+            "leave"
+          ]
+        },
+        {
+          "line": 59,
+          "end_line": 59,
+          "owner": "<callback@44>",
+          "callee": "window.removeEventListener",
+          "arguments": [
+            "'fe:auth-leave'",
+            "leave"
+          ]
+        }
+      ],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/components/DownloadLimitModal.jsx": {
-      "sha256": "6e4ec06d094224c22c29e347cc23be9fb0767536a5ab79f6edb0c225e687cf8c",
+      "sha256": "078f5865e539990e6bcd7a77bfc6f79e9055c486d0adc40e207cf5369d0b45cf",
       "imports": [
         {
           "line": 1,
@@ -22955,10 +23204,34 @@
           "line": 12,
           "end_line": 12,
           "owner": "<module>",
+          "specifier": "./OAuthButtons",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/OAuthButtons.jsx"
+          ],
+          "bindings": [
+            "OAuthButtons"
+          ]
+        },
+        {
+          "line": 13,
+          "end_line": 13,
+          "owner": "<module>",
           "specifier": "../styles/k8-tools.css",
           "category": "owned_source",
           "targets": [
             "frontend/src/styles/k8-tools.css"
+          ],
+          "bindings": []
+        },
+        {
+          "line": 14,
+          "end_line": 14,
+          "owner": "<module>",
+          "specifier": "../styles/w5-pages.css",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/styles/w5-pages.css"
           ],
           "bindings": []
         }
@@ -22966,112 +23239,112 @@
       "routes": [],
       "functions": [
         {
-          "line": 16,
-          "end_line": 108,
+          "line": 18,
+          "end_line": 130,
           "owner": "<module>",
           "name": "DownloadLimitModal",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 25,
-          "end_line": 27,
+          "line": 27,
+          "end_line": 29,
           "owner": "DownloadLimitModal",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 28,
-          "end_line": 28,
+          "line": 30,
+          "end_line": 30,
           "owner": "DownloadLimitModal",
           "name": "close",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 29,
-          "end_line": 34,
+          "line": 31,
+          "end_line": 36,
           "owner": "DownloadLimitModal",
           "name": "resume",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 36,
-          "end_line": 40,
+          "line": 38,
+          "end_line": 42,
           "owner": "DownloadLimitModal",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 37,
-          "end_line": 37,
-          "owner": "DownloadLimitModal.<callback@36>",
+          "line": 39,
+          "end_line": 39,
+          "owner": "DownloadLimitModal.<callback@38>",
           "name": "handler",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 39,
-          "end_line": 39,
-          "owner": "DownloadLimitModal.<callback@36>",
+          "line": 41,
+          "end_line": 41,
+          "owner": "DownloadLimitModal.<callback@38>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 42,
-          "end_line": 47,
+          "line": 44,
+          "end_line": 49,
           "owner": "DownloadLimitModal",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 44,
-          "end_line": 44,
-          "owner": "DownloadLimitModal.<callback@42>",
+          "line": 46,
+          "end_line": 46,
+          "owner": "DownloadLimitModal.<callback@44>",
           "name": "onKey",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 46,
-          "end_line": 46,
-          "owner": "DownloadLimitModal.<callback@42>",
+          "line": 48,
+          "end_line": 48,
+          "owner": "DownloadLimitModal.<callback@44>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 58,
-          "end_line": 58,
+          "line": 60,
+          "end_line": 60,
           "owner": "DownloadLimitModal",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 88,
-          "end_line": 88,
+          "line": 110,
+          "end_line": 110,
           "owner": "DownloadLimitModal",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 97,
-          "end_line": 97,
+          "line": 117,
+          "end_line": 117,
           "owner": "DownloadLimitModal",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 104,
-          "end_line": 104,
+          "line": 126,
+          "end_line": 126,
           "owner": "DownloadLimitModal",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -23080,47 +23353,38 @@
       ],
       "hooks": [
         {
-          "line": 17,
-          "end_line": 17,
-          "owner": "DownloadLimitModal",
-          "callee": "useT",
-          "arguments": []
-        },
-        {
-          "line": 18,
-          "end_line": 18,
-          "owner": "DownloadLimitModal",
-          "callee": "useState",
-          "arguments": [
-            "false"
-          ]
-        },
-        {
           "line": 19,
           "end_line": 19,
           "owner": "DownloadLimitModal",
-          "callee": "useAuth",
+          "callee": "useT",
           "arguments": []
         },
         {
           "line": 20,
           "end_line": 20,
           "owner": "DownloadLimitModal",
-          "callee": "useLocation",
-          "arguments": []
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
         },
         {
           "line": 21,
           "end_line": 21,
           "owner": "DownloadLimitModal",
-          "callee": "useState",
-          "arguments": [
-            "false"
-          ]
+          "callee": "useAuth",
+          "arguments": []
         },
         {
           "line": 22,
           "end_line": 22,
+          "owner": "DownloadLimitModal",
+          "callee": "useLocation",
+          "arguments": []
+        },
+        {
+          "line": 23,
+          "end_line": 23,
           "owner": "DownloadLimitModal",
           "callee": "useState",
           "arguments": [
@@ -23128,8 +23392,17 @@
           ]
         },
         {
-          "line": 25,
-          "end_line": 27,
+          "line": 24,
+          "end_line": 24,
+          "owner": "DownloadLimitModal",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 27,
+          "end_line": 29,
           "owner": "DownloadLimitModal",
           "callee": "useEffect",
           "arguments": [
@@ -23138,8 +23411,8 @@
           ]
         },
         {
-          "line": 36,
-          "end_line": 40,
+          "line": 38,
+          "end_line": 42,
           "owner": "DownloadLimitModal",
           "callee": "useEffect",
           "arguments": [
@@ -23148,8 +23421,8 @@
           ]
         },
         {
-          "line": 42,
-          "end_line": 47,
+          "line": 44,
+          "end_line": 49,
           "owner": "DownloadLimitModal",
           "callee": "useEffect",
           "arguments": [
@@ -23162,9 +23435,9 @@
       "storage": [],
       "events": [
         {
-          "line": 38,
-          "end_line": 38,
-          "owner": "DownloadLimitModal.<callback@36>",
+          "line": 40,
+          "end_line": 40,
+          "owner": "DownloadLimitModal.<callback@38>",
           "callee": "window.addEventListener",
           "arguments": [
             "'fe:download-limit'",
@@ -23172,9 +23445,9 @@
           ]
         },
         {
-          "line": 39,
-          "end_line": 39,
-          "owner": "DownloadLimitModal.<callback@36>.<callback@39>",
+          "line": 41,
+          "end_line": 41,
+          "owner": "DownloadLimitModal.<callback@38>.<callback@41>",
           "callee": "window.removeEventListener",
           "arguments": [
             "'fe:download-limit'",
@@ -23182,9 +23455,9 @@
           ]
         },
         {
-          "line": 45,
-          "end_line": 45,
-          "owner": "DownloadLimitModal.<callback@42>",
+          "line": 47,
+          "end_line": 47,
+          "owner": "DownloadLimitModal.<callback@44>",
           "callee": "window.addEventListener",
           "arguments": [
             "'keydown'",
@@ -23192,9 +23465,9 @@
           ]
         },
         {
-          "line": 46,
-          "end_line": 46,
-          "owner": "DownloadLimitModal.<callback@42>.<callback@46>",
+          "line": 48,
+          "end_line": 48,
+          "owner": "DownloadLimitModal.<callback@44>.<callback@48>",
           "callee": "window.removeEventListener",
           "arguments": [
             "'keydown'",
@@ -23204,56 +23477,64 @@
       ],
       "jsx_handlers": [
         {
-          "line": 52,
-          "end_line": 55,
+          "line": 54,
+          "end_line": 57,
           "owner": "DownloadLimitModal",
           "component": "div",
           "event": "onClick",
           "expression": "{close}"
         },
         {
-          "line": 56,
-          "end_line": 62,
+          "line": 58,
+          "end_line": 64,
           "owner": "DownloadLimitModal",
           "component": "div",
           "event": "onClick",
           "expression": "{(e) => e.stopPropagation()}"
         },
         {
-          "line": 70,
-          "end_line": 75,
+          "line": 72,
+          "end_line": 77,
           "owner": "DownloadLimitModal",
           "component": "button",
           "event": "onClick",
           "expression": "{close}"
         },
         {
-          "line": 84,
-          "end_line": 84,
+          "line": 87,
+          "end_line": 87,
           "owner": "DownloadLimitModal",
           "component": "Button",
           "event": "onClick",
           "expression": "{pending.payload ? resume : close}"
         },
         {
-          "line": 85,
-          "end_line": 90,
-          "owner": "DownloadLimitModal",
-          "component": "Button",
-          "event": "onClick",
-          "expression": "{() => { prepareAuthReturn(); setOpen(false); }}"
-        },
-        {
-          "line": 93,
-          "end_line": 99,
-          "owner": "DownloadLimitModal",
-          "component": "Button",
-          "event": "onClick",
-          "expression": "{() => { prepareAuthReturn(); setOpen(false); }}"
-        },
-        {
-          "line": 104,
+          "line": 99,
           "end_line": 104,
+          "owner": "DownloadLimitModal",
+          "component": "OAuthButtons",
+          "event": "onBeforeRedirect",
+          "expression": "{prepareAuthReturn}"
+        },
+        {
+          "line": 106,
+          "end_line": 112,
+          "owner": "DownloadLimitModal",
+          "component": "Button",
+          "event": "onClick",
+          "expression": "{() => { prepareAuthReturn(); setOpen(false); }}"
+        },
+        {
+          "line": 115,
+          "end_line": 119,
+          "owner": "DownloadLimitModal",
+          "component": "Link",
+          "event": "onClick",
+          "expression": "{() => { prepareAuthReturn(); setOpen(false); }}"
+        },
+        {
+          "line": 126,
+          "end_line": 126,
           "owner": "DownloadLimitModal",
           "component": "ApiInterestLink",
           "event": "onActivate",
@@ -48185,7 +48466,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/OAuthButtons.jsx": {
-      "sha256": "77e5021954f0e32021ccbf919359eaf698fa0ebde7f2760783b69997cd89abab",
+      "sha256": "35155faa6c128da5bd29c3ac01df058489b733a5113bc3bf3915c7fe4b30ad56",
       "imports": [
         {
           "line": 1,
@@ -48319,135 +48600,135 @@
       "functions": [
         {
           "line": 51,
-          "end_line": 224,
+          "end_line": 227,
           "owner": "<module>",
           "name": "OAuthButtons",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 66,
-          "end_line": 72,
+          "line": 67,
+          "end_line": 73,
           "owner": "OAuthButtons",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 69,
-          "end_line": 69,
-          "owner": "OAuthButtons.<callback@66>",
+          "line": 70,
+          "end_line": 70,
+          "owner": "OAuthButtons.<callback@67>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "fetchOAuthProviders()\n      .then"
         },
         {
-          "line": 70,
-          "end_line": 70,
-          "owner": "OAuthButtons.<callback@66>",
+          "line": 71,
+          "end_line": 71,
+          "owner": "OAuthButtons.<callback@67>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "fetchOAuthProviders()\n      .then((list) => { if (alive) setProviders(list); })\n      .catch"
         },
         {
-          "line": 71,
-          "end_line": 71,
-          "owner": "OAuthButtons.<callback@66>",
+          "line": 72,
+          "end_line": 72,
+          "owner": "OAuthButtons.<callback@67>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 75,
-          "end_line": 79,
+          "line": 76,
+          "end_line": 80,
           "owner": "OAuthButtons",
           "name": "cancelConsent",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 81,
-          "end_line": 90,
+          "line": 82,
+          "end_line": 91,
           "owner": "OAuthButtons",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 83,
-          "end_line": 87,
-          "owner": "OAuthButtons.<callback@81>",
+          "line": 84,
+          "end_line": 88,
+          "owner": "OAuthButtons.<callback@82>",
           "name": "onKey",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 89,
-          "end_line": 89,
-          "owner": "OAuthButtons.<callback@81>",
+          "line": 90,
+          "end_line": 90,
+          "owner": "OAuthButtons.<callback@82>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 104,
-          "end_line": 104,
+          "line": 105,
+          "end_line": 105,
           "owner": "OAuthButtons",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "order.filter"
         },
         {
-          "line": 107,
-          "end_line": 113,
+          "line": 108,
+          "end_line": 114,
           "owner": "OAuthButtons",
           "name": "openConsent",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 115,
-          "end_line": 124,
+          "line": 116,
+          "end_line": 127,
           "owner": "OAuthButtons",
           "name": "proceed",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 129,
-          "end_line": 149,
+          "line": 132,
+          "end_line": 152,
           "owner": "OAuthButtons",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ordered.map"
         },
         {
-          "line": 136,
-          "end_line": 142,
-          "owner": "OAuthButtons.<callback@129>",
+          "line": 139,
+          "end_line": 145,
+          "owner": "OAuthButtons.<callback@132>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 170,
-          "end_line": 170,
+          "line": 173,
+          "end_line": 173,
           "owner": "OAuthButtons",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 183,
-          "end_line": 183,
+          "line": 186,
+          "end_line": 186,
           "owner": "OAuthButtons",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 199,
-          "end_line": 199,
+          "line": 202,
+          "end_line": 202,
           "owner": "OAuthButtons",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -48456,24 +48737,15 @@
       ],
       "hooks": [
         {
-          "line": 57,
-          "end_line": 57,
+          "line": 58,
+          "end_line": 58,
           "owner": "OAuthButtons",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 58,
-          "end_line": 58,
-          "owner": "OAuthButtons",
-          "callee": "useState",
-          "arguments": [
-            "null"
-          ]
-        },
-        {
-          "line": 61,
-          "end_line": 61,
+          "line": 59,
+          "end_line": 59,
           "owner": "OAuthButtons",
           "callee": "useState",
           "arguments": [
@@ -48486,7 +48758,7 @@
           "owner": "OAuthButtons",
           "callee": "useState",
           "arguments": [
-            "false"
+            "null"
           ]
         },
         {
@@ -48495,7 +48767,7 @@
           "owner": "OAuthButtons",
           "callee": "useState",
           "arguments": [
-            "true"
+            "false"
           ]
         },
         {
@@ -48504,12 +48776,21 @@
           "owner": "OAuthButtons",
           "callee": "useState",
           "arguments": [
+            "true"
+          ]
+        },
+        {
+          "line": 65,
+          "end_line": 65,
+          "owner": "OAuthButtons",
+          "callee": "useState",
+          "arguments": [
             "false"
           ]
         },
         {
-          "line": 66,
-          "end_line": 72,
+          "line": 67,
+          "end_line": 73,
           "owner": "OAuthButtons",
           "callee": "useEffect",
           "arguments": [
@@ -48518,8 +48799,8 @@
           ]
         },
         {
-          "line": 81,
-          "end_line": 90,
+          "line": 82,
+          "end_line": 91,
           "owner": "OAuthButtons",
           "callee": "useEffect",
           "arguments": [
@@ -48532,9 +48813,9 @@
       "storage": [],
       "events": [
         {
-          "line": 88,
-          "end_line": 88,
-          "owner": "OAuthButtons.<callback@81>",
+          "line": 89,
+          "end_line": 89,
+          "owner": "OAuthButtons.<callback@82>",
           "callee": "window.addEventListener",
           "arguments": [
             "'keydown'",
@@ -48542,9 +48823,9 @@
           ]
         },
         {
-          "line": 89,
-          "end_line": 89,
-          "owner": "OAuthButtons.<callback@81>.<callback@89>",
+          "line": 90,
+          "end_line": 90,
+          "owner": "OAuthButtons.<callback@82>.<callback@90>",
           "callee": "window.removeEventListener",
           "arguments": [
             "'keydown'",
@@ -48554,56 +48835,56 @@
       ],
       "jsx_handlers": [
         {
-          "line": 133,
-          "end_line": 144,
-          "owner": "OAuthButtons.<callback@129>",
+          "line": 136,
+          "end_line": 147,
+          "owner": "OAuthButtons.<callback@132>",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => {\n                if (id === 'google' && showGoogleFallback) {\n                  onGoogleEmailFallback?.();\n                  return;\n                }\n                openConsent(id);\n              }}"
         },
         {
-          "line": 161,
-          "end_line": 167,
+          "line": 164,
+          "end_line": 170,
           "owner": "OAuthButtons",
           "component": "div",
           "event": "onClick",
           "expression": "{cancelConsent}"
         },
         {
-          "line": 168,
-          "end_line": 171,
+          "line": 171,
+          "end_line": 174,
           "owner": "OAuthButtons",
           "component": "div",
           "event": "onClick",
           "expression": "{(e) => e.stopPropagation()}"
         },
         {
-          "line": 180,
-          "end_line": 185,
+          "line": 183,
+          "end_line": 188,
           "owner": "OAuthButtons",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setPolicy(e.target.checked)}"
         },
         {
-          "line": 196,
-          "end_line": 201,
+          "line": 199,
+          "end_line": 204,
           "owner": "OAuthButtons",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => setNewsletter(e.target.checked)}"
         },
         {
-          "line": 206,
-          "end_line": 212,
+          "line": 209,
+          "end_line": 215,
           "owner": "OAuthButtons",
           "component": "Button",
           "event": "onClick",
           "expression": "{proceed}"
         },
         {
-          "line": 215,
-          "end_line": 215,
+          "line": 218,
+          "end_line": 218,
           "owner": "OAuthButtons",
           "component": "Button",
           "event": "onClick",
@@ -111706,7 +111987,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "33d8b890efe0651b247485f923cbade2bc8839745ac0e64014c2fde1c751e48a",
+      "sha256": "8c77c938d635cc4ad7354577cab5869add3d9c5e21b34cb9d1cd1c4fea5bff90",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -112129,7 +112410,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "7b540061e76ca922d0cbe0901dff2299acaeee481213a9dda0d3a289d5b9b84c",
+      "sha256": "29ce9ddce47de91c8f66377e132e56c11f37cf146b9328c3b41a7ecba1ea86e8",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -256602,17 +256883,17 @@
     }
   },
   "totals": {
-    "imports": 4826,
+    "imports": 4832,
     "routes": 95,
-    "functions": 15362,
+    "functions": 15381,
     "hooks": 2830,
     "http": 119,
     "storage": 244,
-    "events": 455,
-    "jsx_handlers": 1249,
+    "events": 458,
+    "jsx_handlers": 1250,
     "registries": 716,
     "mcp_tools": 7,
-    "files": 912,
+    "files": 913,
     "parse_errors": 0
   }
 }

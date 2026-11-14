@@ -1075,8 +1075,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "sha256": "497214514971015f014eead6ca2bb53dcca6fb8e3fb8863af61c8894c5c9768c",
-      "lines": 981
+      "sha256": "fc99138935fb9c6b54ebfecc68848ae26d969c2231df0dc77396c069c3329f16",
+      "lines": 1010
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -145779,6 +145779,20 @@
     },
     {
       "path": "backend/app/services/download_content.py",
+      "line": 575,
+      "end_line": 575,
+      "owner": "_walls_by_device",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "cell['people']",
+      "symbol": "app.services.download_content.cell['people'].add",
+      "expression": "cell['people'].add(r['person'])",
+      "expression_truncated": false,
+      "expression_chars": 31,
+      "ast_sha256": "043555abb77658c60c21ab33bc14a5628f39ee3266a627427b6e289577ecf4e8"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
       "line": 322,
       "end_line": 322,
       "owner": "load_names",
@@ -145807,6 +145821,22 @@
     },
     {
       "path": "backend/app/services/download_content.py",
+      "line": 577,
+      "end_line": 577,
+      "owner": "_walls_by_device",
+      "conditions": [
+        "r.get('signed_up_after')"
+      ],
+      "operation": "add",
+      "receiver": "cell['signed']",
+      "symbol": "app.services.download_content.cell['signed'].add",
+      "expression": "cell['signed'].add(r['person'])",
+      "expression_truncated": false,
+      "expression_chars": 31,
+      "ast_sha256": "b2d57f8468d7c085fa54e7cedf23597aee5592a70566a6b20329308d5f846ca8"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
       "line": 498,
       "end_line": 505,
       "owner": "collect",
@@ -145821,8 +145851,36 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 574,
+      "end_line": 574,
+      "owner": "_walls_by_device",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 574,
+      "end_line": 574,
+      "owner": "_walls_by_device",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.download_content.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 602,
+      "end_line": 602,
       "owner": "summarize.by_content",
       "conditions": [
         "r['person']"
@@ -145837,8 +145895,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 605,
+      "end_line": 605,
       "owner": "summarize.by_content",
       "conditions": [
         "walls and r['signed_up_after']"
@@ -145951,8 +146009,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 576,
-      "end_line": 576,
+      "line": 599,
+      "end_line": 599,
       "owner": "summarize.by_content",
       "conditions": [],
       "operation": "set",
@@ -145965,8 +146023,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 576,
-      "end_line": 576,
+      "line": 599,
+      "end_line": 599,
       "owner": "summarize.by_content",
       "conditions": [],
       "operation": "set",
@@ -145979,8 +146037,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 864,
-      "end_line": 864,
+      "line": 891,
+      "end_line": 891,
       "owner": "collect_paths",
       "conditions": [],
       "operation": "rollback",
@@ -146039,8 +146097,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 850,
-      "end_line": 856,
+      "line": 877,
+      "end_line": 883,
       "owner": "collect_paths",
       "conditions": [],
       "operation": "execute",
@@ -220463,8 +220521,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 852,
-      "end_line": 852,
+      "line": 879,
+      "end_line": 879,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash.in_",
@@ -220472,8 +220530,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 852,
-      "end_line": 852,
+      "line": 879,
+      "end_line": 879,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -220481,8 +220539,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 853,
-      "end_line": 853,
+      "line": 880,
+      "end_line": 880,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -220490,8 +220548,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 854,
-      "end_line": 854,
+      "line": 881,
+      "end_line": 881,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -220607,8 +220665,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 851,
-      "end_line": 851,
+      "line": 878,
+      "end_line": 878,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash",
@@ -220616,8 +220674,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 851,
-      "end_line": 851,
+      "line": 878,
+      "end_line": 878,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -220625,8 +220683,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 851,
-      "end_line": 851,
+      "line": 878,
+      "end_line": 878,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -220634,8 +220692,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 852,
-      "end_line": 852,
+      "line": 879,
+      "end_line": 879,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.session_id_hash",
@@ -220643,8 +220701,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 852,
-      "end_line": 852,
+      "line": 879,
+      "end_line": 879,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220652,8 +220710,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 853,
-      "end_line": 853,
+      "line": 880,
+      "end_line": 880,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220661,8 +220719,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 854,
-      "end_line": 854,
+      "line": 881,
+      "end_line": 881,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220706,8 +220764,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 851,
-      "end_line": 851,
+      "line": 878,
+      "end_line": 878,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220715,8 +220773,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 851,
-      "end_line": 851,
+      "line": 878,
+      "end_line": 878,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220724,8 +220782,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 851,
-      "end_line": 851,
+      "line": 878,
+      "end_line": 878,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220733,8 +220791,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 852,
-      "end_line": 852,
+      "line": 879,
+      "end_line": 879,
       "owner": "collect_paths",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -298650,7 +298708,25 @@
     {
       "path": "backend/app/services/download_content.py",
       "line": 567,
-      "end_line": 611,
+      "end_line": 579,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_walls_by_device",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 582,
+      "end_line": 587,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_device_line",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 590,
+      "end_line": 635,
       "owner": "<module>",
       "conditions": [],
       "name": "summarize",
@@ -298658,8 +298734,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 618,
-      "end_line": 619,
+      "line": 642,
+      "end_line": 643,
       "owner": "<module>",
       "conditions": [],
       "name": "_n",
@@ -298667,8 +298743,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 622,
-      "end_line": 623,
+      "line": 646,
+      "end_line": 647,
       "owner": "<module>",
       "conditions": [],
       "name": "_pct",
@@ -298676,8 +298752,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 626,
-      "end_line": 636,
+      "line": 650,
+      "end_line": 660,
       "owner": "<module>",
       "conditions": [],
       "name": "_people",
@@ -298685,8 +298761,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 639,
-      "end_line": 641,
+      "line": 663,
+      "end_line": 665,
       "owner": "<module>",
       "conditions": [],
       "name": "_mix",
@@ -298694,8 +298770,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 647,
-      "end_line": 649,
+      "line": 671,
+      "end_line": 673,
       "owner": "<module>",
       "conditions": [],
       "name": "_short",
@@ -298703,8 +298779,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 652,
-      "end_line": 656,
+      "line": 676,
+      "end_line": 680,
       "owner": "<module>",
       "conditions": [],
       "name": "_times",
@@ -298712,8 +298788,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 659,
-      "end_line": 668,
+      "line": 683,
+      "end_line": 692,
       "owner": "<module>",
       "conditions": [],
       "name": "_server_line",
@@ -298721,8 +298797,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 671,
-      "end_line": 723,
+      "line": 695,
+      "end_line": 750,
       "owner": "<module>",
       "conditions": [],
       "name": "format_report",
@@ -298730,8 +298806,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 726,
-      "end_line": 740,
+      "line": 753,
+      "end_line": 767,
       "owner": "<module>",
       "conditions": [],
       "name": "digest_lines",
@@ -298739,8 +298815,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 743,
-      "end_line": 747,
+      "line": 770,
+      "end_line": 774,
       "owner": "<module>",
       "conditions": [],
       "name": "_delta",
@@ -298748,8 +298824,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 750,
-      "end_line": 774,
+      "line": 777,
+      "end_line": 801,
       "owner": "<module>",
       "conditions": [],
       "name": "week_digest_lines",
@@ -298757,8 +298833,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 794,
-      "end_line": 798,
+      "line": 821,
+      "end_line": 825,
       "owner": "<module>",
       "conditions": [],
       "name": "_page_label",
@@ -298766,8 +298842,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 801,
-      "end_line": 828,
+      "line": 828,
+      "end_line": 855,
       "owner": "<module>",
       "conditions": [],
       "name": "build_paths",
@@ -298775,8 +298851,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 831,
-      "end_line": 872,
+      "line": 858,
+      "end_line": 899,
       "owner": "<module>",
       "conditions": [],
       "name": "collect_paths",
@@ -298784,8 +298860,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 875,
-      "end_line": 887,
+      "line": 902,
+      "end_line": 914,
       "owner": "<module>",
       "conditions": [],
       "name": "_paths_sheet_rows",
@@ -298793,8 +298869,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 890,
-      "end_line": 892,
+      "line": 917,
+      "end_line": 919,
       "owner": "<module>",
       "conditions": [],
       "name": "_who",
@@ -298802,8 +298878,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 895,
-      "end_line": 972,
+      "line": 922,
+      "end_line": 1001,
       "owner": "<module>",
       "conditions": [],
       "name": "build_xlsx",
@@ -298811,8 +298887,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 975,
-      "end_line": 980,
+      "line": 1004,
+      "end_line": 1009,
       "owner": "<module>",
       "conditions": [],
       "name": "_server_rows",
@@ -298829,8 +298905,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 572,
-      "end_line": 588,
+      "line": 595,
+      "end_line": 611,
       "owner": "summarize",
       "conditions": [],
       "name": "by_content",
@@ -298838,8 +298914,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 906,
-      "end_line": 914,
+      "line": 933,
+      "end_line": 941,
       "owner": "build_xlsx",
       "conditions": [],
       "name": "sheet",
@@ -344862,16 +344938,24 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 882,
-      "end_line": 882,
+      "line": 909,
+      "end_line": 909,
       "owner": "_paths_sheet_rows",
       "conditions": [],
       "symbol": "app.services.download_content.CHANNEL_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 712,
-      "end_line": 712,
+      "line": 585,
+      "end_line": 585,
+      "owner": "_device_line",
+      "conditions": [],
+      "symbol": "app.services.download_content.DEVICE_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 736,
+      "end_line": 736,
       "owner": "format_report",
       "conditions": [
         "d['by_section']"
@@ -344880,8 +344964,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 714,
-      "end_line": 714,
+      "line": 738,
+      "end_line": 738,
       "owner": "format_report",
       "conditions": [
         "d['by_channel']"
@@ -344890,8 +344974,8 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 718,
-      "end_line": 718,
+      "line": 742,
+      "end_line": 742,
       "owner": "format_report",
       "conditions": [
         "w['by_channel']"
@@ -344900,48 +344984,48 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 881,
-      "end_line": 881,
+      "line": 908,
+      "end_line": 908,
       "owner": "_paths_sheet_rows",
       "conditions": [],
       "symbol": "app.services.analytics_period.MSK_OFFSET"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 936,
-      "end_line": 936,
+      "line": 965,
+      "end_line": 965,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 942,
-      "end_line": 942,
+      "line": 971,
+      "end_line": 971,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 952,
-      "end_line": 952,
+      "line": 981,
+      "end_line": 981,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 954,
-      "end_line": 954,
+      "line": 983,
+      "end_line": 983,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.CHANNEL_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 954,
-      "end_line": 954,
+      "line": 983,
+      "end_line": 983,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.DEVICE_LABELS"
@@ -344974,27 +345058,35 @@
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 950,
-      "end_line": 950,
+      "line": 979,
+      "end_line": 979,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.analytics_period.MSK_OFFSET"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 929,
-      "end_line": 929,
+      "line": 956,
+      "end_line": 956,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.SECTION_LABELS"
     },
     {
       "path": "backend/app/services/download_content.py",
-      "line": 930,
-      "end_line": 930,
+      "line": 957,
+      "end_line": 957,
       "owner": "build_xlsx",
       "conditions": [],
       "symbol": "app.services.download_content.CHANNEL_LABELS"
+    },
+    {
+      "path": "backend/app/services/download_content.py",
+      "line": 959,
+      "end_line": 959,
+      "owner": "build_xlsx",
+      "conditions": [],
+      "symbol": "app.services.download_content.DEVICE_LABELS"
     },
     {
       "path": "backend/app/services/emiss_labor_parser.py",
