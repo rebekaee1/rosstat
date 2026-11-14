@@ -10,6 +10,7 @@ import { cn, formatDate, formatValue } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import { quotedWords } from '../lib/quotedWords';
+import { rowUnit } from '../lib/rowUnit';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
 import { useWorldCountries, useWorldRatingConcepts } from '../lib/worldApi';
@@ -38,7 +39,7 @@ import '../styles/z4s-search.css';
 import '../styles/r6a-search.css';
 import '../styles/r7a-search.css';
 import '../styles/r8a-search.css';
-import { labourNoteKey, labourSuggestions, localSuggestions } from './searchLabourHints';
+import { labourNoteKey, labourSuggestions, localSuggestions, tryTheseExamples } from './searchLabourHints';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
@@ -819,10 +820,12 @@ export default function IndicatorSearch({
                               <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
                               {/* R2-Z4: один ряд подсказок без повторов: курсы валют и домашние темы вместе, без второго заголовка. */}
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">
-                                {[...new Set([
-                                  ...['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => t(key)),
-                                  ...popular.slice(0, 6),
-                                ].map((text) => String(text)))].slice(0, 6).map((example) => (
+                                {tryTheseExamples({
+                                  // Без «Ближайшего» подсказки по региону уже стоят выше (r7a) — здесь их не повторяем.
+                                  regionName: nearestRows.length ? globalSearch.data?.intent?.region_name : '',
+                                  popular,
+                                  t,
+                                }).map((example) => (
                                   <li key={example}>
                                     <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
                                   </li>
@@ -940,7 +943,7 @@ function latestText(item, locale, t) {
   const latest = item?.latest;
   if (!latest || latest.value == null || !Number.isFinite(Number(latest.value))) return '';
   const abs = Math.abs(Number(latest.value));
-  const short = splitUnit(plainUnit(String(item.unit || '').trim(), locale)).short;
+  const short = rowUnit(item.unit, locale);
   // Годовой процент читается как «34,9 % за 2025» (один знак после запятой), остальное как «4,00 %, август 2026».
   const yearPercent = item.frequency === 'annual' && /%/.test(short);
   // Курс мелкой валюты (тенге, сум, вона): «0,18 руб.» теряет цифры, нужны четыре знака — «0,1818 руб.».

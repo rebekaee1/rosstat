@@ -141,3 +141,39 @@ async def attach_region_row_values(db: AsyncSession, results: list[dict]) -> Non
             continue
         if found:
             item["latest"] = {"value": round(found[0], 4), "date": found[1]}
+
+
+# Свежесть (14.11.2026): у «Посевных площадей льна-долгунца» Воронежской области последнее значение 0,00 за 2010 год,
+# а в выдаче он стоял выше рядов за 2024. Ряд со значением 0 и ряд, чьё последнее значение старше свежего в той же
+# выдаче больше чем на STALE_YEARS лет, опускаются ниже — только между местами региональных строк со значением,
+# порядок остальной выдачи и состав не меняются (ничего не выбрасывается).
+STALE_YEARS = 3
+
+
+def _latest_year(item: dict) -> int | None:
+    latest = item.get("latest") or {}
+    try:
+        return int(str(latest.get("date") or "")[:4])
+    except ValueError:
+        return None
+
+
+def demote_stale_region_rows(results: list[dict]) -> list[dict]:
+    slots = [i for i, item in enumerate(results)
+             if item.get("kind") == "region_indicator" and _latest_year(item) is not None]
+    if len(slots) < 2:
+        return results
+    newest = max(_latest_year(results[i]) for i in slots)
+
+    def stale(item: dict) -> bool:
+        value = (item.get("latest") or {}).get("value")
+        return value == 0 or newest - _latest_year(item) > STALE_YEARS
+
+    rows = [results[i] for i in slots]
+    ordered = [row for row in rows if not stale(row)] + [row for row in rows if stale(row)]
+    if ordered == rows:
+        return results
+    out = list(results)
+    for i, row in zip(slots, ordered):
+        out[i] = row
+    return out
