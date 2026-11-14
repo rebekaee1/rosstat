@@ -25,6 +25,7 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import BigInteger, Boolean, Column, Index, Integer, MetaData, Table, and_, case, cast, delete, func, or_, select, text, literal_column, union
+from sqlalchemy.orm import aliased
 from sqlalchemy.schema import CreateIndex, CreateTable, DropTable
 
 from app.config import settings
@@ -273,8 +274,11 @@ async def current_marks(db) -> dict:
     return out
 
 
-def _changed_visitors_select(marks: dict):
-    """Посетители, у которых после отметки (минус запас) появились события, цели или портрет."""
+def _changed_visitors_select(marks: dict, dialect: str = "postgresql"):
+    """Посетители, у которых после отметки (минус запас) появились события, цели или портрет, и посетители,
+    чей десктопный портрет того же МСК-дня совпадает с новым портретом: размер их кластера мог вырасти, а он
+    входит в `bot_score` (сверка на копии боевого 14.11: без этой части 46 из 17 109 сессий расходились
+    только `is_bot`/`bot_score`)."""
     parts = []
     for name, model in _INCREMENT_MODELS.items():
         floor = max(0, int(marks.get(name, 0)) - INCREMENT_SLACK_ROWS[name])
@@ -282,8 +286,21 @@ def _changed_visitors_select(marks: dict):
         parts.append(select(key.label("visitor")).where(model.id > floor, key.isnot(None)))
     at = datetime.fromisoformat(marks["at"]) if marks.get("at") else _utcnow()
     key = _row_key(BehaviorSession)
+    fresh = BehaviorSession.started_at >= at - PORTRAIT_INCREMENT_MARGIN
+    parts.append(select(key.label("visitor")).where(fresh, key.isnot(None)))
+    new = aliased(BehaviorSession)
+    same_fp = [col.is_not_distinct_from(getattr(new, col.key)) for col in _PORTRAIT_FP_COLUMNS]
+    same_cluster = select(new.session_id_hash).where(
+        new.started_at >= at - PORTRAIT_INCREMENT_MARGIN, new.device_type == "desktop",
+        msk_day_expr(new.started_at, dialect) == msk_day_expr(BehaviorSession.started_at, dialect),
+        *same_fp,
+    ).exists()
     parts.append(select(key.label("visitor")).where(
-        BehaviorSession.started_at >= at - PORTRAIT_INCREMENT_MARGIN, key.isnot(None)))
+        BehaviorSession.device_type == "desktop", key.isnot(None),
+        # Кластер считается за МСК-день: портреты старше начала дня самой ранней новой отметки не нужны.
+        BehaviorSession.started_at >= at - PORTRAIT_INCREMENT_MARGIN - timedelta(days=1),
+        same_cluster,
+    ))
     return union(*parts)
 
 
@@ -305,7 +322,7 @@ async def _prepare_session_history(db, since: datetime, until: datetime, tempora
     if changed is not None:
         changed_stage = await _stage(
             db, _temp_table("sessionize_changed_", Column("visitor", visitor_type, primary_key=True)),
-            _changed_visitors_select(changed), temporary)
+            _changed_visitors_select(changed, db.bind.dialect.name), temporary)
         window_visitors = window_visitors.where(key.in_(select(changed_stage.c.visitor)))
     visitors = await _stage(
         db, _temp_table("sessionize_visitors_", Column("visitor", visitor_type, primary_key=True)),
