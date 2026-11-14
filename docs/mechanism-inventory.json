@@ -1760,8 +1760,8 @@
     },
     {
       "path": "backend/app/services/seo_country_figures.py",
-      "sha256": "c5f6d01408b3461f618e7440c5b592f38f7f07fd12ffdd5945bb1db32f42aa21",
-      "lines": 419
+      "sha256": "ce0691b0a4bc7c457225f460c4ee3f75c401cab802c1aa6dc3c8b7061f0d7f75",
+      "lines": 423
     },
     {
       "path": "backend/app/services/seo_crawler.py",
@@ -1805,8 +1805,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "sha256": "343a637c8057616822d78561ef063500484e6659bf716dd180ea86f7801b9583",
-      "lines": 2166
+      "sha256": "0995e65cfffa85a9b10f2169977050437cabc1d99ad74b5558f0d23c4815bfe7",
+      "lines": 2188
     },
     {
       "path": "backend/app/services/seo_regional_year.py",
@@ -1835,8 +1835,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "e072836682818cd96159e8b2041ad317fb74d246ae6c957cfe80110c6f298b85",
-      "lines": 2315
+      "sha256": "1cbd601eafd26dea9973b5e50735f5f5daf25ca7fec7534b787eed810336a70e",
+      "lines": 2343
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
@@ -2150,8 +2150,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "sha256": "9cec261f2d97c68a035d23a6833e8d61952ae4e24af63e8c017946b0a5e2db90",
-      "lines": 254
+      "sha256": "6cb5257fc1d4a73cc4bc82b594c31f17b2e6655f87d9a7d94444565598dac4f3",
+      "lines": 261
     },
     {
       "path": "backend/app/services/world_cards.py",
@@ -2824,6 +2824,11 @@
       "lines": 53
     },
     {
+      "path": "scripts/ssr-link-audit.py",
+      "sha256": "7e64371967aaedfce9f7d21d05af4c71c69d1942ef5a289c1766a886e11138be",
+      "lines": 180
+    },
+    {
       "path": "scripts/sync-local-from-prod.py",
       "sha256": "ce71271a04d7a745fab23a6c26e0dedfcfa6283d44007b81ef922adf51cc5756",
       "lines": 134
@@ -2845,8 +2850,8 @@
     },
     {
       "path": "scripts/world-duplicate-canonical.py",
-      "sha256": "cc3e81c14672d1d1f69866e828d87cc756699399cbf4b7edc40d6cd1799cc852",
-      "lines": 71
+      "sha256": "dbe061513b5d19b0da1a1baaa9b99f89effbb011eef2a9fa4c6e80671f645f8f",
+      "lines": 79
     },
     {
       "path": "scripts/world-title-duplicates.py",
@@ -115568,8 +115573,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1289,
-      "end_line": 1292,
+      "line": 1311,
+      "end_line": 1314,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTH_NAMES_NOM",
@@ -115585,8 +115590,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1293,
-      "end_line": 1296,
+      "line": 1315,
+      "end_line": 1318,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTH_NAMES_GEN",
@@ -115602,8 +115607,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1297,
-      "end_line": 1300,
+      "line": 1319,
+      "end_line": 1322,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTH_NAMES_PREP",
@@ -115619,8 +115624,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1301,
-      "end_line": 1304,
+      "line": 1323,
+      "end_line": 1326,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTH_NAMES_DAT",
@@ -115636,8 +115641,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1305,
-      "end_line": 1308,
+      "line": 1327,
+      "end_line": 1330,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTH_NAMES_EN",
@@ -115653,8 +115658,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1309,
-      "end_line": 1309,
+      "line": 1331,
+      "end_line": 1331,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTH_CASES",
@@ -115704,8 +115709,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1332,
-      "end_line": 1382,
+      "line": 1354,
+      "end_line": 1404,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTHLY_RU",
@@ -133334,6 +133339,256 @@
       "expression_chars": 53,
       "ast_sha256": "a86a60262606d12fc309eb059ab8b5b6cedbd1a8647a26c688034ea5738fbb22",
       "runtime_expansion": false
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 28,
+      "end_line": 28,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "HOSTS",
+      "symbol": "scripts.ssr-link-audit.HOSTS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'en'",
+        "'ru'"
+      ],
+      "entries": [
+        {
+          "key": "'en'",
+          "expression": "'forecasteconomy.com'",
+          "expression_truncated": false,
+          "expression_chars": 21,
+          "ast_sha256": "845e76ef366a3bbfbd207034471530f9dce3f1d7f69c059458d75018b7486c1d"
+        },
+        {
+          "key": "'ru'",
+          "expression": "'ru.forecasteconomy.com'",
+          "expression_truncated": false,
+          "expression_chars": 24,
+          "ast_sha256": "2150ad15886eaee9aed1a8207b584065ad2c97297f19801ceb7455402547598c"
+        }
+      ],
+      "expression": "{'en': 'forecasteconomy.com', 'ru': 'ru.forecasteconomy.com'}",
+      "expression_truncated": false,
+      "expression_chars": 61,
+      "ast_sha256": "45324de066d5b93a5c9a2d571568ab01e6363507fa79c27390d566aab9b70b97",
+      "runtime_expansion": false
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 29,
+      "end_line": 46,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SEEDS",
+      "symbol": "scripts.ssr-link-audit.SEEDS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'home'",
+        "'russia-card'",
+        "'russia-year'",
+        "'russia-month'",
+        "'russia-regions'",
+        "'russia-region'",
+        "'russia-today'",
+        "'world-rating'",
+        "'world-country'",
+        "'world-card'",
+        "'world-year'",
+        "'world-vs'",
+        "'world-regions'",
+        "'world-region'",
+        "'world-country-lfs'",
+        "'world-card-lfs'"
+      ],
+      "entries": [
+        {
+          "key": "'home'",
+          "expression": "'/'",
+          "expression_truncated": false,
+          "expression_chars": 3,
+          "ast_sha256": "2aa6b2ef6e5dfe39f88e5bf3558f3778c1b61b59eae77c349b98c1afe6589ec6"
+        },
+        {
+          "key": "'russia-card'",
+          "expression": "'/russia/indicator/key-rate'",
+          "expression_truncated": false,
+          "expression_chars": 28,
+          "ast_sha256": "0bff2b4910fd1355def4f5dfd71cf87383d1b322bd322dd0936bf2b1943a77f3"
+        },
+        {
+          "key": "'russia-year'",
+          "expression": "'/russia/indicator/key-rate/2024'",
+          "expression_truncated": false,
+          "expression_chars": 33,
+          "ast_sha256": "6c8c2cf3c896a57cb0264a9e646084530324798db353111c9a961db6f1c7d0b1"
+        },
+        {
+          "key": "'russia-month'",
+          "expression": "'/russia/indicator/cpi/2026-05'",
+          "expression_truncated": false,
+          "expression_chars": 31,
+          "ast_sha256": "ac2e6a9ee89ad4470ea4e533754d10f2c31c4adf37d025fd6b09ce3c8a5bc98b"
+        },
+        {
+          "key": "'russia-regions'",
+          "expression": "'/russia/region'",
+          "expression_truncated": false,
+          "expression_chars": 16,
+          "ast_sha256": "031656ad5e8e6306bddf292d977e69096ed360774a68ec5e98475586cf10cbc5"
+        },
+        {
+          "key": "'russia-region'",
+          "expression": "'/russia/region/moskva'",
+          "expression_truncated": false,
+          "expression_chars": 23,
+          "ast_sha256": "7abbaecaa4b49ed239a703309f14daf8a8fe73e7b56bb26f72052eb31cbe54a3"
+        },
+        {
+          "key": "'russia-today'",
+          "expression": "'/russia/today'",
+          "expression_truncated": false,
+          "expression_chars": 15,
+          "ast_sha256": "ae77693d881c8a3ed5614b8c336f83a70f2ed3703013ca569098885fca494270"
+        },
+        {
+          "key": "'world-rating'",
+          "expression": "'/world/rating/unemployment-rate'",
+          "expression_truncated": false,
+          "expression_chars": 33,
+          "ast_sha256": "40dca23dfecbec661c182a858a5ca5a0f87c85cbd9422e03f59620c024077e64"
+        },
+        {
+          "key": "'world-country'",
+          "expression": "'/austria'",
+          "expression_truncated": false,
+          "expression_chars": 10,
+          "ast_sha256": "a44f645c1c68ac41391767386f332d2d70cec6e3c93b085afe40434643e26bfb"
+        },
+        {
+          "key": "'world-card'",
+          "expression": "'/austria/indicator/at-weo-pcpipch'",
+          "expression_truncated": false,
+          "expression_chars": 35,
+          "ast_sha256": "538060915c56b09ab8cb6f3f00169bceb8b33f03875159bb2bc00c3b257f9091"
+        },
+        {
+          "key": "'world-year'",
+          "expression": "'/austria/indicator/at-weo-pcpipch/2023'",
+          "expression_truncated": false,
+          "expression_chars": 40,
+          "ast_sha256": "346fc4b6be1a3dc4807952d71445523f70bb4bbd5a1f64867a4b865cc1baf0ab"
+        },
+        {
+          "key": "'world-vs'",
+          "expression": "'/austria-vs-germany/population'",
+          "expression_truncated": false,
+          "expression_chars": 32,
+          "ast_sha256": "f2b19441dead1bf3cd6f35afe2eb44ecbb593ea9348952febd60c42da791c93c"
+        },
+        {
+          "key": "'world-regions'",
+          "expression": "'/united-states/regions'",
+          "expression_truncated": false,
+          "expression_chars": 24,
+          "ast_sha256": "a2c492db73c11136f1ab549a7023fb1492da443a955bc14835c9745830c5bf9e"
+        },
+        {
+          "key": "'world-region'",
+          "expression": "'/united-states/region/alabama'",
+          "expression_truncated": false,
+          "expression_chars": 31,
+          "ast_sha256": "0c92c1c28135d01e76e4ccef4964758808b68678a6875744081d1428d4b083ac"
+        },
+        {
+          "key": "'world-country-lfs'",
+          "expression": "'/denmark'",
+          "expression_truncated": false,
+          "expression_chars": 10,
+          "ast_sha256": "692ffdf2cdd5be9fee2be8d29ebc5245a09676f5be16ff0548d9488d8788961e"
+        },
+        {
+          "key": "'world-card-lfs'",
+          "expression": "'/denmark/indicator/dk-lfsq_urgaed-y15-74-total-t-pc'",
+          "expression_truncated": false,
+          "expression_chars": 53,
+          "ast_sha256": "8192a51da57306cd28b3708a8259bf9d546b1aaab66a34e34fc2d5162de35db5"
+        }
+      ],
+      "expression": "{'home': '/', 'russia-card': '/russia/indicator/key-rate', 'russia-year': '/russia/indicator/key-rate/2024', 'russia-month': '/russia/indicator/cpi/2026-05', 'russia-regions': '/russia/region', 'russia-region': '/russia/region/moskva', 'russia-today': '/russia/today', 'world-rating': '/world/rating/unemployment-rate', 'world-country': '/austria', 'world-card': '/austria/indicator/at-weo-pcpipch', 'world-year': '/austria/indicator/at-weo-pcpipch/2023', 'world-vs': '/austria-vs-germany/population', 'world-regions': '/united-states/regions', 'world-region': '/united-states/region/alabama', 'world-country-lfs': '/denmark', 'world-card-lfs': '/denmark/indicator/dk-lfsq_urgaed-y15-74-total-t-pc'}",
+      "expression_truncated": false,
+      "expression_chars": 699,
+      "ast_sha256": "2a75d58fe3552144f8718d647e01e26593fe068281ede2f77b4c2b01b6a29503",
+      "runtime_expansion": false
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_HREF",
+      "symbol": "scripts.ssr-link-audit._HREF",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('<a\\\\s[^>]*href=\"([^\"#]+)\"', re.I)",
+      "expression_truncated": false,
+      "expression_chars": 45,
+      "ast_sha256": "8139a4784b99a599b857c753048fa7b1dc578ac65940128db7c24fb6d89a1bd8",
+      "runtime_expansion": true
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_CANONICAL",
+      "symbol": "scripts.ssr-link-audit._CANONICAL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('<link rel=\"canonical\" href=\"([^\"]+)\"')",
+      "expression_truncated": false,
+      "expression_chars": 50,
+      "ast_sha256": "5dbb100a8960b953735a756df31278cfac4c24fb4943ef1155ab9ceac0dfcfb6",
+      "runtime_expansion": true
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_SKIP",
+      "symbol": "scripts.ssr-link-audit._SKIP",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('/api/', '/og/', '/assets/', '/sitemap', '/compare?', '/login', '/register', '/account', '/embed/')",
+      "expression_truncated": false,
+      "expression_chars": 100,
+      "ast_sha256": "fc737991d38be2d20f609fd658be7c05beb04ad3724d346200ba1f6a337ca0c6",
+      "runtime_expansion": false
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 57,
+      "end_line": 57,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_OPENER",
+      "symbol": "scripts.ssr-link-audit._OPENER",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "urllib.request.build_opener(NoRedirect)",
+      "expression_truncated": false,
+      "expression_chars": 39,
+      "ast_sha256": "ac2f89e9504fea09f14216df70cc51412846109b05defae40cc8154a7835c26e",
+      "runtime_expansion": true
     },
     {
       "path": "scripts/sync-local-from-prod.py",
@@ -158634,6 +158889,20 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
+      "line": 617,
+      "end_line": 622,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.seo_regional.set",
+      "expression": "set((await db.execute(select(RegionDataPoint.indicator_id).join(Region, Region.id == RegionDataPoint.region_id).where(RegionDataPoint.indicator_id.in_(ids), Region.kind == 'region').distinct())).scalars().all())",
+      "expression_truncated": false,
+      "expression_chars": 211,
+      "ast_sha256": "55ef71f68f96fe015406ca6ea1f72690a3805b15d7d565cdf2efbbd33c088463"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
       "line": 160,
       "end_line": 160,
       "owner": "_region",
@@ -158662,8 +158931,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 607,
-      "end_line": 611,
+      "line": 628,
+      "end_line": 632,
       "owner": "render_region_rating_html",
       "conditions": [],
       "operation": "execute",
@@ -158676,8 +158945,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 615,
-      "end_line": 619,
+      "line": 636,
+      "end_line": 640,
       "owner": "render_region_rating_html",
       "conditions": [],
       "operation": "execute",
@@ -158690,8 +158959,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 625,
-      "end_line": 634,
+      "line": 646,
+      "end_line": 655,
       "owner": "render_region_rating_html",
       "conditions": [],
       "operation": "execute",
@@ -158704,8 +158973,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1061,
-      "end_line": 1065,
+      "line": 1083,
+      "end_line": 1087,
       "owner": "render_regions_map_html",
       "conditions": [],
       "operation": "execute",
@@ -158718,8 +158987,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1086,
-      "end_line": 1095,
+      "line": 1108,
+      "end_line": 1117,
       "owner": "render_regions_map_html",
       "conditions": [],
       "operation": "execute",
@@ -158732,8 +159001,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1684,
-      "end_line": 1686,
+      "line": 1706,
+      "end_line": 1708,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -158746,8 +159015,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1693,
-      "end_line": 1698,
+      "line": 1715,
+      "end_line": 1720,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -158760,8 +159029,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1703,
-      "end_line": 1708,
+      "line": 1725,
+      "end_line": 1730,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -158774,8 +159043,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1735,
-      "end_line": 1744,
+      "line": 1757,
+      "end_line": 1766,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -158788,8 +159057,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 451,
-      "end_line": 457,
+      "line": 453,
+      "end_line": 459,
       "owner": "_region_demand_links",
       "conditions": [],
       "operation": "execute",
@@ -158802,8 +159071,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 650,
-      "end_line": 655,
+      "line": 671,
+      "end_line": 676,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -158818,8 +159087,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1426,
-      "end_line": 1431,
+      "line": 1448,
+      "end_line": 1453,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -158834,8 +159103,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1525,
-      "end_line": 1531,
+      "line": 1547,
+      "end_line": 1553,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -158850,8 +159119,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1726,
-      "end_line": 1731,
+      "line": 1748,
+      "end_line": 1753,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -158866,8 +159135,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1963,
-      "end_line": 1969,
+      "line": 1985,
+      "end_line": 1991,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -158910,8 +159179,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 306,
-      "end_line": 310,
+      "line": 307,
+      "end_line": 311,
       "owner": "render_region_html",
       "conditions": [],
       "operation": "execute",
@@ -158924,8 +159193,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 324,
-      "end_line": 326,
+      "line": 325,
+      "end_line": 327,
       "owner": "render_region_html",
       "conditions": [],
       "operation": "execute",
@@ -158938,36 +159207,36 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 378,
-      "end_line": 386,
+      "line": 379,
+      "end_line": 387,
       "owner": "render_region_html",
       "conditions": [],
       "operation": "execute",
       "receiver": "db",
       "symbol": "app.services.seo_regional.db.execute",
-      "expression": "db.execute(select(RegionIndicator).where(RegionIndicator.table_code.in_(list(MACRO_BY_TABLE)), RegionIndicator.is_listed.is_(True)).order_by(RegionIndicator.section_num).limit(6))",
+      "expression": "db.execute(select(RegionIndicator).where(RegionIndicator.table_code.in_(list(MACRO_BY_TABLE)), RegionIndicator.is_listed.is_(True)).order_by(RegionIndicator.section_num).limit(12))",
       "expression_truncated": false,
-      "expression_chars": 179,
-      "ast_sha256": "8f83a5fb6ec2f6abc63538b2772f7514874848a77fba9aa2bccfc0266dfb5925"
+      "expression_chars": 180,
+      "ast_sha256": "0d2198ab04d11d227e46786f1f777825d2b27e59713479ab2618f52f6216ba44"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 713,
-      "end_line": 720,
+      "line": 734,
+      "end_line": 741,
       "owner": "render_region_rating_html",
       "conditions": [],
       "operation": "execute",
       "receiver": "db",
       "symbol": "app.services.seo_regional.db.execute",
-      "expression": "db.execute(select(RegionIndicator).where(RegionIndicator.section_num == indicator.section_num, RegionIndicator.code != code, RegionIndicator.is_listed.is_(True)).order_by(RegionIndicator.code).limit(12))",
+      "expression": "db.execute(select(RegionIndicator).where(RegionIndicator.section_num == indicator.section_num, RegionIndicator.code != code, RegionIndicator.is_listed.is_(True)).order_by(RegionIndicator.code).limit(24))",
       "expression_truncated": false,
       "expression_chars": 203,
-      "ast_sha256": "05ef95eaf866e747177e3179b54517b18d3d81ff01240bbc6bf2ed78f9e8c1c1"
+      "ast_sha256": "ce23e15eaf43fbe4d5a75920c5f48f9a4e32d059a93e0bf1d37990fbc3969e76"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 926,
-      "end_line": 930,
+      "line": 948,
+      "end_line": 952,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "operation": "execute",
@@ -158980,8 +159249,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1069,
-      "end_line": 1076,
+      "line": 1091,
+      "end_line": 1098,
       "owner": "render_regions_map_html",
       "conditions": [],
       "operation": "execute",
@@ -158994,8 +159263,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1538,
-      "end_line": 1543,
+      "line": 1560,
+      "end_line": 1565,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -159011,8 +159280,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1588,
-      "end_line": 1595,
+      "line": 1610,
+      "end_line": 1617,
       "owner": "_render_region_indicator_monthly",
       "conditions": [],
       "operation": "execute",
@@ -159025,8 +159294,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 2021,
-      "end_line": 2028,
+      "line": 2043,
+      "end_line": 2050,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -159039,8 +159308,22 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1535,
-      "end_line": 1537,
+      "line": 617,
+      "end_line": 622,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.seo_regional.db.execute",
+      "expression": "db.execute(select(RegionDataPoint.indicator_id).join(Region, Region.id == RegionDataPoint.region_id).where(RegionDataPoint.indicator_id.in_(ids), Region.kind == 'region').distinct())",
+      "expression_truncated": false,
+      "expression_chars": 182,
+      "ast_sha256": "f4daa3db0f8be8a39228ba4167f4961bab4053393246d127cf6b981c57f4cfcf"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1557,
+      "end_line": 1559,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -159056,8 +159339,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1541,
-      "end_line": 1541,
+      "line": 1563,
+      "end_line": 1563,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -159753,8 +160036,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1545,
-      "end_line": 1545,
+      "line": 1565,
+      "end_line": 1565,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "update",
@@ -159767,8 +160050,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1994,
-      "end_line": 2000,
+      "line": 2014,
+      "end_line": 2020,
       "owner": "render_world_indicator_html",
       "conditions": [
         "is_retired_world_hicp(slug, code)"
@@ -159783,8 +160066,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2009,
-      "end_line": 2009,
+      "line": 2029,
+      "end_line": 2029,
       "owner": "render_world_indicator_html",
       "conditions": [
         "freshness_note is not None"
@@ -159930,8 +160213,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1866,
-      "end_line": 1870,
+      "line": 1886,
+      "end_line": 1890,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -159991,8 +160274,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1601,
-      "end_line": 1609,
+      "line": 1621,
+      "end_line": 1629,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "execute",
@@ -164633,8 +164916,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 242,
-      "end_line": 253,
+      "line": 249,
+      "end_line": 260,
       "owner": "primary_has_year",
       "conditions": [],
       "operation": "execute",
@@ -176940,6 +177223,34 @@
       "expression_truncated": false,
       "expression_chars": 34,
       "ast_sha256": "e0698d2b128cc5f1c899803ebbbb5fad47df046f91d92834d5c929c0302ce1cd"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 118,
+      "end_line": 118,
+      "owner": "audit",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "scripts.ssr-link-audit.set",
+      "expression": "set(internal_links(html, host))",
+      "expression_truncated": false,
+      "expression_chars": 31,
+      "ast_sha256": "b28330e872edd6ee35da49fcc70d976fd32f56ad100904106a4a1aa9fbe43975"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "audit",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "sources[link]",
+      "symbol": "scripts.ssr-link-audit.sources[link].add",
+      "expression": "sources[link].add(kind)",
+      "expression_truncated": false,
+      "expression_chars": 23,
+      "ast_sha256": "679ec4c6da3463bdb895dab54443e8a68dc621ff2509c7175496775024199a39"
     },
     {
       "path": "scripts/sync-local-from-prod.py",
@@ -247072,8 +247383,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1393,
-      "end_line": 1393,
+      "line": 1415,
+      "end_line": 1415,
       "owner": "_render_region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -247081,8 +247392,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1394,
-      "end_line": 1394,
+      "line": 1416,
+      "end_line": 1416,
       "owner": "_render_region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247099,8 +247410,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 315,
+      "end_line": 315,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -247108,8 +247419,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 320,
+      "end_line": 320,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -247126,8 +247437,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 315,
+      "end_line": 315,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247135,8 +247446,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 316,
+      "end_line": 316,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year.desc",
@@ -247144,8 +247455,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 319,
+      "end_line": 319,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -247153,8 +247464,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 319,
+      "end_line": 319,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -247162,12 +247473,57 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 319,
+      "end_line": 319,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
       "expression": "RegionDataPoint.value"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 320,
+      "end_line": 320,
+      "owner": "render_region_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1719,
+      "end_line": 1719,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionMonthlyPoint.month",
+      "expression": "RegionMonthlyPoint.month"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1729,
+      "end_line": 1729,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.year",
+      "expression": "RegionDataPoint.year"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 160,
+      "end_line": 160,
+      "owner": "_region",
+      "conditions": [],
+      "symbol": "app.models.Region.slug",
+      "expression": "Region.slug"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 316,
+      "end_line": 316,
+      "owner": "render_region_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.year",
+      "expression": "RegionDataPoint.year"
     },
     {
       "path": "backend/app/services/seo_regional.py",
@@ -247180,44 +247536,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1697,
-      "end_line": 1697,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionMonthlyPoint.month",
-      "expression": "RegionMonthlyPoint.month"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1707,
-      "end_line": 1707,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint.year",
-      "expression": "RegionDataPoint.year"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 160,
-      "end_line": 160,
-      "owner": "_region",
-      "conditions": [],
-      "symbol": "app.models.Region.slug",
-      "expression": "Region.slug"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 315,
-      "end_line": 315,
-      "owner": "render_region_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint.year",
-      "expression": "RegionDataPoint.year"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 319,
+      "end_line": 319,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247225,8 +247545,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 319,
+      "end_line": 319,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247234,17 +247554,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 318,
-      "end_line": 318,
-      "owner": "render_region_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint",
-      "expression": "RegionDataPoint"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 609,
-      "end_line": 609,
+      "line": 630,
+      "end_line": 630,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -247252,8 +247563,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 609,
-      "end_line": 609,
+      "line": 630,
+      "end_line": 630,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -247261,8 +247572,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 639,
+      "end_line": 639,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -247270,8 +247581,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 639,
+      "end_line": 639,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region.kind",
@@ -247279,8 +247590,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 632,
-      "end_line": 632,
+      "line": 653,
+      "end_line": 653,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -247288,8 +247599,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1063,
-      "end_line": 1063,
+      "line": 1085,
+      "end_line": 1085,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -247297,8 +247608,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1063,
-      "end_line": 1063,
+      "line": 1085,
+      "end_line": 1085,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -247306,8 +247617,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1093,
-      "end_line": 1093,
+      "line": 1115,
+      "end_line": 1115,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -247315,8 +247626,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1530,
-      "end_line": 1530,
+      "line": 1552,
+      "end_line": 1552,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -247326,8 +247637,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1685,
-      "end_line": 1685,
+      "line": 1707,
+      "end_line": 1707,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -247335,8 +247646,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1697,
-      "end_line": 1697,
+      "line": 1719,
+      "end_line": 1719,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -247344,8 +247655,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1707,
-      "end_line": 1707,
+      "line": 1729,
+      "end_line": 1729,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247353,8 +247664,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1742,
-      "end_line": 1742,
+      "line": 1764,
+      "end_line": 1764,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -247362,8 +247673,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1968,
-      "end_line": 1968,
+      "line": 1990,
+      "end_line": 1990,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -247409,8 +247720,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 310,
+      "end_line": 310,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_num",
@@ -247418,8 +247729,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 310,
+      "end_line": 310,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -247427,8 +247738,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 316,
+      "end_line": 316,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247436,8 +247747,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 608,
-      "end_line": 608,
+      "line": 629,
+      "end_line": 629,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247445,8 +247756,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 609,
-      "end_line": 609,
+      "line": 630,
+      "end_line": 630,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247454,8 +247765,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 609,
-      "end_line": 609,
+      "line": 630,
+      "end_line": 630,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -247463,8 +247774,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 638,
+      "end_line": 638,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -247472,8 +247783,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 639,
+      "end_line": 639,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247481,8 +247792,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 639,
+      "end_line": 639,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -247490,8 +247801,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 632,
-      "end_line": 632,
+      "line": 653,
+      "end_line": 653,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247499,8 +247810,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 652,
-      "end_line": 652,
+      "line": 673,
+      "end_line": 673,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -247510,8 +247821,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 653,
-      "end_line": 653,
+      "line": 674,
+      "end_line": 674,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -247521,8 +247832,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 654,
-      "end_line": 654,
+      "line": 675,
+      "end_line": 675,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -247532,8 +247843,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 929,
-      "end_line": 929,
+      "line": 951,
+      "end_line": 951,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_num",
@@ -247541,8 +247852,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 929,
-      "end_line": 929,
+      "line": 951,
+      "end_line": 951,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -247550,8 +247861,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1062,
-      "end_line": 1062,
+      "line": 1084,
+      "end_line": 1084,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247559,8 +247870,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1063,
-      "end_line": 1063,
+      "line": 1085,
+      "end_line": 1085,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247568,8 +247879,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1063,
-      "end_line": 1063,
+      "line": 1085,
+      "end_line": 1085,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -247577,8 +247888,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1075,
-      "end_line": 1075,
+      "line": 1097,
+      "end_line": 1097,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -247586,8 +247897,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1093,
-      "end_line": 1093,
+      "line": 1115,
+      "end_line": 1115,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247595,8 +247906,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1428,
-      "end_line": 1428,
+      "line": 1450,
+      "end_line": 1450,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -247606,8 +247917,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1429,
-      "end_line": 1429,
+      "line": 1451,
+      "end_line": 1451,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -247617,8 +247928,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1430,
-      "end_line": 1430,
+      "line": 1452,
+      "end_line": 1452,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -247628,8 +247939,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1530,
-      "end_line": 1530,
+      "line": 1552,
+      "end_line": 1552,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -247639,8 +247950,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1685,
-      "end_line": 1685,
+      "line": 1707,
+      "end_line": 1707,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247648,8 +247959,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1685,
-      "end_line": 1685,
+      "line": 1707,
+      "end_line": 1707,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247657,8 +247968,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1728,
-      "end_line": 1728,
+      "line": 1750,
+      "end_line": 1750,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -247668,8 +247979,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1729,
-      "end_line": 1729,
+      "line": 1751,
+      "end_line": 1751,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -247679,8 +247990,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1730,
-      "end_line": 1730,
+      "line": 1752,
+      "end_line": 1752,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -247690,8 +248001,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1742,
-      "end_line": 1742,
+      "line": 1764,
+      "end_line": 1764,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247699,8 +248010,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1968,
-      "end_line": 1968,
+      "line": 1990,
+      "end_line": 1990,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -247728,8 +248039,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 310,
+      "end_line": 310,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247737,57 +248048,12 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 310,
+      "end_line": 310,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
       "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 609,
-      "end_line": 609,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 617,
-      "end_line": 617,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.Region.id",
-      "expression": "Region.id"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 617,
-      "end_line": 617,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint.region_id",
-      "expression": "RegionDataPoint.region_id"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 628,
-      "end_line": 628,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint.indicator_id",
-      "expression": "RegionDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 629,
-      "end_line": 629,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint.year",
-      "expression": "RegionDataPoint.year"
     },
     {
       "path": "backend/app/services/seo_regional.py",
@@ -247795,13 +248061,58 @@
       "end_line": 630,
       "owner": "render_region_rating_html",
       "conditions": [],
-      "symbol": "app.models.Region.kind",
-      "expression": "Region.kind"
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 638,
+      "end_line": 638,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.Region.id",
+      "expression": "Region.id"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 638,
+      "end_line": 638,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.region_id",
+      "expression": "RegionDataPoint.region_id"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 649,
+      "end_line": 649,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.indicator_id",
+      "expression": "RegionDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 650,
+      "end_line": 650,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.year",
+      "expression": "RegionDataPoint.year"
     },
     {
       "path": "backend/app/services/seo_regional.py",
       "line": 651,
       "end_line": 651,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.Region.kind",
+      "expression": "Region.kind"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 672,
+      "end_line": 672,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -247811,8 +248122,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 652,
-      "end_line": 652,
+      "line": 673,
+      "end_line": 673,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -247822,8 +248133,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 653,
-      "end_line": 653,
+      "line": 674,
+      "end_line": 674,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -247833,8 +248144,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 654,
-      "end_line": 654,
+      "line": 675,
+      "end_line": 675,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -247844,8 +248155,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 929,
-      "end_line": 929,
+      "line": 951,
+      "end_line": 951,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247853,8 +248164,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 929,
-      "end_line": 929,
+      "line": 951,
+      "end_line": 951,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247862,8 +248173,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1063,
-      "end_line": 1063,
+      "line": 1085,
+      "end_line": 1085,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -247871,8 +248182,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1075,
-      "end_line": 1075,
+      "line": 1097,
+      "end_line": 1097,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -247880,8 +248191,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1089,
-      "end_line": 1089,
+      "line": 1111,
+      "end_line": 1111,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -247889,8 +248200,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1090,
-      "end_line": 1090,
+      "line": 1112,
+      "end_line": 1112,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -247898,8 +248209,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1091,
-      "end_line": 1091,
+      "line": 1113,
+      "end_line": 1113,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region.kind",
@@ -247907,8 +248218,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1427,
-      "end_line": 1427,
+      "line": 1449,
+      "end_line": 1449,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -247918,8 +248229,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1428,
-      "end_line": 1428,
+      "line": 1450,
+      "end_line": 1450,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -247929,8 +248240,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1429,
-      "end_line": 1429,
+      "line": 1451,
+      "end_line": 1451,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -247940,8 +248251,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1430,
-      "end_line": 1430,
+      "line": 1452,
+      "end_line": 1452,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -247951,8 +248262,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1540,
-      "end_line": 1540,
+      "line": 1562,
+      "end_line": 1562,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -247963,8 +248274,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1541,
-      "end_line": 1541,
+      "line": 1563,
+      "end_line": 1563,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -247975,8 +248286,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1542,
-      "end_line": 1542,
+      "line": 1564,
+      "end_line": 1564,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -247987,8 +248298,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1695,
-      "end_line": 1695,
+      "line": 1717,
+      "end_line": 1717,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -247996,8 +248307,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1696,
-      "end_line": 1696,
+      "line": 1718,
+      "end_line": 1718,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.region_id",
@@ -248005,8 +248316,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1705,
-      "end_line": 1705,
+      "line": 1727,
+      "end_line": 1727,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -248014,8 +248325,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1706,
-      "end_line": 1706,
+      "line": 1728,
+      "end_line": 1728,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -248023,8 +248334,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1727,
-      "end_line": 1727,
+      "line": 1749,
+      "end_line": 1749,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -248034,8 +248345,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1728,
-      "end_line": 1728,
+      "line": 1750,
+      "end_line": 1750,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -248045,8 +248356,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1729,
-      "end_line": 1729,
+      "line": 1751,
+      "end_line": 1751,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -248056,8 +248367,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1730,
-      "end_line": 1730,
+      "line": 1752,
+      "end_line": 1752,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -248067,8 +248378,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1738,
-      "end_line": 1738,
+      "line": 1760,
+      "end_line": 1760,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -248076,8 +248387,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1739,
-      "end_line": 1739,
+      "line": 1761,
+      "end_line": 1761,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -248085,8 +248396,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1740,
-      "end_line": 1740,
+      "line": 1762,
+      "end_line": 1762,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.Region.kind",
@@ -248103,8 +248414,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 384,
-      "end_line": 384,
+      "line": 385,
+      "end_line": 385,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_num",
@@ -248112,8 +248423,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 638,
+      "end_line": 638,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -248121,8 +248432,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 638,
+      "end_line": 638,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248130,8 +248441,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 648,
+      "end_line": 648,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -248139,8 +248450,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 628,
-      "end_line": 628,
+      "line": 649,
+      "end_line": 649,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248148,26 +248459,26 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 629,
-      "end_line": 629,
+      "line": 650,
+      "end_line": 650,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
       "expression": "RegionDataPoint"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 630,
-      "end_line": 630,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.Region",
-      "expression": "Region"
     },
     {
       "path": "backend/app/services/seo_regional.py",
       "line": 651,
       "end_line": 651,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 672,
+      "end_line": 672,
       "owner": "render_region_rating_html",
       "conditions": [
         "rf"
@@ -248177,8 +248488,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 718,
-      "end_line": 718,
+      "line": 739,
+      "end_line": 739,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -248186,8 +248497,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1088,
-      "end_line": 1088,
+      "line": 1110,
+      "end_line": 1110,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -248195,8 +248506,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1089,
-      "end_line": 1089,
+      "line": 1111,
+      "end_line": 1111,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248204,8 +248515,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1090,
-      "end_line": 1090,
+      "line": 1112,
+      "end_line": 1112,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248213,8 +248524,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1091,
-      "end_line": 1091,
+      "line": 1113,
+      "end_line": 1113,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -248222,8 +248533,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1427,
-      "end_line": 1427,
+      "line": 1449,
+      "end_line": 1449,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "rf"
@@ -248233,8 +248544,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1527,
-      "end_line": 1527,
+      "line": 1549,
+      "end_line": 1549,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248244,8 +248555,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1528,
-      "end_line": 1528,
+      "line": 1550,
+      "end_line": 1550,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248255,8 +248566,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1529,
-      "end_line": 1529,
+      "line": 1551,
+      "end_line": 1551,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248266,8 +248577,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1536,
-      "end_line": 1536,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248278,8 +248589,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1539,
-      "end_line": 1539,
+      "line": 1561,
+      "end_line": 1561,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248290,8 +248601,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1539,
-      "end_line": 1539,
+      "line": 1561,
+      "end_line": 1561,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248302,8 +248613,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1540,
-      "end_line": 1540,
+      "line": 1562,
+      "end_line": 1562,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248314,8 +248625,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1541,
-      "end_line": 1541,
+      "line": 1563,
+      "end_line": 1563,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248326,8 +248637,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1542,
-      "end_line": 1542,
+      "line": 1564,
+      "end_line": 1564,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248338,8 +248649,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1593,
-      "end_line": 1593,
+      "line": 1615,
+      "end_line": 1615,
       "owner": "_render_region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -248347,8 +248658,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1694,
-      "end_line": 1694,
+      "line": 1716,
+      "end_line": 1716,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month",
@@ -248356,8 +248667,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1694,
-      "end_line": 1694,
+      "line": 1716,
+      "end_line": 1716,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.value",
@@ -248365,8 +248676,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1695,
-      "end_line": 1695,
+      "line": 1717,
+      "end_line": 1717,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -248374,8 +248685,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1696,
-      "end_line": 1696,
+      "line": 1718,
+      "end_line": 1718,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -248383,8 +248694,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1704,
-      "end_line": 1704,
+      "line": 1726,
+      "end_line": 1726,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -248392,8 +248703,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1704,
-      "end_line": 1704,
+      "line": 1726,
+      "end_line": 1726,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -248401,26 +248712,26 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1705,
-      "end_line": 1705,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint",
-      "expression": "RegionDataPoint"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1706,
-      "end_line": 1706,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint",
-      "expression": "RegionDataPoint"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
       "line": 1727,
       "end_line": 1727,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1728,
+      "end_line": 1728,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1749,
+      "end_line": 1749,
       "owner": "render_region_indicator_html",
       "conditions": [
         "rf and region.slug != 'russia'"
@@ -248430,8 +248741,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1737,
-      "end_line": 1737,
+      "line": 1759,
+      "end_line": 1759,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -248439,8 +248750,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1738,
-      "end_line": 1738,
+      "line": 1760,
+      "end_line": 1760,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248448,8 +248759,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1739,
-      "end_line": 1739,
+      "line": 1761,
+      "end_line": 1761,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248457,8 +248768,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1740,
-      "end_line": 1740,
+      "line": 1762,
+      "end_line": 1762,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -248466,8 +248777,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1965,
-      "end_line": 1965,
+      "line": 1987,
+      "end_line": 1987,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248477,8 +248788,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1966,
-      "end_line": 1966,
+      "line": 1988,
+      "end_line": 1988,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248488,8 +248799,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1967,
-      "end_line": 1967,
+      "line": 1989,
+      "end_line": 1989,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248499,8 +248810,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 2026,
-      "end_line": 2026,
+      "line": 2048,
+      "end_line": 2048,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -248526,8 +248837,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 309,
+      "end_line": 309,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -248535,8 +248846,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 384,
-      "end_line": 384,
+      "line": 385,
+      "end_line": 385,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -248544,8 +248855,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 454,
-      "end_line": 454,
+      "line": 456,
+      "end_line": 456,
       "owner": "_region_demand_links",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery.url",
@@ -248553,8 +248864,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 637,
+      "end_line": 637,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -248562,8 +248873,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 648,
+      "end_line": 648,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -248571,8 +248882,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 648,
+      "end_line": 648,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -248580,8 +248891,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 718,
-      "end_line": 718,
+      "line": 739,
+      "end_line": 739,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -248589,8 +248900,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 928,
-      "end_line": 928,
+      "line": 950,
+      "end_line": 950,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -248598,8 +248909,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1088,
-      "end_line": 1088,
+      "line": 1110,
+      "end_line": 1110,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -248607,8 +248918,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1088,
-      "end_line": 1088,
+      "line": 1110,
+      "end_line": 1110,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -248616,8 +248927,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1526,
-      "end_line": 1526,
+      "line": 1548,
+      "end_line": 1548,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248627,8 +248938,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1526,
-      "end_line": 1526,
+      "line": 1548,
+      "end_line": 1548,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248638,8 +248949,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1527,
-      "end_line": 1527,
+      "line": 1549,
+      "end_line": 1549,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248649,8 +248960,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1528,
-      "end_line": 1528,
+      "line": 1550,
+      "end_line": 1550,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248660,8 +248971,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1529,
-      "end_line": 1529,
+      "line": 1551,
+      "end_line": 1551,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248671,8 +248982,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1536,
-      "end_line": 1536,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248683,8 +248994,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1536,
-      "end_line": 1536,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248695,8 +249006,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1536,
-      "end_line": 1536,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248707,8 +249018,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1539,
-      "end_line": 1539,
+      "line": 1561,
+      "end_line": 1561,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248719,8 +249030,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1539,
-      "end_line": 1539,
+      "line": 1561,
+      "end_line": 1561,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248731,8 +249042,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1541,
-      "end_line": 1541,
+      "line": 1563,
+      "end_line": 1563,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -248743,8 +249054,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1593,
-      "end_line": 1593,
+      "line": 1615,
+      "end_line": 1615,
       "owner": "_render_region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -248752,8 +249063,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1694,
-      "end_line": 1694,
+      "line": 1716,
+      "end_line": 1716,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -248761,8 +249072,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1694,
-      "end_line": 1694,
+      "line": 1716,
+      "end_line": 1716,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -248770,8 +249081,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1704,
-      "end_line": 1704,
+      "line": 1726,
+      "end_line": 1726,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248779,8 +249090,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1704,
-      "end_line": 1704,
+      "line": 1726,
+      "end_line": 1726,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248788,8 +249099,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1737,
-      "end_line": 1737,
+      "line": 1759,
+      "end_line": 1759,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -248797,8 +249108,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1737,
-      "end_line": 1737,
+      "line": 1759,
+      "end_line": 1759,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -248806,8 +249117,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1964,
-      "end_line": 1964,
+      "line": 1986,
+      "end_line": 1986,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248817,8 +249128,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1964,
-      "end_line": 1964,
+      "line": 1986,
+      "end_line": 1986,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248828,8 +249139,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1965,
-      "end_line": 1965,
+      "line": 1987,
+      "end_line": 1987,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248839,8 +249150,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1966,
-      "end_line": 1966,
+      "line": 1988,
+      "end_line": 1988,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248850,8 +249161,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1967,
-      "end_line": 1967,
+      "line": 1989,
+      "end_line": 1989,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -248861,8 +249172,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 2026,
-      "end_line": 2026,
+      "line": 2048,
+      "end_line": 2048,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -248897,8 +249208,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 308,
+      "end_line": 308,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -248906,8 +249217,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 309,
+      "end_line": 309,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -248915,8 +249226,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 454,
-      "end_line": 454,
+      "line": 456,
+      "end_line": 456,
       "owner": "_region_demand_links",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery",
@@ -248924,8 +249235,26 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 620,
+      "end_line": 620,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.indicator_id.in_",
+      "expression": "RegionDataPoint.indicator_id.in_"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 620,
+      "end_line": 620,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.Region.kind",
+      "expression": "Region.kind"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 637,
+      "end_line": 637,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248933,8 +249262,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 647,
+      "end_line": 647,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -248942,8 +249271,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 647,
+      "end_line": 647,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region.name",
@@ -248951,8 +249280,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 647,
+      "end_line": 647,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -248960,8 +249289,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 648,
+      "end_line": 648,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -248969,8 +249298,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 648,
+      "end_line": 648,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -248978,8 +249307,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 927,
-      "end_line": 927,
+      "line": 949,
+      "end_line": 949,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -248987,8 +249316,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 928,
-      "end_line": 928,
+      "line": 950,
+      "end_line": 950,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -248996,8 +249325,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1073,
-      "end_line": 1073,
+      "line": 1095,
+      "end_line": 1095,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -249005,8 +249334,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1087,
-      "end_line": 1087,
+      "line": 1109,
+      "end_line": 1109,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -249014,8 +249343,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1087,
-      "end_line": 1087,
+      "line": 1109,
+      "end_line": 1109,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region.name",
@@ -249023,8 +249352,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1087,
-      "end_line": 1087,
+      "line": 1109,
+      "end_line": 1109,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -249032,8 +249361,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1088,
-      "end_line": 1088,
+      "line": 1110,
+      "end_line": 1110,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249041,8 +249370,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1088,
-      "end_line": 1088,
+      "line": 1110,
+      "end_line": 1110,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -249050,8 +249379,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1526,
-      "end_line": 1526,
+      "line": 1548,
+      "end_line": 1548,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -249061,8 +249390,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1526,
-      "end_line": 1526,
+      "line": 1548,
+      "end_line": 1548,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -249072,8 +249401,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1536,
-      "end_line": 1536,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -249084,8 +249413,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1536,
-      "end_line": 1536,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -249096,8 +249425,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1536,
-      "end_line": 1536,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "_render_region_indicator_monthly",
       "conditions": [
         "region.kind == 'region' and region.district_slug",
@@ -249108,8 +249437,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1736,
-      "end_line": 1736,
+      "line": 1758,
+      "end_line": 1758,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -249117,8 +249446,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1736,
-      "end_line": 1736,
+      "line": 1758,
+      "end_line": 1758,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -249126,8 +249455,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1737,
-      "end_line": 1737,
+      "line": 1759,
+      "end_line": 1759,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249135,8 +249464,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1737,
-      "end_line": 1737,
+      "line": 1759,
+      "end_line": 1759,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -249144,8 +249473,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1964,
-      "end_line": 1964,
+      "line": 1986,
+      "end_line": 1986,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -249155,8 +249484,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1964,
-      "end_line": 1964,
+      "line": 1986,
+      "end_line": 1986,
       "owner": "render_region_indicator_html",
       "conditions": [
         "region.kind == 'region' and region.district_slug"
@@ -249184,8 +249513,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 309,
+      "end_line": 309,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -249193,8 +249522,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 382,
+      "end_line": 382,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.table_code.in_",
@@ -249202,8 +249531,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 383,
+      "end_line": 383,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -249211,8 +249540,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 457,
+      "end_line": 457,
       "owner": "_region_demand_links",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery.impressions",
@@ -249220,8 +249549,35 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 619,
+      "end_line": 619,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 620,
+      "end_line": 620,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.indicator_id",
+      "expression": "RegionDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 620,
+      "end_line": 620,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 647,
+      "end_line": 647,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249229,8 +249585,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 647,
+      "end_line": 647,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249238,8 +249594,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 647,
+      "end_line": 647,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -249247,8 +249603,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 715,
-      "end_line": 715,
+      "line": 736,
+      "end_line": 736,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_num",
@@ -249256,8 +249612,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 716,
-      "end_line": 716,
+      "line": 737,
+      "end_line": 737,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -249265,8 +249621,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 717,
-      "end_line": 717,
+      "line": 738,
+      "end_line": 738,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -249274,8 +249630,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 928,
-      "end_line": 928,
+      "line": 950,
+      "end_line": 950,
       "owner": "render_region_ratings_hub_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -249283,8 +249639,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1073,
-      "end_line": 1073,
+      "line": 1095,
+      "end_line": 1095,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -249292,8 +249648,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1074,
-      "end_line": 1074,
+      "line": 1096,
+      "end_line": 1096,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -249301,8 +249657,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1087,
-      "end_line": 1087,
+      "line": 1109,
+      "end_line": 1109,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249310,8 +249666,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1087,
-      "end_line": 1087,
+      "line": 1109,
+      "end_line": 1109,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249319,8 +249675,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1087,
-      "end_line": 1087,
+      "line": 1109,
+      "end_line": 1109,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -249328,8 +249684,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1590,
-      "end_line": 1590,
+      "line": 1612,
+      "end_line": 1612,
       "owner": "_render_region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_num",
@@ -249337,8 +249693,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1591,
-      "end_line": 1591,
+      "line": 1613,
+      "end_line": 1613,
       "owner": "_render_region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -249346,8 +249702,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1592,
-      "end_line": 1592,
+      "line": 1614,
+      "end_line": 1614,
       "owner": "_render_region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -249355,8 +249711,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1736,
-      "end_line": 1736,
+      "line": 1758,
+      "end_line": 1758,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249364,8 +249720,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1736,
-      "end_line": 1736,
+      "line": 1758,
+      "end_line": 1758,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -249373,8 +249729,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 2023,
-      "end_line": 2023,
+      "line": 2045,
+      "end_line": 2045,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_num",
@@ -249382,8 +249738,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 2024,
-      "end_line": 2024,
+      "line": 2046,
+      "end_line": 2046,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -249391,8 +249747,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 2025,
-      "end_line": 2025,
+      "line": 2047,
+      "end_line": 2047,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -249400,8 +249756,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 379,
-      "end_line": 379,
+      "line": 380,
+      "end_line": 380,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -249409,8 +249765,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 382,
+      "end_line": 382,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.table_code",
@@ -249418,8 +249774,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 383,
+      "end_line": 383,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -249427,12 +249783,282 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 455,
+      "end_line": 455,
       "owner": "_region_demand_links",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery.url.contains",
       "expression": "WebmasterSearchQuery.url.contains"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 457,
+      "end_line": 457,
+      "owner": "_region_demand_links",
+      "conditions": [],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 619,
+      "end_line": 619,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.Region.id",
+      "expression": "Region.id"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 619,
+      "end_line": 619,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.region_id",
+      "expression": "RegionDataPoint.region_id"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 620,
+      "end_line": 620,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 735,
+      "end_line": 735,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 736,
+      "end_line": 736,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 737,
+      "end_line": 737,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 738,
+      "end_line": 738,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.is_listed",
+      "expression": "RegionIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1096,
+      "end_line": 1096,
+      "owner": "render_regions_map_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1611,
+      "end_line": 1611,
+      "owner": "_render_region_indicator_monthly",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1612,
+      "end_line": 1612,
+      "owner": "_render_region_indicator_monthly",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1613,
+      "end_line": 1613,
+      "owner": "_render_region_indicator_monthly",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1614,
+      "end_line": 1614,
+      "owner": "_render_region_indicator_monthly",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.is_listed",
+      "expression": "RegionIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 2044,
+      "end_line": 2044,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 2045,
+      "end_line": 2045,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 2046,
+      "end_line": 2046,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 2047,
+      "end_line": 2047,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.is_listed",
+      "expression": "RegionIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 382,
+      "end_line": 382,
+      "owner": "render_region_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 383,
+      "end_line": 383,
+      "owner": "render_region_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 454,
+      "end_line": 454,
+      "owner": "_region_demand_links",
+      "conditions": [],
+      "symbol": "app.models.WebmasterSearchQuery.url",
+      "expression": "WebmasterSearchQuery.url"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 455,
+      "end_line": 455,
+      "owner": "_region_demand_links",
+      "conditions": [],
+      "symbol": "app.models.WebmasterSearchQuery.url",
+      "expression": "WebmasterSearchQuery.url"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 618,
+      "end_line": 618,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.indicator_id",
+      "expression": "RegionDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 619,
+      "end_line": 619,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 619,
+      "end_line": 619,
+      "owner": "_with_region_years",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 738,
+      "end_line": 738,
+      "owner": "render_region_rating_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1094,
+      "end_line": 1094,
+      "owner": "render_regions_map_html",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.indicator_id",
+      "expression": "RegionDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1094,
+      "end_line": 1094,
+      "owner": "render_regions_map_html",
+      "conditions": [],
+      "symbol": "app.models.Region.kind",
+      "expression": "Region.kind"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 1614,
+      "end_line": 1614,
+      "owner": "_render_region_indicator_monthly",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 2047,
+      "end_line": 2047,
+      "owner": "render_region_indicator_html",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 454,
+      "end_line": 454,
+      "owner": "_region_demand_links",
+      "conditions": [],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
     },
     {
       "path": "backend/app/services/seo_regional.py",
@@ -249445,224 +250071,17 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 714,
-      "end_line": 714,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 715,
-      "end_line": 715,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 716,
-      "end_line": 716,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 717,
-      "end_line": 717,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.is_listed",
-      "expression": "RegionIndicator.is_listed"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1074,
-      "end_line": 1074,
-      "owner": "render_regions_map_html",
+      "line": 618,
+      "end_line": 618,
+      "owner": "_with_region_years",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
       "expression": "RegionDataPoint"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1589,
-      "end_line": 1589,
-      "owner": "_render_region_indicator_monthly",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1590,
-      "end_line": 1590,
-      "owner": "_render_region_indicator_monthly",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1591,
-      "end_line": 1591,
-      "owner": "_render_region_indicator_monthly",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1592,
-      "end_line": 1592,
-      "owner": "_render_region_indicator_monthly",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.is_listed",
-      "expression": "RegionIndicator.is_listed"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 2022,
-      "end_line": 2022,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 2023,
-      "end_line": 2023,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 2024,
-      "end_line": 2024,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 2025,
-      "end_line": 2025,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.is_listed",
-      "expression": "RegionIndicator.is_listed"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 381,
-      "end_line": 381,
-      "owner": "render_region_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 382,
-      "end_line": 382,
-      "owner": "render_region_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 452,
-      "end_line": 452,
-      "owner": "_region_demand_links",
-      "conditions": [],
-      "symbol": "app.models.WebmasterSearchQuery.url",
-      "expression": "WebmasterSearchQuery.url"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 453,
-      "end_line": 453,
-      "owner": "_region_demand_links",
-      "conditions": [],
-      "symbol": "app.models.WebmasterSearchQuery.url",
-      "expression": "WebmasterSearchQuery.url"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 717,
-      "end_line": 717,
-      "owner": "render_region_rating_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1072,
-      "end_line": 1072,
-      "owner": "render_regions_map_html",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint.indicator_id",
-      "expression": "RegionDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1072,
-      "end_line": 1072,
-      "owner": "render_regions_map_html",
-      "conditions": [],
-      "symbol": "app.models.Region.kind",
-      "expression": "Region.kind"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1592,
-      "end_line": 1592,
-      "owner": "_render_region_indicator_monthly",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 2025,
-      "end_line": 2025,
-      "owner": "render_region_indicator_html",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 452,
-      "end_line": 452,
-      "owner": "_region_demand_links",
-      "conditions": [],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 453,
-      "end_line": 453,
-      "owner": "_region_demand_links",
-      "conditions": [],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/seo_regional.py",
-      "line": 1071,
-      "end_line": 1071,
+      "line": 1093,
+      "end_line": 1093,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249670,8 +250089,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1072,
-      "end_line": 1072,
+      "line": 1094,
+      "end_line": 1094,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -249679,8 +250098,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1072,
-      "end_line": 1072,
+      "line": 1094,
+      "end_line": 1094,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249688,8 +250107,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 452,
-      "end_line": 452,
+      "line": 454,
+      "end_line": 454,
       "owner": "_region_demand_links",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery.impressions",
@@ -249697,8 +250116,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1071,
-      "end_line": 1071,
+      "line": 1093,
+      "end_line": 1093,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -249706,8 +250125,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1071,
-      "end_line": 1071,
+      "line": 1093,
+      "end_line": 1093,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -249715,8 +250134,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 452,
-      "end_line": 452,
+      "line": 454,
+      "end_line": 454,
       "owner": "_region_demand_links",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery",
@@ -249724,8 +250143,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1070,
-      "end_line": 1070,
+      "line": 1092,
+      "end_line": 1092,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -249733,8 +250152,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1071,
-      "end_line": 1071,
+      "line": 1093,
+      "end_line": 1093,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -249742,8 +250161,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1071,
-      "end_line": 1071,
+      "line": 1093,
+      "end_line": 1093,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -249751,8 +250170,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1070,
-      "end_line": 1070,
+      "line": 1092,
+      "end_line": 1092,
       "owner": "render_regions_map_html",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -251710,8 +252129,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1537,
-      "end_line": 1537,
+      "line": 1557,
+      "end_line": 1557,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -251782,8 +252201,17 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1514,
-      "end_line": 1514,
+      "line": 1504,
+      "end_line": 1504,
+      "owner": "render_world_country_html._redirects_to_listed",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1534,
+      "end_line": 1534,
       "owner": "render_world_country_html._key_sort",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -251791,8 +252219,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1524,
-      "end_line": 1524,
+      "line": 1544,
+      "end_line": 1544,
       "owner": "render_world_country_html._is_curated_card",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -251854,8 +252282,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1572,
-      "end_line": 1572,
+      "line": 1592,
+      "end_line": 1592,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -251944,8 +252372,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1869,
-      "end_line": 1869,
+      "line": 1889,
+      "end_line": 1889,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -252029,8 +252457,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1869,
-      "end_line": 1869,
+      "line": 1889,
+      "end_line": 1889,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -252239,8 +252667,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1868,
-      "end_line": 1868,
+      "line": 1888,
+      "end_line": 1888,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -252361,8 +252789,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1607,
-      "end_line": 1607,
+      "line": 1627,
+      "end_line": 1627,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -252370,8 +252798,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1607,
-      "end_line": 1607,
+      "line": 1627,
+      "end_line": 1627,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -252379,8 +252807,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1867,
-      "end_line": 1867,
+      "line": 1887,
+      "end_line": 1887,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -252388,8 +252816,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1867,
-      "end_line": 1867,
+      "line": 1887,
+      "end_line": 1887,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -252397,8 +252825,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1868,
-      "end_line": 1868,
+      "line": 1888,
+      "end_line": 1888,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -252598,8 +253026,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1607,
-      "end_line": 1607,
+      "line": 1627,
+      "end_line": 1627,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -252607,8 +253035,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1607,
-      "end_line": 1607,
+      "line": 1627,
+      "end_line": 1627,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -252616,8 +253044,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1867,
-      "end_line": 1867,
+      "line": 1887,
+      "end_line": 1887,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -252625,8 +253053,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1867,
-      "end_line": 1867,
+      "line": 1887,
+      "end_line": 1887,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -253026,8 +253454,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1604,
-      "end_line": 1604,
+      "line": 1624,
+      "end_line": 1624,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -253035,8 +253463,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1605,
-      "end_line": 1605,
+      "line": 1625,
+      "end_line": 1625,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -253147,8 +253575,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1602,
-      "end_line": 1602,
+      "line": 1622,
+      "end_line": 1622,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -253156,8 +253584,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1604,
-      "end_line": 1604,
+      "line": 1624,
+      "end_line": 1624,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -253165,8 +253593,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1605,
-      "end_line": 1605,
+      "line": 1625,
+      "end_line": 1625,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -253230,8 +253658,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1604,
-      "end_line": 1604,
+      "line": 1624,
+      "end_line": 1624,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -270417,8 +270845,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 253,
+      "end_line": 253,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -270426,8 +270854,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 254,
+      "end_line": 254,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -270435,8 +270863,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 255,
+      "end_line": 255,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -270444,8 +270872,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 256,
+      "end_line": 256,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -270453,8 +270881,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 257,
+      "end_line": 257,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -270588,8 +271016,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 251,
+      "end_line": 251,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -270597,8 +271025,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 253,
+      "end_line": 253,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -270606,8 +271034,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 254,
+      "end_line": 254,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -270615,8 +271043,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 255,
+      "end_line": 255,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -270624,8 +271052,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 256,
+      "end_line": 256,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -270633,8 +271061,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 257,
+      "end_line": 257,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -270750,8 +271178,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 251,
+      "end_line": 251,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.id",
@@ -270759,8 +271187,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 251,
+      "end_line": 251,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -270768,8 +271196,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 255,
+      "end_line": 255,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -270777,8 +271205,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 250,
+      "end_line": 250,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.id",
@@ -270786,8 +271214,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 251,
+      "end_line": 251,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -270795,8 +271223,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 251,
+      "end_line": 251,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -270804,8 +271232,8 @@
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 250,
+      "end_line": 250,
       "owner": "primary_has_year",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -320881,7 +321309,7 @@
     {
       "path": "backend/app/services/seo_country_figures.py",
       "line": 320,
-      "end_line": 389,
+      "end_line": 393,
       "owner": "<module>",
       "conditions": [],
       "name": "_figure_sentence",
@@ -320889,8 +321317,8 @@
     },
     {
       "path": "backend/app/services/seo_country_figures.py",
-      "line": 392,
-      "end_line": 410,
+      "line": 396,
+      "end_line": 414,
       "owner": "<module>",
       "conditions": [],
       "name": "render_key_figures_html",
@@ -320898,8 +321326,8 @@
     },
     {
       "path": "backend/app/services/seo_country_figures.py",
-      "line": 413,
-      "end_line": 419,
+      "line": 417,
+      "end_line": 423,
       "owner": "<module>",
       "conditions": [],
       "name": "render_bootstrap_head",
@@ -321673,7 +322101,7 @@
     {
       "path": "backend/app/services/seo_regional.py",
       "line": 204,
-      "end_line": 296,
+      "end_line": 297,
       "owner": "<module>",
       "conditions": [],
       "name": "render_regions_home_html",
@@ -321681,8 +322109,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 299,
-      "end_line": 441,
+      "line": 300,
+      "end_line": 443,
       "owner": "<module>",
       "conditions": [],
       "name": "render_region_html",
@@ -321690,8 +322118,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 444,
-      "end_line": 493,
+      "line": 446,
+      "end_line": 495,
       "owner": "<module>",
       "conditions": [],
       "name": "_region_demand_links",
@@ -321699,8 +322127,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 496,
-      "end_line": 602,
+      "line": 498,
+      "end_line": 604,
       "owner": "<module>",
       "conditions": [],
       "name": "_rating_copy",
@@ -321708,8 +322136,17 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 605,
-      "end_line": 921,
+      "line": 607,
+      "end_line": 623,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_with_region_years",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_regional.py",
+      "line": 626,
+      "end_line": 943,
       "owner": "<module>",
       "conditions": [],
       "name": "render_region_rating_html",
@@ -321717,8 +322154,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 924,
-      "end_line": 981,
+      "line": 946,
+      "end_line": 1003,
       "owner": "<module>",
       "conditions": [],
       "name": "render_region_ratings_hub_html",
@@ -321726,8 +322163,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 984,
-      "end_line": 1286,
+      "line": 1006,
+      "end_line": 1308,
       "owner": "<module>",
       "conditions": [],
       "name": "render_regions_map_html",
@@ -321735,8 +322172,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1312,
-      "end_line": 1321,
+      "line": 1334,
+      "end_line": 1343,
       "owner": "<module>",
       "conditions": [],
       "name": "_month_label",
@@ -321744,8 +322181,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1324,
-      "end_line": 1326,
+      "line": 1346,
+      "end_line": 1348,
       "owner": "<module>",
       "conditions": [],
       "name": "_month_label_nom",
@@ -321753,8 +322190,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1385,
-      "end_line": 1387,
+      "line": 1407,
+      "end_line": 1409,
       "owner": "<module>",
       "conditions": [],
       "name": "_mt",
@@ -321762,8 +322199,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1390,
-      "end_line": 1675,
+      "line": 1412,
+      "end_line": 1697,
       "owner": "<module>",
       "conditions": [],
       "name": "_render_region_indicator_monthly",
@@ -321771,8 +322208,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1678,
-      "end_line": 2166,
+      "line": 1700,
+      "end_line": 2188,
       "owner": "<module>",
       "conditions": [],
       "name": "render_region_indicator_html",
@@ -321780,8 +322217,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 657,
-      "end_line": 658,
+      "line": 678,
+      "end_line": 679,
       "owner": "render_region_rating_html",
       "conditions": [],
       "name": "_vu",
@@ -321789,8 +322226,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1108,
-      "end_line": 1109,
+      "line": 1130,
+      "end_line": 1131,
       "owner": "render_regions_map_html",
       "conditions": [],
       "name": "_vu",
@@ -323475,7 +323912,7 @@
     {
       "path": "backend/app/services/seo_world.py",
       "line": 1460,
-      "end_line": 1848,
+      "end_line": 1868,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_country_html",
@@ -323483,8 +323920,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1851,
-      "end_line": 2315,
+      "line": 1871,
+      "end_line": 2343,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_html",
@@ -323546,8 +323983,17 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1514,
-      "end_line": 1522,
+      "line": 1504,
+      "end_line": 1508,
+      "owner": "render_world_country_html",
+      "conditions": [],
+      "name": "_redirects_to_listed",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1534,
+      "end_line": 1542,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_key_sort",
@@ -323555,8 +324001,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1524,
-      "end_line": 1528,
+      "line": 1544,
+      "end_line": 1548,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_is_curated_card",
@@ -323564,8 +324010,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1954,
-      "end_line": 1955,
+      "line": 1974,
+      "end_line": 1975,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "name": "_fmt_series",
@@ -323573,8 +324019,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2159,
-      "end_line": 2168,
+      "line": 2187,
+      "end_line": 2196,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "name": "_title_with",
@@ -332480,13 +332926,22 @@
       "end_line": 230,
       "owner": "<module>",
       "conditions": [],
+      "name": "non_primary_codes",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_canonical.py",
+      "line": 233,
+      "end_line": 237,
+      "owner": "<module>",
+      "conditions": [],
       "name": "primary_code",
       "kind": "FunctionDef"
     },
     {
       "path": "backend/app/services/world_canonical.py",
-      "line": 234,
-      "end_line": 254,
+      "line": 241,
+      "end_line": 261,
       "owner": "<module>",
       "conditions": [],
       "name": "primary_has_year",
@@ -341999,6 +342454,78 @@
       "kind": "FunctionDef"
     },
     {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 52,
+      "end_line": 54,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "NoRedirect",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 60,
+      "end_line": 73,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "fetch",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 76,
+      "end_line": 87,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "internal_links",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 90,
+      "end_line": 105,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "pattern",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 108,
+      "end_line": 154,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "audit",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 157,
+      "end_line": 176,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "main",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 53,
+      "end_line": 54,
+      "owner": "NoRedirect",
+      "conditions": [],
+      "name": "redirect_request",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 122,
+      "end_line": 128,
+      "owner": "audit",
+      "conditions": [],
+      "name": "check",
+      "kind": "FunctionDef"
+    },
+    {
       "path": "scripts/sync-local-from-prod.py",
       "line": 52,
       "end_line": 54,
@@ -342154,7 +342681,16 @@
     {
       "path": "scripts/world-duplicate-canonical.py",
       "line": 58,
-      "end_line": 67,
+      "end_line": 59,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "wc_pairs",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/world-duplicate-canonical.py",
+      "line": 62,
+      "end_line": 75,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -364334,80 +364870,80 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1309,
-      "end_line": 1309,
+      "line": 1331,
+      "end_line": 1331,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.seo_regional._MONTH_NAMES_NOM"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1309,
-      "end_line": 1309,
+      "line": 1331,
+      "end_line": 1331,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.seo_regional._MONTH_NAMES_GEN"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1309,
-      "end_line": 1309,
+      "line": 1331,
+      "end_line": 1331,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.seo_regional._MONTH_NAMES_PREP"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1309,
-      "end_line": 1309,
+      "line": 1331,
+      "end_line": 1331,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.seo_regional._MONTH_NAMES_DAT"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1320,
-      "end_line": 1320,
+      "line": 1342,
+      "end_line": 1342,
       "owner": "_month_label",
       "conditions": [],
       "symbol": "app.services.seo_regional._MONTH_NAMES_EN"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 742,
-      "end_line": 742,
+      "line": 764,
+      "end_line": 764,
       "owner": "render_region_rating_html",
       "conditions": [],
       "symbol": "app.services.seo_regional.MACRO_BY_TABLE"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1320,
-      "end_line": 1320,
+      "line": 1342,
+      "end_line": 1342,
       "owner": "_month_label",
       "conditions": [],
       "symbol": "app.services.seo_regional._MONTH_CASES"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1386,
-      "end_line": 1386,
+      "line": 1408,
+      "end_line": 1408,
       "owner": "_mt",
       "conditions": [],
       "symbol": "app.services.seo_regional._MONTHLY_RU"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 1941,
-      "end_line": 1941,
+      "line": 1963,
+      "end_line": 1963,
       "owner": "render_region_indicator_html",
       "conditions": [],
       "symbol": "app.services.seo_regional.MACRO_BY_TABLE"
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 474,
+      "end_line": 474,
       "owner": "_region_demand_links",
       "conditions": [
         "len(demand_codes) < 8"
@@ -364424,8 +364960,8 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 382,
+      "end_line": 382,
       "owner": "render_region_html",
       "conditions": [],
       "symbol": "app.services.seo_regional.MACRO_BY_TABLE"
@@ -364888,8 +365424,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1512,
-      "end_line": 1512,
+      "line": 1532,
+      "end_line": 1532,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.services.seo_world._KEY_CATEGORY_ORDER"
@@ -372531,6 +373067,56 @@
       "owner": "audit_html",
       "conditions": [],
       "symbol": "scripts.seo-audit.TRACKING_PARAMS"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 78,
+      "end_line": 78,
+      "owner": "internal_links",
+      "conditions": [],
+      "symbol": "scripts.ssr-link-audit._HREF"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 110,
+      "end_line": 110,
+      "owner": "audit",
+      "conditions": [],
+      "symbol": "scripts.ssr-link-audit.HOSTS"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 112,
+      "end_line": 112,
+      "owner": "audit",
+      "conditions": [],
+      "symbol": "scripts.ssr-link-audit.SEEDS"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 68,
+      "end_line": 68,
+      "owner": "fetch",
+      "conditions": [],
+      "symbol": "scripts.ssr-link-audit._OPENER"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 84,
+      "end_line": 84,
+      "owner": "internal_links",
+      "conditions": [],
+      "symbol": "scripts.ssr-link-audit._SKIP"
+    },
+    {
+      "path": "scripts/ssr-link-audit.py",
+      "line": 126,
+      "end_line": 126,
+      "owner": "audit.check",
+      "conditions": [
+        "status == 200"
+      ],
+      "symbol": "scripts.ssr-link-audit._CANONICAL"
     },
     {
       "path": "scripts/sync-local-from-prod.py",

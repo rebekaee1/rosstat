@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **61**
 - Middleware: **6**
-- Registry declarations: **1434**
-- Registry references: **2699**
+- Registry declarations: **1440**
+- Registry references: **2705**
 - Migration operations: **490**
-- Candidate effects: **2969**
+- Candidate effects: **2973**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -3054,13 +3054,13 @@ Relationships: `[]`
 | app.services.seo_index_control._INDEXED_PREFIXES | Tuple | sequence/source expression | [backend/app/services/seo_index_control.py:44](../backend/app/services/seo_index_control.py#L44) |
 | app.services.seo_indicator_month._EN_MONTHS | Tuple | sequence/source expression | [backend/app/services/seo_indicator_month.py:50](../backend/app/services/seo_indicator_month.py#L50) |
 | app.services.seo_regional.MACRO_BY_TABLE | Dict | '1.1', '3.4', '2.10.1', '20.1', '8.1', '10.1', '16.20', '16.21', '16.22' | [backend/app/services/seo_regional.py:49](../backend/app/services/seo_regional.py#L49) |
-| app.services.seo_regional._MONTH_NAMES_NOM | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1289](../backend/app/services/seo_regional.py#L1289) |
-| app.services.seo_regional._MONTH_NAMES_GEN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1293](../backend/app/services/seo_regional.py#L1293) |
-| app.services.seo_regional._MONTH_NAMES_PREP | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1297](../backend/app/services/seo_regional.py#L1297) |
-| app.services.seo_regional._MONTH_NAMES_DAT | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1301](../backend/app/services/seo_regional.py#L1301) |
-| app.services.seo_regional._MONTH_NAMES_EN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1305](../backend/app/services/seo_regional.py#L1305) |
-| app.services.seo_regional._MONTH_CASES | Dict | 'nom', 'gen', 'prep', 'dat' | [backend/app/services/seo_regional.py:1309](../backend/app/services/seo_regional.py#L1309) |
-| app.services.seo_regional._MONTHLY_RU | Dict | 'p1', 'p1_mom', 'p1_yoy', 'p2', 'p3', 'rel_level', 'rel_above', 'rel_below', 'extremes', 'checkpoints_h2', 'faq_value_q', 'faq_value_a', 'faq_change_q', 'faq_change_a', 'faq_change_flat', 'faq_source_q', 'faq_source_a', 'faq_h2', 'neighbors_h2', 'table_h2', 'th_month', 'th_value', 'alt', 'caption', 'siblings_h2', 'title', 'description', 'dataset_description', 'creator', 'image_name', 'source_h2', 'source_p', 'unit_fallback', 'keywords' | [backend/app/services/seo_regional.py:1332](../backend/app/services/seo_regional.py#L1332) |
+| app.services.seo_regional._MONTH_NAMES_NOM | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1311](../backend/app/services/seo_regional.py#L1311) |
+| app.services.seo_regional._MONTH_NAMES_GEN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1315](../backend/app/services/seo_regional.py#L1315) |
+| app.services.seo_regional._MONTH_NAMES_PREP | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1319](../backend/app/services/seo_regional.py#L1319) |
+| app.services.seo_regional._MONTH_NAMES_DAT | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1323](../backend/app/services/seo_regional.py#L1323) |
+| app.services.seo_regional._MONTH_NAMES_EN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1327](../backend/app/services/seo_regional.py#L1327) |
+| app.services.seo_regional._MONTH_CASES | Dict | 'nom', 'gen', 'prep', 'dat' | [backend/app/services/seo_regional.py:1331](../backend/app/services/seo_regional.py#L1331) |
+| app.services.seo_regional._MONTHLY_RU | Dict | 'p1', 'p1_mom', 'p1_yoy', 'p2', 'p3', 'rel_level', 'rel_above', 'rel_below', 'extremes', 'checkpoints_h2', 'faq_value_q', 'faq_value_a', 'faq_change_q', 'faq_change_a', 'faq_change_flat', 'faq_source_q', 'faq_source_a', 'faq_h2', 'neighbors_h2', 'table_h2', 'th_month', 'th_value', 'alt', 'caption', 'siblings_h2', 'title', 'description', 'dataset_description', 'creator', 'image_name', 'source_h2', 'source_p', 'unit_fallback', 'keywords' | [backend/app/services/seo_regional.py:1354](../backend/app/services/seo_regional.py#L1354) |
 | app.services.seo_regional_year._ALLOWED_REGION_KINDS | Tuple | sequence/source expression | [backend/app/services/seo_regional_year.py:65](../backend/app/services/seo_regional_year.py#L65) |
 | app.services.seo_regional_year._YEAR_TEMPLATES_EN | Dict | 'h1', 'alt', 'caption', 'desc_main', 'change_vs', 'change_vs_pct', 'rf_h2', 'rf_para', 'rf_note', 'rank_h2', 'rank_full_link', 'rank_sentence', 'dyn_h2_by_year', 'dyn_h2_neighbors', 'checkpoints_h2', 'checkpoint_item', 'decade_h2', 'cta_h2', 'cta_link', 'cta_p', 'other_years_h2', 'other_year_link', 'trail_last', 'rank_desc', 'rank_desc_none', 'jsonld_name', 'keywords' | [backend/app/services/seo_regional_year.py:75](../backend/app/services/seo_regional_year.py#L75) |
 | app.services.seo_renderer._SENTENCE_END | Call | computed source expression | [backend/app/services/seo_renderer.py:177](../backend/app/services/seo_renderer.py#L177) |
@@ -3535,6 +3535,12 @@ Relationships: `[]`
 | scripts.search-history-audit.TABLES | List | sequence/source expression | [scripts/search-history-audit.py:27](../scripts/search-history-audit.py#L27) |
 | scripts.seo-audit.TRACKING_PARAMS | Set | sequence/source expression | [scripts/seo-audit.py:21](../scripts/seo-audit.py#L21) |
 | scripts.seo-audit.SITEMAP_NS | Dict | 'sm' | [scripts/seo-audit.py:100](../scripts/seo-audit.py#L100) |
+| scripts.ssr-link-audit.HOSTS | Dict | 'en', 'ru' | [scripts/ssr-link-audit.py:28](../scripts/ssr-link-audit.py#L28) |
+| scripts.ssr-link-audit.SEEDS | Dict | 'home', 'russia-card', 'russia-year', 'russia-month', 'russia-regions', 'russia-region', 'russia-today', 'world-rating', 'world-country', 'world-card', 'world-year', 'world-vs', 'world-regions', 'world-region', 'world-country-lfs', 'world-card-lfs' | [scripts/ssr-link-audit.py:29](../scripts/ssr-link-audit.py#L29) |
+| scripts.ssr-link-audit._HREF | Call | computed source expression | [scripts/ssr-link-audit.py:47](../scripts/ssr-link-audit.py#L47) |
+| scripts.ssr-link-audit._CANONICAL | Call | computed source expression | [scripts/ssr-link-audit.py:48](../scripts/ssr-link-audit.py#L48) |
+| scripts.ssr-link-audit._SKIP | Tuple | sequence/source expression | [scripts/ssr-link-audit.py:49](../scripts/ssr-link-audit.py#L49) |
+| scripts.ssr-link-audit._OPENER | Call | computed source expression | [scripts/ssr-link-audit.py:57](../scripts/ssr-link-audit.py#L57) |
 | scripts.sync-local-from-prod._HERE | Call | computed source expression | [scripts/sync-local-from-prod.py:32](../scripts/sync-local-from-prod.py#L32) |
 | scripts.sync-local-from-prod._CANDIDATES | List | sequence/source expression | [scripts/sync-local-from-prod.py:33](../scripts/sync-local-from-prod.py#L33) |
 | scripts.verify-data-loaded.KNOWN_STRUCTURAL_EMPTY | Set | sequence/source expression | [scripts/verify-data-loaded.py:47](../scripts/verify-data-loaded.py#L47) |

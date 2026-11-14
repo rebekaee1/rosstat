@@ -382,7 +382,11 @@ def _figure_sentence(figure: dict, slug: str, locale: str) -> str | None:
             value=escape(ago_value),
         )
 
-    href = paths.indicator(slug, str(figure.get("indicator_code") or ""))
+    # Неосновная версия точного дубля (world_canonical) — ссылка на основную (аудит ссылок 14.11.2026).
+    from app.services.world_canonical import primary_code
+
+    code = str(figure.get("indicator_code") or "")
+    href = paths.indicator(slug, primary_code(slug, code) or code)
     return (
         f'<li><a href="{escape(href)}"><strong>{escape(str(name))}</strong></a>: '
         f"<strong>{escape(shown)}</strong>, {escape(caption)}.{ago_text}</li>"

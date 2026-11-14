@@ -44,7 +44,7 @@ async def run() -> dict:
             for r in sorted(g, key=wc.primary_key)[1:] if (r.slug, r.code) in kept
         )
         searched_rows = (await db.execute(text("SELECT count(*) FROM gsc_page_daily"))).scalar()
-    return {
+    return mapping, {
         "candidate_groups": len(groups),
         "identical_groups": identical,
         "non_primary_cards": len(excluded),
@@ -55,11 +55,19 @@ async def run() -> dict:
     }
 
 
+def wc_pairs(mapping: dict) -> list:
+    return [(slug, code) for slug, codes in mapping.items() for code in codes]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", type=Path)
+    parser.add_argument("--map-json", type=Path, help="записать сам список (как world-canonical.json генерации)")
     args = parser.parse_args()
-    report = asyncio.run(run())
+    mapping, report = asyncio.run(run())
+    if args.map_json:
+        args.map_json.write_text(json.dumps({"pairs": len(wc_pairs(mapping)), "map": mapping}, ensure_ascii=False),
+                                 encoding="utf-8")
     for key, value in report.items():
         print(f"{key}: {value}")
     if args.json:

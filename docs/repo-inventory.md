@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2335  ·  **Строк:** 1 459 187  ·  **Токенов (≈):** 13 948 679
+**Файлов:** 2337  ·  **Строк:** 1 460 100  ·  **Токенов (≈):** 13 957 679
 
 ## По верхним папкам
 
@@ -16,19 +16,19 @@
 | `(root)` | 8 | 2 855 | 66 166 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 977 | 334 285 | 3 675 963 |
+| `backend` | 978 | 334 417 | 3 677 560 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 461 | 23 358 |
-| `docs` | 147 | 908 969 | 7 825 324 |
+| `docs` | 147 | 909 562 | 7 830 590 |
 | `frontend` | 1033 | 185 910 | 2 039 713 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 140 | 25 142 | 312 503 |
+| `scripts` | 141 | 25 330 | 314 640 |
 
 ## Все файлы (по убыванию токенов)
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 384 399 | 3 137 272 |
+| `docs/mechanism-inventory.json` | 384 985 | 3 141 995 |
 | `docs/client-mechanism-inventory.json` | 258 484 | 1 824 397 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -36,13 +36,13 @@
 | `docs/design/local-acceptance/baseline-paced/http.json` | 23 844 | 219 383 |
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
-| `docs/mechanism-inventory.md` | 3 571 | 162 255 |
+| `docs/mechanism-inventory.md` | 3 577 | 162 512 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/backlog.md` | 3 715 | 132 579 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
-| `docs/data-contracts.md` | 1 289 | 69 432 |
+| `docs/data-contracts.md` | 1 290 | 69 718 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `backend/seed_data.py` | 5 740 | 59 498 |
 | `frontend/src/i18n/messages.ru.js` | 4 196 | 59 112 |
@@ -68,10 +68,10 @@
 | `backend/app/services/analytics_marts.py` | 2 404 | 26 945 |
 | `backend/app/models.py` | 1 994 | 26 099 |
 | `backend/app/services/search.py` | 1 541 | 23 634 |
+| `backend/app/services/seo_world.py` | 2 343 | 22 739 |
 | `backend/app/main.py` | 2 097 | 22 437 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
-| `backend/app/services/seo_world.py` | 2 315 | 22 329 |
-| `backend/app/services/seo_regional.py` | 2 166 | 22 061 |
+| `backend/app/services/seo_regional.py` | 2 188 | 22 328 |
 | `backend/app/services/site_urls.py` | 2 253 | 22 012 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
 | `frontend/nginx.conf` | 1 679 | 21 285 |
@@ -378,6 +378,7 @@
 | `backend/tests/test_seo_regional_year.py` | 440 | 4 218 |
 | `scripts/search-history-analyze.py` | 256 | 4 217 |
 | `backend/app/api/embed.py` | 486 | 4 213 |
+| `backend/app/services/seo_country_figures.py` | 423 | 4 210 |
 | `frontend/src/components/IndicatorSearch.w6d.component.test.jsx` | 313 | 4 209 |
 | `scripts/dev/layout-sweep.mjs` | 319 | 4 208 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 158 | 4 201 |
@@ -386,7 +387,6 @@
 | `scripts/emiss/classify_collected.py` | 264 | 4 170 |
 | `backend/app/services/http_client.py` | 432 | 4 168 |
 | `frontend/src/components/LightScene.jsx` | 362 | 4 168 |
-| `backend/app/services/seo_country_figures.py` | 419 | 4 158 |
 | `frontend/src/components/cabinet/ProfilePanel.jsx` | 406 | 4 156 |
 | `frontend/src/pages/Privacy.jsx` | 303 | 4 149 |
 | `docs/circle-playbook.md` | 124 | 4 134 |
@@ -627,6 +627,7 @@
 | `scripts/e2e/acceptance-matrix.mjs` | 217 | 2 660 |
 | `backend/tests/test_scrape_access_policy.py` | 218 | 2 657 |
 | `frontend/src/lib/cabinetStore.test.js` | 248 | 2 656 |
+| `backend/app/services/world_canonical.py` | 261 | 2 642 |
 | `backend/tests/test_etl_statuses.py` | 301 | 2 639 |
 | `backend/tests/test_staleness.py` | 246 | 2 636 |
 | `frontend/src/pages/RussiaHome.component.test.jsx` | 247 | 2 635 |
@@ -638,7 +639,6 @@
 | `backend/app/api/ticker.py` | 277 | 2 607 |
 | `backend/app/services/locale.py` | 327 | 2 596 |
 | `backend/app/services/demand_router.py` | 263 | 2 580 |
-| `backend/app/services/world_canonical.py` | 254 | 2 576 |
 | `backend/tests/test_audience_reports_flow.py` | 235 | 2 574 |
 | `frontend/src/components/calendar/CalendarGrid.jsx` | 245 | 2 570 |
 | `frontend/src/components/Footer.component.test.jsx` | 202 | 2 565 |
@@ -782,6 +782,7 @@
 | `frontend/src/components/WorldConceptPicker.jsx` | 230 | 2 033 |
 | `frontend/src/components/DataTable.component.test.jsx` | 147 | 2 031 |
 | `frontend/src/embed/EmbedCompare.jsx` | 155 | 2 028 |
+| `scripts/ssr-link-audit.py` | 180 | 2 027 |
 | `frontend/src/lib/rsyFloorAd.js` | 241 | 2 022 |
 | `frontend/src/components/Z4Indicator.component.test.jsx` | 179 | 2 014 |
 | `backend/scripts/world-forecast-gap-audit.py` | 149 | 2 012 |
@@ -1531,6 +1532,7 @@
 | `backend/alembic/versions/20260702_add_regional_tables.py` | 78 | 803 |
 | `backend/app/services/forecast_strategies/registry.py` | 70 | 803 |
 | `backend/app/services/oauth/vk.py` | 82 | 802 |
+| `backend/tests/test_ssr_internal_links.py` | 71 | 802 |
 | `backend/tests/test_world_estat_adapter.py` | 109 | 802 |
 | `frontend/public/404.html` | 47 | 802 |
 | `docs/design/art-prompts/2026-09-24-additions.json` | 17 | 801 |
@@ -1575,6 +1577,7 @@
 | `frontend/src/components/MapTimeline.component.test.jsx` | 68 | 773 |
 | `frontend/src/lib/track.consent.test.js` | 77 | 773 |
 | `frontend/src/lib/useScrollDirection.js` | 94 | 772 |
+| `scripts/world-duplicate-canonical.py` | 79 | 769 |
 | `backend/app/services/demographics.py` | 81 | 768 |
 | `docs/design/requirements-coverage.md` | 16 | 767 |
 | `frontend/src/components/regions/R4YourRegion.jsx` | 67 | 765 |
@@ -1684,7 +1687,6 @@
 | `frontend/src/styles/c8f-z5.test.js` | 64 | 662 |
 | `scripts/install-host-disk-hygiene.sh` | 56 | 662 |
 | `frontend/src/lib/categories.test.js` | 73 | 660 |
-| `scripts/world-duplicate-canonical.py` | 71 | 659 |
 | `backend/alembic/versions/20261114_mail_outbox.py` | 56 | 658 |
 | `frontend/src/i18n/langScroll.test.js` | 79 | 658 |
 | `frontend/src/components/ChipGroup.jsx` | 74 | 656 |
