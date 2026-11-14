@@ -16,3 +16,13 @@
 
 /* R8-E: «1 000 ₽ = …» под заголовком курса мелкой валюты. */
 .r8e-send-line { margin: 4px 0 0; font-size: 15px; font-weight: 600; line-height: 1.35; color: var(--color-champagne-ink); font-variant-numeric: tabular-nums; }
+
+/* 14.11.2026, телефон до 479 px: колонка значения шириной 7,75rem плюс мини-график оставляли названию 88 px —
+   «Доллар С…», а дата под ним шла в три строки. На узком экране название важнее рисунка: мини-график убран,
+   колонка значения по содержимому, название — до двух строк целиком. */
+@media (max-width: 479px) {
+  .fe-z8-cur .fe-trow.fe-w6g-currency-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .fe-z8-cur .fe-trow.fe-w6g-currency-row .fe-trow__spark { display: none; }
+  .fe-z8-cur .fe-trow.fe-w6g-currency-row .fe-trow__val { min-width: 0; }
+  .fe-z8-cur .fe-trow.fe-w6g-currency-row .fe-trow__title { white-space: normal; text-overflow: clip; }
+}
