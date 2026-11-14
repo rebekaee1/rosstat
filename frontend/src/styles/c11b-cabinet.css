@@ -132,7 +132,9 @@
 }
 
 .c11b-group { margin-bottom: 24px; }
-.c11b-group__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.c11b-group__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin-bottom: 8px; }
+/* На телефоне заголовок «Что вышло…» не сжимается в узкую колонку рядом с кнопкой: кнопка уходит строкой ниже. */
+.c11b-group__head .c11b-group__title { flex: 1 1 14rem; }
 .c11b-group__title { margin: 0 0 8px; color: var(--color-text-secondary); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
 .c11b-group__head .c11b-group__title { margin-bottom: 0; }
 

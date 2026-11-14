@@ -41,6 +41,16 @@ export default function Account() {
     if (!isLoading && !isAuthed) navigate('/login', { replace: true });
   }, [isLoading, isAuthed, navigate]);
 
+  // Ряд вкладок на телефоне прокручивается вбок: открытая по адресу вкладка («Настройки», «Профиль») должна быть видна.
+  const activeTabId = cabinet.enabled ? `account-tab-${params.get('tab') || DEFAULT_TAB}` : null;
+  useEffect(() => {
+    if (!activeTabId || typeof document === 'undefined') return;
+    const el = document.getElementById(activeTabId);
+    const row = el?.parentElement;
+    if (!el || !row || row.scrollWidth <= row.clientWidth) return;
+    row.scrollLeft = Math.max(0, el.offsetLeft - (row.clientWidth - el.offsetWidth) / 2);
+  }, [activeTabId]);
+
   if (isLoading) {
     return (
       <div role="status" className="fe-data-page max-w-2xl mx-auto px-4 pt-28 pb-24 flex items-center gap-3 text-text-secondary">

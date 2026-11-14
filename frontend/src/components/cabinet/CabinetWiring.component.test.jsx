@@ -201,6 +201,18 @@ describe('шапка: отметка «Новое» на кнопке «Каби
     expect(link.getAttribute('aria-current')).toBe('page');
   });
 
+  it('телефон: отметка «Новое» стоит и на кнопке меню, где спрятан «Кабинет» (14.11.2026)', async () => {
+    auth.value = signedIn;
+    api.listWatches.mockResolvedValue({
+      items: [{ id: 'w1', subject_kind: 'indicator', subject_key: 'cpi', is_new: true, available: true }], limit: 50,
+    });
+    navAt('/compare');
+    await waitFor(() => expect(document.querySelectorAll('[data-c11b="feed-badge"]').length).toBeGreaterThan(1));
+    const burger = [...document.querySelectorAll('[data-c11b="feed-badge"]')].map((b) => b.closest('button')).find(Boolean);
+    expect(burger.getAttribute('aria-expanded')).toBe('false');
+    expect(burger.className).toContain('relative');
+  });
+
   it('вошедший, кабинет выключен: отметки нет, список слежения не запрашивается', async () => {
     auth.value = signedIn;
     api.fetchCabinetConfig.mockResolvedValue(DISABLED);
