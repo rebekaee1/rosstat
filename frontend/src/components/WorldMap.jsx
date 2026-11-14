@@ -772,7 +772,7 @@ export default function WorldMap({
   return (
     <div className="select-none">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-text-secondary">
           {t('world.map.pickCountry')}
         </div>
         <div className="inline-flex gap-1.5">
@@ -832,7 +832,7 @@ export default function WorldMap({
         {hover && (
           <div className="pointer-events-none absolute bottom-3 left-3 z-10 max-w-[calc(100%-5rem)] rounded-xl px-3.5 py-3 text-xs fe-glass-pop">
             <div className="font-semibold text-text-primary">{hover.country.name}</div>
-            <div className="mt-1 font-mono text-base font-semibold text-champagne">
+            <div className="mt-1 text-base font-semibold tabular-nums text-text-primary">
               {hover.value != null ? formatWorldValue(hover.value) : t('common.noData')}
             </div>
             {hover.value != null && unit && <div className="mt-0.5 text-xs text-text-secondary">{unit}</div>}
@@ -845,7 +845,7 @@ export default function WorldMap({
               </div>
             )}
             {hoverPeriod && (
-              <div className="mt-1.5 pt-1.5 font-mono text-xs text-text-secondary fe-divider">
+              <div className="mt-1.5 pt-1.5 text-xs tabular-nums text-text-secondary fe-divider">
                 {hoverPeriod}
               </div>
             )}
@@ -859,7 +859,7 @@ export default function WorldMap({
             <div className="text-xs font-medium text-text-secondary">
               {metricName || t('world.map.distribution')}
               {periodLabel ? (
-                <span className="font-mono text-text-secondary"> — {periodLabel}</span>
+                <span className="tabular-nums text-text-secondary"> — {periodLabel}</span>
               ) : null}
             </div>
             <div className="text-[11px] uppercase tracking-[0.13em] text-text-secondary">
@@ -885,7 +885,7 @@ export default function WorldMap({
                   title={t(bin.labelKey)}
                 >
                   <div className="k4-bin" style={{ backgroundColor: bin.color }} aria-hidden="true" />
-                  <div className="mt-1 break-words font-mono text-xs leading-tight tabular-nums text-text-secondary">
+                  <div className="mt-1 break-words text-xs leading-tight tabular-nums text-text-secondary">
                     {legendBinLabel(bin)}
                   </div>
                 </div>

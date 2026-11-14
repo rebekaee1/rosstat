@@ -524,7 +524,7 @@ export default function RegionsMap({
           >
             <span className="font-medium">{nameBySlug[hover.slug]}</span>
             {hoverValue != null && (
-              <span className="ml-1.5 font-mono text-[#BFD2F0]">
+              <span className="ml-1.5 font-semibold tabular-nums text-[#BFD2F0]">
                 {formatRegionValue(hoverValue)}{unit ? `\u00A0${unit}` : ''}
               </span>
             )}
@@ -538,7 +538,7 @@ export default function RegionsMap({
           >
             <div className="font-medium text-text-primary">{nameBySlug[hover.slug] || hover.slug}</div>
             {hoverValue != null && (
-              <div className="font-mono text-champagne-ink mt-0.5">
+              <div className="mt-0.5 font-semibold tabular-nums text-text-primary">
                 {formatRegionValue(hoverValue)}{unit ? ` ${unit}` : ''}
               </div>
             )}
