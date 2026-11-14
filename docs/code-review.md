@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `8af2bbf866e98ceedc808add8bda1fc48840983f`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `a01aa820adc25dd105e8abfafeda5c36c748119a`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -14,9 +14,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 |---|---:|
 | Файлы в явно определённом scope | 2484 |
 | Код, шаблоны и стили | 2010 |
-| Актуальные рецензии без пропусков guard | 2483 |
-| Именованные определения Python/JS: с аннотацией / всего | 16263 / 16264 |
-| Файлы, требующие внимания | 1 |
+| Актуальные рецензии без пропусков guard | 2484 |
+| Именованные определения Python/JS: с аннотацией / всего | 16264 / 16264 |
+| Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -2261,7 +2261,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/WorldIndicatorPage.c11f.component.test.jsx](../frontend/src/pages/WorldIndicatorPage.c11f.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/pages/WorldIndicatorPage.c8i.component.test.jsx](../frontend/src/pages/WorldIndicatorPage.c8i.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/pages/WorldIndicatorPage.component.test.jsx](../frontend/src/pages/WorldIndicatorPage.component.test.jsx) | reviewed | 3/3 | актуально |
-| [frontend/src/pages/WorldIndicatorPage.jsx](../frontend/src/pages/WorldIndicatorPage.jsx) | reviewed | 1/2 | definitions_without_annotation |
+| [frontend/src/pages/WorldIndicatorPage.jsx](../frontend/src/pages/WorldIndicatorPage.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/pages/WorldIndicatorPage.population.w6.component.test.jsx](../frontend/src/pages/WorldIndicatorPage.population.w6.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/pages/WorldIndicatorPage.z4.component.test.jsx](../frontend/src/pages/WorldIndicatorPage.z4.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/pages/WorldRatingPage.c11f.component.test.jsx](../frontend/src/pages/WorldRatingPage.c11f.component.test.jsx) | reviewed | 5/5 | актуально |

@@ -21,7 +21,7 @@
   "counts": {
     "files": 2484,
     "code_files": 2010,
-    "current_reviews": 2483,
+    "current_reviews": 2484,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
@@ -30,8 +30,8 @@
       "reviewed": 2214
     },
     "definitions": 16264,
-    "annotated_definitions": 16263,
-    "files_needing_attention": 1
+    "annotated_definitions": 16264,
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -28941,20 +28941,11 @@
       "lines": 838,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 2,
-      "annotated_definitions": 1,
-      "missing_definitions": [
-        {
-          "name": "WorldIndicatorPage.hideRu",
-          "line": 459,
-          "end_line": 461,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 2,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/pages/WorldIndicatorPage.population.w6.component.test.jsx",
@@ -32338,9 +32329,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "48267ee94150329258559451ceefac4e5ca79867a338c771a1c427c8db414ee5",
+  "ledger_sha256": "60526f2f7f188a11aa1b2e05e264e8e1a1fd7c423d6f6a5761a6806131541588",
   "javascript_inventory_sha256": "173cfd4555ce8d4ff8fb491a75ab441424b95957dae8ddb3b3d78b2c80747db6",
-  "baseline_commit": "8af2bbf866e98ceedc808add8bda1fc48840983f",
+  "baseline_commit": "a01aa820adc25dd105e8abfafeda5c36c748119a",
   "branch": "int/2026-11-14",
   "unstaged_at_capture": []
 }
