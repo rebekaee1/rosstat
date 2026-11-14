@@ -23,6 +23,12 @@ def on(monkeypatch):
     monkeypatch.setattr(settings, "cabinet_enabled", True)
 
 
+@pytest.fixture
+def off(monkeypatch):
+    """Аварийный выключатель RUSTATS_CABINET_ENABLED=false (с 14.11.2026 по умолчанию кабинет включён)."""
+    monkeypatch.setattr(settings, "cabinet_enabled", False)
+
+
 def reg(tc, email="a@example.com"):
     tc.cookies.clear()
     r = tc.post("/api/v1/auth/register", json={"email": email, "password": "supersecret1", "consent": True})
@@ -68,7 +74,7 @@ async def _seed_series(s, last=date(2026, 8, 1)):
 
 # ── флаг ──
 
-def test_flag_off_everything_404_except_config(auth_client):
+def test_flag_off_everything_404_except_config(auth_client, off):
     reg(auth_client)
     h = csrf_headers(auth_client)
     assert auth_client.get(f"{C}/config").json() == {"enabled": False, "features": {}, "limits": {}}
@@ -82,12 +88,13 @@ def test_flag_off_everything_404_except_config(auth_client):
         assert r.status_code == 404, (method, path, r.status_code)
 
 
-def test_flag_off_even_for_guest_is_404_not_401(auth_client):
+def test_flag_off_even_for_guest_is_404_not_401(auth_client, off):
     assert auth_client.get(f"{C}/saved").status_code == 404
 
 
-def test_flag_default_is_off():
-    assert type(settings).model_fields["cabinet_enabled"].default is False
+def test_flag_default_is_on():
+    # Решение владельца 14.11.2026 «включаем. доделываем»: выпуск кода включает кабинет; выключатель остаётся в .env.
+    assert type(settings).model_fields["cabinet_enabled"].default is True
 
 
 def test_config_when_on(auth_client, on):
@@ -419,6 +426,7 @@ def test_export_history_defaults_without_hint(auth_client, on):
 
 
 def test_export_history_not_written_when_flag_off_or_guest(auth_client, auth_env, monkeypatch):
+    monkeypatch.setattr(settings, "cabinet_enabled", False)
     reg(auth_client)
     assert auth_client.post("/api/v1/export/table", json=TABLE).status_code == 200   # флаг выключен
     assert count(auth_client, auth_env, UserExport) == 0
