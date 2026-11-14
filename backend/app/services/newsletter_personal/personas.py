@@ -34,17 +34,19 @@ _SIGNALS = {
         ("view", "ru:usd-rub", 1), ("view", "ru:brent", 8), ("compare", "ru:gold", 12),
     ],
     "light": [
-        ("view", "ru:usd-rub", 6), ("view", "ru:usd-rub", 20), ("search_select", "ru:brent", 25),
+        ("view", "ru:usd-rub", 6), ("search_select", "ru:deposit-rate", 9), ("view", "ru:deposit-rate", 9),
+        ("search_select", "ru:brent", 25),
     ],
     "cold": [],
     "rich-en": [
         ("view", "w:united-states:us-cpi-all", 2), ("download", "w:united-states:us-cpi-all", 2),
         ("view", "w:united-states:us-unemployment-rate", 5), ("search_select", "w:united-states:us-unemployment-rate", 5),
-        ("view", "ru:usd-cny", 3), ("view", "ru:eur-usd", 7), ("view", "ru:usd-rub", 7),
+        ("view", "ru:usd-cny", 3), ("download", "ru:usd-cny", 3), ("view", "ru:eur-usd", 7), ("view", "ru:usd-rub", 7),
         ("view", "ru:brent", 4), ("forecast_view", "ru:cpi", 11), ("view", "ru:key-rate", 11),
         ("compare", "w:germany:de-ei_lmhr_m-lm-un-t-tot-sa-pc-act", 14),
     ],
-    "light-en": [("view", "ru:eur-usd", 9), ("view", "ru:usd-cny", 30)],
+    "light-en": [("view", "w:united-states:us-unemployment-rate", 9), ("search_select", "w:united-states:us-unemployment-rate", 9),
+                 ("view", "ru:eur-usd", 20)],
     "cold-en": [],
 }
 

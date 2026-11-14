@@ -267,8 +267,8 @@ def _forecast_period(day: date, frequency: str, locale: str) -> str:
 
 def _fmt_forecast_value(item: dict, value: float, locale: str) -> str:
     unit = (item.get("unit") or "").strip()
-    digits = 1 if abs(value) < 1000 else 0
-    num = number(value, locale, digits=digits)
+    # До двух знаков, без хвостовых нулей — как число того же ряда в других блоках письма.
+    num = number(round(value, 2) if abs(value) < 1000 else round(value), locale)
     if unit.startswith("%"):
         return with_unit(num, "%", locale)
     return with_unit(num, unit, locale)
@@ -362,11 +362,14 @@ def pick(cands: list[Candidate], limit: int) -> list[Candidate]:
     topics: dict[str, int] = {}
     gens: dict[str, int] = {}
     subjects: set[str] = set()
+    paths: set[str] = set()
     for strict in (True, False):
         for c in sorted(cands, key=lambda c: (-c.score, c.gen, c.subject or "")):
             if len(chosen) >= limit:
                 break
-            if c in chosen or (c.subject and c.subject in subjects):
+            path = str(c.block.get("url") or "").split("?")[0].rstrip("/")
+            # Один показатель — один блок: прогноз и факт той же карточки не идут вместе.
+            if c in chosen or (c.subject and c.subject in subjects) or (path and path in paths):
                 continue
             if gens.get(c.gen, 0) >= 2 and c.gen not in ("check",):
                 continue
@@ -374,6 +377,8 @@ def pick(cands: list[Candidate], limit: int) -> list[Candidate]:
                 continue
             chosen.append(c)
             subjects.add(c.subject or "")
+            if path:
+                paths.add(path)
             gens[c.gen] = gens.get(c.gen, 0) + 1
             if c.topic:
                 topics[c.topic] = topics.get(c.topic, 0) + 1
