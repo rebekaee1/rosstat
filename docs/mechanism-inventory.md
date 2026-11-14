@@ -147,7 +147,7 @@
 | POST | /api/v1/cabinet/calendar-feed | app.api.cabinet.calendar_feed_rotate | [backend/app/api/cabinet.py:458](../backend/app/api/cabinet.py#L458) |
 | DELETE | /api/v1/cabinet/calendar-feed | app.api.cabinet.calendar_feed_revoke | [backend/app/api/cabinet.py:468](../backend/app/api/cabinet.py#L468) |
 | GET | /api/v1/cabinet/calendar.ics | app.api.cabinet.calendar_ics | [backend/app/api/cabinet.py:475](../backend/app/api/cabinet.py#L475) |
-| POST | /api/v1/human-pass | app.api.human_pass.human_pass | [backend/app/api/human_pass.py:51](../backend/app/api/human_pass.py#L51) |
+| POST | /api/v1/human-pass | app.api.human_pass.human_pass | [backend/app/api/human_pass.py:58](../backend/app/api/human_pass.py#L58) |
 | GET | /api/v1/research | app.api.research.research_list | [backend/app/api/research.py:66](../backend/app/api/research.py#L66) |
 | GET | /api/v1/research/{slug}/download | app.api.research.research_download | [backend/app/api/research.py:147](../backend/app/api/research.py#L147) |
 | GET | /api/auth/{provider}/start | app.api.oauth.oauth_start | [backend/app/api/oauth.py:494](../backend/app/api/oauth.py#L494) |
