@@ -78,6 +78,11 @@ const DemographicsPage = lazy(() => import('./pages/DemographicsPage'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Account = lazy(() => import('./pages/Account'));
+// Ссылки из писем (ADR-0032): один модуль, четыре страницы.
+const ForgotPassword = lazy(() => import('./pages/AccountMail').then((m) => ({ default: m.ForgotPassword })));
+const ResetPassword = lazy(() => import('./pages/AccountMail').then((m) => ({ default: m.ResetPassword })));
+const VerifyEmail = lazy(() => import('./pages/AccountMail').then((m) => ({ default: m.VerifyEmail })));
+const Unsubscribe = lazy(() => import('./pages/AccountMail').then((m) => ({ default: m.Unsubscribe })));
 const RegionsHome = lazy(() => import('./pages/RegionsHome'));
 const RegionProfile = lazy(() => import('./pages/RegionProfile'));
 const RegionIndicatorPage = lazy(() => import('./pages/RegionIndicatorPage'));
@@ -288,6 +293,10 @@ function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/account/forgot-password" element={<ForgotPassword />} />
+            <Route path="/account/reset-password" element={<ResetPassword />} />
+            <Route path="/account/verify-email" element={<VerifyEmail />} />
+            <Route path="/account/unsubscribe" element={<Unsubscribe />} />
             <Route path="/admin/bi" element={<AdminBI />} />
 
             {/* Мир: хаб и рейтинги до country catch-all */}

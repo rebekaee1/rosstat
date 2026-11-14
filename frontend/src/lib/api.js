@@ -236,6 +236,28 @@ export const submitApiInterest = (payload) =>
 export const updateNewsletter = (subscribe) =>
   api.post('/auth/account/newsletter', { subscribe }).then((r) => r.data.user);
 
+// Почта аккаунта и отписка по ссылке из письма (ADR-0032).
+export const verifyEmail = (token) =>
+  api.post('/auth/email/verify', { token }).then((r) => r.data);
+
+export const resendVerifyEmail = () =>
+  api.post('/auth/email/verify/resend').then((r) => r.data);
+
+export const requestPasswordReset = (email) =>
+  api.post('/auth/password/forgot', { email }).then((r) => r.data);
+
+export const resetPassword = (token, password) =>
+  api.post('/auth/password/reset', { token, password }).then((r) => r.data);
+
+export const fetchUnsubscribeState = (t) =>
+  api.get('/mail/unsubscribe', { params: { t } }).then((r) => r.data);
+
+export const unsubscribeByLink = (t) =>
+  api.post('/mail/unsubscribe', { t }).then((r) => r.data);
+
+export const resubscribeByLink = (t) =>
+  api.post('/mail/resubscribe', { t }).then((r) => r.data);
+
 export const updateProfile = (displayName) =>
   api.patch('/auth/account/profile', { display_name: displayName }).then((r) => r.data.user);
 

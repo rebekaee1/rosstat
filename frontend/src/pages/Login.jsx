@@ -124,13 +124,14 @@ export default function Login() {
 
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[13px] text-text-secondary">
           <span data-testid="login-remember">{t('w6a.login.remember')}</span>
-          <a
-            href={`mailto:info@forecasteconomy.com?subject=${encodeURIComponent(t('w6a.login.forgotSubject'))}`}
+          {/* ADR-0032: письмо со ссылкой на новый пароль (раньше — письмо владельцу вручную). */}
+          <Link
+            to="/account/forgot-password"
             className="inline-flex min-h-11 items-center font-medium text-champagne-ink hover:underline"
             data-testid="login-forgot"
           >
             {t('auth.login.forgot')}
-          </a>
+          </Link>
         </div>
 
         <div id="login-error" role="alert" className="w5-auth-error">{error}</div>

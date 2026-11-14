@@ -1,13 +1,15 @@
 """API личного кабинета: регистрация/вход/выход/профиль (ADR-0007).
 
-Phase 1: email+пароль (этот файл) + OAuth (oauth.py). Почты нет — без
-подтверждения email и сброса пароля.
+Phase 1: email+пароль (этот файл) + OAuth (oauth.py). С 14.11.2026 (ADR-0032) —
+подтверждение адреса и сброс пароля письмом (`services/mail`); пока почта выключена
+(`RUSTATS_MAIL_ENABLED=false`) письма только записываются в журнал `mail_outbox`.
 """
 import re
 import logging
+import uuid
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, field_validator
 from sqlalchemy import select, func, delete
@@ -16,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models import (
     User, Consent, AuthAudit, EmailCredential, OAuthIdentity, PushSubscription,
-    UserSavedItem, UserWatch, UserExport, UserPreference,
+    UserSavedItem, UserWatch, UserExport, UserPreference, MailMessage,
 )
 from app.services import session as session_svc
 from app.services.identity.service import (
@@ -119,7 +121,8 @@ async def _serialize_with_admin(db: AsyncSession, user: User) -> dict:
 
 
 @router.post("/register", status_code=201)
-async def register(body: RegisterIn, request: Request, response: Response, db: AsyncSession = Depends(get_db)):
+async def register(body: RegisterIn, request: Request, response: Response, background: BackgroundTasks,
+                   db: AsyncSession = Depends(get_db)):
     if not body.consent:
         raise HTTPException(
             status_code=422,
@@ -170,7 +173,22 @@ async def register(body: RegisterIn, request: Request, response: Response, db: A
         "user_agent": ua,
         "user_id": str(user.id),
     })
+    # ADR-0032: письмо «подтвердите адрес» — после ответа, не задерживая регистрацию.
+    _queue_verify_mail(background, user.id, normalize_email(body.email), get_locale())
     return {"user": await serialize_user(db, user)}
+
+
+def _queue_verify_mail(background: BackgroundTasks, user_id, email: str, locale: str) -> None:
+    from app.services.mail import account as mail_account, service as mail_service
+    from app.services.mail.tokens import TokenSecretMissing
+
+    try:
+        rendered = mail_account.verify_mail(user_id, email, locale)
+    except TokenSecretMissing:
+        logger.warning("verify mail skipped: RUSTATS_MAIL_TOKEN_SECRET is not set")
+        return
+    background.add_task(mail_service.send_now, kind="verify_email", to=email, locale=locale,
+                        rendered=rendered, user_id=user_id)
 
 
 @router.post("/login")
@@ -267,7 +285,8 @@ class SetPasswordIn(BaseModel):
 
 
 @router.post("/set-password", dependencies=[Depends(require_csrf)])
-async def set_password(body: SetPasswordIn, request: Request, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+async def set_password(body: SetPasswordIn, request: Request, background: BackgroundTasks,
+                       user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     cred = await db.scalar(select(EmailCredential).where(EmailCredential.user_id == user.id))
     if cred is not None:
         cred.password_hash = hash_password(body.password)
@@ -292,9 +311,18 @@ async def set_password(body: SetPasswordIn, request: Request, user: User = Depen
             status_code=409,
             detail=api_detail("Этот email уже используется", "This email is already in use"),
         )
-    db.add(EmailCredential(user_id=user.id, email=email, password_hash=hash_password(body.password), email_verified=False))
+    # Адрес, уже подтверждённый провайдером входа (Яндекс, Google), повторно не подтверждаем.
+    oauth_verified = await db.scalar(select(OAuthIdentity).where(
+        OAuthIdentity.user_id == user.id, func.lower(OAuthIdentity.email) == email,
+        OAuthIdentity.email_verified.is_(True),
+    ))
+    db.add(EmailCredential(user_id=user.id, email=email, password_hash=hash_password(body.password),
+                           email_verified=oauth_verified is not None))
     await audit(db, user.id, "set_password", request)
     await db.commit()
+    if oauth_verified is None:
+        from app.services.locale import get_locale
+        _queue_verify_mail(background, user.id, email, get_locale())
     return {"user": await serialize_user(db, user)}
 
 
@@ -447,6 +475,8 @@ async def export_account(user: User = Depends(get_current_user), db: AsyncSessio
     exports = (await db.scalars(
         select(UserExport).where(UserExport.user_id == user.id).order_by(UserExport.created_at))).all()
     prefs = await db.get(UserPreference, user.id)
+    mails = (await db.scalars(
+        select(MailMessage).where(MailMessage.user_id == user.id).order_by(MailMessage.created_at))).all()
     payload = {
         "user": profile,
         "consents": [
@@ -475,6 +505,13 @@ async def export_account(user: User = Depends(get_current_user), db: AsyncSessio
              "rows_count": x.rows_count, "created_at": x.created_at.isoformat() if x.created_at else None}
             for x in exports
         ],
+        # ADR-0032: какие письма сайт вам отправлял (тема и итог, без текста письма).
+        "emails": [
+            {"kind": m.kind, "subject": m.subject, "to": m.to_email, "status": m.status,
+             "created_at": m.created_at.isoformat() if m.created_at else None,
+             "sent_at": m.sent_at.isoformat() if m.sent_at else None}
+            for m in mails
+        ],
         "preferences": {
             "data": (prefs.data if prefs else {}) or {},
             "calendar_feed_active": bool(prefs and prefs.feed_token_hash),
@@ -501,6 +538,8 @@ async def delete_account(request: Request, response: Response, user: User = Depe
     await db.execute(delete(UserExport).where(UserExport.user_id == uid))
     await db.execute(delete(UserPreference).where(UserPreference.user_id == uid))
     await db.execute(delete(PushSubscription).where(PushSubscription.user_id == uid))
+    # ADR-0032: журнал писем хранит адрес получателя — тоже ПДн.
+    await db.execute(delete(MailMessage).where(MailMessage.user_id == uid))
     # Круг 11 (152-ФЗ): аналитические следы — user_signups, identity_links, user_id в
     # frontend_events сразу; большие таблицы без индекса обнулит ночная уборка.
     from app.services.account_erasure import erase_analytics_now
@@ -511,5 +550,146 @@ async def delete_account(request: Request, response: Response, user: User = Depe
     await db.commit()
     # Purge Redis: все сессии и счётчики попыток.
     await session_svc.destroy_user_sessions(str(uid))
+    clear_session_cookies(response)
+    return {"ok": True}
+
+
+# --- Почта аккаунта (ADR-0032): подтверждение адреса и сброс пароля ------------------
+
+class TokenIn(BaseModel):
+    token: str
+
+
+class ForgotIn(BaseModel):
+    email: str
+
+
+class ResetIn(BaseModel):
+    token: str
+    password: str
+
+    @field_validator("password")
+    @classmethod
+    def _ok(cls, v: str) -> str:
+        return SetPasswordIn._ok(v)
+
+
+def _bad_link(code: str) -> HTTPException:
+    return HTTPException(status_code=400, detail={
+        "code": code,
+        "message": api_detail(
+            "Ссылка устарела или уже использована. Запросите новое письмо.",
+            "The link has expired or was already used. Request a new email.",
+        ),
+    })
+
+
+def _uuid_or_none(value: str):
+    try:
+        return uuid.UUID(value)
+    except (ValueError, TypeError, AttributeError):
+        return None
+
+
+@router.post("/email/verify")
+async def verify_email(body: TokenIn, request: Request, db: AsyncSession = Depends(get_db)):
+    """Подтверждение адреса по ссылке из письма. Без сессии: ссылку открывают и на телефоне."""
+    from app.services.mail import tokens
+
+    try:
+        tok = tokens.verify("verify", body.token)
+    except tokens.TokenError as exc:
+        raise _bad_link("expired" if str(exc) == "expired" else "invalid_link")
+    except tokens.TokenSecretMissing:
+        raise _bad_link("invalid_link")
+    uid = _uuid_or_none(tok.user_id)
+    cred = await db.scalar(select(EmailCredential).where(EmailCredential.user_id == uid)) if uid else None
+    if cred is None or tokens.fingerprint(cred.email) != tok.fingerprint:
+        raise _bad_link("invalid_link")
+    if not cred.email_verified:
+        cred.email_verified = True
+        await audit(db, cred.user_id, "email_verified", request)
+        await db.commit()
+    return {"ok": True}
+
+
+@router.post("/email/verify/resend", dependencies=[Depends(require_csrf)])
+async def resend_verify_email(request: Request, background: BackgroundTasks,
+                              user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    from app.services.locale import get_locale
+    from app.services.mail import service as mail_service
+
+    cred = await db.scalar(select(EmailCredential).where(EmailCredential.user_id == user.id))
+    if cred is None or cred.email_verified:
+        return {"ok": True, "sent": False}
+    if not await mail_service.rate_ok("verify", str(user.id), limit=3, window_seconds=3600):
+        raise HTTPException(status_code=423, detail=api_detail(
+            "Письмо уже отправлено. Новое можно запросить через час.",
+            "The email was already sent. You can request a new one in an hour.",
+        ))
+    _queue_verify_mail(background, user.id, cred.email, get_locale())
+    await audit(db, user.id, "verify_resend", request)
+    await db.commit()
+    return {"ok": True, "sent": True}
+
+
+@router.post("/password/forgot")
+async def forgot_password(body: ForgotIn, request: Request, background: BackgroundTasks,
+                          db: AsyncSession = Depends(get_db)):
+    """Письмо со ссылкой на новый пароль. Ответ всегда одинаковый: по нему нельзя узнать,
+    есть ли такой адрес на сайте."""
+    from app.services.locale import get_locale
+    from app.services.mail import account as mail_account, service as mail_service
+    from app.services.mail.tokens import TokenSecretMissing
+
+    ok = {"ok": True}
+    email = normalize_email(body.email or "")
+    if not _EMAIL_RE.match(email):
+        raise HTTPException(status_code=422, detail=api_detail("Некорректный email", "Invalid email"))
+    ip = _client_ip(request)
+    if not await mail_service.rate_ok("forgot_ip", ip, limit=10, window_seconds=3600):
+        raise HTTPException(status_code=423, detail=api_detail(
+            "Слишком много запросов. Попробуйте через час.", "Too many requests. Try again in an hour.",
+        ))
+    if not await mail_service.rate_ok("forgot_email", email, limit=3, window_seconds=3600):
+        return ok
+    cred = await db.scalar(select(EmailCredential).where(EmailCredential.email == email))
+    if cred is None:
+        return ok
+    locale = get_locale()
+    try:
+        rendered = mail_account.reset_mail(cred.user_id, cred.password_hash, locale)
+    except TokenSecretMissing:
+        logger.warning("reset mail skipped: RUSTATS_MAIL_TOKEN_SECRET is not set")
+        return ok
+    await audit(db, cred.user_id, "password_reset_requested", request)
+    await db.commit()
+    background.add_task(mail_service.send_now, kind="password_reset", to=cred.email,
+                        locale=locale, rendered=rendered, user_id=cred.user_id)
+    return ok
+
+
+@router.post("/password/reset")
+async def reset_password(body: ResetIn, request: Request, response: Response, db: AsyncSession = Depends(get_db)):
+    """Новый пароль по ссылке из письма: старые сессии закрываются, адрес считается
+    подтверждённым (человек открыл письмо), счётчик неудачных входов сбрасывается."""
+    from app.services.mail import tokens
+
+    try:
+        tok = tokens.verify("reset", body.token)
+    except tokens.TokenError as exc:
+        raise _bad_link("expired" if str(exc) == "expired" else "invalid_link")
+    except tokens.TokenSecretMissing:
+        raise _bad_link("invalid_link")
+    uid = _uuid_or_none(tok.user_id)
+    cred = await db.scalar(select(EmailCredential).where(EmailCredential.user_id == uid)) if uid else None
+    if cred is None or tokens.fingerprint(cred.password_hash) != tok.fingerprint:
+        raise _bad_link("invalid_link")
+    cred.password_hash = hash_password(body.password)
+    cred.email_verified = True
+    await audit(db, cred.user_id, "password_reset", request)
+    await db.commit()
+    await session_svc.destroy_user_sessions(str(cred.user_id))
+    await lockout.reset("login", cred.email, _client_ip(request))
     clear_session_cookies(response)
     return {"ok": True}

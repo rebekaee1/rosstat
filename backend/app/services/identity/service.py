@@ -105,6 +105,10 @@ async def serialize_user(db: AsyncSession, user: User) -> dict:
         "email": primary_email,
         "phone": primary_phone,
         "has_password": cred is not None,
+        # ADR-0032: адрес входа по паролю подтверждён письмом; адрес от провайдера
+        # входа (Яндекс, Google) подтвердил сам провайдер.
+        "email_verified": bool(cred.email_verified) if cred else any(
+            i.email and i.email_verified for i in identities),
         "newsletter": nl is not None and nl.kind == "newsletter",
         "identities": methods,
     }

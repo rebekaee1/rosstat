@@ -610,6 +610,40 @@ class Settings(BaseSettings):
     vapid_private_key: str = ""
     vapid_subject: str = ""  # mailto:… или https://… (требование VAPID)
 
+    # Почта (ADR-0032, 14.11.2026): служебные письма (подтверждение адреса, сброс пароля)
+    # и рассылка. Отправка — SMTP (по умолчанию Яндекс 360, smtp.yandex.ru:465 SSL; тот же
+    # код подходит для Yandex Cloud Postbox или другого SMTP-сервиса сменой хоста и ключа).
+    #   mail_enabled=false            — ничего не уходит в сеть; письмо записывается в журнал
+    #                                   mail_outbox со статусом disabled.
+    #   mail_allowlist                — пока mail_allow_all_recipients=false, письмо уходит ТОЛЬКО
+    #                                   на адреса из этого списка (через запятую); остальным —
+    #                                   статус blocked. Защита от случайной отправки людям.
+    #   mail_allow_all_recipients     — снимает список; включает владелец отдельной командой.
+    # Пароль SMTP (пароль приложения Яндекс 360) и секрет ссылок — только в .env сервера.
+    mail_enabled: bool = False
+    mail_smtp_host: str = "smtp.yandex.ru"
+    mail_smtp_port: int = 465
+    mail_smtp_security: str = "ssl"  # ssl (465) | starttls (587)
+    mail_smtp_user: str = ""
+    mail_smtp_password: str = ""
+    mail_smtp_timeout_seconds: float = 20.0
+    mail_from_address: str = ""  # пусто = mail_smtp_user
+    mail_from_name: str = "Forecast Economy"
+    mail_reply_to: str = "info@forecasteconomy.com"
+    mail_allowlist: str = "rebeka.ee@yandex.ru"
+    mail_allow_all_recipients: bool = False
+    # Секрет подписи ссылок в письмах (отписка, подтверждение, сброс пароля). Смена секрета
+    # делает недействительными ссылки во всех уже отправленных письмах.
+    mail_token_secret: str = ""
+    # Рассылка: не больше N писем за запуск и пауза между письмами (лимиты почтового
+    # сервиса и репутация домена; Яндекс 360 считает каждого получателя отдельно).
+    mail_campaign_max_per_run: int = 250
+    mail_campaign_pause_seconds: float = 4.0
+    # Переопределение адресов сайта в ссылках писем (стенд, локальная проверка).
+    # Пусто = ru → https://ru.<apex>, en → public_base_url.
+    mail_link_origin_ru: str = ""
+    mail_link_origin_en: str = ""
+
     # Админ-BI (/admin/bi): comma-separated email'ы с доступом к дашборду.
     # Вход обычной сессией; email сверяется по способам входа пользователя.
     admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"

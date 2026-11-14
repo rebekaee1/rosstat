@@ -236,102 +236,102 @@
     "anonymous_functions": 1
   },
   "frontend/src/App.jsx": {
-    "sha256": "fa483868a8044e6b0f9e1306bd623e79874f5540eeb09e4a5cd9731a99ae930c",
+    "sha256": "77064d9b68d30c574a1be89c97854f61d88410290de420e905dbecf4befd5a39",
     "definitions": [
       {
         "name": "ScrollToTop",
-        "line": 104,
-        "end_line": 115,
+        "line": 109,
+        "end_line": 120,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "YandexMetrikaHit",
-        "line": 117,
-        "end_line": 141,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "IndicatorDetailKeyed",
-        "line": 143,
+        "line": 122,
         "end_line": 146,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "IndicatorDetailKeyed",
+        "line": 148,
+        "end_line": 151,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "WorldCountryRoute",
-        "line": 149,
-        "end_line": 155,
+        "line": 154,
+        "end_line": 160,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldIndicatorRoute",
-        "line": 158,
-        "end_line": 164,
+        "line": 163,
+        "end_line": 169,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RedirectTo",
-        "line": 166,
-        "end_line": 170,
+        "line": 171,
+        "end_line": 175,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NavigateKeepSearch",
-        "line": 173,
-        "end_line": 176,
+        "line": 178,
+        "end_line": 181,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalculatorsAlias",
-        "line": 179,
-        "end_line": 182,
+        "line": 184,
+        "end_line": 187,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CountriesToHome",
-        "line": 185,
-        "end_line": 188,
+        "line": 190,
+        "end_line": 193,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ServerNotFoundGate",
-        "line": 198,
-        "end_line": 201,
+        "line": 203,
+        "end_line": 206,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedSpinner",
-        "line": 205,
-        "end_line": 212,
+        "line": 210,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedRoutes",
-        "line": 214,
-        "end_line": 230,
+        "line": 219,
+        "end_line": 235,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "renderCabinetActions",
-        "line": 233,
-        "end_line": 233,
+        "line": 238,
+        "end_line": 238,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "renderCompareSave",
-        "line": 234,
-        "end_line": 234,
+        "line": 239,
+        "end_line": 239,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AppRoutes",
-        "line": 236,
-        "end_line": 382,
+        "line": 241,
+        "end_line": 391,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "App",
-        "line": 384,
-        "end_line": 390,
+        "line": 393,
+        "end_line": 399,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -466,10 +466,10 @@
         "names": [
           "default"
         ],
-        "line": 384
+        "line": 393
       }
     ],
-    "anonymous_functions": 60
+    "anonymous_functions": 68
   },
   "frontend/src/SpaRoot.jsx": {
     "sha256": "f06df2619a28073c38ba7021f6070257729d8d8887507defa0c2e655aaed9c40",
@@ -16835,66 +16835,72 @@
     "anonymous_functions": 17
   },
   "frontend/src/components/cabinet/ProfilePanel.jsx": {
-    "sha256": "3bea42ac12a0cf9ae29c19e6c5931d2c39957f045d16c4e39ef2366814c9234b",
+    "sha256": "98bec5c9405b286dfe046b1a46085d3a66ff9e471f69abf4b0a4e399581eeee8",
     "definitions": [
       {
         "name": "ProfilePanel",
-        "line": 20,
-        "end_line": 379,
+        "line": 21,
+        "end_line": 406,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ProfilePanel.doExport",
-        "line": 52,
-        "end_line": 70,
+        "line": 54,
+        "end_line": 72,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ProfilePanel.run",
-        "line": 72,
-        "end_line": 85,
+        "line": 74,
+        "end_line": 87,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ProfilePanel.doLogout",
-        "line": 87,
-        "end_line": 91,
+        "line": 89,
+        "end_line": 93,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ProfilePanel.doDelete",
-        "line": 95,
-        "end_line": 100,
+        "line": 97,
+        "end_line": 102,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ProfilePanel.startEditName",
-        "line": 102,
-        "end_line": 106,
+        "line": 104,
+        "end_line": 108,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ProfilePanel.saveName",
-        "line": 108,
-        "end_line": 119,
+        "line": 110,
+        "end_line": 121,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ProfilePanel.resendVerify",
+        "line": 124,
+        "end_line": 132,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ProfilePanel.toggleNewsletter",
-        "line": 121,
-        "end_line": 133,
+        "line": 134,
+        "end_line": 146,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ProfilePanel.sendFeedback",
-        "line": 135,
-        "end_line": 149,
+        "line": 148,
+        "end_line": 162,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ProfilePanel.fieldRow",
-        "line": 152,
-        "end_line": 157,
+        "line": 165,
+        "end_line": 170,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -16925,19 +16931,19 @@
       },
       {
         "source": "../../lib/apiErrorMessage",
-        "line": 9
-      },
-      {
-        "source": "../../i18n",
         "line": 10
       },
       {
-        "source": "../../lib/format",
+        "source": "../../i18n",
         "line": 11
       },
       {
-        "source": "../Button",
+        "source": "../../lib/format",
         "line": 12
+      },
+      {
+        "source": "../Button",
+        "line": 13
       }
     ],
     "exports": [
@@ -16945,7 +16951,7 @@
         "names": [
           "default"
         ],
-        "line": 20
+        "line": 21
       }
     ],
     "anonymous_functions": 14
@@ -23754,7 +23760,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "33d8b890efe0651b247485f923cbade2bc8839745ac0e64014c2fde1c751e48a",
+    "sha256": "c9be9bf78a8d3074de5e679a1452d770b4863220ff7b1e2363848d30dc01db68",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23862,7 +23868,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "7b540061e76ca922d0cbe0901dff2299acaeee481213a9dda0d3a289d5b9b84c",
+    "sha256": "7658d420e0e075a6478b80fdd84266c2f448dc18bbb870d8a140cbe868dfc1d6",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -24449,7 +24455,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/lib/api.js": {
-    "sha256": "16f10d146597a2fcfd972a174f2918e81c4a7a6d9018d4058cec3953d51a8287",
+    "sha256": "d39823ae01916236e4d6c0e7aaa4ab3af67638c383a647ec78106da52ef18153",
     "definitions": [
       {
         "name": "hasIdempotencyKey",
@@ -24644,69 +24650,111 @@
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "updateProfile",
-        "line": 239,
-        "end_line": 240,
+        "name": "verifyEmail",
+        "line": 240,
+        "end_line": 241,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "fetchDownloadQuota",
+        "name": "resendVerifyEmail",
         "line": 243,
         "end_line": 244,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "absoluteAuthNext",
-        "line": 251,
+        "name": "requestPasswordReset",
+        "line": 246,
+        "end_line": 247,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "resetPassword",
+        "line": 249,
+        "end_line": 250,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "fetchUnsubscribeState",
+        "line": 252,
+        "end_line": 253,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "unsubscribeByLink",
+        "line": 255,
+        "end_line": 256,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "resubscribeByLink",
+        "line": 258,
+        "end_line": 259,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "updateProfile",
+        "line": 261,
         "end_line": 262,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "fetchDownloadQuota",
+        "line": 265,
+        "end_line": 266,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "absoluteAuthNext",
+        "line": 273,
+        "end_line": 284,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "oauthStartUrl",
-        "line": 266,
-        "end_line": 271,
+        "line": 288,
+        "end_line": 293,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchOAuthProviders",
-        "line": 274,
-        "end_line": 275,
+        "line": 296,
+        "end_line": 297,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "defaultExportHistory",
-        "line": 281,
-        "end_line": 288,
+        "line": 303,
+        "end_line": 310,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "withExportHref",
-        "line": 294,
-        "end_line": 300,
+        "line": 316,
+        "end_line": 322,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "postExportBlob",
-        "line": 306,
-        "end_line": 329,
+        "line": 328,
+        "end_line": 351,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "exportTable",
-        "line": 337,
-        "end_line": 340,
+        "line": 359,
+        "end_line": 362,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "exportGrid",
-        "line": 347,
-        "end_line": 350,
+        "line": 369,
+        "end_line": 372,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchAccountExport",
-        "line": 356,
-        "end_line": 356,
+        "line": 378,
+        "end_line": 378,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -24897,60 +24945,102 @@
       },
       {
         "names": [
-          "updateProfile"
+          "verifyEmail"
         ],
-        "line": 239
+        "line": 240
       },
       {
         "names": [
-          "fetchDownloadQuota"
+          "resendVerifyEmail"
         ],
         "line": 243
       },
       {
         "names": [
+          "requestPasswordReset"
+        ],
+        "line": 246
+      },
+      {
+        "names": [
+          "resetPassword"
+        ],
+        "line": 249
+      },
+      {
+        "names": [
+          "fetchUnsubscribeState"
+        ],
+        "line": 252
+      },
+      {
+        "names": [
+          "unsubscribeByLink"
+        ],
+        "line": 255
+      },
+      {
+        "names": [
+          "resubscribeByLink"
+        ],
+        "line": 258
+      },
+      {
+        "names": [
+          "updateProfile"
+        ],
+        "line": 261
+      },
+      {
+        "names": [
+          "fetchDownloadQuota"
+        ],
+        "line": 265
+      },
+      {
+        "names": [
           "absoluteAuthNext"
         ],
-        "line": 251
+        "line": 273
       },
       {
         "names": [
           "oauthStartUrl"
         ],
-        "line": 266
+        "line": 288
       },
       {
         "names": [
           "fetchOAuthProviders"
         ],
-        "line": 274
+        "line": 296
       },
       {
         "names": [
           "exportTable"
         ],
-        "line": 337
+        "line": 359
       },
       {
         "names": [
           "exportGrid"
         ],
-        "line": 347
+        "line": 369
       },
       {
         "names": [
           "fetchAccountExport"
         ],
-        "line": 356
+        "line": 378
       },
       {
         "names": [
           "default"
         ],
-        "line": 358
+        "line": 380
       }
     ],
-    "anonymous_functions": 35
+    "anonymous_functions": 42
   },
   "frontend/src/lib/api.test.js": {
     "sha256": "e44c147b4622217efc3fc2c1d6d9548877028014cb36d7c1b5ee480eddea3328",
@@ -53108,6 +53198,197 @@
     "exports": [],
     "anonymous_functions": 42
   },
+  "frontend/src/pages/AccountMail.component.test.jsx": {
+    "sha256": "c9cd56f50e2c1a25efbfb0ef1f6a0b6913d7c013b6b32451fd70587f561c24b5",
+    "definitions": [
+      {
+        "name": "useT",
+        "line": 19,
+        "end_line": 19,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "at",
+        "line": 24,
+        "end_line": 28,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "vitest",
+        "line": 3
+      },
+      {
+        "source": "react-router-dom",
+        "line": 4
+      },
+      {
+        "source": "./AccountMail",
+        "line": 5
+      },
+      {
+        "source": "../lib/api",
+        "line": 6
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 18
+  },
+  "frontend/src/pages/AccountMail.jsx": {
+    "sha256": "134266a18fb5f4d134979fff970aa2b8d54d15ad715ef9eb4f101d5c2d8fc3b4",
+    "definitions": [
+      {
+        "name": "inputClass",
+        "line": 22,
+        "end_line": 25,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "Card",
+        "line": 27,
+        "end_line": 37,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Note",
+        "line": 39,
+        "end_line": 46,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useLinkToken",
+        "line": 52,
+        "end_line": 60,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ForgotPassword",
+        "line": 62,
+        "end_line": 109,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ForgotPassword.submit",
+        "line": 70,
+        "end_line": 82,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ResetPassword",
+        "line": 111,
+        "end_line": 168,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ResetPassword.submit",
+        "line": 121,
+        "end_line": 137,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "VerifyEmail",
+        "line": 170,
+        "end_line": 194,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Unsubscribe",
+        "line": 196,
+        "end_line": 243,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Unsubscribe.toggle",
+        "line": 212,
+        "end_line": 222,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 7
+      },
+      {
+        "source": "react-router-dom",
+        "line": 8
+      },
+      {
+        "source": "../lib/useMeta",
+        "line": 9
+      },
+      {
+        "source": "../i18n",
+        "line": 10
+      },
+      {
+        "source": "../lib/api",
+        "line": 11
+      },
+      {
+        "source": "../lib/apiErrorMessage",
+        "line": 15
+      },
+      {
+        "source": "../components/PasswordField",
+        "line": 16
+      },
+      {
+        "source": "../components/Button",
+        "line": 17
+      },
+      {
+        "source": "../lib/format",
+        "line": 18
+      },
+      {
+        "source": "../styles/w5-pages.css",
+        "line": 19
+      },
+      {
+        "source": "../styles/k8-tools.css",
+        "line": 20
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "ForgotPassword"
+        ],
+        "line": 62
+      },
+      {
+        "names": [
+          "ResetPassword"
+        ],
+        "line": 111
+      },
+      {
+        "names": [
+          "VerifyEmail"
+        ],
+        "line": 170
+      },
+      {
+        "names": [
+          "Unsubscribe"
+        ],
+        "line": 196
+      },
+      {
+        "names": [
+          "default"
+        ],
+        "line": 245
+      }
+    ],
+    "anonymous_functions": 10
+  },
   "frontend/src/pages/AdminBI.component.test.jsx": {
     "sha256": "ea099e8a28fa99ee20b50f6bfd43be9f62c439a731914bb7ea1f95d49bd81664",
     "definitions": [
@@ -57396,7 +57677,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/Login.component.test.jsx": {
-    "sha256": "857ed445e61addfe1e812a269ccc1a3f588d1354da5477496c8eddb9597cc12d",
+    "sha256": "362cf07c2d14066c987535f5390e108ea9a4edb71314f6a9277b8bd67d328832",
     "definitions": [
       {
         "name": "useAuth",
@@ -57455,12 +57736,12 @@
     "anonymous_functions": 17
   },
   "frontend/src/pages/Login.jsx": {
-    "sha256": "3c1f943cf4b6eb93b9820176057e54b71d2a6f73ed20f2a07fcb695dd6a6d0c0",
+    "sha256": "b7b5afe7af1821d16fbc4cef8b68e31e8ace027af95d39c41a5df50b351a8d1c",
     "definitions": [
       {
         "name": "Login",
         "line": 18,
-        "end_line": 153,
+        "end_line": 154,
         "kind": "FunctionDeclaration"
       },
       {
