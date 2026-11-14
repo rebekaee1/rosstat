@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2260  ·  **Строк:** 1 426 659  ·  **Токенов (≈):** 13 603 878
+**Файлов:** 2261  ·  **Строк:** 1 426 903  ·  **Токенов (≈):** 13 606 293
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 801 | 64 850 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 928 | 322 656 | 3 533 352 |
+| `backend` | 929 | 322 799 | 3 534 839 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 146 | 17 427 |
-| `docs` | 144 | 890 176 | 7 651 857 |
+| `docs` | 144 | 890 277 | 7 652 785 |
 | `frontend` | 1017 | 184 664 | 2 023 563 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 666 | 307 333 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 369 138 | 3 021 183 |
+| `docs/mechanism-inventory.json` | 369 237 | 3 021 844 |
 | `docs/client-mechanism-inventory.json` | 255 960 | 1 807 619 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -71,8 +71,8 @@
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
 | `backend/app/main.py` | 2 071 | 22 094 |
 | `backend/app/services/site_urls.py` | 2 253 | 22 012 |
+| `backend/app/services/seo_world.py` | 2 271 | 21 684 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
-| `backend/app/services/seo_world.py` | 2 227 | 21 146 |
 | `backend/app/services/seo_regional.py` | 2 122 | 21 014 |
 | `docs/data_sources.md` | 760 | 20 874 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
@@ -101,9 +101,9 @@
 | `backend/app/services/world_national_ingest.py` | 1 457 | 13 238 |
 | `backend/app/services/admin_bi.py` | 1 335 | 13 106 |
 | `docs/research/our-state-2026-10-05.md` | 431 | 12 982 |
+| `docs/enterprise_resilience.md` | 339 | 12 729 |
 | `backend/app/api/seo_pages.py` | 1 132 | 12 640 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
-| `docs/enterprise_resilience.md` | 337 | 12 462 |
 | `docs/knowledge-unknowns.md` | 201 | 12 429 |
 | `frontend/src/lib/behavior.js` | 1 214 | 12 143 |
 | `backend/tests/test_seo_world.py` | 1 107 | 11 928 |
@@ -1342,6 +1342,7 @@
 | `backend/tests/test_cbr_currencies.py` | 86 | 952 |
 | `backend/app/api/search.py` | 85 | 951 |
 | `backend/app/services/search_r6a.py` | 59 | 950 |
+| `backend/tests/test_same_series_peers.py` | 99 | 949 |
 | `scripts/emiss/fixtures/31548.json` | 1 | 949 |
 | `backend/app/services/identity/service.py` | 110 | 948 |
 | `backend/tests/test_eurostat_headline_pins.py` | 84 | 946 |

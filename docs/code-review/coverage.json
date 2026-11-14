@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2471,
-    "code_files": 1999,
-    "current_reviews": 2471,
+    "files": 2472,
+    "code_files": 2000,
+    "current_reviews": 2472,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 172,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2201
+      "reviewed": 2202
     },
-    "definitions": 16139,
-    "annotated_definitions": 16139,
+    "definitions": 16153,
+    "annotated_definitions": 16153,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -5250,15 +5250,15 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "3873304e3a61ef71a155ace333a90215da7ae20d074a0b720d6c13bf54f0ab30",
-      "bytes": 94998,
-      "lines": 2227,
+      "sha256": "918758842c57a1aae480a988dbf3f2c084c19957ae6dd08b7e1422a36f43b5fc",
+      "bytes": 97763,
+      "lines": 2271,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 49,
-      "annotated_definitions": 49,
+      "definitions": 51,
+      "annotated_definitions": 51,
       "missing_definitions": []
     },
     {
@@ -10644,6 +10644,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_same_series_peers.py",
+      "sha256": "90c46a0d780434259635246ec471adf614dd3799278bd55c2bd0cd0be1540335",
+      "bytes": 3979,
+      "lines": 99,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 12,
+      "annotated_definitions": 12,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_scrape_access_policy.py",
       "sha256": "1b9de2aed1ec1aa0844ad4d789278786c7ebcfd02077d896e00798946c424b8a",
       "bytes": 11029,
@@ -14285,9 +14298,9 @@
     },
     {
       "path": "docs/enterprise_resilience.md",
-      "sha256": "cd626c649fc59a9078293a5b0ddded3d953ead06a0afa408957e6b21e7d8fb21",
-      "bytes": 74171,
-      "lines": 337,
+      "sha256": "93cba8eb8388668a92f0a8eee95f0b07567d3bfa3dcb8e9349685871ad87b8f0",
+      "bytes": 75889,
+      "lines": 339,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14324,7 +14337,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "091550e4fe3db3cb45bccc231388ac2416f7567b94977c18cb405499880d0846",
+      "sha256": "aec4a62a866752541dd6728f824450ee30fca8a87fcb4c50a1580912de6e9ab5",
       "bytes": 3861874,
       "lines": 136683,
       "code": false,
@@ -14376,9 +14389,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "09d28f86716f20e4c56906d4ad858471e03f096aa099776dc0239c7968d70778",
-      "bytes": 12304425,
-      "lines": 369138,
+      "sha256": "9002ccfd9e499864289280be4609d7f4cca2817730e08bb5cf09b131543b1a60",
+      "bytes": 12307068,
+      "lines": 369237,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14389,7 +14402,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "b984c78277d3b095dc24b5ab0a1d9dd7d08ed701259a6ff8606a5159d33e35c3",
+      "sha256": "02a13fd3ecdbe3f50494b0e6a3f543c2fd99398e6e06d22e9c7b774347c9cb56",
       "bytes": 631401,
       "lines": 3410,
       "code": false,
@@ -32160,9 +32173,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "0c47c9e008ce3a248cb3916c29719a48cb0b56862a1285534d01916796f16b19",
+  "ledger_sha256": "957e4b1d6e87b1c431fc2c88025376d55bbeb6fe019c81a0e21b6531963c53cc",
   "javascript_inventory_sha256": "84d9570419dfeb23d776e1b8e0e409c0a444ba520ef2fd120c370f57a4e3425b",
-  "baseline_commit": "df4eb06fb041ec37c64fd59c06add9134aa511c6",
+  "baseline_commit": "09f0831e33dd45eb56d06e03ee1db665a8840683",
   "branch": "worktree-agent-a4879bc09991f03fb",
   "unstaged_at_capture": []
 }

@@ -16,7 +16,7 @@
 - Registry declarations: **1367**
 - Registry references: **2591**
 - Migration operations: **480**
-- Candidate effects: **2849**
+- Candidate effects: **2852**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2949,10 +2949,10 @@ Relationships: `[]`
 | app.services.seo_world._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:206](../backend/app/services/seo_world.py#L206) |
 | app.services.seo_world._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:214](../backend/app/services/seo_world.py#L214) |
 | app.services.seo_world._KEY_CATEGORY_ORDER | Tuple | sequence/source expression | [backend/app/services/seo_world.py:223](../backend/app/services/seo_world.py#L223) |
-| app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:365](../backend/app/services/seo_world.py#L365) |
-| app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:373](../backend/app/services/seo_world.py#L373) |
-| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:500](../backend/app/services/seo_world.py#L500) |
-| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:594](../backend/app/services/seo_world.py#L594) |
+| app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:424](../backend/app/services/seo_world.py#L424) |
+| app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:432](../backend/app/services/seo_world.py#L432) |
+| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:559](../backend/app/services/seo_world.py#L559) |
+| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:653](../backend/app/services/seo_world.py#L653) |
 | app.services.seo_world_subnational._NOT_FOUND | Tuple | sequence/source expression | [backend/app/services/seo_world_subnational.py:37](../backend/app/services/seo_world_subnational.py#L37) |
 | app.services.seo_year_ui._SHORT_CELL_UNITS | Call | computed source expression | [backend/app/services/seo_year_ui.py:24](../backend/app/services/seo_year_ui.py#L24) |
 | app.services.session_analysis._PARAM_KEYS | Call | computed source expression | [backend/app/services/session_analysis.py:33](../backend/app/services/session_analysis.py#L33) |

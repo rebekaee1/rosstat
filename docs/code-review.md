@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `df4eb06fb041ec37c64fd59c06add9134aa511c6`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `09f0831e33dd45eb56d06e03ee1db665a8840683`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2471 |
-| Код, шаблоны и стили | 1999 |
-| Актуальные рецензии без пропусков guard | 2471 |
-| Именованные определения Python/JS: с аннотацией / всего | 16139 / 16139 |
+| Файлы в явно определённом scope | 2472 |
+| Код, шаблоны и стили | 2000 |
+| Актуальные рецензии без пропусков guard | 2472 |
+| Именованные определения Python/JS: с аннотацией / всего | 16153 / 16153 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -439,7 +439,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/seo_research.py](../backend/app/services/seo_research.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/seo_today.py](../backend/app/services/seo_today.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/seo_weekly_report.py](../backend/app/services/seo_weekly_report.py) | reviewed | 13/13 | актуально |
-| [backend/app/services/seo_world.py](../backend/app/services/seo_world.py) | reviewed | 49/49 | актуально |
+| [backend/app/services/seo_world.py](../backend/app/services/seo_world.py) | reviewed | 51/51 | актуально |
 | [backend/app/services/seo_world_compare.py](../backend/app/services/seo_world_compare.py) | reviewed | 17/17 | актуально |
 | [backend/app/services/seo_world_subnational.py](../backend/app/services/seo_world_subnational.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/seo_world_subnational_compare.py](../backend/app/services/seo_world_subnational_compare.py) | reviewed | 3/3 | актуально |
@@ -854,6 +854,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_ruonia_seo.py](../backend/tests/test_ruonia_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_russia_world_compare.py](../backend/tests/test_russia_world_compare.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_russia_year_modes.py](../backend/tests/test_russia_year_modes.py) | reviewed | 22/22 | актуально |
+| [backend/tests/test_same_series_peers.py](../backend/tests/test_same_series_peers.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_scrape_access_policy.py](../backend/tests/test_scrape_access_policy.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_scrape_guard.py](../backend/tests/test_scrape_guard.py) | reviewed | 35/35 | актуально |
 | [backend/tests/test_search_candidate_budget.py](../backend/tests/test_search_candidate_budget.py) | reviewed | 11/11 | актуально |
