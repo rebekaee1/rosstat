@@ -1,5 +1,6 @@
 """Почта (ADR-0032): ссылки, письма, список допуска, подтверждение, сброс, отписка, выпуск."""
 import asyncio
+import re
 import email
 import time
 
@@ -25,7 +26,7 @@ def mail_env(auth_env, monkeypatch):
     monkeypatch.setattr(service, "session_factory", auth_env["session_maker"])
     sent: list = []
 
-    def _fake_send(msg):
+    def _fake_send(msg, profile=None):
         sent.append(msg)
 
     monkeypatch.setattr(transport, "_send_sync", _fake_send)
@@ -116,8 +117,10 @@ def test_templates_follow_design_rules():
                   render_digest(sample_digest(loc, "https://x/"), loc, site_url="https://x/",
                                 unsubscribe_url="https://x/u")):
             low = r.html.lower()
-            assert "border:" not in low.replace("border-radius", "")  # без рамок
-            assert "<img" not in low  # без картинок: не блокируются и не размываются
+            assert "border:" not in low.replace("border-radius", "").replace("border:0;", "")  # без рамок
+            # Картинки только внутри письма (cid:), лёгкие: показываются сразу и не зависят от сайта.
+            assert all(src.startswith("cid:") for src in re.findall(r'<img[^>]*src="([^"]+)"', low))
+            assert r.images and all(len(b) < 50_000 for b, _ in r.images.values())
             assert "#b08a3e" in low  # золото — одна тонкая линия
             assert r.text and r.subject
     news = render_digest(sample_digest("ru", "https://x/"), "ru", site_url="https://x/", unsubscribe_url="https://x/u")
@@ -229,7 +232,7 @@ def test_one_click_unsubscribe_and_resubscribe(mail_env, auth_client):
     uid = _subscribe(auth_client)
     tok = tokens.issue("unsub", uid)
     state = auth_client.get(f"/api/v1/mail/unsubscribe?t={tok}").json()
-    assert state == {"subscribed": True, "email": "a…d@example.com"}
+    assert state == {"subscribed": True, "email": "a…d@example.com", "list": "newsletter"}
     # GET ничего не меняет (сканеры ссылок), POST формы RFC 8058 — отписывает.
     r = auth_client.post(f"/api/v1/mail/unsubscribe?t={tok}", content="List-Unsubscribe=One-Click",
                          headers={"Content-Type": "application/x-www-form-urlencoded"})
@@ -298,6 +301,38 @@ def test_campaign_guards_and_idempotency(mail_env, auth_client, monkeypatch):
     assert "utm_source=email" in html and "utm_campaign=2026-11-test" in html
 
 
+def test_campaign_personal_issue_per_recipient(mail_env, auth_client, monkeypatch):
+    """Выпуск на получателя: свой заголовок каждому, «нечего отправить» — пропуск, повтор без дублей."""
+    from app.config import settings
+    from app.services.mail import campaign
+
+    _subscribe(auth_client, "allowed@example.com")
+    auth_client.cookies.clear()
+    _subscribe(auth_client, "rebeka.ee@yandex.ru")
+    _verify_all(mail_env)
+    monkeypatch.setattr(settings, "mail_allow_all_recipients", True)
+    mail_env["sent"].clear()
+
+    async def builder(db, rec, issue):
+        if rec.email.startswith("rebeka"):
+            return None
+        return {"subject": f"Для вас: {rec.email.split('@')[0]}", "title": "Ваш выпуск",
+                "blocks": [{"type": "story", "title": "Инфляция", "value": "7,7 %",
+                            "url": "https://ru.forecasteconomy.com/russia/indicator/cpi"}]}
+
+    async def _q():
+        async with mail_env["session_maker"]() as db:
+            return await campaign.run(db, campaign.parse_issue(ISSUE), send=True, per_recipient=builder)
+    rep = asyncio.run(_q())
+    assert rep.statuses["sent"] == 1 and rep.statuses["no_personal_content"] == 1
+    msg = mail_env["sent"][0]
+    assert msg["Subject"] == "Для вас: allowed"
+    html = msg.get_body(("html",)).get_content()
+    assert "utm_content=b1-story" in html
+    again = asyncio.run(_q())
+    assert again.already_sent == 1 and len(mail_env["sent"]) == 1
+
+
 def test_campaign_stops_on_server_limit(mail_env, auth_client, monkeypatch):
     import smtplib
     from app.config import settings
@@ -309,7 +344,7 @@ def test_campaign_stops_on_server_limit(mail_env, auth_client, monkeypatch):
     _verify_all(mail_env)
     monkeypatch.setattr(settings, "mail_allow_all_recipients", True)
 
-    def _limit(_msg):
+    def _limit(_msg, profile=None):
         raise smtplib.SMTPDataError(554, b"5.7.1 Message rejected: daily limit exceeded")
 
     monkeypatch.setattr(transport, "_send_sync", _limit)

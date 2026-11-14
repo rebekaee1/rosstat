@@ -1,4 +1,4 @@
-"""Журнал писем mail_outbox (14.11.2026, ADR-0032).
+"""Журнал писем mail_outbox и стоп-лист mail_suppressions (14.11.2026, ADR-0032).
 
 Revision ID: 20261114_mail_outbox
 Revises: 20261114_pulse_context
@@ -36,9 +36,21 @@ def upgrade() -> None:
     )
     op.create_index("ix_mail_outbox_user", "mail_outbox", ["user_id"])
     op.create_index("ix_mail_outbox_status_created", "mail_outbox", ["status", "created_at"])
+    # Адреса с постоянным отказом или жалобой: письма на них не уходят.
+    op.create_table(
+        "mail_suppressions",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("email", sa.String(320), nullable=False),
+        sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=True),
+        sa.Column("reason", sa.String(20), nullable=False, server_default="bounce"),
+        sa.Column("status_code", sa.String(20), nullable=True),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.UniqueConstraint("email", name="uq_mail_suppression_email"),
+    )
 
 
 def downgrade() -> None:
+    op.drop_table("mail_suppressions")
     op.drop_index("ix_mail_outbox_status_created", table_name="mail_outbox")
     op.drop_index("ix_mail_outbox_user", table_name="mail_outbox")
     op.drop_table("mail_outbox")

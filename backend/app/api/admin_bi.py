@@ -272,6 +272,19 @@ async def bi_dashboard(
     return _building_response(build, queued=len(_INFLIGHT))
 
 
+@router.get("/mail")
+async def bi_mail(request: Request, days: int = Query(30, ge=1, le=365), _admin: User = Depends(require_admin)):
+    """Почта (ADR-0032): письма по видам и статусам, выпуски, подписчики, отписки, отказы.
+
+    Только числа; адресов и тем писем людям нет. Запросы короткие (таблицы почты малы),
+    поэтому без фонового снимка, как у дашборда.
+    """
+    from app.services.mail.stats import mail_summary
+
+    async with _override_aware_session(request, get_db) as db:
+        return await mail_summary(db, days=days)
+
+
 @router.get("/slices/meta")
 async def slices_meta(_admin: User = Depends(require_admin)):
     """Справочник конструктора «Срезы»: доступные метрики и измерения."""

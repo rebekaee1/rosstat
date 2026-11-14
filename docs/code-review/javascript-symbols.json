@@ -23809,7 +23809,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "c9be9bf78a8d3074de5e679a1452d770b4863220ff7b1e2363848d30dc01db68",
+    "sha256": "c3d1dc1b51e255230e59a0a7dc5a5448ba9bfbc923aad45003cdb8b2df3d7916",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23917,7 +23917,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "7658d420e0e075a6478b80fdd84266c2f448dc18bbb870d8a140cbe868dfc1d6",
+    "sha256": "b0e8710dc96cc402c0fe28dff74f9d33696c05234c356a060e250e3b38a2d0f5",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -53323,7 +53323,7 @@
     "anonymous_functions": 42
   },
   "frontend/src/pages/AccountMail.component.test.jsx": {
-    "sha256": "c9cd56f50e2c1a25efbfb0ef1f6a0b6913d7c013b6b32451fd70587f561c24b5",
+    "sha256": "8afec2ef7dc49191558e770958189278bd22e1e4866dbd952f263b73b3ac1b8f",
     "definitions": [
       {
         "name": "useT",
@@ -53361,10 +53361,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 18
+    "anonymous_functions": 19
   },
   "frontend/src/pages/AccountMail.jsx": {
-    "sha256": "134266a18fb5f4d134979fff970aa2b8d54d15ad715ef9eb4f101d5c2d8fc3b4",
+    "sha256": "ebe8874ba62e881fbee391c1eeb2c1b0f6ffaf7f0c2414ce1ff5bab832f9c141",
     "definitions": [
       {
         "name": "inputClass",
@@ -53551,7 +53551,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/pages/AdminBI.jsx": {
-    "sha256": "229c717f206d4ed1d0e164beaa07a0765900f662ce9a5ff76bcc1d7a0b1f7ffe",
+    "sha256": "31156e32a0c681b07c8be1de7b763c83f8791a6d35ea83e28e293e874f8d59b6",
     "definitions": [
       {
         "name": "eventLabel",
@@ -53956,33 +53956,57 @@
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "AdminBI",
+        "name": "MailTab",
         "line": 2915,
-        "end_line": 3060,
+        "end_line": 3021,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "MailTab.queryFn",
+        "line": 2919,
+        "end_line": 2919,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "MailTab.total",
+        "line": 2927,
+        "end_line": 2927,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "MailTab.flag",
+        "line": 2932,
+        "end_line": 2936,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "AdminBI",
+        "line": 3038,
+        "end_line": 3184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminBI.queryFn",
-        "line": 2934,
-        "end_line": 2938,
+        "line": 3058,
+        "end_line": 3062,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refetchInterval",
-        "line": 2940,
-        "end_line": 2945,
+        "line": 3064,
+        "end_line": 3069,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refreshNow",
-        "line": 2953,
-        "end_line": 2957,
+        "line": 3077,
+        "end_line": 3081,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.openSlices",
-        "line": 2970,
-        "end_line": 2970,
+        "line": 3094,
+        "end_line": 3094,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -54037,10 +54061,41 @@
         "names": [
           "default"
         ],
-        "line": 2915
+        "line": 3038
       }
     ],
-    "anonymous_functions": 203
+    "anonymous_functions": 215
+  },
+  "frontend/src/pages/AdminBI.mail.component.test.jsx": {
+    "sha256": "6017d545e7e5d0746a7291ed909098767b98b745c7b92619946cc13eed617115",
+    "definitions": [
+      {
+        "name": "default",
+        "line": 7,
+        "end_line": 7,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "./AdminBI",
+        "line": 4
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
   },
   "frontend/src/pages/AuthForms.analytics.component.test.jsx": {
     "sha256": "d10ed5126ab70d5831a9c2fbd17961f21672de06d82c8afe7e6424ffb3ea1d73",
