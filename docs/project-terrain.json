@@ -1,15 +1,11 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "953fc1614de378684cd1d247d7fd6014b9095d2a",
+  "baseline_commit": "3fd4435a5dc7f7f73fb12b97821543fa2ce1ee36",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/code-review/coverage.json",
-    "docs/code-review/javascript-symbols.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json"
+    "docs/code-review/reviews.jsonl"
   ],
   "untracked_at_capture": [],
   "stats": {

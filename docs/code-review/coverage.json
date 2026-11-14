@@ -33721,13 +33721,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "627f23037c94f6ad63f4e2d5ebb46c46136237101334b14625b90d7ac306d093",
+  "ledger_sha256": "9baac01a4cd54792ca5ce298075e520c067dbc61fa3d5bf6588f6fa2f4ba570d",
   "javascript_inventory_sha256": "7631dcc6e06b5906f5ecb61c2ac21cb4c0b54d3bdaf7eab7873accb8a01f806b",
-  "baseline_commit": "953fc1614de378684cd1d247d7fd6014b9095d2a",
+  "baseline_commit": "3fd4435a5dc7f7f73fb12b97821543fa2ce1ee36",
   "branch": "int/2026-11-14",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json"
-  ]
+  "unstaged_at_capture": []
 }
