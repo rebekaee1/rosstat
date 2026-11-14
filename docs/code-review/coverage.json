@@ -14246,7 +14246,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "067d3e31ca6374c9550baf986488dd3e365ecc25c937ed264a334d3a5cfc5896",
+      "sha256": "4b9a9366b016a727d055031d7b2188dadb87163fa2d0869342c8ac56df2d16eb",
       "bytes": 3852995,
       "lines": 136343,
       "code": false,
@@ -15065,9 +15065,9 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "1b35a0224858a9f88f39e796f5f4ff86c244429a976c4c880baf8b50f6f072a0",
-      "bytes": 139566,
-      "lines": 670,
+      "sha256": "a2bfed299797b0f7dcfc038ac6e637e2cbec2843185b6ac272f24d18533229b5",
+      "bytes": 141051,
+      "lines": 672,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -30613,9 +30613,9 @@
     },
     {
       "path": "scripts/check-all.sh",
-      "sha256": "efaf69c141862f83637c2343480e2a1781b29fa807d5838d292e3a61b2115307",
-      "bytes": 2386,
-      "lines": 56,
+      "sha256": "b3b3151c27ddfe0cc88af707b004cdc6d5b5c09958addd024bdaff3eb93d9cd6",
+      "bytes": 3796,
+      "lines": 68,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -32082,9 +32082,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "07be2f632db62b23c29d8b13e0f85c4d5fde14980bafb4847151eb2207fa441b",
+  "ledger_sha256": "566afca5570c51a8320ec07f0ae9c4e640a8b51bd042a48c3210c9d4e67e9dba",
   "javascript_inventory_sha256": "ff07e771d69de4817e88614a86a53747aafd3122d75b0bbe7982760f87d81c5d",
-  "baseline_commit": "867ec755a7cfc48cbff7687999911dbc69632ccd",
+  "baseline_commit": "3afd5788adb5cee88e1bbb16c0a8ef5dd523b785",
   "branch": "fix/counter-google-farm-2026-11-14",
   "unstaged_at_capture": []
 }
