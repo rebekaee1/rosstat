@@ -24,7 +24,8 @@ from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import BigInteger, Boolean, Column, Index, Integer, MetaData, Table, and_, case, cast, delete, func, or_, select, text, literal_column
+from sqlalchemy import BigInteger, Boolean, Column, Index, Integer, MetaData, Table, and_, case, cast, delete, func, or_, select, text, literal_column, union
+from sqlalchemy.orm import aliased
 from sqlalchemy.schema import CreateIndex, CreateTable, DropTable
 
 from app.config import settings
@@ -246,20 +247,86 @@ async def _stage(db, table: Table, source, temporary: list, *, index: tuple = ()
     return table
 
 
-async def _prepare_session_history(db, since: datetime, until: datetime, temporary: list):
+def _row_key(model):
+    """Ключ посетителя строки любой таблицы с visitor/session hash — как `_session_key` у событий."""
+    return func.coalesce(func.nullif(model.visitor_id_hash, literal_column("''")),
+                         func.nullif(model.session_id_hash, literal_column("''")))
+
+
+# Инкрементная сессионизация (14.11.2026): «что поступило» — по первичному ключу (порядок вставки), а не по
+# occurred_at: на боевом 14.11 0,12 % событий поведения приходят через 16,4 ч после occurred_at (пакеты, часы
+# устройства), p99 задержки — 22 с. Запас в строках покрывает транзакции, закоммиченные после чтения отметки
+# (меньший id позже большего): поведение ~73 тыс. строк в сутки → 5 000 ≈ 1,6 ч, цели ~2,1 тыс. → 300 ≈ 3,4 ч.
+# Лишние посетители безвредны: их сессии пересчитываются в то же самое.
+# У портретов (`behavior_sessions`) нет числового id и времени записи: берутся портреты со started_at не раньше
+# отметки минус PORTRAIT_INCREMENT_MARGIN (индекс ix_behavior_sessions_started). Портрет с более старым
+# started_at (часы устройства, запоздавший session_start, обновлённый синтетический портрет) догонит полный прогон.
+INCREMENT_SLACK_ROWS = {"behavior_events": 5_000, "frontend_events": 300}
+PORTRAIT_INCREMENT_MARGIN = timedelta(hours=2)
+_INCREMENT_MODELS = {"behavior_events": BehaviorEvent, "frontend_events": FrontendEvent}
+
+
+async def current_marks(db) -> dict:
+    """Отметка «до чего прочитано»: максимальные id событий и целей (по индексу PK) и время отметки."""
+    out: dict = {name: int(await db.scalar(select(func.max(model.id))) or 0)
+                 for name, model in _INCREMENT_MODELS.items()}
+    out["at"] = _utcnow().isoformat()
+    return out
+
+
+def _changed_visitors_select(marks: dict, dialect: str = "postgresql"):
+    """Посетители, у которых после отметки (минус запас) появились события, цели или портрет, и посетители,
+    чей десктопный портрет того же МСК-дня совпадает с новым портретом: размер их кластера мог вырасти, а он
+    входит в `bot_score` (сверка на копии боевого 14.11: без этой части 46 из 17 109 сессий расходились
+    только `is_bot`/`bot_score`)."""
+    parts = []
+    for name, model in _INCREMENT_MODELS.items():
+        floor = max(0, int(marks.get(name, 0)) - INCREMENT_SLACK_ROWS[name])
+        key = _row_key(model)
+        parts.append(select(key.label("visitor")).where(model.id > floor, key.isnot(None)))
+    at = datetime.fromisoformat(marks["at"]) if marks.get("at") else _utcnow()
+    key = _row_key(BehaviorSession)
+    fresh = BehaviorSession.started_at >= at - PORTRAIT_INCREMENT_MARGIN
+    parts.append(select(key.label("visitor")).where(fresh, key.isnot(None)))
+    new = aliased(BehaviorSession)
+    same_fp = [col.is_not_distinct_from(getattr(new, col.key)) for col in _PORTRAIT_FP_COLUMNS]
+    same_cluster = select(new.session_id_hash).where(
+        new.started_at >= at - PORTRAIT_INCREMENT_MARGIN, new.device_type == "desktop",
+        msk_day_expr(new.started_at, dialect) == msk_day_expr(BehaviorSession.started_at, dialect),
+        *same_fp,
+    ).exists()
+    parts.append(select(key.label("visitor")).where(
+        BehaviorSession.device_type == "desktop", key.isnot(None),
+        # Кластер считается за МСК-день: портреты старше начала дня самой ранней новой отметки не нужны.
+        BehaviorSession.started_at >= at - PORTRAIT_INCREMENT_MARGIN - timedelta(days=1),
+        same_cluster,
+    ))
+    return union(*parts)
+
+
+async def _prepare_session_history(db, since: datetime, until: datetime, temporary: list,
+                                   changed: dict | None = None):
     """Indexed SQL ownership stages have fresh stats even for cold raw tables.
 
     Historical work lives in PostgreSQL temporary storage, not Python lists.
     ANALYZE touches only these private transaction-scoped stages.
+    `changed` (инкремент, 14.11.2026) — отметки id: из посетителей окна берутся только те, у кого после отметки
+    что-то поступило; их история читается целиком, как в полном прогоне.
     """
     visitor_type = BehaviorEvent.visitor_id_hash.type
     key = _session_key()
+    window_visitors = select(key).where(
+        BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
+        BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES), key.isnot(None),
+    )
+    if changed is not None:
+        changed_stage = await _stage(
+            db, _temp_table("sessionize_changed_", Column("visitor", visitor_type, primary_key=True)),
+            _changed_visitors_select(changed, db.bind.dialect.name), temporary)
+        window_visitors = window_visitors.where(key.in_(select(changed_stage.c.visitor)))
     visitors = await _stage(
         db, _temp_table("sessionize_visitors_", Column("visitor", visitor_type, primary_key=True)),
-        select(key).where(
-            BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
-            BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES), key.isnot(None),
-        ).distinct(), temporary)
+        window_visitors.distinct(), temporary)
     raw_columns = [Column("visitor", visitor_type),
                    *(Column(name, BehaviorEvent.__table__.c[name].type) for name in _RAW_COLUMNS)]
     raw = await _stage(db, _temp_table("sessionize_raw_", *raw_columns),
@@ -268,8 +335,9 @@ async def _prepare_session_history(db, since: datetime, until: datetime, tempora
         *(Column(name, BehaviorEvent.__table__.c[name].type) for name in
           _RAW_COLUMNS),
         Column("logical_start", BehaviorEvent.occurred_at.type))
-    return await _stage(db, history, _session_history_query(db, since, until, visitors, raw=raw),
-                        temporary, index=(history.c.visitor, history.c.logical_start))
+    history = await _stage(db, history, _session_history_query(db, since, until, visitors, raw=raw),
+                           temporary, index=(history.c.visitor, history.c.logical_start))
+    return history, visitors
 
 
 def _session_bounds_select(events, since: datetime, dialect: str):
@@ -492,7 +560,8 @@ def _portrait_cluster_for(portrait, clusters, fingerprint) -> int:
     return clusters.get(key, 0) if key else 0
 
 
-async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
+async def sessionize(db, since: datetime, until: datetime | None = None,
+                     changed: dict | None = None) -> int:
     """Recompute touched logical sessions; return starts owned by [since,until).
 
     SQL resolves historical continuity for window visitors. Python uses source
@@ -503,6 +572,8 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
     their day remains the original MSK start day.
     F05b: при RUSTATS_CLICKHOUSE_ENABLED исчезнувшие/новые/изменённые ключи
     сессий пишутся в `server_session_changes` в той же транзакции.
+    `changed` (инкремент, 14.11.2026): пересчитываются и заменяются сессии окна только посетителей,
+    у которых после отметок id что-то поступило; сессии остальных посетителей не трогаются.
     """
     from app.services.analytics_marts import admin_identity
     stop = until or _utcnow()
@@ -520,7 +591,7 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
         if track:
             temporary.append(previous)
             await db.execute(CreateTable(previous))
-        history = await _prepare_session_history(db, since, stop, temporary)
+        history, visitors = await _prepare_session_history(db, since, stop, temporary, changed)
         admin_users, admin_visitors = await admin_identity(db)
         clusters = await _portrait_cluster_sizes(db, since, stop)
         details = await _prepare_session_details(db, history, since, temporary)
@@ -564,6 +635,9 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
             stage.c.started_at < since,
         ).group_by(stage.c.visitor_id_hash).subquery()
         in_window = and_(ServerSession.started_at >= since, ServerSession.started_at < stop)
+        if changed is not None:
+            # Инкремент: заменяются сессии только пересчитанных посетителей.
+            in_window = and_(in_window, ServerSession.visitor_id_hash.in_(select(visitors.c.visitor)))
         matches = and_(ServerSession.visitor_id_hash == carried.c.visitor_id_hash,
                        ServerSession.started_at >= carried.c.first_start)
         if db.bind.dialect.name == "sqlite":
@@ -1149,7 +1223,7 @@ async def sync_metrika_goals(db) -> int:
 # Jobs
 # ---------------------------------------------------------------------------
 
-async def run_rollups(days: int = 2) -> dict[str, int]:
+async def run_rollups(days: int = 2, changed: dict | None = None) -> dict[str, int]:
     """Общий прогон: сессионизация + все rollup'ы для окна N МСК-дней.
     Окно выравнивается по границе МСК-суток — пересчёт всегда затирает
     целые дни (идемпотентность delete+insert без «полудней» на стыке)."""
@@ -1167,7 +1241,8 @@ async def run_rollups(days: int = 2) -> dict[str, int]:
         next_day = window_day + timedelta(days=SESSIONIZE_WINDOW_DAYS)
         until = msk_day_start_utc(next_day) if next_day <= today else None
         async with analytics_session() as db:
-            n_sessions += await sessionize(db, msk_day_start_utc(window_day), until=until)
+            extra = {"changed": changed} if changed is not None else {}
+            n_sessions += await sessionize(db, msk_day_start_utc(window_day), until=until, **extra)
         if until is None:
             break
         window_day = next_day
@@ -1197,10 +1272,61 @@ async def run_rollups(days: int = 2) -> dict[str, int]:
             "pages": n_pages, "signups": n_signups}
 
 
+_MARKS_KEY = "fe:sessionize:marks"
+# Полный прогон окна не реже раза в час: догоняет то, чего инкремент по id не видит — `is_bot` по кластерам
+# портретов других посетителей, портрет из запоздавшего session_start (обновление строки без нового id),
+# связь с аккаунтом админа (identity_links), удаление аккаунта.
+FULL_SESSIONIZE_EVERY = timedelta(minutes=55)
+
+
+async def _load_marks() -> dict | None:
+    try:
+        from app.core.cache import get_state_redis
+
+        raw = await (await get_state_redis()).get(_MARKS_KEY)
+        return json.loads(raw) if raw else None
+    except Exception:  # noqa: BLE001 - нет отметки = полный прогон, как раньше
+        logger.warning("sessionize marks: Redis read failed", exc_info=True)
+        return None
+
+
+async def _save_marks(marks: dict) -> None:
+    try:
+        from app.core.cache import get_state_redis
+
+        await (await get_state_redis()).set(_MARKS_KEY, json.dumps(marks), ex=7 * 24 * 3600)
+    except Exception:  # noqa: BLE001
+        logger.warning("sessionize marks: Redis write failed", exc_info=True)
+
+
+async def run_rollups_15min() -> dict:
+    """Прогон каждые 15 минут: при `analytics_sessionize_incremental_enabled` — инкремент по отметкам id,
+    полный прогон не реже раза в 55 минут; выключено или нет отметок — полный, как до 14.11.2026.
+    Отметки берутся ДО прогона: всё, что поступит во время него, попадёт в следующий."""
+    from app.config import settings
+
+    async with analytics_session() as db:
+        marks_now = await current_marks(db)
+    now = _utcnow()
+    prev = await _load_marks() if settings.analytics_sessionize_incremental_enabled else None
+    full_at = None
+    if prev:
+        try:
+            full_at = datetime.fromisoformat(prev["full_at"])
+        except (KeyError, TypeError, ValueError):
+            full_at = None
+    incremental = bool(prev and full_at and now - full_at < FULL_SESSIONIZE_EVERY and prev.get("marks"))
+    stats = await run_rollups(days=2, changed=prev["marks"] if incremental else None)
+    stats["mode"] = "increment" if incremental else "full"
+    if settings.analytics_sessionize_incremental_enabled:
+        await _save_marks({"marks": marks_now, "full_at": (full_at if incremental else now).isoformat()})
+    return stats
+
+
 async def rollups_15min_job() -> None:
     """Инкремент последних 2 суток + пороговые алерты. Каждые 15 минут."""
     try:
-        stats = await run_rollups(days=2)
+        stats = await run_rollups_15min()
         logger.info("Rollups 15min: %s", stats)
     except Exception:
         logger.exception("Rollups 15min failed")

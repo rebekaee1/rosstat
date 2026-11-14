@@ -12,6 +12,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import re
 from datetime import date
 from html import escape
@@ -236,6 +238,53 @@ def year_values_table(
     )
 
 
+def all_years_block(
+    rows: Sequence[tuple[int, str, str]],
+    *,
+    head_year: str,
+    head_value: str | None,
+    shown: int = TABLE_SHOWN_ROWS,
+    collapse_above: int = TABLE_COLLAPSE_ABOVE,
+) -> str:
+    """Все годы ряда на странице показателя (14.11.2026, ADR-0031): год — ссылка на годовую страницу.
+
+    Страница показателя — главная для ряда в Google; годовые страницы без спроса закрыты меткой
+    ``googlebot``. Строка — ``(год, адрес, значение)``; ``head_value=None`` — только ссылки без
+    значений. До ``collapse_above`` строк — целиком, иначе ``shown`` первых и остаток внутри
+    ``<details class="seo-more">``: поисковик видит все годы, человек — короткий блок.
+    """
+    if not rows:
+        return ""
+
+    def part(chunk: Sequence[tuple[int, str, str]]) -> str:
+        if head_value is None:
+            # Строка годов без маркеров и рамок (визуальная проверка 14.11: столбец из 23 голых годов).
+            return '<ul class="seo-years">' + "".join(
+                f'<li><a href="{escape(href)}">{year}</a></li>' for year, href, _value in chunk
+            ) + "</ul>"
+        body = "".join(
+            f'<tr><td><a href="{escape(href)}">{year}</a></td><td>{escape(value)}</td></tr>'
+            for year, href, value in chunk
+        )
+        return (
+            '<div class="seo-table-scroll" tabindex="0"><table><thead><tr>'
+            f"<th>{escape(head_year)}</th><th>{escape(head_value)}</th></tr></thead>"
+            f"<tbody>{body}</tbody></table></div>"
+        )
+
+    if len(rows) <= collapse_above:
+        return part(rows)
+    head, rest = rows[:shown], rows[shown:]
+    first, last = rest[-1][0], rest[0][0]
+    summary = (
+        f"All years: {first}–{last}" if _en() else f"Все годы: {first}–{last}"
+    )
+    return (
+        f"{part(head) if head else ''}"
+        f'<details class="seo-more"><summary>{escape(summary)}</summary>{part(rest)}</details>'
+    )
+
+
 def extreme_dates(
     dated_values: Sequence[tuple[date, float]],
 ) -> tuple[tuple[date, float], tuple[date, float]]:
@@ -262,8 +311,12 @@ def year_range_note(
     en: bool,
     last_is_partial: bool = False,
     min_points: int = 3,
+    value_fmt: Callable[[float], str] | None = None,
 ) -> str:
     """Короткая фраза для description годовой страницы ряда с несколькими точками.
+
+    ``value_fmt`` — готовый формат числа с единицей (страны мира, 14.11.2026: точность ряда
+    и единица справа от числа); без него — прежний формат с полной единицей.
 
     Запросы вида «максимальная ключевая ставка в 2025», «курс доллара в 2010»
     ищут именно крайние значения и значение на конец периода; прежний текст
@@ -283,6 +336,8 @@ def year_range_note(
     sfx = f" {unit}" if unit else ""
 
     def fmt(v: float) -> str:
+        if value_fmt is not None:
+            return value_fmt(v)
         return f"{format_number_ru(v, locale=loc)}{sfx}"
 
     if en:

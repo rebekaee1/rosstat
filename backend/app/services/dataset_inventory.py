@@ -88,6 +88,12 @@ async def _row_count(db: AsyncSession, model) -> int:
     return int(await db.scalar(select(func.count()).select_from(model)) or 0)
 
 
+async def row_count(db: AsyncSession, model) -> int:
+    """Публичное имя `_row_count` для других модулей (загрузчик Eurostat, 14.11.2026): итог в журнале
+    не должен читать 16 млн строк `world_data_points` точным COUNT(*)."""
+    return await _row_count(db, model)
+
+
 async def _json_keys(db: AsyncSession, model, json_col, order_col) -> set[str]:
     rows = (await db.execute(
         select(json_col).order_by(order_col.desc()).limit(_JSON_SAMPLE_ROWS)

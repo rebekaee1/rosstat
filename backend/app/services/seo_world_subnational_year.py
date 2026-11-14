@@ -85,8 +85,13 @@ async def render_subnational_indicator_year_html(
     og_path = og_subnational_indicator_year(country.slug, region.slug, indicator.code, year)
 
     title = (f"{name} in {region_name}, {year}" if en else f"{name} — {region_name}, {year} год")
+    # EN (14.11.2026): регион и страна, год и значение первым предложением; название — как в заголовке
+    # (не «state gdp overview»), единица со строчной буквы, у годового ряда без повтора года.
+    unit_en = unit[:1].lower() + unit[1:] if unit[:1].isupper() and not unit[:2].isupper() else unit
+    value_en = f"{format_number_ru(value, locale=get_locale())} {unit_en}".strip()
+    when_en = "" if indicator.frequency == "annual" else f" ({period_text})"
     description = (
-        f"Official {name.lower()} observations for {region_name} in {year}; latest published observation: {value_text} ({period_text})."
+        f"{name} in {region_name} ({country_name}), {year}: {value_en}{when_en}. Source: {source_name}."
         if en else
         f"Официальные значения показателя «{name}» в регионе {region_name} за {year} год; последнее наблюдение: {value_text} ({period_text})."
     )

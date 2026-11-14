@@ -11,7 +11,7 @@
   мировые показатели);
 * годовые страницы текущего и прошлого года у показателей России;
 * страницы, которые уже получали показы и клики (Google Search Console за
-  90 дней), визиты (``daily_pages`` за 30 дней) и страницы, на которые
+  90 дней: запросы и отчёт страниц ``gsc_page_daily``), визиты (``daily_pages`` за 30 дней) и страницы, на которые
   маршрутизируются поисковые запросы Яндекса (``webmaster_search_queries``).
 
 Шард не заменяет остальные: те же адреса остаются в своих шардах. Состав
@@ -99,7 +99,7 @@ def normalize_demand_path(value: str | None) -> str | None:
 async def load_priority_plan(db, today: date) -> PriorityPlan:
     """Собрать спрос. Каждый источник независим: сбой одного не отменяет остальные."""
     plan = PriorityPlan()
-    for loader in (_load_gsc, _load_webmaster, _load_key_world_cards, _load_visits):
+    for loader in (_load_gsc, _load_gsc_pages, _load_webmaster, _load_key_world_cards, _load_visits):
         try:
             await loader(db, plan, today)
         except Exception:  # noqa: BLE001 — спрос не должен ломать публикацию sitemap
@@ -126,6 +126,29 @@ async def _load_gsc(db, plan: PriorityPlan, today: date) -> None:
         .limit(_GSC_LIMIT)
     )).all()
     plan.add_ranked([page for (page,) in rows], _W_GSC, "gsc")
+
+
+async def _load_gsc_pages(db, plan: PriorityPlan, today: date) -> None:
+    """Страницы с показами в Google по отчёту страниц (``gsc_page_daily``).
+
+    В ``gsc_search_queries`` нет запросов, которые Google скрывает (анонимные): 01–10.11.2026
+    из 3 667 годовых страниц apex с показами там было 521, из 47 с кликами — 13. Отчёт
+    страниц полный; шард служит списком спроса для метки googlebot на apex (ADR-0031).
+    """
+    from app.models import GscPageDaily
+
+    since = today - timedelta(days=_GSC_DAYS)
+    score = func.coalesce(func.sum(GscPageDaily.impressions), 0) + _CLICK_WEIGHT * func.coalesce(
+        func.sum(GscPageDaily.clicks), 0
+    )
+    rows = (await db.execute(
+        select(GscPageDaily.page)
+        .where(GscPageDaily.date >= since)
+        .group_by(GscPageDaily.page)
+        .order_by(score.desc())
+        .limit(_GSC_LIMIT)
+    )).all()
+    plan.add_ranked([page for (page,) in rows], _W_GSC, "gsc_pages")
 
 
 async def _load_webmaster(db, plan: PriorityPlan, today: date) -> None:

@@ -431,6 +431,27 @@ export async function fetchWorldAverageSeries(conceptSlug, mode, { signal } = {}
   ).data;
 }
 
+/** Знаков после точки в кратчайшей записи числа; «1.5e-7» — 8, целое — 0 (так же считает backend `display._decimals_in`). */
+function decimalsIn(raw) {
+  const value = Math.abs(Number(raw));
+  if (!Number.isFinite(value) || Number.isInteger(value)) return 0;
+  const [mantissa, exponent] = String(value).toLowerCase().split('e');
+  const frac = mantissa.split('.')[1] || '';
+  return exponent === undefined ? frac.length : Math.max(0, frac.length - Number(exponent));
+}
+
+/**
+ * Знаков после запятой для всех чисел ряда страны: столько, сколько есть в самих данных, но не больше двух
+ * («1 815 983», «3,1», «3,58»); ряд, где все значения по модулю меньше единицы, — до четырёх («0,0123», а не «0,01»).
+ * То же правило у серверной страницы — backend `display.world_series_digits`; общие случаи — `worldValueDigits.cases.json`.
+ */
+export function worldValueDigits(values) {
+  const nums = values.map(Number).filter(Number.isFinite);
+  if (nums.length === 0) return 2;
+  const cap = Math.max(...nums.map(Math.abs)) < 1 ? 4 : 2;
+  return Math.min(cap, Math.max(...nums.map(decimalsIn)));
+}
+
 /**
  * Формат числа для витрины мира: RU — запятая и неразрывный пробел; EN — точка.
  * Переиспользует formatValue из lib/format.js.

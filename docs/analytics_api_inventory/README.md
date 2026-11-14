@@ -29,6 +29,8 @@ and `analytics-smoke.py` exits with `enabled=false`.
 
 **Публичный Telegram-бот (08.11.2026, локально, флаг выключен):** таблицы `public_bot_chats`, `public_bot_events`, `public_bot_subscriptions` — внутренний учёт пути «ролик → бот → цифра → подписка → возврат»; переходы из бота на сайт приходят с `utm_source=telegram&utm_medium=bot`. Внешних API нет. Контракт — [data-contracts](../data-contracts.md#публичный-telegram-бот--2026-11-08), решение — [ADR-0027](../adr/0027-public-telegram-bot.md).
 
+**Скачивания и выгрузки в служебном боте (14.11.2026, ветка, не выпущено):** кнопки «📥 Скачивания» и «📤 Выгрузки» читают `frontend_events` (группы скачиваний и упоров в лимит, все действия), `user_signups`, `identity_links`, `server_sessions` и справочники названий; внешних API нет. Контракт — [data-contracts](../data-contracts.md#служебный-бот-скачивания-и-выгрузки--2026-11-14-ветка-не-выпущено), решение — дополнение [ADR-0024](../adr/0024-telegram-report-modes.md#subsequent-additions).
+
 Activation cheat-sheet:
 
 - `RUSTATS_ANALYTICS_API_TOKEN` защищает внутренние analytics REST endpoints

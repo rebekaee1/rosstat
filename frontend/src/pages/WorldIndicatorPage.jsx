@@ -12,7 +12,7 @@ import { getSiteOrigin } from '../lib/siteOrigin';
 import { completeDataset } from '../lib/datasetJsonLd';
 import { mountJsonLd } from '../lib/jsonLd';
 import {
-  useWorldIndicator, useWorldIndicatorData, useWorldCountry, useWorldCompareSnapshot, formatWorldValue,
+  useWorldIndicator, useWorldIndicatorData, useWorldCountry, useWorldCompareSnapshot, formatWorldValue, worldValueDigits,
   localizeWorldUnit,
 } from '../lib/worldApi';
 import {
@@ -39,6 +39,7 @@ import {
 import { deriveWorldMode } from '../lib/worldDerive';
 import { downloadCSV, downloadExcel } from '../lib/excel';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import { prepareVariantGroup } from '../lib/viewModeShortLabels';
 import WorldViewModePicker from '../components/WorldViewModePicker';
 import IndicatorHeroValue from '../components/IndicatorHeroValue';
@@ -335,10 +336,7 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
     || (modeMeta && modeMeta.official === false);
   // Знаков после запятой ровно столько, сколько есть в самих данных: «1 815 983», «3,1», а не «1 815 983,00» и «3,10».
   const valueDigits = points.length > 0
-    ? Math.min(2, Math.max(...points.map((point) => {
-      const value = Number(point.value);
-      return Number.isFinite(value) ? (String(Math.abs(value)).split('.')[1] || '').length : 0;
-    })))
+    ? worldValueDigits(points.map((point) => point.value))
     : chartValueDigits(rawUnit || displayUnit);
   // Численность населения: плитки «28,1 млн», «за год», «место среди стран», «рост за 10 лет».
   const isPopulation = indicator?.concept_slug === 'population'
@@ -486,21 +484,22 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
   const downloadMeta = useMemo(() => ({
     name: displayName,
     unit: displayUnit,
-  }), [displayName, displayUnit]);
+    country: slug,
+  }), [displayName, displayUnit, slug]);
 
   const handleDownloadExcel = useCallback(async () => {
     try {
       const ok = await downloadExcel(fullChartData, activeMode, code, 'all', downloadMeta);
-      if (ok) track(events.DOWNLOAD_EXCEL, { indicator: code, world: true, mode: activeMode });
+      if (ok) track(events.DOWNLOAD_EXCEL, { indicator: code, world: true, mode: activeMode, ...subjectParams({ code, country: slug }) });
     } catch { /* сеть */ }
-  }, [fullChartData, activeMode, code, downloadMeta]);
+  }, [fullChartData, activeMode, code, downloadMeta, slug]);
 
   const handleDownloadCSV = useCallback(async () => {
     try {
       const ok = await downloadCSV(fullChartData, activeMode, code, 'all', downloadMeta);
-      if (ok) track(events.DOWNLOAD_CSV, { indicator: code, world: true, mode: activeMode });
+      if (ok) track(events.DOWNLOAD_CSV, { indicator: code, world: true, mode: activeMode, ...subjectParams({ code, country: slug }) });
     } catch { /* сеть */ }
-  }, [fullChartData, activeMode, code, downloadMeta]);
+  }, [fullChartData, activeMode, code, downloadMeta, slug]);
 
   const dateFormat = resolveDateFormat({
     frequency: activeFreq,

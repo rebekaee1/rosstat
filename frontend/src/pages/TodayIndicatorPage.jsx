@@ -21,6 +21,7 @@ import { ChartSaveButton } from '../components/ChartDownloadMenu';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import { SkeletonBox } from '../components/Skeleton';
 import { todayIndicatorTrail } from '../lib/breadcrumbs';
 import {
@@ -113,7 +114,7 @@ export default function TodayIndicatorPage() {
   });
   const saveImage = async () => {
     if (!imageAuthed) {
-      track(events.CHART_IMAGE_BLOCKED, { indicator: seriesCode, indicatorCategory: indicator?.category });
+      track(events.CHART_IMAGE_BLOCKED, { indicator: seriesCode, indicatorCategory: indicator?.category, ...subjectParams({ code: seriesCode }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -126,7 +127,7 @@ export default function TodayIndicatorPage() {
         source: indicator?.source ? t('z4.png.source', { source: indicator.source }) : '',
       },
     }).catch(() => false);
-    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: seriesCode, indicatorCategory: indicator?.category });
+    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: seriesCode, indicatorCategory: indicator?.category, ...subjectParams({ code: seriesCode }) });
   };
 
   const isError = metaError || dataError;

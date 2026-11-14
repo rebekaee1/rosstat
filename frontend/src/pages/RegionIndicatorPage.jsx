@@ -40,6 +40,7 @@ import { useAuth } from '../context/authContext';
 import { exportTable } from '../lib/api';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import { regionIndicatorTrail } from '../lib/breadcrumbs';
 import {
   regionIndicatorPath,
@@ -152,7 +153,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   // гейт регистрации (то же окно, что в макроблоке). PNG — без watermark.
   const requireAuth = (blockedEvent) => {
     if (isAuthed) return true;
-    track(blockedEvent, { indicator: `region:${slug}:${code}` });
+    track(blockedEvent, { indicator: `region:${slug}:${code}`, ...subjectParams({ code, region: slug }) });
     window.dispatchEvent(new CustomEvent('fe:download-limit'));
     return false;
   };
@@ -181,7 +182,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 100);
-      track(evt, { indicator: `region:${slug}:${code}`, region: slug });
+      track(evt, { indicator: `region:${slug}:${code}`, ...subjectParams({ code, region: slug }) });
     } catch {
       // Сетевые сбои экспорта не должны ронять страницу.
     } finally {
@@ -197,7 +198,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
       watermark: false,
     }).catch(() => false);
     setExporting(false);
-    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `region:${slug}:${code}`, region: slug });
+    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `region:${slug}:${code}`, ...subjectParams({ code, region: slug }) });
   };
 
   // Активный ряд: месячный, если по показателю он пришёл; иначе годовой.

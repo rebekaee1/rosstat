@@ -24,6 +24,7 @@ import json
 import logging
 import re
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
 from html import escape
@@ -168,6 +169,37 @@ def truncate_meta(value: str, limit: int) -> str:
     if cut > limit * 0.6:
         head = head[:cut]
     return head.rstrip(" ,;:—-") + "…"
+
+
+# Английский хост (14.11.2026): description не длиннее 160 знаков — Google показывает в выдаче около
+# 155–160; длиннее — обрезает сам посреди фразы. Русский хост — прежние 300 (Яндекс, отдельное решение).
+META_DESCRIPTION_LIMIT_EN = 160
+_SENTENCE_END = re.compile(r"(?<=[.!?…])\s+(?=[A-ZА-ЯЁ0-9«\"(])")
+# Точка сокращения не конец предложения: «Federal Reserve Bank of St. Louis», «U.S. Bureau».
+_ABBREVIATION_END = re.compile(r"(?:\b(?:[A-Za-z]\.){1,3}|\b(?:St|Dr|Mr|Mrs|Inc|Co|Ltd|vs|No|Jr|Sr|ул|г|гг|т|д)\.)$")
+
+
+def fit_meta(value: str, limit: int) -> str:
+    """Description в пределах ``limit``: целыми предложениями с начала, иначе — по границе слова.
+
+    Шаблоны ставят главное (показатель, место, год, значение) в первое предложение, источник и
+    пояснения — дальше: они и отбрасываются первыми.
+    """
+    if len(value) <= limit:
+        return value
+    sentences: list[str] = []
+    for piece in _SENTENCE_END.split(value):
+        if sentences and _ABBREVIATION_END.search(sentences[-1]):
+            sentences[-1] = f"{sentences[-1]} {piece}"
+        else:
+            sentences.append(piece)
+    kept = ""
+    for sentence in sentences:
+        candidate = f"{kept} {sentence}".strip() if kept else sentence
+        if len(candidate) > limit:
+            break
+        kept = candidate
+    return kept if kept else truncate_meta(value, limit - 1)
 
 
 def _format_date(value: date | None) -> str:
@@ -731,6 +763,8 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,san
 .seo-pills li{margin:0}
 .seo-pills a{display:inline-block;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:999px;padding:.35rem .9rem;font-size:.8125rem;text-decoration:none!important;color:rgba(26,26,46,.75)}
 .seo-pills a:hover{border-color:#B8942F;color:#B8942F}
+.seo-years{display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin:.6rem 0;padding:0;list-style:none}
+.seo-years li{margin:0}
 .seo-faq{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:.9rem;padding:.35rem 1.1rem .6rem;margin:.75rem 0}
 .seo-cta{max-width:56rem;margin:2.5rem auto 0;padding:0 1rem}
 .seo-cta-in{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:1rem;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
@@ -1884,7 +1918,11 @@ def compose_document(
 
     url = _absolute(canonical_path, canonical=True)
     safe_title = escape(title)
-    safe_desc = escape(truncate_meta(clean_text(description), 300))
+    safe_desc = escape(
+        fit_meta(clean_text(description), META_DESCRIPTION_LIMIT_EN)
+        if get_locale() == "en"
+        else truncate_meta(clean_text(description), 300)
+    )
     safe_keywords = escape(clean_text(keywords or _default_keywords())[:400])
     structured_items = list(json_ld or [])
     if og_image:
@@ -3297,8 +3335,13 @@ def year_history_position_lines(
     series: list[tuple[int, float, date]],
     code: str,
     unit: str,
+    value_fmt: Callable[[float], str] | None = None,
 ) -> list[str]:
-    """Положение значения в истории показателя: среднее, рекорд, давность экстремума."""
+    """Положение значения в истории показателя: среднее, рекорд, давность экстремума.
+
+    ``value_fmt`` — формат числа без единицы (страны мира, 14.11.2026: точность ряда); без него —
+    прежний ``format_number_ru``.
+    """
     from app.services.seo_i18n import year_template
 
     yt = year_template
@@ -3309,6 +3352,10 @@ def year_history_position_lines(
         ]
     cpi_mode = is_cpi_index(code)
     unit_suffix = f" {unit}" if unit and not cpi_mode else (" %" if cpi_mode else "")
+
+    def _num(v: float) -> str:
+        return value_fmt(v) if value_fmt is not None else format_number_ru(v, signed=cpi_mode)
+
     shown_pairs = [
         (y, display_value(code, v))
         for y, v, _d in series
@@ -3337,7 +3384,7 @@ def year_history_position_lines(
             or "Положение в истории: {vs_mean} (среднее — {mean})"
         ).format(
             vs_mean=vs_mean,
-            mean=f"{format_number_ru(mean, signed=cpi_mode)}{unit_suffix}",
+            mean=f"{_num(mean)}{unit_suffix}",
         ),
     ]
     vmax = max(values)
@@ -3348,7 +3395,8 @@ def year_history_position_lines(
     def _gap_ago(gap: int) -> str:
         if gap <= 0:
             return ""
-        en = yt("gap_ago")
+        en = yt("gap_ago_one") if gap == 1 else None
+        en = en or yt("gap_ago")
         if en:
             return en.format(n=gap)
         gap_text = (
@@ -3372,7 +3420,7 @@ def year_history_position_lines(
                     yt("hist_max_tie")
                     or "Это один из максимумов за всю историю ({value})"
                 ).format(
-                    value=f"{format_number_ru(vmax, signed=cpi_mode)}{unit_suffix}"
+                    value=f"{_num(vmax)}{unit_suffix}"
                 )
             )
     else:
@@ -3383,7 +3431,7 @@ def year_history_position_lines(
                 yt("hist_max_other")
                 or "Максимум истории — {value} в {peak_year} году{gap}"
             ).format(
-                value=f"{format_number_ru(vmax, signed=cpi_mode)}{unit_suffix}",
+                value=f"{_num(vmax)}{unit_suffix}",
                 peak_year=peak_year,
                 gap=_gap_ago(gap) if gap > 0 else "",
             )
@@ -3402,7 +3450,7 @@ def year_history_position_lines(
                     yt("hist_min_tie")
                     or "Это один из минимумов за всю историю ({value})"
                 ).format(
-                    value=f"{format_number_ru(vmin, signed=cpi_mode)}{unit_suffix}"
+                    value=f"{_num(vmin)}{unit_suffix}"
                 )
             )
     else:
@@ -3413,7 +3461,7 @@ def year_history_position_lines(
                 yt("hist_min_other")
                 or "Минимум истории — {value} в {floor_year} году{gap}"
             ).format(
-                value=f"{format_number_ru(vmin, signed=cpi_mode)}{unit_suffix}",
+                value=f"{_num(vmin)}{unit_suffix}",
                 floor_year=floor_year,
                 gap=_gap_ago(gap) if gap > 0 else "",
             )
@@ -4227,13 +4275,22 @@ def _indicator_body(
     # Пары (year, month) готовит async-вызывающий (data_month_pairs).
     years_section = ""
     if data_years:
-        year_links = _links_list(tuple(
+        # Все годы (14.11.2026, ADR-0031): 12 последних видны, остальные — в «Все годы» внутри <details>.
+        from app.services.seo_year_ui import TABLE_SHOWN_ROWS, all_years_block
+
+        ordered = sorted(data_years, reverse=True)
+        shown_links = _links_list(tuple(
             (paths.russia_indicator_year(indicator.code, y), year_link_tpl.format(name=name, year=y))
-            for y in sorted(data_years, reverse=True)[:12]
+            for y in ordered[:TABLE_SHOWN_ROWS]
         ))
+        rest = ordered[TABLE_SHOWN_ROWS:]
+        rest_html = all_years_block(
+            [(y, paths.russia_indicator_year(indicator.code, y), "") for y in rest],
+            head_year="", head_value=None, collapse_above=0, shown=0,
+        ) if rest else ""
         years_section = (
             f"<section><h2>{escape(years_h2_tpl.format(name=name))}</h2>"
-            f"{year_links}</section>\n"
+            f"{shown_links}{rest_html}</section>\n"
         )
     months_section = ""
     if (indicator.frequency or "").startswith("month") and data_month_pairs:

@@ -314,6 +314,65 @@ async def _category_siblings(db: AsyncSession, country_id: int, indicator: World
     return [row for row in primaries if row.code != indicator.code][:_CATEGORY_SIBLINGS_SHOWN]
 
 
+_SAME_SERIES_PEERS_SHOWN = 12
+
+
+async def _same_series_rows(db: AsyncSession, indicator: WorldIndicator) -> list[tuple[str, str, str, str]]:
+    """Тот же срез (провайдер, набор, срез) у всех активных стран, первые SHOWN + 1 по порядку блока.
+
+    Одна строка лишняя: страна самой карточки исключается уже после, поэтому список общий для всех
+    стран ряда. Порядок прежний (`sort_order`, `name_ru`) + `id` для одинаковых — прежде он зависел от плана.
+    """
+    rows = (
+        await db.execute(
+            select(WorldCountry.slug, WorldCountry.name_ru, WorldCountry.name_en, WorldIndicator.code,
+                   WorldCountry.id)
+            .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
+            .where(
+                WorldIndicator.provider == indicator.provider,
+                WorldIndicator.dataset_id == indicator.dataset_id,
+                WorldIndicator.slice_hash == indicator.slice_hash,
+                WorldIndicator.is_listed.is_(True),
+                WorldCountry.is_active.is_(True),
+            )
+            .order_by(WorldCountry.sort_order, WorldCountry.name_ru, WorldCountry.id)
+            .limit(_SAME_SERIES_PEERS_SHOWN + 1)
+        )
+    ).all()
+    return [(s, n, ne, c, cid) for s, n, ne, c, cid in rows]
+
+
+async def _same_series_peers(
+    db: AsyncSession, indicator: WorldIndicator, country_id: int,
+) -> list[tuple[str, str, str, str]]:
+    """Блок «Этот показатель в других странах» (14.11.2026): список на срез кэшируется на версию каталога.
+
+    Прежний запрос шёл на каждый рендер мировой карточки: по срезу `pg_stat_statements` боевого 14.11
+    (18:04–18:13) — 9 % чтения диска, 90 мс на вызов, уникальный индекс не покрывает условие (страна
+    стоит между провайдером и набором). Список зависит только от среза и каталога, поэтому считается
+    один раз на срез; страна карточки исключается из готового списка — результат тот же, что у прежнего
+    запроса с `id != страна` и `LIMIT 12`.
+    """
+    key = None
+    rows = None
+    try:
+        raw = f"{indicator.provider}|{indicator.dataset_id}|{indicator.slice_hash}"
+        digest = hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
+        key = await versioned_key("world", f"same-series-peers:v1:{digest}")
+        rows = await cache_get(key)
+    except Exception:  # noqa: BLE001 - кэш не обязателен
+        rows = None
+    if rows is None:
+        rows = await _same_series_rows(db, indicator)
+        if key is not None:
+            try:
+                await cache_set(key, [list(r) for r in rows], ttl=_CATEGORY_SIBLINGS_TTL_SECONDS)
+            except Exception:  # noqa: BLE001
+                pass
+    peers = [(s, n, ne, c) for s, n, ne, c, cid in rows if cid != country_id]
+    return peers[:_SAME_SERIES_PEERS_SHOWN]
+
+
 def _pick_card_primaries(inds: list[WorldIndicator]) -> list[WorldIndicator]:
     """Одна карточка на catalog_merge_key: primary частоты, primary мера.
 
@@ -1877,7 +1936,15 @@ async def render_world_indicator_html(
                 f"публикация — {escape(freq_label)}. Источник — {escape(source)}."
             )
 
-    last_value_text = _fmt(last_value)
+    # Точность — правило SPA для всего ряда (display.world_series_digits, 14.11.2026): «3,58», а не «3,5764».
+    from app.services.display import format_fixed, world_series_digits
+
+    series_digits = world_series_digits(v for _d, v in series)
+
+    def _fmt_series(value: float) -> str:
+        return format_fixed(value, series_digits)
+
+    last_value_text = _fmt_series(last_value)
     en_lead = _wt_ind("indicator_lead")
     if en_lead:
         lead_p = escape(
@@ -1946,7 +2013,7 @@ async def render_world_indicator_html(
     recent = list(reversed(series[-24:]))
     table_rows = "".join(
         f"<tr><td>{escape(_period_label(d, indicator.frequency))}</td>"
-        f"<td>{_fmt(v)}</td></tr>"
+        f"<td>{_fmt_series(v)}</td></tr>"
         for d, v in recent
     )
     table_h2 = _wt_ind("indicator_table_h2") or "Последние значения"
@@ -1993,23 +2060,8 @@ async def render_world_indicator_html(
         f"<figcaption>{escape(figcaption)}</figcaption></figure>"
     )
 
-    # Тот же срез у других стран (dataset + slice_hash).
-    peers = (
-        await db.execute(
-            select(WorldCountry.slug, WorldCountry.name_ru, WorldCountry.name_en, WorldIndicator.code)
-            .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
-            .where(
-                WorldIndicator.provider == indicator.provider,
-                WorldIndicator.dataset_id == indicator.dataset_id,
-                WorldIndicator.slice_hash == indicator.slice_hash,
-                WorldIndicator.is_listed.is_(True),
-                WorldCountry.is_active.is_(True),
-                WorldCountry.id != country.id,
-            )
-            .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
-            .limit(12)
-        )
-    ).all()
+    # Тот же срез у других стран (dataset + slice_hash); список на срез кэшируется (14.11.2026).
+    peers = await _same_series_peers(db, indicator, country.id)
     peers_html = ""
     if peers:
         items = "".join(
@@ -2042,20 +2094,36 @@ async def render_world_indicator_html(
             f'<ul class="seo-pills">{items}</ul></section>'
         )
 
-    # Ссылки на годовые страницы ряда (08.11.2026, гигиена после падения Google): мировые годовые страницы (5,5 млн
-    # в sitemap) были «островком» без входа с карточки. Годы берём из уже загруженных точек, только публичные, 12 последних.
+    # Все годы ряда (14.11.2026, ADR-0031; до этого — 12 последних годов ссылками с 08.11): карточка — главная
+    # страница ряда для Google, годовые страницы без спроса закрыты меткой googlebot. Таблица «год — значение»
+    # из уже загруженных точек: значение года — последнее наблюдение года (у годовых рядов — единственное).
     years_html = ""
     if not is_redirect_only_indicator(indicator.code):
-        card_years = sorted({d.year for d, _v in series if paths.is_public_year(d.year)}, reverse=True)[:12]
-        if card_years:
+        year_last: dict[int, float] = {}
+        for d, v in series:
+            if paths.is_public_year(d.year):
+                year_last[d.year] = v
+        if year_last:
+            from app.data.eurostat_listing import normalize_frequency
+            from app.services.seo_year_ui import all_years_block
+
+            annual = normalize_frequency(indicator.frequency) == "annual"
             yh2 = (f"{display} by year" if loc == "en" else f"{display} по годам")
-            items = "".join(
-                f'<li><a href="{escape(paths.indicator_year(slug, indicator.code, y))}">{y}</a></li>'
-                for y in card_years
-            )
+            if loc == "en":
+                head_value = (unit or "Value") if annual else "Last value of the year"
+            else:
+                head_value = (unit or "Значение") if annual else "Последнее значение года"
             years_html = (
                 f'<section class="seo-section"><h2>{escape(yh2)}</h2>'
-                f'<ul class="seo-pills">{items}</ul></section>'
+                + all_years_block(
+                    [
+                        (y, paths.indicator_year(slug, indicator.code, y), _fmt_series(year_last[y]))
+                        for y in sorted(year_last, reverse=True)
+                    ],
+                    head_year="Year" if loc == "en" else "Год",
+                    head_value=head_value,
+                )
+                + "</section>"
             )
 
     # Имя ведомства ведёт на страницу страны, с которой открыт ряд.

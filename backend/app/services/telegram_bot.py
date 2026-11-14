@@ -15,7 +15,10 @@
 - «CSV пользователей» — файл-выгрузка sendDocument;
 - «Пульс сегодня» — снапшот текущего дня на лету;
 - под таблицей пользователей — кнопка на каждого → карточка-аналитика
-  (identity, консенты, история входов из auth_audit).
+  (identity, консенты, история входов из auth_audit);
+- «Скачивания» (14.11.2026) — что скачивали и где упёрлись в лимит по содержанию за срок
+  (`download_content.py`), файл Excel; «Выгрузки» — файлы за срок: скачивания, регистрации,
+  все действия на сайте (`bot_exports.py`), CSV пользователей. Команды `/downloads [N]`, `/export`.
 
 Здесь нет вебхука сознательно: бэкенд за NAT, поллинг раз в 30 с достаточен
 для админ-бота и не требует публичного HTTPS-эндпоинта.
@@ -38,7 +41,7 @@ from sqlalchemy import func, select
 from collections import Counter
 
 from app.config import settings
-from app.services.alerting import interactive_authorized_ids
+from app.services.alerting import interactive_authorized_ids, reports_only_ids
 from app.services.telegram_text import (  # noqa: F401 — реэкспорт для обратной совместимости
     _BLOCKQUOTE_OPEN_RE,
     _BLOCKQUOTE_RE,
@@ -79,6 +82,11 @@ def main_menu_keyboard() -> dict:
             {"text": "📦 Датасет", "callback_data": "dataset"},
         ],
         [{"text": "🧠 Гипотезы", "callback_data": "hypotheses"}],
+        # 14.11.2026: что скачивают и где упираются в лимит; выгрузки файлами за любой срок.
+        [
+            {"text": "📥 Скачивания", "callback_data": "dl:7"},
+            {"text": "📤 Выгрузки", "callback_data": "export"},
+        ],
     ]
     # Круг 11: кнопки отчётов об аудитории. Появляются вместе с дайджестом v2
     # (флаг `telegram_digest_v2_enabled`); существующие кнопки не менялись.
@@ -415,6 +423,192 @@ async def _hypotheses_overview() -> str:
 
 
 # ---------------------------------------------------------------------------
+# Скачивания и выгрузки (14.11.2026)
+# ---------------------------------------------------------------------------
+
+# Потолок на подсчёт для одной кнопки: бот не должен висеть, если база занята.
+_REPORT_TIMEOUT_S = 90
+_EXPORT_WINDOWS = ("7", "30", "90")
+
+
+def downloads_keyboard(window: str) -> dict:
+    """Срок отчёта «Скачивания» + файл за этот же срок."""
+    from app.services.download_content import WINDOWS
+
+    periods = [
+        {"text": ("• " if key == window else "") + label, "callback_data": f"dl:{key}"}
+        for key, label in WINDOWS.items()
+    ]
+    return {"inline_keyboard": [
+        periods[:3], periods[3:],
+        [{"text": f"📊 Файл Excel — {WINDOWS.get(window, window)}", "callback_data": f"dlx:{window}"}],
+        [{"text": "📤 Другие выгрузки", "callback_data": "export"},
+         {"text": "⬅️ Меню", "callback_data": "menu"}],
+    ]}
+
+
+def export_keyboard(reports_only: bool = False) -> dict:
+    """Выгрузки за срок. Роль «только отчёты» — без CSV пользователей."""
+    def row(prefix: str, icon: str, windows=_EXPORT_WINDOWS) -> list[dict]:
+        return [{"text": f"{icon} {w} дн.", "callback_data": f"{prefix}:{w}"} for w in windows]
+
+    rows = [row("dlx", "📥"), row("exs", "🌍"), row("exv", "🖱", ("1", "7", "30"))]
+    if not reports_only:
+        rows.append([{"text": "👥 Все пользователи (CSV)", "callback_data": "users_csv"}])
+    rows.append([{"text": "⬅️ Меню", "callback_data": "menu"}])
+    return {"inline_keyboard": rows}
+
+
+def reports_only_keyboard() -> dict:
+    """Меню роли «только отчёты» (14.11.2026): без пользователей, карточек, Пульса, датасета и гипотез."""
+    return {"inline_keyboard": [[
+        {"text": "📥 Скачивания", "callback_data": "dl:7"},
+        {"text": "📤 Выгрузки", "callback_data": "export"},
+    ]]}
+
+
+EXPORT_MENU_TEXT = (
+    "📤 <b>Выгрузки файлом</b>\n"
+    "Нажмите срок в нужной строке — файл придёт сюда же.\n\n"
+    "📥 <b>Скачивания и лимит</b> — Excel: что скачивали, где упёрлись в лимит, кто потом "
+    "зарегистрировался, каждое событие со страницей и источником захода.\n"
+    "🌍 <b>Регистрации</b> — CSV: откуда пришёл человек, устройство, первая страница, что подтолкнуло.\n"
+    "🖱 <b>Все действия на сайте</b> — CSV: каждое действие посетителей (просмотры, поиск, скачивания, "
+    "сравнения) со страницей и параметрами.\n"
+    "👥 <b>Все пользователи</b> — CSV со списком аккаунтов.\n\n"
+    "Роботы и наши собственные заходы в файлы не попадают. Имён и почт в первых трёх файлах нет."
+)
+EXPORT_MENU_TEXT_REPORTS_ONLY = (
+    "📤 <b>Выгрузки файлом</b>\n"
+    "Нажмите срок в нужной строке — файл придёт сюда же.\n\n"
+    "📥 <b>Скачивания и лимит</b> — Excel: что скачивали, где упёрлись в лимит, кто потом зарегистрировался.\n"
+    "🌍 <b>Регистрации</b> — CSV: откуда пришёл человек, устройство, первая страница, что подтолкнуло.\n"
+    "🖱 <b>Все действия на сайте</b> — CSV: действия посетителей со страницей и параметрами.\n\n"
+    "Без имён, почт, телефонов и меток посетителей. Роботы и наши собственные заходы не попадают."
+)
+
+
+def _window_or_none(raw: str, allowed: tuple[str, ...] | None = None) -> str | None:
+    from app.services.download_content import MAX_DAYS, WINDOWS
+
+    if raw in WINDOWS or (raw.isdigit() and 1 <= int(raw) <= MAX_DAYS):
+        if allowed is None or raw in allowed:
+            return raw
+    return None
+
+
+async def _downloads_data(window: str) -> dict | None:
+    import asyncio
+
+    from app.database import analytics_session
+    from app.services import download_content as dc
+
+    period = dc.period_for_window(window)
+
+    async def run() -> dict:
+        async with analytics_session() as db:
+            return await dc.collect(db, period)
+
+    try:
+        return await asyncio.wait_for(run(), _REPORT_TIMEOUT_S)
+    except Exception:  # noqa: BLE001 — в т.ч. таймаут: ответить человеку, а не молчать
+        logger.warning("Telegram downloads report failed (window=%s)", window, exc_info=True)
+        return None
+
+
+def _period_label(window: str, period) -> str:
+    from app.services.download_content import WINDOWS
+
+    label = WINDOWS.get(window) or f"{window} дн."
+    if period.start_date == period.end_date:
+        return f"{label}, {period.start_date.strftime('%d.%m')}"
+    return f"{label}, {period.start_date.strftime('%d.%m')}–{period.end_date.strftime('%d.%m')}"
+
+
+async def _send_downloads_report(chat_id: str, window: str) -> None:
+    from app.services import download_content as dc
+
+    data = await _downloads_data(window)
+    if data is None:
+        await send_message(chat_id, "⏳ Не успел посчитать скачивания — база занята. Нажмите ещё раз через минуту.",
+                           reply_markup=downloads_keyboard(window), kind="bot_report")
+        return
+    text = dc.format_report(data["summary"], _period_label(window, data["period"]))
+    await send_message(chat_id, text, reply_markup=downloads_keyboard(window), kind="bot_report")
+
+
+async def _download_paths(data: dict) -> dict:
+    """Лист «Путь до упора»: своя сессия и общий потолок; сбой — лист говорит словами, файл уходит."""
+    import asyncio
+
+    from app.database import analytics_session
+    from app.services import download_content as dc
+
+    async def run() -> dict:
+        async with analytics_session() as db:
+            return await dc.collect_paths(db, data)
+
+    try:
+        return await asyncio.wait_for(run(), dc.PATH_TIMEOUT_MS / 1000 + 20)
+    except Exception:  # noqa: BLE001
+        logger.warning("Telegram downloads: paths failed", exc_info=True)
+        return {"status": "timeout", "items": []}
+
+
+async def _send_downloads_file(chat_id: str, window: str, reports_only: bool = False) -> None:
+    from app.services import download_content as dc
+
+    data = await _downloads_data(window)
+    if data is None:
+        await send_message(chat_id, "⏳ Не успел собрать файл — база занята. Нажмите ещё раз через минуту.",
+                           reply_markup=downloads_keyboard(window), kind="bot_report")
+        return
+    data["paths"] = await _download_paths(data)
+    p = data["period"]
+    s = data["summary"]
+    name = f"skachivaniya-{p.start_date.isoformat()}_{p.end_date.isoformat()}.xlsx"
+    caption = (f"📥 Скачивания и лимит — {escape(_period_label(window, p))}: "
+               f"скачали {s['downloads']['people']} чел., упёрлись {s['walls']['people']} чел.")
+    await send_document(chat_id, name, dc.build_xlsx(data, anonymous=reports_only), caption=caption)
+
+
+async def _send_export_file(chat_id: str, kind: str, window: str, reports_only: bool = False) -> None:
+    import asyncio
+
+    from app.database import analytics_session
+    from app.services import bot_exports
+    from app.services.download_content import period_for_window
+
+    period = period_for_window(window)
+    stamp = f"{period.start_date.isoformat()}_{period.end_date.isoformat()}"
+
+    async def run():
+        async with analytics_session() as db:
+            if kind == "exv":
+                return await bot_exports.events_csv(db, period, anonymous=reports_only)
+            return await bot_exports.signups_csv(db, period)
+
+    try:
+        result = await asyncio.wait_for(run(), _REPORT_TIMEOUT_S)
+    except Exception:  # noqa: BLE001
+        logger.warning("Telegram export %s failed (window=%s)", kind, window, exc_info=True)
+        await send_message(chat_id, "⏳ Не успел собрать файл — база занята. Нажмите ещё раз через минуту.",
+                           reply_markup=export_keyboard(), kind="bot_report")
+        return
+    label = escape(_period_label(window, period))
+    if kind == "exv":
+        content, n, cut = result
+        caption = f"🖱 Все действия на сайте — {label}: {n} строк"
+        if cut:
+            caption += f" (первые {bot_exports.EVENTS_ROW_CAP}; возьмите срок короче)"
+        await send_document(chat_id, f"deystviya-{stamp}.csv", content, caption=caption)
+    else:
+        content, n = result
+        await send_document(chat_id, f"registratsii-{stamp}.csv", content,
+                            caption=f"🌍 Регистрации — {label}: {n}")
+
+
+# ---------------------------------------------------------------------------
 # Поллер
 # ---------------------------------------------------------------------------
 
@@ -429,6 +623,8 @@ async def _handle_callback(cq: dict) -> None:
     await _api("answerCallbackQuery", {"callback_query_id": cq["id"]})
     chat_id = str(cq.get("message", {}).get("chat", {}).get("id", ""))
     if chat_id not in interactive_authorized_ids():
+        if chat_id in reports_only_ids():
+            await _handle_reports_only_callback(chat_id, data)
         return
 
     if data == "users":
@@ -492,6 +688,16 @@ async def _handle_callback(cq: dict) -> None:
     elif data == "public_bot" and settings.public_bot_enabled:
         from app.services import public_bot
         await send_message(chat_id, await public_bot.report_text(), reply_markup=main_menu_keyboard(), kind="bot_report")
+    elif data.startswith("dl:") and (w := _window_or_none(data[3:])):
+        await _send_downloads_report(chat_id, w)
+    elif data.startswith("dlx:") and (w := _window_or_none(data[4:])):
+        await _send_downloads_file(chat_id, w)
+    elif data == "export":
+        await send_message(chat_id, EXPORT_MENU_TEXT, reply_markup=export_keyboard(), kind="bot_report")
+    elif data.startswith("exs:") and (w := _window_or_none(data[4:], _EXPORT_WINDOWS)):
+        await _send_export_file(chat_id, "exs", w)
+    elif data.startswith("exv:") and (w := _window_or_none(data[4:], ("1", "7", "30"))):
+        await _send_export_file(chat_id, "exv", w)
     elif data.startswith("user:"):
         text = await _user_card(data.split(":", 1)[1])
         await send_message(chat_id, text, reply_markup=main_menu_keyboard())
@@ -503,6 +709,37 @@ def _is_context_command(text: str) -> bool:
     """/context и «контекст …» — заметки владельца для аналитика Пульса (14.11.2026), не публичный режим."""
     t = (text or "").strip().lower()
     return t.startswith("/context") or t.startswith("контекст")
+
+
+async def _handle_reports_only_callback(chat_id: str, data: str) -> None:
+    """Роль «только отчёты»: белый список кнопок; всё остальное (пользователи, карточки, CSV пользователей,
+    Пульс, датасет, гипотезы) молча игнорируется. Файлы — без хэшей посетителей."""
+    if data.startswith("dl:") and (w := _window_or_none(data[3:])):
+        await _send_downloads_report(chat_id, w)
+    elif data.startswith("dlx:") and (w := _window_or_none(data[4:])):
+        await _send_downloads_file(chat_id, w, reports_only=True)
+    elif data == "export":
+        await send_message(chat_id, EXPORT_MENU_TEXT_REPORTS_ONLY, reply_markup=export_keyboard(reports_only=True),
+                           kind="bot_report")
+    elif data.startswith("exs:") and (w := _window_or_none(data[4:], _EXPORT_WINDOWS)):
+        await _send_export_file(chat_id, "exs", w, reports_only=True)
+    elif data.startswith("exv:") and (w := _window_or_none(data[4:], ("1", "7", "30"))):
+        await _send_export_file(chat_id, "exv", w, reports_only=True)
+    elif data == "menu":
+        await send_message(chat_id, "Меню:", reply_markup=reports_only_keyboard())
+
+
+async def _handle_reports_only_message(chat_id: str, text: str) -> None:
+    if text in ("/start", "/menu", "меню"):
+        await send_message(chat_id, "📥 <b>Forecast Economy — отчёты</b>\nВыберите раздел:",
+                           reply_markup=reports_only_keyboard())
+    elif text and text.split()[0] in _DOWNLOAD_COMMANDS:
+        parts = text.split()
+        w = _window_or_none(parts[1]) if len(parts) > 1 else "7"
+        await _send_downloads_report(chat_id, w or "7")
+    elif text in _EXPORT_COMMANDS:
+        await send_message(chat_id, EXPORT_MENU_TEXT_REPORTS_ONLY, reply_markup=export_keyboard(reports_only=True),
+                           kind="bot_report")
 
 
 async def _handle_message(msg: dict) -> None:
@@ -520,12 +757,60 @@ async def _handle_message(msg: dict) -> None:
         await public_bot.handle_message(msg)
         return
     if chat_id not in interactive_authorized_ids():
+        if chat_id in reports_only_ids():
+            await _handle_reports_only_message(chat_id, text)
         return
     if text in ("/start", "/menu", "меню"):
         await send_message(chat_id, "🛰 <b>Forecast Economy — пульс</b>\nВыберите раздел:", reply_markup=main_menu_keyboard())
     elif text == "/users":
         t, kb = await _users_overview()
         await send_message(chat_id, t, reply_markup=kb)
+    elif text and text.split()[0] in _DOWNLOAD_COMMANDS:
+        # «/downloads», «/downloads 30», «скачивания» — отчёт; срок по умолчанию 7 дней.
+        parts = text.split()
+        w = _window_or_none(parts[1]) if len(parts) > 1 else "7"
+        await _send_downloads_report(chat_id, w or "7")
+    elif text in _EXPORT_COMMANDS:
+        await send_message(chat_id, EXPORT_MENU_TEXT, reply_markup=export_keyboard(), kind="bot_report")
+
+
+_DOWNLOAD_COMMANDS = ("/downloads", "скачивания")
+_EXPORT_COMMANDS = ("/export", "выгрузки", "выгрузка")
+_ADMIN_TEXTS = ("/start", "/menu", "меню", "/users")
+# Заметки для аналитика Пульса (14.11.2026, `pulse_context.handle_owner_command`): только чат владельца.
+_CONTEXT_COMMANDS = ("/context",)
+
+# Меню команд служебного бота (14.11.2026): только в чате владельца и чатах роли «только отчёты»
+# (`BotCommandScopeChat`), не для всех личных чатов — служебный бот остаётся без публичных команд
+# (снятых 08.11.2026), публичный @ForecastEconomyBot — другой токен, его команды не трогаются.
+# Задаёт `backend/scripts/service-bot-commands.py` (по умолчанию показ без отправки).
+OWNER_COMMANDS = [
+    {"command": "menu", "description": "Меню: пользователи, Пульс, скачивания, выгрузки"},
+    {"command": "downloads", "description": "Что скачивают и где упираются в лимит (/downloads 30)"},
+    {"command": "export", "description": "Выгрузки файлом: скачивания, регистрации, действия"},
+    {"command": "users", "description": "Пользователи"},
+    {"command": "context", "description": "Заметки для аналитика Пульса (/context текст до 25.11)"},
+]
+REPORTS_ONLY_COMMANDS = [
+    {"command": "menu", "description": "Меню отчётов"},
+    {"command": "downloads", "description": "Что скачивают и где упираются в лимит (/downloads 30)"},
+    {"command": "export", "description": "Выгрузки файлом без персональных данных"},
+]
+
+
+def service_command_calls(*, reset: bool = False) -> list[tuple[str, dict]]:
+    """Вызовы Bot API для меню команд служебного бота по чатам. `reset` — снять те же меню."""
+    from app.services.alerting import reports_only_ids
+
+    owner = str(settings.telegram_chat_id or "").strip()
+    targets = ([(owner, OWNER_COMMANDS)] if owner else []) + [
+        (cid, REPORTS_ONLY_COMMANDS) for cid in sorted(reports_only_ids())]
+    calls = []
+    for chat_id, commands in targets:
+        scope = {"type": "chat", "chat_id": int(chat_id) if chat_id.lstrip("-").isdigit() else chat_id}
+        calls.append(("deleteMyCommands", {"scope": scope}) if reset
+                     else ("setMyCommands", {"commands": commands, "scope": scope}))
+    return calls
 
 
 def _public_shared() -> bool:
@@ -539,13 +824,14 @@ def _is_public_message(chat_id: str, text: str) -> bool:
     """Чужой чат — всегда публичный режим. Владелец и получатели отчёта попадают в него
     ссылкой с кодом (`/start r014`) и любым текстом, кроме команд админ-меню, — так
     владелец проверяет путь человека из ролика на своём телефоне."""
-    if chat_id not in interactive_authorized_ids():
+    if chat_id not in interactive_authorized_ids() and chat_id not in reports_only_ids():
         return True
     if text.startswith("/start "):
         return True
     if _is_context_command(text):
         return False
-    return text not in ("/start", "/menu", "меню", "/users")
+    first = text.split()[0] if text else ""
+    return text not in _ADMIN_TEXTS + _EXPORT_COMMANDS and first not in _DOWNLOAD_COMMANDS
 
 
 async def telegram_poll_job() -> None:

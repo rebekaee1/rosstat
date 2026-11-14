@@ -39,6 +39,7 @@ import {
   locationsEqual, MAP_OVERVIEW, DEFAULT_MAP_CODE, resolveRegionsMapPaint,
 } from '../lib/regionsMapUrl';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchOptions, normalizeSearchQuery } from '../lib/searchSynonyms';
 import { useAuth } from '../context/authContext';
@@ -544,7 +545,7 @@ export default function RegionsHome() {
   const handlePng = async () => {
     if (exportingMap) return;
     if (!isAuthed) {
-      track(events.CHART_IMAGE_BLOCKED, { indicator: `regions-map:${activeMapCode || 'overview'}` });
+      track(events.CHART_IMAGE_BLOCKED, { indicator: `regions-map:${activeMapCode || 'overview'}`, ...subjectParams({ code: activeMapCode }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -554,13 +555,13 @@ export default function RegionsHome() {
       watermark: false,
     }).catch(() => false);
     setExportingMap(false);
-    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `regions-map:${activeMapCode || 'overview'}` });
+    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `regions-map:${activeMapCode || 'overview'}`, ...subjectParams({ code: activeMapCode }) });
   };
 
   const handleGif = async () => {
     if (exportingGif) return;
     if (!isAuthed) {
-      track(events.REGIONS_MAP_GIF_BLOCKED, { indicator: activeMapCode || 'overview' });
+      track(events.REGIONS_MAP_GIF_BLOCKED, { indicator: `regions-map:${activeMapCode || 'overview'}`, ...subjectParams({ code: activeMapCode }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -570,7 +571,8 @@ export default function RegionsHome() {
       const blob = await buildRegionsMapGif(series.data);
       downloadBlob(blob, `regions-map_${activeMapCode}.gif`);
       track(events.REGIONS_MAP_GIF_DOWNLOAD, {
-        indicator: activeMapCode,
+        indicator: `regions-map:${activeMapCode}`,
+        ...subjectParams({ code: activeMapCode }),
         years: seriesYears.length,
       });
     } catch {

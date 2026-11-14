@@ -6,8 +6,9 @@ Priority задаёт очередность обхода, а не исключ�
 Служебные поверхности, preview, редиректы и несуществующие страницы
 не являются дополнительными публичными canonical-страницами.
 Уточнения только для Google на ru.: метка `googlebot` (11.11.2026), короткий
-индекс sitemap и запрет обхода годовых страниц мира в robots.txt (13.11.2026) —
-блоки ниже; реестр не меняется.
+индекс sitemap и запрет обхода годовых страниц мира в robots.txt (13.11.2026);
+на apex: короткий индекс и метка `googlebot` на годовых страницах без спроса
+(14.11.2026, ADR-0031) — блоки ниже; реестр не меняется.
 
 noindex здесь не инструмент бюджета обхода: робот всё равно скачивает URL,
 чтобы прочитать тег. На каталоге ~5 млн URL на хост эта политика ставит
@@ -84,12 +85,103 @@ def is_ru_google_noindex_path(path: str) -> bool:
 
 
 def googlebot_meta_for_path(path: str, locale: str) -> str:
-    """Тег только для Google на русской версии; пусто для EN и остальных страниц."""
+    """Тег только для Google: годовые страницы мира на ``ru.``, годовые без спроса на apex."""
     from app.config import settings
 
-    if locale != "ru" or not settings.ru_google_noindex_world_years:
-        return ""
-    return GOOGLEBOT_NOINDEX_META if is_ru_google_noindex_path(path) else ""
+    if locale == "ru":
+        if not settings.ru_google_noindex_world_years:
+            return ""
+        return GOOGLEBOT_NOINDEX_META if is_ru_google_noindex_path(path) else ""
+    if locale == "en" and is_apex_google_noindex_path(path):
+        return GOOGLEBOT_NOINDEX_META
+    return ""
+
+
+# --- apex (EN): годовые страницы без спроса — noindex только для Google (14.11.2026) ----
+# Созвон владельца 14.11: «оставить в индексации уникальные страницы, на которые реально
+# заходят; годовые собрать под мастер-страницу; прогревать те, по которым есть заходы».
+# Замер 14.11 (gsc_search_queries с 01.07, gsc_page_daily 01–10.11): английские показы apex
+# выросли до 25 тыс. в неделю к 28.09 и упали до 0,3 тыс. к 02.11 у всех типов страниц разом
+# (сравнения, карточки, годовые) — понижен сайт целиком, а не тип. В Search Console 588 тыс.
+# в индексе, 558 тыс. «просканирована, не проиндексирована»; на apex ~9,5 млн годовых адресов.
+# Годовые страницы стран мира, регионов мира и регионов России на apex, которых нет в
+# опубликованном приоритетном шарде (спрос: Search Console 90 дней по запросам и страницам,
+# Вебмастер, визиты), получают метку googlebot. Годовые страницы показателей России
+# (/russia/indicator/{код}/{год}, ~4,7 тыс.), карточки, сравнения, рейтинги — без метки.
+# Обход не закрываем: страницы уже в индексе, робот должен прочитать метку. Нет шарда или в
+# нём меньше APEX_DEMAND_MIN_YEARS годовых адресов (ночной сбой источников спроса) — метки
+# нет ни у одной страницы. Откат — RUSTATS_APEX_GOOGLE_NOINDEX_YEARS_WITHOUT_DEMAND=false.
+_APEX_GOOGLE_YEAR = re.compile(
+    r"^/(?!(?:currencies|world)/)[a-z0-9-]+/"
+    r"(?:indicator/[a-z0-9_.-]+|region/[a-z0-9-]+/[a-z0-9_.-]+)/[0-9]{4}$"
+)
+APEX_DEMAND_MIN_YEARS = 1_000
+_APEX_DEMAND_RECHECK_SECONDS = 300.0
+_apex_demand: dict = {"checked": None, "key": None, "paths": None}
+
+
+def is_apex_google_year_path(path: str) -> bool:
+    """Массовая годовая страница: страна мира, регион мира или регион России (не показатель России)."""
+    raw = (path or "").split("?", 1)[0].rstrip("/")
+    return bool(_APEX_GOOGLE_YEAR.match(raw)) and not raw.startswith("/russia/indicator/")
+
+
+def apex_google_demand_paths() -> frozenset[str] | None:
+    """Пути годовых страниц со спросом из опубликованного ``sitemap-priority.xml`` apex.
+
+    ``None`` — спрос неизвестен (нет генерации, шарда или он собран без источников спроса).
+    Файл перечитывается при смене генерации или mtime, проверка — не чаще раза в 5 минут.
+    """
+    import time
+
+    from app.config import settings
+    from app.services.sitemap_priority import PRIORITY_SECTION
+    from app.services.sitemap_static import section_file
+
+    now = time.monotonic()
+    checked = _apex_demand["checked"]
+    if checked is not None and now - checked < _APEX_DEMAND_RECHECK_SECONDS:
+        return _apex_demand["paths"]
+    _apex_demand["checked"] = now
+    try:
+        disk = section_file(PRIORITY_SECTION, settings.public_base_url)
+        if disk is None or not disk.is_file():
+            _apex_demand.update(key=None, paths=None)
+            return None
+        key = (str(disk), disk.stat().st_mtime_ns)
+        if key == _apex_demand["key"]:
+            return _apex_demand["paths"]
+        paths = _demand_years_from_urlset(disk.read_text(encoding="utf-8"))
+    except OSError:
+        _apex_demand.update(key=None, paths=None)
+        return None
+    _apex_demand.update(key=key, paths=paths)
+    return paths
+
+
+def _demand_years_from_urlset(urlset_xml: str) -> frozenset[str] | None:
+    from html import unescape
+    from urllib.parse import urlparse
+
+    found = set()
+    for loc in _URL_LOC.findall(urlset_xml):
+        path = urlparse(unescape(loc).strip()).path.rstrip("/")
+        if is_apex_google_year_path(path):
+            found.add(path)
+    return frozenset(found) if len(found) >= APEX_DEMAND_MIN_YEARS else None
+
+
+def is_apex_google_noindex_path(path: str) -> bool:
+    """Годовая страница apex без спроса: метка googlebot noindex (решение 14.11.2026)."""
+    from app.config import settings
+
+    if not (settings.apex_locale_en and settings.apex_google_noindex_years_without_demand):
+        return False
+    raw = (path or "").split("?", 1)[0].rstrip("/")
+    if not is_apex_google_year_path(raw):
+        return False
+    demand = apex_google_demand_paths()
+    return demand is not None and raw not in demand
 
 
 # --- Короткий sitemap для Google на ru. (решение владельца 13.11.2026) --------
@@ -104,8 +196,9 @@ def googlebot_meta_for_path(path: str, locale: str) -> str:
 # Это уточняет решение 20.09 только для одного читателя: реестр, файлы шардов,
 # robots.txt и ответ всем остальным роботам прежние. Отдельный адрес в robots.txt
 # не подошёл: Яндекс знает sitemap только из robots.txt, а его инструмент «Файлы
-# Sitemap» 13.11 работал только на чтение. Apex (EN) не трогается — контроль.
-# Откат — RUSTATS_RU_GOOGLE_SHORT_SITEMAP=false.
+# Sitemap» 13.11 работал только на чтение. Apex (EN) был контролем до 14.11.2026; с 14.11
+# короткий индекс получает и робот Google на apex (созвон владельца, ADR-0031).
+# Откат — RUSTATS_RU_GOOGLE_SHORT_SITEMAP=false, RUSTATS_APEX_GOOGLE_SHORT_SITEMAP=false.
 _GOOGLE_SHORT_SITEMAP_EXCLUDED = re.compile(
     r"^(?:world-years|world-region-years|regional-years)(?:-[0-9]+)?$"
 )
@@ -121,10 +214,21 @@ def is_google_sitemap_agent(user_agent: str | None) -> bool:
 
 
 def ru_google_short_sitemap_enabled(*, ru_host: bool) -> bool:
-    """На этом хосте индекс sitemap зависит от робота (нужен ``Vary: User-Agent``)."""
+    """На этом хосте индекс sitemap зависит от робота (нужен ``Vary: User-Agent``).
+
+    ``ru.`` — ADR-0030 (13.11.2026); apex — тот же короткий индекс с 14.11.2026
+    (``apex_google_short_sitemap``), основание — блок apex выше.
+    """
     from app.config import settings
 
-    return bool(ru_host and settings.apex_locale_en and settings.ru_google_short_sitemap)
+    if not settings.apex_locale_en:
+        return False
+    if ru_host:
+        return bool(settings.ru_google_short_sitemap)
+    return bool(settings.apex_google_short_sitemap)
+
+
+google_short_sitemap_enabled = ru_google_short_sitemap_enabled
 
 
 def is_google_short_sitemap_excluded(section: str) -> bool:

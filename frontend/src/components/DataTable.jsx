@@ -224,7 +224,15 @@ export default function DataTable({
           subject_key: exportMeta?.code,
           params: { ...(exportMeta?.params || {}), from: first, to: last },
         },
-      }, { source: 'table-range' });
+      }, {
+        source: 'table-range',
+        subject: {
+          indicator: exportMeta?.code,
+          code: exportMeta?.code,
+          country: exportMeta?.params?.country,
+          region: exportMeta?.params?.region,
+        },
+      });
     } catch {
       /* ошибка сети: кнопка остаётся, повторное нажатие повторит запрос */
     }
