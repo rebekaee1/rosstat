@@ -293,3 +293,16 @@ def test_exports_have_no_personal_data():
     s_text = signups.decode("utf-8-sig")
     assert n_signups == 1 and "Яндекс" in s_text and "упёрся в лимит скачиваний" in s_text
     assert str(uid) not in s_text
+
+
+def test_walls_by_device_counts_people_once_and_shows_line():
+    rows = []
+    for i, (device, signed) in enumerate([("desktop", True), ("desktop", False), ("desktop", True), ("mobile", False),
+                                          ("mobile", False), ("mobile", True)]):
+        base = {"wall": True, "key": "k", "title": "Дизель", "section": "russia", "what": "x", "authed": False,
+                "person": f"p{i}", "signed_up_after": signed, "channel": "search", "device": device}
+        rows += [base, dict(base)]  # два упора одного человека — один человек
+    s = dc.summarize(rows)
+    assert s["walls"]["by_device"] == {"desktop": {"people": 3, "signed": 2}, "mobile": {"people": 3, "signed": 1}}
+    text = dc.format_report(s, "30 дней")
+    assert "Со стены зарегистрировались: компьютер 2 из 3 (67 %) · телефон 1 из 3 (33 %)" in text
