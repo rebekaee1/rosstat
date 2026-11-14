@@ -188,7 +188,11 @@ class BaseParser(ABC):
             points = self._validate(points, cfg)
 
             failed_reason = fetch_failed_reason(fetch_log)
-            if not points and not (fetch_issues or failed_reason) and not expected_empty_reason(fetch_log):
+            # Пустой результат «по замыслу» (сегменты недельного ИПЦ: точки пишет основной ряд) не повод спрашивать
+            # о недоступности Росстата: 13-14.11.2026 три сегмента дважды в день уходили в failed «источник
+            # недоступен», хотя раздел цен работал, а их точки на месте (14.11.2026).
+            if (not points and not (fetch_issues or failed_reason) and not expected_empty_reason(fetch_log)
+                    and not self._zero_parse_expected(indicator, cfg)):
                 failed_reason = await self._source_outage_reason()
             if not points and (fetch_issues or failed_reason) and not expected_empty_reason(fetch_log):
                 # Источник не ответил, а не «вёрстка сменилась»: честный failed,

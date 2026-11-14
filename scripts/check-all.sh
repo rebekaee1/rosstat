@@ -56,6 +56,10 @@ MAP_PY="$BACKEND_PY"
 echo "== public language audit =="
 "$MAP_PY" scripts/audit-public-language.py
 
+# --- Контекст аналитика Пульса (14.11.2026): предупреждение, если счёт метрик менялся без записи в pulse_context.yaml.
+echo "== pulse context guard =="
+"$BACKEND_PY" scripts/check-pulse-context.py || true
+
 # --- nginx (14.11.2026): быстрые проверки, если доступен Docker -----------------
 # Полный поведенческий набор (~5 минут) идёт в CI job nginx и вручную: bash deploy/test-nginx-all.sh.
 echo "== nginx quick (deploy/test-nginx-all.sh --quick) =="

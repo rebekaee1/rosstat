@@ -98,13 +98,35 @@ def is_missing_file_error(message: str | None) -> bool:
     return bool(message) and bool(_MISSING_FILE_RE.search(message))
 
 
+_NAME_YEAR_RE = re.compile(r"(?<!\d)(20\d{2})(?!\d)")
+
+
+def _name_year(name: str) -> int | None:
+    """Самый поздний год в имени файла (`ind_baza_2018_12-2025.xlsx` -> 2025); None, если года нет."""
+    years = [int(y) for y in _NAME_YEAR_RE.findall(name)]
+    return max(years) if years else None
+
+
 def sample_section_files(html: str, n: int = SECTION_SAMPLE) -> list[str]:
-    """До `n` имён файлов раздела, равномерно по отсортированному списку (детерминированно, без повторов)."""
+    """До `n` имён файлов раздела, детерминированно и без повторов.
+
+    14.11.2026: равномерная выборка по алфавиту попадала в старые живые файлы (`ind_god.xlsx`, `ind_prom_okved.xlsx`
+    от 2022 года) и признавала промышленность рабочей, хотя все файлы с данными 2023-2025 отвечали 404 - ряды
+    промышленности падали, а в причине недоступности раздела не было. Теперь сначала берутся самые свежие файлы
+    по году в имени; файлы без года - только если датированных меньше `n` (равномерно, как раньше).
+    """
     names = sorted(set(_SECTION_FILE_RE.findall(html)))
-    if len(names) <= n:
-        return names
-    step = len(names) / n
-    return [names[int(i * step)] for i in range(n)]
+    dated = sorted((nm for nm in names if _name_year(nm) is not None), key=lambda nm: (-_name_year(nm), nm))
+    picked = dated[:n]
+    undated = [nm for nm in names if _name_year(nm) is None]
+    rest = n - len(picked)
+    if rest > 0 and undated:
+        if len(undated) <= rest:
+            picked += undated
+        else:
+            step = len(undated) / rest
+            picked += [undated[int(i * step)] for i in range(rest)]
+    return picked
 
 
 def partial_reason_from_sections(results: list[tuple[str, int, int]]) -> str | None:

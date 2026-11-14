@@ -117,3 +117,6 @@ api_key.txt
 
 # Временная настройка dev-сервера агента круга правок (свой cacheDir на агента)
 frontend/vite.agent.config.mjs
+
+# Журнал выпусков для аналитика Пульса: пишет scripts/deploy.sh (scripts/release-log.py) на боевом перед сборкой.
+backend/app/data/release_log.json

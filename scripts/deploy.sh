@@ -187,6 +187,9 @@ preparation_failed() {
   exit 1
 }
 trap preparation_failed ERR
+# Журнал выпусков для аналитика Пульса (14.11.2026): заголовки коммитов прод -> цель, без тел и авторов, в
+# backend/app/data/release_log.json (.gitignore; попадает в образ). Ошибка журнала выпуск не останавливает.
+python3 scripts/release-log.py "${PREV_SHA}" "${APPROVED_TARGET}" || echo "WARN: release-log не записан"
 docker compose build --build-arg "VITE_BUILD_ID=${APPROVED_TARGET}" frontend backend
 docker tag rosstat-backend "rosstat-backend:${NEW_SHA}"
 docker tag rosstat-frontend "rosstat-frontend:${NEW_SHA}"

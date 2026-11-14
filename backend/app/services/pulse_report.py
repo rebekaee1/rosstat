@@ -103,7 +103,8 @@ js_files_failed_inert_sessions — то же у сессий без единог
 токен Вебмастера истёк, владелец знает и обновить его не может: не напоминай
 об этом и не делай выводов об индексации в Яндексе за этот день. etl.source_unavailable_indicators — ряды, у которых
 не ответил источник (Росстат, Минфин и т.п.): это авария у источника, данные
-догрузятся сами; не называй её проблемой нашей синхронизации.
+догрузятся сами; не называй её проблемой нашей синхронизации. Число упавших рядов - etl.failed_indicators
+(из них наших ошибок - etl.failed_own_indicators); etl.failed_indicator_ids - только первые 20 id, не считай по нему.
 
 Блок acquisition — привлечение из Яндекс.Метрики: источники трафика
 (реклама/органика/прямые/переходы с сайтов), поисковики, поисковые фразы,
@@ -172,6 +173,15 @@ users.new_list): имён и почт новых людей в данных не
 тот же элемент, тот же показатель или та же причина) и обнови её по id: повтор
 темы новой записью запрещён. Если тема повторяется много дней подряд и данных
 достаточно, закрой её вердиктом, а не переписывай заново.
+
+Блок «Контекст проекта» в начале входа — что происходит в проекте: последние выпуски
+(заголовки изменений), режимы и флаги, события и решения с id, датой и тем, что ждать
+в цифрах, остаток счёта OpenRouter. Прежде чем назвать изменение метрики обвалом,
+ростом или поломкой, сверь его с контекстом: если запись объясняет изменение (смена
+счёта, фильтр роботов, выпуск, авария источника, эксперимент), прямо назови её [id] и
+не выдавай за новость. Если запись контекста объясняет открытую гипотезу, закрой
+гипотезу вердиктом со ссылкой на [id] в rationale, а не заводи новую. Перед датами
+замеров экспериментов из контекста не делай выводов о их исходе.
 
 Цифры — только из данных, ничего не выдумывай и не округляй заметно.
 
@@ -312,15 +322,19 @@ def _split_llm_output(content: str) -> tuple[str, list[dict]]:
     return text.strip(), updates
 
 
-def build_llm_user_content(snapshot: dict, memory: list[dict], hypotheses: list[dict]) -> str:
+def build_llm_user_content(snapshot: dict, memory: list[dict], hypotheses: list[dict],
+                           context: str = "") -> str:
     """Текст пользовательского сообщения для модели.
 
     152-ФЗ (круг 11): всё, что уходит в OpenRouter через зарубежный прокси, проходит
     очистку: без имён и почт новых пользователей, без почт и телефонов в строках
     поиска, копирования и фраз. Чистая функция (проверяется тестом без сети).
+    14.11.2026: первым идёт «Контекст проекта» (`pulse_context.build_block`, уже очищен).
     """
+    head = f"Контекст проекта:\n{context}\n\n" if context else ""
     return (
-        "Память за прошлые дни (старые → новые):\n"
+        head
+        + "Память за прошлые дни (старые → новые):\n"
         + json.dumps(sanitize_memory_for_llm(memory), ensure_ascii=False)
         + "\n\nСнапшот за отчётный день:\n"
         + json.dumps(sanitize_snapshot_for_llm(snapshot), ensure_ascii=False)
@@ -329,12 +343,44 @@ def build_llm_user_content(snapshot: dict, memory: list[dict], hypotheses: list[
     )
 
 
+# 14.11.2026: Пульс ушёл без аналитика - OpenRouter ответил 402 «You requested up to 65536 tokens, but can only afford
+# 36268»: без max_tokens сервис резервирует весь возможный ответ модели, и при остатке на счёте меньше этого резерва
+# запрос отклоняется, хотя на сам отчёт денег хватает. Лимит в обычной работе по-прежнему не ставим (директива
+# 2026-07-05); только при таком отказе повторяем один раз с max_tokens по остатку, если остаток не меньше
+# _MIN_AFFORDABLE_TOKENS (отчёт с гипотезами занимает несколько тысяч токенов). Причину сбоя пишем в шапку отчёта.
+_AFFORD_RE = re.compile(r"can only afford (\d+)")
+_MIN_AFFORDABLE_TOKENS = 6000
+_AFFORD_MARGIN_TOKENS = 512
+_last_llm_failure: str | None = None
+
+
+def llm_failure_note() -> str:
+    """Причина последнего сбоя аналитика для шапки отчёта, простыми словами."""
+    if _last_llm_failure == "credits":
+        return ("LLM-аналитик недоступен: на счёте OpenRouter почти нет денег — пополнить на "
+                "openrouter.ai/settings/credits")
+    return "LLM-аналитик недоступен"
+
+
 async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
     """Сводка дня через OpenRouter (+ ведение гипотез). None при сбое —
     отчёт уйдёт без LLM."""
+    global _last_llm_failure
+    _last_llm_failure = None
     if not settings.openrouter_api_key:
         return None
     hypotheses = await _open_hypotheses()
+    try:
+        from app.services import pulse_context
+
+        from app.database import async_session
+
+        async with async_session() as db:
+            notes = await pulse_context.active_notes(db, today_msk())
+        context = pulse_context.build_block(today_msk(), balance=await pulse_context.openrouter_balance(), notes=notes)
+    except Exception:  # noqa: BLE001 - без контекста отчёт всё равно уходит
+        logger.warning("Pulse context build failed", exc_info=True)
+        context = ""
     payload = {
         # Без max_tokens: модель отвечает сколько нужно (директива владельца
         # 2026-07-05 «освободи его»; подтверждено 2026-08-04 — лимит не ставить).
@@ -346,23 +392,29 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
             {"role": "system", "content": _SYSTEM_PROMPT},
             {
                 "role": "user",
-                "content": build_llm_user_content(snapshot, memory, hypotheses),
+                "content": build_llm_user_content(snapshot, memory, hypotheses, context),
             },
         ],
     }
     try:
+        headers = {
+            "Authorization": f"Bearer {settings.openrouter_api_key}",
+            "HTTP-Referer": "https://forecasteconomy.com",
+            "X-Title": "Forecast Economy Pulse",
+        }
         async with httpx.AsyncClient(
             timeout=90, proxy=settings.openrouter_proxy_url or None
         ) as client:
-            resp = await client.post(
-                _OPENROUTER_URL,
-                json=payload,
-                headers={
-                    "Authorization": f"Bearer {settings.openrouter_api_key}",
-                    "HTTP-Referer": "https://forecasteconomy.com",
-                    "X-Title": "Forecast Economy Pulse",
-                },
-            )
+            resp = await client.post(_OPENROUTER_URL, json=payload, headers=headers)
+            if resp.status_code == 402:
+                m = _AFFORD_RE.search(resp.text)
+                affordable = int(m.group(1)) - _AFFORD_MARGIN_TOKENS if m else 0
+                if affordable >= _MIN_AFFORDABLE_TOKENS:
+                    logger.warning("OpenRouter 402: retry with max_tokens=%d (balance is low)", affordable)
+                    resp = await client.post(
+                        _OPENROUTER_URL, json={**payload, "max_tokens": affordable}, headers=headers)
+                if resp.status_code == 402:
+                    _last_llm_failure = "credits"
         if resp.status_code != 200:
             logger.warning("OpenRouter HTTP %d: %s", resp.status_code, resp.text[:300])
             return None
@@ -453,11 +505,29 @@ def _fallback_summary(snapshot: dict) -> str:
         f"📥 Скачиваний: {sum(ev.get('downloads', {}).values())} "
         f"(зарег. {dl_aud.get('authed', 0)} / гости {dl_aud.get('guest', 0)})",
         f"🛑 Ошибок фронта: {sum(ev.get('errors', {}).values())}",
-        f"🏭 Упавших ETL-индикаторов: {len(etl.get('failed_indicator_ids', []))}",
+        _etl_line(etl),
         f"➕ Новых точек данных: {snapshot.get('data', {}).get('new_points', 0)}",
     ]
+    try:
+        from app.services import pulse_context
+
+        n_ctx = pulse_context.count_active(today_msk())
+        if n_ctx:
+            lines.append(f"🧭 Контекст проекта: действующих событий и решений {n_ctx} (app/data/pulse_context.yaml)")
+    except Exception:  # noqa: BLE001
+        pass
     lines.extend(escape(line) for line in _acquisition_lines(snapshot))
     return "\n".join(lines)
+
+
+def _etl_line(etl: dict) -> str:
+    """ETL дня: наши ошибки отдельно от недоступности источника (14.11.2026: было «упавших 20» = обрезанный список)."""
+    total = etl.get("failed_indicators", len(etl.get("failed_indicator_ids", [])))
+    down = etl.get("source_unavailable_indicators", 0)
+    own = etl.get("failed_own_indicators", max(total - down, 0))
+    if down:
+        return f"🏭 ETL: наших ошибок {own}, источник недоступен у {down} рядов (догрузятся сами)"
+    return f"🏭 Упавших ETL-индикаторов: {total}"
 
 
 def _raw_digits_block(snapshot: dict) -> str:
@@ -537,7 +607,7 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
     # читал детерминированную сводку, думая, что это аналитик (и гипотезы
     # молча не обновлялись).
     body = sanitize_llm_html(summary) if summary else (
-        "⚠️ <i>LLM-аналитик недоступен — детерминированная сводка без гипотез.</i>\n\n"
+        f"⚠️ <i>{escape(llm_failure_note())} — детерминированная сводка без гипотез.</i>\n\n"
         + _fallback_summary(snapshot)
     )
 
