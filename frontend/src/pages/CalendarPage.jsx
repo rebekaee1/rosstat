@@ -213,8 +213,14 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
 
   const { data, isLoading, isError, refetch, isFetching } = useCalendarEvents(apiParams);
   // Ближайшее событие — самое важное из нескольких предстоящих, а не ежедневная ставка вроде RUONIA.
-  const { data: upcomingData } = useCalendarUpcoming({ limit: 8, importance_min: 2 });
-  const upcomingList = upcomingData?.events;
+  // Ежедневная RUONIA (важность 2) занимала все 8 мест «Ближайших событий» и «Ближайшее событие»,
+  // хотя через два дня выходил индекс цен (14.11.2026). Ежедневные публикации по правилу ЦБ из списка убраны:
+  // они собраны в строке «Ежедневные курсы и ставки».
+  const { data: upcomingData } = useCalendarUpcoming({ limit: 40, importance_min: 2 });
+  const upcomingList = useMemo(
+    () => upcomingData?.events?.filter((e) => e.date_confidence !== 'official_rule').slice(0, 8),
+    [upcomingData],
+  );
   const nextImportant = upcomingList?.find((e) => e.importance === 3) || upcomingList?.[0] || null;
 
   const monthEvents = useMemo(() => data?.events || [], [data]);

@@ -131,22 +131,30 @@ describe('IndicatorTile', () => {
 });
 
 describe('CalendarEventCard', () => {
+  // Дата в будущем: статус прошедшего события другой («Вышло», «Ждём данные», «Дата прошла»).
   const event = {
     id: 1, source: 'cbr', importance: 3, title: 'Заседание Совета директоров по ключевой ставке',
-    scheduled_date: '2026-10-23', scheduled_time: '13:30', date_confidence: 'official_rule',
+    scheduled_date: '2099-10-23', scheduled_time: '13:30', date_confidence: 'official_rule',
   };
 
-  it('вместо «●●○ по графику источника» — «Ориентировочно» с подсказкой и пометка важного события', () => {
+  it('ежедневное правило источника — «По графику» с подсказкой и пометка важного события', () => {
     const { container } = renderPage(<CalendarEventCard event={event} />);
-    expect(screen.getByText('Ориентировочно')).toBeTruthy();
+    expect(screen.getByText('По графику')).toBeTruthy();
     expect(screen.getByText('Важное событие')).toBeTruthy();
-    expect(container.textContent).not.toMatch(/по графику источника/);
-    expect(screen.getByText('Ориентировочно').closest('[title]').getAttribute('title')).toMatch(/графику источника/);
+    expect(container.textContent).not.toMatch(/Ориентировочно/);
+    expect(screen.getByText('По графику').closest('[title]').getAttribute('title')).toMatch(/каждый рабочий день/);
   });
 
   it('официальная дата — «Дата подтверждена»', () => {
     renderPage(<CalendarEventCard event={{ ...event, date_confidence: 'official', importance: 2 }} />);
     expect(screen.getByText('Дата подтверждена')).toBeTruthy();
     expect(screen.queryByText('Важное событие')).toBeNull();
+  });
+
+  it('прошедшее событие с цифрой — «Вышло», перенесённое — «Перенесено с …»', () => {
+    renderPage(<CalendarEventCard event={{ ...event, scheduled_date: '2026-10-23', status: 'released', actual_value: '14' }} />);
+    expect(screen.getByText('Вышло')).toBeTruthy();
+    renderPage(<CalendarEventCard event={{ ...event, date_confidence: 'official_explicit', rescheduled_from: '2099-10-13' }} />);
+    expect(screen.getByText(/Перенесено с 13 октября/)).toBeTruthy();
   });
 });
