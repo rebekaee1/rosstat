@@ -125,6 +125,9 @@ export function explainIndicator(name, unit, locale = 'ru') {
   const raw = String(name || '');
   const en = locale === 'en';
   if (DEMOGRAPHIC_LOAD.test(raw)) {
+    // Название уже переписано простыми словами («Детей на 1000 человек…»): пояснение повторило бы его и было бы неточным
+    // (про «детей и пожилых» под строкой только про детей).
+    if (plainIndicatorTitle(raw, locale) !== glueNumbers(raw)) return '';
     return en
       ? 'How many children and older people there are for every 1,000 people of working age.'
       : 'Сколько детей и пожилых приходится на каждую тысячу человек трудоспособного возраста.';

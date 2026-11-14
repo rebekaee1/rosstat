@@ -18,6 +18,8 @@ export function RegionDelta({ value, prevValue, name, label, unit }) {
   if (isPercentUnit(unit)) {
     const pts = formatPointsDelta(value, prevValue, locale);
     if (!pts) return null;
+    // Разница меньше 0,05 п.п.: «без перемен», как у остальных строк страницы, а не «– 0 п.п.» с тире-маркером.
+    if (pts.diff === 0) return <span className="z1p-flat">{t('r2z1.prices.flat')}</span>;
     return (
       <span title={locale === 'en'
         ? 'Change in percentage points: the difference between this year and the previous one.'
@@ -77,7 +79,7 @@ export function RegionValue({ value, unit, locale }) {
   const parts = compactParts(value, unit, locale);
   return (
     <>
-      {parts.num}
+      {String(parts.num).replace(/^-/, '\u2212')}
       {parts.unit ? <>{'\u00A0'}<span className="font-normal text-text-secondary">{parts.unit}</span></> : null}
     </>
   );
@@ -129,7 +131,7 @@ export function RegionIndicatorRow({ item, to, title, compact = false, hidePerio
         ) : null}
         {explain ? <div className="mt-1 text-xs leading-snug text-text-secondary" data-testid="row-explain">{explain}</div> : null}
       </div>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2 sm:w-auto sm:min-w-[9.5rem] sm:max-w-[55%] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
         <div className="fe-num min-w-0 text-[16px] font-semibold tabular-nums text-text-primary sm:whitespace-nowrap">
           <RegionValue value={item.value} unit={item.unit} locale={locale} />
         </div>
@@ -146,12 +148,13 @@ export function RegionIndicatorRow({ item, to, title, compact = false, hidePerio
 /** Заголовок раздела: небольшая надпись обычным регистром, крупное имя, число показателей. */
 export function RegionSectionHeading({ eyebrow, title, count, id }) {
   return (
-    <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4">
-      <div className="min-w-0">
-        {eyebrow && <div className="text-xs font-medium text-champagne-ink">{eyebrow}</div>}
-        <h2 id={id} className="mt-0.5 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{title}</h2>
+    <div className="mb-3 sm:mb-4">
+      {eyebrow && <div className="text-xs font-medium text-champagne-ink">{eyebrow}</div>}
+      {/* Число стоит на линии букв заголовка, а не у золотой черты под ним. */}
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 id={id} className="mt-0.5 min-w-0 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{title}</h2>
+        {count != null && <span className="shrink-0 text-sm tabular-nums text-text-secondary">{count}</span>}
       </div>
-      {count != null && <span className="shrink-0 pb-1 text-sm tabular-nums text-text-secondary">{count}</span>}
     </div>
   );
 }

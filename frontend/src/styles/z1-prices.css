@@ -78,3 +78,16 @@
 .z1h-find__label { margin: 0 0 8px; font-family: var(--font-display, inherit); font-size: 1.05rem; font-weight: 700; color: var(--color-text-primary); }
 .z1h-find [data-testid="map-region-search"] { max-width: none; }
 .fe-rank__unit { font-size: .85em; font-weight: 500; color: var(--color-text-secondary); }
+
+/* Проход дизайна 15.11: две кнопки сравнения в шапке региона — одна пара, а не «мелкая серая плашка + крупный список».
+   Одна высота, один кегль и вес, тёмный текст, иконка — тонкий акцент; на телефоне обе выровнены по левому краю
+   (иконки и подписи стоят в одну колонку, как пункты списка). */
+.z1p-header .z1p-header-actions > a.fe-chip {
+  min-height: 44px; padding-inline: 14px 18px; gap: 8px;
+  font-size: 14px; font-weight: 600; color: var(--color-text-primary);
+}
+.z1p-header .z1p-header-actions > a.fe-chip svg { color: var(--color-champagne-ink); }
+@media (max-width: 639px) {
+  .z1p-header .z1p-header-actions > a.fe-chip { min-height: 40px; font-size: 13px; justify-content: flex-start; padding-inline: 14px 10px; }
+  .z1p-header .z1p-header-actions .fe-reg-pick .fe-reg-pick__select { padding-left: 26px; } /* поле внутри пилюли с отступом 10 px: подпись встаёт на 36 px, как у соседней кнопки */
+}
