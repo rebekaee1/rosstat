@@ -1,6 +1,7 @@
 import { trackFile, track, events } from './track';
 import { exportTable } from './api';
 import { rememberExport, clearPendingExport } from './authReturn';
+import { subjectParams } from './downloadSubject';
 import { trackBusy } from './chunkRecovery';
 
 // Генерация файла перенесена на бэкенд (гейт лимита + минус ~430 КБ xlsx из
@@ -61,7 +62,7 @@ function emitDownloaded(remaining) {
 function handleLimit(err, indicatorCode, payload) {
   if (err?.code === 'download_limit') {
     rememberExport(payload);
-    track(events.DOWNLOAD_LIMIT_HIT, { indicator: indicatorCode });
+    track(events.DOWNLOAD_LIMIT_HIT, { indicator: indicatorCode, ...subjectParams(payload.subject) });
     window.dispatchEvent(new CustomEvent('fe:download-limit'));
     return true;
   }
@@ -78,6 +79,8 @@ async function downloadExcelImpl(chartData, mode, indicatorCode, range, meta = {
       points: toPoints(chartData),
       meta: { indicator_name: meta.name, unit: meta.unit, source: meta.source,
         source_url: meta.source_url, frequency: meta.frequency, provenance: meta.provenance },
+      // Содержание для аналитики (не уходит на сервер: exportTable берёт только свои поля).
+      subject: { code: indicatorCode, country: meta.country },
   };
   try {
     const { blob, remaining } = await exportTable(payload);
@@ -99,6 +102,8 @@ async function downloadCSVImpl(chartData, mode, indicatorCode, range, meta = {})
       points: toPoints(chartData),
       meta: { indicator_name: meta.name, unit: meta.unit, source: meta.source,
         source_url: meta.source_url, frequency: meta.frequency, provenance: meta.provenance },
+      // Содержание для аналитики (не уходит на сервер: exportTable берёт только свои поля).
+      subject: { code: indicatorCode, country: meta.country },
   };
   try {
     const { blob, remaining } = await exportTable(payload);
@@ -117,7 +122,11 @@ async function resumeExportImpl(payload) {
   saveBlob(blob, payload.filename);
   emitDownloaded(remaining);
   clearPendingExport();
-  track(payload.format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { resumed_after_auth: true });
+  track(payload.format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, {
+    resumed_after_auth: true,
+    ...(payload.subject?.code ? { indicator: payload.subject.code } : {}),
+    ...subjectParams(payload.subject),
+  });
 }
 
 // Идущая выгрузка не должна обрываться автоперезагрузкой после релиза (chunkRecovery).

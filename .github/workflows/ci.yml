@@ -127,6 +127,21 @@ jobs:
       - name: Build frontend Docker image
         run: docker build -t rosstat-frontend-test frontend/
 
+  # 14.11.2026: поведенческие проверки nginx (классы роботов, общие бюджеты, пропуск человека, картинки OG,
+  # фильтры fail2ban). До этого их никто не запускал: test-og-crawler-limit.sh был сломан с 05.10 до 14.11.
+  nginx:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pull images
+        run: docker pull -q nginx:alpine && docker pull -q python:3.12-slim && docker pull -q curlimages/curl
+      - name: nginx behaviour tests
+        run: bash deploy/test-nginx-all.sh
+
   # Т-14/Т-16: E2E smoke на живом стеке — SPA загружается, ключевые страницы
   # рендерят контент, SSR для ботов отдаёт canonical/JSON-LD.
   e2e:

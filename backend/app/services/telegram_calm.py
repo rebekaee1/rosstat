@@ -48,6 +48,8 @@ HELD_KINDS = frozenset({
     "host_pressure", "host_memory",
     "acquisition_alert", "recrawl_alert", "analytics_anomaly", "audience_alert",
     "token_expired",
+    "counter_mismatch",  # 14.11.2026: наш счётчик и Метрика по поисковику расходятся в 3+ раза
+    "bot_traffic",  # 14.11.2026: роботы за сутки и люди, не прошедшие отказ «подождите»
 })
 # Отложенное, которое ждёт человека (09.11.2026): сводка с ним не может начинаться с «ничего делать не нужно».
 # Значение - что сказать в первой строке.
@@ -167,12 +169,12 @@ _EMOJI_RE = re.compile(r"^[\W_]+", re.UNICODE)
 
 # Группы сводки: (ключ, заголовок, виды). Порядок — порядок показа.
 GROUPS = (
-    ("site", "Сайт", ("http_5xx_spike", "load_shed", "host_pressure", "host_memory", "rate_limit_alert")),
+    ("site", "Сайт", ("http_5xx_spike", "load_shed", "host_pressure", "host_memory", "rate_limit_alert", "bot_traffic")),
     ("data", "Данные", ("etl_summary", "etl_failure", "etl_alert", "world_ingest_summary", "zero_parse",
                         "staleness", "freshness_watchdog", "forecast_issue", "data_guard", "data_sanity")),
     ("jobs", "Фоновые задачи", ("scheduler_alert", "job_lease_lost", "ticker_stale")),
     ("stats", "Статистика и поиск", ("acquisition_alert", "recrawl_alert", "analytics_anomaly", "audience_alert",
-                                     "token_expired")),
+                                     "token_expired", "counter_mismatch")),
 )
 _KIND_GROUP = {kind: key for key, _, kinds in GROUPS for kind in kinds}
 
@@ -201,6 +203,8 @@ KIND_LABELS = {
     "analytics_anomaly": "необычные колебания в аналитике",
     "audience_alert": "необычные колебания аудитории",
     "token_expired": "истёк доступ к Яндексу",
+    "counter_mismatch": "наш счётчик и Метрика расходятся по поисковикам",
+    "bot_traffic": "роботы и отказы «подождите» людям (цифры в подробностях)",
     "alert": "прочие технические заметки",
 }
 # «Хорошие» отложенные сообщения (всё вернулось в норму) не считаем проблемой.

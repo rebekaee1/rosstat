@@ -318,6 +318,7 @@ async def _own_acquisition(db: AsyncSession, p: Period) -> dict:
     поисковики из referrer-хостов портретов. Метрика-аналог — `_acquisition`.
     """
     from app.models import BehaviorSession
+    from app.services.analytics_marts import human_portrait_conditions
     from app.services.traffic_channel import assistant_name, search_engine_name
 
     ch_rows = (await db.execute(
@@ -328,11 +329,14 @@ async def _own_acquisition(db: AsyncSession, p: Period) -> dict:
     )).all()
     channels = {ch or "unknown": int(n or 0) for ch, n in ch_rows}
 
+    # Поисковики и срезы — по портретам; без фильтра роботов ферма с Referer google.com
+    # 13-14.11.2026 давала ~1 800 «переходов из Google» в сутки (Метрика: 7-13).
+    human = await human_portrait_conditions(db, p.start_date, p.end_date)
     eng_rows = (await db.execute(
         select(BehaviorSession.referrer_host, func.count())
         .where(BehaviorSession.started_at >= p.start,
                BehaviorSession.started_at < p.end,
-               BehaviorSession.channel == "search")
+               BehaviorSession.channel == "search", *human)
         .group_by(BehaviorSession.referrer_host)
     )).all()
     engines: Counter = Counter()
@@ -351,10 +355,7 @@ async def _own_acquisition(db: AsyncSession, p: Period) -> dict:
         .where(
             BehaviorSession.started_at >= p.start,
             BehaviorSession.started_at < p.end,
-            or_(
-                BehaviorSession.is_webdriver.is_(False),
-                BehaviorSession.is_webdriver.is_(None),
-            ),
+            *human,
         )
         .group_by(
             BehaviorSession.channel,
@@ -927,10 +928,15 @@ async def _audience(db: AsyncSession, p: Period,
         full_devices[dev or "unknown"] += int(n or 0)
     sessions_total = sum(full_devices.values())
 
+    # Портреты — без роботов и своей активности, как полный поток выше: иначе браузеры,
+    # экраны, пояса и города показывают ферму (13-14.11.2026: Chrome 157 Linux 1920×1080,
+    # America/New_York — больше половины всех портретов суток).
+    from app.services.analytics_marts import human_portrait_conditions
     portrait_where = (
         BehaviorSession.started_at >= p.start,
         BehaviorSession.started_at < p.end,
         or_(BehaviorSession.device_type.is_(None), BehaviorSession.device_type != "bot"),
+        *(await human_portrait_conditions(db, p.start_date, p.end_date)),
     )
 
     async def _grouped(cols, filters=portrait_where):

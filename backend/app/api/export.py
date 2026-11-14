@@ -432,11 +432,16 @@ def _content_disposition(filename: str) -> str:
     return f"attachment; filename=\"{ascii_fallback}\"; filename*=UTF-8''{quote(filename)}"
 
 
-async def consume_anon_quota(request: Request, user: User | None) -> str | None:
+async def consume_anon_quota(
+    request: Request, user: User | None, *, fmt: str | None = None,
+    history: "ExportHistoryHint | None" = None,
+) -> str | None:
     """Гостевой лимит выгрузок (общий для /export/table и /export/grid).
 
     Вошедшему ничего не списывается. Возвращает id нового cookie `fe_dl`, если его
     нужно выставить в ответе; при исчерпании лимита — 403 `download_limit`.
+    Отказ считается на сервере (`wall_counter`, 14.11.2026): день × путь страницы × формат,
+    без идентификаторов. Путь — из `history.params.href`, иначе из заголовка Referer.
     """
     if user is not None:
         return None
@@ -447,6 +452,10 @@ async def consume_anon_quota(request: Request, user: User | None) -> str | None:
         set_cookie_id = dl_id
     allowed = await dq.consume_anon_download(dl_id)
     if not allowed:
+        from app.services.wall_counter import record_wall
+
+        href = ((history.params or {}).get("href") if history is not None else None)
+        await record_wall(fmt, href if isinstance(href, str) else request.headers.get("referer"))
         raise HTTPException(
             status_code=403,
             detail={
@@ -545,7 +554,7 @@ async def export_table(
     db: AsyncSession = Depends(get_db),
     admission: ExportAdmission = Depends(reserve_export_admission),
 ):
-    set_cookie_id = await consume_anon_quota(request, user)
+    set_cookie_id = await consume_anon_quota(request, user, fmt=body.format, history=body.history)
 
     data = await render_export_async(_build_table, body, user is not None, admission=admission)
     media = ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -572,7 +581,7 @@ async def export_grid_file(
     (`download_anon_limit`), что у /export/table. Только точечные значения: `lower` /
     `upper` отклоняются (422). Вошедшему при включённом кабинете параметры выгрузки
     попадают в историю (без файла)."""
-    set_cookie_id = await consume_anon_quota(request, user)
+    set_cookie_id = await consume_anon_quota(request, user, fmt=body.format, history=body.history)
 
     data = await render_export_async(_build_grid, body, user is not None, admission=admission)
     media = ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

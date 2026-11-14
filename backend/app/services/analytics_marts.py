@@ -380,6 +380,23 @@ async def human_event_conditions(
         db, FrontendEvent.visitor_id_hash, FrontendEvent.user_id, start_date, end_date)
 
 
+async def human_portrait_conditions(
+    db: AsyncSession, start_date: date, end_date: date,
+) -> list:
+    """WHERE-условия для портретов `behavior_sessions`: без роботов и своей активности.
+
+    Портрет пишет каждая вкладка, исполнившая JS, включая headless-фермы. Без этого
+    фильтра «Поисковые системы» в BI 13-14.11.2026 показали ~1 800 переходов из Google
+    в сутки против 7-13 в Метрике: ферма (Chrome 157 Linux, 640 ядер, пояс Нью-Йорка)
+    подставляла Referer https://www.google.com/. Правило то же, что у событий: посетитель
+    с бот- или внутренней сессией за окно исключается; плюс явный webdriver.
+    """
+    conds = await _human_conditions(
+        db, BehaviorSession.visitor_id_hash, BehaviorSession.user_id, start_date, end_date)
+    conds.append(or_(BehaviorSession.is_webdriver.is_(None), BehaviorSession.is_webdriver.is_(False)))
+    return conds
+
+
 def _pctl(values: list[float], p: float) -> float | None:
     if not values:
         return None
@@ -1254,9 +1271,10 @@ async def mart_botness(db: AsyncSession, period: Period | int = 7) -> dict[str, 
 
 async def mart_geo(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     p = as_period(period)
+    human = await human_portrait_conditions(db, p.start_date, p.end_date)
     rows = (await db.execute(
         select(BehaviorSession.country, BehaviorSession.geo_region, BehaviorSession.city, func.count())
-        .where(BehaviorSession.started_at >= p.start, BehaviorSession.started_at < p.end)
+        .where(BehaviorSession.started_at >= p.start, BehaviorSession.started_at < p.end, *human)
         .group_by(BehaviorSession.country, BehaviorSession.geo_region, BehaviorSession.city)
     )).all()
     countries: Counter = Counter()

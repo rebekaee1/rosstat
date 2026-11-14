@@ -11,6 +11,7 @@ import {
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import {
   formatWorldValue,
   localizeWorldUnit,
@@ -724,7 +725,7 @@ export default function WorldRatingPage({ renderActions = null } = {}) {
     if (exporting || displayRows.length === 0) return;
     const indicator = `rating:${activeConcept}`;
     if (!isAuthed) {
-      track(events.DOWNLOAD_LIMIT_HIT, { indicator });
+      track(events.DOWNLOAD_LIMIT_HIT, { indicator, ...subjectParams({ code: activeConcept }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -770,7 +771,7 @@ export default function WorldRatingPage({ renderActions = null } = {}) {
         },
         history: { source: 'rating', subject_key: `${activeConcept}:${activeYear || ''}`, params: { group: activeGroup, columns: extraSlugs } },
       });
-      track(format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { indicator, rows: rows.length });
+      track(format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { indicator, rows: rows.length, ...subjectParams({ code: activeConcept }) });
     } catch (err) {
       if (err?.code === 'download_limit') window.dispatchEvent(new CustomEvent('fe:download-limit'));
       // Остальные сбои сети не должны ронять страницу.

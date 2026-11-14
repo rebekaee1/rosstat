@@ -624,6 +624,21 @@ async def apply_remaps(verdict: StructureVerdict, session_factory=None) -> None:
             await publish_committed_changes()
 
 
+async def _db_totals(db: AsyncSession) -> tuple[int, int, int]:
+    """Итог для журнала: активные страны точно, ряды и точки — оценкой Postgres для больших таблиц.
+
+    До 14.11.2026 здесь был точный `SELECT COUNT(*) FROM world_data_points` (~16 млн строк) в конце
+    каждого запуска, а запуск идёт на каждый набор (`world_eurostat_ingest._run_one_loader --only`):
+    по pg_stat_statements с 26.09 — 7 133 вызова по 1,8 с, 685 млн блоков с диска, первое место по
+    чтению. Числа нужны только строке журнала, поэтому достаточно оценки (`dataset_inventory.row_count`).
+    """
+    from app.services.dataset_inventory import row_count
+
+    n_countries = int((await db.execute(
+        text("SELECT COUNT(*) FROM world_countries WHERE is_active"))).scalar() or 0)
+    return n_countries, await row_count(db, WorldIndicator), await row_count(db, WorldDataPoint)
+
+
 async def run(args: argparse.Namespace) -> int:
     themes = [t.strip() for t in args.themes.split(",") if t.strip()]
     freqs = [f.strip().upper() for f in args.freq.split(",") if f.strip()]
@@ -717,15 +732,8 @@ async def run(args: argparse.Namespace) -> int:
                 geos, n_ind_total, n_pts_total, elapsed,
             )
 
-    # summary counts from DB
     async with async_session() as db:
-        n_countries = (
-            await db.execute(
-                text("SELECT COUNT(*) FROM world_countries WHERE is_active")
-            )
-        ).scalar()
-        n_indicators = (await db.execute(text("SELECT COUNT(*) FROM world_indicators"))).scalar()
-        n_points = (await db.execute(text("SELECT COUNT(*) FROM world_data_points"))).scalar()
+        n_countries, n_indicators, n_points = await _db_totals(db)
 
     log.info("=" * 60)
     log.info(
@@ -737,7 +745,7 @@ async def run(args: argparse.Namespace) -> int:
         stats["points"],
     )
     log.info(
-        "DB totals: countries=%s indicators=%s points=%s",
+        "DB totals (indicators/points — оценка Postgres для больших таблиц): countries=%s indicators=%s points=%s",
         n_countries, n_indicators, n_points,
     )
     if stats["errors"]:

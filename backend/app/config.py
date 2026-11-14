@@ -379,6 +379,10 @@ class Settings(BaseSettings):
     analytics_scheduler_enabled: bool = False
     analytics_scheduler_cron_hour: int = 7
     analytics_scheduler_cron_minute: int = 20
+    # Инкрементная сессионизация в задаче каждые 15 минут (14.11.2026): пересчитываются только посетители,
+    # у которых после прошлого прогона что-то поступило (по id), полный прогон — не реже раза в 55 минут.
+    # Выключено = всё как раньше (полный прогон каждые 15 минут). Включать после сверки на копии данных.
+    analytics_sessionize_incremental_enabled: bool = False
     analytics_api_token: str = ""
     # По умолчанию совпадает с public_base_url; отдельный override — если
     # аналитический crawl ходит на другой origin (стейджинг и т.п.).
@@ -464,6 +468,12 @@ class Settings(BaseSettings):
     # (владелец + `telegram_digest_chat_ids`). Нужен для первого включения: указать здесь один
     # тестовый чат или чат владельца, чтобы отчёты не ушли остальным адресатам дайджеста.
     telegram_reports_chat_ids: str = ""
+    # Роль «только отчёты» в служебном боте (14.11.2026): чаты видят «Скачивания» и выгрузки без
+    # персональных данных — без почт, телефонов, CSV пользователей, карточек и хэшей посетителей.
+    # Флаг выключен, список пуст; кого добавить — решает владелец. Чат из полного списка
+    # (`interactive_authorized_ids`) остаётся с полными правами.
+    telegram_reports_only_enabled: bool = False
+    telegram_reports_only_chat_ids: str = ""
     # Недельный отчёт (понедельник) и месячный (1-го числа) об аудитории.
     telegram_weekly_enabled: bool = False
     telegram_weekly_cron_hour: int = 9

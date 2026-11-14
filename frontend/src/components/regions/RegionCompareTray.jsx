@@ -11,6 +11,7 @@ import { downloadGrid, gridColumnKey, gridFilename } from '../../lib/gridDownloa
 import { useScrollFades } from '../../lib/useScrollFades';
 import { regionIndicatorPath, regionVsPath } from '../../lib/sitePaths';
 import { track, events } from '../../lib/track';
+import { subjectParams } from '../../lib/downloadSubject';
 import { useAuth } from '../../context/authContext';
 import { useLocale } from '../../i18n';
 import '../../styles/regions-w4.css';
@@ -44,7 +45,7 @@ export default function RegionCompareTray({ slugs, namesBySlug, metrics, onRemov
     if (exporting) return;
     const indicator = 'regions-compare';
     if (!isAuthed) {
-      track(events.DOWNLOAD_LIMIT_HIT, { indicator });
+      track(events.DOWNLOAD_LIMIT_HIT, { indicator, ...subjectParams({ regions: slugs }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -68,7 +69,7 @@ export default function RegionCompareTray({ slugs, namesBySlug, metrics, onRemov
         meta: { country: locale === 'en' ? 'Russia' : 'Россия' },
         history: { source: 'region', subject_key: slugs.join(','), params: { regions: slugs } },
       });
-      track(format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { indicator, rows: data.length });
+      track(format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { indicator, rows: data.length, ...subjectParams({ regions: slugs }) });
     } catch (err) {
       if (err?.code === 'download_limit') window.dispatchEvent(new CustomEvent('fe:download-limit'));
     } finally {

@@ -35,6 +35,7 @@ import '../styles/k5-pages.css';
 import '../styles/r3d-card.css';
 import '../styles/r6b-card.css';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import { useLocale, useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';
 import LoadingNote from './LoadingNote';
@@ -172,14 +173,14 @@ export default function GenericIndicatorView({
   const handleDownloadExcel = useCallback(async () => {
     try {
       const ok = await downloadExcel(fullChartData, null, resolved?.code ?? code, 'all', downloadMeta);
-      if (ok) track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+      if (ok) track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category, ...subjectParams({ code }) });
     } catch { /* сеть/сервер — молча */ }
   }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
   const handleDownloadCSV = useCallback(async () => {
     try {
       const ok = await downloadCSV(fullChartData, null, resolved?.code ?? code, 'all', downloadMeta);
-      if (ok) track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+      if (ok) track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category, ...subjectParams({ code }) });
     } catch { /* сеть/сервер — молча */ }
   }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
