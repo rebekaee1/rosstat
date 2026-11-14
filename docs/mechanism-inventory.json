@@ -865,8 +865,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "sha256": "2493bfe6892e4eb027c65a2500b0a08a12f02148ea0f7117ffe31cc3e25c4828",
-      "lines": 447
+      "sha256": "4b54c378b4543b8970e99f83af4fc9e0e6d168e5620c648e644ad7b2d4b98932",
+      "lines": 451
     },
     {
       "path": "backend/app/services/binance_btcusdt_parser.py",
@@ -1440,13 +1440,13 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "sha256": "e6ff1d3498d771b2013446ab57a38de9e2a8d954b8f2924c93070ae8b23e9fb8",
-      "lines": 891
+      "sha256": "f0b5aa27aac80061c73e8ccf77f8cfcabf01c19eef208a72a84a6236bc47f0de",
+      "lines": 898
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "106ffbecf8029bf1ff6e9c3b7d73e451e83e95205ee6b923d90bb6b2aed04c7a",
-      "lines": 586
+      "sha256": "f5a4a7413f47aa2826de92ab1d67147fe0f956e6892f5a933b878846273bdae1",
+      "lines": 597
     },
     {
       "path": "backend/app/services/r4a_price_compare.py",
@@ -37681,8 +37681,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 228,
+      "end_line": 228,
       "owner": "_seo_snapshot",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -37690,8 +37690,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 138,
-      "end_line": 138,
+      "line": 144,
+      "end_line": 144,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "name": "analytics_allowed_counter_ids",
@@ -37699,8 +37699,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 336,
+      "end_line": 336,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -37708,8 +37708,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 345,
+      "end_line": 345,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_model",
@@ -37717,8 +37717,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 563,
+      "end_line": 563,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37726,8 +37726,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 518,
-      "end_line": 518,
+      "line": 529,
+      "end_line": 529,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -37735,8 +37735,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 518,
-      "end_line": 518,
+      "line": 529,
+      "end_line": 529,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37744,8 +37744,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 563,
+      "end_line": 563,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -37753,8 +37753,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 355,
-      "end_line": 355,
+      "line": 356,
+      "end_line": 356,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -37762,8 +37762,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 362,
+      "end_line": 362,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -102477,8 +102477,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 457,
+      "end_line": 457,
       "owner": "<module>",
       "conditions": [],
       "name": "_REGION_MARKERS",
@@ -102528,8 +102528,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 202,
+      "end_line": 202,
       "owner": "<module>",
       "conditions": [],
       "name": "_HYP_WORD_RE",
@@ -142459,8 +142459,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 288,
+      "end_line": 288,
       "owner": "BaseParser.run",
       "conditions": [],
       "operation": "commit",
@@ -142473,8 +142473,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 297,
+      "end_line": 297,
       "owner": "BaseParser.run",
       "conditions": [],
       "operation": "add",
@@ -142487,8 +142487,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 208,
+      "end_line": 208,
       "owner": "BaseParser.run",
       "conditions": [
         "not points and (fetch_issues or failed_reason) and (not expected_empty_reason(fetch_log))"
@@ -142503,8 +142503,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 225,
+      "end_line": 225,
       "owner": "BaseParser.run",
       "conditions": [
         "not points"
@@ -142519,8 +142519,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 289,
-      "end_line": 289,
+      "line": 293,
+      "end_line": 293,
       "owner": "BaseParser.run",
       "conditions": [],
       "operation": "rollback",
@@ -142533,8 +142533,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 298,
+      "end_line": 298,
       "owner": "BaseParser.run",
       "conditions": [],
       "operation": "commit",
@@ -148989,8 +148989,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 778,
-      "end_line": 778,
+      "line": 784,
+      "end_line": 784,
       "owner": "store_snapshot",
       "conditions": [],
       "operation": "get_state_redis",
@@ -149003,8 +149003,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 779,
-      "end_line": 779,
+      "line": 785,
+      "end_line": 785,
       "owner": "store_snapshot",
       "conditions": [],
       "operation": "set",
@@ -149017,8 +149017,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 783,
-      "end_line": 783,
+      "line": 789,
+      "end_line": 789,
       "owner": "load_snapshot",
       "conditions": [],
       "operation": "get_state_redis",
@@ -149031,8 +149031,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 873,
-      "end_line": 873,
+      "line": 880,
+      "end_line": 880,
       "owner": "store_memory",
       "conditions": [],
       "operation": "get_state_redis",
@@ -149045,8 +149045,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 875,
-      "end_line": 875,
+      "line": 882,
+      "end_line": 882,
       "owner": "store_memory",
       "conditions": [],
       "operation": "set",
@@ -149059,8 +149059,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 881,
-      "end_line": 881,
+      "line": 888,
+      "end_line": 888,
       "owner": "load_memory",
       "conditions": [],
       "operation": "get_state_redis",
@@ -149073,8 +149073,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 168,
-      "end_line": 173,
+      "line": 174,
+      "end_line": 179,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "row is not None"
@@ -149089,8 +149089,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 604,
-      "end_line": 604,
+      "line": 610,
+      "end_line": 610,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -149119,8 +149119,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 187,
-      "end_line": 192,
+      "line": 193,
+      "end_line": 198,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "operation": "execute",
@@ -149133,8 +149133,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 470,
-      "end_line": 474,
+      "line": 476,
+      "end_line": 480,
       "owner": "_events_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149147,8 +149147,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 507,
-      "end_line": 512,
+      "line": 513,
+      "end_line": 518,
       "owner": "_events_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149161,8 +149161,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 520,
-      "end_line": 524,
+      "line": 526,
+      "end_line": 530,
       "owner": "_events_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149175,8 +149175,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 540,
-      "end_line": 547,
+      "line": 546,
+      "end_line": 553,
       "owner": "_events_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149189,8 +149189,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 156,
-      "end_line": 165,
+      "line": 162,
+      "end_line": 171,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "operation": "execute",
@@ -149203,8 +149203,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 379,
-      "end_line": 385,
+      "line": 385,
+      "end_line": 391,
       "owner": "_bot_signals",
       "conditions": [],
       "operation": "execute",
@@ -149217,8 +149217,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 595,
-      "end_line": 598,
+      "line": 601,
+      "end_line": 604,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -149233,8 +149233,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 634,
-      "end_line": 638,
+      "line": 640,
+      "end_line": 644,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149247,8 +149247,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 667,
-      "end_line": 673,
+      "line": 673,
+      "end_line": 679,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149261,8 +149261,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 674,
-      "end_line": 680,
+      "line": 680,
+      "end_line": 686,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149275,8 +149275,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 681,
-      "end_line": 687,
+      "line": 687,
+      "end_line": 693,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149289,8 +149289,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 689,
-      "end_line": 693,
+      "line": 695,
+      "end_line": 699,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149331,8 +149331,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 139,
-      "end_line": 145,
+      "line": 145,
+      "end_line": 151,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "operation": "execute",
@@ -149345,8 +149345,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 207,
-      "end_line": 211,
+      "line": 213,
+      "end_line": 217,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -149361,8 +149361,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 435,
-      "end_line": 438,
+      "line": 441,
+      "end_line": 444,
       "owner": "_signup_dims",
       "conditions": [],
       "operation": "execute",
@@ -149375,8 +149375,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 581,
-      "end_line": 583,
+      "line": 587,
+      "end_line": 589,
       "owner": "_users_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149389,8 +149389,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 655,
-      "end_line": 659,
+      "line": 661,
+      "end_line": 665,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149403,8 +149403,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 660,
-      "end_line": 666,
+      "line": 666,
+      "end_line": 672,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149417,8 +149417,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 282,
-      "end_line": 293,
+      "line": 288,
+      "end_line": 299,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
@@ -149433,8 +149433,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 301,
-      "end_line": 310,
+      "line": 307,
+      "end_line": 316,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
@@ -149449,8 +149449,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 591,
-      "end_line": 593,
+      "line": 597,
+      "end_line": 599,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -149465,8 +149465,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 707,
-      "end_line": 712,
+      "line": 713,
+      "end_line": 718,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "execute",
@@ -149479,8 +149479,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 564,
+      "end_line": 564,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -149493,8 +149493,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 563,
+      "end_line": 563,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -149507,8 +149507,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 295,
+      "end_line": 295,
       "owner": "_apply_hypothesis_updates",
       "conditions": [],
       "operation": "commit",
@@ -149521,8 +149521,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 287,
-      "end_line": 287,
+      "line": 288,
+      "end_line": 288,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -149537,8 +149537,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 241,
-      "end_line": 244,
+      "line": 242,
+      "end_line": 245,
       "owner": "_open_hypotheses",
       "conditions": [],
       "operation": "execute",
@@ -149551,8 +149551,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 279,
-      "end_line": 281,
+      "line": 280,
+      "end_line": 282,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -208812,8 +208812,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 311,
-      "end_line": 311,
+      "line": 315,
+      "end_line": 315,
       "owner": "BaseParser._zero_parse_expected",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -208821,8 +208821,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 324,
+      "end_line": 324,
       "owner": "BaseParser._resolve_zero_parse_status",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -208830,8 +208830,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 324,
+      "end_line": 324,
       "owner": "BaseParser._resolve_zero_parse_status",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -208839,8 +208839,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 341,
+      "end_line": 341,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -208848,8 +208848,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 374,
-      "end_line": 374,
+      "line": 378,
+      "end_line": 378,
       "owner": "BaseParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -208857,8 +208857,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 376,
-      "end_line": 376,
+      "line": 380,
+      "end_line": 380,
       "owner": "BaseParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -208866,8 +208866,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 406,
-      "end_line": 406,
+      "line": 410,
+      "end_line": 410,
       "owner": "BaseParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -208875,8 +208875,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 408,
-      "end_line": 408,
+      "line": 412,
+      "end_line": 412,
       "owner": "BaseParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -208884,8 +208884,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 419,
-      "end_line": 419,
+      "line": 423,
+      "end_line": 423,
       "owner": "BaseParser._after_storage",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -208893,8 +208893,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 421,
-      "end_line": 421,
+      "line": 425,
+      "end_line": 425,
       "owner": "BaseParser._after_storage",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -208902,8 +208902,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 431,
-      "end_line": 431,
+      "line": 435,
+      "end_line": 435,
       "owner": "BaseParser._handle_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -208911,8 +208911,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 356,
-      "end_line": 356,
+      "line": 360,
+      "end_line": 360,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -208920,8 +208920,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 356,
-      "end_line": 356,
+      "line": 360,
+      "end_line": 360,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -208929,8 +208929,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 355,
-      "end_line": 355,
+      "line": 359,
+      "end_line": 359,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -208938,8 +208938,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 355,
-      "end_line": 355,
+      "line": 359,
+      "end_line": 359,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -224662,8 +224662,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 511,
+      "end_line": 511,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json['indicator'].as_string",
@@ -224671,8 +224671,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 516,
-      "end_line": 516,
+      "line": 522,
+      "end_line": 522,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json['q'].as_string",
@@ -224680,8 +224680,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 523,
+      "end_line": 523,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json['results'].as_string",
@@ -224689,8 +224689,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 538,
-      "end_line": 538,
+      "line": 544,
+      "end_line": 544,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json['region'].as_string",
@@ -224698,8 +224698,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 473,
+      "end_line": 473,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -224707,8 +224707,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 473,
+      "end_line": 473,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -224716,8 +224716,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 501,
+      "end_line": 501,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed.is_",
@@ -224725,8 +224725,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 501,
+      "end_line": 501,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.user_id.is_not",
@@ -224734,8 +224734,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 473,
+      "end_line": 473,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224743,8 +224743,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 473,
+      "end_line": 473,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224752,8 +224752,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 501,
+      "end_line": 501,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed",
@@ -224761,8 +224761,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 501,
+      "end_line": 501,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.user_id",
@@ -224770,8 +224770,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 511,
+      "end_line": 511,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -224779,8 +224779,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 516,
-      "end_line": 516,
+      "line": 522,
+      "end_line": 522,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -224788,8 +224788,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 523,
+      "end_line": 523,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -224797,8 +224797,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 538,
-      "end_line": 538,
+      "line": 544,
+      "end_line": 544,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -224806,8 +224806,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 501,
+      "end_line": 501,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224815,8 +224815,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 501,
+      "end_line": 501,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224824,8 +224824,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 511,
+      "end_line": 511,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224833,8 +224833,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 516,
-      "end_line": 516,
+      "line": 522,
+      "end_line": 522,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224842,8 +224842,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 523,
+      "end_line": 523,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224851,8 +224851,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 538,
-      "end_line": 538,
+      "line": 544,
+      "end_line": 544,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224869,8 +224869,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 210,
+      "end_line": 210,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.visit_date",
@@ -224878,8 +224878,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 210,
+      "end_line": 210,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.counter_id",
@@ -224887,8 +224887,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 479,
+      "end_line": 479,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -224896,8 +224896,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 479,
+      "end_line": 479,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed",
@@ -224905,8 +224905,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 586,
+      "end_line": 586,
       "owner": "_users_snapshot",
       "conditions": [],
       "symbol": "app.models.User.id",
@@ -224923,8 +224923,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 210,
+      "end_line": 210,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -224932,8 +224932,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 210,
+      "end_line": 210,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -224941,8 +224941,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 286,
+      "end_line": 286,
       "owner": "_seo_snapshot",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery.date",
@@ -224950,8 +224950,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 479,
+      "end_line": 479,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224959,8 +224959,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 479,
+      "end_line": 479,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -224968,8 +224968,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 507,
+      "end_line": 507,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash.is_not",
@@ -224977,8 +224977,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 586,
+      "end_line": 586,
       "owner": "_users_snapshot",
       "conditions": [],
       "symbol": "app.models.User",
@@ -224986,8 +224986,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 643,
+      "end_line": 643,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.AuthAudit.event",
@@ -224995,8 +224995,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 753,
+      "end_line": 753,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.IndicatorData.created_at",
@@ -225004,8 +225004,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 753,
+      "end_line": 753,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.IndicatorData.created_at",
@@ -225013,8 +225013,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 203,
-      "end_line": 203,
+      "line": 209,
+      "end_line": 209,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit.id",
@@ -225022,8 +225022,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 216,
+      "end_line": 216,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -225033,8 +225033,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 286,
+      "end_line": 286,
       "owner": "_seo_snapshot",
       "conditions": [],
       "symbol": "app.models.WebmasterSearchQuery",
@@ -225042,8 +225042,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 330,
+      "end_line": 330,
       "owner": "_seo_snapshot",
       "conditions": [],
       "symbol": "app.models.WebmasterIndexingDaily.host",
@@ -225051,8 +225051,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 331,
+      "end_line": 331,
       "owner": "_seo_snapshot",
       "conditions": [],
       "symbol": "app.models.WebmasterIndexingDaily.day",
@@ -225060,35 +225060,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 370,
-      "end_line": 370,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 370,
-      "end_line": 370,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 375,
-      "end_line": 375,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 376,
+      "end_line": 376,
       "owner": "_bot_signals",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.started_at",
@@ -225100,13 +225073,40 @@
       "end_line": 376,
       "owner": "_bot_signals",
       "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 381,
+      "end_line": 381,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 381,
+      "end_line": 381,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 382,
+      "end_line": 382,
+      "owner": "_bot_signals",
+      "conditions": [],
       "symbol": "app.models.BehaviorSession.is_webdriver.is_",
       "expression": "BehaviorSession.is_webdriver.is_"
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 507,
+      "end_line": 507,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash",
@@ -225114,8 +225114,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 603,
+      "end_line": 603,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -225125,8 +225125,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 643,
+      "end_line": 643,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225134,8 +225134,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 664,
+      "end_line": 664,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -225143,8 +225143,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 691,
-      "end_line": 691,
+      "line": 697,
+      "end_line": 697,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -225152,8 +225152,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 691,
-      "end_line": 691,
+      "line": 697,
+      "end_line": 697,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -225161,8 +225161,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 698,
+      "end_line": 698,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -225170,8 +225170,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 753,
+      "end_line": 753,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -225179,8 +225179,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 753,
+      "end_line": 753,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -225260,8 +225260,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 150,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun.started_at.desc",
@@ -225269,8 +225269,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 150,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun.id.desc",
@@ -225278,8 +225278,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 191,
-      "end_line": 191,
+      "line": 197,
+      "end_line": 197,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.visits.desc",
@@ -225287,8 +225287,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 203,
-      "end_line": 203,
+      "line": 209,
+      "end_line": 209,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.RawMetrikaVisit",
@@ -225296,8 +225296,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 216,
+      "end_line": 216,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -225307,8 +225307,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 329,
+      "end_line": 329,
       "owner": "_seo_snapshot",
       "conditions": [],
       "symbol": "app.models.WebmasterIndexingDaily",
@@ -225316,8 +225316,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 330,
+      "end_line": 330,
       "owner": "_seo_snapshot",
       "conditions": [],
       "symbol": "app.models.WebmasterIndexingDaily",
@@ -225325,57 +225325,12 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 331,
+      "end_line": 331,
       "owner": "_seo_snapshot",
       "conditions": [],
       "symbol": "app.models.WebmasterIndexingDaily",
       "expression": "WebmasterIndexingDaily"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 369,
-      "end_line": 369,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 370,
-      "end_line": 370,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 370,
-      "end_line": 370,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 374,
-      "end_line": 374,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 375,
-      "end_line": 375,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
     },
     {
       "path": "backend/app/services/pulse.py",
@@ -225392,13 +225347,58 @@
       "end_line": 376,
       "owner": "_bot_signals",
       "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 376,
+      "end_line": 376,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 380,
+      "end_line": 380,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 381,
+      "end_line": 381,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 381,
+      "end_line": 381,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 382,
+      "end_line": 382,
+      "owner": "_bot_signals",
+      "conditions": [],
       "symbol": "app.models.BehaviorSession.is_webdriver",
       "expression": "BehaviorSession.is_webdriver"
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 437,
-      "end_line": 437,
+      "line": 443,
+      "end_line": 443,
       "owner": "_signup_dims",
       "conditions": [],
       "symbol": "app.models.UserSignup.user_id.in_",
@@ -225406,8 +225406,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 507,
+      "end_line": 507,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -225415,8 +225415,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 588,
+      "end_line": 588,
       "owner": "_users_snapshot",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -225424,8 +225424,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 588,
+      "end_line": 588,
       "owner": "_users_snapshot",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -225433,8 +225433,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 602,
+      "end_line": 602,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -225444,8 +225444,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 602,
+      "end_line": 602,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -225455,8 +225455,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 603,
+      "end_line": 603,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -225466,8 +225466,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 664,
+      "end_line": 664,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -225475,8 +225475,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 690,
-      "end_line": 690,
+      "line": 696,
+      "end_line": 696,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -225484,8 +225484,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 690,
-      "end_line": 690,
+      "line": 696,
+      "end_line": 696,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.params_json",
@@ -225493,8 +225493,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 691,
-      "end_line": 691,
+      "line": 697,
+      "end_line": 697,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -225502,8 +225502,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 691,
-      "end_line": 691,
+      "line": 697,
+      "end_line": 697,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -225511,8 +225511,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 698,
+      "end_line": 698,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -225520,8 +225520,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 746,
-      "end_line": 746,
+      "line": 752,
+      "end_line": 752,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -225610,8 +225610,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 150,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun.started_at",
@@ -225619,8 +225619,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 150,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun.id",
@@ -225628,8 +225628,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 168,
+      "end_line": 168,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.date_to.desc",
@@ -225637,8 +225637,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 169,
+      "end_line": 169,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.captured_at.desc",
@@ -225646,8 +225646,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 169,
+      "end_line": 169,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.id.desc",
@@ -225655,8 +225655,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 191,
-      "end_line": 191,
+      "line": 197,
+      "end_line": 197,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.visits",
@@ -225664,8 +225664,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 376,
-      "end_line": 376,
+      "line": 382,
+      "end_line": 382,
       "owner": "_bot_signals",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -225673,8 +225673,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 442,
+      "end_line": 442,
       "owner": "_signup_dims",
       "conditions": [],
       "symbol": "app.models.UserSignup.user_id",
@@ -225682,8 +225682,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 442,
+      "end_line": 442,
       "owner": "_signup_dims",
       "conditions": [],
       "symbol": "app.models.UserSignup.site_locale",
@@ -225691,8 +225691,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 437,
-      "end_line": 437,
+      "line": 443,
+      "end_line": 443,
       "owner": "_signup_dims",
       "conditions": [],
       "symbol": "app.models.UserSignup.user_id",
@@ -225700,8 +225700,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 477,
+      "end_line": 477,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -225709,8 +225709,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 477,
+      "end_line": 477,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.authed",
@@ -225718,8 +225718,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 497,
-      "end_line": 497,
+      "line": 503,
+      "end_line": 503,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.user_id",
@@ -225727,8 +225727,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 500,
-      "end_line": 500,
+      "line": 506,
+      "end_line": 506,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.session_id_hash",
@@ -225736,8 +225736,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 545,
-      "end_line": 545,
+      "line": 551,
+      "end_line": 551,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.url",
@@ -225745,8 +225745,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 588,
+      "end_line": 588,
       "owner": "_users_snapshot",
       "conditions": [],
       "symbol": "app.models.User",
@@ -225754,8 +225754,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 588,
+      "end_line": 588,
       "owner": "_users_snapshot",
       "conditions": [],
       "symbol": "app.models.User",
@@ -225763,8 +225763,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 588,
+      "end_line": 588,
       "owner": "_users_snapshot",
       "conditions": [],
       "symbol": "app.models.User",
@@ -225772,8 +225772,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 592,
-      "end_line": 592,
+      "line": 598,
+      "end_line": 598,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -225783,8 +225783,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 602,
+      "end_line": 602,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -225794,8 +225794,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 602,
+      "end_line": 602,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -225805,8 +225805,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 603,
+      "end_line": 603,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -225816,8 +225816,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 636,
-      "end_line": 636,
+      "line": 642,
+      "end_line": 642,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts",
@@ -225825,8 +225825,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 636,
-      "end_line": 636,
+      "line": 642,
+      "end_line": 642,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts",
@@ -225834,8 +225834,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 690,
-      "end_line": 690,
+      "line": 696,
+      "end_line": 696,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -225843,8 +225843,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 690,
-      "end_line": 690,
+      "line": 696,
+      "end_line": 696,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -225852,8 +225852,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 746,
-      "end_line": 746,
+      "line": 752,
+      "end_line": 752,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -225906,8 +225906,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 141,
-      "end_line": 141,
+      "line": 147,
+      "end_line": 147,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun.source",
@@ -225915,8 +225915,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 142,
-      "end_line": 142,
+      "line": 148,
+      "end_line": 148,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun.job_type",
@@ -225924,8 +225924,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 149,
+      "end_line": 149,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun.date_from",
@@ -225933,8 +225933,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 149,
+      "end_line": 149,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun.date_to",
@@ -225942,8 +225942,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 150,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun",
@@ -225951,8 +225951,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 150,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun",
@@ -225960,8 +225960,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 168,
+      "end_line": 168,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.date_to",
@@ -225969,8 +225969,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 169,
+      "end_line": 169,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.captured_at",
@@ -225978,8 +225978,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 169,
+      "end_line": 169,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.id",
@@ -225987,8 +225987,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 190,
-      "end_line": 190,
+      "line": 196,
+      "end_line": 196,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.date",
@@ -225996,8 +225996,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 190,
-      "end_line": 190,
+      "line": 196,
+      "end_line": 196,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.counter_id",
@@ -226005,8 +226005,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 191,
-      "end_line": 191,
+      "line": 197,
+      "end_line": 197,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase",
@@ -226014,8 +226014,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 215,
+      "end_line": 215,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -226025,8 +226025,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 215,
+      "end_line": 215,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -226036,8 +226036,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 314,
+      "end_line": 314,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
@@ -226047,8 +226047,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 388,
+      "end_line": 388,
       "owner": "_bot_signals",
       "conditions": [],
       "symbol": "app.models.BehaviorSession.country",
@@ -226056,8 +226056,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 442,
+      "end_line": 442,
       "owner": "_signup_dims",
       "conditions": [],
       "symbol": "app.models.UserSignup",
@@ -226065,8 +226065,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 442,
+      "end_line": 442,
       "owner": "_signup_dims",
       "conditions": [],
       "symbol": "app.models.UserSignup",
@@ -226074,8 +226074,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 437,
-      "end_line": 437,
+      "line": 443,
+      "end_line": 443,
       "owner": "_signup_dims",
       "conditions": [],
       "symbol": "app.models.UserSignup",
@@ -226083,8 +226083,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 477,
+      "end_line": 477,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -226092,8 +226092,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 477,
+      "end_line": 477,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -226101,8 +226101,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 497,
-      "end_line": 497,
+      "line": 503,
+      "end_line": 503,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -226110,8 +226110,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 500,
-      "end_line": 500,
+      "line": 506,
+      "end_line": 506,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -226119,8 +226119,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 545,
-      "end_line": 545,
+      "line": 551,
+      "end_line": 551,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -226128,8 +226128,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 592,
-      "end_line": 592,
+      "line": 598,
+      "end_line": 598,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -226139,8 +226139,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 592,
-      "end_line": 592,
+      "line": 598,
+      "end_line": 598,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -226150,8 +226150,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 635,
-      "end_line": 635,
+      "line": 641,
+      "end_line": 641,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.AuthAudit.event",
@@ -226159,8 +226159,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 636,
-      "end_line": 636,
+      "line": 642,
+      "end_line": 642,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -226168,8 +226168,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 636,
-      "end_line": 636,
+      "line": 642,
+      "end_line": 642,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -226177,8 +226177,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 657,
-      "end_line": 657,
+      "line": 663,
+      "end_line": 663,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -226186,8 +226186,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 657,
-      "end_line": 657,
+      "line": 663,
+      "end_line": 663,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -226195,8 +226195,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 677,
+      "end_line": 677,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.element_path",
@@ -226204,8 +226204,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 677,
+      "end_line": 677,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.element_text",
@@ -226213,8 +226213,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 684,
+      "end_line": 684,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.element_path",
@@ -226222,8 +226222,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 684,
+      "end_line": 684,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.element_text",
@@ -226231,8 +226231,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 691,
+      "end_line": 691,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -226240,8 +226240,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 691,
+      "end_line": 691,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.element_path",
@@ -226285,8 +226285,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 140,
-      "end_line": 140,
+      "line": 146,
+      "end_line": 146,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun",
@@ -226294,8 +226294,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 141,
-      "end_line": 141,
+      "line": 147,
+      "end_line": 147,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun",
@@ -226303,8 +226303,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 142,
-      "end_line": 142,
+      "line": 148,
+      "end_line": 148,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun",
@@ -226312,8 +226312,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 149,
+      "end_line": 149,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun",
@@ -226321,8 +226321,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 149,
+      "end_line": 149,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.AnalyticsSyncRun",
@@ -226330,8 +226330,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 158,
-      "end_line": 158,
+      "line": 164,
+      "end_line": 164,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.counter_id",
@@ -226339,8 +226339,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 165,
+      "end_line": 165,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.report_type",
@@ -226348,8 +226348,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 166,
+      "end_line": 166,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.date_from",
@@ -226357,8 +226357,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 166,
+      "end_line": 166,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.date_to",
@@ -226366,8 +226366,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 167,
+      "end_line": 167,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot.date_to",
@@ -226375,8 +226375,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 168,
+      "end_line": 168,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226384,8 +226384,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 169,
+      "end_line": 169,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226393,8 +226393,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 169,
+      "end_line": 169,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226402,8 +226402,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 188,
-      "end_line": 188,
+      "line": 194,
+      "end_line": 194,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.phrase",
@@ -226411,8 +226411,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 188,
-      "end_line": 188,
+      "line": 194,
+      "end_line": 194,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.search_engine",
@@ -226420,8 +226420,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 189,
-      "end_line": 189,
+      "line": 195,
+      "end_line": 195,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase.visits",
@@ -226429,8 +226429,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 190,
-      "end_line": 190,
+      "line": 196,
+      "end_line": 196,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase",
@@ -226438,8 +226438,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 190,
-      "end_line": 190,
+      "line": 196,
+      "end_line": 196,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase",
@@ -226447,8 +226447,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 208,
-      "end_line": 208,
+      "line": 214,
+      "end_line": 214,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -226458,8 +226458,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 215,
+      "end_line": 215,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -226469,8 +226469,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 215,
+      "end_line": 215,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -226480,8 +226480,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 314,
+      "end_line": 314,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
@@ -226491,8 +226491,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 315,
+      "end_line": 315,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
@@ -226502,8 +226502,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 388,
+      "end_line": 388,
       "owner": "_bot_signals",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -226511,8 +226511,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 592,
-      "end_line": 592,
+      "line": 598,
+      "end_line": 598,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -226522,8 +226522,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 592,
-      "end_line": 592,
+      "line": 598,
+      "end_line": 598,
       "owner": "_users_snapshot",
       "conditions": [
         "new_users"
@@ -226533,8 +226533,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 635,
-      "end_line": 635,
+      "line": 641,
+      "end_line": 641,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -226542,8 +226542,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 656,
-      "end_line": 656,
+      "line": 662,
+      "end_line": 662,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -226551,8 +226551,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 657,
-      "end_line": 657,
+      "line": 663,
+      "end_line": 663,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226560,8 +226560,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 657,
-      "end_line": 657,
+      "line": 663,
+      "end_line": 663,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226569,8 +226569,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 664,
-      "end_line": 664,
+      "line": 670,
+      "end_line": 670,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.page",
@@ -226578,8 +226578,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 677,
+      "end_line": 677,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226587,8 +226587,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 677,
+      "end_line": 677,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226596,8 +226596,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 684,
+      "end_line": 684,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226605,8 +226605,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 684,
+      "end_line": 684,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226614,8 +226614,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 691,
+      "end_line": 691,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226623,8 +226623,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 691,
+      "end_line": 691,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226632,8 +226632,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 709,
-      "end_line": 709,
+      "line": 715,
+      "end_line": 715,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -226641,8 +226641,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 709,
-      "end_line": 709,
+      "line": 715,
+      "end_line": 715,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -226650,8 +226650,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 710,
-      "end_line": 710,
+      "line": 716,
+      "end_line": 716,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.event_type",
@@ -226677,8 +226677,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 157,
-      "end_line": 157,
+      "line": 163,
+      "end_line": 163,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226686,8 +226686,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 158,
-      "end_line": 158,
+      "line": 164,
+      "end_line": 164,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226695,8 +226695,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 165,
+      "end_line": 165,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226704,8 +226704,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 166,
+      "end_line": 166,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226713,8 +226713,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 166,
+      "end_line": 166,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226722,8 +226722,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 167,
+      "end_line": 167,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaReportSnapshot",
@@ -226731,8 +226731,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 188,
-      "end_line": 188,
+      "line": 194,
+      "end_line": 194,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase",
@@ -226740,8 +226740,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 188,
-      "end_line": 188,
+      "line": 194,
+      "end_line": 194,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase",
@@ -226749,8 +226749,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 189,
-      "end_line": 189,
+      "line": 195,
+      "end_line": 195,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "symbol": "app.models.MetrikaSearchPhrase",
@@ -226758,8 +226758,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 208,
-      "end_line": 208,
+      "line": 214,
+      "end_line": 214,
       "owner": "_acquisition_from_warehouse",
       "conditions": [
         "visits_total"
@@ -226769,14 +226769,588 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 296,
+      "end_line": 296,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
       ],
       "symbol": "app.models.WebmasterSearchQuery.query",
       "expression": "WebmasterSearchQuery.query"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 315,
+      "end_line": 315,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 515,
+      "end_line": 515,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name.in_",
+      "expression": "FrontendEvent.event_name.in_"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 528,
+      "end_line": 528,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 662,
+      "end_line": 662,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 670,
+      "end_line": 670,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 714,
+      "end_line": 714,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.params_json",
+      "expression": "BehaviorEvent.params_json"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 715,
+      "end_line": 715,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 715,
+      "end_line": 715,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 716,
+      "end_line": 716,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 296,
+      "end_line": 296,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 297,
+      "end_line": 297,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery.impressions",
+      "expression": "WebmasterSearchQuery.impressions"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 313,
+      "end_line": 313,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery.date",
+      "expression": "WebmasterSearchQuery.date"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 387,
+      "end_line": 387,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 387,
+      "end_line": 387,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.started_at",
+      "expression": "BehaviorSession.started_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 515,
+      "end_line": 515,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 528,
+      "end_line": 528,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 547,
+      "end_line": 547,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url",
+      "expression": "FrontendEvent.url"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 549,
+      "end_line": 549,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url.like",
+      "expression": "FrontendEvent.url.like"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 550,
+      "end_line": 550,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url.like",
+      "expression": "FrontendEvent.url.like"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 675,
+      "end_line": 675,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 675,
+      "end_line": 675,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 676,
+      "end_line": 676,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 682,
+      "end_line": 682,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 682,
+      "end_line": 682,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.is_dead.is_",
+      "expression": "BehaviorEvent.is_dead.is_"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 689,
+      "end_line": 689,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 689,
+      "end_line": 689,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 690,
+      "end_line": 690,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 690,
+      "end_line": 690,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.is_rage.is_",
+      "expression": "BehaviorEvent.is_rage.is_"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 714,
+      "end_line": 714,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 297,
+      "end_line": 297,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 309,
+      "end_line": 309,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery.host",
+      "expression": "WebmasterSearchQuery.host"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 313,
+      "end_line": 313,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 386,
+      "end_line": 386,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession.country",
+      "expression": "BehaviorSession.country"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 387,
+      "end_line": 387,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 387,
+      "end_line": 387,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 515,
+      "end_line": 515,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 547,
+      "end_line": 547,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 549,
+      "end_line": 549,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url",
+      "expression": "FrontendEvent.url"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 550,
+      "end_line": 550,
+      "owner": "_events_snapshot",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.url",
+      "expression": "FrontendEvent.url"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 668,
+      "end_line": 668,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 668,
+      "end_line": 668,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.occurred_at",
+      "expression": "BehaviorEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 669,
+      "end_line": 669,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.event_type",
+      "expression": "BehaviorEvent.event_type"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 674,
+      "end_line": 674,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.element_path",
+      "expression": "BehaviorEvent.element_path"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 674,
+      "end_line": 674,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.element_text",
+      "expression": "BehaviorEvent.element_text"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 675,
+      "end_line": 675,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 675,
+      "end_line": 675,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 676,
+      "end_line": 676,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 681,
+      "end_line": 681,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.element_path",
+      "expression": "BehaviorEvent.element_path"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 681,
+      "end_line": 681,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.element_text",
+      "expression": "BehaviorEvent.element_text"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 682,
+      "end_line": 682,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 682,
+      "end_line": 682,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.is_dead",
+      "expression": "BehaviorEvent.is_dead"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 688,
+      "end_line": 688,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 688,
+      "end_line": 688,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.element_path",
+      "expression": "BehaviorEvent.element_path"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 689,
+      "end_line": 689,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 689,
+      "end_line": 689,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 690,
+      "end_line": 690,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 690,
+      "end_line": 690,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.is_rage",
+      "expression": "BehaviorEvent.is_rage"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 295,
+      "end_line": 295,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery.date",
+      "expression": "WebmasterSearchQuery.date"
     },
     {
       "path": "backend/app/services/pulse.py",
@@ -226791,26 +227365,66 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 310,
+      "end_line": 310,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery.impressions",
+      "expression": "WebmasterSearchQuery.impressions"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery.clicks",
+      "expression": "WebmasterSearchQuery.clicks"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 386,
+      "end_line": 386,
+      "owner": "_bot_signals",
+      "conditions": [],
+      "symbol": "app.models.BehaviorSession",
+      "expression": "BehaviorSession"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 549,
+      "end_line": 549,
       "owner": "_events_snapshot",
       "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name.in_",
-      "expression": "FrontendEvent.event_name.in_"
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 550,
+      "end_line": 550,
       "owner": "_events_snapshot",
       "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 656,
-      "end_line": 656,
+      "line": 667,
+      "end_line": 667,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent.page",
+      "expression": "BehaviorEvent.page"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 668,
+      "end_line": 668,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226818,8 +227432,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 664,
-      "end_line": 664,
+      "line": 668,
+      "end_line": 668,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226827,17 +227441,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 708,
-      "end_line": 708,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.params_json",
-      "expression": "BehaviorEvent.params_json"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 709,
-      "end_line": 709,
+      "line": 669,
+      "end_line": 669,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226845,8 +227450,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 709,
-      "end_line": 709,
+      "line": 674,
+      "end_line": 674,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226854,8 +227459,115 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 710,
-      "end_line": 710,
+      "line": 674,
+      "end_line": 674,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 681,
+      "end_line": 681,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 681,
+      "end_line": 681,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 688,
+      "end_line": 688,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 688,
+      "end_line": 688,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 690,
+      "end_line": 690,
+      "owner": "build_snapshot",
+      "conditions": [],
+      "symbol": "app.models.BehaviorEvent",
+      "expression": "BehaviorEvent"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 290,
+      "end_line": 290,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery.query",
+      "expression": "WebmasterSearchQuery.query"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 295,
+      "end_line": 295,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 310,
+      "end_line": 310,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 311,
+      "end_line": 311,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery",
+      "expression": "WebmasterSearchQuery"
+    },
+    {
+      "path": "backend/app/services/pulse.py",
+      "line": 667,
+      "end_line": 667,
       "owner": "build_snapshot",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -226885,185 +227597,25 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 292,
+      "end_line": 292,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
       ],
-      "symbol": "app.models.WebmasterSearchQuery.date",
-      "expression": "WebmasterSearchQuery.date"
+      "symbol": "app.models.WebmasterSearchQuery.clicks",
+      "expression": "WebmasterSearchQuery.clicks"
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 381,
-      "end_line": 381,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 381,
-      "end_line": 381,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.started_at",
-      "expression": "BehaviorSession.started_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 509,
-      "end_line": 509,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 522,
-      "end_line": 522,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 541,
-      "end_line": 541,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.url",
-      "expression": "FrontendEvent.url"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 543,
-      "end_line": 543,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.url.like",
-      "expression": "FrontendEvent.url.like"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 544,
-      "end_line": 544,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.url.like",
-      "expression": "FrontendEvent.url.like"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 669,
-      "end_line": 669,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 669,
-      "end_line": 669,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 670,
-      "end_line": 670,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 676,
-      "end_line": 676,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 676,
-      "end_line": 676,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 677,
-      "end_line": 677,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 677,
-      "end_line": 677,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.is_dead.is_",
-      "expression": "BehaviorEvent.is_dead.is_"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 683,
-      "end_line": 683,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 683,
-      "end_line": 683,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 684,
-      "end_line": 684,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 684,
-      "end_line": 684,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.is_rage.is_",
-      "expression": "BehaviorEvent.is_rage.is_"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 708,
-      "end_line": 708,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
+      "line": 293,
+      "end_line": 293,
+      "owner": "_seo_snapshot",
+      "conditions": [
+        "last_date"
+      ],
+      "symbol": "app.models.WebmasterSearchQuery.position",
+      "expression": "WebmasterSearchQuery.position"
     },
     {
       "path": "backend/app/services/pulse.py",
@@ -227078,19 +227630,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 303,
-      "end_line": 303,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery.host",
-      "expression": "WebmasterSearchQuery.host"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 292,
+      "end_line": 292,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
@@ -227100,549 +227641,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 380,
-      "end_line": 380,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession.country",
-      "expression": "BehaviorSession.country"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 381,
-      "end_line": 381,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 381,
-      "end_line": 381,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 509,
-      "end_line": 509,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 541,
-      "end_line": 541,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 543,
-      "end_line": 543,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.url",
-      "expression": "FrontendEvent.url"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 544,
-      "end_line": 544,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.url",
-      "expression": "FrontendEvent.url"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 662,
-      "end_line": 662,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 662,
-      "end_line": 662,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.occurred_at",
-      "expression": "BehaviorEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 663,
-      "end_line": 663,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.event_type",
-      "expression": "BehaviorEvent.event_type"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 668,
-      "end_line": 668,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.element_path",
-      "expression": "BehaviorEvent.element_path"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 668,
-      "end_line": 668,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.element_text",
-      "expression": "BehaviorEvent.element_text"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 669,
-      "end_line": 669,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 669,
-      "end_line": 669,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 670,
-      "end_line": 670,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 675,
-      "end_line": 675,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.element_path",
-      "expression": "BehaviorEvent.element_path"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 675,
-      "end_line": 675,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.element_text",
-      "expression": "BehaviorEvent.element_text"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 676,
-      "end_line": 676,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 676,
-      "end_line": 676,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 677,
-      "end_line": 677,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 677,
-      "end_line": 677,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.is_dead",
-      "expression": "BehaviorEvent.is_dead"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 682,
-      "end_line": 682,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 682,
-      "end_line": 682,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.element_path",
-      "expression": "BehaviorEvent.element_path"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 683,
-      "end_line": 683,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 683,
-      "end_line": 683,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 684,
-      "end_line": 684,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 684,
-      "end_line": 684,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.is_rage",
-      "expression": "BehaviorEvent.is_rage"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 289,
-      "end_line": 289,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery.date",
-      "expression": "WebmasterSearchQuery.date"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 303,
-      "end_line": 303,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery.impressions",
-      "expression": "WebmasterSearchQuery.impressions"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 305,
-      "end_line": 305,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery.clicks",
-      "expression": "WebmasterSearchQuery.clicks"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 380,
-      "end_line": 380,
-      "owner": "_bot_signals",
-      "conditions": [],
-      "symbol": "app.models.BehaviorSession",
-      "expression": "BehaviorSession"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 543,
-      "end_line": 543,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 544,
-      "end_line": 544,
-      "owner": "_events_snapshot",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 661,
-      "end_line": 661,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent.page",
-      "expression": "BehaviorEvent.page"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 662,
-      "end_line": 662,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 662,
-      "end_line": 662,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 663,
-      "end_line": 663,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 668,
-      "end_line": 668,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 668,
-      "end_line": 668,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 675,
-      "end_line": 675,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 675,
-      "end_line": 675,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 677,
-      "end_line": 677,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 682,
-      "end_line": 682,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 682,
-      "end_line": 682,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 684,
-      "end_line": 684,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 284,
-      "end_line": 284,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery.query",
-      "expression": "WebmasterSearchQuery.query"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 289,
-      "end_line": 289,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 305,
-      "end_line": 305,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 661,
-      "end_line": 661,
-      "owner": "build_snapshot",
-      "conditions": [],
-      "symbol": "app.models.BehaviorEvent",
-      "expression": "BehaviorEvent"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 284,
-      "end_line": 284,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 285,
-      "end_line": 285,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery.impressions",
-      "expression": "WebmasterSearchQuery.impressions"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 286,
-      "end_line": 286,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery.clicks",
-      "expression": "WebmasterSearchQuery.clicks"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 287,
-      "end_line": 287,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery.position",
-      "expression": "WebmasterSearchQuery.position"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 285,
-      "end_line": 285,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 286,
-      "end_line": 286,
-      "owner": "_seo_snapshot",
-      "conditions": [
-        "last_date"
-      ],
-      "symbol": "app.models.WebmasterSearchQuery",
-      "expression": "WebmasterSearchQuery"
-    },
-    {
-      "path": "backend/app/services/pulse.py",
-      "line": 287,
-      "end_line": 287,
+      "line": 293,
+      "end_line": 293,
       "owner": "_seo_snapshot",
       "conditions": [
         "last_date"
@@ -227652,8 +227652,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 286,
-      "end_line": 286,
+      "line": 287,
+      "end_line": 287,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -227663,8 +227663,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 271,
-      "end_line": 271,
+      "line": 272,
+      "end_line": 272,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "upd.get('id') is not None"
@@ -227674,8 +227674,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 285,
+      "end_line": 285,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -227685,8 +227685,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 244,
+      "end_line": 244,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at.desc",
@@ -227694,8 +227694,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 244,
+      "end_line": 244,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.id.desc",
@@ -227703,8 +227703,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 244,
+      "end_line": 244,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at",
@@ -227712,8 +227712,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 244,
+      "end_line": 244,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.id",
@@ -227721,8 +227721,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 281,
+      "end_line": 281,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -227733,12 +227733,54 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 243,
+      "end_line": 243,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict.is_",
       "expression": "Hypothesis.verdict.is_"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "_open_hypotheses",
+      "conditions": [],
+      "symbol": "app.models.Hypothesis",
+      "expression": "Hypothesis"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "_open_hypotheses",
+      "conditions": [],
+      "symbol": "app.models.Hypothesis",
+      "expression": "Hypothesis"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 281,
+      "end_line": 281,
+      "owner": "_apply_hypothesis_updates",
+      "conditions": [
+        "h is None",
+        "open_statements is None"
+      ],
+      "symbol": "app.models.Hypothesis",
+      "expression": "Hypothesis"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 281,
+      "end_line": 281,
+      "owner": "_apply_hypothesis_updates",
+      "conditions": [
+        "h is None",
+        "open_statements is None"
+      ],
+      "symbol": "app.models.Hypothesis.verdict",
+      "expression": "Hypothesis.verdict"
     },
     {
       "path": "backend/app/services/pulse_report.py",
@@ -227755,55 +227797,13 @@
       "end_line": 243,
       "owner": "_open_hypotheses",
       "conditions": [],
-      "symbol": "app.models.Hypothesis",
-      "expression": "Hypothesis"
-    },
-    {
-      "path": "backend/app/services/pulse_report.py",
-      "line": 280,
-      "end_line": 280,
-      "owner": "_apply_hypothesis_updates",
-      "conditions": [
-        "h is None",
-        "open_statements is None"
-      ],
-      "symbol": "app.models.Hypothesis",
-      "expression": "Hypothesis"
-    },
-    {
-      "path": "backend/app/services/pulse_report.py",
-      "line": 280,
-      "end_line": 280,
-      "owner": "_apply_hypothesis_updates",
-      "conditions": [
-        "h is None",
-        "open_statements is None"
-      ],
       "symbol": "app.models.Hypothesis.verdict",
       "expression": "Hypothesis.verdict"
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 242,
-      "end_line": 242,
-      "owner": "_open_hypotheses",
-      "conditions": [],
-      "symbol": "app.models.Hypothesis",
-      "expression": "Hypothesis"
-    },
-    {
-      "path": "backend/app/services/pulse_report.py",
-      "line": 242,
-      "end_line": 242,
-      "owner": "_open_hypotheses",
-      "conditions": [],
-      "symbol": "app.models.Hypothesis.verdict",
-      "expression": "Hypothesis.verdict"
-    },
-    {
-      "path": "backend/app/services/pulse_report.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 281,
+      "end_line": 281,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None",
@@ -227814,8 +227814,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 243,
+      "end_line": 243,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -290790,7 +290790,7 @@
     {
       "path": "backend/app/services/base_parser.py",
       "line": 160,
-      "end_line": 447,
+      "end_line": 451,
       "owner": "<module>",
       "conditions": [],
       "name": "BaseParser",
@@ -290799,7 +290799,7 @@
     {
       "path": "backend/app/services/base_parser.py",
       "line": 171,
-      "end_line": 300,
+      "end_line": 304,
       "owner": "BaseParser",
       "conditions": [],
       "name": "run",
@@ -290807,8 +290807,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 302,
-      "end_line": 309,
+      "line": 306,
+      "end_line": 313,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_source_outage_reason",
@@ -290816,8 +290816,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 311,
-      "end_line": 317,
+      "line": 315,
+      "end_line": 321,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_zero_parse_expected",
@@ -290825,8 +290825,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 319,
-      "end_line": 334,
+      "line": 323,
+      "end_line": 338,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_resolve_zero_parse_status",
@@ -290834,8 +290834,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 336,
-      "end_line": 368,
+      "line": 340,
+      "end_line": 372,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_alert_zero_parse_if_regression",
@@ -290843,8 +290843,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 371,
-      "end_line": 390,
+      "line": 375,
+      "end_line": 394,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -290852,8 +290852,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 392,
-      "end_line": 401,
+      "line": 396,
+      "end_line": 405,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_validate",
@@ -290861,8 +290861,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 403,
-      "end_line": 414,
+      "line": 407,
+      "end_line": 418,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_post_upsert",
@@ -290870,8 +290870,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 416,
-      "end_line": 426,
+      "line": 420,
+      "end_line": 430,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_after_storage",
@@ -290879,8 +290879,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 428,
-      "end_line": 447,
+      "line": 432,
+      "end_line": 451,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_handle_forecasts",
@@ -301295,7 +301295,7 @@
     {
       "path": "backend/app/services/pulse.py",
       "line": 86,
-      "end_line": 116,
+      "end_line": 122,
       "owner": "<module>",
       "conditions": [],
       "name": "_etl_snapshot",
@@ -301303,8 +301303,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 119,
-      "end_line": 213,
+      "line": 125,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "_acquisition_from_warehouse",
@@ -301312,8 +301312,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 216,
-      "end_line": 361,
+      "line": 222,
+      "end_line": 367,
       "owner": "<module>",
       "conditions": [],
       "name": "_seo_snapshot",
@@ -301321,8 +301321,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 364,
-      "end_line": 420,
+      "line": 370,
+      "end_line": 426,
       "owner": "<module>",
       "conditions": [],
       "name": "_bot_signals",
@@ -301330,8 +301330,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 423,
-      "end_line": 448,
+      "line": 429,
+      "end_line": 454,
       "owner": "<module>",
       "conditions": [],
       "name": "_signup_dims",
@@ -301339,8 +301339,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 454,
-      "end_line": 461,
+      "line": 460,
+      "end_line": 467,
       "owner": "<module>",
       "conditions": [],
       "name": "_region_from_url",
@@ -301348,8 +301348,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 464,
-      "end_line": 570,
+      "line": 470,
+      "end_line": 576,
       "owner": "<module>",
       "conditions": [],
       "name": "_events_snapshot",
@@ -301357,8 +301357,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 573,
-      "end_line": 611,
+      "line": 579,
+      "end_line": 617,
       "owner": "<module>",
       "conditions": [],
       "name": "_users_snapshot",
@@ -301366,8 +301366,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 614,
-      "end_line": 767,
+      "line": 620,
+      "end_line": 773,
       "owner": "<module>",
       "conditions": [],
       "name": "build_snapshot",
@@ -301375,8 +301375,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 770,
-      "end_line": 774,
+      "line": 776,
+      "end_line": 780,
       "owner": "<module>",
       "conditions": [],
       "name": "build_acquisition",
@@ -301384,8 +301384,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 777,
-      "end_line": 779,
+      "line": 783,
+      "end_line": 785,
       "owner": "<module>",
       "conditions": [],
       "name": "store_snapshot",
@@ -301393,8 +301393,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 782,
-      "end_line": 785,
+      "line": 788,
+      "end_line": 791,
       "owner": "<module>",
       "conditions": [],
       "name": "load_snapshot",
@@ -301402,8 +301402,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 788,
-      "end_line": 797,
+      "line": 794,
+      "end_line": 803,
       "owner": "<module>",
       "conditions": [],
       "name": "snapshot_is_complete",
@@ -301411,8 +301411,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 800,
-      "end_line": 812,
+      "line": 806,
+      "end_line": 818,
       "owner": "<module>",
       "conditions": [],
       "name": "get_or_build_snapshot",
@@ -301420,8 +301420,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 815,
-      "end_line": 840,
+      "line": 821,
+      "end_line": 846,
       "owner": "<module>",
       "conditions": [],
       "name": "acquisition_metrics",
@@ -301429,8 +301429,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 843,
-      "end_line": 868,
+      "line": 849,
+      "end_line": 875,
       "owner": "<module>",
       "conditions": [],
       "name": "memory_core",
@@ -301438,8 +301438,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 871,
-      "end_line": 875,
+      "line": 878,
+      "end_line": 882,
       "owner": "<module>",
       "conditions": [],
       "name": "store_memory",
@@ -301447,8 +301447,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 878,
-      "end_line": 891,
+      "line": 885,
+      "end_line": 898,
       "owner": "<module>",
       "conditions": [],
       "name": "load_memory",
@@ -301456,8 +301456,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 125,
-      "end_line": 136,
+      "line": 131,
+      "end_line": 142,
       "owner": "_acquisition_from_warehouse",
       "conditions": [],
       "name": "_snapshot_rows",
@@ -301465,8 +301465,8 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 819,
-      "end_line": 831,
+      "line": 825,
+      "end_line": 837,
       "owner": "acquisition_metrics",
       "conditions": [],
       "name": "visits",
@@ -301501,8 +301501,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 204,
-      "end_line": 206,
+      "line": 205,
+      "end_line": 207,
       "owner": "<module>",
       "conditions": [],
       "name": "_hypothesis_stems",
@@ -301510,8 +301510,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 209,
-      "end_line": 235,
+      "line": 210,
+      "end_line": 236,
       "owner": "<module>",
       "conditions": [],
       "name": "similar_open_hypothesis",
@@ -301519,8 +301519,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 238,
-      "end_line": 248,
+      "line": 239,
+      "end_line": 249,
       "owner": "<module>",
       "conditions": [],
       "name": "_open_hypotheses",
@@ -301528,8 +301528,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 251,
-      "end_line": 295,
+      "line": 252,
+      "end_line": 296,
       "owner": "<module>",
       "conditions": [],
       "name": "_apply_hypothesis_updates",
@@ -301537,8 +301537,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 298,
-      "end_line": 312,
+      "line": 299,
+      "end_line": 313,
       "owner": "<module>",
       "conditions": [],
       "name": "_split_llm_output",
@@ -301546,8 +301546,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 315,
-      "end_line": 329,
+      "line": 316,
+      "end_line": 330,
       "owner": "<module>",
       "conditions": [],
       "name": "build_llm_user_content",
@@ -301555,8 +301555,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 332,
-      "end_line": 388,
+      "line": 333,
+      "end_line": 389,
       "owner": "<module>",
       "conditions": [],
       "name": "_llm_summary",
@@ -301564,8 +301564,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 391,
-      "end_line": 436,
+      "line": 392,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "name": "_acquisition_lines",
@@ -301573,8 +301573,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 439,
-      "end_line": 460,
+      "line": 440,
+      "end_line": 461,
       "owner": "<module>",
       "conditions": [],
       "name": "_fallback_summary",
@@ -301582,8 +301582,17 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 463,
-      "end_line": 513,
+      "line": 464,
+      "end_line": 471,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_etl_line",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 474,
+      "end_line": 524,
       "owner": "<module>",
       "conditions": [],
       "name": "_raw_digits_block",
@@ -301591,8 +301600,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 516,
-      "end_line": 562,
+      "line": 527,
+      "end_line": 573,
       "owner": "<module>",
       "conditions": [],
       "name": "send_pulse_report",
@@ -301600,8 +301609,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 565,
-      "end_line": 577,
+      "line": 576,
+      "end_line": 588,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_snapshot_job",
@@ -301609,8 +301618,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 580,
-      "end_line": 586,
+      "line": 591,
+      "end_line": 597,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_report_job",
@@ -301618,8 +301627,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 223,
-      "end_line": 226,
+      "line": 224,
+      "end_line": 227,
       "owner": "similar_open_hypothesis",
       "conditions": [],
       "name": "weights",
@@ -343793,32 +343802,32 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 464,
+      "end_line": 464,
       "owner": "_region_from_url",
       "conditions": [],
       "symbol": "app.services.pulse._REGION_MARKERS"
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 486,
-      "end_line": 486,
+      "line": 492,
+      "end_line": 492,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.services.pulse._DOWNLOAD_EVENTS"
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 495,
+      "end_line": 495,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.services.pulse._WALL_EVENTS"
     },
     {
       "path": "backend/app/services/pulse.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 497,
+      "end_line": 497,
       "owner": "_events_snapshot",
       "conditions": [],
       "symbol": "app.services.pulse._ERROR_EVENTS"
@@ -343857,8 +343866,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 205,
-      "end_line": 205,
+      "line": 206,
+      "end_line": 206,
       "owner": "_hypothesis_stems",
       "conditions": [],
       "symbol": "app.services.pulse_report._HYP_WORD_RE"
