@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `4b28fd0ea749930bfdeada858c19be41db64848f`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `9d701a99b86c3941dce1ea81fec9b69e45eae9c6`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2502 |
-| Код, шаблоны и стили | 2026 |
-| Актуальные рецензии без пропусков guard | 2502 |
-| Именованные определения Python/JS: с аннотацией / всего | 16438 / 16438 |
+| Файлы в явно определённом scope | 2507 |
+| Код, шаблоны и стили | 2031 |
+| Актуальные рецензии без пропусков guard | 2507 |
+| Именованные определения Python/JS: с аннотацией / всего | 16461 / 16461 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -413,7 +413,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/search.py](../backend/app/services/search.py) | reviewed | 54/54 | актуально |
 | [backend/app/services/search_currency_aliases.py](../backend/app/services/search_currency_aliases.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/search_dimensions.py](../backend/app/services/search_dimensions.py) | reviewed | 22/22 | актуально |
-| [backend/app/services/search_intent.py](../backend/app/services/search_intent.py) | reviewed | 34/34 | актуально |
+| [backend/app/services/search_intent.py](../backend/app/services/search_intent.py) | reviewed | 35/35 | актуально |
 | [backend/app/services/search_language.py](../backend/app/services/search_language.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/search_language_sql.py](../backend/app/services/search_language_sql.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/search_latest.py](../backend/app/services/search_latest.py) | reviewed | 7/7 | актуально |
@@ -425,6 +425,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/search_region_hint.py](../backend/app/services/search_region_hint.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/search_regional_groups.py](../backend/app/services/search_regional_groups.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/search_units.py](../backend/app/services/search_units.py) | reviewed | 4/4 | актуально |
+| [backend/app/services/search_unknown_word.py](../backend/app/services/search_unknown_word.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/search_variants.py](../backend/app/services/search_variants.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/search_vocabulary.py](../backend/app/services/search_vocabulary.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/seo_calendar.py](../backend/app/services/seo_calendar.py) | reviewed | 1/1 | актуально |
@@ -895,6 +896,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_search_r6a_labour.py](../backend/tests/test_search_r6a_labour.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_search_r7a_local.py](../backend/tests/test_search_r7a_local.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_search_r8a_student.py](../backend/tests/test_search_r8a_student.py) | reviewed | 7/7 | актуально |
+| [backend/tests/test_search_regional_product.py](../backend/tests/test_search_regional_product.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_search_registered_semantics.py](../backend/tests/test_search_registered_semantics.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_search_relationship_roles.py](../backend/tests/test_search_relationship_roles.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_search_single_letter.py](../backend/tests/test_search_single_letter.py) | reviewed | 9/9 | актуально |
@@ -902,6 +904,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_search_subject_roles.py](../backend/tests/test_search_subject_roles.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_search_variants.py](../backend/tests/test_search_variants.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_search_vocabulary_roles.py](../backend/tests/test_search_vocabulary_roles.py) | reviewed | 16/16 | актуально |
+| [backend/tests/test_search_without_word.py](../backend/tests/test_search_without_word.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_search_z4_prices_currencies.py](../backend/tests/test_search_z4_prices_currencies.py) | reviewed | 13/13 | актуально |
 | [backend/tests/test_seed_hash.py](../backend/tests/test_seed_hash.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_seed_integrity.py](../backend/tests/test_seed_integrity.py) | reviewed | 7/7 | актуально |
@@ -1605,7 +1608,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/SkipLink.jsx](../frontend/src/components/SkipLink.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/SourceLink.component.test.jsx](../frontend/src/components/SourceLink.component.test.jsx) | reviewed | 0/0 | актуально |
 | [frontend/src/components/SourceLink.jsx](../frontend/src/components/SourceLink.jsx) | reviewed | 2/2 | актуально |
-| [frontend/src/components/Sparkline.component.test.jsx](../frontend/src/components/Sparkline.component.test.jsx) | reviewed | 8/8 | актуально |
+| [frontend/src/components/Sparkline.component.test.jsx](../frontend/src/components/Sparkline.component.test.jsx) | reviewed | 13/13 | актуально |
 | [frontend/src/components/Sparkline.jsx](../frontend/src/components/Sparkline.jsx) | reviewed | 9/9 | актуально |
 | [frontend/src/components/Spinner.jsx](../frontend/src/components/Spinner.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/TelemetryCard.jsx](../frontend/src/components/TelemetryCard.jsx) | reviewed | 1/1 | актуально |
@@ -2011,6 +2014,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/pwa.js](../frontend/src/lib/pwa.js) | reviewed | 23/23 | актуально |
 | [frontend/src/lib/pwaPolicy.js](../frontend/src/lib/pwaPolicy.js) | reviewed | 10/10 | актуально |
 | [frontend/src/lib/pwaPolicy.test.js](../frontend/src/lib/pwaPolicy.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/quotedWords.js](../frontend/src/lib/quotedWords.js) | reviewed | 1/1 | актуально |
+| [frontend/src/lib/quotedWords.test.js](../frontend/src/lib/quotedWords.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/r10aUnits.js](../frontend/src/lib/r10aUnits.js) | reviewed | 4/4 | актуально |
 | [frontend/src/lib/r5cExport.js](../frontend/src/lib/r5cExport.js) | reviewed | 9/9 | актуально |
 | [frontend/src/lib/r5cExport.test.js](../frontend/src/lib/r5cExport.test.js) | reviewed | 0/0 | актуально |

@@ -4042,6 +4042,8 @@ export default {
   'r8a.nearest.cheaper_rent': 'Rent can be compared by region. Closest: the price of a one-room flat.',
   'r8a.nearest.cheaper': 'Where it is cheaper shows in the subsistence minimum and the food basket cost.',
   'r8a.nearest.loan': 'We have no student loan data. Closest: students and the subsistence minimum.',
+  'r8a.nearest.without_word': 'Nothing matches the word {words}. Without it, here is what we have:',
+  'r8a.nearest.without_words': 'Nothing matches the words {words}. Without them, here is what we have:',
   'r8a.nearest.higher_ed': 'We have no separate series for universities. Closest: student numbers and the subsistence minimum.',
   'r8a.search.compareOwn': '{region} vs Moscow: prices, basket, wages side by side',
   'r9b.title': 'What got pricier and cheaper in a year',

@@ -9,6 +9,7 @@ import {
 import { cn, formatDate, formatValue } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
+import { quotedWords } from '../lib/quotedWords';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
 import { useWorldCountries, useWorldRatingConcepts } from '../lib/worldApi';
@@ -772,7 +773,7 @@ export default function IndicatorSearch({
                               <EmptyState variant="no-results" size={nearestRows.length ? 56 : 80} title={nearestRows.length ? t('r8a.nearest.title', { query: qTrim }) : t('search.nothingFound', { query: qTrim })} />
                               {nearestRows.length ? (
                                 <div className="r8a-nearest" data-testid="search-nearest">
-                                  <p className="r8a-nearest__note">{t(`r8a.nearest.${globalSearch.data.nearest.note}`)}</p>
+                                  <p className="r8a-nearest__note">{t(`r8a.nearest.${globalSearch.data.nearest.note}`, { words: quotedWords(globalSearch.data.nearest.words, locale) })}</p>
                                   {nearestRows.map((item, k) => (
                                     <SearchRow
                                       key={item.key}

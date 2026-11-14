@@ -1585,8 +1585,8 @@
     },
     {
       "path": "backend/app/services/search.py",
-      "sha256": "f5b500250a99c689adfd06af80b63d594d4fca7cd1d48453f6d72042443e422f",
-      "lines": 1512
+      "sha256": "63cb277c7c7fa76003fe26eb2aa54b1c0273838a4faf584674cfd0d46cbf9db5",
+      "lines": 1524
     },
     {
       "path": "backend/app/services/search_currency_aliases.py",
@@ -1600,8 +1600,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "sha256": "0182ac2919193c52eb4144f7b3ca2344505a5fd4fae9b50034eb3b395822dced",
-      "lines": 1154
+      "sha256": "a0d1b86fb6075b70898383820a7e6d6c67b4f87cb08758fee8f6570013207046",
+      "lines": 1180
     },
     {
       "path": "backend/app/services/search_language.py",
@@ -1657,6 +1657,11 @@
       "path": "backend/app/services/search_units.py",
       "sha256": "b74586e5543d43307387a6b4c60e5f3854adb83e9a376affa308515dcc9accdb",
       "lines": 140
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "sha256": "0f4a2732ec3be5b27e26da22a239b03f34e3bf38de24100adc3848d920b882e1",
+      "lines": 95
     },
     {
       "path": "backend/app/services/search_variants.py",
@@ -41614,8 +41619,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 393,
+      "end_line": 393,
       "owner": "_extract_denominators",
       "conditions": [],
       "call": "match.start()",
@@ -41623,8 +41628,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 440,
+      "end_line": 440,
       "owner": "_outside_literal_query",
       "conditions": [
         "tuple((match[0] for match in window)) == parts"
@@ -41634,8 +41639,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 460,
+      "end_line": 460,
       "owner": "_percent_word_spans",
       "conditions": [],
       "call": "match.start()",
@@ -41643,8 +41648,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 831,
-      "end_line": 831,
+      "line": 838,
+      "end_line": 838,
       "owner": "parse_intent",
       "conditions": [],
       "call": "match.start()",
@@ -41652,8 +41657,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 866,
-      "end_line": 866,
+      "line": 873,
+      "end_line": 873,
       "owner": "parse_intent",
       "conditions": [],
       "call": "hit.start()",
@@ -41661,8 +41666,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 446,
+      "end_line": 446,
       "owner": "_outside_literal_query",
       "conditions": [
         "tuple((match[0] for match in window)) == parts",
@@ -41674,8 +41679,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 478,
+      "end_line": 478,
       "owner": "_alias_occurrences",
       "conditions": [],
       "call": "match.start()",
@@ -41683,8 +41688,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 705,
-      "end_line": 705,
+      "line": 712,
+      "end_line": 712,
       "owner": "strip_geography",
       "conditions": [],
       "call": "token_match.start()",
@@ -41692,8 +41697,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 775,
-      "end_line": 775,
+      "line": 782,
+      "end_line": 782,
       "owner": "_unmasked_query",
       "conditions": [
         "not text[phrase_offset:phrase_offset + len(match[0])].strip()"
@@ -41703,8 +41708,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 659,
-      "end_line": 659,
+      "line": 666,
+      "end_line": 666,
       "owner": "strip_geography",
       "conditions": [
         "len(mismatches) == 1 and min(map(len, mismatches[0])) >= 4 and (mismatches[0][0] not in actual_geo_aliases) and edit_distance_one(*mismatches[0]) and (not fx_subject_positions.intersection(range(window[0].start(), window[-1].end())))"
@@ -41714,8 +41719,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 833,
-      "end_line": 833,
+      "line": 840,
+      "end_line": 840,
       "owner": "parse_intent",
       "conditions": [],
       "call": "match.start()",
@@ -41723,8 +41728,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 874,
+      "end_line": 874,
       "owner": "parse_intent",
       "conditions": [],
       "call": "match.start()",
@@ -41732,8 +41737,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 885,
-      "end_line": 885,
+      "line": 892,
+      "end_line": 892,
       "owner": "parse_intent",
       "conditions": [],
       "call": "hit.start()",
@@ -41741,8 +41746,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 901,
-      "end_line": 901,
+      "line": 908,
+      "end_line": 908,
       "owner": "parse_intent",
       "conditions": [
         "len(mismatches) == 1 and min(map(len, mismatches[0])) >= 3 and (not _control_neighbour(mismatches[0][0])) and edit_distance_one(*mismatches[0])"
@@ -41752,8 +41757,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 434,
-      "end_line": 434,
+      "line": 441,
+      "end_line": 441,
       "owner": "_outside_literal_query",
       "conditions": [
         "tuple((match[0] for match in window)) == parts"
@@ -41763,8 +41768,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 665,
+      "end_line": 665,
       "owner": "strip_geography",
       "conditions": [],
       "call": "window[0].start()",
@@ -41772,8 +41777,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 675,
-      "end_line": 675,
+      "line": 682,
+      "end_line": 682,
       "owner": "strip_geography",
       "conditions": [
         "index and match[0] == 's'"
@@ -41783,8 +41788,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 711,
-      "end_line": 711,
+      "line": 718,
+      "end_line": 718,
       "owner": "strip_geography",
       "conditions": [
         "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
@@ -41794,8 +41799,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 713,
-      "end_line": 713,
+      "line": 720,
+      "end_line": 720,
       "owner": "strip_geography",
       "conditions": [
         "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
@@ -41805,8 +41810,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 712,
-      "end_line": 712,
+      "line": 719,
+      "end_line": 719,
       "owner": "strip_geography",
       "conditions": [
         "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
@@ -107735,7 +107740,7 @@
     {
       "path": "backend/app/services/search_intent.py",
       "line": 32,
-      "end_line": 131,
+      "end_line": 138,
       "owner": "<module>",
       "conditions": [],
       "name": "CONCEPTS",
@@ -107743,16 +107748,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "((('ввп на душу населения', 'ввп на душу', 'gdp per capita', 'per capita gdp'), ('gdp-per-capita', 'gdp per capita', 'ввп на душу', 'внутренний продукт на душу', 'domestic product per capita')), (('мрот', 'minimum wage', 'минимальная зарплата'), ('minimum-wage', 'minimum wage', 'минимальная заработная плата', 'минимальный размер оплаты труда')), (('ипц', 'cpi', 'инфляция', 'инфляции', 'inflation', 'рост цен'), ('cpi', 'inflation', 'hicp', 'потребительских цен', 'consumer price')), (('ввп', 'gdp', 'валовой продукт'), ('gdp', 'ввп', 'валовой внутренний продукт', 'gross domestic product')), (('врп', 'grp', 'валовой региональный продукт', 'валовый региональный продукт', 'валового регионального продукта', 'gross regional product'), ('valovoy-regionalnyy-produkt', 'валовой региональный продукт', 'валового регионального продукта', 'gross regional product')), (('ключевая ставка', 'ставка цб', 'key rate', 'cbr rate', 'central bank rate'), ('key-rate', 'ключевая ставка', 'policy-rate')), (('ставка фрс', 'ключевая ставка фрс', 'процентная ставка фрс', 'ставка федрезерва', 'ставка федеральной резервной системы', 'фрс', 'fed rate', 'fed funds rate', 'federal funds rate', 'fed funds', 'federal reserve rate'), ('us-policy-rate', 'federal funds', 'федеральным фондам', 'федеральные фонды')), (('средняя заработная плата', 'зарплата', 'зарплаты', 'заработная плата', 'зпл', 'зп', 'з п', 'salary', 'wages'), ('wage', 'salary', 'заработн', 'зарплат')), (('безработица', 'безработицы', 'уровень безработицы', 'unemployment', 'unemployment rate'), ('unemployment', 'безработ', 'jobless')), (('экспорт товаров', 'exports of goods', 'goods exports'), ('exports', 'экспорт товаров', 'exports of goods')), (('импорт товаров', 'imports of goods', 'goods imports'), ('imports', 'импорт товаров', 'imports of goods')), (('население', 'населения', 'population'), ('population', 'населен', 'resident population')), (('промпроизводство', 'ипп', 'industrial production'), ('ipi', 'industrial production', 'промыш",
+      "expression": "((('ввп на душу населения', 'ввп на душу', 'gdp per capita', 'per capita gdp'), ('gdp-per-capita', 'gdp per capita', 'ввп на душу', 'внутренний продукт на душу', 'domestic product per capita')), (('мрот', 'minimum wage', 'минимальная зарплата'), ('minimum-wage', 'minimum wage', 'минимальная заработная плата', 'минимальный размер оплаты труда')), (('ипц', 'cpi', 'инфляция', 'инфляции', 'inflation', 'рост цен'), ('cpi', 'inflation', 'hicp', 'потребительских цен', 'consumer price')), (('ввп', 'gdp', 'валовой продукт'), ('gdp', 'ввп', 'валовой внутренний продукт', 'gross domestic product')), (('врп на душу населения', 'врп на душу', 'валовой региональный продукт на душу населения', 'валовый региональный продукт на душу населения', 'валовой региональный продукт на душу', 'grp per capita', 'gross regional product per capita'), ('valovoy-regionalnyy-produkt-na-dushu-naseleniya', 'валовой региональный продукт на душу', 'валового регионального продукта на душу', 'gross regional product per capita')), (('врп', 'grp', 'валовой региональный продукт', 'валовый региональный продукт', 'валового регионального продукта', 'gross regional product'), ('valovoy-regionalnyy-produkt', 'валовой региональный продукт', 'валового регионального продукта', 'gross regional product')), (('ключевая ставка', 'ставка цб', 'key rate', 'cbr rate', 'central bank rate'), ('key-rate', 'ключевая ставка', 'policy-rate')), (('ставка фрс', 'ключевая ставка фрс', 'процентная ставка фрс', 'ставка федрезерва', 'ставка федеральной резервной системы', 'фрс', 'fed rate', 'fed funds rate', 'federal funds rate', 'fed funds', 'federal reserve rate'), ('us-policy-rate', 'federal funds', 'федеральным фондам', 'федеральные фонды')), (('средняя заработная плата', 'зарплата', 'зарплаты', 'заработная плата', 'зпл', 'зп', 'з п', 'salary', 'wages'), ('wage', 'salary', 'заработн', 'зарплат')), (('безработица', 'безработицы', 'уровень безработицы', 'unemployment', 'unemployment rate'), ('unemployment', 'безработ', 'jobless')),",
       "expression_truncated": true,
-      "expression_chars": 7582,
-      "ast_sha256": "e16fdec49401489955ced06b188e2ce28e486255594889ab1dda7127abf0863b",
+      "expression_chars": 7994,
+      "ast_sha256": "7e76558db8b3c1ef6488cfe1b2ae656ffbf4703be2b5521141f226525abb7a09",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 135,
-      "end_line": 137,
+      "line": 142,
+      "end_line": 144,
       "owner": "<module>",
       "conditions": [],
       "name": "_SINGLE_ALIASES",
@@ -107768,8 +107773,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 138,
-      "end_line": 142,
+      "line": 145,
+      "end_line": 149,
       "owner": "<module>",
       "conditions": [],
       "name": "_CONTROL_WORDS",
@@ -107785,8 +107790,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 143,
-      "end_line": 144,
+      "line": 150,
+      "end_line": 151,
       "owner": "<module>",
       "conditions": [],
       "name": "_CURRENCY_KEYS",
@@ -107802,8 +107807,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 145,
-      "end_line": 146,
+      "line": 152,
+      "end_line": 153,
       "owner": "<module>",
       "conditions": [],
       "name": "_FX_SUBJECT_KEYS",
@@ -107819,8 +107824,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 147,
-      "end_line": 150,
+      "line": 154,
+      "end_line": 157,
       "owner": "<module>",
       "conditions": [],
       "name": "_DENOMINATOR_COUNTS",
@@ -107950,8 +107955,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 151,
-      "end_line": 154,
+      "line": 158,
+      "end_line": 161,
       "owner": "<module>",
       "conditions": [],
       "name": "_DENOMINATOR_RE",
@@ -107967,8 +107972,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 158,
-      "end_line": 158,
+      "line": 165,
+      "end_line": 165,
       "owner": "<module>",
       "conditions": [],
       "name": "_AMBIGUOUS_ISO",
@@ -107984,8 +107989,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 166,
+      "end_line": 166,
       "owner": "<module>",
       "conditions": [],
       "name": "_CODE_RE",
@@ -108001,8 +108006,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 161,
-      "end_line": 176,
+      "line": 168,
+      "end_line": 183,
       "owner": "<module>",
       "conditions": [],
       "name": "COUNTRY_ALIASES",
@@ -108132,8 +108137,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 177,
-      "end_line": 187,
+      "line": 184,
+      "end_line": 194,
       "owner": "<module>",
       "conditions": [],
       "name": "REGION_ALIASES",
@@ -108207,8 +108212,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 188,
-      "end_line": 209,
+      "line": 195,
+      "end_line": 216,
       "owner": "<module>",
       "conditions": [],
       "name": "_CITY_REGION_ALIASES",
@@ -108386,8 +108391,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 212,
-      "end_line": 228,
+      "line": 219,
+      "end_line": 235,
       "owner": "<module>",
       "conditions": [],
       "name": "_COLLOQUIAL_REGION_ALIASES",
@@ -108525,8 +108530,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 233,
-      "end_line": 241,
+      "line": 240,
+      "end_line": 248,
       "owner": "<module>",
       "conditions": [],
       "name": "SECOND_READING_REGION_ALIASES",
@@ -108592,8 +108597,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 254,
+      "end_line": 254,
       "owner": "<module>",
       "conditions": [],
       "name": "_LAYOUT_EN_RU",
@@ -108609,8 +108614,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 255,
+      "end_line": 255,
       "owner": "<module>",
       "conditions": [],
       "name": "_LAYOUT_RU_EN",
@@ -108626,8 +108631,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 249,
-      "end_line": 256,
+      "line": 256,
+      "end_line": 263,
       "owner": "<module>",
       "conditions": [],
       "name": "MONTHS",
@@ -108643,8 +108648,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 487,
-      "end_line": 487,
+      "line": 494,
+      "end_line": 494,
       "owner": "<module>",
       "conditions": [],
       "name": "CONCEPT_MATCHERS",
@@ -108660,8 +108665,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 780,
-      "end_line": 781,
+      "line": 787,
+      "end_line": 788,
       "owner": "<module>",
       "conditions": [],
       "name": "_RATE_QUOTE_CODES",
@@ -108677,8 +108682,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 971,
-      "end_line": 971,
+      "line": 978,
+      "end_line": 978,
       "owner": "<module>",
       "conditions": [],
       "name": "CONCEPTS_ALTERNATIVES",
@@ -108694,8 +108699,60 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1032,
-      "end_line": 1032,
+      "line": 979,
+      "end_line": 979,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_CONCEPT_BY_CODE",
+      "symbol": "app.services.search_intent._CONCEPT_BY_CODE",
+      "kind": "DictComp",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "{alternatives[0]: alternatives for _aliases, alternatives in CONCEPTS}",
+      "expression_truncated": false,
+      "expression_chars": 70,
+      "ast_sha256": "9884689272a218fb5be4133f558ccf1e877c23cd0042da03ddda5607128bbcfb",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 984,
+      "end_line": 987,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_REGIONAL_PRODUCT",
+      "symbol": "app.services.search_intent._REGIONAL_PRODUCT",
+      "kind": "Dict",
+      "literal_keys": [
+        "'gdp'",
+        "'gdp-per-capita'"
+      ],
+      "entries": [
+        {
+          "key": "'gdp'",
+          "expression": "'valovoy-regionalnyy-produkt'",
+          "expression_truncated": false,
+          "expression_chars": 29,
+          "ast_sha256": "63dc298437612544efde670f8e051ab81e9f536b96bb651697376690caec1589"
+        },
+        {
+          "key": "'gdp-per-capita'",
+          "expression": "'valovoy-regionalnyy-produkt-na-dushu-naseleniya'",
+          "expression_truncated": false,
+          "expression_chars": 49,
+          "ast_sha256": "8633a39c8635b71627c8ee66f692bf61a84809b11e96a753e6f1db83a171a518"
+        }
+      ],
+      "expression": "{'gdp': 'valovoy-regionalnyy-produkt', 'gdp-per-capita': 'valovoy-regionalnyy-produkt-na-dushu-naseleniya'}",
+      "expression_truncated": false,
+      "expression_chars": 107,
+      "ast_sha256": "b2beb86a4f30117ca2c5e832a1cd03653a5586b656abfe26360be8b7610e1d18",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1058,
+      "end_line": 1058,
       "owner": "<module>",
       "conditions": [],
       "name": "EXACT_ONLY_WORDS",
@@ -130281,8 +130338,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 250,
+      "end_line": 250,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.services.search_intent.REGION_ALIASES",
@@ -153223,8 +153280,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 429,
-      "end_line": 429,
+      "line": 436,
+      "end_line": 436,
       "owner": "_outside_literal_query",
       "conditions": [],
       "operation": "set",
@@ -153237,8 +153294,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 642,
-      "end_line": 643,
+      "line": 649,
+      "end_line": 650,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "update",
@@ -153251,8 +153308,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 716,
-      "end_line": 716,
+      "line": 723,
+      "end_line": 723,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -153265,8 +153322,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 717,
-      "end_line": 717,
+      "line": 724,
+      "end_line": 724,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -153279,8 +153336,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 388,
+      "end_line": 388,
       "owner": "_extract_denominators",
       "conditions": [],
       "operation": "set",
@@ -153293,8 +153350,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 393,
+      "end_line": 393,
       "owner": "_extract_denominators",
       "conditions": [],
       "operation": "update",
@@ -153307,8 +153364,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 411,
-      "end_line": 411,
+      "line": 418,
+      "end_line": 418,
       "owner": "_extract_point_units",
       "conditions": [],
       "operation": "set",
@@ -153321,8 +153378,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 415,
-      "end_line": 415,
+      "line": 422,
+      "end_line": 422,
       "owner": "_extract_point_units",
       "conditions": [],
       "operation": "update",
@@ -153335,8 +153392,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 635,
-      "end_line": 635,
+      "line": 642,
+      "end_line": 642,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -153349,8 +153406,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 677,
+      "end_line": 677,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -153363,8 +153420,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 679,
-      "end_line": 679,
+      "line": 686,
+      "end_line": 686,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -153377,8 +153434,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 718,
-      "end_line": 718,
+      "line": 725,
+      "end_line": 725,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -153391,8 +153448,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 718,
-      "end_line": 718,
+      "line": 725,
+      "end_line": 725,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -153405,8 +153462,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 720,
-      "end_line": 720,
+      "line": 727,
+      "end_line": 727,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -153419,8 +153476,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 725,
-      "end_line": 725,
+      "line": 732,
+      "end_line": 732,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "add",
@@ -153433,8 +153490,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 730,
-      "end_line": 730,
+      "line": 737,
+      "end_line": 737,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "add",
@@ -153447,8 +153504,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 864,
+      "end_line": 864,
       "owner": "parse_intent",
       "conditions": [
         "years"
@@ -153463,8 +153520,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 881,
-      "end_line": 881,
+      "line": 888,
+      "end_line": 888,
       "owner": "parse_intent",
       "conditions": [],
       "operation": "set",
@@ -153477,8 +153534,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 912,
-      "end_line": 912,
+      "line": 919,
+      "end_line": 919,
       "owner": "parse_intent",
       "conditions": [],
       "operation": "set",
@@ -153491,8 +153548,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 451,
+      "end_line": 451,
       "owner": "_outside_literal_query",
       "conditions": [
         "tuple((match[0] for match in window)) == parts"
@@ -153507,8 +153564,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 701,
-      "end_line": 701,
+      "line": 708,
+      "end_line": 708,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "add",
@@ -153521,8 +153578,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 732,
-      "end_line": 732,
+      "line": 739,
+      "end_line": 739,
       "owner": "strip_geography",
       "conditions": [
         "item['kind'] != 'country'"
@@ -153537,8 +153594,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 659,
-      "end_line": 659,
+      "line": 666,
+      "end_line": 666,
       "owner": "strip_geography",
       "conditions": [
         "len(mismatches) == 1 and min(map(len, mismatches[0])) >= 4 and (mismatches[0][0] not in actual_geo_aliases) and edit_distance_one(*mismatches[0]) and (not fx_subject_positions.intersection(range(window[0].start(), window[-1].end())))"
@@ -153553,8 +153610,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 676,
-      "end_line": 676,
+      "line": 683,
+      "end_line": 683,
       "owner": "strip_geography",
       "conditions": [
         "index and match[0] == 's'",
@@ -153570,8 +153627,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 940,
-      "end_line": 940,
+      "line": 947,
+      "end_line": 947,
       "owner": "parse_intent",
       "conditions": [
         "residual_terms and (not countries) and (not regions) and (len(terms) > len(residual_terms))",
@@ -153587,8 +153644,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 712,
-      "end_line": 712,
+      "line": 719,
+      "end_line": 719,
       "owner": "strip_geography",
       "conditions": [
         "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
@@ -153603,8 +153660,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 712,
-      "end_line": 712,
+      "line": 719,
+      "end_line": 719,
       "owner": "strip_geography",
       "conditions": [
         "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
@@ -238708,6 +238765,180 @@
       "expression": "Region"
     },
     {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.Indicator.name",
+      "expression": "Indicator.name"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.Indicator.name_en",
+      "expression": "Indicator.name_en"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.name",
+      "expression": "RegionIndicator.name"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.SubnationalIndicator.name_ru",
+      "expression": "SubnationalIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_ru",
+      "expression": "WorldIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_en",
+      "expression": "WorldIndicator.name_en"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.RegionIndicator.name",
+      "expression": "RegionIndicator.name"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.SubnationalIndicator.name_ru",
+      "expression": "SubnationalIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.SubnationalIndicator.name_en",
+      "expression": "SubnationalIndicator.name_en"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 49,
+      "end_line": 49,
+      "owner": "_name_columns",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 47,
+      "end_line": 47,
+      "owner": "_name_columns",
+      "conditions": [
+        "intent.regions"
+      ],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
+    },
+    {
       "path": "backend/app/services/seo_calendar.py",
       "line": 67,
       "end_line": 67,
@@ -309714,7 +309945,7 @@
     {
       "path": "backend/app/services/search.py",
       "line": 1394,
-      "end_line": 1512,
+      "end_line": 1524,
       "owner": "<module>",
       "conditions": [],
       "name": "federated_search",
@@ -310001,8 +310232,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 270,
-      "end_line": 271,
+      "line": 277,
+      "end_line": 278,
       "owner": "<module>",
       "conditions": [],
       "name": "_normalize_text",
@@ -310010,8 +310241,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 274,
-      "end_line": 275,
+      "line": 281,
+      "end_line": 282,
       "owner": "<module>",
       "conditions": [],
       "name": "normalize",
@@ -310019,8 +310250,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 279,
-      "end_line": 280,
+      "line": 286,
+      "end_line": 287,
       "owner": "<module>",
       "conditions": [],
       "name": "_tokens_of_normalized",
@@ -310028,8 +310259,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 283,
-      "end_line": 284,
+      "line": 290,
+      "end_line": 291,
       "owner": "<module>",
       "conditions": [],
       "name": "tokens",
@@ -310037,8 +310268,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 288,
-      "end_line": 289,
+      "line": 295,
+      "end_line": 296,
       "owner": "<module>",
       "conditions": [],
       "name": "_phrase_of_normalized",
@@ -310046,8 +310277,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 292,
-      "end_line": 293,
+      "line": 299,
+      "end_line": 300,
       "owner": "<module>",
       "conditions": [],
       "name": "phrase",
@@ -310055,8 +310286,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 297,
-      "end_line": 311,
+      "line": 304,
+      "end_line": 318,
       "owner": "<module>",
       "conditions": [],
       "name": "edit_distance_one",
@@ -310064,8 +310295,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 315,
-      "end_line": 317,
+      "line": 322,
+      "end_line": 324,
       "owner": "<module>",
       "conditions": [],
       "name": "_control_neighbour",
@@ -310073,8 +310304,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 320,
-      "end_line": 326,
+      "line": 327,
+      "end_line": 333,
       "owner": "<module>",
       "conditions": [],
       "name": "_concept_correction",
@@ -310082,8 +310313,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 330,
-      "end_line": 376,
+      "line": 337,
+      "end_line": 383,
       "owner": "<module>",
       "conditions": [],
       "name": "nominal_variants",
@@ -310091,8 +310322,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 379,
-      "end_line": 387,
+      "line": 386,
+      "end_line": 394,
       "owner": "<module>",
       "conditions": [],
       "name": "_extract_denominators",
@@ -310100,8 +310331,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 390,
-      "end_line": 399,
+      "line": 397,
+      "end_line": 406,
       "owner": "<module>",
       "conditions": [],
       "name": "_percentage_word_text",
@@ -310109,8 +310340,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 402,
-      "end_line": 418,
+      "line": 409,
+      "end_line": 425,
       "owner": "<module>",
       "conditions": [],
       "name": "_extract_point_units",
@@ -310118,8 +310349,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 421,
-      "end_line": 445,
+      "line": 428,
+      "end_line": 452,
       "owner": "<module>",
       "conditions": [],
       "name": "_outside_literal_query",
@@ -310127,8 +310358,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 448,
-      "end_line": 453,
+      "line": 455,
+      "end_line": 460,
       "owner": "<module>",
       "conditions": [],
       "name": "_percent_word_spans",
@@ -310136,8 +310367,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 457,
-      "end_line": 458,
+      "line": 464,
+      "end_line": 465,
       "owner": "<module>",
       "conditions": [],
       "name": "_alias_pattern",
@@ -310145,8 +310376,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 461,
-      "end_line": 471,
+      "line": 468,
+      "end_line": 478,
       "owner": "<module>",
       "conditions": [],
       "name": "_alias_occurrences",
@@ -310154,8 +310385,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 474,
-      "end_line": 484,
+      "line": 481,
+      "end_line": 491,
       "owner": "<module>",
       "conditions": [],
       "name": "_compile_concept_matchers",
@@ -310163,8 +310394,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 490,
-      "end_line": 551,
+      "line": 497,
+      "end_line": 558,
       "owner": "<module>",
       "conditions": [],
       "name": "_russian_geo_cases",
@@ -310172,8 +310403,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 554,
-      "end_line": 568,
+      "line": 561,
+      "end_line": 575,
       "owner": "<module>",
       "conditions": [],
       "name": "_geographic_possessive_aliases",
@@ -310181,8 +310412,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 571,
-      "end_line": 611,
+      "line": 578,
+      "end_line": 618,
       "owner": "<module>",
       "conditions": [],
       "name": "geo_aliases",
@@ -310190,8 +310421,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 615,
-      "end_line": 625,
+      "line": 622,
+      "end_line": 632,
       "owner": "<module>",
       "conditions": [],
       "name": "SearchIntent",
@@ -310199,8 +310430,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 628,
-      "end_line": 734,
+      "line": 635,
+      "end_line": 741,
       "owner": "<module>",
       "conditions": [],
       "name": "strip_geography",
@@ -310208,8 +310439,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 737,
-      "end_line": 766,
+      "line": 744,
+      "end_line": 773,
       "owner": "<module>",
       "conditions": [],
       "name": "literal_identifier",
@@ -310217,8 +310448,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 769,
-      "end_line": 777,
+      "line": 776,
+      "end_line": 784,
       "owner": "<module>",
       "conditions": [],
       "name": "_unmasked_query",
@@ -310226,8 +310457,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 784,
-      "end_line": 968,
+      "line": 791,
+      "end_line": 975,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_intent",
@@ -310235,8 +310466,17 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 974,
-      "end_line": 1000,
+      "line": 990,
+      "end_line": 997,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_regional_product",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1000,
+      "end_line": 1026,
       "owner": "<module>",
       "conditions": [],
       "name": "region_reading",
@@ -310244,8 +310484,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1004,
-      "end_line": 1013,
+      "line": 1030,
+      "end_line": 1039,
       "owner": "<module>",
       "conditions": [],
       "name": "matching_alternatives",
@@ -310253,8 +310493,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1016,
-      "end_line": 1024,
+      "line": 1042,
+      "end_line": 1050,
       "owner": "<module>",
       "conditions": [],
       "name": "complete_nominal_alternative",
@@ -310262,8 +310502,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1035,
-      "end_line": 1057,
+      "line": 1061,
+      "end_line": 1083,
       "owner": "<module>",
       "conditions": [],
       "name": "_typo_pattern",
@@ -310271,8 +310511,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1065,
-      "end_line": 1085,
+      "line": 1091,
+      "end_line": 1111,
       "owner": "<module>",
       "conditions": [],
       "name": "_alternative_plan",
@@ -310280,8 +310520,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1097,
-      "end_line": 1106,
+      "line": 1123,
+      "end_line": 1132,
       "owner": "<module>",
       "conditions": [],
       "name": "_row_evidence",
@@ -310289,8 +310529,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1109,
-      "end_line": 1154,
+      "line": 1135,
+      "end_line": 1180,
       "owner": "<module>",
       "conditions": [],
       "name": "match_score",
@@ -310298,8 +310538,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 808,
-      "end_line": 812,
+      "line": 815,
+      "end_line": 819,
       "owner": "parse_intent",
       "conditions": [],
       "name": "price_base_replacement",
@@ -310810,6 +311050,69 @@
       "conditions": [],
       "name": "denominator_metadata",
       "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 28,
+      "end_line": 38,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "literal_groups",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 41,
+      "end_line": 42,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_escape",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 45,
+      "end_line": 49,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_name_columns",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 52,
+      "end_line": 58,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "word_in_names",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 61,
+      "end_line": 64,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "unknown_words",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 70,
+      "end_line": 74,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_enough_left",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 77,
+      "end_line": 95,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "readings_without_words",
+      "kind": "AsyncFunctionDef"
     },
     {
       "path": "backend/app/services/search_variants.py",
@@ -352065,16 +352368,16 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 882,
-      "end_line": 882,
+      "line": 889,
+      "end_line": 889,
       "owner": "parse_intent",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPT_MATCHERS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 890,
-      "end_line": 890,
+      "line": 897,
+      "end_line": 897,
       "owner": "parse_intent",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPT_MATCHERS"
@@ -352089,51 +352392,59 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 67,
-      "end_line": 67,
+      "line": 74,
+      "end_line": 74,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.PRICE_GOODS_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 133,
-      "end_line": 133,
+      "line": 140,
+      "end_line": 140,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_units.UNIT_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 250,
+      "end_line": 250,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.REGION_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 564,
-      "end_line": 564,
+      "line": 571,
+      "end_line": 571,
       "owner": "_geographic_possessive_aliases",
       "conditions": [],
       "symbol": "app.services.search_intent.COUNTRY_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 564,
-      "end_line": 564,
+      "line": 571,
+      "end_line": 571,
       "owner": "_geographic_possessive_aliases",
       "conditions": [],
       "symbol": "app.services.search_intent.REGION_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 847,
-      "end_line": 847,
+      "line": 854,
+      "end_line": 854,
       "owner": "parse_intent",
       "conditions": [],
       "symbol": "app.services.search_intent.MONTHS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 979,
+      "end_line": 979,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
@@ -352145,120 +352456,120 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 133,
-      "end_line": 133,
+      "line": 140,
+      "end_line": 140,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_r8a.R8A_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 142,
+      "end_line": 142,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 138,
-      "end_line": 138,
+      "line": 145,
+      "end_line": 145,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 324,
+      "end_line": 324,
       "owner": "_control_neighbour",
       "conditions": [],
       "symbol": "app.services.search_intent._CONTROL_WORDS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 331,
+      "end_line": 331,
       "owner": "_concept_correction",
       "conditions": [],
       "symbol": "app.services.search_intent._SINGLE_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 342,
-      "end_line": 342,
+      "line": 349,
+      "end_line": 349,
       "owner": "nominal_variants",
       "conditions": [],
       "symbol": "app.services.search_intent._CONTROL_WORDS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 389,
+      "end_line": 389,
       "owner": "_extract_denominators",
       "conditions": [],
       "symbol": "app.services.search_intent._DENOMINATOR_RE"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 403,
+      "end_line": 403,
       "owner": "_percentage_word_text",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 408,
-      "end_line": 408,
+      "line": 415,
+      "end_line": 415,
       "owner": "_extract_point_units",
       "conditions": [],
       "symbol": "app.services.search_units.UNIT_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 636,
-      "end_line": 636,
+      "line": 643,
+      "end_line": 643,
       "owner": "strip_geography",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 682,
-      "end_line": 682,
+      "line": 689,
+      "end_line": 689,
       "owner": "strip_geography",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 754,
+      "end_line": 754,
       "owner": "literal_identifier",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 773,
-      "end_line": 773,
+      "line": 780,
+      "end_line": 780,
       "owner": "_unmasked_query",
       "conditions": [],
       "symbol": "app.services.search_intent.TOKEN_RE"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 864,
-      "end_line": 864,
+      "line": 871,
+      "end_line": 871,
       "owner": "parse_intent",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPT_MATCHERS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 957,
-      "end_line": 957,
+      "line": 964,
+      "end_line": 964,
       "owner": "parse_intent",
       "conditions": [
         "allow_layout and (not literal) and (not countries) and (not regions) and (not term_hits) and content"
@@ -352267,8 +352578,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 957,
-      "end_line": 957,
+      "line": 964,
+      "end_line": 964,
       "owner": "parse_intent",
       "conditions": [
         "allow_layout and (not literal) and (not countries) and (not regions) and (not term_hits) and content"
@@ -352277,163 +352588,19 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 971,
-      "end_line": 971,
+      "line": 978,
+      "end_line": 978,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1011,
-      "end_line": 1011,
+      "line": 1037,
+      "end_line": 1037,
       "owner": "matching_alternatives",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 133,
-      "end_line": 133,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_r7a.R7A_CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 242,
-      "end_line": 242,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CITY_REGION_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 242,
-      "end_line": 242,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_r6a.CITY_REGION_ALIASES_R6A"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 242,
-      "end_line": 242,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent._COLLOQUIAL_REGION_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 280,
-      "end_line": 280,
-      "owner": "_tokens_of_normalized",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 337,
-      "end_line": 337,
-      "owner": "nominal_variants",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CONTROL_WORDS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 484,
-      "end_line": 484,
-      "owner": "_compile_concept_matchers",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 637,
-      "end_line": 637,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent._FX_SUBJECT_KEYS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 640,
-      "end_line": 640,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_units.UNIT_CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 647,
-      "end_line": 647,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 669,
-      "end_line": 669,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 744,
-      "end_line": 744,
-      "owner": "literal_identifier",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CODE_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 888,
-      "end_line": 888,
-      "owner": "parse_intent",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 945,
-      "end_line": 945,
-      "owner": "parse_intent",
-      "conditions": [],
-      "symbol": "app.services.search_intent._RATE_QUOTE_CODES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 994,
-      "end_line": 994,
-      "owner": "region_reading",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1073,
-      "end_line": 1073,
-      "owner": "_alternative_plan",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1080,
-      "end_line": 1080,
-      "owner": "_alternative_plan",
-      "conditions": [],
-      "symbol": "app.services.search_intent.EXACT_ONLY_WORDS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 133,
-      "end_line": 133,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_r6a.R6A_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
@@ -352441,60 +352608,204 @@
       "end_line": 140,
       "owner": "<module>",
       "conditions": [],
+      "symbol": "app.services.search_r7a.R7A_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CITY_REGION_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_r6a.CITY_REGION_ALIASES_R6A"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent._COLLOQUIAL_REGION_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 287,
+      "end_line": 287,
+      "owner": "_tokens_of_normalized",
+      "conditions": [],
       "symbol": "app.services.search_intent.TOKEN_RE"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 146,
-      "end_line": 146,
+      "line": 344,
+      "end_line": 344,
+      "owner": "nominal_variants",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CONTROL_WORDS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 491,
+      "end_line": 491,
+      "owner": "_compile_concept_matchers",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 644,
+      "end_line": 644,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent._FX_SUBJECT_KEYS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 647,
+      "end_line": 647,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_units.UNIT_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 654,
+      "end_line": 654,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 676,
+      "end_line": 676,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 751,
+      "end_line": 751,
+      "owner": "literal_identifier",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CODE_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 895,
+      "end_line": 895,
+      "owner": "parse_intent",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 952,
+      "end_line": 952,
+      "owner": "parse_intent",
+      "conditions": [],
+      "symbol": "app.services.search_intent._RATE_QUOTE_CODES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1020,
+      "end_line": 1020,
+      "owner": "region_reading",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1099,
+      "end_line": 1099,
+      "owner": "_alternative_plan",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1106,
+      "end_line": 1106,
+      "owner": "_alternative_plan",
+      "conditions": [],
+      "symbol": "app.services.search_intent.EXACT_ONLY_WORDS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 140,
+      "end_line": 140,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_r6a.R6A_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 147,
+      "end_line": 147,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 153,
+      "end_line": 153,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.cbr_currencies.CBR_CURRENCIES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 250,
+      "end_line": 250,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.REGION_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 324,
+      "end_line": 324,
       "owner": "_control_neighbour",
       "conditions": [],
       "symbol": "app.services.search_intent._CONTROL_WORDS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 432,
+      "end_line": 432,
       "owner": "_outside_literal_query",
       "conditions": [],
       "symbol": "app.services.search_intent.TOKEN_RE"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 432,
+      "end_line": 432,
       "owner": "_outside_literal_query",
       "conditions": [],
       "symbol": "app.services.search_intent.TOKEN_RE"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 458,
+      "end_line": 458,
       "owner": "_percent_word_spans",
       "conditions": [],
       "symbol": "app.services.search_intent.TOKEN_RE"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 575,
-      "end_line": 575,
+      "line": 582,
+      "end_line": 582,
       "owner": "geo_aliases",
       "conditions": [
         "item['kind'] == 'country'"
@@ -352503,8 +352814,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 577,
-      "end_line": 577,
+      "line": 584,
+      "end_line": 584,
       "owner": "geo_aliases",
       "conditions": [
         "not (item['kind'] == 'country')"
@@ -352513,96 +352824,128 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 641,
-      "end_line": 641,
+      "line": 648,
+      "end_line": 648,
       "owner": "strip_geography",
       "conditions": [],
       "symbol": "app.services.search_intent._CURRENCY_KEYS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 693,
-      "end_line": 693,
+      "line": 700,
+      "end_line": 700,
       "owner": "strip_geography",
       "conditions": [],
       "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 763,
-      "end_line": 763,
+      "line": 770,
+      "end_line": 770,
       "owner": "literal_identifier",
       "conditions": [],
       "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 781,
-      "end_line": 781,
+      "line": 788,
+      "end_line": 788,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.cbr_currencies.CBR_CURRENCIES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 987,
-      "end_line": 987,
+      "line": 995,
+      "end_line": 995,
+      "owner": "_regional_product",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CONCEPT_BY_CODE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1013,
+      "end_line": 1013,
       "owner": "region_reading",
       "conditions": [],
       "symbol": "app.services.search_intent.SECOND_READING_REGION_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 133,
-      "end_line": 133,
+      "line": 140,
+      "end_line": 140,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_vocabulary.VOCABULARY_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 383,
-      "end_line": 383,
+      "line": 390,
+      "end_line": 390,
       "owner": "_extract_denominators",
       "conditions": [],
       "symbol": "app.services.search_intent._DENOMINATOR_COUNTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 568,
-      "end_line": 568,
+      "line": 575,
+      "end_line": 575,
       "owner": "_geographic_possessive_aliases",
       "conditions": [],
       "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 986,
-      "end_line": 986,
+      "line": 993,
+      "end_line": 993,
+      "owner": "_regional_product",
+      "conditions": [],
+      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 995,
+      "end_line": 995,
+      "owner": "_regional_product",
+      "conditions": [],
+      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 995,
+      "end_line": 995,
+      "owner": "_regional_product",
+      "conditions": [],
+      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1012,
+      "end_line": 1012,
       "owner": "region_reading",
       "conditions": [],
       "symbol": "app.services.search_intent.SECOND_READING_REGION_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 133,
-      "end_line": 133,
+      "line": 140,
+      "end_line": 140,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 133,
-      "end_line": 133,
+      "line": 140,
+      "end_line": 140,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_language.LANGUAGE_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 965,
-      "end_line": 965,
+      "line": 972,
+      "end_line": 972,
       "owner": "parse_intent",
       "conditions": [
         "allow_layout and (not literal) and (not countries) and (not regions) and (not term_hits) and content",
@@ -352612,16 +352955,16 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 143,
+      "end_line": 143,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.TOKEN_RE"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 152,
-      "end_line": 152,
+      "line": 159,
+      "end_line": 159,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent._DENOMINATOR_COUNTS"
@@ -353046,6 +353389,14 @@
       "owner": "unit_metadata",
       "conditions": [],
       "symbol": "app.services.search_units.UNIT_EXCLUDES"
+    },
+    {
+      "path": "backend/app/services/search_unknown_word.py",
+      "line": 32,
+      "end_line": 32,
+      "owner": "literal_groups",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
     },
     {
       "path": "backend/app/services/search_variants.py",

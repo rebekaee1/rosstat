@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import lru_cache
 
 from app.data.cbr_currencies import CBR_CURRENCIES as _CBR_CURRENCIES, search_concepts as _cbr_search_concepts
@@ -38,6 +38,13 @@ CONCEPTS = (
     # ВРП (13.11.2026): сокращение не знал ни один словарь. «врп», «врп москва», «псковская область врп» давали
     # пустую выдачу на боевом, хотя ряды «Валовой региональный продукт» есть у всех регионов; та же судьба у частой
     # описки «валовый». Длинная форма стоит раньше «валовой продукт» (ВВП) по правилу самого длинного псевдонима.
+    # ВРП на душу населения (14.11.2026): без своего понятия «врп на душу населения» исправлялось как описка «ввп на
+    # душу» и уводило в мировые ряды. Длинная форма раньше «врп» и «ввп на душу» по правилу самого длинного псевдонима.
+    (("врп на душу населения", "врп на душу", "валовой региональный продукт на душу населения",
+        "валовый региональный продукт на душу населения", "валовой региональный продукт на душу",
+        "grp per capita", "gross regional product per capita"),
+        ("valovoy-regionalnyy-produkt-na-dushu-naseleniya", "валовой региональный продукт на душу",
+        "валового регионального продукта на душу", "gross regional product per capita")),
     (("врп", "grp", "валовой региональный продукт", "валовый региональный продукт", "валового регионального продукта",
         "gross regional product"),
         ("valovoy-regionalnyy-produkt", "валовой региональный продукт", "валового регионального продукта",
@@ -951,8 +958,8 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
         error = "unsupported_query"
     if len(denominator_terms) > 1:
         error = "unsupported_query"
-    result = SearchIntent(query, content, tuple(terms), frozenset(countries), frozenset(regions), year, month, error,
-        corrected_query if corrected_query != query else None, literal)
+    result = _regional_product(SearchIntent(query, content, tuple(terms), frozenset(countries), frozenset(regions), year,
+        month, error, corrected_query if corrected_query != query else None, literal))
     if allow_layout and not literal and not countries and not regions and not term_hits and content:
         table = _LAYOUT_RU_EN if re.search(r"[а-я]", query) else _LAYOUT_EN_RU
         candidate = normalize(query.translate(table))
@@ -969,6 +976,25 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
 
 
 CONCEPTS_ALTERNATIVES = frozenset(alternatives for _aliases, alternatives in CONCEPTS)
+_CONCEPT_BY_CODE = {alternatives[0]: alternatives for _aliases, alternatives in CONCEPTS}
+# «ВВП Москвы», «ВВП Татарстана» (14.11.2026): у субъекта России этот показатель называется ВРП; ряда «ВВП» у
+# региона нет, и запрос давал пустую выдачу (на боевом за 30 дней — несколько таких поисков). Правило намерения,
+# а не синоним: «ВВП» без региона и «ВВП России» остаются национальным ВВП; регионы других стран (у BEA — «GDP by
+# state») не затрагиваются.
+_REGIONAL_PRODUCT = {
+    "gdp": "valovoy-regionalnyy-produkt",
+    "gdp-per-capita": "valovoy-regionalnyy-produkt-na-dushu-naseleniya",
+}
+
+
+def _regional_product(intent: SearchIntent) -> SearchIntent:
+    if not intent.regions or not all(key.startswith("region:russia:") for key in intent.regions):
+        return intent
+    if not any(term and term[0] in _REGIONAL_PRODUCT for term in intent.terms):
+        return intent
+    terms = tuple(_CONCEPT_BY_CODE[_REGIONAL_PRODUCT[term[0]]] if term and term[0] in _REGIONAL_PRODUCT else term
+                  for term in intent.terms)
+    return replace(intent, terms=terms)
 
 
 def region_reading(raw: str, intent: SearchIntent, geometry: list[dict], *,
