@@ -27,6 +27,7 @@ import { useAuth } from '../context/authContext';
 import { exportTable } from '../lib/api';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import { worldSubnationalIndicatorTrail } from '../lib/breadcrumbs';
 import {
   RUSSIA,
@@ -176,7 +177,7 @@ export default function WorldRegionIndicatorPage() {
 
   const requireAuth = (blockedEvent) => {
     if (isAuthed) return true;
-    track(blockedEvent, { indicator: `world-region:${slug}:${code}` });
+    track(blockedEvent, { indicator: `world-region:${slug}:${code}`, ...subjectParams({ code, region: slug, country: countrySlug }) });
     window.dispatchEvent(new CustomEvent('fe:download-limit'));
     return false;
   };
@@ -212,7 +213,7 @@ export default function WorldRegionIndicatorPage() {
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 100);
-      track(evt, { indicator: `world-region:${slug}:${code}`, region: slug, world: true });
+      track(evt, { indicator: `world-region:${slug}:${code}`, world: true, ...subjectParams({ code, region: slug, country: countrySlug }) });
     } catch {
       // Сетевые сбои экспорта не должны ронять страницу.
     } finally {
@@ -228,7 +229,7 @@ export default function WorldRegionIndicatorPage() {
       watermark: false,
     }).catch(() => false);
     setExporting(false);
-    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `world-region:${slug}:${code}`, region: slug, world: true });
+    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `world-region:${slug}:${code}`, world: true, ...subjectParams({ code, region: slug, country: countrySlug }) });
   };
 
   const viewTrackedRef = useRef('');

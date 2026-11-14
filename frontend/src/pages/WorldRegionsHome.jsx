@@ -23,6 +23,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import { worldSubnationalHubTrail } from '../lib/breadcrumbs';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchOptions } from '../lib/searchSynonyms';
 import { useAuth } from '../context/authContext';
@@ -301,7 +302,7 @@ export default function WorldRegionsHome() {
   const handlePng = async () => {
     if (exportingMap) return;
     if (!isAuthed) {
-      track(events.CHART_IMAGE_BLOCKED, { indicator: `world-regions-map:${activeCode || 'overview'}` });
+      track(events.CHART_IMAGE_BLOCKED, { indicator: `world-regions-map:${activeCode || 'overview'}`, ...subjectParams({ code: activeCode, country: countrySlug }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -311,7 +312,7 @@ export default function WorldRegionsHome() {
       watermark: false,
     }).catch(() => false);
     setExportingMap(false);
-    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `world-regions-map:${activeCode || 'overview'}` });
+    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `world-regions-map:${activeCode || 'overview'}`, ...subjectParams({ code: activeCode, country: countrySlug }) });
   };
 
   const regions = useMemo(() => hub.data?.regions || [], [hub.data?.regions]);

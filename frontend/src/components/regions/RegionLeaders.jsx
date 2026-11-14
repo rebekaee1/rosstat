@@ -7,6 +7,7 @@ import { formatRegionWithUnit } from '../../lib/regionUi';
 import { leadersAndTrailers, leadersDirection, rankRegions } from '../../lib/regionLeaders';
 import { downloadGrid, gridFilename } from '../../lib/gridDownload';
 import { track, events } from '../../lib/track';
+import { subjectParams } from '../../lib/downloadSubject';
 import { useAuth } from '../../context/authContext';
 import { useLocale } from '../../i18n';
 import '../../styles/regions-w4.css';
@@ -47,7 +48,7 @@ export default function RegionLeaders({
     if (exporting) return;
     const indicator = `regions-leaders:${heatmap?.indicator?.code || ''}`;
     if (!isAuthed) {
-      track(events.DOWNLOAD_LIMIT_HIT, { indicator });
+      track(events.DOWNLOAD_LIMIT_HIT, { indicator, ...subjectParams({ code: heatmap?.indicator?.code }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -67,7 +68,7 @@ export default function RegionLeaders({
         meta: { country: locale === 'en' ? 'Russia' : 'Россия', source: heatmap?.indicator?.source || undefined },
         history: { source: 'region', subject_key: heatmap?.indicator?.code || '', params: { year } },
       });
-      track(format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { indicator, rows: ranked.length });
+      track(format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { indicator, rows: ranked.length, ...subjectParams({ code: heatmap?.indicator?.code }) });
     } catch (err) {
       if (err?.code === 'download_limit') window.dispatchEvent(new CustomEvent('fe:download-limit'));
     } finally {

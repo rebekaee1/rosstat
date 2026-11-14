@@ -64,6 +64,7 @@ import {
 } from '../lib/unemploymentViewModeResolve';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import useScrollDepth from '../lib/useScrollDepth';
 import { isIndicatorListed } from '../lib/categories';
 import {
@@ -484,14 +485,14 @@ export default function IndicatorDetail() {
   const handleDownloadExcel = useCallback(async () => {
     try {
       const ok = await downloadExcel(fullChartData, downloadMode, code, 'all', downloadMeta);
-      if (ok) track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+      if (ok) track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category, ...subjectParams({ code }) });
     } catch { /* сеть/сервер — молча, UI не ломаем */ }
   }, [fullChartData, downloadMode, code, downloadMeta, indicator]);
 
   const handleDownloadCSV = useCallback(async () => {
     try {
       const ok = await downloadCSV(fullChartData, downloadMode, code, 'all', downloadMeta);
-      if (ok) track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+      if (ok) track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category, ...subjectParams({ code }) });
     } catch { /* сеть/сервер — молча, UI не ломаем */ }
   }, [fullChartData, downloadMode, code, downloadMeta, indicator]);
 

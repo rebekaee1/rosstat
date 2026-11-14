@@ -156,13 +156,52 @@ def _from_params(event_name: str, params: dict) -> ContentRef | None:
         return ContentRef("world_region", "page", code="карта регионов стран")
     if head == "world" and len(bits) >= 3:  # «world:страна:код» (так пишет просмотр страницы страны)
         return ContentRef("world", "world", code=bits[2], place=bits[1])
+    if head == "rating" and len(bits) >= 2:
+        return ContentRef("rating", "world_rating", code=bits[1])
+    if raw == "regions-compare":
+        return ContentRef("region", "page", code="сравнение регионов")
     if params.get("world"):
         return ContentRef("world", "world", code=raw)
     return ContentRef("russia", "ru", code=raw)
 
 
+def _split(value: Any) -> tuple[str, ...]:
+    return tuple(v.strip() for v in str(value or "").split(",") if v.strip())[:8]
+
+
+def _from_subject(params: dict, segs: list[str]) -> ContentRef | None:
+    """Явное содержание события (`code`, `country`, `region`, `codes`, `regions`; фронт с 14.11.2026,
+    `lib/downloadSubject.js`). Вид страницы — по префиксу прежнего параметра `indicator`."""
+    codes, regions = _split(params.get("codes")), _split(params.get("regions"))
+    if codes:
+        return ContentRef("compare", "compare", codes=codes)
+    if regions:
+        return ContentRef("region", "regions_compare", codes=regions)
+    code = str(params.get("code") or "").strip()
+    if not code:
+        return None
+    country = str(params.get("country") or "").strip()
+    region = str(params.get("region") or "").strip()
+    head = str(params.get("indicator") or "").split(":")[0]
+    if head == "rating":
+        return ContentRef("rating", "world_rating", code=code)
+    if head in ("regions-leaders", "regions-map"):
+        return ContentRef("region", "region_map", code=code)
+    if head == "world-regions-map" and country:
+        return ContentRef("world_region", "world_region_map", code=code, place=country)
+    if country and region:
+        return ContentRef("world_region", "world_region", code=code, place=f"{country}/{region}")
+    if region:
+        return ContentRef("region", "region", code=code, place=region)
+    if country:
+        return ContentRef("world", "world", code=code, place=country)
+    section = "currency" if segs[:1] == ["currencies"] else "russia"
+    return ContentRef(section, "ru", code=code)
+
+
 def content_ref(event_name: str, params: dict | None, url: str | None) -> ContentRef:
-    """Содержание события по адресу страницы, при пустом адресе — по параметрам."""
+    """Содержание события: явные параметры (с 14.11.2026), иначе адрес страницы, иначе прежний
+    параметр `indicator`. Адрес — запасной источник для событий до 14.11 и мест без показателя."""
     params = params or {}
     segs, query = _path_parts(url)
     if event_name == "download_ical":
@@ -171,7 +210,7 @@ def content_ref(event_name: str, params: dict | None, url: str | None) -> Conten
         return ContentRef("demographics", "page", code="демография")
     if event_name == "research_download":
         return _from_params(event_name, params) or ContentRef("research", "page", code="исследования")
-    ref = _from_path(segs, query)
+    ref = _from_subject(params, segs) or _from_path(segs, query)
     if ref is not None:
         return ref
     return _from_params(event_name, params) or ContentRef("other", "page", code="/" + "/".join(segs))
@@ -256,7 +295,8 @@ async def load_names(db: AsyncSession, refs: Iterable[ContentRef]) -> Names:
     ru_codes = {r.code for r in refs if r.kind == "ru"} | {c for r in refs if r.kind == "compare" for c in r.codes}
     world_codes = {r.code for r in refs if r.kind == "world"} | {c for r in refs if r.kind == "compare" for c in r.codes}
     reg_codes = {r.code for r in refs if r.kind in ("region", "region_map", "region_rating")}
-    reg_slugs = {r.place for r in refs if r.kind in ("region", "region_page")}
+    reg_slugs = ({r.place for r in refs if r.kind in ("region", "region_page")}
+                 | {s for r in refs if r.kind == "regions_compare" for s in r.codes})
     country_slugs = {r.place.split("/")[0] for r in refs if r.kind in ("world", "world_region", "world_region_map")}
 
     for part in _chunks(ru_codes):
@@ -335,6 +375,8 @@ def content_title(ref: ContentRef, names: Names) -> str:
         return f"{names.region_ind.get(ref.code) or ref.code} — карта регионов"
     if k == "region_rating":
         return f"{names.region_ind.get(ref.code) or ref.code} — рейтинг регионов"
+    if k == "regions_compare":
+        return "Сравнение регионов: " + ", ".join(names.regions.get(s) or s for s in ref.codes)
     if k == "region_page":
         return f"{names.regions.get(ref.place) or ref.place} — страница региона"
     if k in ("world_region", "world_region_map"):

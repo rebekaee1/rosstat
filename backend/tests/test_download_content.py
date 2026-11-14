@@ -53,6 +53,38 @@ def test_content_from_address_matches_real_events():
     assert (w.kind, w.code, w.place) == ("world", "ee-gdp", "estonia")
 
 
+def test_explicit_subject_params_win_over_the_address():
+    """С 14.11.2026 фронт пишет `code/country/region/codes/regions` (lib/downloadSubject.js); адрес — запасной."""
+    ref = dc.content_ref
+    page = f"{SITE}/russia/indicator/fuel-diesel?mode=eop-month"
+    r = ref("download_limit", {"indicator": "fuel-diesel-eop-month", "code": "fuel-diesel-eop-month"}, page)
+    assert (r.kind, r.code) == ("ru", "fuel-diesel-eop-month")  # точный ряд, а не страница
+    r = ref("download_excel", {"source": "table-range", "indicator": "usd-rub", "code": "usd-rub"},
+            f"{SITE}/currencies/indicator/usd-rub")
+    assert (r.section, r.code) == ("currency", "usd-rub")
+    r = ref("download_csv", {"indicator": "de-gdp", "code": "de-gdp", "country": "germany", "world": True}, None)
+    assert (r.kind, r.code, r.place) == ("world", "de-gdp", "germany")
+    r = ref("chart_image_blocked", {"indicator": "region:moskva:vrp", "code": "vrp", "region": "moskva"}, None)
+    assert (r.kind, r.code, r.place) == ("region", "vrp", "moskva")
+    r = ref("download_csv", {"indicator": "world-region:california:ur", "code": "ur", "region": "california",
+                             "country": "united-states"}, None)
+    assert (r.kind, r.place) == ("world_region", "united-states/california")
+    r = ref("download_excel", {"indicator": "regions-leaders:vrp", "code": "vrp"}, None)
+    assert r.kind == "region_map"
+    r = ref("chart_image_download", {"indicator": "world-regions-map:ur", "code": "ur", "country": "united-states"}, None)
+    assert (r.kind, r.place) == ("world_region_map", "united-states")
+    r = ref("download_limit", {"indicator": "rating:gdp-usd", "code": "gdp-usd"}, None)
+    assert (r.kind, r.code) == ("world_rating", "gdp-usd")
+    r = ref("compare_image_blocked", {"count": 2, "codes": "cpi,de-gdp"}, f"{SITE}/compare")
+    assert r.codes == ("cpi", "de-gdp")
+    r = ref("download_limit", {"indicator": "regions-compare", "regions": "moskva,tatarstan"}, None)
+    assert (r.kind, r.codes) == ("regions_compare", ("moskva", "tatarstan"))
+    assert dc.content_title(r, dc.Names(regions={"moskva": "Москва"})) == "Сравнение регионов: Москва, tatarstan"
+    # Старые события без новых полей разбираются как раньше.
+    assert ref("download_limit", {"indicator": "rating:gdp-usd"}, None).kind == "world_rating"
+    assert ref("download_limit", {"indicator": "regions-compare"}, None).code == "сравнение регионов"
+
+
 def test_titles_are_plain_names_not_codes():
     names = dc.Names(
         ru={"cpi": "Инфляция"}, world={"de-gdp": ("ВВП", "Германия")}, region_ind={"vrp": "ВРП"},

@@ -55,6 +55,7 @@ import {
 import { compareTooltipRows, indexNote } from '../lib/compareTooltip';
 import { useElementWidth, useTouchTooltip, useChartGlassIds } from '../lib/chartHooks';
 import { track, events } from '../lib/track';
+import { subjectParams } from '../lib/downloadSubject';
 import useSearchTracking from '../lib/useSearchTracking';
 import useGlobalSearch from '../lib/useGlobalSearch';
 import { filterSearchOptions } from '../lib/searchSynonyms';
@@ -1783,7 +1784,7 @@ export default function ComparePage({ renderSave = null } = {}) {
     if (current.includes(code)) return;
     if (current.length >= cap) {
       if (!isAuthed) {
-        track(events.COMPARE_LIMIT_HIT, { count: current.length });
+        track(events.COMPARE_LIMIT_HIT, { count: current.length, ...subjectParams({ codes: [...current, code] }) });
         setUpsellOpen(true);
       }
       return;
@@ -2375,7 +2376,7 @@ export default function ComparePage({ renderSave = null } = {}) {
   const handleExport = async () => {
     if (!hasData) return;
     if (!isAuthed) {
-      track(events.COMPARE_IMAGE_BLOCKED, { count: codes.length });
+      track(events.COMPARE_IMAGE_BLOCKED, { count: codes.length, ...subjectParams({ codes }) });
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
       return;
     }
@@ -2384,9 +2385,9 @@ export default function ComparePage({ renderSave = null } = {}) {
       watermark: false,
     }).catch(() => false);
     if (ok) {
-      track(events.COMPARE_IMAGE_DOWNLOAD, { count: codes.length, watermark: false, authed: isAuthed });
+      track(events.COMPARE_IMAGE_DOWNLOAD, { count: codes.length, watermark: false, authed: isAuthed, ...subjectParams({ codes }) });
     } else {
-      track(events.COMPARE_IMAGE_BLOCKED, { count: codes.length });
+      track(events.COMPARE_IMAGE_BLOCKED, { count: codes.length, ...subjectParams({ codes }) });
     }
   };
 
@@ -2435,7 +2436,7 @@ export default function ComparePage({ renderSave = null } = {}) {
             codes, rep: repString, range, scale: indexed ? 'index' : 'values', step,
           },
         },
-      }, { source: 'compare' });
+      }, { source: 'compare', subject: { codes } });
       setActionNote('');
     } catch {
       setActionNote(t('c11c.compare.exportFailed'));
@@ -2472,7 +2473,7 @@ export default function ComparePage({ renderSave = null } = {}) {
     ? t('z7.compare.capAuthedFix', { n: USER_MAX })
     : t('z7.compare.capGuestFix');
   const openLimit = () => {
-    track(events.COMPARE_LIMIT_HIT, { count: codes.length });
+    track(events.COMPARE_LIMIT_HIT, { count: codes.length, ...subjectParams({ codes }) });
     setUpsellOpen(true);
   };
   // Короткое имя ряда для плашек и сводки: «ВВП, текущие цены, США»; полное остаётся в подсказке.
