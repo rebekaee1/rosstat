@@ -34115,7 +34115,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/IndicatorSearch.jsx": {
-      "sha256": "76551346bb5d68c70df2f824ddb03480162cb4b1f4eb5ad7a7abbcdeac364530",
+      "sha256": "634fd9d37126556d1ce9d7281c342ae69dedfab894ccbbe031fd35930f0eaa37",
       "imports": [
         {
           "line": 1,
@@ -34660,7 +34660,7 @@
         },
         {
           "line": 114,
-          "end_line": 892,
+          "end_line": 893,
           "owner": "<module>",
           "name": "IndicatorSearch",
           "kind": "FunctionDeclaration",
@@ -35427,100 +35427,92 @@
           "callback_context": null
         },
         {
-          "line": 828,
-          "end_line": 832,
+          "line": 829,
+          "end_line": 833,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "tryTheseExamples({\n                                  // Без «Ближайшего» подсказки по региону уже стоят выше (r7a) — здесь их не повторяем.\n                                  regionName: nearestRows.length ? globalSearch.data?.intent?.region_name : '',\n                                  popular,\n                                  t,\n                                }).map"
+          "callback_context": "tryTheseExamples({\n                                  suggest: nearestRows.length ? globalSearch.data?.suggest : [],\n                                  // Без «Ближайшего» подсказки по региону уже стоят выше (r7a) — здесь их не повторяем.\n                                  regionName: nearestRows.length ? globalSearch.data?.intent?.region_name : '',\n                                  popular,\n                                  t,\n                                }).map"
         },
         {
-          "line": 830,
-          "end_line": 830,
-          "owner": "IndicatorSearch.<callback@828>",
+          "line": 831,
+          "end_line": 831,
+          "owner": "IndicatorSearch.<callback@829>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 834,
-          "end_line": 843,
+          "line": 835,
+          "end_line": 844,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n                                // R8-A: назван свой регион — сравнение «мой регион и Москва», а не чужая пара.\n                                const ownSlug = (globalSearch.data?.intent?.regions || [])[0]?.split(':').pop();\n                                const own = ownSlug && ownSlug !== 'moskva' ? ownSlug : '';\n                                return (\n                                  <button type=\"button\" data-testid=\"search-nothing-compare\" onClick={() => navigate(own ? regionVsPath(own, 'moskva') : regionVsPath('moskva', 'sankt-peterburg'))} className={cn(FOCUS_RING, 'fe-press mt-4 min-h-11 rounded-xl px-4 text-sm font-medium text-champagne-ink')}>\n                                    {own ? t('r8a.search.compareOwn', { region: globalSearch.data.intent.region_name }) : t('r5d.search.compare')}\n                                  </button>\n                                );\n                              }"
         },
         {
-          "line": 839,
-          "end_line": 839,
-          "owner": "IndicatorSearch.<callback@834>",
+          "line": 840,
+          "end_line": 840,
+          "owner": "IndicatorSearch.<callback@835>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 849,
-          "end_line": 854,
+          "line": 850,
+          "end_line": 855,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "view?.sections.map"
         },
         {
-          "line": 852,
-          "end_line": 852,
-          "owner": "IndicatorSearch.<callback@849>",
+          "line": 853,
+          "end_line": 853,
+          "owner": "IndicatorSearch.<callback@850>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "section.rows.map"
         },
         {
-          "line": 855,
-          "end_line": 862,
+          "line": 856,
+          "end_line": 863,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "view.moreGroups.map"
         },
         {
-          "line": 860,
-          "end_line": 860,
-          "owner": "IndicatorSearch.<callback@855>",
+          "line": 861,
+          "end_line": 861,
+          "owner": "IndicatorSearch.<callback@856>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "group.rows.map"
         },
         {
-          "line": 875,
-          "end_line": 875,
+          "line": 876,
+          "end_line": 876,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 897,
-          "end_line": 906,
+          "line": 898,
+          "end_line": 907,
           "owner": "<module>",
           "name": "regionValueText",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 909,
-          "end_line": 939,
+          "line": 910,
+          "end_line": 940,
           "owner": "<module>",
           "name": "RegionGroupChips",
           "kind": "FunctionDeclaration",
           "callback_context": null
-        },
-        {
-          "line": 913,
-          "end_line": 913,
-          "owner": "RegionGroupChips",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "regions.filter"
         },
         {
           "line": 914,
@@ -35528,7 +35520,7 @@
           "owner": "RegionGroupChips",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "valued.reduce"
+          "callback_context": "regions.filter"
         },
         {
           "line": 915,
@@ -35539,177 +35531,185 @@
           "callback_context": "valued.reduce"
         },
         {
-          "line": 923,
-          "end_line": 931,
+          "line": 916,
+          "end_line": 916,
+          "owner": "RegionGroupChips",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "valued.reduce"
+        },
+        {
+          "line": 924,
+          "end_line": 932,
           "owner": "RegionGroupChips",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "shown.map"
         },
         {
-          "line": 926,
-          "end_line": 926,
-          "owner": "RegionGroupChips.<callback@923>",
+          "line": 927,
+          "end_line": 927,
+          "owner": "RegionGroupChips.<callback@924>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 942,
-          "end_line": 959,
+          "line": 943,
+          "end_line": 960,
           "owner": "<module>",
           "name": "latestText",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 965,
-          "end_line": 1082,
+          "line": 966,
+          "end_line": 1083,
           "owner": "<module>",
           "name": "SearchRow",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 984,
-          "end_line": 984,
+          "line": 985,
+          "end_line": 985,
           "owner": "SearchRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "item.spark.map"
         },
         {
-          "line": 993,
-          "end_line": 993,
+          "line": 994,
+          "end_line": 994,
           "owner": "SearchRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 996,
-          "end_line": 996,
+          "line": 997,
+          "end_line": 997,
           "owner": "SearchRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1030,
-          "end_line": 1040,
+          "line": 1031,
+          "end_line": 1041,
           "owner": "SearchRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "row.chips.map"
         },
         {
-          "line": 1036,
-          "end_line": 1036,
-          "owner": "SearchRow.<callback@1030>",
+          "line": 1037,
+          "end_line": 1037,
+          "owner": "SearchRow.<callback@1031>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1045,
-          "end_line": 1047,
+          "line": 1046,
+          "end_line": 1048,
           "owner": "SearchRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "row.quick.map"
         },
         {
-          "line": 1046,
-          "end_line": 1046,
-          "owner": "SearchRow.<callback@1045>",
+          "line": 1047,
+          "end_line": 1047,
+          "owner": "SearchRow.<callback@1046>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1052,
-          "end_line": 1052,
+          "line": 1053,
+          "end_line": 1053,
           "owner": "SearchRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1057,
-          "end_line": 1057,
+          "line": 1058,
+          "end_line": 1058,
           "owner": "SearchRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1062,
-          "end_line": 1072,
+          "line": 1063,
+          "end_line": 1073,
           "owner": "SearchRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "shownCountries.map"
         },
         {
-          "line": 1067,
-          "end_line": 1067,
-          "owner": "SearchRow.<callback@1062>",
+          "line": 1068,
+          "end_line": 1068,
+          "owner": "SearchRow.<callback@1063>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1087,
-          "end_line": 1092,
+          "line": 1088,
+          "end_line": 1093,
           "owner": "<module>",
           "name": "filterValueLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1098,
-          "end_line": 1145,
+          "line": 1099,
+          "end_line": 1146,
           "owner": "<module>",
           "name": "SearchFilters",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1099,
-          "end_line": 1099,
+          "line": 1100,
+          "end_line": 1100,
           "owner": "SearchFilters",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "FILTER_GROUPS_ORDER.filter"
         },
         {
-          "line": 1123,
-          "end_line": 1123,
+          "line": 1124,
+          "end_line": 1124,
           "owner": "SearchFilters",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "FILTER_GROUPS_ORDER.filter"
         },
         {
-          "line": 1123,
-          "end_line": 1140,
+          "line": 1124,
+          "end_line": 1141,
           "owner": "SearchFilters",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "FILTER_GROUPS_ORDER.filter((group) => options[group].length > 0).map"
         },
         {
-          "line": 1127,
-          "end_line": 1137,
-          "owner": "SearchFilters.<callback@1123>",
+          "line": 1128,
+          "end_line": 1138,
+          "owner": "SearchFilters.<callback@1124>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "options[group].map"
         },
         {
-          "line": 1133,
-          "end_line": 1133,
-          "owner": "SearchFilters.<callback@1123>.<callback@1127>",
+          "line": 1134,
+          "end_line": 1134,
+          "owner": "SearchFilters.<callback@1124>.<callback@1128>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -36678,153 +36678,153 @@
           "expression": "{() => { onQueryChange(example); inputRef.current?.focus(); }}"
         },
         {
-          "line": 830,
-          "end_line": 830,
-          "owner": "IndicatorSearch.<callback@828>",
+          "line": 831,
+          "end_line": 831,
+          "owner": "IndicatorSearch.<callback@829>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => { onQueryChange(example); inputRef.current?.focus(); }}"
         },
         {
-          "line": 839,
-          "end_line": 839,
-          "owner": "IndicatorSearch.<callback@834>",
+          "line": 840,
+          "end_line": 840,
+          "owner": "IndicatorSearch.<callback@835>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => navigate(own ? regionVsPath(own, 'moskva') : regionVsPath('moskva', 'sankt-peterburg'))}"
         },
         {
-          "line": 871,
-          "end_line": 876,
+          "line": 872,
+          "end_line": 877,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setMoreFor(showMore ? '' : qTrim)}"
         },
         {
-          "line": 926,
-          "end_line": 926,
-          "owner": "RegionGroupChips.<callback@923>",
+          "line": 927,
+          "end_line": 927,
+          "owner": "RegionGroupChips.<callback@924>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onPick(entry)}"
         },
         {
-          "line": 933,
-          "end_line": 933,
+          "line": 934,
+          "end_line": 934,
           "owner": "RegionGroupChips",
           "component": "button",
           "event": "onClick",
           "expression": "{onToggle}"
         },
         {
-          "line": 989,
-          "end_line": 1004,
+          "line": 990,
+          "end_line": 1005,
           "owner": "SearchRow",
           "component": "button",
           "event": "onMouseEnter",
           "expression": "{() => { onHover(index); onWarm?.(); }}"
         },
         {
-          "line": 989,
-          "end_line": 1004,
+          "line": 990,
+          "end_line": 1005,
           "owner": "SearchRow",
           "component": "button",
           "event": "onFocus",
           "expression": "{onWarm}"
         },
         {
-          "line": 989,
-          "end_line": 1004,
+          "line": 990,
+          "end_line": 1005,
           "owner": "SearchRow",
           "component": "button",
           "event": "onTouchStart",
           "expression": "{onWarm}"
         },
         {
-          "line": 989,
-          "end_line": 1004,
+          "line": 990,
+          "end_line": 1005,
           "owner": "SearchRow",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onPick(row, index + 1)}"
         },
         {
-          "line": 1031,
-          "end_line": 1037,
-          "owner": "SearchRow.<callback@1030>",
+          "line": 1032,
+          "end_line": 1038,
+          "owner": "SearchRow.<callback@1031>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onPick(row, index + 1, chip.item)}"
         },
         {
-          "line": 1046,
-          "end_line": 1046,
-          "owner": "SearchRow.<callback@1045>",
+          "line": 1047,
+          "end_line": 1047,
+          "owner": "SearchRow.<callback@1046>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onQuick?.(chip.query)}"
         },
         {
-          "line": 1051,
-          "end_line": 1052,
+          "line": 1052,
+          "end_line": 1053,
           "owner": "SearchRow",
           "component": "RegionGroupChips",
           "event": "onToggle",
           "expression": "{onToggle}"
         },
         {
-          "line": 1051,
-          "end_line": 1052,
+          "line": 1052,
+          "end_line": 1053,
           "owner": "SearchRow",
           "component": "RegionGroupChips",
           "event": "onPick",
           "expression": "{(entry) => onPick(row, index + 1, { key: `${item.key}:${entry.slug}`, kind: 'region_indicator', path: entry.path, navigation: entry.navigation || 'spa' })}"
         },
         {
-          "line": 1057,
-          "end_line": 1057,
+          "line": 1058,
+          "end_line": 1058,
           "owner": "SearchRow",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onPick(row, index + 1, row.rating)}"
         },
         {
-          "line": 1063,
-          "end_line": 1068,
-          "owner": "SearchRow.<callback@1062>",
+          "line": 1064,
+          "end_line": 1069,
+          "owner": "SearchRow.<callback@1063>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onPick(row, index + 1, country)}"
         },
         {
-          "line": 1074,
-          "end_line": 1074,
+          "line": 1075,
+          "end_line": 1075,
           "owner": "SearchRow",
           "component": "button",
           "event": "onClick",
           "expression": "{onToggle}"
         },
         {
-          "line": 1103,
-          "end_line": 1109,
+          "line": 1104,
+          "end_line": 1110,
           "owner": "SearchFilters",
           "component": "button",
           "event": "onClick",
           "expression": "{onToggle}"
         },
         {
-          "line": 1117,
-          "end_line": 1117,
+          "line": 1118,
+          "end_line": 1118,
           "owner": "SearchFilters",
           "component": "button",
           "event": "onClick",
           "expression": "{onReset}"
         },
         {
-          "line": 1128,
-          "end_line": 1134,
-          "owner": "SearchFilters.<callback@1123>.<callback@1127>",
+          "line": 1129,
+          "end_line": 1135,
+          "owner": "SearchFilters.<callback@1124>.<callback@1128>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onChange(group, entry.value)}"
@@ -36923,8 +36923,8 @@
           "initializer": "useMemo"
         },
         {
-          "line": 1084,
-          "end_line": 1084,
+          "line": 1085,
+          "end_line": 1085,
           "owner": "<module>",
           "name": "FILTER_LABELS",
           "kind": "ObjectExpression",
@@ -106931,7 +106931,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/searchLabourHints.js": {
-      "sha256": "906b1751106caa21a9901b3ef1a19cb78bf85a266b6481191bd87f8e746a5aef",
+      "sha256": "1f1c1e524b1d0cbde87dc285b08458ab2aa90bce89d356c0eef80719474374b5",
       "imports": [],
       "routes": [],
       "functions": [
@@ -107017,23 +107017,23 @@
         },
         {
           "line": 47,
-          "end_line": 54,
+          "end_line": 57,
           "owner": "<module>",
           "name": "tryTheseExamples",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 51,
-          "end_line": 51,
+          "line": 54,
+          "end_line": 54,
           "owner": "tryTheseExamples",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map"
         },
         {
-          "line": 53,
-          "end_line": 53,
+          "line": 56,
+          "end_line": 56,
           "owner": "tryTheseExamples",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -107176,7 +107176,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/searchTryThese.test.js": {
-      "sha256": "5252a7ad0c44908a226e9a8b1fb155ecc5ad181a825c4ac6e368c8dc07f14f68",
+      "sha256": "88f4ad6371615593b4c84d0de6ca6a929cc1ef64adebb4d4bdf259e0103e91f4",
       "imports": [
         {
           "line": 2,
@@ -107230,7 +107230,7 @@
         },
         {
           "line": 8,
-          "end_line": 23,
+          "end_line": 28,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -107238,15 +107238,23 @@
         },
         {
           "line": 9,
-          "end_line": 14,
+          "end_line": 12,
           "owner": "<callback@8>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 16,
-          "end_line": 22,
+          "line": 14,
+          "end_line": 19,
+          "owner": "<callback@8>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 21,
+          "end_line": 27,
           "owner": "<callback@8>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -256532,7 +256540,7 @@
   "totals": {
     "imports": 4826,
     "routes": 95,
-    "functions": 15353,
+    "functions": 15354,
     "hooks": 2830,
     "http": 119,
     "storage": 244,

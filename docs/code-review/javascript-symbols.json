@@ -7420,7 +7420,7 @@
     "anonymous_functions": 48
   },
   "frontend/src/components/IndicatorSearch.jsx": {
-    "sha256": "76551346bb5d68c70df2f824ddb03480162cb4b1f4eb5ad7a7abbcdeac364530",
+    "sha256": "634fd9d37126556d1ce9d7281c342ae69dedfab894ccbbe031fd35930f0eaa37",
     "definitions": [
       {
         "name": "RotatingHint",
@@ -7437,7 +7437,7 @@
       {
         "name": "IndicatorSearch",
         "line": 114,
-        "end_line": 892,
+        "end_line": 893,
         "kind": "FunctionDeclaration"
       },
       {
@@ -7478,38 +7478,38 @@
       },
       {
         "name": "regionValueText",
-        "line": 897,
-        "end_line": 906,
+        "line": 898,
+        "end_line": 907,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionGroupChips",
-        "line": 909,
-        "end_line": 939,
+        "line": 910,
+        "end_line": 940,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "latestText",
-        "line": 942,
-        "end_line": 959,
+        "line": 943,
+        "end_line": 960,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchRow",
-        "line": 965,
-        "end_line": 1082,
+        "line": 966,
+        "end_line": 1083,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "filterValueLabel",
-        "line": 1087,
-        "end_line": 1092,
+        "line": 1088,
+        "end_line": 1093,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SearchFilters",
-        "line": 1098,
-        "end_line": 1145,
+        "line": 1099,
+        "end_line": 1146,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -22095,7 +22095,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/components/searchLabourHints.js": {
-    "sha256": "906b1751106caa21a9901b3ef1a19cb78bf85a266b6481191bd87f8e746a5aef",
+    "sha256": "1f1c1e524b1d0cbde87dc285b08458ab2aa90bce89d356c0eef80719474374b5",
     "definitions": [
       {
         "name": "isLabourQuery",
@@ -22136,7 +22136,7 @@
       {
         "name": "tryTheseExamples",
         "line": 47,
-        "end_line": 54,
+        "end_line": 57,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -22217,7 +22217,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/searchTryThese.test.js": {
-    "sha256": "5252a7ad0c44908a226e9a8b1fb155ecc5ad181a825c4ac6e368c8dc07f14f68",
+    "sha256": "88f4ad6371615593b4c84d0de6ca6a929cc1ef64adebb4d4bdf259e0103e91f4",
     "definitions": [
       {
         "name": "t",
@@ -22241,7 +22241,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 3
+    "anonymous_functions": 4
   },
   "frontend/src/components/shellScrollOffset.component.test.jsx": {
     "sha256": "628239088b7633e8d39193131369d64ad819b46ab2519f85f7f3ae56e366c31f",

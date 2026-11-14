@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `7aa0c6e5837cbc1f2fa0e9dc6b136282b8b4e55b`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `42d81bfd6908ec06111e4349b8dd97da5c6a5a92`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2491 |
-| Код, шаблоны и стили | 2018 |
-| Актуальные рецензии без пропусков guard | 2491 |
-| Именованные определения Python/JS: с аннотацией / всего | 16312 / 16312 |
+| Файлы в явно определённом scope | 2492 |
+| Код, шаблоны и стили | 2019 |
+| Актуальные рецензии без пропусков guard | 2492 |
+| Именованные определения Python/JS: с аннотацией / всего | 16319 / 16319 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -418,7 +418,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/search_r7a.py](../backend/app/services/search_r7a.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/search_r8a.py](../backend/app/services/search_r8a.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/search_region_hint.py](../backend/app/services/search_region_hint.py) | reviewed | 3/3 | актуально |
-| [backend/app/services/search_regional_groups.py](../backend/app/services/search_regional_groups.py) | reviewed | 11/11 | актуально |
+| [backend/app/services/search_regional_groups.py](../backend/app/services/search_regional_groups.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/search_units.py](../backend/app/services/search_units.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/search_unknown_word.py](../backend/app/services/search_unknown_word.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/search_variants.py](../backend/app/services/search_variants.py) | reviewed | 6/6 | актуально |
@@ -892,6 +892,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_search_regional_product.py](../backend/tests/test_search_regional_product.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_search_registered_semantics.py](../backend/tests/test_search_registered_semantics.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_search_relationship_roles.py](../backend/tests/test_search_relationship_roles.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_search_section_suggestions.py](../backend/tests/test_search_section_suggestions.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_search_single_letter.py](../backend/tests/test_search_single_letter.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_search_speed.py](../backend/tests/test_search_speed.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_search_subject_roles.py](../backend/tests/test_search_subject_roles.py) | reviewed | 11/11 | актуально |

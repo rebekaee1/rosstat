@@ -12594,8 +12594,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "f96bd15600150fca3f1d16328ace18d71451487bbb72d1f2db39342d3fa6a2d4",
-        "bytes": 7282098
+        "sha256": "f0be2a3fccba3a88f51c6b3898b6c55b840c4c26c73f1fbab9e3e3daecd5744e",
+        "bytes": 7282404
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -13348,7 +13348,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "ec8182afc0b95cc947edea0c85ed30b6f72aaa121fa51d95b6aef1fc913cf257",
+        "sha256": "af1b53c5a8f79c739577c7890aecb3c4299679d6b93c21a94a9f63c68913fe45",
         "bytes": 13421
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -15273,8 +15273,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "8043d80fea68d991b2c0136973ba9db0d97fb3b6bcdaaa6934a6b298a622be47",
-        "bytes": 949115
+        "sha256": "56ef24e7fd79437d5e77f8d27069929b41df4170b5fa5fa4eef94b11752969aa",
+        "bytes": 949500
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -17701,8 +17701,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "4214af6edd2410a81b8758af5bcbf7aa3f153bd1e5aa7b71a37f136eb9fe7c37",
-        "bytes": 7844843
+        "sha256": "272c09222beb325cac1f99ac25b804b297d772f968155fe9086f70cf46b365ee",
+        "bytes": 7847909
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -20634,7 +20634,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "ea0eec70c9c3430435a096fe8de03e6d813d6d5a029fdd262035fa4cd72d3fcc",
+        "sha256": "324ff29dcdea4e9cc0398f935ad91075e6d36651fe64ab494466e9ebc901efab",
         "bytes": 1335351
       },
       "review_status": "generated_snapshot",
@@ -22404,8 +22404,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "198e57397b0670557243aa8335414296559765bd58d93b886f2f81d503d19295",
-        "bytes": 23549239
+        "sha256": "eb3efcc0371f052703b0406c3dc4efc042ec64963df4429b3aaf9b8ffcc93bc9",
+        "bytes": 23556513
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -30221,7 +30221,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "0fd95bf860541984087131077f455eaf42939eb6218b59391bca9aa39c40da99",
+        "sha256": "d22f009e8a1b23da942087c458a831fa8d5017230e54ebdfbeedae9e5fc16119",
         "bytes": 3864292
       },
       "review_status": "generated_snapshot",
@@ -40343,8 +40343,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "33f441b6591f5af70cdd7ba64a3dfff8b1297e72a82877df4c5c4edf3211926a",
-        "bytes": 12363456
+        "sha256": "8da66651e4a16b76ecb8679a491cf0ee7f1ae2735c619acd81dc0ff434af9623",
+        "bytes": 12371234
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -41420,7 +41420,7 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "361fdd9038fc7e6e57c90de568210c4c2126488aeddf01d003c3ef67b6d7046e",
+        "sha256": "29b9c488d6fa23849125a5ad63af44f2c2ba4a1474f35862b41be83e691c7186",
         "bytes": 633855
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -46409,8 +46409,8 @@
         "main": "e4049dca93a88ceb80409fa3781fc5201ca8fd4c",
         "scope": "tracked/index",
         "date": "2026-11-14",
-        "sha256": "2c69b79248e4d47aeb4ff5d59a528dce1001126b29718ac4b66d93f73fe4cad9",
-        "bytes": 168765
+        "sha256": "4cef1552bbc007b0f8efc62a0a341569c196660dc07f98834638d13f89198757",
+        "bytes": 171785
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "prior_version_evidence": [

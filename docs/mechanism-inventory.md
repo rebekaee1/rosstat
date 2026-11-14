@@ -14,9 +14,9 @@
 - Jobs: **59**
 - Middleware: **6**
 - Registry declarations: **1378**
-- Registry references: **2614**
+- Registry references: **2615**
 - Migration operations: **480**
-- Candidate effects: **2868**
+- Candidate effects: **2870**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2791,22 +2791,22 @@ Relationships: `[]`
 | app.services.scrape_guard._TELEMETRY_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:112](../backend/app/services/scrape_guard.py#L112) |
 | app.services.scrape_guard._AUTH_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:121](../backend/app/services/scrape_guard.py#L121) |
 | app.services.scrape_guard._HEADLESS_GL_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:127](../backend/app/services/scrape_guard.py#L127) |
-| app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:60](../backend/app/services/search.py#L60) |
-| app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:62](../backend/app/services/search.py#L62) |
-| app.services.search._INFLATION_WORD | Call | computed source expression | [backend/app/services/search.py:66](../backend/app/services/search.py#L66) |
-| app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:73](../backend/app/services/search.py#L73) |
-| app.services.search._RUSSIA_HEADLINES | Dict | 'housing', 'birth-count', 'cpi', 'gdp', 'wage', 'unemployment', 'key-rate', 'fuel', 'fuel-ai95', 'fuel-ai92', 'fuel-diesel', 'pensioners', 'exports', 'imports', 'gas-price', 'natural-gas', 'газ', 'trade-balance', 'wages-real', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'mortgage-rate', 'credit-rate', 'cpi-food', 'government-debt', 'budget-balance', 'reserves', 'mortality', 'births', 'copper', 'silver', 'budget-expenditure', 'budget-revenue', 'государство' | [backend/app/services/search.py:76](../backend/app/services/search.py#L76) |
-| app.services.search._NATIVE_PRICE_WORDS | Tuple | sequence/source expression | [backend/app/services/search.py:142](../backend/app/services/search.py#L142) |
-| app.services.search._PRICE_VALUATION_PHRASES | Tuple | sequence/source expression | [backend/app/services/search.py:143](../backend/app/services/search.py#L143) |
-| app.services.search._COUNTRY_HEADLINE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search.py:211](../backend/app/services/search.py#L211) |
-| app.services.search._COUNTRY_HEADLINE_CODE_PATTERNS | Tuple | sequence/source expression | [backend/app/services/search.py:212](../backend/app/services/search.py#L212) |
-| app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:227](../backend/app/services/search.py#L227) |
-| app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:238](../backend/app/services/search.py#L238) |
-| app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:246](../backend/app/services/search.py#L246) |
-| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1286](../backend/app/services/search.py#L1286) |
-| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1287](../backend/app/services/search.py#L1287) |
-| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1288](../backend/app/services/search.py#L1288) |
-| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1313](../backend/app/services/search.py#L1313) |
+| app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:62](../backend/app/services/search.py#L62) |
+| app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:64](../backend/app/services/search.py#L64) |
+| app.services.search._INFLATION_WORD | Call | computed source expression | [backend/app/services/search.py:68](../backend/app/services/search.py#L68) |
+| app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:75](../backend/app/services/search.py#L75) |
+| app.services.search._RUSSIA_HEADLINES | Dict | 'housing', 'birth-count', 'cpi', 'gdp', 'wage', 'unemployment', 'key-rate', 'fuel', 'fuel-ai95', 'fuel-ai92', 'fuel-diesel', 'pensioners', 'exports', 'imports', 'gas-price', 'natural-gas', 'газ', 'trade-balance', 'wages-real', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'mortgage-rate', 'credit-rate', 'cpi-food', 'government-debt', 'budget-balance', 'reserves', 'mortality', 'births', 'copper', 'silver', 'budget-expenditure', 'budget-revenue', 'государство' | [backend/app/services/search.py:78](../backend/app/services/search.py#L78) |
+| app.services.search._NATIVE_PRICE_WORDS | Tuple | sequence/source expression | [backend/app/services/search.py:144](../backend/app/services/search.py#L144) |
+| app.services.search._PRICE_VALUATION_PHRASES | Tuple | sequence/source expression | [backend/app/services/search.py:145](../backend/app/services/search.py#L145) |
+| app.services.search._COUNTRY_HEADLINE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search.py:213](../backend/app/services/search.py#L213) |
+| app.services.search._COUNTRY_HEADLINE_CODE_PATTERNS | Tuple | sequence/source expression | [backend/app/services/search.py:214](../backend/app/services/search.py#L214) |
+| app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:229](../backend/app/services/search.py#L229) |
+| app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:240](../backend/app/services/search.py#L240) |
+| app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:248](../backend/app/services/search.py#L248) |
+| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1288](../backend/app/services/search.py#L1288) |
+| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1289](../backend/app/services/search.py#L1289) |
+| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1290](../backend/app/services/search.py#L1290) |
+| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1315](../backend/app/services/search.py#L1315) |
 | app.services.search_currency_aliases._SHARED_LAST_WORDS | Call | computed source expression | [backend/app/services/search_currency_aliases.py:15](../backend/app/services/search_currency_aliases.py#L15) |
 | app.services.search_currency_aliases._ROOT_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/search_currency_aliases.py:18](../backend/app/services/search_currency_aliases.py#L18) |
 | app.services.search_currency_aliases._GENERIC_FIRST | Call | computed source expression | [backend/app/services/search_currency_aliases.py:20](../backend/app/services/search_currency_aliases.py#L20) |
@@ -2886,7 +2886,7 @@ Relationships: `[]`
 | app.services.search_r8a.SHORT_REGION_NAMES | Dict | 'velichina-prozhitochnogo-minimuma-ustanovlennaya-v-tselom-po-3-11', 'velichina-prozhitochnogo-minimuma-ustanovlennaya-v-tselom-po', 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy' | [backend/app/services/search_r8a.py:93](../backend/app/services/search_r8a.py#L93) |
 | app.services.search_region_hint._NAME_STOP | Call | computed source expression | [backend/app/services/search_region_hint.py:13](../backend/app/services/search_region_hint.py#L13) |
 | app.services.search_region_hint._WORD | Call | computed source expression | [backend/app/services/search_region_hint.py:16](../backend/app/services/search_region_hint.py#L16) |
-| app.services.search_regional_groups._FIRST_SLUGS | Tuple | sequence/source expression | [backend/app/services/search_regional_groups.py:25](../backend/app/services/search_regional_groups.py#L25) |
+| app.services.search_regional_groups._FIRST_SLUGS | Tuple | sequence/source expression | [backend/app/services/search_regional_groups.py:26](../backend/app/services/search_regional_groups.py#L26) |
 | app.services.search_units.UNIT_RULES | Dict | 'money', 'million', 'billion', 'thousand', 'rub', 'usd', 'cad', 'aud', 'gbp', 'cny', 'jpy', 'eur', 'persons', 'index', 'percentage-point', 'litre', 'tonne', 'kilogram', 'square-metre', 'chained-prices', 'btu', 'cubic-metre', 'solid-cubic-metre' | [backend/app/services/search_units.py:9](../backend/app/services/search_units.py#L9) |
 | app.services.search_units.UNIT_EXCLUDES | Dict | 'square-metre', 'cubic-metre' | [backend/app/services/search_units.py:34](../backend/app/services/search_units.py#L34) |
 | app.services.search_units.UNIT_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_units.py:36](../backend/app/services/search_units.py#L36) |
