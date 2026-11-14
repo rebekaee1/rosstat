@@ -19,15 +19,15 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2542,
+    "files": 2543,
     "code_files": 2062,
-    "current_reviews": 2542,
+    "current_reviews": 2543,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2270
+      "reviewed": 2271
     },
     "definitions": 16763,
     "annotated_definitions": 16763,
@@ -15668,6 +15668,19 @@
       "lines": null,
       "code": false,
       "status": "artifact_schema_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/research/wall-funnel-2026-11-14.md",
+      "sha256": "da5d66bbff8bac6afcee0e52000db64450e0b5ea7346eb8bc8c340f42c121e50",
+      "bytes": 9446,
+      "lines": 99,
+      "code": false,
+      "status": "reviewed",
       "current": true,
       "issues": [],
       "definitions": 0,
@@ -33083,20 +33096,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "20ee5f619c4c2316847d1b57dedbc5882192d677bbc11b071d3a5221e039af5d",
+  "ledger_sha256": "bd52a204fc4ec99baa9286ee6216f8a5ffcb69a440058c9e73176d674296cb65",
   "javascript_inventory_sha256": "830728782b412f2e093585e39a50a9416a64debf6cdb2d811292d49cfc9b5449",
-  "baseline_commit": "fb80bf96caa91feca9e322c2a821284604ea8d8a",
+  "baseline_commit": "9dde8fe55ea23f5c8c82d458dc5da4ac5ba1930d",
   "branch": "int/2026-11-14",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
