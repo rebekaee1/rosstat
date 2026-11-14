@@ -162,3 +162,74 @@ def test_release_log_script_keeps_only_subjects(tmp_path, monkeypatch):
     assert last == {"sha": "feedbeef", "date": "2026-11-18", "lines": last["lines"], "more": 6}
     assert last["lines"][0] == "ccccccc2 fix: письмо от [почта]"
     assert len(last["lines"]) == 15 and not any("одобрить" in x or "docs(knowledge)" in x for x in last["lines"])
+
+
+# --- заметки владельца из бота -----------------------------------------------------------------------------------
+
+
+def test_parse_command_latin_command_and_russian_text_trigger():
+    from app.services.pulse_context import parse_command
+
+    assert parse_command("/context") == ("list", None, None)
+    assert parse_command("/context@forecast_bot список") == ("list", None, None)
+    assert parse_command("контекст удалить 3") == ("delete", 3, None)
+    kind, text, until = parse_command("Контекст: пополнил OpenRouter на $20 до 25.11.2026")
+    assert kind == "add" and text == "пополнил OpenRouter на $20" and until == date(2026, 11, 25)
+    assert parse_command("/context выпуск ферма") == ("add", "выпуск ферма", None)
+    assert parse_command("дизель") is None
+    assert parse_command("/contextual") is None
+
+
+def test_notes_add_list_delete_and_scrub(monkeypatch):
+    from tests.test_analytics2 import _run_with_db
+
+    async def scenario(maker):
+        monkeypatch.setattr("app.database.async_session", maker)
+        r1 = await pulse_context.handle_owner_command("/context договорились с партнёром, пишите на a@b.ru до 30.12")
+        r2 = await pulse_context.handle_owner_command("контекст выпустили фильтр фермы")
+        listing = await pulse_context.handle_owner_command("/context")
+        gone = await pulse_context.handle_owner_command("/context удалить 1")
+        again = await pulse_context.handle_owner_command("/context удалить 1")
+        async with maker() as db:
+            notes = await pulse_context.active_notes(db, date(2026, 11, 20))
+        return r1, r2, listing, gone, again, notes
+
+    r1, r2, listing, gone, again, notes = _run_with_db(scenario)
+    assert "заметка 1" in r1 and "30.12" in r1 and "заметка 2" in r2
+    assert "a@b.ru" not in listing and "выпустили фильтр фермы" in listing
+    assert gone == "🧭 Заметка 1 удалена." and again == "Заметки 1 нет."
+    assert [n.text for n in notes] == ["выпустили фильтр фермы"]
+    block = build_block(TODAY, entries=[], releases=[], flags=[], balance=None, notes=notes)
+    assert "Заметки владельца" in block and "[заметка 2]" in block
+
+
+def test_owner_chat_context_is_handled_and_stranger_is_not(monkeypatch):
+    from app.services import telegram_bot as tb
+
+    sent = []
+
+    async def fake_send(chat_id, text, reply_markup=None, kind="bot_reply"):
+        sent.append((chat_id, text))
+        return True
+
+    async def fake_handle(raw):
+        return f"ответ на {raw}"
+
+    monkeypatch.setattr(tb, "interactive_authorized_ids", lambda: {"42"})
+    monkeypatch.setattr(tb, "send_message", fake_send)
+    monkeypatch.setattr(pulse_context, "handle_owner_command", fake_handle)
+    monkeypatch.setattr(tb.settings, "public_bot_enabled", True, raising=False)
+    monkeypatch.setattr(tb.settings, "public_bot_token", "", raising=False)
+    asyncio.run(tb._handle_message({"chat": {"id": 42}, "text": "Контекст: Выпуск 18.11"}))
+    assert sent == [("42", "ответ на Контекст: Выпуск 18.11")]
+    assert tb._is_public_message("42", "/context") is False
+    sent.clear()
+    routed = []
+
+    async def public(msg):
+        routed.append(msg["text"])
+
+    from app.services import public_bot
+    monkeypatch.setattr(public_bot, "handle_message", public)
+    asyncio.run(tb._handle_message({"chat": {"id": 999}, "text": "/context чужой"}))
+    assert sent == [] and routed == ["/context чужой"]

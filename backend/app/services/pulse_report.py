@@ -373,7 +373,11 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
     try:
         from app.services import pulse_context
 
-        context = pulse_context.build_block(today_msk(), balance=await pulse_context.openrouter_balance())
+        from app.database import async_session
+
+        async with async_session() as db:
+            notes = await pulse_context.active_notes(db, today_msk())
+        context = pulse_context.build_block(today_msk(), balance=await pulse_context.openrouter_balance(), notes=notes)
     except Exception:  # noqa: BLE001 - без контекста отчёт всё равно уходит
         logger.warning("Pulse context build failed", exc_info=True)
         context = ""

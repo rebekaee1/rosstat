@@ -13,7 +13,9 @@
   число и «мало», ключ не пишется в журнал).
 
 Блок ограничен `MAX_BLOCK_CHARS`; каждая запись — `MAX_ENTRY_CHARS`. Текст проходит ту же очистку от ПДн, что и
-остальной ввод модели (`scrub_value`). Заметки владельца из бота — второй этап (таблица и команда /context).
+остальной ввод модели (`scrub_value`).
+* **Заметки владельца** — служебный бот: /context текст [до ДД.ММ] или «контекст …» в чате владельца,
+  /context — список, /context удалить N. Таблица `pulse_context_notes`, в блок — до NOTES_IN_BLOCK свежих.
 """
 from __future__ import annotations
 
@@ -182,7 +184,7 @@ def _release_lines(releases: list[dict]) -> list[str]:
 
 
 def build_block(today: date, *, entries: list[Entry] | None = None, releases: list[dict] | None = None,
-                flags: list[str] | None = None, balance: float | None = None) -> str:
+                flags: list[str] | None = None, balance: float | None = None, notes: list | None = None) -> str:
     """Текст блока «Контекст проекта» для модели; пусто, если знать нечего."""
     from app.services.pii_scrub import scrub_value
 
@@ -212,6 +214,9 @@ def build_block(today: date, *, entries: list[Entry] | None = None, releases: li
     if active:
         lines.append("События и решения (id для ссылок в гипотезах):")
         lines.extend(f"- {t}" for _, t in sorted(active))
+    if notes:
+        lines.append("Заметки владельца (свежие внизу):")
+        lines.extend(note_lines(notes))
 
     if not lines:
         return ""
@@ -241,3 +246,114 @@ def count_active(today: date) -> int:
                if not (e.until and e.until < today)
                and ((release_date_of(e.commit, releases) or e.date) >= today - timedelta(days=LOOKBACK_DAYS)
                     or (e.until and e.until >= today)))
+
+
+# --- Заметки владельца из служебного бота (/context, «контекст …») -------------------------------------------------
+
+NOTE_MAX_CHARS = 600
+NOTES_IN_BLOCK = 10
+
+
+def parse_command(raw: str) -> tuple[str, str | int | None, date | None] | None:
+    """Разбор команды владельца: ("add", текст, срок) / ("list", None, None) / ("delete", номер, None) или None.
+
+    Telegram не принимает кириллицу в именах команд, поэтому команда - /context; в чате владельца работает и текст
+    «контекст …». «… до 25.11» или «… до 25.11.2026» в конце - срок показа.
+    """
+    import re
+
+    text = (raw or "").strip()
+    m = re.match(r"^(?:/context(?:@\w+)?|контекст)\b[:\s]*(.*)$", text, re.IGNORECASE | re.DOTALL)
+    if not m:
+        return None
+    body = m.group(1).strip()
+    if not body or body.lower() in ("список", "list"):
+        return ("list", None, None)
+    d = re.match(r"^(?:удалить|delete)\s+(\d+)$", body, re.IGNORECASE)
+    if d:
+        return ("delete", int(d.group(1)), None)
+    until = None
+    u = re.search(r"\s+до\s+(\d{1,2})\.(\d{1,2})(?:\.(\d{4}))?\s*$", body, re.IGNORECASE)
+    if u:
+        today = date.today()
+        year = int(u.group(3)) if u.group(3) else today.year
+        try:
+            until = date(year, int(u.group(2)), int(u.group(1)))
+            if not u.group(3) and until < today:
+                until = date(year + 1, until.month, until.day)
+            body = body[: u.start()].strip()
+        except ValueError:
+            until = None
+    return ("add", body[:NOTE_MAX_CHARS], until)
+
+
+async def add_note(db, text: str, until: date | None):
+    from datetime import datetime, timezone
+
+    from app.models import PulseContextNote
+    from app.services.pii_scrub import scrub_text
+
+    note = PulseContextNote(created_at=datetime.now(timezone.utc).replace(tzinfo=None),
+                            text=scrub_text(text)[:NOTE_MAX_CHARS], until=until, deleted=False)
+    db.add(note)
+    await db.commit()
+    return note
+
+
+async def active_notes(db, today: date, limit: int = NOTES_IN_BLOCK) -> list:
+    from sqlalchemy import or_, select
+
+    from app.models import PulseContextNote
+
+    rows = (await db.execute(
+        select(PulseContextNote)
+        .where(PulseContextNote.deleted.is_(False),
+               or_(PulseContextNote.until.is_(None), PulseContextNote.until >= today))
+        .order_by(PulseContextNote.id.desc()).limit(limit)
+    )).scalars().all()
+    return list(reversed(rows))
+
+
+async def delete_note(db, note_id: int) -> bool:
+    from app.models import PulseContextNote
+
+    note = await db.get(PulseContextNote, note_id)
+    if note is None or note.deleted:
+        return False
+    note.deleted = True
+    await db.commit()
+    return True
+
+
+def note_lines(notes: list) -> list[str]:
+    return [f"- [заметка {n.id}] {n.created_at:%d.%m.%Y} · заметка владельца · {_clip(n.text, MAX_ENTRY_CHARS)}"
+            + (f" (до {n.until:%d.%m.%Y})" if n.until else "") for n in notes]
+
+
+async def handle_owner_command(raw: str) -> str | None:
+    """Ответ бота на команду владельца; None - это не команда контекста."""
+    from html import escape
+
+    from app.database import async_session
+
+    cmd = parse_command(raw)
+    if cmd is None:
+        return None
+    action, arg, until = cmd
+    today = date.today()
+    async with async_session() as db:
+        if action == "add":
+            if not arg:
+                return "Напишите текст после команды: <code>/context что произошло … до 25.11</code>"
+            note = await add_note(db, str(arg), until)
+            tail = f", показывать до {until:%d.%m.%Y}" if until else ""
+            return f"🧭 Записал для аналитика (заметка {note.id}{tail}). Учтёт в ближайшем Пульсе."
+        if action == "delete":
+            ok = await delete_note(db, int(arg))
+            return f"🧭 Заметка {arg} удалена." if ok else f"Заметки {arg} нет."
+        notes = await active_notes(db, today, limit=30)
+    if not notes:
+        return ("🧭 Заметок для аналитика нет. Добавить: <code>/context текст</code> или «контекст текст», "
+                "срок — «… до 25.11». Удалить: <code>/context удалить 3</code>.")
+    body = "\n".join(escape(x[2:]) for x in note_lines(notes))
+    return f"🧭 <b>Заметки для аналитика</b> ({len(notes)}):\n{body}\n\nУдалить: <code>/context удалить N</code>."
