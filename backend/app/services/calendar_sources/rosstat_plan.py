@@ -100,11 +100,24 @@ class _TopicRule:
     title_en: str
     importance: int = 2
     exclude: tuple[str, ...] = ()
+    # Отдельный выпуск со своим ключом (не участвует в нумерации r1/r2 выпусков периода):
+    # предварительная оценка ВВП выходит раньше первой оценки и не должна сдвигать её номер.
+    key_suffix: str | None = None
 
 
 # Порядок значим: первый совпавший блок побеждает (ИЦП раньше ИПП — иначе
 # «цен производителей промышленных товаров» уйдёт в промышленное производство).
 _TOPIC_RULES: tuple[_TopicRule, ...] = (
+    # «Справка о предварительной оценке динамики ВВП в III квартале 2026 года» (13.11.2026):
+    # в названии аббревиатура, а не «валовой внутренний продукт», — раньше выпуск терялся.
+    _TopicRule(
+        stems=("предварительн", "оценк", "ввп"),
+        codes=("gdp-real",),
+        title="ВВП: предварительная оценка динамики",
+        title_en="GDP Flash Estimate",
+        importance=3,
+        key_suffix="flash",
+    ),
     _TopicRule(
         stems=("индекс", "потребительск", "цен"),
         codes=("cpi", "cpi-food", "cpi-nonfood", "cpi-services"),
@@ -240,6 +253,27 @@ def parse_schedule_docx(content: bytes, *, year: int) -> list[tuple[date, str]]:
     return out
 
 
+def resolve_schedule_doc_urls(html: str) -> list[tuple[int, str]]:
+    """Все годовые графики со страницы плана: [(год, ссылка)] по возрастанию года.
+
+    На странице лежат графики нескольких лет (14.11.2026 — 2026 и 2025). В декабре рядом
+    появляется следующий год, и выпуски января нужны раньше, чем уйдёт текущий год, —
+    поэтому читаются все, а не только первая ссылка.
+    """
+    if not _SCHEDULE_CARD_RE.search(html):
+        return []
+    found: dict[int, str] = {}
+    for m in _SCHEDULE_DOC_HREF_RE.finditer(html):
+        url = m.group(1)
+        ym = re.search(r"(20\d{2})\.docx$", url, re.IGNORECASE)
+        if not ym:
+            continue
+        if not url.startswith("http"):
+            url = "https://rosstat.gov.ru" + (url if url.startswith("/") else "/" + url)
+        found.setdefault(int(ym.group(1)), url)
+    return sorted(found.items())
+
+
 def resolve_schedule_doc_url(html: str) -> str | None:
     """Ссылка на docx графика из HTML страницы плана публикаций."""
     if not _SCHEDULE_CARD_RE.search(html):
@@ -340,12 +374,17 @@ def build_rosstat_plan_candidates(
         codes, rule = matched
         ref = _topic_reference_period(title)
         for code in codes:
-            n = ordinal[(code, ref)] = ordinal.get((code, ref), 0) + 1
+            if rule.key_suffix:
+                release_tag = rule.key_suffix
+                n = 0
+            else:
+                n = ordinal[(code, ref)] = ordinal.get((code, ref), 0) + 1
+                release_tag = f"r{n}"
             if not (cutoff <= scheduled <= horizon):
                 continue
-            uid = f"rosstat-plan-{code}-{ref or 'na'}-r{n}-{scheduled.isoformat()}"
+            uid = f"rosstat-plan-{code}-{ref or 'na'}-{release_tag}-{scheduled.isoformat()}"
             candidates.append(CalendarCandidate(
-                event_key=stable_key("rosstat", "plan", code, ref, f"r{n}"),
+                event_key=stable_key("rosstat", "plan", code, ref, release_tag),
                 title=rule.title,
                 title_en=rule.title_en,
                 event_type="data_release",
@@ -359,6 +398,7 @@ def build_rosstat_plan_candidates(
                 source_event_uid=uid,
                 description=_plan_description(code),
                 metadata={
+                    "feed": "rosstat_plan",
                     "bulletin_title": title,
                     "schedule_doc": doc_url,
                     "schedule_year": year,
@@ -383,15 +423,65 @@ def fetch_rosstat_plan_candidates(
     months_ahead: int,
     session: requests.Session | None = None,
 ) -> list[CalendarCandidate]:
-    """Точка входа конвейера: fetch + parse + candidates. Ошибки — не фатальны."""
+    """Точка входа конвейера: все годовые графики текущего и следующего года. Ошибки — не фатальны.
+
+    Пустой список — источник недоступен; тогда календарь не трогает уже сохранённые даты.
+    """
     try:
-        got = fetch_schedule_docx(session=session)
-        if not got:
-            return []
-        content, doc_url, year = got
-        return build_rosstat_plan_candidates(
-            content, doc_url=doc_url, year=year, today=today, months_ahead=months_ahead,
-        )
+        docs = fetch_schedule_docs(session=session, years={today.year, today.year + 1})
+        candidates: list[CalendarCandidate] = []
+        for content, doc_url, year in docs:
+            candidates.extend(build_rosstat_plan_candidates(
+                content, doc_url=doc_url, year=year, today=today, months_ahead=months_ahead,
+            ))
+        return candidates
     except Exception:
         logger.exception("Failed to fetch Rosstat publication plan")
         return []
+
+
+def fetch_schedule_docs(
+    *,
+    years: set[int],
+    session: requests.Session | None = None,
+) -> list[tuple[bytes, str, int]]:
+    """Скачать графики указанных лет, что есть на странице плана. [] — страница недоступна."""
+    from app.config import settings
+    from app.services.http_client import create_session
+
+    sess = session or create_session(timeout=30)
+    if not session:
+        sess.verify = settings.rosstat_ca_cert
+    try:
+        resp = sess.get(
+            PUBLICATIONS_PLANS_API,
+            params={"type": PLAN_TYPE_INFO_ANALYTICS, "page": "1"},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        try:
+            payload = resp.json()
+            html = (payload.get("html") or payload.get("content") or "") if isinstance(payload, dict) else ""
+        except ValueError:
+            html = resp.text
+    except requests.RequestException:
+        logger.warning("Rosstat publications-plans getPage failed", exc_info=True)
+        return []
+
+    docs: list[tuple[bytes, str, int]] = []
+    for year, doc_url in resolve_schedule_doc_urls(html):
+        if year not in years:
+            continue
+        try:
+            doc = sess.get(doc_url, timeout=30)
+            doc.raise_for_status()
+        except requests.RequestException:
+            logger.warning("Rosstat plan schedule docx download failed: %s", doc_url)
+            continue
+        if doc.content[:2] != b"PK":
+            logger.warning("Rosstat plan: %s is not a docx file", doc_url)
+            continue
+        docs.append((doc.content, doc_url, year))
+    if not docs:
+        logger.info("Rosstat plan: no schedule docx for years %s on publications page", sorted(years))
+    return docs

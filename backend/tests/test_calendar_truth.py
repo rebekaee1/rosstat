@@ -37,8 +37,10 @@ def test_unverified_rules_hidden_from_list_detail_upcoming_and_ical(auth_env, au
                           scheduled_date=today_msk() + timedelta(days=1))]
             db.add_all(rows)
             await db.commit()
-            return [r.id for r in rows]
-    ids = asyncio.run(seed())
+            return rows
+    seeded = asyncio.run(seed())
+    ids = [r.id for r in seeded]
+    rows_by_id = {r.id: r for r in seeded}
     response = auth_client.get("/api/v1/calendar")
     assert response.status_code == 200
     assert {e["id"] for e in response.json()["events"]} == set(ids[2:])
@@ -47,8 +49,10 @@ def test_unverified_rules_hidden_from_list_detail_upcoming_and_ical(auth_env, au
     upcoming = auth_client.get("/api/v1/calendar/upcoming").json()["events"]
     assert {e["id"] for e in upcoming} == {ids[3]}
     ical = auth_client.get("/api/v1/calendar/export/ical", params={"from": str(today_msk()-timedelta(days=2))}).text
-    assert all(f"fe-event-{id_}@" not in ical for id_ in ids[:2])
-    assert all(f"fe-event-{id_}@" in ical for id_ in ids[2:])
+    from app.api.calendar import _ics_uid
+    unfolded = ical.replace("\r\n ", "")
+    assert all(f"UID:{_ics_uid(rows_by_id[id_])}" not in unfolded for id_ in ids[:2])
+    assert all(f"UID:{_ics_uid(rows_by_id[id_])}" in unfolded for id_ in ids[2:])
 
 
 def test_ingest_does_not_mark_elapsed_date_released(auth_env):

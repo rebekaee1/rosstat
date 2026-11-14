@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, CalendarPlus, CheckCircle2, Clock3, ExternalLink } from 'lucide-react';
-import { cn } from '../../lib/format';
+import { cn, formatDate } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import { isExternalHref } from '../../lib/sourceLink';
 import SourceLink from '../SourceLink';
@@ -55,18 +55,74 @@ function ImportanceBadge({ level }) {
   );
 }
 
-/** Подтверждена ли дата: «Дата подтверждена» (объявлена источником) или «Ориентировочно» (по графику источника). */
+function localTodayIso() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** «13 ноября» без года, если год текущий. */
+function dayMonth(iso, locale) {
+  const text = formatDate(iso, 'day', locale);
+  const year = String(new Date().getFullYear());
+  return text.endsWith(` ${year}`) ? text.slice(0, -(year.length + 1)) : text;
+}
+
+/** Через сколько дней после даты выпуска перестаём «ждать данные» и пишем «дата прошла». */
+const AWAIT_DAYS = 7;
+
+/**
+ * Статус события одной строкой (круг 14.11.2026). Раньше прошедшие события без цифры писались
+ * «Ориентировочно» — и заседание ЦБ, прошедшее три недели назад, выглядело неподтверждённым.
+ * Теперь: вышло (цифра есть на сайте) → ждём данные (неделя после даты) → дата прошла; будущее —
+ * дата подтверждена, по графику (каждый рабочий день) или перенесено с прежней даты.
+ */
+export function eventStatus(event, today = localTodayIso()) {
+  const date = event?.scheduled_date || '';
+  if (event?.status === 'released' || (event?.actual_value != null && event.actual_value !== '')) {
+    return { kind: 'released' };
+  }
+  if (date && date < today) {
+    const days = Math.round((Date.parse(today) - Date.parse(date)) / 86400000);
+    // Предварительная оценка ВВП (ключ «:flash») не добавляет точку в ряд — ждать на сайте нечего.
+    const confirmable = event?.indicator_code && !String(event?.event_key || '').endsWith(':flash');
+    return { kind: days <= AWAIT_DAYS && confirmable ? 'awaiting' : 'passed' };
+  }
+  if (event?.rescheduled_from) return { kind: 'moved', from: event.rescheduled_from };
+  if (event?.date_confidence === 'official_rule') return { kind: 'byRule' };
+  return { kind: 'confirmed' };
+}
+
 function DateStatus({ event }) {
   const t = useT();
-  const tentative = event.date_confidence === 'official_rule' || event.status === 'awaiting_confirmation';
-  const Icon = tentative ? Clock3 : CheckCircle2;
+  const { locale } = useLocale();
+  const status = eventStatus(event);
+  const positive = status.kind === 'released' || status.kind === 'confirmed';
+  const Icon = positive ? CheckCircle2 : Clock3;
+  let label;
+  let hint;
+  if (status.kind === 'confirmed') {
+    label = t('w3.cal.confirmed');
+    hint = t('w3.cal.confirmedHint');
+  } else if (status.kind === 'moved') {
+    const from = dayMonth(status.from, locale);
+    label = t('cal26.status.moved', { date: from });
+    hint = t('cal26.status.movedHint', { date: from });
+  } else if (status.kind === 'released' && event.released_on) {
+    // День нашей загрузки — в подсказке, не в метке: «Вышло 11 ноября» читалось бы как дата публикации.
+    label = t('cal26.status.released');
+    hint = t('cal26.status.releasedSeenHint', { date: dayMonth(event.released_on, locale) });
+  } else {
+    label = t(`cal26.status.${status.kind}`);
+    hint = t(`cal26.status.${status.kind}Hint`);
+  }
   return (
     <span
-      className={cn('inline-flex items-center gap-1.5 text-xs', tentative ? 'text-text-secondary' : 'text-emerald-700')}
-      title={tentative ? t('w3.cal.tentativeHint') : t('w3.cal.confirmedHint')}
+      className={cn('inline-flex items-center gap-1.5 text-xs', positive ? 'text-emerald-700' : 'text-text-secondary')}
+      title={hint}
+      data-status={status.kind}
     >
       <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-      {tentative ? t('w3.cal.tentative') : t('w3.cal.confirmed')}
+      {label}
     </span>
   );
 }

@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import logging
 import re
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
-from sqlalchemy import select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import EconomicEvent, Indicator, IndicatorData
@@ -190,11 +190,78 @@ async def prune_persisted_speculative_rosstat_monthly(db: AsyncSession) -> int:
     return removed
 
 
-async def enrich_events_from_indicator_data(db: AsyncSession) -> int:
-    """Set actual_value + status=released when reference_period has a data point.
+# Выпуск, который не даёт новой точки в ряду показателя (предварительная оценка ВВП — только
+# темп, ряд пополнится на первой оценке), не подтверждается из ряда: иначе ему достался бы
+# чужой факт.
+def _confirmable(ev: EconomicEvent) -> bool:
+    details = ((ev.metadata_json or {}).get("provenance") or {}).get("details") or {}
+    return not (details.get("no_data_confirmation") or str(ev.event_key or "").endswith(":flash"))
 
-    Returns number of events updated.
+
+def _msk_date(moment: datetime | None) -> date | None:
+    if moment is None:
+        return None
+    return (moment + timedelta(hours=3)).date()
+
+
+def _stamp_release(ev: EconomicEvent, *, value: float, point_date: date, created_at: datetime | None,
+                   previous: float | None, via: str, now: datetime) -> bool:
+    """Записать факт выхода; True — что-то поменялось."""
+    actual_str = _format_actual(value)
+    prev_str = _format_actual(previous) if previous is not None else None
+    changed = False
+    if ev.actual_value != actual_str:
+        ev.actual_value = actual_str
+        changed = True
+    if ev.status != "released":
+        ev.status = "released"
+        changed = True
+    if ev.actual_date is None:
+        ev.actual_date = point_date
+        changed = True
+    if prev_str and not ev.previous_value:
+        ev.previous_value = prev_str
+        changed = True
+    metadata = dict(ev.metadata_json or {})
+    fact = dict(metadata.get("release_fact") or {})
+    seen_on = _msk_date(created_at)
+    wanted = {
+        "via": via,
+        "point_date": point_date.isoformat(),
+        "seen_on": seen_on.isoformat() if seen_on else fact.get("seen_on"),
+    }
+    if any(fact.get(k) != v for k, v in wanted.items()):
+        fact.update(wanted)
+        metadata["release_fact"] = fact
+        ev.metadata_json = metadata
+        changed = True
+    if changed:
+        ev.updated_at = now
+    return changed
+
+
+async def _previous_point(db: AsyncSession, indicator_id: int, before: date) -> float | None:
+    row = (await db.execute(
+        select(IndicatorData.value)
+        .where(IndicatorData.indicator_id == indicator_id, IndicatorData.date < before)
+        .order_by(IndicatorData.date.desc())
+        .limit(1)
+    )).first()
+    return float(row[0]) if row else None
+
+
+async def enrich_events_from_indicator_data(db: AsyncSession, *, today: date | None = None) -> int:
+    """Отметить выход события с отчётным периодом, когда точка этого периода есть в ряду.
+
+    Точка периода подтверждает выпуск, если дата выпуска уже наступила или точка пришла не
+    раньше чем за 7 дней до неё (источник опубликовал раньше графика). 14.11.2026: второй выпуск
+    ВВП за квартал (уточнение) получал «вышло» ещё за три недели до своей даты — по точке
+    первого выпуска. Кроме значения пишется предыдущее значение ряда и день, когда факт
+    появился в нашей загрузке.
     """
+    from app.services.display import today_msk
+
+    today = today or today_msk()
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     result = await db.execute(
         select(EconomicEvent, Indicator)
@@ -209,11 +276,10 @@ async def enrich_events_from_indicator_data(db: AsyncSession) -> int:
     if not rows:
         return 0
 
-    # Collect (indicator_id, date) lookups we need
     needed: dict[int, set[date]] = {}
     parsed_by_event: dict[int, date] = {}
     for ev, ind in rows:
-        if ind is None:
+        if ind is None or not _confirmable(ev):
             continue
         ref_date = parse_reference_period_date(ev.reference_period)
         if ref_date is None:
@@ -224,42 +290,160 @@ async def enrich_events_from_indicator_data(db: AsyncSession) -> int:
     if not needed:
         return 0
 
-    # Batch-load matching points
-    values: dict[tuple[int, date], float] = {}
+    points: dict[tuple[int, date], tuple[float, datetime | None]] = {}
     for ind_id, dates in needed.items():
         pts = await db.execute(
-            select(IndicatorData.date, IndicatorData.value).where(
+            select(IndicatorData.date, IndicatorData.value, IndicatorData.created_at).where(
                 IndicatorData.indicator_id == ind_id,
                 IndicatorData.date.in_(dates),
             )
         )
-        for d, v in pts.all():
-            values[(ind_id, d)] = float(v)
+        for d, v, created in pts.all():
+            points[(ind_id, d)] = (float(v), created)
 
     updated = 0
     for ev, ind in rows:
         if ind is None or ev.id not in parsed_by_event:
             continue
         ref_date = parsed_by_event[ev.id]
-        val = values.get((ind.id, ref_date))
-        if val is None:
+        hit = points.get((ind.id, ref_date))
+        if hit is None:
             continue
-        actual_str = _format_actual(val)
-        changed = False
-        if ev.actual_value != actual_str:
-            ev.actual_value = actual_str
-            changed = True
-        if ev.status != "released":
-            ev.status = "released"
-            changed = True
-        if ev.actual_date is None:
-            ev.actual_date = ref_date
-            changed = True
-        if changed:
-            ev.updated_at = now
+        value, created = hit
+        seen_on = _msk_date(created)
+        due = ev.scheduled_date <= today or (
+            seen_on is not None and seen_on >= ev.scheduled_date - timedelta(days=7)
+        )
+        if not due:
+            continue
+        previous = await _previous_point(db, ind.id, ref_date) if not ev.previous_value else None
+        if _stamp_release(ev, value=value, point_date=ref_date, created_at=created,
+                          previous=previous, via="reference_period", now=now):
             updated += 1
 
     if updated:
         await db.commit()
         logger.info("Calendar enrichment: marked %d events released from IndicatorData", updated)
     return updated
+
+
+# Сколько дней после даты выпуска ждём новую точку в загрузке, и как далеко назад смотрим.
+LOAD_CONFIRM_WINDOW_DAYS = 4
+LOAD_CONFIRM_LOOKBACK_DAYS = 75
+# Дневные публикации ЦБ: курс, установленный в день D, ряд хранит датой следующего дня
+# (после пятницы — субботой или понедельником); RUONIA за день D выходит на следующий рабочий день.
+_DAILY_POINT_OFFSET = {
+    "usd-rub": (0, 4), "eur-rub": (0, 4), "cny-rub": (0, 4), "gold-price": (0, 4),
+    "ruonia": (-4, 0),
+}
+
+
+async def confirm_releases_from_loads(db: AsyncSession, *, today: date | None = None) -> int:
+    """Отметить выход событий без отчётного периода по факту нашей загрузки.
+
+    До 14.11.2026 у событий ЦБ (заседания по ставке, резервы, денежная масса, ставки, курсы)
+    не было отчётного периода, и они навсегда оставались «ожидает подтверждения»: заседание
+    23 октября через три недели было «ориентировочно». Теперь выход подтверждает загрузка:
+    - дневные ряды ЦБ — точка с датой рядом с днём выпуска (``_DAILY_POINT_OFFSET``);
+    - решение по ключевой ставке — значение ставки, действующее после заседания;
+    - остальные — самая поздняя по дате точка из первой загрузки в день выпуска или в
+      следующие 4 дня (ЦБ грузится тем же вечером; дольше — уже следующая публикация ряда).
+    """
+    from app.services.display import today_msk
+
+    today = today or today_msk()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    rows = (await db.execute(
+        select(EconomicEvent, Indicator)
+        .join(Indicator, EconomicEvent.indicator_id == Indicator.id)
+        .where(
+            EconomicEvent.reference_period.is_(None),
+            EconomicEvent.is_estimated.is_(False),
+            EconomicEvent.scheduled_date <= today,
+            EconomicEvent.scheduled_date >= today - timedelta(days=LOAD_CONFIRM_LOOKBACK_DAYS),
+            EconomicEvent.event_type.in_(("data_release", "rate_decision")),
+            or_(EconomicEvent.actual_value.is_(None), EconomicEvent.actual_value == ""),
+        )
+    )).all()
+    updated = 0
+    for ev, ind in rows:
+        if not _confirmable(ev):
+            continue
+        hit = await _load_fact_for(db, ev, ind)
+        if hit is None:
+            continue
+        point_date, value, created = hit
+        previous = await _previous_point(db, ind.id, point_date)
+        if _stamp_release(ev, value=value, point_date=point_date, created_at=created,
+                          previous=previous, via="load", now=now):
+            updated += 1
+    if updated:
+        await db.commit()
+        logger.info("Calendar: %d events confirmed from our data loads", updated)
+    return updated
+
+
+async def _load_fact_for(db: AsyncSession, ev: EconomicEvent, ind: Indicator):
+    day = ev.scheduled_date
+    # Начало дня выпуска по Москве в UTC (created_at хранится в UTC без зоны).
+    day_start_utc = datetime(day.year, day.month, day.day) - timedelta(hours=3)
+    window_end_utc = day_start_utc + timedelta(days=LOAD_CONFIRM_WINDOW_DAYS + 1)
+
+    if ind.code in _DAILY_POINT_OFFSET:
+        lo, hi = _DAILY_POINT_OFFSET[ind.code]
+        if hi > 0:
+            # Курс на следующий день — ближайшая точка после дня выпуска.
+            stmt = (
+                select(IndicatorData.date, IndicatorData.value, IndicatorData.created_at)
+                .where(IndicatorData.indicator_id == ind.id,
+                       IndicatorData.date > day,
+                       IndicatorData.date <= day + timedelta(days=hi))
+                .order_by(IndicatorData.date.asc())
+            )
+        else:
+            # RUONIA — последняя точка не позже дня выпуска, загруженная в этот день или позже.
+            stmt = (
+                select(IndicatorData.date, IndicatorData.value, IndicatorData.created_at)
+                .where(IndicatorData.indicator_id == ind.id,
+                       IndicatorData.date >= day + timedelta(days=lo),
+                       IndicatorData.date <= day,
+                       IndicatorData.created_at >= day_start_utc)
+                .order_by(IndicatorData.date.desc())
+            )
+        row = (await db.execute(stmt.limit(1))).first()
+        return (row[0], float(row[1]), row[2]) if row else None
+
+    if ev.event_type == "rate_decision":
+        # Ставка, действующая после заседания: первая точка с датой позже заседания
+        # (новая ставка вступает в силу со следующего рабочего дня).
+        row = (await db.execute(
+            select(IndicatorData.date, IndicatorData.value, IndicatorData.created_at)
+            .where(IndicatorData.indicator_id == ind.id, IndicatorData.date > day,
+                   IndicatorData.date <= day + timedelta(days=LOAD_CONFIRM_WINDOW_DAYS))
+            .order_by(IndicatorData.date.asc())
+            .limit(1)
+        )).first()
+        return (row[0], float(row[1]), row[2]) if row else None
+
+    first = (await db.execute(
+        select(func.min(IndicatorData.created_at)).where(
+            IndicatorData.indicator_id == ind.id,
+            IndicatorData.created_at >= day_start_utc,
+            IndicatorData.created_at < window_end_utc,
+        )
+    )).scalar()
+    if first is None:
+        return None
+    # Точки одной загрузки пишутся в пределах минут; берём самую позднюю по дате.
+    row = (await db.execute(
+        select(IndicatorData.date, IndicatorData.value, IndicatorData.created_at)
+        .where(
+            IndicatorData.indicator_id == ind.id,
+            IndicatorData.created_at >= first,
+            IndicatorData.created_at < first + timedelta(hours=1),
+            IndicatorData.date <= day,
+        )
+        .order_by(IndicatorData.date.desc())
+        .limit(1)
+    )).first()
+    return (row[0], float(row[1]), row[2]) if row else None

@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -95,6 +95,135 @@ def append_reschedule_audit(metadata: dict, old_date: date, new_date: date, fetc
     return metadata
 
 
+# Источники, которые отдают полный список своих событий на окно: если событие источника исчезло
+# из свежего ответа, его больше нет в официальном графике. Условие отбирает сохранённые строки
+# этого источника (в том числе записанные до появления поля ``feed``).
+def _feed_row_conditions(feed: str) -> list:
+    if feed == "cbr_key_rate":
+        return [
+            EconomicEvent.source == "cbr",
+            or_(
+                EconomicEvent.event_key.like("cbr:key-rate-decision:%"),
+                EconomicEvent.event_key.like("cbr:key-rate-summary:%"),
+            ),
+        ]
+    if feed == "cbr_ics":
+        return [
+            EconomicEvent.source == "cbr",
+            EconomicEvent.date_confidence == "official_explicit",
+            ~EconomicEvent.event_key.like("cbr:key-rate-%"),
+        ]
+    if feed == "rosstat_plan":
+        return [
+            EconomicEvent.source == "rosstat",
+            EconomicEvent.event_key.like("rosstat:plan:%"),
+        ]
+    if feed == "rosstat_oper":
+        return [
+            EconomicEvent.source == "rosstat",
+            EconomicEvent.event_key.like("rosstat:sep:%"),
+        ]
+    raise ValueError(f"Unknown calendar feed: {feed}")
+
+
+async def sweep_unseen_feed_events(
+    db: AsyncSession,
+    *,
+    feed: str,
+    seen_keys: set[str],
+    start: date,
+    end: date,
+) -> list[str]:
+    """Удалить события источника в окне [start, end], которых нет в его свежем ответе.
+
+    Вызывается только после удачного чтения источника. Событие с фактом из нашей загрузки
+    (``actual_value``) не трогается: это уже история выхода, а не обещание даты.
+    14.11.2026: резюме ЦБ 04.11 оставалось на сайте после того, как ЦБ поставил его на 05.11.
+    """
+    rows = (await db.execute(
+        select(EconomicEvent).where(
+            *_feed_row_conditions(feed),
+            EconomicEvent.scheduled_date >= start,
+            EconomicEvent.scheduled_date <= end,
+            or_(EconomicEvent.actual_value.is_(None), EconomicEvent.actual_value == ""),
+        )
+    )).scalars().all()
+    removed: list[str] = []
+    for row in rows:
+        if row.event_key in seen_keys:
+            continue
+        removed.append(f"{row.event_key}@{row.scheduled_date}")
+        await db.delete(row)
+    if removed:
+        await db.commit()
+        logger.info("Calendar: %s dropped %d event(s) no longer in the source: %s",
+                    feed, len(removed), ", ".join(removed[:10]))
+    return removed
+
+
+async def prune_legacy_keyless_estimates(db: AsyncSession) -> int:
+    """Удалить старые скрытые оценки дат без ключа (до перехода на официальные источники).
+
+    Их не показывает ни сайт, ни .ics: публичные условия требуют ключ и источник. Но они
+    занимали естественный ключ базы (14.11.2026: ИПЦ не мог переехать на 25.11) и попадали
+    в ответы ботов. Строки с фактом выхода не трогаются.
+    """
+    rows = (await db.execute(
+        select(EconomicEvent).where(
+            EconomicEvent.event_key.is_(None),
+            EconomicEvent.is_estimated.is_(True),
+            or_(EconomicEvent.actual_value.is_(None), EconomicEvent.actual_value == ""),
+        )
+    )).scalars().all()
+    for row in rows:
+        await db.delete(row)
+    if rows:
+        await db.commit()
+        logger.info("Calendar: pruned %d legacy keyless estimated rows", len(rows))
+    return len(rows)
+
+
+async def repair_legacy_cbr_ics_times(db: AsyncSession) -> int:
+    """Перевести в московское время строки файла ЦБ, записанные до 14.11.2026 временем UTC.
+
+    Свежие строки окна обновления переписывает сам проход; эта правка нужна для истории
+    (события старше двух недель проход не трогает). Строка помечается ``time_zone: msk``,
+    поэтому повторный запуск ничего не сдвигает.
+    """
+    from datetime import datetime as _dt
+    from datetime import timedelta as _td
+
+    rows = (await db.execute(
+        select(EconomicEvent).where(
+            EconomicEvent.source == "cbr",
+            EconomicEvent.date_confidence == "official_explicit",
+            ~EconomicEvent.event_key.like("cbr:key-rate-%"),
+            EconomicEvent.scheduled_time.is_not(None),
+        )
+    )).scalars().all()
+    fixed = 0
+    for row in rows:
+        meta = dict(row.metadata_json or {})
+        details = (meta.get("provenance") or {}).get("details") or {}
+        if meta.get("time_zone") == "msk" or details.get("feed") == "cbr_ics":
+            continue
+        try:
+            moment = _dt.strptime(f"{row.scheduled_date.isoformat()} {row.scheduled_time}", "%Y-%m-%d %H:%M")
+        except ValueError:
+            continue
+        moment += _td(hours=3)
+        if moment.date() != row.scheduled_date:
+            continue  # переход через полночь меняет дату — такую строку обновит сам проход
+        row.scheduled_time = moment.strftime("%H:%M")
+        meta["time_zone"] = "msk"
+        row.metadata_json = meta
+        fixed += 1
+    if fixed:
+        await db.commit()
+        logger.info("Calendar: %d CBR events moved from UTC to Moscow time", fixed)
+    return fixed
+
+
 async def upsert_calendar_candidates(db: AsyncSession, candidates: list[CalendarCandidate]) -> int:
     """Upsert official calendar events by stable event_key, auditing date moves.
 
@@ -108,11 +237,13 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
     changed = 0
     skipped: list[str] = []
 
+    run_keys = {(c.source, c.event_type, c.event_key) for c in candidates}
     for candidate in candidates:
         if candidate.date_confidence not in (*OFFICIAL_CONFIDENCES, "estimated"):
             raise ValueError(f"Unsupported calendar confidence: {candidate.date_confidence}")
         try:
             async with db.begin_nested():
+                await _clear_stale_blocker(db, candidate, code_to_id, run_keys)
                 delta = await _apply_candidate(db, candidate, code_to_id, fetched_at)
                 await db.flush()
             changed += delta
@@ -129,6 +260,67 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
     return changed
 
 
+async def _clear_stale_blocker(
+    db: AsyncSession,
+    candidate: CalendarCandidate,
+    code_to_id: dict[str, int],
+    run_keys: set[tuple[str, str, str]],
+) -> None:
+    """Освободить дату, если её занимает устаревшая строка того же показателя.
+
+    Естественный ключ базы — (источник, тип, дата, показатель). Когда официальная дата
+    переезжает на день, где лежит старая строка с другим ключом (прежняя оценка по правилу,
+    выпуск из прошлой версии графика), перенос падал на уникальности и событие оставалось на
+    старой дате. Мешающая строка удаляется, если её нет среди событий текущего прохода, у неё
+    нет факта выхода и она не точнее кандидата. Иначе это настоящий конфликт — пропуск с записью.
+    14.11.2026: ИПЦ за октябрь с 01.11 не мог переехать с 13.11 на 25.11 — 25.11 занимала скрытая
+    строка-оценка без ключа (cpi, 2026-11-25), а остальные срезы ИПЦ переехали.
+    Параллельно тот же случай закрыл `_release_estimated_slot` (коммит 58aa3d7a, внутри `_apply_candidate`:
+    только строки `is_estimated`). Эта функция шире: ещё старые строки по правилу (`official_rule`
+    Росстата и Минфина, `is_estimated=false`) и строки без ключа; работает до поиска существующей строки.
+    """
+    indicator_id = code_to_id.get(candidate.indicator_code) if candidate.indicator_code else None
+    if indicator_id is None:
+        return
+    blockers = (await db.execute(
+        select(EconomicEvent).where(
+            EconomicEvent.source == candidate.source,
+            EconomicEvent.event_type == candidate.event_type,
+            EconomicEvent.scheduled_date == candidate.scheduled_date,
+            EconomicEvent.indicator_id == indicator_id,
+            # Старые строки-оценки лежат без ключа (NULL): «!=» их не видит.
+            or_(EconomicEvent.event_key.is_(None), EconomicEvent.event_key != candidate.event_key),
+        )
+    )).scalars().all()
+    for blocker in blockers:
+        if (blocker.source, blocker.event_type, blocker.event_key) in run_keys:
+            continue
+        if blocker.actual_value not in (None, ""):
+            continue
+        # Мешает только менее точная строка: оценка, правило или старая строка без ключа.
+        # Две официальные даты одного показателя в один день — настоящий конфликт, его не решаем удалением.
+        if blocker.date_confidence == "official_explicit" and blocker.event_key:
+            continue
+        # Строка с ключом кандидата где-то ещё есть? Тогда мешающая — чужой остаток, удаляем;
+        # если строки с ключом кандидата нет, _find_existing_event сама подхватит мешающую
+        # по естественному ключу и перепишет её — удалять не нужно.
+        same_key = (await db.execute(
+            select(EconomicEvent.id).where(
+                EconomicEvent.source == candidate.source,
+                EconomicEvent.event_type == candidate.event_type,
+                EconomicEvent.event_key == candidate.event_key,
+            )
+        )).first()
+        if same_key is None:
+            continue
+        logger.info(
+            "Calendar: removing stale %s/%s on %s to make room for %s",
+            blocker.source, blocker.event_key, blocker.scheduled_date, candidate.event_key,
+        )
+        await db.delete(blocker)
+        await db.flush()
+
+
 async def _apply_candidate(
     db: AsyncSession,
     candidate: CalendarCandidate,
@@ -143,6 +335,8 @@ async def _apply_candidate(
     if (existing is not None and existing.date_confidence == "official_explicit"
             and candidate.date_confidence != "official_explicit"):
         return 0
+    if candidate.date_confidence in OFFICIAL_CONFIDENCES:
+        await _release_estimated_slot(db, candidate, indicator_id, keep_id=existing.id if existing else None)
     metadata = merge_metadata(
         existing.metadata_json if existing else None,
         candidate,
@@ -228,6 +422,43 @@ async def _apply_candidate(
         existing.source_url,
     )
     return int(before != after)
+
+
+async def _release_estimated_slot(
+    db: AsyncSession,
+    candidate: CalendarCandidate,
+    indicator_id: int | None,
+    *,
+    keep_id: int | None,
+) -> int:
+    """Официальная дата вытесняет непубличную оценочную строку с того же места (`uq_event_natural_key`).
+
+    14.11.2026: Росстат перенёс ИПЦ за октябрь с 13.11 на 25.11, а на 25.11 у `cpi` лежала старая оценочная строка
+    «Недельная инфляция» (`estimated`, без ключа, публично не показывается). Перенос официальной строки падал на
+    уникальности и пропускался, календарь показывал 13.11 «ждёт подтверждения». Оценочные строки — наследие
+    старого сидера (новых не создаётся), поэтому место отдаётся официальной дате; строки с фактом не трогаются.
+    """
+    if indicator_id is None:
+        return 0
+    blockers = (await db.execute(select(EconomicEvent).where(
+        EconomicEvent.source == candidate.source,
+        EconomicEvent.event_type == candidate.event_type,
+        EconomicEvent.scheduled_date == candidate.scheduled_date,
+        EconomicEvent.indicator_id == indicator_id,
+    ))).scalars().all()
+    removed = 0
+    for row in blockers:
+        if row.id == keep_id or row.date_confidence in OFFICIAL_CONFIDENCES or not row.is_estimated:
+            continue
+        if row.actual_value not in (None, ""):
+            continue
+        logger.info("Calendar: estimated %s/%s on %s gives way to official %s",
+                    row.source, row.title, row.scheduled_date, candidate.event_key)
+        await db.delete(row)
+        removed += 1
+    if removed:
+        await db.flush()
+    return removed
 
 
 async def _find_existing_event(

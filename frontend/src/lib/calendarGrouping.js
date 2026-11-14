@@ -91,8 +91,31 @@ export function groupSimilarEvents(events) {
     // Берём первый event как основу, чтобы остальные поля (importance,
     // values, description, source_url, id) пришли консистентно.
     // Описание — у «головного» показателя группы (индекс цен, а не его услуговая часть).
-    return { ...arr[0], description: groupDescription(arr), indicators };
+    return { ...arr[0], description: groupDescription(arr), indicators, ...groupFacts(arr) };
   });
+}
+
+/**
+ * Статус и цифры карточки-группы (14.11.2026). С фактом выхода у событий ЦБ появились цифры, и группа
+ * «Внешняя торговля товарами» показала бы экспорт под видом всей группы. Цифры показываются только
+ * у головного показателя семьи (ИПЦ и его части), иначе их нет; «вышло» — если вышел хотя бы один ряд.
+ */
+function groupFacts(arr) {
+  const head = arr.reduce((best, ev) => (
+    String(ev.indicator_code || '~').length < String(best.indicator_code || '~').length ? ev : best
+  ), arr[0]);
+  const headCode = String(head.indicator_code || '');
+  const nested = headCode && arr.every((ev) => String(ev.indicator_code || '').startsWith(headCode));
+  const released = arr.filter((ev) => ev.status === 'released');
+  const facts = nested
+    ? { previous_value: head.previous_value ?? null, forecast_value: head.forecast_value ?? null,
+      actual_value: head.actual_value ?? null }
+    : { previous_value: null, forecast_value: null, actual_value: null };
+  if (released.length) {
+    const days = released.map((ev) => ev.released_on).filter(Boolean).sort();
+    return { ...facts, status: 'released', released_on: days[0] || null };
+  }
+  return { ...facts, status: head.status, released_on: null };
 }
 
 /**

@@ -496,7 +496,7 @@ async def build_personal_ics(db: AsyncSession, user_id: uuid.UUID, *, today: dat
     /calendar/export/ical) и только федеральные показатели (EconomicEvent
     привязан к `indicators`). Отправки нет: календарь телефона сам читает ленту.
     """
-    from app.api.calendar import _public_calendar_conditions  # единое определение «публичного» события
+    from app.api.calendar import _ics_uid, _public_calendar_conditions  # единое определение «публичного» события
 
     codes = list((await db.scalars(
         select(UserWatch.subject_key).where(
@@ -537,9 +537,10 @@ async def build_personal_ics(db: AsyncSession, user_id: uuid.UUID, *, today: dat
             desc.append(("Time: " if en else "Время: ") + f"{ev.scheduled_time} " + ("MSK" if en else "МСК"))
         lines += [
             "BEGIN:VEVENT",
-            f"UID:fe-event-{ev.id}@forecasteconomy.com",
+            f"UID:{_ics_uid(ev)}",
             f"DTSTAMP:{stamp}",
             f"DTSTART;VALUE=DATE:{ev.scheduled_date.strftime('%Y%m%d')}",
+            f"SEQUENCE:{len((ev.metadata_json or {}).get('reschedule_audit') or [])}",
             f"SUMMARY:{_ics_escape(title)}",
             f"DESCRIPTION:{_ics_escape(chr(10).join(desc))}",
         ]
