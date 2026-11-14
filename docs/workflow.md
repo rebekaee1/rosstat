@@ -483,6 +483,12 @@ docker exec rosstat-postgres-1 sh -c 'pg_restore -L /tmp/product.list --no-owner
 
 <a id="circle14-2026-10-15"></a>
 
+<a id="cabinet-on-2026-11-14"></a>
+
+### Включение полного кабинета (14.11.2026)
+
+Новых миграций нет (таблицы кабинета на боевом с 12.10, пустые). `RUSTATS_CABINET_ENABLED` по умолчанию `true` в compose: выпуск кода включает кабинет у всех. Перед выпуском — свежий `scripts/pg-backup.sh` (identity-копия включает четыре таблицы кабинета). Вместе с кодом выпускается `frontend/nginx.conf` (location `= /api/v1/cabinet/calendar.ics` пишет журналы без query): после `up -d frontend` проверить `docker compose exec frontend nginx -t` и что строка `GET /api/v1/cabinet/calendar.ics` в `access.log` без `token=`. Проверка после выпуска: `curl -s https://ru.forecasteconomy.com/api/v1/cabinet/config` → `"enabled":true`; вход своим аккаунтом, звезда, колокольчик, `/account`. **Откат без пересборки:** `RUSTATS_CABINET_ENABLED=false` в `/opt/rosstat/.env`, `docker compose up -d backend` (данные сохраняются; config кэшируется в браузере 10 минут). Локальная проверка шла на облегчённой копии базы (`rustats_cab14`: без событий аналитики, мировые ряды 10 стран) — полную копию 5 ГБ на этом Mac не делать: диск заполнился, Docker VM ушла в ошибку ввода-вывода (14.11).
+
 ### Пачка 15.10.2026 (круг 14): прогноз на всех рядах стран
 
 Код ветки `claude/modest-mayer-7v8whz` поверх круга 13 (`3d60012`), на боевой не выкладывался; миграций нет. Решение — [ADR-0012, 2026-10-15](adr/0012-world-multi-provider-official-first-forecasts.md#2026-10-15--прогноз-нашей-модели-на-всех-рядах-стран-круг-14), контракт — [data-contracts](data-contracts.md#прогноз-на-всех-рядах-стран-круг-14-1510). Состояние боевого на 15.10 не читалось: прошлая сессия остановилась на шаге 8 круга 13 (МВФ включён, 485 прогнозов; перенос Евростата применён; настройки пакетов Европы — неизвестно).

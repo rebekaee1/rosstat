@@ -68,13 +68,24 @@ describe('Google sign-in for the English site', () => {
     }
   });
 
-  it('keeps the Google signup button and sends an unconfigured provider to email registration', async () => {
+  it('без подключённого Google кнопки Google нет (14.11.2026: кнопки строятся по списку сервера)', async () => {
     vi.mocked(fetchOAuthProviders).mockResolvedValue(['yandex', 'vk']);
+    render(<OAuthButtons showGoogleEmailFallback onGoogleEmailFallback={vi.fn()} />);
+    await screen.findByRole('button', { name: /auth\.oauth\.yandex/ });
+    expect(screen.queryByRole('button', { name: /auth\.oauth\.google/ })).toBeNull();
+  });
+
+  it('на входе Google есть только когда он подключён и ведёт к настоящему входу', async () => {
+    vi.mocked(fetchOAuthProviders).mockResolvedValue(['yandex']);
+    const { unmount } = render(<OAuthButtons showGoogleEmailFallback preferRealGoogle googleFallbackLabelKey="auth.oauth.google" onGoogleEmailFallback={vi.fn()} />);
+    await screen.findByRole('button', { name: /auth\.oauth\.yandex/ });
+    expect(screen.queryByRole('button', { name: 'auth.oauth.google' })).toBeNull();
+    unmount();
+    vi.mocked(fetchOAuthProviders).mockResolvedValue(['yandex', 'google']);
     const onFallback = vi.fn();
-    render(<OAuthButtons showGoogleEmailFallback onGoogleEmailFallback={onFallback} />);
-    fireEvent.click(await screen.findByRole('button', { name: 'auth.oauth.googleRegister' }));
-    expect(onFallback).toHaveBeenCalledOnce();
-    expect(screen.queryByText('auth.oauth.googleConsentIntro')).toBeNull();
+    render(<OAuthButtons showGoogleEmailFallback preferRealGoogle googleFallbackLabelKey="auth.oauth.google" onGoogleEmailFallback={onFallback} />);
+    fireEvent.click(await screen.findByRole('button', { name: 'auth.oauth.google' }));
+    expect(onFallback).not.toHaveBeenCalled();
   });
 
   it('keeps registration on email even if Google appears in the provider list', async () => {

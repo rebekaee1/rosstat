@@ -90,7 +90,7 @@ export default function OAuthButtons({
     return () => window.removeEventListener('keydown', onKey);
   }, [pending, intent]);
 
-  if (providers === null && !showGoogleEmailFallback) {
+  if (providers === null) {
     return <div className="space-y-2.5" aria-hidden>
       <div className="h-11 rounded-xl skeleton" />
       <div className="h-11 rounded-xl skeleton" />
@@ -101,8 +101,11 @@ export default function OAuthButtons({
   // Register can keep the branded Google entry visible while intentionally
   // routing every click to email until Google signup is explicitly enabled.
   // На входе (preferRealGoogle) настоящий Google-вход главнее запасного: запасной нужен, только пока провайдер не подключён.
-  const showGoogleFallback = showGoogleEmailFallback && !(preferRealGoogle && available.includes('google'));
-  const ordered = order.filter((id) => available.includes(id) || (id === 'google' && showGoogleFallback));
+  // 14.11.2026: кнопки строятся только по списку сервера (`/auth/oauth/providers`). Google без подключённого провайдера
+  // больше не рисуется: «Войти через Google», ведущая на форму почты, обманывала. Запасной путь регистрации
+  // (кнопка Google → форма почты) остаётся только там, где Google подключён, а страница его не просит (`preferRealGoogle`).
+  const showGoogleFallback = showGoogleEmailFallback && available.includes('google') && !preferRealGoogle;
+  const ordered = order.filter((id) => available.includes(id));
   if (ordered.length === 0) return null;
 
   const openConsent = (id) => {
