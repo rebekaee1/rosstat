@@ -9,6 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.models import User, EmailCredential, OAuthIdentity, Consent
 from app.services.identity.passwords import (
     hash_password, verify_password, needs_rehash, normalize_email,
@@ -109,6 +110,9 @@ async def serialize_user(db: AsyncSession, user: User) -> dict:
         # входа (Яндекс, Google) подтвердил сам провайдер.
         "email_verified": bool(cred.email_verified) if cred else any(
             i.email and i.email_verified for i in identities),
+        # 14.11.2026: письма сайта реально уходят (почта включена и есть секрет ссылок). Без этого плашка
+        # «Подтвердите почту: письмо мы отправили» в кабинете неправдива, кнопка «ещё раз» ничего не отправит.
+        "mail_available": bool(settings.mail_enabled and settings.mail_token_secret),
         "newsletter": nl is not None and nl.kind == "newsletter",
         "identities": methods,
     }
