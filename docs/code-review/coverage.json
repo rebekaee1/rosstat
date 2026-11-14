@@ -14493,7 +14493,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "c1973a4f0838e5e9e37ff7d76a78a06250baafb3f16b2fbf4d6140663dc7fb47",
+      "sha256": "2d44a27bf5322674c114b98a5fe4fbd75391b491fab403439d1e624c7235a4b7",
       "bytes": 3864130,
       "lines": 136773,
       "code": false,
@@ -15312,9 +15312,9 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "62bfeeb16edb388f0d7ffd846e7db9eaa6932cbbd9378bcc4f9068555f32d1a8",
-      "bytes": 144812,
-      "lines": 688,
+      "sha256": "f0fd29daa2c410c5848f7bf412f719a9a24d81570526fd65346ad4ee4e3cd203",
+      "bytes": 146297,
+      "lines": 690,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -30925,9 +30925,9 @@
     },
     {
       "path": "scripts/check-all.sh",
-      "sha256": "efaf69c141862f83637c2343480e2a1781b29fa807d5838d292e3a61b2115307",
-      "bytes": 2386,
-      "lines": 56,
+      "sha256": "b3b3151c27ddfe0cc88af707b004cdc6d5b5c09958addd024bdaff3eb93d9cd6",
+      "bytes": 3796,
+      "lines": 68,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -32394,14 +32394,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "482953de2382ff523551ccf176147074c9f62ab31a9c1bf1f97112afb3811fe8",
+  "ledger_sha256": "781a8315da2b8774009f422de0af5afe8ca867e94ffb71d2fd2fdadd844af606",
   "javascript_inventory_sha256": "173cfd4555ce8d4ff8fb491a75ab441424b95957dae8ddb3b3d78b2c80747db6",
-  "baseline_commit": "1be59c28b3edcb480a883265a51a139d1999bfb2",
+  "baseline_commit": "4c268b4ee9200664e66808d9eb8f341f596ff214",
   "branch": "int/2026-11-14",
-  "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.md",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }

@@ -10,14 +10,30 @@ echo "== project knowledge (read-only) =="
 
 echo "== backend pytest =="
 cd "$ROOT/backend"
-if [[ -x .venv/bin/pytest ]]; then
-  PYTHONPATH=. .venv/bin/pytest -q
-else
-  PYTHONPATH=. python3 -m pytest -q
+# Python бэкенда (14.11.2026): своя backend/.venv, иначе .venv основного checkout (у git worktree её нет - она не в Git),
+# иначе системный python3. Системный python3 без dev-зависимостей (lupa для Lua в fakeredis, xlwt, закреплённый
+# fakeredis 2.26.2) даёт 21 ложное падение и 2 ошибки сбора - поэтому без них останавливаемся с понятной причиной.
+BACKEND_PY=""
+COMMON_ROOT="$(cd "$(git -C "$ROOT" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)/.." 2>/dev/null && pwd || true)"
+for cand in "$ROOT/backend/.venv/bin/python" "${COMMON_ROOT:+$COMMON_ROOT/backend/.venv/bin/python}"; do
+  if [[ -n "$cand" && -x "$cand" ]]; then BACKEND_PY="$cand"; break; fi
+done
+BACKEND_PY="${BACKEND_PY:-python3}"
+echo "python: $BACKEND_PY"
+if ! "$BACKEND_PY" -c "import lupa, xlwt, fakeredis" >/dev/null 2>&1; then
+  echo "Нет dev-зависимостей backend у $BACKEND_PY (lupa, xlwt, fakeredis): тесты Redis-блокировок, лимитов и кэша мира"
+  echo "упадут ложно. Окружение (CI - Python 3.12): python3 -m venv backend/.venv && backend/.venv/bin/pip install"
+  echo "-r backend/requirements-dev.txt -c backend/constraints.txt (в git worktree подходит .venv основного checkout)"
+  exit 1
 fi
+PYTHONPATH=. "$BACKEND_PY" -m pytest -q
 
 echo "== frontend test + lint + build =="
 cd "$ROOT/frontend"
+if [[ ! -d node_modules ]]; then
+  echo "Нет frontend/node_modules (у git worktree их нет): cd frontend && npm ci"
+  exit 1
+fi
 node ../scripts/code-review-symbols.mjs --check --tracked-only
 node ../scripts/build-client-mechanism-inventory.mjs --check
 node ../scripts/test_project_terrain.mjs
@@ -32,11 +48,7 @@ npm run build
 # не протухала. Перегенерация: python scripts/build-indicator-index.py
 echo "== indicator map (repo-inventory + indicator-index --check) =="
 cd "$ROOT"
-if [[ -x backend/.venv/bin/python ]]; then
-  MAP_PY="backend/.venv/bin/python"
-else
-  MAP_PY="python3"
-fi
+MAP_PY="$BACKEND_PY"
 "$MAP_PY" scripts/repo-inventory.py
 "$MAP_PY" scripts/build-indicator-index.py --check
 "$MAP_PY" scripts/audit-doc-counters.py

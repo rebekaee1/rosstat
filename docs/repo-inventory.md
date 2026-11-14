@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2278  ·  **Строк:** 1 432 125  ·  **Токенов (≈):** 13 675 220
+**Файлов:** 2278  ·  **Строк:** 1 432 139  ·  **Токенов (≈):** 13 675 778
 
 ## По верхним папкам
 
@@ -19,10 +19,10 @@
 | `backend` | 938 | 325 030 | 3 561 970 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 461 | 23 358 |
-| `docs` | 145 | 892 605 | 7 683 531 |
+| `docs` | 145 | 892 607 | 7 683 801 |
 | `frontend` | 1022 | 184 968 | 2 027 833 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 135 | 24 675 | 307 438 |
+| `scripts` | 135 | 24 687 | 307 726 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -64,7 +64,7 @@
 | `backend/app/api/sitemap.py` | 2 683 | 28 379 |
 | `backend/app/services/public_bot.py` | 2 063 | 27 394 |
 | `backend/app/services/analytics_marts.py` | 2 404 | 26 945 |
-| `docs/workflow.md` | 688 | 25 337 |
+| `docs/workflow.md` | 690 | 25 607 |
 | `backend/app/models.py` | 1 920 | 25 109 |
 | `docs/search.md` | 986 | 24 225 |
 | `backend/app/services/search.py` | 1 512 | 23 157 |
@@ -1504,6 +1504,7 @@
 | `frontend/public/robots.txt` | 108 | 797 |
 | `frontend/src/components/ApiRetryBanner.component.test.jsx` | 66 | 796 |
 | `frontend/src/components/Brand.jsx` | 58 | 796 |
+| `scripts/check-all.sh` | 68 | 795 |
 | `backend/tests/test_fred_parser.py` | 106 | 793 |
 | `backend/app/data/seo_static/robots.en.txt` | 107 | 792 |
 | `frontend/src/components/PlanetPlaceholder.component.test.jsx` | 51 | 791 |
@@ -1787,7 +1788,6 @@
 | `frontend/src/lib/gridDownload.test.js` | 41 | 508 |
 | `scripts/dev/perf_ssr_shell.py` | 53 | 508 |
 | `frontend/src/lib/absoluteAuthNext.test.js` | 55 | 507 |
-| `scripts/check-all.sh` | 56 | 507 |
 | `frontend/src/main.jsx` | 55 | 506 |
 | `backend/tests/test_world_forecast_priority_config.py` | 44 | 505 |
 | `frontend/src/components/CurrencyNext.jsx` | 44 | 504 |

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `1be59c28b3edcb480a883265a51a139d1999bfb2`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `4c268b4ee9200664e66808d9eb8f341f596ff214`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
