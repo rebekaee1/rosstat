@@ -21,7 +21,7 @@
   "counts": {
     "files": 2591,
     "code_files": 2105,
-    "current_reviews": 2590,
+    "current_reviews": 2591,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
@@ -32,7 +32,7 @@
     },
     "definitions": 17201,
     "annotated_definitions": 17201,
-    "files_needing_attention": 1
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -4549,9 +4549,9 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "sha256": "498a1731a12bc672fd9efc9b4c22bb708555874ff21cc186d40751dbc3b77467",
-      "bytes": 33880,
-      "lines": 547,
+      "sha256": "f2ad9d57724817bbe8e874b229bce7ea56d8bd2bf7521650b41b20d60607f4f0",
+      "bytes": 34364,
+      "lines": 554,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -10464,9 +10464,9 @@
     },
     {
       "path": "backend/tests/test_mail.py",
-      "sha256": "1fe1095db305fe9232b5fe4524a02f4452961a86b60c54b4a7f44cb7d53cb8c8",
-      "bytes": 20117,
-      "lines": 425,
+      "sha256": "36943e2312a290027ba1caab0932b0ecee87f2f72f2192daec2da6f1ce4bbf82",
+      "bytes": 20461,
+      "lines": 428,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -13883,16 +13883,13 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "bc4bed9be627419a53c70a42f24963c4ef8261e53d33f3cf11f815d785de2e32",
-      "bytes": 29216,
-      "lines": 191,
+      "sha256": "981010982b81fd34bd09b6dde562206c84a8e7425418b71992676e95786a6afe",
+      "bytes": 29518,
+      "lines": 192,
       "code": false,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -14146,9 +14143,9 @@
     },
     {
       "path": "deploy/verify-bot-defense-live.sh",
-      "sha256": "23c20a060aeccca29b1c16eb750f42a597847c178c38b7705247d2746ff0155c",
-      "bytes": 6917,
-      "lines": 92,
+      "sha256": "127ce372a98bb54122e169de34d08863e90af78916407f5e5ff4a18d7ee06f59",
+      "bytes": 7136,
+      "lines": 93,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -15459,7 +15456,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "57d38689013c177d035f16268b11faaef8e54711978783204d25d39162ffe3fa",
+      "sha256": "3b2b7cf7206ac6ec7dcb5e19e7829e30f08d79429dbb4721c15fd6efa322c0c5",
       "bytes": 3920081,
       "lines": 138908,
       "code": false,
@@ -15524,8 +15521,8 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "774c8e1baaa772a2fba6fb9affd20c0d41d3fe5ec7e10aae02ab9df7c061b00a",
-      "bytes": 13365095,
+      "sha256": "3fa68cc8a04dd4ebf18946462be53efe63bdfd239a7d7fee353b77a0c0df092f",
+      "bytes": 13364857,
       "lines": 402505,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -15537,7 +15534,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "83c70f60b9d1202230978222c2283f1ad6a5da73bf91b7242bf4f2b2afb5a4fd",
+      "sha256": "dcfb3e80036e3b421cdd01eea3014bf27bc3a3d96aeed87568198159c29f5cda",
       "bytes": 681494,
       "lines": 3735,
       "code": false,
@@ -33724,11 +33721,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "1285e1725dd6ad4c75455105ef3e318eac10f4810dc1136091b1f4eaaacd2585",
+  "ledger_sha256": "13ac1f91a7bf66e392998a67be6b66478466c005ae00556e1c355b7cbbde4fc5",
   "javascript_inventory_sha256": "6483fb1f39f6d176a6f53e696cd19fbd7a925c080da7fc41507d12520b353949",
-  "baseline_commit": "3eaf7550f2c85e110a45f81484c274ead2de11fc",
+  "baseline_commit": "8451f3f70a82e4fac963be6ee2dc6f594fdc684c",
   "branch": "int/2026-11-14",
   "unstaged_at_capture": [
-    "docker-compose.yml"
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
   ]
 }

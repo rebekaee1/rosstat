@@ -1450,8 +1450,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "sha256": "498a1731a12bc672fd9efc9b4c22bb708555874ff21cc186d40751dbc3b77467",
-      "lines": 547
+      "sha256": "f2ad9d57724817bbe8e874b229bce7ea56d8bd2bf7521650b41b20d60607f4f0",
+      "lines": 554
     },
     {
       "path": "backend/app/services/mail/tokens.py",
@@ -106303,8 +106303,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 44,
-      "end_line": 47,
+      "line": 47,
+      "end_line": 50,
       "owner": "<module>",
       "conditions": [],
       "name": "OPERATOR",
@@ -106317,10 +106317,10 @@
       "entries": [
         {
           "key": "'ru'",
-          "expression": "'ООО «ИИМПАКТ ПЛЮС», 123557, Москва, ул. Пресненский Вал, д. 21, помещ. 172'",
+          "expression": "''",
           "expression_truncated": false,
-          "expression_chars": 76,
-          "ast_sha256": "c2b805d823e618eb362f9ee276b505c79361ff856d6b47e8cedc2f1ea10899d4"
+          "expression_chars": 2,
+          "ast_sha256": "773412cc3dbeacb25b2c0fd071c17c08962a2023cc5d2d64841d48b07313d3ac"
         },
         {
           "key": "'en'",
@@ -106330,16 +106330,16 @@
           "ast_sha256": "2dc49e500f760a1009657c6c34c7db6327fdefc2b503378a31deeb921c8a9fd6"
         }
       ],
-      "expression": "{'ru': 'ООО «ИИМПАКТ ПЛЮС», 123557, Москва, ул. Пресненский Вал, д. 21, помещ. 172', 'en': 'IIMPAKT PLUS LLC, 21 Presnensky Val St., premises 172, Moscow 123557, Russia'}",
+      "expression": "{'ru': '', 'en': 'IIMPAKT PLUS LLC, 21 Presnensky Val St., premises 172, Moscow 123557, Russia'}",
       "expression_truncated": false,
-      "expression_chars": 170,
-      "ast_sha256": "71b4e4625fa059bcce4e408a065ab4bb15c885bc5f7e6f99f7ce60024525e8ba",
+      "expression_chars": 96,
+      "ast_sha256": "6ccabfb2acf93e74b1cadfc9302f214754aad6a5e36811f1552e0b63c20f61c4",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 49,
-      "end_line": 150,
+      "line": 52,
+      "end_line": 153,
       "owner": "<module>",
       "conditions": [],
       "name": "STRINGS",
@@ -106373,8 +106373,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 388,
+      "end_line": 388,
       "owner": "<module>",
       "conditions": [],
       "name": "ACTION_KINDS",
@@ -328971,8 +328971,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 153,
-      "end_line": 154,
+      "line": 156,
+      "end_line": 157,
       "owner": "<module>",
       "conditions": [],
       "name": "t",
@@ -328980,8 +328980,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 157,
-      "end_line": 162,
+      "line": 160,
+      "end_line": 165,
       "owner": "<module>",
       "conditions": [],
       "name": "inline_images",
@@ -328989,8 +328989,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 166,
-      "end_line": 170,
+      "line": 169,
+      "end_line": 173,
       "owner": "<module>",
       "conditions": [],
       "name": "RenderedMail",
@@ -328998,8 +328998,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 174,
-      "end_line": 178,
+      "line": 177,
+      "end_line": 181,
       "owner": "<module>",
       "conditions": [],
       "name": "DigestItem",
@@ -329007,8 +329007,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 182,
-      "end_line": 195,
+      "line": 185,
+      "end_line": 198,
       "owner": "<module>",
       "conditions": [],
       "name": "Digest",
@@ -329016,8 +329016,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 200,
-      "end_line": 202,
+      "line": 203,
+      "end_line": 205,
       "owner": "<module>",
       "conditions": [],
       "name": "_p",
@@ -329025,8 +329025,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 205,
-      "end_line": 215,
+      "line": 208,
+      "end_line": 218,
       "owner": "<module>",
       "conditions": [],
       "name": "_button",
@@ -329034,8 +329034,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 218,
-      "end_line": 222,
+      "line": 221,
+      "end_line": 225,
       "owner": "<module>",
       "conditions": [],
       "name": "_fallback_link",
@@ -329043,8 +329043,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 225,
-      "end_line": 229,
+      "line": 228,
+      "end_line": 232,
       "owner": "<module>",
       "conditions": [],
       "name": "_note",
@@ -329052,8 +329052,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 232,
-      "end_line": 251,
+      "line": 235,
+      "end_line": 254,
       "owner": "<module>",
       "conditions": [],
       "name": "_item",
@@ -329061,8 +329061,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 254,
-      "end_line": 276,
+      "line": 257,
+      "end_line": 281,
       "owner": "<module>",
       "conditions": [],
       "name": "_footer",
@@ -329070,8 +329070,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 279,
-      "end_line": 300,
+      "line": 284,
+      "end_line": 305,
       "owner": "<module>",
       "conditions": [],
       "name": "_hero",
@@ -329079,8 +329079,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 303,
-      "end_line": 359,
+      "line": 308,
+      "end_line": 364,
       "owner": "<module>",
       "conditions": [],
       "name": "layout",
@@ -329088,8 +329088,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 362,
-      "end_line": 364,
+      "line": 367,
+      "end_line": 369,
       "owner": "<module>",
       "conditions": [],
       "name": "_h1",
@@ -329097,8 +329097,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 367,
-      "end_line": 376,
+      "line": 372,
+      "end_line": 383,
       "owner": "<module>",
       "conditions": [],
       "name": "_text_footer",
@@ -329106,8 +329106,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 384,
-      "end_line": 405,
+      "line": 391,
+      "end_line": 412,
       "owner": "<module>",
       "conditions": [],
       "name": "render_action",
@@ -329115,8 +329115,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 408,
-      "end_line": 417,
+      "line": 415,
+      "end_line": 424,
       "owner": "<module>",
       "conditions": [],
       "name": "_list_text",
@@ -329124,8 +329124,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 420,
-      "end_line": 425,
+      "line": 427,
+      "end_line": 432,
       "owner": "<module>",
       "conditions": [],
       "name": "_ru_plural",
@@ -329133,8 +329133,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 428,
-      "end_line": 437,
+      "line": 435,
+      "end_line": 444,
       "owner": "<module>",
       "conditions": [],
       "name": "watch_subject",
@@ -329142,8 +329142,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 440,
-      "end_line": 456,
+      "line": 447,
+      "end_line": 463,
       "owner": "<module>",
       "conditions": [],
       "name": "render_watch",
@@ -329151,8 +329151,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 459,
-      "end_line": 461,
+      "line": 466,
+      "end_line": 468,
       "owner": "<module>",
       "conditions": [],
       "name": "_paragraphs",
@@ -329160,8 +329160,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 464,
-      "end_line": 472,
+      "line": 471,
+      "end_line": 479,
       "owner": "<module>",
       "conditions": [],
       "name": "preheader_of",
@@ -329169,8 +329169,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 475,
-      "end_line": 526,
+      "line": 482,
+      "end_line": 533,
       "owner": "<module>",
       "conditions": [],
       "name": "render_digest",
@@ -329178,8 +329178,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 529,
-      "end_line": 547,
+      "line": 536,
+      "end_line": 554,
       "owner": "<module>",
       "conditions": [],
       "name": "sample_digest",
@@ -329187,8 +329187,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 392,
-      "end_line": 393,
+      "line": 399,
+      "end_line": 400,
       "owner": "render_action",
       "conditions": [],
       "name": "tx",
@@ -375812,48 +375812,48 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 389,
-      "end_line": 389,
-      "owner": "render_action",
-      "conditions": [],
-      "symbol": "app.services.mail.templates.ACTION_KINDS"
-    },
-    {
-      "path": "backend/app/services/mail/templates.py",
-      "line": 154,
-      "end_line": 154,
-      "owner": "t",
-      "conditions": [],
-      "symbol": "app.services.mail.templates.STRINGS"
-    },
-    {
-      "path": "backend/app/services/mail/templates.py",
-      "line": 275,
-      "end_line": 275,
+      "line": 278,
+      "end_line": 278,
       "owner": "_footer",
       "conditions": [],
       "symbol": "app.services.mail.templates.OPERATOR"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 380,
+      "end_line": 380,
       "owner": "_text_footer",
       "conditions": [],
       "symbol": "app.services.mail.templates.OPERATOR"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 396,
+      "end_line": 396,
+      "owner": "render_action",
+      "conditions": [],
+      "symbol": "app.services.mail.templates.ACTION_KINDS"
+    },
+    {
+      "path": "backend/app/services/mail/templates.py",
+      "line": 157,
+      "end_line": 157,
+      "owner": "t",
+      "conditions": [],
+      "symbol": "app.services.mail.templates.STRINGS"
+    },
+    {
+      "path": "backend/app/services/mail/templates.py",
+      "line": 163,
+      "end_line": 163,
       "owner": "inline_images",
       "conditions": [],
       "symbol": "app.services.mail.templates.ASSETS"
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 164,
+      "end_line": 164,
       "owner": "inline_images",
       "conditions": [],
       "symbol": "app.services.mail.templates.ASSETS"

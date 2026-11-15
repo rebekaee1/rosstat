@@ -57,7 +57,8 @@ for f in security.log pass-observe.log human429.log; do
   if [ -f "$p" ]; then ok "$f: $(wc -l < "$p") строк, изменён $(date -r "$p" '+%d.%m %H:%M')"
   else fail "$f нет - nginx не пишет журнал (старый конфиг или нет тома)"; fi
 done
-if [ -f /var/log/rosstat-nginx/pass-observe.log ] && grep -Eq '([0-9]{1,3}\.){3}[0-9]{1,3}' /var/log/rosstat-nginx/pass-observe.log; then
+# Строку браузера (в кавычках) не смотрим: версия «Chrome/148.0.7778.97» похожа на IP (ложная тревога 15.11.2026).
+if [ -f /var/log/rosstat-nginx/pass-observe.log ] && sed 's/"[^"]*"//g' /var/log/rosstat-nginx/pass-observe.log | grep -Eq '(^|[^0-9.])([0-9]{1,3}\.){3}[0-9]{1,3}([^0-9.]|$)'; then
   fail "в pass-observe.log есть IP целиком"
 fi
 

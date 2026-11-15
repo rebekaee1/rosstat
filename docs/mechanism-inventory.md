@@ -2849,9 +2849,9 @@ Relationships: `[]`
 | app.services.mail.campaign.OWN_HOSTS | Tuple | sequence/source expression | [backend/app/services/mail/campaign.py:45](../backend/app/services/mail/campaign.py#L45) |
 | app.services.mail.campaign.DEFER | Call | computed source expression | [backend/app/services/mail/campaign.py:196](../backend/app/services/mail/campaign.py#L196) |
 | app.services.mail.templates.ASSETS | Call | computed source expression | [backend/app/services/mail/templates.py:40](../backend/app/services/mail/templates.py#L40) |
-| app.services.mail.templates.OPERATOR | Dict | 'ru', 'en' | [backend/app/services/mail/templates.py:44](../backend/app/services/mail/templates.py#L44) |
-| app.services.mail.templates.STRINGS | Dict | 'ru', 'en' | [backend/app/services/mail/templates.py:49](../backend/app/services/mail/templates.py#L49) |
-| app.services.mail.templates.ACTION_KINDS | Tuple | sequence/source expression | [backend/app/services/mail/templates.py:381](../backend/app/services/mail/templates.py#L381) |
+| app.services.mail.templates.OPERATOR | Dict | 'ru', 'en' | [backend/app/services/mail/templates.py:47](../backend/app/services/mail/templates.py#L47) |
+| app.services.mail.templates.STRINGS | Dict | 'ru', 'en' | [backend/app/services/mail/templates.py:52](../backend/app/services/mail/templates.py#L52) |
+| app.services.mail.templates.ACTION_KINDS | Tuple | sequence/source expression | [backend/app/services/mail/templates.py:388](../backend/app/services/mail/templates.py#L388) |
 | app.services.mail.tokens.PURPOSES | Tuple | sequence/source expression | [backend/app/services/mail/tokens.py:26](../backend/app/services/mail/tokens.py#L26) |
 | app.services.mail.tokens.TTL_SECONDS | Dict | 'unsub', 'unsub_watch', 'unpers', 'verify', 'reset' | [backend/app/services/mail/tokens.py:27](../backend/app/services/mail/tokens.py#L27) |
 | app.services.mail.transport.BULK_KINDS | Call | computed source expression | [backend/app/services/mail/transport.py:57](../backend/app/services/mail/transport.py#L57) |

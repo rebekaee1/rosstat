@@ -18773,7 +18773,7 @@
         },
         {
           "file": "backend/tests/test_mail.py",
-          "line": 331,
+          "line": 334,
           "kind": "tests"
         },
         {

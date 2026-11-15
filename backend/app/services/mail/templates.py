@@ -41,8 +41,11 @@ ASSETS = Path(__file__).with_name("assets")
 CID_F = "fe-glass-f"
 CID_HERO = "fe-hero"
 
+# Реквизиты в подвале (решение владельца 15.11.2026): в русских письмах не ставим — российский закон их в каждом
+# письме не требует, оператор назван в политике конфиденциальности. В английских остаются: американский CAN-SPAM
+# требует почтовый адрес отправителя в каждом рекламном письме.
 OPERATOR = {
-    "ru": "ООО «ИИМПАКТ ПЛЮС», 123557, Москва, ул. Пресненский Вал, д. 21, помещ. 172",
+    "ru": "",
     "en": "IIMPAKT PLUS LLC, 21 Presnensky Val St., premises 172, Moscow 123557, Russia",
 }
 
@@ -272,7 +275,9 @@ def _footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_url: 
     if links:
         out += (f'<p style="margin:0 0 10px;font-family:{FONT};font-size:12px;line-height:1.6;color:{MUTED};">'
                 + "&nbsp;&nbsp;&nbsp;".join(links) + "</p>")
-    out += _p(OPERATOR["en" if locale == "en" else "ru"], color="#8A93A5", size=11, margin="0", line=1.5)
+    operator = OPERATOR["en" if locale == "en" else "ru"]
+    if operator:
+        out += _p(operator, color="#8A93A5", size=11, margin="0", line=1.5)
     return out
 
 
@@ -372,7 +377,9 @@ def _text_footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_
         parts.append(f"{label}: {unsubscribe_url}")
     if manage_url:
         parts.append(f"{t(locale, 'manage')}: {manage_url}")
-    parts.append(OPERATOR["en" if locale == "en" else "ru"])
+    operator = OPERATOR["en" if locale == "en" else "ru"]
+    if operator:
+        parts.append(operator)
     return "\n".join(parts)
 
 

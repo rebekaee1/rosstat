@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2377  ·  **Строк:** 1 490 987  ·  **Токенов (≈):** 14 266 540
+**Файлов:** 2377  ·  **Строк:** 1 490 999  ·  **Токенов (≈):** 14 266 741
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 870 | 66 749 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 1007 | 344 437 | 3 792 598 |
+| `backend` | 1007 | 344 447 | 3 792 746 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 21 | 1 566 | 25 296 |
-| `docs` | 149 | 929 190 | 8 005 140 |
+| `deploy` | 21 | 1 568 | 25 387 |
+| `docs` | 149 | 929 190 | 8 005 102 |
 | `frontend` | 1041 | 187 001 | 2 056 025 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 142 | 25 358 | 315 080 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 402 505 | 3 283 417 |
+| `docs/mechanism-inventory.json` | 402 505 | 3 283 379 |
 | `docs/client-mechanism-inventory.json` | 259 886 | 1 834 038 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -192,10 +192,10 @@
 | `backend/app/data/world_subnational/us.yaml` | 805 | 7 615 |
 | `docs/research/search-history-replay-2026-09-30.md` | 493 | 7 609 |
 | `scripts/emiss/fixtures/57824.json` | 1 | 7 592 |
+| `backend/app/services/mail/templates.py` | 554 | 7 565 |
 | `frontend/src/lib/pageMeta.generated.json` | 529 | 7 533 |
 | `backend/app/services/analytics_alerts.py` | 664 | 7 503 |
 | `backend/app/api/auth.py` | 714 | 7 491 |
-| `backend/app/services/mail/templates.py` | 547 | 7 489 |
 | `frontend/src/styles/indicator-russia.css` | 755 | 7 482 |
 | `backend/app/services/world_subnational_ingest.py` | 779 | 7 476 |
 | `backend/tests/test_newsletter_personal.py` | 555 | 7 347 |
@@ -256,10 +256,10 @@
 | `backend/app/services/bot_agent_tools.py` | 428 | 5 773 |
 | `frontend/src/styles/k1-scene.css` | 587 | 5 773 |
 | `docs/adr/0007-identity-user-accounts.md` | 263 | 5 770 |
+| `deploy/approved-shas.txt` | 192 | 5 764 |
 | `frontend/src/components/WorldMap.component.test.jsx` | 481 | 5 756 |
 | `backend/tests/test_telegram_reports.py` | 442 | 5 730 |
 | `backend/app/api/world_subnational.py` | 648 | 5 712 |
-| `deploy/approved-shas.txt` | 191 | 5 712 |
 | `frontend/src/styles/z6-rating.css` | 390 | 5 705 |
 | `frontend/src/styles/k5-pages.css` | 541 | 5 666 |
 | `backend/app/api/export.py` | 607 | 5 615 |
@@ -321,13 +321,13 @@
 | `backend/tests/test_regional_publication.py` | 412 | 4 953 |
 | `backend/tests/test_bot_defense.py` | 372 | 4 928 |
 | `backend/app/services/forecast_pipeline.py` | 520 | 4 886 |
+| `backend/tests/test_mail.py` | 428 | 4 859 |
 | `backend/app/services/world_adapters/ons_timeseries.py` | 573 | 4 845 |
 | `backend/app/services/world_adapters/ecos_bok.py` | 551 | 4 839 |
 | `backend/app/services/world_adapters/banxico_sie.py` | 555 | 4 831 |
 | `backend/tests/test_auth_oauth.py` | 459 | 4 805 |
 | `backend/app/api/cabinet.py` | 496 | 4 794 |
 | `frontend/src/components/DataTable.jsx` | 441 | 4 793 |
-| `backend/tests/test_mail.py` | 425 | 4 787 |
 | `frontend/src/lib/searchView.js` | 386 | 4 774 |
 | `backend/app/services/base_parser.py` | 451 | 4 762 |
 | `scripts/regional/regions_registry.py` | 293 | 4 762 |
@@ -1046,6 +1046,7 @@
 | `backend/tests/test_rosstat_population.py` | 185 | 1 483 |
 | `backend/app/services/bot_exports.py` | 124 | 1 472 |
 | `backend/app/services/event_params.py` | 141 | 1 472 |
+| `deploy/verify-bot-defense-live.sh` | 93 | 1 472 |
 | `frontend/src/lib/usCatalogTopics.js` | 127 | 1 472 |
 | `frontend/src/lib/viewModeShortLabels.js` | 136 | 1 471 |
 | `backend/app/services/telegram_outbox.py` | 163 | 1 468 |
@@ -1073,7 +1074,6 @@
 | `backend/tests/test_hypotheses_triage.py` | 129 | 1 437 |
 | `backend/tests/test_ru_google_recovery.py` | 132 | 1 435 |
 | `backend/tests/test_branded_errors.py` | 100 | 1 433 |
-| `deploy/verify-bot-defense-live.sh` | 92 | 1 433 |
 | `backend/tests/test_forecaster.py` | 174 | 1 431 |
 | `backend/app/data/world_concept_national.py` | 153 | 1 429 |
 | `scripts/build-rid-listing.py` | 172 | 1 428 |
