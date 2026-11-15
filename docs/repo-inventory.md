@@ -7,18 +7,18 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2377  ·  **Строк:** 1 490 988  ·  **Токенов (≈):** 14 266 483
+**Файлов:** 2377  ·  **Строк:** 1 490 987  ·  **Токенов (≈):** 14 266 540
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 872 | 66 793 |
+| `(root)` | 8 | 2 870 | 66 749 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 1007 | 344 437 | 3 792 598 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 21 | 1 565 | 25 195 |
+| `deploy` | 21 | 1 566 | 25 296 |
 | `docs` | 149 | 929 190 | 8 005 140 |
 | `frontend` | 1041 | 187 001 | 2 056 025 |
 | `mcp` | 3 | 158 | 1 120 |
@@ -146,8 +146,8 @@
 | `backend/app/data/world_bea_regional/description_ru.json` | 477 | 9 258 |
 | `frontend/src/pages/WorldIndicatorPage.jsx` | 838 | 9 248 |
 | `backend/scripts/repair-world-listing.py` | 979 | 9 209 |
-| `docker-compose.yml` | 610 | 9 124 |
 | `docs/agent-orchestration.md` | 176 | 9 111 |
+| `docker-compose.yml` | 608 | 9 080 |
 | `docs/research/competitor-roschart-2026-10-04.md` | 277 | 9 030 |
 | `backend/app/services/clickhouse_sync.py` | 796 | 8 999 |
 | `docs/research/tech-benchmark-2026-10-05.md` | 345 | 8 854 |
@@ -259,10 +259,10 @@
 | `frontend/src/components/WorldMap.component.test.jsx` | 481 | 5 756 |
 | `backend/tests/test_telegram_reports.py` | 442 | 5 730 |
 | `backend/app/api/world_subnational.py` | 648 | 5 712 |
+| `deploy/approved-shas.txt` | 191 | 5 712 |
 | `frontend/src/styles/z6-rating.css` | 390 | 5 705 |
 | `frontend/src/styles/k5-pages.css` | 541 | 5 666 |
 | `backend/app/api/export.py` | 607 | 5 615 |
-| `deploy/approved-shas.txt` | 190 | 5 611 |
 | `frontend/src/components/RegionAnnualChart.jsx` | 517 | 5 575 |
 | `backend/tests/test_derived_ops.py` | 633 | 5 574 |
 | `docs/research/_fpsr_raw/agent05.json` | 541 | 5 566 |

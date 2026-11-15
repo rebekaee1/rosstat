@@ -21,7 +21,7 @@
   "counts": {
     "files": 2591,
     "code_files": 2105,
-    "current_reviews": 2591,
+    "current_reviews": 2590,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
@@ -32,7 +32,7 @@
     },
     "definitions": 17201,
     "annotated_definitions": 17201,
-    "files_needing_attention": 0
+    "files_needing_attention": 1
   },
   "orphan_reviews": [],
   "files": [
@@ -13883,13 +13883,16 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "81818b721b77646af0fde715688d09dd25b28adfa661c0bc9424336f1c12d743",
-      "bytes": 28614,
-      "lines": 190,
+      "sha256": "bc4bed9be627419a53c70a42f24963c4ef8261e53d33f3cf11f815d785de2e32",
+      "bytes": 29216,
+      "lines": 191,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -14156,9 +14159,9 @@
     },
     {
       "path": "docker-compose.yml",
-      "sha256": "de98e43bd470673d9802a77b2a0eade40d8e504e7ed1b3ec0216ac7c10309c96",
-      "bytes": 43055,
-      "lines": 610,
+      "sha256": "c72bfcbeaff52e9ff0b884b5da0710246d1ef75c9300073a13ef7320288000b9",
+      "bytes": 42832,
+      "lines": 608,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -33721,13 +33724,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "44547e4b73644f2e30ec1c0f5671d05432482aa781136b5c573c0799abdef6f2",
+  "ledger_sha256": "1285e1725dd6ad4c75455105ef3e318eac10f4810dc1136091b1f4eaaacd2585",
   "javascript_inventory_sha256": "6483fb1f39f6d176a6f53e696cd19fbd7a925c080da7fc41507d12520b353949",
-  "baseline_commit": "24acb653434a0e52e21ab80d042cc1255df4ef15",
+  "baseline_commit": "3eaf7550f2c85e110a45f81484c274ead2de11fc",
   "branch": "int/2026-11-14",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json"
+    "docker-compose.yml"
   ]
 }
