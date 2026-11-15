@@ -35,7 +35,11 @@ export default function R6bPulseStrip({
       if (!el || window.innerWidth >= 768) { setBar((b) => (b === null ? b : null)); return; }
       const head = document.querySelector('nav.fe-navbar');
       const top = head ? Math.round(head.getBoundingClientRect().bottom) + 6 : 90;
-      const gone = el.getBoundingClientRect().bottom < top - 6;
+      // 640–767 px (iPad mini): строка героя с полосой скрыта, у неё нулевая рамка (bottom = 0), и полоса висела сразу при входе,
+      // поверх хлебных крошек. Тогда следим за самим героем: полоса появляется, когда крупное число ушло вверх.
+      const target = el.getClientRects().length ? el : el.closest('.z4-hero');
+      if (!target) { setBar((b) => (b === null ? b : null)); return; }
+      const gone = target.getBoundingClientRect().bottom < top - 6;
       setBar((b) => {
         if (!gone) return b === null ? b : null;
         return b === top ? b : top;
