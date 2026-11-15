@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `3fd4435a5dc7f7f73fb12b97821543fa2ce1ee36`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `24acb653434a0e52e21ab80d042cc1255df4ef15`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2591 |
 | Код, шаблоны и стили | 2105 |
 | Актуальные рецензии без пропусков guard | 2591 |
-| Именованные определения Python/JS: с аннотацией / всего | 17199 / 17199 |
+| Именованные определения Python/JS: с аннотацией / всего | 17201 / 17201 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -1763,7 +1763,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/home/HomePopularCountries.component.test.jsx](../frontend/src/components/home/HomePopularCountries.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/home/HomePopularCountries.jsx](../frontend/src/components/home/HomePopularCountries.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/home/HomePricesRates.jsx](../frontend/src/components/home/HomePricesRates.jsx) | reviewed | 8/8 | актуально |
-| [frontend/src/components/home/HomeRegionPriceTiles.jsx](../frontend/src/components/home/HomeRegionPriceTiles.jsx) | reviewed | 6/6 | актуально |
+| [frontend/src/components/home/HomeRegionPriceTiles.jsx](../frontend/src/components/home/HomeRegionPriceTiles.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/components/home/HomeToday.component.test.jsx](../frontend/src/components/home/HomeToday.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/home/HomeToday.jsx](../frontend/src/components/home/HomeToday.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/home/HomeTools.c10m.component.test.jsx](../frontend/src/components/home/HomeTools.c10m.component.test.jsx) | reviewed | 2/2 | актуально |
@@ -1989,7 +1989,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/footerNav.js](../frontend/src/lib/footerNav.js) | reviewed | 6/6 | актуально |
 | [frontend/src/lib/footerNav.test.js](../frontend/src/lib/footerNav.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/forecastPublicText.test.js](../frontend/src/lib/forecastPublicText.test.js) | reviewed | 1/1 | актуально |
-| [frontend/src/lib/forecastShowcase.js](../frontend/src/lib/forecastShowcase.js) | reviewed | 9/9 | актуально |
+| [frontend/src/lib/forecastShowcase.js](../frontend/src/lib/forecastShowcase.js) | reviewed | 10/10 | актуально |
 | [frontend/src/lib/forecastShowcase.test.js](../frontend/src/lib/forecastShowcase.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/format.js](../frontend/src/lib/format.js) | reviewed | 43/43 | актуально |
 | [frontend/src/lib/format.test.js](../frontend/src/lib/format.test.js) | reviewed | 8/8 | актуально |

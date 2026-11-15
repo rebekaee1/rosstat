@@ -5623,7 +5623,7 @@
     "anonymous_functions": 3
   },
   "frontend/src/components/ForecastTable.jsx": {
-    "sha256": "55ce1a8eb99b3dcec743b13cdcd0d7c30bf51ba955939f1246da78941de4a7a3",
+    "sha256": "9b36663a5b7b479d20c96a45261aabd75c86aeab5ec35b2c7eabf351c3cca8d7",
     "definitions": [
       {
         "name": "ForecastTable",
@@ -11921,24 +11921,24 @@
     "anonymous_functions": 3
   },
   "frontend/src/components/R6bPulseStrip.jsx": {
-    "sha256": "62b853a1832d4fecb36e116a6102e97ecd5467d621a1d16d3edc85d182ba6ec3",
+    "sha256": "56a4822a9261d06e9bd4e46cb2a70aafd619d7a695adc24c3350e6e7910cd5a3",
     "definitions": [
       {
         "name": "R6bPulseStrip",
         "line": 21,
-        "end_line": 119,
+        "end_line": 123,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "R6bPulseStrip.update",
         "line": 32,
-        "end_line": 43,
+        "end_line": 47,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "R6bPulseStrip.onScroll",
-        "line": 44,
-        "end_line": 44,
+        "line": 48,
+        "end_line": 48,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -12008,7 +12008,7 @@
         "line": 21
       }
     ],
-    "anonymous_functions": 8
+    "anonymous_functions": 9
   },
   "frontend/src/components/R7PricesBlock.component.test.jsx": {
     "sha256": "24a28bac58517a6ec517e778e2ceefc9b928aeab0feeff75ada0574e74a0daa4",
@@ -12652,7 +12652,7 @@
     "anonymous_functions": 42
   },
   "frontend/src/components/RegionCrossLink.jsx": {
-    "sha256": "7644e93bf28e86a050dcbe888f0d47d9a80f5c8b2a71b9db4184c535c97a61af",
+    "sha256": "5b48c3ce3947a1ef40549ea2fe3f193fedfee77c77c5e11e70b145732a854873",
     "definitions": [
       {
         "name": "RegionCrossLink",
@@ -12790,7 +12790,7 @@
     "anonymous_functions": 19
   },
   "frontend/src/components/RegionsMap.jsx": {
-    "sha256": "4c5aa5b064cf7003a54f7f4ff9203536fec985bc21d03cdd4d00910905611084",
+    "sha256": "b7776b13ef29f6888aadf9f256e9447586f610c913857fc8aa2b64d67001a3a4",
     "definitions": [
       {
         "name": "paddedViewBox",
@@ -14991,7 +14991,7 @@
     "anonymous_functions": 49
   },
   "frontend/src/components/WorldMap.jsx": {
-    "sha256": "94f4ad86ed2ed9b9fffa512169780b096bf38df8fcb6235a359ed2ffbed4b4e6",
+    "sha256": "c5b031d223926e2c40ace7d2e6c1113b0f02b561b9017b6788bdf12404a563c1",
     "definitions": [
       {
         "name": "isNotAntarctica",
@@ -17485,7 +17485,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/components/calendar/CalendarEventCard.jsx": {
-    "sha256": "fadd6a83310bc55add388e167bd2b4f1d1d80d8aa9fe565247e0710025ca075f",
+    "sha256": "8dfd8d07d0925c939d1705369a107a60e47d99118a9b30d1d346e691a34df335",
     "definitions": [
       {
         "name": "ImportanceBadge",
@@ -17520,7 +17520,7 @@
       {
         "name": "CalendarEventCard",
         "line": 154,
-        "end_line": 351,
+        "end_line": 356,
         "kind": "FunctionDeclaration"
       },
       {
@@ -19492,7 +19492,7 @@
     "anonymous_functions": 24
   },
   "frontend/src/components/home/HomeRegionPriceTiles.jsx": {
-    "sha256": "651ca613d811236f8b6968d5341c939689f1efde239ac97885c6c33bb14b3c35",
+    "sha256": "30c01fbed1bb17f30b52debc163cb31eba78412425facf662847f5ad18f8309a",
     "definitions": [
       {
         "name": "unitParts",
@@ -19501,33 +19501,39 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "tileName",
+        "line": 28,
+        "end_line": 34,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "Trend",
-        "line": 27,
-        "end_line": 39,
+        "line": 36,
+        "end_line": 48,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomeRegionPriceTiles",
-        "line": 41,
-        "end_line": 96,
+        "line": 50,
+        "end_line": 105,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "savedRegion",
-        "line": 98,
-        "end_line": 100,
+        "line": 107,
+        "end_line": 109,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomePriceStrip",
-        "line": 106,
-        "end_line": 144,
+        "line": 115,
+        "end_line": 153,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomePriceStrip.on",
-        "line": 112,
-        "end_line": 112,
+        "line": 121,
+        "end_line": 121,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -19578,13 +19584,13 @@
         "names": [
           "default"
         ],
-        "line": 41
+        "line": 50
       },
       {
         "names": [
           "HomePriceStrip"
         ],
-        "line": 106
+        "line": 115
       }
     ],
     "anonymous_functions": 9
@@ -21479,54 +21485,54 @@
     "anonymous_functions": 5
   },
   "frontend/src/components/regions/RegionParts.jsx": {
-    "sha256": "da056d89a565ecbbf83295f6029bf24f5a99516ae6b118dddd5f6cf3f05c59d9",
+    "sha256": "600f24b87ed3bfd2e17e8eba85ae54acef5b89fd19e867e620cfe7fc4ac1fabe",
     "definitions": [
       {
         "name": "RegionDelta",
         "line": 15,
-        "end_line": 46,
+        "end_line": 48,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TrendTick",
-        "line": 52,
-        "end_line": 73,
+        "line": 54,
+        "end_line": 75,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionValue",
-        "line": 76,
-        "end_line": 84,
+        "line": 78,
+        "end_line": 86,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionHeadlineCard",
-        "line": 86,
-        "end_line": 108,
+        "line": 88,
+        "end_line": 110,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorRow",
-        "line": 110,
-        "end_line": 144,
+        "line": 112,
+        "end_line": 146,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionSectionHeading",
-        "line": 147,
-        "end_line": 157,
+        "line": 149,
+        "end_line": 160,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionSearchField",
-        "line": 159,
-        "end_line": 173,
+        "line": 162,
+        "end_line": 176,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionMetricLine",
-        "line": 176,
-        "end_line": 186,
+        "line": 179,
+        "end_line": 189,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -21575,43 +21581,43 @@
         "names": [
           "TrendTick"
         ],
-        "line": 52
+        "line": 54
       },
       {
         "names": [
           "RegionValue"
         ],
-        "line": 76
+        "line": 78
       },
       {
         "names": [
           "RegionHeadlineCard"
         ],
-        "line": 86
+        "line": 88
       },
       {
         "names": [
           "RegionIndicatorRow"
         ],
-        "line": 110
+        "line": 112
       },
       {
         "names": [
           "RegionSectionHeading"
         ],
-        "line": 147
+        "line": 149
       },
       {
         "names": [
           "RegionSearchField"
         ],
-        "line": 159
+        "line": 162
       },
       {
         "names": [
           "RegionMetricLine"
         ],
-        "line": 176
+        "line": 179
       }
     ],
     "anonymous_functions": 0
@@ -35529,7 +35535,7 @@
     "anonymous_functions": 4
   },
   "frontend/src/lib/forecastShowcase.js": {
-    "sha256": "d3d79bf97c2bbe4563cf40ec4513d547f5f0f18c12945c6b7f5fdc9a93f79e6b",
+    "sha256": "b95c8904afae0b5f4fd91eeed169eb035b725bb08e8b99867613235814a48e50",
     "definitions": [
       {
         "name": "toTime",
@@ -35570,7 +35576,7 @@
       {
         "name": "chartGeometry",
         "line": 53,
-        "end_line": 104,
+        "end_line": 124,
         "kind": "FunctionDeclaration"
       },
       {
@@ -35583,6 +35589,12 @@
         "name": "chartGeometry.y",
         "line": 78,
         "end_line": 78,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "chartGeometry.sideFor",
+        "line": 97,
+        "end_line": 107,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -35619,10 +35631,10 @@
         "line": 53
       }
     ],
-    "anonymous_functions": 8
+    "anonymous_functions": 14
   },
   "frontend/src/lib/forecastShowcase.test.js": {
-    "sha256": "b82aa14babd12ac34ab3c27b16fd103ff93f0d261c59479769c26392b9d4e392",
+    "sha256": "72009bb5570ae020cc013150ab59ce8ba89e9929328513ee7a1e1f732621ca87",
     "definitions": [],
     "imports": [
       {
@@ -35635,10 +35647,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 13
+    "anonymous_functions": 15
   },
   "frontend/src/lib/format.js": {
-    "sha256": "4faf80e1635302a5e53ffc6b24614d906856b31b8ded0e375afcc885054fc1d1",
+    "sha256": "93060e72d24d63e7c733f3a2f25385d140fd56ab74d745d78f191de640a4671b",
     "definitions": [
       {
         "name": "resolveFormatLocale",
@@ -35697,205 +35709,205 @@
       {
         "name": "pickCalendarAlignedTicks",
         "line": 173,
-        "end_line": 242,
+        "end_line": 247,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pickCalendarAlignedTicks.toQ",
-        "line": 217,
-        "end_line": 217,
+        "line": 220,
+        "end_line": 220,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "pickIndexAlignedTicks",
-        "line": 247,
-        "end_line": 262,
+        "line": 252,
+        "end_line": 267,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fitTicksNoOverlap",
-        "line": 268,
-        "end_line": 305,
+        "line": 273,
+        "end_line": 310,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fitTicksNoOverlap.tryBudget",
-        "line": 273,
-        "end_line": 278,
+        "line": 278,
+        "end_line": 283,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "pickChartAxisTicks",
-        "line": 314,
-        "end_line": 347,
+        "line": 319,
+        "end_line": 352,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pickChartAxisTicks.get",
-        "line": 323,
-        "end_line": 323,
+        "line": 328,
+        "end_line": 328,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "resolveDateFormat",
-        "line": 359,
-        "end_line": 376,
+        "line": 364,
+        "end_line": 381,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatDate",
-        "line": 383,
-        "end_line": 407,
+        "line": 388,
+        "end_line": 412,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setNumberFormat",
-        "line": 431,
-        "end_line": 436,
+        "line": 436,
+        "end_line": 441,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "numberTag",
-        "line": 442,
-        "end_line": 444,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "groupThousands",
         "line": 447,
         "end_line": 449,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "groupThousands",
+        "line": 452,
+        "end_line": 454,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "formatFixed",
-        "line": 453,
-        "end_line": 463,
+        "line": 458,
+        "end_line": 468,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatValue",
-        "line": 465,
-        "end_line": 470,
+        "line": 470,
+        "end_line": 475,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatCount",
-        "line": 473,
-        "end_line": 478,
+        "line": 478,
+        "end_line": 483,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatValueWithUnit",
-        "line": 480,
-        "end_line": 487,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "unitSuffix",
-        "line": 489,
+        "line": 485,
         "end_line": 492,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "unitDigits",
+        "name": "unitSuffix",
         "line": 494,
-        "end_line": 496,
+        "end_line": 497,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "unitDigits",
+        "line": 499,
+        "end_line": 501,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "chartValueDigits",
-        "line": 503,
-        "end_line": 505,
+        "line": 508,
+        "end_line": 510,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatAxisTick",
-        "line": 507,
-        "end_line": 524,
+        "line": 512,
+        "end_line": 529,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compactDigitsFor",
-        "line": 547,
-        "end_line": 550,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "trimZeroDecimals",
         "line": 552,
         "end_line": 555,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "trimZeroDecimals",
+        "line": 557,
+        "end_line": 560,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "formatCompactNumber",
-        "line": 562,
-        "end_line": 579,
+        "line": 567,
+        "end_line": 584,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatCompactParts",
-        "line": 586,
-        "end_line": 611,
+        "line": 591,
+        "end_line": 616,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatCompactParts.plain",
-        "line": 594,
-        "end_line": 598,
+        "line": 599,
+        "end_line": 603,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "formatCompactWithUnit",
-        "line": 614,
-        "end_line": 618,
+        "line": 619,
+        "end_line": 623,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatPeriodShort",
-        "line": 624,
-        "end_line": 639,
+        "line": 629,
+        "end_line": 644,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatChange",
-        "line": 641,
-        "end_line": 647,
+        "line": 646,
+        "end_line": 652,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "cn",
-        "line": 649,
-        "end_line": 651,
+        "line": 654,
+        "end_line": 656,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isCpiIndex",
-        "line": 672,
-        "end_line": 674,
+        "line": 677,
+        "end_line": 679,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "adjustCpiDisplay",
-        "line": 676,
-        "end_line": 680,
+        "line": 681,
+        "end_line": 685,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "adjustCpiForecastDisplay",
-        "line": 682,
-        "end_line": 694,
+        "line": 687,
+        "end_line": 699,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "relativeTimeEn",
-        "line": 696,
-        "end_line": 698,
+        "line": 701,
+        "end_line": 703,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "relativeTime",
-        "line": 700,
-        "end_line": 724,
+        "line": 705,
+        "end_line": 729,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -35940,139 +35952,139 @@
         "names": [
           "pickChartAxisTicks"
         ],
-        "line": 314
+        "line": 319
       },
       {
         "names": [
           "resolveDateFormat"
         ],
-        "line": 359
+        "line": 364
       },
       {
         "names": [
           "formatDate"
         ],
-        "line": 383
+        "line": 388
       },
       {
         "names": [
           "setNumberFormat"
         ],
-        "line": 431
+        "line": 436
       },
       {
         "names": [
           "numberTag"
         ],
-        "line": 442
+        "line": 447
       },
       {
         "names": [
           "formatValue"
         ],
-        "line": 465
+        "line": 470
       },
       {
         "names": [
           "formatCount"
         ],
-        "line": 473
+        "line": 478
       },
       {
         "names": [
           "formatValueWithUnit"
         ],
-        "line": 480
+        "line": 485
       },
       {
         "names": [
           "unitSuffix"
         ],
-        "line": 489
+        "line": 494
       },
       {
         "names": [
           "unitDigits"
         ],
-        "line": 494
+        "line": 499
       },
       {
         "names": [
           "chartValueDigits"
         ],
-        "line": 503
+        "line": 508
       },
       {
         "names": [
           "formatAxisTick"
         ],
-        "line": 507
+        "line": 512
       },
       {
         "names": [
           "formatCompactNumber"
         ],
-        "line": 562
+        "line": 567
       },
       {
         "names": [
           "formatCompactParts"
         ],
-        "line": 586
+        "line": 591
       },
       {
         "names": [
           "formatCompactWithUnit"
         ],
-        "line": 614
+        "line": 619
       },
       {
         "names": [
           "formatPeriodShort"
         ],
-        "line": 624
+        "line": 629
       },
       {
         "names": [
           "formatChange"
         ],
-        "line": 641
+        "line": 646
       },
       {
         "names": [
           "cn"
         ],
-        "line": 649
+        "line": 654
       },
       {
         "names": [
           "isCpiIndex"
         ],
-        "line": 672
+        "line": 677
       },
       {
         "names": [
           "adjustCpiDisplay"
         ],
-        "line": 676
+        "line": 681
       },
       {
         "names": [
           "adjustCpiForecastDisplay"
         ],
-        "line": 682
+        "line": 687
       },
       {
         "names": [
           "relativeTime"
         ],
-        "line": 700
+        "line": 705
       }
     ],
     "anonymous_functions": 11
   },
   "frontend/src/lib/format.test.js": {
-    "sha256": "fa029fe1a199e33393f0a24ecfd06a8e32cdaf0e32d3f9b3fea44dd59979b48f",
+    "sha256": "2761a50a53e89e3813387877d139a7fbc2f00af39f1275964a4b801961b06549",
     "definitions": [
       {
         "name": "tickIndices",
@@ -36088,38 +36100,38 @@
       },
       {
         "name": "formatLabel",
-        "line": 122,
-        "end_line": 122,
+        "line": 130,
+        "end_line": 130,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "formatLabel",
-        "line": 160,
-        "end_line": 160,
+        "line": 168,
+        "end_line": 168,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "toQ",
-        "line": 194,
-        "end_line": 197,
+        "line": 202,
+        "end_line": 205,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "formatLabel",
-        "line": 229,
-        "end_line": 229,
+        "line": 237,
+        "end_line": 237,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "formatLabel",
-        "line": 259,
-        "end_line": 259,
+        "line": 267,
+        "end_line": 267,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "daysAgo",
-        "line": 470,
-        "end_line": 474,
+        "line": 478,
+        "end_line": 482,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -36134,7 +36146,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 86
+    "anonymous_functions": 88
   },
   "frontend/src/lib/frequencySwitcher.js": {
     "sha256": "5e0292f9fd9a5454a2e65064e27554486248ee4ce971d5a11b97efc5a654d300",
@@ -43116,7 +43128,7 @@
     "anonymous_functions": 14
   },
   "frontend/src/lib/regionUi.js": {
-    "sha256": "56de782a26fe71654ae93fd3178b5ad618dff1fbec1caec1452841cf63158ded",
+    "sha256": "1f3a91fd7ac7326e88db8ce7365def8318b62adc35a4e8865760f9b8eaba38bd",
     "definitions": [
       {
         "name": "numberLocale",
@@ -43175,37 +43187,37 @@
       {
         "name": "explainIndicator",
         "line": 124,
-        "end_line": 153,
+        "end_line": 156,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "plainName",
-        "line": 156,
-        "end_line": 158,
+        "line": 159,
+        "end_line": 161,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compactParts",
-        "line": 176,
-        "end_line": 190,
+        "line": 179,
+        "end_line": 193,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatRegionCompact",
-        "line": 193,
-        "end_line": 196,
+        "line": 196,
+        "end_line": 199,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "prioritizeIndicators",
-        "line": 202,
-        "end_line": 213,
+        "line": 205,
+        "end_line": 216,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "prioritizeIndicators.score",
-        "line": 203,
-        "end_line": 208,
+        "line": 206,
+        "end_line": 211,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -43284,25 +43296,25 @@
         "names": [
           "plainName"
         ],
-        "line": 156
+        "line": 159
       },
       {
         "names": [
           "compactParts"
         ],
-        "line": 176
+        "line": 179
       },
       {
         "names": [
           "formatRegionCompact"
         ],
-        "line": 193
+        "line": 196
       },
       {
         "names": [
           "prioritizeIndicators"
         ],
-        "line": 202
+        "line": 205
       }
     ],
     "anonymous_functions": 4
@@ -55870,7 +55882,7 @@
     "anonymous_functions": 30
   },
   "frontend/src/pages/ComparePage.jsx": {
-    "sha256": "b36dad4ab18ea534b1b321eb1664e81c099c9eaa992f36912c2067a84ae139e9",
+    "sha256": "b078a7d4d41ed1fd02e017d9532968638d1bcee0e8346681afba2e75b9a0f381",
     "definitions": [
       {
         "name": "useViewportHeight",
@@ -57538,7 +57550,7 @@
     "anonymous_functions": 13
   },
   "frontend/src/pages/ForecastsPage.jsx": {
-    "sha256": "4bc454548206832369995dbc35bd2378aa0ed8884ebd00a8c0461ec6e490324d",
+    "sha256": "d80b3c67dd200ea47c7ea14e9af8b8bec625a9abc241d768831af7ca2d32c0b7",
     "definitions": [
       {
         "name": "useForecastShowcase",
@@ -60500,7 +60512,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/ResearchPage.jsx": {
-    "sha256": "9e5b47c387566cb71309c31f132283c98b5ca1e7834333a741d041b1e1321fcc",
+    "sha256": "ea874050f25039f970ead83c98ff210200d4e1f309967d7a45d9134d106295ab",
     "definitions": [
       {
         "name": "formatCount",
@@ -62621,7 +62633,7 @@
     "anonymous_functions": 56
   },
   "frontend/src/pages/WorldRatingPage.jsx": {
-    "sha256": "eef630121d97b64a877b70294b793cfc413a48d122a02b66717abb374764fe59",
+    "sha256": "c05f5e54f54adee55f6db8f487957295dc7ada28a8c29e0273d8c0662134fd3e",
     "definitions": [
       {
         "name": "SortableTh",
