@@ -183,7 +183,7 @@
   box-sizing: content-box;
   padding: 8px;
   border-radius: 9999px;
-  background: rgba(173, 138, 72, 0.16);
+  background: color-mix(in srgb, var(--color-tint) 11.2%, transparent);
   color: var(--z4-gold-ink);
   transition: transform 0.25s ease, background-color 0.2s ease;
 }
@@ -460,7 +460,7 @@
 }
 @media (pointer: coarse) { .z4-info__btn { width: 44px; height: 44px; } }
 .z4-info__btn:hover, .z4-info.is-open .z4-info__btn {
-  background: rgba(173, 138, 72, 0.12);
+  background: color-mix(in srgb, var(--color-tint) 8.4%, transparent);
   color: var(--z4-gold-ink);
 }
 .z4-info__pop {

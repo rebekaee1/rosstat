@@ -14,6 +14,9 @@
   --color-champagne: #AD8A48;
   --color-champagne-muted: #8A6B35;
   --color-champagne-ink: #1E3A6E;
+  /* Проход дизайна 15.11: холодная основа всех лёгких подложек (подсказки, выбранные строки, наведение). Раньше они брали
+     золото `champagne` с альфой 5–18 % и давали бежевые плашки. Один токен — меняется здесь. */
+  --color-tint: #2C4A8A;
   --color-ivory: #202A3C;
   --color-ivory-muted: #465369;
   --color-surface: #FDFDFE;
@@ -69,6 +72,7 @@
   --color-champagne: #D0B47D;
   --color-champagne-muted: #E4C994;
   --color-champagne-ink: #D0B47D;
+  --color-tint: #9DB4DE;
   --color-ivory: #EDF1F7;
   --color-ivory-muted: #C5CFDE;
   --color-surface: #202D40;

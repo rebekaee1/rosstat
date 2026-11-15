@@ -89,7 +89,7 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
 .fe-contrast-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .fe-contrast-side { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; min-width: 0; padding: 10px 12px; border-radius: 14px; background: var(--color-obsidian-light); }
 .fe-contrast-side > .fe-num { margin-top: auto; }
-.fe-contrast-ratio { padding: 3px 9px; border-radius: 999px; background: rgba(173, 138, 72, 0.16); color: var(--color-champagne-ink); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.fe-contrast-ratio { padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-tint) 11.2%, transparent); color: var(--color-champagne-ink); font-size: 12px; font-weight: 700; white-space: nowrap; }
 
 /* Линия примера на странице сравнения «рисуется» один раз слева направо. */
 @keyframes fe-draw-line { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }

@@ -7,7 +7,7 @@
   max-width: 34rem;
   padding: 14px 16px 16px;
   border-radius: 24px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-champagne) 16%, transparent), transparent 75%), var(--fe-l1-bg); box-shadow: var(--fe-card-shadow);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-tint) 11.2%, transparent), transparent 75%), var(--fe-l1-bg); box-shadow: var(--fe-card-shadow);
 }
 .z3-add-panel__title { margin: 0; color: var(--color-text-primary); font-size: 15px; font-weight: 650; line-height: 1.3; }
 .z3-add-panel__text { margin: 4px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.5; }
@@ -20,13 +20,13 @@
   color: var(--color-champagne-ink);
   font-weight: 600;
 }
-.z3-add-panel .fe-chip.z3-add-chip:not(.is-active):not(:disabled):hover { background: color-mix(in srgb, var(--color-champagne) 12%, var(--color-surface)); }
+.z3-add-panel .fe-chip.z3-add-chip:not(.is-active):not(:disabled):hover { background: color-mix(in srgb, var(--color-tint) 8.4%, var(--color-surface)); }
 
 /* ── Рейтинг: строки-карточки на телефоне нажимаются (шеврон, подсветка, медали) ───── */
 .w2-rank-chev { color: var(--color-text-tertiary); opacity: 0.75; }
-.w2-rank-row:active { background: color-mix(in srgb, var(--color-champagne) 12%, transparent); }
+.w2-rank-row:active { background: color-mix(in srgb, var(--color-tint) 8.4%, transparent); }
 @media (hover: hover) {
-  .w2-rank-row:hover { background: color-mix(in srgb, var(--color-champagne) 7%, transparent); }
+  .w2-rank-row:hover { background: color-mix(in srgb, var(--color-tint) 4.9%, transparent); }
 }
 @media (hover: hover) and (min-width: 640px) {
   .w2-rank-row:hover .w2-rank-chev { color: var(--color-champagne-ink); }

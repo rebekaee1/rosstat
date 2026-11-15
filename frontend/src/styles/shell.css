@@ -59,7 +59,7 @@
 /* Ссылка растянута на всю плитку: нажимается и число, и подпись. */
 .fe-scope-stat__link { display: inline-flex; align-items: baseline; gap: 4px; color: inherit; text-decoration: none; }
 .fe-scope-stat__link::after { content: ''; position: absolute; z-index: 1; inset: -4px 0; border-radius: 12px; }
-.fe-scope-stat__link:hover::after { background: color-mix(in srgb, var(--color-champagne) 12%, transparent); }
+.fe-scope-stat__link:hover::after { background: color-mix(in srgb, var(--color-tint) 8.4%, transparent); }
 .fe-scope-stat__link:focus-visible { outline: none; }
 .fe-scope-stat__link:focus-visible::after { outline: 2px solid var(--color-champagne-ink); outline-offset: 1px; }
 .fe-scope-stat__label {
@@ -189,7 +189,7 @@
 .fe-rotate-in { display: inline-block; max-width: 100%; vertical-align: bottom; animation: fe-rotate-in 0.35s var(--fe-ease-out) both; }
 
 /* ── Диалог поиска ───────────────────────────────────────────────────────── */
-.fe-search-row:active { background: rgba(173, 138, 72, 0.16); }
+.fe-search-row:active { background: color-mix(in srgb, var(--color-tint) 11.2%, transparent); }
 @media (pointer: coarse) {
   .fe-search-row { min-height: 60px; }
 }
@@ -308,7 +308,7 @@
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: rgba(173, 138, 72, 0.14);
+  background: color-mix(in srgb, var(--color-tint) 9.8%, transparent);
   color: var(--color-champagne-ink);
 }
 
@@ -409,7 +409,7 @@ main#main-content .fe-ssr-hold { padding-top: 2.75rem; }
   width: 36px;
   height: 36px;
   border-radius: 9999px;
-  background: rgba(173, 138, 72, 0.08);
+  background: color-mix(in srgb, var(--color-tint) 5.6%, transparent);
   font-size: 20px;
   line-height: 1;
   box-shadow: var(--fe-l2-shadow);
@@ -471,7 +471,7 @@ main#main-content .fe-ssr-hold { padding-top: 2.75rem; }
 .fe-mnav-scroll { min-height: 0; flex: 1; padding: 12px 12px 8px; overflow-y: auto; overscroll-behavior: contain; }
 .fe-mnav-foot { flex: none; padding: 10px 12px 12px; background: var(--color-surface); }
 .fe-navbar-mobile-menu .fe-mnav-link { transition: background-color 0.15s ease, color 0.15s ease; }
-.fe-navbar-mobile-menu .fe-mnav-link:active { background: rgba(173, 138, 72, 0.12); }
+.fe-navbar-mobile-menu .fe-mnav-link:active { background: color-mix(in srgb, var(--color-tint) 8.4%, transparent); }
 @keyframes fe-mnav-in {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: none; }

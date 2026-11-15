@@ -109,7 +109,7 @@
   text-align: left;
   background: transparent;
 }
-.fe-cal-upcoming__item:hover { background: rgba(173, 138, 72, 0.1); }
+.fe-cal-upcoming__item:hover { background: color-mix(in srgb, var(--color-tint) 7%, transparent); }
 .fe-cal-upcoming__dot { flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 9999px; }
 .fe-cal-upcoming__main { display: flex; flex-direction: column; min-width: 0; }
 .fe-cal-upcoming__name { font-size: 14px; font-weight: 600; line-height: 1.3; color: var(--color-text-primary); }
@@ -121,7 +121,7 @@
   isolation: isolate;
   -webkit-tap-highlight-color: transparent;
 }
-a.fe-today-card:active { background-color: rgba(173, 138, 72, 0.09); }
+a.fe-today-card:active { background-color: color-mix(in srgb, var(--color-tint) 6.3%, transparent); }
 .fe-today-card__asof {
   margin: -2px 0 0;
   color: var(--color-text-primary);
@@ -161,7 +161,7 @@ a.fe-today-card:active { background-color: rgba(173, 138, 72, 0.09); }
   min-height: 38px; padding: 0 14px; border-radius: 9999px;
   font-size: 13px; font-weight: 600; color: var(--color-text-secondary);
 }
-.fe-map-shape button[aria-pressed='true'] { background: rgba(173, 138, 72, 0.18); color: var(--color-champagne-ink); }
+.fe-map-shape button[aria-pressed='true'] { background: color-mix(in srgb, var(--color-tint) 12.6%, transparent); color: var(--color-champagne-ink); }
 
 /* ── Рейтинг регионов на странице «Регионы России» ─────────────────────────────────────────────── */
 .fe-rank {
@@ -184,7 +184,7 @@ a.fe-today-card:active { background-color: rgba(173, 138, 72, 0.09); }
   color: var(--color-text-primary);
   text-decoration: none;
 }
-.fe-rank__row:hover { background: rgba(173, 138, 72, 0.08); }
+.fe-rank__row:hover { background: color-mix(in srgb, var(--color-tint) 5.6%, transparent); }
 .fe-rank__place {
   grid-area: place;
   display: inline-flex; align-items: center; justify-content: center; gap: 2px;
@@ -249,7 +249,7 @@ a.fe-today-card:active { background-color: rgba(173, 138, 72, 0.09); }
   font-size: 14px; line-height: 1.35; color: var(--color-text-primary);
 }
 .fe-topic-row__main:hover { background: var(--color-surface-hover); }
-.fe-topic-row__main.is-active { background: rgba(173, 138, 72, 0.15); font-weight: 600; color: var(--color-champagne-ink); }
+.fe-topic-row__main.is-active { background: color-mix(in srgb, var(--color-tint) 10.5%, transparent); font-weight: 600; color: var(--color-champagne-ink); }
 .fe-topic-row__info {
   display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; min-height: 44px;
   color: var(--color-text-secondary); border-radius: 10px;

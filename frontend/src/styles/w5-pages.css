@@ -132,7 +132,7 @@
   width: 40px;
   height: 40px;
   border-radius: 9999px;
-  background: rgba(173, 138, 72, 0.1);
+  background: color-mix(in srgb, var(--color-tint) 7%, transparent);
   font-family: var(--font-display);
   font-weight: 700;
   color: var(--color-champagne-ink);
@@ -223,7 +223,7 @@
   color: var(--color-text-secondary);
   text-decoration: none;
 }
-.w5-toc a:hover { background: rgba(173, 138, 72, 0.1); color: var(--color-text-primary); }
+.w5-toc a:hover { background: color-mix(in srgb, var(--color-tint) 7%, transparent); color: var(--color-text-primary); }
 @media (pointer: coarse) { .w5-toc a { min-height: 44px; } }
 
 /* ── Вход, регистрация, аккаунт ──────────────────────────────────────────── */
@@ -396,7 +396,7 @@
   width: 24px;
   height: 24px;
   border-radius: 9999px;
-  background: rgba(173, 138, 72, 0.14);
+  background: color-mix(in srgb, var(--color-tint) 9.8%, transparent);
   font-size: 13px;
   font-weight: 700;
   color: var(--color-champagne-ink);

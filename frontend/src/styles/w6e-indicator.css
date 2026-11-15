@@ -114,7 +114,7 @@
   margin-top: 12px;
   padding: 10px 12px;
   border-radius: 16px;
-  background: rgba(173, 138, 72, 0.1);
+  background: color-mix(in srgb, var(--color-tint) 7%, transparent);
   color: var(--color-text-primary);
   font-size: 13px;
   line-height: 1.4;

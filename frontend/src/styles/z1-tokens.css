@@ -473,3 +473,8 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
   --fe-glass-l1: rgba(255, 255, 255, 0.9);
   --fe-glass-l1-soft: rgba(255, 255, 255, 0.88);
 }
+
+/* Проход дизайна 15.11 (утверждено координатором): лёгкие подложки Tailwind `bg-champagne/5…25` (подсказки, выбранные строки
+   и дни, наведение, плитки иконок — ~45 мест в JSX) берут холодный `--color-tint` вместо золота. Переопределяется переменная
+   только на таких элементах, поэтому линии, точки и текст `text-champagne` в других местах остаются золотыми. */
+[class*='bg-champagne/'] { --color-champagne: var(--color-tint); }

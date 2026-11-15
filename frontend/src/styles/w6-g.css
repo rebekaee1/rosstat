@@ -22,7 +22,7 @@
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--color-champagne) 7%, transparent);
+  background: color-mix(in srgb, var(--color-tint) 4.9%, transparent);
   box-shadow: var(--fe-l2-shadow);
 }
 .fe-compare-demo__text {
@@ -216,7 +216,7 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-champagne) 12%, transparent);
+  background: color-mix(in srgb, var(--color-tint) 8.4%, transparent);
   color: var(--color-champagne-ink);
   font-size: 1.125rem;
   font-weight: 650;
@@ -306,7 +306,7 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 0.75rem;
-  background: color-mix(in srgb, var(--color-champagne) 14%, transparent);
+  background: color-mix(in srgb, var(--color-tint) 9.8%, transparent);
   color: var(--color-champagne-ink);
 }
 .fe-w6g-showcase__body { display: grid; gap: 0.125rem; min-width: 0; }
@@ -462,7 +462,7 @@
   margin-top: 0.75rem;
   padding: 0.625rem 0.875rem;
   border-radius: 0.875rem;
-  background: color-mix(in srgb, var(--color-champagne) 8%, transparent);
+  background: color-mix(in srgb, var(--color-tint) 5.6%, transparent);
   font-size: 0.8125rem;
   line-height: 1.4;
   color: var(--color-text-primary);
