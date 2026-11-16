@@ -153,7 +153,8 @@ async def _world_ingest(db, start: datetime, end: datetime) -> dict[str, Any]:
         s["runs"][status] = int(runs)
         s["datasets_ok"] += int(ok or 0)
         s["datasets_failed"] += int(failed or 0)
-    last = await db.scalar(select(func.max(WorldIngestRun.completed_at)).where(WorldIngestRun.status == "success"))
+    # Статусы запусков: ok / partial / failed / running (проверено на боевой базе 16.11.2026).
+    last = await db.scalar(select(func.max(WorldIngestRun.completed_at)).where(WorldIngestRun.status == "ok"))
     return {"by_source": by_source, "runs": sum(sum(s["runs"].values()) for s in by_source.values()),
             "datasets_failed": sum(s["datasets_failed"] for s in by_source.values()),
             "last_success_utc": last.isoformat() if last else None}
@@ -223,7 +224,14 @@ async def _calendar(db, d: date) -> dict[str, Any]:
     overdue = int(await db.scalar(select(func.count()).select_from(EconomicEvent).where(
         EconomicEvent.scheduled_date < d, EconomicEvent.scheduled_date >= d - timedelta(days=14),
         EconomicEvent.status == "scheduled", EconomicEvent.actual_date.is_(None))) or 0)
-    return {"day": [row(e) for e in day], "next_3_days": [row(e) for e in nxt],
+    # Ежедневные ставки (RUONIA и т. п.) повторяются каждый день и забивают список: название — один раз.
+    seen: set[str] = set()
+    upcoming = []
+    for e in nxt:
+        if e.title not in seen:
+            seen.add(e.title)
+            upcoming.append(e)
+    return {"day": [row(e) for e in day], "next_3_days": [row(e) for e in upcoming],
             "scheduled_but_not_released_14d": overdue}
 
 

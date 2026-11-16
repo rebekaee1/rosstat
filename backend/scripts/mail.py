@@ -14,6 +14,8 @@
                                                        # «подтвердите почту» неподтверждённым адресам
     python /app/scripts/mail.py bounces                # один проход разбора отказов (IMAP, только чтение)
     python /app/scripts/mail.py watch-digest [--send]  # сводка «колокольчика»: без --send только счёт
+    python /app/scripts/mail.py funnel [--campaign ключ] [--json]   # воронка выпуска: дошло, открыли, перешли, вернулись
+    python /app/scripts/mail.py sync-clicks                         # перенести переходы из сессий сайта в события писем
     python /app/scripts/mail.py campaign issue.json --send [--include-unverified] [--max 50]
                                                        # ЛЮДЯМ; только по команде владельца и при
                                                        # RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=true
@@ -80,6 +82,8 @@ def cmd_check(_args) -> int:
           f"от {bulk.from_addr or '—'}, пароль {_yes(bulk.password)}")
     print(f"разбор отказов (IMAP):              {settings.mail_bounce_poll_enabled} -> {settings.mail_imap_host}:{settings.mail_imap_port}")
     print(f"письма «колокольчика»:              {settings.mail_watch_digest_enabled}, {settings.mail_watch_digest_hour_msk}:15 МСК")
+    print(f"учёт открытий и переходов:          {settings.mail_tracking_enabled}")
+    print(f"итог выпуска в Telegram:            {settings.mail_report_enabled}, {settings.mail_report_hour_msk}:{int(settings.mail_report_minute):02d} МСК")
     if not (settings.mail_smtp_user and settings.mail_smtp_password):
         return 1
     try:
@@ -243,6 +247,34 @@ async def cmd_bounces(_args) -> int:
     return 0
 
 
+async def cmd_funnel(args) -> int:
+    """Воронка выпуска (ADR-0034): только суммы. Без --campaign — последний выпуск."""
+    import re
+
+    from app.database import async_session
+    from app.services.mail import funnel
+
+    async with async_session() as db:
+        if args.json:
+            key = args.campaign or next((c["key"] for c in await funnel.campaigns(db, limit=1)), None)
+            data = await funnel.campaign_funnel(db, key) if key else {"has_data": False}
+            print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+        else:
+            print(re.sub(r"</?b>", "", await funnel.report_text(db, args.campaign)))
+    return 0
+
+
+async def cmd_sync_clicks(_args) -> int:
+    from app.database import async_session
+    from app.services.mail import tracking
+
+    async with async_session() as db:
+        n = await tracking.sync_clicks(db)
+        await db.commit()
+    print(f"новых переходов записано: {n}")
+    return 0
+
+
 async def cmd_watch_digest(args) -> int:
     """Сводка «колокольчика»: без --send только счёт (кому ушло бы сегодня)."""
     from app.database import async_session
@@ -284,13 +316,17 @@ def main() -> int:
     rc.add_argument("--send", action="store_true")
     rc.add_argument("--max", type=int)
     sub.add_parser("bounces", help="один проход разбора отказов по IMAP")
+    fn = sub.add_parser("funnel", help="воронка выпуска: дошло, открыли, перешли, вернулись, отписались")
+    fn.add_argument("--campaign")
+    fn.add_argument("--json", action="store_true")
+    sub.add_parser("sync-clicks", help="перенести переходы из сессий сайта в события писем")
     wd = sub.add_parser("watch-digest", help="сводка «колокольчика» (без --send — только счёт)")
     wd.add_argument("--send", action="store_true")
     args = p.parse_args()
     try:
         tokens._secret()
     except tokens.TokenSecretMissing:
-        if args.cmd not in ("check",):
+        if args.cmd not in ("check", "funnel", "sync-clicks"):
             print("RUSTATS_MAIL_TOKEN_SECRET не задан (нужен для ссылок в письмах)")
             return 1
     if args.cmd == "check":
@@ -299,7 +335,8 @@ def main() -> int:
         return cmd_render(args)
     return asyncio.run({"test": cmd_test, "audience": cmd_audience, "campaign": cmd_campaign,
                         "reconfirm": cmd_reconfirm, "bounces": cmd_bounces,
-                        "watch-digest": cmd_watch_digest}[args.cmd](args))
+                        "watch-digest": cmd_watch_digest, "funnel": cmd_funnel,
+                        "sync-clicks": cmd_sync_clicks}[args.cmd](args))
 
 
 if __name__ == "__main__":

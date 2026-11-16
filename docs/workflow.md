@@ -744,6 +744,29 @@ docker compose exec -T backend python /app/scripts/mail.py reconfirm --send --ma
 
 **Выпуск рассылки.** `scripts/mail.py audience` (счёт, без адресов) → `campaign issue.json` (сухой прогон) → `campaign issue.json --test-to rebeka.ee@yandex.ru` → `campaign issue.json --send` только по команде владельца. Запуск повторяем, пока отчёт не перестанет показывать `stopped: max_per_run`; `server_limit` — остановиться и разобрать (лимит или подозрение на спам у почтового сервиса). Журнал: `select status, error, count(*) from mail_outbox where campaign='…' group by 1, 2`.
 
+## Воронка письма (ADR-0034)
+
+Учёт открытий и переходов из писем и отчёт по выпуску в служебный Telegram. Решение и пределы — [ADR-0034](adr/0034-mail-funnel-tracking-and-pulse-audit.md).
+
+Флаги (`/opt/rosstat/.env`, по умолчанию выключены):
+- `RUSTATS_MAIL_TRACKING_ENABLED` — пиксель открытия и метка человека на ссылках рассылки; задача `mail_click_sync` (раз в 20 минут). Включать только после публикации раздела политики (`VITE_PRIVACY_MAIL_TRACKING=true`).
+- `RUSTATS_MAIL_REPORT_ENABLED` — итог выпуска через сутки и через 7 суток, `RUSTATS_MAIL_REPORT_HOUR_MSK` / `RUSTATS_MAIL_REPORT_MINUTE` (09:20 МСК).
+
+Команды (контейнер backend, адреса на экран не выводятся):
+
+```bash
+docker compose exec -T backend python /app/scripts/mail.py check          # в выводе — включён ли учёт и отчёт
+docker compose exec -T backend python /app/scripts/mail.py funnel         # воронка последнего выпуска словами
+docker compose exec -T backend python /app/scripts/mail.py funnel --campaign <ключ> --json
+docker compose exec -T backend python /app/scripts/mail.py sync-clicks    # перенести переходы сейчас, не ждать задачу
+```
+
+В служебном боте: `/mail`, `/mail <ключ>`, кнопка «✉️ Рассылка».
+
+Порядок включения: миграция `20261116_mail_tracking` → политика → флаги → пересоздать `backend` и `scheduler` (сначала `docker diff`) → выпуск на свой аккаунт, открыть письмо, `mail.py funnel`. Проверочное письмо `--test-to` учёт не несёт: у него нет получателя-аккаунта.
+
+Что читать в отчёте с оговоркой: доля открытий занижена (почта без картинок), «открыла программа» — не человек; «вернулись» сравнивать с числом за такое же окно до письма, а не с нулём; срок, который ещё не истёк, помечен.
+
 ## Персональный выпуск рассылки (ADR-0033)
 
 Команда — `scripts/newsletter_personal.py` в контейнере backend (адреса на экран не выводятся):

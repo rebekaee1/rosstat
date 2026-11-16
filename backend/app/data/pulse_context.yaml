@@ -33,6 +33,13 @@ entries:
     expect: После включения переходы из писем несут utm_content p<N>-<вид блока> (личные) и b<N>-<тип> (редакция); рост визитов на страницы «своих» рядов подписчиков в день выпуска — эффект рассылки.
     until: 2027-03-31
     commit: 2ae044c2
+  - id: mail-funnel
+    date: 2026-11-16
+    kind: новый раздел
+    title: "Воронка письма и ревизия Пульса (ADR-0034): учёт открытий и переходов, отчёт по выпуску; пока выключено."
+    expect: В снимке появились разделы mail, consents, cabinet, public_bot, research, world_ingest, freshness, telegram, calendar. До первого выпуска людям mail.last_campaign пуст — это «рассылка ещё не уходила», а не «никто не открыл». Открытия программой (open_machine) — не интерес людей.
+    until: 2027-03-31
+    commit: 77b5d441
   - id: bot-filter-google-farm
     date: 2026-11-14
     kind: смена счёта метрик
