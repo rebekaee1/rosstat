@@ -51,6 +51,9 @@ const setFlag = (welcome_enabled, visits = 1) => {
 };
 const advance = async (ms) => { await act(async () => { await vi.advanceTimersByTimeAsync(ms); }); };
 const screenEl = () => screen.queryByTestId('welcome-screen');
+const title = (t, step) => t(`welcome.${step}.title`).replace('|', ' ');
+const heading = () => screen.getByRole('heading', { level: 2 }).textContent;
+const start = () => fireEvent.click(screen.getByTestId('welcome-start'));
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] });
@@ -65,48 +68,79 @@ beforeEach(() => {
 afterEach(() => { vi.useRealTimers(); });
 
 describe('WelcomeScreen', () => {
-  it('четыре шага по порядку, на каждом заголовок шага; «Дальше» листает, последний шаг предлагает аккаунт', () => {
+  it('приветствие, затем четыре шага по порядку; «Дальше» листает, последний шаг предлагает аккаунт', () => {
     wrap(<WelcomeScreen onClose={() => {}} />);
     const dialog = screenEl();
     expect(dialog.getAttribute('role')).toBe('dialog');
     expect(dialog.getAttribute('aria-modal')).toBe('true');
-    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe(ru('welcome.find.title'));
+    expect(dialog.getAttribute('data-wl-kind')).toBe('hello');
+    expect(heading()).toBe(title(ru, 'hello'));
+    expect(screen.queryByTestId('welcome-next')).toBeNull(); // на приветствии одна кнопка
+    start();
+    expect(dialog.getAttribute('data-wl-kind')).toBe('step');
+    expect(heading()).toBe(title(ru, 'find'));
     for (const step of ['fresh', 'telegram', 'account']) {
       fireEvent.click(screen.getByTestId('welcome-next'));
-      expect(screen.getByRole('heading', { level: 2 }).textContent).toBe(ru(`welcome.${step}.title`));
+      expect(heading()).toBe(title(ru, step));
     }
     expect(screen.queryByTestId('welcome-next')).toBeNull();
     const register = screen.getByTestId('welcome-register');
     expect(register.getAttribute('href')).toBe('/register?next=%2F');
-    expect(register.className).toContain('fe-cta-gold');
-    expect(track.mock.calls.filter(([name]) => name === 'welcome_step').map(([, p]) => p.step)).toEqual(['fresh', 'telegram', 'account']);
-    expect(track.mock.calls.filter(([name]) => name === 'welcome_view')).toHaveLength(1);
+    expect(register.className).toContain('fe-wl__btn--gold');
+    expect(document.querySelectorAll('.fe-wl__btn--gold')).toHaveLength(1);
+    expect(track.mock.calls.filter(([name]) => name === 'welcome_step').map(([, p]) => p.step)).toEqual(['find', 'fresh', 'telegram', 'account']);
+    expect(track.mock.calls.filter(([name]) => name === 'welcome_view')).toEqual([['welcome_view', { trigger: 'auto', audience: 'ru' }]]);
   });
 
-  it('«Пропустить» есть на каждом шаге, закрывает экран и запоминает исход', async () => {
+  it('уходящий экран остаётся на месте на время перехода и не ловит фокус', async () => {
+    wrap(<WelcomeScreen onClose={() => {}} />);
+    start();
+    const out = document.querySelector('.fe-wl__copy[data-out="true"]');
+    expect(out.getAttribute('data-screen')).toBe('hello');
+    expect(out.getAttribute('aria-hidden')).toBe('true');
+    expect(out.hasAttribute('inert')).toBe(true);
+    await advance(400);
+    expect(document.querySelector('.fe-wl__copy[data-out="true"]')).toBeNull();
+  });
+
+  it('«Пропустить» есть на каждом экране, закрывает и запоминает исход', async () => {
     const onClose = vi.fn();
     wrap(<WelcomeScreen onClose={onClose} />);
+    expect(screen.getByRole('button', { name: ru('welcome.skipAria') })).toBeTruthy();
+    start();
     for (let i = 0; i < 3; i += 1) {
       expect(screen.getByRole('button', { name: ru('welcome.skipAria') })).toBeTruthy();
       fireEvent.click(screen.getByTestId('welcome-next'));
     }
     fireEvent.click(screen.getByRole('button', { name: ru('welcome.skipAria') }));
-    await advance(400);
+    expect(screenEl().getAttribute('data-wl-leaving')).toBe('skip');
+    await advance(700);
     expect(onClose).toHaveBeenCalledWith('skip');
     expect(readWelcomeSeen().outcome).toBe('skip');
     expect(track).toHaveBeenCalledWith('welcome_skip', { step: 'account', via: 'button' });
+  });
+
+  it('«На сайт» на последнем шаге поднимает занавес и закрывает', async () => {
+    const onClose = vi.fn();
+    wrap(<WelcomeScreen initialStep={4} onClose={onClose} />);
+    fireEvent.click(screen.getByTestId('welcome-done'));
+    expect(screenEl().getAttribute('data-wl-leaving')).toBe('done');
+    await advance(1400);
+    expect(onClose).toHaveBeenCalledWith('done');
+    expect(track).toHaveBeenCalledWith('welcome_done');
   });
 
   it('клавиатура: Esc пропускает, стрелки листают', async () => {
     const onClose = vi.fn();
     wrap(<WelcomeScreen onClose={onClose} />);
     fireEvent.keyDown(document, { key: 'ArrowRight' });
-    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe(ru('welcome.fresh.title'));
+    fireEvent.keyDown(document, { key: 'ArrowRight' });
+    expect(heading()).toBe(title(ru, 'fresh'));
     fireEvent.keyDown(document, { key: 'ArrowLeft' });
-    fireEvent.keyDown(document, { key: 'ArrowLeft' });
-    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe(ru('welcome.find.title'));
+    fireEvent.keyDown(document, { key: 'ArrowLeft' }); // с первого шага назад на приветствие не уходим
+    expect(heading()).toBe(title(ru, 'find'));
     fireEvent.keyDown(document, { key: 'Escape' });
-    await advance(400);
+    await advance(700);
     expect(onClose).toHaveBeenCalledWith('skip');
   });
 
@@ -122,9 +156,7 @@ describe('WelcomeScreen', () => {
 
   it('шаг Telegram ведёт на бота и канал в новой вкладке и не закрывает экран', () => {
     const onClose = vi.fn();
-    wrap(<WelcomeScreen onClose={onClose} />);
-    fireEvent.click(screen.getByTestId('welcome-next'));
-    fireEvent.click(screen.getByTestId('welcome-next'));
+    wrap(<WelcomeScreen initialStep={3} onClose={onClose} />);
     const bot = screen.getByRole('link', { name: new RegExp(ru('welcome.telegram.bot')) });
     const channel = screen.getByRole('link', { name: new RegExp(ru('welcome.telegram.channel')) });
     expect(bot.getAttribute('href')).toBe('https://t.me/ForecastEconomyBot?start=site_welcome');
@@ -141,9 +173,8 @@ describe('WelcomeScreen', () => {
 
   it('без кабинета на сервере не обещает «сохранять» и «следить»', () => {
     cabinet.enabled = false;
-    wrap(<WelcomeScreen onClose={() => {}} />);
-    for (let i = 0; i < 3; i += 1) fireEvent.click(screen.getByTestId('welcome-next'));
-    const points = [...document.querySelectorAll('.fe-wl__points li')].map((li) => li.textContent);
+    wrap(<WelcomeScreen initialStep={4} onClose={() => {}} />);
+    const points = [...document.querySelectorAll('.fe-wl__copy:not([data-out]) .fe-wl__points li')].map((li) => li.textContent);
     expect(points).toEqual([ru('welcome.account.download')]);
   });
 
@@ -158,10 +189,35 @@ describe('WelcomeScreen', () => {
     window.matchMedia = original;
   });
 
-  it('английская версия: те же шаги на английском', () => {
+  it('английская версия: вместо Telegram — сравнение стран, бот и канал не предлагаются', () => {
     wrap(<WelcomeScreen onClose={() => {}} />, { t: en, locale: 'en' });
-    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe(en('welcome.find.title'));
+    expect(heading()).toBe(title(en, 'hello'));
     expect(screen.getByRole('button', { name: en('welcome.skipAria') })).toBeTruthy();
+    start();
+    const seen = [heading()];
+    for (let i = 0; i < 3; i += 1) {
+      fireEvent.click(screen.getByTestId('welcome-next'));
+      seen.push(heading());
+      expect(document.querySelector('.fe-wl__copy:not([data-out]) a[href*="t.me"]')).toBeNull();
+    }
+    expect(seen).toEqual(['find', 'fresh', 'compare', 'account'].map((step) => title(en, step)));
+  });
+
+  it('иностранному посетителю показываются ведомства его страны (пояс устройства и язык браузера)', () => {
+    const original = Intl.DateTimeFormat;
+    vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(() => ({ resolvedOptions: () => ({ timeZone: 'Europe/London' }) }));
+    wrap(<WelcomeScreen initialStep={2} onClose={() => {}} />, { t: en, locale: 'en' });
+    const chips = [...document.querySelectorAll('.fe-wl-svg__chip')].map((el) => el.textContent);
+    expect(chips).toEqual(['ONS', 'Bank of England', 'IMF']);
+    expect(track).toHaveBeenCalledWith('welcome_view', { trigger: 'auto', audience: 'GB' });
+    Intl.DateTimeFormat.mockRestore?.();
+    expect(Intl.DateTimeFormat).toBe(original);
+  });
+
+  it('русская версия берёт подписи источников из словаря, страну посетителя не определяет', () => {
+    wrap(<WelcomeScreen initialStep={2} onClose={() => {}} />);
+    const chips = [...document.querySelectorAll('.fe-wl-svg__chip')].map((el) => el.textContent);
+    expect(chips).toEqual([ru('welcome.fresh.source1'), ru('welcome.fresh.source2'), ru('welcome.fresh.source3')]);
   });
 });
 
@@ -182,9 +238,9 @@ describe('WelcomeGate', () => {
     await vi.dynamicImportSettled();
     await advance(0);
     expect(screenEl()).not.toBeNull();
-    expect(track).toHaveBeenCalledWith('welcome_view', { trigger: 'auto' });
+    expect(track).toHaveBeenCalledWith('welcome_view', { trigger: 'auto', audience: 'ru' });
     fireEvent.click(screen.getByRole('button', { name: ru('welcome.skipAria') }));
-    await advance(400);
+    await advance(700);
     expect(screenEl()).toBeNull();
     await advance(WELCOME_OPEN_DELAY_MS + 50);
     expect(screenEl()).toBeNull();
@@ -220,9 +276,9 @@ describe('WelcomeGate', () => {
     await vi.dynamicImportSettled();
     await advance(0);
     expect(screenEl()).not.toBeNull();
-    expect(track).toHaveBeenCalledWith('welcome_view', { trigger: 'manual' });
+    expect(track).toHaveBeenCalledWith('welcome_view', { trigger: 'manual', audience: 'ru' });
     fireEvent.click(screen.getByRole('button', { name: ru('welcome.skipAria') }));
-    await advance(400);
+    await advance(700);
     expect(screenEl()).toBeNull();
     expect(screen.getByTestId('where').textContent).toBe('/russia?x=2');
     fireEvent.click(screen.getByTestId('welcome-entry'));

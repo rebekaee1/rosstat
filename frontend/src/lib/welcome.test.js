@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
-  NEW_VISITOR_MAX_VISITS, TELEGRAM_BOT_URL, TELEGRAM_CHANNEL_URL, WELCOME_KEY, WELCOME_STEPS, canRemember, clampStep, isCrawlerUa,
-  isManualRequest, manualStartStep, markWelcomeSeen, readWelcomeSeen, shouldAutoOpenWelcome, welcomeMotionLevel,
+  NEW_VISITOR_MAX_VISITS, TELEGRAM_BOT_URL, TELEGRAM_CHANNEL_URL, WELCOME_KEY, WELCOME_STEPS, WELCOME_STEPS_EN, canRemember, clampStep,
+  isCrawlerUa, isManualRequest, layoutChips, manualStartStep, markWelcomeSeen, readWelcomeSeen, shouldAutoOpenWelcome, welcomeMotionLevel,
+  welcomeScreens,
 } from './welcome';
 
 function memoryStorage({ broken = false } = {}) {
@@ -88,7 +89,7 @@ describe('приветственный экран: память и служеб�
     expect(isManualRequest('?preview_locale=en&welcome=1')).toBe(true);
     expect(isManualRequest('?welcome=0')).toBe(false);
     expect(isManualRequest('')).toBe(false);
-    expect(manualStartStep('?welcome=1&welcome_step=3')).toBe(2);
+    expect(manualStartStep('?welcome=1&welcome_step=3')).toBe(3);
     expect(manualStartStep('?welcome=1&welcome_step=9')).toBe(0);
     expect(manualStartStep('?welcome=1')).toBe(0);
   });
@@ -114,8 +115,26 @@ describe('приветственный экран: память и служеб�
   it('четыре шага, аккаунт последним; ссылки Telegram ведут на бота и канал проекта', () => {
     expect(WELCOME_STEPS).toEqual(['find', 'fresh', 'telegram', 'account']);
     expect(clampStep(-1)).toBe(0);
-    expect(clampStep(99)).toBe(3);
+    expect(clampStep(99)).toBe(4);
     expect(TELEGRAM_BOT_URL).toMatch(/^https:\/\/t\.me\/ForecastEconomyBot\?start=[a-z_]+$/);
     expect(TELEGRAM_CHANNEL_URL).toBe('https://t.me/forecasteconomy');
+  });
+
+  it('перед шагами стоит приветствие; английская версия вместо Telegram показывает сравнение стран', () => {
+    expect(welcomeScreens('ru')).toEqual(['hello', 'find', 'fresh', 'telegram', 'account']);
+    expect(welcomeScreens('en')).toEqual(['hello', 'find', 'fresh', 'compare', 'account']);
+    expect(WELCOME_STEPS_EN).not.toContain('telegram');
+    expect(WELCOME_STEPS_EN.at(-1)).toBe('account');
+  });
+
+  it('плашки источников: ряд стоит по центру, лишняя не влезает и не рисуется', () => {
+    const short = layoutChips(['FRED', 'BLS', 'BEA']);
+    expect(short).toHaveLength(3);
+    const left = short[0].x - 40;
+    const right = 360 - (short[2].x + short[2].w);
+    expect(Math.abs(left - right)).toBeLessThan(1);
+    const long = layoutChips(['Statistics Canada', 'Bank of Canada', 'IMF']);
+    expect(long.map((c) => c.label)).toEqual(['Statistics Canada', 'Bank of Canada']);
+    for (const chip of long) expect(chip.x + chip.w).toBeLessThanOrEqual(360);
   });
 });

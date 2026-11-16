@@ -21,7 +21,19 @@ export const NEW_VISITOR_MAX_VISITS = 3;
 /** Пауза перед появлением: главная успевает нарисовать первый экран, заставка не мигает поверх пустой страницы. */
 export const WELCOME_OPEN_DELAY_MS = 700;
 
+/**
+ * Шаги по языку сайта. Перед ними всегда стоит экран-приветствие `hello` (он шагом не считается и в полосках не виден).
+ * Русская версия рассказывает про Telegram-бота и канал (они про экономику России и на русском).
+ * Английская (иностранная аудитория) вместо этого показывает сравнение стран: бот про Россию ей не по адресу.
+ */
 export const WELCOME_STEPS = Object.freeze(['find', 'fresh', 'telegram', 'account']);
+export const WELCOME_STEPS_EN = Object.freeze(['find', 'fresh', 'compare', 'account']);
+export const WELCOME_HELLO = 'hello';
+
+/** Экраны по порядку: приветствие и шаги для этого языка. */
+export function welcomeScreens(locale) {
+  return [WELCOME_HELLO, ...(locale === 'en' ? WELCOME_STEPS_EN : WELCOME_STEPS)];
+}
 
 export const TELEGRAM_BOT_URL = 'https://t.me/ForecastEconomyBot?start=site_welcome';
 export const TELEGRAM_CHANNEL_URL = 'https://t.me/forecasteconomy';
@@ -77,11 +89,11 @@ export function isManualRequest(search) {
   }
 }
 
-/** Шаг, с которого открыть экран вручную: `?welcome=1&welcome_step=3` (нужно при проверке на устройствах). По умолчанию первый. */
+/** Экран, с которого открыть вручную: `?welcome=1&welcome_step=3` — третий шаг (нужно при проверке на устройствах). Без параметра — приветствие (0). */
 export function manualStartStep(search) {
   try {
     const n = Number(new URLSearchParams(search || '').get('welcome_step'));
-    return Number.isInteger(n) && n >= 1 && n <= WELCOME_STEPS.length ? n - 1 : 0;
+    return Number.isInteger(n) && n >= 1 && n <= WELCOME_STEPS.length ? n : 0;
   } catch {
     return 0;
   }
@@ -119,6 +131,26 @@ export function welcomeMotionLevel(mode) {
 }
 
 /** Следующий шаг в пределах списка. */
-export function clampStep(index, total = WELCOME_STEPS.length) {
+export function clampStep(index, total = WELCOME_STEPS.length + 1) {
   return Math.max(0, Math.min(total - 1, Number(index) || 0));
+}
+
+/** Ширина плашки под подпись: в SVG текст заранее не измерить, считаем по числу знаков (с запасом). */
+export function chipWidth(label) {
+  return Math.round(38 + String(label).length * 6.5);
+}
+
+/** Сколько плашек помещается в ряд шириной 320 и откуда начинать, чтобы ряд стоял по центру. */
+export function layoutChips(labels, { max = 320, gap = 8 } = {}) {
+  const out = [];
+  let used = 0;
+  for (const label of labels) {
+    const w = chipWidth(label);
+    const next = used + (out.length ? gap : 0) + w;
+    if (next > max) break;
+    out.push({ label, w, x: used + (out.length ? gap : 0) });
+    used = next;
+  }
+  const start = 40 + (max - used) / 2;
+  return out.map((chip) => ({ ...chip, x: start + chip.x }));
 }

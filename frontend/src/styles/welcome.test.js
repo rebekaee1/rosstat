@@ -31,7 +31,7 @@ describe('welcome.css', () => {
   });
 
   it('«меньше движения» гасит всё: и системная настройка, и data-wl-motion="off"', () => {
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.fe-wl, \.fe-wl \*, \.fe-wl \*::before\s*\{\s*animation: none !important;\s*transition: none !important;/);
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.fe-wl, \.fe-wl \*, \.fe-wl \*::before, \.fe-wl \*::after\s*\{\s*animation: none !important;\s*transition: none !important;/);
     expect(css).toMatch(/\.fe-wl\[data-wl-motion='off'\] \*,[\s\S]*?animation: none !important;/);
     // Фоновое плавание только в полном режиме.
     for (const m of css.matchAll(/([^{}]+)\{[^{}]*infinite[^{}]*\}/g)) expect(m[1]).toContain("[data-wl-motion='full']");
@@ -41,12 +41,23 @@ describe('welcome.css', () => {
     const warm = [...css.matchAll(/rgba\(236, 214, 156, ([\d.]+)\)/g)].map((m) => Number(m[1]));
     expect(warm.length).toBeGreaterThan(0);
     expect(Math.max(...warm)).toBeLessThanOrEqual(0.18);
-    expect(css).not.toMatch(/background:[^;]*#C9A24D[^;]*;[^}]*min-height/);
+    // Золотая заливка кнопки — одна: «Создать аккаунт».
+    const goldFills = [...css.matchAll(/([^{}]+)\{[^{}]*background:[^;{}]*#E3C273[^{}]*\}/g)].map((m) => m[1].trim());
+    expect(goldFills).toEqual(['.fe-wl__btn--gold']);
   });
 
-  it('картинка F — кадры 2× из реестра бренда', () => {
+  it('картинка F — кадр 2× из реестра бренда; высота показа не больше половины кадра (1519 px)', () => {
     expect(css).toContain("url('/brand/emblem-f-2x.webp')");
-    expect(css).toContain("url('/brand/emblem-f-phone.webp')");
+    const caps = [...css.matchAll(/--wl-hfh: min\([\d.]+d?vh, (\d+)px\)/g)].map((m) => Number(m[1]));
+    expect(caps.length).toBeGreaterThan(2);
+    // На шагах F увеличена масштабом до 1,62: там она фон с прозрачностью .2, резкость кадра не видна.
+    expect(Math.max(...caps)).toBeLessThanOrEqual(760);
+  });
+
+  it('тёмная сцена: сапфир палитры сайта, размытия и светлого фона нет', () => {
+    expect(css).toMatch(/\.fe-wl \{[^}]*background: radial-gradient\([^;]*#0A1227/);
+    expect(css).not.toContain('#F4F5F7');
+    expect(css).toMatch(/html\[data-fe-welcome='open'\], html\[data-fe-welcome='open'\] body \{ background: #0A1227 !important; \}/);
   });
 });
 
@@ -55,7 +66,7 @@ describe('сцены и тексты приветственного экрана
     const texts = [...art.matchAll(/<text[^>]*>([^<{]*)</g)].map((m) => m[1].trim()).filter(Boolean);
     for (const text of texts) expect(text).not.toMatch(/\d/);
     for (const locale of ['ru', 'en']) {
-      for (const key of ['welcome.find.word', 'welcome.fresh.updated', 'welcome.account.saved', 'welcome.telegram.subscribe']) {
+      for (const key of ['welcome.find.word', 'welcome.fresh.updated', 'welcome.account.saved', 'welcome.telegram.subscribe', 'welcome.compare.home', 'welcome.compare.peer']) {
         expect(MESSAGES[locale][key]).not.toMatch(/\d/);
       }
     }
@@ -64,7 +75,7 @@ describe('сцены и тексты приветственного экрана
   it('тексты шагов короткие и без служебных слов', () => {
     for (const locale of ['ru', 'en']) {
       const dict = MESSAGES[locale];
-      for (const step of ['find', 'fresh', 'telegram', 'account']) {
+      for (const step of ['hello', 'find', 'fresh', 'telegram', 'compare', 'account']) {
         expect(dict[`welcome.${step}.title`].length).toBeLessThanOrEqual(40);
         const body = dict[`welcome.${step}.body`];
         if (body) expect(body.length).toBeLessThanOrEqual(150);
