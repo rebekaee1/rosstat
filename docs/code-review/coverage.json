@@ -4536,8 +4536,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "sha256": "fcb44b7701cb870f2fc88f7d71ce0c2e27cf3f477eea92208805cfc49a57315e",
-      "bytes": 26521,
+      "sha256": "342d9466dbe07bacd7ec8c38f1e9bc6419fe1c07b256fc013d49935d66c45f1e",
+      "bytes": 26543,
       "lines": 447,
       "code": true,
       "status": "reviewed",
@@ -7643,9 +7643,9 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "sha256": "79cce911bea807e26d5281bad081f61bd411917746beba841becb342531c3971",
-      "bytes": 17780,
-      "lines": 357,
+      "sha256": "984e2950eba14b19e7540e7fcb54d7c4fc7255040bcb36fdcbebd371d030ca32",
+      "bytes": 17817,
+      "lines": 358,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -10568,9 +10568,9 @@
     },
     {
       "path": "backend/tests/test_mail_tracking.py",
-      "sha256": "bf18d0c96eafeed9112b1137215fb9faae92a1ff17d1221902528953aced2d6e",
-      "bytes": 13624,
-      "lines": 233,
+      "sha256": "0038ce149e6858e5e6290fe92a60fc426538af725fd602f13fac4c5ea990f2dc",
+      "bytes": 13562,
+      "lines": 232,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -14676,9 +14676,9 @@
     },
     {
       "path": "docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md",
-      "sha256": "70fc79cf5f547cbe00a573c535b008702322376b8605d617eafa81df5329f18c",
-      "bytes": 17404,
-      "lines": 104,
+      "sha256": "64188ede2ef04230859b77f8a989587507891d6b26d4161fdacaf9c222af8c4f",
+      "bytes": 18999,
+      "lines": 111,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -15612,8 +15612,8 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "71a229bf24f7fd8fffb5ecfc857056c5f8e4706a8d910f2e41f9fd2161be02a0",
-      "bytes": 13573425,
+      "sha256": "0bf2fd20430a5b815033a1f7ba64fca75eebed87b380d4e3d0d9d46a268cafda",
+      "bytes": 13573473,
       "lines": 409496,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -16405,8 +16405,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "8c8ebaa1a65c44fb3be6502aeff4bed9822f6c18f30587ac2c87951c9471464e",
-      "bytes": 167758,
+      "sha256": "925dcde467ffc1f626f38ecee5df4cccbcfc440b8621ff2f13a7c68e44029c9f",
+      "bytes": 168080,
       "lines": 813,
       "code": false,
       "status": "reviewed",
@@ -33838,17 +33838,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "7857fac2788c06ce3097dd14c055438ac19418e6fd6f40379f4a5dce3a074356",
+  "ledger_sha256": "f1714c99c84034625db032b0fad7968a7c5595512d276b869ee7201ac9a282bb",
   "javascript_inventory_sha256": "6e5e88e03d563a8d7f81b50b8bebc0e04e836c127c17ae43614ff118a51c5a58",
-  "baseline_commit": "948476e8f085bca4c19edc9fe5b1af9611438609",
+  "baseline_commit": "7fbad4751002ce1f2014d5b29fbea10fd044be1a",
   "branch": "feat/newsletter-personal-first-issue",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/mechanism-inventory.json"
   ]
 }

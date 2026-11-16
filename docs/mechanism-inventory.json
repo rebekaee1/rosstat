@@ -1445,7 +1445,7 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "sha256": "fcb44b7701cb870f2fc88f7d71ce0c2e27cf3f477eea92208805cfc49a57315e",
+      "sha256": "342d9466dbe07bacd7ec8c38f1e9bc6419fe1c07b256fc013d49935d66c45f1e",
       "lines": 447
     },
     {
@@ -2595,8 +2595,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "sha256": "79cce911bea807e26d5281bad081f61bd411917746beba841becb342531c3971",
-      "lines": 357
+      "sha256": "984e2950eba14b19e7540e7fcb54d7c4fc7255040bcb36fdcbebd371d030ca32",
+      "lines": 358
     },
     {
       "path": "backend/scripts/public-bot-dialogs.py",
@@ -133855,7 +133855,7 @@
     {
       "path": "backend/scripts/newsletter_personal.py",
       "line": 162,
-      "end_line": 173,
+      "end_line": 174,
       "owner": "<module>",
       "conditions": [],
       "name": "_RAW_SQL",
@@ -133884,10 +133884,10 @@
         },
         {
           "key": "'rm'",
-          "expression": "'select d.month, d.value from region_monthly_data d join region_indicators i on i.id=d.indicator_id join regions r on r.id=d.region_id where i.code=:c and r.slug=:s order by d.month desc limit 1'",
+          "expression": "'select d.month, d.value from region_monthly_data d join region_indicators i on i.id=d.indicator_id join regions r on r.id=d.region_id where i.code=:c and r.slug=:s and d.value is not null order by d.month desc limit 1'",
           "expression_truncated": false,
-          "expression_chars": 195,
-          "ast_sha256": "6eceaa675c6a940d674d9fcdc270a899ad24bc12d4f3ba1b00b6b8c0921b7296"
+          "expression_chars": 219,
+          "ast_sha256": "f4c58e73f38754f624ee8580cc1e696aeabbde13749fd26e72ce7ef750a51e6a"
         },
         {
           "key": "'ra'",
@@ -133897,10 +133897,10 @@
           "ast_sha256": "54f2471c3f58d4ad50a12441745e853e9059926210b15980815e4e0445f8d3a3"
         }
       ],
-      "expression": "{'ru': 'select d.date, d.value from indicator_data d join indicators i on i.id=d.indicator_id where i.code=:c and d.value is not null order by d.date desc limit 1', 'w': 'select d.date, d.value from world_data_points d join world_indicators i on i.id=d.indicator_id join world_countries c on c.id=i.country_id where i.code=:c and c.slug=:s and d.value is not null order by d.date desc limit 1', 'rm': 'select d.month, d.value from region_monthly_data d join region_indicators i on i.id=d.indicator_id join regions r on r.id=d.region_id where i.code=:c and r.slug=:s order by d.month desc limit 1', 'ra': 'select d.year, d.value from region_data d join region_indicators i on i.id=d.indicator_id join regions r on r.id=d.region_id where i.code=:c and r.slug=:s and d.value is not null order by d.year desc limit 1'}",
+      "expression": "{'ru': 'select d.date, d.value from indicator_data d join indicators i on i.id=d.indicator_id where i.code=:c and d.value is not null order by d.date desc limit 1', 'w': 'select d.date, d.value from world_data_points d join world_indicators i on i.id=d.indicator_id join world_countries c on c.id=i.country_id where i.code=:c and c.slug=:s and d.value is not null order by d.date desc limit 1', 'rm': 'select d.month, d.value from region_monthly_data d join region_indicators i on i.id=d.indicator_id join regions r on r.id=d.region_id where i.code=:c and r.slug=:s and d.value is not null order by d.month desc limit 1', 'ra': 'select d.year, d.value from region_data d join region_indicators i on i.id=d.indicator_id join regions r on r.id=d.region_id where i.code=:c and r.slug=:s and d.value is not null order by d.year desc limit 1'}",
       "expression_truncated": false,
-      "expression_chars": 814,
-      "ast_sha256": "c2a3194871c0baed8ecdad27b41780f05cc3e4c1ad994bf63de9987018664c02",
+      "expression_chars": 838,
+      "ast_sha256": "69a2f19625e7560a4d3792e977db2bb4ca0c2d00eb46624172dbce111c25b09e",
       "runtime_expansion": false
     },
     {
@@ -180282,8 +180282,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 199,
-      "end_line": 199,
+      "line": 200,
+      "end_line": 200,
       "owner": "cmd_audit",
       "conditions": [],
       "operation": "set",
@@ -180296,8 +180296,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 232,
-      "end_line": 232,
+      "line": 233,
+      "end_line": 233,
       "owner": "cmd_audit",
       "conditions": [],
       "operation": "rollback",
@@ -180310,8 +180310,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 208,
-      "end_line": 208,
+      "line": 209,
+      "end_line": 209,
       "owner": "cmd_audit",
       "conditions": [],
       "operation": "add",
@@ -180324,8 +180324,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 216,
+      "end_line": 216,
       "owner": "cmd_audit",
       "conditions": [
         "kind == 'ru'"
@@ -180340,8 +180340,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 218,
-      "end_line": 218,
+      "line": 219,
+      "end_line": 219,
       "owner": "cmd_audit",
       "conditions": [
         "not (kind == 'ru')"
@@ -180356,8 +180356,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 220,
-      "end_line": 220,
+      "line": 221,
+      "end_line": 221,
       "owner": "cmd_audit",
       "conditions": [
         "not (kind == 'ru')",
@@ -311522,8 +311522,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 216,
+      "end_line": 216,
       "owner": "cmd_audit",
       "conditions": [
         "kind == 'ru'"
@@ -311534,8 +311534,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 218,
-      "end_line": 218,
+      "line": 219,
+      "end_line": 219,
       "owner": "cmd_audit",
       "conditions": [
         "not (kind == 'ru')"
@@ -311546,8 +311546,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 220,
-      "end_line": 220,
+      "line": 221,
+      "end_line": 221,
       "owner": "cmd_audit",
       "conditions": [
         "not (kind == 'ru')",
@@ -361542,8 +361542,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 176,
-      "end_line": 235,
+      "line": 177,
+      "end_line": 236,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_audit",
@@ -361551,8 +361551,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 238,
-      "end_line": 242,
+      "line": 239,
+      "end_line": 243,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_aggregates",
@@ -361560,8 +361560,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 245,
-      "end_line": 253,
+      "line": 246,
+      "end_line": 254,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_metrics",
@@ -361569,8 +361569,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 256,
-      "end_line": 286,
+      "line": 257,
+      "end_line": 287,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_send_test",
@@ -361578,8 +361578,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 289,
-      "end_line": 300,
+      "line": 290,
+      "end_line": 301,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_campaign",
@@ -361587,8 +361587,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 303,
-      "end_line": 353,
+      "line": 304,
+      "end_line": 354,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -361596,8 +361596,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 307,
-      "end_line": 315,
+      "line": 308,
+      "end_line": 316,
       "owner": "main",
       "conditions": [],
       "name": "who",
@@ -394730,8 +394730,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 216,
+      "end_line": 216,
       "owner": "cmd_audit",
       "conditions": [
         "kind == 'ru'"
@@ -394740,8 +394740,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 218,
-      "end_line": 218,
+      "line": 219,
+      "end_line": 219,
       "owner": "cmd_audit",
       "conditions": [
         "not (kind == 'ru')"
@@ -394750,8 +394750,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 220,
-      "end_line": 220,
+      "line": 221,
+      "end_line": 221,
       "owner": "cmd_audit",
       "conditions": [
         "not (kind == 'ru')",

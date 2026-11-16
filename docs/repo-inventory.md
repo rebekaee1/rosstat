@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2386  ·  **Строк:** 1 500 746  ·  **Токенов (≈):** 14 359 780
+**Файлов:** 2386  ·  **Строк:** 1 500 753  ·  **Токенов (≈):** 14 360 086
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 871 | 66 869 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 1013 | 346 656 | 3 822 853 |
+| `backend` | 1013 | 346 656 | 3 822 851 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 568 | 25 387 |
-| `docs` | 151 | 936 634 | 8 066 731 |
+| `docs` | 151 | 936 641 | 8 067 039 |
 | `frontend` | 1042 | 187 094 | 2 057 208 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 142 | 25 358 | 315 080 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 409 496 | 3 335 345 |
+| `docs/mechanism-inventory.json` | 409 496 | 3 335 357 |
 | `docs/client-mechanism-inventory.json` | 259 916 | 1 834 237 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -60,7 +60,7 @@
 | `frontend/src/pages/ComparePage.jsx` | 3 325 | 36 894 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 962 | 32 847 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 104 |
-| `docs/workflow.md` | 813 | 29 384 |
+| `docs/workflow.md` | 813 | 29 433 |
 | `backend/app/api/world.py` | 2 909 | 28 926 |
 | `backend/app/api/sitemap.py` | 2 683 | 28 379 |
 | `backend/app/models.py` | 2 130 | 28 055 |
@@ -251,7 +251,7 @@
 | `backend/scripts/export_seo_demand_quarter.py` | 554 | 5 996 |
 | `frontend/src/pages/WorldRegionsHome.jsx` | 562 | 5 974 |
 | `backend/app/services/forecast_showcase.py` | 592 | 5 943 |
-| `backend/app/services/mail/funnel.py` | 447 | 5 929 |
+| `backend/app/services/mail/funnel.py` | 447 | 5 934 |
 | `backend/app/services/alerting.py` | 566 | 5 911 |
 | `backend/tests/forecast_strategies/test_derived.py` | 621 | 5 829 |
 | `docs/adr/0012-world-multi-provider-official-first-forecasts.md` | 245 | 5 783 |
@@ -408,7 +408,7 @@
 | `scripts/emiss/classify_collected.py` | 264 | 4 170 |
 | `backend/app/services/http_client.py` | 432 | 4 168 |
 | `frontend/src/components/LightScene.jsx` | 362 | 4 168 |
-| `backend/scripts/newsletter_personal.py` | 357 | 4 151 |
+| `backend/scripts/newsletter_personal.py` | 358 | 4 160 |
 | `backend/app/services/telegram_calm.py` | 362 | 4 146 |
 | `docs/circle-playbook.md` | 124 | 4 134 |
 | `backend/app/services/newsletter_personal/signals.py` | 339 | 4 121 |
@@ -526,13 +526,13 @@
 | `backend/tests/test_search_vocabulary_roles.py` | 219 | 3 261 |
 | `frontend/src/lib/consentAdsGate.component.test.jsx` | 345 | 3 250 |
 | `backend/scripts/audit-world-eurostat-underslice.py` | 355 | 3 236 |
-| `backend/tests/test_mail_tracking.py` | 233 | 3 226 |
 | `frontend/src/components/CountryComparePicker.jsx` | 311 | 3 222 |
 | `backend/tests/test_session_change_log.py` | 335 | 3 221 |
 | `frontend/src/styles/z7-compare.css` | 437 | 3 219 |
 | `scripts/dev/check-raster-dpr.py` | 303 | 3 219 |
 | `backend/app/services/analytics_backfill.py` | 343 | 3 211 |
 | `frontend/src/pages/Account.test.jsx` | 242 | 3 211 |
+| `backend/tests/test_mail_tracking.py` | 232 | 3 210 |
 | `frontend/src/components/PlanetLabels.jsx` | 277 | 3 197 |
 | `backend/app/api/admin_bi.py` | 339 | 3 167 |
 | `docs/research/search-accuracy-2026-10-04.md` | 206 | 3 161 |
@@ -562,6 +562,7 @@
 | `frontend/src/components/CountryComparePicker.component.test.jsx` | 331 | 3 077 |
 | `frontend/src/pages/CalculatorPage.component.test.jsx` | 378 | 3 075 |
 | `frontend/src/components/regions/R4PriceCompare.jsx` | 255 | 3 053 |
+| `docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md` | 111 | 3 052 |
 | `frontend/src/pages/RegionComparePage.jsx` | 278 | 3 043 |
 | `backend/tests/test_calendar_world.py` | 218 | 3 035 |
 | `frontend/src/styles/w5-tools.css` | 323 | 3 025 |
@@ -612,7 +613,6 @@
 | `backend/tests/test_mail_lifecycle.py` | 225 | 2 814 |
 | `backend/app/services/seo_world_subnational_year.py` | 214 | 2 812 |
 | `backend/tests/test_goal_dims_rollup.py` | 212 | 2 806 |
-| `docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md` | 104 | 2 805 |
 | `scripts/audit-world-export.py` | 284 | 2 805 |
 | `backend/tests/test_index_policy.py` | 212 | 2 802 |
 | `frontend/src/lib/categories.js` | 292 | 2 797 |
