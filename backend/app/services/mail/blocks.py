@@ -112,6 +112,11 @@ def _meta(source: str, why: str, locale: str) -> str:
             + " &nbsp;·&nbsp; ".join(parts) + "</div>")
 
 
+def _why_shown(b: dict) -> str:
+    """Причина блока в служебной строке — только если её не сказала рубрика («Вы скачивали» уже причина)."""
+    return "" if b.get("kicker") else str(b.get("why") or "")
+
+
 def _delta(b: dict) -> str:
     """Изменение к прошлому периоду: стрелка и число отдельной строкой сразу под заголовком."""
     if not b.get("delta"):
@@ -119,20 +124,20 @@ def _delta(b: dict) -> str:
     arrow = {"up": "▲", "down": "▼"}.get(b.get("delta_dir") or "", "")
     mark = f'<span style="color:{ARROW};">{arrow}</span>&nbsp;' if arrow else ""
     return (f'<div style="margin-top:6px;font-family:{FONT};font-size:13.5px;line-height:1.4;font-weight:600;'
-            f'color:{DELTA};{NUM}">{mark}{escape(b["delta"])}</div>')
+            f'color:{DELTA};{NUM}">{mark}{escape(str(b["delta"]).replace(chr(0x202f), chr(0xa0)))}</div>')
 
 
 def _layer(inner: str, personal: bool = False) -> str:
     bg = LAYER_PERSONAL if personal else LAYER
     return ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" '
-            f'bgcolor="{bg}" style="margin:0 0 12px;background:{bg};border-radius:16px;">'
-            f'<tr><td style="padding:18px 20px;">{inner}</td></tr></table>')
+            f'bgcolor="{bg}" style="margin:0 0 16px;background:{bg};border-radius:16px;">'
+            f'<tr><td style="padding:22px 24px;">{inner}</td></tr></table>')
 
 
-def chapter(index: int, title: str, text: str = "") -> str:
+def chapter(index: int, title: str, text: str = "", *, rule: bool | None = None) -> str:
     """Глава письма: номер, название, строка пояснения. Между главами — воздух и линия-свет."""
-    rule = ""
-    if index > 1:
+    with_rule, rule = (index > 1 if rule is None else rule), ""
+    if with_rule:
         rule = ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" '
                 'style="margin:28px 0 24px;"><tr>'
                 f'<td height="1" bgcolor="{HAIRLINE}" style="height:1px;line-height:1px;font-size:1px;'
@@ -146,27 +151,70 @@ def chapter(index: int, title: str, text: str = "") -> str:
             f'line-height:1.3;color:{INK};">{escape(title)}</div>{note}</div>')
 
 
-def _with_value(head: str, rest: str, value_html: str) -> str:
+def _with_value(head: str, rest: str, value_html: str, mobile_html: str = "") -> str:
     """Заголовок и текст слева, крупное число справа. На телефоне число встаёт сразу под
     заголовок: правая ячейка прячется, а копия под заголовком показывается. Копия скрыта
     встроенным стилем, поэтому почта, которая вырезает медиазапросы, покажет число один раз."""
     if not value_html:
         return head + rest
     mobile = (f'<div class="fe-val-m" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">'
-              f'<div style="padding-top:6px;">{value_html}</div></div>')
+              f'<div style="padding-top:8px;">{mobile_html or value_html}</div></div>')
     return ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>'
             f'<td valign="top">{head}{mobile}{rest}</td>'
-            f'<td class="fe-val" valign="top" align="right" style="padding:0 0 0 18px;white-space:nowrap;">'
+            f'<td class="fe-val" valign="top" align="right" style="padding:0 0 0 24px;white-space:nowrap;">'
             f'{value_html}</td></tr></table>')
 
 
-def _value(value: str, color: str = INK, dot: bool = False) -> str:
+_NUM_RE = re.compile(r"^([−+\-]?\d[\d\s\u00a0\u202f.,]*)(.*)$")
+_SHORT_UNITS = {"%", "₽", "$", "€", "£", "¥"}
+
+
+def split_value(value: str) -> tuple[str, str]:
+    """«614,3 млрд руб.» → («614,3», «млрд руб.»): число читается одним взглядом, единица — подписью.
+    Знак валюты и процента остаётся при числе; в числе тысячи разделены обычным неразрывным пробелом
+    (узкий пробел в жирном начертании не виден, и «16 949,24» сливается в «16949,24»)."""
+    v = (value or "").strip()
+    m = _NUM_RE.match(v)
+    if not m:
+        return v, ""
+    num, unit = m.group(1).rstrip(), m.group(2).strip()
+    if not unit or unit in _SHORT_UNITS:
+        return v.replace("\u202f", "\u00a0"), ""
+    return num.replace("\u202f", "\u00a0").replace(" ", "\u00a0"), unit
+
+
+def _spark(points: list, align: str = "right") -> str:
+    """Мини-график блока: до 8 последних значений столбиками, последний — синий. Ячейки таблицы, не картинка."""
+    try:
+        vals = [float(v) for v in (points or [])][-8:]
+    except (TypeError, ValueError):
+        return ""
+    if len(vals) < 4:
+        return ""
+    lo, hi = min(vals), max(vals)
+    cells = []
+    for i, v in enumerate(vals):
+        h = 12 if hi == lo else round(4 + 20 * (v - lo) / (hi - lo))
+        color = BLUE if i == len(vals) - 1 else "#C9D3E2"
+        cells.append(f'<td valign="bottom" style="padding:0 0 0 3px;height:24px;line-height:1px;font-size:1px;">'
+                     f'<table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>'
+                     f'<td width="6" height="{h}" bgcolor="{color}" style="width:6px;height:{h}px;line-height:{h}px;'
+                     f'font-size:1px;background:{color};border-radius:2px 2px 0 0;">&nbsp;</td></tr></table></td>')
+    return (f'<table role="presentation" align="{align}" cellspacing="0" cellpadding="0" border="0" '
+            f'style="margin-top:10px;"><tr>{"".join(cells)}</tr></table>')
+
+
+def _value(value: str, color: str = INK, dot: bool = False, spark: list | None = None, align: str = "right") -> str:
     if not value:
         return ""
+    num, unit = split_value(value)
     mark = (f'<span style="display:inline-block;width:6px;height:6px;border-radius:3px;background:{GOLD};'
-            'vertical-align:middle;margin:0 8px 4px 0;"></span>') if dot else ""
-    return (f'<div style="font-family:{FONT};font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.2;'
-            f'color:{color};{NUM}">{mark}{escape(value)}</div>')
+            'vertical-align:middle;margin:0 8px 5px 0;"></span>') if dot else ""
+    unit_html = (f'<div style="margin-top:4px;font-family:{FONT};font-size:12px;line-height:1.3;font-weight:600;'
+                 f'color:{MUTED};">{escape(unit)}</div>') if unit else ""
+    return (f'<div style="font-family:{FONT};font-size:26px;font-weight:700;line-height:1.1;'
+            f'color:{color};white-space:nowrap;{NUM}">{mark}{escape(num)}</div>{unit_html}'
+            + (_spark(spark, align) if spark else ""))
 
 
 # --- блоки --------------------------------------------------------------------
@@ -221,8 +269,9 @@ def lead(b: dict, locale: str, *, kicker: bool = True) -> str:
 
 def story(b: dict, locale: str) -> str:
     head = _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-    rest = _delta(b) + _text(b.get("text") or "") + _meta(b.get("source") or "", b.get("why") or "", locale)
-    return _layer(_with_value(head, rest, _value(b.get("value") or "")), personal=bool(b.get("why")))
+    rest = _delta(b) + _text(b.get("text") or "") + _meta(b.get("source") or "", _why_shown(b), locale)
+    return _layer(_with_value(head, rest, _value(b.get("value") or "", spark=b.get("spark")),
+                              _value(b.get("value") or "")), personal=bool(b.get("why")))
 
 
 def forecast(b: dict, locale: str) -> str:
@@ -231,7 +280,7 @@ def forecast(b: dict, locale: str) -> str:
         last = (f'<div style="margin-top:4px;font-family:{FONT};font-size:13px;color:{MUTED};{NUM}">'
                 f'{escape(_l(locale, "last"))}: {escape(b["last_actual"])}</div>')
     head = _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-    rest = last + _text(b.get("text") or "") + _meta(b.get("source") or "", b.get("why") or "", locale)
+    rest = last + _text(b.get("text") or "") + _meta(b.get("source") or "", _why_shown(b), locale)
     return _layer(_with_value(head, rest, _value(b.get("value") or "", BLUE_DEEP, dot=True)),
                   personal=bool(b.get("why")))
 
@@ -248,12 +297,12 @@ def table(b: dict, locale: str) -> str:
             f'<td align="{"left" if i == 0 else "right"}" style="padding:9px 10px;font-family:{FONT};font-size:14px;'
             f'line-height:1.35;color:{INK};{"" if i == 0 else "white-space:nowrap;" + NUM}'
             f'{"border-radius:10px 0 0 10px;" if i == 0 else ""}{"border-radius:0 10px 10px 0;" if i == len(r) - 1 else ""}">'
-            f'{escape(str(c))}</td>' for i, c in enumerate(r))
+            f'{escape(str(c).replace(chr(0x202f), chr(0xa0)))}</td>' for i, c in enumerate(r))
         body.append(f'<tr style="background:{bg};" bgcolor="{bg}">{tds}</tr>')
     tbl = ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;">'
            f'<tr>{head}</tr>' + "".join(body) + "</table>")
     return ('<div style="margin:6px 0 22px;">' + _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-            + tbl + _meta(b.get("source") or "", b.get("why") or "", locale) + "</div>")
+            + tbl + _meta(b.get("source") or "", _why_shown(b), locale) + "</div>")
 
 
 def calendar(b: dict, locale: str, today: date | None = None, *, bare: bool = False) -> str:
@@ -308,7 +357,7 @@ def render(b: dict, locale: str, today: date | None = None) -> str:
     return {"lead": lead, "story": story, "forecast": forecast, "table": table}[kind](b, locale)
 
 
-def _chapters(blocks: list[dict], locale: str, today: date | None):
+def _chapters(blocks: list[dict], locale: str, today: date | None, started: bool = False):
     """Порядок повествования выпуска: (номер главы | None, название, пояснение, блок | None).
 
     Главы: «Число недели» (блок lead) → «Для вас» (блок section и личные блоки — у них есть поле
@@ -331,13 +380,13 @@ def _chapters(blocks: list[dict], locale: str, today: date | None):
         elif kind == "calendar":
             if not visible_entries(b, today):
                 continue
-            if n:
+            if n or started:
                 n += 1
                 yield n, str(b.get("title") or _l(locale, "calendar")), "", None
             yield None, "", "", b
             group = "calendar"
         else:
-            if not b.get("why") and group != "editorial" and n:
+            if not b.get("why") and group != "editorial" and (n or started):
                 n += 1
                 yield n, _l(locale, "more"), "", None
             if not b.get("why"):
@@ -345,13 +394,14 @@ def _chapters(blocks: list[dict], locale: str, today: date | None):
             yield None, "", "", b
 
 
-def render_all(blocks: list[dict], locale: str, today: date | None = None) -> str:
-    """Все блоки выпуска с главами — единственный путь вёрстки тела письма рассылки."""
+def render_all(blocks: list[dict], locale: str, today: date | None = None, *, after_cover: bool = False) -> str:
+    """Все блоки выпуска с главами — единственный путь вёрстки тела письма рассылки.
+    `after_cover` — блоки после обложки (число недели уже показано): главы идут с 01."""
     out = []
     chaptered = False
-    for index, title, text, b in _chapters(blocks, locale, today):
+    for index, title, text, b in _chapters(blocks, locale, today, after_cover):
         if b is None:
-            out.append(chapter(index, title, text))
+            out.append(chapter(index, title, text, rule=True if after_cover else None))
             chaptered = True
         elif b.get("type") == "lead":
             out.append(lead(b, locale, kicker=not chaptered))
@@ -362,10 +412,10 @@ def render_all(blocks: list[dict], locale: str, today: date | None = None) -> st
     return "".join(out)
 
 
-def text_all(blocks: list[dict], locale: str, today: date | None = None) -> list[str]:
+def text_all(blocks: list[dict], locale: str, today: date | None = None, *, after_cover: bool = False) -> list[str]:
     """То же повествование простым текстом: название главы заглавными, затем блоки."""
     out = []
-    for index, title, text, b in _chapters(blocks, locale, today):
+    for index, title, text, b in _chapters(blocks, locale, today, after_cover):
         if b is None:
             out.append("\n".join(x for x in (f"{index:02d} · {title.upper()}", text) if x))
         elif b.get("type") == "section":

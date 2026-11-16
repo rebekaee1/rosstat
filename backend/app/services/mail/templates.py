@@ -496,11 +496,20 @@ def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url
         body += (f'<div style="margin:0 0 10px;font-family:{FONT};font-size:12px;font-weight:600;line-height:1.3;'
                  f'color:{MUTED};">{escape(digest.masthead)}</div>')
     body += _h1(digest.title)
-    body += _paragraphs(digest.intro)
-    if digest.blocks:
-        body += blk.render_all(digest.blocks, locale, today)
+    # Обложка: заголовок и сразу число недели с графиком — взгляд цепляется за число, а не за абзац;
+    # вступление объясняет число уже после него (правила письма, глава «Концепция»).
+    cover = digest.blocks[0] if digest.blocks and digest.blocks[0].get("type") == "lead" else None
+    if cover:
+        body += blk.lead(cover, locale)
+        body += '<div style="height:22px;line-height:22px;font-size:1px;">&nbsp;</div>'
+        body += _paragraphs(digest.intro, margin_last="0 0 4px")
+        body += blk.render_all(digest.blocks[1:], locale, today, after_cover=True)
     else:
-        body += "".join(_item(i) for i in digest.items)
+        body += _paragraphs(digest.intro)
+        if digest.blocks:
+            body += blk.render_all(digest.blocks, locale, today)
+        else:
+            body += "".join(_item(i) for i in digest.items)
     if digest.cta_label and digest.cta_url:
         body += '<div style="height:12px;line-height:12px;font-size:12px;">&nbsp;</div>'
         body += _button(digest.cta_label, digest.cta_url)
@@ -520,9 +529,13 @@ def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url
     if digest.masthead:
         lines.append(digest.masthead)
     lines.append(digest.title)
+    if cover:
+        lines.append(blk.as_text(cover, locale, today))
     if digest.intro:
         lines.append(digest.intro)
-    if digest.blocks:
+    if cover:
+        lines += blk.text_all(digest.blocks[1:], locale, today, after_cover=True)
+    elif digest.blocks:
         lines += blk.text_all(digest.blocks, locale, today)
     else:
         lines += _list_text(digest.items)

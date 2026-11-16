@@ -57,7 +57,7 @@ def test_typography_scale_and_weights():
     assert weights <= {300, 400, 600, 700}, weights          # Яндекс Почта рисует 650 обычным начертанием
     sizes = {float(s) for s in re.findall(r"font-size:([\d.]+)px", html)}
     # 24 и 38 — заголовок и число недели на телефоне (медиазапрос).
-    assert sizes <= {1, 2, 11, 12, 12.5, 13, 13.5, 14, 15.5, 16, 17, 19, 22, 24, 25, 27, 38, 46}, sizes
+    assert sizes <= {1, 2, 11, 12, 12.5, 13, 13.5, 14, 15.5, 16, 17, 19, 22, 24, 25, 26, 27, 38, 46}, sizes
 
 
 def test_no_borders_and_gold_is_a_thin_accent():
@@ -68,23 +68,36 @@ def test_no_borders_and_gold_is_a_thin_accent():
 
 
 def test_chapters_tell_the_story_in_order():
-    html = blk.render_all(ISSUE, "ru", date(2026, 11, 16))
-    order = [html.index(x) for x in (">01<", "Число недели", ">02<", "Для вас", ">03<", "Ещё на этой неделе",
-                                     ">04<", "Что выйдет дальше")]
+    html = _html()
+    html = html[html.index("<h1"):]
+    # Обложка: заголовок → число недели → вступление; дальше главы 01–03.
+    order = [html.index(x) for x in ("Заголовок", "70,01", "Вступление.", ">01<", "Для вас", ">02<",
+                                     "Ещё на этой неделе", ">03<", "Что выйдет дальше")]
     assert order == sorted(order)
-    text = "\n".join(blk.text_all(ISSUE, "ru", date(2026, 11, 16)))
-    assert "02 · ДЛЯ ВАС" in text and "03 · ЕЩЁ НА ЭТОЙ НЕДЕЛЕ" in text
+    text = "\n".join(blk.text_all(ISSUE[1:], "ru", date(2026, 11, 16), after_cover=True))
+    assert "01 · ДЛЯ ВАС" in text and "02 · ЕЩЁ НА ЭТОЙ НЕДЕЛЕ" in text
     # Прошедший календарь не оставляет пустую главу.
-    past = blk.render_all(ISSUE, "ru", date(2027, 1, 1))
-    assert ">04<" not in past and "Что выйдет дальше" not in past
+    past = blk.render_all(ISSUE[1:], "ru", date(2027, 1, 1), after_cover=True)
+    assert ">03<" not in past and "Что выйдет дальше" not in past
 
 
 def test_personal_blocks_are_tinted_and_editorial_are_not():
     personal = blk.render(ISSUE[2], "ru")
     editorial = blk.render(ISSUE[5], "ru")
     assert T.LAYER_PERSONAL in personal and T.LAYER_PERSONAL not in editorial and T.LAYER in editorial
-    assert "Источник: Росстат" in personal and "Вы скачивали этот ряд" in personal   # одна служебная строка
+    assert "Источник: Росстат" in personal and "Вы скачивали этот ряд" not in personal   # рубрика уже причина
     assert "Без изменений за месяц" in personal                                      # изменение — своей строкой
+
+
+def test_number_is_read_at_a_glance():
+    """Число отдельно от единицы; тысячи разделены видимым пробелом; мини-график из ячеек."""
+    assert blk.split_value("16\u202f949,24 млн $") == ("16\u00a0949,24", "млн $")
+    assert blk.split_value("614,3 млрд руб.") == ("614,3", "млрд руб.")
+    assert blk.split_value("1,77 %") == ("1,77 %", "") and blk.split_value("$92.14") == ("$92.14", "")
+    card = blk.render({"type": "story", "kicker": "Ваши темы", "title": "Экспорт", "value": "125\u202f716,38 млн $",
+                       "source": "Банк России", "why": "x", "spark": [1, 2, 3, 2, 4]}, "ru")
+    assert "125\xa0716,38</div>" in card and ">млн $</div>" in card and card.count('width="6"') == 5
+    assert blk._spark([1, 2, 3]) == ""
 
 
 def test_old_issue_without_lead_and_section_has_no_chapters():

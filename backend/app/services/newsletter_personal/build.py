@@ -392,7 +392,13 @@ class Builder:
                        else T.t(loc, "intro.more", n=T.plural(n_numbers, loc), topics=", ".join(topics)) if topics
                        else "")
         if extra_intro:
-            payload["intro"] = (payload.get("intro") or "").rstrip() + "\n\n" + T.typo(extra_intro, loc)
+            # Личная строка стоит в начале главы «Для вас», а не в конце вступления редакции.
+            for blk_ in out_blocks:
+                if blk_.get("type") == "section":
+                    blk_["text"] = T.typo(extra_intro, loc)
+                    break
+            else:
+                payload["intro"] = (payload.get("intro") or "").rstrip() + "\n\n" + T.typo(extra_intro, loc)
         payload["personal_note"] = T.t(loc, "note")
         subject_arm = ab.subject_arm(us.user_id, key, self.subject_ab_pct)
         if subject_arm == "subj_personal":

@@ -276,7 +276,10 @@ def test_end_to_end_profile_issue_render(nl_env, caplog):
     assert len(editorial) * 3 >= len(content)
     # Метки блоков: свои p<N>-<генератор>, у редакции прежние b<N>-<тип>.
     assert all(f"utm_content=p{m['pos']}-" in blocks[m["pos"] - 1]["url"] for m in personal if blocks[m["pos"] - 1].get("url"))
-    assert res.payload["personal_note"] and "по вашим темам" in res.payload["intro"]
+    # Личная строка стоит в начале главы «Для вас», вступление редакции не меняется (16.11.2026).
+    section = next(b for b in res.payload["blocks"] if b.get("type") == "section")
+    assert res.payload["personal_note"] and "по вашим темам" in section["text"]
+    assert "по вашим темам" not in res.payload["intro"]
     # Рендер почтой.
     digest = campaign.personal_digest(_issue(), "ru", res.payload)
     rendered, _ = campaign.render_for(_issue(), "ru", str(uid), digest)

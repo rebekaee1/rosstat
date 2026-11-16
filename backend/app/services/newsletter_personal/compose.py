@@ -139,6 +139,9 @@ def _story(fact: Fact, ctx: Context, *, kicker: str, why: str, text: str | None 
     if fact.change_text and not delta_in_text:
         block["delta"] = T.typo(T.cap(fact.change_text), loc)
         block["delta_dir"] = fact.change_dir
+    # Мини-график: последние значения самого ряда (у рядов «за год» точки — базовый индекс, не рисуем).
+    if not fact.headline_yoy and len(fact.points) >= 4:
+        block["spark"] = [round(v, 4) for _d, v in fact.points[-8:]]
     return block
 
 
@@ -163,7 +166,7 @@ async def series_candidates(ctx: Context) -> list[Candidate]:
             if downloaded and fact.as_of > downloaded.date():
                 gen = "download"
                 text = T.sentence(T.t(ctx.locale, "download.text", day=full_date(downloaded.date(), ctx.locale),
-                                      period=fact.period))
+                                      period_cap=T.cap(fact.period)))
                 news = max(news, 0.9)
         elif reason in ("search_select", "search_query"):
             gen = "search"
