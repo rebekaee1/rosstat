@@ -13,15 +13,19 @@ import re
 from datetime import date
 from html import escape
 
-from app.services.mail.templates import BLUE, BLUE_DEEP, FONT, GOLD, INK, LAYER, MUTED, TEXT
+from app.services.mail.templates import (
+    ARROW, BLUE, BLUE_DEEP, DELTA, FONT, GOLD, HAIRLINE, INK, LAYER, LAYER_PERSONAL, MUTED, TEXT,
+)
 
 NUM = "font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;"
 TYPES = ("lead", "story", "forecast", "table", "calendar", "section")
 RANGE_FIELDS = {"lower", "upper", "range", "min", "max", "interval", "ci", "low", "high"}
 _RANGE_RE = re.compile(r"\d[\d\s .,]*\s*[–—-]\s*[−-]?\d|(?<!\w)от\s.+\sдо\s|(?<!\w)from\s.+\sto\s", re.I)
 LABELS = {
-    "ru": {"source": "Источник", "last": "Последнее значение", "chart": "График"},
-    "en": {"source": "Source", "last": "Last value", "chart": "Chart"},
+    "ru": {"source": "Источник", "last": "Последнее значение", "chart": "График",
+           "lead": "Число недели", "more": "Ещё на этой неделе", "calendar": "Что выйдет дальше"},
+    "en": {"source": "Source", "last": "Last value", "chart": "Chart",
+           "lead": "Number of the week", "more": "Also this week", "calendar": "Dates ahead"},
 }
 
 
@@ -95,10 +99,51 @@ def _source(text: str, locale: str) -> str:
             f'{escape(_l(locale, "source"))}: {escape(text)}</div>')
 
 
-def _layer(inner: str) -> str:
+def _meta(source: str, why: str, locale: str) -> str:
+    """Служебная строка блока: источник и (в личном блоке) причина — одной приглушённой строкой."""
+    parts = []
+    if source:
+        parts.append(f'{escape(_l(locale, "source"))}: {escape(source)}')
+    if why:
+        parts.append(escape(why.rstrip(".")))
+    if not parts:
+        return ""
+    return (f'<div style="margin-top:9px;font-family:{FONT};font-size:12px;line-height:1.45;color:{MUTED};">'
+            + " &nbsp;·&nbsp; ".join(parts) + "</div>")
+
+
+def _delta(b: dict) -> str:
+    """Изменение к прошлому периоду: стрелка и число отдельной строкой сразу под заголовком."""
+    if not b.get("delta"):
+        return ""
+    arrow = {"up": "▲", "down": "▼"}.get(b.get("delta_dir") or "", "")
+    mark = f'<span style="color:{ARROW};">{arrow}</span>&nbsp;' if arrow else ""
+    return (f'<div style="margin-top:6px;font-family:{FONT};font-size:13.5px;line-height:1.4;font-weight:600;'
+            f'color:{DELTA};{NUM}">{mark}{escape(b["delta"])}</div>')
+
+
+def _layer(inner: str, personal: bool = False) -> str:
+    bg = LAYER_PERSONAL if personal else LAYER
     return ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" '
-            f'style="margin:0 0 12px;background:{LAYER};border-radius:16px;">'
+            f'bgcolor="{bg}" style="margin:0 0 12px;background:{bg};border-radius:16px;">'
             f'<tr><td style="padding:18px 20px;">{inner}</td></tr></table>')
+
+
+def chapter(index: int, title: str, text: str = "") -> str:
+    """Глава письма: номер, название, строка пояснения. Между главами — воздух и линия-свет."""
+    rule = ""
+    if index > 1:
+        rule = ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" '
+                'style="margin:28px 0 24px;"><tr>'
+                f'<td height="1" bgcolor="{HAIRLINE}" style="height:1px;line-height:1px;font-size:1px;'
+                f'background:{HAIRLINE};">&nbsp;</td></tr></table>')
+    note = (f'<div style="margin-top:5px;font-family:{FONT};font-size:14px;line-height:1.55;color:{TEXT};">'
+            f'{escape(text)}</div>') if text else ""
+    return (rule + '<div style="margin:0 0 16px;">'
+            f'<div style="font-family:{FONT};font-size:11px;line-height:1.2;font-weight:700;color:{BLUE};{NUM}">'
+            f'{index:02d}</div>'
+            f'<div style="margin-top:5px;font-family:{FONT};font-size:19px;font-weight:700;letter-spacing:-.01em;'
+            f'line-height:1.3;color:{INK};">{escape(title)}</div>{note}</div>')
 
 
 def _with_value(head: str, rest: str, value_html: str) -> str:
@@ -161,27 +206,23 @@ def _fmt_num(v: float) -> str:
     return text.replace(",", " ").replace(".", ",")
 
 
-def lead(b: dict, locale: str) -> str:
-    arrow = {"up": "▲", "down": "▼"}.get(b.get("delta_dir") or "", "—")
-    delta = ""
-    if b.get("delta"):
-        delta = (f'<div style="margin-top:8px;font-family:{FONT};font-size:13.5px;font-weight:600;color:#2A3550;{NUM}">'
-                 f'<span style="color:#6B7C99;">{arrow}</span>&nbsp;{escape(b["delta"])}</div>')
+def lead(b: dict, locale: str, *, kicker: bool = True) -> str:
+    delta = _delta(b)
     value = (f'<div class="fe-lead-num" style="font-family:{FONT};font-size:46px;font-weight:700;letter-spacing:-.03em;'
              f'line-height:1.04;color:{INK};white-space:nowrap;{NUM}">{escape(b.get("value") or "")}</div>')
     gold = (f'<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:16px 0 14px;">'
             f'<tr><td width="30" height="2" bgcolor="{GOLD}" style="width:30px;height:2px;line-height:2px;'
             f'font-size:2px;background:{GOLD};">&nbsp;</td></tr></table>')
-    return ('<div style="margin:6px 0 28px;">' + _kicker(b.get("kicker") or "") + value + delta + gold
-            + _title(b["title"], b.get("url") or "", 17) + _text(b.get("text") or "")
-            + _source(b.get("source") or "", locale) + _why(b.get("why") or "")
+    return ('<div style="margin:6px 0 4px;">' + (_kicker(b.get("kicker") or "") if kicker else "") + value + delta
+            + gold + _title(b["title"], b.get("url") or "", 17) + _text(b.get("text") or "")
+            + _meta(b.get("source") or "", b.get("why") or "", locale)
             + (_bars(b["bars"]) if b.get("bars") else "") + "</div>")
 
 
 def story(b: dict, locale: str) -> str:
     head = _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-    rest = _text(b.get("text") or "") + _source(b.get("source") or "", locale) + _why(b.get("why") or "")
-    return _layer(_with_value(head, rest, _value(b.get("value") or "")))
+    rest = _delta(b) + _text(b.get("text") or "") + _meta(b.get("source") or "", b.get("why") or "", locale)
+    return _layer(_with_value(head, rest, _value(b.get("value") or "")), personal=bool(b.get("why")))
 
 
 def forecast(b: dict, locale: str) -> str:
@@ -190,8 +231,9 @@ def forecast(b: dict, locale: str) -> str:
         last = (f'<div style="margin-top:4px;font-family:{FONT};font-size:13px;color:{MUTED};{NUM}">'
                 f'{escape(_l(locale, "last"))}: {escape(b["last_actual"])}</div>')
     head = _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-    rest = last + _text(b.get("text") or "") + _source(b.get("source") or "", locale) + _why(b.get("why") or "")
-    return _layer(_with_value(head, rest, _value(b.get("value") or "", BLUE_DEEP, dot=True)))
+    rest = last + _text(b.get("text") or "") + _meta(b.get("source") or "", b.get("why") or "", locale)
+    return _layer(_with_value(head, rest, _value(b.get("value") or "", BLUE_DEEP, dot=True)),
+                  personal=bool(b.get("why")))
 
 
 def table(b: dict, locale: str) -> str:
@@ -211,10 +253,10 @@ def table(b: dict, locale: str) -> str:
     tbl = ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;">'
            f'<tr>{head}</tr>' + "".join(body) + "</table>")
     return ('<div style="margin:6px 0 22px;">' + _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-            + tbl + _source(b.get("source") or "", locale) + _why(b.get("why") or "") + "</div>")
+            + tbl + _meta(b.get("source") or "", b.get("why") or "", locale) + "</div>")
 
 
-def calendar(b: dict, locale: str, today: date | None = None) -> str:
+def calendar(b: dict, locale: str, today: date | None = None, *, bare: bool = False) -> str:
     rows = []
     for e in visible_entries(b, today):
         when = escape(str(e.get("date") or ""))
@@ -228,10 +270,10 @@ def calendar(b: dict, locale: str, today: date | None = None) -> str:
             f'{escape(str(e.get("title") or ""))}</td></tr>')
     if not rows:
         return ""
-    return ('<div style="margin:10px 0 18px;">' + _kicker(b.get("kicker") or "")
-            + _title(b.get("title") or "", b.get("url") or "")
-            + '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;">'
-            + "".join(rows) + "</table></div>")
+    head = "" if bare else _kicker(b.get("kicker") or "") + _title(b.get("title") or "", b.get("url") or "")
+    return (f'<div style="margin:{"0 0 10px" if bare else "10px 0 18px"};">' + head
+            + '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" '
+            + f'style="margin-top:{0 if bare else 12}px;">' + "".join(rows) + "</table></div>")
 
 
 def visible_entries(b: dict, today: date | None) -> list[dict]:
@@ -264,6 +306,75 @@ def render(b: dict, locale: str, today: date | None = None) -> str:
     if kind == "calendar":
         return calendar(b, locale, today)
     return {"lead": lead, "story": story, "forecast": forecast, "table": table}[kind](b, locale)
+
+
+def _chapters(blocks: list[dict], locale: str, today: date | None):
+    """Порядок повествования выпуска: (номер главы | None, название, пояснение, блок | None).
+
+    Главы: «Число недели» (блок lead) → «Для вас» (блок section и личные блоки — у них есть поле
+    `why`) → «Ещё на этой неделе» (остальные блоки редакции) → «Что выйдет дальше» (календарь).
+    Выпуск без lead и section (старый формат) идёт без глав.
+    """
+    n = 0
+    group = None
+    for b in blocks:
+        kind = b.get("type")
+        if kind == "lead":
+            n += 1
+            yield n, str(b.get("kicker") or _l(locale, "lead")), "", None
+            yield None, "", "", b
+            group = "lead"
+        elif kind == "section":
+            n += 1
+            yield n, str(b.get("title") or ""), str(b.get("text") or ""), None
+            group = "personal"
+        elif kind == "calendar":
+            if not visible_entries(b, today):
+                continue
+            if n:
+                n += 1
+                yield n, str(b.get("title") or _l(locale, "calendar")), "", None
+            yield None, "", "", b
+            group = "calendar"
+        else:
+            if not b.get("why") and group != "editorial" and n:
+                n += 1
+                yield n, _l(locale, "more"), "", None
+            if not b.get("why"):
+                group = "editorial"
+            yield None, "", "", b
+
+
+def render_all(blocks: list[dict], locale: str, today: date | None = None) -> str:
+    """Все блоки выпуска с главами — единственный путь вёрстки тела письма рассылки."""
+    out = []
+    chaptered = False
+    for index, title, text, b in _chapters(blocks, locale, today):
+        if b is None:
+            out.append(chapter(index, title, text))
+            chaptered = True
+        elif b.get("type") == "lead":
+            out.append(lead(b, locale, kicker=not chaptered))
+        elif b.get("type") == "calendar":
+            out.append(calendar(b, locale, today, bare=chaptered))
+        else:
+            out.append(render(b, locale, today))
+    return "".join(out)
+
+
+def text_all(blocks: list[dict], locale: str, today: date | None = None) -> list[str]:
+    """То же повествование простым текстом: название главы заглавными, затем блоки."""
+    out = []
+    for index, title, text, b in _chapters(blocks, locale, today):
+        if b is None:
+            out.append("\n".join(x for x in (f"{index:02d} · {title.upper()}", text) if x))
+        elif b.get("type") == "section":
+            continue
+        else:
+            t = as_text(b, locale, today)
+            if t:
+                out.append(t)
+    return out
 
 
 def as_text(b: dict, locale: str, today: date | None = None) -> str:

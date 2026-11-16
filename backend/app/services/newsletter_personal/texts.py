@@ -52,7 +52,7 @@ STR = {
         "note": ("Подборку «Для вас» мы составили по вашим действиям на сайте: что вы смотрели, искали "
                  "и скачивали. Отключить её можно по ссылке ниже — письмо останется, но без подборки."),
         "check.text": "В письме от {sent} наш прогноз на {period} был {forecast}. Официальное значение — {actual}.",
-        "download.text": "Со дня, когда вы скачивали ряд ({day}), вышло новое значение {period}.",
+        "download.text": "Новое значение {period}. Оно вышло после того, как вы скачали ряд ({day}).",
         "since.text": "{then_period} было {then}, сейчас {now} ({period}).",
         "compare.text": "По России — {value}.",
         "now.text": "Нашли ряд, который чаще всего выбирают по такому запросу.",
@@ -98,7 +98,7 @@ STR = {
         "note": ("We picked the “For you” section from what you did on the site: what you viewed, searched "
                  "for and downloaded. You can switch it off with the link below; the email stays, without the section."),
         "check.text": "In our email of {sent}, our forecast for {period} was {forecast}. The official figure is {actual}.",
-        "download.text": "A new value {period} has come out since you downloaded the series ({day}).",
+        "download.text": "A new value {period}. It came out after you downloaded the series ({day}).",
         "since.text": "{then_period}: {then}; now {now} ({period}).",
         "compare.text": "Russia as a whole: {value}.",
         "now.text": "This is the series people most often pick for that search.",

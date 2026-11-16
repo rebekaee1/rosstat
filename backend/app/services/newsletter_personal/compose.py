@@ -125,15 +125,21 @@ def _news_factor(ctx: Context, fact: Fact) -> float:
     return {"fresh": 1.0, "aging": 0.45}.get(level or "", 0.0)
 
 
-def _story(fact: Fact, ctx: Context, *, kicker: str, why: str, text: str | None = None) -> dict:
+def _story(fact: Fact, ctx: Context, *, kicker: str, why: str, text: str | None = None,
+           delta_in_text: bool = False) -> dict:
     loc = ctx.locale
-    body = text if text is not None else T.sentence(fact.period, fact.change_text,
-                                                    T.t(loc, "compare.text", value=fact.compare["value_text"]) if fact.compare else "")
-    return {
+    body = text if text is not None else T.sentence(
+        fact.period, T.t(loc, "compare.text", value=fact.compare["value_text"]) if fact.compare else "")
+    block = {
         "type": "story", "kicker": kicker, "title": T.clean_title(fact.title), "value": fact.value_text,
         "text": T.typo(body, loc), "source": fact.source, "as_of": fact.as_of.isoformat(),
         "url": fact.path, "why": why,
     }
+    # Изменение — отдельной строкой блока со стрелкой (правила письма, глава «Анатомия блока»).
+    if fact.change_text and not delta_in_text:
+        block["delta"] = T.typo(T.cap(fact.change_text), loc)
+        block["delta_dir"] = fact.change_dir
+    return block
 
 
 async def series_candidates(ctx: Context) -> list[Candidate]:
@@ -157,7 +163,7 @@ async def series_candidates(ctx: Context) -> list[Candidate]:
             if downloaded and fact.as_of > downloaded.date():
                 gen = "download"
                 text = T.sentence(T.t(ctx.locale, "download.text", day=full_date(downloaded.date(), ctx.locale),
-                                      period=fact.period), fact.change_text)
+                                      period=fact.period))
                 news = max(news, 0.9)
         elif reason in ("search_select", "search_query"):
             gen = "search"

@@ -36,6 +36,13 @@ GOLD_BRIGHT = "#C9A24D"
 BG = "#E9EDF3"
 SURFACE = "#FFFFFF"
 LAYER = "#F3F5F9"
+# Слой «выбрано для вас»: тот же светлый слой с холодным синим тоном — личное видно без подписи.
+LAYER_PERSONAL = "#EBF0F9"
+# Линия-свет между главами письма (не рамка: одна тонкая горизонталь, как у пояснения служебного письма).
+HAIRLINE = "#E3E8F0"
+# Изменение к прошлому периоду и стрелка: серо-синие, без красного и зелёного — оценку даёт текст.
+DELTA = "#2A3550"
+ARROW = "#6B7C99"
 
 ASSETS = Path(__file__).with_name("assets")
 CID_F = "fe-glass-f"
@@ -491,7 +498,7 @@ def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url
     body += _h1(digest.title)
     body += _paragraphs(digest.intro)
     if digest.blocks:
-        body += "".join(blk.render(b, locale, today) for b in digest.blocks)
+        body += blk.render_all(digest.blocks, locale, today)
     else:
         body += "".join(_item(i) for i in digest.items)
     if digest.cta_label and digest.cta_url:
@@ -516,7 +523,7 @@ def render_digest(digest: Digest, locale: str, *, site_url: str, unsubscribe_url
     if digest.intro:
         lines.append(digest.intro)
     if digest.blocks:
-        lines += [blk.as_text(b, locale, today) for b in digest.blocks]
+        lines += blk.text_all(digest.blocks, locale, today)
     else:
         lines += _list_text(digest.items)
     if digest.cta_label and digest.cta_url:
