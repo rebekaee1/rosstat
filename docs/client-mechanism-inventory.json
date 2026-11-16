@@ -113152,6 +113152,36 @@
       "registries": [],
       "mcp_tools": []
     },
+    "frontend/src/i18n/privacyMailTracking.jsx": {
+      "sha256": "dd05f4f2a860cc2f9e9b66602bd7177fd2129a369692e4a651401e3ec636810e",
+      "imports": [],
+      "routes": [],
+      "functions": [
+        {
+          "line": 16,
+          "end_line": 55,
+          "owner": "<module>",
+          "name": "MailTrackingPolicyRu",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 57,
+          "end_line": 93,
+          "owner": "<module>",
+          "name": "MailTrackingPolicyEn",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/i18n/privacyPersonalNewsletter.component.test.jsx": {
       "sha256": "8e909e456d9f98d7e4a474c5f180d36958c7399a67ccb3c1c0585ce2d4740133",
       "imports": [
@@ -259872,7 +259902,7 @@
   "totals": {
     "imports": 4883,
     "routes": 100,
-    "functions": 15568,
+    "functions": 15570,
     "hooks": 2871,
     "http": 127,
     "storage": 248,
@@ -259880,7 +259910,7 @@
     "jsx_handlers": 1260,
     "registries": 719,
     "mcp_tools": 7,
-    "files": 924,
+    "files": 925,
     "parse_errors": 0
   }
 }

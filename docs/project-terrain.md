@@ -6,7 +6,7 @@
 
 [Независимый backend-инвентарь](mechanism-inventory.md) · [Клиент/anonymous callbacks/MCP](client-mechanism-inventory.md) · [Приёмка и границы](project-knowledge-acceptance.md) · [Неизвестное](knowledge-unknowns.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `8451f3f70a82`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `948476e8f085`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
 
 Input scope: `tracked`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.
 
@@ -14,13 +14,13 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 
 | Измерение | Число |
 |---|---:|
-| Файлы в инвентаризации | 2591 |
-| Переданы структурному экстрактору | 2219 |
-| Дали узлы графа | 2123 |
-| Узлы / связи между символами | 26636 / 84326 |
-| Связи между файлами (тип и уверенность сохраняются) | 19250 |
+| Файлы в инвентаризации | 2600 |
+| Переданы структурному экстрактору | 2228 |
+| Дали узлы графа | 2132 |
+| Узлы / связи между символами | 26828 / 84912 |
+| Связи между файлами (тип и уверенность сохраняются) | 19359 |
 
-Исходники, шаблоны и стили: **2105** файлов; узлы есть у **2007**, из них **135** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
+Исходники, шаблоны и стили: **2112** файлов; узлы есть у **2014**, из них **135** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
 
 Полная инвентаризация относится к Git-дереву. Наличие в списке не означает, что каждый файл прошёл содержательный аудит. `nodes` — экстрактор нашёл структуру; `no_nodes` — файл прочитан экстрактором, но сущностей не получено; `inventory_only` — учтён без разбора структуры. Бинарные материалы, конфиги и данные включены в инвентарь. Содержательное чтение XLSX/PDF, просмотр исторических изображений и классификация внешних материалов фиксируются отдельно в [реестре](code-review/materials-current.json) и приёмке; сам экстрактор не устанавливает визуальное содержание.
 
@@ -33,17 +33,17 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | Браузер: страницы и компоненты | 335 | 335 | 253 | 3 |
 | Клиент: данные, hooks и состояние | 245 | 239 | 239 | 4 |
 | Встраиваемые виджеты | 8 | 8 | 8 | 0 |
-| Языки и локализация | 16 | 16 | 16 | 0 |
+| Языки и локализация | 17 | 17 | 17 | 0 |
 | HTTP API | 31 | 31 | 31 | 9 |
-| Сервисы и расчёты | 320 | 318 | 318 | 16 |
+| Сервисы и расчёты | 323 | 321 | 321 | 16 |
 | Планировщик и фоновые задачи | 7 | 7 | 7 | 2 |
 | Модели, ядро и запуск backend | 16 | 16 | 16 | 5 |
 | Реестры и исходные данные | 73 | 41 | 41 | 4 |
-| Миграции БД | 54 | 53 | 52 | 0 |
+| Миграции БД | 55 | 54 | 53 | 0 |
 | Операционные скрипты | 180 | 168 | 166 | 3 |
 | Инфраструктура и конфигурация | 56 | 21 | 21 | 1 |
-| Тесты и fixtures | 877 | 842 | 838 | 0 |
-| Документация и правила | 124 | 0 | 112 | 21 |
+| Тесты и fixtures | 879 | 844 | 840 | 0 |
+| Документация и правила | 126 | 0 | 114 | 21 |
 | Исследования и артефакты | 60 | 1 | 1 | 0 |
 | Статические ресурсы | 189 | 9 | 4 | 0 |
 
@@ -51,8 +51,8 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 
 `EXTRACTED` и `INFERRED` — метки Graphify. Даже EXTRACTED означает статическую конструкцию, а не выполненный вызов. JSON сохраняет направление, тип, количество и примеры исходных строк. Внутрифайловые отношения остаются в полном Graphify-графе; внешние/неразрешённые endpoints не превращаются в выдуманные файлы. Отсутствие входящих связей не доказывает мёртвый код. Динамические реестры, HTTP, SQL, Redis и scheduler требуют контрактов из отдельных документов.
 
-Метки связей: `{"EXTRACTED": 76265, "INFERRED": 8061}`.
-Не включены в проекцию между файлами: `{"external_or_unresolved_file": 3265, "missing_endpoint": 4746, "within_file": 36631}`.
+Метки связей: `{"EXTRACTED": 76777, "INFERRED": 8135}`.
+Не включены в проекцию между файлами: `{"external_or_unresolved_file": 3294, "missing_endpoint": 4764, "within_file": 36907}`.
 
 ## Слои файлов
 
@@ -62,11 +62,11 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | `.cursor` | 11 | 0 |
 | `.github` | 3 | 0 |
 | `.tours` | 1 | 0 |
-| `backend` | 1041 | 937 |
+| `backend` | 1047 | 943 |
 | `clickhouse` | 2 | 0 |
 | `deploy` | 21 | 11 |
-| `docs` | 165 | 106 |
-| `frontend` | 1187 | 932 |
+| `docs` | 167 | 108 |
+| `frontend` | 1188 | 933 |
 | `mcp` | 4 | 3 |
 | `scripts` | 148 | 131 |
 
@@ -87,7 +87,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [.cursor/rules/subagents.mdc](../.cursor/rules/subagents.mdc) | 12 | inventory_only |
 | [.cursor/rules/working-agreement.mdc](../.cursor/rules/working-agreement.mdc) | 63 | inventory_only |
 | [.cursor/rules/world-ui-parity.mdc](../.cursor/rules/world-ui-parity.mdc) | 32 | inventory_only |
-| [AGENTS.md](../AGENTS.md) | 88 | nodes |
+| [AGENTS.md](../AGENTS.md) | 89 | nodes |
 | [CONTEXT.md](../CONTEXT.md) | 1334 | nodes |
 | [README.md](../README.md) | 273 | nodes |
 | [deploy/tor-http-bridge/README.md](../deploy/tor-http-bridge/README.md) | 50 | nodes |
@@ -122,8 +122,9 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/adr/0029-ru-google-recovery.md](../docs/adr/0029-ru-google-recovery.md) | 50 | nodes |
 | [docs/adr/0030-ru-google-short-sitemap.md](../docs/adr/0030-ru-google-short-sitemap.md) | 80 | nodes |
 | [docs/adr/0031-apex-google-demand-only-years.md](../docs/adr/0031-apex-google-demand-only-years.md) | 97 | nodes |
-| [docs/adr/0032-email-channel-service-mail-and-newsletter.md](../docs/adr/0032-email-channel-service-mail-and-newsletter.md) | 96 | nodes |
-| [docs/adr/0033-personal-newsletter-issue.md](../docs/adr/0033-personal-newsletter-issue.md) | 119 | nodes |
+| [docs/adr/0032-email-channel-service-mail-and-newsletter.md](../docs/adr/0032-email-channel-service-mail-and-newsletter.md) | 100 | nodes |
+| [docs/adr/0033-personal-newsletter-issue.md](../docs/adr/0033-personal-newsletter-issue.md) | 166 | nodes |
+| [docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md](../docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md) | 104 | nodes |
 | [docs/agent-briefs/README.md](../docs/agent-briefs/README.md) | 15 | nodes |
 | [docs/agent-briefs/hotfix-brief.md](../docs/agent-briefs/hotfix-brief.md) | 15 | nodes |
 | [docs/agent-briefs/integration-brief.md](../docs/agent-briefs/integration-brief.md) | 13 | nodes |
@@ -164,8 +165,9 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/knowledge-unknowns.md](../docs/knowledge-unknowns.md) | 201 | nodes |
 | [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | 111 | nodes |
 | [docs/legal/privacy-cabinet-draft-2026-11-14.md](../docs/legal/privacy-cabinet-draft-2026-11-14.md) | 104 | nodes |
-| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | 3735 | nodes |
+| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | 3789 | nodes |
 | [docs/missed_data_audit.md](../docs/missed_data_audit.md) | 449 | nodes |
+| [docs/newsletter-playbook.md](../docs/newsletter-playbook.md) | 191 | nodes |
 | [docs/offsite-backup-runbook.md](../docs/offsite-backup-runbook.md) | 74 | nodes |
 | [docs/planet-view.md](../docs/planet-view.md) | 594 | nodes |
 | [docs/pravki-21-reanalysis.md](../docs/pravki-21-reanalysis.md) | 52 | nodes |
@@ -195,7 +197,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/verification/us-eu-source-audit-2026-09-24.md](../docs/verification/us-eu-source-audit-2026-09-24.md) | 114 | nodes |
 | [docs/verification/us-indicators-2026-09-24.md](../docs/verification/us-indicators-2026-09-24.md) | 41 | nodes |
 | [docs/verification/world-forecast-v2-2026-09-24.md](../docs/verification/world-forecast-v2-2026-09-24.md) | 64 | nodes |
-| [docs/workflow.md](../docs/workflow.md) | 790 | nodes |
+| [docs/workflow.md](../docs/workflow.md) | 813 | nodes |
 | [frontend/public/brand/README-prompts.md](../frontend/public/brand/README-prompts.md) | 42 | nodes |
 | [frontend/public/planet/README.md](../frontend/public/planet/README.md) | 112 | nodes |
 | [scripts/audit-world-truthfulness-report.md](../scripts/audit-world-truthfulness-report.md) | 145 | nodes |
