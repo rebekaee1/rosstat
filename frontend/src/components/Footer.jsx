@@ -5,6 +5,7 @@ import Brand from './Brand';
 import Emblem from './brand/Emblem';
 import FacetMark from './brand/FacetMark';
 import PwaInstallEntry from './PwaInstallEntry';
+import { WelcomeEntry } from './welcome/WelcomeGate';
 import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -312,6 +313,8 @@ export default function Footer() {
               </Link>
             </li>
             <PwaInstallEntry className={footLink} />
+            {/* «Знакомство с сайтом»: вернуться к приветственному экрану (виден только при включённом флаге). */}
+            <WelcomeEntry className={footLink} />
             <li>
               <button type="button" onClick={openConsentSettings} className={cn(footLink, 'text-left')}>
                 {t('footer.cookies')}

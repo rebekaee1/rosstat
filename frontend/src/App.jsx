@@ -19,6 +19,7 @@ import RegisterNudge from './components/RegisterNudge';
 import DownloadLimitModal from './components/DownloadLimitModal';
 import ApiInterestModal from './components/ApiInterestModal';
 import PwaInstallPrompt from './components/PwaInstallPrompt';
+import WelcomeGate from './components/welcome/WelcomeGate';
 import RouteFallback from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
@@ -382,6 +383,8 @@ function AppRoutes() {
       </main>
       <RegisterNudge />
       <PwaInstallPrompt />
+      {/* Приветственный экран нового посетителя: за флагом сервера, по умолчанию выключен (lib/welcome.js). */}
+      <WelcomeGate />
       <Footer />
       <DownloadLimitModal />
       <ApiInterestModal />
