@@ -120,6 +120,8 @@ def instrument(html: str, text: str, row: MailMessage, *, click_term: str | None
         if click_term:
             out_html = _HREF_RE.sub(lambda m: f'href="{_with_term(m.group(1), click_term, html=True)}"', out_html)
             out_text = _TEXT_URL_RE.sub(lambda m: _with_term(m.group(0), click_term, html=False), out_text)
+        if not settings.mail_tracking_open_pixel:
+            return out_html, out_text
         pixel = (f'<img src="{pixel_url(row)}" width="1" height="1" alt="" '
                  'style="display:block;width:1px;height:1px;border:0;opacity:0" />')
         if "</body>" in out_html:

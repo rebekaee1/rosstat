@@ -46,6 +46,7 @@ def test_tracking_is_off_by_default_and_letter_is_untouched(mail_env, auth_clien
 
 
 def test_pixel_and_click_marks_added_on_send_and_open_is_recorded(mail_env, auth_client, monkeypatch):
+    monkeypatch.setattr(settings, "mail_tracking_open_pixel", True)
     from app.models import MailEvent
     from app.services.mail import tracking
     from sqlalchemy import select
