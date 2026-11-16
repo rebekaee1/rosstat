@@ -93,7 +93,8 @@ export function detectVisitorCountry({ timeZone, languages } = {}) {
 
 /**
  * Набор для приветственного экрана.
- * @returns {{ key: string, sources: string[], home: string, peer: string }} `home` и `peer` — английские названия стран.
+ * @returns {{ key: string, sources: string[], home: string, peer: string, homeSlug: string, peerSlug: string }}
+ * `home` и `peer` — английские названия стран, `homeSlug` и `peerSlug` — их адреса на сайте.
  */
 export function welcomeAudience(signals = {}) {
   const country = detectVisitorCountry(signals);
@@ -101,12 +102,14 @@ export function welcomeAudience(signals = {}) {
   const set = AUDIENCES[key];
   const homeCode = key === 'WORLD' ? set.home : (key === 'EU' ? country : key);
   const peerCode = set.peer === homeCode ? 'DE' : set.peer;
-  return {
-    key,
-    sources: set.sources,
-    home: COUNTRY_NAMES[homeCode] || COUNTRY_NAMES.US,
-    peer: COUNTRY_NAMES[peerCode] || COUNTRY_NAMES.DE,
-  };
+  const home = COUNTRY_NAMES[homeCode] || COUNTRY_NAMES.US;
+  const peer = COUNTRY_NAMES[peerCode] || COUNTRY_NAMES.DE;
+  return { key, sources: set.sources, home, peer, homeSlug: countrySlug(home), peerSlug: countrySlug(peer) };
+}
+
+/** Адрес страны на сайте по её английскому названию (country-first URL, ADR-0013): `United Kingdom` → `united-kingdom`. */
+export function countrySlug(name) {
+  return String(name || '').toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '');
 }
 
 /** Сигналы этого браузера; любая ошибка даёт пустой набор (общий международный вариант). */
