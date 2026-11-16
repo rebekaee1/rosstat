@@ -374,6 +374,16 @@ services:
       RUSTATS_NEWSLETTER_PERSONAL_HOLDOUT_PCT: ${RUSTATS_NEWSLETTER_PERSONAL_HOLDOUT_PCT:-0}
       RUSTATS_NEWSLETTER_PERSONAL_BUILD_ENABLED: ${RUSTATS_NEWSLETTER_PERSONAL_BUILD_ENABLED:-false}
       RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED: ${RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED:-false}
+      RUSTATS_NEWSLETTER_PERSONAL_SUBJECT_AB_PCT: ${RUSTATS_NEWSLETTER_PERSONAL_SUBJECT_AB_PCT:-50}
+      # Прогнозы витрины, которые не ставятся в письма (id через запятую).
+      RUSTATS_NEWSLETTER_PERSONAL_SKIP_FORECASTS: ${RUSTATS_NEWSLETTER_PERSONAL_SKIP_FORECASTS:-}
+      # Воронка письма и отчёт служебного бота (ADR-0034): выключено; счётчик открытий — отдельно
+      # и выключен (с внешней картинкой Яндекс Почта прячет шапку письма, проверка 16.11.2026).
+      RUSTATS_MAIL_TRACKING_ENABLED: ${RUSTATS_MAIL_TRACKING_ENABLED:-false}
+      RUSTATS_MAIL_TRACKING_OPEN_PIXEL: ${RUSTATS_MAIL_TRACKING_OPEN_PIXEL:-false}
+      RUSTATS_MAIL_REPORT_ENABLED: ${RUSTATS_MAIL_REPORT_ENABLED:-false}
+      RUSTATS_MAIL_REPORT_HOUR_MSK: ${RUSTATS_MAIL_REPORT_HOUR_MSK:-9}
+      RUSTATS_MAIL_REPORT_MINUTE: ${RUSTATS_MAIL_REPORT_MINUTE:-20}
       # Личный кабинет: включён с 14.11.2026; false в .env = аварийно выключить (/api/v1/cabinet/* → 404, кроме /cabinet/config).
       RUSTATS_CABINET_ENABLED: ${RUSTATS_CABINET_ENABLED:-true}
       # PWA: аварийные выключатели без пересборки фронта (по умолчанию включено).
@@ -515,6 +525,9 @@ services:
         VITE_PUBLIC_BASE_URL: ${VITE_PUBLIC_BASE_URL:-https://forecasteconomy.com}
         # Намеренно тот же source env, что у backend: отдельного VITE-флага нет.
         VITE_APEX_LOCALE_EN: ${RUSTATS_APEX_LOCALE_EN:-false}
+        # Разделы политики о личной подборке и учёте писем (ADR-0033/0034): публикация флагом сборки.
+        VITE_PRIVACY_PERSONAL_NEWSLETTER: ${VITE_PRIVACY_PERSONAL_NEWSLETTER:-false}
+        VITE_PRIVACY_MAIL_TRACKING: ${VITE_PRIVACY_MAIL_TRACKING:-false}
     environment:
       # Пропуск человека (08.11.2026, frontend/40-fe-human-pass.sh): пусто = выключено.
       FE_HUMAN_PASS_SECRET: ${FE_HUMAN_PASS_SECRET:-}
