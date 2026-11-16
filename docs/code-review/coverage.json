@@ -2209,8 +2209,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "d737c82cab0a5bf6f6a76ce99e5eac654a9dc070ce4a246f953d261a44f8d002",
-      "bytes": 79625,
+      "sha256": "eec74c8204ce270957da3492b73aad5b292ae6340b8251ec71dda28ecb10b9de",
+      "bytes": 79620,
       "lines": 1736,
       "code": true,
       "status": "reviewed",
@@ -4575,8 +4575,8 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "sha256": "464bd0eaf5f02ba12ddf06a3b899e59e110ab0b7869a0ddc52a754a6ea10f8cd",
-      "bytes": 36318,
+      "sha256": "49a0b4d61d6ae81f548d5d8515070911bdd5e353bb3319409bb4cc72229d01bf",
+      "bytes": 36330,
       "lines": 584,
       "code": true,
       "status": "reviewed",
@@ -5654,8 +5654,8 @@
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "sha256": "be8603217ced1b6334f25ab6791f628f9585c7f5c3a69def5212f679fbc78b95",
-      "bytes": 50234,
+      "sha256": "091515e1c430a90d641699496258c724a229768c9bf61dbc671136c8e09a1dc1",
+      "bytes": 50225,
       "lines": 716,
       "code": true,
       "status": "reviewed",
@@ -10516,8 +10516,8 @@
     },
     {
       "path": "backend/tests/test_mail.py",
-      "sha256": "36943e2312a290027ba1caab0932b0ecee87f2f72f2192daec2da6f1ce4bbf82",
-      "bytes": 20461,
+      "sha256": "5e6d550162393e40dafcd42a47387a7b46dbb6727185ac03257ef4808ad11968",
+      "bytes": 20520,
       "lines": 428,
       "code": true,
       "status": "reviewed",
@@ -13961,9 +13961,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "981010982b81fd34bd09b6dde562206c84a8e7425418b71992676e95786a6afe",
-      "bytes": 29518,
-      "lines": 192,
+      "sha256": "e4c0cf1741ab9e74d76e87ac873c2eabdfd37c5f9102be725844c4ca6abb013a",
+      "bytes": 30442,
+      "lines": 194,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14975,7 +14975,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "8060e14dbc88e39028c6407c46b9d7b20b88f1d7e4299390bec66dec13630e8d",
+      "sha256": "ebb6fac10c67dc89af64e5d73eabe8bb774b3a6e78dd52414e77df218ce09816",
       "bytes": 7376254,
       "lines": 260023,
       "code": false,
@@ -15612,8 +15612,8 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "419131c0873df388993c6d2b2df3a5cc7f06d2e701fd7545d3fcd0300b99a6c3",
-      "bytes": 13577987,
+      "sha256": "73ba8f51ca71c66f7f25cc2cf03c3dba72c359cd9291c36c58886f3fd2c03d5f",
+      "bytes": 13578012,
       "lines": 409650,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -23308,9 +23308,9 @@
     },
     {
       "path": "frontend/src/i18n/legalPages.en.jsx",
-      "sha256": "2cd099cf8d19d2cd28a16f2db080651f4dfb18f6b9ed2b223a304e82273312af",
-      "bytes": 20884,
-      "lines": 401,
+      "sha256": "f0cee1b2265cdccf8014a0f1594c80b7fc16f85701985b147dd9e563f1ea4e57",
+      "bytes": 20779,
+      "lines": 400,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -23347,8 +23347,8 @@
     },
     {
       "path": "frontend/src/i18n/messages.en.js",
-      "sha256": "aa032b41f2b76c3fae8b75bb16315f8bf7bce2382b2949f3273eaca5255dbcc7",
-      "bytes": 237103,
+      "sha256": "e6202ef35473ee9700c28e6ebea1bf1bf19ba838bde606c698fc1b697ac87e19",
+      "bytes": 237118,
       "lines": 4217,
       "code": true,
       "status": "reviewed",
@@ -23386,8 +23386,8 @@
     },
     {
       "path": "frontend/src/i18n/messages.ru.js",
-      "sha256": "7b2faeb236a71e9f552a68f1990363d403d9ee7aed58d15de85f980f44b78165",
-      "bytes": 336720,
+      "sha256": "63fc0dccf354b9be0f37625587b02d0524e42685cb54e2e0a309c863b92ae8c6",
+      "bytes": 336731,
       "lines": 4222,
       "code": true,
       "status": "reviewed",
@@ -26350,8 +26350,8 @@
     },
     {
       "path": "frontend/src/lib/pageMeta.generated.json",
-      "sha256": "754f78384ce686a9136e75d5c19f07e8f2bec52bb8a615fedeeb08600afa4dc5",
-      "bytes": 38568,
+      "sha256": "d53eeb5b9f4ca4c31df0681f5a28589ebc2d5645f465bf93e61a25b9aaf2ec80",
+      "bytes": 38554,
       "lines": 529,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -29899,9 +29899,9 @@
     },
     {
       "path": "frontend/src/pages/Privacy.jsx",
-      "sha256": "a6d41f31bb7da4ac63e3bfedfc80baf1dfcc4b5937a3979a7b88483b05c29360",
-      "bytes": 24239,
-      "lines": 310,
+      "sha256": "367b7fe94c16870c43dcf645c75763de2c1ec9527f72dd1ffa04d56006db20f0",
+      "bytes": 24058,
+      "lines": 309,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -30198,8 +30198,8 @@
     },
     {
       "path": "frontend/src/pages/Terms.jsx",
-      "sha256": "579997b8275f7fac61abbedd47287b09cc7f110befc15988c8b51c490d2687a0",
-      "bytes": 12792,
+      "sha256": "927d4771437021a815cb97ebb34c05b49393a43f6668c024db6fa922bb4c9067",
+      "bytes": 12793,
       "lines": 172,
       "code": true,
       "status": "reviewed",
@@ -33851,15 +33851,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "4c69b7c274c1ac1efceb9fcd763d55a6c8c5f0a7a0f1446f07f4b0ac72f65c13",
-  "javascript_inventory_sha256": "897de928c5aa77d78a8680c460cd714ed8bc4d7f39b984bbce8321fbce73a22f",
-  "baseline_commit": "c66642ec55211fec97cee576ca2a7ee6a3830bf0",
+  "ledger_sha256": "ecd7275e0a3b7ee6c87816bcce9a41f066ab646524c8131f7c132fc99680392e",
+  "javascript_inventory_sha256": "f5624088954e52559fce18edbe7d8cbf4e746f43548c5b54a9651c8f1bc0752c",
+  "baseline_commit": "3d27333b1b67f91429a7c79dbbefea7d19fde90b",
   "branch": "feat/newsletter-personal-first-issue",
   "unstaged_at_capture": [
     "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/mechanism-inventory.json"
   ]
 }
