@@ -53,7 +53,7 @@ CID_HERO = "fe-hero"
 # требует почтовый адрес отправителя в каждом рекламном письме.
 OPERATOR = {
     "ru": "",
-    "en": "IIMPAKT PLUS LLC, 21 Presnensky Val St., premises 172, Moscow 123557, Russia",
+    "en": "LORREDA LLC, 16 Sadovaya-Triumfalnaya St., bldg. 3, premises 2A/1, Moscow 127006, Russia",
 }
 
 STRINGS = {

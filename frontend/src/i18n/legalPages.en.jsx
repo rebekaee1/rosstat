@@ -45,11 +45,10 @@ export function PrivacyBodyEn({ t, h1 }) {
         Federal Law No. 152-FZ of 27 July 2006 “On Personal Data”.
       </p>
       <p className={p}>
-        The personal data controller is IIMPACT PLUS Limited Liability Company
-        (IIMPACT PLUS LLC), tax ID (INN) 9705243471, primary state registration number
-        (OGRN) 1257700255196, address: 123557, Moscow, Presnensky Val St., 21, premises 172
-        (the Controller). The Controller is listed in the Roskomnadzor register of personal
-        data controllers under registration number 77-26-538159.
+        The personal data controller is LORREDA Limited Liability Company
+        (LORREDA LLC), tax ID (INN) 9710139814, primary state registration number
+        (OGRN) 1247700718165, address: 127006, Moscow, Sadovaya-Triumfalnaya St., 16, bldg. 3,
+        premises 2A/1 (the Controller).
       </p>
       <p className={p}>
         By using the Site, you agree to this policy. Rules for using Site materials are set
@@ -262,8 +261,8 @@ export function PrivacyBodyEn({ t, h1 }) {
         </li>
       </ul>
       <p className="text-text-secondary leading-relaxed">
-        Postal address of the Controller: 123557, Moscow, Presnensky Val St., 21,
-        premises 172, IIMPACT PLUS LLC.
+        Postal address of the Controller: 127006, Moscow, Sadovaya-Triumfalnaya St., 16,
+        bldg. 3, premises 2A/1, LORREDA LLC.
       </p>
     </>
   );
@@ -285,9 +284,9 @@ export function TermsBodyEn({ t, h1 }) {
       <p className={p}>
         These terms govern the use of{' '}
         <strong className="text-text-primary">forecasteconomy.com</strong> (the Site).
-        The Site is administered by IIMPACT PLUS Limited Liability Company (IIMPACT PLUS LLC),
-        tax ID (INN) 9705243471, primary state registration number (OGRN) 1257700255196,
-        address: 123557, Moscow, Presnensky Val St., 21, premises 172 (the Administration);
+        The Site is administered by LORREDA Limited Liability Company (LORREDA LLC),
+        tax ID (INN) 9710139814, primary state registration number (OGRN) 1247700718165,
+        address: 127006, Moscow, Sadovaya-Triumfalnaya St., 16, bldg. 3, premises 2A/1 (the Administration);
         it is also the personal data controller for visitors. By using the Site, you accept
         these terms. If you do not agree, please stop using the Site.
       </p>

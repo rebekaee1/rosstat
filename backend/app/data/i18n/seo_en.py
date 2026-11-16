@@ -498,7 +498,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
         ),
         h1="Privacy and personal data processing policy",
         intro=(
-            "The operator is IIMPACT PLUS LLC, tax ID (INN) 9705243471. This page describes "
+            "The operator is LORREDA LLC, tax ID (INN) 9710139814. This page describes "
             "which data are processed when you use the site, how to manage cookie "
             "consent, and what rights visitors have."
         ),

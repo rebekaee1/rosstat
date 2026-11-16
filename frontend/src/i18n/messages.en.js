@@ -151,7 +151,7 @@ export default {
   'footer.disclaimer':
     'Content is for information only and does not constitute investment advice.',
   'footer.operator':
-    'Personal data operator: IIMPACT PLUS LLC, TIN 9705243471, OGRN 1257700255196. 123557, Moscow, Presnensky Val St., 21, suite 172',
+    'Personal data operator: LORREDA LLC, TIN 9710139814, OGRN 1247700718165. 127006, Moscow, Sadovaya-Triumfalnaya St., 16, bldg. 3, premises 2A/1',
   'footer.rosstat': 'Rosstat',
   'footer.cbr': 'Bank of Russia',
   'footer.minfin': 'Russian Ministry of Finance',
@@ -611,8 +611,8 @@ export default {
   'common.networkError': 'Could not reach the server. Check your connection and try again.',
 
   'legal.eyebrow': 'Legal information',
-  'legal.revised': 'Revised 24 September 2026',
-  'legal.privacyRevised': 'Revised 8 November 2026',
+  'legal.revised': 'Revised 16 November 2026',
+  'legal.privacyRevised': 'Revised 16 November 2026',
   'legal.cookieSettings': 'Cookie settings',
   'legal.privacyLink': 'privacy policy',
   'legal.termsLink': 'terms of use',
