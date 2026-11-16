@@ -23559,7 +23559,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/i18n/legalPages.en.jsx": {
-    "sha256": "f0cee1b2265cdccf8014a0f1594c80b7fc16f85701985b147dd9e563f1ea4e57",
+    "sha256": "2cd099cf8d19d2cd28a16f2db080651f4dfb18f6b9ed2b223a304e82273312af",
     "definitions": [
       {
         "name": "CookieRow",
@@ -23570,13 +23570,13 @@
       {
         "name": "PrivacyBodyEn",
         "line": 29,
-        "end_line": 269,
+        "end_line": 270,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TermsBodyEn",
-        "line": 272,
-        "end_line": 400,
+        "line": 273,
+        "end_line": 401,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -23625,7 +23625,7 @@
         "names": [
           "TermsBodyEn"
         ],
-        "line": 272
+        "line": 273
       }
     ],
     "anonymous_functions": 2
@@ -23975,7 +23975,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "e6202ef35473ee9700c28e6ebea1bf1bf19ba838bde606c698fc1b697ac87e19",
+    "sha256": "a4cb3fc253e6ac8a92bb6f5d4d9f02370b4f7e4d9d12b556ceb2b9b8093d5f1f",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -24083,7 +24083,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "63fc0dccf354b9be0f37625587b02d0524e42685cb54e2e0a309c863b92ae8c6",
+    "sha256": "03609976212b8327be091d1900eef837c843fdd0c82d55df676d57e0672be6dd",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -58899,7 +58899,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/Privacy.jsx": {
-    "sha256": "367b7fe94c16870c43dcf645c75763de2c1ec9527f72dd1ffa04d56006db20f0",
+    "sha256": "94cc738f6ae7a67a7cf4ba10eb820afd8b078fb025b2fd53d7cb604e21556b27",
     "definitions": [
       {
         "name": "CookieRow",
@@ -58910,7 +58910,7 @@
       {
         "name": "Privacy",
         "line": 49,
-        "end_line": 309,
+        "end_line": 310,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -61001,7 +61001,7 @@
     "anonymous_functions": 22
   },
   "frontend/src/pages/Terms.jsx": {
-    "sha256": "927d4771437021a815cb97ebb34c05b49393a43f6668c024db6fa922bb4c9067",
+    "sha256": "579997b8275f7fac61abbedd47287b09cc7f110befc15988c8b51c490d2687a0",
     "definitions": [
       {
         "name": "Terms",

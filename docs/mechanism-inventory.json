@@ -595,7 +595,7 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "eec74c8204ce270957da3492b73aad5b292ae6340b8251ec71dda28ecb10b9de",
+      "sha256": "d737c82cab0a5bf6f6a76ce99e5eac654a9dc070ce4a246f953d261a44f8d002",
       "lines": 1736
     },
     {
@@ -1460,7 +1460,7 @@
     },
     {
       "path": "backend/app/services/mail/templates.py",
-      "sha256": "49a0b4d61d6ae81f548d5d8515070911bdd5e353bb3319409bb4cc72229d01bf",
+      "sha256": "464bd0eaf5f02ba12ddf06a3b899e59e110ab0b7869a0ddc52a754a6ea10f8cd",
       "lines": 584
     },
     {
@@ -1875,7 +1875,7 @@
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "sha256": "091515e1c430a90d641699496258c724a229768c9bf61dbc671136c8e09a1dc1",
+      "sha256": "be8603217ced1b6334f25ab6791f628f9585c7f5c3a69def5212f679fbc78b95",
       "lines": 716
     },
     {
@@ -82490,10 +82490,10 @@
         },
         {
           "key": "'privacy'",
-          "expression": "PageSeo(slug='privacy', path='/privacy', title='Privacy policy', description='Personal data processing policy for forecasteconomy.com: operator, data categories, cookies, and user rights.', h1='Privacy and personal data processing policy', intro='The operator is LORREDA LLC, tax ID (INN) 9710139814.",
+          "expression": "PageSeo(slug='privacy', path='/privacy', title='Privacy policy', description='Personal data processing policy for forecasteconomy.com: operator, data categories, cookies, and user rights.', h1='Privacy and personal data processing policy', intro='The operator is IIMPACT PLUS LLC, tax ID (INN) 970524",
           "expression_truncated": true,
-          "expression_chars": 607,
-          "ast_sha256": "9ac4114eb312bb999bc9499da6b14917a8cea4c542b1bf16299afd26882582c1"
+          "expression_chars": 612,
+          "ast_sha256": "3864f125b63b351e1bd33fdde493d27635303500ad469bc950b26a9a669a6a49"
         },
         {
           "key": "'terms'",
@@ -82575,8 +82575,8 @@
       ],
       "expression": "{'home': PageSeo(slug='home', path='/', title='Forecast Economy — official macroeconomic indicators by country', description='Official macroeconomic indicators from national statistical offices, central banks, Eurostat, and the IMF: charts, tables, comparisons, and forecasts.', h1='Country economies in one place', intro='Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, Eurostat, and the IMF. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.', keywords='country macroeconomic indicators, country statistics, GDP, inflation, unemployment, interest rates, Eurostat, IMF, Bureau of Labor Statistics, Federal Reserve, official statistics, economic forecasts', links=((paths.country('united-states'), 'United States'), (paths.indicator('united-states', 'us-cpi-all'), 'Consumer Price Index'), (paths.indicator('united-states', 'us-unemployment-rate'), 'Unemployment rate'), ('/world/rating/gdp-usd', 'Country rankings'), ('/compare', 'Compare indicators'), ('/about', 'About')), blocks=(SeoBlock('About the platform', 'The platform provides country indicators from official national and international sources. Cards show history, view modes, tables, and comparable series; forecasts appear only where the model has passed a quality check.'), SeoBlock('Data sources', 'Official primary sources only: Eurostat, the IMF, the U.S. Bureau of Labor Statistics, the Bureau of Economic Analysis, the Federal Reserve, and national statistical offices and central banks.'))), 'about': PageSeo(slug='about', path='/about', title='About Forecast Economy', description='Analytics platform for official economic data by country: charts, tables, comparisons, and forecasts from national statistical offices, central banks, Eurostat, and the IMF.', h1='About Forecast Economy', intro='Forecast Economy is an analytics project for",
       "expression_truncated": true,
-      "expression_chars": 17432,
-      "ast_sha256": "32d9d5c6e73f9552525f0b4e5ed97c7a33468ec2f668164e58cbd195fa9213f6",
+      "expression_chars": 17437,
+      "ast_sha256": "710a209c358c8265a77f8746175ecb8c77092719a6d3a0ec00c9b89f6f5e1afd",
       "runtime_expansion": false
     },
     {
@@ -107483,16 +107483,16 @@
         },
         {
           "key": "'en'",
-          "expression": "'LORREDA LLC, 16 Sadovaya-Triumfalnaya St., bldg. 3, premises 2A/1, Moscow 127006, Russia'",
+          "expression": "'IIMPAKT PLUS LLC, 21 Presnensky Val St., premises 172, Moscow 123557, Russia'",
           "expression_truncated": false,
-          "expression_chars": 90,
-          "ast_sha256": "10b1727901130b2e7d8177adc75419e6e7c5290e0877bd34e7c4136c09d64ccd"
+          "expression_chars": 78,
+          "ast_sha256": "2dc49e500f760a1009657c6c34c7db6327fdefc2b503378a31deeb921c8a9fd6"
         }
       ],
-      "expression": "{'ru': '', 'en': 'LORREDA LLC, 16 Sadovaya-Triumfalnaya St., bldg. 3, premises 2A/1, Moscow 127006, Russia'}",
+      "expression": "{'ru': '', 'en': 'IIMPAKT PLUS LLC, 21 Presnensky Val St., premises 172, Moscow 123557, Russia'}",
       "expression_truncated": false,
-      "expression_chars": 108,
-      "ast_sha256": "7a611d6eb92aa7ee040f18e0b20797bd3b5c445f89302cfc811ac45d1593a418",
+      "expression_chars": 96,
+      "ast_sha256": "6ccabfb2acf93e74b1cadfc9302f214754aad6a5e36811f1552e0b63c20f61c4",
       "runtime_expansion": false
     },
     {
@@ -119600,8 +119600,8 @@
           "key": "'privacy'",
           "expression": "PageSeo(slug='privacy', path='/privacy', title='Политика конфиденциальности', description='Политика обработки персональных данных сайта forecasteconomy.com: оператор, состав данных, cookie, права пользователей.', h1='Политика конфиденциальности и обработки персональных данных', intro='Оператор — ООО",
           "expression_truncated": true,
-          "expression_chars": 697,
-          "ast_sha256": "6750ea38bd81c5c6766783e426234502bf5571e569de16e6828ce10bcbacd064"
+          "expression_chars": 702,
+          "ast_sha256": "56f1ac020650a25c16fe3a8f88b94d28b60b7b5f5a0fa433139ecc9d34742f14"
         },
         {
           "key": "'terms'",
@@ -119683,8 +119683,8 @@
       ],
       "expression": "{'home': PageSeo(slug='home', path='/', title='Forecast Economy — макроэкономические индикаторы стран и России', description='Официальные макроэкономические индикаторы по странам, России и её регионам: графики, таблицы, сравнения и статистические прогнозы по данным ведомств статистики и центральных банков.', h1='Экономика стран в одном месте', intro='Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков, Евростата и МВФ. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. По России покрытие особенно глубокое. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.', keywords='макроэкономические показатели стран, статистика по странам, экономика России, макроэкономика России, ВВП России, инфляция в России, ИПЦ, ключевая ставка ЦБ, курс доллара, курс евро, курсы валют ЦБ, Росстат данные, Банк России, Евростат, прогноз инфляции, экономические данные России, статистика России, статистика стран', links=((paths.today(), 'Экономика сегодня: курсы, ставка, инфляция'), (paths.russia_indicator('cpi'), 'Индекс потребительских цен'), (paths.region_hub(), 'Регионы России'), (paths.world_rating('gdp-usd'), 'Рейтинг стран'), (paths.demographics(), 'Возрастная структура населения'), ('/calculator', 'Калькулятор инфляции'), ('/compare', 'Сравнение индикаторов'), (paths.calendar(), 'Календарь публикаций')), blocks=(SeoBlock('О платформе', 'Официальные показатели по странам мира, по России и её регионам, а также по штатам США. К каждому показателю — график, таблица и вся история; прогноз показываем только там, где ему можно доверять.'), SeoBlock('Источники данных', 'Только официальные первоисточники: Евростат, МВФ, национальные статистические ведомства подключённых стран, Бюро экономического анализа США, Бюро трудовой статистики США, Росстат, Банк России и Минфин России.'))), 'about': PageSeo(slug='about', path='/about', title='О прое",
       "expression_truncated": true,
-      "expression_chars": 18071,
-      "ast_sha256": "e640a992a8aacd849e939c6be491ed82c76646c63430a45d20d346ea24a2d5cd",
+      "expression_chars": 18076,
+      "ast_sha256": "a6246701d4b13c2fa16af7bc6f48ab2a6d195297fdcb50e22e3e2334fbee8aa1",
       "runtime_expansion": false
     },
     {
