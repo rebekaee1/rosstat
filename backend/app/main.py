@@ -1332,6 +1332,69 @@ async def lifespan(app: FastAPI):
                 )
                 logger.info("Public bot notify enabled: every 30 min")
 
+        # Telegram-канал (ADR-0035): счётчик, модель-автор, публикация по кнопке владельца. Всё за флагами.
+        if settings.channel_stats_enabled and settings.telegram_bot_token:
+            from app.services.channel_stats import channel_stats_job
+            scheduler.add_job(
+                channel_stats_job,
+                trigger=CronTrigger(hour=settings.channel_stats_cron_hour, minute=settings.channel_stats_cron_minute,
+                                    timezone="Europe/Moscow"),
+                id="channel_stats",
+                name="Telegram channel: subscribers and post views once a day (read-only)",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Channel stats enabled: daily at %02d:%02d MSK",
+                        settings.channel_stats_cron_hour, settings.channel_stats_cron_minute)
+        if settings.channel_author_enabled and settings.openrouter_api_key and settings.telegram_bot_token:
+            from app.services.channel_author import (
+                channel_author_daily_job, channel_author_release_job, channel_plan_job,
+            )
+            scheduler.add_job(
+                channel_author_daily_job,
+                trigger=CronTrigger(hour=settings.channel_author_daily_hour, minute=settings.channel_author_daily_minute,
+                                    timezone="Europe/Moscow"),
+                id="channel_author_daily",
+                name="Telegram channel author: daily decision and draft for the owner",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            scheduler.add_job(
+                channel_author_release_job,
+                trigger=IntervalTrigger(minutes=30),
+                id="channel_author_release",
+                name="Telegram channel author: draft on a fresh data point (09-21 MSK)",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            if settings.channel_plan_enabled:
+                scheduler.add_job(
+                    channel_plan_job,
+                    trigger=CronTrigger(day_of_week="sun", hour=18, minute=0, timezone="Europe/Moscow"),
+                    id="channel_plan",
+                    name="Telegram channel author: weekly plan note for the owner",
+                    replace_existing=True,
+                    coalesce=True,
+                    max_instances=1,
+                )
+            logger.info("Channel author enabled: daily at %02d:%02d MSK, release check every 30 min",
+                        settings.channel_author_daily_hour, settings.channel_author_daily_minute)
+        if settings.channel_publish_enabled and settings.telegram_bot_token:
+            from app.services.channel_posts import channel_publish_job
+            scheduler.add_job(
+                channel_publish_job,
+                trigger=IntervalTrigger(minutes=1),
+                id="channel_publish",
+                name="Telegram channel: publish owner-approved posts when due",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Channel publishing enabled: approved posts go out when due")
+
         # Почта (ADR-0032): разбор отказов и сводка «колокольчика» — только при включённой почте и своём флаге.
         if settings.mail_enabled and settings.mail_bounce_poll_enabled:
             from app.services.mail.bounces import bounce_poll_job

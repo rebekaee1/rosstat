@@ -359,4 +359,10 @@ async def calm_morning_summary_job() -> bool:
     extra = await morning_calendar_lines()
     if extra and len(text) + sum(len(x) + 1 for x in extra) <= MESSAGE_LIMIT:
         text = text + "\n" + "\n".join(extra)
+    # Канал (17.11.2026, ADR-0035): подписчики, просмотры последнего поста, заходы на сайт из канала.
+    from app.services.channel_stats import morning_line
+
+    channel = await morning_line()
+    if channel and len(text) + len(channel) + 1 <= MESSAGE_LIMIT:
+        text = text + "\n" + channel
     return await send_telegram(text, kind=SUMMARY_KIND)

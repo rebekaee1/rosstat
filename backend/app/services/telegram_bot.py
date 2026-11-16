@@ -16,6 +16,8 @@
 - «Пульс сегодня» — снапшот текущего дня на лету;
 - под таблицей пользователей — кнопка на каждого → карточка-аналитика
   (identity, консенты, история входов из auth_audit);
+- черновики постов Telegram-канала (17.11.2026, ADR-0035): кнопки `ch:*` и ответы на черновик уходят в
+  `channel_posts.py` — владелец утверждает, правит словами или отклоняет пост;
 - «Скачивания» (14.11.2026) — что скачивали и где упёрлись в лимит по содержанию за срок
   (`download_content.py`), файл Excel; «Выгрузки» — файлы за срок: скачивания, регистрации,
   все действия на сайте (`bot_exports.py`), CSV пользователей. Команды `/downloads [N]`, `/export`.
@@ -636,6 +638,11 @@ async def _handle_callback(cq: dict) -> None:
         from app.services import public_bot
         await public_bot.handle_callback(cq)
         return
+    if data.startswith("ch:"):
+        # Кнопки под черновиком поста для канала (ADR-0035): решает только проверяющий, ответ на нажатие — там же.
+        from app.services import channel_posts
+        await channel_posts.handle_callback(cq)
+        return
     await _api("answerCallbackQuery", {"callback_query_id": cq["id"]})
     chat_id = str(cq.get("message", {}).get("chat", {}).get("id", ""))
     if chat_id not in interactive_authorized_ids():
@@ -769,6 +776,17 @@ async def _handle_message(msg: dict) -> None:
         reply = await pulse_context.handle_owner_command(msg.get("text") or "")
         if reply:
             await send_message(chat_id, reply, reply_markup=main_menu_keyboard(), kind="bot_reply")
+            return
+    if settings.channel_author_enabled:
+        # Ответ проверяющего на черновик поста для канала или текст после кнопки «Поправить» (ADR-0035).
+        from app.services import channel_posts, channel_voice
+        if chat_id in channel_posts.reviewers() and channel_voice.is_voice_command(msg.get("text") or ""):
+            # Словарь автора: «да: …», «нет: …», «правило: …» — ответы владельца из показа становятся правилами.
+            reply = await channel_voice.handle_owner_command(msg.get("text") or "")
+            if reply:
+                await send_message(chat_id, reply, kind="bot_reply", link_preview=False)
+                return
+        if await channel_posts.handle_message(msg):
             return
     if _public_shared() and _is_public_message(chat_id, text):
         from app.services import public_bot

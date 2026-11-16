@@ -581,6 +581,39 @@ class Settings(BaseSettings):
     public_bot_notify_from_hour: int = 9
     public_bot_notify_to_hour: int = 21
 
+    # Telegram-канал (17.11.2026, ADR-0035): счётчик, модель-автор, публикация по кнопке владельца.
+    # Всё выключено по умолчанию; порядок включения — docs/workflow.md, «Автор Telegram-канала».
+    channel_chat_id: str = "@forecasteconomy"
+    # Счётчик: раз в сутки число подписчиков (Bot API) и просмотры постов (открытая страница t.me).
+    channel_stats_enabled: bool = False
+    channel_stats_cron_hour: int = 8
+    channel_stats_cron_minute: int = 40
+    # Автор: модель через OpenRouter сама решает, что написать сегодня, и присылает черновик в служебный бот.
+    # В канал без кнопки ничего не уходит (и без channel_publish_enabled кнопка только помечает «одобрено»).
+    channel_author_enabled: bool = False
+    # Opus 5.5: по документации Anthropic заметно реже ошибается в числах и источниках; постов мало (≈10 в неделю),
+    # поэтому цена решает меньше, чем точность (сравнение — .artifacts/telegram-author-2026-11-17/).
+    channel_author_model: str = "anthropic/claude-opus-5.5"
+    channel_author_effort: str = "medium"          # low | medium | high — сколько модель думает
+    channel_author_tone: str = "between"           # headlines | between | datasecrets
+    channel_author_web_enabled: bool = True        # поиск в интернете (серверный инструмент OpenRouter)
+    channel_author_web_engine: str = "auto"        # auto = родной поиск провайдера модели, иначе Exa
+    # Поиск идёт отдельным запросом к недорогой модели: она ищет и возвращает выдержки, автор читает их как данные.
+    channel_author_web_model: str = "anthropic/claude-haiku-5.5"
+    channel_author_web_max_searches: int = 4
+    channel_author_daily_hour: int = 9             # ежедневный запуск, МСК: после утренней сводки 09:10
+    channel_author_daily_minute: int = 30
+    channel_author_daily_usd_limit: float = 3.0    # потолок расхода на модель в сутки; дальше запуски пропускаются
+    # Еженедельный план (воскресенье 18:00 МСК): короткая записка владельцу, что пойдёт на неделе и почему.
+    channel_plan_enabled: bool = False
+    # Кому приходят черновики с кнопками (comma-separated chat_id). Пусто = только владелец (telegram_chat_id).
+    # Если указаны двое, решает первое нажатие; второму сообщение обновляется: кто и что решил.
+    channel_review_chat_ids: str = ""
+    # Публикация: одобренный пост уходит в канал в свой срок. Бот должен быть администратором канала.
+    channel_publish_enabled: bool = False
+    channel_post_hour_msk: int = 10                # обычное время выхода
+    channel_bot_token: str = ""                    # пусто = служебный бот (telegram_bot_token)
+
     # «Фальшивая дверь» платного API (замер спроса, 2026-10-05): точки входа
     # «API и выгрузка с прогнозом» на странице показателя и в окне лимита
     # скачиваний. false = фронт ничего не показывает, POST /api-interest → 404.
