@@ -29,7 +29,9 @@ BLOCK_LABELS = {
     "related": "рядом с вашими темами", "now": "теперь есть на сайте", "forecast": "прогноз", "check": "сверка",
     "since": "пока вас не было", "table": "таблица «Ваши показатели»", "calendar": "календарь",
     "lead": "число недели", "story": "блок редакции", "cta": "кнопка в конце",
+    "logo": "логотип в шапке", "settings": "«Настройки» в подвале", "none": "ссылка без метки",
 }
+DEVICE_LABELS = {"mobile": "телефон", "desktop": "компьютер", "tablet": "планшет"}
 
 
 def _now() -> datetime:
@@ -48,9 +50,28 @@ def block_label(content: str | None) -> tuple[str, str]:
     """Метка блока письма (`p3-series`, `b2-story`) → (личный/редакция/без метки, вид блока)."""
     c = (content or "").strip()
     if not c:
-        return "—", "cta"
+        return "—", "none"
+    # Метки мест письма (правила письма, 16.11.2026): шапка, кнопка, подвал, блок, строка таблицы.
+    fixed = {"hdr-logo": "logo", "cta": "cta", "ftr-settings": "settings"}
+    if c in fixed:
+        return "—", fixed[c]
     origin = "personal" if c.startswith("p") else "editorial" if c.startswith("b") else "—"
-    return origin, (c.split("-", 1)[1] if "-" in c else c)
+    kind = c.split("-", 1)[1] if "-" in c else c
+    if kind.startswith("table"):
+        kind = "table"          # `p7-table-r2` — строка таблицы; в отчёте таблица одной строкой
+    return origin, kind
+
+
+async def _names(db: AsyncSession, codes: list[str]) -> dict[str, str]:
+    """Код показателя → название для отчёта (владелец читает слова, а не коды). Только ряды России;
+    региональные и мировые коды остаются как есть."""
+    plain = [c for c in codes if c and ":" not in c]
+    if not plain:
+        return {}
+    from app.models import Indicator
+
+    return {code: name for code, name in (await db.execute(
+        select(Indicator.code, Indicator.name).where(Indicator.code.in_(plain)))).all() if name}
 
 
 async def campaigns(db: AsyncSession, *, limit: int = 12) -> list[dict]:
@@ -139,7 +160,27 @@ async def campaign_funnel(db: AsyncSession, campaign: str, *, now: datetime | No
     out["sessions_from_mail"] = total_sessions
     out["sessions_without_person"] = max(0, total_sessions - len(matched))
 
-    sids = [sid for _m, _b, sid in human_clicks if sid]
+    # Все визиты из письма по месту нажатия и устройству — и те, где человек не вошёл в аккаунт
+    # (без входа визит нельзя привязать к письму, но выпуск и место нажатия в метке ссылки есть).
+    places: Counter[tuple[str, str]] = Counter()
+    devices: Counter[str] = Counter()
+    all_sids: list[str] = []
+    for sid, content, device, webdriver in (await db.execute(
+            select(BehaviorSession.session_id_hash, BehaviorSession.utm_content, BehaviorSession.device_type,
+                   BehaviorSession.is_webdriver)
+            .where(BehaviorSession.utm_medium == "newsletter", BehaviorSession.utm_campaign == campaign,
+                   BehaviorSession.started_at >= first_sent))).all():
+        if webdriver:
+            continue
+        places[block_label(content)] += 1
+        devices[device or "—"] += 1
+        if sid:
+            all_sids.append(sid)
+    out["places"] = [{"origin": o, "block": g, "label": BLOCK_LABELS.get(g, g), "sessions": n}
+                     for (o, g), n in places.most_common()]
+    out["devices"] = {DEVICE_LABELS.get(k, "не определено" if k == "—" else k): n for k, n in devices.most_common()}
+
+    sids = list(dict.fromkeys([sid for _m, _b, sid in human_clicks if sid] + all_sids))
     viewed: Counter[str] = Counter()
     by_event: Counter[str] = Counter()
     if sids:
@@ -155,7 +196,8 @@ async def campaign_funnel(db: AsyncSession, campaign: str, *, now: datetime | No
     downloads = sum(n for name, n in by_event.items() if name in events_in_group(GROUP_DOWNLOAD))
     out["visit"] = {
         "events": sum(by_event.values()), "indicator_views": sum(viewed.values()),
-        "top_viewed": dict(viewed.most_common(7)), "downloads": downloads,
+        "top_viewed": dict(viewed.most_common(7)), "top_viewed_names": await _names(db, [k for k, _ in viewed.most_common(7)]),
+        "downloads": downloads,
         "forecast_views": by_event.get("forecast_view", 0), "searches": by_event.get("search_query", 0),
         "events_per_session": round(sum(by_event.values()) / len(sids), 1) if sids else None,
     }
@@ -267,7 +309,12 @@ def format_report(f: dict, prev: dict | None = None, *, stage: str = "") -> str:
                  f"вернулось с отказом {f['bounced']}, не ушло из-за ошибки {f['failed']}.")
     if f.get("not_sent"):
         lines.append("Не отправлялось: " + ", ".join(f"{escape(k)} {v}" for k, v in sorted(f["not_sent"].items())) + ".")
-    if f["tracked"]:
+    from app.config import settings as _settings
+
+    if f["tracked"] and not f["opened_people"] and not _settings.mail_tracking_open_pixel:
+        lines.append("Открытия не считаем: счётчик открытий выключен (с ним Яндекс Почта прячет шапку письма). "
+                     "Интерес видно по переходам.")
+    elif f["tracked"]:
         lines.append(f"Открыли: <b>{f['opened_people']}</b> из {f['tracked']} ({_n(f['open_rate_pct'])} %)"
                      f"{_delta(f['open_rate_pct'], p and p.get('open_rate_pct'))}. "
                      f"Ещё {f['opened_machine_only']} открыла почтовая программа без человека — они не в счёте. "
@@ -276,19 +323,26 @@ def format_report(f: dict, prev: dict | None = None, *, stage: str = "") -> str:
             lines.append(f"Половина открыла за {_n(f['minutes_to_open_median'])} мин после отправки.")
     else:
         lines.append("Открытия: нет данных — учёт открытий был выключен.")
-    lines.append(f"Перешли на сайт: <b>{f['clicked_people']}</b> человек ({_n(f['click_rate_pct'])} % от дошедших)"
+    lines.append(f"Перешли на сайт: <b>{f['clicked_people']}</b> чел. ({_n(f['click_rate_pct'])} % от дошедших)"
                  f"{_delta(f['click_rate_pct'], p and p.get('click_rate_pct'))}; визитов из письма {f['click_sessions']}"
                  + (f", ещё {f['sessions_without_person']} визитов без известного человека" if f.get("sessions_without_person") else "")
                  + ".")
     v = f.get("visit") or {}
-    if f["click_sessions"]:
-        top = ", ".join(f"{escape(k)} ×{n}" for k, n in (v.get("top_viewed") or {}).items()) or "нет данных"
+    if f["click_sessions"] or f.get("sessions_from_mail"):
+        names = v.get("top_viewed_names") or {}
+        top = ", ".join(f"{escape(names.get(k, k))} ×{n}" for k, n in (v.get("top_viewed") or {}).items()) or "нет данных"
         lines.append(f"В этих визитах: действий {v.get('events', 0)} (в среднем {_n(v.get('events_per_session'))} на визит), "
                      f"открыто показателей {v.get('indicator_views', 0)}, прогнозов {v.get('forecast_views', 0)}, "
                      f"скачиваний {v.get('downloads', 0)}. Смотрели: {top}.")
-    if f.get("blocks"):
+    if f.get("places"):
+        parts = [f"{escape(b['label'])}" + (" (личный)" if b["origin"] == "personal" else "") + f" — {b['sessions']}"
+                 for b in f["places"][:8]]
+        lines.append("Куда нажимали (все визиты из письма): " + "; ".join(parts) + ".")
+    elif f.get("blocks"):
         parts = [f"{escape(b['label'])} — {b['clicks']}" for b in f["blocks"][:6]]
         lines.append("Какие блоки сработали (переходы): " + "; ".join(parts) + ".")
+    if f.get("devices"):
+        lines.append("С каких устройств: " + ", ".join(f"{escape(k)} {n}" for k, n in f["devices"].items()) + ".")
     r = f.get("returned") or {}
     ret = []
     for days in RETURN_WINDOWS:
@@ -318,7 +372,7 @@ def format_report(f: dict, prev: dict | None = None, *, stage: str = "") -> str:
         lines.append("Личные и общие письма — " + "; ".join(parts) + ".")
     prov = cuts.get("provider") or {}
     if prov:
-        parts = [f"{escape(k)} {a['delivered']}/{a['opened']}/{a['clicked']}"
+        parts = [f"{escape('другие' if k == 'other' else k)} {a['delivered']}/{a['opened']}/{a['clicked']}"
                  for k, a in sorted(prov.items(), key=lambda kv: -kv[1]["delivered"])[:6]]
         lines.append("По почтовым сервисам (дошло/открыли/перешли): " + ", ".join(parts) + ".")
     need = []

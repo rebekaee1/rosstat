@@ -267,7 +267,7 @@ async def cmd_send_test(args) -> int:
         print(f"в выпуске нет языка {res.locale}")
         return 1
     rendered, one_click = _render(issue, res.locale, res.payload, "00000000-0000-0000-0000-000000000000")
-    rendered.subject = f"[test] {rendered.subject}"
+    # Тема без пометки «[test]»: проверочное письмо выглядит как настоящее (слово владельца 16.11.2026).
     if args.no_db:
         # Без журнала mail_outbox (стенд без миграции почты): прямая отправка, как `mail.py test --no-db`.
         from app.services.mail import transport

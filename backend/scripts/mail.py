@@ -202,7 +202,7 @@ async def cmd_campaign(args) -> int:
             rendered, one_click = campaign.render_for(issue, loc, DUMMY_USER)
             try:
                 mid = await transport.send(transport.OutgoingMail(
-                    to=args.test_to, subject=sample_subject(f"выпуск {issue.key}", loc, rendered.subject),
+                    to=args.test_to, subject=rendered.subject,
                     html=rendered.html, text=rendered.text,
                     images=rendered.images, kind="newsletter", unsubscribe_url=one_click, campaign=issue.key))
                 print(f"{loc}: sent {mid}")

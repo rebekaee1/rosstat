@@ -163,7 +163,9 @@ def test_clicks_from_site_sessions_funnel_and_report(mail_env, auth_client, monk
                                    utm_campaign=key, utm_content="p3-series", utm_term=term, is_webdriver=True))
             # Визит по ссылке без известного человека.
             db.add(BehaviorSession(session_id_hash="s-x", started_at=t0 + timedelta(hours=4), utm_medium="newsletter",
-                                   utm_campaign=key, utm_content="b2-story"))
+                                   utm_campaign=key, utm_content="p7-table-r2", device_type="mobile"))
+            db.add(FrontendEvent(event_name="indicator_view", session_id_hash="s-x",
+                                 params_json={"indicator": "unemployment"}, occurred_at=t0 + timedelta(hours=4, minutes=1)))
             db.add(Consent(user_id=b.user_id, kind="newsletter_revoked", version="1", granted_at=t0 + timedelta(hours=5)))
             await db.commit()
             first = await tracking.sync_clicks(db, now=t0 + timedelta(hours=6))
@@ -181,13 +183,21 @@ def test_clicks_from_site_sessions_funnel_and_report(mail_env, auth_client, monk
     assert f["opened_people"] == 1 and f["open_rate_pct"] == 50.0
     assert f["clicked_people"] == 2 and f["click_sessions"] == 2 and f["click_sessions_machine"] == 1
     assert f["sessions_from_mail"] == 4 and f["sessions_without_person"] == 1
-    assert f["visit"]["top_viewed"] == {"fuel-ai92": 1} and f["visit"]["downloads"] == 1
+    # Визит без входа тоже виден: что смотрели, куда нажали (строка таблицы — «таблица»), с какого устройства.
+    assert f["visit"]["top_viewed"] == {"fuel-ai92": 1, "unemployment": 1} and f["visit"]["downloads"] == 1
+    assert {(x["origin"], x["block"]): x["sessions"] for x in f["places"]} == {
+        ("editorial", "lead"): 1, ("personal", "series"): 1, ("personal", "table"): 1}
+    assert f["devices"].get("телефон") == 1
+    assert "Куда нажимали" in text and "таблица «Ваши показатели» (личный) — 1" in text and "телефон 1" in text
+    assert funnel.block_label("hdr-logo") == ("—", "logo") and funnel.block_label("ftr-settings") == ("—", "settings")
+    assert funnel.block_label("cta") == ("—", "cta") and funnel.block_label("") == ("—", "none")
+    print("\n" + text.replace("<b>", "").replace("</b>", ""))
     assert {(x["origin"], x["block"]) for x in f["blocks"]} == {("editorial", "lead"), ("personal", "series")}
     assert f["unsubscribed"] == 1 and f["unsubscribe_pct"] == 50.0
     assert f["returned"]["d1"]["people"] == 1 and f["returned"]["d1"]["window_complete"] is True
     assert f["returned"]["d7"]["window_complete"] is False
     assert f["minutes_to_open_median"] is not None and f["cuts"]["variant"]["general"]["clicked"] == 2
-    assert "Открыли: <b>1</b> из 2" in text and "Перешли на сайт: <b>2</b>" in text and "fuel-ai92" in text
+    assert "Открыли: <b>1</b> из 2" in text and "Перешли на сайт: <b>2</b>" in text
     assert "@" not in text and "срок не истёк" in text and "отписок больше 2 %" in text
 
 

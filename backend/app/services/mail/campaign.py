@@ -188,7 +188,8 @@ async def send_test(issue: Issue, to: str) -> dict[str, str]:
     out = {}
     for loc in issue.by_locale:
         rendered, one_click = render_for(issue, loc, "00000000-0000-0000-0000-000000000000")
-        rendered.subject = f"[test] {rendered.subject}"
+        # Тема проверочного письма — как у настоящего, без пометки (слово владельца 16.11.2026):
+        # проверка показывает письмо таким, каким его увидит человек.
         out[loc] = await service.send_now(kind="newsletter", to=to, locale=loc, rendered=rendered,
                                           unsubscribe_url=one_click)
     return out
