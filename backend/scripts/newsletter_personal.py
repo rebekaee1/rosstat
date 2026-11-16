@@ -166,7 +166,8 @@ _RAW_SQL = {
          "join world_countries c on c.id=i.country_id where i.code=:c and c.slug=:s and d.value is not null "
          "order by d.date desc limit 1",
     "rm": "select d.month, d.value from region_monthly_data d join region_indicators i on i.id=d.indicator_id "
-          "join regions r on r.id=d.region_id where i.code=:c and r.slug=:s order by d.month desc limit 1",
+          "join regions r on r.id=d.region_id where i.code=:c and r.slug=:s and d.value is not null "
+          "order by d.month desc limit 1",
     "ra": "select d.year, d.value from region_data d join region_indicators i on i.id=d.indicator_id "
           "join regions r on r.id=d.region_id where i.code=:c and r.slug=:s and d.value is not null "
           "order by d.year desc limit 1",

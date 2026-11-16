@@ -191,7 +191,6 @@ def test_clicks_from_site_sessions_funnel_and_report(mail_env, auth_client, monk
     assert "Куда нажимали" in text and "таблица «Ваши показатели» (личный) — 1" in text and "телефон 1" in text
     assert funnel.block_label("hdr-logo") == ("—", "logo") and funnel.block_label("ftr-settings") == ("—", "settings")
     assert funnel.block_label("cta") == ("—", "cta") and funnel.block_label("") == ("—", "none")
-    print("\n" + text.replace("<b>", "").replace("</b>", ""))
     assert {(x["origin"], x["block"]) for x in f["blocks"]} == {("editorial", "lead"), ("personal", "series")}
     assert f["unsubscribed"] == 1 and f["unsubscribe_pct"] == 50.0
     assert f["returned"]["d1"]["people"] == 1 and f["returned"]["d1"]["window_complete"] is True

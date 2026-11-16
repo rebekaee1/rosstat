@@ -749,7 +749,7 @@ docker compose exec -T backend python /app/scripts/mail.py reconfirm --send --ma
 Учёт открытий и переходов из писем и отчёт по выпуску в служебный Telegram. Решение и пределы — [ADR-0034](adr/0034-mail-funnel-tracking-and-pulse-audit.md).
 
 Флаги (`/opt/rosstat/.env`, по умолчанию выключены):
-- `RUSTATS_MAIL_TRACKING_ENABLED` — пиксель открытия и метка человека на ссылках рассылки; задача `mail_click_sync` (раз в 20 минут). Включать только после публикации раздела политики (`VITE_PRIVACY_MAIL_TRACKING=true`).
+- `RUSTATS_MAIL_TRACKING_ENABLED` — метка человека на ссылках рассылки (переходы); пиксель открытия — отдельным флагом `RUSTATS_MAIL_TRACKING_OPEN_PIXEL` (по умолчанию выключен: проверка 16.11.2026 показала, что Яндекс Почта прячет вложенные картинки шапки у письма с внешней картинкой); задача `mail_click_sync` (раз в 20 минут). Включать только после публикации раздела политики (`VITE_PRIVACY_MAIL_TRACKING=true`).
 - `RUSTATS_MAIL_REPORT_ENABLED` — итог выпуска через сутки и через 7 суток, `RUSTATS_MAIL_REPORT_HOUR_MSK` / `RUSTATS_MAIL_REPORT_MINUTE` (09:20 МСК).
 
 Команды (контейнер backend, адреса на экран не выводятся):
