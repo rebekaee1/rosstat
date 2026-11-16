@@ -136,9 +136,9 @@ def test_templates_follow_design_rules():
     news = render_digest(sample_digest("ru", "https://x/"), "ru", site_url="https://x/", unsubscribe_url="https://x/u")
     assert "Отписаться" in news.html and "https://x/u" in news.text
     # Реквизиты (15.11.2026): в русском письме нет, в английском — адрес для CAN-SPAM.
-    assert "ЛОРРЕДА" not in news.html and "Садовая" not in news.text and "ИИМПАКТ" not in news.html
+    assert "ИИМПАКТ" not in news.html and "Пресненский" not in news.text
     news_en = render_digest(sample_digest("en", "https://x/"), "en", site_url="https://x/", unsubscribe_url="https://x/u")
-    assert "LORREDA LLC" in news_en.html and "IIMPAKT" not in news_en.html
+    assert "IIMPAKT PLUS LLC" in news_en.html
 
 
 # --- список допуска и выключатель ----------------------------------------------------
