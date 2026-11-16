@@ -232,6 +232,16 @@ async def collect(db: AsyncSession, user_ids: list[uuid.UUID], *, now: datetime,
     for uid, vid in (await db.execute(
             select(IdentityLink.user_id, IdentityLink.visitor_id_hash).where(IdentityLink.user_id.in_(sids)))).all():
         visitor_owner.setdefault(vid, uid)
+    # Устройство, привязанное к двум и более аккаунтам (общий компьютер), никому не приписывается:
+    # действия без входа с него неизвестно чьи (16.11.2026: 3 таких устройства у подписчиков).
+    if visitor_owner:
+        from sqlalchemy import func
+
+        shared = {vid for (vid,) in (await db.execute(
+            select(IdentityLink.visitor_id_hash).where(IdentityLink.visitor_id_hash.in_(list(visitor_owner)))
+            .group_by(IdentityLink.visitor_id_hash).having(func.count(func.distinct(IdentityLink.user_id)) > 1))).all()}
+        for vid in shared:
+            visitor_owner.pop(vid, None)
 
     # Пояс и последний визит.
     sess_filter = [BehaviorSession.user_id.in_(sids)]

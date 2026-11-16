@@ -43,7 +43,8 @@ TOPIC_SHOWCASE_THEME = {"prices": "inflation", "fuel": "inflation", "gdp": "gdp"
                         "labor": "unemployment", "wages": "wages", "rates": "rates", "housing": "rates"}
 # Региональный показатель по теме (если человек сам смотрел регион, а ряда темы у него нет).
 REGION_TOPIC_CODE = {
-    "fuel": "ceni-ai95", "prices": "ceni-ai95",
+    # Без «цены → бензин» (16.11.2026): человек, читавший инфляцию, бензин региона не смотрел.
+    "fuel": "ceni-ai95",
     "wages": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
 }
 LIMITS = {
@@ -194,7 +195,7 @@ async def region_candidates(ctx: Context, taken: set[str]) -> list[Candidate]:
             keys.append((f"r:{region}:{sub.code}", item["score"]))
     for topic in ctx.profile.top_topics(3):
         code = REGION_TOPIC_CODE.get(topic)
-        if code:
+        if code and region != "russia":   # «регион Россия» по теме — дубль общероссийского ряда
             keys.append((f"r:{region}:{code}", ctx.profile.topics.get(topic, 0) * 0.6))
     # Без догадки по умолчанию (16.11.2026): раньше сюда вставал бензин региона, даже если человек
     # смотрел демографию. Его собственные ряды региона приходят из `series_candidates`.

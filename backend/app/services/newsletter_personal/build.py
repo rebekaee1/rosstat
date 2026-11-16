@@ -302,6 +302,10 @@ class Builder:
             if table and check_block(table, loc):
                 dropped.append({"gen": "table", "reason": check_block(table, loc)})
                 table, table_used = None, []
+        if not table and chosen and all(c.gen == "forecast" and c.why == "topic" for c in chosen):
+            # Один прогноз «по теме» — не подборка «по тому, что вы смотрели»: честный общий выпуск.
+            dropped += [{"gen": c.gen, "subject": c.subject, "reason": "topic_forecast_alone"} for c in chosen]
+            chosen = []
         if not chosen and not table:
             res = _general(us.user_id, loc, base, "general", tier, arm, profile=profile)
             res.blocks_meta += [{"origin": "dropped", **d} for d in dropped]

@@ -161,25 +161,39 @@ def _change(points: list[tuple[date, float]], freq: str, unit: str, locale: str,
                 prev = (d, v)
         if prev is None:
             return None, "", "flat"
+    elif freq == "quarterly":
+        # Квартал к предыдущему кварталу у несезонно сглаженных рядов — сезонный скачок («инвестиции
+        # +44,5 % за квартал»); честное сравнение — с тем же кварталом год назад (16.11.2026).
+        prev = next(((d, v) for d, v in points[:-1] if d.year == last_day.year - 1 and d.month == last_day.month), None)
+        if prev is None:
+            return None, "", "flat"
     else:
         prev = points[-2]
     delta = round(last_val - prev[1], digits)
     direction = "up" if delta > 0 else "down" if delta < 0 else "flat"
     ru_phrase, en_phrase = _STEP_PHRASE.get(freq, ("", ""))
+    if freq == "quarterly":
+        ru_phrase, en_phrase = "к тому же кварталу прошлого года", "from the same quarter a year earlier"
     phrase = en_phrase if locale == "en" else ru_phrase
     if delta == 0:
         text = ("unchanged " + phrase) if locale == "en" else ("без изменений " + phrase)
         return prev, text.strip(), "flat"
-    if unit.strip() == "%":
+    if _is_share_unit(unit):   # доля, темп, ставка — в процентных пунктах, без «процента от процента»
         unit_pp = "pp" if locale == "en" else "п. п."
         text = f"{number(delta, locale, signed=True, digits=digits)}{NBSP}{unit_pp} {phrase}"
     else:
         text = f"{with_unit(number(delta, locale, signed=True, digits=digits), unit, locale)} {phrase}"
         if prev[1] and prev[1] > 0:
             pct = (last_val / prev[1] - 1.0) * 100.0
-            if abs(pct) >= 0.05:
+            # Сотни процентов у сальдо и чистых потоков (база около нуля) ничего не объясняют — только разница.
+            if 0.05 <= abs(pct) <= 200:
                 text += f" ({with_unit(number(pct, locale, signed=True, digits=1), '%', locale)})"
     return prev, text.strip(), direction
+
+
+def _is_share_unit(unit: str) -> bool:
+    u = (unit or "").strip().lower()
+    return "%" in u or "percent" in u or "процент" in u
 
 
 def _fmt_points(points, code: str | None):
@@ -336,9 +350,11 @@ class FactCache:
         if not rows:
             return None
         points = _fmt_points(sorted((d, float(v)) for d, v in rows), ind.code)
+        freq = _freq(ind.frequency)
+        if freq == "annual" and ind.code.startswith("weo-"):
+            points = [(d, v) for d, v in points if d.year < self.today.year]   # прогноз МВФ — не факт
         if not points:
             return None
-        freq = _freq(ind.frequency)
         unit = localize_unit(ind.unit, locale=self.locale) or ""
         last_day, last_val = points[-1]
         num = format_number_ru(last_val, signed=False, locale=self.locale)
@@ -383,6 +399,12 @@ class FactCache:
         if not rows:
             return None
         series = sorted((d, float(v)) for d, v in rows)
+        if _freq(ind.frequency) == "annual":
+            # Год ещё не закончился — это оценка или прогноз источника (МВФ), а не факт (16.11.2026:
+            # «численность населения Грузии за 2026 год» стояла в письме как свершившаяся).
+            series = [(d, v) for d, v in series if d.year < self.today.year]
+            if not series:
+                return None
         token = set_locale(self.locale)
         try:
             unit = (_indicator_public_unit(ind) or "").strip()
@@ -404,8 +426,8 @@ class FactCache:
             points, prev, change, direction = series, None, "", "flat"
         else:
             num = format_number_ru(last_val, locale=self.locale)
-            digits = _decimals(num)
-            if digits > 2 and ("%" in unit or abs(last_val) >= 10):
+            digits = max(_decimals(num), _decimals(format_number_ru(series[-2][1], locale=self.locale)) if len(series) > 1 else 0)
+            if _decimals(num) > 2 and ("%" in unit or abs(last_val) >= 10):
                 num = number(last_val, self.locale, digits=2)   # «3.4514 %» → «3.45 %»
             points = series
             prev, change, direction = _change(points, freq, unit, self.locale, min(digits, 2))
@@ -477,7 +499,8 @@ class FactCache:
         region_name = await self.region_name(sub.place) or sub.place
         last_day, last_val = pts[-1]
         num = format_number_ru(last_val, locale=self.locale)
-        prev, change, direction = _change(pts, freq, unit, self.locale, min(_decimals(num), 2))
+        digits = max(_decimals(num), _decimals(format_number_ru(pts[-2][1], locale=self.locale)) if len(pts) > 1 else 0)
+        prev, change, direction = _change(pts, freq, unit, self.locale, min(digits, 2))
         compare = None
         # Строка «по России» у самой Российской Федерации не нужна: сравнение с собой.
         if last_day in rus and rid != self._russia_region_id:
@@ -485,7 +508,8 @@ class FactCache:
                        "value": rus[last_day],
                        "value_text": with_unit(format_number_ru(rus[last_day], locale=self.locale), unit, self.locale)}
         return Fact(
-            key=sub.key, kind="r", title=f"{base_name}, {region_name}", unit=unit, frequency=freq,
+            key=sub.key, kind="r", title=f"{_fit(base_name, 108 - len(region_name))}, {region_name}", unit=unit,
+            frequency=freq,
             source="Rosstat" if self.locale == "en" else "Росстат",
             path=site_paths.region_indicator(sub.place, sub.code),
             topic=topic_for_code(ind.code) or topic_for_text(ind.section_name, ind.name),
@@ -558,6 +582,13 @@ def _short_unit(unit: str, locale: str) -> str:
 
 _REGION_NAME_PREFIXES = re.compile(
     r"^(Средняя цена:\s*|Потребительские цены на\s+|Потребительская цена на\s+|Consumer price of\s+)", re.I)
+
+
+def _fit(name: str, limit: int) -> str:
+    """Длинное название показателя сокращается само, чтобы после него уцелело название региона."""
+    if len(name) <= max(limit, 30):
+        return name
+    return name[:max(limit, 30)].rsplit(" ", 1)[0].rstrip(",;:—- ") + "…"
 
 
 def clean_region_name(name: str) -> str:

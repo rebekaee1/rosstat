@@ -586,3 +586,22 @@ def test_first_issue_rules_no_default_fuel_and_skip_forecasts(monkeypatch):
     monkeypatch.setattr(settings, "newsletter_personal_skip_forecasts", "russia-inflation, russia-unemployment")
     assert C.forecast_candidates(ctx, set()) == []
     assert C.MAX_PER_GEN == 3 and C.LIMITS["light"][0] == 3
+
+
+def test_change_text_rules_quarter_to_year_ago_and_percentage_points():
+    """16.11.2026: квартал сравнивается с тем же кварталом год назад; доли и темпы — в п. п."""
+    from app.services.newsletter_personal.facts import _change, _fit, _is_share_unit
+
+    q = [(date(2025, 6, 1), 30000.0), (date(2025, 9, 1), 37000.0), (date(2025, 12, 1), 41000.0),
+         (date(2026, 3, 1), 32000.0), (date(2026, 6, 1), 33000.0)]
+    prev, text, direction = _change(q, "quarterly", "млрд руб.", "ru", 1)
+    assert prev == (date(2025, 6, 1), 30000.0) and direction == "up"
+    assert "к тому же кварталу прошлого года" in text and "+10,0" in text
+    assert _change(q[-2:], "quarterly", "млрд руб.", "ru", 1) == (None, "", "flat")   # года назад нет — молчим
+    _p, text, _d = _change([(date(2024, 1, 1), 1.02), (date(2025, 1, 1), 1.98)], "annual", "изменение за год, %", "ru", 2)
+    assert "п.\xa0п." in text and "(" not in text                                   # без «процента от процента»
+    _p, text, _d = _change([(date(2025, 9, 1), 2135.86), (date(2026, 9, 1), 16949.24)], "quarterly", "млн $", "ru", 2)
+    assert "(" not in text                                                          # +693 % у сальдо не пишем
+    assert _is_share_unit("% of GDP") and _is_share_unit("Percentage of total population") and not _is_share_unit("руб.")
+    long_name = "Численность активных абонентов фиксированного и мобильного широкополосного доступа к сети Интернет на 100 человек населения"
+    assert _fit(long_name, 96).endswith("…") and len(_fit(long_name, 96)) <= 97 and _fit("Бензин АИ-95", 96) == "Бензин АИ-95"
