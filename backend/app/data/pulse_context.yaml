@@ -11,6 +11,7 @@ entries:
     title: "Автор Telegram-канала (ADR-0035): модель пишет посты, владелец утверждает кнопкой; пока выключено."
     expect: После включения заходы из канала несут utm_source=telegram и utm_medium=channel (канал campaign); рост таких заходов в день поста — эффект канала, не робот.
     until: 2027-03-31
+    commit: 1b3e2815
   - id: human-429-pass-count
     date: 2026-11-15
     kind: отчёты

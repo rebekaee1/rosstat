@@ -91,7 +91,7 @@ def fmt_num(v: float, digits: int = 2) -> str:
     """Число по-русски. Округление — «половина вверх», как считает человек (3 112,5 → 3 113): обычное
     форматирование Python округляет к чётному и расходилось бы со сторожем на рубль."""
     q = Decimal(1).scaleb(-digits) if digits else Decimal(1)
-    d = Decimal(repr(float(v))).quantize(q, rounding=ROUND_HALF_UP)
+    d = Decimal(repr(round(float(v), 9))).quantize(q, rounding=ROUND_HALF_UP)
     s = f"{d:,.{digits}f}".replace(",", " ").replace(".", ",")
     return s.replace("-", "−")
 
@@ -120,8 +120,10 @@ def plural(n: int, one: str, few: str, many: str) -> str:
 
 
 def _half_up(v: float, decimals: int) -> Decimal:
+    """Округление «половина вверх» по модулю. Хвост двоичной дроби срезается заранее: (74,72 − 70,01) × 50 в
+    числах с плавающей точкой — 235,49999999999997, а человек и калькулятор видят 235,5 → 236."""
     q = Decimal(1).scaleb(-decimals) if decimals else Decimal(1)
-    return Decimal(repr(abs(v))).quantize(q, rounding=ROUND_HALF_UP)
+    return Decimal(repr(round(abs(float(v)), 9))).quantize(q, rounding=ROUND_HALF_UP)
 
 
 # ---------------------------------------------------------------------------
@@ -651,13 +653,18 @@ def check_post(text_html: str, corpus: Corpus, declared: list[dict] | None = Non
     for tok in tokens:
         if tok.kind != "number" or len(re.sub(r"\D", "", tok.raw).lstrip("0")) < 3:
             continue
-        for b in corpus.find(tok.value, tok.decimals, scale=tok.scale):
-            if b.series and b.digits == tok.decimals and tok.scale == 1.0:
+        for b in corpus.find(tok.value, tok.decimals):
+            if b.series and b.digits == tok.decimals:
                 in_play.add(b.series)
 
+    def candidates(tok: NumToken) -> list[Basis]:
+        # «724,30 млрд $»: в данных ряд может уже быть в миллиардах (724,30) или в единицах (724 300 000 000).
+        found = corpus.find(tok.value, tok.decimals)
+        return found + (corpus.find(tok.value, tok.decimals, scale=tok.scale) if tok.scale != 1.0 else [])
+
     def usable(tok: NumToken) -> list[Basis]:
-        cands = corpus.find(tok.value, tok.decimals, scale=tok.scale)
-        good = [b for b in cands if (b.digits == tok.decimals and tok.scale == 1.0)
+        cands = candidates(tok)
+        good = [b for b in cands if b.digits == tok.decimals
                 or (b.series and b.series in in_play) or b.kind in ("tool", "web")]
         order = {"data": 0, "derived": 1, "forecast": 2, "tool": 3, "web": 4}
         return sorted(good, key=lambda b: (0 if (b.series and b.series in in_play) else 1,
@@ -684,7 +691,8 @@ def check_post(text_html: str, corpus: Corpus, declared: list[dict] | None = Non
         if decl and basis_kind == "calc":
             try:
                 value, operands = eval_expr(str(decl.get("expr", "")))
-                same = _half_up(value / tok.scale, tok.decimals) == _half_up(tok.value, tok.decimals)
+                same = _half_up(tok.value, tok.decimals) in (_half_up(value, tok.decimals),
+                                                             _half_up(value / tok.scale, tok.decimals))
                 foreign = [o for o, dec in operands
                            if not corpus.find(o, dec) and not (dec == 0 and o in _CONSTANTS)
                            and not any(_half_up(float(x.value), dec) == _half_up(o, dec)

@@ -42,6 +42,14 @@ def test_fmt_num_rounds_half_up_like_the_guard():
     assert cf.fmt_num(86.63) == "86,63"
     assert cf.fmt_num(-0.25, 1) == "−0,3"
     assert cf.fmt_num(1234567.891) == "1 234 567,89"
+    # (74,72 − 70,01) × 50 в двоичной арифметике — 235,49999999999997; человек видит 235,5 и округляет до 236.
+    assert cf.fmt_num((74.72 - 70.01) * 50, 0) == "236"
+    c = cf.Corpus()
+    c.n(74.72, "АИ-92 · 5 октября", series="fuel-ai92")
+    c.n(70.01, "АИ-92 · 9 ноября", series="fuel-ai92")
+    audit = cf.check_post("АИ-92 — 70,01 ₽, было 74,72 ₽. Бак дешевле на 236 ₽.", c,
+                          [{"shown": "236", "basis": "calc", "expr": "(74.72-70.01)*50"}])
+    assert not audit.blocked and {n["shown"]: n["status"] for n in audit.numbers}["236"] == "calc"
 
 
 def test_jump_and_streak():
@@ -107,6 +115,16 @@ def test_guard_accepts_data_calc_and_assumption():
     assert status == {"86,63": "data", "0,3": "derived", "50": "assumption", "4 332": "derived", "8 663": "calc",
                       "9 ноября": "date"}
     assert audit.sources == ["Росстат"]          # источник собран из оснований, а не со слов модели
+
+
+def test_guard_reads_scaled_units_both_ways():
+    # Резервы в базе уже в миллиардах: «724,30 млрд $» — это 724,30, а не 724,30 × 10⁹ (показ 17.11.2026).
+    c = cf.Corpus()
+    c.add_text("Международные резервы, млрд $. последнее 724,30 на 2026-11-06; максимум 826,80 на 2026-01-30", "база сайта: get_series")
+    c.n(103014, "Средняя зарплата · август 2026 · Росстат", 0, source="Росстат", series="wages-nominal")
+    audit = cf.check_post("Резервы — 724,30 млрд $, на 102,50 млрд меньше максимума. Около 724 млрд. Зарплата — 103 014 ₽, то есть 103 тыс. ₽.",
+                          c, [{"shown": "102,50", "basis": "calc", "expr": "826.80-724.30"}])
+    assert not audit.blocked, audit.issues
 
 
 def test_guard_blocks_unknown_number_and_wrong_calc():
