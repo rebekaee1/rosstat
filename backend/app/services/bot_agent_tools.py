@@ -111,6 +111,10 @@ def _date_arg(s: str | None, default: date, end: bool = False) -> date:
     try:
         if re.fullmatch(r"\d{4}", s):
             return date(int(s), 12, 31) if end else date(int(s), 1, 1)
+        if re.fullmatch(r"\d{4}-\d{2}", s):
+            # 17.11.2026: автор канала просил историю «с 2025-06» и получал три года — месяц без дня не разбирался.
+            first = date(int(s[:4]), int(s[5:7]), 1)
+            return (date(first.year + first.month // 12, first.month % 12 + 1, 1) - timedelta(days=1)) if end else first
         return date.fromisoformat(s[:10])
     except ValueError:
         return default
