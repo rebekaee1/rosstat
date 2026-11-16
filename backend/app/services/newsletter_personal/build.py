@@ -364,7 +364,7 @@ class Builder:
         if section_supported():
             add({"type": "section", "title": T.t(loc, "section.title"), "text": T.t(loc, "section.text")},
                 "personal", gen="section")
-        for c in sorted(chosen, key=lambda c: (c.gen != "check", -c.score)):
+        for c in sorted(chosen, key=lambda c: (c.gen != "check", c.gen == "forecast" and c.why == "topic", -c.score)):
             add(c.block, "personal", c)
         if table:
             add(table, "personal", gen="table")
@@ -475,9 +475,11 @@ def _personal_subject(payload: dict, chosen: list[C.Candidate], loc: str) -> Non
     title = T.clean_title(str(top.extra.get("title") or top.block.get("title") or ""), 60)
     value = str(top.block.get("value") or "")
     subj = f"{title}: {value}"
-    if len(subj) <= 50 and subj.find(value) <= 35:
+    # Тема с единицей «индекс» или «единиц» («…: 341,06 индекс») читается как сбой — остаётся тема редакции.
+    plain_unit = not any(w in value.lower() for w in ("индекс", "index", "единиц", "units"))
+    if len(subj) <= 50 and subj.find(value) <= 35 and plain_unit:
         payload["subject"] = T.typo(subj, loc)
-    lead_in = f"{title} — {value}. "
+    lead_in = f"{title} — {value.rstrip('.')}. "
     pre = lead_in + (payload.get("preheader") or "")
     if len(pre) > 110:
         pre = pre[:110].rsplit(" ", 1)[0].rstrip(",;:—- ") + "…"

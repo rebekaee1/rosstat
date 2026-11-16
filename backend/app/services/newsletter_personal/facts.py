@@ -343,6 +343,10 @@ class FactCache:
         last_day, last_val = points[-1]
         num = format_number_ru(last_val, signed=False, locale=self.locale)
         digits = max(_decimals(num), _decimals(format_number_ru(points[-2][1], locale=self.locale)) if len(points) > 1 else 0)
+        if _decimals(num) > 2 and (unit.startswith("%") or abs(last_val) >= 10):
+            # «16,3286 %» и «91,1107 трлн руб.» в письме читаются как ошибка — до двух знаков.
+            # Курсы вроде 1,1014 остаются как на карточке.
+            num = number(last_val, self.locale, digits=2)
         prev, change, direction = _change(points, freq, unit, self.locale, min(digits, 2))
         title = YOY_TITLES.get(ind.code, {}).get(self.locale) or (
             (ind.name_en if self.locale == "en" else ind.name) or ind.name or "").strip()
@@ -401,6 +405,8 @@ class FactCache:
         else:
             num = format_number_ru(last_val, locale=self.locale)
             digits = _decimals(num)
+            if digits > 2 and ("%" in unit or abs(last_val) >= 10):
+                num = number(last_val, self.locale, digits=2)   # «3.4514 %» → «3.45 %»
             points = series
             prev, change, direction = _change(points, freq, unit, self.locale, min(digits, 2))
             value_text = with_unit(num, unit, self.locale)
@@ -473,7 +479,8 @@ class FactCache:
         num = format_number_ru(last_val, locale=self.locale)
         prev, change, direction = _change(pts, freq, unit, self.locale, min(_decimals(num), 2))
         compare = None
-        if last_day in rus:
+        # Строка «по России» у самой Российской Федерации не нужна: сравнение с собой.
+        if last_day in rus and rid != self._russia_region_id:
             compare = {"label": "Russia" if self.locale == "en" else "Россия",
                        "value": rus[last_day],
                        "value_text": with_unit(format_number_ru(rus[last_day], locale=self.locale), unit, self.locale)}

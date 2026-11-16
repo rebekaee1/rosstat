@@ -49,10 +49,13 @@ REGION_TOPIC_CODE = {
 LIMITS = {
     # уровень: (личных блоков, таблица, минимальная доля редакции)
     "rich": (4, True, 1 / 3),
-    "light": (2, False, 1 / 2),
+    "light": (3, False, 1 / 2),
     "cold": (0, False, 1.0),
 }
 MAX_CONTENT_BLOCKS = 8
+# Три, а не два (16.11.2026): у человека, который смотрел только данные регионов, все кандидаты
+# одного вида, и при пределе «два» третий и четвёртый личные блоки оставались пустыми.
+MAX_PER_GEN = 3
 MAX_TABLE_ROWS = 5
 MAX_CAL_ENTRIES = 6
 
@@ -193,8 +196,8 @@ async def region_candidates(ctx: Context, taken: set[str]) -> list[Candidate]:
         code = REGION_TOPIC_CODE.get(topic)
         if code:
             keys.append((f"r:{region}:{code}", ctx.profile.topics.get(topic, 0) * 0.6))
-    if not keys:
-        keys.append((f"r:{region}:{REGION_TOPIC_CODE['fuel']}", 0.6))
+    # Без догадки по умолчанию (16.11.2026): раньше сюда вставал бензин региона, даже если человек
+    # смотрел демографию. Его собственные ряды региона приходят из `series_candidates`.
     out = []
     shown = ctx.shown_facts
     for key, base in keys:
@@ -274,6 +277,19 @@ def _fmt_forecast_value(item: dict, value: float, locale: str) -> str:
     return with_unit(num, unit, locale)
 
 
+# Прогноз «по теме» (человек не открывал сам прогноз) не должен вытеснять ряды, которые он смотрел:
+# вес темы — сумма по всем её рядам, поэтому без множителя прогноз всегда вставал первым.
+TOPIC_FORECAST_FACTOR = 0.35
+
+
+def skip_forecasts() -> frozenset[str]:
+    """Прогнозы витрины, которые редакция не ставит в письма (`RUSTATS_NEWSLETTER_PERSONAL_SKIP_FORECASTS`)."""
+    from app.config import settings
+
+    raw = getattr(settings, "newsletter_personal_skip_forecasts", "") or ""
+    return frozenset(x.strip() for x in raw.split(",") if x.strip())
+
+
 def forecast_candidates(ctx: Context, editorial_forecast_ids: set[str]) -> list[Candidate]:
     if not ctx.showcase:
         return []
@@ -281,7 +297,7 @@ def forecast_candidates(ctx: Context, editorial_forecast_ids: set[str]) -> list[
     want = {code for code in (s.subject.code for s in ctx.us.signals if s.kind == "forecast_view")}
     out = []
     for item in ctx.showcase:
-        if item.get("id") in editorial_forecast_ids:
+        if item.get("id") in editorial_forecast_ids or item.get("id") in skip_forecasts():
             continue
         topic = SHOWCASE_THEME_TOPIC.get(item.get("theme"))
         tscore = max(ctx.profile.topics.get(topic or "", 0.0),
@@ -290,7 +306,8 @@ def forecast_candidates(ctx: Context, editorial_forecast_ids: set[str]) -> list[
         if slug != country and not (slug == "russia" and country == "russia"):
             tscore *= 0.4
         code = (item.get("path") or "").rstrip("/").rsplit("/", 1)[-1]
-        if code in want:
+        viewed = code in want
+        if viewed:
             tscore += 1.0
         if tscore <= 0.3:
             continue
@@ -309,10 +326,11 @@ def forecast_candidates(ctx: Context, editorial_forecast_ids: set[str]) -> list[
             "value": _fmt_forecast_value(item, float(end["value"]), ctx.locale), "target": period,
             "last_actual": T.typo(last_text, ctx.locale), "text": T.t(ctx.locale, "forecast.note"),
             "source": item.get("source") or "", "url": item.get("path") or "",
-            "why": T.t(ctx.locale, "why.topic", topic=topic_label(topic, ctx.locale).lower()) if topic else "",
+            "why": (T.t(ctx.locale, "why.forecast") if viewed
+                    else T.t(ctx.locale, "why.topic", topic=topic_label(topic, ctx.locale).lower()) if topic else ""),
         }
-        out.append(Candidate(gen="forecast", subject=f"fc:{item['id']}", block=block, score=tscore * 0.9,
-                             topic=topic, as_of=last["date"], why="topic",
+        out.append(Candidate(gen="forecast", subject=f"fc:{item['id']}", block=block, score=tscore * (0.9 if viewed else TOPIC_FORECAST_FACTOR),
+                             topic=topic, as_of=last["date"], why="forecast_view" if viewed else "topic",
                              extra={"item_id": item["id"], "target": end["date"], "value": float(end["value"]),
                                     "value_text": block["value"], "period": period}))
     out.sort(key=lambda c: -c.score)
@@ -357,7 +375,7 @@ def check_candidates(ctx: Context) -> list[Candidate]:
 
 
 def pick(cands: list[Candidate], limit: int) -> list[Candidate]:
-    """Жадный отбор с разнообразием: тема — один раз, генератор — не больше двух раз."""
+    """Жадный отбор с разнообразием: тема — один раз, генератор — не больше ``MAX_PER_GEN`` раз."""
     chosen: list[Candidate] = []
     topics: dict[str, int] = {}
     gens: dict[str, int] = {}
@@ -371,7 +389,7 @@ def pick(cands: list[Candidate], limit: int) -> list[Candidate]:
             # Один показатель — один блок: прогноз и факт той же карточки не идут вместе.
             if c in chosen or (c.subject and c.subject in subjects) or (path and path in paths):
                 continue
-            if gens.get(c.gen, 0) >= 2 and c.gen not in ("check",):
+            if gens.get(c.gen, 0) >= MAX_PER_GEN and c.gen not in ("check",):
                 continue
             if strict and c.topic and topics.get(c.topic, 0) >= 1:
                 continue

@@ -686,6 +686,8 @@ class Settings(BaseSettings):
     newsletter_personal_holdout_pct: int = 0
     # A/B личной темы и прехедера: доля группы «личная тема», % (действует при enabled).
     newsletter_personal_subject_ab_pct: int = 50
+    # Прогнозы витрины, которые не ставятся в письма (id через запятую, например russia-inflation).
+    newsletter_personal_skip_forecasts: str = ""
     # Сборка снимков личных выпусков по расписанию (четверг, после окна ETL).
     newsletter_personal_build_enabled: bool = False
     newsletter_personal_build_weekday: str = "thu"

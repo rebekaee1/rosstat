@@ -4,7 +4,8 @@
 Сбор сигналов из базы — `signals.py`.
 
 Правила:
-* вклад сигнала = вес × 2^(−возраст / полураспад); у явных сигналов кабинета без затухания;
+* вклад сигнала = вес × max(``DECAY_FLOOR``, 2^(−возраст / полураспад)); у явных сигналов кабинета
+  без затухания;
 * повтор того же вида сигнала по тому же предмету в тот же день не суммируется;
 * сигналы до регистрации (история посетителя через `identity_links`) × ``PRE_SIGNUP_FACTOR``;
 * вес предмета сжимается ``log1p``: сто просмотров одного ряда не забивают остальные интересы;
@@ -45,6 +46,10 @@ SIGNALS: dict[str, tuple[float, float | None]] = {
 EXPLICIT = frozenset({"watch", "favorite", "saved_compare", "pref_topic", "export"})
 BEHAVIOR = frozenset(SIGNALS) - EXPLICIT - {"landing", "landing_gate", "mail_click"}
 PRE_SIGNUP_FACTOR = 0.7
+# Нижняя граница затухания (16.11.2026): человек, который три месяца назад изучал демографию
+# региона, по-прежнему интересуется ею. Без границы первый выпуск давним подписчикам (медиана
+# давности действий — 55 дней) собирался из общих блоков, а не из того, что они смотрели.
+DECAY_FLOOR = 0.35
 # Показ без клика: множитель за каждый выпуск подряд, не больше FATIGUE_MAX раз.
 FATIGUE_FACTOR = 0.6
 FATIGUE_MAX = 3
@@ -91,10 +96,10 @@ class Profile:
                 "subjects": self.subjects, "geo": self.geo, "stats": self.stats}
 
 
-def decay(weight: float, half_life: float | None, age_days: float) -> float:
+def decay(weight: float, half_life: float | None, age_days: float, floor: float = 0.0) -> float:
     if half_life is None:
         return weight
-    return weight * math.pow(2.0, -max(0.0, age_days) / half_life)
+    return weight * max(floor, math.pow(2.0, -max(0.0, age_days) / half_life))
 
 
 def _topic_of(sub: Subject, topic_hint: dict[str, str]) -> str | None:
@@ -138,7 +143,7 @@ def build_profile(
             continue
         seen.add(dedupe)
         weight, half = spec
-        value = decay(weight, half, (now - sig.at).total_seconds() / 86400.0)
+        value = decay(weight, half, (now - sig.at).total_seconds() / 86400.0, DECAY_FLOOR)
         if sig.pre_signup:
             value *= PRE_SIGNUP_FACTOR
         topic = _topic_of(sig.subject, topic_hint)

@@ -84,7 +84,9 @@ def test_profile_weights_decay_dedupe_tiers_and_fatigue():
     assert p.tier == "rich"
     assert p.subjects[0]["key"] == "ru:cpi"          # колокольчик без затухания
     old_view = next(x for x in p.subjects if x["key"] == "ru:usd-rub")
-    assert old_view["score"] < 0.05                 # 200 дней при полураспаде 30
+    # 200 дней при полураспаде 30: интерес слабеет до нижней границы, но не исчезает (16.11.2026).
+    assert old_view["score"] == pytest.approx(0.3001, abs=1e-3)
+    assert decay(1.0, 30, 200) < 0.02 and decay(1.0, 30, 200, 0.35) == pytest.approx(0.35)
     tired = build_profile("u", rich, now=now, fatigue={"ru:cpi": 5})
     assert tired.score("ru:cpi") < p.score("ru:cpi")
     assert build_profile("u", [], now=now).tier == "cold"
@@ -93,7 +95,7 @@ def test_profile_weights_decay_dedupe_tiers_and_fatigue():
     assert pre.score("ru:cpi") < post.score("ru:cpi")
 
 
-def test_pick_diversity_one_topic_and_two_per_generator():
+def test_pick_diversity_one_topic_and_three_per_generator():
     from app.services.newsletter_personal.compose import Candidate, pick
 
     cands = [Candidate("series", f"ru:a{i}", {}, 10 - i, topic="prices") for i in range(3)]
@@ -101,7 +103,7 @@ def test_pick_diversity_one_topic_and_two_per_generator():
     chosen = pick(cands, 3)
     assert [c.subject for c in chosen] == ["ru:a0", "ru:b", "ru:c"]
     chosen = pick(cands, 5)
-    assert sum(1 for c in chosen if c.gen == "series") == 2
+    assert sum(1 for c in chosen if c.gen == "series") == 3   # предел на генератор — три (16.11.2026)
 
 
 def test_block_check_rules():
@@ -553,3 +555,34 @@ def test_account_export_and_delete_cover_personal_tables(nl_env, auth_client):
             b = await db.scalar(select(func.count()).select_from(NewsletterPersonalIssue))
             return a, b
     assert _run(_count()) == (0, 0), me
+
+
+def test_first_issue_rules_no_default_fuel_and_skip_forecasts(monkeypatch):
+    """16.11.2026: регион без «бензина по умолчанию»; прогноз по теме не вытесняет свои ряды и снимается списком."""
+    import asyncio
+    from types import SimpleNamespace
+
+    from app.config import settings
+    from app.services.newsletter_personal import compose as C
+    from app.services.newsletter_personal.profile import Profile
+
+    class NoFacts:
+        async def get(self, key):
+            raise AssertionError(f"ряд по умолчанию не должен запрашиваться: {key}")
+
+    profile = Profile(user_id="u", tier="light", topics={"population": 2.0, "labor": 1.5},
+                      geo={"country": "russia", "region": "respublika-mariy-el"})
+    us = SimpleNamespace(signals=[], history=[], gaps=[], last_visit=None)
+    item = {"id": "russia-unemployment", "theme": "unemployment", "country": {"slug": "russia"},
+            "path": "/russia/indicator/unemployment", "title": "Россия: безработица", "unit": "%",
+            "frequency": "monthly", "source": "Росстат",
+            "forecast_end": {"date": "2027-09-01", "value": 1.77}, "last_actual": {"date": "2026-09-01", "value": 2.2}}
+    ctx = C.Context(profile=profile, us=us, cache=NoFacts(), locale="ru", today=date(2026, 11, 16),
+                    issue_key="k", showcase=[item], related={}, query_map={})
+    assert asyncio.run(C.region_candidates(ctx, set())) == []
+    fc = C.forecast_candidates(ctx, set())
+    assert len(fc) == 1 and fc[0].why == "topic"
+    assert fc[0].score == pytest.approx(1.5 * C.TOPIC_FORECAST_FACTOR)
+    monkeypatch.setattr(settings, "newsletter_personal_skip_forecasts", "russia-inflation, russia-unemployment")
+    assert C.forecast_candidates(ctx, set()) == []
+    assert C.MAX_PER_GEN == 3 and C.LIMITS["light"][0] == 3
