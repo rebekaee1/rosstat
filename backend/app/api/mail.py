@@ -138,6 +138,27 @@ async def _token_from(request: Request, query_t: str | None) -> str | None:
     return None
 
 
+@router.get("/o/{name}")
+async def open_pixel(name: str, request: Request, db: AsyncSession = Depends(get_db)):
+    """Пиксель открытия письма (ADR-0034). Всегда отдаёт прозрачную точку; учёт — по возможности."""
+    from fastapi.responses import Response
+
+    from app.services.mail import tracking
+
+    try:
+        token = name[:-4] if name.endswith(".gif") else name
+        if await tracking.record_open(db, token, request.headers.get("user-agent")):
+            await db.commit()
+    except Exception:  # noqa: BLE001 — картинка важнее учёта
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+    return Response(content=tracking.PIXEL, media_type="image/gif", headers={
+        "Cache-Control": "no-store, no-cache, must-revalidate, private", "Pragma": "no-cache",
+        "X-Robots-Tag": "noindex"})
+
+
 @router.get("/unsubscribe")
 async def unsubscribe_state(t: str | None = None, db: AsyncSession = Depends(get_db)):
     purpose, user = await _user_from(t, db)

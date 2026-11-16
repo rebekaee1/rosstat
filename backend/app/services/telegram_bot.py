@@ -98,6 +98,8 @@ def main_menu_keyboard() -> dict:
         rows.append([{"text": "🎯 Цели", "callback_data": "goals"}])
     if settings.public_bot_enabled:
         rows.append([{"text": "🤖 Публичный бот", "callback_data": "public_bot"}])
+    if settings.mail_enabled or settings.mail_report_enabled:
+        rows.append([{"text": "✉️ Рассылка", "callback_data": "mail_report"}])
     return {"inline_keyboard": rows}
 
 
@@ -525,6 +527,20 @@ def _period_label(window: str, period) -> str:
     return f"{label}, {period.start_date.strftime('%d.%m')}–{period.end_date.strftime('%d.%m')}"
 
 
+async def _send_mail_report(chat_id: str, campaign: str | None = None) -> None:
+    """«Рассылка» (ADR-0034): воронка последнего или названного выпуска; только суммы."""
+    from app.database import analytics_session
+    from app.services.mail import funnel
+
+    try:
+        async with analytics_session() as db:
+            text = await funnel.report_text(db, campaign)
+    except Exception:  # noqa: BLE001
+        logger.warning("mail report failed", exc_info=True)
+        text = "⏳ Не успел посчитать рассылку — база занята. Нажмите ещё раз через минуту."
+    await send_message(chat_id, text, reply_markup=main_menu_keyboard(), kind="bot_report", link_preview=False)
+
+
 async def _send_downloads_report(chat_id: str, window: str) -> None:
     from app.services import download_content as dc
 
@@ -688,6 +704,8 @@ async def _handle_callback(cq: dict) -> None:
     elif data == "public_bot" and settings.public_bot_enabled:
         from app.services import public_bot
         await send_message(chat_id, await public_bot.report_text(), reply_markup=main_menu_keyboard(), kind="bot_report")
+    elif data == "mail_report":
+        await _send_mail_report(chat_id)
     elif data.startswith("dl:") and (w := _window_or_none(data[3:])):
         await _send_downloads_report(chat_id, w)
     elif data.startswith("dlx:") and (w := _window_or_none(data[4:])):
@@ -772,8 +790,13 @@ async def _handle_message(msg: dict) -> None:
         await _send_downloads_report(chat_id, w or "7")
     elif text in _EXPORT_COMMANDS:
         await send_message(chat_id, EXPORT_MENU_TEXT, reply_markup=export_keyboard(), kind="bot_report")
+    elif text and text.split()[0] in _MAIL_COMMANDS:
+        # «/mail», «рассылка», «/mail fe-weekly-01» — воронка последнего или названного выпуска.
+        parts = (msg.get("text") or "").split()
+        await _send_mail_report(chat_id, parts[1].strip()[:80] if len(parts) > 1 else None)
 
 
+_MAIL_COMMANDS = ("/mail", "рассылка")
 _DOWNLOAD_COMMANDS = ("/downloads", "скачивания")
 _EXPORT_COMMANDS = ("/export", "выгрузки", "выгрузка")
 _ADMIN_TEXTS = ("/start", "/menu", "меню", "/users")
@@ -789,6 +812,7 @@ OWNER_COMMANDS = [
     {"command": "downloads", "description": "Что скачивают и где упираются в лимит (/downloads 30)"},
     {"command": "export", "description": "Выгрузки файлом: скачивания, регистрации, действия"},
     {"command": "users", "description": "Пользователи"},
+    {"command": "mail", "description": "Рассылка: дошло, открыли, перешли, вернулись, отписались"},
     {"command": "context", "description": "Заметки для аналитика Пульса (/context текст до 25.11)"},
 ]
 REPORTS_ONLY_COMMANDS = [
@@ -831,7 +855,7 @@ def _is_public_message(chat_id: str, text: str) -> bool:
     if _is_context_command(text):
         return False
     first = text.split()[0] if text else ""
-    return text not in _ADMIN_TEXTS + _EXPORT_COMMANDS and first not in _DOWNLOAD_COMMANDS
+    return text not in _ADMIN_TEXTS + _EXPORT_COMMANDS and first not in _DOWNLOAD_COMMANDS + _MAIL_COMMANDS
 
 
 async def telegram_poll_job() -> None:

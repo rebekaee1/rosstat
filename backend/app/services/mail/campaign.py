@@ -263,6 +263,9 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
             db, kind="newsletter", to=rec.email, locale=rec.locale, subject=rendered.subject,
             user_id=rec.user_id, campaign=issue.key)
         row.to_email, row.subject = service.normalize(rec.email), rendered.subject[:300]
+        # ADR-0034: разрезы воронки на момент отправки.
+        row.addr_verified = bool(rec.verified)
+        row.variant = "personal" if (digest is not None and getattr(digest, "personal_note", "")) else "general"
         try:
             await service.attempt(db, row, rendered, unsubscribe_url=one_click)
         except transport.SendError as err:

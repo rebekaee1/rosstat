@@ -1358,6 +1358,35 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Mail watch digest enabled: daily %02d:15 MSK", int(settings.mail_watch_digest_hour_msk))
 
+        # Воронка письма (ADR-0034): перенос переходов из сессий сайта в события писем; итог выпуска в
+        # служебный Telegram через сутки и через 7 суток (утром, одним сообщением на выпуск).
+        if settings.mail_enabled and settings.mail_tracking_enabled:
+            from app.services.mail.tracking import click_sync_job
+            scheduler.add_job(
+                locked_job(click_sync_job, "mail_click_sync", ttl_seconds=600),
+                trigger=IntervalTrigger(minutes=20),
+                id="mail_click_sync",
+                name="Mail: clicks from site sessions to mail events",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Mail click sync enabled: every 20 min")
+        if settings.mail_report_enabled:
+            from app.services.mail.funnel import newsletter_report_job
+            scheduler.add_job(
+                locked_job(newsletter_report_job, "mail_newsletter_report", ttl_seconds=1800),
+                trigger=CronTrigger(hour=int(settings.mail_report_hour_msk), minute=int(settings.mail_report_minute),
+                                    timezone="Europe/Moscow"),
+                id="mail_newsletter_report",
+                name="Mail: newsletter funnel report to service Telegram (day 1 and day 7)",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Mail newsletter report enabled: daily %02d:%02d MSK", int(settings.mail_report_hour_msk),
+                        int(settings.mail_report_minute))
+
         # Персональный выпуск (ADR-0033): ночные обезличенные таблицы и снимки личных выпусков в четверг
         # после окна ETL. Ничего не отправляют; отправка — только командой владельца.
         if settings.newsletter_personal_build_enabled:

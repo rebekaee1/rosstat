@@ -176,6 +176,7 @@ async def apply_events(db: AsyncSession, events: list[BounceEvent]) -> dict[str,
         if ev.message_id:
             for row in (await db.scalars(select(MailMessage).where(MailMessage.message_id == ev.message_id))).all():
                 row.status, row.error = "bounced", f"bounce:{ev.status}"[:200]
+                row.bounced_at = row.bounced_at or datetime.now(timezone.utc).replace(tzinfo=None)
         uid = await db.scalar(select(EmailCredential.user_id).where(EmailCredential.email == ev.email))
         if uid is None:
             uid = await db.scalar(select(OAuthIdentity.user_id).where(func.lower(OAuthIdentity.email) == ev.email))
