@@ -119,7 +119,7 @@ SYSTEM_PROMPT = """Ты ведёшь Telegram-канал Forecast Economy — с
 Канал держится на доверии к цифрам, а читатель не может их перепроверить, поэтому за точность отвечаешь ты. Вот как это устроено.
 
 У каждого числа в посте должно быть основание одного из четырёх видов:
-1. Число из сводки или из ответа инструмента по нашей базе. Это основа любого поста.
+1. Число из сводки или из ответа инструмента по нашей базе. Это основа любого поста. Сюда же относятся числа отчёта из раздела research_queue: их объявлять не нужно.
 2. Расчёт из таких чисел. Считай инструментом calculate, а не в уме, и запиши выражение в поле numbers: программа пересчитает его сама.
 3. Условное допущение, которое читатель сам видит как допущение (бак на 50 литров, сумма 100 000 ₽). Его тоже запиши в numbers.
 4. Число из интернета — только со страницы первоисточника (Банк России, Росстат, Минфин, Мосбиржа), которую ты сам нашёл поиском в этом запуске, и с названием источника в тексте. Это редкий случай: канал стоит на нашей базе.
@@ -320,7 +320,7 @@ def plan_text(days: list, note: str) -> str:
             lines.append(f"{d.get('day')}: без поста")
         for p in posts:
             lines.append(f"{d.get('day')}: {SIZE_TITLES.get(p.get('size'), p.get('size'))} — {p.get('about')}")
-    return ("\n".join(lines) + ("\n\n" + note.strip() if note and note.strip() else "")).strip()[:1800]
+    return ("\n".join(lines) + ("\n\n" + note.strip() if note and note.strip() else "")).strip()[:3000]
 
 
 def system_prompt(tone: str | None = None, words: str | None = None) -> str:
@@ -529,7 +529,7 @@ def _draft_from_args(args: dict, briefing: Briefing, result: AuthorResult) -> tu
     checks = [c for c in (args.get("checks") or []) if isinstance(c, dict)]
     declared = [n for n in (args.get("numbers") or []) if isinstance(n, dict)]
     audit = check_post(body, briefing.corpus, declared, checks=checks, web_searches=result.web_searches,
-                       banned=briefing.banned)
+                       banned=briefing.banned, reports=rubric == "research")
     chart = args.get("chart_topic") if args.get("chart_topic") in CHART_KEYS else None
     if not plain_text(body).strip():
         audit.issues.append("пустой текст")
@@ -676,7 +676,10 @@ async def run_author(kind: str = "daily", *, fresh: list[str] | None = None, tri
                         out = "Лимит обращений к базе исчерпан — заверши запуск."
                     else:
                         out = await run_tool(name, args)
-                        briefing.corpus.add_text(out, f"база сайта: {name}({', '.join(f'{k}={v}' for k, v in args.items())})")
+                        # Источник ряда стоит в первой строке ответа: «…, руб./г (Россия, Банк России)».
+                        src = re.search(r"\((?:Россия|[^,()]{2,40}), ([^()]{2,80})\)", out.split("\n", 1)[0]) if name == "get_series" else None
+                        briefing.corpus.add_text(out, f"база сайта: {name}({', '.join(f'{k}={v}' for k, v in args.items())})",
+                                                 source=src.group(1).split(";")[0].strip() if src else None)
                         result.tool_log.append({"tool": name, "args": args, "out": out[:1200]})
                     messages.append({"role": "tool", "tool_call_id": call.get("id", ""), "content": out})
         if not done and last_draft is not None and not result.drafts:
@@ -802,14 +805,14 @@ async def _deliver(result: AuthorResult) -> None:
     if result.status == "http_402" and not await alert_muted("channel_author_no_credits", 24 * 3600):
         # Деньги на счёте OpenRouter кончились: автор молчит не потому, что нечего сказать. Одно сообщение в сутки.
         await channel_posts.notify_reviewers(
-            "✍️ <b>Автор канала сегодня не написал пост</b>: на счёте сервиса, через который работает модель, "
+            "✍️ <b>Редактор канала сегодня не написал пост</b>: на счёте сервиса, через который работает модель, "
             "закончились деньги. Пополнить: openrouter.ai/settings/credits. После пополнения ничего включать не нужно.",
             kind="channel_note")
     for draft in result.drafts:
         await channel_posts.create_and_send(draft, run_id=result.run_id)
     if result.concerns and not result.drafts:
         await channel_posts.notify_reviewers(
-            "✍️ <b>Автор канала</b>: сегодня без поста.\n" + _esc(result.nothing or "") +
+            "✍️ <b>Редактор канала</b>: сегодня без поста.\n" + _esc(result.nothing or "") +
             "\n\n<b>Заметил в данных сайта:</b> " + _esc(result.concerns), kind="channel_note")
 
 

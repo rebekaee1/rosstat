@@ -377,9 +377,13 @@ _FUNCS = {"round": round, "min": min, "max": max, "abs": abs}
 
 
 def calculate(expression: str) -> str:
-    """Безопасная арифметика: только числа, операторы и round/min/max/abs (без имён и вызовов чего-то ещё)."""
-    expr = (expression or "").replace(",", ".").replace("×", "*").replace("^", "**").replace(" ", "")
-    expr = re.sub(r"(?<=\d)\.(?=\d{3}(?!\d))", "", expr) if expr.count(".") > 1 else expr
+    """Безопасная арифметика: только числа, операторы и round/min/max/abs (без имён и вызовов чего-то ещё).
+
+    Запятая сначала читается как в Python — разделитель аргументов: «round(71/21, 1)». Если так выражение не
+    разбирается — как десятичная: «86,63*50». До 17.11.2026 запятая всегда становилась точкой, и
+    «round(71/21, 1)» считалось как round(71/21.1) = 3 (заметил автор канала на показе).
+    """
+    base = (expression or "").replace("×", "*").replace("^", "**").replace("−", "-").replace(" ", "").replace("\u00a0", "")
 
     def ev(n):
         if isinstance(n, ast.Expression):
@@ -396,11 +400,18 @@ def calculate(expression: str) -> str:
         if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id in _FUNCS and not n.keywords:
             return _FUNCS[n.func.id](*[ev(a) for a in n.args])
         raise ValueError("недопустимое выражение")
-    try:
-        v = ev(ast.parse(expr[:300], mode="eval"))
-        return f"{expression} = {_num(v) if isinstance(v, (int, float)) else v}"
-    except Exception as e:  # noqa: BLE001
-        return f"Не посчитал «{expression}»: {e}"
+
+    decimal_commas = base.replace(",", ".")
+    if decimal_commas.count(".") > 1:
+        decimal_commas = re.sub(r"(?<=\d)\.(?=\d{3}(?!\d))", "", decimal_commas)
+    error: Exception | None = None
+    for expr in dict.fromkeys((base, decimal_commas)):
+        try:
+            v = ev(ast.parse(expr[:300], mode="eval"))
+            return f"{expression} = {_num(v) if isinstance(v, (int, float)) else v}"
+        except Exception as e:  # noqa: BLE001
+            error = e
+    return f"Не посчитал «{expression}»: {error}"
 
 
 async def run_tool(name: str, raw_args: str | dict | None) -> str:

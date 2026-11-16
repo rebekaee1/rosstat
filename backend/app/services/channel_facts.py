@@ -164,7 +164,7 @@ class Corpus:
         self.dates.add(d)
         return fmt_day(d, year)
 
-    def add_text(self, raw: str, label: str, kind: str = "tool") -> None:
+    def add_text(self, raw: str, label: str, kind: str = "tool", source: str | None = None) -> None:
         """Числа и даты из свободного текста: ответ инструмента по базе или выдержка из поиска."""
         for m in _ISO_DATE_RE.finditer(raw or ""):
             try:
@@ -175,7 +175,7 @@ class Corpus:
         for m in _NUM_RE.finditer(cleaned):
             whole = re.sub("[" + _SP + "]", "", m.group(1))
             try:
-                self.items.append(Basis(float(f"{whole}.{m.group(2)}" if m.group(2) else whole), label, None, kind,
+                self.items.append(Basis(float(f"{whole}.{m.group(2)}" if m.group(2) else whole), label, source, kind,
                                         False, len(m.group(2) or "")))
             except ValueError:
                 continue
@@ -198,7 +198,7 @@ class Corpus:
             except Exception:  # noqa: BLE001 — бесконечность или NaN в основаниях
                 continue
         # Свои данные раньше расчётов, расчёты раньше интернета.
-        order = {"data": 0, "derived": 1, "forecast": 2, "tool": 3, "web": 4}
+        order = {"data": 0, "derived": 1, "forecast": 2, "tool": 3, "report": 4, "web": 5}
         return sorted(out, key=lambda b: order.get(b.kind, 9))
 
 
@@ -639,7 +639,8 @@ def _declared_for(tok: NumToken, declared: list[dict]) -> dict | None:
 
 
 def check_post(text_html: str, corpus: Corpus, declared: list[dict] | None = None, *,
-               checks: list[dict] | None = None, web_searches: int = 0, banned: list[str] | None = None) -> Audit:
+               checks: list[dict] | None = None, web_searches: int = 0, banned: list[str] | None = None,
+               reports: bool = False) -> Audit:
     """Сверить каждое число поста с основаниями. Возвращает разбор: что откуда и что не сошлось."""
     audit = Audit()
     plain = plain_text(text_html)
@@ -664,10 +665,14 @@ def check_post(text_html: str, corpus: Corpus, declared: list[dict] | None = Non
 
     def usable(tok: NumToken) -> list[Basis]:
         cands = candidates(tok)
+        # Числа отчётов раздела «Исследования» — основания только для поста об исследовании (`reports`):
+        # иначе «3,4» в посте о топливе совпало бы с «×3,4» из чужого отчёта.
+        cands = [b for b in cands if b.kind != "report" or reports]
         good = [b for b in cands if b.digits == tok.decimals
-                or (b.series and b.series in in_play) or b.kind in ("tool", "web")]
-        order = {"data": 0, "derived": 1, "forecast": 2, "tool": 3, "web": 4}
-        return sorted(good, key=lambda b: (0 if (b.series and b.series in in_play) else 1,
+                or (b.series and b.series in in_play) or b.kind in ("tool", "web", "report")]
+        order = {"data": 0, "derived": 1, "forecast": 2, "tool": 3, "report": 4, "web": 5}
+        # В посте об исследовании число отчёта важнее случайного совпадения с рядом, о котором в посте нет ни слова.
+        return sorted(good, key=lambda b: (0 if (b.series and b.series in in_play) else (1 if b.kind == "report" else 2),
                                            0 if b.digits == tok.decimals else 1, order.get(b.kind, 9)))
 
     for tok in tokens:
@@ -702,7 +707,9 @@ def check_post(text_html: str, corpus: Corpus, declared: list[dict] | None = Non
                     audit.numbers.append({"shown": tok.raw, "status": "calc",
                                           "basis": f"расчёт: {decl.get('expr')} = {fmt_num(value, max(tok.decimals, 2))}"})
                     for o, dec in operands:
-                        for b in corpus.find(o, dec)[:1]:
+                        if dec == 0 and o in _CONSTANTS:
+                            continue
+                        for b in [x for x in corpus.find(o, dec) if x.kind != "report"][:1]:
                             if b.source and b.source not in audit.sources:
                                 audit.sources.append(b.source)
                             used_forecast = used_forecast or b.kind == "forecast"
@@ -717,7 +724,8 @@ def check_post(text_html: str, corpus: Corpus, declared: list[dict] | None = Non
                 audit.numbers.append({"shown": tok.raw, "status": "unmatched", "basis": why})
                 audit.issues.append(f"число «{tok.raw}»: {why}")
                 continue
-        if decl and basis_kind == "assumption":
+        if decl and basis_kind == "assumption" and not [b for b in usable(tok) if b.kind != "web"]:
+            # Допущением число считается, только если его нет в данных: данные важнее объявления автора.
             audit.numbers.append({"shown": tok.raw, "status": "assumption",
                                   "basis": "условное допущение: " + str(decl.get("note") or "названо в тексте")})
             continue
@@ -739,7 +747,8 @@ def check_post(text_html: str, corpus: Corpus, declared: list[dict] | None = Non
         own = [b for b in found if b.kind != "web"]
         if own:
             b = own[0]
-            status = {"data": "data", "derived": "derived", "forecast": "forecast", "tool": "tool"}.get(b.kind, "data")
+            status = {"data": "data", "derived": "derived", "forecast": "forecast", "tool": "tool",
+                      "report": "report"}.get(b.kind, "data")
             audit.numbers.append({"shown": tok.raw, "status": status, "basis": b.label})
             if b.source and b.source not in audit.sources:
                 audit.sources.append(b.source)
@@ -772,7 +781,7 @@ def check_post(text_html: str, corpus: Corpus, declared: list[dict] | None = Non
                                 + "), а перепроверки в интернете нет")
         else:
             audit.warnings.append("число из ряда с необычным скачком (" + ", ".join(used_jump[:3])
-                                  + ") — автор перепроверил его в интернете; посмотрите, чем подтверждено, прежде чем публиковать")
+                                  + ") — редактор перепроверил его в интернете; посмотрите, чем подтверждено, прежде чем публиковать")
     from app.services.channel_voice import find_banned
 
     # Слова «не пишем»: словарь автора (файл + ответы владельца); без него — встроенный список жаргона.
@@ -892,7 +901,7 @@ async def _history_lines(db) -> tuple[list[str], list[str]]:
     return posts, decisions[:10]
 
 
-def _research_lines(limit: int = 6) -> list[str]:
+def _research_lines(limit: int = 6, corpus: "Corpus | None" = None) -> list[str]:
     import json
     from pathlib import Path
 
@@ -903,8 +912,13 @@ def _research_lines(limit: int = 6) -> list[str]:
     out = []
     for it in (data.get("items") or [])[:limit]:
         figs = "; ".join(f"{f.get('value')} — {f.get('label')}" for f in (it.get("figures") or [])[:3])
-        out.append(f"research:{it.get('slug')} — «{it.get('title')}». {str(it.get('annotation') or '')[:260]}"
-                   + (f" Цифры отчёта: {figs}." if figs else ""))
+        line = (f"research:{it.get('slug')} — «{it.get('title')}». {str(it.get('annotation') or '')[:260]}"
+                + (f" Цифры отчёта: {figs}." if figs else ""))
+        if corpus is not None:
+            # Числа аннотации и карточек отчёта — тоже основания: пост об исследовании пишется по ним.
+            corpus.add_text(line, f"отчёт «{it.get('title')}» (раздел «Исследования» сайта)", kind="report",
+                            source="исследование Forecast Economy")
+        out.append(line)
     return out
 
 
@@ -964,7 +978,7 @@ async def build_briefing(db, now: datetime | None = None, *, fresh: list[str] | 
                      + "\n".join(decisions) + "\n</owner_decisions>")
     if plan_note:
         parts.append("<week_plan>\n" + plan_note.strip()[:1500] + "\n</week_plan>")
-    research = _research_lines()
+    research = _research_lines(corpus=c)
     if research:
         parts.append("<research_queue>\n" + "\n".join(research) + "\n</research_queue>")
     pages = "; ".join(f"{w.code} → {ru_public_origin()}{site_paths.russia_indicator(w.code)}" for w in WATCH)

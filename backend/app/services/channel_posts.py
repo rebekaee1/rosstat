@@ -42,7 +42,7 @@ _EDIT_TTL = 1800
 _edit_mem: dict[str, tuple[int, datetime]] = {}
 _tasks: set[asyncio.Task] = set()
 STATUS_NUM = {"data": "база сайта", "derived": "расчёт из базы", "forecast": "наш расчёт (прогноз сайта)",
-              "tool": "база сайта (запрос автора)", "calc": "расчёт автора, пересчитан", "assumption": "условное допущение",
+              "tool": "база сайта (запрос редактора)", "report": "отчёт раздела «Исследования»", "calc": "расчёт редактора, пересчитан", "assumption": "условное допущение",
               "web": "страница в интернете", "small": "не сверялось", "unmatched": "НЕ СОШЛОСЬ",
               "date": "дата", "date_unknown": "даты нет в данных", "year": "год"}
 
@@ -193,10 +193,10 @@ def panel_text(post, label: str, who: str | None = None) -> str:
         lines.append("Обратите внимание: " + escape("; ".join(audit["warnings"][:3])) + ".")
     checks = audit.get("checks") or []
     if checks:
-        lines.append("Автор перепроверил: " + escape("; ".join(
-            f"{c.get('what', '')} — {c.get('result', '')}" for c in checks[:3])) + ".")
+        lines.append("Редактор перепроверил: " + escape("; ".join(
+            f"{c.get('what', '')} — {c.get('result', '')}"[:180] for c in checks[:3])) + ".")
     if audit.get("concerns"):
-        lines.append("Сомнения автора: " + escape(audit["concerns"][:400]))
+        lines.append("Сомнения редактора: " + escape(audit["concerns"][:500]))
     from app.services.channel_author import SIZE_TITLES
 
     bits = [SIZE_TITLES[post_size(post)]]
@@ -210,7 +210,7 @@ def panel_text(post, label: str, who: str | None = None) -> str:
         "publishing": "⏳ Отправляется в канал.",
         "published": "📣 <b>Опубликовано</b>" + (f": {escape(post_link(post))}" if post_link(post) else "") + ".",
         "skipped": "✖️ <b>Не публикуем.</b>" + (f" Причина: {escape(post.feedback)}." if post.feedback
-                                               else " Если не трудно, отметьте почему — автор учтёт."),
+                                               else " Если не трудно, отметьте почему — редактор учтёт."),
         "replaced": "✏️ Заменён новой версией ниже.",
         "failed": "⚠️ <b>Не ушло в канал.</b> " + escape(post.error or "") ,
     }.get(post.status)
@@ -399,10 +399,10 @@ def sources_text(post) -> str:
                      f"({escape(str(c.get('where')))})")
     web = audit.get("web") or []
     if web:
-        lines.append("Страницы, которые автор открывал в интернете: "
+        lines.append("Страницы, которые редактор нашёл в интернете: "
                      + "; ".join(escape(re.sub(r'^https?://(www\.)?', '', w.get("url", ""))[:70]) for w in web[:6]))
     if audit.get("concerns"):
-        lines.append("Сомнения автора: " + escape(audit["concerns"]))
+        lines.append("Сомнения редактора: " + escape(audit["concerns"]))
     return "\n".join(lines)
 
 
@@ -465,7 +465,7 @@ async def handle_callback(cq: dict) -> None:
             reason = SKIP_REASONS.get(parts[3] if len(parts) > 3 else "")
             if reason and post.status == "skipped":
                 post.feedback = reason
-                toast = "Спасибо, автор учтёт"
+                toast = "Спасибо, редактор учтёт"
         elif action == "retry":
             if post.status == "failed":
                 post.status, post.planned_at, post.error = "approved", _utcnow(), None
@@ -476,7 +476,7 @@ async def handle_callback(cq: dict) -> None:
             if post.status in ("draft", "approved"):
                 await _set_pending_edit(chat_id, pid)
                 follow = ("edit", "✏️ Напишите одним сообщением, что поправить: «короче», «без вкладов», «заголовок спокойнее». "
-                                  "Автор перепишет и пришлёт новую версию.\n"
+                                  "Редактор перепишет и пришлёт новую версию.\n"
                                   "Чтобы поставить свой текст целиком, начните сообщение со слова <b>Текст:</b>")
             else:
                 toast = "Этот пост уже нельзя править"
@@ -566,7 +566,7 @@ async def handle_message(msg: dict) -> bool:
         if post.status == "skipped":
             post.feedback = raw[:600]
             await db.commit()
-            await send_message(chat_id, "Записал, почему не подошло: автор учтёт в следующих постах.", kind="bot_reply")
+            await send_message(chat_id, "Записал, почему не подошло: редактор учтёт в следующих постах.", kind="bot_reply")
             await refresh_panels(post.id)
             return True
         if post.status not in ("draft", "approved"):
@@ -635,7 +635,8 @@ async def _manual_text(pid: int, text: str, chat_id: str) -> None:
                 return
             briefing = await build_briefing(db)
             body = channel_author.clean_body(text)
-            audit = check_post(body, briefing.corpus, (post.audit or {}).get("declared") or [], banned=briefing.banned)
+            audit = check_post(body, briefing.corpus, (post.audit or {}).get("declared") or [], banned=briefing.banned,
+                               reports=post.rubric == "research")
             info = audit.as_dict()
             info["concerns"] = "Текст написан владельцем; числа сверены со сводкой данных на сегодня."
             info["size"] = channel_author.size_of(plain_text(body))

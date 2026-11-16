@@ -708,6 +708,57 @@ def test_author_keeps_blocked_draft_after_two_corrections(monkeypatch):
     assert n["i"] == 3 and result.drafts and result.drafts[0].blocked
 
 
+def test_research_numbers_and_tool_sources_are_grounds(env, monkeypatch):
+    maker, _, _ = env
+
+    async def brief():
+        async with maker() as db:
+            return await cf.build_briefing(db, datetime(2026, 11, 21, 9, 30, tzinfo=MSK))
+
+    b = asyncio.run(brief())
+    # Числа аннотации отчёта из очереди исследований — основания: пост о нём пишется по ним.
+    audit = cf.check_post("В одном банке вернут не больше 1,4 млн ₽. На вкладах 71 трлн ₽, наличных — 21 трлн ₽.", b.corpus,
+                          [{"shown": "71", "basis": "assumption"}], banned=b.banned, reports=True)
+    assert not audit.blocked, audit.issues
+    assert audit.sources == ["исследование Forecast Economy"]
+    # Число есть в данных — это данные, даже если автор объявил его допущением.
+    assert {n["shown"]: n["status"] for n in audit.numbers} == {"1,4": "report", "71": "report", "21": "report"}
+    # Даже если такое же число случайно есть у ряда, о котором в посте ни слова (евро подешевел на 1,4 %).
+    b.corpus.n(1.4, "Евро · изменение к прошлой дате", 1, source="Банк России", kind="derived", series="eur-rub")
+    again = cf.check_post("В одном банке вернут не больше 1,4 млн ₽.", b.corpus, banned=b.banned, reports=True)
+    assert again.numbers[0]["status"] == "report" and again.sources == ["исследование Forecast Economy"]
+    # В посте другой рубрики числа отчётов основанием не считаются: «3,4» не совпадёт с «×3,4» из отчёта.
+    other = cf.check_post("Дизель — 86,63 ₽. Это в 3,4 раза больше.", b.corpus)
+    assert other.blocked and "исследование Forecast Economy" not in other.sources
+
+    # Источник ряда из ответа базы попадает в строку под постом.
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+    import app.services.bot_agent_tools as tools
+
+    async def fake_tool(name, args):
+        return ("Международные резервы, млрд $ (Россия, Банк России). Точек за период: 45.\n"
+                "Первое 752,50 на 2026-01-02; последнее 724,30 на 2026-11-06.")
+
+    monkeypatch.setattr(tools, "run_tool", fake_tool)
+    replies = [
+        _Resp({"content": "", "tool_calls": [_call("get_series", {"code": "international-reserves"})]}),
+        _Resp({"content": "", "tool_calls": [_call("submit_draft", {
+            "rubric": "flash", "size": "short", "text": "Международные резервы — 724,30 млрд $ на 6 ноября.",
+            "link": "home", "when": "slot", "silent": True, "why": "резервы"}, "c2")]}),
+    ]
+    n = {"i": 0}
+
+    async def fake_post(client, payload):
+        n["i"] += 1
+        return replies[n["i"] - 1]
+
+    monkeypatch.setattr(ca, "_post", fake_post)
+    result = asyncio.run(ca.run_author("daily", briefing=_briefing(), save=False))
+    draft = result.drafts[0]
+    assert not draft.blocked, draft.audit["issues"]
+    assert draft.audit["sources"] == ["Банк России"] and "\n\nБанк России · <a href=" in draft.text
+
+
 def test_author_may_decide_nothing_today_and_uses_db_tool(monkeypatch):
     monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
     replies = [
@@ -832,3 +883,13 @@ def test_migration_matches_models_and_only_adds():
         with Operations.context(MigrationContext.configure(conn)):
             mod.downgrade()
         assert not tables & set(sa.inspect(conn).get_table_names())
+
+
+def test_calculator_reads_comma_as_argument_separator_first():
+    from app.services.bot_agent_tools import calculate
+
+    assert calculate("round(71/21, 1)").endswith("= 3,40")       # было 3,00: запятая превращалась в точку
+    assert calculate("86,63*50").endswith("= 4 331,50")
+    assert calculate("round((341.06/313.90-1)*100,1)").endswith("= 8,70")
+    assert calculate("1 000 000/(1+0,0635)").startswith("1 000 000/(1+0,0635) = 940")
+    assert "Не посчитал" in calculate("__import__('os')")

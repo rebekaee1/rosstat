@@ -167,7 +167,7 @@ async def handle_owner_command(raw: str) -> str | None:
             await db.commit()
             n_ban = sum(1 for k, _ in items if k == "ban")
             return (f"Записал: {added} из {len(items)} (остальные уже были). "
-                    + (f"«Не пишем» — {n_ban}: автор перестанет употреблять эти слова со следующего поста, "
+                    + (f"«Не пишем» — {n_ban}: редактор перестанет употреблять эти слова со следующего поста, "
                        "а программа не пропустит пост с ними. " if n_ban else "")
                     + "Весь словарь: /voice")
         if body:
@@ -176,7 +176,7 @@ async def handle_owner_command(raw: str) -> str | None:
                     "<code>правило: заголовок без тире</code>\nСнять правило: <code>/voice убрать 3</code>")
         rules = await owner_rules(db)
     base = load_base()
-    lines = ["🖋 <b>Словарь автора канала</b>",
+    lines = ["🖋 <b>Словарь редактора канала</b>",
              f"Основа: {sum(len(v) for v in base['use'].values())} формул и {len(base['ban'])} слов «не пишем»."]
     if rules:
         lines.append("<b>Ваши правила:</b>")
