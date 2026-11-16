@@ -754,6 +754,12 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         ) or 0
         snap["data"] = {"new_points": new_points}
 
+        # --- Ревизия 16.11.2026 (ADR-0034): почта, согласия, кабинет, публичный бот, исследования,
+        # мировые данные, свежесть рядов, доставка Telegram, календарь. Только суммы.
+        from app.services import pulse_extra
+
+        snap.update(await pulse_extra.build_extra(db, d, start, end))
+
     # HTTP Вебмастера и витрины — вне основной сессии (idle in transaction).
     snap["seo"] = await _seo_snapshot()
     try:
@@ -872,7 +878,26 @@ def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
         "acquisition_metadata": (snap.get("acquisition") or {}).get("metadata"),
         "seo_indexed_share_pct": snap.get("seo", {}).get("indexed_share_pct"),
         "seo_searchable_pages": snap.get("seo", {}).get("searchable_pages"),
+        **_extra_core(snap),
     }
+
+
+def _extra_core(snap: dict[str, Any]) -> dict[str, Any]:
+    """Память по разделам ревизии 16.11.2026; у старых снимков без этих разделов ключей нет."""
+    out: dict[str, Any] = {}
+    mail = snap.get("mail")
+    if isinstance(mail, dict) and "error" not in mail:
+        out["mail_letters"] = sum(sum(v.values()) for v in (mail.get("letters_by_kind") or {}).values())
+        out["mail_opens"] = (mail.get("events") or {}).get("open", 0)
+        out["mail_clicks"] = (mail.get("events") or {}).get("click", 0)
+    consents = snap.get("consents")
+    if isinstance(consents, dict) and "error" not in consents:
+        out["newsletter_opt_in"] = consents.get("newsletter_opt_in", 0)
+        out["newsletter_revoked"] = consents.get("newsletter_revoked", 0)
+    fresh = snap.get("freshness")
+    if isinstance(fresh, dict) and "error" not in fresh:
+        out["stale_series"] = (fresh.get("levels") or {}).get("stale", 0)
+    return out
 
 
 async def store_memory(d: date, core: dict[str, Any], summary: str) -> None:

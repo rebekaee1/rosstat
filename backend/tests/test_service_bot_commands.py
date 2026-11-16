@@ -27,7 +27,8 @@ def test_commands_go_only_to_owner_chat_scope(monkeypatch):
         ("deleteMyCommands", {"scope": {"type": "chat", "chat_id": 433221767}})]
     # Каждая команда меню обрабатывается ботом.
     for c in tb.OWNER_COMMANDS:
-        assert f"/{c['command']}" in tb._ADMIN_TEXTS + tb._EXPORT_COMMANDS + tb._DOWNLOAD_COMMANDS + tb._CONTEXT_COMMANDS
+        assert f"/{c['command']}" in tb._ADMIN_TEXTS + tb._EXPORT_COMMANDS + tb._DOWNLOAD_COMMANDS + tb._CONTEXT_COMMANDS \
+            + tb._MAIL_COMMANDS
 
 
 def test_reports_only_chats_get_short_menu(monkeypatch):

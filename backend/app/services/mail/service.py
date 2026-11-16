@@ -101,9 +101,13 @@ async def attempt(db: AsyncSession, row: MailMessage, rendered: RenderedMail, *,
         row.status, row.error = "suppressed", "suppressed"
         return row
     row.attempts = (row.attempts or 0) + 1
+    # ADR-0034: разрезы письма и учёт открытий и переходов — на готовом письме, шаблон не меняется.
+    from app.services.mail import tracking
+
+    html, text = await tracking.prepare(db, row, rendered.html, rendered.text)
     try:
         row.message_id = await transport.send(transport.OutgoingMail(
-            to=row.to_email, subject=rendered.subject, html=rendered.html, text=rendered.text, images=rendered.images,
+            to=row.to_email, subject=rendered.subject, html=html, text=text, images=rendered.images,
             kind=row.kind, unsubscribe_url=unsubscribe_url, campaign=row.campaign,
         ))
         row.status, row.error, row.sent_at = "sent", None, _now()

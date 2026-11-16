@@ -138,6 +138,27 @@ invalid — нет пригодного ответа. metadata.sync — журн
 Не выдавай total_revenue_rub за сутки: это сумма окна витрины. Расходы ad_costs
 и доход партнёра — разные показатели; прибыль без сопоставимых данных неизвестна.
 
+Блоки ревизии 16.11.2026 (только суммы, без людей):
+mail — почта сайта: letters_by_kind (письма дня по видам и итогам: sent — принято почтовым
+сервером, bounced — вернулось, failed — не ушло, disabled/blocked — почта выключена или адрес не в
+списке допуска, это не сбой), events (open — открыли люди; open_machine — открыла почтовая
+программа сама, это не интерес; click — переходы на сайт), last_campaign — последний выпуск рассылки:
+дошло, открыли, перешли, что смотрели в визите (visit), какие блоки письма сработали (blocks),
+вернулись ли на сайт (returned: people и то же окно до письма same_window_before_send — сравнивай
+с ним, а не с нулём; window_complete=false — срок ещё не истёк, не делай выводов), отписки,
+отказы от личной подборки, жалобы. last_campaign=null — выпуски людям ещё не отправлялись: не
+пиши «никто не открыл». tracking=false — учёт открытий выключен, открытий в данных нет по
+определению. Доля открытий всегда занижена (почта без картинок их не показывает).
+consents — согласия дня: сколько новых подписались на рассылку, отписки, отказы от подборки.
+cabinet — личный кабинет: избранное, слежения («колокольчик»), выгрузки, настройки.
+public_bot — публичный Telegram-бот: чаты, активность, темы. research — скачивания исследований.
+world_ingest — загрузка мировых данных (datasets_failed — наборы с ошибкой). freshness — сколько
+российских рядов каталога устарели по правилу сайта (levels.stale) и какие дольше всех; рост
+stale — сигнал, даже если ETL формально зелёный. telegram — доставка сообщений этого бота:
+failed — владелец что-то не получил. calendar — публикации официальных данных: что вышло в
+отчётный день и что ждём в ближайшие три дня (если вышел важный показатель и к нему пришли люди —
+свяжи это). Раздел с полем error не посчитался: не делай по нему выводов.
+
 Блок seo — индексация в Яндексе: sitemap_urls_total (сколько URL публикует
 сайт), searchable_pages (сколько реально в поиске по Вебмастеру),
 indexed_share_pct (доля), excluded_pages, sqi (ИКС), site_problems,
@@ -613,6 +634,12 @@ def _raw_digits_block(snapshot: dict) -> str:
         )
         parts.append(f"Источники (Метрика): {escape(top)}")
     parts.extend(escape(line) for line in _acquisition_lines(snapshot))
+    try:
+        from app.services import pulse_extra
+
+        parts.extend(escape(line) for line in pulse_extra.digits_lines(snapshot))
+    except Exception:  # noqa: BLE001 — новые строки не должны ронять отчёт
+        logger.warning("Pulse extra digits failed", exc_info=True)
     if acq.get("search_phrases_top"):
         top = ", ".join(
             f"«{p['phrase'][:40]}» ×{p['visits']}" for p in acq["search_phrases_top"][:10]

@@ -1643,6 +1643,49 @@ class MailMessage(Base):
     message_id: Mapped[str | None] = mapped_column(String(200))
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
     sent_at: Mapped[datetime | None] = mapped_column(DateTime)
+    # --- воронка письма (16.11.2026, ADR-0034). Разрезы на момент отправки: ---
+    # personal / general — была ли в письме личная подборка; NULL у служебных писем.
+    variant: Mapped[str | None] = mapped_column(String(12))
+    addr_verified: Mapped[bool | None] = mapped_column(Boolean)
+    # Почтовый сервис адреса одной из групп (gmail / yandex / mailru / outlook / icloud / other), без самого адреса.
+    provider: Mapped[str | None] = mapped_column(String(12))
+    # Было ли письмо с учётом открытий и переходов (флаг включён и человек не отказался от подборки).
+    tracked: Mapped[bool | None] = mapped_column(Boolean)
+    # Итоги по событиям `mail_events` (чтобы отчёт не пересчитывал сырые строки):
+    opened_at: Mapped[datetime | None] = mapped_column(DateTime)          # первое открытие человеком
+    opens: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    machine_opened_at: Mapped[datetime | None] = mapped_column(DateTime)  # первое открытие программой (не человек)
+    open_client: Mapped[str | None] = mapped_column(String(20))
+    clicked_at: Mapped[datetime | None] = mapped_column(DateTime)         # первый переход на сайт
+    clicks: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    bounced_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+class MailEvent(Base):
+    """События письма после отправки (ADR-0034): открытие и переход на сайт.
+
+    Одна строка на событие; адреса, IP и строки User-Agent не хранятся — только класс почтовой
+    программы и признак «открыла программа, а не человек». ПДн (действие человека с письмом):
+    удаляется вместе с письмом и аккаунтом (CASCADE), входит в выгрузку «Мои данные».
+    """
+    __tablename__ = "mail_events"
+    __table_args__ = (
+        Index("ix_mail_events_mail", "mail_id", "kind"),
+        Index("ix_mail_events_campaign", "campaign", "kind", "occurred_at"),
+        UniqueConstraint("kind", "session_id_hash", name="uq_mail_events_kind_session"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    mail_id: Mapped[int] = mapped_column(ForeignKey("mail_outbox.id", ondelete="CASCADE"), nullable=False)
+    user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
+    campaign: Mapped[str | None] = mapped_column(String(80))
+    kind: Mapped[str] = mapped_column(String(12), nullable=False)  # open / click
+    machine: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    # open: gmail_proxy / yandex_proxy / apple_privacy / scanner / mail_client; click: site
+    client: Mapped[str | None] = mapped_column(String(20))
+    block: Mapped[str | None] = mapped_column(String(40))            # метка блока письма (utm_content)
+    session_id_hash: Mapped[str | None] = mapped_column(String(80))  # сессия сайта перехода; у открытий NULL
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
 
 
 class MailSuppression(Base):

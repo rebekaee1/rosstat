@@ -94,3 +94,7 @@
 - `campaign.run(per_recipient=per_recipient_hook(issue))`;
 - журнал согласий `mail_personal` / `mail_personal_revoked` (функция `services/personalization.set_mail_personalization`);
 - эффект блоков для вкладки «Почта» — `block_effect_summary`.
+
+## Дополнение 16.11.2026: воронка письма
+
+Учёт открытий и переходов, разрезы письма на момент отправки, отчёт по выпуску в служебный Telegram и раздел `mail` в Пульсе — [ADR-0034](0034-mail-funnel-tracking-and-pulse-audit.md). Журнал `mail_outbox` получил необязательные столбцы итогов, появилась таблица `mail_events`. Всё за флагами `RUSTATS_MAIL_TRACKING_ENABLED` и `RUSTATS_MAIL_REPORT_ENABLED`, по умолчанию выключено.

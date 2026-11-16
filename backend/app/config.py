@@ -642,6 +642,13 @@ class Settings(BaseSettings):
     mail_reply_to: str = "info@forecasteconomy.com"
     mail_allowlist: str = "rebeka.ee@yandex.ru"
     mail_allow_all_recipients: bool = False
+    # Учёт открытий и переходов (ADR-0034, 16.11.2026): пиксель открытия и метка человека на ссылках
+    # рассылки. Выключено, пока не опубликован раздел политики. Отказ от подборки выключает учёт у человека.
+    mail_tracking_enabled: bool = False
+    # Итог выпуска в служебный Telegram через сутки и через 7 суток (утром, отдельным сообщением).
+    mail_report_enabled: bool = False
+    mail_report_hour_msk: int = 9
+    mail_report_minute: int = 20
     # Секрет подписи ссылок в письмах (отписка, подтверждение, сброс пароля). Смена секрета
     # делает недействительными ссылки во всех уже отправленных письмах.
     mail_token_secret: str = ""

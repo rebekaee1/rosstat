@@ -511,7 +511,10 @@ async def export_account(user: User = Depends(get_current_user), db: AsyncSessio
         "emails": [
             {"kind": m.kind, "subject": m.subject, "to": m.to_email, "status": m.status,
              "created_at": m.created_at.isoformat() if m.created_at else None,
-             "sent_at": m.sent_at.isoformat() if m.sent_at else None}
+             "sent_at": m.sent_at.isoformat() if m.sent_at else None,
+             # ADR-0034: что мы знаем о судьбе письма (открытие, переход); без IP и почтовой программы.
+             "tracked": bool(m.tracked), "opened_at": m.opened_at.isoformat() if m.opened_at else None,
+             "clicked_at": m.clicked_at.isoformat() if m.clicked_at else None}
             for m in mails
         ],
         "preferences": {
@@ -543,6 +546,8 @@ async def delete_account(request: Request, response: Response, user: User = Depe
     await db.execute(delete(UserPreference).where(UserPreference.user_id == uid))
     await db.execute(delete(PushSubscription).where(PushSubscription.user_id == uid))
     # ADR-0032: журнал писем хранит адрес получателя — тоже ПДн.
+    from app.models import MailEvent  # ADR-0034: события писем (открытия, переходы) — тоже ПДн
+    await db.execute(delete(MailEvent).where(MailEvent.user_id == uid))
     await db.execute(delete(MailMessage).where(MailMessage.user_id == uid))
     await db.execute(delete(MailSuppression).where(MailSuppression.user_id == uid))
     # ADR-0033: профиль интересов и снимки личных выпусков — производные от действий человека.
