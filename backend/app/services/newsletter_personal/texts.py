@@ -126,6 +126,14 @@ def plural(n: int, locale: str) -> str:
     return f"{n}{NBSP}{word}"
 
 
+def soft_lower(s: str) -> str:
+    """Название темы в середине фразы: строчная первая буква, но аббревиатура остаётся («ВВП и рост»)."""
+    first = s.split(" ", 1)[0] if s else ""
+    if len(first) > 1 and first.isupper():
+        return s
+    return s[:1].lower() + s[1:]
+
+
 def cap(s: str) -> str:
     return s[:1].upper() + s[1:] if s else s
 

@@ -337,7 +337,7 @@ def forecast_candidates(ctx: Context, editorial_forecast_ids: set[str]) -> list[
             "last_actual": T.typo(last_text, ctx.locale), "text": T.t(ctx.locale, "forecast.note"),
             "source": item.get("source") or "", "url": item.get("path") or "",
             "why": (T.t(ctx.locale, "why.forecast") if viewed
-                    else T.t(ctx.locale, "why.topic", topic=topic_label(topic, ctx.locale).lower()) if topic else ""),
+                    else T.t(ctx.locale, "why.topic", topic=T.soft_lower(topic_label(topic, ctx.locale))) if topic else ""),
         }
         out.append(Candidate(gen="forecast", subject=f"fc:{item['id']}", block=block, score=tscore * (0.9 if viewed else TOPIC_FORECAST_FACTOR),
                              topic=topic, as_of=last["date"], why="forecast_view" if viewed else "topic",

@@ -388,7 +388,7 @@ class Builder:
 
         payload = {k: v for k, v in base.items() if k != "blocks"}
         payload["blocks"] = out_blocks
-        topics = [topic_label(c.topic, loc).lower() for c in chosen if c.topic]
+        topics = [T.soft_lower(topic_label(c.topic, loc)) for c in chosen if c.topic]
         topics = list(dict.fromkeys(topics))[:3]
         n_numbers = len(chosen) + (len(table_used) if table else 0)
         extra_intro = (T.t(loc, "intro.since", date=T.typo(_date_text(us.last_visit.date(), loc), loc)) if dormant
