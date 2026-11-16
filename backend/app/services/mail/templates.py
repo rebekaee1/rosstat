@@ -207,9 +207,16 @@ class Digest:
 
 # --- части HTML ---------------------------------------------------------------
 
-def _p(text: str, *, color: str = TEXT, size: int = 16, margin: str = "0 0 18px", line: float = 1.62) -> str:
+def _p(text: str, *, color: str = TEXT, size: int = 16, margin: str = "0 0 18px", line: float = 1.62,
+       rich: bool = False) -> str:
+    if rich:
+        from app.services.mail.blocks import rich as _rich
+
+        inner = _rich(text)
+    else:
+        inner = escape(text)
     return (f'<p style="margin:{margin};font-family:{FONT};font-size:{size}px;line-height:{line};'
-            f'color:{color};">{escape(text)}</p>')
+            f'color:{color};">{inner}</p>')
 
 
 def _button(label: str, url: str) -> str:
@@ -474,7 +481,8 @@ def render_watch(items: list[DigestItem], locale: str, *, site_url: str, cabinet
 
 def _paragraphs(text: str, *, margin_last: str = "0 0 24px") -> str:
     parts = [x.strip() for x in (text or "").split("\n\n") if x.strip()]
-    return "".join(_p(x, margin=(margin_last if i == len(parts) - 1 else "0 0 14px")) for i, x in enumerate(parts))
+    return "".join(_p(x, margin=(margin_last if i == len(parts) - 1 else "0 0 14px"), rich=True)
+                   for i, x in enumerate(parts))
 
 
 def preheader_of(digest: Digest) -> str:

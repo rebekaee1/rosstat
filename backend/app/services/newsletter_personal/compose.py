@@ -430,6 +430,7 @@ def table_block(rest: list[Candidate], locale: str) -> tuple[dict | None, list[C
     summary = "; ".join(f"{r[0]} — {r[1]}" + (f" ({r[2]})" if r[2] != "—" else "") for r in rows)
     block = {"type": "table", "kicker": T.t(locale, "kicker.table"), "title": T.t(locale, "table.title"),
              "columns": T.t(locale, "table.cols"), "rows": rows, "text": T.typo(summary + ".", locale),
+             "row_urls": [c.extra["fact"].path for c in used],
              "source": ", ".join(dict.fromkeys(c.extra["fact"].source for c in used if c.extra["fact"].source)),
              "why": T.t(locale, "why.view")}
     return block, used

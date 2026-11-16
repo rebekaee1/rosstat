@@ -48,6 +48,7 @@ STR = {
         "section.title": "Для вас",
         "section.text": "Подборка по тому, что вы смотрели, искали и скачивали на сайте.",
         "intro.more": "{n} по вашим темам: {topics}.",
+        "subject.tail": "{n} для вас",
         "intro.since": "С вашего последнего визита {date} кое-что изменилось — ниже главное по вашим темам.",
         "note": ("Подборку «Для вас» мы составили по вашим действиям на сайте: что вы смотрели, искали "
                  "и скачивали. Отключить её можно по ссылке ниже — письмо останется, но без подборки."),
@@ -94,6 +95,7 @@ STR = {
         "section.title": "For you",
         "section.text": "Picked from what you viewed, searched for and downloaded on the site.",
         "intro.more": "{n} on your topics: {topics}.",
+        "subject.tail": "{n} for you",
         "intro.since": "Some things have changed since your last visit on {date}; below is the main news on your topics.",
         "note": ("We picked the “For you” section from what you did on the site: what you viewed, searched "
                  "for and downloaded. You can switch it off with the link below; the email stays, without the section."),

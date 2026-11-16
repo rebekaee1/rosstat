@@ -22,9 +22,11 @@ TYPES = ("lead", "story", "forecast", "table", "calendar", "section")
 RANGE_FIELDS = {"lower", "upper", "range", "min", "max", "interval", "ci", "low", "high"}
 _RANGE_RE = re.compile(r"\d[\d\s .,]*\s*[–—-]\s*[−-]?\d|(?<!\w)от\s.+\sдо\s|(?<!\w)from\s.+\sto\s", re.I)
 LABELS = {
-    "ru": {"source": "Источник", "last": "Последнее значение", "chart": "График",
+    "ru": {"source": "Источник", "last": "Последнее значение", "chart": "График", "open": "Открыть график",
+           "open_cal": "Весь календарь",
            "lead": "Число недели", "more": "Ещё на этой неделе", "calendar": "Что выйдет дальше"},
-    "en": {"source": "Source", "last": "Last value", "chart": "Chart",
+    "en": {"source": "Source", "last": "Last value", "chart": "Chart", "open": "Open the chart",
+           "open_cal": "Full calendar",
            "lead": "Number of the week", "more": "Also this week", "calendar": "Dates ahead"},
 }
 
@@ -81,7 +83,7 @@ def _text(text: str) -> str:
     if not text:
         return ""
     return (f'<div style="margin-top:6px;font-family:{FONT};font-size:14px;line-height:1.58;color:{TEXT};">'
-            f'{escape(text)}</div>')
+            f'{rich(text)}</div>')
 
 
 def _why(text: str) -> str:
@@ -97,6 +99,35 @@ def _source(text: str, locale: str) -> str:
         return ""
     return (f'<div style="margin-top:8px;font-family:{FONT};font-size:12px;line-height:1.4;color:{MUTED};">'
             f'{escape(_l(locale, "source"))}: {escape(text)}</div>')
+
+
+def _link(inner: str, url: str, color: str = INK) -> str:
+    """Обёртка-ссылка без подчёркивания: число, график и заголовок блока ведут на одну страницу."""
+    if not url:
+        return inner
+    return (f'<a href="{escape(url, quote=True)}" target="_blank" style="color:{color};text-decoration:none;">'
+            f'{inner}</a>')
+
+
+def _open(url: str, locale: str, key: str = "open") -> str:
+    """Явная ссылка действия под блоком: на телефоне по ней попадают пальцем."""
+    if not url:
+        return ""
+    return (f'<div style="margin-top:12px;font-family:{FONT};font-size:13px;line-height:1.3;font-weight:600;">'
+            f'<a href="{escape(url, quote=True)}" target="_blank" style="color:{BLUE};text-decoration:none;">'
+            f'{escape(_l(locale, key))}&nbsp;&rarr;</a></div>')
+
+
+_BOLD_RE = re.compile(
+    r"(?<![\w,.])([−+\-]?\d[\d\u00a0\u202f ]*(?:[.,]\d+)?[\u00a0\u202f ]?(?:%|₽|\$|€|п\.[\u00a0 ]?п\.|pp\b))")
+
+
+def rich(text: str) -> str:
+    """Текст письма с выделенными числами: «74,72 ₽», «6,3 %», «$92.14» — полужирным графитом, чтобы
+    абзац читался по числам. Только числа со знаком единицы; даты и годы не выделяются."""
+    out = escape(text)
+    out = re.sub(r"(\$\d[\d,]*(?:\.\d+)?)", rf'<b style="font-weight:600;color:{INK};">\1</b>', out)
+    return _BOLD_RE.sub(rf'<b style="font-weight:600;color:{INK};">\1</b>', out)
 
 
 def _meta(source: str, why: str, locale: str) -> str:
@@ -204,7 +235,8 @@ def _spark(points: list, align: str = "right") -> str:
             f'style="margin-top:10px;"><tr>{"".join(cells)}</tr></table>')
 
 
-def _value(value: str, color: str = INK, dot: bool = False, spark: list | None = None, align: str = "right") -> str:
+def _value(value: str, color: str = INK, dot: bool = False, spark: list | None = None, align: str = "right",
+           url: str = "") -> str:
     if not value:
         return ""
     num, unit = split_value(value)
@@ -213,8 +245,8 @@ def _value(value: str, color: str = INK, dot: bool = False, spark: list | None =
     unit_html = (f'<div style="margin-top:4px;font-family:{FONT};font-size:12px;line-height:1.3;font-weight:600;'
                  f'color:{MUTED};">{escape(unit)}</div>') if unit else ""
     return (f'<div style="font-family:{FONT};font-size:26px;font-weight:700;line-height:1.1;'
-            f'color:{color};white-space:nowrap;{NUM}">{mark}{escape(num)}</div>{unit_html}'
-            + (_spark(spark, align) if spark else ""))
+            f'color:{color};white-space:nowrap;{NUM}">{mark}{_link(escape(num), url, color)}</div>{unit_html}'
+            + (_link(_spark(spark, align), url) if spark else ""))
 
 
 # --- блоки --------------------------------------------------------------------
@@ -257,21 +289,25 @@ def _fmt_num(v: float) -> str:
 def lead(b: dict, locale: str, *, kicker: bool = True) -> str:
     delta = _delta(b)
     value = (f'<div class="fe-lead-num" style="font-family:{FONT};font-size:46px;font-weight:700;letter-spacing:-.03em;'
-             f'line-height:1.04;color:{INK};white-space:nowrap;{NUM}">{escape(b.get("value") or "")}</div>')
+             f'line-height:1.04;color:{INK};white-space:nowrap;{NUM}">'
+             f'{_link(escape(b.get("value") or ""), b.get("url") or "")}</div>')
     gold = (f'<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:16px 0 14px;">'
             f'<tr><td width="30" height="2" bgcolor="{GOLD}" style="width:30px;height:2px;line-height:2px;'
             f'font-size:2px;background:{GOLD};">&nbsp;</td></tr></table>')
     return ('<div style="margin:6px 0 4px;">' + (_kicker(b.get("kicker") or "") if kicker else "") + value + delta
             + gold + _title(b["title"], b.get("url") or "", 17) + _text(b.get("text") or "")
             + _meta(b.get("source") or "", b.get("why") or "", locale)
-            + (_bars(b["bars"]) if b.get("bars") else "") + "</div>")
+            + (_link(_bars(b["bars"]), b.get("url") or "") if b.get("bars") else "")
+            + _open(b.get("url") or "", locale) + "</div>")
 
 
 def story(b: dict, locale: str) -> str:
     head = _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-    rest = _delta(b) + _text(b.get("text") or "") + _meta(b.get("source") or "", _why_shown(b), locale)
-    return _layer(_with_value(head, rest, _value(b.get("value") or "", spark=b.get("spark")),
-                              _value(b.get("value") or "")), personal=bool(b.get("why")))
+    url = b.get("url") or ""
+    rest = (_delta(b) + _text(b.get("text") or "") + _meta(b.get("source") or "", _why_shown(b), locale)
+            + _open(url, locale))
+    return _layer(_with_value(head, rest, _value(b.get("value") or "", spark=b.get("spark"), url=url),
+                              _value(b.get("value") or "", url=url)), personal=bool(b.get("why")))
 
 
 def forecast(b: dict, locale: str) -> str:
@@ -280,8 +316,10 @@ def forecast(b: dict, locale: str) -> str:
         last = (f'<div style="margin-top:4px;font-family:{FONT};font-size:13px;color:{MUTED};{NUM}">'
                 f'{escape(_l(locale, "last"))}: {escape(b["last_actual"])}</div>')
     head = _kicker(b.get("kicker") or "") + _title(b["title"], b.get("url") or "")
-    rest = last + _text(b.get("text") or "") + _meta(b.get("source") or "", _why_shown(b), locale)
-    return _layer(_with_value(head, rest, _value(b.get("value") or "", BLUE_DEEP, dot=True)),
+    url = b.get("url") or ""
+    rest = (last + _text(b.get("text") or "") + _meta(b.get("source") or "", _why_shown(b), locale)
+            + _open(url, locale))
+    return _layer(_with_value(head, rest, _value(b.get("value") or "", BLUE_DEEP, dot=True, url=url)),
                   personal=bool(b.get("why")))
 
 
@@ -291,13 +329,16 @@ def table(b: dict, locale: str) -> str:
         f'<td align="{"left" if i == 0 else "right"}" style="padding:0 10px 8px;font-family:{FONT};font-size:11px;'
         f'font-weight:600;color:{MUTED};">{escape(str(c))}</td>' for i, c in enumerate(cols))
     body = []
+    urls = b.get("row_urls") or []
     for n, r in enumerate(rows):
         bg = LAYER if n % 2 == 0 else "#FFFFFF"
+        link = urls[n] if n < len(urls) else ""
         tds = "".join(
             f'<td class="fe-td" align="{"left" if i == 0 else "right"}" style="padding:9px 10px;font-family:{FONT};font-size:14px;'
             f'line-height:1.35;color:{INK};{"" if i == 0 else "white-space:nowrap;" + NUM}'
             f'{"border-radius:10px 0 0 10px;" if i == 0 else ""}{"border-radius:0 10px 10px 0;" if i == len(r) - 1 else ""}">'
-            f'{escape(str(c).replace(chr(0x202f), chr(0xa0)))}</td>' for i, c in enumerate(r))
+            f'{_link(escape(str(c).replace(chr(0x202f), chr(0xa0))), link if i == 0 else "")}</td>'
+            for i, c in enumerate(r))
         body.append(f'<tr style="background:{bg};" bgcolor="{bg}">{tds}</tr>')
     tbl = ('<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;">'
            f'<tr>{head}</tr>' + "".join(body) + "</table>")
@@ -322,7 +363,8 @@ def calendar(b: dict, locale: str, today: date | None = None, *, bare: bool = Fa
     head = "" if bare else _kicker(b.get("kicker") or "") + _title(b.get("title") or "", b.get("url") or "")
     return (f'<div style="margin:{"0 0 10px" if bare else "10px 0 18px"};">' + head
             + '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" '
-            + f'style="margin-top:{0 if bare else 12}px;">' + "".join(rows) + "</table></div>")
+            + f'style="margin-top:{0 if bare else 12}px;">' + "".join(rows) + "</table>"
+            + _open(b.get("url") or "", locale, "open_cal") + "</div>")
 
 
 def visible_entries(b: dict, today: date | None) -> list[dict]:

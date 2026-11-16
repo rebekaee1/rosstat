@@ -103,3 +103,32 @@ def test_number_is_read_at_a_glance():
 def test_old_issue_without_lead_and_section_has_no_chapters():
     html = blk.render_all([ISSUE[5]], "ru", date(2026, 11, 16))
     assert ">01<" not in html and "Ещё на этой неделе" not in html
+
+
+def test_everything_meaningful_is_a_link_and_every_link_is_labelled():
+    """16.11.2026: в блоке нажимаются заголовок, число, мини-график и «Открыть график»; у таблицы — строки;
+    числа в тексте выделены; у каждой ссылки своего сайта есть метка места."""
+    url = "https://ru.forecasteconomy.com/russia/indicator/exports?utm_medium=newsletter&utm_content=p3-series"
+    card = blk.render({"type": "story", "kicker": "Ваши темы", "title": "Экспорт", "value": "125 716,38 млн $",
+                       "text": "Рост на 6,3 % с 74,72 ₽ в 2025 году.", "source": "Банк России", "why": "x",
+                       "spark": [1, 2, 3, 2, 4], "url": url}, "ru")
+    assert card.count("utm_content=p3-series") == 5          # заголовок, число (и его копия для телефона), график, «Открыть»
+    assert "Открыть график" in card
+    assert '<b style="font-weight:600;color:#1E2638;">6,3 %</b>' in card and "74,72 ₽</b>" in card
+    assert "<b" not in blk.rich("В 2025 году, 9 ноября")      # даты и годы не выделяются
+    table = blk.render({"type": "table", "title": "Ваши показатели", "columns": ["Показатель", "Значение"],
+                        "rows": [["Доходы бюджета", "3 687,1"]], "row_urls": [url], "source": "Минфин"}, "ru")
+    assert table.count("utm_content=p3-series") == 1
+    from app.services.mail import campaign
+
+    issue = campaign.parse_issue({"key": "fe-test-01", "ru": {"subject": "Т", "title": "З", "cta_label": "Открыть",
+                                                              "cta_url": "https://ru.forecasteconomy.com/x"}})
+    assert "utm_content=cta" in issue.by_locale["ru"].cta_url
+
+
+def test_personal_subject_names_topics_and_fits():
+    from app.services.newsletter_personal.build import _topics_subject
+
+    s = _topics_subject(["работа", "деньги и бюджет", "зарплаты и доходы"], 9, "ru")
+    assert s.startswith("Работа, деньги и бюджет") and "9" in s and len(s) <= 50
+    assert _topics_subject(["очень длинное название темы для проверки предела длины строки"], 9, "ru") == ""

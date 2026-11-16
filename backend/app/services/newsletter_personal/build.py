@@ -344,9 +344,12 @@ class Builder:
             if origin == "personal":
                 g = cand.gen if cand else (gen or "table")
                 content = f"p{pos}-{g}"
+                token = ab.click_token(us.user_id, key) if self.click_tokens else None
                 if b.get("url"):
-                    token = ab.click_token(us.user_id, key) if self.click_tokens else None
                     b["url"] = _utm(_abs(b["url"], loc), key, content, token)
+                if b.get("row_urls"):
+                    b["row_urls"] = [_utm(_abs(u, loc), key, f"{content}-r{i + 1}", token) if u else ""
+                                     for i, u in enumerate(b["row_urls"])]
                 for k in ("kicker", "title", "text", "why", "value", "last_actual"):
                     if isinstance(b.get(k), str):
                         b[k] = T.typo(b[k], loc)
@@ -402,7 +405,7 @@ class Builder:
         payload["personal_note"] = T.t(loc, "note")
         subject_arm = ab.subject_arm(us.user_id, key, self.subject_ab_pct)
         if subject_arm == "subj_personal":
-            _personal_subject(payload, chosen, loc)
+            _personal_subject(payload, chosen, loc, n_numbers=n_numbers, topics=topics)
         data_as_of = max((date.fromisoformat(c.as_of[:10]) for c in chosen + table_used
                           if c.as_of and len(c.as_of) >= 10), default=None)
         # Последняя проверка формой почты: не прошло — общий выпуск.
@@ -476,8 +479,24 @@ def _date_text(d: date, loc: str) -> str:
     return full_date(d, loc)
 
 
-def _personal_subject(payload: dict, chosen: list[C.Candidate], loc: str) -> None:
-    """Личная тема/прехедер по правилам редакции: тема до 50 знаков, число в первых 35; прехедер ≤ 110."""
+def _topics_subject(topics: list[str], n_numbers: int, loc: str) -> str:
+    """«Работа, деньги и бюджет: 9 чисел для вас» — тема называет темы человека и обещает счёт; до 50 знаков."""
+    tail = T.t(loc, "subject.tail", n=T.plural(n_numbers, loc))
+    for k in range(len(topics), 0, -1):
+        head = ", ".join(topics[:k])
+        subj = f"{head[:1].upper()}{head[1:]}: {tail}"
+        if len(subj) <= 50:
+            return subj
+    return ""
+
+
+def _personal_subject(payload: dict, chosen: list[C.Candidate], loc: str, *, n_numbers: int = 0,
+                      topics: list[str] | None = None) -> None:
+    """Личная тема/прехедер по правилам редакции: тема до 50 знаков; прехедер ≤ 110.
+
+    От трёх чисел тема называет темы человека («Работа, деньги и бюджет: 9 чисел для вас»): одно сухое
+    «Дефицит/профицит бюджета: 614,3 млрд руб.» в списке писем не цепляет (замечание владельца 16.11.2026).
+    Главное личное число уходит в первую строку письма."""
     top = next((c for c in chosen if c.block.get("value") and c.gen in
                 ("series", "download", "search", "region", "since", "check")), None)
     if top is None:
@@ -487,7 +506,10 @@ def _personal_subject(payload: dict, chosen: list[C.Candidate], loc: str) -> Non
     subj = f"{title}: {value}"
     # Тема с единицей «индекс» или «единиц» («…: 341,06 индекс») читается как сбой — остаётся тема редакции.
     plain_unit = not any(w in value.lower() for w in ("индекс", "index", "единиц", "units"))
-    if len(subj) <= 50 and subj.find(value) <= 35 and plain_unit:
+    by_topics = _topics_subject(topics or [], n_numbers, loc) if n_numbers >= 3 else ""
+    if by_topics:
+        payload["subject"] = T.typo(by_topics, loc)
+    elif len(subj) <= 50 and subj.find(value) <= 35 and plain_unit:
         payload["subject"] = T.typo(subj, loc)
     lead_in = f"{title} — {value.rstrip('.')}. "
     pre = lead_in + (payload.get("preheader") or "")

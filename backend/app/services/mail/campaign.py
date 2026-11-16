@@ -120,6 +120,9 @@ def parse_issue(data: dict) -> Issue:
             b = dict(b)
             if b.get("url"):
                 b["url"] = with_utm(str(b["url"]), key, f"b{len(blocks) + 1}-{b.get('type')}")
+            if b.get("row_urls"):
+                b["row_urls"] = [with_utm(str(u), key, f"b{len(blocks) + 1}-table-r{i + 1}") if u else ""
+                                 for i, u in enumerate(b["row_urls"])]
             blocks.append(b)
         signoff = str(raw.get("signoff") or "").strip()
         outro = str(raw.get("outro") or "").strip()
@@ -130,7 +133,7 @@ def parse_issue(data: dict) -> Issue:
         by_locale[loc] = Digest(
             subject=str(raw["subject"]), title=str(raw["title"]), intro=str(raw.get("intro") or ""),
             preheader=str(raw.get("preheader") or ""), items=items,
-            cta_label=str(raw.get("cta_label") or ""), cta_url=with_utm(str(raw.get("cta_url") or ""), key),
+            cta_label=str(raw.get("cta_label") or ""), cta_url=with_utm(str(raw.get("cta_url") or ""), key, "cta"),
             outro=outro, masthead=str(raw.get("masthead") or ""), signoff=signoff, blocks=blocks,
             personal_note=str(raw.get("personal_note") or ""),
         )
@@ -168,9 +171,11 @@ def render_for(issue: Issue, locale: str, user_id, digest: Digest | None = None)
     unpers = None
     if d.personal_note:
         unpers = service.site_link(locale, "/account/unsubscribe", t=tokens.issue("unpers", str(user_id)))
+    # Каждая ссылка письма несёт метку места: шапка, блок, кнопка, календарь, подвал.
     rendered = render_digest(
-        d, locale, site_url=service.site_origin(locale) + "/",
-        unsubscribe_url=page_url, manage_url=service.site_link(locale, "/account"), today=today_msk(),
+        d, locale, site_url=with_utm(service.site_origin(locale) + "/", issue.key, "hdr-logo"),
+        unsubscribe_url=page_url, manage_url=with_utm(service.site_link(locale, "/account"), issue.key, "ftr-settings"),
+        today=today_msk(),
         unpersonalize_url=unpers,
     )
     return rendered, one_click
