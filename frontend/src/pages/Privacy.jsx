@@ -17,6 +17,7 @@ import {
   PERSONAL_NEWSLETTER_POLICY_PUBLISHED,
   PersonalNewsletterPolicyRu,
 } from '../i18n/privacyPersonalNewsletter';
+import { MAIL_TRACKING_POLICY_PUBLISHED, MailTrackingPolicyRu } from '../i18n/privacyMailTracking';
 
 /**
  * Политика конфиденциальности и обработки персональных данных.
@@ -160,6 +161,7 @@ export default function Privacy() {
           </li>
         </ul>
         {PERSONAL_NEWSLETTER_POLICY_PUBLISHED && <PersonalNewsletterPolicyRu />}
+        {MAIL_TRACKING_POLICY_PUBLISHED && <MailTrackingPolicyRu />}
 
         <h2 className={h2}>4. Файлы cookie и согласие</h2>
         <p className={p}>
