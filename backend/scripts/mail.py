@@ -219,6 +219,15 @@ async def cmd_campaign(args) -> int:
     async with async_session() as db:
         report = await campaign.run(db, issue, send=args.send, include_unverified=args.include_unverified,
                                     max_per_run=args.max)
+    if args.send:
+        # «Рассылка прошла» — сразу в служебный Telegram (ADR-0034); сбой уведомления отправку не отменяет.
+        try:
+            from app.services.mail import funnel
+
+            async with async_session() as db:
+                await funnel.notify_sent(db, report.as_dict())
+        except Exception as exc:  # noqa: BLE001
+            print(f"уведомление в Telegram не отправлено: {type(exc).__name__}")
     print(json.dumps(report.as_dict(), ensure_ascii=False, indent=2))
     return 0 if not report.stopped or report.stopped == "max_per_run" else 3
 

@@ -407,6 +407,60 @@ REPORT_STAGES = ((1, "итог за первые сутки"), (7, "итог з�
 _STATE_KEY = "fe:mail_report:{campaign}:d{days}"
 
 
+def format_sent_notice(report: dict, totals: dict[str, int]) -> str:
+    """Сообщение «рассылка прошла» сразу после запуска отправки: только суммы, без адресов."""
+    key = escape(str(report.get("key") or ""))
+    st = report.get("statuses") or {}
+    sent_now = int(st.get("sent", 0))
+    lines = [f"✉️ <b>Рассылка {key}: отправка прошла</b>",
+             f"Ушло сейчас: <b>{sent_now}</b>. Всего по выпуску принято почтой: {totals.get('sent', 0)}."]
+    bad = {k: v for k, v in st.items() if k not in ("sent", "personal_ready")}
+    if bad:
+        names = {"failed": "не ушло из-за ошибки", "suppressed": "в стоп-листе", "blocked": "закрыто списком допуска",
+                 "disabled": "почта выключена", "deferred": "отложено до дневных часов получателя",
+                 "unsubscribed_meanwhile": "успели отписаться", "no_personal_content": "нет содержимого"}
+        lines.append("Не ушло: " + ", ".join(f"{names.get(k, escape(k))} — {v}" for k, v in sorted(bad.items())) + ".")
+    skipped = []
+    if report.get("unverified_skipped"):
+        skipped.append(f"адрес не подтверждён — {report['unverified_skipped']}")
+    if report.get("no_address"):
+        skipped.append(f"нет адреса — {report['no_address']}")
+    if report.get("already_sent"):
+        skipped.append(f"получили раньше — {report['already_sent']}")
+    if skipped:
+        lines.append("Пропущено: " + ", ".join(skipped) + ".")
+    stop = report.get("stopped")
+    if stop == "max_per_run":
+        lines.append("Остановлено по пределу за запуск — остальным уйдёт следующим запуском.")
+    elif stop:
+        lines.append(f"⚠️ Отправка остановлена почтовым сервером ({escape(str(stop))}). Остальные письма не ушли.")
+    lines.append("Итог придёт через сутки и через 7 суток; сейчас — кнопкой ниже или командой /mail.")
+    return "\n".join(lines)
+
+
+async def notify_sent(db: AsyncSession, report: dict) -> int:
+    """После `campaign … --send`: сообщение в служебный Telegram с кнопкой «Итог сейчас». Сколько отправлено."""
+    from app.config import settings
+    from app.services.alerting import digest_recipients
+    from app.services.telegram_bot import send_message
+
+    if not (settings.mail_report_enabled and settings.telegram_bot_token) or report.get("dry_run"):
+        return 0
+    recipients = set(digest_recipients())
+    if settings.pulse_chat_id:
+        recipients.add(str(settings.pulse_chat_id))
+    totals = {k: int(n) for k, n in (await db.execute(
+        select(MailMessage.status, func.count()).where(MailMessage.campaign == report.get("key"))
+        .group_by(MailMessage.status))).all()}
+    text = format_sent_notice(report, totals)
+    markup = {"inline_keyboard": [[{"text": "✉️ Итог сейчас", "callback_data": "mail_report"}]]}
+    sent = 0
+    for cid in sorted(recipients):
+        if await send_message(cid, text, reply_markup=markup, kind="newsletter_report", link_preview=False):
+            sent += 1
+    return sent
+
+
 async def newsletter_report_job() -> int:
     """Утром: по каждому выпуску — итог через сутки и через 7 суток, по одному разу. Сколько отправлено."""
     from app.config import settings

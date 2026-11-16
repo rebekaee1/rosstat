@@ -230,3 +230,17 @@ def test_pulse_extra_sections_are_sums_only(mail_env, auth_client, monkeypatch):
     assert "@" not in blob and "example.com" not in blob
     lines = pulse_extra.digits_lines({**extra})
     assert any(line.startswith("Почта за день") for line in lines) and any("Согласия" in line for line in lines)
+
+
+def test_sent_notice_text_is_sums_only():
+    """Сообщение «рассылка прошла»: сколько ушло, что пропущено, остановка сервером — без адресов."""
+    from app.services.mail import funnel
+
+    text = funnel.format_sent_notice(
+        {"key": "fe-weekly-01", "dry_run": False, "audience": 103, "no_address": 21, "unverified_skipped": 74,
+         "already_sent": 0, "statuses": {"sent": 28, "suppressed": 1}, "stopped": None}, {"sent": 28, "suppressed": 1})
+    assert "отправка прошла" in text and "Ушло сейчас: <b>28</b>" in text and "в стоп-листе — 1" in text
+    assert "адрес не подтверждён — 74" in text and "нет адреса — 21" in text and "@" not in text
+    stopped = funnel.format_sent_notice({"key": "k", "statuses": {"sent": 3, "failed": 1}, "stopped": "server_limit:554"},
+                                        {"sent": 3})
+    assert "остановлена почтовым сервером" in stopped
