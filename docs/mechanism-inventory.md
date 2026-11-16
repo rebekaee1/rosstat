@@ -9,14 +9,14 @@
 - ORM tables: **82**
 - DTO schemas (own fields + resolved inherited bases): **53**
 - Settings fields: **322**
-- Settings reads: **818**
+- Settings reads: **822**
 - Direct environment reads: **36**
 - Jobs: **65**
 - Middleware: **6**
 - Registry declarations: **1521**
 - Registry references: **2837**
 - Migration operations: **508**
-- Candidate effects: **3156**
+- Candidate effects: **3159**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -2011,7 +2011,7 @@ Relationships: `[]`
 | RUSTATS_WORLD_BEA_REGIONAL_INGEST_HOUR | int = 4 | 1 | [backend/app/config.py:244](../backend/app/config.py#L244) |
 | RUSTATS_WORLD_BEA_REGIONAL_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:245](../backend/app/config.py#L245) |
 | RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED | bool = True | 2 | [backend/app/config.py:250](../backend/app/config.py#L250) |
-| RUSTATS_TELEGRAM_BOT_TOKEN | str = '' | 20 | [backend/app/config.py:253](../backend/app/config.py#L253) |
+| RUSTATS_TELEGRAM_BOT_TOKEN | str = '' | 21 | [backend/app/config.py:253](../backend/app/config.py#L253) |
 | RUSTATS_TELEGRAM_CHAT_ID | str = '' | 17 | [backend/app/config.py:254](../backend/app/config.py#L254) |
 | RUSTATS_FORECAST_STEPS | int = 12 | 3 | [backend/app/config.py:257](../backend/app/config.py#L257) |
 | RUSTATS_SEO_APP_SHELL_URL | str = 'http://frontend/__spa-index.html' | 2 | [backend/app/config.py:260](../backend/app/config.py#L260) |
@@ -2138,7 +2138,7 @@ Relationships: `[]`
 | RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:513](../backend/app/config.py#L513) |
 | RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:514](../backend/app/config.py#L514) |
 | RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:518](../backend/app/config.py#L518) |
-| RUSTATS_PULSE_CHAT_ID | str = '' | 7 | [backend/app/config.py:519](../backend/app/config.py#L519) |
+| RUSTATS_PULSE_CHAT_ID | str = '' | 9 | [backend/app/config.py:519](../backend/app/config.py#L519) |
 | RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:520](../backend/app/config.py#L520) |
 | RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:521](../backend/app/config.py#L521) |
 | RUSTATS_OPENROUTER_API_KEY | str = '' | 17 | [backend/app/config.py:523](../backend/app/config.py#L523) |
@@ -2191,7 +2191,7 @@ Relationships: `[]`
 | RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 6 | [backend/app/config.py:644](../backend/app/config.py#L644) |
 | RUSTATS_MAIL_TRACKING_ENABLED | bool = False | 4 | [backend/app/config.py:647](../backend/app/config.py#L647) |
 | RUSTATS_MAIL_TRACKING_OPEN_PIXEL | bool = False | 2 | [backend/app/config.py:651](../backend/app/config.py#L651) |
-| RUSTATS_MAIL_REPORT_ENABLED | bool = False | 4 | [backend/app/config.py:653](../backend/app/config.py#L653) |
+| RUSTATS_MAIL_REPORT_ENABLED | bool = False | 5 | [backend/app/config.py:653](../backend/app/config.py#L653) |
 | RUSTATS_MAIL_REPORT_HOUR_MSK | int = 9 | 3 | [backend/app/config.py:654](../backend/app/config.py#L654) |
 | RUSTATS_MAIL_REPORT_MINUTE | int = 20 | 3 | [backend/app/config.py:655](../backend/app/config.py#L655) |
 | RUSTATS_MAIL_TOKEN_SECRET | str = '' | 7 | [backend/app/config.py:658](../backend/app/config.py#L658) |

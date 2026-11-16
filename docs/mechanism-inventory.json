@@ -1445,8 +1445,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "sha256": "342d9466dbe07bacd7ec8c38f1e9bc6419fe1c07b256fc013d49935d66c45f1e",
-      "lines": 447
+      "sha256": "721081495565887f8e73fa597626a614643b6fb0a22ffd3a56f6a466af3d4396",
+      "lines": 501
     },
     {
       "path": "backend/app/services/mail/service.py",
@@ -2585,8 +2585,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "sha256": "b2aad8940eaa5bf2fca8306a42e608ac92e8fa6945a8b70f3cc288aefb1faabb",
-      "lines": 343
+      "sha256": "acf0fab5b4052d015abbf6573fda5fde327d0ce80d4c16225dda9002199536ac",
+      "lines": 352
     },
     {
       "path": "backend/scripts/metrika-goals-redesign.py",
@@ -2595,8 +2595,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "sha256": "984e2950eba14b19e7540e7fcb54d7c4fc7255040bcb36fdcbebd371d030ca32",
-      "lines": 358
+      "sha256": "7934f1d47f83051e1282d7af2a815c111afdbd4101eb2aabe5f17c09030f25f4",
+      "lines": 367
     },
     {
       "path": "backend/scripts/public-bot-dialogs.py",
@@ -40524,8 +40524,17 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 422,
-      "end_line": 422,
+      "line": 450,
+      "end_line": 450,
+      "owner": "notify_sent",
+      "conditions": [],
+      "name": "pulse_chat_id",
+      "expression": "settings.pulse_chat_id"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 476,
+      "end_line": 476,
       "owner": "newsletter_report_job",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -40542,8 +40551,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 419,
-      "end_line": 419,
+      "line": 473,
+      "end_line": 473,
       "owner": "newsletter_report_job",
       "conditions": [],
       "name": "mail_report_enabled",
@@ -40551,8 +40560,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 419,
-      "end_line": 419,
+      "line": 473,
+      "end_line": 473,
       "owner": "newsletter_report_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -40560,8 +40569,37 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 423,
-      "end_line": 423,
+      "line": 447,
+      "end_line": 447,
+      "owner": "notify_sent",
+      "conditions": [],
+      "name": "mail_report_enabled",
+      "expression": "settings.mail_report_enabled"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 447,
+      "end_line": 447,
+      "owner": "notify_sent",
+      "conditions": [],
+      "name": "telegram_bot_token",
+      "expression": "settings.telegram_bot_token"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 451,
+      "end_line": 451,
+      "owner": "notify_sent",
+      "conditions": [
+        "settings.pulse_chat_id"
+      ],
+      "name": "pulse_chat_id",
+      "expression": "settings.pulse_chat_id"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 477,
+      "end_line": 477,
       "owner": "newsletter_report_job",
       "conditions": [
         "settings.pulse_chat_id"
@@ -43615,8 +43653,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 293,
+      "end_line": 293,
       "owner": "cmd_watch_digest",
       "conditions": [],
       "name": "mail_enabled",
@@ -43624,8 +43662,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 293,
+      "end_line": 293,
       "owner": "cmd_watch_digest",
       "conditions": [],
       "name": "mail_watch_digest_enabled",
@@ -160209,8 +160247,22 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 421,
-      "end_line": 421,
+      "line": 449,
+      "end_line": 449,
+      "owner": "notify_sent",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.mail.funnel.set",
+      "expression": "set(digest_recipients())",
+      "expression_truncated": false,
+      "expression_chars": 24,
+      "ast_sha256": "0ad5bf25fb3b32f80ce935c13fd1838c1001a2a3e1531ab024d89a70acb106d2"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 475,
+      "end_line": 475,
       "owner": "newsletter_report_job",
       "conditions": [],
       "operation": "set",
@@ -160237,8 +160289,24 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 423,
-      "end_line": 423,
+      "line": 451,
+      "end_line": 451,
+      "owner": "notify_sent",
+      "conditions": [
+        "settings.pulse_chat_id"
+      ],
+      "operation": "add",
+      "receiver": "recipients",
+      "symbol": "app.services.mail.funnel.recipients.add",
+      "expression": "recipients.add(str(settings.pulse_chat_id))",
+      "expression_truncated": false,
+      "expression_chars": 43,
+      "ast_sha256": "b1307b219df0cfc2dd71de8c3ed3517b5004ba2d09aa3a8977ea2dc8f2ba4520"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 477,
+      "end_line": 477,
       "owner": "newsletter_report_job",
       "conditions": [
         "settings.pulse_chat_id"
@@ -160253,8 +160321,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 480,
+      "end_line": 480,
       "owner": "newsletter_report_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -160267,8 +160335,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 431,
-      "end_line": 431,
+      "line": 485,
+      "end_line": 485,
       "owner": "newsletter_report_job",
       "conditions": [],
       "operation": "commit",
@@ -160415,8 +160483,22 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 452,
+      "end_line": 454,
+      "owner": "notify_sent",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.mail.funnel.db.execute",
+      "expression": "db.execute(select(MailMessage.status, func.count()).where(MailMessage.campaign == report.get('key')).group_by(MailMessage.status))",
+      "expression_truncated": false,
+      "expression_chars": 130,
+      "ast_sha256": "1e3646f9122a5fba99b9869bdc22630f19eb888146e78d7e36d0bbe1e53ecc7b"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 499,
+      "end_line": 499,
       "owner": "newsletter_report_job",
       "conditions": [
         "ok"
@@ -180191,8 +180273,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 273,
-      "end_line": 273,
+      "line": 282,
+      "end_line": 282,
       "owner": "cmd_sync_clicks",
       "conditions": [],
       "operation": "commit",
@@ -245085,6 +245167,15 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
+      "line": 454,
+      "end_line": 454,
+      "owner": "notify_sent",
+      "conditions": [],
+      "symbol": "app.models.MailMessage.status",
+      "expression": "MailMessage.status"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
       "line": 74,
       "end_line": 74,
       "owner": "_names",
@@ -245355,6 +245446,15 @@
       ],
       "symbol": "app.models.MailSuppression",
       "expression": "MailSuppression"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 454,
+      "end_line": 454,
+      "owner": "notify_sent",
+      "conditions": [],
+      "symbol": "app.models.MailMessage",
+      "expression": "MailMessage"
     },
     {
       "path": "backend/app/services/mail/funnel.py",
@@ -245726,6 +245826,15 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
+      "line": 453,
+      "end_line": 453,
+      "owner": "notify_sent",
+      "conditions": [],
+      "symbol": "app.models.MailMessage.campaign",
+      "expression": "MailMessage.campaign"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
       "line": 80,
       "end_line": 80,
       "owner": "campaigns",
@@ -245790,6 +245899,24 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
+      "line": 453,
+      "end_line": 453,
+      "owner": "notify_sent",
+      "conditions": [],
+      "symbol": "app.models.MailMessage.status",
+      "expression": "MailMessage.status"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 453,
+      "end_line": 453,
+      "owner": "notify_sent",
+      "conditions": [],
+      "symbol": "app.models.MailMessage",
+      "expression": "MailMessage"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
       "line": 256,
       "end_line": 256,
       "owner": "campaign_funnel",
@@ -245798,6 +245925,15 @@
       ],
       "symbol": "app.models.Consent.user_id",
       "expression": "Consent.user_id"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 453,
+      "end_line": 453,
+      "owner": "notify_sent",
+      "conditions": [],
+      "symbol": "app.models.MailMessage",
+      "expression": "MailMessage"
     },
     {
       "path": "backend/app/services/mail/funnel.py",
@@ -335145,7 +335281,25 @@
     {
       "path": "backend/app/services/mail/funnel.py",
       "line": 410,
-      "end_line": 447,
+      "end_line": 438,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "format_sent_notice",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 441,
+      "end_line": 461,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "notify_sent",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/mail/funnel.py",
+      "line": 464,
+      "end_line": 501,
       "owner": "<module>",
       "conditions": [],
       "name": "newsletter_report_job",
@@ -361363,7 +361517,7 @@
     {
       "path": "backend/scripts/mail.py",
       "line": 194,
-      "end_line": 223,
+      "end_line": 232,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_campaign",
@@ -361371,8 +361525,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 226,
-      "end_line": 237,
+      "line": 235,
+      "end_line": 246,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_reconfirm",
@@ -361380,8 +361534,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 240,
-      "end_line": 247,
+      "line": 249,
+      "end_line": 256,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_bounces",
@@ -361389,8 +361543,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 250,
-      "end_line": 264,
+      "line": 259,
+      "end_line": 273,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_funnel",
@@ -361398,8 +361552,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 267,
-      "end_line": 275,
+      "line": 276,
+      "end_line": 284,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_sync_clicks",
@@ -361407,8 +361561,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 278,
-      "end_line": 290,
+      "line": 287,
+      "end_line": 299,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_watch_digest",
@@ -361416,8 +361570,8 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "line": 293,
-      "end_line": 339,
+      "line": 302,
+      "end_line": 348,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -361579,7 +361733,7 @@
     {
       "path": "backend/scripts/newsletter_personal.py",
       "line": 290,
-      "end_line": 301,
+      "end_line": 310,
       "owner": "<module>",
       "conditions": [],
       "name": "cmd_campaign",
@@ -361587,8 +361741,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 304,
-      "end_line": 354,
+      "line": 313,
+      "end_line": 363,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -361596,8 +361750,8 @@
     },
     {
       "path": "backend/scripts/newsletter_personal.py",
-      "line": 308,
-      "end_line": 316,
+      "line": 317,
+      "end_line": 325,
       "owner": "main",
       "conditions": [],
       "name": "who",
@@ -382608,8 +382762,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 434,
-      "end_line": 434,
+      "line": 488,
+      "end_line": 488,
       "owner": "newsletter_report_job",
       "conditions": [],
       "symbol": "app.services.mail.funnel.REPORT_STAGES"

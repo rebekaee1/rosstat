@@ -112253,7 +112253,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/legalPages.en.jsx": {
-      "sha256": "467857964f809f3d00602ba7cd21335ea5769c59fae89a23758076ffc704bc59",
+      "sha256": "2cd099cf8d19d2cd28a16f2db080651f4dfb18f6b9ed2b223a304e82273312af",
       "imports": [
         {
           "line": 5,
@@ -112343,45 +112343,59 @@
             "PERSONAL_NEWSLETTER_POLICY_PUBLISHED",
             "PersonalNewsletterPolicyEn"
           ]
+        },
+        {
+          "line": 12,
+          "end_line": 12,
+          "owner": "<module>",
+          "specifier": "./privacyMailTracking",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/privacyMailTracking.jsx"
+          ],
+          "bindings": [
+            "MAIL_TRACKING_POLICY_PUBLISHED",
+            "MailTrackingPolicyEn"
+          ]
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 17,
-          "end_line": 25,
+          "line": 18,
+          "end_line": 26,
           "owner": "<module>",
           "name": "CookieRow",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 28,
-          "end_line": 268,
+          "line": 29,
+          "end_line": 270,
           "owner": "<module>",
           "name": "PrivacyBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 256,
-          "end_line": 256,
+          "line": 258,
+          "end_line": 258,
           "owner": "PrivacyBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 271,
-          "end_line": 399,
+          "line": 273,
+          "end_line": 401,
           "owner": "<module>",
           "name": "TermsBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 391,
-          "end_line": 391,
+          "line": 393,
+          "end_line": 393,
           "owner": "TermsBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -112394,24 +112408,24 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 156,
-          "end_line": 163,
+          "line": 158,
+          "end_line": 165,
           "owner": "PrivacyBodyEn",
           "component": "button",
           "event": "onClick",
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 253,
-          "end_line": 257,
+          "line": 255,
+          "end_line": 259,
           "owner": "PrivacyBodyEn",
           "component": "a",
           "event": "onClick",
           "expression": "{() => track(events.CONTACT_EMAIL)}"
         },
         {
-          "line": 388,
-          "end_line": 392,
+          "line": 390,
+          "end_line": 394,
           "owner": "TermsBodyEn",
           "component": "a",
           "event": "onClick",
@@ -113144,6 +113158,85 @@
       "imports": [],
       "routes": [],
       "functions": [],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
+    "frontend/src/i18n/privacyMailTracking.component.test.jsx": {
+      "sha256": "e8c67b643be3edc4bcd9454d111bf6b578ee688d87233b2e2dac6961c010cfae",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "@testing-library/react",
+          "category": "external_package",
+          "target": "@testing-library/react",
+          "bindings": [
+            "render",
+            "screen"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "./privacyMailTracking",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/privacyMailTracking.jsx"
+          ],
+          "bindings": [
+            "MAIL_TRACKING_POLICY_PUBLISHED",
+            "MailTrackingPolicyEn",
+            "MailTrackingPolicyRu"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 5,
+          "end_line": 19,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 6,
+          "end_line": 8,
+          "owner": "<callback@5>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 10,
+          "end_line": 18,
+          "owner": "<callback@5>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
       "hooks": [],
       "http": [],
       "storage": [],
@@ -226510,7 +226603,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Privacy.jsx": {
-      "sha256": "4101058c220854390e48921679b2c9791eb6fe7e671a6d2ca5120a26c90f5baf",
+      "sha256": "a6d41f31bb7da4ac63e3bfedfc80baf1dfcc4b5937a3979a7b88483b05c29360",
       "imports": [
         {
           "line": 1,
@@ -226713,29 +226806,43 @@
             "PERSONAL_NEWSLETTER_POLICY_PUBLISHED",
             "PersonalNewsletterPolicyRu"
           ]
+        },
+        {
+          "line": 20,
+          "end_line": 20,
+          "owner": "<module>",
+          "specifier": "../i18n/privacyMailTracking",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/privacyMailTracking.jsx"
+          ],
+          "bindings": [
+            "MAIL_TRACKING_POLICY_PUBLISHED",
+            "MailTrackingPolicyRu"
+          ]
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 38,
-          "end_line": 46,
+          "line": 39,
+          "end_line": 47,
           "owner": "<module>",
           "name": "CookieRow",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 48,
-          "end_line": 308,
+          "line": 49,
+          "end_line": 310,
           "owner": "<module>",
           "name": "Privacy",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 293,
-          "end_line": 293,
+          "line": 295,
+          "end_line": 295,
           "owner": "Privacy",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -226744,15 +226851,15 @@
       ],
       "hooks": [
         {
-          "line": 49,
-          "end_line": 49,
+          "line": 50,
+          "end_line": 50,
           "owner": "Privacy",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 50,
-          "end_line": 50,
+          "line": 51,
+          "end_line": 51,
           "owner": "Privacy",
           "callee": "useRef",
           "arguments": [
@@ -226760,8 +226867,8 @@
           ]
         },
         {
-          "line": 52,
-          "end_line": 56,
+          "line": 53,
+          "end_line": 57,
           "owner": "Privacy",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -226774,16 +226881,16 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 191,
-          "end_line": 198,
+          "line": 193,
+          "end_line": 200,
           "owner": "Privacy",
           "component": "button",
           "event": "onClick",
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 290,
-          "end_line": 294,
+          "line": 292,
+          "end_line": 296,
           "owner": "Privacy",
           "component": "a",
           "event": "onClick",
@@ -259900,9 +260007,9 @@
     }
   },
   "totals": {
-    "imports": 4883,
+    "imports": 4888,
     "routes": 100,
-    "functions": 15570,
+    "functions": 15573,
     "hooks": 2871,
     "http": 127,
     "storage": 248,
@@ -259910,7 +260017,7 @@
     "jsx_handlers": 1260,
     "registries": 719,
     "mcp_tools": 7,
-    "files": 925,
+    "files": 926,
     "parse_errors": 0
   }
 }
