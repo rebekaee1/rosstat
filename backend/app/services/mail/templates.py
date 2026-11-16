@@ -349,6 +349,8 @@ def layout(locale: str, *, preheader: str, body_html: str, footer_html: str, sit
     .fe-val {{ display:none !important; }}
     .fe-val-m {{ display:block !important; max-height:none !important; overflow:visible !important; }}
     .fe-lead-num {{ font-size:38px !important; }}
+    /* Таблица на телефоне: ячейки переносятся и не раздвигают письмо шире экрана. */
+    .fe-td {{ white-space:normal !important; font-size:13px !important; padding:8px 6px !important; }}
   }}
 </style>
 </head>

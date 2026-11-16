@@ -294,7 +294,7 @@ def table(b: dict, locale: str) -> str:
     for n, r in enumerate(rows):
         bg = LAYER if n % 2 == 0 else "#FFFFFF"
         tds = "".join(
-            f'<td align="{"left" if i == 0 else "right"}" style="padding:9px 10px;font-family:{FONT};font-size:14px;'
+            f'<td class="fe-td" align="{"left" if i == 0 else "right"}" style="padding:9px 10px;font-family:{FONT};font-size:14px;'
             f'line-height:1.35;color:{INK};{"" if i == 0 else "white-space:nowrap;" + NUM}'
             f'{"border-radius:10px 0 0 10px;" if i == 0 else ""}{"border-radius:0 10px 10px 0;" if i == len(r) - 1 else ""}">'
             f'{escape(str(c).replace(chr(0x202f), chr(0xa0)))}</td>' for i, c in enumerate(r))
