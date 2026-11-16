@@ -94,6 +94,17 @@ def test_config_flags(client, monkeypatch, pwa, prompt, expect_sw, expect_prompt
     assert body["push_enabled"] is False and body["vapid_public_key"] is None  # push по умолчанию закрыт
 
 
+def test_welcome_flag_is_off_by_default_and_independent_of_pwa(client, monkeypatch):
+    # Приветственный экран: по умолчанию выключен; включается своим флагом и не зависит от PWA.
+    assert settings.model_fields["welcome_enabled"].default is False
+    monkeypatch.setattr(settings, "welcome_enabled", False)
+    assert client.get("/api/v1/pwa/config").json()["welcome_enabled"] is False
+    monkeypatch.setattr(settings, "welcome_enabled", True)
+    monkeypatch.setattr(settings, "pwa_enabled", False)
+    body = client.get("/api/v1/pwa/config").json()
+    assert body["welcome_enabled"] is True and body["sw_enabled"] is False
+
+
 def test_defaults_enable_install_prompt_with_emergency_off():
     # Требование владельца: приглашение включено по умолчанию, выключатель — переменной окружения.
     fields = settings.model_fields

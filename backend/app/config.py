@@ -604,6 +604,12 @@ class Settings(BaseSettings):
     pwa_enabled: bool = True
     pwa_install_prompt_enabled: bool = True
 
+    # Приветственный экран для новых посетителей (16.11.2026, frontend `components/welcome/`):
+    # четыре коротких шага «как пользоваться, свежие данные, аккаунт, Telegram» с кнопкой «Пропустить».
+    # Выключено по умолчанию; фронт читает флаг из того же GET /api/v1/pwa/config (без пересборки
+    # и без лишнего запроса). false = экран не открывается сам, пункта в подвале и `?welcome=1` нет.
+    welcome_enabled: bool = False
+
     # Web-push — ТОЛЬКО ПОДГОТОВКА (2026-10-05): ничего никому не отправляется.
     #   push_subscribe_enabled — принимать подписки (/push/subscribe, /push/unsubscribe; иначе 404)
     #                            и отдавать клиенту публичный ключ VAPID; по умолчанию выключено.

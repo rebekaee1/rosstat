@@ -389,6 +389,8 @@ services:
       # PWA: аварийные выключатели без пересборки фронта (по умолчанию включено).
       RUSTATS_PWA_ENABLED: ${RUSTATS_PWA_ENABLED:-true}
       RUSTATS_PWA_INSTALL_PROMPT_ENABLED: ${RUSTATS_PWA_INSTALL_PROMPT_ENABLED:-true}
+      # Приветственный экран новых посетителей (по умолчанию выключен; true = включить без пересборки фронта).
+      RUSTATS_WELCOME_ENABLED: ${RUSTATS_WELCOME_ENABLED:-false}
       # Замер спроса на платный API («фальшивая дверь»); false = точки входа скрыты.
       RUSTATS_API_INTEREST_ENABLED: ${RUSTATS_API_INTEREST_ENABLED:-false}
       # Круг 11: отчёты аудитории в Telegram. Все выключены; включать по одному, сначала в тестовый чат.

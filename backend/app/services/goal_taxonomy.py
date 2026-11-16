@@ -93,6 +93,7 @@ _INTENT = {
     "feedback_nudge_expand",
     "api_interest_click",   # клик «API и выгрузка» — намерение, ещё не заявка
     "pwa_install_prompt_accept",    # «Установить» / «Понятно» в окне приглашения
+    "welcome_cta",                  # нажатие на приветственном экране: «Создать аккаунт», бот, канал (намерение)
     "pwa_install_native_accepted",  # согласие в системном окне установки
     "pwa_install_entry_click",      # пункт «Установить приложение» в подвале
     "oauth_consent_open",           # открыл окно согласия перед входом через соцсеть
@@ -162,6 +163,8 @@ _ENGAGEMENT = {
     "embed_theme_change",
     "embed_type_change",
     "locale_switch",          # смена языка сайта (ru/en)
+    "welcome_step",           # перешёл к шагу приветственного экрана
+    "welcome_done",           # дошёл до конца приветственного экрана
     "compare_preset_open",    # открыл готовое сравнение
     "compare_saved_open",     # открыл сохранённое сравнение
     "calc_use",               # начал считать в калькуляторе (раз за загрузку)
@@ -185,6 +188,8 @@ _TECHNICAL = {
     "experiment_exposure",
     "embed_runtime_view",   # сигнал дистрибуции — своя карточка, не конверсия
     "search_abandon",       # негативный сигнал «искал и не нашёл»
+    "welcome_view",         # показ приветственного экрана — знаменатель
+    "welcome_skip",         # «Пропустить» на приветственном экране
     "outbound_link",        # уход с сайта — не вовлечение
     "api_interest_view",    # показ точки входа «API и выгрузка» — знаменатель CTR
     "pwa_install_prompt_view",       # показ окна «Установить приложение» — знаменатель CTR

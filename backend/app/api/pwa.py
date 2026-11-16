@@ -152,4 +152,6 @@ async def pwa_config(response: Response):
         "install_prompt_enabled": bool(settings.pwa_enabled and settings.pwa_install_prompt_enabled),
         "push_enabled": push_ready,
         "vapid_public_key": settings.vapid_public_key if push_ready else None,
+        # Приветственный экран новых посетителей: отдельный выключатель, от PWA не зависит.
+        "welcome_enabled": bool(settings.welcome_enabled),
     }

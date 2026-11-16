@@ -213,6 +213,11 @@ ym(107136069, 'init', {
 | `api_interest_view` | `ApiInterestLink` (график показателя; окно лимита) | показ точки входа «API и выгрузка с прогнозом», не чаще 1 раза за сессию на точку входа; только при `RUSTATS_API_INTEREST_ENABLED=true` | `source` (`indicator`/`limit_modal`) |
 | `api_interest_click` | `ApiInterestLink` | клик по точке входа, открывает окно заявки | `source`, `indicator_code` |
 | `api_interest_submit` | `ApiInterestModal` | заявка отправлена (замер платного спроса) | `use_case`, `source`; почта в событие не кладётся |
+| `welcome_view` | `WelcomeScreen` | показ приветственного экрана (один раз на показ); только при `RUSTATS_WELCOME_ENABLED=true` | `trigger` (`auto`/`manual`) |
+| `welcome_step` | `WelcomeScreen` | человек перешёл к шагу | `step` (`find`/`fresh`/`account`/`telegram`), `via` (`next`/`back`/`dot`/`key`/`swipe`) |
+| `welcome_skip` | `WelcomeScreen` | «Пропустить», Esc | `step` (на каком шаге), `via` (`button`/`key`) |
+| `welcome_done` | `WelcomeScreen` | «Перейти на сайт» на последнем шаге | — |
+| `welcome_cta` | `WelcomeScreen` | нажатие «Создать аккаунт», «Открыть бота», «Открыть канал» (намерение, не конверсия) | `target` (`register`/`bot`/`channel`) |
 | `pwa_install_prompt_view` | `PwaInstallPrompt` | показ окна «Установить приложение» (один раз на показ) | `platform` (`android`/`ios`) |
 | `pwa_ios_hint_view` | `PwaInstallPrompt`, `PwaInstallEntry` | показ подсказки iPhone «Поделиться → На экран Домой» | `platform` |
 | `pwa_install_prompt_accept` | `PwaInstallPrompt` | «Установить» (Android) / «Понятно» (iPhone) | `platform` |

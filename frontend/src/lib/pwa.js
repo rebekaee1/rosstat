@@ -118,6 +118,8 @@ async function loadConfig() {
     return {
       sw_enabled: data.sw_enabled !== false,
       install_prompt_enabled: data.install_prompt_enabled === true,
+      // Приветственный экран новых посетителей (lib/welcome.js): включается только явным true.
+      welcome_enabled: data.welcome_enabled === true,
     };
   } catch { return null; }
 }

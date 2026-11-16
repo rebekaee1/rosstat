@@ -291,6 +291,12 @@ export const events = {
   REGISTER_NUDGE_VIEW: 'register_nudge_view',
   REGISTER_NUDGE_EXPAND: 'register_nudge_expand',
   REGISTER_NUDGE_CTA: 'register_nudge_cta',
+  // Приветственный экран (components/welcome): показ, шаг, пропуск, конец, нажатия «аккаунт / бот / канал».
+  WELCOME_VIEW: 'welcome_view',
+  WELCOME_STEP: 'welcome_step',
+  WELCOME_SKIP: 'welcome_skip',
+  WELCOME_DONE: 'welcome_done',
+  WELCOME_CTA: 'welcome_cta',
   HEADER_LOGIN_CLICK: 'header_login_click',
   HEADER_REGISTER_CLICK: 'header_register_click',
 

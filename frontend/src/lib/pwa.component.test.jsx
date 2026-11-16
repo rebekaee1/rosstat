@@ -64,7 +64,7 @@ describe('service worker и аварийный выход', () => {
     await flush(); await flush();
     expect(sw.register).toHaveBeenCalledWith('/sw.js', { scope: '/' });
     expect(registration.update).toHaveBeenCalled();
-    expect(pwa.__testing._store.config).toEqual({ sw_enabled: true, install_prompt_enabled: true });
+    expect(pwa.__testing._store.config).toEqual({ sw_enabled: true, install_prompt_enabled: true, welcome_enabled: false });
   });
 
   it('kill-switch: sw_enabled=false снимает регистрации, чистит кэши fe- и не регистрирует', async () => {
