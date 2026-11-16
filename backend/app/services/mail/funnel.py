@@ -96,7 +96,7 @@ async def campaign_funnel(db: AsyncSession, campaign: str, *, now: datetime | No
                  "accepted": len(accepted), "has_data": bool(accepted)}
     if not accepted:
         return out
-    first_sent = min((m.sent_at for m in accepted if m.sent_at), default=None) or now
+    first_sent = min((m.sent_at for m in accepted if m.sent_at), default=None) or at
     age_days = (at - first_sent).total_seconds() / 86400.0
     delivered = [m for m in accepted if m.status == "sent"]
     tracked = [m for m in delivered if m.tracked]
