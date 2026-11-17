@@ -384,7 +384,10 @@ function AppRoutes() {
       <RegisterNudge />
       <PwaInstallPrompt />
       {/* Приветственный экран нового посетителя: за флагом сервера, по умолчанию выключен (lib/welcome.js). */}
-      <WelcomeGate />
+      {/* Сбой экрана (не загрузился чанк после выпуска, ошибка отрисовки) не должен ронять сайт: без экрана — сразу сайт. */}
+      <ErrorBoundary fallback={null}>
+        <WelcomeGate />
+      </ErrorBoundary>
       <Footer />
       <DownloadLimitModal />
       <ApiInterestModal />
