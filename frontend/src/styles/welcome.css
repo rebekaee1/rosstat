@@ -90,6 +90,22 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 .fe-wl[data-wl-motion='full'] .fe-wl__glow--b { animation: fe-wl-drift 23s ease-in-out -7s infinite alternate-reverse; }
 @keyframes fe-wl-drift { to { transform: translate3d(3vmax, 2vmax, 0); } }
 
+/* Мазки света: две широкие косые полосы, как свет из окна на тёмной стене. Плывут медленно и только в полном режиме. */
+.fe-wl__beam { position: absolute; top: -30%; height: 170%; transform: rotate(24deg); transform-origin: center; }
+.fe-wl__beam--a {
+  left: 2%; width: 26vmax;
+  background: linear-gradient(90deg, rgba(118, 156, 240, 0), rgba(118, 156, 240, 0.075) 50%, rgba(118, 156, 240, 0));
+}
+.fe-wl__beam--b {
+  left: 50%; width: 18vmax;
+  background: linear-gradient(90deg, rgba(127, 211, 216, 0), rgba(127, 211, 216, 0.045) 50%, rgba(127, 211, 216, 0));
+}
+.fe-wl[data-wl-motion='full'] .fe-wl__beam--a { animation: fe-wl-beam 26s ease-in-out infinite alternate; }
+.fe-wl[data-wl-motion='full'] .fe-wl__beam--b { animation: fe-wl-beam 34s ease-in-out -9s infinite alternate-reverse; }
+@keyframes fe-wl-beam { to { transform: rotate(24deg) translate3d(7vmax, 0, 0); } }
+/* Лёд: тонкие светлые трещины, неподвижные. Фактура сцены (на светлых страницах сайта её роль играют грани и F). */
+.fe-wl__ice { position: absolute; inset: 0; width: 100%; height: 100%; }
+
 /* F — один предмет на весь показ: на приветствии она главная, на шагах отходит в глубину и чуть сдвигается с каждым шагом. */
 .fe-wl__f {
   position: absolute;
@@ -104,6 +120,67 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 }
 .fe-wl__f-img,
 .fe-wl__f-sweep { position: absolute; inset: 0; }
+/* Свет под F: буква стоит на поверхности, а не висит в пустоте. */
+.fe-wl__f-ground {
+  position: absolute;
+  left: -18%;
+  right: -18%;
+  bottom: -9%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(126, 162, 242, 0.42), rgba(126, 162, 242, 0.1) 60%, rgba(126, 162, 242, 0));
+  animation: fe-wl-fade 1600ms ease 900ms both;
+}
+/* Тонкая орбита вокруг F с одной золотой точкой: мир показателей вокруг знака. Только на приветствии. */
+.fe-wl__f-orbit {
+  position: absolute;
+  left: -34%;
+  right: -34%;
+  top: 30%;
+  height: 46%;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, rgba(10, 18, 39, 0) calc(100% - 1.5px), rgba(190, 208, 248, 0.34) calc(100% - 1px), rgba(190, 208, 248, 0.34) 100%);
+  -webkit-mask: linear-gradient(180deg, #000 0 46%, transparent 58%);
+  mask: linear-gradient(180deg, #000 0 46%, transparent 58%);
+  transform: rotate(-12deg);
+  opacity: 0;
+  transition: opacity 500ms ease;
+  animation: fe-wl-fade 1400ms ease 1500ms both;
+}
+.fe-wl[data-wl-kind='hello'] .fe-wl__f-orbit { opacity: 1; }
+.fe-wl[data-wl-kind='step'] .fe-wl__f-orbit { animation: none; opacity: 0; }
+.fe-wl__f-orbit i {
+  position: absolute;
+  left: 13%;
+  top: 9%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #E0BE6E;
+}
+/* Искры на хрустале: три резкие точки света там, где у буквы блики. Загораются по очереди после прохода блика. */
+.fe-wl__spark {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0), #FFFFFF 50%, rgba(255, 255, 255, 0)) center / 100% 1.5px no-repeat,
+    linear-gradient(180deg, rgba(255, 255, 255, 0), #FFFFFF 50%, rgba(255, 255, 255, 0)) center / 1.5px 100% no-repeat,
+    radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 70%) center / 6px 6px no-repeat;
+  opacity: 0;
+}
+.fe-wl__spark--a { left: 57%; top: 6%; }
+.fe-wl__spark--b { left: 86%; top: 17%; width: 10px; height: 10px; }
+.fe-wl__spark--c { left: 30%; top: 60%; width: 11px; height: 11px; }
+.fe-wl:not([data-wl-motion='off'])[data-wl-kind='hello'] .fe-wl__spark { animation: fe-wl-spark 2400ms ease-in-out 2600ms 2 both; }
+.fe-wl:not([data-wl-motion='off'])[data-wl-kind='hello'] .fe-wl__spark--b { animation-delay: 3000ms; }
+.fe-wl:not([data-wl-motion='off'])[data-wl-kind='hello'] .fe-wl__spark--c { animation-delay: 3350ms; }
+@keyframes fe-wl-spark {
+  0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); }
+  35% { opacity: 1; transform: scale(1) rotate(18deg); }
+  70% { opacity: 0.2; transform: scale(0.7) rotate(30deg); }
+}
 .fe-wl__f-img {
   background: url('/brand/emblem-f-2x.webp') center / contain no-repeat;
   mix-blend-mode: screen;
@@ -161,9 +238,27 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 .fe-wl__mark img { display: block; width: 30px; height: 30px; border-radius: 8px; }
 .fe-wl__mark-word { font-size: 17px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; }
 .fe-wl__mark-word span { font-weight: 300; }
+.fe-wl__top-actions { display: inline-flex; align-items: center; gap: 2px; margin-right: -14px; }
+/* Пауза показа: маленькая круглая кнопка рядом с «Пропустить». */
+.fe-wl__pause {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--wl-ink-3);
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.1s ease-out;
+}
+.fe-wl__pause:active { transform: scale(0.94); }
+.fe-wl__pause[aria-pressed='true'] { color: var(--wl-ink); background-color: rgba(255, 255, 255, 0.1); }
+@media (hover: hover) {
+  .fe-wl__pause:hover { color: var(--wl-ink); background-color: rgba(255, 255, 255, 0.08); }
+}
 .fe-wl__skip {
   min-height: 44px;
-  margin-right: -14px;
   padding: 0 14px;
   border-radius: 999px;
   color: var(--wl-ink-3);
@@ -222,7 +317,22 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 .fe-wl-svg text { font-family: var(--font-sans, 'Manrope', system-ui, sans-serif); }
 .fe-wl-svg__word { font-size: 18px; font-weight: 650; fill: #16213D; }
 .fe-wl-svg__chip { font-size: 11px; font-weight: 680; fill: #16213D; }
-.fe-wl-svg__tag { font-size: 11.5px; font-weight: 650; fill: #F2F5FA; letter-spacing: 0.01em; }
+.fe-wl-svg__tag { font-size: 10.5px; font-weight: 650; fill: #F2F5FA; letter-spacing: 0.01em; }
+/* Настоящее в сценах: название показателя, страна, значение, подпись. Цифры одной ширины. */
+.fe-wl-svg__row { font-size: 11px; font-weight: 660; fill: #16213D; }
+.fe-wl-svg__row--ghost { fill: #EEF2FB; }
+.fe-wl-svg__row--quiet { fill: #4B596F; font-weight: 600; }
+.fe-wl-svg__sub { font-size: 9.5px; font-weight: 560; fill: #5F6B80; }
+.fe-wl-svg__sub--ghost { fill: rgba(222, 231, 248, 0.66); }
+.fe-wl-svg__sub--lg { font-size: 11.5px; }
+.fe-wl-svg__num { font-size: 13.5px; font-weight: 720; fill: #16213D; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.fe-wl-svg__num--ghost { fill: #F4F7FD; }
+.fe-wl-svg__big { font-size: 25px; font-weight: 720; fill: #16213D; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.fe-wl-svg__head { font-size: 15px; font-weight: 720; fill: #16213D; letter-spacing: -0.01em; }
+.fe-wl-svg__answer { font-size: 12.5px; font-weight: 700; fill: #16213D; letter-spacing: -0.01em; }
+.fe-wl-svg__tick { font-size: 8.5px; font-weight: 560; fill: #8E98A8; font-variant-numeric: tabular-nums; }
+.fe-wl-svg__live { font-size: 9px; font-weight: 660; fill: #1F7A52; }
+.fe-wl-svg__role { font-size: 10px; font-weight: 600; fill: rgba(196, 210, 238, 0.7); }
 .fe-wl-svg__name { font-size: 14px; font-weight: 720; fill: #F4F7FD; }
 .fe-wl-svg__say { font-size: 14px; font-weight: 620; fill: #FFFFFF; }
 .fe-wl-svg__btn { font-size: 12.5px; font-weight: 650; fill: #FFFFFF; }
@@ -269,7 +379,16 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 /* Каждая строка заголовка выходит из-под своей кромки: буквы поднимаются, а не проявляются. */
 .fe-wl__line { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
 .fe-wl__line-in { display: block; }
-.fe-wl__line:not([data-accent]) .fe-wl__line-in { color: rgba(206, 219, 246, 0.6); }
+.fe-wl__line:not([data-accent]) .fe-wl__line-in {
+  color: #9DB6EE;
+  background: linear-gradient(92deg, #8FB2F5 0%, #B9C8F2 46%, #7FD3D8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* Номер шага рядом с названием: мелкая точная деталь, цифры одной ширины. */
+.fe-wl__count { margin-left: 4px; color: #E0BE6E; font-variant-numeric: tabular-nums; letter-spacing: 0.08em; }
+.fe-wl__count i { color: rgba(169, 188, 230, 0.55); font-style: normal; }
 .fe-wl__body {
   margin: 14px auto 0;
   max-width: 30em;
@@ -363,6 +482,78 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 }
 .fe-wl__btn--quiet { padding: 0 14px; color: var(--wl-ink-2); font-size: 15.5px; font-weight: 600; background: transparent; }
 .fe-wl__btn-arrow { transition: transform 0.28s var(--wl-out); }
+/* Стрелка в тёмном кружке: чёткая деталь на светлой и на золотой кнопке. */
+.fe-wl__btn-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-right: -12px;
+  border-radius: 50%;
+  color: #F4F7FD;
+  background: #0C1630;
+}
+.fe-wl__btn--gold .fe-wl__btn-chip { background: #231B0B; color: #F3E2B4; }
+
+/*
+ * Целевые кнопки живут (слова владельца 17.11.2026: «кнопочки двигались, прыгали, которые именно CTA»).
+ * Целевые — те, где мы ждём действия: «Начать», «Создать аккаунт», «Открыть бота», «Открыть канал». «Дальше» целевой не считается:
+ * показ листает себя сам, она остаётся спокойной.
+ * Как прыгают, чтобы не вышла мобильная игра (принцип 2): образец — значок в Dock у Mac, который просит внимания.
+ * Короткий подскок на 10 pt и отскок на 4 pt, без сплющивания, без качания и смены цвета; между подскоками долгая пауза;
+ * тень под кнопкой растёт вместе с подскоком (кнопка отрывается от поверхности, а не дёргается на месте); через несколько
+ * подскоков кнопка успокаивается сама. Стрелка в кружке кивает вправо в тот же такт.
+ */
+.fe-wl:not([data-wl-motion='off']) .fe-wl__start .fe-wl__btn--light { animation: fe-wl-hop 2600ms cubic-bezier(0.3, 0, 0.3, 1) 3700ms 1 both; }
+.fe-wl:not([data-wl-motion='off']) .fe-wl__btn--gold { animation: fe-wl-hop 2800ms cubic-bezier(0.3, 0, 0.3, 1) 2900ms 6 both; }
+.fe-wl:not([data-wl-motion='off']) .fe-wl__btn--gold .fe-wl__btn-arrow,
+.fe-wl:not([data-wl-motion='off']) .fe-wl__start .fe-wl__btn-arrow { animation: fe-wl-nod 2800ms cubic-bezier(0.3, 0, 0.3, 1) 2900ms 6 both; }
+.fe-wl:not([data-wl-motion='off']) .fe-wl__start .fe-wl__btn-arrow { animation-delay: 3700ms; animation-iteration-count: 1; animation-duration: 2600ms; }
+@keyframes fe-wl-hop {
+  0%, 38%, 100% { transform: translate3d(0, 0, 0); }
+  11% { transform: translate3d(0, -10px, 0); }
+  22% { transform: translate3d(0, 0, 0); }
+  29% { transform: translate3d(0, -4px, 0); }
+}
+@keyframes fe-wl-nod {
+  0%, 38%, 100% { transform: translate3d(0, 0, 0); }
+  13% { transform: translate3d(4px, 0, 0); }
+  26% { transform: translate3d(0, 0, 0); }
+}
+/* Свет под золотой кнопкой дышит в такт подскоку: отдельный слой, меняется только прозрачность и масштаб. */
+.fe-wl__cta { position: relative; }
+.fe-wl__cta::before {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 30px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(224, 190, 110, 0.55), rgba(224, 190, 110, 0));
+  opacity: 0.35;
+  pointer-events: none;
+}
+.fe-wl:not([data-wl-motion='off']) .fe-wl__cta::before { animation: fe-wl-under 2800ms cubic-bezier(0.3, 0, 0.3, 1) 2900ms 6 both; }
+@keyframes fe-wl-under {
+  0%, 38%, 100% { opacity: 0.35; transform: scale(1); }
+  11% { opacity: 0.8; transform: scale(1.22); }
+  22% { opacity: 0.4; transform: scale(1); }
+  29% { opacity: 0.55; transform: scale(1.08); }
+}
+/* Ссылки в Telegram приподнимаются по очереди: приглашают, не требуют. */
+.fe-wl:not([data-wl-motion='off']) .fe-wl__copy:not([data-out]) .fe-wl__link { animation: fe-wl-hop-soft 3200ms cubic-bezier(0.3, 0, 0.3, 1) 3900ms 2 both; }
+.fe-wl:not([data-wl-motion='off']) .fe-wl__copy:not([data-out]) .fe-wl__link + .fe-wl__link { animation-delay: 4250ms; }
+@keyframes fe-wl-hop-soft {
+  0%, 28%, 100% { transform: translate3d(0, 0, 0); }
+  10% { transform: translate3d(0, -6px, 0); }
+  20% { transform: translate3d(0, 0, 0); }
+}
+/* Под рукой кнопка слушается руки, а не расписания. */
+.fe-wl .fe-wl__btn:hover, .fe-wl .fe-wl__btn:active, .fe-wl .fe-wl__link:hover, .fe-wl .fe-wl__link:active,
+.fe-wl .fe-wl__btn:focus-visible, .fe-wl .fe-wl__link:focus-visible { animation: none; }
 @media (hover: hover) {
   .fe-wl__btn--light:hover, .fe-wl__btn--gold:hover { transform: translate3d(0, -2px, 0); }
   .fe-wl__btn--light:hover:active, .fe-wl__btn--gold:hover:active { transform: scale(0.965); }
@@ -436,6 +627,13 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 }
 .fe-wl__dot[data-state='done'] span::after { transform: scaleX(1); }
 .fe-wl__dot[data-state='current'] span::after { transform: scaleX(1); background: linear-gradient(90deg, #E0BE6E, #B08A3E); }
+/* Показ идёт сам: текущая полоска наполняется за время экрана (--wl-dur) и замирает, пока показ стоит. */
+.fe-wl[data-wl-auto='on'] .fe-wl__dot[data-state='current'] span::after {
+  transition: none;
+  animation: fe-wl-time var(--wl-dur, 7000ms) linear both;
+}
+.fe-wl[data-wl-auto='on'][data-wl-paused='true'] .fe-wl__dot[data-state='current'] span::after { animation-play-state: paused; }
+@keyframes fe-wl-time { from { transform: scaleX(0); } }
 @media (hover: hover) {
   .fe-wl__dot:hover span { transform: scaleY(1.67); }
 }
@@ -472,8 +670,8 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 .fe-wl__cta-hint { color: var(--wl-ink-3); font-size: 12px; line-height: 1.2; }
 
 /* Фокус с клавиатуры: обводка (исключение 1 раздела «Без границ»). */
-.fe-wl :is(.fe-wl__skip, .fe-wl__dot, .fe-wl__back, .fe-wl__link, .fe-wl__btn):focus { outline: none; }
-.fe-wl :is(.fe-wl__skip, .fe-wl__back, .fe-wl__link, .fe-wl__btn):focus-visible { outline: 2px solid #E0BE6E; outline-offset: 3px; }
+.fe-wl :is(.fe-wl__skip, .fe-wl__pause, .fe-wl__dot, .fe-wl__back, .fe-wl__link, .fe-wl__btn):focus { outline: none; }
+.fe-wl :is(.fe-wl__skip, .fe-wl__pause, .fe-wl__back, .fe-wl__link, .fe-wl__btn):focus-visible { outline: 2px solid #E0BE6E; outline-offset: 3px; }
 .fe-wl .fe-wl__dot:focus-visible span { outline: 2px solid #E0BE6E; outline-offset: 4px; }
 
 /* ── Появление текста: черта шага вытягивается, строки заголовка поднимаются, остальное подходит каскадом ── */
@@ -510,7 +708,7 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 .fe-wl__copy[data-screen='hello'] .fe-wl__body { max-width: 24em; }
 
 /* ── Движение внутри сцен (классы ставит WelcomeArt.jsx, задержка — --d). Базовый вид без анимации = итоговый кадр. ── */
-.fe-wl-svg :is(.wl-rise, .wl-pop, .wl-ping, .wl-shift, .wl-wipe, .wl-sheen) { transform-box: fill-box; transform-origin: center; }
+.fe-wl-svg :is(.wl-rise, .wl-pop, .wl-ping, .wl-shift, .wl-wipe, .wl-sheen, .wl-live) { transform-box: fill-box; transform-origin: center; }
 .wl-rise { animation: wl-rise 760ms var(--wl-out, ease-out) var(--d, 0ms) both; }
 @keyframes wl-rise { from { opacity: 0; transform: translate3d(0, 20px, 0) scale(0.97); } }
 .wl-rise--far { animation-name: wl-rise-far; animation-duration: 900ms; }
@@ -551,6 +749,13 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
   0% { opacity: 0; transform: translate3d(0, 6px, 0); }
   18%, 78% { opacity: 1; transform: translate3d(0, 0, 0); }
   100% { opacity: 0; }
+}
+/* Зелёная точка «проверяем каждый день»: кольцо расходится и гаснет, спокойно и без конца (в итоговом кадре кольца нет). */
+.wl-live { opacity: 0; }
+.fe-wl:not([data-wl-motion='off']) .wl-live { animation: wl-live 2400ms ease-out 1800ms infinite; }
+@keyframes wl-live {
+  0% { opacity: 0.7; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(3); }
 }
 /* Блик по главной плите в конце сцены: один проход, в итоговом кадре его нет. */
 .wl-sheen { opacity: 0; animation: wl-sheen 1100ms cubic-bezier(0.4, 0, 0.2, 1) var(--d, 0ms) both; }
@@ -678,6 +883,8 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 }
 /* Узкий телефон: три кнопки последнего шага должны уместиться в строку. */
 @media (max-width: 399px) {
+  /* На узком телефоне у золотой кнопки нет кружка со стрелкой: иначе три действия не помещаются в строку. */
+  .fe-wl__btn--gold .fe-wl__btn-chip { display: none; }
   .fe-wl__btn--gold { min-width: 0; padding: 0 20px; }
   .fe-wl__btn--quiet { padding: 0 10px; }
   .fe-wl__actions { gap: 6px; }

@@ -34,7 +34,11 @@ describe('welcome.css', () => {
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.fe-wl, \.fe-wl \*, \.fe-wl \*::before, \.fe-wl \*::after\s*\{\s*animation: none !important;\s*transition: none !important;/);
     expect(css).toMatch(/\.fe-wl\[data-wl-motion='off'\] \*,[\s\S]*?animation: none !important;/);
     // Фоновое плавание только в полном режиме.
-    for (const m of css.matchAll(/([^{}]+)\{[^{}]*infinite[^{}]*\}/g)) expect(m[1]).toContain("[data-wl-motion='full']");
+    // Бесконечные циклы: фоновый свет только в полном режиме; маленькая живая точка сцены — везде, кроме «меньше движения».
+    for (const m of css.matchAll(/([^{}]+)\{[^{}]*infinite[^{}]*\}/g)) expect(m[1]).toMatch(/\[data-wl-motion='full'\]|:not\(\[data-wl-motion='off'\]\)/);
+    // Целевые кнопки подпрыгивают конечное число раз и успокаиваются сами.
+    for (const m of css.matchAll(/animation: fe-wl-(?:hop|hop-soft|nod|under) [^;]*;/g)) expect(m[0]).not.toMatch(/infinite/);
+    for (const m of css.matchAll(/([^{}]+)\{[^{}]*animation: fe-wl-(?:hop|hop-soft|nod|under) [^{}]*\}/g)) expect(m[1]).toContain(":not([data-wl-motion='off'])");
   });
 
   it('одно тёплое пятно не ярче .18, золото только чертой и у кнопки аккаунта', () => {
@@ -66,7 +70,7 @@ describe('сцены и тексты приветственного экрана
     const texts = [...art.matchAll(/<text[^>]*>([^<{]*)</g)].map((m) => m[1].trim()).filter(Boolean);
     for (const text of texts) expect(text).not.toMatch(/\d/);
     for (const locale of ['ru', 'en']) {
-      for (const key of ['welcome.find.word', 'welcome.fresh.updated', 'welcome.account.saved', 'welcome.telegram.subscribe', 'welcome.compare.home', 'welcome.compare.peer']) {
+      for (const key of ['welcome.find.word', 'welcome.account.saved', 'welcome.telegram.subscribe', 'welcome.scene.indicator', 'welcome.scene.home', 'welcome.scene.peer', 'welcome.scene.daily', 'welcome.scene.saved1', 'welcome.scene.saved2']) {
         expect(MESSAGES[locale][key]).not.toMatch(/\d/);
       }
     }

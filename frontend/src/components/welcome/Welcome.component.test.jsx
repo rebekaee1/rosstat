@@ -7,6 +7,7 @@ import WelcomeGate, { WelcomeEntry } from './WelcomeGate';
 import WelcomeScreen from './WelcomeScreen';
 import * as pwa from '../../lib/pwa';
 import { track } from '../../lib/track';
+import { fetchWorldCompareSeries } from '../../lib/worldApi';
 import { WELCOME_KEY, WELCOME_OPEN_DELAY_MS, readWelcomeSeen } from '../../lib/welcome';
 
 vi.mock('../../lib/track', () => ({
@@ -22,6 +23,22 @@ const cabinet = { enabled: true, ready: true, features: {}, limits: {} };
 vi.mock('../../lib/useCabinet', () => ({ useCabinetConfig: () => cabinet }));
 const automation = { on: false };
 vi.mock('../../lib/behavior', () => ({ isAutomationClient: () => automation.on }));
+vi.mock('../../lib/worldApi', () => ({ fetchWorldCompareSeries: vi.fn() }));
+
+/** Месячный ряд: 130 точек с января 2016, последняя — октябрь 2026. */
+const series = (lastValue, source) => ({
+  meta: source ? { source } : {},
+  data: Array.from({ length: 130 }, (_, i) => ({
+    date: new Date(Date.UTC(2016, i, 1)).toISOString().slice(0, 10),
+    value: i === 129 ? lastValue : 5 - i / 60,
+  })),
+});
+const SERIES = {
+  russia: series(2.2, 'Росстат'),
+  'united-states': series(4.1),
+  'united-kingdom': series(4.6),
+  germany: series(3.9),
+};
 
 const ru = (key, vars) => translate(key, vars, 'ru');
 const en = (key, vars) => translate(key, vars, 'en');
@@ -54,11 +71,18 @@ const screenEl = () => screen.queryByTestId('welcome-screen');
 const title = (t, step) => t(`welcome.${step}.title`).replace('|', ' ');
 const heading = () => screen.getByRole('heading', { level: 2 }).textContent;
 const start = () => fireEvent.click(screen.getByTestId('welcome-start'));
+const settle = () => advance(0);
+const sceneText = () => [...document.querySelectorAll('.fe-wl__art-in:not([data-out]) text')].map((el) => el.textContent);
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] });
   pwa.resetPwaForTests();
   track.mockClear();
+  fetchWorldCompareSeries.mockReset();
+  fetchWorldCompareSeries.mockImplementation(async (slug) => {
+    if (!SERIES[slug]) throw new Error('404');
+    return SERIES[slug];
+  });
   auth.isAuthed = false;
   auth.isLoading = false;
   cabinet.enabled = true;
@@ -218,6 +242,158 @@ describe('WelcomeScreen', () => {
     wrap(<WelcomeScreen initialStep={2} onClose={() => {}} />);
     const chips = [...document.querySelectorAll('.fe-wl-svg__chip')].map((el) => el.textContent);
     expect(chips).toEqual([ru('welcome.fresh.source1'), ru('welcome.fresh.source2'), ru('welcome.fresh.source3')]);
+  });
+});
+
+describe('показ идёт сам', () => {
+  it('экраны сменяются без единого нажатия и останавливаются на шаге про аккаунт', async () => {
+    const onClose = vi.fn();
+    wrap(<WelcomeScreen onClose={onClose} />);
+    await settle();
+    expect(screenEl().getAttribute('data-wl-auto')).toBe('on');
+    expect(heading()).toBe(title(ru, 'hello'));
+    await advance(5300);
+    expect(heading()).toBe(title(ru, 'find'));
+    await advance(7900);
+    expect(heading()).toBe(title(ru, 'fresh'));
+    await advance(7700);
+    expect(heading()).toBe(title(ru, 'telegram'));
+    await advance(8100);
+    expect(heading()).toBe(title(ru, 'account'));
+    // Последний шаг ждёт человека: сам не закрывается и не уезжает.
+    await advance(60000);
+    expect(heading()).toBe(title(ru, 'account'));
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screenEl().getAttribute('data-wl-auto')).toBe('off');
+    expect(screen.queryByTestId('welcome-pause')).toBeNull();
+    expect(track.mock.calls.filter(([n]) => n === 'welcome_step').map(([, v]) => v.via)).toEqual(['auto', 'auto', 'auto', 'auto']);
+  });
+
+  it('кнопка паузы останавливает показ и пускает его снова', async () => {
+    wrap(<WelcomeScreen onClose={() => {}} />);
+    await settle();
+    const pause = screen.getByTestId('welcome-pause');
+    expect(pause.getAttribute('aria-label')).toBe(ru('welcome.pause'));
+    fireEvent.click(pause);
+    expect(pause.getAttribute('aria-pressed')).toBe('true');
+    expect(pause.getAttribute('aria-label')).toBe(ru('welcome.play'));
+    expect(screenEl().getAttribute('data-wl-paused')).toBe('true');
+    await advance(30000);
+    expect(heading()).toBe(title(ru, 'hello'));
+    fireEvent.click(pause);
+    await advance(5300);
+    expect(heading()).toBe(title(ru, 'find'));
+  });
+
+  it('пока палец или кнопка мыши на сцене, показ ждёт и продолжает с того же места', async () => {
+    wrap(<WelcomeScreen onClose={() => {}} />);
+    await settle();
+    await advance(3000);
+    const stage = document.querySelector('.fe-wl__stage');
+    fireEvent.pointerDown(stage, { pointerType: 'mouse', clientX: 10, clientY: 10 });
+    await advance(20000);
+    expect(heading()).toBe(title(ru, 'hello'));
+    fireEvent.pointerUp(stage, { pointerType: 'mouse', clientX: 10, clientY: 10 });
+    await advance(1500);
+    expect(heading()).toBe(title(ru, 'hello')); // оставалось больше двух секунд
+    await advance(1000);
+    expect(heading()).toBe(title(ru, 'find'));
+  });
+
+  it('с клавиатуры человек ведёт сам: после Tab или стрелки показ больше не листает', async () => {
+    wrap(<WelcomeScreen onClose={() => {}} />);
+    await settle();
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(screenEl().getAttribute('data-wl-auto')).toBe('off');
+    await advance(30000);
+    expect(heading()).toBe(title(ru, 'hello'));
+    fireEvent.keyDown(document, { key: 'ArrowRight' });
+    expect(heading()).toBe(title(ru, 'find'));
+    await advance(30000);
+    expect(heading()).toBe(title(ru, 'find'));
+  });
+
+  it('«Назад» останавливает показ: человек вернулся перечитать', async () => {
+    wrap(<WelcomeScreen onClose={() => {}} />);
+    await settle();
+    start();
+    fireEvent.click(screen.getByTestId('welcome-next'));
+    fireEvent.click(screen.getByRole('button', { name: ru('welcome.back') }));
+    expect(heading()).toBe(title(ru, 'find'));
+    await advance(30000);
+    expect(heading()).toBe(title(ru, 'find'));
+  });
+
+  it('«меньше движения»: показ сам не идёт, кнопки паузы нет, листает человек', async () => {
+    const original = window.matchMedia;
+    window.matchMedia = (q) => ({ matches: /reduced-motion/.test(q), media: q, addEventListener() {}, removeEventListener() {} });
+    wrap(<WelcomeScreen onClose={() => {}} />);
+    await settle();
+    expect(screenEl().getAttribute('data-wl-auto')).toBe('off');
+    expect(screen.queryByTestId('welcome-pause')).toBeNull();
+    await advance(60000);
+    expect(heading()).toBe(title(ru, 'hello'));
+    start();
+    expect(heading()).toBe(title(ru, 'find'));
+    window.matchMedia = original;
+  });
+
+  it('открытие сразу на шаге (проверка на устройствах) стоит на месте', async () => {
+    wrap(<WelcomeScreen initialStep={2} onClose={() => {}} />);
+    await settle();
+    await advance(60000);
+    expect(heading()).toBe(title(ru, 'fresh'));
+  });
+});
+
+describe('сцены показывают настоящее', () => {
+  it('в сценах — название показателя, страна, последнее значение, месяц и источник из ряда сайта', async () => {
+    wrap(<WelcomeScreen initialStep={1} onClose={() => {}} />);
+    await settle();
+    expect(fetchWorldCompareSeries.mock.calls.map((c) => c[0]).sort()).toEqual(['russia', 'united-states']);
+    expect(screenEl().getAttribute('data-wl-data')).toBe('ready');
+    const find = sceneText();
+    expect(find).toContain(ru('welcome.scene.indicator'));
+    expect(find).toContain('2,2\u00a0%');
+    expect(find).toContain('4,1\u00a0%');
+    expect(find).toContain('октябрь 2026, Росстат');
+    fireEvent.click(screen.getByTestId('welcome-next'));
+    expect(sceneText()).toContain('Россия, октябрь 2026, Росстат');
+    fireEvent.click(screen.getByTestId('welcome-next'));
+    expect(sceneText()).toContain(ru('welcome.scene.answer', { value: '2,2\u00a0%' }));
+  });
+
+  it('знак сайта в сцене — стеклянная F значка сайта; плоской «F.» нет нигде', async () => {
+    wrap(<WelcomeScreen initialStep={3} onClose={() => {}} />);
+    await settle();
+    const mark = document.querySelector('.fe-wl__art-in image');
+    expect(mark.getAttribute('href')).toBe('/favicon-512.png');
+    expect(document.querySelector('.fe-wl__mark img').getAttribute('src')).toBe('/favicon-512.png');
+    expect(document.querySelector('.fe-wl .fe-brand')).toBeNull();
+    // Прежний плоский знак рисовался контуром «M51.5 53V40.5…»: его больше нет.
+    expect(document.querySelector('.fe-wl').innerHTML).not.toContain('M51.5 53');
+  });
+
+  it('данные не пришли — в сценах остаются названия, но нет ни одного числа', async () => {
+    fetchWorldCompareSeries.mockRejectedValue(new Error('down'));
+    wrap(<WelcomeScreen initialStep={1} onClose={() => {}} />);
+    await settle();
+    expect(screenEl().getAttribute('data-wl-data')).toBe('empty');
+    for (let i = 0; i < 4; i += 1) {
+      const text = sceneText().join(' ');
+      expect(text).not.toMatch(/\d/);
+      if (i < 3) fireEvent.click(screen.getByTestId('welcome-next'));
+    }
+  });
+
+  it('иностранный посетитель видит ряд своей страны и соседней', async () => {
+    const RealFormat = Intl.DateTimeFormat;
+    vi.spyOn(Intl, 'DateTimeFormat').mockImplementation((...args) => (args.length ? new RealFormat(...args) : { resolvedOptions: () => ({ timeZone: 'Europe/London' }) }));
+    wrap(<WelcomeScreen initialStep={3} onClose={() => {}} />, { t: en, locale: 'en' });
+    await settle();
+    expect(fetchWorldCompareSeries.mock.calls.map((c) => c[0]).sort()).toEqual(['germany', 'united-kingdom']);
+    expect(sceneText()).toEqual(expect.arrayContaining(['United Kingdom 4.6%', 'Germany 3.9%']));
+    vi.restoreAllMocks();
   });
 });
 

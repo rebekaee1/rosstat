@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Bell, Bot, Download, Send, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Bell, Bot, Download, Pause, Play, Send, Star } from 'lucide-react';
 import WelcomeArt from './WelcomeArt';
 import { useLocale, useT } from '../../i18n';
 import { track, events } from '../../lib/track';
@@ -12,6 +12,8 @@ import {
   TELEGRAM_BOT_URL, TELEGRAM_CHANNEL_URL, WELCOME_HELLO, clampStep, markWelcomeSeen, welcomeMotionLevel, welcomeScreens,
 } from '../../lib/welcome';
 import { readBrowserSignals, welcomeAudience } from '../../lib/welcomeAudience';
+import { WELCOME_CONCEPT, cleanSeries, formatMonth, formatPercent } from '../../lib/welcomeChart';
+import { fetchWorldCompareSeries } from '../../lib/worldApi';
 import '../../styles/welcome.css';
 
 /**
@@ -42,6 +44,13 @@ const OUT_MS = 300;
 const SWIPE_MIN = 56;
 const SWIPE_VELOCITY = 0.45; // px/мс: быстрый короткий жест тоже листает
 const DRAG_SLOP = 10;
+/**
+ * Показ идёт сам (слова владельца 17.11.2026: «чтобы всё в анимации перетекало… не обязательно от пользователя нужно действие»).
+ * Сколько стоит каждый экран, мс: сцена доигрывает за 3,5–3,9 с, остальное — время прочитать две строки. Последний шаг
+ * (аккаунт) не уходит сам: там действие, которого мы ждём от человека.
+ */
+const AUTOPLAY_MS = { hello: 5200, find: 7800, fresh: 7600, telegram: 8000, compare: 7600 };
+const DATA_TIMEOUT_MS = 4500;
 const STAGE_COLOR = '#0A1227';
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -80,11 +89,59 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
   const tickRef = useRef(0);
   const dragFromRef = useRef(0);
   const liveCopyRef = useRef(null);
+  // Показ идёт сам, пока человек его не остановил: кнопкой паузы, клавиатурой, шагом назад. При «меньше движения» не идёт вовсе.
+  // Открытие сразу на заданном шаге (`welcome_step`, проверка на устройствах) — показ стоит, чтобы шаг можно было рассмотреть.
+  const [auto, setAuto] = useState(() => welcomeMotionLevel(readSceneMode()) !== 'off' && !initialStep);
+  // Временная остановка: палец или кнопка мыши на сцене, курсор над ссылками, вкладка не на экране.
+  const [held, setHeld] = useState(false);
+  const remainRef = useRef(0);
+  // Настоящее для сцен: ряд страны посетителя и страны рядом (один-два запроса). Сбой не роняет экран: сцены останутся без чисел.
+  const [data, setData] = useState({ status: 'loading', series: [], peer: [], source: '' });
   useEffect(() => { indexRef.current = index; }, [index]);
 
   const name = screens[index];
   const hello = name === WELCOME_HELLO;
   const last = index === total - 1;
+  const homeSlug = audience ? audience.homeSlug : 'russia';
+  const peerSlug = audience ? audience.peerSlug : 'united-states';
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => setData((cur) => (cur.status === 'loading' ? { ...cur, status: 'empty' } : cur)), DATA_TIMEOUT_MS);
+    const load = (slug) => fetchWorldCompareSeries(slug, WELCOME_CONCEPT, { signal: controller.signal }).catch(() => null);
+    Promise.all([load(homeSlug), load(peerSlug)]).then(([home, peer]) => {
+      if (controller.signal.aborted) return;
+      const series = cleanSeries(home);
+      setData({
+        status: series.length ? 'ready' : 'empty',
+        series,
+        peer: series.length ? cleanSeries(peer) : [],
+        source: typeof home?.meta?.source === 'string' ? home.meta.source : '',
+      });
+    });
+    return () => { controller.abort(); window.clearTimeout(timer); };
+  }, [homeSlug, peerSlug]);
+
+  const facts = useMemo(() => {
+    const home = audience ? audience.home : t('welcome.scene.home');
+    const peer = audience ? audience.peer : t('welcome.scene.peer');
+    if (data.status !== 'ready') return { series: [], peerSeries: [], home, peer, value: '', peerValue: '', month: '', caption: '', answer: '' };
+    const lastPoint = data.series[data.series.length - 1];
+    const peerPoint = data.peer.length ? data.peer[data.peer.length - 1] : null;
+    const value = formatPercent(lastPoint.value, locale);
+    const month = formatMonth(lastPoint.t, locale);
+    return {
+      series: data.series,
+      peerSeries: data.peer,
+      home,
+      peer,
+      value,
+      peerValue: peerPoint ? formatPercent(peerPoint.value, locale) : '',
+      month,
+      caption: data.source ? t('welcome.scene.caption', { month, source: data.source }) : month,
+      answer: t('welcome.scene.answer', { value, country: home }),
+    };
+  }, [audience, data, locale, t]);
 
   const close = useCallback((outcome, { instant = false } = {}) => {
     if (closedRef.current) return;
@@ -123,6 +180,34 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
     window.setTimeout(() => setOut((cur) => (cur && cur.tick === tick ? null : cur)), OUT_MS);
     track(events.WELCOME_STEP, { step: screens[target], via });
   }, [motion, screens, total]);
+
+  // Показ идёт сам: когда время экрана вышло, открывается следующий. Остановка запоминает, сколько осталось.
+  const duration = AUTOPLAY_MS[name] || 0;
+  const playing = auto && !held && !leaving && duration > 0;
+  useEffect(() => { remainRef.current = AUTOPLAY_MS[screens[index]] || 0; }, [index, screens]);
+  useEffect(() => {
+    if (!playing) return undefined;
+    const startedAt = Date.now();
+    const left = remainRef.current > 0 ? remainRef.current : duration;
+    const id = window.setTimeout(() => go(indexRef.current + 1, 'auto'), left);
+    return () => {
+      window.clearTimeout(id);
+      remainRef.current = Math.max(400, left - (Date.now() - startedAt));
+    };
+  }, [playing, duration, go, index]);
+  // Вкладка ушла с экрана — показ ждёт: человек не должен вернуться к концу, которого не видел.
+  useEffect(() => {
+    const onVisibility = () => setHeld(document.visibilityState === 'hidden');
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, []);
+  const toggleAuto = () => {
+    setAuto((on) => {
+      track(events.WELCOME_STEP, { step: screens[indexRef.current], via: on ? 'pause' : 'play' });
+      return !on;
+    });
+    setHeld(false);
+  };
 
   const skip = useCallback((via) => {
     track(events.WELCOME_SKIP, { step: screens[indexRef.current], via });
@@ -185,6 +270,8 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
         skip('key');
         return;
       }
+      // С клавиатуры человек ведёт сам: показ перестаёт листать под ним (и не перебивает экранное чтение по Tab).
+      if (event.key === 'Tab' || event.key === 'ArrowRight' || event.key === 'ArrowLeft' || event.key === ' ') setAuto(false);
       if (event.key === 'ArrowRight') { go(indexRef.current + 1, 'key'); return; }
       if (event.key === 'ArrowLeft') { go(indexRef.current - 1, 'key'); return; }
       if (event.key !== 'Tab' || !rootRef.current) return;
@@ -221,6 +308,7 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
     }
   };
   const onPointerDown = (event) => {
+    setHeld(true); // пока палец или кнопка мыши на сцене, показ стоит: можно рассмотреть
     if (event.pointerType !== 'touch' || motion === 'off') return;
     drag.current = { x: event.clientX, y: event.clientY, lastX: event.clientX, lastT: event.timeStamp, v: 0, active: false, dx: 0 };
   };
@@ -246,6 +334,7 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
     setDrag(d.dx);
   };
   const onPointerEnd = (event) => {
+    setHeld(false);
     const d = drag.current;
     drag.current = null;
     if (!d || !d.active) return;
@@ -280,6 +369,9 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
       <p className="fe-wl__eyebrow">
         <span className="fe-wl__rule" aria-hidden="true" />
         {t(`welcome.${screen}.eyebrow`)}
+        {screen !== WELCOME_HELLO ? (
+          <span className="fe-wl__count" aria-hidden="true">{String(screens.indexOf(screen)).padStart(2, '0')}<i> / {String(stepCount).padStart(2, '0')}</i></span>
+        ) : null}
         {live && screen !== WELCOME_HELLO ? <span className="sr-only">. {t('welcome.stepOf', { n: index, total: stepCount })}</span> : null}
       </p>
       <h2 id={live ? titleId : undefined} className="fe-wl__title font-display"><TitleLines text={t(`welcome.${screen}.title`)} /></h2>
@@ -301,7 +393,11 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
       )}
 
       {screen === 'telegram' && (
-        <div className="fe-wl__links">
+        <div
+          className="fe-wl__links"
+          onMouseEnter={live ? () => setHeld(true) : undefined}
+          onMouseLeave={live ? () => setHeld(false) : undefined}
+        >
           <a className="fe-wl__link" href={TELEGRAM_BOT_URL} target="_blank" rel="noopener noreferrer" onClick={live ? onTelegram('bot') : undefined}>
             <Bot className="h-[18px] w-[18px]" aria-hidden="true" />
             <span>{t('welcome.telegram.bot')}</span>
@@ -325,7 +421,7 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
             data-testid={live ? 'welcome-start' : undefined}
           >
             <span>{t('welcome.hello.start')}</span>
-            <ArrowRight className="fe-wl__btn-arrow h-4 w-4" aria-hidden="true" />
+            <span className="fe-wl__btn-chip" aria-hidden="true"><ArrowRight className="fe-wl__btn-arrow h-4 w-4" /></span>
           </button>
         </div>
       )}
@@ -347,16 +443,39 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
       data-wl-step={name}
       data-wl-kind={hello ? 'hello' : 'step'}
       data-wl-leaving={leaving || undefined}
+      data-wl-auto={auto && duration > 0 ? 'on' : 'off'}
+      data-wl-paused={playing ? undefined : 'true'}
+      data-wl-data={data.status}
       data-testid="welcome-screen"
-      style={{ '--wl-dir': dir, '--wl-i': Math.max(0, index - 1) }}
+      style={{ '--wl-dir': dir, '--wl-i': Math.max(0, index - 1), '--wl-dur': `${duration || 1}ms` }}
     >
       <div className="fe-wl__scene" aria-hidden="true">
         <span className="fe-wl__glow fe-wl__glow--a" />
         <span className="fe-wl__glow fe-wl__glow--b" />
         <span className="fe-wl__glow fe-wl__glow--warm" />
+        {/* Мазки света и тонкие трещины льда: сцена не пустая и не плоская; резкие искры рядом с F — там, где хрусталь ловит свет. */}
+        <span className="fe-wl__beam fe-wl__beam--a" />
+        <span className="fe-wl__beam fe-wl__beam--b" />
+        <svg className="fe-wl__ice" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <g fill="none" stroke="#DCE6FF" strokeLinecap="round">
+            <path d="M-40 212 L60 190 L148 214 L236 176 L330 188 L402 150" strokeOpacity="0.09" strokeWidth="1" />
+            <path d="M402 150 L470 96 L512 20 L498 -40" strokeOpacity="0.06" strokeWidth="0.8" />
+            <path d="M402 150 L486 196 L590 204 L664 258 L770 262" strokeOpacity="0.07" strokeWidth="0.9" />
+            <path d="M770 262 L842 210 L946 196 L1010 132 L1108 110 L1240 122" strokeOpacity="0.09" strokeWidth="1" />
+            <path d="M770 262 L808 350 L790 448 L846 540 L836 640" strokeOpacity="0.06" strokeWidth="0.8" />
+            <path d="M836 640 L930 676 L1036 660 L1120 716 L1240 708" strokeOpacity="0.07" strokeWidth="0.9" />
+            <path d="M-40 560 L70 548 L150 596 L262 590 L330 648 L318 742 L360 840" strokeOpacity="0.07" strokeWidth="0.9" />
+            <path d="M262 590 L310 500 L296 410 L352 330" strokeOpacity="0.05" strokeWidth="0.7" />
+          </g>
+        </svg>
         <span className="fe-wl__f">
+          <span className="fe-wl__f-ground" />
+          <span className="fe-wl__f-orbit"><i /></span>
           <span className="fe-wl__f-img" />
           <span className="fe-wl__f-sweep"><i /></span>
+          <span className="fe-wl__spark fe-wl__spark--a" />
+          <span className="fe-wl__spark fe-wl__spark--b" />
+          <span className="fe-wl__spark fe-wl__spark--c" />
         </span>
       </div>
 
@@ -366,9 +485,24 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
           <img src="/favicon-512.png" width="30" height="30" alt="" decoding="async" />
           <span className="fe-wl__mark-word">forecast<span>economy</span></span>
         </span>
-        <button type="button" className="fe-wl__skip" onClick={() => skip('button')} aria-label={t('welcome.skipAria')}>
-          {t('welcome.skip')}
-        </button>
+        <span className="fe-wl__top-actions">
+          {/* Показ идёт сам, поэтому остановить его можно всегда (и снова пустить). На последнем шаге и при «меньше движения» кнопки нет. */}
+          {motion !== 'off' && duration > 0 ? (
+            <button
+              type="button"
+              className="fe-wl__pause"
+              onClick={toggleAuto}
+              aria-label={auto ? t('welcome.pause') : t('welcome.play')}
+              aria-pressed={!auto}
+              data-testid="welcome-pause"
+            >
+              {auto ? <Pause className="h-4 w-4" aria-hidden="true" /> : <Play className="h-4 w-4" aria-hidden="true" />}
+            </button>
+          ) : null}
+          <button type="button" className="fe-wl__skip" onClick={() => skip('button')} aria-label={t('welcome.skipAria')}>
+            {t('welcome.skip')}
+          </button>
+        </span>
       </header>
 
       <div
@@ -378,16 +512,17 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
         onPointerMove={onPointerMove}
         onPointerUp={onPointerEnd}
         onPointerCancel={onPointerEnd}
+        onPointerLeave={(event) => { if (event.pointerType === 'mouse') setHeld(false); }}
       >
         <div className="fe-wl__art">
           {out && out.name !== WELCOME_HELLO ? (
             <div className="fe-wl__art-in" data-out="true" key={`out-${out.tick}`}>
-              <WelcomeArt step={out.name} t={t} audience={audience} />
+              <WelcomeArt step={out.name} t={t} audience={audience} facts={facts} />
             </div>
           ) : null}
           {!hello && (
             <div className="fe-wl__art-in" key={name}>
-              <WelcomeArt step={name} t={t} audience={audience} />
+              <WelcomeArt step={name} t={t} audience={audience} facts={facts} />
             </div>
           )}
         </div>
@@ -429,7 +564,7 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
           <button
             type="button"
             className="fe-wl__back"
-            onClick={() => go(index - 1, 'back')}
+            onClick={() => { setAuto(false); go(index - 1, 'back'); }}
             aria-label={t('welcome.back')}
             disabled={index <= 1}
             data-hidden={index <= 1 ? 'true' : undefined}
@@ -451,6 +586,7 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
                   data-testid="welcome-register"
                 >
                   <span>{t('welcome.account.cta')}</span>
+                  <span className="fe-wl__btn-chip" aria-hidden="true"><ArrowRight className="fe-wl__btn-arrow h-4 w-4" /></span>
                 </Link>
                 <span className="fe-wl__cta-hint">{t('welcome.account.ctaHint')}</span>
               </div>
@@ -464,7 +600,7 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
               data-testid="welcome-next"
             >
               <span>{t('welcome.next')}</span>
-              <ArrowRight className="fe-wl__btn-arrow h-4 w-4" aria-hidden="true" />
+              <span className="fe-wl__btn-chip" aria-hidden="true"><ArrowRight className="fe-wl__btn-arrow h-4 w-4" /></span>
               {/* Когда сцена доиграла, по кнопке один раз проходит блик: взгляд возвращается к следующему действию. */}
               <i className="fe-wl__btn-glint" key={name} aria-hidden="true" />
             </button>
