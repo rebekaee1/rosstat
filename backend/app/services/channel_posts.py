@@ -25,7 +25,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from html import escape
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 
 from app.config import settings
 from app.services.channel_facts import MSK, WEEKDAYS_SHORT, fmt_day, plain_text
@@ -667,6 +667,11 @@ def _plain_error(raw: str | None) -> str:
     return "Telegram не принял сообщение. Попробуйте ещё раз позже."
 
 
+# Одобрение не вечно: пост, срок которого прошёл больше этого времени назад (публикация была выключена,
+# планировщик стоял), сам в канал не уходит — возвращается владельцу на новое решение (17.11.2026).
+APPROVAL_STALE_HOURS = 6
+
+
 async def channel_publish_job() -> dict:
     """Раз в минуту: одобренный пост, срок которого настал, уходит в канал. Один пост за запуск."""
     from app.database import async_session
@@ -686,10 +691,25 @@ async def channel_publish_job() -> dict:
             post.status, post.error = "failed", "Число в тексте не сошлось с базой."
             await db.commit()
             return {"failed": post.id}
-        # Отметка до отправки: если процесс упадёт посередине, пост не уйдёт второй раз сам.
-        post.status = "publishing"
-        await db.commit()
+        if post.planned_at and post.planned_at < _utcnow() - timedelta(hours=APPROVAL_STALE_HOURS):
+            # Числа могли устареть: без нового нажатия владельца пост не выходит.
+            pid = post.id
+            post.status, post.planned_at, post.decided_at = "draft", None, None
+            post.error = "Срок выхода прошёл, пост не опубликован. Числа могли измениться — подтвердите заново."
+            await db.commit()
+            await refresh_panels(pid)
+            return {"expired": pid}
+        # Захват одной командой: если второй процесс планировщика взял этот же пост, строка уже не «approved»
+        # и обновление её не тронет — пост не уйдёт дважды. Отметка стоит до отправки: при падении посередине
+        # пост сам повторно не выходит.
         pid = post.id
+        claimed = await db.execute(
+            update(ChannelPost).where(ChannelPost.id == pid, ChannelPost.status == "approved")
+            .values(status="publishing").execution_options(synchronize_session=False))
+        await db.commit()
+        if not claimed.rowcount:
+            return {"skipped": "taken"}
+        await db.refresh(post)
         mid = await _send_post(settings.channel_chat_id, post, token=settings.channel_bot_token or None,
                                kind=KIND_POST, silent=post.silent, once=True)
         if mid:

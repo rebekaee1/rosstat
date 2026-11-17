@@ -527,6 +527,37 @@ def test_publish_failure_is_not_retried_automatically(env, monkeypatch):
     assert len(once_calls) == 1
 
 
+def test_stale_approval_returns_to_owner_and_claim_is_atomic(env, monkeypatch):
+    """17.11.2026: одобрение старше шести часов само в канал не уходит; занятый пост не берётся повторно."""
+    maker, _, once_calls = env
+    monkeypatch.setattr(settings, "channel_publish_enabled", True, raising=False)
+    pid = asyncio.run(cp.create_and_send(_draft()))
+
+    async def approve(hours_ago):
+        async with maker() as db:
+            p = await db.get(ChannelPost, pid)
+            p.status = "approved"
+            p.planned_at = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(hours=hours_ago)
+            await db.commit()
+
+    asyncio.run(approve(cp.APPROVAL_STALE_HOURS + 1))
+    assert asyncio.run(cp.channel_publish_job()) == {"expired": pid}
+    post = asyncio.run(_get(maker, pid))
+    assert post.status == "draft" and post.planned_at is None and "подтвердите заново" in post.error
+    assert once_calls == []                                   # в канал ничего не ушло
+
+    # Пост, уже взятый другим процессом («publishing»), второй раз не отправляется.
+    async def taken():
+        async with maker() as db:
+            p = await db.get(ChannelPost, pid)
+            p.status, p.planned_at = "publishing", datetime.now(timezone.utc).replace(tzinfo=None)
+            await db.commit()
+
+    asyncio.run(taken())
+    assert asyncio.run(cp.channel_publish_job()) == {"skipped": "nothing_due"}
+    assert once_calls == []
+
+
 def test_reject_with_reason_feeds_author_memory(env):
     maker, _, _ = env
     pid = asyncio.run(cp.create_and_send(_draft()))
