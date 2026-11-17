@@ -1,59 +1,148 @@
 /*
- * Приветственный экран для новых посетителей: components/welcome/WelcomeScreen.jsx, линия — WelcomeChart.jsx.
- * Третья версия (17.11.2026). Вторую владелец отверг: «мультяшное, виден AI slop». Основание третьей —
- * `.artifacts/FE-REFERENSY/FILOSOFIYA.md` и принятые им кадры 01–12 там же.
+ * Приветственный экран для новых посетителей: components/welcome/WelcomeScreen.jsx, сцены — WelcomeArt.jsx.
+ * Вид и движение переделаны 17.11.2026 (слова владельца: «как будто ты открываешь новый iPhone, и ты его давно ждал»).
  *
- * Что здесь есть: холодный светлый лёд сайта, графит, глубокий синий; одна фраза крупно; одна настоящая линия;
- * одно поле вопроса; число под рукой. Золото значит одно — «ваше» (точка на шаге про аккаунт).
- * Чего здесь нет намеренно: нарисованных «интерфейсов», значков-галочек, всплывающих кружков, бликов, свечений,
- * градиентных кнопок, большой буквы-украшения, тёмной «сцены», сдвигов текста.
+ * Образ: свет гаснет, на тёмном сапфире стоит хрустальная F; человек сам нажимает «Начать»; в конце тёмный занавес
+ * поднимается и открывает светлый сайт.
  *
- * Принципы владельца (docs/design-system.md): без рамок (обводка только у фокуса с клавиатуры), без backdrop-filter,
- * фон не голый (свет и тонкие трещины льда), прогноза и диапазонов нет. Движение: проявление (opacity) и один проход
- * линии (`clip-path` — исключение раздела 6 для линии графика); при prefers-reduced-motion и data-wl-motion="off"
- * всё стоит сразу. Слова не двигаются вовсе: фразу читают секунды, она должна стоять.
+ * Принципы владельца (docs/design-system.md):
+ *  - палитра сайта: тёмный сапфир подвала и профиля страны (L3: #0E1A33 → #172751), графит, глубокий синий;
+ *    золото — только тонкая черта шага, текущая полоска шагов, линия прогноза и одна кнопка «Создать аккаунт»;
+ *  - фон не голый: свет (два холодных пятна, одно тёплое ≤ .18) и хрустальная F, кадр 2× от размера показа;
+ *  - без рамок: отделение светлотой слоя, бликом сверху и тенью; обводка только у фокуса с клавиатуры;
+ *  - без backdrop-filter: экран непрозрачный, размытия в кадре не добавляет (бюджет раздела 5 не тратится);
+ *  - движение: только transform и прозрачность (opacity, у букв строки SVG fill-opacity); при prefers-reduced-motion
+ *    и data-wl-motion="off" всё стоит в итоговом виде, при data-wl-motion="calm" (слабое устройство) нет фонового
+ *    плавания света, короткие проходы остаются.
+ *
+ * Кривые: --wl-out — выход на место без перелёта (как пружина с затуханием 1); --wl-in — уход; --wl-lift — занавес.
+ * Свои цвета заданы значениями, а не токенами темы: экран всегда тёмный.
  */
-.fe-wl3 {
-  --wl-bg: #F4F5F7;
-  --wl-ink: #121822;
-  --wl-mute: #5A667A;
-  --wl-faint: #8E98A8;
-  --wl-blue: #1F3B78;
-  --wl-teal: #238F9B;
-  --wl-gold: #B08A3E;
-  --wl-pad: clamp(20px, 4.4vw, 64px);
-  --wl-max: 1320px;
+.fe-wl {
+  --wl-ink: #F4F7FD;
+  --wl-ink-2: rgba(222, 231, 248, 0.74);
+  --wl-ink-3: rgba(196, 210, 238, 0.6);
+  --wl-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --wl-in: cubic-bezier(0.5, 0, 0.9, 0.4);
+  --wl-lift: cubic-bezier(0.66, 0, 0.2, 1);
+  --wl-pad: clamp(18px, 4vw, 48px);
+  --wl-max: 1180px;
+  /* Хрустальная F: высота, центр по вертикали и сдвиг на приветствии; на шагах она отходит в глубину сцены. */
+  --wl-hfh: min(34vh, 320px);
+  --wl-hfcy: 31vh;
+  --wl-hfx: 0px;
+  --wl-fh: var(--wl-hfh);
+  --wl-fcy: var(--wl-hfcy);
+  --wl-fx: var(--wl-hfx);
+  --wl-fs: 1;
+  --wl-fo: 1;
   position: fixed;
   inset: 0;
   z-index: 200;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   color: var(--wl-ink);
-  background:
-    radial-gradient(75% 75% at 85% 0%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 100%),
-    radial-gradient(70% 70% at 0% 100%, rgba(201, 213, 232, 0.7), rgba(201, 213, 232, 0) 100%),
-    var(--wl-bg);
+  background: radial-gradient(120% 90% at 78% -10%, #1D3266 0%, #101D3D 42%, #0A1227 78%, #070D1C 100%);
   overflow: hidden;
-  overflow: clip;
   overscroll-behavior: contain;
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
   padding-top: env(safe-area-inset-top, 0px);
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
-  animation: fe-wl3-in 220ms ease both;
+  box-shadow: 0 40px 90px rgba(7, 13, 28, 0.5);
+  animation: fe-wl-in 420ms ease both;
 }
-.fe-wl3:focus { outline: none; }
-@keyframes fe-wl3-in { from { opacity: 0; } }
-.fe-wl3[data-wl-leaving='true'] { animation: fe-wl3-out 260ms ease both; pointer-events: none; }
-@keyframes fe-wl3-out { to { opacity: 0; } }
+@supports (height: 1dvh) {
+  .fe-wl { --wl-hfh: min(34dvh, 320px); --wl-hfcy: 31dvh; }
+}
+.fe-wl:focus { outline: none; }
+/* Пока экран открыт, фон документа тоже сапфир: Safari на iPhone красит свои панели сверху и снизу по фону страницы,
+   и сцена не выглядит вставленной между двумя светлыми полосами. С началом выхода фон возвращается (атрибут снимает экран). */
+html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0A1227 !important; }
+@keyframes fe-wl-in { from { opacity: 0; } }
 
-/* Лёд: тонкие трещины, неподвижные. Фактура, а не украшение. */
-.fe-wl3__ice { position: absolute; inset: 0; pointer-events: none; }
-.fe-wl3__ice svg { display: block; width: 100%; height: 100%; }
+/* Выход: содержимое гаснет, занавес уходит вверх и открывает сайт. «Пропустить» — то же, но быстрее. */
+.fe-wl[data-wl-leaving] { pointer-events: none; }
+.fe-wl[data-wl-leaving='done'] { animation: fe-wl-lift 1050ms var(--wl-lift) 260ms both; }
+.fe-wl[data-wl-leaving='skip'] { animation: fe-wl-lift 540ms var(--wl-lift) 80ms both; }
+@keyframes fe-wl-lift { to { transform: translate3d(0, -104%, 0); } }
+.fe-wl[data-wl-leaving] :is(.fe-wl__top, .fe-wl__stage, .fe-wl__nav) { animation: fe-wl-dim 220ms ease both; }
+@keyframes fe-wl-dim { to { opacity: 0; transform: translate3d(0, -10px, 0); } }
 
-/* ── Верх ──────────────────────────────────────────────────────────────── */
-.fe-wl3__top {
+/* ── Сцена: свет и хрустальная F ────────────────────────────────────────── */
+.fe-wl__scene { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.fe-wl__glow { position: absolute; border-radius: 50%; }
+.fe-wl__glow--a {
+  left: -26vmax; top: -30vmax; width: 78vmax; height: 78vmax;
+  background: radial-gradient(closest-side, rgba(76, 116, 207, 0.34), rgba(76, 116, 207, 0) 100%);
+}
+.fe-wl__glow--b {
+  right: -30vmax; bottom: -38vmax; width: 86vmax; height: 86vmax;
+  background: radial-gradient(closest-side, rgba(44, 74, 138, 0.42), rgba(44, 74, 138, 0) 100%);
+}
+/* Единственное тёплое пятно экрана, альфа ≤ .18. */
+.fe-wl__glow--warm {
+  right: 4vmax; top: -22vmax; width: 50vmax; height: 50vmax;
+  background: radial-gradient(closest-side, rgba(236, 214, 156, 0.13), rgba(236, 214, 156, 0) 100%);
+}
+.fe-wl[data-wl-motion='full'] .fe-wl__glow--a { animation: fe-wl-drift 18s ease-in-out infinite alternate; }
+.fe-wl[data-wl-motion='full'] .fe-wl__glow--b { animation: fe-wl-drift 23s ease-in-out -7s infinite alternate-reverse; }
+@keyframes fe-wl-drift { to { transform: translate3d(3vmax, 2vmax, 0); } }
+
+/* F — один предмет на весь показ: на приветствии она главная, на шагах отходит в глубину и чуть сдвигается с каждым шагом. */
+.fe-wl__f {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: var(--wl-fh);
+  aspect-ratio: 1300 / 1519;
+  opacity: var(--wl-fo);
+  transform: translate3d(calc(-50% + var(--wl-fx)), calc(var(--wl-fcy) - 50%), 0) scale(var(--wl-fs));
+  transition: transform 1100ms var(--wl-out), opacity 700ms ease;
+  will-change: transform, opacity;
+}
+.fe-wl__f-img,
+.fe-wl__f-sweep { position: absolute; inset: 0; }
+.fe-wl__f-img {
+  background: url('/brand/emblem-f-2x.webp') center / contain no-repeat;
+  mix-blend-mode: screen;
+  animation: fe-wl-f-rise 2000ms var(--wl-out) 300ms both, fe-wl-f-show 1500ms cubic-bezier(0.4, 0, 0.6, 1) 300ms both;
+}
+/* F выходит из темноты медленно: проявление идёт своим темпом, подъём — своим. */
+@keyframes fe-wl-f-rise { from { transform: translate3d(0, 6%, 0) scale(0.8); } }
+@keyframes fe-wl-f-show { from { opacity: 0; } }
+/* Блик проходит по хрусталю один раз: маска повторяет силуэт буквы. */
+.fe-wl__f-sweep {
+  overflow: hidden;
+  -webkit-mask: url('/brand/emblem-f-2x.webp') center / contain no-repeat;
+  mask: url('/brand/emblem-f-2x.webp') center / contain no-repeat;
+}
+.fe-wl__f-sweep i {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 46%;
+  height: 140%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.78) 50%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0;
+  transform: translate3d(-140%, 0, 0) skewX(-14deg);
+  animation: fe-wl-f-sweep 1600ms cubic-bezier(0.4, 0, 0.2, 1) 1500ms both;
+}
+@keyframes fe-wl-f-sweep {
+  0% { opacity: 0; transform: translate3d(-140%, 0, 0) skewX(-14deg); }
+  15%, 80% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(330%, 0, 0) skewX(-14deg); }
+}
+.fe-wl[data-wl-kind='step'] {
+  --wl-fx: calc(31vw - var(--wl-i, 0) * 1.6vw);
+  --wl-fcy: 21vh;
+  --wl-fs: 1.2;
+  --wl-fo: 0.2;
+}
+
+/* ── Верх: знак и «Пропустить» ──────────────────────────────────────────── */
+.fe-wl__top {
   position: relative;
   display: flex;
   align-items: center;
@@ -62,442 +151,561 @@
   width: 100%;
   max-width: calc(var(--wl-max) + 2 * var(--wl-pad));
   margin-inline: auto;
-  padding: 16px var(--wl-pad) 0;
+  padding: 14px var(--wl-pad) 6px;
+  animation: fe-wl-fade 600ms ease 500ms both;
 }
-.fe-wl3__brand { display: inline-flex; align-items: center; gap: 11px; color: var(--wl-ink); font-size: 16px; font-weight: 620; letter-spacing: -0.01em; }
-/* Значок сайта 512 px показан в 28 pt: резкость с запасом (принцип 9). */
-.fe-wl3__brand img { display: block; width: 28px; height: 28px; border-radius: 7px; }
-.fe-wl3__skip {
+@keyframes fe-wl-fade { from { opacity: 0; } }
+.fe-wl .fe-wl__brand { color: #F4F7FD; }
+.fe-wl .fe-wl__brand svg { filter: none; }
+.fe-wl__skip {
   min-height: 44px;
-  margin-right: -12px;
-  padding: 0 12px;
-  border-radius: 10px;
-  color: var(--wl-mute);
+  margin-right: -14px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: var(--wl-ink-3);
   font-size: 15px;
-  font-weight: 560;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   background: transparent;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.1s ease-out;
 }
+.fe-wl__skip:active { transform: scale(0.97); }
 @media (hover: hover) {
-  .fe-wl3__skip:hover { color: var(--wl-ink); }
+  .fe-wl__skip:hover { color: var(--wl-ink); background-color: rgba(255, 255, 255, 0.08); }
 }
 
-/* ── Середина: текст сверху, линия внизу на одном месте ─────────────────── */
-.fe-wl3__stage {
+/* ── Середина: сцена и текст ────────────────────────────────────────────── */
+.fe-wl__stage {
   position: relative;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: clamp(8px, 2vh, 24px);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-content: start;
+  gap: clamp(14px, 3vh, 28px);
   width: 100%;
   max-width: calc(var(--wl-max) + 2 * var(--wl-pad));
   min-height: 0;
   margin-inline: auto;
-  padding: clamp(10px, 3.4vh, 44px) var(--wl-pad) 0;
+  padding: clamp(4px, 2.6vh, 28px) var(--wl-pad) 8px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
-.fe-wl3__copywrap { display: grid; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
-.fe-wl3__copywrap > * { grid-area: 1 / 1; }
-.fe-wl3__copy { max-width: 920px; }
-.fe-wl3__copy > :is(.fe-wl3__body, .fe-wl3__caption, .fe-wl3__points, .fe-wl3__question) { max-width: 36rem; }
-.fe-wl3__copy > * { animation: fe-wl3-word 520ms ease both; }
-.fe-wl3__copy > :nth-child(1) { animation-delay: 40ms; }
-.fe-wl3__copy > :nth-child(2) { animation-delay: 110ms; }
-.fe-wl3__copy > :nth-child(3) { animation-delay: 190ms; }
-.fe-wl3__copy > :nth-child(4) { animation-delay: 280ms; }
-.fe-wl3__copy > :nth-child(n + 5) { animation-delay: 370ms; }
-@keyframes fe-wl3-word { from { opacity: 0; } }
-.fe-wl3__copy[data-out='true'] { animation: fe-wl3-out 160ms ease both; pointer-events: none; }
-.fe-wl3__copy[data-out='true'] > * { animation: none; }
+.fe-wl__art {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+.fe-wl__art > * { grid-area: 1 / 1; }
+.fe-wl__art-in {
+  position: relative;
+  width: min(100%, 44vh, 420px);
+  transform: translate3d(calc(var(--wl-drag, 0px) * 1), 0, 0);
+  animation: fe-wl-art 700ms var(--wl-out) 60ms both;
+}
+@keyframes fe-wl-art {
+  from { opacity: 0; transform: translate3d(calc(var(--wl-dir, 1) * 56px), 0, 0) scale(0.94); }
+}
+.fe-wl__art-in[data-out='true'] { animation: fe-wl-art-out 280ms var(--wl-in) both; pointer-events: none; }
+@keyframes fe-wl-art-out {
+  from { transform: translate3d(var(--wl-from, 0px), 0, 0); }
+  to { opacity: 0; transform: translate3d(calc(var(--wl-dir, 1) * -56px), 0, 0) scale(0.97); }
+}
+.fe-wl-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.fe-wl-svg text { font-family: var(--font-sans, 'Manrope', system-ui, sans-serif); }
+.fe-wl-svg__word { font-size: 18px; font-weight: 650; fill: #16213D; }
+.fe-wl-svg__chip { font-size: 11px; font-weight: 680; fill: #16213D; }
+.fe-wl-svg__tag { font-size: 11.5px; font-weight: 650; fill: #F2F5FA; letter-spacing: 0.01em; }
+.fe-wl-svg__name { font-size: 14px; font-weight: 720; fill: #F4F7FD; }
+.fe-wl-svg__say { font-size: 14px; font-weight: 620; fill: #FFFFFF; }
+.fe-wl-svg__btn { font-size: 12.5px; font-weight: 650; fill: #FFFFFF; }
+.fe-wl-svg__label { font-size: 10.5px; font-weight: 720; fill: #5A667A; letter-spacing: 0.12em; text-transform: uppercase; }
 
-.fe-wl3__label {
-  margin: 0 0 clamp(8px, 1.6vh, 16px);
-  color: var(--wl-mute);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+/* Обёртка без position: уходящее приветствие отсчитывает своё место от всей сцены, а не от колонки текста. */
+.fe-wl__copy-wrap { display: grid; min-width: 0; }
+.fe-wl__copy-wrap > * { grid-area: 1 / 1; }
+.fe-wl__copy {
+  max-width: 540px;
+  margin-inline: auto;
+  text-align: center;
+  transform: translate3d(calc(var(--wl-drag, 0px) * 0.45), 0, 0);
 }
-.fe-wl3__question { margin: 0 0 clamp(10px, 2vh, 22px); color: var(--wl-mute); font-size: clamp(17px, 1.7vw, 24px); line-height: 1.3; }
-.fe-wl3__phrase {
-  margin: 0;
-  color: var(--wl-ink);
-  font-family: var(--font-display, 'Manrope', system-ui, sans-serif);
-  font-size: clamp(33px, 9.2vw, 44px);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums;
-  text-wrap: balance;
+.fe-wl__copy[data-out='true'] { animation: fe-wl-copy-out 240ms var(--wl-in) both; pointer-events: none; }
+@keyframes fe-wl-copy-out {
+  from { transform: translate3d(calc(var(--wl-from, 0px) * 0.45), 0, 0); }
+  to { opacity: 0; transform: translate3d(calc(var(--wl-dir, 1) * -28px), 0, 0); }
 }
-.fe-wl3__caption { margin: clamp(10px, 1.6vh, 16px) 0 0; color: var(--wl-faint); font-size: 14px; line-height: 1.45; text-wrap: pretty; }
-.fe-wl3__body { margin: clamp(12px, 2vh, 20px) 0 0; max-width: 34em; color: var(--wl-mute); font-size: 16.5px; line-height: 1.5; text-wrap: pretty; }
-.fe-wl3__points { margin: clamp(12px, 2vh, 20px) 0 0; padding: 0; list-style: none; color: var(--wl-ink); font-size: 17px; font-weight: 520; line-height: 1.35; }
-.fe-wl3__points li + li { margin-top: 6px; }
-.fe-wl3__links { display: flex; flex-wrap: wrap; gap: 6px 26px; margin: clamp(14px, 2.2vh, 22px) 0 0; }
-/* Ссылка — слова и стрелка, подчёркнутые тонкой линией текста: без плашек. */
-.fe-wl3__link {
+/* Палец отпущен: сцена и текст возвращаются на место без рывка. */
+.fe-wl__stage:not([data-wl-drag]) :is(.fe-wl__art-in, .fe-wl__copy) { transition: transform 420ms var(--wl-out); }
+
+.fe-wl__eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  color: var(--wl-blue);
-  font-size: 17px;
-  font-weight: 620;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
-  text-decoration-color: rgba(31, 59, 120, 0.35);
-  transition: text-decoration-color 0.2s ease;
+  gap: 10px;
+  margin: 0 0 12px;
+  color: #A9BCE6;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
-@media (hover: hover) {
-  .fe-wl3__link:hover { text-decoration-color: currentColor; }
+/* Золото — тонкой чертой (исключение 4 раздела «Без границ»: линия, не рамка). */
+.fe-wl__rule { display: block; width: 28px; height: 2px; border-radius: 1px; background: linear-gradient(90deg, #E0BE6E, #B08A3E); transform-origin: left center; }
+.fe-wl__title {
+  margin: 0;
+  color: var(--wl-ink);
+  font-size: clamp(29px, 8.2vw, 36px);
+  font-weight: 740;
+  line-height: 1.08;
+  letter-spacing: -0.028em;
 }
-
-/* Поле вопроса: одно, с круглой кнопкой. Углубление (свет сверху, тень внутри), а не рамка. */
-.fe-wl3__ask { margin: clamp(14px, 2.4vh, 26px) 0 0; max-width: 560px; }
-.fe-wl3__field {
+/* Каждая строка заголовка выходит из-под своей кромки: буквы поднимаются, а не проявляются. */
+.fe-wl__line { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.fe-wl__line-in { display: block; }
+.fe-wl__line:not([data-accent]) .fe-wl__line-in { color: rgba(206, 219, 246, 0.6); }
+.fe-wl__body {
+  margin: 14px auto 0;
+  max-width: 30em;
+  color: var(--wl-ink-2);
+  font-size: 16.5px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.fe-wl__points { display: inline-grid; gap: 9px; margin: 16px 0 0; padding: 0; list-style: none; text-align: left; }
+.fe-wl__points li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 58px;
-  padding: 0 9px 0 24px;
-  border-radius: 29px;
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 18px 40px -26px rgba(18, 24, 34, 0.45);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-.fe-wl3__field:focus-within { background: #FFFFFF; box-shadow: inset 0 1px 0 #FFFFFF, 0 22px 44px -24px rgba(31, 59, 120, 0.5); }
-.fe-wl3__field input {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
+  gap: 12px;
   color: var(--wl-ink);
-  font-size: 17px;
-  background: transparent;
-  outline: none;
+  font-size: 16.5px;
+  font-weight: 560;
+  line-height: 1.3;
 }
-.fe-wl3__field input::placeholder { color: var(--wl-faint); }
-.fe-wl3__field button {
+.fe-wl__point-icon {
   display: inline-flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  color: #F2F5FA;
-  background: var(--wl-ink);
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.1s ease-out;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  color: #C7D6F7;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 10px 22px -14px rgba(0, 0, 0, 0.6);
 }
-.fe-wl3__field button:disabled { opacity: 0.28; cursor: default; }
-.fe-wl3__field button:active:not(:disabled) { transform: scale(0.94); }
-.fe-wl3__tries { display: flex; flex-wrap: wrap; gap: 0 18px; margin: 6px 0 0 24px; }
-.fe-wl3__tries button {
-  min-height: 40px;
-  color: var(--wl-mute);
-  font-size: 14.5px;
-  background: transparent;
-  cursor: pointer;
-  transition: color 0.2s ease;
+.fe-wl__note { margin: 14px auto 0; max-width: 30em; color: var(--wl-ink-3); font-size: 13.5px; line-height: 1.45; text-wrap: pretty; }
+.fe-wl__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
+.fe-wl__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  color: var(--wl-ink);
+  font-size: 15px;
+  font-weight: 640;
+  text-decoration: none;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.07));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 14px 28px -18px rgba(0, 0, 0, 0.7);
+  transition: transform 0.24s var(--wl-out), background-color 0.2s ease;
 }
+.fe-wl__link svg { color: #C7D6F7; }
 @media (hover: hover) {
-  .fe-wl3__tries button:hover { color: var(--wl-blue); }
+  .fe-wl__link:hover { transform: translate3d(0, -2px, 0); background-color: rgba(255, 255, 255, 0.08); }
 }
+.fe-wl__link:active { transform: scale(0.97); transition-duration: 0.1s; }
+.fe-wl__start { display: flex; justify-content: center; margin-top: 26px; }
 
-/* ── Линия ─────────────────────────────────────────────────────────────── */
-.fe-wl3-chart {
+/* ── Кнопки: отклик на само нажатие (а не на отпускание), подъём при наведении ── */
+.fe-wl__btn {
   position: relative;
-  height: clamp(120px, 24vh, 330px);
-  margin-bottom: 22px;
-  touch-action: pan-y;
-  cursor: crosshair;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 26px;
+  border-radius: 999px;
+  font-size: 16.5px;
+  font-weight: 680;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
+  transition: transform 0.28s var(--wl-out), box-shadow 0.28s ease, background-color 0.2s ease, color 0.2s ease;
 }
-.fe-wl3-chart[data-empty='true'] { cursor: default; }
-.fe-wl3-chart__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.fe-wl3-chart__line {
-  fill: none;
-  stroke: var(--wl-blue);
-  stroke-width: 2.25;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
+.fe-wl__btn:active { transform: scale(0.965); transition-duration: 0.1s; }
+/* Главная кнопка шага: светлое стекло на тёмной сцене — самое яркое пятно экрана после заголовка. */
+.fe-wl__btn--light {
+  min-width: 156px;
+  color: #0C1630;
+  background: linear-gradient(180deg, #FFFFFF, #E6ECF8);
+  box-shadow: inset 0 1px 0 #FFFFFF, 0 18px 40px -18px rgba(120, 160, 255, 0.75), 0 2px 6px rgba(4, 8, 20, 0.4);
 }
-.fe-wl3-chart__line--peer { stroke: var(--wl-teal); animation: fe-wl3-draw 1300ms cubic-bezier(0.45, 0, 0.15, 1) 120ms both; }
-/* Сначала линия, потом тон: вещь растёт на глазах, без «крутилки». */
-.fe-wl3-chart__draw { transition: opacity 500ms ease; animation: fe-wl3-draw 1700ms cubic-bezier(0.45, 0, 0.15, 1) 450ms both; }
-@keyframes fe-wl3-draw { from { clip-path: inset(-10% 100% -10% 0); } to { clip-path: inset(-10% 0 -10% 0); } }
-.fe-wl3-chart__area { animation: fe-wl3-word 900ms ease 1700ms both; }
-/* Шаг про свежесть: обычная линия уступает той же линии, но с прошлым в тени. Две копии меняются прозрачностью. */
-.fe-wl3-chart__past { opacity: 0; transition: opacity 600ms ease; pointer-events: none; }
-.fe-wl3-chart__past .fe-wl3-chart__line { stroke: url(#fe-wl3-past); }
-.fe-wl3-chart[data-mode='fresh'] .fe-wl3-chart__past { opacity: 1; }
-.fe-wl3-chart[data-mode='fresh'] .fe-wl3-chart__draw { opacity: 0; }
-.fe-wl3-chart[data-mode='telegram'] .fe-wl3-chart__draw { opacity: 0.38; }
-.fe-wl3-chart[data-mode='compare'] .fe-wl3-chart__area { visibility: hidden; }
-
-.fe-wl3-chart__years { position: absolute; left: 0; right: 0; bottom: -22px; height: 16px; color: var(--wl-faint); font-size: 11.5px; font-variant-numeric: tabular-nums; }
-.fe-wl3-chart__years span { position: absolute; transform: translateX(-50%); }
-
-/* «Сейчас»: точка у правого края. Светлое поле вокруг неё — кружок цвета фона под точкой, а не кольцо. */
-.fe-wl3-chart__now {
-  --dot: var(--wl-blue);
-  position: absolute;
-  width: 19px;
-  height: 19px;
-  margin: -9.5px 0 0 -9.5px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--dot) 0 4.6px, var(--wl-bg) 5.2px 9px, rgba(244, 245, 247, 0) 9.5px);
-  animation: fe-wl3-word 400ms ease 2050ms both;
+/* Единственная золотая заливка экрана: «Создать аккаунт». */
+.fe-wl__btn--gold {
+  min-width: 190px;
+  color: #231B0B;
+  background: linear-gradient(135deg, #E3C273, #B8913F);
+  box-shadow: inset 0 1px 0 rgba(255, 244, 214, 0.8), 0 18px 40px -18px rgba(201, 162, 77, 0.8), 0 2px 6px rgba(4, 8, 20, 0.4);
 }
-.fe-wl3-chart__now--peer { --dot: var(--wl-teal); animation-delay: 1300ms; }
-.fe-wl3-chart[data-mode='account'] .fe-wl3-chart__now:not(.fe-wl3-chart__now--peer) { --dot: var(--wl-gold); }
-.fe-wl3-chart[data-mode='telegram'] .fe-wl3-chart__now { opacity: 0.5; }
-/* Кромка: тонкая вертикаль у последней точки и месяц рядом. Только на шаге про свежесть. */
-.fe-wl3-chart__edge {
+.fe-wl__btn--quiet { padding: 0 14px; color: var(--wl-ink-2); font-size: 15.5px; font-weight: 600; background: transparent; }
+.fe-wl__btn-arrow { transition: transform 0.28s var(--wl-out); }
+@media (hover: hover) {
+  .fe-wl__btn--light:hover, .fe-wl__btn--gold:hover { transform: translate3d(0, -2px, 0); }
+  .fe-wl__btn--light:hover:active, .fe-wl__btn--gold:hover:active { transform: scale(0.965); }
+  .fe-wl__btn:hover .fe-wl__btn-arrow { transform: translate3d(3px, 0, 0); }
+  .fe-wl__btn--quiet:hover { color: var(--wl-ink); background-color: rgba(255, 255, 255, 0.08); }
+}
+/* Блик по кнопке «Дальше», когда сцена шага доиграла. */
+.fe-wl__btn-glint {
   position: absolute;
   top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(180deg, rgba(31, 59, 120, 0), rgba(31, 59, 120, 0.45) 30%, rgba(31, 59, 120, 0.45));
+  left: 0;
+  width: 42%;
+  height: 100%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(140, 176, 255, 0.5), rgba(255, 255, 255, 0));
   opacity: 0;
-  transition: opacity 500ms ease;
-}
-.fe-wl3-chart[data-mode='fresh'] .fe-wl3-chart__edge { opacity: 1; }
-.fe-wl3-chart__nowlabel {
-  position: absolute;
-  transform: translate(calc(-100% - 12px), calc(-100% - 14px));
-  color: var(--wl-blue);
-  font-size: 13.5px;
-  font-weight: 620;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 500ms ease, color 400ms ease;
-  /* Свет фона вокруг букв: там, где подпись всё же пересекает линию, линия под ней отступает. */
-  text-shadow: 0 0 6px var(--wl-bg), 0 0 6px var(--wl-bg), 0 0 6px var(--wl-bg), 0 0 2px var(--wl-bg);
-}
-.fe-wl3-chart__nowlabel[data-below='true'] { transform: translate(calc(-100% - 12px), 14px); }
-.fe-wl3-chart:is([data-mode='fresh'], [data-mode='account']) .fe-wl3-chart__nowlabel { opacity: 1; }
-.fe-wl3-chart[data-mode='account'] .fe-wl3-chart__nowlabel { color: #8A6A2A; }
-.fe-wl3-chart__end {
-  position: absolute;
-  transform: translate(calc(-100% - 12px), calc(-100% - 12px));
-  color: var(--wl-blue);
-  font-size: 13.5px;
-  font-weight: 620;
-  white-space: nowrap;
-  animation: fe-wl3-word 500ms ease 1300ms both;
-  text-shadow: 0 0 6px var(--wl-bg), 0 0 6px var(--wl-bg), 0 0 6px var(--wl-bg), 0 0 2px var(--wl-bg);
-}
-.fe-wl3-chart__end[data-below='true'] { transform: translate(calc(-100% - 12px), 12px); }
-.fe-wl3-chart__end--peer { color: #1B7480; }
-
-/* Под рукой: волосок, точка, число и месяц. Больше ничего. */
-.fe-wl3-chart__hair { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(18, 24, 34, 0.16); pointer-events: none; }
-.fe-wl3-chart__dot {
-  position: absolute;
-  width: 19px;
-  height: 19px;
-  margin: -9.5px 0 0 -9.5px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--wl-ink) 0 4.6px, var(--wl-bg) 5.2px 9px, rgba(244, 245, 247, 0) 9.5px);
+  transform: translate3d(-130%, 0, 0);
   pointer-events: none;
+  animation: fe-wl-glint 900ms cubic-bezier(0.4, 0, 0.2, 1) 4200ms both;
 }
-.fe-wl3-chart__read {
-  position: absolute;
-  display: grid;
-  transform: translate(12px, calc(-100% - 12px));
-  color: var(--wl-mute);
-  font-size: 12.5px;
-  line-height: 1.25;
-  white-space: nowrap;
-  pointer-events: none;
-  text-shadow: 0 0 8px var(--wl-bg), 0 0 8px var(--wl-bg), 0 0 3px var(--wl-bg);
+@keyframes fe-wl-glint {
+  0% { opacity: 0; transform: translate3d(-130%, 0, 0); }
+  20%, 70% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(340%, 0, 0); }
 }
-.fe-wl3-chart__read[data-flip='true'] { transform: translate(calc(-100% - 12px), calc(-100% - 12px)); text-align: right; }
-.fe-wl3-chart__read b { color: var(--wl-ink); font-size: 21px; font-weight: 640; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-/* Пока число под рукой, подписи «сейчас» и концов линий не спорят с ним. */
-.fe-wl3-chart[data-scrub='true'] .fe-wl3-chart__end { opacity: 0.25; }
-.fe-wl3-chart[data-scrub='true']:is([data-mode='fresh'], [data-mode='account']) .fe-wl3-chart__nowlabel { opacity: 0.25; }
 
 /* ── Низ: шаги и действия ───────────────────────────────────────────────── */
-.fe-wl3__nav {
+.fe-wl__nav {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 4px;
   width: 100%;
   max-width: calc(var(--wl-max) + 2 * var(--wl-pad));
   margin-inline: auto;
-  padding: 14px var(--wl-pad) calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 4px var(--wl-pad) calc(14px + env(safe-area-inset-bottom, 0px));
+  animation: fe-wl-nav-in 760ms var(--wl-out) 260ms both;
 }
-.fe-wl3__actions { display: flex; align-items: flex-start; gap: 8px; min-height: 72px; }
-.fe-wl3__steps { display: flex; align-items: center; gap: 0; height: 52px; margin: 0 auto 0 -5px; padding: 0; list-style: none; }
-.fe-wl3__tick { display: flex; align-items: center; justify-content: center; width: 32px; height: 44px; padding: 0; background: transparent; cursor: pointer; }
-.fe-wl3__tick span { display: block; width: 22px; height: 2px; border-radius: 1px; background: rgba(18, 24, 34, 0.16); transition: background-color 0.3s ease; }
-.fe-wl3__tick[data-state='done'] span { background: rgba(18, 24, 34, 0.42); }
-.fe-wl3__tick[data-state='current'] span { background: var(--wl-ink); }
-.fe-wl3__back, .fe-wl3__quiet {
-  display: inline-flex;
-  flex: none;
+@keyframes fe-wl-nav-in { from { opacity: 0; transform: translate3d(0, 18px, 0); } }
+.fe-wl__steps { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.fe-wl__dot {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  height: 52px;
-  padding: 0 14px;
-  border-radius: 12px;
-  color: var(--wl-mute);
-  font-size: 15.5px;
-  font-weight: 560;
+  justify-content: center;
+  width: 38px;
+  height: 44px;
+  padding: 0;
   background: transparent;
   cursor: pointer;
-  transition: color 0.2s ease, opacity 0.2s ease;
 }
-.fe-wl3__back[data-hidden='true'] { opacity: 0; pointer-events: none; }
-.fe-wl3__back span { display: none; }
+.fe-wl__dot span {
+  position: relative;
+  display: block;
+  width: 30px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+  transition: transform 0.3s var(--wl-out);
+}
+/* Заливка полоски выезжает слева: пройденные — светлые, текущая — золотая. */
+.fe-wl__dot span::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.62);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 560ms var(--wl-out), background-color 300ms ease;
+}
+.fe-wl__dot[data-state='done'] span::after { transform: scaleX(1); }
+.fe-wl__dot[data-state='current'] span::after { transform: scaleX(1); background: linear-gradient(90deg, #E0BE6E, #B08A3E); }
 @media (hover: hover) {
-  .fe-wl3__back:hover, .fe-wl3__quiet:hover { color: var(--wl-ink); }
+  .fe-wl__dot:hover span { transform: scaleY(1.67); }
 }
-/* Главное действие: графит, как активное состояние на сайте. Отклик — на само нажатие. */
-.fe-wl3__go {
+.fe-wl__actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 74px;
+}
+.fe-wl__actions > .fe-wl__btn--light, .fe-wl__actions > .fe-wl__btn--quiet { margin-left: auto; }
+.fe-wl__back {
   display: inline-flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  width: 52px;
   height: 52px;
-  padding: 0 24px;
-  border-radius: 26px;
-  color: #F2F5FA;
-  font-size: 16.5px;
-  font-weight: 620;
-  text-decoration: none;
-  white-space: nowrap;
-  background: var(--wl-ink);
-  box-shadow: 0 16px 30px -20px rgba(18, 24, 34, 0.7);
+  padding: 0;
+  border-radius: 50%;
+  color: var(--wl-ink-2);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  transition: transform 0.1s ease-out, background-color 0.2s ease;
+  transition: opacity 0.3s ease, color 0.2s ease, transform 0.28s var(--wl-out);
 }
-.fe-wl3__go:active { transform: scale(0.97); }
+.fe-wl__back:active { transform: scale(0.94); transition-duration: 0.1s; }
+.fe-wl__back[data-hidden='true'] { opacity: 0; pointer-events: none; }
 @media (hover: hover) {
-  .fe-wl3__go:hover { background: #1E2638; }
+  .fe-wl__back:hover { color: var(--wl-ink); }
 }
-.fe-wl3__cta { display: flex; flex: none; flex-direction: column; align-items: center; gap: 5px; }
-.fe-wl3__cta small { color: var(--wl-faint); font-size: 12px; line-height: 1.2; }
+.fe-wl__cta { display: flex; flex: none; flex-direction: column; align-items: center; gap: 5px; }
+.fe-wl__cta-hint { color: var(--wl-ink-3); font-size: 12px; line-height: 1.2; }
 
 /* Фокус с клавиатуры: обводка (исключение 1 раздела «Без границ»). */
-.fe-wl3 :is(.fe-wl3__skip, .fe-wl3__tick, .fe-wl3__back, .fe-wl3__quiet, .fe-wl3__go, .fe-wl3__link, .fe-wl3__tries button, .fe-wl3__field button):focus { outline: none; }
-.fe-wl3 :is(.fe-wl3__skip, .fe-wl3__back, .fe-wl3__quiet, .fe-wl3__go, .fe-wl3__link, .fe-wl3__tries button, .fe-wl3__field button):focus-visible { outline: 2px solid #B08A3E; outline-offset: 3px; }
-.fe-wl3 .fe-wl3__tick:focus-visible span { outline: 2px solid #B08A3E; outline-offset: 4px; }
+.fe-wl :is(.fe-wl__skip, .fe-wl__dot, .fe-wl__back, .fe-wl__link, .fe-wl__btn):focus { outline: none; }
+.fe-wl :is(.fe-wl__skip, .fe-wl__back, .fe-wl__link, .fe-wl__btn):focus-visible { outline: 2px solid #E0BE6E; outline-offset: 3px; }
+.fe-wl .fe-wl__dot:focus-visible span { outline: 2px solid #E0BE6E; outline-offset: 4px; }
 
-/* Телефон: полоски шагов стоят своей строкой над кнопками, иначе три действия последнего шага не помещаются. */
-@media (max-width: 759px) {
-  .fe-wl3__actions { flex-wrap: wrap; justify-content: flex-end; min-height: 0; }
-  .fe-wl3__steps { flex: 0 0 100%; height: 26px; margin-bottom: 6px; }
-  .fe-wl3__tick { height: 26px; }
-  .fe-wl3__back { margin-right: auto; padding-left: 4px; }
-  .fe-wl3__cta small { display: none; }
+/* ── Появление текста: черта шага вытягивается, строки заголовка поднимаются, остальное подходит каскадом ── */
+.fe-wl__copy:not([data-out]) .fe-wl__eyebrow { animation: fe-wl-step-in 620ms var(--wl-out) 120ms both; }
+.fe-wl__copy:not([data-out]) .fe-wl__rule { animation: fe-wl-rule 700ms var(--wl-out) 200ms both; }
+@keyframes fe-wl-rule { from { transform: scaleX(0); } }
+.fe-wl__copy:not([data-out]) .fe-wl__line-in { animation: fe-wl-line 820ms var(--wl-out) calc(190ms + var(--i, 0) * 110ms) both; }
+@keyframes fe-wl-line { from { opacity: 0; transform: translate3d(0, 108%, 0); } }
+.fe-wl__copy:not([data-out]) > :is(.fe-wl__body, .fe-wl__points) { animation: fe-wl-step-in 700ms var(--wl-out) 420ms both; }
+.fe-wl__copy:not([data-out]) > :is(.fe-wl__note, .fe-wl__links, .fe-wl__start) { animation: fe-wl-step-in 700ms var(--wl-out) 540ms both; }
+@keyframes fe-wl-step-in {
+  from { opacity: 0; transform: translate3d(calc(var(--wl-dir, 1) * 22px), 8px, 0); }
+}
+/* Приветствие: всё выходит позже и медленнее, после того как F встала на место и по ней прошёл блик. */
+.fe-wl__copy[data-screen='hello']:not([data-out]) .fe-wl__eyebrow { animation-delay: 1700ms; }
+.fe-wl__copy[data-screen='hello']:not([data-out]) .fe-wl__rule { animation-delay: 1780ms; }
+.fe-wl__copy[data-screen='hello']:not([data-out]) .fe-wl__line-in { animation-duration: 1000ms; animation-delay: calc(1840ms + var(--i, 0) * 150ms); }
+.fe-wl__copy[data-screen='hello']:not([data-out]) > .fe-wl__body { animation-delay: 2300ms; }
+.fe-wl__copy[data-screen='hello']:not([data-out]) > .fe-wl__start { animation: fe-wl-start 900ms var(--wl-out) 2650ms both; }
+@keyframes fe-wl-start { from { opacity: 0; transform: translate3d(0, 14px, 0) scale(0.94); } }
+/* Уходящее приветствие поднимается вверх вслед за F, а не в сторону. */
+.fe-wl__copy[data-screen='hello'][data-out='true'] { animation-name: fe-wl-hello-out; animation-duration: 280ms; }
+@keyframes fe-wl-hello-out { to { opacity: 0; transform: translate3d(0, -18px, 0) scale(0.98); } }
+
+/* ── Приветствие: F в центре, текст под ней ─────────────────────────────── */
+.fe-wl { --wl-hello-top: calc(var(--wl-hfcy) + var(--wl-hfh) / 2 - 64px - env(safe-area-inset-top, 0px) + clamp(14px, 3vh, 30px)); }
+.fe-wl[data-wl-kind='hello'] .fe-wl__stage { display: block; padding-top: var(--wl-hello-top); }
+/* Уходящее приветствие остаётся там, где стояло (место на экране ему записывает WelcomeScreen), пока раскладка уже перестроилась под шаг. */
+.fe-wl .fe-wl__copy[data-screen='hello'][data-out='true'] { max-width: none; min-height: 0; text-align: center; }
+.fe-wl .fe-wl__copy[data-screen='hello'][data-out='true'] :is(.fe-wl__body) { margin-inline: auto; }
+.fe-wl .fe-wl__copy[data-screen='hello'][data-out='true'] .fe-wl__start { justify-content: center; }
+.fe-wl[data-wl-kind='hello'] .fe-wl__art { display: none; }
+.fe-wl__copy[data-screen='hello'] .fe-wl__title { font-size: clamp(31px, 8.4vw, 40px); }
+.fe-wl__copy[data-screen='hello'] .fe-wl__body { max-width: 24em; }
+
+/* ── Движение внутри сцен (классы ставит WelcomeArt.jsx, задержка — --d). Базовый вид без анимации = итоговый кадр. ── */
+.fe-wl-svg :is(.wl-rise, .wl-pop, .wl-ping, .wl-shift, .wl-wipe, .wl-sheen) { transform-box: fill-box; transform-origin: center; }
+.wl-rise { animation: wl-rise 760ms var(--wl-out, ease-out) var(--d, 0ms) both; }
+@keyframes wl-rise { from { opacity: 0; transform: translate3d(0, 20px, 0) scale(0.97); } }
+.wl-rise--far { animation-name: wl-rise-far; animation-duration: 900ms; }
+@keyframes wl-rise-far { from { opacity: 0; transform: translate3d(0, 44px, 0) scale(0.95); } }
+.wl-rise--near { animation-name: wl-rise-near; animation-duration: 560ms; }
+@keyframes wl-rise-near { from { opacity: 0; transform: translate3d(0, 8px, 0) scale(0.92); } }
+.wl-fade { animation: wl-fade 560ms ease var(--d, 0ms) both; }
+@keyframes wl-fade { from { opacity: 0; } }
+/* Буквы слова — части одной строки SVG (tspan): Safari не применяет к ним opacity, поэтому гаснет заливка буквы (fill-opacity). */
+.wl-type { animation: wl-letter 110ms linear var(--d, 0ms) both; }
+@keyframes wl-letter { from { fill-opacity: 0; } }
+/* Курсор: трижды мигает после слова и гаснет; в итоговом кадре его нет. */
+.wl-caret { fill: #2C4A8A; fill-opacity: 0; animation: wl-caret 1500ms linear var(--d, 0ms) both; }
+/* Явные кадры вместо steps(): Safari с steps() оставлял курсор гореть после конца. */
+@keyframes wl-caret {
+  0%, 20%, 38%, 60%, 78%, 100% { fill-opacity: 0; }
+  2%, 18%, 40%, 58%, 80%, 96% { fill-opacity: 1; }
+}
+/* Точка и значок: короткий упругий вход, перелёт не больше 8 %. */
+.wl-pop { animation: wl-pop 520ms cubic-bezier(0.3, 1.36, 0.5, 1) var(--d, 0ms) both; }
+@keyframes wl-pop { from { opacity: 0; transform: scale(0.4); } }
+/* Круг-отклик: расходится один раз и гаснет; в итоговом кадре его нет. */
+.wl-ping { opacity: 0; animation: wl-ping 900ms ease-out var(--d, 0ms) both; }
+@keyframes wl-ping {
+  0% { opacity: 0; transform: scale(0.7); }
+  25% { opacity: 0.6; }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+/* Шторка открывает линию графика слева направо. Сдвиг в единицах рисунка (--wx): проценты у фигур SVG Safari не считает. */
+.wl-wipe { transform: translate3d(var(--wx, 260px), 0, 0); animation: wl-wipe 1100ms cubic-bezier(0.5, 0, 0.2, 1) var(--d, 0ms) both; }
+@keyframes wl-wipe { from { transform: translate3d(0, 0, 0); } }
+/* Строки списка уступают место новой. */
+.wl-shift { transform: translate3d(0, 0, 0); animation: wl-shift 620ms var(--wl-out, ease-out) var(--d, 0ms) both; }
+@keyframes wl-shift { from { transform: translate3d(0, -34px, 0); } }
+/* «Бот печатает»: появляется и уходит до ответа. */
+.wl-typing { opacity: 0; animation: wl-typing 900ms ease var(--d, 0ms) both; }
+@keyframes wl-typing {
+  0% { opacity: 0; transform: translate3d(0, 6px, 0); }
+  18%, 78% { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: 0; }
+}
+/* Блик по главной плите в конце сцены: один проход, в итоговом кадре его нет. */
+.wl-sheen { opacity: 0; animation: wl-sheen 1100ms cubic-bezier(0.4, 0, 0.2, 1) var(--d, 0ms) both; }
+@keyframes wl-sheen {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) skewX(-16deg); }
+  18%, 76% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate3d(var(--sx, 500px), 0, 0) skewX(-16deg); }
 }
 
-/* ── Планшет и компьютер ───────────────────────────────────────────────── */
-@media (min-width: 760px) and (min-height: 560px) {
-  .fe-wl3__top { padding-top: 26px; }
-  .fe-wl3__copy { max-width: none; }
-  .fe-wl3__phrase { font-size: clamp(40px, 4.5vw, 72px); line-height: 1; letter-spacing: -0.045em; }
-  .fe-wl3__ask { display: flex; align-items: center; gap: 4px 22px; max-width: none; }
-  .fe-wl3__field { flex: 0 1 520px; }
-  .fe-wl3__tries { margin: 0; }
-  .fe-wl3__label { font-size: 13px; }
-  .fe-wl3__caption { font-size: 15.5px; }
-  .fe-wl3__body { font-size: 19px; }
-  .fe-wl3__points { font-size: 20px; }
-  .fe-wl3__points li + li { margin-top: 8px; }
-  .fe-wl3__field { height: 64px; border-radius: 32px; padding: 0 12px 0 28px; }
-  .fe-wl3__field input { font-size: 18px; }
-  .fe-wl3-chart { height: clamp(140px, 27vh, 320px); }
-  .fe-wl3-chart__line { stroke-width: 2.5; }
-  .fe-wl3__nav { padding-bottom: calc(26px + env(safe-area-inset-bottom, 0px)); }
-  .fe-wl3__actions { gap: 12px; }
-  .fe-wl3__back span { display: inline; }
-}
-/* Невысокое окно компьютера: всё плотнее, чтобы поле вопроса не ушло под линию. */
-@media (min-width: 760px) and (min-height: 560px) and (max-height: 780px) {
-  .fe-wl3__top { padding-top: 14px; }
-  .fe-wl3__stage { padding-top: 12px; }
-  .fe-wl3__phrase { font-size: clamp(36px, 4vw, 56px); }
-  .fe-wl3__body { font-size: 17px; margin-top: 12px; }
-  .fe-wl3__field { height: 56px; }
-  .fe-wl3-chart { height: clamp(120px, 23vh, 200px); }
-  .fe-wl3__nav { padding-top: 8px; padding-bottom: 16px; }
-}
-/* Высокое окно: линии можно дать больше места. */
-@media (min-width: 760px) and (min-height: 920px) {
-  .fe-wl3-chart { height: clamp(220px, 34vh, 420px); }
+/* ── Планшет в книжной ориентации ───────────────────────────────────────── */
+@media (min-width: 600px) and (max-width: 899px) and (min-height: 701px) {
+  .fe-wl { --wl-hfh: min(36vh, 400px); }
+  .fe-wl__stage { align-content: center; }
+  .fe-wl__art-in { width: min(100%, 46vh, 520px); }
+  .fe-wl__title { font-size: 44px; }
+  .fe-wl__copy[data-screen='hello'] .fe-wl__title { font-size: 52px; }
+  .fe-wl__body { font-size: 19px; }
+  .fe-wl__points li { font-size: 19px; }
 }
 
-/* ── Низкий экран (телефон на боку) ────────────────────────────────────── */
+/* ── Компьютер и планшет на боку: текст слева, сцена справа, низ в одну строку ── */
+@media (min-width: 900px) and (min-height: 560px) {
+  .fe-wl { --wl-hfh: min(38vh, 430px); --wl-hfcy: 31vh; }
+  .fe-wl[data-wl-kind='step'] {
+    --wl-fx: calc(27vw - var(--wl-i, 0) * 1.2vw);
+    --wl-fcy: 50vh;
+    --wl-fs: 1.62;
+    --wl-fo: 0.2;
+  }
+  .fe-wl__top { padding-top: 22px; }
+  .fe-wl__stage {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-rows: auto;
+    align-content: center;
+    align-items: center;
+    gap: clamp(32px, 6vw, 96px);
+    padding-top: 8px;
+  }
+  .fe-wl__art { order: 2; }
+  .fe-wl__art-in { width: min(100%, 82vh, 620px); }
+  /* Высота под самый длинный шаг: заголовок стоит на одном месте, пока человек листает. */
+  .fe-wl__copy { max-width: 520px; min-height: 380px; margin-inline: 0; text-align: left; }
+  .fe-wl__title { font-size: clamp(40px, 4.3vw, 62px); line-height: 1.04; letter-spacing: -0.034em; }
+  .fe-wl__eyebrow { margin-bottom: 18px; }
+  .fe-wl__body { margin: 22px 0 0; font-size: 19px; line-height: 1.55; }
+  .fe-wl__points { gap: 13px; margin-top: 26px; }
+  .fe-wl__points li { font-size: 18.5px; }
+  .fe-wl__point-icon { width: 38px; height: 38px; }
+  .fe-wl__note { margin-inline: 0; font-size: 14.5px; }
+  .fe-wl__links { justify-content: flex-start; margin-top: 28px; }
+  .fe-wl__nav {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    justify-items: stretch;
+    gap: 24px;
+    padding-bottom: calc(26px + env(safe-area-inset-bottom, 0px));
+  }
+  .fe-wl__steps { margin-left: -4px; height: 52px; }
+  .fe-wl__actions { justify-content: flex-end; gap: 12px; }
+  .fe-wl__actions > .fe-wl__btn--light, .fe-wl__actions > .fe-wl__btn--quiet { margin-left: 0; }
+  /* Приветствие на компьютере: всё по центру, как один предмет на сцене. */
+  .fe-wl[data-wl-kind='hello'] .fe-wl__copy { max-width: 760px; min-height: 0; margin-inline: auto; text-align: center; }
+  .fe-wl__copy[data-screen='hello'] .fe-wl__title { font-size: clamp(44px, 4.5vw, 68px); }
+  .fe-wl__copy[data-screen='hello'] .fe-wl__body { margin-inline: auto; max-width: 30em; }
+  .fe-wl__copy[data-screen='hello'] .fe-wl__eyebrow { margin-bottom: 14px; }
+  .fe-wl__start { margin-top: 30px; }
+}
+@media (min-width: 900px) and (min-height: 560px) and (max-height: 760px) {
+  .fe-wl { --wl-hfh: 36vh; --wl-hfcy: 30vh; }
+  .fe-wl__copy[data-screen='hello'] .fe-wl__title { font-size: clamp(38px, 4vw, 52px); }
+  .fe-wl__start { margin-top: 20px; }
+}
+
+/* ── Низкий экран (телефон на боку): F слева, текст справа, всё плотнее ─── */
 @media (max-height: 559px) and (min-width: 560px) {
-  .fe-wl3__top { padding-top: 6px; }
-  .fe-wl3__stage { grid-template-rows: none; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 28px; padding-top: 4px; }
-  .fe-wl3__phrase { font-size: clamp(26px, 4vw, 34px); }
-  .fe-wl3__body { font-size: 15px; margin-top: 8px; }
-  .fe-wl3__ask { margin-top: 10px; }
-  .fe-wl3__field { height: 48px; }
-  .fe-wl3__tries { display: none; }
-  .fe-wl3-chart { height: auto; align-self: stretch; min-height: 120px; }
-  .fe-wl3__nav { padding-top: 6px; }
-  .fe-wl3__actions { min-height: 0; }
-  .fe-wl3__go, .fe-wl3__back, .fe-wl3__quiet, .fe-wl3__steps { height: 44px; }
-  .fe-wl3__cta small { display: none; }
+  .fe-wl { --wl-hfh: 62vh; --wl-hfcy: 52vh; --wl-hfx: -24vw; }
+  .fe-wl[data-wl-kind='step'] { --wl-fx: 34vw; --wl-fcy: 44vh; --wl-fs: 1.3; --wl-fo: 0.16; }
+  .fe-wl__top { padding-block: 6px 0; }
+  .fe-wl__stage {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-content: center;
+    align-items: center;
+    gap: 20px;
+    padding-block: 0;
+  }
+  .fe-wl__art-in { width: min(100%, 62vh); }
+  .fe-wl__copy { text-align: left; margin-inline: 0; }
+  .fe-wl__title, .fe-wl__copy[data-screen='hello'] .fe-wl__title { font-size: 26px; }
+  .fe-wl__body { margin: 8px 0 0; font-size: 15px; }
+  .fe-wl__links { justify-content: flex-start; margin-top: 10px; }
+  .fe-wl__nav { grid-template-columns: auto minmax(0, 1fr); align-items: start; justify-items: stretch; gap: 16px; padding-top: 0; }
+  .fe-wl__actions { justify-content: flex-end; min-height: 0; }
+  .fe-wl__actions > .fe-wl__btn--light, .fe-wl__actions > .fe-wl__btn--quiet { margin-left: 0; }
+  .fe-wl__btn { min-height: 44px; }
+  .fe-wl__back { width: 44px; height: 44px; }
+  .fe-wl__cta-hint { display: none; }
+  .fe-wl[data-wl-kind='hello'] .fe-wl__stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding-top: 0; }
+  .fe-wl[data-wl-kind='hello'] .fe-wl__art { display: block; }
+  .fe-wl__start { justify-content: flex-start; margin-top: 14px; }
 }
 
-/* ── Невысокий и узкий телефон ─────────────────────────────────────────── */
-@media (max-width: 559px) and (max-height: 720px) {
-  .fe-wl3__top { padding-top: 8px; }
-  .fe-wl3__stage { padding-top: 6px; }
-  .fe-wl3__phrase { font-size: clamp(28px, 8vw, 34px); }
-  .fe-wl3__question { font-size: 16px; margin-bottom: 8px; }
-  .fe-wl3__body { font-size: 15px; margin-top: 10px; }
-  .fe-wl3__points { font-size: 15.5px; }
-  .fe-wl3__caption { font-size: 13px; }
-  .fe-wl3__ask { margin-top: 12px; }
-  .fe-wl3__field { height: 52px; }
-  .fe-wl3__tries button { min-height: 36px; }
-  .fe-wl3-chart { height: clamp(96px, 20vh, 150px); }
-  .fe-wl3__nav { padding-top: 8px; }
-  .fe-wl3__actions { min-height: 66px; }
-  .fe-wl3__go, .fe-wl3__back, .fe-wl3__quiet, .fe-wl3__steps { height: 48px; }
+/* Невысокий телефон (до 740 pt по высоте окна; у iPhone с панелями Safari это обычный случай): сцена и текст плотнее, шаг помещается без прокрутки. */
+@media (max-width: 559px) and (max-height: 740px) {
+  .fe-wl { --wl-hfh: 30vh; --wl-hfcy: 27vh; }
+  .fe-wl__top { padding-block: 8px 0; }
+  .fe-wl__stage { gap: 10px; padding-top: 2px; }
+  .fe-wl__art-in { width: min(100%, 38vh); }
+  .fe-wl__eyebrow { margin-bottom: 7px; font-size: 11px; }
+  .fe-wl__title { font-size: clamp(25px, 7.2vw, 28px); }
+  .fe-wl__copy[data-screen='hello'] .fe-wl__title { font-size: clamp(27px, 7.9vw, 31px); }
+  .fe-wl__body { margin-top: 8px; font-size: 15px; line-height: 1.42; }
+  .fe-wl__points { gap: 5px; margin-top: 10px; }
+  .fe-wl__points li { font-size: 15px; }
+  .fe-wl__point-icon { width: 28px; height: 28px; border-radius: 9px; }
+  .fe-wl__note { margin-top: 8px; font-size: 12.5px; line-height: 1.35; }
+  .fe-wl__links { margin-top: 10px; gap: 8px; }
+  .fe-wl__link { min-height: 44px; }
+  .fe-wl__start { margin-top: 16px; }
+  .fe-wl__nav { gap: 0; padding-top: 0; }
+  .fe-wl__dot { height: 30px; }
+  .fe-wl__actions { min-height: 70px; }
+  .fe-wl__btn { min-height: 48px; }
+  .fe-wl__back { width: 48px; height: 48px; }
 }
-/* Совсем невысокий телефон: остаётся главное — фраза, поле вопроса, линия. */
-@media (max-width: 559px) and (max-height: 620px) {
-  .fe-wl3__question, .fe-wl3__tries { display: none; }
-  .fe-wl3__body { font-size: 14px; line-height: 1.4; margin-top: 8px; }
-  .fe-wl3__caption { margin-top: 6px; }
-  .fe-wl3__ask { margin-top: 10px; }
-  .fe-wl3__field { height: 48px; }
-  .fe-wl3-chart { height: 88px; }
-}
+/* Узкий телефон: три кнопки последнего шага должны уместиться в строку. */
 @media (max-width: 399px) {
-  .fe-wl3 { --wl-pad: 16px; }
-  .fe-wl3__go { padding: 0 18px; font-size: 15.5px; }
-  .fe-wl3__quiet, .fe-wl3__back { padding: 0 8px; }
-  .fe-wl3__tick { width: 26px; }
-  .fe-wl3__tick span { width: 18px; }
+  .fe-wl__btn--gold { min-width: 0; padding: 0 20px; }
+  .fe-wl__btn--quiet { padding: 0 10px; }
+  .fe-wl__actions { gap: 6px; }
+}
+@media (max-width: 359px) {
+  .fe-wl { --wl-pad: 14px; }
+  .fe-wl__btn { padding: 0 16px; font-size: 15px; }
+  .fe-wl__btn--light { min-width: 0; }
+  .fe-wl__btn--gold { min-width: 0; }
+  .fe-wl__btn--quiet { padding: 0 6px; font-size: 14px; }
+  .fe-wl__back { width: 44px; height: 44px; }
+  .fe-wl__link { padding: 0 13px; font-size: 14px; }
+  .fe-wl__dot { width: 30px; }
+  .fe-wl__dot span { width: 22px; }
 }
 
-/* ── Меньше движения: всё стоит сразу ──────────────────────────────────── */
-.fe-wl3[data-wl-motion='off'],
-.fe-wl3[data-wl-motion='off'] *,
-.fe-wl3[data-wl-motion='off'] *::before {
+/* ── Меньше движения: всё стоит в итоговом виде ─────────────────────────── */
+.fe-wl[data-wl-motion='off'],
+.fe-wl[data-wl-motion='off'] *,
+.fe-wl[data-wl-motion='off'] *::before,
+.fe-wl[data-wl-motion='off'] *::after {
   animation: none !important;
   transition: none !important;
 }
 @media (prefers-reduced-motion: reduce) {
-  .fe-wl3, .fe-wl3 *, .fe-wl3 *::before {
+  .fe-wl, .fe-wl *, .fe-wl *::before, .fe-wl *::after {
     animation: none !important;
     transition: none !important;
   }
 }
+/* Экономия трафика и «меньше прозрачности»: без картинки F, фон остаётся со светом. */
+html[data-fe-lite='on'] .fe-wl__f { display: none; }
 @media print {
-  .fe-wl3 { display: none; }
+  .fe-wl { display: none; }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { countrySlug, detectVisitorCountry, welcomeAudience } from './welcomeAudience';
+import { detectVisitorCountry, welcomeAudience } from './welcomeAudience';
 
 describe('приветственный экран: чьи источники показать', () => {
   it('часовой пояс сильнее языка: en-US в Лондоне — это Великобритания', () => {
@@ -50,14 +50,5 @@ describe('приветственный экран: чьи источники п�
   it('регион берётся и из тега с письменностью (zh-Hans-CN)', () => {
     expect(detectVisitorCountry({ timeZone: null, languages: ['zh-Hans-CN'] })).toBe('CN');
     expect(detectVisitorCountry({ timeZone: null, languages: ['pt-BR'] })).toBe('BR');
-  });
-
-  it('у набора есть адреса стран на сайте: по ним берётся настоящий ряд', () => {
-    expect(countrySlug('United Kingdom')).toBe('united-kingdom');
-    expect(countrySlug('United States')).toBe('united-states');
-    const gb = welcomeAudience({ timeZone: 'Europe/London', languages: ['en-GB'] });
-    expect(gb).toMatchObject({ homeSlug: 'united-kingdom', peerSlug: 'germany' });
-    const world = welcomeAudience({});
-    expect(world).toMatchObject({ homeSlug: 'united-states', peerSlug: 'germany' });
   });
 });

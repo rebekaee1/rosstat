@@ -214,10 +214,10 @@ ym(107136069, 'init', {
 | `api_interest_click` | `ApiInterestLink` | клик по точке входа, открывает окно заявки | `source`, `indicator_code` |
 | `api_interest_submit` | `ApiInterestModal` | заявка отправлена (замер платного спроса) | `use_case`, `source`; почта в событие не кладётся |
 | `welcome_view` | `WelcomeScreen` | показ приветственного экрана (один раз на показ); только при `RUSTATS_WELCOME_ENABLED=true` | `trigger` (`auto`/`manual`), `audience` (`ru` на русском сайте; на английском ключ набора источников: `US`, `GB`, `CA`, `AU`, `JP`, `IN`, `BR`, `CN`, `EU`, `WORLD`) |
-| `welcome_step` | `WelcomeScreen` | человек перешёл к шагу | `step` (`find`/`fresh`/`telegram` или `compare`/`account`), `via` (`next`/`back`/`dot`/`key`) |
+| `welcome_step` | `WelcomeScreen` | человек перешёл к шагу | `step` (`find`/`fresh`/`telegram` или `compare`/`account`), `via` (`start`/`next`/`back`/`dot`/`key`/`swipe`) |
 | `welcome_skip` | `WelcomeScreen` | «Пропустить», Esc | `step` (на каком шаге), `via` (`button`/`key`) |
 | `welcome_done` | `WelcomeScreen` | «Перейти на сайт» на последнем шаге | — |
-| `welcome_cta` | `WelcomeScreen` | нажатие «Создать аккаунт», «Открыть бота», «Открыть канал», вопрос из поля «Спросите своё» (намерение, не конверсия) | `target` (`register`/`bot`/`channel`/`search` — вопрос из поля ушёл в поиск сайта) |
+| `welcome_cta` | `WelcomeScreen` | нажатие «Создать аккаунт», «Открыть бота», «Открыть канал» (намерение, не конверсия) | `target` (`register`/`bot`/`channel`) |
 | `pwa_install_prompt_view` | `PwaInstallPrompt` | показ окна «Установить приложение» (один раз на показ) | `platform` (`android`/`ios`) |
 | `pwa_ios_hint_view` | `PwaInstallPrompt`, `PwaInstallEntry` | показ подсказки iPhone «Поделиться → На экран Домой» | `platform` |
 | `pwa_install_prompt_accept` | `PwaInstallPrompt` | «Установить» (Android) / «Понятно» (iPhone) | `platform` |

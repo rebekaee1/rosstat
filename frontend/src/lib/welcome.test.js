@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   NEW_VISITOR_MAX_VISITS, TELEGRAM_BOT_URL, TELEGRAM_CHANNEL_URL, WELCOME_KEY, WELCOME_STEPS, WELCOME_STEPS_EN, canRemember, clampStep,
-  isCrawlerUa, isManualRequest, manualStartStep, markWelcomeSeen, readWelcomeSeen, searchHref, shouldAutoOpenWelcome, welcomeMotionLevel,
+  isCrawlerUa, isManualRequest, layoutChips, manualStartStep, markWelcomeSeen, readWelcomeSeen, shouldAutoOpenWelcome, welcomeMotionLevel,
   welcomeScreens,
 } from './welcome';
 
@@ -89,7 +89,7 @@ describe('приветственный экран: память и служеб�
     expect(isManualRequest('?preview_locale=en&welcome=1')).toBe(true);
     expect(isManualRequest('?welcome=0')).toBe(false);
     expect(isManualRequest('')).toBe(false);
-    expect(manualStartStep('?welcome=1&welcome_step=3')).toBe(2);
+    expect(manualStartStep('?welcome=1&welcome_step=3')).toBe(3);
     expect(manualStartStep('?welcome=1&welcome_step=9')).toBe(0);
     expect(manualStartStep('?welcome=1')).toBe(0);
   });
@@ -115,21 +115,26 @@ describe('приветственный экран: память и служеб�
   it('четыре шага, аккаунт последним; ссылки Telegram ведут на бота и канал проекта', () => {
     expect(WELCOME_STEPS).toEqual(['find', 'fresh', 'telegram', 'account']);
     expect(clampStep(-1)).toBe(0);
-    expect(clampStep(99)).toBe(3);
+    expect(clampStep(99)).toBe(4);
     expect(TELEGRAM_BOT_URL).toMatch(/^https:\/\/t\.me\/ForecastEconomyBot\?start=[a-z_]+$/);
     expect(TELEGRAM_CHANNEL_URL).toBe('https://t.me/forecasteconomy');
   });
 
-  it('шаги по языку: английская версия вместо Telegram показывает сравнение стран', () => {
-    expect(welcomeScreens('ru')).toEqual(['find', 'fresh', 'telegram', 'account']);
-    expect(welcomeScreens('en')).toEqual(['find', 'fresh', 'compare', 'account']);
+  it('перед шагами стоит приветствие; английская версия вместо Telegram показывает сравнение стран', () => {
+    expect(welcomeScreens('ru')).toEqual(['hello', 'find', 'fresh', 'telegram', 'account']);
+    expect(welcomeScreens('en')).toEqual(['hello', 'find', 'fresh', 'compare', 'account']);
     expect(WELCOME_STEPS_EN).not.toContain('telegram');
     expect(WELCOME_STEPS_EN.at(-1)).toBe('account');
   });
 
-  it('вопрос из поля ведёт на главную с открытым поиском; служебные параметры экрана в адрес не попадают', () => {
-    expect(searchHref('курс доллара')).toBe('/?q=%D0%BA%D1%83%D1%80%D1%81+%D0%B4%D0%BE%D0%BB%D0%BB%D0%B0%D1%80%D0%B0');
-    expect(searchHref('  gdp  ', '?preview_locale=en&welcome=1&welcome_step=2')).toBe('/?preview_locale=en&q=gdp');
-    expect(searchHref('x'.repeat(200)).length).toBeLessThan(100);
+  it('плашки источников: ряд стоит по центру, лишняя не влезает и не рисуется', () => {
+    const short = layoutChips(['FRED', 'BLS', 'BEA']);
+    expect(short).toHaveLength(3);
+    const left = short[0].x - 40;
+    const right = 360 - (short[2].x + short[2].w);
+    expect(Math.abs(left - right)).toBeLessThan(1);
+    const long = layoutChips(['Statistics Canada', 'Bank of Canada', 'IMF']);
+    expect(long.map((c) => c.label)).toEqual(['Statistics Canada', 'Bank of Canada']);
+    for (const chip of long) expect(chip.x + chip.w).toBeLessThanOrEqual(360);
   });
 });
