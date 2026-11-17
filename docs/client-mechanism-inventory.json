@@ -859,7 +859,7 @@
       "mcp_tools": []
     },
     "frontend/src/App.jsx": {
-      "sha256": "53b96a9a35f0981cbcb1aaebf98c994740c89918a8a034230a292bd4f531067d",
+      "sha256": "43677a7d7b6e8c5a78b7750098f713d74c379a43be2498c283fbbca3e249cf5f",
       "imports": [
         {
           "line": 1,
@@ -3098,7 +3098,7 @@
         },
         {
           "line": 242,
-          "end_line": 394,
+          "end_line": 397,
           "owner": "<module>",
           "name": "AppRoutes",
           "kind": "FunctionDeclaration",
@@ -3209,8 +3209,8 @@
           "callback_context": null
         },
         {
-          "line": 396,
-          "end_line": 402,
+          "line": 399,
+          "end_line": 405,
           "owner": "<module>",
           "name": "App",
           "kind": "FunctionDeclaration",
@@ -110210,7 +110210,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/welcome/WelcomeGate.jsx": {
-      "sha256": "ffe4edb0cab21b6fa9aa94aef9da7d07d02a526de2e11fdfdb3a7171eab98b96",
+      "sha256": "0b9542c1758b15aaf2093687772baca7c92fd0916ac9bb42273e972bb0b72d3a",
       "imports": [
         {
           "line": 1,
@@ -110224,6 +110224,7 @@
             "Suspense",
             "useCallback",
             "useEffect",
+            "useRef",
             "useState"
           ]
         },
@@ -110366,79 +110367,119 @@
         },
         {
           "line": 33,
-          "end_line": 92,
+          "end_line": 115,
           "owner": "<module>",
           "name": "WelcomeGate",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 46,
-          "end_line": 51,
+          "line": 42,
+          "end_line": 42,
           "owner": "WelcomeGate",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 48,
-          "end_line": 48,
-          "owner": "WelcomeGate.<callback@46>",
+          "line": 49,
+          "end_line": 54,
+          "owner": "WelcomeGate",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 51,
+          "end_line": 51,
+          "owner": "WelcomeGate.<callback@49>",
           "name": "onOpen",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 50,
-          "end_line": 50,
-          "owner": "WelcomeGate.<callback@46>",
+          "line": 53,
+          "end_line": 53,
+          "owner": "WelcomeGate.<callback@49>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 67,
-          "end_line": 73,
+          "line": 59,
+          "end_line": 67,
           "owner": "WelcomeGate",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 69,
-          "end_line": 71,
-          "owner": "WelcomeGate.<callback@67>",
+          "line": 61,
+          "end_line": 65,
+          "owner": "WelcomeGate.<callback@59>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "window.setTimeout"
         },
         {
-          "line": 72,
-          "end_line": 72,
-          "owner": "WelcomeGate.<callback@67>",
+          "line": 66,
+          "end_line": 66,
+          "owner": "WelcomeGate.<callback@59>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 75,
-          "end_line": 84,
+          "line": 70,
+          "end_line": 72,
+          "owner": "WelcomeGate",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 89,
+          "end_line": 95,
+          "owner": "WelcomeGate",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 91,
+          "end_line": 93,
+          "owner": "WelcomeGate.<callback@89>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "window.setTimeout"
+        },
+        {
+          "line": 94,
+          "end_line": 94,
+          "owner": "WelcomeGate.<callback@89>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 97,
+          "end_line": 107,
           "owner": "WelcomeGate",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 95,
-          "end_line": 111,
+          "line": 118,
+          "end_line": 134,
           "owner": "<module>",
           "name": "WelcomeEntry",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 104,
-          "end_line": 104,
+          "line": 127,
+          "end_line": 127,
           "owner": "WelcomeEntry",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -110503,49 +110544,97 @@
           "owner": "WelcomeGate",
           "callee": "useState",
           "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 41,
+          "end_line": 41,
+          "owner": "WelcomeGate",
+          "callee": "useRef",
+          "arguments": [
+            "pathname"
+          ]
+        },
+        {
+          "line": 42,
+          "end_line": 42,
+          "owner": "WelcomeGate",
+          "callee": "useEffect",
+          "arguments": [
+            "() => { pathRef.current = pathname; }",
+            "[pathname]"
+          ]
+        },
+        {
+          "line": 43,
+          "end_line": 43,
+          "owner": "WelcomeGate",
+          "callee": "useState",
+          "arguments": [
             "0"
           ]
         },
         {
-          "line": 46,
-          "end_line": 51,
+          "line": 49,
+          "end_line": 54,
           "owner": "WelcomeGate",
           "callee": "useEffect",
           "arguments": [
-            "() => {\n    if (!enabled) return undefined;\n    const onOpen = () => setOpened('manual');\n    window.addEventListener(WELCOME_OPEN_EVENT, onOpen);\n    return () => window.removeEventListener(WELCOME_OPEN_EVENT, onOpen);\n  }",
+            "() => {\n    if (!enabled) return undefined;\n    const onOpen = () => { setOpened('manual'); setOpenedPath(pathRef.current); };\n    window.addEventListener(WELCOME_OPEN_EVENT, onOpen);\n    return () => window.removeEventListener(WELCOME_OPEN_EVENT, onOpen);\n  }",
             "[enabled]"
           ]
         },
         {
-          "line": 67,
-          "end_line": 73,
+          "line": 59,
+          "end_line": 67,
           "owner": "WelcomeGate",
           "callee": "useEffect",
           "arguments": [
-            "() => {\n    if (!auto) return undefined;\n    const id = window.setTimeout(() => {\n      if (!visitorIsBusy()) setOpened('auto');\n    }, WELCOME_OPEN_DELAY_MS);\n    return () => window.clearTimeout(id);\n  }",
+            "() => {\n    if (!leftPage) return undefined;\n    const id = window.setTimeout(() => {\n      setOpened(null);\n      setOpenedPath(null);\n      setClosedAt(Date.now());\n    }, 0);\n    return () => window.clearTimeout(id);\n  }",
+            "[leftPage]"
+          ]
+        },
+        {
+          "line": 70,
+          "end_line": 72,
+          "owner": "WelcomeGate",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    if (!trigger && typeof document !== 'undefined') document.documentElement.removeAttribute('data-fe-welcome');\n  }",
+            "[trigger]"
+          ]
+        },
+        {
+          "line": 89,
+          "end_line": 95,
+          "owner": "WelcomeGate",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    if (!auto) return undefined;\n    const id = window.setTimeout(() => {\n      if (!visitorIsBusy()) { setOpened('auto'); setOpenedPath(pathRef.current); }\n    }, WELCOME_OPEN_DELAY_MS);\n    return () => window.clearTimeout(id);\n  }",
             "[auto]"
           ]
         },
         {
-          "line": 75,
-          "end_line": 84,
+          "line": 97,
+          "end_line": 107,
           "owner": "WelcomeGate",
           "callee": "useCallback",
           "arguments": [
-            "() => {\n    setOpened(null);\n    setClosedAt(Date.now());\n    if (!isManualRequest(search)) return;\n    const params = new URLSearchParams(search);\n    params.delete(WELCOME_QUERY);\n    params.delete('welcome_step');\n    const rest = params.toString();\n    navigate({ pathname, search: rest ? `?${rest}` : '', hash }, { replace: true });\n  }",
+            "() => {\n    setOpened(null);\n    setOpenedPath(null);\n    setClosedAt(Date.now());\n    if (!isManualRequest(search)) return;\n    const params = new URLSearchParams(search);\n    params.delete(WELCOME_QUERY);\n    params.delete('welcome_step');\n    const rest = params.toString();\n    navigate({ pathname, search: rest ? `?${rest}` : '', hash }, { replace: true });\n  }",
             "[hash, navigate, pathname, search]"
           ]
         },
         {
-          "line": 96,
-          "end_line": 96,
+          "line": 119,
+          "end_line": 119,
           "owner": "WelcomeEntry",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 97,
-          "end_line": 97,
+          "line": 120,
+          "end_line": 120,
           "owner": "WelcomeEntry",
           "callee": "useWelcomeEnabled",
           "arguments": []
@@ -110555,9 +110644,9 @@
       "storage": [],
       "events": [
         {
-          "line": 49,
-          "end_line": 49,
-          "owner": "WelcomeGate.<callback@46>",
+          "line": 52,
+          "end_line": 52,
+          "owner": "WelcomeGate.<callback@49>",
           "callee": "window.addEventListener",
           "arguments": [
             "WELCOME_OPEN_EVENT",
@@ -110565,9 +110654,9 @@
           ]
         },
         {
-          "line": 50,
-          "end_line": 50,
-          "owner": "WelcomeGate.<callback@46>.<callback@50>",
+          "line": 53,
+          "end_line": 53,
+          "owner": "WelcomeGate.<callback@49>.<callback@53>",
           "callee": "window.removeEventListener",
           "arguments": [
             "WELCOME_OPEN_EVENT",
@@ -110575,9 +110664,9 @@
           ]
         },
         {
-          "line": 104,
-          "end_line": 104,
-          "owner": "WelcomeEntry.<callback@104>",
+          "line": 127,
+          "end_line": 127,
+          "owner": "WelcomeEntry.<callback@127>",
           "callee": "window.dispatchEvent",
           "arguments": [
             "new Event(WELCOME_OPEN_EVENT)"
@@ -110586,16 +110675,16 @@
       ],
       "jsx_handlers": [
         {
-          "line": 89,
-          "end_line": 89,
+          "line": 112,
+          "end_line": 112,
           "owner": "WelcomeGate",
           "component": "WelcomeScreen",
           "event": "onClose",
           "expression": "{onClose}"
         },
         {
-          "line": 101,
-          "end_line": 106,
+          "line": 124,
+          "end_line": 129,
           "owner": "WelcomeEntry",
           "component": "button",
           "event": "onClick",
@@ -264514,8 +264603,8 @@
   "totals": {
     "imports": 4939,
     "routes": 100,
-    "functions": 15874,
-    "hooks": 2926,
+    "functions": 15879,
+    "hooks": 2931,
     "http": 127,
     "storage": 249,
     "events": 466,

@@ -236,7 +236,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/App.jsx": {
-    "sha256": "53b96a9a35f0981cbcb1aaebf98c994740c89918a8a034230a292bd4f531067d",
+    "sha256": "43677a7d7b6e8c5a78b7750098f713d74c379a43be2498c283fbbca3e249cf5f",
     "definitions": [
       {
         "name": "ScrollToTop",
@@ -325,13 +325,13 @@
       {
         "name": "AppRoutes",
         "line": 242,
-        "end_line": 394,
+        "end_line": 397,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "App",
-        "line": 396,
-        "end_line": 402,
+        "line": 399,
+        "end_line": 405,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -470,7 +470,7 @@
         "names": [
           "default"
         ],
-        "line": 396
+        "line": 399
       }
     ],
     "anonymous_functions": 68
@@ -22856,7 +22856,7 @@
     "anonymous_functions": 12
   },
   "frontend/src/components/welcome/WelcomeGate.jsx": {
-    "sha256": "ffe4edb0cab21b6fa9aa94aef9da7d07d02a526de2e11fdfdb3a7171eab98b96",
+    "sha256": "0b9542c1758b15aaf2093687772baca7c92fd0916ac9bb42273e972bb0b72d3a",
     "definitions": [
       {
         "name": "useWelcomeEnabled",
@@ -22873,19 +22873,19 @@
       {
         "name": "WelcomeGate",
         "line": 33,
-        "end_line": 92,
+        "end_line": 115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WelcomeGate.onOpen",
-        "line": 48,
-        "end_line": 48,
+        "line": 51,
+        "end_line": 51,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WelcomeEntry",
-        "line": 95,
-        "end_line": 111,
+        "line": 118,
+        "end_line": 134,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -22934,10 +22934,10 @@
         "names": [
           "WelcomeEntry"
         ],
-        "line": 95
+        "line": 118
       }
     ],
-    "anonymous_functions": 8
+    "anonymous_functions": 13
   },
   "frontend/src/components/welcome/WelcomeScreen.jsx": {
     "sha256": "6beca01519e8a8797fad427a659e1e38b2694454a8813be3d37f4d250116187c",
