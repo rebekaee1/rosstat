@@ -157,6 +157,10 @@ html[data-fe-welcome='open'], html[data-fe-welcome='open'] body { background: #0
 @keyframes fe-wl-fade { from { opacity: 0; } }
 .fe-wl .fe-wl__brand { color: #F4F7FD; }
 .fe-wl .fe-wl__brand svg { filter: none; }
+.fe-wl__mark { display: inline-flex; align-items: center; gap: 10px; }
+.fe-wl__mark img { display: block; width: 30px; height: 30px; border-radius: 8px; }
+.fe-wl__mark-word { font-size: 17px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; }
+.fe-wl__mark-word span { font-weight: 300; }
 .fe-wl__skip {
   min-height: 44px;
   margin-right: -14px;

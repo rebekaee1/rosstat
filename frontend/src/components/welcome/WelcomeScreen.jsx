@@ -2,7 +2,6 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Bell, Bot, Download, Send, Star } from 'lucide-react';
-import Brand from '../Brand';
 import WelcomeArt from './WelcomeArt';
 import { useLocale, useT } from '../../i18n';
 import { track, events } from '../../lib/track';
@@ -362,7 +361,11 @@ export default function WelcomeScreen({ trigger = 'auto', initialStep = 0, onClo
       </div>
 
       <header className="fe-wl__top">
-        <Brand compact className="fe-wl__brand" />
+        {/* Маленький знак — значок сайта (стеклянная F на тёмно-синем), слово владельца 17.11.2026. */}
+        <span className="fe-wl__brand fe-wl__mark">
+          <img src="/favicon-512.png" width="30" height="30" alt="" decoding="async" />
+          <span className="fe-wl__mark-word">forecast<span>economy</span></span>
+        </span>
         <button type="button" className="fe-wl__skip" onClick={() => skip('button')} aria-label={t('welcome.skipAria')}>
           {t('welcome.skip')}
         </button>
