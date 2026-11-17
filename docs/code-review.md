@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `7e4640c6cc09f38237808096a82a3eedf9bf667f`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `74a6d869f5ceacfc78f49b6c028375c21d13eebb`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2611 |
-| Код, шаблоны и стили | 2121 |
-| Актуальные рецензии без пропусков guard | 2611 |
-| Именованные определения Python/JS: с аннотацией / всего | 17516 / 17516 |
+| Файлы в явно определённом scope | 2623 |
+| Код, шаблоны и стили | 2133 |
+| Актуальные рецензии без пропусков guard | 2623 |
+| Именованные определения Python/JS: с аннотацией / всего | 17611 / 17611 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -754,7 +754,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_cbr_reserves.py](../backend/tests/test_cbr_reserves.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_cbr_ruonia.py](../backend/tests/test_cbr_ruonia.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_cbr_trade_monthly.py](../backend/tests/test_cbr_trade_monthly.py) | reviewed | 25/25 | актуально |
-| [backend/tests/test_channel_author.py](../backend/tests/test_channel_author.py) | reviewed | 76/76 | актуально |
+| [backend/tests/test_channel_author.py](../backend/tests/test_channel_author.py) | reviewed | 79/79 | актуально |
 | [backend/tests/test_circle9_f.py](../backend/tests/test_circle9_f.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_clickhouse_replication_ch.py](../backend/tests/test_clickhouse_replication_ch.py) | reviewed | 23/23 | актуально |
 | [backend/tests/test_clickhouse_replication_pg.py](../backend/tests/test_clickhouse_replication_pg.py) | reviewed | 34/34 | актуально |
@@ -896,7 +896,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_pulse_telegram_html.py](../backend/tests/test_pulse_telegram_html.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_pulse_week_fixes.py](../backend/tests/test_pulse_week_fixes.py) | reviewed | 23/23 | актуально |
 | [backend/tests/test_push.py](../backend/tests/test_push.py) | reviewed | 33/33 | актуально |
-| [backend/tests/test_pwa.py](../backend/tests/test_pwa.py) | reviewed | 13/13 | актуально |
+| [backend/tests/test_pwa.py](../backend/tests/test_pwa.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_r10b_compare_snapshot.py](../backend/tests/test_r10b_compare_snapshot.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_r10c_cpi_chain.py](../backend/tests/test_r10c_cpi_chain.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_r4a_price_compare.py](../backend/tests/test_r4a_price_compare.py) | reviewed | 6/6 | актуально |
@@ -1818,6 +1818,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/searchTryThese.test.js](../frontend/src/components/searchTryThese.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/components/shellScrollOffset.component.test.jsx](../frontend/src/components/shellScrollOffset.component.test.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/components/viewModesContext.js](../frontend/src/components/viewModesContext.js) | reviewed | 2/2 | актуально |
+| [frontend/src/components/welcome/Welcome.component.test.jsx](../frontend/src/components/welcome/Welcome.component.test.jsx) | reviewed | 25/25 | актуально |
+| [frontend/src/components/welcome/WelcomeArt.jsx](../frontend/src/components/welcome/WelcomeArt.jsx) | reviewed | 13/13 | актуально |
+| [frontend/src/components/welcome/WelcomeGate.jsx](../frontend/src/components/welcome/WelcomeGate.jsx) | reviewed | 5/5 | актуально |
+| [frontend/src/components/welcome/WelcomeScreen.jsx](../frontend/src/components/welcome/WelcomeScreen.jsx) | reviewed | 13/13 | актуально |
 | [frontend/src/context/AuthProvider.analytics.component.test.jsx](../frontend/src/context/AuthProvider.analytics.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/context/AuthProvider.jsx](../frontend/src/context/AuthProvider.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/context/authContext.js](../frontend/src/context/authContext.js) | reviewed | 1/1 | актуально |
@@ -2254,6 +2258,12 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/w6eIndicator.test.js](../frontend/src/lib/w6eIndicator.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/w6f.test.js](../frontend/src/lib/w6f.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/w6g-libs.test.js](../frontend/src/lib/w6g-libs.test.js) | reviewed | 3/3 | актуально |
+| [frontend/src/lib/welcome.js](../frontend/src/lib/welcome.js) | reviewed | 13/13 | актуально |
+| [frontend/src/lib/welcome.test.js](../frontend/src/lib/welcome.test.js) | reviewed | 4/4 | актуально |
+| [frontend/src/lib/welcomeAudience.js](../frontend/src/lib/welcomeAudience.js) | reviewed | 6/6 | актуально |
+| [frontend/src/lib/welcomeAudience.test.js](../frontend/src/lib/welcomeAudience.test.js) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/welcomeChart.js](../frontend/src/lib/welcomeChart.js) | reviewed | 10/10 | актуально |
+| [frontend/src/lib/welcomeChart.test.js](../frontend/src/lib/welcomeChart.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/worldApi.cached.test.jsx](../frontend/src/lib/worldApi.cached.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/worldApi.js](../frontend/src/lib/worldApi.js) | reviewed | 53/53 | актуально |
 | [frontend/src/lib/worldApi.test.js](../frontend/src/lib/worldApi.test.js) | reviewed | 0/0 | актуально |
@@ -2474,6 +2484,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/styles/w6d.css](../frontend/src/styles/w6d.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/w6e-indicator.css](../frontend/src/styles/w6e-indicator.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/w6f-pages.css](../frontend/src/styles/w6f-pages.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/welcome.css](../frontend/src/styles/welcome.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/welcome.test.js](../frontend/src/styles/welcome.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/styles/world.css](../frontend/src/styles/world.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/x2-indicator.css](../frontend/src/styles/x2-indicator.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/y2-indicator.css](../frontend/src/styles/y2-indicator.css) | reviewed | 0/0 | актуально |
