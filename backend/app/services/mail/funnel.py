@@ -418,7 +418,9 @@ def format_sent_notice(report: dict, totals: dict[str, int]) -> str:
     if bad:
         names = {"failed": "не ушло из-за ошибки", "suppressed": "в стоп-листе", "blocked": "закрыто списком допуска",
                  "disabled": "почта выключена", "deferred": "отложено до дневных часов получателя",
-                 "unsubscribed_meanwhile": "успели отписаться", "no_personal_content": "нет содержимого"}
+                 "unsubscribed_meanwhile": "успели отписаться", "no_personal_content": "нет содержимого",
+                 "spam_rejected": "почтовый сервер счёл письмо спамом",
+                 "spam_rejected_before": "сервер счёл спамом раньше, повтора нет"}
         lines.append("Не ушло: " + ", ".join(f"{names.get(k, escape(k))} — {v}" for k, v in sorted(bad.items())) + ".")
     skipped = []
     if report.get("unverified_skipped"):

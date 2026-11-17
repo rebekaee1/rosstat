@@ -200,6 +200,8 @@ async def send_test(issue: Issue, to: str) -> dict[str, str]:
 # (человеку нечего отправить — пропуск) или DEFER (отложить: тихие часы и т. п. — не пропуск,
 # строка журнала не создаётся, следующий запуск попробует снова). Ключ, лимиты, повтор — общие.
 DEFER = object()
+# Сколько отказов «похоже на спам» подряд означает, что сервер режет ящик, а не одно письмо.
+SPAM_STREAK_STOP = 2
 PersonalBuilder = Callable[[AsyncSession, "audience.Recipient", Issue], Awaitable["Digest | dict | None"]]
 
 
@@ -228,6 +230,7 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
     recipients, report.no_address = await audience.subscribers(db)
     report.audience = len(recipients)
     sent_now = 0
+    spam_streak = 0
     for rec in recipients:
         if not rec.verified and not include_unverified:
             report.unverified_skipped += 1
@@ -239,6 +242,10 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
             MailMessage.campaign == issue.key, MailMessage.user_id == rec.user_id))
         if existing is not None and existing.status == "sent":
             report.already_sent += 1
+            continue
+        if existing is not None and (existing.error or "").endswith(":spam"):
+            # Сервер уже отклонил письмо этому человеку как спам: повтор только вредит ящику.
+            report.statuses["spam_rejected_before"] += 1
             continue
         report.by_locale[rec.locale] += 1
         if not send:
@@ -275,10 +282,17 @@ async def run(db: AsyncSession, issue: Issue, *, send: bool, include_unverified:
         try:
             await service.attempt(db, row, rendered, unsubscribe_url=one_click)
         except transport.SendError as err:
-            report.statuses[row.status] += 1
-            report.stopped = f"server_limit:{err.code}"
+            report.statuses["spam_rejected" if err.spam else row.status] += 1
             await db.commit()
-            break
+            spam_streak = spam_streak + 1 if err.spam else SPAM_STREAK_STOP
+            if spam_streak >= SPAM_STREAK_STOP:
+                report.stopped = f"server_limit:{err.code}"
+                break
+            # Один отказ «похоже на спам» — про это письмо, а не про ящик: идём дальше.
+            if pause > 0:
+                await asyncio.sleep(pause)
+            continue
+        spam_streak = 0
         report.statuses[row.status] += 1
         await db.commit()
         sent_now += 1

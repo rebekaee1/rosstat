@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 import smtplib
 import ssl
 import uuid
@@ -22,6 +23,7 @@ from datetime import datetime, timezone
 from app.config import settings
 
 logger = logging.getLogger(__name__)
+_EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+")
 
 
 class MailConfigError(RuntimeError):
@@ -31,12 +33,15 @@ class MailConfigError(RuntimeError):
 class SendError(Exception):
     """Письмо не принято сервером. permanent=True — повтор не поможет (адрес, политика)."""
 
-    def __init__(self, code: str, *, permanent: bool, limit: bool = False):
+    def __init__(self, code: str, *, permanent: bool, limit: bool = False, spam: bool = False):
         super().__init__(code)
         self.code = code[:200]
         self.permanent = permanent
         # Сервер сообщил о суточном лимите или подозрении на спам: рассылку надо остановить.
         self.limit = limit
+        # Подозрение на спам по одному письму (17.11.2026: Яндекс дважды отклонил один адрес,
+        # соседние прошли). Выпуск такое письмо откладывает и идёт дальше; стоп — при отказах подряд.
+        self.spam = spam
 
 
 @dataclass
@@ -147,10 +152,13 @@ def _classify(exc: Exception) -> SendError:
         code = int(exc.smtp_code or 0)
         raw = exc.smtp_error.decode("utf-8", "replace") if isinstance(exc.smtp_error, bytes) else str(exc.smtp_error)
         low = raw.lower()
-        limit = any(w in low for w in ("limit", "spam", "too many", "rate"))
+        spam = "spam" in low
+        limit = spam or any(w in low for w in ("limit", "too many", "rate"))
+        # Точный ответ сервера — в журнал: без него лимит не отличить от подозрения на спам.
+        logger.warning("smtp refused code=%s text=%s", code, _EMAIL_RE.sub("<адрес>", raw)[:300])
         # В код ошибки — только номер и короткий признак, без адресов из ответа сервера.
-        tag = "limit" if limit else "rejected"
-        return SendError(f"smtp_{code}:{tag}", permanent=code >= 500, limit=limit)
+        tag = "spam" if spam else "limit" if limit else "rejected"
+        return SendError(f"smtp_{code}:{tag}", permanent=code >= 500, limit=limit, spam=spam)
     if isinstance(exc, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError, OSError, TimeoutError)):
         return SendError(f"network:{type(exc).__name__}", permanent=False)
     return SendError(f"error:{type(exc).__name__}", permanent=False)

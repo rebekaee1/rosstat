@@ -418,6 +418,58 @@ def test_campaign_stops_on_server_limit(mail_env, auth_client, monkeypatch):
     assert rep.stopped and rep.stopped.startswith("server_limit") and rep.statuses["failed"] == 1
 
 
+def test_campaign_skips_single_spam_reject_and_stops_on_streak(mail_env, auth_client, monkeypatch):
+    """17.11.2026: Яндекс дважды отклонил один адрес как спам, остальные прошли. Одно такое
+    письмо выпуск обходит и не повторяет; два отказа подряд — остановка."""
+    import smtplib
+    from app.config import settings
+    from app.services.mail import transport
+
+    for addr in ("a1@example.com", "a2@example.com", "a3@example.com"):
+        _subscribe(auth_client, addr)
+        auth_client.cookies.clear()
+    _verify_all(mail_env)
+    monkeypatch.setattr(settings, "mail_allow_all_recipients", True)
+    real = transport._send_sync
+    seen: list[str] = []
+
+    def _one_bad(msg, profile=None):
+        seen.append(msg["To"])
+        if len(seen) == 1:
+            raise smtplib.SMTPDataError(554, b"5.7.1 Message rejected under suspicion of SPAM; x@example.com")
+        return real(msg, profile)
+
+    monkeypatch.setattr(transport, "_send_sync", _one_bad)
+    rep = _run(mail_env, send=True)
+    assert rep.stopped is None and rep.statuses["spam_rejected"] == 1 and rep.statuses["sent"] == 2
+    rep = _run(mail_env, send=True)
+    assert rep.statuses["spam_rejected_before"] == 1 and len(seen) == 3
+
+    err = transport._classify(smtplib.SMTPDataError(554, b"5.7.1 Message rejected under suspicion of SPAM"))
+    assert err.code == "smtp_554:spam" and err.spam and err.limit
+
+
+def test_campaign_stops_on_two_spam_rejects_in_a_row(mail_env, auth_client, monkeypatch):
+    import smtplib
+    from app.config import settings
+    from app.services.mail import transport
+
+    for addr in ("a1@example.com", "a2@example.com", "a3@example.com"):
+        _subscribe(auth_client, addr)
+        auth_client.cookies.clear()
+    _verify_all(mail_env)
+    monkeypatch.setattr(settings, "mail_allow_all_recipients", True)
+    calls: list[str] = []
+
+    def _all_bad(msg, profile=None):
+        calls.append(msg["To"])
+        raise smtplib.SMTPDataError(554, b"5.7.1 Message rejected under suspicion of SPAM")
+
+    monkeypatch.setattr(transport, "_send_sync", _all_bad)
+    rep = _run(mail_env, send=True)
+    assert rep.stopped == "server_limit:smtp_554:spam" and rep.statuses["spam_rejected"] == 2 and len(calls) == 2
+
+
 def test_delete_account_removes_mail_log(mail_env, auth_client):
     auth_client.post("/api/v1/auth/register", json={
         "email": "allowed@example.com", "password": "supersecret1", "consent": True})
