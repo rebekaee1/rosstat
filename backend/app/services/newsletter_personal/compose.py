@@ -13,11 +13,11 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from app.services import freshness
 from app.services.newsletter_personal import texts as T
-from app.services.newsletter_personal.facts import Fact, FactCache, full_date, number, with_unit
+from app.services.newsletter_personal.facts import Fact, FactCache, _is_share_unit, day_label, full_date, number, with_unit
 from app.services.newsletter_personal.profile import Profile
 from app.services.newsletter_personal.signals import UserSignals
 from app.services.newsletter_personal.subjects import parse_key, topic_label
@@ -434,6 +434,105 @@ def table_block(rest: list[Candidate], locale: str) -> tuple[dict | None, list[C
              "source": ", ".join(dict.fromkeys(c.extra["fact"].source for c in used if c.extra["fact"].source)),
              "why": T.t(locale, "why.view")}
     return block, used
+
+
+# --- «С вашей регистрации»: личный блок для человека без действий на сайте (17.11.2026) ---------
+# Одинаковое письмо редакции всем, о ком нет сигналов, почтовый сервер счёл массовой рассылкой, а
+# владелец просил личное письмо каждому. О таком человеке известна дата регистрации — от неё и
+# считаем: что было с главными рядами в тот день и что сейчас. Ряды — дневные и недельные, чтобы
+# «было» находилось для любой даты; короткие имена — для темы письма.
+SIGNUP_SERIES = (   # код, имя по-русски, имя по-английски, единица в таблице (ru, en)
+    ("key-rate", "ключевая ставка", "key rate", "%", "%"),
+    ("usd-rub", "доллар", "US dollar", "₽", "RUB"),
+    ("fuel-ai92", "бензин АИ-92", "AI-92 petrol", "₽/л", "RUB/l"),
+    ("imoex", "индекс МосБиржи", "MOEX index", "", ""),
+    ("gold-price", "золото", "gold", "₽/г", "RUB/g"),
+    ("brent", "нефть Brent", "Brent oil", "$", "USD"),
+    ("eur-rub", "евро", "euro", "₽", "RUB"),
+    ("cny-rub", "юань", "yuan", "₽", "RUB"),
+)
+SIGNUP_ALWAYS = 2       # ставка и доллар — всегда, если есть
+SIGNUP_ROWS = 4
+SIGNUP_MIN_DAYS = 3
+
+
+def _signup_move(fact: Fact, then: float, locale: str) -> tuple[float, str]:
+    """(сила изменения для отбора, подпись изменения): ставки — в п. п., остальное — в процентах."""
+    if _is_share_unit(fact.unit):
+        delta = round(fact.value - then, 2)
+        if not delta:
+            return 0.0, ""
+        text = number(delta, locale, signed=True, digits=2).rstrip("0").rstrip(",.")
+        return abs(delta) * 2.0, f"{text}{T.NBSP}{'pp' if locale == 'en' else 'п. п.'}"
+    if then <= 0:
+        return 0.0, ""
+    pct = (fact.value / then - 1.0) * 100.0
+    if abs(pct) > 200 or abs(pct) < 0.05:
+        return 0.0, ""
+    return abs(pct), with_unit(number(pct, locale, signed=True, digits=1), "%", locale)
+
+
+def _signup_pair(then: float, now: float, unit: str, locale: str) -> tuple[str, str]:
+    """«Было» и «сейчас» с одним числом знаков: тысячи — без копеек, одинаковые хвостовые нули убраны."""
+    digits = 0 if max(abs(then), abs(now)) >= 1000 else 2
+    a, b = number(then, locale, digits=digits), number(now, locale, digits=digits)
+    while digits and a[-1] == "0" and b[-1] == "0":
+        a, b, digits = a[:-1], b[:-1], digits - 1
+    if unit == "%" and digits:   # ставка: «14,5 % → 14 %», без «14,0»
+        a, b = (x.rstrip("0").rstrip(",.") for x in (a, b))
+    a, b = a.rstrip(",."), b.rstrip(",.")
+    return (with_unit(a, unit, locale), with_unit(b, unit, locale)) if unit else (a, b)
+
+
+async def signup_block(ctx: Context) -> tuple[dict | None, list[Candidate], dict]:
+    """Таблица «было в день регистрации → сейчас» и сведения для темы письма."""
+    created = ctx.us.created_at
+    if created is None:
+        return None, [], {}
+    day = (created + timedelta(hours=3)).date()   # время в базе — UTC; день регистрации называем по Москве
+    if (ctx.today - day).days < SIGNUP_MIN_DAYS:
+        return None, [], {}
+    loc = ctx.locale
+    found = []
+    for pos, (code, ru_name, en_name, ru_unit, en_unit) in enumerate(SIGNUP_SERIES):
+        fact = await ctx.cache.get(f"ru:{code}")
+        if fact is None or fact.stale:
+            continue
+        then = await ctx.cache.value_at(fact, day)
+        if then is None or then[0] >= fact.as_of:
+            continue
+        strength, move = _signup_move(fact, then[1], loc)
+        then_text, now_text = _signup_pair(then[1], fact.value, en_unit if loc == "en" else ru_unit, loc)
+        found.append({"pos": pos, "fact": fact, "then": then, "strength": strength, "move": move,
+                      "then_text": then_text, "now_text": now_text, "name": en_name if loc == "en" else ru_name})
+    always = [f for f in found if f["pos"] < SIGNUP_ALWAYS]
+    rest = sorted((f for f in found if f["pos"] >= SIGNUP_ALWAYS and f["move"]), key=lambda f: -f["strength"])
+    picked = always + rest[:max(0, SIGNUP_ROWS - len(always))]
+    if len(picked) < 2 or not any(f["move"] for f in picked):
+        return None, [], {}
+    day_text = day_label(day, loc)
+    rows, used, parts = [], [], []
+    for f in picked:
+        fact: Fact = f["fact"]
+        rows.append([T.cap(f["name"]), f["then_text"], f["now_text"]])
+        f["part"] = (T.t(loc, "signup.part", name=f["name"], then=f["then_text"], now=f["now_text"]) if f["move"]
+                     else T.t(loc, "signup.same", name=f["name"], now=f["now_text"]))
+        parts.append(f["part"])
+        used.append(Candidate(gen="signup", subject=fact.key, block={}, score=f["strength"], topic=fact.topic,
+                              as_of=fact.as_of.isoformat(), why="signup",
+                              extra={"fact": fact, "value": f["now_text"], "then": f["then_text"],
+                                     "then_as_of": f["then"][0].isoformat(), "then_value": f["then"][1],
+                                     "now_value": fact.value}))
+    block = {"type": "table", "kicker": T.t(loc, "signup.kicker", day=day_text), "title": T.t(loc, "signup.title"),
+             "columns": [T.t(loc, "table.cols")[0], day_text, T.t(loc, "signup.now")], "rows": rows,
+             "text": T.typo(T.t(loc, "signup.lead", day=day_text) + " " + "; ".join(parts).rstrip(".") + ".", loc),
+             "row_urls": [f["fact"].path for f in picked],
+             "source": ", ".join(dict.fromkeys(f["fact"].source for f in picked if f["fact"].source)),
+             "why": T.t(loc, "why.signup", date=full_date(day, loc))}
+    movers = sorted((f for f in picked if f["move"]), key=lambda f: -f["strength"])
+    return block, used, {"day": day_text, "date": full_date(day, loc),
+                         "movers": [(f["name"], f["move"]) for f in movers],
+                         "first": movers[0]["part"].rstrip(".") if movers else ""}
 
 
 def editorial_share_ok(n_editorial: int, n_total: int, min_share: float) -> bool:

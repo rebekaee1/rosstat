@@ -247,8 +247,8 @@ class Builder:
         dormant = bool(self.dormant_enabled and us.last_visit
                        and (self.now - us.last_visit).days >= settings.newsletter_personal_dormant_days)
         tier = profile.tier
-        if tier == "cold" and not dormant:
-            return _general(us.user_id, loc, base, "general", tier, arm, profile=profile)
+        # Человек без действий на сайте: личный блок считается от даты его регистрации (17.11.2026).
+        by_signup = tier == "cold" and not dormant
         series_keys = [s["key"] for s in profile.series()[:5]]
         ctx = C.Context(profile=profile, us=us, cache=self.cache(loc), locale=loc, today=self.today,
                         issue_key=key, showcase=await self.showcase(loc),
@@ -262,17 +262,19 @@ class Builder:
         editorial_fc = {str(b.get("url") or "") for b in editorial if b.get("type") == "forecast"}
 
         cands: list[C.Candidate] = []
-        cands += C.check_candidates(ctx)
-        series = await C.series_candidates(ctx)
-        cands += series
-        taken = {c.subject for c in cands if c.subject}
-        cands += await C.region_candidates(ctx, taken)
-        cands += await C.related_candidates(ctx, taken)
-        if self.behavior:
-            cands += await C.gap_candidates(ctx, taken)
-        fc_ids = {it["id"] for it in ctx.showcase if _abs(it.get("path") or "", loc).split("?")[0] in
-                  {u.split("?")[0] for u in editorial_fc}}
-        cands += C.forecast_candidates(ctx, fc_ids)
+        signup_info: dict = {}
+        if not by_signup:
+            cands += C.check_candidates(ctx)
+            series = await C.series_candidates(ctx)
+            cands += series
+            taken = {c.subject for c in cands if c.subject}
+            cands += await C.region_candidates(ctx, taken)
+            cands += await C.related_candidates(ctx, taken)
+            if self.behavior:
+                cands += await C.gap_candidates(ctx, taken)
+            fc_ids = {it["id"] for it in ctx.showcase if _abs(it.get("path") or "", loc).split("?")[0] in
+                      {u.split("?")[0] for u in editorial_fc}}
+            cands += C.forecast_candidates(ctx, fc_ids)
 
         # Проверка до отбора: блок, не прошедший правила, в выбор не попадает; ряд, о котором уже
         # пишет редакция в этом выпуске, — тоже (у редакции текст богаче, повтор не нужен).
@@ -295,7 +297,17 @@ class Builder:
                 limit = 2
         chosen = C.pick(ok_cands, limit)
         table, table_used = (None, [])
-        if with_table:
+
+        async def signup():
+            blk, used, info = await C.signup_block(ctx)
+            if blk and check_block(blk, loc):
+                dropped.append({"gen": "signup", "reason": check_block(blk, loc)})
+                return None, [], {}
+            return blk, used, info
+
+        if by_signup:
+            table, table_used, signup_info = await signup()
+        elif with_table:
             rest = [c for c in sorted(ok_cands, key=lambda c: -c.score) if c not in chosen and c.subject not in
                     {x.subject for x in chosen}]
             table, table_used = C.table_block(rest, loc)
@@ -306,6 +318,11 @@ class Builder:
             # Один прогноз «по теме» — не подборка «по тому, что вы смотрели»: честный общий выпуск.
             dropped += [{"gen": c.gen, "subject": c.subject, "reason": "topic_forecast_alone"} for c in chosen]
             chosen = []
+        if not chosen and not table and not by_signup and not dormant:
+            # Человек что-то смотрел, но показать по этому нечего (старые или уже показанные числа):
+            # одинаковое письмо редакции не шлём — личный блок считается от даты регистрации.
+            by_signup = True
+            table, table_used, signup_info = await signup()
         if not chosen and not table:
             res = _general(us.user_id, loc, base, "general", tier, arm, profile=profile)
             res.blocks_meta += [{"origin": "dropped", **d} for d in dropped]
@@ -374,11 +391,14 @@ class Builder:
         for c in sorted(chosen, key=lambda c: (c.gen != "check", c.gen == "forecast" and c.why == "topic", -c.score)):
             add(c.block, "personal", c)
         if table:
-            add(table, "personal", gen="table")
+            add(table, "personal", gen="signup" if by_signup else "table")
             for c in table_used:  # строки таблицы — тоже показанные факты (защита от повторов)
-                meta.append({"pos": None, "origin": "personal", "gen": "table_row", "subject": c.subject,
+                meta.append({"pos": None, "origin": "personal", "gen": "signup_row" if by_signup else "table_row",
+                             "subject": c.subject,
                              "as_of": c.as_of, "reason": c.why, "score": round(c.score, 4), "topic": c.topic,
-                             "utm_content": None})
+                             "utm_content": None,
+                             **{k: c.extra[k] for k in ("value", "then", "then_as_of", "then_value", "now_value")
+                                if k in c.extra}})
         for b in editorial:
             add(b, "editorial")
         cal = await self._calendar(calendar, profile, loc, ctx)
@@ -391,7 +411,8 @@ class Builder:
         topics = [T.soft_lower(topic_label(c.topic, loc)) for c in chosen if c.topic]
         topics = list(dict.fromkeys(topics))[:3]
         n_numbers = len(chosen) + (len(table_used) if table else 0)
-        extra_intro = (T.t(loc, "intro.since", date=T.typo(_date_text(us.last_visit.date(), loc), loc)) if dormant
+        extra_intro = (T.t(loc, "signup.section", date=signup_info["date"]) if signup_info
+                       else T.t(loc, "intro.since", date=T.typo(_date_text(us.last_visit.date(), loc), loc)) if dormant
                        else T.t(loc, "intro.more", n=T.plural(n_numbers, loc), topics=", ".join(topics)) if topics
                        else "")
         if extra_intro:
@@ -402,9 +423,12 @@ class Builder:
                     break
             else:
                 payload["intro"] = (payload.get("intro") or "").rstrip() + "\n\n" + T.typo(extra_intro, loc)
-        payload["personal_note"] = T.t(loc, "note")
+        payload["personal_note"] = T.t(loc, "note.signup" if signup_info else "note")
         subject_arm = ab.subject_arm(us.user_id, key, self.subject_ab_pct)
-        if subject_arm == "subj_personal":
+        if signup_info:
+            # Тема и первая строка — всегда от даты человека: одинаковых писем быть не должно.
+            _signup_subject(payload, signup_info, loc)
+        elif subject_arm == "subj_personal":
             _personal_subject(payload, chosen, loc, n_numbers=n_numbers, topics=topics)
         data_as_of = max((date.fromisoformat(c.as_of[:10]) for c in chosen + table_used
                           if c.as_of and len(c.as_of) >= 10), default=None)
@@ -513,6 +537,24 @@ def _personal_subject(payload: dict, chosen: list[C.Candidate], loc: str, *, n_n
         payload["subject"] = T.typo(subj, loc)
     lead_in = f"{title} — {value.rstrip('.')}. "
     pre = lead_in + (payload.get("preheader") or "")
+    if len(pre) > 110:
+        pre = pre[:110].rsplit(" ", 1)[0].rstrip(",;:—- ") + "…"
+    payload["preheader"] = T.typo(pre, loc)
+
+
+def _signup_subject(payload: dict, info: dict, loc: str) -> None:
+    """«С 22 июня: доллар +5,2 %, золото +12,0 %» — тема от даты регистрации; до 50 знаков."""
+    movers = [f"{name} {move}" for name, move in info.get("movers") or []]
+    subj = ""
+    for k in (2, 1):
+        if len(movers) >= k:
+            cand = T.t(loc, "signup.subject", day=info["day"], movers=", ".join(movers[:k]))
+            if len(cand) <= 50:
+                subj = cand
+                break
+    payload["subject"] = T.typo(subj or T.t(loc, "signup.subject.plain", day=info["day"]), loc)
+    first = info.get("first") or ""
+    pre = (T.t(loc, "signup.lead", day=info["day"]) + " " + first + ". " if first else "") + (payload.get("preheader") or "")
     if len(pre) > 110:
         pre = pre[:110].rsplit(" ", 1)[0].rstrip(",;:—- ") + "…"
     payload["preheader"] = T.typo(pre, loc)
@@ -720,7 +762,9 @@ def per_recipient_hook(issue, *, behavior: bool | None = None, respect_quiet_hou
             tz = await db.scalar(select(NewsletterProfile.timezone).where(NewsletterProfile.user_id == rec.user_id))
         if respect_quiet_hours and not in_send_window(tz, now):
             return defer
-        if snap is not None and snap.payload and snap.locale == loc and await snapshot_fresh(db, builder, snap):
+        # Снимок общего письма не переиспользуем: с 17.11.2026 такому человеку собирается личный блок.
+        if (snap is not None and snap.payload and snap.locale == loc and snap.status == "built"
+                and await snapshot_fresh(db, builder, snap)):
             return copy.deepcopy(snap.payload)
         try:
             us = (await asyncio.wait_for(collect(db, [rec.user_id], now=now, behavior=builder.behavior),

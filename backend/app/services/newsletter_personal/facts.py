@@ -269,6 +269,32 @@ class FactCache:
             self._meta_topic[key] = fact.topic
         return fact
 
+    async def value_at(self, fact: Fact, day: date) -> tuple[date, float] | None:
+        """Значение ряда на день или ближайшее раньше него (для блока «с вашей регистрации»).
+
+        Окно назад ограничено шагом ряда: «было» из прошлого года за «было в день регистрации» не выдаём."""
+        if fact.indicator_id is None:
+            return None
+        back = {"daily": 10, "weekly": 14, "monthly": 45}.get(fact.frequency)
+        if back is None:
+            return None
+        row = (await self.db.execute(
+            select(IndicatorData.date, IndicatorData.value)
+            .where(IndicatorData.indicator_id == fact.indicator_id, _finite(IndicatorData.value),
+                   IndicatorData.date <= day, IndicatorData.date >= day - timedelta(days=back))
+            .order_by(IndicatorData.date.desc()).limit(1))).first()
+        if row is None:
+            return None
+        pts = _fmt_points([(row[0], float(row[1]))], fact.key.split(":", 1)[-1])
+        return pts[0] if pts else None
+
+    def value_text(self, fact: Fact, value: float) -> str:
+        """Число с единицей в том же виде, что главное число факта."""
+        num = format_number_ru(value, signed=False, locale=self.locale)
+        if _decimals(num) > 2 and (fact.unit.startswith("%") or abs(value) >= 10):
+            num = number(value, self.locale, digits=2)
+        return with_unit(num, fact.unit, self.locale)
+
     async def _recover(self) -> None:
         try:
             await self.db.rollback()

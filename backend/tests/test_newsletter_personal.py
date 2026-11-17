@@ -608,3 +608,22 @@ def test_change_text_rules_quarter_to_year_ago_and_percentage_points():
     assert _is_share_unit("% of GDP") and _is_share_unit("Percentage of total population") and not _is_share_unit("руб.")
     long_name = "Численность активных абонентов фиксированного и мобильного широкополосного доступа к сети Интернет на 100 человек населения"
     assert _fit(long_name, 96).endswith("…") and len(_fit(long_name, 96)) <= 97 and _fit("Бензин АИ-95", 96) == "Бензин АИ-95"
+
+
+def test_signup_block_formats_then_and_now_alike():
+    """17.11.2026: блок «было и стало» от даты регистрации — одинаковое число знаков, ставка без «14,0»."""
+    from types import SimpleNamespace
+
+    from app.services.newsletter_personal import compose as C
+
+    nb = " "
+    assert C._signup_pair(84.9, 82.51, "₽", "ru") == (f"84,90{nb}₽", f"82,51{nb}₽")
+    assert C._signup_pair(14.5, 14.0, "%", "ru") == (f"14,5{nb}%", f"14{nb}%")
+    assert C._signup_pair(14.0, 14.0, "%", "en") == ("14%", "14%")
+    assert C._signup_pair(11259.4, 10322.01, "₽/г", "ru")[1].endswith("322" + nb + "₽/г")
+    assert C._signup_pair(2511.1, 2475.7, "", "ru") == ("2\u202f511", "2\u202f476")
+    rate = SimpleNamespace(unit="%", value=14.0)
+    assert C._signup_move(rate, 14.0, "ru") == (0.0, "")
+    assert C._signup_move(rate, 14.5, "ru")[1] == f"−0,5{nb}п. п."
+    oil = SimpleNamespace(unit="USD/баррель", value=92.14)
+    assert C._signup_move(oil, 130.03, "ru")[1] == f"−29,1{nb}%"
