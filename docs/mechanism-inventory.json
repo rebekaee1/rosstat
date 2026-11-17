@@ -620,8 +620,8 @@
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "3245df01273c82246dece8d711a372e0d0291e12be36b0a459b8a5daf51dcdff",
-      "lines": 231
+      "sha256": "80a932b583f170ee35e911752278d5d2dfba240da9b7047f6d67fbf6e4eae3fc",
+      "lines": 238
     },
     {
       "path": "backend/app/data/region_indicator_polarity.py",
@@ -1475,13 +1475,13 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "sha256": "295334216aae065b756d4847e9d579a66ffaafc60f21681ce85daf07e98c09ff",
-      "lines": 364
+      "sha256": "b70f1c36f46f46a47b2637e99a6c9f56f4874123a23de91ee19c549cde7a71c0",
+      "lines": 378
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "sha256": "721081495565887f8e73fa597626a614643b6fb0a22ffd3a56f6a466af3d4396",
-      "lines": 501
+      "sha256": "e74f5634b20e7a11108cd98143dccfb8e0a8db6cb863bc4b368cbff94356af59",
+      "lines": 503
     },
     {
       "path": "backend/app/services/mail/service.py",
@@ -1510,8 +1510,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "sha256": "39a07762f70c7acb170657629806c6dee05480dbcc3b2ba7f27b9de416aed543",
-      "lines": 197
+      "sha256": "ae1b3d5e0f25c1a4cee15707da74ae312d8f03f2d68d43af83cd9dc61851f94e",
+      "lines": 205
     },
     {
       "path": "backend/app/services/mail/watch_digest.py",
@@ -1550,18 +1550,18 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "sha256": "1d7cdb6b212e5ea61c28b9805e112a6eed376935db6e981ca8f9c7e9f4275378",
-      "lines": 744
+      "sha256": "4c04347115af026a61118940e1fd1b6114d11d51d40e7d0ea5833478cb30936b",
+      "lines": 788
     },
     {
       "path": "backend/app/services/newsletter_personal/compose.py",
-      "sha256": "64bf5ef1be928696c27b489a99900552a50463551902a307a18818cf2320d29e",
-      "lines": 440
+      "sha256": "c87f5d97815ecb9877967920f72888522351b6e6f4327bf2ac9574fb6f9eaa0f",
+      "lines": 539
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "sha256": "33ebc37427523aebd13fcc9408ffff8567a341a082508501e039cd6c02bff209",
-      "lines": 621
+      "sha256": "bdc83e810caa7b779e736410a730c59a4f1912c453f1838ae770766fc8caa33a",
+      "lines": 647
     },
     {
       "path": "backend/app/services/newsletter_personal/jobs.py",
@@ -1600,8 +1600,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "sha256": "245d8b9cb1a4bc7032af5ae50201737a3a4341bcea77c4a3b5e25b4dc97496b6",
-      "lines": 187
+      "sha256": "828a26a9da87bf5eb1be8ac3659b683c2a50a74f71423493684671e026d3704e",
+      "lines": 211
     },
     {
       "path": "backend/app/services/oauth/__init__.py",
@@ -42238,8 +42238,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 227,
+      "end_line": 227,
       "owner": "run",
       "conditions": [],
       "name": "mail_campaign_max_per_run",
@@ -42247,8 +42247,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 228,
+      "end_line": 228,
       "owner": "run",
       "conditions": [],
       "name": "mail_campaign_pause_seconds",
@@ -42256,8 +42256,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 312,
-      "end_line": 312,
+      "line": 326,
+      "end_line": 326,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_campaign_max_per_run",
@@ -42265,21 +42265,12 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 327,
+      "end_line": 327,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_campaign_pause_seconds",
       "expression": "settings.mail_campaign_pause_seconds"
-    },
-    {
-      "path": "backend/app/services/mail/campaign.py",
-      "line": 218,
-      "end_line": 218,
-      "owner": "run",
-      "conditions": [],
-      "name": "mail_allow_all_recipients",
-      "expression": "settings.mail_allow_all_recipients"
     },
     {
       "path": "backend/app/services/mail/campaign.py",
@@ -42287,13 +42278,22 @@
       "end_line": 220,
       "owner": "run",
       "conditions": [],
+      "name": "mail_allow_all_recipients",
+      "expression": "settings.mail_allow_all_recipients"
+    },
+    {
+      "path": "backend/app/services/mail/campaign.py",
+      "line": 222,
+      "end_line": 222,
+      "owner": "run",
+      "conditions": [],
       "name": "mail_enabled",
       "expression": "settings.mail_enabled"
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 319,
+      "end_line": 319,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_allow_all_recipients",
@@ -42301,8 +42301,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 321,
+      "end_line": 321,
       "owner": "run_reconfirm",
       "conditions": [],
       "name": "mail_enabled",
@@ -42310,8 +42310,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 450,
-      "end_line": 450,
+      "line": 452,
+      "end_line": 452,
       "owner": "notify_sent",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -42319,8 +42319,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 478,
+      "end_line": 478,
       "owner": "newsletter_report_job",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -42337,8 +42337,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 475,
+      "end_line": 475,
       "owner": "newsletter_report_job",
       "conditions": [],
       "name": "mail_report_enabled",
@@ -42346,8 +42346,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 475,
+      "end_line": 475,
       "owner": "newsletter_report_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -42355,8 +42355,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 447,
-      "end_line": 447,
+      "line": 449,
+      "end_line": 449,
       "owner": "notify_sent",
       "conditions": [],
       "name": "mail_report_enabled",
@@ -42364,8 +42364,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 447,
-      "end_line": 447,
+      "line": 449,
+      "end_line": 449,
       "owner": "notify_sent",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -42373,8 +42373,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 453,
+      "end_line": 453,
       "owner": "notify_sent",
       "conditions": [
         "settings.pulse_chat_id"
@@ -42384,8 +42384,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 477,
-      "end_line": 477,
+      "line": 479,
+      "end_line": 479,
       "owner": "newsletter_report_job",
       "conditions": [
         "settings.pulse_chat_id"
@@ -42536,8 +42536,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 109,
-      "end_line": 109,
+      "line": 114,
+      "end_line": 114,
       "owner": "build_message",
       "conditions": [],
       "name": "mail_reply_to",
@@ -42545,8 +42545,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 82,
-      "end_line": 82,
+      "line": 87,
+      "end_line": 87,
       "owner": "profile_for",
       "conditions": [],
       "name": "mail_smtp_host",
@@ -42554,8 +42554,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 88,
+      "end_line": 88,
       "owner": "profile_for",
       "conditions": [],
       "name": "mail_smtp_user",
@@ -42563,8 +42563,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 88,
+      "end_line": 88,
       "owner": "profile_for",
       "conditions": [],
       "name": "mail_smtp_password",
@@ -42572,8 +42572,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 110,
-      "end_line": 110,
+      "line": 115,
+      "end_line": 115,
       "owner": "build_message",
       "conditions": [
         "settings.mail_reply_to"
@@ -42583,8 +42583,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 168,
+      "end_line": 168,
       "owner": "_send_sync",
       "conditions": [],
       "name": "mail_smtp_timeout_seconds",
@@ -42592,8 +42592,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 76,
-      "end_line": 76,
+      "line": 81,
+      "end_line": 81,
       "owner": "profile_for",
       "conditions": [
         "kind in BULK_KINDS and (settings.mail_bulk_smtp_host or '').strip()"
@@ -42603,8 +42603,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 77,
-      "end_line": 77,
+      "line": 82,
+      "end_line": 82,
       "owner": "profile_for",
       "conditions": [
         "kind in BULK_KINDS and (settings.mail_bulk_smtp_host or '').strip()"
@@ -42614,8 +42614,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 82,
-      "end_line": 82,
+      "line": 87,
+      "end_line": 87,
       "owner": "profile_for",
       "conditions": [],
       "name": "mail_smtp_port",
@@ -42623,8 +42623,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 104,
-      "end_line": 104,
+      "line": 109,
+      "end_line": 109,
       "owner": "build_message",
       "conditions": [],
       "name": "mail_from_name",
@@ -42632,8 +42632,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 80,
+      "end_line": 80,
       "owner": "profile_for",
       "conditions": [
         "kind in BULK_KINDS and (settings.mail_bulk_smtp_host or '').strip()"
@@ -42643,8 +42643,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 73,
-      "end_line": 73,
+      "line": 78,
+      "end_line": 78,
       "owner": "profile_for",
       "conditions": [],
       "name": "mail_bulk_smtp_host",
@@ -42652,8 +42652,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 80,
+      "end_line": 80,
       "owner": "profile_for",
       "conditions": [
         "kind in BULK_KINDS and (settings.mail_bulk_smtp_host or '').strip()"
@@ -42663,8 +42663,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 88,
+      "end_line": 88,
       "owner": "profile_for",
       "conditions": [],
       "name": "mail_smtp_security",
@@ -42672,8 +42672,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 84,
-      "end_line": 84,
+      "line": 89,
+      "end_line": 89,
       "owner": "profile_for",
       "conditions": [],
       "name": "mail_from_address",
@@ -42681,8 +42681,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 84,
-      "end_line": 84,
+      "line": 89,
+      "end_line": 89,
       "owner": "profile_for",
       "conditions": [],
       "name": "mail_smtp_user",
@@ -42690,8 +42690,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 76,
-      "end_line": 76,
+      "line": 81,
+      "end_line": 81,
       "owner": "profile_for",
       "conditions": [
         "kind in BULK_KINDS and (settings.mail_bulk_smtp_host or '').strip()"
@@ -42701,8 +42701,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 84,
+      "end_line": 84,
       "owner": "profile_for",
       "conditions": [
         "kind in BULK_KINDS and (settings.mail_bulk_smtp_host or '').strip()"
@@ -42712,8 +42712,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 84,
+      "end_line": 84,
       "owner": "profile_for",
       "conditions": [
         "kind in BULK_KINDS and (settings.mail_bulk_smtp_host or '').strip()"
@@ -42723,8 +42723,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 84,
+      "end_line": 84,
       "owner": "profile_for",
       "conditions": [
         "kind in BULK_KINDS and (settings.mail_bulk_smtp_host or '').strip()"
@@ -42734,8 +42734,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 120,
-      "end_line": 120,
+      "line": 125,
+      "end_line": 125,
       "owner": "build_message",
       "conditions": [
         "mail.kind in BULK_KINDS",
@@ -42836,8 +42836,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 661,
-      "end_line": 661,
+      "line": 703,
+      "end_line": 703,
       "owner": "in_send_window",
       "conditions": [],
       "name": "newsletter_personal_send_start_hour",
@@ -42845,8 +42845,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 661,
-      "end_line": 661,
+      "line": 703,
+      "end_line": 703,
       "owner": "in_send_window",
       "conditions": [],
       "name": "newsletter_personal_send_end_hour",
@@ -42854,8 +42854,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 667,
-      "end_line": 667,
+      "line": 709,
+      "end_line": 709,
       "owner": "sent_recently",
       "conditions": [],
       "name": "newsletter_personal_min_days_between",
@@ -42881,8 +42881,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 604,
-      "end_line": 604,
+      "line": 646,
+      "end_line": 646,
       "owner": "build_campaign",
       "conditions": [],
       "name": "newsletter_personal_batch_size",
@@ -42890,8 +42890,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 679,
+      "end_line": 679,
       "owner": "build_campaign",
       "conditions": [],
       "name": "newsletter_personal_batch_pause_seconds",
@@ -42899,8 +42899,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 707,
-      "end_line": 707,
+      "line": 749,
+      "end_line": 749,
       "owner": "per_recipient_hook.hook",
       "conditions": [],
       "name": "newsletter_personal_enabled",
@@ -110937,8 +110937,25 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 57,
-      "end_line": 57,
+      "line": 26,
+      "end_line": 26,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_EMAIL_RE",
+      "symbol": "app.services.mail.transport._EMAIL_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('[\\\\w.+-]+@[\\\\w.-]+')",
+      "expression_truncated": false,
+      "expression_chars": 32,
+      "ast_sha256": "24d366dc18b0428fbe2caaf36a08c546a121245299642c3a2b2398d1628d7022",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/mail/transport.py",
+      "line": 62,
+      "end_line": 62,
       "owner": "<module>",
       "conditions": [],
       "name": "BULK_KINDS",
@@ -110954,8 +110971,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 99,
-      "end_line": 99,
+      "line": 104,
+      "end_line": 104,
       "owner": "<module>",
       "conditions": [],
       "name": "_POLICY",
@@ -111862,6 +111879,23 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/newsletter_personal/compose.py",
+      "line": 444,
+      "end_line": 453,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SIGNUP_SERIES",
+      "symbol": "app.services.newsletter_personal.compose.SIGNUP_SERIES",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "(('key-rate', 'ключевая ставка', 'key rate', '%', '%'), ('usd-rub', 'доллар', 'US dollar', '₽', 'RUB'), ('fuel-ai92', 'бензин АИ-92', 'AI-92 petrol', '₽/л', 'RUB/l'), ('imoex', 'индекс МосБиржи', 'MOEX index', '', ''), ('gold-price', 'золото', 'gold', '₽/г', 'RUB/g'), ('brent', 'нефть Brent', 'Brent oil', '$', 'USD'), ('eur-rub', 'евро', 'euro', '₽', 'RUB'), ('cny-rub', 'юань', 'yuan', '₽', 'RUB'))",
+      "expression_truncated": false,
+      "expression_chars": 401,
+      "ast_sha256": "96e36c9d6ae2756b7b2fc3704270e909a7455c90f7af94f972aa1773ef8f9113",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/newsletter_personal/facts.py",
       "line": 41,
       "end_line": 45,
@@ -112048,8 +112082,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 558,
-      "end_line": 561,
+      "line": 584,
+      "end_line": 587,
       "owner": "<module>",
       "conditions": [],
       "name": "_UNIT_SHORT_RU",
@@ -112115,8 +112149,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 562,
-      "end_line": 562,
+      "line": 588,
+      "end_line": 588,
       "owner": "<module>",
       "conditions": [],
       "name": "_UNIT_SHORT_EN",
@@ -112158,8 +112192,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 565,
-      "end_line": 565,
+      "line": 591,
+      "end_line": 591,
       "owner": "<module>",
       "conditions": [],
       "name": "_RU_UNIT_PER",
@@ -112201,8 +112235,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 583,
-      "end_line": 584,
+      "line": 609,
+      "end_line": 610,
       "owner": "<module>",
       "conditions": [],
       "name": "_REGION_NAME_PREFIXES",
@@ -112218,8 +112252,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 601,
-      "end_line": 602,
+      "line": 627,
+      "end_line": 628,
       "owner": "<module>",
       "conditions": [],
       "name": "_RU_MONTHS_GEN",
@@ -112235,8 +112269,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 603,
-      "end_line": 604,
+      "line": 629,
+      "end_line": 630,
       "owner": "<module>",
       "conditions": [],
       "name": "_EN_MONTHS",
@@ -113219,7 +113253,7 @@
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
       "line": 14,
-      "end_line": 109,
+      "end_line": 133,
       "owner": "<module>",
       "conditions": [],
       "name": "STR",
@@ -113234,27 +113268,27 @@
           "key": "'ru'",
           "expression": "{'kicker.for_you': 'Для вас', 'kicker.watch': 'Вы следите', 'kicker.favorite': 'Избранное', 'kicker.download': 'Вы скачивали', 'kicker.search': 'Вы искали', 'kicker.view': 'Ваши темы', 'kicker.region': 'Регион', 'kicker.country': 'Страна', 'kicker.related': 'Рядом с вашими темами', 'kicker.forecast'",
           "expression_truncated": true,
-          "expression_chars": 2260,
-          "ast_sha256": "f03c127d44dbf8ebf9b01ca2ec2b32ca21bde37178ce23b036506bd01047cc77"
+          "expression_chars": 2880,
+          "ast_sha256": "025b416f662c74446c65ab282f44497de265731d9cbdfa3bf86e1ea71bd29af8"
         },
         {
           "key": "'en'",
           "expression": "{'kicker.for_you': 'For you', 'kicker.watch': 'You follow', 'kicker.favorite': 'Favourites', 'kicker.download': 'You downloaded', 'kicker.search': 'You searched', 'kicker.view': 'Your topics', 'kicker.region': 'Region', 'kicker.country': 'Country', 'kicker.related': 'Close to your topics', 'kicker.f",
           "expression_truncated": true,
-          "expression_chars": 2352,
-          "ast_sha256": "86f84717a2a9b795a2408ee1be3ae5c95fb33062f5971d927c8fe27bb9f280e3"
+          "expression_chars": 2987,
+          "ast_sha256": "fae3d38044d630f60dea51f750ab09540c616e88710530c3de85929a58bec808"
         }
       ],
       "expression": "{'ru': {'kicker.for_you': 'Для вас', 'kicker.watch': 'Вы следите', 'kicker.favorite': 'Избранное', 'kicker.download': 'Вы скачивали', 'kicker.search': 'Вы искали', 'kicker.view': 'Ваши темы', 'kicker.region': 'Регион', 'kicker.country': 'Страна', 'kicker.related': 'Рядом с вашими темами', 'kicker.forecast': 'Прогноз', 'kicker.check': 'Сверка', 'kicker.now': 'Теперь есть на сайте', 'kicker.since': 'Пока вас не было', 'kicker.table': 'Ваши показатели', 'why.watch': 'Вы следите за этим показателем.', 'why.favorite': 'Этот показатель у вас в избранном.', 'why.download': 'Вы скачивали этот ряд.', 'why.search': 'Вы искали это на сайте.', 'why.view': 'Вы смотрели этот показатель.', 'why.forecast': 'Вы смотрели этот прогноз.', 'why.region': 'Вы смотрели данные этого региона.', 'why.country': 'Вы смотрели данные этой страны.', 'why.related': 'Его часто смотрят вместе с вашими показателями.', 'why.topic': 'По вашей теме: {topic}.', 'why.mail_click': 'Вы открывали его из прошлого письма.', 'why.check': 'Этот прогноз был в вашем письме.', 'why.now': 'Раньше ваш запрос на сайте ничего не находил.', 'why.since': 'Вы давно не заходили, а значение изменилось.', 'forecast.note': 'Модельный прогноз по официальному ряду, а не обещание.', 'source.word': 'Источник', 'table.title': 'Ваши показатели за неделю', 'table.cols': ['Показатель', 'Значение', 'Изменение'], 'section.title': 'Для вас', 'section.text': 'Подборка по тому, что вы смотрели, искали и скачивали на сайте.', 'intro.more': '{n} по вашим темам: {topics}.', 'subject.tail': '{n} для вас', 'intro.since': 'С вашего последнего визита {date} кое-что изменилось — ниже главное по вашим темам.', 'note': 'Подборку «Для вас» мы составили по вашим действиям на сайте: что вы смотрели, искали и скачивали. Отключить её можно по ссылке ниже — письмо останется, но без подборки.', 'check.text': 'В письме от {sent} наш прогноз на {period} был {forecast}. Официальное значение — {actual}.', 'download.text': '{period_cap}. Вышло после вашего скач",
       "expression_truncated": true,
-      "expression_chars": 4628,
-      "ast_sha256": "9ab122f7cbc3df14f4a56f186ea1d9da0071f66b7d9ace8c81abf85569bf34e0",
+      "expression_chars": 5883,
+      "ast_sha256": "f1b629b366054f794b278526e52fcc0ad4d85d71d389878eb446aed8c11b60d2",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 156,
-      "end_line": 160,
+      "line": 180,
+      "end_line": 184,
       "owner": "<module>",
       "conditions": [],
       "name": "_JARGON",
@@ -113270,8 +113304,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 161,
-      "end_line": 164,
+      "line": 185,
+      "end_line": 188,
       "owner": "<module>",
       "conditions": [],
       "name": "FORBIDDEN_WORDS",
@@ -164534,8 +164568,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 283,
-      "end_line": 283,
+      "line": 297,
+      "end_line": 297,
       "owner": "run",
       "conditions": [],
       "operation": "commit",
@@ -164548,8 +164582,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 360,
+      "end_line": 360,
       "owner": "run_reconfirm",
       "conditions": [],
       "operation": "commit",
@@ -164562,8 +164596,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 286,
+      "end_line": 286,
       "owner": "run",
       "conditions": [],
       "operation": "commit",
@@ -164576,8 +164610,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 357,
+      "end_line": 357,
       "owner": "run_reconfirm",
       "conditions": [],
       "operation": "commit",
@@ -164604,8 +164638,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 451,
+      "end_line": 451,
       "owner": "notify_sent",
       "conditions": [],
       "operation": "set",
@@ -164618,8 +164652,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 477,
+      "end_line": 477,
       "owner": "newsletter_report_job",
       "conditions": [],
       "operation": "set",
@@ -164646,8 +164680,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 453,
+      "end_line": 453,
       "owner": "notify_sent",
       "conditions": [
         "settings.pulse_chat_id"
@@ -164662,8 +164696,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 477,
-      "end_line": 477,
+      "line": 479,
+      "end_line": 479,
       "owner": "newsletter_report_job",
       "conditions": [
         "settings.pulse_chat_id"
@@ -164678,8 +164712,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 480,
-      "end_line": 480,
+      "line": 482,
+      "end_line": 482,
       "owner": "newsletter_report_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -164692,8 +164726,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 487,
+      "end_line": 487,
       "owner": "newsletter_report_job",
       "conditions": [],
       "operation": "commit",
@@ -164840,8 +164874,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 452,
-      "end_line": 454,
+      "line": 454,
+      "end_line": 456,
       "owner": "notify_sent",
       "conditions": [],
       "operation": "execute",
@@ -164854,8 +164888,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 499,
-      "end_line": 499,
+      "line": 501,
+      "end_line": 501,
       "owner": "newsletter_report_job",
       "conditions": [
         "ok"
@@ -165418,8 +165452,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 525,
-      "end_line": 525,
+      "line": 567,
+      "end_line": 567,
       "owner": "_fatigue",
       "conditions": [],
       "operation": "set",
@@ -165432,8 +165466,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 343,
+      "end_line": 343,
       "owner": "Builder._compose",
       "conditions": [
         "n_personal + n_editorial > cap and editorial"
@@ -165448,8 +165482,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 370,
-      "end_line": 370,
+      "line": 387,
+      "end_line": 387,
       "owner": "Builder._compose",
       "conditions": [
         "lead"
@@ -165464,8 +165498,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 372,
-      "end_line": 373,
+      "line": 389,
+      "end_line": 390,
       "owner": "Builder._compose",
       "conditions": [
         "section_supported()"
@@ -165480,8 +165514,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 392,
+      "end_line": 392,
       "owner": "Builder._compose",
       "conditions": [],
       "operation": "add",
@@ -165494,8 +165528,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 394,
+      "end_line": 394,
       "owner": "Builder._compose",
       "conditions": [
         "table"
@@ -165503,15 +165537,15 @@
       "operation": "add",
       "receiver": null,
       "symbol": "app.services.newsletter_personal.build.add",
-      "expression": "add(table, 'personal', gen='table')",
+      "expression": "add(table, 'personal', gen='signup' if by_signup else 'table')",
       "expression_truncated": false,
-      "expression_chars": 35,
-      "ast_sha256": "66d5d10bf97bf92c7ea920e39000d94847ed1b3faf5a931ae5636c14fe1e8578"
+      "expression_chars": 62,
+      "ast_sha256": "a86e5cabd7a69533514e8fa655983764c18291daee07b51c1007ec1ee0d89562"
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 383,
-      "end_line": 383,
+      "line": 403,
+      "end_line": 403,
       "owner": "Builder._compose",
       "conditions": [],
       "operation": "add",
@@ -165524,8 +165558,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 406,
+      "end_line": 406,
       "owner": "Builder._compose",
       "conditions": [
         "cal"
@@ -165540,8 +165574,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 475,
+      "end_line": 475,
       "owner": "Builder._calendar",
       "conditions": [],
       "operation": "add",
@@ -165554,8 +165588,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 359,
-      "end_line": 360,
+      "line": 376,
+      "end_line": 377,
       "owner": "Builder._compose.add",
       "conditions": [
         "cand is not None"
@@ -165570,8 +165604,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 535,
-      "end_line": 535,
+      "line": 577,
+      "end_line": 577,
       "owner": "_fatigue",
       "conditions": [
         "was_clicked"
@@ -165586,8 +165620,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 636,
-      "end_line": 636,
+      "line": 678,
+      "end_line": 678,
       "owner": "build_campaign",
       "conditions": [
         "can_store"
@@ -165602,8 +165636,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 365,
-      "end_line": 366,
+      "line": 382,
+      "end_line": 383,
       "owner": "Builder._compose.add",
       "conditions": [
         "not (cand is not None)",
@@ -165777,8 +165811,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 539,
-      "end_line": 539,
+      "line": 565,
+      "end_line": 565,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "operation": "set",
@@ -165791,8 +165825,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 543,
-      "end_line": 543,
+      "line": 569,
+      "end_line": 569,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "operation": "add",
@@ -165805,8 +165839,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 300,
+      "end_line": 300,
       "owner": "FactCache._recover",
       "conditions": [],
       "operation": "rollback",
@@ -165833,8 +165867,22 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 315,
-      "end_line": 318,
+      "line": 281,
+      "end_line": 285,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "self.db",
+      "symbol": "app.services.newsletter_personal.facts.self.db.execute",
+      "expression": "self.db.execute(select(IndicatorData.date, IndicatorData.value).where(IndicatorData.indicator_id == fact.indicator_id, _finite(IndicatorData.value), IndicatorData.date <= day, IndicatorData.date >= day - timedelta(days=back)).order_by(IndicatorData.date.desc()).limit(1))",
+      "expression_truncated": false,
+      "expression_chars": 271,
+      "ast_sha256": "77d4ec1f770430a67d62ea8f4d2d6d34e0107014fd9cc2a8bfd1beca3fc01a98"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 341,
+      "end_line": 344,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "operation": "execute",
@@ -165847,8 +165895,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 345,
-      "end_line": 349,
+      "line": 371,
+      "end_line": 375,
       "owner": "FactCache._russia",
       "conditions": [],
       "operation": "execute",
@@ -165861,8 +165909,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 385,
-      "end_line": 389,
+      "line": 411,
+      "end_line": 415,
       "owner": "FactCache._world",
       "conditions": [],
       "operation": "execute",
@@ -165875,8 +165923,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 394,
-      "end_line": 398,
+      "line": 420,
+      "end_line": 424,
       "owner": "FactCache._world",
       "conditions": [],
       "operation": "execute",
@@ -165889,8 +165937,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 529,
-      "end_line": 537,
+      "line": 555,
+      "end_line": 563,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "operation": "execute",
@@ -165919,8 +165967,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 283,
-      "end_line": 284,
+      "line": 309,
+      "end_line": 310,
       "owner": "FactCache.topics",
       "conditions": [
         "ru_codes"
@@ -165935,8 +165983,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 291,
-      "end_line": 294,
+      "line": 317,
+      "end_line": 320,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -165951,8 +165999,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 490,
-      "end_line": 493,
+      "line": 516,
+      "end_line": 519,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -165967,8 +166015,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 301,
-      "end_line": 303,
+      "line": 327,
+      "end_line": 329,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -251213,8 +251261,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 242,
+      "end_line": 242,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage.campaign",
@@ -251222,8 +251270,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 242,
+      "end_line": 242,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage.user_id",
@@ -251231,8 +251279,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 333,
+      "end_line": 333,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage.campaign",
@@ -251240,8 +251288,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 333,
+      "end_line": 333,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage.user_id",
@@ -251249,8 +251297,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 344,
+      "end_line": 344,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -251258,8 +251306,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 241,
+      "end_line": 241,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -251267,8 +251315,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 242,
+      "end_line": 242,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -251276,8 +251324,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 242,
+      "end_line": 242,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -251285,8 +251333,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 332,
+      "end_line": 332,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -251294,8 +251342,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 333,
+      "end_line": 333,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -251303,8 +251351,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 333,
+      "end_line": 333,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -251312,8 +251360,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 343,
+      "end_line": 343,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email_verified",
@@ -251321,8 +251369,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 344,
+      "end_line": 344,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -251330,8 +251378,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 343,
+      "end_line": 343,
       "owner": "run_reconfirm",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -251839,8 +251887,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 454,
-      "end_line": 454,
+      "line": 456,
+      "end_line": 456,
       "owner": "notify_sent",
       "conditions": [],
       "symbol": "app.models.MailMessage.status",
@@ -252121,8 +252169,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 454,
-      "end_line": 454,
+      "line": 456,
+      "end_line": 456,
       "owner": "notify_sent",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -252498,8 +252546,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 455,
+      "end_line": 455,
       "owner": "notify_sent",
       "conditions": [],
       "symbol": "app.models.MailMessage.campaign",
@@ -252571,8 +252619,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 455,
+      "end_line": 455,
       "owner": "notify_sent",
       "conditions": [],
       "symbol": "app.models.MailMessage.status",
@@ -252580,8 +252628,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 455,
+      "end_line": 455,
       "owner": "notify_sent",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -252600,8 +252648,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 455,
+      "end_line": 455,
       "owner": "notify_sent",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -254307,8 +254355,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 713,
+      "end_line": 713,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage.user_id",
@@ -254316,8 +254364,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 713,
+      "end_line": 713,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage.kind",
@@ -254325,8 +254373,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 713,
+      "end_line": 713,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage.status",
@@ -254334,8 +254382,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 672,
-      "end_line": 672,
+      "line": 714,
+      "end_line": 714,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage.campaign",
@@ -254343,8 +254391,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 672,
-      "end_line": 672,
+      "line": 714,
+      "end_line": 714,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage.sent_at",
@@ -254352,8 +254400,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 720,
-      "end_line": 720,
+      "line": 762,
+      "end_line": 762,
       "owner": "per_recipient_hook.hook",
       "conditions": [
         "snap is not None and await store.tables_ready(db)"
@@ -254363,8 +254411,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 712,
+      "end_line": 712,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage.id",
@@ -254372,8 +254420,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 713,
+      "end_line": 713,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -254381,8 +254429,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 713,
+      "end_line": 713,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -254390,8 +254438,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 713,
+      "end_line": 713,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -254399,8 +254447,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 672,
-      "end_line": 672,
+      "line": 714,
+      "end_line": 714,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -254408,8 +254456,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 672,
-      "end_line": 672,
+      "line": 714,
+      "end_line": 714,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -254417,8 +254465,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 720,
-      "end_line": 720,
+      "line": 762,
+      "end_line": 762,
       "owner": "per_recipient_hook.hook",
       "conditions": [
         "snap is not None and await store.tables_ready(db)"
@@ -254428,8 +254476,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 720,
-      "end_line": 720,
+      "line": 762,
+      "end_line": 762,
       "owner": "per_recipient_hook.hook",
       "conditions": [
         "snap is not None and await store.tables_ready(db)"
@@ -254439,8 +254487,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 712,
+      "end_line": 712,
       "owner": "sent_recently",
       "conditions": [],
       "symbol": "app.models.MailMessage",
@@ -254448,8 +254496,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 720,
-      "end_line": 720,
+      "line": 762,
+      "end_line": 762,
       "owner": "per_recipient_hook.hook",
       "conditions": [
         "snap is not None and await store.tables_ready(db)"
@@ -254522,8 +254570,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 356,
+      "end_line": 356,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed.is_",
@@ -254531,8 +254579,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 356,
+      "end_line": 356,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed",
@@ -254540,8 +254588,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 358,
+      "end_line": 358,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -254549,8 +254597,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 358,
+      "end_line": 358,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -254558,8 +254606,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 490,
+      "end_line": 490,
       "owner": "FactCache._region",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -254567,8 +254615,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 490,
+      "end_line": 490,
       "owner": "FactCache._region",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -254576,8 +254624,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 356,
+      "end_line": 356,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -254585,8 +254633,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 331,
-      "end_line": 331,
+      "line": 357,
+      "end_line": 357,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -254594,8 +254642,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 358,
+      "end_line": 358,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -254603,8 +254651,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 358,
+      "end_line": 358,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -254612,8 +254660,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 361,
+      "end_line": 361,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -254623,8 +254671,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 361,
+      "end_line": 361,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -254634,8 +254682,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 361,
+      "end_line": 361,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -254645,8 +254693,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 367,
+      "end_line": 367,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -254656,8 +254704,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 367,
+      "end_line": 367,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -254667,8 +254715,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 367,
+      "end_line": 367,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -254678,8 +254726,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 463,
-      "end_line": 463,
+      "line": 489,
+      "end_line": 489,
       "owner": "FactCache._region",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -254687,8 +254735,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 490,
+      "end_line": 490,
       "owner": "FactCache._region",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -254696,8 +254744,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 490,
+      "end_line": 490,
       "owner": "FactCache._region",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -254758,8 +254806,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 344,
+      "end_line": 344,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code.in_",
@@ -254767,8 +254815,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 358,
+      "end_line": 358,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -254776,8 +254824,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 360,
+      "end_line": 360,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -254787,8 +254835,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 361,
+      "end_line": 361,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -254798,8 +254846,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 361,
+      "end_line": 361,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -254809,8 +254857,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 361,
+      "end_line": 361,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -254820,8 +254868,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 340,
-      "end_line": 340,
+      "line": 366,
+      "end_line": 366,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -254831,8 +254879,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 367,
+      "end_line": 367,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -254842,8 +254890,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 367,
+      "end_line": 367,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -254853,8 +254901,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 367,
+      "end_line": 367,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -254864,8 +254912,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 414,
+      "end_line": 414,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -254873,8 +254921,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 414,
+      "end_line": 414,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -254882,8 +254930,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 389,
-      "end_line": 389,
+      "line": 415,
+      "end_line": 415,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -254891,8 +254939,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 490,
+      "end_line": 490,
       "owner": "FactCache._region",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -254971,8 +255019,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 310,
+      "end_line": 310,
       "owner": "FactCache.topics",
       "conditions": [
         "ru_codes"
@@ -254982,8 +255030,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 320,
+      "end_line": 320,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -254993,8 +255041,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 343,
+      "end_line": 343,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -255002,8 +255050,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 344,
+      "end_line": 344,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -255011,8 +255059,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 360,
+      "end_line": 360,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -255022,8 +255070,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 361,
+      "end_line": 361,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -255033,8 +255081,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 361,
+      "end_line": 361,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is not None and shown_code != code"
@@ -255044,8 +255092,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 367,
+      "end_line": 367,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -255055,8 +255103,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 367,
+      "end_line": 367,
       "owner": "FactCache._russia",
       "conditions": [
         "ind is None and shown_code != code"
@@ -255066,8 +255114,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 413,
+      "end_line": 413,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -255075,8 +255123,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 414,
+      "end_line": 414,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -255084,8 +255132,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 414,
+      "end_line": 414,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -255093,8 +255141,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 389,
-      "end_line": 389,
+      "line": 415,
+      "end_line": 415,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -255102,8 +255150,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 537,
-      "end_line": 537,
+      "line": 563,
+      "end_line": 563,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.scheduled_date",
@@ -255129,8 +255177,17 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 285,
+      "end_line": 285,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date.desc",
+      "expression": "IndicatorData.date.desc"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 310,
+      "end_line": 310,
       "owner": "FactCache.topics",
       "conditions": [
         "ru_codes"
@@ -255140,8 +255197,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 310,
+      "end_line": 310,
       "owner": "FactCache.topics",
       "conditions": [
         "ru_codes"
@@ -255151,8 +255208,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 310,
+      "end_line": 310,
       "owner": "FactCache.topics",
       "conditions": [
         "ru_codes"
@@ -255162,8 +255219,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 319,
+      "end_line": 319,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255173,8 +255230,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 320,
+      "end_line": 320,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255184,8 +255241,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 343,
+      "end_line": 343,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -255193,8 +255250,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 343,
+      "end_line": 343,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -255202,8 +255259,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 344,
+      "end_line": 344,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -255211,8 +255268,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 374,
+      "end_line": 374,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date.desc",
@@ -255220,8 +255277,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 413,
+      "end_line": 413,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -255229,8 +255286,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 413,
+      "end_line": 413,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -255238,8 +255295,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 389,
-      "end_line": 389,
+      "line": 415,
+      "end_line": 415,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -255247,8 +255304,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 397,
-      "end_line": 397,
+      "line": 423,
+      "end_line": 423,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date.desc",
@@ -255256,8 +255313,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 537,
-      "end_line": 537,
+      "line": 563,
+      "end_line": 563,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -255265,8 +255322,17 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 285,
+      "end_line": 285,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 310,
+      "end_line": 310,
       "owner": "FactCache.topics",
       "conditions": [
         "ru_codes"
@@ -255276,8 +255342,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 310,
+      "end_line": 310,
       "owner": "FactCache.topics",
       "conditions": [
         "ru_codes"
@@ -255287,8 +255353,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 310,
+      "end_line": 310,
       "owner": "FactCache.topics",
       "conditions": [
         "ru_codes"
@@ -255298,8 +255364,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 319,
+      "end_line": 319,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255309,8 +255375,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 319,
+      "end_line": 319,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255320,8 +255386,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 320,
+      "end_line": 320,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255331,8 +255397,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 329,
+      "end_line": 329,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255342,8 +255408,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 342,
+      "end_line": 342,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -255351,8 +255417,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 342,
+      "end_line": 342,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -255360,8 +255426,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 343,
+      "end_line": 343,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -255369,8 +255435,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 343,
+      "end_line": 343,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -255378,8 +255444,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 374,
+      "end_line": 374,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -255387,8 +255453,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 412,
+      "end_line": 412,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -255396,8 +255462,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 412,
+      "end_line": 412,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -255405,8 +255471,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 412,
+      "end_line": 412,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_en",
@@ -255414,8 +255480,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 413,
+      "end_line": 413,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -255423,8 +255489,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 413,
+      "end_line": 413,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -255432,8 +255498,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 397,
-      "end_line": 397,
+      "line": 423,
+      "end_line": 423,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -255441,8 +255507,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 519,
+      "end_line": 519,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -255452,8 +255518,53 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 283,
+      "end_line": 283,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 283,
+      "end_line": 283,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.value",
+      "expression": "IndicatorData.value"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 284,
+      "end_line": 284,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 284,
+      "end_line": 284,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 285,
+      "end_line": 285,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 318,
+      "end_line": 318,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255463,8 +255574,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 318,
+      "end_line": 318,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255474,8 +255585,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 318,
+      "end_line": 318,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255485,8 +255596,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 318,
+      "end_line": 318,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255496,8 +255607,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 319,
+      "end_line": 319,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255507,8 +255618,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 319,
+      "end_line": 319,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255518,8 +255629,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 328,
+      "end_line": 328,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255529,8 +255640,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 328,
+      "end_line": 328,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255540,8 +255651,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 328,
+      "end_line": 328,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255551,8 +255662,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 329,
+      "end_line": 329,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255562,8 +255673,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 342,
+      "end_line": 342,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -255571,8 +255682,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 342,
+      "end_line": 342,
       "owner": "FactCache.world_country_for_code",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -255580,8 +255691,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 373,
+      "end_line": 373,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -255589,8 +255700,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 373,
+      "end_line": 373,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData.value",
@@ -255598,8 +255709,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 374,
+      "end_line": 374,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -255607,8 +255718,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 412,
+      "end_line": 412,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -255616,8 +255727,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 412,
+      "end_line": 412,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -255625,8 +255736,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 422,
+      "end_line": 422,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -255634,8 +255745,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 422,
+      "end_line": 422,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -255643,8 +255754,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 397,
-      "end_line": 397,
+      "line": 423,
+      "end_line": 423,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -255652,8 +255763,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 519,
+      "end_line": 519,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -255663,8 +255774,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 533,
-      "end_line": 533,
+      "line": 559,
+      "end_line": 559,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -255672,8 +255783,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 533,
-      "end_line": 533,
+      "line": 559,
+      "end_line": 559,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator.frequency",
@@ -255681,8 +255792,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 560,
+      "end_line": 560,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.scheduled_date",
@@ -255690,8 +255801,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 535,
-      "end_line": 535,
+      "line": 561,
+      "end_line": 561,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.scheduled_date",
@@ -255699,8 +255810,62 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 282,
+      "end_line": 282,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 282,
+      "end_line": 282,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.value",
+      "expression": "IndicatorData.value"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 283,
+      "end_line": 283,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 283,
+      "end_line": 283,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 284,
+      "end_line": 284,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 284,
+      "end_line": 284,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 318,
+      "end_line": 318,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255710,8 +255875,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 318,
+      "end_line": 318,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255721,8 +255886,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 318,
+      "end_line": 318,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255732,8 +255897,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 318,
+      "end_line": 318,
       "owner": "FactCache.topics",
       "conditions": [
         "w_codes"
@@ -255743,8 +255908,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 328,
+      "end_line": 328,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255754,8 +255919,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 328,
+      "end_line": 328,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255765,8 +255930,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 328,
+      "end_line": 328,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255776,8 +255941,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 329,
+      "end_line": 329,
       "owner": "FactCache.topics",
       "conditions": [
         "r_codes"
@@ -255787,8 +255952,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 372,
+      "end_line": 372,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -255796,8 +255961,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 372,
+      "end_line": 372,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData.value",
@@ -255805,8 +255970,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 373,
+      "end_line": 373,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -255814,8 +255979,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 373,
+      "end_line": 373,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -255823,8 +255988,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 395,
-      "end_line": 395,
+      "line": 421,
+      "end_line": 421,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -255832,8 +255997,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 395,
-      "end_line": 395,
+      "line": 421,
+      "end_line": 421,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -255841,8 +256006,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 422,
+      "end_line": 422,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -255850,8 +256015,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 422,
+      "end_line": 422,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -255859,8 +256024,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 518,
+      "end_line": 518,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -255870,8 +256035,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 518,
+      "end_line": 518,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -255881,8 +256046,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 519,
+      "end_line": 519,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -255892,8 +256057,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 531,
-      "end_line": 531,
+      "line": 557,
+      "end_line": 557,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -255901,8 +256066,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 533,
-      "end_line": 533,
+      "line": 559,
+      "end_line": 559,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -255910,8 +256075,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 533,
-      "end_line": 533,
+      "line": 559,
+      "end_line": 559,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -255919,8 +256084,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 560,
+      "end_line": 560,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -255928,8 +256093,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 535,
-      "end_line": 535,
+      "line": 561,
+      "end_line": 561,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -255937,8 +256102,26 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 282,
+      "end_line": 282,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 282,
+      "end_line": 282,
+      "owner": "FactCache.value_at",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 372,
+      "end_line": 372,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -255946,8 +256129,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 372,
+      "end_line": 372,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -255955,8 +256138,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 395,
-      "end_line": 395,
+      "line": 421,
+      "end_line": 421,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -255964,8 +256147,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 395,
-      "end_line": 395,
+      "line": 421,
+      "end_line": 421,
       "owner": "FactCache._world",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -255973,8 +256156,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 517,
+      "end_line": 517,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -255984,8 +256167,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 517,
+      "end_line": 517,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -255995,8 +256178,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 517,
+      "end_line": 517,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -256006,8 +256189,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 518,
+      "end_line": 518,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -256017,8 +256200,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 518,
+      "end_line": 518,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -256028,8 +256211,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 531,
-      "end_line": 531,
+      "line": 557,
+      "end_line": 557,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -256037,8 +256220,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 531,
-      "end_line": 531,
+      "line": 557,
+      "end_line": 557,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.indicator_id",
@@ -256046,8 +256229,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 533,
-      "end_line": 533,
+      "line": 559,
+      "end_line": 559,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -256055,8 +256238,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 517,
+      "end_line": 517,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -256066,8 +256249,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 517,
+      "end_line": 517,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -256077,8 +256260,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 517,
+      "end_line": 517,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -256088,8 +256271,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 518,
+      "end_line": 518,
       "owner": "FactCache._region",
       "conditions": [
         "not (mine)"
@@ -256099,8 +256282,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 530,
-      "end_line": 530,
+      "line": 556,
+      "end_line": 556,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -256108,8 +256291,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 530,
-      "end_line": 530,
+      "line": 556,
+      "end_line": 556,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -256117,8 +256300,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 531,
-      "end_line": 531,
+      "line": 557,
+      "end_line": 557,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -256126,8 +256309,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 531,
-      "end_line": 531,
+      "line": 557,
+      "end_line": 557,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -256135,8 +256318,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 530,
-      "end_line": 530,
+      "line": 556,
+      "end_line": 556,
       "owner": "FactCache.upcoming_events",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -343034,8 +343217,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 206,
-      "end_line": 209,
+      "line": 208,
+      "end_line": 211,
       "owner": "<module>",
       "conditions": [],
       "name": "personal_digest",
@@ -343043,8 +343226,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 212,
-      "end_line": 287,
+      "line": 214,
+      "end_line": 301,
       "owner": "<module>",
       "conditions": [],
       "name": "run",
@@ -343052,8 +343235,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 293,
-      "end_line": 350,
+      "line": 307,
+      "end_line": 364,
       "owner": "<module>",
       "conditions": [],
       "name": "run_reconfirm",
@@ -343061,8 +343244,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 353,
-      "end_line": 364,
+      "line": 367,
+      "end_line": 378,
       "owner": "<module>",
       "conditions": [],
       "name": "send_reconfirm_test",
@@ -343188,7 +343371,7 @@
     {
       "path": "backend/app/services/mail/funnel.py",
       "line": 410,
-      "end_line": 438,
+      "end_line": 440,
       "owner": "<module>",
       "conditions": [],
       "name": "format_sent_notice",
@@ -343196,8 +343379,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 441,
-      "end_line": 461,
+      "line": 443,
+      "end_line": 463,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_sent",
@@ -343205,8 +343388,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 464,
-      "end_line": 501,
+      "line": 466,
+      "end_line": 503,
       "owner": "<module>",
       "conditions": [],
       "name": "newsletter_report_job",
@@ -343808,8 +343991,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 27,
-      "end_line": 28,
+      "line": 29,
+      "end_line": 30,
       "owner": "<module>",
       "conditions": [],
       "name": "MailConfigError",
@@ -343817,8 +344000,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 31,
-      "end_line": 39,
+      "line": 33,
+      "end_line": 44,
       "owner": "<module>",
       "conditions": [],
       "name": "SendError",
@@ -343826,8 +344009,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 43,
-      "end_line": 52,
+      "line": 48,
+      "end_line": 57,
       "owner": "<module>",
       "conditions": [],
       "name": "OutgoingMail",
@@ -343835,8 +344018,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 61,
-      "end_line": 68,
+      "line": 66,
+      "end_line": 73,
       "owner": "<module>",
       "conditions": [],
       "name": "SmtpProfile",
@@ -343844,8 +344027,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 71,
-      "end_line": 85,
+      "line": 76,
+      "end_line": 90,
       "owner": "<module>",
       "conditions": [],
       "name": "profile_for",
@@ -343853,8 +344036,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 88,
-      "end_line": 89,
+      "line": 93,
+      "end_line": 94,
       "owner": "<module>",
       "conditions": [],
       "name": "from_address",
@@ -343862,8 +344045,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 92,
-      "end_line": 94,
+      "line": 97,
+      "end_line": 99,
       "owner": "<module>",
       "conditions": [],
       "name": "sender_domain",
@@ -343871,8 +344054,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 102,
-      "end_line": 136,
+      "line": 107,
+      "end_line": 141,
       "owner": "<module>",
       "conditions": [],
       "name": "build_message",
@@ -343880,8 +344063,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 139,
-      "end_line": 156,
+      "line": 144,
+      "end_line": 164,
       "owner": "<module>",
       "conditions": [],
       "name": "_classify",
@@ -343889,8 +344072,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 159,
-      "end_line": 178,
+      "line": 167,
+      "end_line": 186,
       "owner": "<module>",
       "conditions": [],
       "name": "_send_sync",
@@ -343898,8 +344081,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 181,
-      "end_line": 184,
+      "line": 189,
+      "end_line": 192,
       "owner": "<module>",
       "conditions": [],
       "name": "ensure_configured",
@@ -343907,8 +344090,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 187,
-      "end_line": 197,
+      "line": 195,
+      "end_line": 205,
       "owner": "<module>",
       "conditions": [],
       "name": "send",
@@ -343916,8 +344099,8 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 34,
-      "end_line": 39,
+      "line": 36,
+      "end_line": 44,
       "owner": "SendError",
       "conditions": [],
       "name": "__init__",
@@ -344475,7 +344658,7 @@
     {
       "path": "backend/app/services/newsletter_personal/build.py",
       "line": 148,
-      "end_line": 465,
+      "end_line": 489,
       "owner": "<module>",
       "conditions": [],
       "name": "Builder",
@@ -344483,8 +344666,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 468,
-      "end_line": 473,
+      "line": 492,
+      "end_line": 497,
       "owner": "<module>",
       "conditions": [],
       "name": "_content_of",
@@ -344492,8 +344675,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 476,
-      "end_line": 479,
+      "line": 500,
+      "end_line": 503,
       "owner": "<module>",
       "conditions": [],
       "name": "_date_text",
@@ -344501,8 +344684,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 482,
-      "end_line": 490,
+      "line": 506,
+      "end_line": 514,
       "owner": "<module>",
       "conditions": [],
       "name": "_topics_subject",
@@ -344510,8 +344693,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 493,
-      "end_line": 518,
+      "line": 517,
+      "end_line": 542,
       "owner": "<module>",
       "conditions": [],
       "name": "_personal_subject",
@@ -344519,8 +344702,17 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 521,
-      "end_line": 538,
+      "line": 545,
+      "end_line": 560,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_signup_subject",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/build.py",
+      "line": 563,
+      "end_line": 580,
       "owner": "<module>",
       "conditions": [],
       "name": "_fatigue",
@@ -344528,8 +344720,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 541,
-      "end_line": 546,
+      "line": 583,
+      "end_line": 588,
       "owner": "<module>",
       "conditions": [],
       "name": "_general",
@@ -344537,8 +344729,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 551,
-      "end_line": 555,
+      "line": 593,
+      "end_line": 597,
       "owner": "<module>",
       "conditions": [],
       "name": "locale_for",
@@ -344546,8 +344738,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 558,
-      "end_line": 565,
+      "line": 600,
+      "end_line": 607,
       "owner": "<module>",
       "conditions": [],
       "name": "build_personal_issue",
@@ -344555,8 +344747,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 569,
-      "end_line": 581,
+      "line": 611,
+      "end_line": 623,
       "owner": "<module>",
       "conditions": [],
       "name": "CampaignReport",
@@ -344564,8 +344756,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 584,
-      "end_line": 585,
+      "line": 626,
+      "end_line": 627,
       "owner": "<module>",
       "conditions": [],
       "name": "_bump",
@@ -344573,8 +344765,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 588,
-      "end_line": 642,
+      "line": 630,
+      "end_line": 684,
       "owner": "<module>",
       "conditions": [],
       "name": "build_campaign",
@@ -344582,8 +344774,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 647,
-      "end_line": 656,
+      "line": 689,
+      "end_line": 698,
       "owner": "<module>",
       "conditions": [],
       "name": "_local_hour",
@@ -344591,8 +344783,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 659,
-      "end_line": 661,
+      "line": 701,
+      "end_line": 703,
       "owner": "<module>",
       "conditions": [],
       "name": "in_send_window",
@@ -344600,8 +344792,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 664,
-      "end_line": 673,
+      "line": 706,
+      "end_line": 715,
       "owner": "<module>",
       "conditions": [],
       "name": "sent_recently",
@@ -344609,8 +344801,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 676,
-      "end_line": 688,
+      "line": 718,
+      "end_line": 730,
       "owner": "<module>",
       "conditions": [],
       "name": "snapshot_fresh",
@@ -344618,8 +344810,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 691,
-      "end_line": 740,
+      "line": 733,
+      "end_line": 784,
       "owner": "<module>",
       "conditions": [],
       "name": "per_recipient_hook",
@@ -344691,7 +344883,7 @@
     {
       "path": "backend/app/services/newsletter_personal/build.py",
       "line": 245,
-      "end_line": 420,
+      "end_line": 444,
       "owner": "Builder",
       "conditions": [],
       "name": "_compose",
@@ -344699,8 +344891,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 422,
-      "end_line": 436,
+      "line": 446,
+      "end_line": 460,
       "owner": "Builder",
       "conditions": [],
       "name": "_editorial_relevance",
@@ -344708,8 +344900,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 438,
-      "end_line": 465,
+      "line": 462,
+      "end_line": 489,
       "owner": "Builder",
       "conditions": [],
       "name": "_calendar",
@@ -344717,8 +344909,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 580,
-      "end_line": 581,
+      "line": 622,
+      "end_line": 623,
       "owner": "CampaignReport",
       "conditions": [],
       "name": "as_dict",
@@ -344726,8 +344918,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 700,
-      "end_line": 738,
+      "line": 742,
+      "end_line": 782,
       "owner": "per_recipient_hook",
       "conditions": [],
       "name": "hook",
@@ -344735,8 +344927,17 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/build.py",
-      "line": 340,
-      "end_line": 367,
+      "line": 301,
+      "end_line": 306,
+      "owner": "Builder._compose",
+      "conditions": [],
+      "name": "signup",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/build.py",
+      "line": 357,
+      "end_line": 384,
       "owner": "Builder._compose",
       "conditions": [],
       "name": "add",
@@ -344897,8 +345098,35 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/compose.py",
-      "line": 439,
-      "end_line": 440,
+      "line": 459,
+      "end_line": 472,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_signup_move",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/compose.py",
+      "line": 475,
+      "end_line": 484,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_signup_pair",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/compose.py",
+      "line": 487,
+      "end_line": 535,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "signup_block",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/compose.py",
+      "line": 538,
+      "end_line": 539,
       "owner": "<module>",
       "conditions": [],
       "name": "editorial_share_ok",
@@ -345015,7 +345243,7 @@
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
       "line": 208,
-      "end_line": 555,
+      "end_line": 581,
       "owner": "<module>",
       "conditions": [],
       "name": "FactCache",
@@ -345023,8 +345251,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 568,
-      "end_line": 580,
+      "line": 594,
+      "end_line": 606,
       "owner": "<module>",
       "conditions": [],
       "name": "_short_unit",
@@ -345032,8 +345260,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 587,
-      "end_line": 591,
+      "line": 613,
+      "end_line": 617,
       "owner": "<module>",
       "conditions": [],
       "name": "_fit",
@@ -345041,8 +345269,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 594,
-      "end_line": 598,
+      "line": 620,
+      "end_line": 624,
       "owner": "<module>",
       "conditions": [],
       "name": "clean_region_name",
@@ -345050,8 +345278,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 607,
-      "end_line": 610,
+      "line": 633,
+      "end_line": 636,
       "owner": "<module>",
       "conditions": [],
       "name": "_day_label",
@@ -345059,8 +345287,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 613,
-      "end_line": 614,
+      "line": 639,
+      "end_line": 640,
       "owner": "<module>",
       "conditions": [],
       "name": "day_label",
@@ -345068,8 +345296,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 617,
-      "end_line": 618,
+      "line": 643,
+      "end_line": 644,
       "owner": "<module>",
       "conditions": [],
       "name": "full_date",
@@ -345132,7 +345360,25 @@
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
       "line": 272,
-      "end_line": 276,
+      "end_line": 289,
+      "owner": "FactCache",
+      "conditions": [],
+      "name": "value_at",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 291,
+      "end_line": 296,
+      "owner": "FactCache",
+      "conditions": [],
+      "name": "value_text",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/facts.py",
+      "line": 298,
+      "end_line": 302,
       "owner": "FactCache",
       "conditions": [],
       "name": "_recover",
@@ -345140,8 +345386,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 278,
-      "end_line": 310,
+      "line": 304,
+      "end_line": 336,
       "owner": "FactCache",
       "conditions": [],
       "name": "topics",
@@ -345149,8 +345395,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 312,
-      "end_line": 319,
+      "line": 338,
+      "end_line": 345,
       "owner": "FactCache",
       "conditions": [],
       "name": "world_country_for_code",
@@ -345158,8 +345404,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 322,
-      "end_line": 376,
+      "line": 348,
+      "end_line": 402,
       "owner": "FactCache",
       "conditions": [],
       "name": "_russia",
@@ -345167,8 +345413,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 379,
-      "end_line": 442,
+      "line": 405,
+      "end_line": 468,
       "owner": "FactCache",
       "conditions": [],
       "name": "_world",
@@ -345176,8 +345422,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 444,
-      "end_line": 454,
+      "line": 470,
+      "end_line": 480,
       "owner": "FactCache",
       "conditions": [],
       "name": "_world_title",
@@ -345185,8 +345431,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 457,
-      "end_line": 520,
+      "line": 483,
+      "end_line": 546,
       "owner": "FactCache",
       "conditions": [],
       "name": "_region",
@@ -345194,8 +345440,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 523,
-      "end_line": 555,
+      "line": 549,
+      "end_line": 581,
       "owner": "FactCache",
       "conditions": [],
       "name": "upcoming_events",
@@ -345662,8 +345908,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 112,
-      "end_line": 114,
+      "line": 136,
+      "end_line": 138,
       "owner": "<module>",
       "conditions": [],
       "name": "t",
@@ -345671,8 +345917,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 117,
-      "end_line": 126,
+      "line": 141,
+      "end_line": 150,
       "owner": "<module>",
       "conditions": [],
       "name": "plural",
@@ -345680,8 +345926,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 129,
-      "end_line": 134,
+      "line": 153,
+      "end_line": 158,
       "owner": "<module>",
       "conditions": [],
       "name": "soft_lower",
@@ -345689,8 +345935,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 137,
-      "end_line": 138,
+      "line": 161,
+      "end_line": 162,
       "owner": "<module>",
       "conditions": [],
       "name": "cap",
@@ -345698,8 +345944,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 141,
-      "end_line": 152,
+      "line": 165,
+      "end_line": 176,
       "owner": "<module>",
       "conditions": [],
       "name": "sentence",
@@ -345707,8 +345953,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 167,
-      "end_line": 175,
+      "line": 191,
+      "end_line": 199,
       "owner": "<module>",
       "conditions": [],
       "name": "clean_title",
@@ -345716,8 +345962,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 178,
-      "end_line": 187,
+      "line": 202,
+      "end_line": 211,
       "owner": "<module>",
       "conditions": [],
       "name": "typo",
@@ -391529,8 +391775,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 207,
-      "end_line": 207,
+      "line": 209,
+      "end_line": 209,
       "owner": "personal_digest",
       "conditions": [],
       "symbol": "app.services.mail.campaign.DEFER"
@@ -391545,8 +391791,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 267,
+      "end_line": 267,
       "owner": "run",
       "conditions": [
         "per_recipient is not None"
@@ -391563,8 +391809,8 @@
     },
     {
       "path": "backend/app/services/mail/campaign.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 254,
+      "end_line": 254,
       "owner": "run",
       "conditions": [
         "not send",
@@ -391590,8 +391836,8 @@
     },
     {
       "path": "backend/app/services/mail/funnel.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 490,
+      "end_line": 490,
       "owner": "newsletter_report_job",
       "conditions": [],
       "symbol": "app.services.mail.funnel.REPORT_STAGES"
@@ -391754,27 +392000,37 @@
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 113,
-      "end_line": 113,
+      "line": 118,
+      "end_line": 118,
       "owner": "build_message",
       "conditions": [],
       "symbol": "app.services.mail.transport.BULK_KINDS"
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 73,
-      "end_line": 73,
+      "line": 78,
+      "end_line": 78,
       "owner": "profile_for",
       "conditions": [],
       "symbol": "app.services.mail.transport.BULK_KINDS"
     },
     {
       "path": "backend/app/services/mail/transport.py",
-      "line": 103,
-      "end_line": 103,
+      "line": 108,
+      "end_line": 108,
       "owner": "build_message",
       "conditions": [],
       "symbol": "app.services.mail.transport._POLICY"
+    },
+    {
+      "path": "backend/app/services/mail/transport.py",
+      "line": 158,
+      "end_line": 158,
+      "owner": "_classify",
+      "conditions": [
+        "isinstance(exc, smtplib.SMTPResponseException)"
+      ],
+      "symbol": "app.services.mail.transport._EMAIL_RE"
     },
     {
       "path": "backend/app/services/mail/watch_digest.py",
@@ -391898,6 +392154,14 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/compose.py",
+      "line": 497,
+      "end_line": 497,
+      "owner": "signup_block",
+      "conditions": [],
+      "symbol": "app.services.newsletter_personal.compose.SIGNUP_SERIES"
+    },
+    {
+      "path": "backend/app/services/newsletter_personal/compose.py",
       "line": 206,
       "end_line": 206,
       "owner": "region_candidates",
@@ -391962,8 +392226,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 573,
-      "end_line": 573,
+      "line": 599,
+      "end_line": 599,
       "owner": "_short_unit",
       "conditions": [],
       "symbol": "app.services.newsletter_personal.facts._UNIT_SHORT_RU"
@@ -391998,8 +392262,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 600,
+      "end_line": 600,
       "owner": "_short_unit",
       "conditions": [
         "u in _UNIT_SHORT_RU"
@@ -392008,24 +392272,24 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 622,
+      "end_line": 622,
       "owner": "clean_region_name",
       "conditions": [],
       "symbol": "app.services.newsletter_personal.facts._REGION_NAME_PREFIXES"
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 327,
-      "end_line": 327,
+      "line": 353,
+      "end_line": 353,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.services.search_latest._FEDERAL_HEADLINE_YOY"
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 572,
-      "end_line": 572,
+      "line": 598,
+      "end_line": 598,
       "owner": "_short_unit",
       "conditions": [
         "locale == 'en'"
@@ -392034,8 +392298,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 577,
-      "end_line": 577,
+      "line": 603,
+      "end_line": 603,
       "owner": "_short_unit",
       "conditions": [
         "m"
@@ -392044,8 +392308,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 610,
-      "end_line": 610,
+      "line": 636,
+      "end_line": 636,
       "owner": "_day_label",
       "conditions": [],
       "symbol": "app.services.newsletter_personal.facts._RU_MONTHS_GEN"
@@ -392078,8 +392342,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 498,
+      "end_line": 498,
       "owner": "FactCache._region",
       "conditions": [
         "self.locale == 'en'"
@@ -392088,8 +392352,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 609,
-      "end_line": 609,
+      "line": 635,
+      "end_line": 635,
       "owner": "_day_label",
       "conditions": [
         "locale == 'en'"
@@ -392098,8 +392362,8 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/facts.py",
-      "line": 367,
-      "end_line": 367,
+      "line": 393,
+      "end_line": 393,
       "owner": "FactCache._russia",
       "conditions": [],
       "symbol": "app.services.newsletter_personal.facts.YOY_TITLES"
@@ -392396,16 +392660,16 @@
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 169,
-      "end_line": 169,
+      "line": 193,
+      "end_line": 193,
       "owner": "clean_title",
       "conditions": [],
       "symbol": "app.services.newsletter_personal.texts._JARGON"
     },
     {
       "path": "backend/app/services/newsletter_personal/texts.py",
-      "line": 113,
-      "end_line": 113,
+      "line": 137,
+      "end_line": 137,
       "owner": "t",
       "conditions": [],
       "symbol": "app.services.newsletter_personal.texts.STR"

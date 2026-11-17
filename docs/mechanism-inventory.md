@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **70**
 - Middleware: **6**
-- Registry declarations: **1565**
-- Registry references: **2925**
+- Registry declarations: **1567**
+- Registry references: **2927**
 - Migration operations: **524**
-- Candidate effects: **3235**
+- Candidate effects: **3236**
 - Unresolved syntax: **2**
 - MCP tools: **7**
 
@@ -3068,8 +3068,9 @@ Relationships: `[]`
 | app.services.mail.tracking._PROVIDERS | Tuple | sequence/source expression | [backend/app/services/mail/tracking.py:48](../backend/app/services/mail/tracking.py#L48) |
 | app.services.mail.tracking._HREF_RE | Call | computed source expression | [backend/app/services/mail/tracking.py:104](../backend/app/services/mail/tracking.py#L104) |
 | app.services.mail.tracking._TEXT_URL_RE | Call | computed source expression | [backend/app/services/mail/tracking.py:105](../backend/app/services/mail/tracking.py#L105) |
-| app.services.mail.transport.BULK_KINDS | Call | computed source expression | [backend/app/services/mail/transport.py:57](../backend/app/services/mail/transport.py#L57) |
-| app.services.mail.transport._POLICY | Call | computed source expression | [backend/app/services/mail/transport.py:99](../backend/app/services/mail/transport.py#L99) |
+| app.services.mail.transport._EMAIL_RE | Call | computed source expression | [backend/app/services/mail/transport.py:26](../backend/app/services/mail/transport.py#L26) |
+| app.services.mail.transport.BULK_KINDS | Call | computed source expression | [backend/app/services/mail/transport.py:62](../backend/app/services/mail/transport.py#L62) |
+| app.services.mail.transport._POLICY | Call | computed source expression | [backend/app/services/mail/transport.py:104](../backend/app/services/mail/transport.py#L104) |
 | app.services.mail.watch_digest.WATCH_KINDS | Tuple | sequence/source expression | [backend/app/services/mail/watch_digest.py:32](../backend/app/services/mail/watch_digest.py#L32) |
 | app.services.mail.watch_digest.MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/mail/watch_digest.py:33](../backend/app/services/mail/watch_digest.py#L33) |
 | app.services.metrika_acquisition._VISIT_FIELDS | List | sequence/source expression | [backend/app/services/metrika_acquisition.py:63](../backend/app/services/metrika_acquisition.py#L63) |
@@ -3090,15 +3091,16 @@ Relationships: `[]`
 | app.services.newsletter_personal.compose.TOPIC_SHOWCASE_THEME | Dict | 'prices', 'fuel', 'gdp', 'business', 'labor', 'wages', 'rates', 'housing' | [backend/app/services/newsletter_personal/compose.py:42](../backend/app/services/newsletter_personal/compose.py#L42) |
 | app.services.newsletter_personal.compose.REGION_TOPIC_CODE | Dict | 'fuel', 'wages' | [backend/app/services/newsletter_personal/compose.py:45](../backend/app/services/newsletter_personal/compose.py#L45) |
 | app.services.newsletter_personal.compose.LIMITS | Dict | 'rich', 'light', 'cold' | [backend/app/services/newsletter_personal/compose.py:50](../backend/app/services/newsletter_personal/compose.py#L50) |
+| app.services.newsletter_personal.compose.SIGNUP_SERIES | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/compose.py:444](../backend/app/services/newsletter_personal/compose.py#L444) |
 | app.services.newsletter_personal.facts._EN_SOURCES | Dict | 'Росстат', 'Банк России', 'ЦБ РФ', 'Минфин России', 'Минфин', 'Московская биржа', 'ЕМИСС' | [backend/app/services/newsletter_personal/facts.py:41](../backend/app/services/newsletter_personal/facts.py#L41) |
 | app.services.newsletter_personal.facts.YOY_TITLES | Dict | 'cpi-yoy', 'cpi-food-yoy', 'cpi-nonfood-yoy', 'cpi-services-yoy' | [backend/app/services/newsletter_personal/facts.py:96](../backend/app/services/newsletter_personal/facts.py#L96) |
 | app.services.newsletter_personal.facts._STEP_PHRASE | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/newsletter_personal/facts.py:103](../backend/app/services/newsletter_personal/facts.py#L103) |
-| app.services.newsletter_personal.facts._UNIT_SHORT_RU | Dict | 'рублей за литр', 'рублей за кг', 'рублей', 'рублей за шт.', 'рублей за 10 шт.', 'рублей за 1000 мл' | [backend/app/services/newsletter_personal/facts.py:558](../backend/app/services/newsletter_personal/facts.py#L558) |
-| app.services.newsletter_personal.facts._UNIT_SHORT_EN | Dict | 'roubles per litre', 'roubles per kg', 'roubles' | [backend/app/services/newsletter_personal/facts.py:562](../backend/app/services/newsletter_personal/facts.py#L562) |
-| app.services.newsletter_personal.facts._RU_UNIT_PER | Dict | 'литр', 'кг', 'шт.' | [backend/app/services/newsletter_personal/facts.py:565](../backend/app/services/newsletter_personal/facts.py#L565) |
-| app.services.newsletter_personal.facts._REGION_NAME_PREFIXES | Call | computed source expression | [backend/app/services/newsletter_personal/facts.py:583](../backend/app/services/newsletter_personal/facts.py#L583) |
-| app.services.newsletter_personal.facts._RU_MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/facts.py:601](../backend/app/services/newsletter_personal/facts.py#L601) |
-| app.services.newsletter_personal.facts._EN_MONTHS | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/facts.py:603](../backend/app/services/newsletter_personal/facts.py#L603) |
+| app.services.newsletter_personal.facts._UNIT_SHORT_RU | Dict | 'рублей за литр', 'рублей за кг', 'рублей', 'рублей за шт.', 'рублей за 10 шт.', 'рублей за 1000 мл' | [backend/app/services/newsletter_personal/facts.py:584](../backend/app/services/newsletter_personal/facts.py#L584) |
+| app.services.newsletter_personal.facts._UNIT_SHORT_EN | Dict | 'roubles per litre', 'roubles per kg', 'roubles' | [backend/app/services/newsletter_personal/facts.py:588](../backend/app/services/newsletter_personal/facts.py#L588) |
+| app.services.newsletter_personal.facts._RU_UNIT_PER | Dict | 'литр', 'кг', 'шт.' | [backend/app/services/newsletter_personal/facts.py:591](../backend/app/services/newsletter_personal/facts.py#L591) |
+| app.services.newsletter_personal.facts._REGION_NAME_PREFIXES | Call | computed source expression | [backend/app/services/newsletter_personal/facts.py:609](../backend/app/services/newsletter_personal/facts.py#L609) |
+| app.services.newsletter_personal.facts._RU_MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/facts.py:627](../backend/app/services/newsletter_personal/facts.py#L627) |
+| app.services.newsletter_personal.facts._EN_MONTHS | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/facts.py:629](../backend/app/services/newsletter_personal/facts.py#L629) |
 | app.services.newsletter_personal.metrics.GEN_LABELS | Dict | 'series', 'download', 'search', 'region', 'related', 'now', 'forecast', 'check', 'since', 'table', 'calendar', 'section', 'editorial' | [backend/app/services/newsletter_personal/metrics.py:103](../backend/app/services/newsletter_personal/metrics.py#L103) |
 | app.services.newsletter_personal.personas.PERSONA_IDS | Dict | 'rich', 'light', 'cold', 'rich-en', 'light-en', 'cold-en' | [backend/app/services/newsletter_personal/personas.py:15](../backend/app/services/newsletter_personal/personas.py#L15) |
 | app.services.newsletter_personal.personas._SIGNALS | Dict | 'rich', 'light', 'cold', 'rich-en', 'light-en', 'cold-en' | [backend/app/services/newsletter_personal/personas.py:25](../backend/app/services/newsletter_personal/personas.py#L25) |
@@ -3116,8 +3118,8 @@ Relationships: `[]`
 | app.services.newsletter_personal.subjects._CODE_RE | Call | computed source expression | [backend/app/services/newsletter_personal/subjects.py:134](../backend/app/services/newsletter_personal/subjects.py#L134) |
 | app.services.newsletter_personal.subjects._PATH_PATTERNS | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/subjects.py:266](../backend/app/services/newsletter_personal/subjects.py#L266) |
 | app.services.newsletter_personal.texts.STR | Dict | 'ru', 'en' | [backend/app/services/newsletter_personal/texts.py:14](../backend/app/services/newsletter_personal/texts.py#L14) |
-| app.services.newsletter_personal.texts._JARGON | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/texts.py:156](../backend/app/services/newsletter_personal/texts.py#L156) |
-| app.services.newsletter_personal.texts.FORBIDDEN_WORDS | Call | computed source expression | [backend/app/services/newsletter_personal/texts.py:161](../backend/app/services/newsletter_personal/texts.py#L161) |
+| app.services.newsletter_personal.texts._JARGON | Tuple | sequence/source expression | [backend/app/services/newsletter_personal/texts.py:180](../backend/app/services/newsletter_personal/texts.py#L180) |
+| app.services.newsletter_personal.texts.FORBIDDEN_WORDS | Call | computed source expression | [backend/app/services/newsletter_personal/texts.py:185](../backend/app/services/newsletter_personal/texts.py#L185) |
 | app.services.oauth.google._TIMEOUT | Call | computed source expression | [backend/app/services/oauth/google.py:21](../backend/app/services/oauth/google.py#L21) |
 | app.services.oauth.registry.SUPPORTED | Tuple | sequence/source expression | [backend/app/services/oauth/registry.py:14](../backend/app/services/oauth/registry.py#L14) |
 | app.services.oauth.registry.PUBLIC_PROVIDERS | Tuple | sequence/source expression | [backend/app/services/oauth/registry.py:17](../backend/app/services/oauth/registry.py#L17) |

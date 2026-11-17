@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `a3995ad3e7cf023af3b5ee20c68d5a21f144c3f6`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `a51ba50b50dc56a78e126bd4d4664e611fa5e268`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2623 |
 | Код, шаблоны и стили | 2133 |
 | Актуальные рецензии без пропусков guard | 2623 |
-| Именованные определения Python/JS: с аннотацией / всего | 17611 / 17611 |
+| Именованные определения Python/JS: с аннотацией / всего | 17623 / 17623 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -405,9 +405,9 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/moex_index_parser.py](../backend/app/services/moex_index_parser.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/newsletter_personal/__init__.py](../backend/app/services/newsletter_personal/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/services/newsletter_personal/ab.py](../backend/app/services/newsletter_personal/ab.py) | reviewed | 6/6 | актуально |
-| [backend/app/services/newsletter_personal/build.py](../backend/app/services/newsletter_personal/build.py) | reviewed | 39/39 | актуально |
-| [backend/app/services/newsletter_personal/compose.py](../backend/app/services/newsletter_personal/compose.py) | reviewed | 20/20 | актуально |
-| [backend/app/services/newsletter_personal/facts.py](../backend/app/services/newsletter_personal/facts.py) | reviewed | 31/31 | актуально |
+| [backend/app/services/newsletter_personal/build.py](../backend/app/services/newsletter_personal/build.py) | reviewed | 41/41 | актуально |
+| [backend/app/services/newsletter_personal/compose.py](../backend/app/services/newsletter_personal/compose.py) | reviewed | 23/23 | актуально |
+| [backend/app/services/newsletter_personal/facts.py](../backend/app/services/newsletter_personal/facts.py) | reviewed | 33/33 | актуально |
 | [backend/app/services/newsletter_personal/jobs.py](../backend/app/services/newsletter_personal/jobs.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/newsletter_personal/metrics.py](../backend/app/services/newsletter_personal/metrics.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/newsletter_personal/personas.py](../backend/app/services/newsletter_personal/personas.py) | reviewed | 1/1 | актуально |
@@ -853,7 +853,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_load_priority.py](../backend/tests/test_load_priority.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_locale_vary.py](../backend/tests/test_locale_vary.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_mac_backup_pull.py](../backend/tests/test_mac_backup_pull.py) | reviewed | 9/9 | актуально |
-| [backend/tests/test_mail.py](../backend/tests/test_mail.py) | reviewed | 36/36 | актуально |
+| [backend/tests/test_mail.py](../backend/tests/test_mail.py) | reviewed | 40/40 | актуально |
 | [backend/tests/test_mail_blocks.py](../backend/tests/test_mail_blocks.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_mail_design.py](../backend/tests/test_mail_design.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_mail_lifecycle.py](../backend/tests/test_mail_lifecycle.py) | reviewed | 14/14 | актуально |
@@ -867,7 +867,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_monetary_mass_seo.py](../backend/tests/test_monetary_mass_seo.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_mortgage_rate_seo.py](../backend/tests/test_mortgage_rate_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_newsletter_counts.py](../backend/tests/test_newsletter_counts.py) | reviewed | 3/3 | актуально |
-| [backend/tests/test_newsletter_personal.py](../backend/tests/test_newsletter_personal.py) | reviewed | 43/43 | актуально |
+| [backend/tests/test_newsletter_personal.py](../backend/tests/test_newsletter_personal.py) | reviewed | 44/44 | актуально |
 | [backend/tests/test_oauth_google.py](../backend/tests/test_oauth_google.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_observability.py](../backend/tests/test_observability.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_og_capacity.py](../backend/tests/test_og_capacity.py) | reviewed | 15/15 | актуально |
