@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2409  ·  **Строк:** 1 522 856  ·  **Токенов (≈):** 14 582 766
+**Файлов:** 2409  ·  **Строк:** 1 522 972  ·  **Токенов (≈):** 14 583 863
 
 ## По верхним папкам
 
@@ -18,9 +18,9 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 1022 | 351 257 | 3 885 094 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 21 | 1 574 | 25 796 |
-| `docs` | 152 | 950 654 | 8 184 291 |
-| `frontend` | 1055 | 190 534 | 2 099 161 |
+| `deploy` | 21 | 1 575 | 25 876 |
+| `docs` | 152 | 950 743 | 8 184 953 |
+| `frontend` | 1055 | 190 560 | 2 099 516 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 142 | 25 358 | 315 080 |
 
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 418 496 | 3 406 221 |
-| `docs/client-mechanism-inventory.json` | 264 528 | 1 866 954 |
+| `docs/client-mechanism-inventory.json` | 264 617 | 1 867 616 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -245,12 +245,12 @@
 | `backend/app/data/eurostat_listing.py` | 721 | 6 321 |
 | `backend/app/services/seo_today.py` | 635 | 6 301 |
 | `backend/app/services/seo_world_year.py` | 621 | 6 253 |
+| `deploy/approved-shas.txt` | 199 | 6 253 |
 | `backend/tests/test_seo_world_year.py` | 572 | 6 245 |
 | `backend/app/data/legacy_redirects.py` | 650 | 6 238 |
 | `docs/research/_fpsr_raw/agent03.json` | 503 | 6 238 |
 | `backend/app/services/minfin_budget_parser.py` | 669 | 6 225 |
 | `backend/app/api/indicators.py` | 623 | 6 186 |
-| `deploy/approved-shas.txt` | 198 | 6 173 |
 | `docs/adr/0026-graceful-degradation-and-traffic-priority.md` | 103 | 6 116 |
 | `frontend/index.html` | 240 | 6 076 |
 | `backend/tests/test_forecast_showcase.py` | 579 | 6 053 |
@@ -315,12 +315,12 @@
 | `docs/research/_fpsr_raw/agent10.json` | 336 | 5 087 |
 | `backend/tests/test_calendar_actuality.py` | 399 | 5 076 |
 | `backend/tests/test_search_pulse_gaps.py` | 344 | 5 066 |
+| `frontend/src/App.jsx` | 405 | 5 061 |
 | `scripts/catalog-harvest.py` | 523 | 5 054 |
 | `frontend/src/lib/searchSynonyms.js` | 417 | 5 047 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 247 | 5 034 |
 | `frontend/src/components/CurrencyDesk.jsx` | 435 | 5 018 |
 | `backend/app/data/world_aggregation.py` | 580 | 5 015 |
-| `frontend/src/App.jsx` | 402 | 5 014 |
 | `frontend/src/lib/homeWorkbench.js` | 548 | 5 013 |
 | `frontend/src/lib/w6g-libs.test.js` | 418 | 5 008 |
 | `backend/app/services/world_adapters/statcan_wds.py` | 545 | 5 002 |
@@ -1158,6 +1158,7 @@
 | `backend/app/data/seo_static/llms.txt` | 74 | 1 333 |
 | `frontend/public/llms.txt` | 74 | 1 333 |
 | `frontend/src/components/home/HomeDataScope.jsx` | 117 | 1 331 |
+| `frontend/src/components/welcome/WelcomeGate.jsx` | 134 | 1 328 |
 | `frontend/src/styles/z1-prices.css` | 93 | 1 325 |
 | `backend/app/data/eurostat_substance.py` | 157 | 1 324 |
 | `backend/app/services/cbr_keyrate_parser.py` | 152 | 1 321 |
@@ -1380,7 +1381,6 @@
 | `frontend/src/styles/r10b-compare.css` | 49 | 1 024 |
 | `frontend/src/lib/cbrTermSliceRateContent.jsx` | 136 | 1 023 |
 | `backend/app/services/process_metrics.py` | 131 | 1 021 |
-| `frontend/src/components/welcome/WelcomeGate.jsx` | 111 | 1 020 |
 | `frontend/src/styles/y2-indicator.css` | 115 | 1 020 |
 | `backend/scripts/public-bot-dialogs.py` | 77 | 1 019 |
 | `backend/tests/test_cabinet_migration.py` | 87 | 1 018 |

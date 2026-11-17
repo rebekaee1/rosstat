@@ -14078,9 +14078,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "8b9cc0a04f94bc7c0e8444ac8ec204e4dbecaa5f5cb6bc9d847468d3e5b9cae9",
-      "bytes": 32106,
-      "lines": 198,
+      "sha256": "c697ec3875dd11330b306b2c4f0c5e626e4341b22ceacaba10869f151af546be",
+      "bytes": 32619,
+      "lines": 199,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -15105,9 +15105,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "4ee838b611a94d6f40933c646e6365ee37e3c9f02dcb2297766765d239e62001",
-      "bytes": 7504932,
-      "lines": 264528,
+      "sha256": "764cb5e2bd295acb44829981cbfbd8ed144fade661b7672e6a004c469d4e66f9",
+      "bytes": 7507582,
+      "lines": 264617,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -15118,7 +15118,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "d0a9d880e4ad6f88d4cfa5c62bdc7ec81a28b848e0a98d3aeee56e4a5e9308cb",
+      "sha256": "4d94a873c2c97dd6e6ec343288cdea80c51d6f4c8a34da44bd6919ac633ec772",
       "bytes": 14011,
       "lines": 142,
       "code": false,
@@ -15677,7 +15677,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "ec448e05b2a71a1797593d2f327dda364cbbef2327cc36db5843f227e63fbc81",
+      "sha256": "b7c7ecbe6a2aaa107563d26f47480fc7d1c7330225248f50432dbe416eb8096d",
       "bytes": 3936863,
       "lines": 139558,
       "code": false,
@@ -18901,9 +18901,9 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "sha256": "53b96a9a35f0981cbcb1aaebf98c994740c89918a8a034230a292bd4f531067d",
-      "bytes": 21016,
-      "lines": 402,
+      "sha256": "43677a7d7b6e8c5a78b7750098f713d74c379a43be2498c283fbbca3e249cf5f",
+      "bytes": 21297,
+      "lines": 405,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -23204,9 +23204,9 @@
     },
     {
       "path": "frontend/src/components/welcome/WelcomeGate.jsx",
-      "sha256": "ffe4edb0cab21b6fa9aa94aef9da7d07d02a526de2e11fdfdb3a7171eab98b96",
-      "bytes": 4495,
-      "lines": 111,
+      "sha256": "0b9542c1758b15aaf2093687772baca7c92fd0916ac9bb42273e972bb0b72d3a",
+      "bytes": 6073,
+      "lines": 134,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -34137,15 +34137,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "c98df956f3903754bce1d7ee814cab2c4ea624128f83c6be3326fb3d3d41bab0",
-  "javascript_inventory_sha256": "39f424efe2d8f556c9eaecffb6a40760001ecbaab4370b7fbf2cdce38fbac2a7",
-  "baseline_commit": "74a6d869f5ceacfc78f49b6c028375c21d13eebb",
+  "ledger_sha256": "a0632ef1a6e3027ede9ce2b30c8c2d514ba7a6684246dd34a3a0dfa48e3c9ebd",
+  "javascript_inventory_sha256": "5f2e38c3176cedb7f3bc06370aa70e0e4c471d29033f3fbcd805f9dee221d354",
+  "baseline_commit": "a3995ad3e7cf023af3b5ee20c68d5a21f144c3f6",
   "branch": "feat/welcome-screen",
   "unstaged_at_capture": [
     "docs/client-mechanism-inventory.json",
     "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/indicator-index.json"
   ]
 }
