@@ -1385,7 +1385,8 @@ async def lifespan(app: FastAPI):
         if settings.channel_publish_enabled and settings.telegram_bot_token:
             from app.services.channel_posts import channel_publish_job
             scheduler.add_job(
-                channel_publish_job,
+                # Замок задачи: два планировщика (пересоздание контейнера) не публикуют одновременно.
+                locked_job(channel_publish_job, "channel_publish", ttl_seconds=120),
                 trigger=IntervalTrigger(minutes=1),
                 id="channel_publish",
                 name="Telegram channel: publish owner-approved posts when due",
