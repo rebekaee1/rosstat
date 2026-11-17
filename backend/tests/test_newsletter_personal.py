@@ -624,6 +624,6 @@ def test_signup_block_formats_then_and_now_alike():
     assert C._signup_pair(2511.1, 2475.7, "", "ru") == ("2\u202f511", "2\u202f476")
     rate = SimpleNamespace(unit="%", value=14.0)
     assert C._signup_move(rate, 14.0, "ru") == (0.0, "")
-    assert C._signup_move(rate, 14.5, "ru")[1] == f"−0,5{nb}п. п."
+    assert C._signup_move(rate, 14.5, "ru")[1] == f"−0,5{C.T.NBSP}п. п."
     oil = SimpleNamespace(unit="USD/баррель", value=92.14)
     assert C._signup_move(oil, 130.03, "ru")[1] == f"−29,1{nb}%"
