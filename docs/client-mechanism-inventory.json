@@ -112731,7 +112731,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "aa032b41f2b76c3fae8b75bb16315f8bf7bce2382b2949f3273eaca5255dbcc7",
+      "sha256": "a4cb3fc253e6ac8a92bb6f5d4d9f02370b4f7e4d9d12b556ceb2b9b8093d5f1f",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -113154,7 +113154,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "7b2faeb236a71e9f552a68f1990363d403d9ee7aed58d15de85f980f44b78165",
+      "sha256": "03609976212b8327be091d1900eef837c843fdd0c82d55df676d57e0672be6dd",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -226603,7 +226603,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Privacy.jsx": {
-      "sha256": "a6d41f31bb7da4ac63e3bfedfc80baf1dfcc4b5937a3979a7b88483b05c29360",
+      "sha256": "94cc738f6ae7a67a7cf4ba10eb820afd8b078fb025b2fd53d7cb604e21556b27",
       "imports": [
         {
           "line": 1,

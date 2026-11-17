@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `c66642ec55211fec97cee576ca2a7ee6a3830bf0`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `7e4640c6cc09f38237808096a82a3eedf9bf667f`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2601 |
-| Код, шаблоны и стили | 2113 |
-| Актуальные рецензии без пропусков guard | 2601 |
-| Именованные определения Python/JS: с аннотацией / всего | 17304 / 17304 |
+| Файлы в явно определённом scope | 2611 |
+| Код, шаблоны и стили | 2121 |
+| Актуальные рецензии без пропусков guard | 2611 |
+| Именованные определения Python/JS: с аннотацией / всего | 17516 / 17516 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -117,6 +117,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/alembic/versions/20261114_pulse_context.py](../backend/alembic/versions/20261114_pulse_context.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/20261115_newsletter_personal.py](../backend/alembic/versions/20261115_newsletter_personal.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/20261116_mail_tracking.py](../backend/alembic/versions/20261116_mail_tracking.py) | reviewed | 2/2 | актуально |
+| [backend/alembic/versions/20261117_channel_author.py](../backend/alembic/versions/20261117_channel_author.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/8524e35ba1ee_init_schema.py](../backend/alembic/versions/8524e35ba1ee_init_schema.py) | reviewed | 2/2 | актуально |
 | [backend/app/__init__.py](../backend/app/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/__init__.py](../backend/app/api/__init__.py) | reviewed | 0/0 | актуально |
@@ -179,6 +180,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/__init__.py](../backend/app/data/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/data/bi_targets.py](../backend/app/data/bi_targets.py) | reviewed | 2/2 | актуально |
 | [backend/app/data/cbr_currencies.py](../backend/app/data/cbr_currencies.py) | reviewed | 19/19 | актуально |
+| [backend/app/data/channel_voice.yaml](../backend/app/data/channel_voice.yaml) | reviewed | 0/0 | актуально |
 | [backend/app/data/cpi_provenance.py](../backend/app/data/cpi_provenance.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/emiss_labor.py](../backend/app/data/emiss_labor.py) | body_reviewed | 4/4 | актуально |
 | [backend/app/data/emiss_price_goods.py](../backend/app/data/emiss_price_goods.py) | reviewed | 18/18 | актуально |
@@ -251,7 +253,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/world_superseded.py](../backend/app/data/world_superseded.py) | reviewed | 7/7 | актуально |
 | [backend/app/database.py](../backend/app/database.py) | reviewed | 6/6 | актуально |
 | [backend/app/main.py](../backend/app/main.py) | reviewed | 46/46 | актуально |
-| [backend/app/models.py](../backend/app/models.py) | reviewed | 84/84 | актуально |
+| [backend/app/models.py](../backend/app/models.py) | reviewed | 89/89 | актуально |
 | [backend/app/schemas.py](../backend/app/schemas.py) | reviewed | 14/14 | актуально |
 | [backend/app/security/__init__.py](../backend/app/security/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/security/auth.py](../backend/app/security/auth.py) | reviewed | 8/8 | актуально |
@@ -313,6 +315,11 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/cbr_ruonia_parser.py](../backend/app/services/cbr_ruonia_parser.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/cbr_trade_goods_monthly_parser.py](../backend/app/services/cbr_trade_goods_monthly_parser.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/cbr_trade_services_monthly_parser.py](../backend/app/services/cbr_trade_services_monthly_parser.py) | reviewed | 6/6 | актуально |
+| [backend/app/services/channel_author.py](../backend/app/services/channel_author.py) | reviewed | 27/27 | актуально |
+| [backend/app/services/channel_facts.py](../backend/app/services/channel_facts.py) | reviewed | 45/45 | актуально |
+| [backend/app/services/channel_posts.py](../backend/app/services/channel_posts.py) | reviewed | 33/33 | актуально |
+| [backend/app/services/channel_stats.py](../backend/app/services/channel_stats.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/channel_voice.py](../backend/app/services/channel_voice.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/clickhouse_sync.py](../backend/app/services/clickhouse_sync.py) | reviewed | 28/28 | актуально |
 | [backend/app/services/data_sanity.py](../backend/app/services/data_sanity.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/data_validator.py](../backend/app/services/data_validator.py) | reviewed | 1/1 | актуально |
@@ -607,6 +614,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/scripts/backfill-behavior-channels.py](../backend/scripts/backfill-behavior-channels.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/backfill-metrika-history.py](../backend/scripts/backfill-metrika-history.py) | reviewed | 4/4 | актуально |
 | [backend/scripts/backfill-signup-attribution.py](../backend/scripts/backfill-signup-attribution.py) | reviewed | 1/1 | актуально |
+| [backend/scripts/channel-author-preview.py](../backend/scripts/channel-author-preview.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/check-migration-drift.py](../backend/scripts/check-migration-drift.py) | reviewed | 3/3 | актуально |
 | [backend/scripts/create-admin.py](../backend/scripts/create-admin.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/export-design-gallery.py](../backend/scripts/export-design-gallery.py) | reviewed | 2/2 | актуально |
@@ -746,6 +754,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_cbr_reserves.py](../backend/tests/test_cbr_reserves.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_cbr_ruonia.py](../backend/tests/test_cbr_ruonia.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_cbr_trade_monthly.py](../backend/tests/test_cbr_trade_monthly.py) | reviewed | 25/25 | актуально |
+| [backend/tests/test_channel_author.py](../backend/tests/test_channel_author.py) | reviewed | 76/76 | актуально |
 | [backend/tests/test_circle9_f.py](../backend/tests/test_circle9_f.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_clickhouse_replication_ch.py](../backend/tests/test_clickhouse_replication_ch.py) | reviewed | 23/23 | актуально |
 | [backend/tests/test_clickhouse_replication_pg.py](../backend/tests/test_clickhouse_replication_pg.py) | reviewed | 34/34 | актуально |
@@ -1165,6 +1174,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0032-email-channel-service-mail-and-newsletter.md](../docs/adr/0032-email-channel-service-mail-and-newsletter.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0033-personal-newsletter-issue.md](../docs/adr/0033-personal-newsletter-issue.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md](../docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md) | reviewed | 0/0 | актуально |
+| [docs/adr/0035-telegram-channel-author.md](../docs/adr/0035-telegram-channel-author.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/README.md](../docs/agent-briefs/README.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/hotfix-brief.md](../docs/agent-briefs/hotfix-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/integration-brief.md](../docs/agent-briefs/integration-brief.md) | reviewed | 0/0 | актуально |

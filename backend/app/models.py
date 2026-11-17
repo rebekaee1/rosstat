@@ -2128,3 +2128,94 @@ class ResearchDownload(Base):
     source: Mapped[str] = mapped_column(String(16), nullable=False, default="site", server_default="site")
     count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
+
+
+class ChannelPost(Base):
+    """Черновик и публикация в Telegram-канале (17.11.2026, ADR-0035).
+
+    Пишет модель-автор (`services/channel_author.py`), в канал уходит только после кнопки владельца в служебном
+    боте (`services/channel_posts.py`). Строка проходит путь draft → approved → published либо skipped / failed.
+    `audit` хранит «откуда каждое число»: показанное число, его основание (ряд базы, расчёт, источник в интернете),
+    итог сверки сторожем и что модель перепроверила в интернете. Без ПДн.
+    """
+    __tablename__ = "channel_posts"
+    __table_args__ = (
+        Index("ix_channel_posts_status", "status", "planned_at"),
+        Index("ix_channel_posts_created", "created_at"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    rubric: Mapped[str] = mapped_column(String(20), nullable=False)       # release / fuel / week_ahead / week / noticed / research
+    status: Mapped[str] = mapped_column(String(12), nullable=False, default="draft")
+    text: Mapped[str] = mapped_column(Text, nullable=False)                # HTML Telegram, как уйдёт в канал
+    chart_topic: Mapped[str | None] = mapped_column(String(20))            # ключ темы для картинки-графика или пусто
+    link_url: Mapped[str | None] = mapped_column(String(500))              # ссылка на сайт с метками канала
+    silent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    why: Mapped[str | None] = mapped_column(String(600))                   # одна фраза владельцу: почему этот пост сегодня
+    planned_at: Mapped[datetime | None] = mapped_column(DateTime)          # когда выйдет после одобрения (UTC, наивное)
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime)
+    decided_by: Mapped[str | None] = mapped_column(String(32))             # chat_id нажавшего
+    feedback: Mapped[str | None] = mapped_column(String(600))              # причина «не надо» или текст правки — память автора
+    published_at: Mapped[datetime | None] = mapped_column(DateTime)
+    telegram_message_id: Mapped[int | None] = mapped_column(Integer)       # номер поста в канале
+    parent_id: Mapped[int | None] = mapped_column(Integer)                 # прошлая версия этого же поста (правка)
+    run_id: Mapped[int | None] = mapped_column(Integer)                    # запуск автора, который его написал
+    blocked: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    audit: Mapped[dict | None] = mapped_column(JSON)
+    review_messages: Mapped[list | None] = mapped_column(JSON)             # [{chat_id, message_id}] — сообщения с кнопками
+    error: Mapped[str | None] = mapped_column(String(300))
+
+
+class ChannelAuthorRun(Base):
+    """Один запуск модели-автора канала: зачем запускался, что решил, сколько стоил (ADR-0035)."""
+    __tablename__ = "channel_author_runs"
+    __table_args__ = (Index("ix_channel_author_runs_started", "started_at"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    kind: Mapped[str] = mapped_column(String(12), nullable=False)          # daily / release / plan / revise
+    trigger: Mapped[str | None] = mapped_column(String(300))               # что стало поводом (новые точки, слот недели)
+    model: Mapped[str] = mapped_column(String(80), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="ok")
+    decision: Mapped[str | None] = mapped_column(String(20))               # draft / nothing / plan / error
+    note: Mapped[str | None] = mapped_column(Text)                         # план недели или причина «сегодня ничего»
+    steps: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    web_searches: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    prompt_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    completion_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    cost_usd: Mapped[float] = mapped_column(Numeric(10, 5), nullable=False, default=0)
+    seconds: Mapped[float | None] = mapped_column(Numeric(8, 1))
+
+
+class ChannelStatsDaily(Base):
+    """Подписчики канала по дням (17.11.2026): одно число в сутки, `getChatMemberCount`. Без ПДн."""
+    __tablename__ = "channel_stats_daily"
+
+    day: Mapped[date] = mapped_column(Date, primary_key=True)
+    subscribers: Mapped[int] = mapped_column(Integer, nullable=False)
+    taken_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+class ChannelPostView(Base):
+    """Просмотры поста канала на день снятия (17.11.2026): счётчик с открытой страницы t.me. Без ПДн."""
+    __tablename__ = "channel_post_views"
+    __table_args__ = (UniqueConstraint("message_id", "day", name="uq_channel_post_views_msg_day"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    message_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    day: Mapped[date] = mapped_column(Date, nullable=False)
+    views: Mapped[int] = mapped_column(Integer, nullable=False)
+    posted_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+class ChannelVoiceRule(Base):
+    """Правило владельца для автора канала (17.11.2026, ADR-0035): «так писать можно», «так не пишем» или правило его
+    словами. Приходит из служебного бота командой /voice; основа словаря — `app/data/channel_voice.yaml`. Без ПДн."""
+    __tablename__ = "channel_voice_rules"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    kind: Mapped[str] = mapped_column(String(8), nullable=False)       # use / ban / rule
+    text: Mapped[str] = mapped_column(String(300), nullable=False)
+    deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
