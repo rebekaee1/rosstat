@@ -165,11 +165,13 @@ export const events = {
   CHART_MODE_CHANGE: 'chart_mode_change',
   CHART_RANGE_CHANGE: 'chart_range_change',
   CHART_ZOOM: 'chart_zoom',
+  CHART_PICK: 'chart_pick',
   FORECAST_TOGGLE: 'forecast_toggle',
 
   TABLE_SEARCH: 'table_search',
   TABLE_SORT: 'table_sort',
   TABLE_PAGE: 'table_page',
+  TABLE_JUMP: 'table_jump',
 
   COMPARE_OPEN: 'compare_open',
   COMPARE_CHANGE: 'compare_change',

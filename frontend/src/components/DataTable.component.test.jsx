@@ -1,16 +1,99 @@
 import { describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import DataTable from './DataTable';
 import { LocaleProvider } from '../i18n';
 import { events, track } from '../lib/track';
+import { emitPeriodPick } from '../lib/periodJump';
 
-vi.mock('../lib/track', () => ({ track: vi.fn(), events: { TABLE_SEARCH: 'table_search', TABLE_PAGE: 'table_page', TABLE_SORT: 'table_sort' } }));
+vi.mock('../lib/track', () => ({
+  track: vi.fn(),
+  events: {
+    TABLE_SEARCH: 'table_search', TABLE_PAGE: 'table_page', TABLE_SORT: 'table_sort', TABLE_JUMP: 'table_jump',
+  },
+}));
 
 const data = [{ date: '2026-01-01', value: 1234.5 }];
 
 function renderTable(ui) {
   return render(<LocaleProvider>{ui}</LocaleProvider>);
 }
+
+/** Номер открытой страницы: выбранный пункт списка «Перейти к …» между кнопками. */
+function pageNo() {
+  return screen.getByRole('combobox', { name: /Перейти к/ }).selectedIndex + 1;
+}
+
+/** Месячный ряд янв 2015 — дек 2025, 132 строки. */
+function monthly() {
+  const rows = [];
+  for (let y = 2015; y <= 2025; y += 1) {
+    for (let m = 1; m <= 12; m += 1) rows.push({ date: `${y}-${String(m).padStart(2, '0')}-01`, value: y + m / 100 });
+  }
+  return rows;
+}
+
+describe('DataTable: переход к периоду (Пульс 17.11.2026)', () => {
+  it('кнопки названы по времени: сверху новые, «Раньше» ведёт в прошлое; после сортировки по возрастанию — наоборот', () => {
+    renderTable(<DataTable data={monthly()} dateFormat="full" />);
+    expect(screen.getByRole('button', { name: 'Позже' }).disabled).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'Раньше' }));
+    expect(pageNo()).toBe(2);
+    expect(screen.queryByRole('button', { name: 'Вперёд' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Дата/ }));
+    expect(screen.getByRole('button', { name: 'Раньше' }).disabled).toBe(true);
+    expect(screen.getByRole('button', { name: 'Позже' }).disabled).toBe(false);
+  });
+
+  it('список лет между кнопками открывает страницу, где год начинается, и подсвечивает его первую строку', () => {
+    vi.mocked(track).mockClear();
+    renderTable(<DataTable data={monthly()} dateFormat="full" />);
+    const select = screen.getByRole('combobox', { name: 'Перейти к году' });
+    expect([...select.options].map((o) => o.value).slice(0, 3)).toEqual(['2025', '2024', '2023']);
+    fireEvent.change(select, { target: { value: '2018' } });
+    const current = document.querySelector('tbody tr[aria-current="true"]');
+    expect(current.textContent).toContain('декабрь 2018');
+    expect(current.className).toContain('is-picked');
+    expect(select.value).toBe('2018');
+    expect(track).toHaveBeenCalledWith(events.TABLE_JUMP, { source: 'year', to: '2018' });
+  });
+
+  it('у годового ряда список — отрезки страниц («2044–2025»)', () => {
+    const rows = Array.from({ length: 45 }, (_, i) => ({ date: `${2000 + i}-01-01`, value: i }));
+    renderTable(<DataTable data={rows} dateFormat="annual" />);
+    const select = screen.getByRole('combobox', { name: 'Перейти к периоду' });
+    expect([...select.options].map((o) => o.textContent)).toEqual(['2044 – 2025', '2024 – 2005', '2004 – 2000']);
+    fireEvent.change(select, { target: { value: '2' } });
+    expect(document.querySelector('tbody tr').textContent).toContain('2004');
+  });
+
+  it('поле «От» открывает календарь щелчком по всему полю (мышь), на касании не вмешивается', () => {
+    const showPicker = vi.fn();
+    const proto = window.HTMLInputElement.prototype;
+    const savedPicker = proto.showPicker;
+    const savedMatch = window.matchMedia;
+    proto.showPicker = showPicker;
+    try {
+      window.matchMedia = (q) => ({ matches: q === '(pointer: fine)', media: q, addEventListener() {}, removeEventListener() {} });
+      renderTable(<DataTable data={monthly()} dateFormat="full" />);
+      fireEvent.click(screen.getByLabelText('От'));
+      expect(showPicker).toHaveBeenCalledTimes(1);
+      window.matchMedia = (q) => ({ matches: false, media: q, addEventListener() {}, removeEventListener() {} });
+      fireEvent.click(screen.getByLabelText('До'));
+      expect(showPicker).toHaveBeenCalledTimes(1);
+    } finally {
+      proto.showPicker = savedPicker;
+      window.matchMedia = savedMatch;
+    }
+  });
+
+  it('точка, выбранная на графике, открывает в таблице свою строку или ближайшую раньше', () => {
+    renderTable(<DataTable data={monthly()} dateFormat="full" />);
+    act(() => emitPeriodPick('2017-06-15'));
+    const current = document.querySelector('tbody tr[aria-current="true"]');
+    expect(current.textContent).toContain('июнь 2017');
+    expect(screen.getByRole('combobox', { name: 'Перейти к году' }).value).toBe('2017');
+  });
+});
 
 describe('DataTable', () => {
   it('размер страницы: 20 строк по умолчанию, 12 рядом с карточкой прогноза (круг 13, С1)', () => {
@@ -83,7 +166,7 @@ describe('DataTable', () => {
   it('сохраняет видимую строку после уменьшения данных на второй странице', () => {
     const rows = Array.from({ length: 21 }, (_, index) => ({ date: `2024-01-${String(index + 1).padStart(2, '0')}`, value: index }));
     const { rerender } = renderTable(<DataTable data={rows} dateFormat="day" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Вперёд' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Раньше' }));
     rerender(<LocaleProvider><DataTable data={[rows[0]]} dateFormat="day" /></LocaleProvider>);
     expect(screen.getAllByRole('row')).toHaveLength(2);
     expect(screen.getByText('1 января 2024')).toBeTruthy();
@@ -96,29 +179,29 @@ describe('DataTable', () => {
     const rows = Array.from({ length: 45 }, (_, index) => ({ date: `2024-02-${String(index + 1).padStart(2, '0')}`, value: index }));
     const { rerender } = renderTable(<DataTable data={rows} dateFormat="day" />);
     await new Promise((r) => setTimeout(r, 300)); // первичный дебаунс отработал
-    fireEvent.click(screen.getByRole('button', { name: 'Вперёд' }));
-    expect(screen.getByText('2 / 3')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Раньше' }));
+    expect(pageNo()).toBe(2);
     vi.mocked(track).mockClear();
     rerender(<LocaleProvider><DataTable data={rows.map((r) => ({ ...r }))} dateFormat="day" /></LocaleProvider>);
     await new Promise((r) => setTimeout(r, 400));
-    expect(screen.getByText('2 / 3')).toBeTruthy();
+    expect(pageNo()).toBe(2);
     expect(track).not.toHaveBeenCalledWith(events.TABLE_SEARCH, expect.anything());
   });
 
-  it('клик «Вперёд» сразу после монтирования не откатывается дебаунсом поиска', async () => {
+  it('клик «Раньше» (следующая страница) сразу после монтирования не откатывается дебаунсом поиска', async () => {
     const rows = Array.from({ length: 45 }, (_, index) => ({ date: `2024-02-${String(index + 1).padStart(2, '0')}`, value: index }));
     renderTable(<DataTable data={rows} dateFormat="day" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Вперёд' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Раньше' }));
     await new Promise((r) => setTimeout(r, 400));
-    expect(screen.getByText('2 / 3')).toBeTruthy();
+    expect(pageNo()).toBe(2);
   });
 
   it('поиск по-прежнему возвращает на первую страницу', async () => {
     const rows = Array.from({ length: 45 }, (_, index) => ({ date: `2024-02-${String(index + 1).padStart(2, '0')}`, value: index }));
     renderTable(<DataTable data={rows} dateFormat="day" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Вперёд' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Раньше' }));
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '2024' } });
-    await waitFor(() => expect(screen.getByText('1 / 3')).toBeTruthy());
+    await waitFor(() => expect(pageNo()).toBe(1));
   });
 
   it('ряд «изменение за год, %» не повторяет единицу в каждой строке: в строках «%», полная единица в заголовке (круг 9, W10)', () => {
@@ -136,7 +219,7 @@ describe('DataTable', () => {
     // Две перемены: первая точка и скачок с 14 на 15.
     expect(document.querySelectorAll('tbody tr')).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: 'Только изменения' }));
-    expect(screen.getByText('1 / 3')).toBeTruthy();
+    expect(pageNo()).toBe(1);
   });
 
   it('у ряда без повторов переключателя «Только изменения» нет', () => {

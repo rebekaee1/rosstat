@@ -1325,8 +1325,10 @@ export default {
   'forecast.value.withUnit': 'Значение ({unit})',
 
   'table.searchPlaceholder': 'Поиск...',
-  'table.prev': 'Назад',
-  'table.next': 'Вперёд',
+  'table.later': 'Позже',
+  'table.earlier': 'Раньше',
+  'table.jumpYear': 'Перейти к году',
+  'table.jumpPeriod': 'Перейти к периоду',
   'table.date': 'Дата',
   'table.value': 'Значение',
   'table.valueWithUnit': 'Значение ({unit})',
