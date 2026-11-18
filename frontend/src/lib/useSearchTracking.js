@@ -22,7 +22,9 @@ import { track, events } from './track';
 export default function useSearchTracking(context, query, resultsCount, { minLen = 2, delay = 900 } = {}) {
   useEffect(() => {
     const q = (query || '').trim();
-    if (q.length < minLen) return undefined;
+    // null/undefined — набор, в котором ищут, ещё не загружен или не загрузился: это не «ничего не найдено»
+    // (18.11.2026: на странице региона такие поиски попадали в Пульс пустыми).
+    if (q.length < minLen || resultsCount == null) return undefined;
     const t = setTimeout(() => {
       track(events.SEARCH_QUERY, { q: q.slice(0, 60), results: resultsCount, context });
     }, delay);

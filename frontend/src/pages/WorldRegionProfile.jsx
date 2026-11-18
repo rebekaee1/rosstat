@@ -88,7 +88,7 @@ export default function WorldRegionProfile() {
   }, [sections, deferredQuery, countrySlug, countryName, slug, regionName]);
 
   const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
-  useSearchTracking('world-region-profile', deferredQuery, foundIndicators);
+  useSearchTracking('world-region-profile', deferredQuery, profile.data ? foundIndicators : null);
 
   const headline = useMemo(() => {
     if (!profile.data) return [];

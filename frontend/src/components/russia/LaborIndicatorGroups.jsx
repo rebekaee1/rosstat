@@ -9,6 +9,8 @@ const TOPICS = [
   ['Неполная занятость', 'Part-time employment', /^part-time-employed$/],
   ['Регистрация в службе занятости', 'Registration with employment services', /^registered-unemployment-share(?:-quarterly)?$/],
   ['Образование безработных', 'Education of unemployed people', /^unemployed-higher-education-share(?:-annual)?$/],
+  ['Распределение зарплат', 'Distribution of wages', /^wages-(?:median|decile-\d+)$/],
+  ['Неравенство доходов', 'Income inequality', /^income-(?:gini|funds-ratio|share-(?:quintile-\d|top10|bottom10))$/],
 ];
 
 export default function LaborIndicatorGroups({ indicators, gridClass, renderIndicator, expandAll, fallback }) {

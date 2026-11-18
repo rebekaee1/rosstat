@@ -37,7 +37,7 @@ from app.models import (
 from app.services import site_paths as paths
 from app.services.locale import get_locale
 from app.services.search_intent import (
-    CONCEPTS, SEARCH_VERSION, SearchIntent, complete_nominal_alternative, geo_aliases, literal_identifier, match_score, matching_alternatives, normalize, parse_intent, phrase, region_reading, strip_geography,
+    CONCEPTS, CONCEPTS_ALTERNATIVES, SEARCH_VERSION, SearchIntent, complete_nominal_alternative, geo_aliases, literal_identifier, match_score, matching_alternatives, normalize, parse_intent, phrase, region_reading, strip_geography,
 )
 from app.services.search_language import measure_matches, relevance_bonus, title_frequencies
 from app.services.search_language_sql import measure_constraints, _pattern_clause
@@ -71,6 +71,7 @@ _ANNUAL_INFLATION_LEAD = 50
 from app.services.search_r6a import REGION_HEADLINES_R6A, arrears_demotion
 from app.services.search_r7a import REGION_HEADLINES_R7A, r7a_demotion
 from app.services.search_r8a import MAX_NEAREST, nearest_plan, nearest_query, r8a_demotion, short_region_name, sort_cheapest_first
+from app.services.search_rewrite import conjunction_parts, profile_only, rewritten_query
 
 _REGION_HEADLINES = {
     "wage": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
@@ -1385,18 +1386,77 @@ async def _second_readings(db: AsyncSession, raw: str, geometry: list[dict], int
         concept = await _title_concept(db, prepared_title) if prepared_title and phrase(prepared_title) == intent.content else None
         if concept:
             readings.append(replace(intent, terms=(concept,), literal=None))
+    if intent.corrected and not literal:
+        # 18.11.2026: настоящее слово каталога было «исправлено» в соседнее понятие словаря («валовое накопление» →
+        # «накопления» = вклады). Читаем слова как написаны.
+        as_written = parse_intent(raw, geometry, literal_content=literal_title, correct_typos=False)
+        if not as_written.error:
+            readings.append(as_written)
     regional = region_reading(raw, intent, geometry, literal_content=literal)
     if regional is not None:
         readings.append(regional)
+    if (intent.regions or intent.countries) and intent.year is None and profile_only(intent.terms):
+        # «Псковская область в экономике», «место псковской области в экономике России» — страница территории.
+        readings.append(replace(intent, terms=(), literal=None))
     unique: list[SearchIntent] = []
     for reading in readings:
-        if (reading.terms or reading.regions) and reading != intent and reading not in unique:
+        if (reading.terms or reading.regions or reading.countries) and reading != intent and reading not in unique:
             unique.append(reading)
     return unique[:_MAX_SECOND_READINGS]
 
 
+async def _rewritten_or_split(db: AsyncSession, raw: str, geometry: list[dict], countries: dict[str, WorldCountry],
+        intent: SearchIntent, limit: int) -> dict | None:
+    """Последние попытки после пустой выдачи и вторых чтений (18.11.2026), см. ``search_rewrite``.
+
+    1. Запрос словами каталога: словарь «как говорят → как называется ряд», опечатка в слове каталога, числа из
+       таблицы. Ответ несёт ``corrected_query`` — окно поиска пишет «Показаны результаты для: …».
+    2. Два-три показателя через союз («рождаемость и смертность псковская область»): каждая часть ищется отдельно,
+       география запроса относится ко всем частям. Ответ — только если нашла каждая часть; строки чередуются.
+    """
+    rewritten = await rewritten_query(db, raw, geometry)
+    if rewritten:
+        # Один проход без вторых чтений: пустой запрос и так стоит до четырёх поисков, а скорость — главный дефект поиска.
+        reading = parse_intent(rewritten, geometry)
+        if not reading.error and (reading.terms or reading.regions or reading.countries):
+            found = await federated_search(db, rewritten, limit=limit, _nearest=False, _rewrite=False,
+                                           _reading=(reading, geometry, countries))
+            if found["results"]:
+                return {**found, "corrected_query": rewritten}
+    parts = conjunction_parts(rewritten or raw)
+    if not parts:
+        return None
+    if rewritten:
+        # География переписанного запроса: опечатка в названии региона («псковсая») уже исправлена.
+        intent = parse_intent(rewritten, geometry)
+    answers = []
+    for part in parts:
+        reading = parse_intent(part, geometry)
+        # Часть — показатель: понятие словаря или слово не короче четырёх букв («цены и ин» — недописанное слово).
+        if reading.error or not any(term in CONCEPTS_ALTERNATIVES or len(term[0]) >= 4 for term in reading.terms):
+            return None
+        if not (reading.regions or reading.countries):
+            reading = replace(reading, regions=intent.regions, countries=intent.countries)
+        found = await federated_search(db, part, limit=limit, _nearest=False, _rewrite=False,
+                                       _reading=(reading, geometry, countries))
+        if not found["results"]:
+            return None
+        answers.append(found)
+    merged, seen = [], set()
+    for rank in range(limit):
+        for answer in answers:
+            rows = answer["results"]
+            if rank < len(rows) and rows[rank]["key"] not in seen:
+                seen.add(rows[rank]["key"])
+                merged.append(rows[rank])
+    merged = merged[:limit]
+    return {**answers[0], "results": merged, "total": len(merged),
+            "has_more": any(answer.get("has_more") for answer in answers) or len(seen) > len(merged)}
+
+
 async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _nearest: bool = True,
-        _reading: tuple[SearchIntent, list[dict], dict[str, WorldCountry]] | None = None) -> dict:
+        _reading: tuple[SearchIntent, list[dict], dict[str, WorldCountry]] | None = None,
+        _rewrite: bool = True) -> dict:
     """One query contract with bounded SQL and truthful availability states."""
     empty = {"results": [], "total": 0, "has_more": False, "version": SEARCH_VERSION}
     if not phrase(raw):
@@ -1500,6 +1560,10 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
                 second = await federated_search(db, raw, limit=limit, _nearest=False, _reading=(reading, geometry, countries))
                 if second["results"]:
                     return second
+            if _rewrite:
+                rescued = await _rewritten_or_split(db, raw, geometry, countries, intent, limit)
+                if rescued:
+                    return rescued
         response["reason"] = "no_coverage"
         plan = nearest_plan(raw) if _nearest else None
         if plan:

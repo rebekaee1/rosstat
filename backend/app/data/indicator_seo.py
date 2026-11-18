@@ -8881,6 +8881,13 @@ for _cur in _cbr_currencies.CBR_CURRENCIES:
     INDICATOR_SEO_BLOCKS.setdefault(_cur.code, _cbr_currencies.seo_blocks(_cur))
 
 
+# Распределение доходов и зарплат (ЕМИСС, 18.11.2026): слова, которыми люди ищут неравенство и распределение.
+from app.data import emiss_income as _emiss_income  # noqa: E402
+
+for _code, _keywords in _emiss_income.seo_keywords().items():
+    INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
+
+
 # ── «О показателе»: составляющие промышленного производства (ИПП) ───────────
 #
 # Четыре раздела ОКВЭД2 — добыча, обработка, энергетика, водоснабжение —

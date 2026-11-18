@@ -40,6 +40,20 @@ describe('useSearchTracking', () => {
     });
   });
 
+  it('не шлёт, пока набор для поиска не загружен (null), и шлёт после загрузки', () => {
+    const { rerender } = renderHook(({ count }) => useSearchTracking('region-profile', 'ипотека', count),
+      { initialProps: { count: null } });
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(track).not.toHaveBeenCalled();
+    rerender({ count: 0 });
+    act(() => {
+      vi.advanceTimersByTime(900);
+    });
+    expect(track).toHaveBeenCalledWith('search_query', { q: 'ипотека', results: 0, context: 'region-profile' });
+  });
+
   it('не шлёт при query короче minLen', () => {
     renderHook(() => useSearchTracking('world-concept-picker', 'а', 2));
     act(() => {
