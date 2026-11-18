@@ -86,11 +86,11 @@ def plain(raw: str) -> str:
 
 def rewrite_words(raw: str) -> str:
     """Словарь и числа из таблицы. Без базы: чистая функция нормализованной строки."""
-    text = plain(raw)
+    # Дробь и разряды — до снятия запятых: «43,6» и «20 053,4» уходят целиком.
+    text = _DIGIT_GROUPS.sub(" ", _DECIMAL.sub(" ", normalize(raw)))
+    text = plain(text)
     for pattern, replacement in _COMPILED:
         text = pattern.sub(replacement, text)
-    text = _DECIMAL.sub(" ", text)
-    text = _DIGIT_GROUPS.sub(" ", text)
     text = _GLUED_DIGITS.sub("", text)
     if re.search(r"[a-zа-я]{3}", text):
         text = _SHORT_NUMBER.sub(" ", text)
