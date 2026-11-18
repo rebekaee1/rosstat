@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2412  ·  **Строк:** 1 524 450  ·  **Токенов (≈):** 14 603 303
+**Файлов:** 2412  ·  **Строк:** 1 524 453  ·  **Токенов (≈):** 14 603 638
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 1023 | 351 649 | 3 890 795 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 21 | 1 576 | 25 963 |
-| `docs` | 152 | 951 612 | 8 195 336 |
+| `deploy` | 21 | 1 577 | 26 061 |
+| `docs` | 152 | 951 614 | 8 195 573 |
 | `frontend` | 1057 | 190 776 | 2 102 741 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 142 | 25 358 | 315 080 |
@@ -38,8 +38,8 @@
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
 | `docs/mechanism-inventory.md` | 3 954 | 176 001 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
+| `docs/backlog.md` | 3 867 | 137 597 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
-| `docs/backlog.md` | 3 865 | 137 360 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 249 | 118 289 |
 | `docs/data-contracts.md` | 1 370 | 73 677 |
@@ -238,12 +238,12 @@
 | `docs/research/_fpsr_raw/agent06.json` | 425 | 6 550 |
 | `backend/app/services/cabinet.py` | 634 | 6 513 |
 | `backend/tests/test_parser_publication.py` | 543 | 6 455 |
+| `deploy/approved-shas.txt` | 201 | 6 438 |
 | `docs/research/_fpsr_raw/agent08.json` | 458 | 6 434 |
 | `frontend/src/styles/k8-tools.css` | 611 | 6 425 |
 | `backend/app/data/cbr_currencies.py` | 480 | 6 417 |
 | `backend/app/services/mail/blocks.py` | 508 | 6 363 |
 | `backend/app/services/world_eurostat_ingest.py` | 670 | 6 341 |
-| `deploy/approved-shas.txt` | 200 | 6 340 |
 | `backend/app/data/eurostat_listing.py` | 721 | 6 321 |
 | `backend/app/services/seo_today.py` | 635 | 6 301 |
 | `backend/app/services/seo_world_year.py` | 621 | 6 253 |
