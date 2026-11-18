@@ -667,11 +667,12 @@ function PwaCard({ d }) {
 function OverviewTab({ d }) {
   const kpi = useMemo(() => d.kpi_daily || [], [d.kpi_daily]);
   const totals = useMemo(() => {
-    const t = { visits: 0, visitors: 0, ad: 0, reg: 0, dl: 0, err: 0, ev: 0, srch: 0, own: 0 };
+    const t = { visits: 0, visitors: 0, ad: 0, reg: 0, dl: 0, err: 0, ev: 0, srch: 0, own: 0, people: 0, unconfirmed: 0, unrated: 0 };
     for (const r of kpi) {
       t.visits += r.visits; t.visitors += r.visitors; t.ad += r.ad_visits;
       t.reg += r.registrations; t.dl += r.downloads; t.err += r.errors;
       t.ev += r.events; t.srch += r.searches; t.own += r.own_sessions || 0;
+      t.people += r.own_people || 0; t.unconfirmed += r.own_unconfirmed || 0; t.unrated += r.own_unrated || 0;
     }
     return t;
   }, [kpi]);
@@ -690,7 +691,10 @@ function OverviewTab({ d }) {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-        <Kpi label="Сессии (наш счётчик)" value={fmtInt(totals.own)} series={spark('own_sessions')} />
+        {/* 18.11.2026: человек — только сессия с признаком живого посетителя; сессии без робота — в графике ниже. */}
+        <Kpi label="Люди (наш счётчик)" value={fmtInt(totals.people)}
+          sub={`сессий ${fmtInt(totals.own)}, не подтверждено ${fmtInt(totals.unconfirmed)}${totals.unrated ? `, без оценки ${fmtInt(totals.unrated)}` : ''}`}
+          series={spark('own_people')} />
         <Kpi label="Посетители (наш счётчик)" value={fmtInt(d.metric_tree?.north_star?.visitors_total ?? 0)} series={spark('own_visitors')} color={INK} />
         <Kpi label="Визиты (Метрика)" value={fmtInt(totals.visits)} series={spark('visits')} color={PURPLE} />
         <Kpi label="Из рекламы" value={fmtInt(totals.ad)} sub={totals.visits ? fmtPct(Math.round(totals.ad / totals.visits * 100)) : null} series={spark('ad_visits')} color={BLUE} />

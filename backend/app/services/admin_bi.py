@@ -32,7 +32,7 @@ from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import extract, func, or_, select
+from sqlalchemy import case, extract, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import (
@@ -205,21 +205,30 @@ async def _kpi_daily(db: AsyncSession, p: Period) -> list[dict]:
         "registrations": 0, "downloads": 0, "errors": 0, "searches": 0,
         "live_pageviews": 0, "live_sessions_n": 0,
         "own_sessions": 0, "own_visitors": 0,
+        "own_people": 0, "own_unconfirmed": 0, "own_unrated": 0,
     })
 
     # Наш счётчик — истина (этап 2 BI 2.1): небот-сессии и посетители по дням.
+    # 18.11.2026: из небот-сессий люди — только с признаком живого посетителя (`is_human`); остальные —
+    # «не подтверждено», сессии до правила (NULL) — «без оценки». Сессии считаются как раньше.
     own_rows = (await db.execute(
         select(ServerSession.day, func.count(),
-               func.count(func.distinct(ServerSession.visitor_id_hash)))
+               func.count(func.distinct(ServerSession.visitor_id_hash)),
+               func.sum(case((ServerSession.is_human.is_(True), 1), else_=0)),
+               func.sum(case((ServerSession.is_human.is_(False), 1), else_=0)),
+               func.sum(case((ServerSession.is_human.is_(None), 1), else_=0)))
         .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
                ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
         .group_by(ServerSession.day)
     )).all()
-    for d_raw, n_sessions, n_visitors in own_rows:
+    for d_raw, n_sessions, n_visitors, n_people, n_unconfirmed, n_unrated in own_rows:
         d = _day(d_raw)
         if d:
             days[d]["own_sessions"] = int(n_sessions or 0)
             days[d]["own_visitors"] = int(n_visitors or 0)
+            days[d]["own_people"] = int(n_people or 0)
+            days[d]["own_unconfirmed"] = int(n_unconfirmed or 0)
+            days[d]["own_unrated"] = int(n_unrated or 0)
 
     visits = (await db.execute(
         select(RawMetrikaVisit.visit_date, RawMetrikaVisit.client_id_hash,
@@ -309,6 +318,9 @@ async def _kpi_daily(db: AsyncSession, p: Period) -> list[dict]:
             "live_sessions": row["live_sessions_n"],
             "own_sessions": row["own_sessions"],
             "own_visitors": row["own_visitors"],
+            "own_people": row["own_people"],
+            "own_unconfirmed": row["own_unconfirmed"],
+            "own_unrated": row["own_unrated"],
         })
     return out
 

@@ -711,7 +711,9 @@ def _infer_from_pageviews(evs) -> tuple[str | None, str | None, bool]:
 def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
                       visitor_sessions: int = 1, fallback_portrait=None, goal_counts=None,
                       portrait_clusters=None) -> dict[str, Any]:
-    from app.services.bot_score import BOT_THRESHOLD, SessionSignals, portrait_fingerprint, score_session
+    from app.services.bot_score import (
+        BOT_THRESHOLD, SessionSignals, human_evidence, portrait_fingerprint, score_session,
+    )
 
     started, ended = evs[0].occurred_at, evs[-1].occurred_at
     pageviews = sum(getattr(e, "weight", 1) for e in evs if e.event_type == "pageview")
@@ -783,7 +785,7 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
     engaged = active_ms > 15_000 or max_scroll > 50 or pageviews >= 2
     user_id = next((e.user_id for e in evs if e.user_id), None)
 
-    bot = score_session(SessionSignals(
+    signals = SessionSignals(
         pageviews=pageviews,
         clicks=clicks,
         moves=moves,
@@ -802,7 +804,9 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
         portrait_cluster=_portrait_cluster_for(portrait, portrait_clusters, portrait_fingerprint),
         referrer=getattr(portrait, "referrer", None) if portrait else None,
         timezone=getattr(portrait, "timezone", None) if portrait else None,
-    ))
+        signed_in=user_id is not None,
+    )
+    bot = score_session(signals)
     return {
         "day": msk_day(started),  # день сессии — МСК (BI 2.1)
         "visitor_id_hash": visitor,
@@ -826,6 +830,8 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
         "macro_goals": macro,
         "is_bot": bot >= BOT_THRESHOLD,
         "bot_score": bot,
+        # 18.11.2026: человек — только с признаком живого посетителя; робот признаками не оправдывается.
+        "is_human": bot < BOT_THRESHOLD and bool(human_evidence(signals)),
         "computed_at": _utcnow(),
     }
 
