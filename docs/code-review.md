@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `cd346efa545ac8a375b425179a76072deef85c32`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `ca4a4344fd259a57bedb638f1af10bab082986f9`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -14,9 +14,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 |---|---:|
 | Файлы в явно определённом scope | 2653 |
 | Код, шаблоны и стили | 2162 |
-| Актуальные рецензии без пропусков guard | 2601 |
+| Актуальные рецензии без пропусков guard | 2617 |
 | Именованные определения Python/JS: с аннотацией / всего | 17739 / 17928 |
-| Файлы, требующие внимания | 52 |
+| Файлы, требующие внимания | 36 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -1167,7 +1167,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0005-official-calendar-source-bound.md](../docs/adr/0005-official-calendar-source-bound.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0006-indicator-card-unification.md](../docs/adr/0006-indicator-card-unification.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0007-identity-user-accounts.md](../docs/adr/0007-identity-user-accounts.md) | reviewed | 0/0 | актуально |
-| [docs/adr/0008-regional-bounded-context.md](../docs/adr/0008-regional-bounded-context.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/adr/0008-regional-bounded-context.md](../docs/adr/0008-regional-bounded-context.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0009-behavior-stream-first-party.md](../docs/adr/0009-behavior-stream-first-party.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0010-analytics-contour-identity-goals-marts-olap.md](../docs/adr/0010-analytics-contour-identity-goals-marts-olap.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0011-world-eurostat-data-plane.md](../docs/adr/0011-world-eurostat-data-plane.md) | reviewed | 0/0 | актуально |
@@ -1175,7 +1175,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0013-country-first-url-architecture.md](../docs/adr/0013-country-first-url-architecture.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0014-subnational-regions-generic.md](../docs/adr/0014-subnational-regions-generic.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0015-us-bea-regional-catalog.md](../docs/adr/0015-us-bea-regional-catalog.md) | reviewed | 0/0 | актуально |
-| [docs/adr/0016-federated-public-search.md](../docs/adr/0016-federated-public-search.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/adr/0016-federated-public-search.md](../docs/adr/0016-federated-public-search.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0017-platform-growth-boundaries.md](../docs/adr/0017-platform-growth-boundaries.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0018-crystal-without-borders-design-system.md](../docs/adr/0018-crystal-without-borders-design-system.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0019-personal-cabinet-behind-flag.md](../docs/adr/0019-personal-cabinet-behind-flag.md) | reviewed | 0/0 | актуально |
@@ -1191,7 +1191,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0029-ru-google-recovery.md](../docs/adr/0029-ru-google-recovery.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0030-ru-google-short-sitemap.md](../docs/adr/0030-ru-google-short-sitemap.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0031-apex-google-demand-only-years.md](../docs/adr/0031-apex-google-demand-only-years.md) | reviewed | 0/0 | актуально |
-| [docs/adr/0032-email-channel-service-mail-and-newsletter.md](../docs/adr/0032-email-channel-service-mail-and-newsletter.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/adr/0032-email-channel-service-mail-and-newsletter.md](../docs/adr/0032-email-channel-service-mail-and-newsletter.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0033-personal-newsletter-issue.md](../docs/adr/0033-personal-newsletter-issue.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md](../docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0035-telegram-channel-author.md](../docs/adr/0035-telegram-channel-author.md) | reviewed | 0/0 | актуально |
@@ -1207,24 +1207,24 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/agent-orchestration.md](../docs/agent-orchestration.md) | reviewed | 0/0 | актуально |
 | [docs/agent-recipes.md](../docs/agent-recipes.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/README.md](../docs/analytics_api_inventory/README.md) | reviewed | 0/0 | актуально |
-| [docs/analytics_api_inventory/frontend_instrumentation.md](../docs/analytics_api_inventory/frontend_instrumentation.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/analytics_api_inventory/frontend_instrumentation.md](../docs/analytics_api_inventory/frontend_instrumentation.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/google_search_console.md](../docs/analytics_api_inventory/google_search_console.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/metrika_logs.md](../docs/analytics_api_inventory/metrika_logs.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/metrika_management.md](../docs/analytics_api_inventory/metrika_management.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/metrika_reporting.md](../docs/analytics_api_inventory/metrika_reporting.md) | reviewed | 0/0 | актуально |
-| [docs/analytics_api_inventory/yandex_webmaster.md](../docs/analytics_api_inventory/yandex_webmaster.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/analytics_api_inventory/yandex_webmaster.md](../docs/analytics_api_inventory/yandex_webmaster.md) | reviewed | 0/0 | актуально |
 | [docs/architecture-history.md](../docs/architecture-history.md) | reviewed | 0/0 | актуально |
 | [docs/architecture-knowledge.json](../docs/architecture-knowledge.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/architecture.md](../docs/architecture.md) | reviewed | 0/0 | актуально |
 | [docs/backlog.md](../docs/backlog.md) | reviewed | 0/0 | актуально |
 | [docs/circle-playbook.md](../docs/circle-playbook.md) | reviewed | 0/0 | актуально |
-| [docs/client-mechanism-inventory.json](../docs/client-mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | source_changed |
-| [docs/client-mechanism-inventory.md](../docs/client-mechanism-inventory.md) | artifact_schema_reviewed | 0/0 | source_changed |
+| [docs/client-mechanism-inventory.json](../docs/client-mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/client-mechanism-inventory.md](../docs/client-mechanism-inventory.md) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/code-review-findings.md](../docs/code-review-findings.md) | reviewed | 0/0 | актуально |
 | [docs/data-contracts.md](../docs/data-contracts.md) | reviewed | 0/0 | актуально |
-| [docs/data_sources.md](../docs/data_sources.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/data_sources.md](../docs/data_sources.md) | reviewed | 0/0 | актуально |
 | [docs/dead-code-report.md](../docs/dead-code-report.md) | reviewed | 0/0 | актуально |
-| [docs/design-system.md](../docs/design-system.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/design-system.md](../docs/design-system.md) | reviewed | 0/0 | актуально |
 | [docs/design/README.md](../docs/design/README.md) | reviewed | 0/0 | актуально |
 | [docs/design/accessibility-review.md](../docs/design/accessibility-review.md) | reviewed | 0/0 | актуально |
 | [docs/design/art-prompts/2026-09-24-additions.json](../docs/design/art-prompts/2026-09-24-additions.json) | artifact_schema_reviewed | 0/0 | актуально |
@@ -1262,15 +1262,15 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/enterprise_resilience.md](../docs/enterprise_resilience.md) | reviewed | 0/0 | актуально |
 | [docs/indexnow-sitemap-backfill-plan.md](../docs/indexnow-sitemap-backfill-plan.md) | reviewed | 0/0 | актуально |
 | [docs/indicator-family-playbook.md](../docs/indicator-family-playbook.md) | reviewed | 0/0 | актуально |
-| [docs/indicator-index.json](../docs/indicator-index.json) | data_schema_reviewed | 0/0 | source_changed |
-| [docs/indicator-index.md](../docs/indicator-index.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/indicator-index.json](../docs/indicator-index.json) | data_schema_reviewed | 0/0 | актуально |
+| [docs/indicator-index.md](../docs/indicator-index.md) | reviewed | 0/0 | актуально |
 | [docs/knowledge-unknowns.md](../docs/knowledge-unknowns.md) | reviewed | 0/0 | актуально |
 | [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | reviewed | 0/0 | актуально |
 | [docs/legal/privacy-cabinet-draft-2026-11-14.md](../docs/legal/privacy-cabinet-draft-2026-11-14.md) | reviewed | 0/0 | актуально |
-| [docs/mechanism-inventory.json](../docs/mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | source_changed |
-| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | artifact_schema_reviewed | 0/0 | source_changed |
+| [docs/mechanism-inventory.json](../docs/mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/missed_data_audit.md](../docs/missed_data_audit.md) | reviewed | 0/0 | актуально |
-| [docs/newsletter-playbook.md](../docs/newsletter-playbook.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/newsletter-playbook.md](../docs/newsletter-playbook.md) | reviewed | 0/0 | актуально |
 | [docs/offsite-backup-runbook.md](../docs/offsite-backup-runbook.md) | reviewed | 0/0 | актуально |
 | [docs/planet-view.md](../docs/planet-view.md) | reviewed | 0/0 | актуально |
 | [docs/pravki-21-reanalysis.md](../docs/pravki-21-reanalysis.md) | reviewed | 0/0 | актуально |
@@ -1320,7 +1320,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/usa-official-sources.xlsx](../docs/research/usa-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/wall-funnel-2026-11-14.md](../docs/research/wall-funnel-2026-11-14.md) | reviewed | 0/0 | актуально |
 | [docs/runtime-inventory.json](../docs/runtime-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
-| [docs/search.md](../docs/search.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/search.md](../docs/search.md) | reviewed | 0/0 | актуально |
 | [docs/server-hardening-runbook-2026-10-04.md](../docs/server-hardening-runbook-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/site-inventory.json](../docs/site-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/traffic-platform-2026-09-10.md](../docs/traffic-platform-2026-09-10.md) | reviewed | 0/0 | актуально |
@@ -1328,7 +1328,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/verification/us-eu-source-audit-2026-09-24.md](../docs/verification/us-eu-source-audit-2026-09-24.md) | reviewed | 0/0 | актуально |
 | [docs/verification/us-indicators-2026-09-24.md](../docs/verification/us-indicators-2026-09-24.md) | reviewed | 0/0 | актуально |
 | [docs/verification/world-forecast-v2-2026-09-24.md](../docs/verification/world-forecast-v2-2026-09-24.md) | reviewed | 0/0 | актуально |
-| [docs/workflow.md](../docs/workflow.md) | reviewed | 0/0 | source_changed, read_range_gap |
+| [docs/workflow.md](../docs/workflow.md) | reviewed | 0/0 | актуально |
 | [frontend/.dockerignore](../frontend/.dockerignore) | reviewed | 0/0 | актуально |
 | [frontend/.env.example](../frontend/.env.example) | reviewed | 0/0 | актуально |
 | [frontend/.gitignore](../frontend/.gitignore) | reviewed | 0/0 | актуально |
