@@ -1,7 +1,7 @@
 """Недельные цены на топливо по субъектам РФ: таблица region_weekly_data (18.11.2026, ADR-0008).
 
 Revision ID: 20261118_region_weekly
-Revises: 20261117_channel_author
+Revises: 20261118_session_is_human
 
 Только добавляющая миграция: одна новая таблица, старые не тронуты. Неделя хранится датой
 регистрации цен Росстатом (не номером недели): люди спрашивают цену «на 01.01.2026».
@@ -10,7 +10,7 @@ from alembic import op
 import sqlalchemy as sa
 
 revision = "20261118_region_weekly"
-down_revision = "20261117_channel_author"
+down_revision = "20261118_session_is_human"
 branch_labels = None
 depends_on = None
 
