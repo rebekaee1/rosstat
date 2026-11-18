@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2439  ·  **Строк:** 1 538 384  ·  **Токенов (≈):** 14 759 463
+**Файлов:** 2439  ·  **Строк:** 1 538 384  ·  **Токенов (≈):** 14 759 498
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 1042 | 356 246 | 3 948 409 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 577 | 26 061 |
-| `docs` | 153 | 959 984 | 8 282 111 |
+| `docs` | 153 | 959 984 | 8 282 146 |
 | `frontend` | 1063 | 191 535 | 2 111 788 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 143 | 25 563 | 317 706 |
@@ -42,7 +42,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 256 | 118 363 |
-| `docs/data-contracts.md` | 1 437 | 76 074 |
+| `docs/data-contracts.md` | 1 437 | 76 099 |
 | `frontend/src/i18n/messages.ru.js` | 4 295 | 60 674 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
 | `frontend/src/i18n/messages.en.js` | 4 290 | 59 820 |
@@ -689,10 +689,10 @@
 | `backend/tests/test_search_intent_literals.py` | 171 | 2 564 |
 | `backend/scripts/export-design-gallery.py` | 168 | 2 560 |
 | `frontend/src/lib/pwa.component.test.jsx` | 239 | 2 559 |
+| `docs/adr/0036-search-index.md` | 126 | 2 558 |
 | `frontend/src/i18n/locale.js` | 281 | 2 552 |
 | `backend/app/services/mail/bounces.py` | 226 | 2 550 |
 | `backend/app/services/seo_region_compare.py` | 266 | 2 548 |
-| `docs/adr/0036-search-index.md` | 126 | 2 548 |
 | `scripts/classify-graph-omissions.py` | 168 | 2 547 |
 | `docs/adr/0031-apex-google-demand-only-years.md` | 97 | 2 533 |
 | `backend/tests/test_seo_not_found.py` | 230 | 2 531 |

@@ -1,9 +1,15 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "baaec32178ce4f66ba54fb3174e060676282d0b7",
+  "baseline_commit": "fa9119f9db587c1960b45ffb89755cd579ab1e45",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
-  "unstaged_at_capture": [],
+  "unstaged_at_capture": [
+    "CONTEXT.md",
+    "README.md",
+    "docs/code-review/coverage.json",
+    "docs/code-review/reviews.jsonl",
+    "docs/data_sources.md"
+  ],
   "untracked_at_capture": [],
   "stats": {
     "files": 2653,
@@ -757,9 +763,9 @@
     {"path": ".python-version", "kind": "asset/data/config", "bytes": 5, "lines": 1, "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": ".tours/architect-view-mode-contract.tour", "kind": "asset/data/config", "bytes": 4718, "lines": 55, "sha256": "7cc8136295580e0e36f0d2994158dd8d04ffd526d1219e5f1b198b52b3a2a260", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "AGENTS.md", "kind": "document", "bytes": 11493, "lines": 89, "sha256": "c2f0708edb9e24dcd989c4ecde8ae3fa69af575a28ea02ddcf3f4b0f07f6d0cc", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "CONTEXT.md", "kind": "document", "bytes": 253888, "lines": 1334, "sha256": "86f8c43402b45c5a9b83083aadf39ce04afc868cf0f82f280887e60ad2cfdf98", "symlink": false, "nodes": 90, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "CONTEXT.md", "kind": "document", "bytes": 253892, "lines": 1334, "sha256": "d0342c16958fee9f56b1bdad75c13ad6ee920e07697f8585a2239e5ce682e1fa", "symlink": false, "nodes": 90, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "Caddyfile", "kind": "asset/data/config", "bytes": 5859, "lines": 61, "sha256": "f722e19aa5a99451060e0d034f8fe22c983505a25a8bd4bd019766c3d33669b9", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
-    {"path": "README.md", "kind": "document", "bytes": 24719, "lines": 273, "sha256": "693ba5345532ca6556dc5dc6c7f19fe626ae0e4a7099a51f6d785158f5fe8ad7", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "README.md", "kind": "document", "bytes": 24721, "lines": 273, "sha256": "ec4879aee19410a4f18069a5cf943b96e583b112a49f28b88cb0980887536068", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/.dockerignore", "kind": "asset/data/config", "bytes": 65, "lines": 9, "sha256": "ba593c9a6ca673a2f1f3597929767155f8d3d88c37d4167896782fe0961de11a", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/Dockerfile", "kind": "asset/data/config", "bytes": 2035, "lines": 48, "sha256": "c225c3ba9edbb443a3d35290d29d437004b18555b5c2a895462188d7fa239bd7", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/alembic.ini", "kind": "asset/data/config", "bytes": 589, "lines": 37, "sha256": "ed8b179d48bc97d1c360ba8f7cc56f0b3ed3395214e7041ce8b28142a7c0ff82", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
@@ -1922,7 +1928,7 @@
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 14011, "lines": 142, "sha256": "b738d8d6e9ab0465ff166d61928d52b8d551e7ef04cfe50bc58889e8d7b741f7", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 31882, "lines": 161, "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/data-contracts.md", "kind": "document", "bytes": 445294, "lines": 1437, "sha256": "20726949cf0c979650c51b06209ab0e9e0abf3e1f1ff16a1ff962580040ee28c", "symlink": false, "nodes": 114, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/data_sources.md", "kind": "document", "bytes": 140937, "lines": 847, "sha256": "c2d6c37194de4edf7baef6f0bc1599a8e1a961815f5b91a1b811048c28758ac9", "symlink": false, "nodes": 42, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/data_sources.md", "kind": "document", "bytes": 140937, "lines": 847, "sha256": "b62cd294c95dbeffb8e787ff7ac7683050fb511be7535a32426cf64158f10fc4", "symlink": false, "nodes": 42, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/dead-code-report.md", "kind": "document", "bytes": 12346, "lines": 82, "sha256": "098ba90621dc159e2e26bddb831898fd4a58c6c3b9ca1b169a78035a962ff106", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/design-system.md", "kind": "document", "bytes": 271609, "lines": 527, "sha256": "c6199c87cac429b0dc053300f6ea21dbd4aee010452583000d8ccac9b992667a", "symlink": false, "nodes": 21, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/design/README.md", "kind": "document", "bytes": 10682, "lines": 109, "sha256": "f69cb4d2fa760f5d3d822ee4319db55137831de0f011fc68004bfa8fb38250f0", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
