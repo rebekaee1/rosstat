@@ -16,7 +16,7 @@ from sqlalchemy import and_, literal_column, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
-from app.services import site_paths as paths
+from app.services import search_index, site_paths as paths
 
 logger = logging.getLogger(__name__)
 
@@ -82,14 +82,21 @@ async def _latest_by_region(db: AsyncSession, code: str, *, monthly: bool,
     point = RegionMonthlyPoint if monthly else RegionDataPoint
     period_column = point.month if monthly else point.year
     indicator = select(RegionIndicator.id).where(RegionIndicator.code == code).scalar_subquery()
+    facts = (await search_index.active_index(db)).region_facts
+    if facts is not None:
+        # Поисковый индекс (ADR-0036): последняя конечная точка пары посчитана при сборке, без чтения таблиц точек.
+        period, value = ((facts.c.last_month, facts.c.last_month_value) if monthly
+                         else (facts.c.last_year, facts.c.last_year_value))
+        query = select(Region.slug, period, value).select_from(Region).outerjoin(
+            facts, and_(facts.c.region_id == Region.id, facts.c.indicator_id == indicator))
+    else:
+        def last(column):
+            # Последняя конечная точка региона: одно чтение по индексу (показатель, регион, период).
+            # Оконная функция читала все точки показателя ради одного значения на регион.
+            return select(column).where(point.indicator_id == indicator, point.region_id == Region.id,
+                _finite(point.value)).order_by(period_column.desc()).limit(1).scalar_subquery()
 
-    def last(column):
-        # Последняя конечная точка региона: одно чтение по индексу (показатель, регион, период).
-        # Оконная функция читала все точки показателя ради одного значения на регион.
-        return select(column).where(point.indicator_id == indicator, point.region_id == Region.id,
-            _finite(point.value)).order_by(period_column.desc()).limit(1).scalar_subquery()
-
-    query = select(Region.slug, last(period_column), last(point.value))
+        query = select(Region.slug, last(period_column), last(point.value))
     if slugs:
         query = query.where(Region.slug.in_(slugs))
     rows = (await db.execute(query)).all()

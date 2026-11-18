@@ -1685,6 +1685,20 @@ async def lifespan(app: FastAPI):
                 next_run_time=datetime.now(dt_timezone.utc) + timedelta(seconds=20),
             )
 
+        # Поисковый индекс (ADR-0036, 18.11.2026): маленькие копии каталога для поиска; пересборка части, если её основные
+        # таблицы изменились. Первая проверка — после наблюдения за выкладкой; задача no-op без search_index_enabled.
+        from app.services.search_index import search_index_job
+        scheduler.add_job(
+            locked_job(search_index_job, "search_index", ttl_seconds=3600),
+            trigger=IntervalTrigger(minutes=max(1, settings.search_index_check_minutes)),
+            id="search_index",
+            name="Search index refresh (world / russia / territory copies, ADR-0036)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+            next_run_time=datetime.now(dt_timezone.utc) + timedelta(minutes=settings.search_index_first_build_delay_minutes),
+        )
+
         asyncio.create_task(_cleanup_stuck_fetch_logs())
 
         # «New indicator initial ETL trap» + forecast gap-fill (steps>0 без

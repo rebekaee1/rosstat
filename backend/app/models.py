@@ -2248,3 +2248,148 @@ class ChannelVoiceRule(Base):
     kind: Mapped[str] = mapped_column(String(8), nullable=False)       # use / ban / rule
     text: Mapped[str] = mapped_column(String(300), nullable=False)
     deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+
+
+# --- Поисковый индекс (18.11.2026, ADR-0036) ---------------------------------------------------------------------------
+# Маленькие копии того, что поиск читает при каждом запросе: строки мирового каталога без длинных текстов и с отметкой
+# «есть факт», активные ряды России с той же отметкой, пары «показатель × территория», у которых есть данные. Собираются
+# из основных таблиц (`app/services/search_index.py`); основные таблицы и заливка данных не меняются. У каждой части две
+# копии `a`/`b`: поиск читает действующую (`search_index_state.active`), пересборка пишет в другую и переключает указатель
+# одной транзакцией, поэтому читатель не видит наполовину собранную копию и не ждёт блокировок.
+
+
+class SearchIndexState(Base):
+    """Какая копия части поискового индекса действует и из какого состояния основных таблиц она собрана."""
+    __tablename__ = "search_index_state"
+
+    part: Mapped[str] = mapped_column(String(16), primary_key=True)  # world | russia | territory
+    active: Mapped[str | None] = mapped_column(String(1))  # a | b; None — копия не собрана
+    built_at: Mapped[datetime | None] = mapped_column(DateTime)
+    signature: Mapped[str | None] = mapped_column(Text)
+    rows: Mapped[int | None] = mapped_column(Integer)
+    seconds: Mapped[float | None] = mapped_column(Numeric(10, 2))
+
+
+class _SearchWorldRow:
+    """Строка мирового каталога для поиска: столбцы, которые читает поиск, и отметка «есть ненулевой конечный факт».
+
+    Физический порядок строк — порядок выдачи (`ord`), поэтому проход по индексу порядка читает подряд идущие страницы.
+    Описание, методология и SEO-тексты страницы (две трети строки `world_indicators`) сюда не входят.
+    """
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    country_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    provider: Mapped[str] = mapped_column(String(50), nullable=False)
+    code: Mapped[str] = mapped_column(String(120), nullable=False)
+    dataset_id: Mapped[str] = mapped_column(String(160), nullable=False)
+    slice_json: Mapped[dict | None] = mapped_column(JSON)
+    slice_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    name_ru: Mapped[str] = mapped_column(String(400), nullable=False)
+    name_en: Mapped[str | None] = mapped_column(String(400))
+    unit: Mapped[str] = mapped_column(String(80), nullable=False)
+    unit_ru: Mapped[str] = mapped_column(String(80), nullable=False)
+    frequency: Mapped[str] = mapped_column(String(20), nullable=False)
+    category_ru: Mapped[str] = mapped_column(String(80), nullable=False)
+    seo_keywords: Mapped[str | None] = mapped_column(Text)
+    is_listed: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    points_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    history_end: Mapped[date | None] = mapped_column(Date)
+    # Место строки в порядке выдачи (is_listed DESC, code): по всему каталогу и внутри страны. Номера идут подряд с 1.
+    ord: Mapped[int] = mapped_column(Integer, nullable=False)
+    country_ord: Mapped[int] = mapped_column(Integer, nullable=False)
+    has_fact: Mapped[bool] = mapped_column(Boolean, nullable=False)
+
+
+def _search_world_indexes(table: str) -> tuple:
+    # `lower(…)` для точного совпадения объявлены для сверки моделей с миграцией (Alembic сравнивает такие btree);
+    # создаются только в PostgreSQL. GIN меток среза `fe_world_slice_members(provider, slice_json)` — только в миграции
+    # 20261118_search_index, как `ix_world_indicators_slice_members`: Alembic не сравнивает GIN по выражению.
+    expressions = tuple(
+        Index(f"ix_{table}_lower_{column}", text(f"lower({column})")).ddl_if(dialect="postgresql")
+        for column in ("code", "name_ru", "name_en"))
+    return (
+        *expressions,
+        Index(f"ix_{table}_code", "code", unique=True),
+        Index(f"ix_{table}_ord", "ord", unique=True),
+        Index(f"ix_{table}_country_ord", "country_id", "country_ord", unique=True),
+        Index(f"ix_{table}_listed_fact_country", "country_id", postgresql_where=text("is_listed AND has_fact")),
+        Index(f"ix_{table}_card_lookup", "country_id", "provider", "dataset_id",
+              postgresql_ops={"dataset_id": "varchar_pattern_ops"}),
+        Index(f"ix_{table}_search_text_trgm", "code", "name_ru", "name_en", "seo_keywords", postgresql_using="gin",
+              postgresql_ops={"code": "gin_trgm_ops", "name_ru": "gin_trgm_ops", "name_en": "gin_trgm_ops",
+                              "seo_keywords": "gin_trgm_ops"}),
+    )
+
+
+class SearchWorldRowA(_SearchWorldRow, Base):
+    __tablename__ = "search_world_a"
+    __table_args__ = _search_world_indexes("search_world_a")
+
+
+class SearchWorldRowB(_SearchWorldRow, Base):
+    __tablename__ = "search_world_b"
+    __table_args__ = _search_world_indexes("search_world_b")
+
+
+class _SearchRussiaRow:
+    """Активный ряд России для поиска: столбцы, которые читает поиск, и отметка «есть конечный факт»."""
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    code: Mapped[str] = mapped_column(String(50), nullable=False)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    name_en: Mapped[str | None] = mapped_column(String(200))
+    unit: Mapped[str] = mapped_column(String(20), nullable=False)
+    frequency: Mapped[str] = mapped_column(String(50), nullable=False)
+    category: Mapped[str | None] = mapped_column(String(100))
+    seo_keywords: Mapped[str | None] = mapped_column(Text)
+    is_listed: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    has_fact: Mapped[bool] = mapped_column(Boolean, nullable=False)
+
+
+class SearchRussiaRowA(_SearchRussiaRow, Base):
+    __tablename__ = "search_russia_a"
+
+
+class SearchRussiaRowB(_SearchRussiaRow, Base):
+    __tablename__ = "search_russia_b"
+
+
+class _SearchRegionFact:
+    """Пара «региональный показатель × регион России», у которой есть хотя бы одна конечная точка, и её последние
+    конечные точки: год и значение годовой, месяц (YYYYMM) и значение месячной."""
+
+    indicator_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    region_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    has_annual: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    has_monthly: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    last_year: Mapped[int | None] = mapped_column(Integer)
+    last_year_value: Mapped[float | None] = mapped_column(Numeric(18, 4))
+    last_month: Mapped[int | None] = mapped_column(Integer)
+    last_month_value: Mapped[float | None] = mapped_column(Numeric(18, 4))
+
+
+class SearchRegionFactA(_SearchRegionFact, Base):
+    __tablename__ = "search_region_facts_a"
+    __table_args__ = (Index("ix_search_region_facts_a_region", "region_id"),)
+
+
+class SearchRegionFactB(_SearchRegionFact, Base):
+    __tablename__ = "search_region_facts_b"
+    __table_args__ = (Index("ix_search_region_facts_b_region", "region_id"),)
+
+
+class _SearchSubnationalFact:
+    """Пара «субнациональный показатель × территория», у которой есть хотя бы одна конечная точка."""
+
+    indicator_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    region_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+
+
+class SearchSubnationalFactA(_SearchSubnationalFact, Base):
+    __tablename__ = "search_subnational_facts_a"
+    __table_args__ = (Index("ix_search_subnational_facts_a_region", "region_id"),)
+
+
+class SearchSubnationalFactB(_SearchSubnationalFact, Base):
+    __tablename__ = "search_subnational_facts_b"
+    __table_args__ = (Index("ix_search_subnational_facts_b_region", "region_id"),)
