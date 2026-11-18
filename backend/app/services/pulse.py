@@ -617,6 +617,30 @@ async def _users_snapshot(db, start: datetime, end: datetime) -> dict[str, Any]:
     }
 
 
+async def _friction_tops(db, start: datetime, end: datetime) -> tuple[list[dict], list[dict]]:
+    """Клики в некликабельное (dead) и серии кликов в одну точку (rage): число кликов и число сессий.
+
+    18.11.2026: без числа сессий один человек, 46 раз щёлкнувший в одну точку рейтинга регионов, выглядел в
+    отчёте как «люди кликают в пустоту — главный сигнал дня». Первыми идут места, где ошиблось больше людей.
+    """
+    sessions = func.count(func.distinct(BehaviorEvent.session_id_hash))
+    window = (BehaviorEvent.occurred_at >= start, BehaviorEvent.occurred_at < end, BehaviorEvent.event_type == "click")
+    dead = (await db.execute(
+        select(BehaviorEvent.element_path, BehaviorEvent.element_text, func.count(), sessions)
+        .where(*window, BehaviorEvent.is_dead.is_(True))
+        .group_by(BehaviorEvent.element_path, BehaviorEvent.element_text)
+        .order_by(sessions.desc(), func.count().desc()).limit(10)
+    )).all()
+    rage = (await db.execute(
+        select(BehaviorEvent.page, BehaviorEvent.element_path, func.count(), sessions)
+        .where(*window, BehaviorEvent.is_rage.is_(True))
+        .group_by(BehaviorEvent.page, BehaviorEvent.element_path)
+        .order_by(sessions.desc(), func.count().desc()).limit(10)
+    )).all()
+    return ([{"element": path, "text": text, "n": n, "sessions": who} for path, text, n, who in dead],
+            [{"page": page, "element": path, "n": n, "sessions": who} for page, path, n, who in rage])
+
+
 async def build_snapshot(d: date) -> dict[str, Any]:
     """Собрать снапшот дня из БД. Чистое чтение, без побочных эффектов."""
     start, end = _day_bounds(d)
@@ -677,20 +701,7 @@ async def build_snapshot(d: date) -> dict[str, Any]:
             .group_by(BehaviorEvent.element_path, BehaviorEvent.element_text)
             .order_by(func.count().desc()).limit(15)
         )).all()
-        b_dead = (await db.execute(
-            select(BehaviorEvent.element_path, BehaviorEvent.element_text, func.count())
-            .where(BehaviorEvent.occurred_at >= start, BehaviorEvent.occurred_at < end,
-                   BehaviorEvent.event_type == "click", BehaviorEvent.is_dead.is_(True))
-            .group_by(BehaviorEvent.element_path, BehaviorEvent.element_text)
-            .order_by(func.count().desc()).limit(10)
-        )).all()
-        b_rage = (await db.execute(
-            select(BehaviorEvent.page, BehaviorEvent.element_path, func.count())
-            .where(BehaviorEvent.occurred_at >= start, BehaviorEvent.occurred_at < end,
-                   BehaviorEvent.event_type == "click", BehaviorEvent.is_rage.is_(True))
-            .group_by(BehaviorEvent.page, BehaviorEvent.element_path)
-            .order_by(func.count().desc()).limit(10)
-        )).all()
+        b_dead, b_rage = await _friction_tops(db, start, end)
         # dwell: среднее время и глубина скролла по страницам (из params_json)
         dwell_rows = (await db.execute(
             select(BehaviorEvent.page, BehaviorEvent.params_json)
@@ -728,12 +739,8 @@ async def build_snapshot(d: date) -> dict[str, Any]:
                 {"element": path, "text": scrub_text(text) if text else text, "n": n}
                 for path, text, n in b_clicks
             ],
-            "dead_clicks_top": [
-                {"element": path, "text": text, "n": n} for path, text, n in b_dead
-            ],
-            "rage_clicks_top": [
-                {"page": page, "element": path, "n": n} for page, path, n in b_rage
-            ],
+            "dead_clicks_top": b_dead,
+            "rage_clicks_top": b_rage,
             "dwell_by_page": b_dwell,
             "copied_top": dict(copy_counter.most_common(10)),
         }

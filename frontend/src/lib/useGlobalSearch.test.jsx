@@ -3,7 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import api from './api';
-import useGlobalSearch from './useGlobalSearch';
+import useGlobalSearch, { rowsStartingWith, unfinishedTail } from './useGlobalSearch';
 
 const localeState = vi.hoisted(() => ({ value: 'ru' }));
 vi.mock('../i18n', () => ({ useLocale: () => ({ locale: localeState.value }) }));
@@ -59,4 +59,67 @@ it('does not reuse the previous client namespace when backend semantics change',
   await waitFor(() => expect(result.current.data?.version).toBe('federated-v2'));
   expect(result.current.data.results[0].name).toBe('Current interpretation');
   expect(api.get).toHaveBeenCalledOnce();
+});
+
+// ── Недописанное последнее слово (18.11.2026) ────────────────────────────────────────────────────
+const EMPTY = { results: [], total: 0, has_more: false, version: 'federated-v2', reason: 'no_coverage' };
+const byQuery = (answers) => (_path, options) => Promise.resolve({ data: answers[options.params.q] ?? EMPTY });
+
+it('reads a one- or two-letter last word as unfinished only after a complete word', () => {
+  expect(unfinishedTail('коэффициент ро')).toEqual({ stable: 'коэффициент', fragment: 'ро' });
+  expect(unfinishedTail('Суммарный  коэффициент  Р')).toEqual({ stable: 'Суммарный коэффициент', fragment: 'р' });
+  expect(unfinishedTail('уровень бё')).toEqual({ stable: 'уровень', fragment: 'бе' });
+  expect(unfinishedTail('коэффициент рож')).toBeNull();   // три буквы сервер уже читает как начало слова
+  expect(unfinishedTail('ро')).toBeNull();
+  expect(unfinishedTail('m2 us')).toBeNull();              // дописанная часть короче трёх знаков
+  expect(unfinishedTail('инфляция 20')).toBeNull();        // цифры — не начало слова
+  expect(unfinishedTail('')).toBeNull();
+});
+
+it('keeps rows that have a word starting with the typed letters: by name first, then by region or country', () => {
+  const rows = [
+    { name: 'Коэффициент Джини', country_name: 'Россия' }, { name: 'Коэффициент рождаемости' }, { name: 'Коэффициент смертности' },
+    { name: 'Gini', name_en: 'Road freight' }, { name: 'Средняя зарплата', region_name: 'Ростовская область' },
+    { name: 'Потребительские цены' },   // «ро» внутри слова — не начало
+    { name: 'Число родившихся', country_name: 'Россия' },
+  ];
+  expect(rowsStartingWith(rows, 'ро').map((row) => row.name)).toEqual(
+    ['Коэффициент рождаемости', 'Число родившихся', 'Коэффициент Джини', 'Средняя зарплата']);
+  expect(rowsStartingWith(rows, 'ro').map((row) => row.name)).toEqual(['Gini']);   // английское название
+  expect(rowsStartingWith(undefined, 'ро')).toEqual([]);
+});
+
+it('shows rows for the typed words when the last word is unfinished instead of an empty answer', async () => {
+  api.get.mockImplementation(byQuery({
+    'коэффициент': { results: [{ key: 'a', name: 'Коэффициент рождаемости' }, { key: 'b', name: 'Коэффициент смертности' }],
+      total: 2, has_more: true, version: 'federated-v2', intent: { terms: ['коэффициент'] } },
+  }));
+  const { result } = renderHook(() => useGlobalSearch('коэффициент ро'), { wrapper });
+  await waitFor(() => expect(result.current.data?.results?.length).toBe(1));
+  expect(result.current.data).toMatchObject({ results: [{ key: 'a' }], total: 1, has_more: false,
+    unfinished: { stable: 'коэффициент', fragment: 'ро' } });
+  expect(result.current.data.reason).toBeUndefined();
+  expect(api.get.mock.calls.map(([, options]) => options.params.q)).toEqual(['коэффициент ро', 'коэффициент']);
+});
+
+it('stays honestly empty when no row has a word with that start', async () => {
+  api.get.mockImplementation(byQuery({ 'коэффициент': { results: [{ key: 'b', name: 'Коэффициент смертности' }], version: 'federated-v2' } }));
+  const { result } = renderHook(() => useGlobalSearch('коэффициент ро'), { wrapper });
+  await waitFor(() => expect(api.get).toHaveBeenCalledTimes(2));
+  await waitFor(() => expect(result.current.isPending).toBe(false));
+  expect(result.current.data).toEqual(EMPTY);
+});
+
+it('does not replace a real answer, a finished word or the server "nearest" block', async () => {
+  api.get.mockImplementation(byQuery({
+    'ввп ес': { results: [{ key: 'eu', name: 'ВВП ЕС' }], version: 'federated-v2' },
+    'мрот ом': { ...EMPTY, nearest: { note: 'no_series', results: [{ key: 'n', name: 'Прожиточный минимум', path: '/x' }] } },
+  }));
+  const real = renderHook(() => useGlobalSearch('ввп ес'), { wrapper });
+  await waitFor(() => expect(real.result.current.data?.results?.[0]?.key).toBe('eu'));
+  const nearest = renderHook(() => useGlobalSearch('мрот ом'), { wrapper });
+  await waitFor(() => expect(nearest.result.current.data?.nearest?.results?.length).toBe(1));
+  const finished = renderHook(() => useGlobalSearch('коэффициент напряженности'), { wrapper });
+  await waitFor(() => expect(finished.result.current.data).toEqual(EMPTY));
+  expect(api.get.mock.calls.map(([, options]) => options.params.q).sort()).toEqual(['ввп ес', 'коэффициент напряженности', 'мрот ом']);
 });

@@ -226,6 +226,9 @@ def test_pulse_extra_sections_are_sums_only(mail_env, auth_client, monkeypatch):
     assert not [k for k, v in extra.items() if "error" in v], extra
     assert extra["mail"]["letters_by_kind"]["newsletter"]["sent"] == 2 and extra["mail"]["last_campaign"]["delivered"] == 2
     assert extra["consents"]["newsletter_opt_in"] == 2
+    # Счётчик открытий выключен по умолчанию: ноль открытий — не измерение, в снимке его нет (18.11.2026).
+    assert extra["mail"]["open_tracking"] is False and extra["mail"]["last_campaign"]["opened_people"] is None
+    assert extra["mail"]["last_campaign"]["open_rate_pct"] is None
     blob = str(extra)
     assert "@" not in blob and "example.com" not in blob
     lines = pulse_extra.digits_lines({**extra})

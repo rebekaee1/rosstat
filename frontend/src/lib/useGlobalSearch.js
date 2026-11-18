@@ -6,7 +6,46 @@ import { useLocale } from '../i18n';
 const searchKey = (locale, q, limit) => ['catalog-search', 'v3', locale, q, limit];
 const fetchSearch = (q, limit, signal) => api.get('/search', { params: { q, limit }, signal }).then((r) => r.data);
 
-/** One server search across public catalogues; never display another query's hits. */
+/**
+ * Недописанное последнее слово (18.11.2026). Пока второе слово набрано на 1–2 буквы, сервер честно отвечает
+ * пустотой: короткое слово для него — целое слово, а не начало («коэффициент ро», «уровень бе», «цена бе»).
+ * Человек видел «ничего не найдено» посреди набора и исправлял опечатку, которой не было (Пульс за 17.11.2026).
+ * Возвращает дописанную часть и начало слова; null — если последнее слово нельзя считать недописанным.
+ */
+export function unfinishedTail(query) {
+  const words = String(query || '').trim().split(/\s+/).filter(Boolean);
+  if (words.length < 2) return null;
+  const fragment = words[words.length - 1].toLowerCase().replace(/ё/g, 'е');
+  if (!/^[a-zа-я]{1,2}$/.test(fragment)) return null;
+  const stable = words.slice(0, -1).join(' ');
+  if ([...stable].length < 3) return null;
+  return { stable, fragment };
+}
+
+/**
+ * Ряды, в названии, регионе или стране которых есть слово, начинающееся с набранных букв.
+ * Сначала совпавшие по названию, затем только по месту («коэффициент ро»: рождаемость выше, чем любой ряд России).
+ */
+export function rowsStartingWith(results, fragment) {
+  const start = new RegExp(`(^|[^a-zа-я0-9])${fragment}`);
+  const has = (...parts) => start.test(parts.filter(Boolean).join(' ').toLowerCase().replace(/ё/g, 'е'));
+  const byName = [];
+  const byPlace = [];
+  for (const item of results || []) {
+    if (has(item?.name, item?.name_en)) byName.push(item);
+    else if (has(item?.region_name, item?.country_name)) byPlace.push(item);
+  }
+  return [...byName, ...byPlace];
+}
+
+const isPlainEmpty = (data) => Boolean(data) && Array.isArray(data.results) && data.results.length === 0
+  && data.reason === 'no_coverage' && !(data.nearest?.results?.length);
+
+/**
+ * One server search across public catalogues; never display another query's hits.
+ * Единственное исключение — недописанное последнее слово: если на весь запрос сервер ответил пусто, показываются
+ * ряды выдачи по дописанной части, в которых есть слово с таким началом. Все набранные слова остаются условием.
+ */
 export default function useGlobalSearch(query, { enabled = true, limit = 100 } = {}) {
   const { locale } = useLocale();
   const needle = String(query || '').trim();
@@ -37,5 +76,28 @@ export default function useGlobalSearch(query, { enabled = true, limit = 100 } =
   };
   // Подсказка нажата: пауза набора не нужна, ищем сразу.
   const flush = (text) => setSettled(String(text || '').trim());
-  return { ...request, isDebouncing, prefetch, flush };
+
+  // Запрос по дописанной части обычно уже в кэше: человек только что прошёл через него при наборе.
+  const tail = !isDebouncing && isPlainEmpty(request.data) ? unfinishedTail(settled) : null;
+  const stable = useQuery({
+    queryKey: searchKey(locale, tail?.stable || '', limit),
+    queryFn: ({ signal }) => fetchSearch(tail.stable, limit, signal),
+    enabled: enabled && Boolean(tail),
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
+    retry: 1,
+  });
+  if (!tail) return { ...request, isDebouncing, prefetch, flush };
+  if (!stable.data && !stable.isError) {
+    // Ответ по дописанной части ещё идёт: не показываем «ничего не найдено» раньше времени.
+    return { ...request, data: undefined, isPending: true, isLoading: true, isFetching: true, isSuccess: false, isDebouncing, prefetch, flush };
+  }
+  const rows = rowsStartingWith(stable.data?.results, tail.fragment);
+  if (!rows.length) return { ...request, isDebouncing, prefetch, flush };
+  const { nearest: _nearest, suggest: _suggest, reason: _reason, ...rest } = stable.data;
+  const data = {
+    ...rest, results: rows, total: rows.length, has_more: false, unfinished: tail,
+    ...(rest.corrected_query ? { corrected_query: `${rest.corrected_query} ${tail.fragment}` } : {}),
+  };
+  return { ...request, data, isDebouncing, prefetch, flush };
 }

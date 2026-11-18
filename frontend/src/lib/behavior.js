@@ -61,7 +61,9 @@ const RAGE_WINDOW_MS = 700;
 const RAGE_RADIUS = 28;
 const RAGE_COUNT = 3;
 
-const INTERACTIVE = 'a,button,input,select,textarea,label,summary,[role="button"],[role="link"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[onclick]';
+// 18.11.2026: ползунки и элементы с пометкой `data-interactive` (своё управление указателем без кнопки и ссылки —
+// дорожка рамки периода под графиком). Без них каждое пользование рамкой записывалось как клик в некликабельное.
+const INTERACTIVE = 'a,button,input,select,textarea,label,summary,[role="button"],[role="link"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[role="slider"],[data-interactive],[onclick]';
 const NO_TEXT_CAPTURE = 'input,textarea,[contenteditable="true"]';
 
 const ACTIVE_GAP_MS = 15_000;    // разрыв активности больше — время не «активное»

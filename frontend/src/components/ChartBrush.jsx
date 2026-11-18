@@ -137,6 +137,7 @@ export default function ChartBrush({
       <div
         ref={trackRef}
         className="fe-brush__track"
+        data-interactive=""
         onPointerDown={jump}
         onPointerMove={move}
         onPointerUp={finish}

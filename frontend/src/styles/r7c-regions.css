@@ -30,6 +30,22 @@
 .r7c-mine-card__med { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
 :root:root .fe-rank__row.is-mine { background: linear-gradient(135deg, rgba(60, 84, 130, 0.14), transparent 85%), var(--fe-glass-l2); }
 
+/* Строка рейтинга нажимается целиком (18.11.2026). Строка подсвечивается и приподнимается под курсором, а ссылками
+   были только слова названия и число: место, полоса и поля строки не отвечали на нажатие (клики в пустоту в Пульсе).
+   Область названия растянута на всю строку псевдоэлементом; число остаётся своей ссылкой поверх. У названия снято
+   сжатие при нажатии: transform сделал бы ссылку опорой для псевдоэлемента, область сжалась бы до слов названия и
+   нажатие по полосе срывалось бы между «нажал» и «отпустил». Отклик нажатия перенесён на саму строку. */
+:root:root .fe-rank__row { position: relative; }
+:root:root .fe-rank__row > .fe-rank__name.fe-rank__link { position: static; }
+:root:root .fe-rank__row > .fe-rank__name.fe-rank__link:active { transform: none; }
+/* z-index: полоса значения сама position: relative и стоит в разметке позже названия — без него она легла бы поверх области. */
+:root:root .fe-rank__row > .fe-rank__name.fe-rank__link::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+:root:root .fe-rank__row > .fe-rank__value.fe-rank__link { position: relative; z-index: 2; }
+:root:root .fe-rank__row:has(> .fe-rank__name:active) { transform: scale(0.992); }
+@media (prefers-reduced-motion: reduce) {
+  :root:root .fe-rank__row:has(> .fe-rank__name:active) { transform: none; }
+}
+
 /* Строки рейтинга на телефоне: название и полоса слева, значение справа. Раньше три яруса по 90 px, на экран влезало 5 регионов. */
 @media (max-width: 639px) {
   :root:root .fe-rank__row {

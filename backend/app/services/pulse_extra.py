@@ -37,6 +37,8 @@ async def _mail(db, start: datetime, end: datetime) -> dict[str, Any]:
     out: dict[str, Any] = {
         "enabled": bool(settings.mail_enabled), "people_allowed": bool(settings.mail_allow_all_recipients),
         "tracking": bool(settings.mail_tracking_enabled),
+        # Счётчик открытий — отдельный флаг (ADR-0034). Пока он выключен, открытий в данных нет по определению.
+        "open_tracking": bool(settings.mail_tracking_enabled and settings.mail_tracking_open_pixel),
         "letters_by_kind": by_kind, "events": events, "new_suppressions": suppressed_new,
     }
     recent = await funnel.campaigns(db, limit=2)
@@ -46,6 +48,10 @@ async def _mail(db, start: datetime, end: datetime) -> dict[str, Any]:
             "campaign", "first_sent", "age_days", "accepted", "delivered", "bounced", "tracked", "opened_people",
             "open_rate_pct", "opened_machine_only", "clicked_people", "click_rate_pct", "click_sessions",
             "unsubscribed", "personal_off", "complaints", "returned", "blocks", "visit")}
+        if not out["open_tracking"] and not out["last_campaign"].get("opened_people"):
+            # Ноль при выключенном счётчике — не «никто не открыл»: 18.11.2026 отчёт принял его за попадание в спам.
+            for key in ("opened_people", "open_rate_pct", "opened_machine_only"):
+                out["last_campaign"][key] = None
     else:
         out["last_campaign"] = None   # выпуски людям ещё не отправлялись
     return out
@@ -272,12 +278,16 @@ def digits_lines(snapshot: dict) -> list[str]:
             lines.append("Почта за день: " + "; ".join(
                 f"{k}: " + ", ".join(f"{s} {n}" for s, n in sorted(v.items())) for k, v in sorted(letters.items())))
         ev = m.get("events") or {}
+        opens_counted = m.get("open_tracking", True)   # снимки до 18.11.2026 ключа не содержат
         if ev:
-            lines.append(f"Письма: открытий людьми {ev.get('open', 0)}, программами {ev.get('open_machine', 0)}, "
-                         f"переходов на сайт {ev.get('click', 0)}")
+            opens = (f"открытий людьми {ev.get('open', 0)}, программами {ev.get('open_machine', 0)}"
+                     if opens_counted or ev.get("open") or ev.get("open_machine") else "открытия не считаем")
+            lines.append(f"Письма: {opens}, переходов на сайт {ev.get('click', 0)}")
         lc = m.get("last_campaign")
         if lc:
-            lines.append(f"Последний выпуск {lc.get('campaign')}: дошло {lc.get('delivered')}, открыли {lc.get('opened_people')}, "
+            opened = ("открытия не считаем (счётчик выключен)" if lc.get("opened_people") is None
+                      else f"открыли {lc.get('opened_people')}")
+            lines.append(f"Последний выпуск {lc.get('campaign')}: дошло {lc.get('delivered')}, {opened}, "
                          f"перешли {lc.get('clicked_people')}, отписались {lc.get('unsubscribed')}")
         elif not letters:
             lines.append("Рассылка: выпуски людям ещё не отправлялись")
