@@ -126,6 +126,7 @@ ym(107136069, 'init', {
 | `chart_mode_change` | `IndicatorDetail` | `CpiViewModePicker` | `mode`, `code`, `category` |
 | `chart_range_change` | `IndicatorDetail` | range-кнопки внутри `IndicatorChart` | `range`, `indicator`, `category` |
 | `chart_zoom` | `IndicatorChart` | reset zoom | `action`, `indicator`, `category` |
+| `chart_pick` | `IndicatorChart` | нажатие или касание точки графика (с 18.11.2026): значение закреплено, таблица страницы переходит к дате | `indicator`, `category` |
 | `forecast_toggle` | `IndicatorChartSection` | переключатель «Прогноз» | `enabled`, `indicator`, `category` |
 | `forecast_view` | `IndicatorForecastSection` | IntersectionObserver ≥40% | `indicator`, `category`, `chartMode` |
 
@@ -135,7 +136,8 @@ ym(107136069, 'init', {
 |---|---|---|---|
 | `table_search` | `DataTable` | search input (debounced) | `query` |
 | `table_sort` | `DataTable` | column header click | `order` |
-| `table_page` | `DataTable` | pagination buttons | `direction` |
+| `table_page` | `DataTable` | кнопки «Позже» / «Раньше» (до 18.11.2026 «Назад» / «Вперёд») | `direction` (`prev` — к началу списка, `next` — дальше по списку) |
+| `table_jump` | `DataTable` | список «Перейти к году» / «Перейти к периоду» между кнопками (с 18.11.2026) | `source` (`year` или `page`), `to` (год или номер страницы с нуля) |
 
 ### Сравнение и калькулятор
 
