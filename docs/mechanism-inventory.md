@@ -9,7 +9,7 @@
 - ORM tables: **87**
 - DTO schemas (own fields + resolved inherited bases): **53**
 - Settings fields: **343**
-- Settings reads: **881**
+- Settings reads: **883**
 - Direct environment reads: **36**
 - Jobs: **70**
 - Middleware: **6**
@@ -2308,8 +2308,8 @@ Relationships: `[]`
 | RUSTATS_MAIL_REPLY_TO | str = 'info@forecasteconomy.com' | 4 | [backend/app/config.py:681](../backend/app/config.py#L681) |
 | RUSTATS_MAIL_ALLOWLIST | str = 'rebeka.ee@yandex.ru' | 1 | [backend/app/config.py:682](../backend/app/config.py#L682) |
 | RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 6 | [backend/app/config.py:683](../backend/app/config.py#L683) |
-| RUSTATS_MAIL_TRACKING_ENABLED | bool = False | 4 | [backend/app/config.py:686](../backend/app/config.py#L686) |
-| RUSTATS_MAIL_TRACKING_OPEN_PIXEL | bool = False | 2 | [backend/app/config.py:690](../backend/app/config.py#L690) |
+| RUSTATS_MAIL_TRACKING_ENABLED | bool = False | 5 | [backend/app/config.py:686](../backend/app/config.py#L686) |
+| RUSTATS_MAIL_TRACKING_OPEN_PIXEL | bool = False | 3 | [backend/app/config.py:690](../backend/app/config.py#L690) |
 | RUSTATS_MAIL_REPORT_ENABLED | bool = False | 5 | [backend/app/config.py:692](../backend/app/config.py#L692) |
 | RUSTATS_MAIL_REPORT_HOUR_MSK | int = 9 | 3 | [backend/app/config.py:693](../backend/app/config.py#L693) |
 | RUSTATS_MAIL_REPORT_MINUTE | int = 20 | 3 | [backend/app/config.py:694](../backend/app/config.py#L694) |
@@ -3218,9 +3218,9 @@ Relationships: `[]`
 | app.services.pulse_context._SECRET_HINTS | Tuple | sequence/source expression | [backend/app/services/pulse_context.py:60](../backend/app/services/pulse_context.py#L60) |
 | app.services.pulse_report._TG_ALLOWED_TAG_RE | Call | computed source expression | [backend/app/services/pulse_report.py:44](../backend/app/services/pulse_report.py#L44) |
 | app.services.pulse_report._HTML_ENTITY_RE | Call | computed source expression | [backend/app/services/pulse_report.py:48](../backend/app/services/pulse_report.py#L48) |
-| app.services.pulse_report._HYP_WORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:234](../backend/app/services/pulse_report.py#L234) |
-| app.services.pulse_report._CONTEXT_REF_RE | Call | computed source expression | [backend/app/services/pulse_report.py:288](../backend/app/services/pulse_report.py#L288) |
-| app.services.pulse_report._AFFORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:412](../backend/app/services/pulse_report.py#L412) |
+| app.services.pulse_report._HYP_WORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:240](../backend/app/services/pulse_report.py#L240) |
+| app.services.pulse_report._CONTEXT_REF_RE | Call | computed source expression | [backend/app/services/pulse_report.py:294](../backend/app/services/pulse_report.py#L294) |
+| app.services.pulse_report._AFFORD_RE | Call | computed source expression | [backend/app/services/pulse_report.py:418](../backend/app/services/pulse_report.py#L418) |
 | app.services.r4a_price_compare.BASKET | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:21](../backend/app/services/r4a_price_compare.py#L21) |
 | app.services.r4a_price_compare._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:35](../backend/app/services/r4a_price_compare.py#L35) |
 | app.services.r4a_price_compare._MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:37](../backend/app/services/r4a_price_compare.py#L37) |

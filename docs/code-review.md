@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `a51ba50b50dc56a78e126bd4d4664e611fa5e268`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `3412225d4f6ced5553907c3b66b9744cb0f8de79`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2623 |
-| Код, шаблоны и стили | 2133 |
-| Актуальные рецензии без пропусков guard | 2623 |
-| Именованные определения Python/JS: с аннотацией / всего | 17623 / 17623 |
+| Файлы в явно определённом scope | 2626 |
+| Код, шаблоны и стили | 2136 |
+| Актуальные рецензии без пропусков guard | 2626 |
+| Именованные определения Python/JS: с аннотацией / всего | 17636 / 17636 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -434,7 +434,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/process_metrics.py](../backend/app/services/process_metrics.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/public_bot.py](../backend/app/services/public_bot.py) | reviewed | 84/84 | актуально |
 | [backend/app/services/public_bot_dialog.py](../backend/app/services/public_bot_dialog.py) | reviewed | 5/5 | актуально |
-| [backend/app/services/pulse.py](../backend/app/services/pulse.py) | reviewed | 22/22 | актуально |
+| [backend/app/services/pulse.py](../backend/app/services/pulse.py) | reviewed | 23/23 | актуально |
 | [backend/app/services/pulse_context.py](../backend/app/services/pulse_context.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/pulse_extra.py](../backend/app/services/pulse_extra.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/pulse_report.py](../backend/app/services/pulse_report.py) | reviewed | 22/22 | актуально |
@@ -892,6 +892,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_pulse.py](../backend/tests/test_pulse.py) | reviewed | 89/89 | актуально |
 | [backend/tests/test_pulse_context.py](../backend/tests/test_pulse_context.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_pulse_llm_payload_no_pii.py](../backend/tests/test_pulse_llm_payload_no_pii.py) | reviewed | 7/7 | актуально |
+| [backend/tests/test_pulse_signals_2026_11_18.py](../backend/tests/test_pulse_signals_2026_11_18.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_pulse_snapshot_window.py](../backend/tests/test_pulse_snapshot_window.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_pulse_telegram_html.py](../backend/tests/test_pulse_telegram_html.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_pulse_week_fixes.py](../backend/tests/test_pulse_week_fixes.py) | reviewed | 23/23 | актуально |
@@ -1872,6 +1873,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/authTrigger.test.js](../frontend/src/lib/authTrigger.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/behavior.apitiming.test.js](../frontend/src/lib/behavior.apitiming.test.js) | reviewed | 11/11 | актуально |
 | [frontend/src/lib/behavior.browser.test.js](../frontend/src/lib/behavior.browser.test.js) | reviewed | 20/20 | актуально |
+| [frontend/src/lib/behavior.interactive.test.js](../frontend/src/lib/behavior.interactive.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/behavior.js](../frontend/src/lib/behavior.js) | reviewed | 77/77 | актуально |
 | [frontend/src/lib/behavior.test.js](../frontend/src/lib/behavior.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/behavior.transport.test.js](../frontend/src/lib/behavior.transport.test.js) | reviewed | 11/11 | актуально |
@@ -2223,8 +2225,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/useDownloadAccess.js](../frontend/src/lib/useDownloadAccess.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/useFooterTone.js](../frontend/src/lib/useFooterTone.js) | reviewed | 5/5 | актуально |
 | [frontend/src/lib/useGenericViewModeData.js](../frontend/src/lib/useGenericViewModeData.js) | reviewed | 3/3 | актуально |
-| [frontend/src/lib/useGlobalSearch.js](../frontend/src/lib/useGlobalSearch.js) | reviewed | 7/7 | актуально |
-| [frontend/src/lib/useGlobalSearch.test.jsx](../frontend/src/lib/useGlobalSearch.test.jsx) | reviewed | 2/2 | актуально |
+| [frontend/src/lib/useGlobalSearch.js](../frontend/src/lib/useGlobalSearch.js) | reviewed | 12/12 | актуально |
+| [frontend/src/lib/useGlobalSearch.test.jsx](../frontend/src/lib/useGlobalSearch.test.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/useIndicatorViewModeData.js](../frontend/src/lib/useIndicatorViewModeData.js) | reviewed | 5/5 | актуально |
 | [frontend/src/lib/useInflationCalc.js](../frontend/src/lib/useInflationCalc.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/useKeepInViewport.js](../frontend/src/lib/useKeepInViewport.js) | reviewed | 3/3 | актуально |
@@ -2462,6 +2464,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/styles/r6b-pulse.css](../frontend/src/styles/r6b-pulse.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/r6c-annual.css](../frontend/src/styles/r6c-annual.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/r7a-search.css](../frontend/src/styles/r7a-search.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/r7c-rank-row.test.js](../frontend/src/styles/r7c-rank-row.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/styles/r7c-regions.css](../frontend/src/styles/r7c-regions.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/r7d-prices.css](../frontend/src/styles/r7d-prices.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/r8a-search.css](../frontend/src/styles/r8a-search.css) | reviewed | 0/0 | актуально |

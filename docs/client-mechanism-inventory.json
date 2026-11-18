@@ -11292,7 +11292,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/ChartBrush.jsx": {
-      "sha256": "c7563a797fb63f669eed1db77f328c94b3688c7ed004206211812b7ac8ac9b42",
+      "sha256": "6a3e3538d6076977d3035f6d3ef3c025515c8b0665ea78936c4a76d30c0a10ca",
       "imports": [
         {
           "line": 1,
@@ -11360,7 +11360,7 @@
         },
         {
           "line": 49,
-          "end_line": 197,
+          "end_line": 198,
           "owner": "<module>",
           "name": "ChartBrush",
           "kind": "FunctionDeclaration",
@@ -11500,7 +11500,7 @@
       "jsx_handlers": [
         {
           "line": 137,
-          "end_line": 144,
+          "end_line": 145,
           "owner": "ChartBrush",
           "component": "div",
           "event": "onPointerDown",
@@ -11508,7 +11508,7 @@
         },
         {
           "line": 137,
-          "end_line": 144,
+          "end_line": 145,
           "owner": "ChartBrush",
           "component": "div",
           "event": "onPointerMove",
@@ -11516,7 +11516,7 @@
         },
         {
           "line": 137,
-          "end_line": 144,
+          "end_line": 145,
           "owner": "ChartBrush",
           "component": "div",
           "event": "onPointerUp",
@@ -11524,47 +11524,47 @@
         },
         {
           "line": 137,
-          "end_line": 144,
+          "end_line": 145,
           "owner": "ChartBrush",
           "component": "div",
           "event": "onPointerCancel",
           "expression": "{finish}"
         },
         {
-          "line": 158,
-          "end_line": 163,
+          "line": 159,
+          "end_line": 164,
           "owner": "ChartBrush",
           "component": "div",
           "event": "onPointerDown",
           "expression": "{begin('move')}"
         },
         {
-          "line": 164,
-          "end_line": 176,
+          "line": 165,
+          "end_line": 177,
           "owner": "ChartBrush",
           "component": "button",
           "event": "onPointerDown",
           "expression": "{begin('start')}"
         },
         {
-          "line": 164,
-          "end_line": 176,
+          "line": 165,
+          "end_line": 177,
           "owner": "ChartBrush",
           "component": "button",
           "event": "onKeyDown",
           "expression": "{keyHandler('start')}"
         },
         {
-          "line": 179,
-          "end_line": 191,
+          "line": 180,
+          "end_line": 192,
           "owner": "ChartBrush",
           "component": "button",
           "event": "onPointerDown",
           "expression": "{begin('end')}"
         },
         {
-          "line": 179,
-          "end_line": 191,
+          "line": 180,
+          "end_line": 192,
           "owner": "ChartBrush",
           "component": "button",
           "event": "onKeyDown",
@@ -121632,8 +121632,102 @@
       "registries": [],
       "mcp_tools": []
     },
+    "frontend/src/lib/behavior.interactive.test.js": {
+      "sha256": "b78c7e3f1685794013005bce04aa4b9827397edc199efdf729368e18d2ef3c52",
+      "imports": [
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "node:fs",
+          "category": "external_package",
+          "target": "node:fs",
+          "bindings": [
+            "readFileSync"
+          ]
+        },
+        {
+          "line": 5,
+          "end_line": 5,
+          "owner": "<module>",
+          "specifier": "node:path",
+          "category": "external_package",
+          "target": "node:path",
+          "bindings": [
+            "dirname",
+            "join"
+          ]
+        },
+        {
+          "line": 6,
+          "end_line": 6,
+          "owner": "<module>",
+          "specifier": "node:url",
+          "category": "external_package",
+          "target": "node:url",
+          "bindings": [
+            "fileURLToPath"
+          ]
+        },
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 13,
+          "end_line": 27,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 16,
+          "end_line": 18,
+          "owner": "<callback@13>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 20,
+          "end_line": 22,
+          "owner": "<callback@13>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 24,
+          "end_line": 26,
+          "owner": "<callback@13>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/lib/behavior.js": {
-      "sha256": "a0773ff77e92c4c1f74637adb95208343780351f856237742e95d6b20b6da85b",
+      "sha256": "0af9ce9bd62acce10a8109cd75414a9fe8665fbf0aba1032ccdb2b94818af50c",
       "imports": [
         {
           "line": 38,
@@ -121682,8 +121776,8 @@
           ]
         },
         {
-          "line": 740,
-          "end_line": 740,
+          "line": 742,
+          "end_line": 742,
           "owner": "setupVitals",
           "dynamic": true,
           "specifier": "web-vitals",
@@ -121691,8 +121785,8 @@
           "target": "web-vitals"
         },
         {
-          "line": 744,
-          "end_line": 744,
+          "line": 746,
+          "end_line": 746,
           "owner": "setupVitals",
           "dynamic": true,
           "specifier": "web-vitals/attribution",
@@ -121703,920 +121797,912 @@
       "routes": [],
       "functions": [
         {
-          "line": 77,
-          "end_line": 80,
+          "line": 79,
+          "end_line": 82,
           "owner": "<module>",
           "name": "isAutomationUa",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 82,
-          "end_line": 85,
+          "line": 84,
+          "end_line": 87,
           "owner": "<module>",
           "name": "isAutomationClient",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 134,
-          "end_line": 145,
+          "line": 136,
+          "end_line": 147,
           "owner": "<module>",
           "name": "sessionId",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 149,
-          "end_line": 165,
+          "line": 151,
+          "end_line": 167,
           "owner": "<module>",
           "name": "visitorId",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 168,
-          "end_line": 175,
+          "line": 170,
+          "end_line": 177,
           "owner": "<module>",
           "name": "ymUid",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 179,
-          "end_line": 213,
+          "line": 181,
+          "end_line": 215,
           "owner": "<module>",
           "name": "createAttentionClock",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 185,
-          "end_line": 192,
+          "line": 187,
+          "end_line": 194,
           "owner": "createAttentionClock",
           "name": "advance",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 194,
-          "end_line": 194,
+          "line": 196,
+          "end_line": 196,
           "owner": "createAttentionClock",
           "name": "reset",
           "kind": "ObjectMethod",
           "callback_context": null
         },
         {
-          "line": 195,
-          "end_line": 198,
+          "line": 197,
+          "end_line": 200,
           "owner": "createAttentionClock",
           "name": "visibility",
           "kind": "ObjectMethod",
           "callback_context": null
         },
         {
-          "line": 199,
-          "end_line": 204,
+          "line": 201,
+          "end_line": 206,
           "owner": "createAttentionClock",
           "name": "input",
           "kind": "ObjectMethod",
           "callback_context": null
         },
         {
-          "line": 205,
-          "end_line": 210,
+          "line": 207,
+          "end_line": 212,
           "owner": "createAttentionClock",
           "name": "snapshot",
           "kind": "ObjectMethod",
           "callback_context": null
         },
         {
-          "line": 211,
-          "end_line": 211,
+          "line": 213,
+          "end_line": 213,
           "owner": "createAttentionClock",
           "name": "activeUntil",
           "kind": "ObjectMethod",
           "callback_context": null
         },
         {
-          "line": 215,
-          "end_line": 217,
+          "line": 217,
+          "end_line": 219,
           "owner": "<module>",
           "name": "attentionVisible",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 219,
-          "end_line": 226,
+          "line": 221,
+          "end_line": 228,
           "owner": "<module>",
           "name": "markActivity",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 228,
-          "end_line": 239,
+          "line": 230,
+          "end_line": 241,
           "owner": "<module>",
           "name": "captureInputTarget",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 241,
-          "end_line": 253,
+          "line": 243,
+          "end_line": 255,
           "owner": "<module>",
           "name": "originalInpTarget",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 245,
-          "end_line": 246,
+          "line": 247,
+          "end_line": 248,
           "owner": "originalInpTarget",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_inputTargets.filter"
         },
         {
-          "line": 247,
-          "end_line": 247,
+          "line": 249,
+          "end_line": 249,
           "owner": "originalInpTarget",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_inputTargets.filter((input) => input.family === evidence.inp_type\n    && (!exactType || input.type === exactType) && Math.abs(input.start - evidence.inp_start_ms) <= 8)\n    .sort"
         },
         {
-          "line": 255,
-          "end_line": 265,
+          "line": 257,
+          "end_line": 267,
           "owner": "<module>",
           "name": "consentAllows",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 267,
-          "end_line": 269,
+          "line": 269,
+          "end_line": 271,
           "owner": "<module>",
           "name": "newPageLoadId",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 271,
-          "end_line": 274,
+          "line": 273,
+          "end_line": 276,
           "owner": "<module>",
           "name": "listen",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 273,
-          "end_line": 273,
+          "line": 275,
+          "end_line": 275,
           "owner": "listen",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_listeners.push"
         },
         {
-          "line": 276,
-          "end_line": 278,
+          "line": 278,
+          "end_line": 280,
           "owner": "<module>",
           "name": "relativeTime",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 285,
-          "end_line": 313,
+          "line": 287,
+          "end_line": 315,
           "owner": "<module>",
           "name": "elementPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 300,
-          "end_line": 300,
+          "line": 302,
+          "end_line": 302,
           "owner": "elementPath",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from(node.classList)\n        .filter"
         },
         {
-          "line": 305,
-          "end_line": 305,
+          "line": 307,
+          "end_line": 307,
           "owner": "elementPath",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from(node.parentElement.children).filter"
         },
         {
-          "line": 315,
-          "end_line": 319,
+          "line": 317,
+          "end_line": 321,
           "owner": "<module>",
           "name": "elementText",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 321,
-          "end_line": 323,
+          "line": 323,
+          "end_line": 325,
           "owner": "<module>",
           "name": "cleanUrl",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 325,
-          "end_line": 335,
+          "line": 327,
+          "end_line": 337,
           "owner": "<module>",
           "name": "push",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 337,
-          "end_line": 342,
+          "line": 339,
+          "end_line": 344,
           "owner": "<module>",
           "name": "drainMoves",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 344,
-          "end_line": 348,
+          "line": 346,
+          "end_line": 350,
           "owner": "<module>",
           "name": "batchId",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 350,
-          "end_line": 353,
+          "line": 352,
+          "end_line": 355,
           "owner": "<module>",
           "name": "deliveryCurrent",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 355,
-          "end_line": 361,
+          "line": 357,
+          "end_line": 363,
           "owner": "<module>",
           "name": "removeBatch",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 356,
-          "end_line": 356,
+          "line": 358,
+          "end_line": 358,
           "owner": "removeBatch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_pendingBatches.filter"
         },
         {
-          "line": 363,
-          "end_line": 370,
+          "line": 365,
+          "end_line": 372,
           "owner": "<module>",
           "name": "clearDelivery",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 372,
-          "end_line": 379,
+          "line": 374,
+          "end_line": 381,
           "owner": "<module>",
           "name": "retryAfterMs",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 381,
-          "end_line": 389,
+          "line": 383,
+          "end_line": 391,
           "owner": "<module>",
           "name": "deliveryResponse",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 391,
-          "end_line": 397,
+          "line": 393,
+          "end_line": 399,
           "owner": "<module>",
           "name": "acknowledge",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 399,
-          "end_line": 409,
+          "line": 401,
+          "end_line": 411,
           "owner": "<module>",
           "name": "applyDeliveryResult",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 411,
-          "end_line": 416,
+          "line": 413,
+          "end_line": 418,
           "owner": "<module>",
           "name": "finishDelivery",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 418,
-          "end_line": 426,
+          "line": 420,
+          "end_line": 428,
           "owner": "<module>",
           "name": "scheduleDelivery",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 422,
-          "end_line": 422,
+          "line": 424,
+          "end_line": 424,
           "owner": "scheduleDelivery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_pendingBatches.map"
         },
         {
-          "line": 424,
-          "end_line": 424,
+          "line": 426,
+          "end_line": 426,
           "owner": "scheduleDelivery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_pendingBatches.filter"
         },
         {
-          "line": 424,
-          "end_line": 424,
+          "line": 426,
+          "end_line": 426,
           "owner": "scheduleDelivery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_pendingBatches.filter((batch) => batch.attempts <= DELIVERY_RETRY_MS.length).map"
         },
         {
-          "line": 425,
-          "end_line": 425,
+          "line": 427,
+          "end_line": 427,
           "owner": "scheduleDelivery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 428,
-          "end_line": 450,
+          "line": 430,
+          "end_line": 452,
           "owner": "<module>",
           "name": "pumpDelivery",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 432,
-          "end_line": 432,
+          "line": 434,
+          "end_line": 434,
           "owner": "pumpDelivery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_pendingBatches.find"
         },
         {
-          "line": 445,
-          "end_line": 445,
+          "line": 447,
+          "end_line": 447,
           "owner": "pumpDelivery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Promise.resolve(fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' },\n          body: batch.body, keepalive: false, ...(controller ? { signal: controller.signal } : {}) }))\n          .then(deliveryResponse)\n          .then"
         },
         {
-          "line": 445,
-          "end_line": 445,
+          "line": 447,
+          "end_line": 447,
           "owner": "pumpDelivery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Promise.resolve(fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' },\n          body: batch.body, keepalive: false, ...(controller ? { signal: controller.signal } : {}) }))\n          .then(deliveryResponse)\n          .then"
         },
         {
-          "line": 452,
-          "end_line": 475,
+          "line": 454,
+          "end_line": 477,
           "owner": "<module>",
           "name": "sendLeavingBatches",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 471,
-          "end_line": 471,
+          "line": 473,
+          "end_line": 473,
           "owner": "sendLeavingBatches",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Promise.resolve(fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' },\n        body: batch.body, keepalive: true, ...(controller ? { signal: controller.signal } : {}) }))\n        .then(deliveryResponse)\n        .then"
         },
         {
-          "line": 471,
-          "end_line": 471,
+          "line": 473,
+          "end_line": 473,
           "owner": "sendLeavingBatches",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Promise.resolve(fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' },\n        body: batch.body, keepalive: true, ...(controller ? { signal: controller.signal } : {}) }))\n        .then(deliveryResponse)\n        .then"
         },
         {
-          "line": 477,
-          "end_line": 504,
+          "line": 479,
+          "end_line": 506,
           "owner": "<module>",
           "name": "flush",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 494,
-          "end_line": 494,
+          "line": 496,
+          "end_line": 496,
           "owner": "flush",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_pendingBatches.reduce"
         },
         {
-          "line": 497,
-          "end_line": 497,
+          "line": 499,
+          "end_line": 499,
           "owner": "flush",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "events.some"
         },
         {
-          "line": 508,
-          "end_line": 533,
+          "line": 510,
+          "end_line": 535,
           "owner": "<module>",
           "name": "emitDwell",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 536,
-          "end_line": 549,
+          "line": 538,
+          "end_line": 551,
           "owner": "<module>",
           "name": "emitBlockViews",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 551,
-          "end_line": 568,
+          "line": 553,
+          "end_line": 570,
           "owner": "<module>",
           "name": "observeBlocksNow",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 570,
-          "end_line": 580,
+          "line": 572,
+          "end_line": 582,
           "owner": "<module>",
           "name": "overlayRects",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 582,
-          "end_line": 598,
+          "line": 584,
+          "end_line": 600,
           "owner": "<module>",
           "name": "refreshBlocks",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 600,
-          "end_line": 606,
+          "line": 602,
+          "end_line": 608,
           "owner": "<module>",
           "name": "scheduleGeometry",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 602,
-          "end_line": 605,
+          "line": 604,
+          "end_line": 607,
           "owner": "scheduleGeometry",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 608,
-          "end_line": 612,
+          "line": 610,
+          "end_line": 614,
           "owner": "<module>",
           "name": "resetBlocks",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 614,
-          "end_line": 627,
+          "line": 616,
+          "end_line": 629,
           "owner": "<module>",
           "name": "setupBlockObserver",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 616,
-          "end_line": 624,
+          "line": 618,
+          "end_line": 626,
           "owner": "setupBlockObserver",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "IntersectionObserver"
         },
         {
-          "line": 635,
-          "end_line": 712,
+          "line": 637,
+          "end_line": 714,
           "owner": "<module>",
           "name": "emitSessionStart",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 674,
-          "end_line": 685,
+          "line": 676,
+          "end_line": 687,
           "owner": "emitSessionStart",
           "name": null,
           "kind": "FunctionExpression",
           "callback_context": "function () {\n      const stamped = q.get('utm_referrer') || '';\n      const raw = document.referrer || '';\n      try {\n        if (!raw) return stamped || null;\n        const rh = new URL(raw).hostname.replace(/^www\\./, '');\n        const host = (location.hostname || '').replace(/^www\\./, '');\n        const apex = host.replace(/^ru\\./, '');\n        if (rh === host || rh === apex || rh === `ru.${apex}`) return stamped || raw;\n      } catch { /* чужой referrer */ }\n      return raw || stamped || null;\n    }"
         },
         {
-          "line": 716,
-          "end_line": 748,
+          "line": 718,
+          "end_line": 750,
           "owner": "<module>",
           "name": "setupVitals",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 718,
-          "end_line": 739,
+          "line": 720,
+          "end_line": 741,
           "owner": "setupVitals",
           "name": "report",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 731,
-          "end_line": 731,
+          "line": 733,
+          "end_line": 733,
           "owner": "setupVitals.report",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[..._pageHistory].reverse().find"
         },
         {
-          "line": 740,
-          "end_line": 743,
+          "line": 742,
+          "end_line": 745,
           "owner": "setupVitals",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "import('web-vitals').then"
         },
         {
-          "line": 743,
-          "end_line": 743,
+          "line": 745,
+          "end_line": 745,
           "owner": "setupVitals",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "import('web-vitals').then(({ onLCP, onCLS, onFCP, onTTFB }) => {\n    if (generation !== _generation) return;\n    onLCP(report); onCLS(report); onFCP(report); onTTFB(report);\n  }).catch"
         },
         {
-          "line": 744,
-          "end_line": 747,
+          "line": 746,
+          "end_line": 749,
           "owner": "setupVitals",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "import('web-vitals/attribution').then"
         },
         {
-          "line": 747,
-          "end_line": 747,
+          "line": 749,
+          "end_line": 749,
           "owner": "setupVitals",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "import('web-vitals/attribution').then(({ onINP }) => {\n    if (generation !== _generation) return;\n    onINP(report, { generateTarget: interactionTarget, includeProcessedEventEntries: false });\n  }).catch"
         },
         {
-          "line": 752,
-          "end_line": 781,
+          "line": 754,
+          "end_line": 783,
           "owner": "<module>",
           "name": "setupErrorCapture",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 754,
-          "end_line": 769,
+          "line": 756,
+          "end_line": 771,
           "owner": "setupErrorCapture",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "listen"
         },
         {
-          "line": 770,
-          "end_line": 780,
+          "line": 772,
+          "end_line": 782,
           "owner": "setupErrorCapture",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "listen"
         },
         {
-          "line": 783,
-          "end_line": 785,
+          "line": 785,
+          "end_line": 787,
           "owner": "<module>",
           "name": "apiTimingUrl",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 787,
-          "end_line": 789,
+          "line": 789,
+          "end_line": 791,
           "owner": "<module>",
           "name": "isApiTimingUrl",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 793,
-          "end_line": 851,
+          "line": 795,
+          "end_line": 853,
           "owner": "<module>",
           "name": "setupApiTiming",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 798,
-          "end_line": 812,
+          "line": 800,
+          "end_line": 814,
           "owner": "setupApiTiming",
           "name": "feFetch",
           "kind": "FunctionExpression",
           "callback_context": null
         },
         {
-          "line": 805,
-          "end_line": 808,
+          "line": 807,
+          "end_line": 810,
           "owner": "setupApiTiming.feFetch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "orig.apply(this, arguments).then"
         },
         {
-          "line": 808,
-          "end_line": 811,
+          "line": 810,
+          "end_line": 813,
           "owner": "setupApiTiming.feFetch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "orig.apply(this, arguments).then"
         },
         {
-          "line": 814,
-          "end_line": 814,
+          "line": 816,
+          "end_line": 816,
           "owner": "setupApiTiming",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "restores.push"
         },
         {
-          "line": 822,
-          "end_line": 825,
+          "line": 824,
+          "end_line": 827,
           "owner": "setupApiTiming",
           "name": "feXhrOpen",
           "kind": "FunctionExpression",
           "callback_context": null
         },
         {
-          "line": 826,
-          "end_line": 842,
+          "line": 828,
+          "end_line": 844,
           "owner": "setupApiTiming",
           "name": "feXhrSend",
           "kind": "FunctionExpression",
           "callback_context": null
         },
         {
-          "line": 834,
-          "end_line": 837,
+          "line": 836,
+          "end_line": 839,
           "owner": "setupApiTiming.feXhrSend",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "this.addEventListener"
         },
         {
-          "line": 845,
-          "end_line": 848,
+          "line": 847,
+          "end_line": 850,
           "owner": "setupApiTiming",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "restores.push"
         },
         {
-          "line": 850,
-          "end_line": 850,
+          "line": 852,
+          "end_line": 852,
           "owner": "setupApiTiming",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 854,
-          "end_line": 856,
+          "line": 856,
+          "end_line": 858,
           "owner": "<module>",
           "name": "formName",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 858,
-          "end_line": 867,
+          "line": 860,
+          "end_line": 869,
           "owner": "<module>",
           "name": "onFormFocus",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 869,
-          "end_line": 873,
+          "line": 871,
+          "end_line": 875,
           "owner": "<module>",
           "name": "onFormSubmit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 875,
-          "end_line": 905,
+          "line": 877,
+          "end_line": 907,
           "owner": "<module>",
           "name": "enterPage",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 908,
-          "end_line": 919,
+          "line": 910,
+          "end_line": 921,
           "owner": "<module>",
           "name": "behaviorRouteChange",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 918,
-          "end_line": 918,
+          "line": 920,
+          "end_line": 920,
           "owner": "behaviorRouteChange",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 922,
-          "end_line": 924,
+          "line": 924,
+          "end_line": 926,
           "owner": "<module>",
           "name": "behaviorSetIdentity",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 926,
-          "end_line": 971,
+          "line": 928,
+          "end_line": 973,
           "owner": "<module>",
           "name": "onClick",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 935,
-          "end_line": 935,
+          "line": 937,
+          "end_line": 937,
           "owner": "onClick",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_recentClicks.filter"
         },
         {
-          "line": 938,
-          "end_line": 938,
+          "line": 940,
+          "end_line": 940,
           "owner": "onClick",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "_recentClicks.every"
         },
         {
-          "line": 973,
-          "end_line": 975,
+          "line": 975,
+          "end_line": 977,
           "owner": "<module>",
           "name": "interactionAction",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 978,
-          "end_line": 1008,
+          "line": 980,
+          "end_line": 1010,
           "owner": "<module>",
           "name": "onPointer",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1010,
-          "end_line": 1028,
+          "line": 1012,
+          "end_line": 1030,
           "owner": "<module>",
           "name": "recordOverlayState",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1030,
-          "end_line": 1042,
+          "line": 1032,
+          "end_line": 1044,
           "owner": "<module>",
           "name": "onMove",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1044,
-          "end_line": 1050,
+          "line": 1046,
+          "end_line": 1052,
           "owner": "<module>",
           "name": "observeScroll",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1052,
-          "end_line": 1060,
+          "line": 1054,
+          "end_line": 1062,
           "owner": "<module>",
           "name": "onScroll",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1059,
-          "end_line": 1059,
+          "line": 1061,
+          "end_line": 1061,
           "owner": "onScroll",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 1062,
-          "end_line": 1069,
+          "line": 1064,
+          "end_line": 1071,
           "owner": "<module>",
           "name": "onCopy",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1071,
-          "end_line": 1081,
+          "line": 1073,
+          "end_line": 1083,
           "owner": "<module>",
           "name": "onLeave",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1083,
-          "end_line": 1095,
+          "line": 1085,
+          "end_line": 1097,
           "owner": "<module>",
           "name": "onVisibility",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1100,
-          "end_line": 1111,
+          "line": 1102,
+          "end_line": 1113,
           "owner": "<module>",
           "name": "behaviorInit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1107,
-          "end_line": 1107,
+          "line": 1109,
+          "end_line": 1109,
           "owner": "behaviorInit",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "listen"
         },
         {
-          "line": 1113,
-          "end_line": 1144,
+          "line": 1115,
+          "end_line": 1146,
           "owner": "<module>",
           "name": "startCollectors",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1123,
-          "end_line": 1123,
+          "line": 1125,
+          "end_line": 1125,
           "owner": "startCollectors",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "listen"
         },
         {
-          "line": 1124,
-          "end_line": 1124,
-          "owner": "startCollectors",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "listen"
-        },
-        {
-          "line": 1138,
-          "end_line": 1138,
+          "line": 1126,
+          "end_line": 1126,
           "owner": "startCollectors",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -122631,24 +122717,32 @@
           "callback_context": "listen"
         },
         {
-          "line": 1141,
-          "end_line": 1141,
+          "line": 1142,
+          "end_line": 1142,
           "owner": "startCollectors",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "listen"
         },
         {
-          "line": 1146,
-          "end_line": 1166,
+          "line": 1143,
+          "end_line": 1143,
+          "owner": "startCollectors",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "listen"
+        },
+        {
+          "line": 1148,
+          "end_line": 1168,
           "owner": "<module>",
           "name": "onConsentChange",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 1169,
-          "end_line": 1212,
+          "line": 1171,
+          "end_line": 1214,
           "owner": "<module>",
           "name": "_resetForTests",
           "kind": "FunctionDeclaration",
@@ -122658,8 +122752,8 @@
       "hooks": [],
       "http": [
         {
-          "line": 442,
-          "end_line": 443,
+          "line": 444,
+          "end_line": 445,
           "owner": "pumpDelivery",
           "callee": "fetch",
           "arguments": [
@@ -122668,8 +122762,8 @@
           ]
         },
         {
-          "line": 468,
-          "end_line": 469,
+          "line": 470,
+          "end_line": 471,
           "owner": "sendLeavingBatches",
           "callee": "fetch",
           "arguments": [
@@ -122680,8 +122774,8 @@
       ],
       "storage": [
         {
-          "line": 136,
-          "end_line": 136,
+          "line": 138,
+          "end_line": 138,
           "owner": "sessionId",
           "callee": "window.sessionStorage.getItem",
           "arguments": [
@@ -122689,8 +122783,8 @@
           ]
         },
         {
-          "line": 139,
-          "end_line": 139,
+          "line": 141,
+          "end_line": 141,
           "owner": "sessionId",
           "callee": "window.sessionStorage.setItem",
           "arguments": [
@@ -122699,8 +122793,8 @@
           ]
         },
         {
-          "line": 151,
-          "end_line": 151,
+          "line": 153,
+          "end_line": 153,
           "owner": "visitorId",
           "callee": "window.localStorage.getItem",
           "arguments": [
@@ -122708,8 +122802,8 @@
           ]
         },
         {
-          "line": 156,
-          "end_line": 156,
+          "line": 158,
+          "end_line": 158,
           "owner": "visitorId",
           "callee": "window.localStorage.setItem",
           "arguments": [
@@ -122718,8 +122812,8 @@
           ]
         },
         {
-          "line": 159,
-          "end_line": 159,
+          "line": 161,
+          "end_line": 161,
           "owner": "visitorId",
           "callee": "window.localStorage.setItem",
           "arguments": [
@@ -122728,8 +122822,8 @@
           ]
         },
         {
-          "line": 259,
-          "end_line": 259,
+          "line": 261,
+          "end_line": 261,
           "owner": "consentAllows",
           "callee": "window.localStorage.getItem",
           "arguments": [
@@ -122737,8 +122831,8 @@
           ]
         },
         {
-          "line": 394,
-          "end_line": 394,
+          "line": 396,
+          "end_line": 396,
           "owner": "acknowledge",
           "callee": "window.sessionStorage.setItem",
           "arguments": [
@@ -122747,8 +122841,8 @@
           ]
         },
         {
-          "line": 640,
-          "end_line": 640,
+          "line": 642,
+          "end_line": 642,
           "owner": "emitSessionStart",
           "callee": "window.sessionStorage.getItem",
           "arguments": [
@@ -122758,8 +122852,8 @@
       ],
       "events": [
         {
-          "line": 272,
-          "end_line": 272,
+          "line": 274,
+          "end_line": 274,
           "owner": "listen",
           "callee": "target.addEventListener",
           "arguments": [
@@ -122769,9 +122863,9 @@
           ]
         },
         {
-          "line": 273,
-          "end_line": 273,
-          "owner": "listen.<callback@273>",
+          "line": 275,
+          "end_line": 275,
+          "owner": "listen.<callback@275>",
           "callee": "target.removeEventListener",
           "arguments": [
             "type",
@@ -122780,8 +122874,8 @@
           ]
         },
         {
-          "line": 834,
-          "end_line": 837,
+          "line": 836,
+          "end_line": 839,
           "owner": "setupApiTiming.feXhrSend",
           "callee": "this.addEventListener",
           "arguments": [
@@ -122807,8 +122901,8 @@
           "initializer": null
         },
         {
-          "line": 645,
-          "end_line": 645,
+          "line": 647,
+          "end_line": 647,
           "owner": "emitSessionStart",
           "name": "ATTR_KEYS",
           "kind": "ArrayExpression",
@@ -181634,7 +181728,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/useGlobalSearch.js": {
-      "sha256": "8095a29a96a03b43c7c99f53ab0a7c51ae5d0af971c04e6e3674fd1ac9124500",
+      "sha256": "ddc9e7043080cedf6c6f8a13a7718ca98df41edffb7fb0818492090997772084",
       "imports": [
         {
           "line": 1,
@@ -181714,89 +181808,129 @@
           "callback_context": "api.get('/search', { params: { q, limit }, signal }).then"
         },
         {
-          "line": 10,
-          "end_line": 41,
+          "line": 15,
+          "end_line": 23,
+          "owner": "<module>",
+          "name": "unfinishedTail",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 29,
+          "end_line": 39,
+          "owner": "<module>",
+          "name": "rowsStartingWith",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 31,
+          "end_line": 31,
+          "owner": "rowsStartingWith",
+          "name": "has",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 41,
+          "end_line": 42,
+          "owner": "<module>",
+          "name": "isPlainEmpty",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 49,
+          "end_line": 103,
           "owner": "<module>",
           "name": "useGlobalSearch",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 14,
-          "end_line": 17,
+          "line": 53,
+          "end_line": 56,
           "owner": "useGlobalSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 15,
-          "end_line": 15,
-          "owner": "useGlobalSearch.<callback@14>",
+          "line": 54,
+          "end_line": 54,
+          "owner": "useGlobalSearch.<callback@53>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 16,
-          "end_line": 16,
-          "owner": "useGlobalSearch.<callback@14>",
+          "line": 55,
+          "end_line": 55,
+          "owner": "useGlobalSearch.<callback@53>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 22,
-          "end_line": 22,
+          "line": 61,
+          "end_line": 61,
           "owner": "useGlobalSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 29,
-          "end_line": 37,
+          "line": 68,
+          "end_line": 76,
           "owner": "useGlobalSearch",
           "name": "prefetch",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 34,
-          "end_line": 34,
+          "line": 73,
+          "end_line": 73,
           "owner": "useGlobalSearch.prefetch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 36,
-          "end_line": 36,
+          "line": 75,
+          "end_line": 75,
           "owner": "useGlobalSearch.prefetch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "queryClient.prefetchQuery({\n      queryKey: searchKey(locale, q, limit),\n      queryFn: ({ signal }) => fetchSearch(q, limit, signal),\n      staleTime: 60_000,\n    }).catch"
         },
         {
-          "line": 39,
-          "end_line": 39,
+          "line": 78,
+          "end_line": 78,
           "owner": "useGlobalSearch",
           "name": "flush",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 84,
+          "end_line": 84,
+          "owner": "useGlobalSearch",
+          "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         }
       ],
       "hooks": [
         {
-          "line": 11,
-          "end_line": 11,
+          "line": 50,
+          "end_line": 50,
           "owner": "useGlobalSearch",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 13,
-          "end_line": 13,
+          "line": 52,
+          "end_line": 52,
           "owner": "useGlobalSearch",
           "callee": "useState",
           "arguments": [
@@ -181804,8 +181938,8 @@
           ]
         },
         {
-          "line": 14,
-          "end_line": 17,
+          "line": 53,
+          "end_line": 56,
           "owner": "useGlobalSearch",
           "callee": "useEffect",
           "arguments": [
@@ -181814,19 +181948,28 @@
           ]
         },
         {
-          "line": 19,
-          "end_line": 19,
+          "line": 58,
+          "end_line": 58,
           "owner": "useGlobalSearch",
           "callee": "useQueryClient",
           "arguments": []
         },
         {
-          "line": 20,
-          "end_line": 27,
+          "line": 59,
+          "end_line": 66,
           "owner": "useGlobalSearch",
           "callee": "useQuery",
           "arguments": [
             "{\n    queryKey: searchKey(locale, settled, limit),\n    queryFn: ({ signal }) => fetchSearch(settled, limit, signal),\n    enabled: enabled && Boolean(settled) && !isDebouncing,\n    staleTime: 60_000,\n    gcTime: 5 * 60_000,\n    retry: 1,\n  }"
+          ]
+        },
+        {
+          "line": 82,
+          "end_line": 89,
+          "owner": "useGlobalSearch",
+          "callee": "useQuery",
+          "arguments": [
+            "{\n    queryKey: searchKey(locale, tail?.stable || '', limit),\n    queryFn: ({ signal }) => fetchSearch(tail.stable, limit, signal),\n    enabled: enabled && Boolean(tail),\n    staleTime: 60_000,\n    gcTime: 5 * 60_000,\n    retry: 1,\n  }"
           ]
         }
       ],
@@ -181849,7 +181992,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/useGlobalSearch.test.jsx": {
-      "sha256": "0e02b996fc620b8a6020412cfb1ca51c93124495409f4bd5a7671e3ac4ad4257",
+      "sha256": "37311b7a92bffb881c8a2d9a6b3a6201c6a07cc6bcee61ab7775fa56ba84fcf3",
       "imports": [
         {
           "line": 2,
@@ -181914,7 +182057,9 @@
             "frontend/src/lib/useGlobalSearch.js"
           ],
           "bindings": [
-            "useGlobalSearch"
+            "useGlobalSearch",
+            "rowsStartingWith",
+            "unfinishedTail"
           ]
         }
       ],
@@ -182103,6 +182248,182 @@
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "waitFor"
+        },
+        {
+          "line": 66,
+          "end_line": 66,
+          "owner": "<module>",
+          "name": "byQuery",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 66,
+          "end_line": 66,
+          "owner": "byQuery",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 68,
+          "end_line": 77,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 79,
+          "end_line": 90,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 86,
+          "end_line": 86,
+          "owner": "<callback@79>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "rowsStartingWith(rows, 'ро').map"
+        },
+        {
+          "line": 88,
+          "end_line": 88,
+          "owner": "<callback@79>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "rowsStartingWith(rows, 'ro').map"
+        },
+        {
+          "line": 92,
+          "end_line": 103,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 97,
+          "end_line": 97,
+          "owner": "<callback@92>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "renderHook"
+        },
+        {
+          "line": 98,
+          "end_line": 98,
+          "owner": "<callback@92>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 102,
+          "end_line": 102,
+          "owner": "<callback@92>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.get.mock.calls.map"
+        },
+        {
+          "line": 105,
+          "end_line": 111,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 107,
+          "end_line": 107,
+          "owner": "<callback@105>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "renderHook"
+        },
+        {
+          "line": 108,
+          "end_line": 108,
+          "owner": "<callback@105>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 109,
+          "end_line": 109,
+          "owner": "<callback@105>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 113,
+          "end_line": 125,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 118,
+          "end_line": 118,
+          "owner": "<callback@113>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "renderHook"
+        },
+        {
+          "line": 119,
+          "end_line": 119,
+          "owner": "<callback@113>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 120,
+          "end_line": 120,
+          "owner": "<callback@113>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "renderHook"
+        },
+        {
+          "line": 121,
+          "end_line": 121,
+          "owner": "<callback@113>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 122,
+          "end_line": 122,
+          "owner": "<callback@113>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "renderHook"
+        },
+        {
+          "line": 123,
+          "end_line": 123,
+          "owner": "<callback@113>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 124,
+          "end_line": 124,
+          "owner": "<callback@113>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "api.get.mock.calls.map"
         }
       ],
       "hooks": [
@@ -182142,13 +182463,74 @@
           "arguments": [
             "'население Калифорнии'"
           ]
+        },
+        {
+          "line": 97,
+          "end_line": 97,
+          "owner": "<callback@92>.<callback@97>",
+          "callee": "useGlobalSearch",
+          "arguments": [
+            "'коэффициент ро'"
+          ]
+        },
+        {
+          "line": 107,
+          "end_line": 107,
+          "owner": "<callback@105>.<callback@107>",
+          "callee": "useGlobalSearch",
+          "arguments": [
+            "'коэффициент ро'"
+          ]
+        },
+        {
+          "line": 118,
+          "end_line": 118,
+          "owner": "<callback@113>.<callback@118>",
+          "callee": "useGlobalSearch",
+          "arguments": [
+            "'ввп ес'"
+          ]
+        },
+        {
+          "line": 120,
+          "end_line": 120,
+          "owner": "<callback@113>.<callback@120>",
+          "callee": "useGlobalSearch",
+          "arguments": [
+            "'мрот ом'"
+          ]
+        },
+        {
+          "line": 122,
+          "end_line": 122,
+          "owner": "<callback@113>.<callback@122>",
+          "callee": "useGlobalSearch",
+          "arguments": [
+            "'коэффициент напряженности'"
+          ]
         }
       ],
       "http": [],
       "storage": [],
       "events": [],
       "jsx_handlers": [],
-      "registries": [],
+      "registries": [
+        {
+          "line": 65,
+          "end_line": 65,
+          "owner": "<module>",
+          "name": "EMPTY",
+          "kind": "ObjectExpression",
+          "entries": [
+            "results",
+            "total",
+            "has_more",
+            "version",
+            "reason"
+          ],
+          "initializer": null
+        }
+      ],
       "mcp_tools": []
     },
     "frontend/src/lib/useIndicatorViewModeData.js": {
@@ -262789,6 +263171,116 @@
       "registries": [],
       "mcp_tools": []
     },
+    "frontend/src/styles/r7c-rank-row.test.js": {
+      "sha256": "0af825f72d0f307fcc7854b69478cc8626906bbd1de081a38d311d2d40edebbd",
+      "imports": [
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "node:fs",
+          "category": "external_package",
+          "target": "node:fs",
+          "bindings": [
+            "readFileSync"
+          ]
+        },
+        {
+          "line": 5,
+          "end_line": 5,
+          "owner": "<module>",
+          "specifier": "node:path",
+          "category": "external_package",
+          "target": "node:path",
+          "bindings": [
+            "dirname",
+            "join"
+          ]
+        },
+        {
+          "line": 6,
+          "end_line": 6,
+          "owner": "<module>",
+          "specifier": "node:url",
+          "category": "external_package",
+          "target": "node:url",
+          "bindings": [
+            "fileURLToPath"
+          ]
+        },
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 13,
+          "end_line": 17,
+          "owner": "<module>",
+          "name": "rule",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 19,
+          "end_line": 45,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 20,
+          "end_line": 27,
+          "owner": "<callback@19>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 29,
+          "end_line": 32,
+          "owner": "<callback@19>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 34,
+          "end_line": 38,
+          "owner": "<callback@19>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 40,
+          "end_line": 44,
+          "owner": "<callback@19>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/styles/s6-shell.test.js": {
       "sha256": "f409a4103c34300335999222948f45fce6f37e3e25f17cd93c69304f9c1bf038",
       "imports": [
@@ -264601,17 +265093,17 @@
     }
   },
   "totals": {
-    "imports": 4939,
+    "imports": 4947,
     "routes": 100,
-    "functions": 15879,
-    "hooks": 2931,
+    "functions": 15916,
+    "hooks": 2937,
     "http": 127,
     "storage": 249,
     "events": 466,
     "jsx_handlers": 1302,
-    "registries": 733,
+    "registries": 734,
     "mcp_tools": 7,
-    "files": 937,
+    "files": 939,
     "parse_errors": 0
   }
 }

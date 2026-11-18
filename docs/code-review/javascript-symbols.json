@@ -2552,7 +2552,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/components/ChartBrush.jsx": {
-    "sha256": "c7563a797fb63f669eed1db77f328c94b3688c7ed004206211812b7ac8ac9b42",
+    "sha256": "6a3e3538d6076977d3035f6d3ef3c025515c8b0665ea78936c4a76d30c0a10ca",
     "definitions": [
       {
         "name": "sparkPaths",
@@ -2563,7 +2563,7 @@
       {
         "name": "ChartBrush",
         "line": 49,
-        "end_line": 197,
+        "end_line": 198,
         "kind": "FunctionDeclaration"
       },
       {
@@ -26707,469 +26707,493 @@
     "exports": [],
     "anonymous_functions": 25
   },
+  "frontend/src/lib/behavior.interactive.test.js": {
+    "sha256": "b78c7e3f1685794013005bce04aa4b9827397edc199efdf729368e18d2ef3c52",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "node:fs",
+        "line": 4
+      },
+      {
+        "source": "node:path",
+        "line": 5
+      },
+      {
+        "source": "node:url",
+        "line": 6
+      },
+      {
+        "source": "vitest",
+        "line": 7
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
+  },
   "frontend/src/lib/behavior.js": {
-    "sha256": "a0773ff77e92c4c1f74637adb95208343780351f856237742e95d6b20b6da85b",
+    "sha256": "0af9ce9bd62acce10a8109cd75414a9fe8665fbf0aba1032ccdb2b94818af50c",
     "definitions": [
       {
         "name": "isAutomationUa",
-        "line": 77,
-        "end_line": 80,
+        "line": 79,
+        "end_line": 82,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isAutomationClient",
-        "line": 82,
-        "end_line": 85,
+        "line": 84,
+        "end_line": 87,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "sessionId",
-        "line": 134,
-        "end_line": 145,
+        "line": 136,
+        "end_line": 147,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "visitorId",
-        "line": 149,
-        "end_line": 165,
+        "line": 151,
+        "end_line": 167,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ymUid",
-        "line": 168,
-        "end_line": 175,
+        "line": 170,
+        "end_line": 177,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createAttentionClock",
-        "line": 179,
-        "end_line": 213,
+        "line": 181,
+        "end_line": 215,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createAttentionClock.advance",
-        "line": 185,
-        "end_line": 192,
+        "line": 187,
+        "end_line": 194,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createAttentionClock.reset",
-        "line": 194,
-        "end_line": 194,
+        "line": 196,
+        "end_line": 196,
         "kind": "ObjectMethod"
       },
       {
         "name": "createAttentionClock.visibility",
-        "line": 195,
-        "end_line": 198,
+        "line": 197,
+        "end_line": 200,
         "kind": "ObjectMethod"
       },
       {
         "name": "createAttentionClock.input",
-        "line": 199,
-        "end_line": 204,
+        "line": 201,
+        "end_line": 206,
         "kind": "ObjectMethod"
       },
       {
         "name": "createAttentionClock.snapshot",
-        "line": 205,
-        "end_line": 210,
+        "line": 207,
+        "end_line": 212,
         "kind": "ObjectMethod"
       },
       {
         "name": "createAttentionClock.activeUntil",
-        "line": 211,
-        "end_line": 211,
+        "line": 213,
+        "end_line": 213,
         "kind": "ObjectMethod"
       },
       {
         "name": "attentionVisible",
-        "line": 215,
-        "end_line": 217,
+        "line": 217,
+        "end_line": 219,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "markActivity",
-        "line": 219,
-        "end_line": 226,
+        "line": 221,
+        "end_line": 228,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "captureInputTarget",
-        "line": 228,
-        "end_line": 239,
+        "line": 230,
+        "end_line": 241,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "originalInpTarget",
-        "line": 241,
-        "end_line": 253,
+        "line": 243,
+        "end_line": 255,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "consentAllows",
-        "line": 255,
-        "end_line": 265,
+        "line": 257,
+        "end_line": 267,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "newPageLoadId",
-        "line": 267,
-        "end_line": 269,
+        "line": 269,
+        "end_line": 271,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "listen",
-        "line": 271,
-        "end_line": 274,
+        "line": 273,
+        "end_line": 276,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "relativeTime",
-        "line": 276,
-        "end_line": 278,
+        "line": 278,
+        "end_line": 280,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "elementPath",
-        "line": 285,
-        "end_line": 313,
+        "line": 287,
+        "end_line": 315,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "elementText",
-        "line": 315,
-        "end_line": 319,
+        "line": 317,
+        "end_line": 321,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "cleanUrl",
-        "line": 321,
-        "end_line": 323,
+        "line": 323,
+        "end_line": 325,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "push",
-        "line": 325,
-        "end_line": 335,
+        "line": 327,
+        "end_line": 337,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "drainMoves",
-        "line": 337,
-        "end_line": 342,
+        "line": 339,
+        "end_line": 344,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "batchId",
-        "line": 344,
-        "end_line": 348,
+        "line": 346,
+        "end_line": 350,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "deliveryCurrent",
-        "line": 350,
-        "end_line": 353,
+        "line": 352,
+        "end_line": 355,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "removeBatch",
-        "line": 355,
-        "end_line": 361,
+        "line": 357,
+        "end_line": 363,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "clearDelivery",
-        "line": 363,
-        "end_line": 370,
+        "line": 365,
+        "end_line": 372,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "retryAfterMs",
-        "line": 372,
-        "end_line": 379,
+        "line": 374,
+        "end_line": 381,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "deliveryResponse",
-        "line": 381,
-        "end_line": 389,
+        "line": 383,
+        "end_line": 391,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "acknowledge",
-        "line": 391,
-        "end_line": 397,
+        "line": 393,
+        "end_line": 399,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "applyDeliveryResult",
-        "line": 399,
-        "end_line": 409,
+        "line": 401,
+        "end_line": 411,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "finishDelivery",
-        "line": 411,
-        "end_line": 416,
+        "line": 413,
+        "end_line": 418,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "scheduleDelivery",
-        "line": 418,
-        "end_line": 426,
+        "line": 420,
+        "end_line": 428,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pumpDelivery",
-        "line": 428,
-        "end_line": 450,
+        "line": 430,
+        "end_line": 452,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "sendLeavingBatches",
-        "line": 452,
-        "end_line": 475,
+        "line": 454,
+        "end_line": 477,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "flush",
-        "line": 477,
-        "end_line": 504,
+        "line": 479,
+        "end_line": 506,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "emitDwell",
-        "line": 508,
-        "end_line": 533,
+        "line": 510,
+        "end_line": 535,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "emitBlockViews",
-        "line": 536,
-        "end_line": 549,
+        "line": 538,
+        "end_line": 551,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "observeBlocksNow",
-        "line": 551,
-        "end_line": 568,
+        "line": 553,
+        "end_line": 570,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "overlayRects",
-        "line": 570,
-        "end_line": 580,
+        "line": 572,
+        "end_line": 582,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "refreshBlocks",
-        "line": 582,
-        "end_line": 598,
+        "line": 584,
+        "end_line": 600,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "scheduleGeometry",
-        "line": 600,
-        "end_line": 606,
+        "line": 602,
+        "end_line": 608,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resetBlocks",
-        "line": 608,
-        "end_line": 612,
+        "line": 610,
+        "end_line": 614,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupBlockObserver",
-        "line": 614,
-        "end_line": 627,
+        "line": 616,
+        "end_line": 629,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "emitSessionStart",
-        "line": 635,
-        "end_line": 712,
+        "line": 637,
+        "end_line": 714,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupVitals",
-        "line": 716,
-        "end_line": 748,
+        "line": 718,
+        "end_line": 750,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupVitals.report",
-        "line": 718,
-        "end_line": 739,
+        "line": 720,
+        "end_line": 741,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "setupErrorCapture",
-        "line": 752,
-        "end_line": 781,
+        "line": 754,
+        "end_line": 783,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "apiTimingUrl",
-        "line": 783,
-        "end_line": 785,
+        "line": 785,
+        "end_line": 787,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isApiTimingUrl",
-        "line": 787,
-        "end_line": 789,
+        "line": 789,
+        "end_line": 791,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupApiTiming",
-        "line": 793,
-        "end_line": 851,
+        "line": 795,
+        "end_line": 853,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupApiTiming.feFetch",
-        "line": 798,
-        "end_line": 812,
+        "line": 800,
+        "end_line": 814,
         "kind": "FunctionExpression"
       },
       {
         "name": "setupApiTiming.feXhrOpen",
-        "line": 822,
-        "end_line": 825,
+        "line": 824,
+        "end_line": 827,
         "kind": "FunctionExpression"
       },
       {
         "name": "setupApiTiming.feXhrSend",
-        "line": 826,
-        "end_line": 842,
+        "line": 828,
+        "end_line": 844,
         "kind": "FunctionExpression"
       },
       {
         "name": "setupApiTiming._restoreFetch",
-        "line": 850,
-        "end_line": 850,
+        "line": 852,
+        "end_line": 852,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "formName",
-        "line": 854,
-        "end_line": 856,
+        "line": 856,
+        "end_line": 858,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onFormFocus",
-        "line": 858,
-        "end_line": 867,
+        "line": 860,
+        "end_line": 869,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onFormSubmit",
-        "line": 869,
-        "end_line": 873,
+        "line": 871,
+        "end_line": 875,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "enterPage",
-        "line": 875,
-        "end_line": 905,
+        "line": 877,
+        "end_line": 907,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "behaviorRouteChange",
-        "line": 908,
-        "end_line": 919,
+        "line": 910,
+        "end_line": 921,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "behaviorSetIdentity",
-        "line": 922,
-        "end_line": 924,
+        "line": 924,
+        "end_line": 926,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onClick",
-        "line": 926,
-        "end_line": 971,
+        "line": 928,
+        "end_line": 973,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "interactionAction",
-        "line": 973,
-        "end_line": 975,
+        "line": 975,
+        "end_line": 977,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onPointer",
-        "line": 978,
-        "end_line": 1008,
+        "line": 980,
+        "end_line": 1010,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "recordOverlayState",
-        "line": 1010,
-        "end_line": 1028,
+        "line": 1012,
+        "end_line": 1030,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onMove",
-        "line": 1030,
-        "end_line": 1042,
+        "line": 1032,
+        "end_line": 1044,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "observeScroll",
-        "line": 1044,
-        "end_line": 1050,
+        "line": 1046,
+        "end_line": 1052,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onScroll",
-        "line": 1052,
-        "end_line": 1060,
+        "line": 1054,
+        "end_line": 1062,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onCopy",
-        "line": 1062,
-        "end_line": 1069,
+        "line": 1064,
+        "end_line": 1071,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onLeave",
-        "line": 1071,
-        "end_line": 1081,
+        "line": 1073,
+        "end_line": 1083,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onVisibility",
-        "line": 1083,
-        "end_line": 1095,
+        "line": 1085,
+        "end_line": 1097,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "behaviorInit",
-        "line": 1100,
-        "end_line": 1111,
+        "line": 1102,
+        "end_line": 1113,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "startCollectors",
-        "line": 1113,
-        "end_line": 1144,
+        "line": 1115,
+        "end_line": 1146,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onConsentChange",
-        "line": 1146,
-        "end_line": 1166,
+        "line": 1148,
+        "end_line": 1168,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "_resetForTests",
-        "line": 1169,
-        "end_line": 1212,
+        "line": 1171,
+        "end_line": 1214,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -27192,74 +27216,74 @@
         "names": [
           "isAutomationUa"
         ],
-        "line": 77
+        "line": 79
       },
       {
         "names": [
           "isAutomationClient"
         ],
-        "line": 82
+        "line": 84
       },
       {
         "names": [
           "sessionId"
         ],
-        "line": 134
+        "line": 136
       },
       {
         "names": [
           "visitorId"
         ],
-        "line": 149
+        "line": 151
       },
       {
         "names": [
           "createAttentionClock"
         ],
-        "line": 179
+        "line": 181
       },
       {
         "names": [
           "consentAllows"
         ],
-        "line": 255
+        "line": 257
       },
       {
         "names": [
           "flush"
         ],
-        "line": 477
+        "line": 479
       },
       {
         "names": [
           "behaviorRouteChange"
         ],
-        "line": 908
+        "line": 910
       },
       {
         "names": [
           "behaviorSetIdentity"
         ],
-        "line": 922
+        "line": 924
       },
       {
         "names": [
           "behaviorInit"
         ],
-        "line": 1100
+        "line": 1102
       },
       {
         "names": [
           "_resetForTests"
         ],
-        "line": 1169
+        "line": 1171
       },
       {
         "names": [
           "_elementPath",
           "_consentAllows"
         ],
-        "line": 1214
+        "line": 1216
       }
     ],
     "anonymous_functions": 42
@@ -49603,7 +49627,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/lib/useGlobalSearch.js": {
-    "sha256": "8095a29a96a03b43c7c99f53ab0a7c51ae5d0af971c04e6e3674fd1ac9124500",
+    "sha256": "ddc9e7043080cedf6c6f8a13a7718ca98df41edffb7fb0818492090997772084",
     "definitions": [
       {
         "name": "searchKey",
@@ -49618,33 +49642,63 @@
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "unfinishedTail",
+        "line": 15,
+        "end_line": 23,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "rowsStartingWith",
+        "line": 29,
+        "end_line": 39,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "rowsStartingWith.has",
+        "line": 31,
+        "end_line": 31,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "isPlainEmpty",
+        "line": 41,
+        "end_line": 42,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "useGlobalSearch",
-        "line": 10,
-        "end_line": 41,
+        "line": 49,
+        "end_line": 103,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useGlobalSearch.queryFn",
-        "line": 22,
-        "end_line": 22,
+        "line": 61,
+        "end_line": 61,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useGlobalSearch.prefetch",
-        "line": 29,
-        "end_line": 37,
+        "line": 68,
+        "end_line": 76,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useGlobalSearch.prefetch.queryFn",
-        "line": 34,
-        "end_line": 34,
+        "line": 73,
+        "end_line": 73,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useGlobalSearch.flush",
-        "line": 39,
-        "end_line": 39,
+        "line": 78,
+        "end_line": 78,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useGlobalSearch.queryFn",
+        "line": 84,
+        "end_line": 84,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -49669,15 +49723,27 @@
     "exports": [
       {
         "names": [
+          "unfinishedTail"
+        ],
+        "line": 15
+      },
+      {
+        "names": [
+          "rowsStartingWith"
+        ],
+        "line": 29
+      },
+      {
+        "names": [
           "default"
         ],
-        "line": 10
+        "line": 49
       }
     ],
     "anonymous_functions": 5
   },
   "frontend/src/lib/useGlobalSearch.test.jsx": {
-    "sha256": "0e02b996fc620b8a6020412cfb1ca51c93124495409f4bd5a7671e3ac4ad4257",
+    "sha256": "37311b7a92bffb881c8a2d9a6b3a6201c6a07cc6bcee61ab7775fa56ba84fcf3",
     "definitions": [
       {
         "name": "useLocale",
@@ -49690,6 +49756,12 @@
         "line": 12,
         "end_line": 12,
         "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "byQuery",
+        "line": 66,
+        "end_line": 66,
+        "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [
@@ -49715,7 +49787,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 21
+    "anonymous_functions": 42
   },
   "frontend/src/lib/useIndicatorViewModeData.js": {
     "sha256": "54302fad31834748801498f13314c480a1a25552db0fa32e6d00496a640a8518",
@@ -65470,6 +65542,37 @@
     ],
     "exports": [],
     "anonymous_functions": 9
+  },
+  "frontend/src/styles/r7c-rank-row.test.js": {
+    "sha256": "0af825f72d0f307fcc7854b69478cc8626906bbd1de081a38d311d2d40edebbd",
+    "definitions": [
+      {
+        "name": "rule",
+        "line": 13,
+        "end_line": 17,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "node:fs",
+        "line": 4
+      },
+      {
+        "source": "node:path",
+        "line": 5
+      },
+      {
+        "source": "node:url",
+        "line": 6
+      },
+      {
+        "source": "vitest",
+        "line": 7
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 5
   },
   "frontend/src/styles/s6-shell.test.js": {
     "sha256": "f409a4103c34300335999222948f45fce6f37e3e25f17cd93c69304f9c1bf038",
