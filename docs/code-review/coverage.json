@@ -21,19 +21,18 @@
   "counts": {
     "files": 2653,
     "code_files": 2162,
-    "current_reviews": 2617,
+    "current_reviews": 2653,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
       "binary_asset": 1,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "missing": 6,
-      "reviewed": 2374
+      "reviewed": 2380
     },
     "definitions": 17928,
-    "annotated_definitions": 17739,
-    "files_needing_attention": 36
+    "annotated_definitions": 17928,
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -1096,36 +1095,12 @@
       "bytes": 8064,
       "lines": 129,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 3,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_world",
-          "line": 27,
-          "end_line": 69,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "upgrade",
-          "line": 72,
-          "end_line": 115,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "downgrade",
-          "line": 118,
-          "end_line": 129,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 3,
+      "missing_definitions": []
     },
     {
       "path": "backend/alembic/versions/20261118_session_is_human.py",
@@ -1862,11 +1837,8 @@
       "lines": 801,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 5,
       "annotated_definitions": 5,
       "missing_definitions": []
@@ -1982,26 +1954,11 @@
       "lines": 168,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 5,
-      "annotated_definitions": 3,
-      "missing_definitions": [
-        {
-          "name": "IncomeSeries.source_url",
-          "line": 45,
-          "end_line": 46,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "IncomeSeries.coverage",
-          "line": 49,
-          "end_line": 55,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 5,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/data/emiss_labor.py",
@@ -2933,104 +2890,11 @@
       "lines": 2395,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 104,
-      "annotated_definitions": 89,
-      "missing_definitions": [
-        {
-          "name": "RegionWeeklyPoint",
-          "line": 195,
-          "end_line": 221,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "SearchIndexState",
-          "line": 2261,
-          "end_line": 2270,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_SearchWorldRow",
-          "line": 2273,
-          "end_line": 2300,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_search_world_indexes",
-          "line": 2303,
-          "end_line": 2321,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "SearchWorldRowA",
-          "line": 2324,
-          "end_line": 2326,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "SearchWorldRowB",
-          "line": 2329,
-          "end_line": 2331,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_SearchRussiaRow",
-          "line": 2334,
-          "end_line": 2346,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "SearchRussiaRowA",
-          "line": 2349,
-          "end_line": 2350,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "SearchRussiaRowB",
-          "line": 2353,
-          "end_line": 2354,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_SearchRegionFact",
-          "line": 2357,
-          "end_line": 2368,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "SearchRegionFactA",
-          "line": 2371,
-          "end_line": 2373,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "SearchRegionFactB",
-          "line": 2376,
-          "end_line": 2378,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_SearchSubnationalFact",
-          "line": 2381,
-          "end_line": 2385,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "SearchSubnationalFactA",
-          "line": 2388,
-          "end_line": 2390,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "SearchSubnationalFactB",
-          "line": 2393,
-          "end_line": 2395,
-          "kind": "ClassDef"
-        }
-      ]
+      "annotated_definitions": 104,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/schemas.py",
@@ -4027,20 +3891,11 @@
       "lines": 99,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 5,
-      "annotated_definitions": 4,
-      "missing_definitions": [
-        {
-          "name": "EmissIncomeParser._fetch_and_parse",
-          "line": 91,
-          "end_line": 99,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 5,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/emiss_labor_parser.py",
@@ -4075,20 +3930,11 @@
       "lines": 432,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 13,
-      "annotated_definitions": 12,
-      "missing_definitions": [
-        {
-          "name": "resolve_week_dates.matches",
-          "line": 182,
-          "end_line": 192,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 13,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/eurostat_parser.py",
@@ -4864,158 +4710,11 @@
       "lines": 479,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 24,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "DmarcRecord",
-          "line": 62,
-          "end_line": 68,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "DmarcReport",
-          "line": 72,
-          "end_line": 81,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "DmarcReport.messages",
-          "line": 80,
-          "end_line": 81,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "reporter_key",
-          "line": 84,
-          "end_line": 90,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_ts",
-          "line": 93,
-          "end_line": 97,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_text",
-          "line": 100,
-          "end_line": 102,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "parse_dmarc_xml",
-          "line": 105,
-          "end_line": 138,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_unpack",
-          "line": 141,
-          "end_line": 156,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "parse_dmarc_message",
-          "line": 159,
-          "end_line": 173,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_remote_service",
-          "line": 176,
-          "end_line": 190,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "service_of",
-          "line": 193,
-          "end_line": 206,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "MailboxSurvey",
-          "line": 210,
-          "end_line": 216,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "classify",
-          "line": 219,
-          "end_line": 232,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_junk_folder",
-          "line": 235,
-          "end_line": 242,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "survey_mailbox",
-          "line": 245,
-          "end_line": 283,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "dmarc_summary",
-          "line": 286,
-          "end_line": 301,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_doh",
-          "line": 308,
-          "end_line": 324,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "dkim_key_bits",
-          "line": 327,
-          "end_line": 339,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "parse_dmarc_record",
-          "line": 342,
-          "end_line": 343,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "rcpt_probe",
-          "line": 346,
-          "end_line": 353,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "check_dns",
-          "line": 356,
-          "end_line": 391,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "journal_by_service",
-          "line": 398,
-          "end_line": 419,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_pct",
-          "line": 426,
-          "end_line": 427,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "format_report",
-          "line": 430,
-          "end_line": 479,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 24,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/mail/funnel.py",
@@ -5583,20 +5282,11 @@
       "lines": 974,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 25,
-      "annotated_definitions": 24,
-      "missing_definitions": [
-        {
-          "name": "_in_search_freshness",
-          "line": 378,
-          "end_line": 391,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 25,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/pulse_context.py",
@@ -5631,20 +5321,11 @@
       "lines": 189,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 11,
-      "annotated_definitions": 10,
-      "missing_definitions": [
-        {
-          "name": "PeopleIndex.__init__",
-          "line": 52,
-          "end_line": 60,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 11,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/pulse_report.py",
@@ -5939,50 +5620,11 @@
       "lines": 1762,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 60,
-      "annotated_definitions": 54,
-      "missing_definitions": [
-        {
-          "name": "_world_top_from_index",
-          "line": 928,
-          "end_line": 1005,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_world.columns_for",
-          "line": 1026,
-          "end_line": 1028,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world.rank_conditions_for",
-          "line": 1030,
-          "end_line": 1032,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world.rank_for",
-          "line": 1034,
-          "end_line": 1045,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world.where_lists",
-          "line": 1047,
-          "end_line": 1073,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world.where_lists.candidates",
-          "line": 1057,
-          "end_line": 1059,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 60,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/search_currency_aliases.py",
@@ -6016,108 +5658,12 @@
       "bytes": 19748,
       "lines": 315,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 15,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "ActiveIndex",
-          "line": 77,
-          "end_line": 83,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "reset_cache",
-          "line": 90,
-          "end_line": 93,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_index_from_state",
-          "line": 96,
-          "end_line": 105,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "active_index",
-          "line": 108,
-          "end_line": 127,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_finite",
-          "line": 130,
-          "end_line": 132,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world_rows",
-          "line": 135,
-          "end_line": 147,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_russia_rows",
-          "line": 150,
-          "end_line": 157,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_territory_rows",
-          "line": 160,
-          "end_line": 188,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_signature",
-          "line": 191,
-          "end_line": 199,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_utcnow_naive",
-          "line": 202,
-          "end_line": 203,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_truncate",
-          "line": 206,
-          "end_line": 211,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "build_part",
-          "line": 214,
-          "end_line": 263,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "release_copy",
-          "line": 266,
-          "end_line": 282,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "refresh",
-          "line": 285,
-          "end_line": 306,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "search_index_job",
-          "line": 309,
-          "end_line": 315,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 15,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/search_intent.py",
@@ -7075,22 +6621,11 @@
       "lines": 182,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 8,
-      "annotated_definitions": 7,
-      "missing_definitions": [
-        {
-          "name": "_freshness_lines",
-          "line": 152,
-          "end_line": 170,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 8,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
@@ -7866,20 +7401,11 @@
       "lines": 910,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 27,
-      "annotated_definitions": 26,
-      "missing_definitions": [
-        {
-          "name": "emiss_weekly_fuel_job",
-          "line": 717,
-          "end_line": 725,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 27,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/tasks/session_analysis.py",
@@ -8356,20 +7882,11 @@
       "lines": 376,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 15,
-      "annotated_definitions": 14,
-      "missing_definitions": [
-        {
-          "name": "cmd_deliverability",
-          "line": 262,
-          "end_line": 275,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 15,
+      "missing_definitions": []
     },
     {
       "path": "backend/scripts/metrika-goals-redesign.py",
@@ -10367,26 +9884,11 @@
       "lines": 85,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 8,
-      "annotated_definitions": 6,
-      "missing_definitions": [
-        {
-          "name": "run",
-          "line": 16,
-          "end_line": 27,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "run.post",
-          "line": 20,
-          "end_line": 22,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 8,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_emiss_labor_parser.py",
@@ -10447,32 +9949,11 @@
       "lines": 166,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 14,
-      "annotated_definitions": 11,
-      "missing_definitions": [
-        {
-          "name": "_row",
-          "line": 46,
-          "end_line": 50,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_fetch_year_sends_weeks_in_columns_and_all_fuels.fake_post",
-          "line": 145,
-          "end_line": 148,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_rows_without_any_price_mean_format_change.fake_post",
-          "line": 162,
-          "end_line": 163,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 14,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_en_catalog.py",
@@ -11157,44 +10638,11 @@
       "lines": 162,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 12,
-      "annotated_definitions": 7,
-      "missing_definitions": [
-        {
-          "name": "_sig",
-          "line": 21,
-          "end_line": 26,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_status",
-          "line": 29,
-          "end_line": 30,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_ev",
-          "line": 69,
-          "end_line": 75,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_portrait",
-          "line": 78,
-          "end_line": 84,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_sessionize_writes_is_human_and_pulse_splits_events_by_people.scenario",
-          "line": 92,
-          "end_line": 122,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 12,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_hypotheses_triage.py",
@@ -11411,86 +10859,11 @@
       "lines": 184,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 12,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_report_mail",
-          "line": 31,
-          "end_line": 38,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_dmarc_report_gzip_and_zip",
-          "line": 41,
-          "end_line": 62,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_dmarc_xml_refuses_entities_and_garbage",
-          "line": 65,
-          "end_line": 77,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_bounce_and_complaint_classified_without_addresses",
-          "line": 80,
-          "end_line": 96,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_service_of",
-          "line": 99,
-          "end_line": 106,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_dns_check_flags_missing_dmarc_mailbox",
-          "line": 109,
-          "end_line": 137,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_dns_check_flags_missing_dmarc_mailbox.fake_probe",
-          "line": 122,
-          "end_line": 124,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_dns_check_network_error_is_reported",
-          "line": 140,
-          "end_line": 148,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_dns_check_network_error_is_reported.boom",
-          "line": 143,
-          "end_line": 144,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_dkim_key_bits",
-          "line": 151,
-          "end_line": 156,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_journal_by_service",
-          "line": 159,
-          "end_line": 184,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_journal_by_service.run",
-          "line": 163,
-          "end_line": 180,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 12,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_mail_design.py",
@@ -11941,11 +11314,8 @@
       "lines": 773,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 89,
       "annotated_definitions": 89,
       "missing_definitions": []
@@ -12178,50 +11548,11 @@
       "lines": 158,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 12,
-      "annotated_definitions": 6,
-      "missing_definitions": [
-        {
-          "name": "_render_weekly",
-          "line": 73,
-          "end_line": 101,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_render_weekly.scenario",
-          "line": 80,
-          "end_line": 99,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_weekly_layer_answers_price_on_date_ru",
-          "line": 104,
-          "end_line": 114,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_weekly_layer_en_has_no_russian_text",
-          "line": 117,
-          "end_line": 123,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_federal_fuel_page_lists_regions_on_last_record_of_year",
-          "line": 126,
-          "end_line": 158,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_federal_fuel_page_lists_regions_on_last_record_of_year.scenario",
-          "line": 133,
-          "end_line": 152,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 12,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_region_polarity.py",
@@ -12801,156 +12132,12 @@
       "bytes": 18737,
       "lines": 331,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 23,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_answers",
-          "line": 28,
-          "end_line": 39,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_build",
-          "line": 42,
-          "end_line": 48,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_fresh_index_state",
-          "line": 52,
-          "end_line": 57,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_answers_with_index_equal_live_tables",
-          "line": 60,
-          "end_line": 77,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_answers_with_index_equal_live_tables.run",
-          "line": 63,
-          "end_line": 72,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_index_flags_match_live_fact_conditions",
-          "line": 80,
-          "end_line": 129,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_index_flags_match_live_fact_conditions._NoPeriod",
-          "line": 86,
-          "end_line": 87,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "test_index_flags_match_live_fact_conditions.run",
-          "line": 91,
-          "end_line": 127,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_regional_last_values_from_index_equal_live",
-          "line": 132,
-          "end_line": 162,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_regional_last_values_from_index_equal_live.run",
-          "line": 139,
-          "end_line": 159,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_rebuild_switches_copy_and_releases_previous",
-          "line": 165,
-          "end_line": 184,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_rebuild_switches_copy_and_releases_previous.run",
-          "line": 171,
-          "end_line": 178,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_disabled_flag_and_missing_state_read_live_tables",
-          "line": 187,
-          "end_line": 212,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_disabled_flag_and_missing_state_read_live_tables.run",
-          "line": 193,
-          "end_line": 208,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_unchanged_sources_are_not_rebuilt_without_force",
-          "line": 215,
-          "end_line": 227,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_unchanged_sources_are_not_rebuilt_without_force.run",
-          "line": 223,
-          "end_line": 225,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_random_catalogue",
-          "line": 235,
-          "end_line": 253,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues",
-          "line": 257,
-          "end_line": 331,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues._NoPeriod",
-          "line": 262,
-          "end_line": 263,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues.run",
-          "line": 272,
-          "end_line": 329,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues.run.where_lists",
-          "line": 299,
-          "end_line": 303,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues.run.conditions",
-          "line": 305,
-          "end_line": 307,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues.run.rank_for",
-          "line": 309,
-          "end_line": 311,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 23,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_search_intent_candidate_roles.py",
@@ -13219,38 +12406,11 @@
       "lines": 190,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 19,
-      "annotated_definitions": 15,
-      "missing_definitions": [
-        {
-          "name": "rewrite_client.seed",
-          "line": 80,
-          "end_line": 116,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "rewrite_client.seed.definition",
-          "line": 94,
-          "end_line": 95,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "get",
-          "line": 123,
-          "end_line": 126,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "codes",
-          "line": 129,
-          "end_line": 130,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 19,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_search_section_suggestions.py",
@@ -14272,216 +13432,12 @@
       "bytes": 7266,
       "lines": 183,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 33,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "test_gap_between_points_is_marked",
-          "line": 32,
-          "end_line": 38,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_regular_update_step_is_not_a_gap",
-          "line": 41,
-          "end_line": 43,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_single_point_and_empty_history",
-          "line": 46,
-          "end_line": 51,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_last_crawl_day_ignores_null_points_and_list_shape",
-          "line": 54,
-          "end_line": 58,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_report_lines_name_both_dates_and_stale_crawl",
-          "line": 61,
-          "end_line": 66,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_report_lines_empty_when_fresh",
-          "line": 69,
-          "end_line": 71,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_Resp",
-          "line": 74,
-          "end_line": 76,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_Resp.__init__",
-          "line": 75,
-          "end_line": 76,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_Client",
-          "line": 79,
-          "end_line": 94,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_Client.user",
-          "line": 80,
-          "end_line": 81,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_Client.summary",
-          "line": 83,
-          "end_line": 85,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_Client.search_events_samples",
-          "line": 87,
-          "end_line": 88,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_Client.in_search_history",
-          "line": 90,
-          "end_line": 91,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_Client.indexing_history",
-          "line": 93,
-          "end_line": 94,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_fake_analytics",
-          "line": 97,
-          "end_line": 115,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_fake_analytics.FakeDB",
-          "line": 98,
-          "end_line": 106,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_fake_analytics.FakeDB.scalar",
-          "line": 99,
-          "end_line": 100,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_fake_analytics.FakeDB.execute",
-          "line": 102,
-          "end_line": 106,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_fake_analytics.FakeDB.execute._R",
-          "line": 103,
-          "end_line": 105,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_fake_analytics.FakeDB.execute._R.all",
-          "line": 104,
-          "end_line": 105,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_fake_analytics._CM",
-          "line": 108,
-          "end_line": 113,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "_fake_analytics._CM.__aenter__",
-          "line": 109,
-          "end_line": 110,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_fake_analytics._CM.__aexit__",
-          "line": 112,
-          "end_line": 113,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_pulse_snapshot_carries_freshness_and_gap",
-          "line": 118,
-          "end_line": 138,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_pulse_snapshot_survives_missing_history",
-          "line": 141,
-          "end_line": 156,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_pulse_snapshot_survives_missing_history.NoHistory",
-          "line": 145,
-          "end_line": 147,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "test_pulse_snapshot_survives_missing_history.NoHistory.in_search_history",
-          "line": 146,
-          "end_line": 147,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_weekly_report_signs_gap_instead_of_unchanged",
-          "line": 159,
-          "end_line": 176,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_weekly_report_signs_gap_instead_of_unchanged.Redis",
-          "line": 162,
-          "end_line": 170,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "test_weekly_report_signs_gap_instead_of_unchanged.Redis.__init__",
-          "line": 163,
-          "end_line": 164,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_weekly_report_signs_gap_instead_of_unchanged.Redis.get",
-          "line": 166,
-          "end_line": 167,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_weekly_report_signs_gap_instead_of_unchanged.Redis.set",
-          "line": 169,
-          "end_line": 170,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_pulse_prompt_forbids_drop_across_gap",
-          "line": 179,
-          "end_line": 183,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 33,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_webmaster_integrity.py",
@@ -16123,16 +15079,13 @@
     },
     {
       "path": "docs/adr/0036-search-index.md",
-      "sha256": "cf5e758bccd42d49f9763dd74551c8a6ed960c3e1c8cd3e95bad9dd9203d1ba7",
-      "bytes": 16050,
+      "sha256": "6a3662b122121410f960b684210d285b2e415f0261252595a5ee804652f998b7",
+      "bytes": 16119,
       "lines": 126,
       "code": false,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -16464,8 +15417,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "7c6d39c5d0df1f17904856c8072e47403747a5e3638e0fe7d9be1790f86f773a",
-      "bytes": 445175,
+      "sha256": "20726949cf0c979650c51b06209ab0e9e0abf3e1f1ff16a1ff962580040ee28c",
+      "bytes": 445294,
       "lines": 1437,
       "code": false,
       "status": "reviewed",
@@ -20824,11 +19777,8 @@
       "lines": 264,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 3,
       "annotated_definitions": 3,
       "missing_definitions": []
@@ -21191,64 +20141,11 @@
       "lines": 230,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 9,
-      "annotated_definitions": 1,
-      "missing_definitions": [
-        {
-          "name": "pageNo",
-          "line": 22,
-          "end_line": 24,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "monthly",
-          "line": 27,
-          "end_line": 33,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "matchMedia",
-          "line": 76,
-          "end_line": 76,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "matchMedia.addEventListener",
-          "line": 76,
-          "end_line": 76,
-          "kind": "ObjectMethod"
-        },
-        {
-          "name": "matchMedia.removeEventListener",
-          "line": 76,
-          "end_line": 76,
-          "kind": "ObjectMethod"
-        },
-        {
-          "name": "matchMedia",
-          "line": 80,
-          "end_line": 80,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "matchMedia.addEventListener",
-          "line": 80,
-          "end_line": 80,
-          "kind": "ObjectMethod"
-        },
-        {
-          "name": "matchMedia.removeEventListener",
-          "line": 80,
-          "end_line": 80,
-          "kind": "ObjectMethod"
-        }
-      ]
+      "annotated_definitions": 9,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/DataTable.jsx",
@@ -21257,32 +20154,11 @@
       "lines": 516,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 6,
-      "annotated_definitions": 3,
-      "missing_definitions": [
-        {
-          "name": "DataTable.openDatePicker",
-          "line": 128,
-          "end_line": 135,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "DataTable.pageLabel",
-          "line": 200,
-          "end_line": 205,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "DataTable.goToJump",
-          "line": 212,
-          "end_line": 220,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 6,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/DeathsIndicatorControls.jsx",
@@ -21629,26 +20505,11 @@
       "lines": 1177,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 11,
-      "annotated_definitions": 9,
-      "missing_definitions": [
-        {
-          "name": "PickedMarker",
-          "line": 285,
-          "end_line": 313,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "IndicatorChart.handlePlotClick",
-          "line": 540,
-          "end_line": 554,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 11,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/IndicatorChart.rebase.component.test.jsx",
@@ -24491,20 +23352,11 @@
       "lines": 66,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 1,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "wrap",
-          "line": 18,
-          "end_line": 18,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 1,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/regions/WeeklyPrices.jsx",
@@ -24513,20 +23365,11 @@
       "lines": 106,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 2,
-      "annotated_definitions": 1,
-      "missing_definitions": [
-        {
-          "name": "WeeklyPrices.day",
-          "line": 23,
-          "end_line": 23,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 2,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/russia/LaborIndicatorGroups.jsx",
@@ -28045,56 +26888,11 @@
       "lines": 86,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 7,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "iso",
-          "line": 12,
-          "end_line": 14,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "periodJumpOptions",
-          "line": 22,
-          "end_line": 49,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "currentJumpValue",
-          "line": 52,
-          "end_line": 59,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "nearestRow",
-          "line": 65,
-          "end_line": 72,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "emitPeriodPick",
-          "line": 75,
-          "end_line": 78,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "onPeriodPick",
-          "line": 81,
-          "end_line": 86,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "onPeriodPick.listener",
-          "line": 83,
-          "end_line": 83,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 7,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/periodJump.test.js",
@@ -28102,30 +26900,12 @@
       "bytes": 2758,
       "lines": 56,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 2,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "desc",
-          "line": 7,
-          "end_line": 7,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "pageLabel",
-          "line": 28,
-          "end_line": 28,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 2,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/periodPhrase.js",
@@ -31085,32 +29865,11 @@
       "lines": 3214,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 76,
-      "annotated_definitions": 73,
-      "missing_definitions": [
-        {
-          "name": "BehaviorTab.formatter",
-          "line": 2137,
-          "end_line": 2137,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "BehaviorTab.formatter",
-          "line": 2151,
-          "end_line": 2151,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "SlicesTab.queryFn",
-          "line": 2429,
-          "end_line": 2429,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 76,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/pages/AdminBI.mail.component.test.jsx",
@@ -31808,20 +30567,11 @@
       "lines": 900,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 13,
-      "annotated_definitions": 12,
-      "missing_definitions": [
-        {
-          "name": "RegionIndicatorPage.onSelect",
-          "line": 587,
-          "end_line": 587,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 13,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/pages/RegionProfile.component.test.jsx",
@@ -32480,11 +31230,8 @@
       "lines": 175,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -35473,20 +34220,11 @@
       "lines": 205,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 7,
-      "annotated_definitions": 6,
-      "missing_definitions": [
-        {
-          "name": "main",
-          "line": 156,
-          "end_line": 200,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 7,
+      "missing_definitions": []
     },
     {
       "path": "scripts/search-history-analyze.py",
@@ -35789,9 +34527,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "ea1e7aefadbb6506879ed4966da145e7939742b1b2f6d8208f996a12399745eb",
+  "ledger_sha256": "649b2c01d388d48d3fb69300becf220cd6dd4413022f881504c0f2efa3ddea00",
   "javascript_inventory_sha256": "c0ca962bae4c4f1b590e8022d6f6ced851fe1ef665c8fbe28f63cc84adde8a40",
-  "baseline_commit": "ca4a4344fd259a57bedb638f1af10bab082986f9",
+  "baseline_commit": "5daafdb6cef9199051ce07762909e7bcc1571619",
   "branch": "int/2026-11-18-radical",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/adr/0036-search-index.md",
+    "docs/data-contracts.md"
+  ]
 }
