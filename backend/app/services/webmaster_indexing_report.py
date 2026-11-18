@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import logging
+from datetime import timedelta
 
 from app.config import settings
 from app.core.cache import get_state_redis
@@ -123,6 +124,7 @@ async def _host_report_block(client, user_id, host_id: str, redis) -> str | None
     if problems:
         pretty = ", ".join(f"{k}: {v}" for k, v in problems.items())
         lines.append(f"Проблемы сайта: {pretty}")
+    history: dict | None = None
     try:
         history = (await client.indexing_history(user_id, host_id, indexing_indicator="DOWNLOADED")).data
         totals = _http_breakdown(history)
@@ -137,6 +139,7 @@ async def _host_report_block(client, user_id, host_id: str, redis) -> str | None
                 lines.append(f"Роботу отдано {errors} ошибок — проверить деплой-окна и 404-карту")
     except Exception:
         logger.warning("Indexing report: indexing history unavailable host=%s", host_id, exc_info=True)
+    lines.extend(await _freshness_lines(client, user_id, host_id, history))
     try:
         await redis.set(snap_key, json.dumps(
             {"searchable": searchable, "excluded": excluded, "sqi": sqi}
@@ -144,6 +147,27 @@ async def _host_report_block(client, user_id, host_id: str, redis) -> str | None
     except Exception:
         logger.warning("Indexing report: snapshot save failed host=%s", host_id)
     return "\n".join(lines)
+
+
+async def _freshness_lines(client, user_id, host_id: str, crawl_history: dict | None) -> list[str]:
+    """Подпись к числам отчёта, когда данные Вебмастера стоят или пришли после перерыва.
+
+    16.11.2026 отчёт писал «105480 (без изменений)» и обход сентября–октября, хотя Яндекс
+    после аварий ЦОД не обновлял эти числа с 07–10.10; через три дня пришло 29306.
+    """
+    from app.services.display import today_msk
+    from app.services.webmaster_freshness import freshness_lines, in_search_freshness, last_crawl_day
+
+    today = today_msk()
+    fresh = None
+    try:
+        hist = (await client.in_search_history(
+            user_id, host_id, date_from=(today - timedelta(days=60)).isoformat(),
+            date_to=(today + timedelta(days=1)).isoformat())).data
+        fresh = in_search_freshness(hist, today)
+    except Exception:
+        logger.warning("Indexing report: in-search history unavailable host=%s", host_id, exc_info=True)
+    return freshness_lines(fresh, last_crawl_day(crawl_history), today)
 
 
 async def indexing_report_job() -> None:
