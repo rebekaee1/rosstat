@@ -20,6 +20,7 @@ from app.services.cbr_fx_parser import CbrFxParser
 from app.services.cbr_ruonia_parser import CbrRuoniaParser
 from app.services.cbr_monetary_parser import CbrMonetaryParser
 from app.services.cbr_dataservice_parser import CbrDataServiceParser
+from app.services.emiss_income_parser import EmissIncomeParser
 from app.services.emiss_labor_parser import EmissLaborParser
 from app.services.rosstat_labor_parser import RosstatLaborParser
 from app.services.rosstat_gdp_parser import RosstatGdpParser
@@ -97,6 +98,7 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     CbrMonetaryParser.parser_type: CbrMonetaryParser,
     CbrDataServiceParser.parser_type: CbrDataServiceParser,
     EmissLaborParser.parser_type: EmissLaborParser,
+    EmissIncomeParser.parser_type: EmissIncomeParser,
     RosstatLaborParser.parser_type: RosstatLaborParser,
     RosstatGdpParser.parser_type: RosstatGdpParser,
     CbrDataServiceSumParser.parser_type: CbrDataServiceSumParser,

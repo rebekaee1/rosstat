@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from typing import TypedDict
 
+from app.data.emiss_income import SERIES as INCOME_SERIES, UNITS_EN as INCOME_UNITS_EN
 from app.data.emiss_labor import SERIES
 
 
@@ -32,6 +33,15 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
             "unit": "%" if series.unit == "%" else "thousand people",
         }
         for code, series in SERIES.items()
+    },
+    **{
+        code: {
+            "name": series.name_en,
+            "description": series.explanation_en,
+            "methodology": series.coverage[1],
+            "unit": INCOME_UNITS_EN[series.unit],
+        }
+        for code, series in INCOME_SERIES.items()
     },
     # --- Listed catalogue cards ---
     "cpi": {

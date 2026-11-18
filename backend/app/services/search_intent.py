@@ -789,7 +789,9 @@ _RATE_QUOTE_CODES = frozenset(("usd-rub", "eur-rub", "cny-rub", "try-rub", "kzt-
 
 
 def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
-        literal_content: str | None = None) -> SearchIntent:
+        literal_content: str | None = None, correct_typos: bool = True) -> SearchIntent:
+    """Разбор запроса. ``correct_typos=False`` — второе чтение 18.11.2026: слово остаётся как написано, без
+    исправления в понятие словаря («валовое накопление» не становится «накопления» = вклады)."""
     query = normalize(raw)
     literal = normalize(literal_content) if literal_content else literal_identifier(raw, geometry)
     text, countries, regions, corrections = strip_geography(raw, geometry, literal_content=literal)
@@ -928,7 +930,7 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
         if token in STOP_WORDS or token in ("год", "года", "году", "year"):
             continue
         alternatives = (token,)
-        typo = _concept_correction(token)
+        typo = _concept_correction(token) if correct_typos else None
         if typo:
             corrections[token], alternatives = typo
         elif len(alternatives) == 1 and re.fullmatch(r"[а-я]{4,}(?:ами|ями)", token):

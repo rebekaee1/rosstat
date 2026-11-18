@@ -84,7 +84,7 @@ export default function RegionProfile({ renderActions = null } = {}) {
   }, [data, sections, deferredQuery, slug, regionName]);
 
   const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
-  useSearchTracking('region-profile', deferredQuery, foundIndicators);
+  useSearchTracking('region-profile', deferredQuery, data ? foundIndicators : null);
 
   // Несколько цен (бензин, проезд) лежат и в других темах; «Все цены» ведёт в тему, где их больше всего.
   const priceSection = (data?.sections || []).reduce((best, s) => {
