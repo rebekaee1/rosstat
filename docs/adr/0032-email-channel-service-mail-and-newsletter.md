@@ -4,7 +4,7 @@
 **Date:** 2026-11-14.
 **Part of:** [`../data-contracts.md`](../data-contracts.md#почта-сайта--2026-11-14), [`../workflow.md`](../workflow.md#почта-сайта-adr-0032).
 **Related:** [ADR-0007](0007-identity-user-accounts.md) (аккаунты, журнал согласий append-only, 152-ФЗ), [ADR-0010](0010-analytics-contour-identity-goals-marts-olap.md) (метки utm), [ADR-0019](0019-personal-cabinet-behind-flag.md) (кабинет, переключатель рассылки), [ADR-0018](0018-crystal-without-borders-design-system.md) (вид писем).
-**Code anchors:** `backend/app/services/mail/` (`tokens.py`, `templates.py`, `transport.py`, `service.py`, `audience.py`, `campaign.py`, `account.py`), `backend/app/api/mail.py`, `backend/app/api/auth.py` (`/email/verify`, `/email/verify/resend`, `/password/forgot`, `/password/reset`, хуки в `register` и `set-password`), `backend/app/models.py::MailMessage`, Alembic `20261114_mail_outbox`, `backend/scripts/mail.py`, `frontend/src/pages/AccountMail.jsx`, `frontend/nginx.conf` (маршрут `/account/…`), `backend/tests/test_mail.py`, `frontend/src/pages/AccountMail.component.test.jsx`.
+**Code anchors:** `backend/app/services/mail/` (`tokens.py`, `templates.py`, `transport.py`, `service.py`, `audience.py`, `campaign.py`, `account.py`, `deliverability.py` — с 18.11), `backend/app/api/mail.py`, `backend/app/api/auth.py` (`/email/verify`, `/email/verify/resend`, `/password/forgot`, `/password/reset`, хуки в `register` и `set-password`), `backend/app/models.py::MailMessage`, Alembic `20261114_mail_outbox`, `backend/scripts/mail.py`, `frontend/src/pages/AccountMail.jsx`, `frontend/nginx.conf` (маршрут `/account/…`), `backend/tests/test_mail.py`, `frontend/src/pages/AccountMail.component.test.jsx`.
 
 ## Контекст (замер 14.11.2026)
 
@@ -113,3 +113,35 @@
 **Причина отказов** устранена на стороне содержания письма, а не транспорта: ADR-0033, дополнение 17.11.2026 (блок «Было и стало», одинаковых писем нет). Темп отправки в выпуске — одно письмо в минуту (`RUSTATS_MAIL_CAMPAIGN_PAUSE_SECONDS=60`), порядок волн и опыт — `docs/newsletter-playbook.md`, раздел «Как отправлять». Итог выпуска: принято почтой 107 из 108, один возврат `5.1.1`.
 
 **Не закрыто.** Различение «спам» и «лимит» построено на тексте ответа (`spam` в нижнем регистре); другой провайдер может назвать то же иначе. Тест: `backend/tests/test_mail.py` (два новых).
+
+<a id="dop-2026-11-18-delivery"></a>
+
+## Дополнение 18.11.2026: что видно о доставке и чего не видно
+
+**Основание.** Разбор Пульса за 17.11 ([backlog](../backlog.md#pulse-2026-11-18)): после выпуска `fe-weekly-01` (106 писем) за сутки один переход; дошли ли письма до «Входящих», не установлено. Владельцу был дан ответ: подключить кабинеты отправителя Яндекса («Почтовый офис»), Mail.ru и Google и отправить выпуск на проверочные ящики.
+
+**Замер 18.11.2026 (боевой, только чтение: журнал, ящик `info@` по IMAP через `EXAMINE`, DNS, проверка адреса по SMTP без письма).**
+- Принято сервисами получателей 106 из 107 отправленных; один постоянный отказ Gmail `550 5.1.1` (адреса нет), он в стоп-листе. Отказов проверки подлинности (`5.7.x`) нет ни от Gmail (32 письма), ни от Mail.ru (26), ни от прочих. Жалоб (ARF) и отписок после выпуска нет.
+- Письма подписаны DKIM `d=forecasteconomy.com; s=mail` (RSA ≈1024) — это видно в заголовках исходного письма, вложенных в отказ Gmail; сервер отправки `forward105e.mail.yandex.net` (93.77.172.69, 2a02:6b8:c32::…) входит в SPF `_spf.yandex.net`. DMARC `p=none`, выравнивание по DKIM и SPF есть. Результат проверки у получателя не наблюдался.
+- **Дефект: отчёты DMARC терялись с 14.11.** Запись DMARC указывает `rua=mailto:dmarc@forecasteconomy.com`; сервер `mx.yandex.net` на этот адрес отвечает `550 5.7.1 No such user!`. Google, Mail.ru и Яндекс отправляют агрегатные отчёты раз в сутки — они возвращались отправителям.
+- Домен не в Spamhaus DBL, сервер отправки Яндекса не в Spamhaus ZEN (проверка с боевого; URIBL и SURBL с боевого резолвера не отвечают — не проверено).
+- **«Почтовый офис» Яндекса закрыт в сентябре 2020 года** — `postoffice.yandex.ru` не разрешается в DNS, `postmaster.yandex.ru` отдаёт 404. Ответ владельцу про подключение кабинета Яндекса был ошибкой. Google Postmaster Tools и Postmaster Mail.ru показывают статистику при объёме; при ~30 письмах на сервис за выпуск графики будут пустыми. Папку письма при нашем объёме показывают только проверочные ящики.
+- Один переход на 106 писем (89 — на неподтверждённые адреса) — сам по себе не признак попадания в спам.
+
+**Решение.**
+- Команда `scripts/mail.py deliverability [--campaign] [--days 7] [--no-probe]` (`services/mail/deliverability.py`) — одна сводка без адресов: DNS (SPF, DKIM и длина ключа, DMARC, принимает ли почту адрес отчётов — `RCPT` без письма), ящик отправителя за N суток («Входящие» и «Спам», только чтение): отказы по кодам и сервисам, жалобы ARF, агрегатные отчёты DMARC по сервисам (писем, прошли DKIM/SPF с выравниванием, карантин/отказ); журнал выпуска по сервисам получателя (принято, отказ, «похоже на спам», переходы). DNS читается через DNS-over-HTTPS (`dns.google`): в контейнере нет `dnspython`. Отчёт DMARC больше 5 МБ и XML с `DOCTYPE`/`ENTITY` не разбираются.
+- Разбор отказов (`bounces.py`) не меняется: письма с отчётами DMARC — не `multipart/report`, он их пропускает.
+- Порядок проверки папки — [правила письма, раздел 10](../newsletter-playbook.md#10-проверка-доставки-18112026).
+
+**Что сделать владельцу (подготовлено 18.11.2026).**
+1. **DNS у nic.ru** (домен `forecasteconomy.com`, раздел «DNS-серверы и управление зоной»): у записи `_dmarc` типа TXT заменить значение на
+   `v=DMARC1; p=none; rua=mailto:info@forecasteconomy.com`
+   Другой путь без DNS: в admin.yandex.ru добавить ящику `info@` алиас `dmarc`. Через сутки после правки `mail.py deliverability` покажет отчёты DMARC.
+2. **Проверочные ящики:** сказать адрес своего Gmail и завести ящик Mail.ru (нужен телефон). Ящик Яндекса есть — `rebeka.ee@yandex.ru`. По слову владельца агент отправляет на них то же письмо выпуска:
+   ```bash
+   ssh fe-prod 'cd /opt/rosstat && docker compose cp /root/newsletter-issues/fe-weekly-01/. backend:/tmp/fe-weekly-01/ && for to in rebeka.ee@yandex.ru АДРЕС_GMAIL АДРЕС_MAILRU; do docker compose exec -T backend python /app/scripts/newsletter_personal.py send-test --persona rich --issue /tmp/fe-weekly-01/issue-01-ru.json /tmp/fe-weekly-01/issue-01-en.json --to "$to"; done'
+   ```
+   Владелец смотрит папку в каждом ящике; в Gmail «⋮» → «Показать оригинал»: SPF, DKIM, DMARC — `PASS`.
+3. **Кабинеты (по желанию, польза при росте объёма):** postmaster.google.com → добавить `forecasteconomy.com`; если этим аккаунтом Google подтверждён Search Console, запись `google-site-verification` в DNS уже есть и подтверждение проходит сразу (не проверено), иначе — TXT из кабинета. postmaster.mail.ru → добавить домен → TXT `mailru-verification: <код из кабинета>` в ту же зону у nic.ru → «Подтвердить» → включить отчёты о жалобах (FBL) на `info@forecasteconomy.com`: разбор отказов уже снимает подписку жалующегося.
+
+**Не закрыто.** Папка писем выпуска 01 у получателей; `spf/dkim/dmarc=pass` на стороне Gmail и Mail.ru; DKIM 1024 → 2048 — по-прежнему [пересмотр 05.12](../backlog.md#dmarc-dkim-review-2026-12-05). Сводка `deliverability` — команда, не задача планировщика: в Пульс и в бота не идёт. Тест: `backend/tests/test_mail_deliverability.py`.
