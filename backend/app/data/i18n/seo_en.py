@@ -1305,6 +1305,30 @@ REGIONAL_TEMPLATES_EN: dict[str, str] = {
     ),
     'region_monthly.unit_fallback': 'source units',
     'region_monthly.keywords': '{indicator} {region}, average prices {region}, {indicator} by month, Rosstat price statistics',
+    # Weekly fuel layer (EMISS 37426, 18.11.2026): price on a Rosstat registration date.
+    'region_monthly.w_lead': (
+        'A litre of {fuel} in {region} cost {value} {unit} on average on {date} (Rosstat weekly data).'
+    ),
+    'region_monthly.w_lead_rf': ' The Russia-wide average on the same day was {value} {unit}.',
+    'region_monthly.w_h2': 'Weekly {fuel} prices: any date since {first}',
+    'region_monthly.w_p': (
+        'Rosstat records prices once a week, usually on Mondays. For the price on a given day, take the nearest '
+        'registration on or before it. Official statistics do not publish prices of individual filling-station '
+        'chains: this is the average across filling stations of the region.'
+    ),
+    'region_monthly.w_th_date': 'Registration date',
+    'region_monthly.w_th_russia': 'Russia',
+    'region_monthly.w_faq_q': 'How much did a litre of {fuel} cost in {region} on a particular date?',
+    'region_monthly.w_faq_a': (
+        'At the start of {year} (registration of {date}) it was {value} {unit}. For another date, see the weekly '
+        'price table and take the nearest registration on or before that day; weekly prices are available since '
+        '{first}. Official statistics do not publish prices of individual filling-station chains.'
+    ),
+    'region_monthly.w_title': '{fuel} — {region}: {value} {unit} on {date}, weekly prices',
+    'region_monthly.w_description': (
+        '{indicator} in {region}: {value} {unit} on {date}. Weekly prices since {first_year} and monthly since '
+        '{first_month_year}, comparison with the Russia-wide average. Rosstat data.'
+    ),
     'region_indicator.title': '{indicator} — {region}: {value} ({year})',
     'region_indicator.description': '{indicator} in {region}: {value} {unit} in {year}. Dynamics since the 1990s, comparison with Russia, and place among federal subjects.',
     'region_indicator.h1': '{indicator} in {region}',

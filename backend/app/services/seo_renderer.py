@@ -3084,6 +3084,10 @@ async def render_indicator_html(
         desc, current, display_unit or indicator.unit,
         code=data_indicator.code, frequency=display_frequency,
     )
+    # Топливо: цена по регионам на последнюю запись Росстата, со ссылками на «топливо × регион» (18.11.2026).
+    from app.services.regional_weekly import fuel_regions_section
+
+    fuel_regions_html = await fuel_regions_section(db, indicator.code)
     body = _indicator_body(
         indicator,
         category,
@@ -3104,6 +3108,7 @@ async def render_indicator_html(
         source_label=source_label,
         seo_blocks=overlay.get("seo_blocks"),
         locale=loc,
+        fuel_regions_html=fuel_regions_html,
     )
     canonical_path = paths.russia_indicator(indicator.code)
     # ?mode= не каноничен: INDEX_POLICY. Canonical всегда базовый URL карточки.
@@ -3882,6 +3887,10 @@ async def render_indicator_year_html(
         last_date_text=_format_date(last.date),
         annual=freq == "annual",
     )
+    # Топливо: цена по регионам на последнюю запись года (18.11.2026; «ДТ в СПб в 2025» чаще приходит сюда).
+    from app.services.regional_weekly import fuel_regions_section
+
+    fuel_regions_html = await fuel_regions_section(db, code, year=year)
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(year_trail)}
 {fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=year_lead_text)}
@@ -3889,6 +3898,7 @@ async def render_indicator_year_html(
 {totals_section}
 {_seo_chart_figure(paths.og_indicator(paths.RUSSIA, code, year), chart_alt, ui.chart_caption(year), href=card_path, brand=False)}
 {table_section}
+{fuel_regions_html}
 <section><h2>{escape(chart_h2)}</h2><p>{chart_p}</p></section>
 {f"<section><h2>{escape(other_h2)}</h2>{year_links}</section>" if year_links else ""}
 </main>"""
@@ -4090,6 +4100,7 @@ def _indicator_body(
     source_label: str | None = None,
     seo_blocks: list | None = None,
     locale: str | None = None,
+    fuel_regions_html: str = "",
 ) -> str:
     from app.services.i18n_display import public_name
     from app.services.locale import get_locale
@@ -4333,5 +4344,5 @@ def _indicator_body(
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p></section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
-{years_section}{months_section}{world_compare_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
+{years_section}{months_section}{fuel_regions_html}{world_compare_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
 </main>"""

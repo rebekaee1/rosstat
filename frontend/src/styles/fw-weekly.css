@@ -1,0 +1,45 @@
+/* «Цена на дату» (недельные цены топлива в регионе, 18.11.2026). Без рамок: поле — колодец калькулятора
+   (.calc-field-input), выбранная строка — заливка светлотой, ответ — крупная цифра без плашки. */
+.fw-head { margin-bottom: 0.85rem; }
+.fw-lead { margin-top: 0.3rem; font-size: 13px; line-height: 1.5; color: var(--color-text-secondary, #5d6578); max-width: 44rem; }
+
+.fw-body { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.9rem 1.6rem; }
+.fw-pick { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.fw-pick__label { font-size: 12px; color: var(--color-text-secondary, #5d6578); }
+.fw-pick__field { position: relative; display: inline-flex; align-items: center; }
+
+.fw-pick__input {
+  width: 13.5rem;
+  max-width: 100%;
+  border-radius: 14px;
+  padding: 0 0.85rem;
+  font-size: 15px;
+  color: var(--color-text-primary, #1e2638);
+}
+
+.fw-answer { min-width: 0; }
+.fw-answer__value {
+  font-size: 1.75rem;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary, #1e2638);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.fw-answer__unit { margin-left: 0.3rem; font-size: 13px; font-weight: 500; color: var(--color-text-secondary, #5d6578); letter-spacing: 0; }
+.fw-answer__date { margin-top: 0.2rem; font-size: 13px; color: var(--color-text-primary, #1e2638); }
+.fw-answer__rf { margin-top: 0.15rem; font-size: 13px; color: var(--color-text-secondary, #5d6578); }
+.fw-answer__note { margin-top: 0.3rem; font-size: 12px; line-height: 1.45; color: var(--color-text-secondary, #5d6578); max-width: 26rem; }
+
+.fw-foot { margin: 0.9rem 0 0.4rem; font-size: 12px; line-height: 1.5; color: var(--color-text-secondary, #5d6578); }
+.fw-toggle { margin-inline: -0.25rem; width: calc(100% + 0.5rem); }
+.fw-table { margin-top: 0.35rem; }
+/* Разделитель строк таблицы — тонкая линия (п.2 исключений «без границ»), как у таблицы по месяцам. */
+.fw-table tbody tr td { border-top: 1px solid var(--color-border-subtle, rgba(30, 38, 56, 0.12)); }
+.fw-row--on td { background: color-mix(in srgb, var(--color-accent-solid, #1e3a6e) 8%, transparent); }
+.fw-row--on td:first-child { color: var(--color-text-primary, #1e2638); font-weight: 500; }
+
+@media (max-width: 639px) {
+  .fw-body { flex-direction: column; align-items: stretch; }
+  .fw-pick__input { width: 100%; }
+}

@@ -138,6 +138,7 @@ _ENGAGEMENT = {
     "related_link_click",
     "source_link_click",
     "region_crosslink_click",
+    "region_weekly_date",           # выбор даты в блоке «Цена на дату» (топливо по неделям, 18.11.2026)
     "regions_map_metric",
     "regions_map_select",
     "regions_map_timeline",

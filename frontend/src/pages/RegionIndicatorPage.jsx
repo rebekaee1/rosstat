@@ -21,6 +21,7 @@ import { indicatorPolarity } from '../lib/deltaTone';
 import { prioritizeIndicators, formatRegionNumber, isPercentUnit, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import { HistoryKeyYears, HistoryCoverage } from '../components/regions/MonthlyPricePartsHistory';
+import WeeklyPrices from '../components/regions/WeeklyPrices';
 import { deflateSeries, eventPeriods, fillMonthGaps } from '../lib/z2PriceHistory';
 import GroupedSiblings, { CompareLines, AreaCalc, CopyForClient, DiscontinuedNote, PairSwitch, RangeChips } from '../components/regions/MonthlyPriceParts';
 import {
@@ -651,6 +652,16 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <p className="z2p-source" lang={locale}>{t('r2z2.source', { month: lastMonthLabel })}</p>
             )}
             </div>
+
+          {isMonthly && monthly.data?.weekly?.length > 0 && (
+            <WeeklyPrices
+              weekly={monthly.data.weekly}
+              weeklyRussia={monthly.data.weekly_russia}
+              regionName={regionName}
+              isRussia={slug === 'russia'}
+              subject={`region:${slug}:${code}`}
+            />
+          )}
 
           {isMonthly && isPrice && (
             <HistoryKeyYears series={activeSeries} russiaSeries={active.russia_series} cpi={cpiChain} last={last} unit={active.indicator.unit} discontinued={discontinued} />

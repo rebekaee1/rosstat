@@ -664,6 +664,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Недельные цены на топливо по субъектам (ЕМИСС 37426, 18.11.2026): витрина обновляется по средам,
+        # публикация бывает с опозданием на неделю-две. Четверг и суббота: повтор идемпотентен и стоит
+        # одну страницу витрины и один-два запроса.
+        from app.tasks.scheduler import emiss_weekly_fuel_job as _emiss_weekly_fuel
+
+        scheduler.add_job(
+            locked_job(_emiss_weekly_fuel, "emiss_weekly_fuel", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=8, minute=20, day_of_week="thu,sat", timezone="Europe/Moscow"),
+            id="emiss_weekly_fuel",
+            name="Weekly EMISS regional fuel prices (region_weekly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # World: национальные паспорта (19 официальных источников, ~90 рядов)
         # обновляются ежедневно — данные пишут сразу, контур проверен живыми
         # прогонами. Eurostat-часть (TOC-driven, часы работы) остаётся

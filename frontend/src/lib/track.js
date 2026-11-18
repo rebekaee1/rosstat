@@ -345,6 +345,8 @@ export const events = {
   REGIONS_CONTRASTS_SHUFFLE: 'regions_contrasts_shuffle',
   REGION_COMPARE_ADD: 'region_compare_add',
   REGION_CROSSLINK_CLICK: 'region_crosslink_click',
+  // Выбор дня в блоке «Цена на дату» (недельные цены топлива в регионе, 18.11.2026).
+  REGION_WEEKLY_DATE: 'region_weekly_date',
   // Просмотр карточки регионального показателя — first-party аналог
   // indicator_view, чтобы просмотры регионов попадали в «Пульс», а не только
   // в хиты Метрики.

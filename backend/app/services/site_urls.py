@@ -44,7 +44,7 @@ from app.services.index_policy import (
 )
 from app.services.display import today_msk
 
-from sqlalchemy import Integer, String, func, literal, select, tuple_, union_all
+from sqlalchemy import Integer, String, cast, extract, func, literal, select, tuple_, union_all
 from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
@@ -56,6 +56,7 @@ from app.models import (
     Region,
     RegionDataPoint,
     RegionMonthlyPoint,
+    RegionWeeklyPoint,
     RegionIndicator,
     WorldCountry,
     WorldDataPoint,
@@ -436,13 +437,18 @@ async def _region_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     return urls
 
 
-# Годовые и месячные ряды используют одну публичную карточку. UNION ALL
-# допускает оба источника, GROUP BY ниже не даёт дублировать URL пары.
+# Годовые, месячные и недельные ряды используют одну публичную карточку. UNION ALL
+# допускает все источники, GROUP BY ниже не даёт дублировать URL пары. Недельная цена
+# (топливо, 18.11.2026) свежее месячной: lastmod страницы двигается с каждой неделей.
 _REGIONAL_PAIR_DATA = union_all(
     select(RegionDataPoint.indicator_id, RegionDataPoint.region_id,
            (RegionDataPoint.year * 10000 + 1231).label("last_day")),
     select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.region_id,
            (RegionMonthlyPoint.month * 100 + 1).label("last_day")),
+    select(RegionWeeklyPoint.indicator_id, RegionWeeklyPoint.region_id,
+           cast(extract("year", RegionWeeklyPoint.date) * 10000
+                + extract("month", RegionWeeklyPoint.date) * 100
+                + extract("day", RegionWeeklyPoint.date), Integer).label("last_day")),
 ).subquery()
 
 

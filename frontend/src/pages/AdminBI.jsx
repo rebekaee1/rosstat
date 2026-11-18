@@ -72,6 +72,7 @@ const EVENT_RU = {
   region_indicator_view: 'Просмотр показателя региона',
   region_compare_add: 'Регион добавлен в сравнение',
   region_crosslink_click: 'Переход по мосту макро–регионы',
+  region_weekly_date: 'Выбор даты в блоке «Цена на дату» (топливо в регионе)',
   indicator_view: 'Просмотр карточки индикатора',
   frequency_switch: 'Переключение частоты ряда',
   chart_mode_change: 'Смена режима графика',
