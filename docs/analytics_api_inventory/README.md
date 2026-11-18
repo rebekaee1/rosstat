@@ -31,6 +31,8 @@ and `analytics-smoke.py` exits with `enabled=false`.
 
 **Скачивания и выгрузки в служебном боте (14.11.2026, ветка, не выпущено):** кнопки «📥 Скачивания» и «📤 Выгрузки» читают `frontend_events` (группы скачиваний и упоров в лимит, все действия), `user_signups`, `identity_links`, `server_sessions` и справочники названий; внешних API нет. Контракт — [data-contracts](../data-contracts.md#служебный-бот-скачивания-и-выгрузки--2026-11-14-ветка-не-выпущено), решение — дополнение [ADR-0024](../adr/0024-telegram-report-modes.md#subsequent-additions).
 
+**Люди только с признаком живого посетителя (18.11.2026, ветка, не выпущено):** `server_sessions.is_human` (миграция `20261118_session_is_human`), правило `bot_score.human_evidence`, раздел Пульса `people` и `events.people_by_name` (`services/pulse_people.py`), в ряду дней BI `own_people`/`own_unconfirmed`/`own_unrated`. Сверка на 30 днях и остаток — [ADR-0009](../adr/0009-behavior-stream-first-party.md#человек--только-сессия-с-признаком-живого-посетителя--2026-11-18).
+
 Activation cheat-sheet:
 
 - `RUSTATS_ANALYTICS_API_TOKEN` защищает внутренние analytics REST endpoints
