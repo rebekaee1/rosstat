@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2439  ·  **Строк:** 1 538 384  ·  **Токенов (≈):** 14 759 498
+**Файлов:** 2439  ·  **Строк:** 1 538 411  ·  **Токенов (≈):** 14 760 735
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 1042 | 356 246 | 3 948 409 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 21 | 1 577 | 26 061 |
-| `docs` | 153 | 959 984 | 8 282 146 |
+| `deploy` | 21 | 1 578 | 26 206 |
+| `docs` | 153 | 960 010 | 8 283 238 |
 | `frontend` | 1063 | 191 535 | 2 111 788 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 143 | 25 563 | 317 706 |
@@ -38,7 +38,7 @@
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
 | `docs/mechanism-inventory.md` | 4 100 | 179 351 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
-| `docs/backlog.md` | 4 005 | 142 096 |
+| `docs/backlog.md` | 4 023 | 143 024 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 256 | 118 363 |
@@ -59,8 +59,8 @@
 | `backend/app/data/regional/emiss_price_goods.json` | 7 211 | 39 800 |
 | `frontend/src/pages/ComparePage.jsx` | 3 325 | 36 894 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 962 | 32 847 |
+| `docs/search.md` | 1 225 | 31 898 |
 | `backend/app/models.py` | 2 395 | 31 840 |
-| `docs/search.md` | 1 217 | 31 734 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 104 |
 | `docs/workflow.md` | 837 | 30 278 |
 | `backend/app/api/world.py` | 2 909 | 28 926 |
@@ -233,12 +233,12 @@
 | `frontend/src/styles/regions-w4.css` | 423 | 6 643 |
 | `backend/app/services/freshness.py` | 648 | 6 637 |
 | `frontend/src/styles/z2-shell.css` | 530 | 6 634 |
+| `deploy/approved-shas.txt` | 202 | 6 583 |
 | `backend/app/services/display.py` | 695 | 6 561 |
 | `docs/adr/0027-public-telegram-bot.md` | 229 | 6 556 |
 | `docs/research/_fpsr_raw/agent06.json` | 425 | 6 550 |
 | `backend/app/services/cabinet.py` | 634 | 6 513 |
 | `backend/tests/test_parser_publication.py` | 543 | 6 455 |
-| `deploy/approved-shas.txt` | 201 | 6 438 |
 | `docs/research/_fpsr_raw/agent08.json` | 458 | 6 434 |
 | `frontend/src/styles/k8-tools.css` | 611 | 6 425 |
 | `backend/app/data/cbr_currencies.py` | 480 | 6 417 |
