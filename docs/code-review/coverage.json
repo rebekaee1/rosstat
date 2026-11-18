@@ -14351,9 +14351,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "8b4e2282667e8f433f415265c8c00986237eea8327d6a327174de1085ce5ccd5",
-      "bytes": 34781,
-      "lines": 202,
+      "sha256": "38f72a123ed2eed308b19f998713a71145a8f210b47af613bc37b515d5bbcb30",
+      "bytes": 35188,
+      "lines": 203,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14741,8 +14741,8 @@
     },
     {
       "path": "docs/adr/0009-behavior-stream-first-party.md",
-      "sha256": "15689562532411c8b818d78de8185986d999328c41293d83fc67aa2a5ba0fa99",
-      "bytes": 27109,
+      "sha256": "b79b62f6806be51605dcb1098771236dcfa6ec255e8d8149f178bfa71d09caf3",
+      "bytes": 27164,
       "lines": 181,
       "code": false,
       "status": "reviewed",
@@ -15365,8 +15365,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "4baf2898ee5ce857a63f72e7bd786071b1b0789b9328d09e03507945a896c980",
-      "bytes": 862546,
+      "sha256": "26d76551bd9c0df84791e099efd063410277a87b3355ede456880d8bb03fef1c",
+      "bytes": 862887,
       "lines": 4023,
       "code": false,
       "status": "reviewed",
@@ -34540,9 +34540,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "56f272e778734e017c0da4c5aa69224907c02fd9ec551bbd8acac30d2e8287c4",
+  "ledger_sha256": "e439d5605fd46a311d72895b01d3106dac86f21fd8759af41743880fdba69355",
   "javascript_inventory_sha256": "c0ca962bae4c4f1b590e8022d6f6ced851fe1ef665c8fbe28f63cc84adde8a40",
-  "baseline_commit": "57eaf8ddf39bf49615809cfd2d7a8a2c2a643a77",
+  "baseline_commit": "126ddf688d6dc64865580d5e709ae591768d7a94",
   "branch": "int/2026-11-18-radical",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/adr/0009-behavior-stream-first-party.md",
+    "docs/backlog.md"
+  ]
 }

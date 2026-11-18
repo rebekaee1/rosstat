@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2440  ·  **Строк:** 1 538 573  ·  **Токенов (≈):** 14 762 749
+**Файлов:** 2440  ·  **Строк:** 1 538 574  ·  **Токенов (≈):** 14 762 885
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 1043 | 356 377 | 3 949 721 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 21 | 1 578 | 26 206 |
-| `docs` | 153 | 960 041 | 8 283 940 |
+| `deploy` | 21 | 1 579 | 26 274 |
+| `docs` | 153 | 960 041 | 8 284 008 |
 | `frontend` | 1063 | 191 535 | 2 111 788 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 143 | 25 563 | 317 706 |
@@ -38,7 +38,7 @@
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
 | `docs/mechanism-inventory.md` | 4 101 | 179 384 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
-| `docs/backlog.md` | 4 023 | 143 123 |
+| `docs/backlog.md` | 4 023 | 143 181 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 256 | 118 363 |
@@ -230,10 +230,10 @@
 | `backend/app/services/mail/funnel.py` | 503 | 6 707 |
 | `backend/app/services/world_adapters/abs_data.py` | 756 | 6 686 |
 | `docs/research/_fpsr_raw/agent02.json` | 489 | 6 660 |
+| `deploy/approved-shas.txt` | 203 | 6 651 |
 | `frontend/src/styles/regions-w4.css` | 423 | 6 643 |
 | `backend/app/services/freshness.py` | 648 | 6 637 |
 | `frontend/src/styles/z2-shell.css` | 530 | 6 634 |
-| `deploy/approved-shas.txt` | 202 | 6 583 |
 | `backend/app/services/display.py` | 695 | 6 561 |
 | `docs/adr/0027-public-telegram-bot.md` | 229 | 6 556 |
 | `docs/research/_fpsr_raw/agent06.json` | 425 | 6 550 |
@@ -383,7 +383,7 @@
 | `docs/design/art-prompts/approved-collection.json` | 93 | 4 468 |
 | `backend/app/services/telegram_missed_summary.py` | 423 | 4 440 |
 | `frontend/src/lib/searchSynonyms.test.js` | 340 | 4 432 |
-| `docs/adr/0009-behavior-stream-first-party.md` | 181 | 4 416 |
+| `docs/adr/0009-behavior-stream-first-party.md` | 181 | 4 426 |
 | `backend/app/services/seo_world_subnational.py` | 463 | 4 406 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 403 |
