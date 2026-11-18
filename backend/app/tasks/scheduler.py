@@ -714,6 +714,17 @@ async def emiss_regional_job():
     await _job()
 
 
+async def emiss_weekly_fuel_job():
+    """Недельные цены на топливо по субъектам (ЕМИСС 37426) в region_weekly_data.
+
+    Расписание в main.py, реализация — app.services.emiss_weekly_fuel. Даты недель берутся из
+    федерального недельного ряда топлива, поэтому прогон после daily ETL (утро) даёт свежие даты.
+    """
+    from app.services.emiss_weekly_fuel import emiss_weekly_fuel_job as _job
+
+    await _job()
+
+
 
 # ---------------------------------------------------------------------------
 #  Staleness-мониторинг (Н-3): «источник молча умер» виден не через failed,

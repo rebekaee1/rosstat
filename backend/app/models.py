@@ -191,6 +191,32 @@ class RegionMonthlyPoint(Base):
     month: Mapped[int] = mapped_column(Integer, nullable=False)  # YYYYMM
     value: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
 
+
+class RegionWeeklyPoint(Base):
+    """Недельная цена регионального показателя на дату регистрации Росстата (18.11.2026, ADR-0008).
+
+    Третья частота регионального контура — своя таблица, как и месяц: частоты в одной таблице
+    не смешиваются. Пока только топливо (ЕМИСС 37426, с 2022 года); пишет
+    ``app.services.emiss_weekly_fuel``. Ряд привязан к тому же показателю, что и месячный
+    (``ceni-dt`` и т. п.), и показывается на той же странице «топливо × регион».
+    """
+
+    __tablename__ = "region_weekly_data"
+    __table_args__ = (
+        UniqueConstraint("indicator_id", "region_id", "date", name="uq_region_weekly_point"),
+        Index("ix_region_weekly_region_indicator_date", "region_id", "indicator_id", "date"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    indicator_id: Mapped[int] = mapped_column(
+        ForeignKey("region_indicators.id", ondelete="CASCADE"), nullable=False
+    )
+    region_id: Mapped[int] = mapped_column(
+        ForeignKey("regions.id", ondelete="CASCADE"), nullable=False
+    )
+    date: Mapped[date] = mapped_column(Date, nullable=False)
+    value: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+
     indicator: Mapped["RegionIndicator"] = relationship()
     region: Mapped["Region"] = relationship()
 

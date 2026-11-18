@@ -4,7 +4,7 @@ from datetime import date
 
 from app.models import (
     Indicator, IndicatorData,
-    Region, RegionIndicator, RegionDataPoint, RegionMonthlyPoint,
+    Region, RegionIndicator, RegionDataPoint, RegionMonthlyPoint, RegionWeeklyPoint,
     WorldCountry, WorldIndicator, WorldDataPoint,
 )
 from app.services import site_urls as urls
@@ -57,6 +57,8 @@ def test_regional_public_kinds_hidden_rows_and_monthly_pairs(auth_env):
             db.add_all([
                 RegionMonthlyPoint(region_id=regions[0].id, indicator_id=annual.id, month=202501, value=2),
                 RegionMonthlyPoint(region_id=regions[0].id, indicator_id=monthly.id, month=202502, value=2),
+                # Недельная цена той же пары (18.11.2026) — тот же URL, lastmod по последней неделе.
+                RegionWeeklyPoint(region_id=regions[0].id, indicator_id=monthly.id, date=date(2025, 3, 17), value=2),
                 RegionDataPoint(region_id=regions[0].id, indicator_id=annual.id, year=1899, value=1),
                 RegionDataPoint(region_id=regions[0].id, indicator_id=annual.id, year=2100, value=1),
             ])
@@ -67,6 +69,7 @@ def test_regional_public_kinds_hidden_rows_and_monthly_pairs(auth_env):
             full = await urls._regional_pair_urls(db, today)
             assert {u.path for u in full} == expected_pairs
             assert len(full) == len(expected_pairs)
+            assert {u.path: u.lastmod for u in full}["/russia/region/alpha/fuel"] == "2025-03-17"
             assert (await db.execute(urls._REG_PAIRS_COUNT)).scalar_one() == len(expected_pairs)
             source = urls._CHUNKED_SOURCES["regional-"]
             bounds = await urls._chunk_bounds(db, "regional-public-test", source.bounds, source.sort, 2)

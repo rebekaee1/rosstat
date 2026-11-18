@@ -4272,4 +4272,17 @@ export default {
   'welcome.telegram.channel': 'Open the channel',
   'welcome.telegram.subscribe': 'Send new data',
   'welcome.telegram.newTab': 'opens in Telegram',
+  // "Price on a date": weekly fuel prices in a region (EMISS 37426, 18.11.2026).
+  'fw.title': 'Price on a date',
+  'fw.lead': 'Rosstat records filling-station prices once a week, usually on Mondays. Pick a day and we show the price of the last record on or before it.',
+  'fw.pickLabel': 'Day',
+  'fw.pickAria': 'Day to show the price for',
+  'fw.perLitre': 'per litre',
+  'fw.onDate': 'on {date}',
+  'fw.russiaSameDay': 'Russia-wide average on the same day: {value}',
+  'fw.nearest': 'No record on {date}: showing the last one before that day.',
+  'fw.beforeFirst': 'Weekly prices start on {date}: showing the first record.',
+  'fw.foot': 'Average price across filling stations of the region, all chains together: official statistics do not publish prices of individual chains. Weekly records from {first} to {last}.',
+  'fw.tableToggle': 'All weekly prices ({n})',
+  'fw.colDate': 'Record date',
 };

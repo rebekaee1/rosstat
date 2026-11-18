@@ -1093,7 +1093,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
     Сравнение с РФ строится, рейтинг — нет: цена зависит от структуры рынка
     и логистики региона, «место в рейтинге цен» вводило бы в заблуждение.
     """
-    cache_key = await versioned_key("regions", f"monthly:v3:{slug}:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"monthly:v4:{slug}:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1163,6 +1163,20 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
     # у годового эндпоинта: карточка месяц-режима строит те же блоки.
     sibling_items = await _section_siblings(db, region, indicator)
 
+    # Недельный слой (топливо, ЕМИСС 37426, с 2022): цена на дату регистрации в регионе и в России.
+    # Выбор даты делает страница; отдельного адреса на дату нет (решение 18.11.2026).
+    from app.services.regional_weekly import weekly_points
+
+    weekly = [{"date": d.isoformat(), "value": _fmt(v)} for d, v in await weekly_points(db, indicator.id, region.id)]
+    weekly_russia = []
+    if weekly and region.slug != "russia":
+        rf_region = (await db.execute(select(Region).where(Region.slug == "russia"))).scalar_one_or_none()
+        if rf_region is not None:
+            weekly_russia = [
+                {"date": d.isoformat(), "value": _fmt(v)}
+                for d, v in await weekly_points(db, indicator.id, rf_region.id)
+            ]
+
     copy = _icopy(indicator)
     first_ym = min([rows[0][0]] + ([russia_series[0]["year"] * 100 + russia_series[0]["month"]] if russia_series else []))
     cpi_chain = await _russia_cpi_chain(db, int(first_ym))
@@ -1188,6 +1202,8 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
         "compare": compare,
         "series": series,
         "russia_series": russia_series,
+        "weekly": weekly,
+        "weekly_russia": weekly_russia,
         "siblings": sibling_items,
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)

@@ -17,6 +17,7 @@
 Legacy query `/regions?view=map&indicator=&year=` → 301 на канон (seo_pages).
 """
 
+from datetime import date
 from html import escape
 
 from sqlalchemy import func, select
@@ -29,7 +30,9 @@ from app.data.region_indicator_polarity import (
 from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint, WebmasterSearchQuery
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
+from app.services.display import format_date_locale
 from app.services.locale import in_language
+from app.services.regional_weekly import fmt_kop, fuel_name_gen, fuel_name_nom, value_on, weekly_points, weekly_unit
 from app.services.seo_i18n import (
     region_display_name,
     region_indicator_copy,
@@ -1401,6 +1404,28 @@ _MONTHLY_RU = {
     ),
     "unit_fallback": "единицы источника",
     "keywords": "{indicator} {region}, средние цены {region}, {indicator} по месяцам, статистика цен Росстата",
+    # Недельный слой (топливо, ЕМИСС 37426, 18.11.2026): цена на дату регистрации Росстата.
+    "w_lead": "Литр {fuel} в регионе {region} на {date} стоил в среднем {value} {unit} (недельные данные Росстата).",
+    "w_lead_rf": " В среднем по России в тот же день — {value} {unit}.",
+    "w_h2": "Цена {fuel} по неделям: на любую дату с {first}",
+    "w_p": (
+        "Росстат регистрирует цены раз в неделю, обычно по понедельникам. Чтобы узнать цену на нужный день, "
+        "возьмите ближайшую регистрацию не позже него. Цены отдельных сетей заправок (Роснефть, Лукойл, "
+        "Газпромнефть и других) официальная статистика не публикует: здесь средняя цена по заправкам региона."
+    ),
+    "w_th_date": "Дата регистрации",
+    "w_th_russia": "Россия",
+    "w_faq_q": "Сколько стоил литр {fuel} в регионе {region} на определённую дату?",
+    "w_faq_a": (
+        "На начало {year} года (регистрация {date}) — {value} {unit}. Для другой даты смотрите таблицу цен по "
+        "неделям и берите ближайшую регистрацию не позже нужного дня; недельные цены есть с {first}. Цены "
+        "отдельных сетей заправок официальная статистика не публикует."
+    ),
+    "w_title": "{fuel} — {region}: {value} {unit} на {date}, цены по неделям",
+    "w_description": (
+        "{indicator} в регионе {region}: {value} {unit} на {date}. Цены по неделям с {first_year} года и по месяцам "
+        "с {first_month_year} года, сравнение со средней по России. Данные Росстата."
+    ),
 }
 
 
@@ -1416,6 +1441,7 @@ async def _render_region_indicator_monthly(
     indicator: RegionIndicator,
     rows: list,
     db: AsyncSession,
+    weekly: list | None = None,
 ) -> tuple[int, str]:
     """SSR-карточка месячного показателя региона (средние потребительские цены, ЕМИСС).
 
@@ -1426,6 +1452,10 @@ async def _render_region_indicator_monthly(
     не строится — уровень цены зависит от структуры рынка и логистики,
     «место в рейтинге цен» вводило бы в заблуждение. Тексты — на языке хоста (14.11.2026: раньше en-страница
     была наполовину русской).
+
+    ``weekly`` — недельные цены той же пары (топливо, ЕМИСС 37426, с 2022 года; 18.11.2026): первая строка
+    страницы называет последнюю недельную цену с датой, таблица по неделям отвечает на «цену на дату», вопрос
+    «на начало года» — в FAQ. Отдельной страницы на дату нет.
     """
     series = [(int(m), float(v)) for m, v in rows]
     first_period, first_value = series[0]
@@ -1487,6 +1517,39 @@ async def _render_region_indicator_monthly(
     n_at = series[values_desc.index(vmin)][0]
     paragraphs.append(_mt("extremes", max=_fmt(vmax), min=_fmt(vmin), unit=unit_sfx,
                           max_month=escape(_month_label(p_at)), min_month=escape(_month_label(n_at))))
+    weekly = weekly or []
+    weekly_html = ""
+    weekly_faq: tuple[str, str] | None = None
+    w_last = weekly[-1] if weekly else None
+    if w_last:
+        rf_weekly = dict(await weekly_points(db, indicator.id, rf.id)) if rf else {}
+        fuel = fuel_name_gen(code, ind_name)
+        w_unit = weekly_unit(unit)
+        lead = _mt("w_lead", fuel=escape(fuel), region=escape(region_name),
+                   date=escape(format_date_locale(w_last[0])), value=fmt_kop(w_last[1]), unit=escape(w_unit))
+        if rf_weekly.get(w_last[0]) is not None:
+            lead += _mt("w_lead_rf", value=fmt_kop(rf_weekly[w_last[0]]), unit=escape(w_unit))
+        paragraphs.insert(0, lead)
+        th_rf = f"<th>{escape(_mt('w_th_russia'))}</th>" if rf_weekly else ""
+        w_rows = "".join(
+            f"<tr><td>{escape(format_date_locale(d))}</td><td>{fmt_kop(v)}</td>"
+            + (f"<td>{fmt_kop(rf_weekly[d]) if d in rf_weekly else '—'}</td>" if rf_weekly else "")
+            + "</tr>"
+            for d, v in reversed(weekly)
+        )
+        weekly_html = (
+            f'<section class="seo-section" id="weekly"><h2>{escape(_mt("w_h2", fuel=fuel, first=format_date_locale(weekly[0][0])))}</h2>'
+            f"<p>{escape(_mt('w_p'))}</p>"
+            f"<table><thead><tr><th>{escape(_mt('w_th_date'))}</th><th>{escape(region_name)}</th>{th_rf}</tr></thead>"
+            f"<tbody>{w_rows}</tbody></table></section>"
+        )
+        year_start = value_on(weekly, date(w_last[0].year, 1, 1))
+        if year_start:
+            weekly_faq = (
+                _mt("w_faq_q", fuel=fuel, region=region_name),
+                _mt("w_faq_a", year=w_last[0].year, date=format_date_locale(year_start[0]),
+                    value=fmt_kop(year_start[1]), unit=w_unit, first=format_date_locale(weekly[0][0])),
+            )
     paragraphs_html = "".join(f"<p>{p}</p>" for p in paragraphs)
 
     # контрольные точки: январь каждого пятого года + последний месяц
@@ -1522,6 +1585,8 @@ async def _render_region_indicator_monthly(
         ),
         (_mt("faq_source_q"), _mt("faq_source_a")),
     ]
+    if weekly_faq:
+        faq.insert(1, weekly_faq)
     faq_h2 = _mt("faq_h2")
     faq_html = (
         f'<section class="seo-section"><h2>{escape(faq_h2)}</h2>'
@@ -1632,6 +1697,15 @@ async def _render_region_indicator_monthly(
                 month=_month_label_nom(last_period)).replace("  ", " ").strip()
     desc = _mt("description", indicator=ind_name, region=region_name, value=_fmt(last_value), unit=unit,
                month_prep=_month_label(last_period, "prep"), first_year=first_year).replace("  ", " ")
+    if w_last:
+        # Недельная цена свежее месячной и отвечает на «цену на дату»: она и в заголовке.
+        title = _mt("w_title", fuel=fuel_name_nom(code, ind_name), region=region_name,
+                    value=fmt_kop(w_last[1]), unit=weekly_unit(unit),
+                    date=format_date_locale(w_last[0])).replace("  ", " ").strip()
+        desc = _mt("w_description", indicator=ind_name, region=region_name, value=fmt_kop(w_last[1]),
+                   unit=weekly_unit(unit),
+                   date=format_date_locale(w_last[0]), first_year=weekly[0][0].year,
+                   first_month_year=first_year).replace("  ", " ")
 
     json_ld = [
         _breadcrumbs(crumbs.region_indicator_trail(
@@ -1677,6 +1751,7 @@ async def _render_region_indicator_monthly(
 {figure_html}
 {paragraphs_html}
 {checkpoints_html}
+{weekly_html}
 {table_html}
 {faq_html}
 {district_html}
@@ -1720,7 +1795,8 @@ async def render_region_indicator_html(
     )).all()
 
     if monthly_rows:
-        return await _render_region_indicator_monthly(slug, code, region, indicator, monthly_rows, db)
+        weekly = await weekly_points(db, indicator.id, region.id)
+        return await _render_region_indicator_monthly(slug, code, region, indicator, monthly_rows, db, weekly)
 
     rows = (await db.execute(
         select(RegionDataPoint.year, RegionDataPoint.value)
