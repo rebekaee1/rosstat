@@ -97,6 +97,15 @@ _SYSTEM_PROMPT = """Ты — аналитик forecasteconomy.com (эконом�
 dead_clicks_top и rage_clicks_top два числа: n — клики, sessions — сколько разных сессий
 (людей) их сделали. Суди по sessions: десятки кликов при sessions=1 — один человек, пиши
 «один человек», не «люди», и не называй это главным сигналом дня. Тенденция — от трёх сессий.
+Блок people — кто был на сайте. Человек — только сессия с признаком живого посетителя
+(путь указателя, прокрутка, ввод дольше одного действия, два нажатия, вход в аккаунт):
+people.sessions.human и people.human_visitors — это и есть «люди». unconfirmed — заходы
+без единого такого признака: не доказанные роботы, но и не люди; bot — роботы; unknown —
+сессия не оценивалась. events.people_by_name делит события так же: people — события
+подтверждённых людей (people_sessions — сколько их), unconfirmed/bot — остальных.
+Если событие сделали только неподтверждённые (people=0), не пиши «люди нажимали», не делай
+из него вывода о спросе или поломке и не проси что-то проверить — пиши «заходы без признаков
+человека». У строк dead/rage поле people — сколько из sessions подтверждённые люди.
 Счётчик behavior.by_type.js_error включает роботов: безголовые браузеры фермы
 не грузят картинки и Метрику и шлют по ошибке на каждый файл. О поломке сайта
 говори только по marts.reliability: js_errors_real_own (ошибки кода) и
@@ -576,6 +585,7 @@ def _fallback_summary(snapshot: dict) -> str:
         f"👤 Пользователи: всего {u.get('total', 0)}, новых {u.get('new', 0)}",
         f"🫂 Активны за день: зарег. {aud.get('authed_active', 0)}, "
         f"гостей {aud.get('guest_sessions', 0)}",
+        *([f"🧍 {_people_digits(snapshot)}"] if _people_digits(snapshot) else []),
         f"⚡ Событий: {ev.get('total', 0)} "
         f"(зарег. {by_aud.get('authed', 0)} / гости {by_aud.get('guest', 0)})",
         f"📥 Скачиваний: {sum(ev.get('downloads', {}).values())} "
@@ -594,6 +604,13 @@ def _fallback_summary(snapshot: dict) -> str:
         pass
     lines.extend(escape(line) for line in _acquisition_lines(snapshot))
     return "\n".join(lines)
+
+
+def _people_digits(snapshot: dict) -> str | None:
+    """Строка «люди / не подтверждено / роботы» (18.11.2026); None у снимков без раздела people."""
+    from app.services.pulse_people import digits_line
+
+    return digits_line(snapshot.get("people"))
 
 
 def _etl_line(etl: dict) -> str:
@@ -619,6 +636,9 @@ def _raw_digits_block(snapshot: dict) -> str:
         f"события зарег/гость {by_aud.get('authed', 0)}/{by_aud.get('guest', 0)}; "
         f"скачивания зарег/гость {dl_aud.get('authed', 0)}/{dl_aud.get('guest', 0)}"
     )
+    people = _people_digits(snapshot)
+    if people:
+        parts.append(escape(people))
     if ev.get("by_name"):
         top = ", ".join(f"{k}: {v}" for k, v in list(ev["by_name"].items())[:15])
         parts.append(f"События: {escape(top)}")

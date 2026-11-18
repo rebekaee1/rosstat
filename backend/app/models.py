@@ -1301,6 +1301,9 @@ class ServerSession(Base):
     is_bot: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
     # Эвристический скор роботности 0..100 (bot_score.py): is_bot = score>=порога.
     bot_score: Mapped[int] = mapped_column(Integer, default=0, nullable=False, server_default="0")
+    # Человек подтверждён признаком живого посетителя (bot_score.human_evidence, 18.11.2026): True — да,
+    # False — нет (робот или «не подтверждён»), NULL — сессия посчитана до правила и не пересчитывалась.
+    is_human: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     # Собственная активность (владелец/админы по identity_links, /admin/*):
     # исключается из витрин, но не смешивается с ботами (этап 3б BI 2.1).
     is_internal: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")

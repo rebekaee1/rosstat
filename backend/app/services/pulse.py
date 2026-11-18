@@ -726,6 +726,17 @@ async def build_snapshot(d: date) -> dict[str, Any]:
             .order_by(func.count().desc()).limit(15)
         )).all()
         b_dead, b_rage = await _friction_tops(db, start, end)
+
+        # --- Люди (18.11.2026): человек — только сессия с признаком живого посетителя -----------
+        # Пульс за 17.11 назвал людьми семь заходов одной программы («Sign up» в одну точку). Раздел `people`
+        # делит сессии дня на людей, неподтверждённых, роботов; события и клики в пустоту — по тем же сессиям.
+        from app.services import pulse_people
+
+        people_index = await pulse_people.load_index(db, start, end)
+        snap["people"] = await pulse_people.people_snapshot(db, start, end)
+        snap["events"]["people_by_name"] = await pulse_people.events_by_people(
+            db, start, end, people_index, list(snap["events"].get("by_name") or {}))
+        await pulse_people.friction_people(db, start, end, people_index, b_dead, b_rage)
         # dwell: среднее время и глубина скролла по страницам (из params_json)
         dwell_rows = (await db.execute(
             select(BehaviorEvent.page, BehaviorEvent.params_json)
@@ -911,8 +922,15 @@ def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
         "seo_searchable_pages": snap.get("seo", {}).get("searchable_pages"),
         # День точки Вебмастера: одинаковое число неделю подряд с одной датой — данные стоят, не «без изменений».
         "seo_in_search_date": (snap.get("seo", {}).get("in_search_freshness") or {}).get("date"),
+        **_people_core(snap),
         **_extra_core(snap),
     }
+
+
+def _people_core(snap: dict[str, Any]) -> dict[str, Any]:
+    from app.services.pulse_people import memory_core as people_memory
+
+    return people_memory(snap.get("people"))
 
 
 def _extra_core(snap: dict[str, Any]) -> dict[str, Any]:
