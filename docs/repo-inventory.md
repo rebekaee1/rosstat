@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2440  ·  **Строк:** 1 538 574  ·  **Токенов (≈):** 14 762 885
+**Файлов:** 2440  ·  **Строк:** 1 538 576  ·  **Токенов (≈):** 14 763 113
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 1043 | 356 377 | 3 949 721 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 579 | 26 274 |
-| `docs` | 153 | 960 041 | 8 284 008 |
+| `docs` | 153 | 960 043 | 8 284 236 |
 | `frontend` | 1063 | 191 535 | 2 111 788 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 143 | 25 563 | 317 706 |
@@ -38,7 +38,7 @@
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
 | `docs/mechanism-inventory.md` | 4 101 | 179 384 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
-| `docs/backlog.md` | 4 023 | 143 181 |
+| `docs/backlog.md` | 4 025 | 143 409 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 256 | 118 363 |

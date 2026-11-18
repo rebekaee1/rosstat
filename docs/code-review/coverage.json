@@ -15365,9 +15365,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "26d76551bd9c0df84791e099efd063410277a87b3355ede456880d8bb03fef1c",
-      "bytes": 862887,
-      "lines": 4023,
+      "sha256": "b867acb531a1970c0305f4145db1e2f66d45a42236e331dfe9e6f2feca1d01cb",
+      "bytes": 864373,
+      "lines": 4025,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -34540,12 +34540,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "e439d5605fd46a311d72895b01d3106dac86f21fd8759af41743880fdba69355",
+  "ledger_sha256": "155361ff2fe80f7b2362e543603338a93a70bd575a9d9616a27db9acd73a1d94",
   "javascript_inventory_sha256": "c0ca962bae4c4f1b590e8022d6f6ced851fe1ef665c8fbe28f63cc84adde8a40",
-  "baseline_commit": "126ddf688d6dc64865580d5e709ae591768d7a94",
-  "branch": "int/2026-11-18-radical",
-  "unstaged_at_capture": [
-    "docs/adr/0009-behavior-stream-first-party.md",
-    "docs/backlog.md"
-  ]
+  "baseline_commit": "027e7a160af2366c94bdf2ba321d12539d495f3e",
+  "branch": "fix/pulse-2026-11-18",
+  "unstaged_at_capture": []
 }
