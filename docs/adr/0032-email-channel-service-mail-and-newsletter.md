@@ -137,6 +137,7 @@
 1. **DNS у nic.ru** (домен `forecasteconomy.com`, раздел «DNS-серверы и управление зоной»): у записи `_dmarc` типа TXT заменить значение на
    `v=DMARC1; p=none; rua=mailto:info@forecasteconomy.com`
    Другой путь без DNS: в admin.yandex.ru добавить ящику `info@` алиас `dmarc`. Через сутки после правки `mail.py deliverability` покажет отчёты DMARC.
+   **Сделано 18.11.2026 (по слову владельца «сделай»):** ящику `info@` в admin.yandex.ru добавлена дополнительная почта `dmarc@forecasteconomy.com`; проверка `RCPT` на `mx.yandex.net` с боевого — `250 2.1.5 recipient ok` (несуществующий адрес — `550`). Запись DNS `_dmarc` не менялась. Отчёты DMARC приходят в `info@` со следующих суток.
 2. **Проверочные ящики:** сказать адрес своего Gmail и завести ящик Mail.ru (нужен телефон). Ящик Яндекса есть — `rebeka.ee@yandex.ru`. По слову владельца агент отправляет на них то же письмо выпуска:
    ```bash
    ssh fe-prod 'cd /opt/rosstat && docker compose cp /root/newsletter-issues/fe-weekly-01/. backend:/tmp/fe-weekly-01/ && for to in rebeka.ee@yandex.ru АДРЕС_GMAIL АДРЕС_MAILRU; do docker compose exec -T backend python /app/scripts/newsletter_personal.py send-test --persona rich --issue /tmp/fe-weekly-01/issue-01-ru.json /tmp/fe-weekly-01/issue-01-en.json --to "$to"; done'

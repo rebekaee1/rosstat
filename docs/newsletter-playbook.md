@@ -247,8 +247,8 @@ ssh fe-prod 'cd /opt/rosstat && docker compose exec -T backend python /app/scrip
   получателя — `spf=pass`, `dkim=pass`, `dmarc=pass`; у получателя не подтверждён (нет отчётов DMARC и
   проверочных ящиков).
 - **Отчёты DMARC терялись:** запись DMARC отправляла их на `dmarc@forecasteconomy.com`, а такого ящика нет
-  (сервер Яндекса отвечает `550 5.7.1 No such user`). Исправление — в DNS (раздел «Что сделать владельцу»
-  в [ADR-0032](adr/0032-email-channel-service-mail-and-newsletter.md#dop-2026-11-18-delivery)).
+  (сервер Яндекса отвечал `550 5.7.1 No such user`). Исправлено 18.11.2026: у ящика `info@` добавлен алиас `dmarc`
+  ([ADR-0032](adr/0032-email-channel-service-mail-and-newsletter.md#dop-2026-11-18-delivery)).
 - Домен не в списке Spamhaus DBL, сервер отправки Яндекса — не в Spamhaus ZEN.
 - Переход один (один человек, адрес не на Яндексе, Gmail или Mail.ru). При 106 письмах, из которых 89 ушли на
   неподтверждённые адреса, один-два перехода в первые сутки — обычный порядок; сам по себе это не признак спама.
