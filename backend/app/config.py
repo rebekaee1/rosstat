@@ -74,6 +74,9 @@ class Settings(BaseSettings):
     analytics_db_max_overflow: int = 2
     analytics_db_pool_timeout: int = 15
     analytics_db_statement_timeout_ms: int = 60_000
+    # Ночной пересчёт истории аналитики (rollups_daily_job, 60 дней): свой предел запроса на транзакцию (SET LOCAL).
+    # 18.11.2026 окно дней бот-фермы 27–30.09 не укладывалось в 60 с; на боевом вручную с 600 с — 22 мин на 60 дней.
+    analytics_history_statement_timeout_ms: int = 600_000
     analytics_db_idle_in_transaction_timeout_ms: int = 120_000
     # Каталог статических sitemap (ночной job → nginx try_files).
     sitemap_dir: str = "/var/www/sitemaps"

@@ -19,19 +19,19 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2653,
-    "code_files": 2162,
-    "current_reviews": 2653,
+    "files": 2654,
+    "code_files": 2163,
+    "current_reviews": 2654,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
       "binary_asset": 1,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2380
+      "reviewed": 2381
     },
-    "definitions": 17928,
-    "annotated_definitions": 17928,
+    "definitions": 17944,
+    "annotated_definitions": 17944,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -1832,9 +1832,9 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "cd2229e162492c90bf19b8ddba9befd32fd2d97413fe94b7ed5a7bf51803cf0d",
-      "bytes": 66713,
-      "lines": 801,
+      "sha256": "a1537927f20a8b53dc6b7ecec617e09851cf292352de04501e2286e98c5f037f",
+      "bytes": 67130,
+      "lines": 804,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -7357,15 +7357,15 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "sha256": "5171328f8b4fa301f9bea4dc93dce9546959b2435ddea362cf5ceac9a2c8b26c",
-      "bytes": 72888,
-      "lines": 1374,
+      "sha256": "cb7d46bca338d72f4d7799581a1e2d55d905ec516a6d81d6df24e805ab610ddb",
+      "bytes": 74517,
+      "lines": 1393,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 46,
-      "annotated_definitions": 46,
+      "definitions": 47,
+      "annotated_definitions": 47,
       "missing_definitions": []
     },
     {
@@ -11698,6 +11698,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_rollups_history_timeout.py",
+      "sha256": "a2312636ced244106c64b877a942c5509219a407fd1e3670681249cbe8cd0eb1",
+      "bytes": 4112,
+      "lines": 109,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 15,
+      "annotated_definitions": 15,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_rosstat_fuel_samples.py",
       "sha256": "23e4ffb85df72e5e53b39eb6672b71c8f06aff4188011d10b0554e560041fffb",
       "bytes": 2834,
@@ -14728,8 +14741,8 @@
     },
     {
       "path": "docs/adr/0009-behavior-stream-first-party.md",
-      "sha256": "258beddd4b0b59a93b9fd980cf6f035458ba70f2ec5fb354d9e71429eba43b66",
-      "bytes": 26448,
+      "sha256": "15689562532411c8b818d78de8185986d999328c41293d83fc67aa2a5ba0fa99",
+      "bytes": 27109,
       "lines": 181,
       "code": false,
       "status": "reviewed",
@@ -15352,8 +15365,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "84e704981c9ed619e963787968e91c7639603a6cb4c3ba4cf328d34a26cef084",
-      "bytes": 862313,
+      "sha256": "4baf2898ee5ce857a63f72e7bd786071b1b0789b9328d09e03507945a896c980",
+      "bytes": 862546,
       "lines": 4023,
       "code": false,
       "status": "reviewed",
@@ -15950,9 +15963,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "1915f089bd452869bc98e6ef3fbe08d2559e99681da88d775f4afbc7edf5ecba",
-      "bytes": 3989453,
-      "lines": 141441,
+      "sha256": "dae3f4b4d50ea972d82b394b80f31dc8fc71d17f8059499ec0cc3942549c23ee",
+      "bytes": 3989675,
+      "lines": 141451,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -16015,9 +16028,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "f3b596efc04ae94cf0c27be99997229e11bec9823290d962d239b796d347f816",
-      "bytes": 14084987,
-      "lines": 424963,
+      "sha256": "294decd7c0c03ab2c3199c52edfafcb85d7fa26dcce701e5d73fda7fca24c2a0",
+      "bytes": 14085839,
+      "lines": 424992,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -16028,9 +16041,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "23e85b9e993c130097c013087b3a0f94e2424177ffe96585a665dcd0e70aedef",
-      "bytes": 723946,
-      "lines": 4100,
+      "sha256": "78a570036882dc5cf6d235bdc2992d7644af53a2a2e5e2cc2598573b496f47c0",
+      "bytes": 724077,
+      "lines": 4101,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -34527,12 +34540,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "3afb5dfe72ab52d3b3e9bd70314b408036d6ff790ef9c41054225b9b89486691",
+  "ledger_sha256": "56f272e778734e017c0da4c5aa69224907c02fd9ec551bbd8acac30d2e8287c4",
   "javascript_inventory_sha256": "c0ca962bae4c4f1b590e8022d6f6ced851fe1ef665c8fbe28f63cc84adde8a40",
-  "baseline_commit": "88d22a510641df2e3b80bc35acc4ba67c9e9b192",
+  "baseline_commit": "57eaf8ddf39bf49615809cfd2d7a8a2c2a643a77",
   "branch": "int/2026-11-18-radical",
-  "unstaged_at_capture": [
-    "docs/adr/0009-behavior-stream-first-party.md",
-    "docs/backlog.md"
-  ]
+  "unstaged_at_capture": []
 }

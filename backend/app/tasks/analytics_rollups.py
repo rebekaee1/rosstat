@@ -21,6 +21,7 @@ import json
 from types import SimpleNamespace
 from uuid import uuid4
 from collections import defaultdict
+from contextlib import asynccontextmanager
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
@@ -29,7 +30,7 @@ from sqlalchemy.orm import aliased
 from sqlalchemy.schema import CreateIndex, CreateTable, DropTable
 
 from app.config import settings
-from app.database import analytics_session
+from app.database import analytics_session, set_local_statement_timeout
 from app.models import (
     BehaviorEvent,
     BehaviorSession,
@@ -1229,10 +1230,28 @@ async def sync_metrika_goals(db) -> int:
 # Jobs
 # ---------------------------------------------------------------------------
 
-async def run_rollups(days: int = 2, changed: dict | None = None) -> dict[str, int]:
+@asynccontextmanager
+async def _rollup_session(statement_timeout_ms: int | None):
+    """Сессия пула аналитики; с `statement_timeout_ms` — свой предел запроса на первую транзакцию (SET LOCAL).
+
+    Сессионизация окна и каждая сводка — одна транзакция, поэтому предел действует на весь шаг; соединение
+    возвращается в пул со штатным пределом."""
+    async with analytics_session() as db:
+        if statement_timeout_ms:
+            await set_local_statement_timeout(db, statement_timeout_ms)
+        yield db
+
+
+async def run_rollups(days: int = 2, changed: dict | None = None,
+                      statement_timeout_ms: int | None = None) -> dict[str, int]:
     """Общий прогон: сессионизация + все rollup'ы для окна N МСК-дней.
     Окно выравнивается по границе МСК-суток — пересчёт всегда затирает
-    целые дни (идемпотентность delete+insert без «полудней» на стыке)."""
+    целые дни (идемпотентность delete+insert без «полудней» на стыке).
+
+    `statement_timeout_ms` (18.11.2026) — предел запроса для транзакций этого прогона вместо общего предела
+    пула аналитики (`analytics_db_statement_timeout_ms`, 60 с). Ночной пересчёт 60 дней передаёт
+    `analytics_history_statement_timeout_ms`: окно дней бот-фермы 27–30.09.2026 (≈ 60 тыс. сессий в неделю)
+    не укладывалось в 60 с, исключение обрывало сессионизацию следующих окон и все сводки прогона."""
     from app.services.analytics_period import msk_day_start_utc
 
     since_day = msk_day(_utcnow() - timedelta(days=days))
@@ -1246,30 +1265,30 @@ async def run_rollups(days: int = 2, changed: dict | None = None) -> dict[str, i
     while True:
         next_day = window_day + timedelta(days=SESSIONIZE_WINDOW_DAYS)
         until = msk_day_start_utc(next_day) if next_day <= today else None
-        async with analytics_session() as db:
+        async with _rollup_session(statement_timeout_ms) as db:
             extra = {"changed": changed} if changed is not None else {}
             n_sessions += await sessionize(db, msk_day_start_utc(window_day), until=until, **extra)
         if until is None:
             break
         window_day = next_day
-    async with analytics_session() as db:
+    async with _rollup_session(statement_timeout_ms) as db:
         n_traffic = await rollup_daily_traffic(db, since_day)
-    async with analytics_session() as db:
+    async with _rollup_session(statement_timeout_ms) as db:
         n_goals = await rollup_daily_goals(db, since_day)
     n_dims = 0
     try:
-        async with analytics_session() as db:
+        async with _rollup_session(statement_timeout_ms) as db:
             n_dims = await rollup_daily_goal_dims(db, since_day)
     except Exception:
         # Разрезы для отчётов не должны останавливать основные роллапы.
         logger.exception("daily_goal_dims rollup failed")
-    async with analytics_session() as db:
+    async with _rollup_session(statement_timeout_ms) as db:
         n_pages = await rollup_daily_pages(db, since_day)
     n_signups = 0
     try:
         from app.services.signup_attribution import ensure_signup_attribution, refill_empty_attribution
 
-        async with analytics_session() as db:
+        async with _rollup_session(statement_timeout_ms) as db:
             n_signups = await ensure_signup_attribution(db)
             await refill_empty_attribution(db, since=_utcnow() - timedelta(days=3))
     except Exception:
@@ -1347,7 +1366,7 @@ async def rollups_daily_job() -> None:
     """Ночной пересчёт хвоста истории (60 дней) + синк словаря целей
     + суточная калибровка антибота к визитам Метрики."""
     try:
-        stats = await run_rollups(days=60)
+        stats = await run_rollups(days=60, statement_timeout_ms=settings.analytics_history_statement_timeout_ms)
         logger.info("Rollups daily: %s", stats)
     except Exception:
         logger.exception("Rollups daily failed")

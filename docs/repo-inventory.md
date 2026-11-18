@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2439  ·  **Строк:** 1 538 412  ·  **Токенов (≈):** 14 761 032
+**Файлов:** 2440  ·  **Строк:** 1 538 573  ·  **Токенов (≈):** 14 762 749
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 914 | 67 736 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 1042 | 356 246 | 3 948 409 |
+| `backend` | 1043 | 356 377 | 3 949 721 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 578 | 26 206 |
-| `docs` | 153 | 960 011 | 8 283 535 |
+| `docs` | 153 | 960 041 | 8 283 940 |
 | `frontend` | 1063 | 191 535 | 2 111 788 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 143 | 25 563 | 317 706 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 424 963 | 3 460 309 |
+| `docs/mechanism-inventory.json` | 424 992 | 3 460 522 |
 | `docs/client-mechanism-inventory.json` | 266 392 | 1 879 641 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -36,9 +36,9 @@
 | `docs/design/local-acceptance/baseline-paced/http.json` | 23 844 | 219 383 |
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
-| `docs/mechanism-inventory.md` | 4 100 | 179 351 |
+| `docs/mechanism-inventory.md` | 4 101 | 179 384 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
-| `docs/backlog.md` | 4 023 | 143 084 |
+| `docs/backlog.md` | 4 023 | 143 123 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 256 | 118 363 |
@@ -85,8 +85,8 @@
 | `docs/architecture.md` | 468 | 17 881 |
 | `backend/app/services/search_intent.py` | 1 182 | 17 827 |
 | `backend/app/data/eurostat_titles_ru.py` | 1 902 | 17 591 |
+| `backend/app/tasks/analytics_rollups.py` | 1 393 | 17 067 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
-| `backend/app/tasks/analytics_rollups.py` | 1 374 | 16 757 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 1 402 | 16 536 |
 | `backend/tests/test_i18n_parity.py` | 1 833 | 16 334 |
 | `docs/design/local-acceptance/final-narrow/browser.json` | 2 181 | 16 120 |
@@ -110,7 +110,7 @@
 | `docs/knowledge-unknowns.md` | 201 | 12 605 |
 | `frontend/src/components/IndicatorChart.jsx` | 1 177 | 12 477 |
 | `backend/tests/test_channel_author.py` | 926 | 12 404 |
-| `backend/app/config.py` | 801 | 12 301 |
+| `backend/app/config.py` | 804 | 12 374 |
 | `frontend/src/lib/behavior.js` | 1 216 | 12 209 |
 | `backend/app/services/download_content.py` | 1 010 | 12 094 |
 | `backend/app/api/regions.py` | 1 210 | 11 970 |
@@ -383,6 +383,7 @@
 | `docs/design/art-prompts/approved-collection.json` | 93 | 4 468 |
 | `backend/app/services/telegram_missed_summary.py` | 423 | 4 440 |
 | `frontend/src/lib/searchSynonyms.test.js` | 340 | 4 432 |
+| `docs/adr/0009-behavior-stream-first-party.md` | 181 | 4 416 |
 | `backend/app/services/seo_world_subnational.py` | 463 | 4 406 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 403 |
@@ -400,7 +401,6 @@
 | `frontend/src/components/CurrencyDesk.component.test.jsx` | 310 | 4 319 |
 | `backend/app/services/bot_traffic.py` | 393 | 4 317 |
 | `frontend/src/lib/searchView.test.js` | 313 | 4 314 |
-| `docs/adr/0009-behavior-stream-first-party.md` | 181 | 4 296 |
 | `backend/app/api/calendar.py` | 441 | 4 289 |
 | `backend/app/services/seo_indicator_month.py` | 456 | 4 282 |
 | `frontend/src/lib/compareRepresentation.test.js` | 366 | 4 272 |
@@ -1484,6 +1484,7 @@
 | `scripts/dev/perf_swr_check.py` | 76 | 936 |
 | `frontend/public/50x.html` | 53 | 934 |
 | `backend/app/security/auth.py` | 111 | 932 |
+| `backend/tests/test_rollups_history_timeout.py` | 109 | 929 |
 | `backend/tests/test_yandex_token_alert.py` | 102 | 927 |
 | `docs/verification/world-forecast-v2-2026-09-24.md` | 64 | 927 |
 | `backend/app/services/calendar_sources/world_enrichment.py` | 89 | 926 |

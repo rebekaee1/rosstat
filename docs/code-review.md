@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `88d22a510641df2e3b80bc35acc4ba67c9e9b192`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `57eaf8ddf39bf49615809cfd2d7a8a2c2a643a77`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2653 |
-| Код, шаблоны и стили | 2162 |
-| Актуальные рецензии без пропусков guard | 2653 |
-| Именованные определения Python/JS: с аннотацией / всего | 17928 / 17928 |
+| Файлы в явно определённом scope | 2654 |
+| Код, шаблоны и стили | 2163 |
+| Актуальные рецензии без пропусков guard | 2654 |
+| Именованные определения Python/JS: с аннотацией / всего | 17944 / 17944 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -601,7 +601,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/yandex_webmaster_client.py](../backend/app/services/yandex_webmaster_client.py) | reviewed | 19/19 | актуально |
 | [backend/app/session_analysis_schema.py](../backend/app/session_analysis_schema.py) | reviewed | 10/10 | актуально |
 | [backend/app/tasks/__init__.py](../backend/app/tasks/__init__.py) | reviewed | 0/0 | актуально |
-| [backend/app/tasks/analytics_rollups.py](../backend/app/tasks/analytics_rollups.py) | reviewed | 46/46 | актуально |
+| [backend/app/tasks/analytics_rollups.py](../backend/app/tasks/analytics_rollups.py) | reviewed | 47/47 | актуально |
 | [backend/app/tasks/analytics_scheduler.py](../backend/app/tasks/analytics_scheduler.py) | reviewed | 22/22 | актуально |
 | [backend/app/tasks/freshness_watchdog.py](../backend/app/tasks/freshness_watchdog.py) | reviewed | 1/1 | актуально |
 | [backend/app/tasks/scheduler.py](../backend/app/tasks/scheduler.py) | reviewed | 27/27 | актуально |
@@ -935,6 +935,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_regional_seed_pg.py](../backend/tests/test_regional_seed_pg.py) | reviewed | 28/28 | актуально |
 | [backend/tests/test_reports_only_role.py](../backend/tests/test_reports_only_role.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_research.py](../backend/tests/test_research.py) | reviewed | 12/12 | актуально |
+| [backend/tests/test_rollups_history_timeout.py](../backend/tests/test_rollups_history_timeout.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_rosstat_fuel_samples.py](../backend/tests/test_rosstat_fuel_samples.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_rosstat_gdp.py](../backend/tests/test_rosstat_gdp.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_rosstat_housing.py](../backend/tests/test_rosstat_housing.py) | reviewed | 22/22 | актуально |
