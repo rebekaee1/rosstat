@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2439  ·  **Строк:** 1 538 411  ·  **Токенов (≈):** 14 760 735
+**Файлов:** 2439  ·  **Строк:** 1 538 412  ·  **Токенов (≈):** 14 761 032
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 1042 | 356 246 | 3 948 409 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 578 | 26 206 |
-| `docs` | 153 | 960 010 | 8 283 238 |
+| `docs` | 153 | 960 011 | 8 283 535 |
 | `frontend` | 1063 | 191 535 | 2 111 788 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 143 | 25 563 | 317 706 |
@@ -38,7 +38,7 @@
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
 | `docs/mechanism-inventory.md` | 4 100 | 179 351 |
 | `backend/app/data/regional/indicators.json` | 16 131 | 145 025 |
-| `docs/backlog.md` | 4 023 | 143 024 |
+| `docs/backlog.md` | 4 023 | 143 084 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 256 | 118 363 |
@@ -400,6 +400,7 @@
 | `frontend/src/components/CurrencyDesk.component.test.jsx` | 310 | 4 319 |
 | `backend/app/services/bot_traffic.py` | 393 | 4 317 |
 | `frontend/src/lib/searchView.test.js` | 313 | 4 314 |
+| `docs/adr/0009-behavior-stream-first-party.md` | 181 | 4 296 |
 | `backend/app/api/calendar.py` | 441 | 4 289 |
 | `backend/app/services/seo_indicator_month.py` | 456 | 4 282 |
 | `frontend/src/lib/compareRepresentation.test.js` | 366 | 4 272 |
@@ -435,7 +436,6 @@
 | `backend/tests/test_data_loading_c28.py` | 383 | 4 098 |
 | `frontend/src/components/GenericIndicatorView.jsx` | 386 | 4 093 |
 | `scripts/search-history-audit.py` | 279 | 4 090 |
-| `docs/adr/0009-behavior-stream-first-party.md` | 180 | 4 059 |
 | `backend/app/services/world_adapters/estat_api.py` | 438 | 4 057 |
 | `frontend/src/lib/compareRepresentation.js` | 362 | 4 039 |
 | `backend/tests/test_telegram_order_and_alert_noise.py` | 446 | 4 038 |
