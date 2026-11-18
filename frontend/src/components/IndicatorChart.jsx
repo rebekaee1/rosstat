@@ -26,6 +26,7 @@ import { ChartEventsList, EventsChip } from './ChartEvents';
 import { eventReferenceLines, useEventsToggle } from '../lib/chartEventMarks';
 import { eventsInWindow } from '../lib/chartEvents';
 import { formatPointLabel, pointLabelWidth } from '../lib/chartPointLabel';
+import { emitPeriodPick } from '../lib/periodJump';
 import Chip from './Chip';
 import ChipGroup from './ChipGroup';
 import '../styles/chart-controls.css';
@@ -277,6 +278,40 @@ function NowBeam({ x1, y1, y2 }) {
   );
 }
 
+/**
+ * Точка, выбранная нажатием (18.11.2026): тонкая вертикаль, точка на линии и плашка «дата значение».
+ * Остаётся, когда указатель ушёл с графика или палец отпущен; повторное нажатие на ту же точку снимает выбор.
+ */
+function PickedMarker({
+  cx, cy, top, bottom, date, value, color, anchorEnd, below: belowWanted, showTag = true,
+}) {
+  if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  const text = `${date}  ${value}`;
+  const width = pointLabelWidth(text) + 4;
+  const height = 24;
+  const below = belowWanted ? cy + 14 + height + 4 <= bottom : cy - 14 - height < top;
+  const x = anchorEnd ? cx - width + 12 : cx - 12;
+  const y = below ? cy + 14 : cy - 14 - height;
+  return (
+    <g pointerEvents="none" className="k4-picked">
+      {Number.isFinite(top) && Number.isFinite(bottom) && (
+        <line x1={cx} x2={cx} y1={top} y2={bottom} stroke={CHART_THEME.cursor} strokeWidth={1} />
+      )}
+      <circle cx={cx} cy={cy} r={5.5} fill={color} stroke="#FFFFFF" strokeWidth={2} />
+      {showTag && (
+        <>
+          <rect className="k4-lastpoint__tag" x={x} y={y} width={width} height={height} rx={12} fill="#FFFFFF" fillOpacity={0.94} />
+          <rect x={x + 6} y={y + 1} width={Math.max(0, width - 12)} height={1.2} rx={0.6} fill="#FFFFFF" />
+          <text x={x + width / 2} y={y + height / 2 + 4.2} textAnchor="middle" fontFamily={CHART_THEME.font} fontSize={12}>
+            <tspan fill={CHART_THEME.axis}>{date}</tspan>
+            <tspan dx={6} fill={CHART_THEME.ink} fontWeight={700}>{value}</tspan>
+          </text>
+        </>
+      )}
+    </g>
+  );
+}
+
 export default function IndicatorChart({
   inflation,
   showForecast = true,
@@ -328,6 +363,10 @@ export default function IndicatorChart({
   const [isHovering, setIsHovering] = useState(false);
   // Последнее взаимодействие — касанием: подсказку открываем тапом по плоту и закрываем тапом вне плота.
   const [touchMode, setTouchMode] = useState(false);
+  // Точка, выбранная нажатием (дата строки ряда): значение остаётся на графике, таблица страницы переходит к ней.
+  const [picked, setPicked] = useState(null);
+  // Отпускание после сдвига графика мышью — не нажатие на точку.
+  const suppressPickRef = useRef(false);
   const [prevPreset, setPrevPreset] = useState(rangePreset);
   const [chartType, setChartType] = useState(savedView?.chartType ?? defaultChartType);
   // Круг 11: отметки событий (выключены, пока человек не включит).
@@ -381,6 +420,7 @@ export default function IndicatorChart({
     setRange(defaultRange);
     setWindowOverride(null);
     setOffset(0);
+    setPicked(null);
   }
 
   // Круг 10 (Ср2): «старт периода = 100» считается от начала видимого окна, и на коротком окне («с 2016») сравнение теряет историю.
@@ -495,6 +535,24 @@ export default function IndicatorChart({
     track(events.CHART_RANGE_CHANGE, { range: key, indicator: indicatorCode, indicatorCategory });
   };
 
+  // Нажатие на график (Пульс 17.11: за 30 дней 3176 нажатий по плоту у 476 человек, отклика не было).
+  // Recharts отдаёт дату ближайшей точки; повторное нажатие на ту же точку снимает выбор.
+  const handlePlotClick = (state) => {
+    if (suppressPickRef.current) {
+      suppressPickRef.current = false;
+      return;
+    }
+    const date = state?.activeLabel;
+    if (date == null || date === '') return;
+    if (picked === date) {
+      setPicked(null);
+      return;
+    }
+    setPicked(date);
+    emitPeriodPick(date, 'chart');
+    track(events.CHART_PICK, { indicator: indicatorCode, indicatorCategory });
+  };
+
   // Рамка выбора под графиком: левая и правая ручки задают начало и конец окна, середина двигает его целиком.
   const handleBrush = useCallback((start, end) => {
     setWindowOverride(Math.max(minWindow, end - start));
@@ -584,6 +642,7 @@ export default function IndicatorChart({
   const handlePointerUp = useCallback((e) => {
     const d = dragRef.current;
     if (d?.phase === 'dragging') {
+      suppressPickRef.current = true;
       try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* ok */ }
     } else if (e.pointerType === 'touch') {
       if (e.type === 'pointercancel') {
@@ -747,6 +806,13 @@ export default function IndicatorChart({
     }
     return false;
   }, [visualData, lastPointRow]);
+  const pickedRow = useMemo(
+    () => (picked == null ? null : visualData.find((row) => row.date === picked) || null),
+    [picked, visualData],
+  );
+  const pickedValue = pickedRow ? (pickedRow.actual ?? pickedRow.forecast) : null;
+  const pickedShown = pickedRow && pickedValue != null && Number.isFinite(Number(pickedValue));
+  const pickedIsForecast = pickedShown && pickedRow.actual == null;
   // События рисуются только на фактических датах: у прогноза отметок нет.
   const eventMarks = useMemo(
     () => eventsInWindow(visualData.filter((row) => row.actual != null).map((row) => row.date)),
@@ -839,6 +905,8 @@ export default function IndicatorChart({
         onPointerCancel={handlePointerUp}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
+        data-interactive=""
+        data-picked={pickedShown ? 'true' : undefined}
         className={cn(
           'fe-chart-plot z4-plot fe-chart-draw rounded-xl relative',
           isDragging ? 'cursor-grabbing select-none' : 'cursor-crosshair'
@@ -846,7 +914,7 @@ export default function IndicatorChart({
         style={{ touchAction: 'pan-y' }}
       >
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={visualData} margin={{ top: 38, right: 14, bottom: 16, left: 0 }}>
+          <ComposedChart data={visualData} margin={{ top: 38, right: 14, bottom: 16, left: 0 }} onClick={handlePlotClick}>
             <defs>
               <ChartGlassDefs ids={glass} forecastColor={FORECAST} width={Math.max(plotWidth, 320)} />
             </defs>
@@ -1013,7 +1081,7 @@ export default function IndicatorChart({
                 />
               );
             })}
-            {lastPointRow && chartType !== 'bar' && !isDragging && !isHovering && (
+            {lastPointRow && chartType !== 'bar' && !isDragging && !isHovering && !pickedShown && (
               <ReferenceDot
                 x={lastPointRow.date}
                 y={Number(lastPointRow.actual)}
@@ -1028,6 +1096,28 @@ export default function IndicatorChart({
                     below={lastPointBelow}
                     beadId={glass.bead}
                     plotBottom={(chartAreaRef.current?.clientHeight || 0) > 0 ? chartAreaRef.current.clientHeight - 16 - 42 : Infinity}
+                  />
+                )}
+              />
+            )}
+            {pickedShown && !isDragging && (
+              <ReferenceDot
+                x={pickedRow.date}
+                y={Number(pickedValue)}
+                r={5}
+                ifOverflow="visible"
+                shape={(props) => (
+                  <PickedMarker
+                    cx={props.cx}
+                    cy={props.cy}
+                    top={38}
+                    bottom={(chartAreaRef.current?.clientHeight || 0) > 0 ? chartAreaRef.current.clientHeight - 16 - 42 : Infinity}
+                    date={formatDate(pickedRow.date, dateFormat)}
+                    value={formatPointLabel(pickedValue, digits, locale)}
+                    color={pickedIsForecast ? FORECAST : LINE}
+                    anchorEnd={Number(props.cx) > plotWidth * 0.55}
+                    below={false}
+                    showTag={!(touchMode && isHovering)}
                   />
                 )}
               />

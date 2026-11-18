@@ -129,6 +129,13 @@ describe('IndicatorChart', () => {
     expect(label).toContain('18,10\u00A0%');
   });
 
+  it('плот отвечает на нажатие и помечен как управление: поток поведения не пишет его кликом в пустоту (Пульс 17.11.2026)', () => {
+    renderChart();
+    const plot = screen.getByRole('img');
+    expect(plot.hasAttribute('data-interactive')).toBe(true);
+    expect(plot.getAttribute('data-picked')).toBeNull();
+  });
+
   it('периоды и тип графика — группы Chip с aria-pressed', () => {
     renderChart();
     const range = screen.getByRole('group', { name: 'Период графика' });
@@ -212,13 +219,13 @@ describe('DataTable', () => {
 
   it('пагинация отключена, пока таблица грузится', () => {
     wrap(<DataTable data={rows} loading />);
-    expect(screen.getByRole('button', { name: 'Назад' }).disabled).toBe(true);
-    expect(screen.getByRole('button', { name: 'Вперёд' }).disabled).toBe(true);
+    expect(screen.getByRole('button', { name: 'Позже' }).disabled).toBe(true);
+    expect(screen.getByRole('button', { name: 'Раньше' }).disabled).toBe(true);
   });
 
   it('кнопки пагинации — общий Button (44px на касании задаёт .fe-btn)', () => {
     wrap(<DataTable data={rows} />);
-    const next = screen.getByRole('button', { name: 'Вперёд' });
+    const next = screen.getByRole('button', { name: 'Раньше' });
     expect(next.className).toContain('fe-btn');
     expect(next.disabled).toBe(false);
   });

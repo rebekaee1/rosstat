@@ -1325,8 +1325,10 @@ export default {
   'forecast.value.withUnit': 'Value ({unit})',
 
   'table.searchPlaceholder': 'Search...',
-  'table.prev': 'Back',
-  'table.next': 'Next',
+  'table.later': 'Later',
+  'table.earlier': 'Earlier',
+  'table.jumpYear': 'Go to year',
+  'table.jumpPeriod': 'Go to period',
   'table.date': 'Date',
   'table.value': 'Value',
   'table.valueWithUnit': 'Value ({unit})',

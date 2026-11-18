@@ -114,6 +114,7 @@ _ENGAGEMENT = {
     "chart_mode_change",
     "chart_range_change",
     "chart_zoom",
+    "chart_pick",           # нажал точку графика: значение закреплено, таблица перешла к дате
     "frequency_switch",
     "methodology_click",
     "scroll_depth",
@@ -153,6 +154,7 @@ _ENGAGEMENT = {
     "calc_preset",
     "demographics_chart_type",
     "table_page",
+    "table_jump",           # перешёл к году или отрезку в таблице истории
     "table_search",
     "table_sort",
     "embed_code_tab",

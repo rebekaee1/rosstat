@@ -87,6 +87,51 @@
 .c11c-range__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; align-items: center; }
 .c11c-range__note { flex: 1 1 100%; margin: 0; font-size: 12px; color: var(--color-text-secondary); }
 
+/* Переход к периоду в таблице истории (18.11.2026, Пульс за 17.11): между «Позже» и «Раньше» — список лет
+   (у годовых рядов — отрезков). Поле — то же стекло L2, что «От» и «До»; стрелка — значок, без рамки. */
+.fe-histtable__pager .fe-pager-btn { gap: 4px; }
+.fe-histtable__jump {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.fe-histtable__jump select {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 40px;
+  max-width: 100%;
+  padding: 0 34px 0 16px;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.fe-histtable__jump select:disabled { opacity: .55; cursor: default; }
+.fe-histtable__jump-icon {
+  position: absolute;
+  right: 12px;
+  width: 14px;
+  height: 14px;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+@media (pointer: coarse) {
+  .fe-histtable__jump select { min-height: 44px; font-size: 16px; }
+}
+
+/* Строка, к которой перешли (год из списка или точка на графике): холодная подложка и тонкий синий акцент слева,
+   поверх подсветки самого высокого и низкого значения. */
+:root:root .fe-histtable tr.is-picked td { background: rgba(44, 74, 138, 0.1); }
+:root:root .fe-histtable tr.is-picked td:first-child { box-shadow: inset 3px 0 0 rgba(44, 74, 138, 0.75); }
+
 /* Подсказка графика «Сравнение»: строка = имя и значение, ниже мелко фраза про рост и настоящее значение. Ширина держится в пределах графика. */
 .c11c-tip { min-width: 180px; width: max-content; overflow: hidden; }
 .c11c-tip__head { margin: 2px 0 0; font-size: 11.5px; line-height: 1.3; color: var(--color-text-secondary); }

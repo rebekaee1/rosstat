@@ -1,7 +1,9 @@
 import {
   useState, useMemo, useEffect, useRef, useCallback,
 } from 'react';
-import { ChevronDown, ChevronUp, Search } from 'lucide-react';
+import {
+  ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Search,
+} from 'lucide-react';
 import { formatDate, formatValue, unitSuffix, cn } from '../lib/format';
 import { valueWithUnit } from '../lib/valueText';
 import { track, events } from '../lib/track';
@@ -12,6 +14,9 @@ import {
   growthDigits, isPercentChangeUnit, unitKind,
 } from '../lib/indicatorSummary';
 import { medianStepDays } from '../lib/chartEvents';
+import {
+  currentJumpValue, nearestRow, onPeriodPick, periodJumpOptions,
+} from '../lib/periodJump';
 import { downloadGrid, safeFilename } from '../lib/gridExport';
 import { useLocale } from '../i18n';
 import Button from './Button';
@@ -70,6 +75,8 @@ export default function DataTable({
   const [rangeFrom, setRangeFrom] = useState('');
   const [rangeTo, setRangeTo] = useState('');
   const scrollRef = useRef(null);
+  // Строка, к которой перешли (год из списка или точка на графике): подсвечена, пока не выбрана другая.
+  const [pickedDate, setPickedDate] = useState(null);
 
   useEffect(() => {
     // Дебаунс нужен только для смены текста поиска. Раньше эффект срабатывал и
@@ -116,6 +123,16 @@ export default function DataTable({
   const fromIso = rangeFrom ? (yearMode && /^\d{4}$/.test(rangeFrom) ? `${rangeFrom}-01-01` : rangeFrom) : '';
   const toIso = rangeTo ? (yearMode && /^\d{4}$/.test(rangeTo) ? `${rangeTo}-12-31` : rangeTo) : '';
   const rangeActive = Boolean(fromIso || toIso);
+  // Поле даты на компьютере открывает календарь только по значку, щелчок по тексту ставит курсор в день:
+  // на ИПЦ «От» нажимали очередью (Пульс 17.11). Календарь открывается щелчком по всему полю.
+  const openDatePicker = (event) => {
+    if (yearMode) return;
+    try {
+      if (window.matchMedia?.('(pointer: fine)').matches) event.currentTarget.showPicker?.();
+    } catch {
+      /* браузер без showPicker или без жеста пользователя: остаётся обычное поле */
+    }
+  };
   const inRange = useCallback((row) => {
     const d = String(row?.date ?? '').slice(0, 10);
     if (fromIso && d < fromIso) return false;
@@ -176,6 +193,42 @@ export default function DataTable({
   const totalPages = Math.ceil(filtered.length / pageSize);
   const visiblePage = Math.min(page, Math.max(0, totalPages - 1));
   const pageData = filtered.slice(visiblePage * pageSize, (visiblePage + 1) * pageSize);
+
+  // Переход к периоду вместо листания (18.11.2026): список лет или отрезков страниц в текущем порядке строк.
+  const jump = useMemo(() => periodJumpOptions(filtered, pageSize, {
+    yearMode,
+    pageLabel: (a, b) => {
+      const fmt = yearMode ? 'annual' : (dateFormat === 'day' || dateFormat === 'weekly' ? 'dayShort' : 'short');
+      const left = formatDate(a, fmt);
+      const right = formatDate(b, fmt);
+      return left === right ? left : `${left} – ${right}`;
+    },
+  }), [filtered, pageSize, yearMode, dateFormat]);
+  // Выбранная строка на открытой странице задаёт год в списке: после «2018» список не показывает «2019» из первой строки страницы.
+  const pickedOnPage = jump.kind === 'year' && pickedDate && pageData.some((row) => row.date === pickedDate);
+  const jumpValue = pickedOnPage
+    ? String(pickedDate).slice(0, 4)
+    : currentJumpValue(jump, filtered, visiblePage, pageSize);
+  const goToJump = (value) => {
+    const option = jump.options.find((o) => o.value === value);
+    if (!option) return;
+    setPage(option.page);
+    setPickedDate(jump.kind === 'year'
+      ? (filtered.find((row) => String(row.date).startsWith(value))?.date ?? null)
+      : null);
+    track(events.TABLE_JUMP, { source: jump.kind, to: value });
+  };
+
+  // Точка, выбранная на графике той же страницы, открывает в таблице свою строку (без прокрутки страницы).
+  const latest = useRef({ filtered, pageSize, sortAsc });
+  useEffect(() => { latest.current = { filtered, pageSize, sortAsc }; }, [filtered, pageSize, sortAsc]);
+  useEffect(() => onPeriodPick(({ date }) => {
+    const { filtered: rows, pageSize: size, sortAsc: asc } = latest.current;
+    const hit = nearestRow(rows, date, { asc });
+    if (!hit) return;
+    setPage(Math.floor(hit.index / size));
+    setPickedDate(hit.date);
+  }), []);
   const tableUnit = unitSuffix(unit);
   // Ряд уже «изменение за год, %»: в строках стоит короткий «%», полная единица один раз в заголовке (круг 9, W10).
   const rowUnit = isPercentChangeUnit(unit) ? '%' : unit;
@@ -283,6 +336,7 @@ export default function DataTable({
               max={yearMode ? bounds.last.slice(0, 4) : bounds.last}
               placeholder={yearMode ? bounds.first.slice(0, 4) : undefined}
               onChange={(e) => { setRangeFrom(e.target.value); setPage(0); }}
+              onClick={openDatePicker}
               aria-label={t('c11c.table.from')}
             />
           </label>
@@ -296,6 +350,7 @@ export default function DataTable({
               max={yearMode ? bounds.last.slice(0, 4) : bounds.last}
               placeholder={yearMode ? bounds.last.slice(0, 4) : undefined}
               onChange={(e) => { setRangeTo(e.target.value); setPage(0); }}
+              onClick={openDatePicker}
               aria-label={t('c11c.table.to')}
             />
           </label>
@@ -338,7 +393,7 @@ export default function DataTable({
                 <button
                   type="button"
                   className="inline-flex min-h-[44px] items-center gap-1 hover:text-text-primary transition-colors select-none"
-                  onClick={() => { const next = !sortAsc; setSortAsc(next); track(events.TABLE_SORT, { order: next ? 'asc' : 'desc' }); }}
+                  onClick={() => { const next = !sortAsc; setSortAsc(next); setPage(0); track(events.TABLE_SORT, { order: next ? 'asc' : 'desc' }); }}
                 >
                   {t('table.date')}
                   {sortAsc ? <ChevronUp className="w-3 h-3" aria-hidden="true" /> : <ChevronDown className="w-3 h-3" aria-hidden="true" />}
@@ -389,7 +444,9 @@ export default function DataTable({
                     'transition-colors',
                     row.date === maxDate && 'is-max',
                     row.date === minDate && 'is-min',
+                    row.date === pickedDate && 'is-picked',
                   )}
+                  aria-current={row.date === pickedDate ? 'true' : undefined}
                 >
                   <td className="px-5 py-2.5 text-text-secondary text-sm tabular-nums">
                     {formatDate(row.date, dateFormat)}
@@ -414,25 +471,43 @@ export default function DataTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="p-4 flex items-center justify-between k5-seam k5-seam--top">
+        <div className="fe-histtable__pager p-4 flex items-center justify-between gap-3 k5-seam k5-seam--top">
+          {/* По умолчанию сверху новые строки: «Вперёд» уводил в прошлое. Кнопки названы по времени (18.11.2026). */}
           <Button
             variant="secondary"
             className="fe-pager-btn"
             onClick={() => { setPage(Math.max(0, visiblePage - 1)); track(events.TABLE_PAGE, { direction: 'prev' }); }}
             disabled={loading || visiblePage === 0}
           >
-            {t('table.prev')}
+            <ChevronLeft className="w-4 h-4 shrink-0" aria-hidden="true" />
+            {sortAsc ? t('table.earlier') : t('table.later')}
           </Button>
-          <span className="text-sm text-text-secondary tabular-nums" aria-live="polite">
-            {visiblePage + 1} / {totalPages}
-          </span>
+          {jump.options.length > 1 ? (
+            <label className="fe-histtable__jump fe-tap">
+              <span className="sr-only">{jump.kind === 'year' ? t('table.jumpYear') : t('table.jumpPeriod')}</span>
+              <select
+                value={jumpValue}
+                onChange={(e) => goToJump(e.target.value)}
+                disabled={loading}
+                aria-label={jump.kind === 'year' ? t('table.jumpYear') : t('table.jumpPeriod')}
+              >
+                {jump.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+              <ChevronDown className="fe-histtable__jump-icon" aria-hidden="true" />
+            </label>
+          ) : (
+            <span className="text-sm text-text-secondary tabular-nums" aria-live="polite">
+              {visiblePage + 1} / {totalPages}
+            </span>
+          )}
           <Button
             variant="secondary"
             className="fe-pager-btn"
             onClick={() => { setPage(Math.min(totalPages - 1, visiblePage + 1)); track(events.TABLE_PAGE, { direction: 'next' }); }}
             disabled={loading || visiblePage >= totalPages - 1}
           >
-            {t('table.next')}
+            {sortAsc ? t('table.later') : t('table.earlier')}
+            <ChevronRight className="w-4 h-4 shrink-0" aria-hidden="true" />
           </Button>
         </div>
       )}
