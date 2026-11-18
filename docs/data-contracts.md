@@ -1263,6 +1263,41 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 
 **Откат.** `alembic downgrade 20261109_research_downloads`: снимает индекс (`DROP INDEX CONCURRENTLY`), ждёт 65 с (работающий поиск до минуты считает индекс живым и вызывает функцию), затем снимает функцию. Поиск возвращается к полному проходу каталога, ответы те же. Проверено на пустой локальной базе: `upgrade head` → `downgrade -1` → `upgrade head`.
 
+<a id="search-index-2026-11-18"></a>
+
+## Поисковый индекс — 2026-11-18 (ADR-0036, ветка агента, не выпущено)
+
+Миграция `20261118_search_index` (после `20261117_channel_author`, одна голова, идентификатор 21 знак). Только
+добавляет девять пустых таблиц; основные таблицы не меняются. Решение и замеры — [ADR-0036](adr/0036-search-index.md),
+поведение поиска — [search.md](search.md#search-index-2026-11-18).
+
+| Таблица | Строка | Ключ и индексы |
+|---|---|---|
+| `search_index_state` | часть индекса (`world`, `russia`, `territory`): действующая копия `active` (`a`/`b`/NULL), `built_at` (UTC), `signature` (счётчики `n_tup_ins/upd/del` основных таблиц части в момент сборки), `rows`, `seconds` | PK `part` |
+| `search_world_a/b` | строка `world_indicators`: `id, country_id, provider, code, dataset_id, slice_json (jsonb), slice_hash, name_ru, name_en, unit, unit_ru, frequency, category_ru, seo_keywords, is_listed, points_count, history_end`; `ord` и `country_ord` — номер в порядке `is_listed DESC, code` по каталогу и внутри страны (с 1, подряд); `has_fact` — есть точка `world_data_points` с конечным ненулевым значением | PK `id`; уникальные `code`, `ord`, `(country_id, country_ord)`; `(country_id) WHERE is_listed AND has_fact`; `(country_id, provider, dataset_id varchar_pattern_ops)`; GIN-триграммы `code, name_ru, name_en, seo_keywords`; по выражениям (только миграция): GIN `fe_world_slice_members(provider, slice_json)`, btree `lower(code)`, `lower(name_ru)`, `lower(name_en)` |
+| `search_russia_a/b` | активный ряд `indicators` (`is_active IS TRUE`): `id, code, name, name_en, unit, frequency, category, seo_keywords, is_listed`; `has_fact` — есть точка `indicator_data` с конечным значением | PK `id` |
+| `search_region_facts_a/b` | пара (`indicator_id` → `region_indicators`, `region_id` → `regions`) с хотя бы одной конечной точкой; `has_annual`/`has_monthly`; последняя конечная годовая (`last_year`, `last_year_value`) и месячная (`last_month` YYYYMM, `last_month_value`) | PK `(indicator_id, region_id)`; `(region_id)` |
+| `search_subnational_facts_a/b` | пара (`indicator_id` → `subnational_indicators`, `region_id` → `subnational_regions`) с хотя бы одной конечной точкой | PK `(indicator_id, region_id)`; `(region_id)` |
+
+«Конечное значение» — те же границы, что у условий факта поиска: не NULL и строго между −1e30 и 1e30 (без NaN и
+бесконечностей). Внешних ключей нет: копия собирается целиком из основных таблиц одной транзакцией.
+
+**Кто пишет.** Только `search_index.build_part` (задача планировщика `search_index`, раз в 10 мин проверка): в
+недействующую копию части `TRUNCATE` + `INSERT … SELECT … ORDER BY`, `ANALYZE`, затем `search_index_state.active` —
+одной транзакцией под `pg_advisory_xact_lock`; через 90 с прежняя копия очищается. Часть пересобирается, если
+изменилась подпись основных таблиц (`world_indicators`, `world_data_points` / `indicators`, `indicator_data` /
+`region_data`, `region_monthly_data`, `subnational_data_points`) и с прошлой сборки прошло 60 мин.
+
+**Кто читает.** Только поиск (`search.py`, `search_regional_groups._latest_by_region`) через
+`search_index.active_index` — указатель в памяти процесса 10 с, чтение в savepoint (нет таблицы → основные таблицы).
+Запросы с годом или месяцем копию не читают.
+
+**Порядок выпуска.** Любой. Код без миграции и миграция без сборки отвечают как раньше. После выкладки первая сборка —
+через 20 мин после старта планировщика; до неё поиск читает основные таблицы.
+
+**Откат.** `RUSTATS_SEARCH_INDEX_ENABLED=false` или `alembic downgrade 20261117_channel_author` (снимает указатель,
+ждёт 15 с, удаляет копии). Проверено на локальной копии базы: `upgrade head` → `downgrade 20261117_channel_author` → `upgrade head`.
+
 ## Служебный бот: «Скачивания» и «Выгрузки» — 2026-11-14 (ветка, не выпущено)
 
 Запрос партнёра (созвон 14.11.2026): что именно скачивают и на чём упираются в лимит; слова владельца: события «в Telegram тоже в виде отчёта приходили… в информационном боте всё что угодно выгрузить, посмотреть, когда душе угодно». Бот — служебный «Информационный бот по сайту» (`telegram_bot.py`, получатели `interactive_authorized_ids()`), не публичный @ForecastEconomyBot (ADR-0027). Флагов нет: кнопки видны сразу после выпуска. Код: `backend/app/services/download_content.py`, `bot_exports.py`; тесты `backend/tests/test_download_content.py`.

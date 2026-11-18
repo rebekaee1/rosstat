@@ -315,6 +315,17 @@ class Settings(BaseSettings):
     world_listed_counts_enabled: bool = False
     world_listed_counts_max_age_seconds: int = 6 * 3600
 
+    # Поисковый индекс (services/search_index.py, ADR-0036, 18.11.2026): поиск без года читает маленькие копии каталога
+    # с готовой отметкой «есть данные» вместо широких таблиц и проверки фактов. Выдача та же. Пока часть не собрана
+    # или флаг выключен (RUSTATS_SEARCH_INDEX_ENABLED=false), поиск читает основные таблицы, как до 18.11.
+    # Проверка свежести — раз в check_minutes; часть пересобирается, если основные таблицы менялись и с прошлой сборки
+    # прошло min_interval_minutes. Первая сборка — через first_build_delay_minutes после запуска планировщика
+    # (после 15-минутного наблюдения за выкладкой).
+    search_index_enabled: bool = True
+    search_index_check_minutes: int = 10
+    search_index_min_interval_minutes: int = 60
+    search_index_first_build_delay_minutes: int = 20
+
     # IndexNow — мгновенное уведомление поисковиков (Яндекс/Bing) об
     # обновлённых URL после ETL. Key-файл: frontend/public/{key}.txt.
     indexnow_enabled: bool = True

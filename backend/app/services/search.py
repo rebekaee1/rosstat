@@ -19,7 +19,7 @@ from urllib.parse import urlsplit, urlunsplit
 from sqlalchemy import Integer, and_, bindparam, case, exists, literal, literal_column, or_, select, text, true, union_all, func
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import load_only
+from sqlalchemy.orm import aliased, load_only
 from sqlalchemy.sql.elements import False_
 
 from app.data.global_market_indicators import COUNTRY_MARKET_INDICATOR_CODES, is_global_market_indicator, market_indicator_codes_for_country
@@ -34,7 +34,7 @@ from app.models import (
     RegionMonthlyPoint, SubnationalDataPoint, SubnationalIndicator,
     SubnationalRegion, WorldCountry, WorldDataPoint, WorldIndicator,
 )
-from app.services import site_paths as paths
+from app.services import search_index, site_paths as paths
 from app.services.locale import get_locale
 from app.services.search_intent import (
     CONCEPTS, SEARCH_VERSION, SearchIntent, complete_nominal_alternative, geo_aliases, literal_identifier, match_score, matching_alternatives, normalize, parse_intent, phrase, region_reading, strip_geography,
@@ -271,24 +271,24 @@ def _concept_headline_bonus(code: str, intent: SearchIntent) -> int:
     return _CONCEPT_HEADLINE_BONUS if any(rx.match(str(code or "")) for rx in _CONCEPT_HEADLINE_REGEX[key]) else 0
 
 
-def _world_preference(intent: SearchIntent):
+def _world_preference(intent: SearchIntent, W=WorldIndicator):
     """Catalogue headline identities, not a popularity prior."""
     if _country_only(intent):
-        clauses = [WorldIndicator.code.like(pattern) for pattern in _COUNTRY_HEADLINE_CODE_PATTERNS]
+        clauses = [W.code.like(pattern) for pattern in _COUNTRY_HEADLINE_CODE_PATTERNS]
         for slug in _COUNTRY_HEADLINE_CONCEPTS:
             codes = national_codes_for_concept(slug)
             if codes:
-                clauses.append(WorldIndicator.code.in_(codes))
+                clauses.append(W.code.in_(codes))
         return or_(*clauses)
     concept = _intent_concept(intent)
-    clauses = [WorldIndicator.code.like(pattern) for pattern in _concept_headline_patterns(intent)]
+    clauses = [W.code.like(pattern) for pattern in _concept_headline_patterns(intent)]
     if concept:
         codes = national_codes_for_concept(concept)
         if codes:
-            clauses.append(WorldIndicator.code.in_(codes))
+            clauses.append(W.code.in_(codes))
     if concept == "hicp-index":
-        clauses.extend((WorldIndicator.code.like("%-prc_hicp_midx-cp00-%"),
-            WorldIndicator.code.like("%-prc_hicp_minr-cp00-%")))
+        clauses.extend((W.code.like("%-prc_hicp_midx-cp00-%"),
+            W.code.like("%-prc_hicp_minr-cp00-%")))
     return or_(*clauses) if clauses else literal(False)
 
 
@@ -403,13 +403,13 @@ def _escape_like(value: str) -> str:
     return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
-def _world_lexical(intent: SearchIntent, *, postgres: bool, indexed: bool = False):
+def _world_lexical(intent: SearchIntent, *, postgres: bool, indexed: bool = False, W=WorldIndicator):
     """One combined predicate per required term (lexical OR native dimension)."""
     return [or_(lexical, dimension) if dimension is not None else lexical
-            for lexical, dimension in _world_lexical_terms(intent, postgres=postgres, indexed=indexed)]
+            for lexical, dimension in _world_lexical_terms(intent, postgres=postgres, indexed=indexed, W=W)]
 
 
-def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool = False):
+def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool = False, W=WorldIndicator):
     """Per required term: (lexical predicate, native-dimension predicate or None).
 
     The lexical part is trigram-indexable (code/name/SEO ILIKE). The dimension
@@ -434,7 +434,7 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool 
         for alternative in alternatives:
             nominal = complete_nominal_alternative(sourcegroup, alternatives, alternative)
             if alternative == "search-subject-price":
-                term_clauses.append(_native_price_constraint(WorldIndicator.name_ru, WorldIndicator.name_en, postgres=postgres))
+                term_clauses.append(_native_price_constraint(W.name_ru, W.name_en, postgres=postgres))
                 continue
             if alternative in {"current-prices", "constant-prices"}:
                 # A separate measure predicate uses actual names and native
@@ -451,7 +451,7 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool 
                 # itself; fragments in two different translations cannot join
                 # into invented evidence ahead of the candidate budget.
                 base_clauses = []
-                for unit_column in (WorldIndicator.unit, WorldIndicator.unit_ru):
+                for unit_column in (W.unit, W.unit_ru):
                     units = func.lower(func.coalesce(unit_column, ""))
                     for separator in PRICE_BASE_UNIT_SEPARATORS:
                         units = func.replace(units, separator, " ")
@@ -468,32 +468,32 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool 
                 # The denominator belongs to the actual measure/unit, not SEO
                 # or the native scale of a count. Promille is a people rate
                 # only in controlled demographic measures, never every ratio.
-                measure_text = func.lower(func.coalesce(WorldIndicator.name_ru, "") + literal(" ") +
-                    func.coalesce(WorldIndicator.name_en, "") + literal(" ") +
-                    func.coalesce(WorldIndicator.unit, "") + literal(" ") + func.coalesce(WorldIndicator.unit_ru, ""))
+                measure_text = func.lower(func.coalesce(W.name_ru, "") + literal(" ") +
+                    func.coalesce(W.name_en, "") + literal(" ") +
+                    func.coalesce(W.unit, "") + literal(" ") + func.coalesce(W.unit_ru, ""))
                 measure_text = func.replace(func.replace(measure_text, "\u00a0", " "), "\u202f", " ")
                 term_clauses.append(_pattern_clause(measure_text, DENOMINATOR_RULES[alternative], postgres=postgres))
                 continue
             if alternative == "search-unit-percent":
-                percentage_points = or_(WorldIndicator.unit == "PC_PNT",
-                    WorldIndicator.unit.ilike("%percentage point%"), WorldIndicator.unit.ilike("%percent point%"),
-                    WorldIndicator.unit_ru.ilike("%процентных пункт%"), WorldIndicator.unit_ru.ilike("%процентные пункт%"),
-                    WorldIndicator.unit_ru.ilike("%п.п.%"))
-                term_clauses.append(and_(percentage_points.is_not(True), or_(WorldIndicator.unit.in_(_PERCENT_UNITS),
-                    and_(WorldIndicator.unit.like("PC\\_%", escape="\\"), WorldIndicator.unit != "PC_PNT"),
-                    WorldIndicator.unit.contains("%"), WorldIndicator.unit_ru.contains("%"),
-                    WorldIndicator.unit.ilike("%percent%"), WorldIndicator.unit_ru.ilike("%процент%"))))
+                percentage_points = or_(W.unit == "PC_PNT",
+                    W.unit.ilike("%percentage point%"), W.unit.ilike("%percent point%"),
+                    W.unit_ru.ilike("%процентных пункт%"), W.unit_ru.ilike("%процентные пункт%"),
+                    W.unit_ru.ilike("%п.п.%"))
+                term_clauses.append(and_(percentage_points.is_not(True), or_(W.unit.in_(_PERCENT_UNITS),
+                    and_(W.unit.like("PC\\_%", escape="\\"), W.unit != "PC_PNT"),
+                    W.unit.contains("%"), W.unit_ru.contains("%"),
+                    W.unit.ilike("%percent%"), W.unit_ru.ilike("%процент%"))))
                 continue
             if alternative.startswith("search-unit-") and alternative.removeprefix("search-unit-") in UNIT_RULES:
                 unit_key = alternative.removeprefix("search-unit-")
-                unit_text = func.lower(func.coalesce(WorldIndicator.unit, "") + literal(" ") + func.coalesce(WorldIndicator.unit_ru, ""))
+                unit_text = func.lower(func.coalesce(W.unit, "") + literal(" ") + func.coalesce(W.unit_ru, ""))
                 unit_clause = _pattern_clause(unit_text, UNIT_RULES[unit_key], postgres=postgres)
                 if unit_key == "percentage-point":
                     unit_clause = or_(unit_clause, unit_text.contains("п.п."))
                 if unit_key in ("litre", "tonne"):
                     symbols = ("l", "л") if unit_key == "litre" else ("t", "т")
                     symbol_clauses = []
-                    for column in (WorldIndicator.unit, WorldIndicator.unit_ru):
+                    for column in (W.unit, W.unit_ru):
                         compact = func.lower(func.coalesce(column, ""))
                         if postgres:
                             compact = func.regexp_replace(compact, r"\s+", "", "g")
@@ -514,7 +514,7 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool 
                 frequency = alternative.removeprefix("search-freq-")
                 aliases = {"annual": ("annual", "yearly", "A"), "monthly": ("monthly", "M"), "quarterly": ("quarterly", "Q"),
                     "weekly": ("weekly", "W"), "daily": ("daily", "D")}.get(frequency, (frequency,))
-                term_clauses.append(WorldIndicator.frequency.in_(aliases))
+                term_clauses.append(W.frequency.in_(aliases))
                 continue
             if alternative.startswith("search-source-freq-"):
                 # World rows have no registered derivation/source-frequency
@@ -530,7 +530,7 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool 
                     term_clauses.append(literal(True))
                     continue
                 if mode == "eop":
-                    names = (WorldIndicator.name_ru, WorldIndicator.name_en)
+                    names = (W.name_ru, W.name_en)
                     text = _native_name_text(*names, postgres=postgres)
                     phrases = ("end of period", "end of year", "end of quarter", "end of month",
                         "на конец года", "на конец квартала", "на конец месяца", "на конец периода")
@@ -541,15 +541,15 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool 
                     "avg": ("average", "средн"), "pop": ("month-on-month", "quarter-on-quarter", "изменение за месяц"),
                     "eop": ("end of period", "end of year", "end of quarter", "end of month", "на конец года", "на конец квартала", "на конец месяца", "на конец периода"),
                     "level": ("index", "индекс")}.get(mode, ())
-                term_clauses.extend(WorldIndicator.name_en.ilike(f"%{p}%") for p in phrases)
-                term_clauses.extend(WorldIndicator.name_ru.ilike(f"%{p}%") for p in phrases)
+                term_clauses.extend(W.name_en.ilike(f"%{p}%") for p in phrases)
+                term_clauses.extend(W.name_ru.ilike(f"%{p}%") for p in phrases)
                 if mode != "eop":
-                    term_clauses.append(WorldIndicator.code.ilike(f"%-{mode}%"))
+                    term_clauses.append(W.code.ilike(f"%-{mode}%"))
                 continue
             if intent.literal and normalize(alternative) == intent.literal:
                 literal_pattern = "%" + "%".join(_escape_like(word) for word in phrase(alternative).split()) + "%"
                 term_clauses.append(or_(*(column.ilike(literal_pattern, escape="\\") for column in
-                    (WorldIndicator.code, WorldIndicator.name_ru, WorldIndicator.name_en))))
+                    (W.code, W.name_ru, W.name_en))))
                 continue
             needle = _escape_like(normalize(alternative))
             # A short whole query stays a prefix lookup. A short term inside a
@@ -562,10 +562,10 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool 
                 # The scorer then requires the normalized phrase/typed measure;
                 # this is not permission to drop a meaningful interior word.
                 pattern = "%" + "%".join(_escape_like(word) for word in phrase(alternative).split()) + "%"
-            columns = (WorldIndicator.code, WorldIndicator.name_ru, WorldIndicator.name_en, WorldIndicator.seo_keywords)
+            columns = (W.code, W.name_ru, W.name_en, W.seo_keywords)
             native_alternatives.append((alternative, nominal))
             if "=" in alternative or (alternative.startswith("i") and alternative[1:].isdigit()):
-                columns += (WorldIndicator.unit, WorldIndicator.unit_ru)
+                columns += (W.unit, W.unit_ru)
             for column in columns:
                 if postgres and (nominal or (len(needle) < 3 and len(intent.terms) > 1 and len(alternatives) == 1)):
                     # An unfinished one/two-letter qualifier cannot match an
@@ -584,9 +584,9 @@ def _world_lexical_terms(intent: SearchIntent, *, postgres: bool, indexed: bool 
                     term_clauses.append(column.ilike(pattern, escape="\\"))
             raw_singleton = len(sourcegroup) == 1 and alternative == sourcegroup[0]
             if postgres and (len(alternatives) == 1 or raw_singleton) and not nominal and len(needle) >= 5 and " " not in needle:
-                for column in (WorldIndicator.name_ru, WorldIndicator.name_en):
+                for column in (W.name_ru, W.name_en):
                     term_clauses.append(literal(needle).op("<%")(column))
-        dimension = native_dimension_match_clause(WorldIndicator.provider, WorldIndicator.slice_json,
+        dimension = native_dimension_match_clause(W.provider, W.slice_json,
             tuple(native_alternatives), indexed=indexed)
         lexical = or_(*term_clauses) if term_clauses else literal(False)
         clauses.append((lexical, None if isinstance(dimension, False_) else dimension))
@@ -678,15 +678,24 @@ async def _entities(db: AsyncSession, geometry: list[dict], intent: SearchIntent
     # останавливается на первой. Прежние запросы читали все строки территории
     # (у региона России их до 165 тыс.) и на боевой базе шли десятки секунд.
     allowed = set()
+    # Поисковый индекс (ADR-0036): «есть данные» — по готовым отметкам копий, без чтения таблиц точек.
+    index = await search_index.active_index(db) if candidates else search_index.EMPTY
     country_ids = [item["id"] for item, _score in candidates if item["kind"] == "country" and item["id"] is not None]
     if country_ids:
-        listed_fact = exists(select(1).where(WorldIndicator.country_id == WorldCountry.id,
-            WorldIndicator.is_listed.is_(True), _world_fact(intent)))
+        if index.world is not None:
+            copy = index.world
+            listed_fact = exists(select(1).where(copy.c.country_id == WorldCountry.id, copy.c.is_listed, copy.c.has_fact))
+        else:
+            listed_fact = exists(select(1).where(WorldIndicator.country_id == WorldCountry.id,
+                WorldIndicator.is_listed.is_(True), _world_fact(intent)))
         rows = await db.execute(select(WorldCountry.id).where(WorldCountry.id.in_(country_ids), listed_fact))
         allowed.update(("country", item) for item in rows.scalars())
     if any(item["kind"] == "country" and item["country_slug"] == "russia" for item, _score in candidates):
-        fact = exists(select(1).select_from(Indicator).where(Indicator.is_active.is_(True),
-            exists(select(1).where(IndicatorData.indicator_id == Indicator.id, _finite(IndicatorData.value)))))
+        if index.russia is not None:
+            fact = exists(select(1).where(index.russia.c.has_fact))
+        else:
+            fact = exists(select(1).select_from(Indicator).where(Indicator.is_active.is_(True),
+                exists(select(1).where(IndicatorData.indicator_id == Indicator.id, _finite(IndicatorData.value)))))
         if (await db.execute(select(fact))).scalar():
             allowed.add(("country", None))
     region_ids = [item["id"] for item, _score in candidates if item["kind"] == "region"]
@@ -695,16 +704,26 @@ async def _entities(db: AsyncSession, geometry: list[dict], intent: SearchIntent
         # После заливки 13,1 млн месячных цен (09.11.2026) прежний UNION читал около 160 тыс. строк на регион
         # и упирался в statement_timeout: запрос с названием региона («саратовская область») отвечал 500
         # через 31 с при каждом вызове (сверено на боевом 13.11.2026). Индексы по region_id есть у обеих таблиц.
-        has_annual = exists(select(1).where(RegionDataPoint.region_id == Region.id, _finite(RegionDataPoint.value)))
-        has_monthly = exists(select(1).where(RegionMonthlyPoint.region_id == Region.id, _finite(RegionMonthlyPoint.value)))
-        rows = await db.execute(select(Region.id).where(Region.id.in_(region_ids), or_(has_annual, has_monthly)))
+        if index.region_facts is not None:
+            has_any = exists(select(1).where(index.region_facts.c.region_id == Region.id))
+        else:
+            has_annual = exists(select(1).where(RegionDataPoint.region_id == Region.id, _finite(RegionDataPoint.value)))
+            has_monthly = exists(select(1).where(RegionMonthlyPoint.region_id == Region.id, _finite(RegionMonthlyPoint.value)))
+            has_any = or_(has_annual, has_monthly)
+        rows = await db.execute(select(Region.id).where(Region.id.in_(region_ids), has_any))
         allowed.update(("region", item) for item in rows.scalars())
     subnational_ids = [item["id"] for item, _score in candidates if item["kind"] == "subnational_region"]
     if subnational_ids:
-        has_listed_fact = exists(select(1).select_from(SubnationalDataPoint).join(SubnationalIndicator,
-            SubnationalIndicator.id == SubnationalDataPoint.indicator_id).where(
-            SubnationalDataPoint.region_id == SubnationalRegion.id, SubnationalIndicator.is_listed.is_(True),
-            _finite(SubnationalDataPoint.value)))
+        if index.subnational_facts is not None:
+            facts = index.subnational_facts
+            has_listed_fact = exists(select(1).select_from(facts).join(SubnationalIndicator,
+                SubnationalIndicator.id == facts.c.indicator_id).where(
+                facts.c.region_id == SubnationalRegion.id, SubnationalIndicator.is_listed.is_(True)))
+        else:
+            has_listed_fact = exists(select(1).select_from(SubnationalDataPoint).join(SubnationalIndicator,
+                SubnationalIndicator.id == SubnationalDataPoint.indicator_id).where(
+                SubnationalDataPoint.region_id == SubnationalRegion.id, SubnationalIndicator.is_listed.is_(True),
+                _finite(SubnationalDataPoint.value)))
         rows = await db.execute(select(SubnationalRegion.id).where(SubnationalRegion.id.in_(subnational_ids), has_listed_fact))
         allowed.update(("subnational_region", item) for item in rows.scalars())
     country_names = {item["country_slug"]: item["name_en"] if locale == "en" else item["name_ru"]
@@ -737,9 +756,16 @@ async def _russia(db: AsyncSession, intent: SearchIntent, locale: str) -> list[d
         origin_countries = list((await db.execute(select(WorldCountry).where(
             WorldCountry.slug.in_(intent.countries), WorldCountry.is_active.is_(True)
         ))).scalars())
-    rows = list((await db.execute(select(Indicator).where(Indicator.is_active.is_(True),
-        exists(select(1).where(IndicatorData.indicator_id == Indicator.id, _finite(IndicatorData.value),
-            *_date_constraints(IndicatorData.date, intent)))))).scalars())
+    copy = (await search_index.active_index(db)).russia if intent.year is None else None
+    if copy is not None:
+        # Поисковый индекс (ADR-0036): активные ряды с конечным фактом и только те столбцы, что читаются ниже.
+        R = aliased(Indicator, copy, adapt_on_names=True)
+        rows = list((await db.execute(select(R).options(load_only(R.id, R.code, R.name, R.name_en, R.unit,
+            R.frequency, R.category, R.seo_keywords, R.is_listed)).where(copy.c.has_fact))).scalars())
+    else:
+        rows = list((await db.execute(select(Indicator).where(Indicator.is_active.is_(True),
+            exists(select(1).where(IndicatorData.indicator_id == Indicator.id, _finite(IndicatorData.value),
+                *_date_constraints(IndicatorData.date, intent)))))).scalars())
     output = []
     for row in rows:
         market_country = None
@@ -890,6 +916,94 @@ async def _world_top_with_facts(db: AsyncSession, statement, intent: SearchInten
         limit *= _WORLD_CANDIDATE_GROWTH
 
 
+# Проход по порядку выдачи перед свободным запросом (ADR-0036). Первый кусок — `_WORLD_WALK_FIRST` строк копии подряд
+# (строка около 750 байт: 2 048 строк — около 190 страниц). По доле подходящих строк в пройденном считается, сколько
+# строк нужно ещё (с запасом в четверть); пока всего пройдено не больше `_WORLD_WALK_MAX`, читается следующий кусок
+# такого размера, иначе слово редкое и остаток берёт запрос по триграммам.
+_WORLD_WALK_FIRST = 2048
+_WORLD_WALK_MAX = 32768
+
+
+async def _world_top_from_index(db: AsyncSession, copy, where_lists, rank_for, columns_for, need: int, *,
+        country_id: int | None, postgres: bool) -> list[tuple[int, WorldIndicator]]:
+    """Первые `need` строк каждого набора условий с фактом, в порядке выдачи, из копии каталога (ADR-0036).
+
+    Тот же итог, что у `_world_top_with_facts` по основным таблицам: отбор «условия и есть факт», порядок
+    (ранг, is_listed DESC, code), предел. Факт — готовая отметка `has_fact`, без чтения точек; порядок
+    (is_listed DESC, code) — номер строки `ord` (внутри страны `country_ord`), посчитанный при сборке тем же ORDER BY.
+
+    1. Строки ранга 0–2 (точное совпадение кода или названия с запросом, главный ряд понятия): условия ранга с
+       точным совпадением идут по индексам `lower(…)`, главный ряд — по коду. Их немного.
+    2. Остальные строки — в порядке `ord`. Копия лежит на диске в этом же порядке. Сначала читаются куски строк
+       подряд (подзапрос с OFFSET 0: база не может заменить проход по порядку чтением всех совпадений по
+       триграммам); широкое слово («уровень», «индекс», «население») набирает выдачу в первом же куске. Если доля
+       совпадений мала — остаток каталога одним запросом по триграммам (порядок `ord + 0`, полный проход запрещён).
+       Строки ранга 0–2 в этой части не исключаются условием (база плохо оценивает его долю и уходила в сортировку
+       всех совпадений); вместо этого берётся на столько строк больше, сколько их нашлось в п. 1, и они отбрасываются.
+    Все строки п. 1 стоят в выдаче раньше всех строк п. 2, поэтому склейка списков — тот же порядок.
+    """
+    W = aliased(WorldIndicator, copy, adapt_on_names=True)
+    position = copy.c.ord if country_id is None else copy.c.country_ord
+    rank, hit = rank_for(W)
+    statements = where_lists(W)
+    picked: list[tuple[int, int]] = []
+    # Куски порядка и условия на них общие для всех наборов условий одного поиска.
+    blocks: dict[tuple[int, int], tuple] = {}
+    if postgres:
+        # На время запросов к копии: без полного прохода по ней (база по своей оценке читала бы всю копию вместо
+        # триграмм — так было с «ВВП») и с планом под каждые значения параметров. Подготовленный запрос с шестого
+        # повтора получает общий план без значений, и такой план для остатка шёл 5 с вместо 0,1 с. Настройки
+        # действуют до конца транзакции, ниже возвращаются прежние; при ошибке транзакция откатится вместе с ними.
+        settings_before = (await db.execute(text(
+            "SELECT current_setting('enable_seqscan'), current_setting('plan_cache_mode')"))).one()
+        await db.execute(text("SELECT set_config('enable_seqscan', 'off', true), "
+            "set_config('plan_cache_mode', 'force_custom_plan', true)"))
+    for index, where in enumerate(statements):
+        low = (await db.execute(select(W.id, rank.label("fe_rank")).where(*where, copy.c.has_fact, hit)
+            .order_by(rank, copy.c.ord).limit(need))).all()
+        part = [(row_rank, row_id) for row_id, row_rank in low]
+        if len(part) < need:
+            skip = {row_id for _rank, row_id in part}
+            want = need + len(skip)
+            high: list[int] = []
+            start, size = 1, _WORLD_WALK_FIRST
+            while size:
+                if (start, size) not in blocks:
+                    block = select(copy).where(position >= start, position < start + size,
+                        *(() if country_id is None else (copy.c.country_id == country_id,))).offset(0).subquery()
+                    blocks[start, size] = (block, where_lists(aliased(WorldIndicator, block, adapt_on_names=True)))
+                block, block_lists = blocks[start, size]
+                found = (await db.execute(select(block.c.id).where(*block_lists[index], block.c.has_fact)
+                    .order_by(block.c.ord).limit(want - len(high)))).scalars().all()
+                high += found
+                start += size
+                if len(high) >= want:
+                    break
+                # Сколько строк порядка нужно ещё при доле подходящих во всём пройденном (с запасом в четверть).
+                # Доля по странам неровная, поэтому кусков может быть несколько, но всего не больше _WORLD_WALK_MAX.
+                walked = start - 1
+                more = -(-(want - len(high)) * walked * 5 // (4 * len(high))) if high else None
+                size = more if more is not None and walked + more <= _WORLD_WALK_MAX else 0
+            else:
+                # Остаток: подходящих строк мало, их находят индексы слов. Порядок `ord + 0` не даёт базе снова идти
+                # по индексу порядка (по оценке плана она шла бы им, а на деле проверяла бы сотни тысяч строк), а
+                # запрет полного прохода на этот запрос — читать всю копию вместо триграмм (так было с «ВВП»).
+                high += (await db.execute(select(W.id).where(*where, copy.c.has_fact, position >= start,
+                    *(() if country_id is None else (copy.c.country_id == country_id,))).order_by(
+                    copy.c.ord + literal(0)).limit(want - len(high)))).scalars().all()
+            part += [(3, row_id) for row_id in high if row_id not in skip][:need - len(part)]
+        picked += part
+    if postgres:
+        await db.execute(text("SELECT set_config('enable_seqscan', :seq, true), set_config('plan_cache_mode', :plan, true)"),
+                         {"seq": settings_before[0], "plan": settings_before[1]})
+    ids = list(dict.fromkeys(row_id for _rank, row_id in picked))
+    if not ids:
+        return []
+    belongs = W.id == func.any(bindparam("fe_ids", ids, type_=ARRAY(Integer))) if postgres else W.id.in_(ids)
+    rows = {row.id: row for row in (await db.execute(select(W).options(load_only(*columns_for(W))).where(belongs))).scalars()}
+    return [(row_rank, rows[row_id]) for row_rank, row_id in picked]
+
+
 async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, WorldCountry], locale: str, budget: int) -> tuple[list[dict], bool]:
     if intent.regions or intent.countries == frozenset(("russia",)):
         return [], False
@@ -899,38 +1013,54 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
     selected = [c.id for slug, c in countries.items() if not intent.countries or slug in intent.countries]
     if not selected:
         return [], False
-    columns = (WorldIndicator.id, WorldIndicator.code, WorldIndicator.country_id, WorldIndicator.provider,
-        WorldIndicator.dataset_id, WorldIndicator.slice_json, WorldIndicator.slice_hash, WorldIndicator.name_ru,
-        WorldIndicator.name_en, WorldIndicator.unit, WorldIndicator.unit_ru, WorldIndicator.frequency,
-        WorldIndicator.category_ru, WorldIndicator.seo_keywords, WorldIndicator.is_listed, WorldIndicator.points_count)
     postgres = db.get_bind().dialect.name == "postgresql"
-    needle = _escape_like(intent.literal or intent.content)
-    rank = case((WorldIndicator.code.ilike(_escape_like(intent.query), escape="\\"), 0),
-        (WorldIndicator.code.ilike(needle, escape="\\"), 0),
-        (WorldIndicator.name_ru.ilike(needle, escape="\\"), 1),
-        (WorldIndicator.name_en.ilike(needle, escape="\\"), 1),
-        (_world_preference(intent), 2), else_=3)
+    # Поисковый индекс (ADR-0036): без года и месяца строки и отметка «есть факт» берутся из маленькой копии каталога.
+    # Запрос с периодом проверяет факт этого периода и читает основные таблицы, как раньше.
+    copy = (await search_index.active_index(db)).world if intent.year is None else None
+    # У копии индекса свой индекс меток среза (миграция 20261118_search_index).
+    indexed = postgres and (copy is not None or await _slice_index_available(db))
+    needle_text = intent.literal or intent.content
+    needle = _escape_like(needle_text)
 
-    indexed = postgres and await _slice_index_available(db)
+    def columns_for(W) -> tuple:
+        return (W.id, W.code, W.country_id, W.provider, W.dataset_id, W.slice_json, W.slice_hash, W.name_ru,
+            W.name_en, W.unit, W.unit_ru, W.frequency, W.category_ru, W.seo_keywords, W.is_listed, W.points_count)
 
-    def candidates(term_clauses):
-        # Кандидаты в порядке выдачи, только id и ранг. Все ограничения географии, слов, срезов и меры стоят
-        # до LIMIT, как раньше; проверка факта идёт следом по этому же порядку (`_world_top_with_facts`).
-        return select(WorldIndicator.id, rank.label("fe_rank")).where(
-            WorldIndicator.country_id.in_(selected), *term_clauses,
+    def rank_conditions_for(W) -> tuple:
+        return (W.code.ilike(_escape_like(intent.query), escape="\\"), W.code.ilike(needle, escape="\\"),
+            W.name_ru.ilike(needle, escape="\\"), W.name_en.ilike(needle, escape="\\"), _world_preference(intent, W))
+
+    def rank_for(W):
+        """Ранг строки и условие «ранг 0–2» для копии индекса.
+
+        `col ILIKE 'слово'` без знаков подстановки в базе UTF-8 — это `lower(col) = lower('слово')`: ILIKE
+        сравнивает строки после `lower` обеих. Равенство идёт по индексу `lower(col)` копии, а само условие ранга
+        остаётся рядом и решает, как и раньше.
+        """
+        conditions = rank_conditions_for(W)
+        exact = (func.lower(W.code) == func.lower(literal(intent.query)), func.lower(W.code) == func.lower(literal(needle_text)),
+            func.lower(W.name_ru) == func.lower(literal(needle_text)), func.lower(W.name_en) == func.lower(literal(needle_text)))
+        hit = or_(*(and_(equal, condition) for equal, condition in zip(exact, conditions[:4])), conditions[4])
+        return case(*zip(conditions, (0, 0, 1, 1, 2)), else_=3), hit
+
+    def where_lists(W) -> list[list]:
+        # Условия, общие для всех наборов: дубли, срезы, мера. Строятся один раз на сущность.
+        tail = [
             # Остановленные источником дубли ведут на канон (301), в выдаче их нет.
-            WorldIndicator.dataset_id.notin_(superseded_dataset_ids()),
-            *dimension_constraints(intent.terms, WorldIndicator.provider, WorldIndicator.slice_json, indexed=indexed),
-            *measure_constraints(intent.terms, WorldIndicator.code, (WorldIndicator.name_ru, WorldIndicator.name_en,
-                native_dimension_text(WorldIndicator.provider, WorldIndicator.slice_json, intent.terms)), postgres=postgres,
-                unit_columns=(WorldIndicator.unit, WorldIndicator.unit_ru))
-        ).order_by(rank, WorldIndicator.is_listed.desc(), WorldIndicator.code)
+            W.dataset_id.notin_(superseded_dataset_ids()),
+            *dimension_constraints(intent.terms, W.provider, W.slice_json, indexed=indexed),
+            *measure_constraints(intent.terms, W.code, (W.name_ru, W.name_en,
+                native_dimension_text(W.provider, W.slice_json, intent.terms)), postgres=postgres,
+                unit_columns=(W.unit, W.unit_ru))]
 
-    terms = _world_lexical_terms(intent, postgres=postgres, indexed=indexed)
-    dimension_terms = [index for index, (_lexical, dimension) in enumerate(terms) if dimension is not None]
-    if not postgres or not dimension_terms or len(dimension_terms) > _MAX_DIMENSION_TERMS:
-        statements = [candidates(_world_lexical(intent, postgres=postgres, indexed=indexed))]
-    else:
+        def candidates(term_clauses) -> list:
+            # Все ограничения географии, слов, срезов и меры стоят до LIMIT, как раньше.
+            return [W.country_id.in_(selected), *term_clauses, *tail]
+
+        terms = _world_lexical_terms(intent, postgres=postgres, indexed=indexed, W=W)
+        dimension_terms = [index for index, (_lexical, dimension) in enumerate(terms) if dimension is not None]
+        if not postgres or not dimension_terms or len(dimension_terms) > _MAX_DIMENSION_TERMS:
+            return [candidates(_world_lexical(intent, postgres=postgres, indexed=indexed, W=W))]
         # A term holds through its lexical or its dimension predicate. Every
         # combination is its own AND query, so each can use the trigram index;
         # the union of the per-query top candidates contains the overall top.
@@ -939,11 +1069,23 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
             use_dimension = {dimension_terms[bit] for bit in range(len(dimension_terms)) if mask >> bit & 1}
             statements.append(candidates([dimension if index in use_dimension else lexical
                 for index, (lexical, dimension) in enumerate(terms)]))
+        return statements
+
     merged: dict[int, tuple[int, WorldIndicator]] = {}
-    facts: dict[int, WorldIndicator | None] = {}
-    for statement in statements:
-        for row_rank, row in await _world_top_with_facts(db, statement, intent, columns, budget + 1, facts, postgres=postgres):
+    if copy is not None:
+        for row_rank, row in await _world_top_from_index(db, copy, where_lists, rank_for, columns_for, budget + 1,
+                country_id=selected[0] if len(selected) == 1 else None, postgres=postgres):
             merged.setdefault(row.id, (row_rank, row))
+    else:
+        W = WorldIndicator
+        columns = columns_for(W)
+        rank = case(*zip(rank_conditions_for(W), (0, 0, 1, 1, 2)), else_=3)
+        facts: dict[int, WorldIndicator | None] = {}
+        for where in where_lists(W):
+            # Кандидаты в порядке выдачи, только id и ранг; проверка факта идёт следом по этому же порядку.
+            statement = select(W.id, rank.label("fe_rank")).where(*where).order_by(rank, W.is_listed.desc(), W.code)
+            for row_rank, row in await _world_top_with_facts(db, statement, intent, columns, budget + 1, facts, postgres=postgres):
+                merged.setdefault(row.id, (row_rank, row))
     ordered = sorted(merged.values(), key=lambda item: (item[0], 0 if item[1].is_listed else 1, item[1].code))
     rows = [row for _rank, row in ordered[:budget + 1]]
     clipped = len(rows) > budget
@@ -1088,11 +1230,20 @@ async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict],
             candidates[row.id], copies[row.id] = score, en
     if not candidates:
         return [], False
-    annual = literal(False) if frequency == "monthly" else _annual_fact(intent)
-    monthly = literal(False) if frequency == "annual" else _monthly_fact(intent)
+    # Поисковый индекс (ADR-0036): без года «есть годовая / месячная точка у пары» — готовые отметки пары.
+    facts = (await search_index.active_index(db)).region_facts if intent.year is None else None
+    if facts is not None:
+        annual = literal(False) if frequency == "monthly" else facts.c.has_annual
+        monthly = literal(False) if frequency == "annual" else facts.c.has_monthly
+    else:
+        annual = literal(False) if frequency == "monthly" else _annual_fact(intent)
+        monthly = literal(False) if frequency == "annual" else _monthly_fact(intent)
     usable = annual if intent.year is not None else or_(annual, monthly)
     async def run(indicator_ids: list[int], region_ids: list[int], limit: int) -> list:
-        stmt = select(Region, RegionIndicator, monthly.label("monthly"), annual.label("annual")).select_from(RegionIndicator).join(Region, true()).where(
+        stmt = select(Region, RegionIndicator, monthly.label("monthly"), annual.label("annual")).select_from(RegionIndicator).join(Region, true())
+        if facts is not None:
+            stmt = stmt.join(facts, and_(facts.c.indicator_id == RegionIndicator.id, facts.c.region_id == Region.id))
+        stmt = stmt.where(
             RegionIndicator.id.in_(indicator_ids), Region.id.in_(region_ids), usable).order_by(
             case({item: candidates[item] for item in indicator_ids}, value=RegionIndicator.id).desc(),
             Region.sort_order, RegionIndicator.code).limit(limit)
@@ -1131,9 +1282,15 @@ async def _subnational(db: AsyncSession, intent: SearchIntent, geometry: list[di
             candidates[row.id] = score
     if not candidates:
         return [], False
-    fact = exists(select(1).where(SubnationalDataPoint.indicator_id == SubnationalIndicator.id,
-        SubnationalDataPoint.region_id == SubnationalRegion.id, _finite(SubnationalDataPoint.value),
-        *_date_constraints(SubnationalDataPoint.period, intent)))
+    facts = (await search_index.active_index(db)).subnational_facts if intent.year is None else None
+    if facts is not None:
+        # Поисковый индекс (ADR-0036): пара с конечной точкой — готовая строка пары.
+        fact = exists(select(1).where(facts.c.indicator_id == SubnationalIndicator.id,
+            facts.c.region_id == SubnationalRegion.id))
+    else:
+        fact = exists(select(1).where(SubnationalDataPoint.indicator_id == SubnationalIndicator.id,
+            SubnationalDataPoint.region_id == SubnationalRegion.id, _finite(SubnationalDataPoint.value),
+            *_date_constraints(SubnationalDataPoint.period, intent)))
     async def run(indicator_ids: list[int], region_ids: list[int], limit: int) -> list:
         stmt = select(SubnationalRegion, SubnationalIndicator).select_from(SubnationalIndicator).join(
             SubnationalRegion, SubnationalRegion.country_code == SubnationalIndicator.country_code).where(
