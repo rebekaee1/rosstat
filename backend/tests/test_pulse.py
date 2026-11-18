@@ -179,6 +179,7 @@ def test_memory_core_is_compact():
         "acquisition_metadata": None,
         "seo_indexed_share_pct": None,
         "seo_searchable_pages": None,
+        "seo_in_search_date": None,
     }
 
 

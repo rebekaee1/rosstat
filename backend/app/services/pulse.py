@@ -239,6 +239,7 @@ async def _seo_snapshot(db=None) -> dict[str, Any]:
         summary_by_host: dict[str, dict[str, Any]] = {}
         host_ids = _report_host_ids()
         primary = None
+        primary_label = None
         for host_id in host_ids:
             try:
                 data = (await client.summary(user_id, host_id)).data
@@ -251,9 +252,11 @@ async def _seo_snapshot(db=None) -> dict[str, Any]:
                 "excluded_pages": data.get("excluded_pages_count"),
                 "sqi": data.get("sqi"),
                 "site_problems": data.get("site_problems") or {},
+                "in_search_freshness": await _in_search_freshness(client, user_id, host_id),
             }
             if primary is None:
                 primary = data
+                primary_label = label
         if primary is None or not summary_by_host:
             return {"available": False, "reason": "summary fetch failed"}
         summary = primary
@@ -350,6 +353,11 @@ async def _seo_snapshot(db=None) -> dict[str, Any]:
                 round(100 * searchable / total_urls, 1) if searchable and total_urls else None
             ),
             "site_problems": summary.get("site_problems") or {},
+            # Дата и перерыв точки «в поиске»: 29 306 на 13.11.2026 после пяти недель без данных
+            # Яндекса Пульс подал как падение «со 105 480» (docs/backlog.md#yandex-in-search-2026-11-18).
+            "in_search_freshness": summary_by_host.get(primary_label, {}).get("in_search_freshness"),
+            "yandex_data_gap": any(
+                (h.get("in_search_freshness") or {}).get("data_gap") for h in summary_by_host.values()),
             "summary_by_host": summary_by_host,
             "exclusion_reasons_sample": exclusion_reasons,
             "top_search_queries_date": last_date.isoformat() if last_date else None,
@@ -365,6 +373,22 @@ async def _seo_snapshot(db=None) -> dict[str, Any]:
             return {"available": False, "reason": "webmaster token expired: owner must re-issue it"}
         logger.warning("Pulse SEO snapshot failed", exc_info=True)
         return {"available": False, "reason": "fetch failed"}
+
+
+async def _in_search_freshness(client, user_id: str, host_id: str) -> dict[str, Any] | None:
+    """Последняя/предыдущая точка «в поиске» хоста и перерыв между ними; None — история недоступна."""
+    from app.services.display import today_msk
+    from app.services.webmaster_freshness import in_search_freshness
+
+    today = today_msk()
+    try:
+        hist = (await client.in_search_history(
+            user_id, host_id, date_from=(today - timedelta(days=60)).isoformat(),
+            date_to=(today + timedelta(days=1)).isoformat())).data
+    except Exception:
+        logger.warning("Pulse SEO snapshot: in-search history unavailable host=%s", host_id, exc_info=True)
+        return None
+    return in_search_freshness(hist, today)
 
 
 async def _bot_signals(d: date) -> dict[str, Any]:
@@ -885,6 +909,8 @@ def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
         "acquisition_metadata": (snap.get("acquisition") or {}).get("metadata"),
         "seo_indexed_share_pct": snap.get("seo", {}).get("indexed_share_pct"),
         "seo_searchable_pages": snap.get("seo", {}).get("searchable_pages"),
+        # День точки Вебмастера: одинаковое число неделю подряд с одной датой — данные стоят, не «без изменений».
+        "seo_in_search_date": (snap.get("seo", {}).get("in_search_freshness") or {}).get("date"),
         **_extra_core(snap),
     }
 
