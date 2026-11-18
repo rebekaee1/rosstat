@@ -698,6 +698,8 @@ cd backend && set -a && . ~/.config/fe-mail.env && set +a && export RUSTATS_MAIL
 ```
 В Яндекс Почте у полученного письма «⋯» → «Свойства письма»: в `Authentication-Results` ждём `spf=pass`, `dkim=pass header.d=forecasteconomy.com`, `dmarc=pass`.
 
+**Что видно о доставке (с 18.11.2026).** `docker compose exec -T backend python /app/scripts/mail.py deliverability` — DNS почты, отказы и жалобы в ящике `info@`, отчёты DMARC, журнал выпуска по сервисам; ничего не отправляет. Папку письма у получателя показывают только проверочные ящики — [правила письма, раздел 10](newsletter-playbook.md#10-проверка-доставки-18112026).
+
 **Включение на сервере (по команде владельца, после выпуска с миграцией `20261114_mail_outbox`).**
 ```bash
 ssh fe-prod 'cd /opt/rosstat && cp .env .env.bak-mail-$(date +%Y%m%d) && cat >> .env' < ~/.config/fe-mail.env

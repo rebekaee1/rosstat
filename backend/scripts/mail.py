@@ -13,6 +13,9 @@
     python /app/scripts/mail.py reconfirm [--test-to rebeka.ee@yandex.ru | --send [--max 50]]
                                                        # «подтвердите почту» неподтверждённым адресам
     python /app/scripts/mail.py bounces                # один проход разбора отказов (IMAP, только чтение)
+    python /app/scripts/mail.py deliverability [--campaign ключ] [--days 7] [--no-probe]
+                                                       # что видно о доставке: DNS, отказы, жалобы,
+                                                       # отчёты DMARC, журнал по сервисам; без писем
     python /app/scripts/mail.py watch-digest [--send]  # сводка «колокольчика»: без --send только счёт
     python /app/scripts/mail.py funnel [--campaign ключ] [--json]   # воронка выпуска: дошло, открыли, перешли, вернулись
     python /app/scripts/mail.py sync-clicks                         # перенести переходы из сессий сайта в события писем
@@ -256,6 +259,22 @@ async def cmd_bounces(_args) -> int:
     return 0
 
 
+async def cmd_deliverability(args) -> int:
+    """Что видно о доставке со стороны сайта (ADR-0032, 18.11.2026). Ничего не отправляет и не меняет."""
+    from app.database import async_session
+    from app.services.mail import deliverability as dlv
+    from app.services.mail import funnel
+
+    domain = (settings.mail_from_address or settings.mail_smtp_user or "info@forecasteconomy.com").split("@")[-1]
+    dns = await asyncio.to_thread(dlv.check_dns, domain, probe_rua=not args.no_probe)
+    box = await asyncio.to_thread(dlv.survey_mailbox, args.days)
+    async with async_session() as db:
+        key = args.campaign or next((c["key"] for c in await funnel.campaigns(db, limit=1)), None)
+        journal = await dlv.journal_by_service(db, key) if key else {}
+    print(dlv.format_report(dns, box, journal, key, args.days))
+    return 0
+
+
 async def cmd_funnel(args) -> int:
     """Воронка выпуска (ADR-0034): только суммы. Без --campaign — последний выпуск."""
     import re
@@ -325,6 +344,10 @@ def main() -> int:
     rc.add_argument("--send", action="store_true")
     rc.add_argument("--max", type=int)
     sub.add_parser("bounces", help="один проход разбора отказов по IMAP")
+    dv = sub.add_parser("deliverability", help="что видно о доставке: DNS, отказы, жалобы, DMARC, журнал")
+    dv.add_argument("--campaign")
+    dv.add_argument("--days", type=int, default=7)
+    dv.add_argument("--no-probe", action="store_true", help="не проверять по SMTP адрес отчётов DMARC")
     fn = sub.add_parser("funnel", help="воронка выпуска: дошло, открыли, перешли, вернулись, отписались")
     fn.add_argument("--campaign")
     fn.add_argument("--json", action="store_true")
@@ -335,7 +358,7 @@ def main() -> int:
     try:
         tokens._secret()
     except tokens.TokenSecretMissing:
-        if args.cmd not in ("check", "funnel", "sync-clicks"):
+        if args.cmd not in ("check", "funnel", "sync-clicks", "deliverability"):
             print("RUSTATS_MAIL_TOKEN_SECRET не задан (нужен для ссылок в письмах)")
             return 1
     if args.cmd == "check":
@@ -344,6 +367,7 @@ def main() -> int:
         return cmd_render(args)
     return asyncio.run({"test": cmd_test, "audience": cmd_audience, "campaign": cmd_campaign,
                         "reconfirm": cmd_reconfirm, "bounces": cmd_bounces,
+                        "deliverability": cmd_deliverability,
                         "watch-digest": cmd_watch_digest, "funnel": cmd_funnel,
                         "sync-clicks": cmd_sync_clicks}[args.cmd](args))
 
