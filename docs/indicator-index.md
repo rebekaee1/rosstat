@@ -27,17 +27,17 @@
 
 ## Сводка
 
-- Всего кодов: **1685**
+- Всего кодов: **1705**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (перекрытая standalone-ветка): **24**
-- unresolved (нет ui_stack): **27**
+- unresolved (нет ui_stack): **47**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=1613, `housing`=8, `null`=27, `ppi`=5
+По стекам: `cpi`=32, `generic`=1613, `housing`=8, `null`=47, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
-`cny-eur`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `gbp-eur`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `steel`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`
+`cny-eur`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `gbp-eur`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `steel`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`
 
 ## Все индикаторы
 
@@ -881,6 +881,15 @@
 | `imports-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `imports-yoy` | Торговля | quarterly | `generic` | — | — | both, shadowed |
 | `imports-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
+| `income-funds-ratio` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `income-gini` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `income-share-bottom10` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `income-share-quintile-1` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `income-share-quintile-2` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `income-share-quintile-3` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `income-share-quintile-4` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `income-share-quintile-5` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `income-share-top10` | Рынок труда | annual | `null` | — | ✓ | no-stack |
 | `inflation-annual` | Цены | annual | `cpi` | derived_from_source | — | — |
 | `inflation-quarterly` | Цены | quarterly | `cpi` | — | — | — |
 | `inflation-weekly` | Цены | weekly | `cpi` | generic_ols | — | — |
@@ -1662,7 +1671,18 @@
 | `vnd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `vnd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `vnd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `wages-decile-1` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-10` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-2` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-3` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-4` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-5` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-6` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-7` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-8` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `wages-decile-9` | Рынок труда | annual | `null` | — | ✓ | no-stack |
 | `wages-index` | Рынок труда | monthly | `generic` | — | — | — |
+| `wages-median` | Рынок труда | annual | `null` | — | ✓ | no-stack |
 | `wages-nominal` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `wages-nominal-annual` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-nominal-annual-yoy` | Рынок труда | annual | `generic` | — | — | — |
@@ -1739,7 +1759,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **198** · с полной матрицей: **159** · с пробелами: **39**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 160, 'orphan': 27}.
+Корней-семейств: **218** · с полной матрицей: **159** · с пробелами: **59**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 160, 'orphan': 47}.
 
 ## Систематические пробелы по типам
 
@@ -1766,11 +1786,12 @@
 | generic/T8 | index | month | 1 | `pop:year` |
 | generic/T9 | gdp | quarter | 10 | — |
 | generic/T9s | signed-flow | quarter | 3 | — |
+| orphan/- | annual-count | year | 13 | `index:year`, `yoy:year` |
 | orphan/- | avg-level | day | 3 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:week`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 | orphan/- | avg-level | month | 6 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 | orphan/- | rate | month | 14 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 | orphan/- | rate | quarter | 2 | `pop:quarter`, `value:year`, `yoy:quarter`, `yoy:year` |
-| orphan/- | rate | year | 2 | `yoy:year` |
+| orphan/- | rate | year | 9 | `yoy:year` |
 
 ## Корни с пробелами матрицы
 
@@ -1809,9 +1830,29 @@
 | `cpi-food` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `cpi-nonfood` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `cpi-services` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
+| `income-funds-ratio` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `income-gini` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
 | `ppi` | bespoke/PPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
+| `wages-decile-1` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-10` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-2` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-3` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-4` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-5` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-6` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-7` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-8` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-decile-9` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
+| `wages-median` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
 | `housing-price-primary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `housing-price-secondary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
+| `income-share-bottom10` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
+| `income-share-quintile-1` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
+| `income-share-quintile-2` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
+| `income-share-quintile-3` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
+| `income-share-quintile-4` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
+| `income-share-quintile-5` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
+| `income-share-top10` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
 | `registered-unemployment-share` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
 | `unemployed-higher-education-share-annual` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
 | `wages-real` | generic/T8 | index | month | 0.9 | `pop:year` | full | yes | curated |
@@ -1819,6 +1860,6 @@
 ## Измерения паспорта (агрегат)
 
 - **Без полных текстов** (18): `birth-rate`, `death-rate`, `exports-monthly`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`, `working-age-population`
-- **Без прогноза** (39): `cny-eur`, `coal`, `copper`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `silver`, `soybean`, `steel`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
-- **SEO не curated** (34): `cny-eur`, `deposit-rate-long`, `deposit-rate-medium`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `exports-monthly`, `gbp-eur`, `housing-affordability-primary`, `imports-monthly`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `services-exports-monthly`, `services-imports-monthly`, `short-term-unemployed`, `trade-balance-monthly`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`
+- **Без прогноза** (59): `cny-eur`, `coal`, `copper`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `silver`, `soybean`, `steel`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
+- **SEO не curated** (54): `cny-eur`, `deposit-rate-long`, `deposit-rate-medium`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `exports-monthly`, `gbp-eur`, `housing-affordability-primary`, `imports-monthly`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `services-exports-monthly`, `services-imports-monthly`, `short-term-unemployed`, `trade-balance-monthly`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`
 

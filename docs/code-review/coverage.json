@@ -19,20 +19,21 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2626,
-    "code_files": 2136,
-    "current_reviews": 2626,
+    "files": 2653,
+    "code_files": 2162,
+    "current_reviews": 2601,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 174,
       "binary_asset": 1,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "reviewed": 2353
+      "missing": 6,
+      "reviewed": 2374
     },
-    "definitions": 17636,
-    "annotated_definitions": 17636,
-    "files_needing_attention": 0
+    "definitions": 17928,
+    "annotated_definitions": 17739,
+    "files_needing_attention": 52
   },
   "orphan_reviews": [],
   "files": [
@@ -1077,6 +1078,69 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/alembic/versions/20261118_region_weekly.py",
+      "sha256": "d97a6d7b924115e72a5f8416bf724231cdbf077877ad2bbda201ee989ab454c3",
+      "bytes": 1657,
+      "lines": 42,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/alembic/versions/20261118_search_index.py",
+      "sha256": "289c4c2ee35f2235fdb1bede019cd0d3b5ecf91f4e2566ad461ad97453c8cc8d",
+      "bytes": 8064,
+      "lines": 129,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 3,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "_world",
+          "line": 27,
+          "end_line": 69,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "upgrade",
+          "line": 72,
+          "end_line": 115,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "downgrade",
+          "line": 118,
+          "end_line": 129,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/alembic/versions/20261118_session_is_human.py",
+      "sha256": "7ce478890074b3b0828e8bab389f93561bad6425f0d6f666b42f76f109d455f9",
+      "bytes": 1050,
+      "lines": 24,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/alembic/versions/8524e35ba1ee_init_schema.py",
       "sha256": "a62f187e83558a320ee3edea0a81fc61ee252df0fb1b55651bfe75500d53b7ca",
       "bytes": 4626,
@@ -1364,9 +1428,9 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "sha256": "0ae9232f1f9b56c946932ded9f40094276d881fdbd73e38d6a37462e5b7682ea",
-      "bytes": 52312,
-      "lines": 1194,
+      "sha256": "6ec5f2ed897fcef2401834039140879618c104aab7ef9466839d650b0d1ed0ea",
+      "bytes": 53250,
+      "lines": 1210,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -1403,9 +1467,9 @@
     },
     {
       "path": "backend/app/api/search.py",
-      "sha256": "66155bd2a8b44ccd74265b9e95942fa1d9b5d7fc91f089899d8db23b68156a90",
-      "bytes": 4584,
-      "lines": 85,
+      "sha256": "c758d24250ac7d8512287bbafb272456d54a52580c32919845d0361d010046df",
+      "bytes": 4791,
+      "lines": 86,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -1793,13 +1857,16 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "f939bcd7548b720b6e84e2c8457df8e89b8d55aa6f332eec3fc2c03ca8af1fa5",
-      "bytes": 65550,
-      "lines": 790,
+      "sha256": "cd2229e162492c90bf19b8ddba9befd32fd2d97413fe94b7ed5a7bf51803cf0d",
+      "bytes": 66713,
+      "lines": 801,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 5,
       "annotated_definitions": 5,
       "missing_definitions": []
@@ -1907,6 +1974,34 @@
       "definitions": 1,
       "annotated_definitions": 1,
       "missing_definitions": []
+    },
+    {
+      "path": "backend/app/data/emiss_income.py",
+      "sha256": "4707157177ea0164058498607caeaf456ea50483f94efba77ac92d0e0a2fe66e",
+      "bytes": 11996,
+      "lines": 168,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 5,
+      "annotated_definitions": 3,
+      "missing_definitions": [
+        {
+          "name": "IncomeSeries.source_url",
+          "line": 45,
+          "end_line": 46,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "IncomeSeries.coverage",
+          "line": 49,
+          "end_line": 55,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/data/emiss_labor.py",
@@ -2183,9 +2278,9 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "sha256": "17b094ac5c96676278c1009ba5733f05532e6e79f7b8d09bda9abeb98e8af158",
-      "bytes": 73914,
-      "lines": 1091,
+      "sha256": "44727d43dedca9b7b6d76e7f2037b4f7dce855b4e95207f1cc922b6399ea7b67",
+      "bytes": 74275,
+      "lines": 1101,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2235,9 +2330,9 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "d737c82cab0a5bf6f6a76ce99e5eac654a9dc070ce4a246f953d261a44f8d002",
-      "bytes": 79625,
-      "lines": 1736,
+      "sha256": "59e03b227b7ddab68332a3a7d1f3d2acb4f280d1ee7552449ec8baa102ef2d67",
+      "bytes": 81270,
+      "lines": 1760,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2248,9 +2343,9 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "sha256": "1d2d53a4c37e3e3c12d72beedceecb0cc459349503cb2864c862d0a62f7c129f",
-      "bytes": 730719,
-      "lines": 9249,
+      "sha256": "3213d2d113147b6c4aa9003cd8c0915adebac46590516242f7f1d2bd6363860c",
+      "bytes": 731094,
+      "lines": 9256,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2287,9 +2382,9 @@
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "bb84426f98fe87217af98cf25c05c40c74f053684a19ab6b53392fc8513aad17",
-      "bytes": 21155,
-      "lines": 245,
+      "sha256": "baf636952af1e31e37162166bbca8fcaba6c29d13bb2a6d2a472f7472457c2b0",
+      "bytes": 23540,
+      "lines": 272,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -2820,9 +2915,9 @@
     },
     {
       "path": "backend/app/main.py",
-      "sha256": "ea1fbb9986996b39096dc7058e48236f34cedd11e8cbea45cc25b2a095088f66",
-      "bytes": 106127,
-      "lines": 2220,
+      "sha256": "016ecab65d23adb473480d126ccaa7c65a5c1cb544f140196036111c454b61de",
+      "bytes": 108063,
+      "lines": 2249,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2833,16 +2928,109 @@
     },
     {
       "path": "backend/app/models.py",
-      "sha256": "060de06e9d9bcab5d7ad1588f7a3fa214c0e6560730adece680bb701d442cd95",
-      "bytes": 130895,
-      "lines": 2221,
+      "sha256": "52c996423e84f91e11621b5eb123b0ebcd152f11b9fd65084fa07aa1115d6d09",
+      "bytes": 141700,
+      "lines": 2395,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 89,
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 104,
       "annotated_definitions": 89,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "RegionWeeklyPoint",
+          "line": 195,
+          "end_line": 221,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SearchIndexState",
+          "line": 2261,
+          "end_line": 2270,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_SearchWorldRow",
+          "line": 2273,
+          "end_line": 2300,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_search_world_indexes",
+          "line": 2303,
+          "end_line": 2321,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "SearchWorldRowA",
+          "line": 2324,
+          "end_line": 2326,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SearchWorldRowB",
+          "line": 2329,
+          "end_line": 2331,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_SearchRussiaRow",
+          "line": 2334,
+          "end_line": 2346,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SearchRussiaRowA",
+          "line": 2349,
+          "end_line": 2350,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SearchRussiaRowB",
+          "line": 2353,
+          "end_line": 2354,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_SearchRegionFact",
+          "line": 2357,
+          "end_line": 2368,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SearchRegionFactA",
+          "line": 2371,
+          "end_line": 2373,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SearchRegionFactB",
+          "line": 2376,
+          "end_line": 2378,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_SearchSubnationalFact",
+          "line": 2381,
+          "end_line": 2385,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SearchSubnationalFactA",
+          "line": 2388,
+          "end_line": 2390,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SearchSubnationalFactB",
+          "line": 2393,
+          "end_line": 2395,
+          "kind": "ClassDef"
+        }
+      ]
     },
     {
       "path": "backend/app/schemas.py",
@@ -2963,9 +3151,9 @@
     },
     {
       "path": "backend/app/services/admin_bi.py",
-      "sha256": "f56c67504d9717a609dbfac4269769087e587991c86971d82977ea686f41aa36",
-      "bytes": 58410,
-      "lines": 1341,
+      "sha256": "a35be136a4e6d553e391d64c3bac3361cd0874c9bbbd27dde9eaa8a935e1b8f1",
+      "bytes": 59408,
+      "lines": 1353,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3197,15 +3385,15 @@
     },
     {
       "path": "backend/app/services/bot_score.py",
-      "sha256": "77830f276008d3613ec06e6c9e22eb08f4a37772908c87c9f9a3795e11854b40",
-      "bytes": 11748,
-      "lines": 199,
+      "sha256": "542faf63ae08ac0d24322425dad3bbf3470f8540679a35fa3aa5221b971c4bb6",
+      "bytes": 16424,
+      "lines": 253,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 11,
-      "annotated_definitions": 11,
+      "definitions": 13,
+      "annotated_definitions": 13,
       "missing_definitions": []
     },
     {
@@ -3833,6 +4021,28 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/services/emiss_income_parser.py",
+      "sha256": "a74ea9483325e4baa114555f35f9fdfdc05bca998158a076d7514717bc1e9a86",
+      "bytes": 5979,
+      "lines": 99,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 5,
+      "annotated_definitions": 4,
+      "missing_definitions": [
+        {
+          "name": "EmissIncomeParser._fetch_and_parse",
+          "line": 91,
+          "end_line": 99,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
       "path": "backend/app/services/emiss_labor_parser.py",
       "sha256": "df73ac114c37e767e750df444b5114943480846a1b673a01700b079da2c4d8cc",
       "bytes": 4309,
@@ -3857,6 +4067,28 @@
       "definitions": 14,
       "annotated_definitions": 14,
       "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/emiss_weekly_fuel.py",
+      "sha256": "ed325f381bcdd5069d7bc750f49663db10f95e217962f848eedd95e2e94d8dfb",
+      "bytes": 21293,
+      "lines": 432,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 13,
+      "annotated_definitions": 12,
+      "missing_definitions": [
+        {
+          "name": "resolve_week_dates.matches",
+          "line": 182,
+          "end_line": 192,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/services/eurostat_parser.py",
@@ -4263,9 +4495,9 @@
     },
     {
       "path": "backend/app/services/goal_taxonomy.py",
-      "sha256": "1a6706d5305758f0fdef306946b8ae150c59bcfb849133e5a802e33f5dac68e0",
-      "bytes": 16427,
-      "lines": 348,
+      "sha256": "43686ae449b89870e792a2e83a7ea9f2d4071c9cb16c732432762afc68928212",
+      "bytes": 16836,
+      "lines": 351,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4624,6 +4856,166 @@
       "definitions": 14,
       "annotated_definitions": 14,
       "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/mail/deliverability.py",
+      "sha256": "81d9746f548af074c3b38d9db036d84e2395d0d429cc37f30b6dad37f6d31acd",
+      "bytes": 23833,
+      "lines": 479,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 24,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "DmarcRecord",
+          "line": 62,
+          "end_line": 68,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DmarcReport",
+          "line": 72,
+          "end_line": 81,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DmarcReport.messages",
+          "line": 80,
+          "end_line": 81,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "reporter_key",
+          "line": 84,
+          "end_line": 90,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_ts",
+          "line": 93,
+          "end_line": 97,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_text",
+          "line": 100,
+          "end_line": 102,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "parse_dmarc_xml",
+          "line": 105,
+          "end_line": 138,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_unpack",
+          "line": 141,
+          "end_line": 156,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "parse_dmarc_message",
+          "line": 159,
+          "end_line": 173,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_remote_service",
+          "line": 176,
+          "end_line": 190,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "service_of",
+          "line": 193,
+          "end_line": 206,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "MailboxSurvey",
+          "line": 210,
+          "end_line": 216,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "classify",
+          "line": 219,
+          "end_line": 232,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_junk_folder",
+          "line": 235,
+          "end_line": 242,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "survey_mailbox",
+          "line": 245,
+          "end_line": 283,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "dmarc_summary",
+          "line": 286,
+          "end_line": 301,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_doh",
+          "line": 308,
+          "end_line": 324,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "dkim_key_bits",
+          "line": 327,
+          "end_line": 339,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "parse_dmarc_record",
+          "line": 342,
+          "end_line": 343,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "rcpt_probe",
+          "line": 346,
+          "end_line": 353,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "check_dns",
+          "line": 356,
+          "end_line": 391,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "journal_by_service",
+          "line": 398,
+          "end_line": 419,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_pct",
+          "line": 426,
+          "end_line": 427,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "format_report",
+          "line": 430,
+          "end_line": 479,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/services/mail/funnel.py",
@@ -5186,16 +5578,25 @@
     },
     {
       "path": "backend/app/services/pulse.py",
-      "sha256": "5bcb628bcda01087230f9ac9e18e7d8473b72954ba5d92258cd58a56208fbaa7",
-      "bytes": 46369,
-      "lines": 930,
+      "sha256": "c2f7b9d0a215956f195a3bdf4d76aa4e0e13622cf6a015ccc97073ad657cb5f2",
+      "bytes": 49337,
+      "lines": 974,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 23,
-      "annotated_definitions": 23,
-      "missing_definitions": []
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 25,
+      "annotated_definitions": 24,
+      "missing_definitions": [
+        {
+          "name": "_in_search_freshness",
+          "line": 378,
+          "end_line": 391,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/services/pulse_context.py",
@@ -5224,16 +5625,38 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/services/pulse_people.py",
+      "sha256": "80a13fa725d7dfb1abcc28800d989baef525fe5e39c33b5c2ca7a9335ff7cd48",
+      "bytes": 10950,
+      "lines": 189,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 11,
+      "annotated_definitions": 10,
+      "missing_definitions": [
+        {
+          "name": "PeopleIndex.__init__",
+          "line": 52,
+          "end_line": 60,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "902bea71935fe3ab7770dd3ee929d381b1e9537dc4cf3616ac57551a6fc646e1",
-      "bytes": 48970,
-      "lines": 729,
+      "sha256": "ccb689e110fbac146c1807765d69da6badf2926a6a652dce092288c76c4a00ba",
+      "bytes": 51993,
+      "lines": 758,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 22,
-      "annotated_definitions": 22,
+      "definitions": 23,
+      "annotated_definitions": 23,
       "missing_definitions": []
     },
     {
@@ -5289,10 +5712,23 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/services/regional_weekly.py",
+      "sha256": "fc4e2ffaac771004376851daa0408dc7b030b1a38ffbdf0acf625bf8b5d5d36c",
+      "bytes": 8192,
+      "lines": 165,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 7,
+      "annotated_definitions": 7,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "sha256": "c3a8ef8d97285b1628baffac59fbb48a4330f41bcd1e26c146f0be25a9c315f7",
-      "bytes": 6305,
-      "lines": 140,
+      "sha256": "887ac7210c65b042df5cf6ef4e11458aa5673cdaabcabb55cbffa481df0f92ef",
+      "bytes": 6422,
+      "lines": 142,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5498,16 +5934,55 @@
     },
     {
       "path": "backend/app/services/search.py",
-      "sha256": "f4bc53dbef563d876c8966b4751e5b2f8021aea67d5a4b1923d1eb6dd4b63455",
-      "bytes": 101948,
-      "lines": 1541,
+      "sha256": "946ec0201e4c39e10775ba6e85bcd8eb036faf697838eb71737bbf9fafba3123",
+      "bytes": 119158,
+      "lines": 1762,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 54,
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 60,
       "annotated_definitions": 54,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "_world_top_from_index",
+          "line": 928,
+          "end_line": 1005,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_world.columns_for",
+          "line": 1026,
+          "end_line": 1028,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_world.rank_conditions_for",
+          "line": 1030,
+          "end_line": 1032,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_world.rank_for",
+          "line": 1034,
+          "end_line": 1045,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_world.where_lists",
+          "line": 1047,
+          "end_line": 1073,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_world.where_lists.candidates",
+          "line": 1057,
+          "end_line": 1059,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/services/search_currency_aliases.py",
@@ -5536,10 +6011,119 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/services/search_index.py",
+      "sha256": "dab1fa3ff224593ea258879617bb087b49db483631d65aeb70826f306cb75f0b",
+      "bytes": 19748,
+      "lines": 315,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 15,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "ActiveIndex",
+          "line": 77,
+          "end_line": 83,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "reset_cache",
+          "line": 90,
+          "end_line": 93,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_index_from_state",
+          "line": 96,
+          "end_line": 105,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "active_index",
+          "line": 108,
+          "end_line": 127,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_finite",
+          "line": 130,
+          "end_line": 132,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_world_rows",
+          "line": 135,
+          "end_line": 147,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_russia_rows",
+          "line": 150,
+          "end_line": 157,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_territory_rows",
+          "line": 160,
+          "end_line": 188,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_signature",
+          "line": 191,
+          "end_line": 199,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_utcnow_naive",
+          "line": 202,
+          "end_line": 203,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_truncate",
+          "line": 206,
+          "end_line": 211,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "build_part",
+          "line": 214,
+          "end_line": 263,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "release_copy",
+          "line": 266,
+          "end_line": 282,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "refresh",
+          "line": 285,
+          "end_line": 306,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "search_index_job",
+          "line": 309,
+          "end_line": 315,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
       "path": "backend/app/services/search_intent.py",
-      "sha256": "a0d1b86fb6075b70898383820a7e6d6c67b4f87cb08758fee8f6570013207046",
-      "bytes": 80222,
-      "lines": 1180,
+      "sha256": "01ef35bfd70517d49697f5a70545c9d476528e13bc41b57aae7e52f9e20c4bfc",
+      "bytes": 80611,
+      "lines": 1182,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5667,15 +6251,28 @@
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
-      "sha256": "51a032f205d82a70a3d70b0c41b65b84cc6bf0add6d8f59aa245e1140d1c1e3c",
-      "bytes": 12799,
-      "lines": 243,
+      "sha256": "19792b00695338c0508aea2d0c57797533d6a3217a9825bf99172ffddde83463",
+      "bytes": 13463,
+      "lines": 250,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
       "definitions": 14,
       "annotated_definitions": 14,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/search_rewrite.py",
+      "sha256": "640429b2b2a1bf440be5b1cf4f8163370f8672b9b8ff0a7871f5388522959110",
+      "bytes": 16774,
+      "lines": 222,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 9,
+      "annotated_definitions": 9,
       "missing_definitions": []
     },
     {
@@ -5875,9 +6472,9 @@
     },
     {
       "path": "backend/app/services/seo_regional.py",
-      "sha256": "0995e65cfffa85a9b10f2169977050437cabc1d99ad74b5558f0d23c4815bfe7",
-      "bytes": 101016,
-      "lines": 2188,
+      "sha256": "4a9b01aceff4f62b478e4d55627a963762e217d3c389bb75850f501167bab8aa",
+      "bytes": 106599,
+      "lines": 2264,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5901,9 +6498,9 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "6a7a4821f650cde71486ff9a43fb98c5c545a08d2c8be85c346f085fcb7216ad",
-      "bytes": 225172,
-      "lines": 4337,
+      "sha256": "35e5dc5297c753ff3971f32ec1fe7ca3c8e1092448bc9ff24ea52c589fdd4661",
+      "bytes": 225926,
+      "lines": 4348,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -6122,9 +6719,9 @@
     },
     {
       "path": "backend/app/services/site_urls.py",
-      "sha256": "39cc942e11bdd6e8be81864a38e59c9e9d18b436ff239b7d752abcc67d40399b",
-      "bytes": 97922,
-      "lines": 2254,
+      "sha256": "d8d7cd4171ed6af720385c56a4bba2de3e842c83e08a618a3d3186df1111f3b1",
+      "bytes": 98434,
+      "lines": 2260,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -6446,6 +7043,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/services/webmaster_freshness.py",
+      "sha256": "d584833f7afc1cfcc6392d96928c27f3d8a3c8a4a0290ea8664d4572c3a1f37c",
+      "bytes": 5726,
+      "lines": 106,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 5,
+      "annotated_definitions": 5,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/services/webmaster_indexing_daily.py",
       "sha256": "50cdae9aa3ebc42f15e93d8b5318ace381e91c093303fe9aab498a8d1fe698d4",
       "bytes": 20073,
@@ -6460,16 +7070,27 @@
     },
     {
       "path": "backend/app/services/webmaster_indexing_report.py",
-      "sha256": "1777b5df05b23febafe0e5dc0b5d71a08eeeef89a652662ffbed955bcfefbaf4",
-      "bytes": 6584,
-      "lines": 158,
+      "sha256": "b810203205d28edb0c1127a064753fe1e768c61eb3c20986194e5fc45ad4b6b7",
+      "bytes": 7918,
+      "lines": 182,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 7,
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
+      "definitions": 8,
       "annotated_definitions": 7,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "_freshness_lines",
+          "line": 152,
+          "end_line": 170,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
@@ -7201,9 +7822,9 @@
     },
     {
       "path": "backend/app/tasks/analytics_rollups.py",
-      "sha256": "a0454383f6ce3fb857588ee50170aa2cf6b17183532454e7cf06d53b9335bce7",
-      "bytes": 72543,
-      "lines": 1368,
+      "sha256": "5171328f8b4fa301f9bea4dc93dce9546959b2435ddea362cf5ceac9a2c8b26c",
+      "bytes": 72888,
+      "lines": 1374,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -7240,16 +7861,25 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "sha256": "1d037deb462c4b7b4670deaa22f23f2134869798bb1f65c5b1337be5fcb1cf4f",
-      "bytes": 44726,
-      "lines": 899,
+      "sha256": "194ac617b78ecbf5c1b17aceab548d36a2b4445481efabc6ab8ce70b72568dd5",
+      "bytes": 45291,
+      "lines": 910,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 26,
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 27,
       "annotated_definitions": 26,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "emiss_weekly_fuel_job",
+          "line": 717,
+          "end_line": 725,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/tasks/session_analysis.py",
@@ -7721,16 +8351,25 @@
     },
     {
       "path": "backend/scripts/mail.py",
-      "sha256": "acf0fab5b4052d015abbf6573fda5fde327d0ce80d4c16225dda9002199536ac",
-      "bytes": 20675,
-      "lines": 352,
+      "sha256": "9d7c0244978e5806b41bf37a2499043ce4c9bc8a12b6332f6d45a0772225418c",
+      "bytes": 22364,
+      "lines": 376,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 14,
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 15,
       "annotated_definitions": 14,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "cmd_deliverability",
+          "line": 262,
+          "end_line": 275,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/scripts/metrika-goals-redesign.py",
@@ -8020,9 +8659,9 @@
     },
     {
       "path": "backend/seed_data.py",
-      "sha256": "b5b24cc78cb63069e3e37e1f33e1e69b494018e4ddffbb323538b89e6553ebb5",
-      "bytes": 305131,
-      "lines": 5740,
+      "sha256": "febc4008266710dd781b799a02b462dac9170657f653092382ac2236ca29fe92",
+      "bytes": 305240,
+      "lines": 5742,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -9722,6 +10361,34 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_emiss_income_parser.py",
+      "sha256": "9518a7d3ba8d0573781bfaa8c6e1e1a0b4c257e6f0669cc354245a0a05e14263",
+      "bytes": 4705,
+      "lines": 85,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 8,
+      "annotated_definitions": 6,
+      "missing_definitions": [
+        {
+          "name": "run",
+          "line": 16,
+          "end_line": 27,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "run.post",
+          "line": 20,
+          "end_line": 22,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
       "path": "backend/tests/test_emiss_labor_parser.py",
       "sha256": "9cb5cc6e0dd42e64a3a165ec94bd5913b2135216611ca3a4c4039d908d61b92c",
       "bytes": 1936,
@@ -9772,6 +10439,40 @@
       "definitions": 20,
       "annotated_definitions": 20,
       "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_emiss_weekly_fuel.py",
+      "sha256": "76e889653f185094c31d0c993d75fdb2a898188ff2abbf36f8d911db2e42c3ea",
+      "bytes": 7342,
+      "lines": 166,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 14,
+      "annotated_definitions": 11,
+      "missing_definitions": [
+        {
+          "name": "_row",
+          "line": 46,
+          "end_line": 50,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_fetch_year_sends_weeks_in_columns_and_all_fuels.fake_post",
+          "line": 145,
+          "end_line": 148,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_rows_without_any_price_mean_format_change.fake_post",
+          "line": 162,
+          "end_line": 163,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_en_catalog.py",
@@ -10450,6 +11151,52 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_human_evidence_2026_11_18.py",
+      "sha256": "9107d3d8ad5719ddd0fce317f0f9e3e0909962306f3e95247feefd5569f7ac59",
+      "bytes": 9684,
+      "lines": 162,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 12,
+      "annotated_definitions": 7,
+      "missing_definitions": [
+        {
+          "name": "_sig",
+          "line": 21,
+          "end_line": 26,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_status",
+          "line": 29,
+          "end_line": 30,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_ev",
+          "line": 69,
+          "end_line": 75,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_portrait",
+          "line": 78,
+          "end_line": 84,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_sessionize_writes_is_human_and_pulse_splits_events_by_people.scenario",
+          "line": 92,
+          "end_line": 122,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
       "path": "backend/tests/test_hypotheses_triage.py",
       "sha256": "768ea811843099e07a598a80a00f2674cbf2784a782c362d7a2c85d48e9565f2",
       "bytes": 6178,
@@ -10656,6 +11403,94 @@
       "definitions": 12,
       "annotated_definitions": 12,
       "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_mail_deliverability.py",
+      "sha256": "5b56dc680ad7178eb40d5451b0c2eee165be9f27bcc89eaaf2058981e7d13cc8",
+      "bytes": 9535,
+      "lines": 184,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 12,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "_report_mail",
+          "line": 31,
+          "end_line": 38,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_dmarc_report_gzip_and_zip",
+          "line": 41,
+          "end_line": 62,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_dmarc_xml_refuses_entities_and_garbage",
+          "line": 65,
+          "end_line": 77,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_bounce_and_complaint_classified_without_addresses",
+          "line": 80,
+          "end_line": 96,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_service_of",
+          "line": 99,
+          "end_line": 106,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_dns_check_flags_missing_dmarc_mailbox",
+          "line": 109,
+          "end_line": 137,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_dns_check_flags_missing_dmarc_mailbox.fake_probe",
+          "line": 122,
+          "end_line": 124,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_dns_check_network_error_is_reported",
+          "line": 140,
+          "end_line": 148,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_dns_check_network_error_is_reported.boom",
+          "line": 143,
+          "end_line": 144,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_dkim_key_bits",
+          "line": 151,
+          "end_line": 156,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_journal_by_service",
+          "line": 159,
+          "end_line": 184,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_journal_by_service.run",
+          "line": 163,
+          "end_line": 180,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_mail_design.py",
@@ -11101,13 +11936,16 @@
     },
     {
       "path": "backend/tests/test_pulse.py",
-      "sha256": "897526fd705c70908a7577bfa5bca5ccb9b1c99f3d9eeb18db409bda02e19fc2",
-      "bytes": 33984,
-      "lines": 772,
+      "sha256": "2b0cb5cd52836e345ac38896b70352a9e5db0fed50f27c2bf40a8bb6f497959e",
+      "bytes": 34020,
+      "lines": 773,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 89,
       "annotated_definitions": 89,
       "missing_definitions": []
@@ -11335,16 +12173,55 @@
     },
     {
       "path": "backend/tests/test_region_monthly_ssr_copy.py",
-      "sha256": "075cddca7d0ca2d482245eb190a224fe2a1bc9304a8e835d0202a52020a8cee6",
-      "bytes": 3364,
-      "lines": 70,
+      "sha256": "d69f55f91df5d4aaba0d70f49dd11f4e0b9c03f672523b0b371ae24dd1c87d32",
+      "bytes": 8841,
+      "lines": 158,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 6,
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 12,
       "annotated_definitions": 6,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "_render_weekly",
+          "line": 73,
+          "end_line": 101,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_render_weekly.scenario",
+          "line": 80,
+          "end_line": 99,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_weekly_layer_answers_price_on_date_ru",
+          "line": 104,
+          "end_line": 114,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_weekly_layer_en_has_no_russian_text",
+          "line": 117,
+          "end_line": 123,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_federal_fuel_page_lists_regions_on_last_record_of_year",
+          "line": 126,
+          "end_line": 158,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_federal_fuel_page_lists_regions_on_last_record_of_year.scenario",
+          "line": 133,
+          "end_line": 152,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_region_polarity.py",
@@ -11413,9 +12290,9 @@
     },
     {
       "path": "backend/tests/test_regional_publication.py",
-      "sha256": "9bd3ec454524ab20025c864d7441fb17067769ef2aab1bf6c2e93f518fcc3f99",
-      "bytes": 19931,
-      "lines": 412,
+      "sha256": "318f3a00eb4b55ab8ce62f3b147fc379c0ee519f113e1560a4ff7381f9cd97e4",
+      "bytes": 20099,
+      "lines": 413,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -11919,6 +12796,163 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_search_index.py",
+      "sha256": "55dc1a0f13fa438b23326e044d6351a53057364966cbf9a01f0c188bef932c13",
+      "bytes": 18737,
+      "lines": 331,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 23,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "_answers",
+          "line": 28,
+          "end_line": 39,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_build",
+          "line": 42,
+          "end_line": 48,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_fresh_index_state",
+          "line": 52,
+          "end_line": 57,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_answers_with_index_equal_live_tables",
+          "line": 60,
+          "end_line": 77,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_answers_with_index_equal_live_tables.run",
+          "line": 63,
+          "end_line": 72,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_index_flags_match_live_fact_conditions",
+          "line": 80,
+          "end_line": 129,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_index_flags_match_live_fact_conditions._NoPeriod",
+          "line": 86,
+          "end_line": 87,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "test_index_flags_match_live_fact_conditions.run",
+          "line": 91,
+          "end_line": 127,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_regional_last_values_from_index_equal_live",
+          "line": 132,
+          "end_line": 162,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_regional_last_values_from_index_equal_live.run",
+          "line": 139,
+          "end_line": 159,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_rebuild_switches_copy_and_releases_previous",
+          "line": 165,
+          "end_line": 184,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_rebuild_switches_copy_and_releases_previous.run",
+          "line": 171,
+          "end_line": 178,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_disabled_flag_and_missing_state_read_live_tables",
+          "line": 187,
+          "end_line": 212,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_disabled_flag_and_missing_state_read_live_tables.run",
+          "line": 193,
+          "end_line": 208,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_unchanged_sources_are_not_rebuilt_without_force",
+          "line": 215,
+          "end_line": 227,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_unchanged_sources_are_not_rebuilt_without_force.run",
+          "line": 223,
+          "end_line": 225,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_random_catalogue",
+          "line": 235,
+          "end_line": 253,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues",
+          "line": 257,
+          "end_line": 331,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues._NoPeriod",
+          "line": 262,
+          "end_line": 263,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues.run",
+          "line": 272,
+          "end_line": 329,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues.run.where_lists",
+          "line": 299,
+          "end_line": 303,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues.run.conditions",
+          "line": 305,
+          "end_line": 307,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_index_walk_equals_single_ordered_query_on_random_catalogues.run.rank_for",
+          "line": 309,
+          "end_line": 311,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
       "path": "backend/tests/test_search_intent_candidate_roles.py",
       "sha256": "a83fc1903275458d8a9354aa4bf778aad74b9fa2e32709e9134d0d770fcc44a7",
       "bytes": 13636,
@@ -12177,6 +13211,46 @@
       "definitions": 10,
       "annotated_definitions": 10,
       "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_search_rewrite.py",
+      "sha256": "bba6a3eb00488d90bcd9860db80e1c5401ab12e84b5b48a8c763e0209d7d7776",
+      "bytes": 12598,
+      "lines": 190,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 19,
+      "annotated_definitions": 15,
+      "missing_definitions": [
+        {
+          "name": "rewrite_client.seed",
+          "line": 80,
+          "end_line": 116,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "rewrite_client.seed.definition",
+          "line": 94,
+          "end_line": 95,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get",
+          "line": 123,
+          "end_line": 126,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "codes",
+          "line": 129,
+          "end_line": 130,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_search_section_suggestions.py",
@@ -12752,9 +13826,9 @@
     },
     {
       "path": "backend/tests/test_sitemap_public_coverage.py",
-      "sha256": "58159f03f3adbdefc1523f10b33f2f792b288af4f4a7ce5cdcb5f120557416b1",
-      "bytes": 12116,
-      "lines": 229,
+      "sha256": "05c752616d69b7cf332fdb27c874aa73f957d73d360f8d9bd697796ca0a99f3f",
+      "bytes": 12498,
+      "lines": 232,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -13191,6 +14265,223 @@
       "definitions": 20,
       "annotated_definitions": 20,
       "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_webmaster_freshness.py",
+      "sha256": "a12bae1854d21a9316a677b6784e9dbfd102a2ea507c88de86489e914e198603",
+      "bytes": 7266,
+      "lines": 183,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 33,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "test_gap_between_points_is_marked",
+          "line": 32,
+          "end_line": 38,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_regular_update_step_is_not_a_gap",
+          "line": 41,
+          "end_line": 43,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_single_point_and_empty_history",
+          "line": 46,
+          "end_line": 51,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_last_crawl_day_ignores_null_points_and_list_shape",
+          "line": 54,
+          "end_line": 58,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_report_lines_name_both_dates_and_stale_crawl",
+          "line": 61,
+          "end_line": 66,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_report_lines_empty_when_fresh",
+          "line": 69,
+          "end_line": 71,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_Resp",
+          "line": 74,
+          "end_line": 76,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_Resp.__init__",
+          "line": 75,
+          "end_line": 76,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_Client",
+          "line": 79,
+          "end_line": 94,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_Client.user",
+          "line": 80,
+          "end_line": 81,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_Client.summary",
+          "line": 83,
+          "end_line": 85,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_Client.search_events_samples",
+          "line": 87,
+          "end_line": 88,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_Client.in_search_history",
+          "line": 90,
+          "end_line": 91,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_Client.indexing_history",
+          "line": 93,
+          "end_line": 94,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_fake_analytics",
+          "line": 97,
+          "end_line": 115,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fake_analytics.FakeDB",
+          "line": 98,
+          "end_line": 106,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_fake_analytics.FakeDB.scalar",
+          "line": 99,
+          "end_line": 100,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_fake_analytics.FakeDB.execute",
+          "line": 102,
+          "end_line": 106,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_fake_analytics.FakeDB.execute._R",
+          "line": 103,
+          "end_line": 105,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_fake_analytics.FakeDB.execute._R.all",
+          "line": 104,
+          "end_line": 105,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fake_analytics._CM",
+          "line": 108,
+          "end_line": 113,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_fake_analytics._CM.__aenter__",
+          "line": 109,
+          "end_line": 110,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_fake_analytics._CM.__aexit__",
+          "line": 112,
+          "end_line": 113,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_pulse_snapshot_carries_freshness_and_gap",
+          "line": 118,
+          "end_line": 138,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_pulse_snapshot_survives_missing_history",
+          "line": 141,
+          "end_line": 156,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_pulse_snapshot_survives_missing_history.NoHistory",
+          "line": 145,
+          "end_line": 147,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "test_pulse_snapshot_survives_missing_history.NoHistory.in_search_history",
+          "line": 146,
+          "end_line": 147,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_weekly_report_signs_gap_instead_of_unchanged",
+          "line": 159,
+          "end_line": 176,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_weekly_report_signs_gap_instead_of_unchanged.Redis",
+          "line": 162,
+          "end_line": 170,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "test_weekly_report_signs_gap_instead_of_unchanged.Redis.__init__",
+          "line": 163,
+          "end_line": 164,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_weekly_report_signs_gap_instead_of_unchanged.Redis.get",
+          "line": 166,
+          "end_line": 167,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_weekly_report_signs_gap_instead_of_unchanged.Redis.set",
+          "line": 169,
+          "end_line": 170,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_pulse_prompt_forbids_drop_across_gap",
+          "line": 179,
+          "end_line": 183,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_webmaster_integrity.py",
@@ -14468,22 +15759,25 @@
     },
     {
       "path": "docs/adr/0008-regional-bounded-context.md",
-      "sha256": "caeae72f8b7de30e053b87eece9888f678ed246df3b9cee7447969a4e8cbfe25",
-      "bytes": 21989,
-      "lines": 220,
+      "sha256": "7aeeed382cf82926887b273323cad0782e057767e52ab5c101482061aa14cbe6",
+      "bytes": 25200,
+      "lines": 250,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
     },
     {
       "path": "docs/adr/0009-behavior-stream-first-party.md",
-      "sha256": "faecc67bd8522fe57cc5d39e87b38b9b477ac8f1ebfef066222092f68d732fcc",
-      "bytes": 14862,
-      "lines": 146,
+      "sha256": "ed8102958405e2d86564a724fb319747a19aadf720927a4f60e4b78c22b6871c",
+      "bytes": 25032,
+      "lines": 180,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14572,13 +15866,16 @@
     },
     {
       "path": "docs/adr/0016-federated-public-search.md",
-      "sha256": "e26d9df2d2566876dfa14d571bfd0c79b24d2ab3302474e9c84eb7f86a428132",
-      "bytes": 15236,
-      "lines": 188,
+      "sha256": "52e01640fe30c186671d16bef86659b955f223380c9f77ec50ac5c9d99248dbd",
+      "bytes": 19006,
+      "lines": 212,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -14780,13 +16077,16 @@
     },
     {
       "path": "docs/adr/0032-email-channel-service-mail-and-newsletter.md",
-      "sha256": "c6916a3079dcbf0b626dd2ae5e4c3ba38a4a650d7ee3b2500e1c0d89a2a488e4",
-      "bytes": 31465,
-      "lines": 115,
+      "sha256": "bbef24be356bf8a342fb90047d452368724efa85df2900e371f4cc2ca5a77d5f",
+      "bytes": 39369,
+      "lines": 148,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -14826,6 +16126,22 @@
       "status": "reviewed",
       "current": true,
       "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/adr/0036-search-index.md",
+      "sha256": "cf5e758bccd42d49f9763dd74551c8a6ed960c3e1c8cd3e95bad9dd9203d1ba7",
+      "bytes": 16050,
+      "lines": 126,
+      "code": false,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -14962,9 +16278,9 @@
     },
     {
       "path": "docs/analytics_api_inventory/README.md",
-      "sha256": "82d263e705a1ae153b3cdec283a06a288287d0dcb9fbf4b27b34d105ecbbce23",
-      "bytes": 8928,
-      "lines": 85,
+      "sha256": "4322522a4bf1cd3eae624b91a174d0672baa12f6f624817126b2c06a9a677cff",
+      "bytes": 9558,
+      "lines": 87,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14975,13 +16291,16 @@
     },
     {
       "path": "docs/analytics_api_inventory/frontend_instrumentation.md",
-      "sha256": "4dd3a36617ed1d636649da8cc6d592462b54ccb38f1e4a9c1d5f4e7f8a23b00a",
-      "bytes": 37049,
-      "lines": 365,
+      "sha256": "de33bc8b139eea504b11f42c132adfa39f1fbd4ef17bf4395d334c46e9ba7aa3",
+      "bytes": 37716,
+      "lines": 367,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -15040,13 +16359,16 @@
     },
     {
       "path": "docs/analytics_api_inventory/yandex_webmaster.md",
-      "sha256": "ab544bb06a825b6b3e786d2f3d5f33bf2d55eaca4566a32fa1757ece89036ee3",
-      "bytes": 13110,
-      "lines": 76,
+      "sha256": "33961e02f4f6b4e41622917e20c4d866b551606cd5bbad4c833e21e8e3404379",
+      "bytes": 18082,
+      "lines": 90,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -15092,9 +16414,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "659dc18755428c602730f3c4c23c78ec86fc6b11f7099eb483e817f0de19a2d5",
-      "bytes": 828329,
-      "lines": 3867,
+      "sha256": "158938eff7a5cced6e27c392fd18091f7cb6c53af99f6cd67108d0da8e5e6d03",
+      "bytes": 856395,
+      "lines": 4005,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -15118,26 +16440,30 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "98b61ae8cf17bafde725b9254e91775a6bed2331f7b0f37a96b6518e2dec3f4d",
-      "bytes": 7520554,
-      "lines": 265109,
+      "sha256": "65be12939d851cd80bf172fb291228989adde5aca26ab3c78d5f6c8a32ea3456",
+      "bytes": 7555909,
+      "lines": 266392,
       "code": false,
       "status": "artifact_schema_reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "e074ce271b16100ed4e65b12d4e1c9c8d41e0a9edbf3ad46303e72e665f4be6d",
+      "sha256": "b738d8d6e9ab0465ff166d61928d52b8d551e7ef04cfe50bc58889e8d7b741f7",
       "bytes": 14011,
       "lines": 142,
       "code": false,
       "status": "artifact_schema_reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -15157,9 +16483,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "5534379b00302db843cf6df2e0bd3763e955a8918f8b14f883dabdbc5ae719e1",
-      "bytes": 431353,
-      "lines": 1370,
+      "sha256": "7c6d39c5d0df1f17904856c8072e47403747a5e3638e0fe7d9be1790f86f773a",
+      "bytes": 445175,
+      "lines": 1437,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -15170,13 +16496,16 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "1c65359cba04db11e5e38ccf527271038b0c3efde47990e20f606f8df27f46b6",
-      "bytes": 124851,
-      "lines": 789,
+      "sha256": "c2d6c37194de4edf7baef6f0bc1599a8e1a961815f5b91a1b811048c28758ac9",
+      "bytes": 140937,
+      "lines": 847,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -15196,13 +16525,16 @@
     },
     {
       "path": "docs/design-system.md",
-      "sha256": "eb5b8bd0eaa1f03331be892a8dbf593a653baf2f05b85c55911f4f99bafd4c39",
-      "bytes": 269555,
-      "lines": 526,
+      "sha256": "c6199c87cac429b0dc053300f6ea21dbd4aee010452583000d8ccac9b992667a",
+      "bytes": 271609,
+      "lines": 527,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -15690,26 +17022,31 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "ceafe46e22f85a23c00f1e1bc5d4d07b887bcdd8638d8f3e326dc75cc330322c",
-      "bytes": 3939537,
-      "lines": 139658,
+      "sha256": "1915f089bd452869bc98e6ef3fbe08d2559e99681da88d775f4afbc7edf5ecba",
+      "bytes": 3989453,
+      "lines": 141441,
       "code": false,
       "status": "data_schema_reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "5fd4a66639d277c93c1b7293e1d161d888a50ee8ca4a6c3d9c28f708f4b7f24e",
-      "bytes": 160576,
-      "lines": 1824,
+      "sha256": "5317137ed55ed5a8b275a89665db97d1b5b6bdce52ab07a8c0476923886ab4f1",
+      "bytes": 165775,
+      "lines": 1865,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -15755,26 +17092,30 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "871164149b3381375ff9f6339793acb17dc6a190539122480d1b7b373cfa274e",
-      "bytes": 13871080,
-      "lines": 418751,
+      "sha256": "f3b596efc04ae94cf0c27be99997229e11bec9823290d962d239b796d347f816",
+      "bytes": 14084987,
+      "lines": 424963,
       "code": false,
       "status": "artifact_schema_reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "c4e9b07428771732f00ead1459db4d6aa482297e48966dbae93b6653f2fb179d",
-      "bytes": 710371,
-      "lines": 3954,
+      "sha256": "23e85b9e993c130097c013087b3a0f94e2424177ffe96585a665dcd0e70aedef",
+      "bytes": 723946,
+      "lines": 4100,
       "code": false,
       "status": "artifact_schema_reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -15794,13 +17135,16 @@
     },
     {
       "path": "docs/newsletter-playbook.md",
-      "sha256": "24174689966730c63140230e31234fcaad6267f6e0fafa9caacde6d6c6522291",
-      "bytes": 21395,
-      "lines": 206,
+      "sha256": "db5505979fa86d2312b02510e37252f434639dfd71dd5d1e4f156909896c49d7",
+      "bytes": 27388,
+      "lines": 259,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -16444,13 +17788,16 @@
     },
     {
       "path": "docs/search.md",
-      "sha256": "8c50b56691ca814ac0773ce792d1220eda464b3ad4cf36e69d1d8d6e64dde0b9",
-      "bytes": 178604,
-      "lines": 1072,
+      "sha256": "554cfecdf14ff82a77771ae109a0466677f4a625cb0f0c9adb7b9cdf6c7448db",
+      "bytes": 204339,
+      "lines": 1217,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -16548,13 +17895,16 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "705142119fdddd2aca534dfbb6b52f9993d6dfcecb25d3bc76412ee6a9e8e853",
-      "bytes": 172680,
-      "lines": 835,
+      "sha256": "8541aaca71fe4959ff956962fb1b9e4f3eb89bac8378cab98672a11eade20a64",
+      "bytes": 173237,
+      "lines": 837,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -19512,13 +20862,16 @@
     },
     {
       "path": "frontend/src/components/ChartControls.component.test.jsx",
-      "sha256": "bf6d6817221bdfbcd61ea61ed8e807a7fe991c9907ce516b66f6097bb06637b1",
-      "bytes": 12638,
-      "lines": 257,
+      "sha256": "93ac90ee98afde7129283a071a2799cab63a7c1c555c9ffcb2438b681b1adc0a",
+      "bytes": 13042,
+      "lines": 264,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 3,
       "annotated_definitions": 3,
       "missing_definitions": []
@@ -19876,29 +21229,103 @@
     },
     {
       "path": "frontend/src/components/DataTable.component.test.jsx",
-      "sha256": "7eb48ae4a7f37a6b8d69774b2ecd48a7f044918563162099c03ea9e51aca46e0",
-      "bytes": 9441,
-      "lines": 147,
+      "sha256": "886a043e96e6128e128110bb6338d520890e42e2fe3d56ae8c1700d4a7af6e5b",
+      "bytes": 13972,
+      "lines": 230,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 1,
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
+      "definitions": 9,
       "annotated_definitions": 1,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "pageNo",
+          "line": 22,
+          "end_line": 24,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "monthly",
+          "line": 27,
+          "end_line": 33,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "matchMedia",
+          "line": 76,
+          "end_line": 76,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "matchMedia.addEventListener",
+          "line": 76,
+          "end_line": 76,
+          "kind": "ObjectMethod"
+        },
+        {
+          "name": "matchMedia.removeEventListener",
+          "line": 76,
+          "end_line": 76,
+          "kind": "ObjectMethod"
+        },
+        {
+          "name": "matchMedia",
+          "line": 80,
+          "end_line": 80,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "matchMedia.addEventListener",
+          "line": 80,
+          "end_line": 80,
+          "kind": "ObjectMethod"
+        },
+        {
+          "name": "matchMedia.removeEventListener",
+          "line": 80,
+          "end_line": 80,
+          "kind": "ObjectMethod"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/DataTable.jsx",
-      "sha256": "4c3370950b7cfbd198ae015f4ac8842206e8fff3726146807c9dd905b9a7fb6e",
-      "bytes": 20269,
-      "lines": 441,
+      "sha256": "10d098d42582a53ea095166cba3992f09698a90c1269c87a972efbe92944287b",
+      "bytes": 24790,
+      "lines": 516,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 3,
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 6,
       "annotated_definitions": 3,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "DataTable.openDatePicker",
+          "line": 128,
+          "end_line": 135,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "DataTable.pageLabel",
+          "line": 200,
+          "end_line": 205,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "DataTable.goToJump",
+          "line": 212,
+          "end_line": 220,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/DeathsIndicatorControls.jsx",
@@ -20240,16 +21667,31 @@
     },
     {
       "path": "frontend/src/components/IndicatorChart.jsx",
-      "sha256": "d8e1e6134cf3a28fa99fc1082a3e1f809cb69e27680c0cab17f94cf5a99dedec",
-      "bytes": 49376,
-      "lines": 1087,
+      "sha256": "302b7ae150fdd500e923726f178ca2b3d74e3721c82b2e4408a3cbd4ef460e0f",
+      "bytes": 53857,
+      "lines": 1177,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 9,
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 11,
       "annotated_definitions": 9,
-      "missing_definitions": []
+      "missing_definitions": [
+        {
+          "name": "PickedMarker",
+          "line": 285,
+          "end_line": 313,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "IndicatorChart.handlePlotClick",
+          "line": 540,
+          "end_line": 554,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/IndicatorChart.rebase.component.test.jsx",
@@ -23086,10 +24528,54 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/src/components/regions/WeeklyPrices.component.test.jsx",
+      "sha256": "f0a6a464328f619e2908f1fc4cac5adb10a05ecbd991cdffc7605bcd9ca53acc",
+      "bytes": 3654,
+      "lines": 66,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 1,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "wrap",
+          "line": 18,
+          "end_line": 18,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/regions/WeeklyPrices.jsx",
+      "sha256": "6824585d61bcfe47a7ecdd00d5bee3541385988ad2b7905bef5b3ffdf0342cd8",
+      "bytes": 5498,
+      "lines": 106,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 2,
+      "annotated_definitions": 1,
+      "missing_definitions": [
+        {
+          "name": "WeeklyPrices.day",
+          "line": 23,
+          "end_line": 23,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
+    },
+    {
       "path": "frontend/src/components/russia/LaborIndicatorGroups.jsx",
-      "sha256": "571a0bbba31801547d5d0eedd1680366a54f21c768a36f4cc0a749e205a83def",
-      "bytes": 3131,
-      "lines": 52,
+      "sha256": "5ca5509cbdc23f1848f2531f4e3c7d3053e0dbf7b1eaba0da32f0c44c986a602",
+      "bytes": 3374,
+      "lines": 54,
       "code": true,
       "status": "body_reviewed",
       "current": true,
@@ -23542,9 +25028,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.en.js",
-      "sha256": "cf846b1d0374b95bacbebd71f3eaef4b86740f1e22f26d0941d8756021a61785",
-      "bytes": 240224,
-      "lines": 4275,
+      "sha256": "ddbf474d9a8b5bf8bf5ea298c4e49769c4e8fe535951e13f3004242e6d8ba255",
+      "bytes": 241204,
+      "lines": 4290,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -23581,9 +25067,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.ru.js",
-      "sha256": "bad606fac2125f10059d05d7429e1530b3cdc3c0383efa5ab61ec5f1345736a9",
-      "bytes": 341063,
-      "lines": 4280,
+      "sha256": "9860378b02ef563749c105407f3d2c7e3d26de47610fc92c07c118be26268c13",
+      "bytes": 342488,
+      "lines": 4295,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -26596,6 +28082,95 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/src/lib/periodJump.js",
+      "sha256": "d67abdee93d6b6fd3b1014b01062880979da25d3588295c97b4d47a823e24f5e",
+      "bytes": 4517,
+      "lines": 86,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 7,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "iso",
+          "line": 12,
+          "end_line": 14,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "periodJumpOptions",
+          "line": 22,
+          "end_line": 49,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "currentJumpValue",
+          "line": 52,
+          "end_line": 59,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "nearestRow",
+          "line": 65,
+          "end_line": 72,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "emitPeriodPick",
+          "line": 75,
+          "end_line": 78,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "onPeriodPick",
+          "line": 81,
+          "end_line": 86,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "onPeriodPick.listener",
+          "line": 83,
+          "end_line": 83,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/lib/periodJump.test.js",
+      "sha256": "e4fbbcf25453ee8b8983ed167fbd70743226b3cae777906e0fe1cb3f39b15394",
+      "bytes": 2758,
+      "lines": 56,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 2,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "desc",
+          "line": 7,
+          "end_line": 7,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "pageLabel",
+          "line": 28,
+          "end_line": 28,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
+    },
+    {
       "path": "frontend/src/lib/periodPhrase.js",
       "sha256": "36c0464cc2150329b087f588d51c951a5f53e9cca14ef3e1a309a2ca31574c3e",
       "bytes": 2047,
@@ -28157,9 +29732,9 @@
     },
     {
       "path": "frontend/src/lib/track.js",
-      "sha256": "7aa3ee6cbe878baab0a0f69a0a450c9d21090334df0c28566c1cb188f6d28718",
-      "bytes": 16306,
-      "lines": 352,
+      "sha256": "60e943b8a779038e33c87172f187153f39f0fdb41bf378aaf132d96156890744",
+      "bytes": 16546,
+      "lines": 356,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -28729,9 +30304,9 @@
     },
     {
       "path": "frontend/src/lib/useSearchTracking.js",
-      "sha256": "372d0daa61d4ebaf0402929fb94543c410d20c81ce5993ea74377277d600e802",
-      "bytes": 1836,
-      "lines": 31,
+      "sha256": "833a4ca8dca6395ff8975d669156e691a75fbf51b31271d1c47e634003b78fbb",
+      "bytes": 2167,
+      "lines": 33,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -28742,9 +30317,9 @@
     },
     {
       "path": "frontend/src/lib/useSearchTracking.test.js",
-      "sha256": "64986ef2e5c566032d3b1c1c1c30373d7029d4be433c93365447026b020b5567",
-      "bytes": 1326,
-      "lines": 50,
+      "sha256": "912d4282338f2f2cc1dd430cdd372f5bb6c6b0b7a34cb866ce57c92e80bf50c7",
+      "bytes": 1938,
+      "lines": 64,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -28914,6 +30489,19 @@
       "sha256": "5e7a9da602dd52bd449306190bb66395525b5322d9c98726f4ff9f72bc500b8b",
       "bytes": 23005,
       "lines": 418,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 3,
+      "annotated_definitions": 3,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/lib/weeklyPrice.js",
+      "sha256": "6fdbab32e3902c53bb63149b9f6ae28b9680c9b801391765296be8db10d15903",
+      "bytes": 1773,
+      "lines": 32,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29535,16 +31123,37 @@
     },
     {
       "path": "frontend/src/pages/AdminBI.jsx",
-      "sha256": "6e3d9727a9cede1fca44b5f142b2ae7cc4d64f98773dab9ad866dea99807c3f4",
-      "bytes": 216117,
-      "lines": 3209,
+      "sha256": "93d9e6dc5e6f3751189d032c3aa0bca0609af30cff51d0183c3c0de163394d3b",
+      "bytes": 216778,
+      "lines": 3214,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 76,
-      "annotated_definitions": 76,
-      "missing_definitions": []
+      "annotated_definitions": 73,
+      "missing_definitions": [
+        {
+          "name": "BehaviorTab.formatter",
+          "line": 2137,
+          "end_line": 2137,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "BehaviorTab.formatter",
+          "line": 2151,
+          "end_line": 2151,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "SlicesTab.queryFn",
+          "line": 2429,
+          "end_line": 2429,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/pages/AdminBI.mail.component.test.jsx",
@@ -30237,16 +31846,25 @@
     },
     {
       "path": "frontend/src/pages/RegionIndicatorPage.jsx",
-      "sha256": "1d68dd5391e31e908ea82941d454d51e7afd8c59c7013c1b1965787b38b12cad",
-      "bytes": 48890,
-      "lines": 889,
+      "sha256": "da2592ed5275ee484eafcbffd944b977ee4ddfe6fc34a9814106f102493fdb42",
+      "bytes": 49299,
+      "lines": 900,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 13,
-      "annotated_definitions": 13,
-      "missing_definitions": []
+      "annotated_definitions": 12,
+      "missing_definitions": [
+        {
+          "name": "RegionIndicatorPage.onSelect",
+          "line": 587,
+          "end_line": 587,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/pages/RegionProfile.component.test.jsx",
@@ -30263,8 +31881,8 @@
     },
     {
       "path": "frontend/src/pages/RegionProfile.jsx",
-      "sha256": "b135653f600eb7bdde1d10dc762982ca9595be2ba4037019fdc1cc221394d489",
-      "bytes": 14948,
+      "sha256": "ab96e4ac503094708a9279267f974a3382a0bdfec7302a274f31b131949048b4",
+      "bytes": 14962,
       "lines": 333,
       "code": true,
       "status": "reviewed",
@@ -30770,8 +32388,8 @@
     },
     {
       "path": "frontend/src/pages/WorldRegionProfile.jsx",
-      "sha256": "9cc3d33f373a8032a9715bdd174ebab9acf7c4fa794961545afc7635632a9395",
-      "bytes": 15437,
+      "sha256": "702656676db40f65ff8876a5ac3225845f9ba8269bb916117123cf5d7659e382",
+      "bytes": 15459,
       "lines": 335,
       "code": true,
       "status": "reviewed",
@@ -30900,13 +32518,16 @@
     },
     {
       "path": "frontend/src/styles/c11c-charts.css",
-      "sha256": "a9b792e7750cca7efb995136577f9744028461f75d1954970f633ecdf2a5cc57",
-      "bytes": 6374,
-      "lines": 130,
+      "sha256": "8e6737fd295b4c4ed6e8ac7bdb8d816e368f4b8e8ab18b3d220491bc4453116e",
+      "bytes": 8142,
+      "lines": 175,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -31085,6 +32706,19 @@
       "sha256": "e5226dbc6b501e661b735d8730b69fcd136f5ea4237003259faaf2af67d89edc",
       "bytes": 3245,
       "lines": 87,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/styles/fw-weekly.css",
+      "sha256": "66b56120c9dafe5afafea066b3ec3b8ffc309efcc6f32ec672292ff220bb6f8a",
+      "bytes": 2553,
+      "lines": 45,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -33876,6 +35510,28 @@
       "missing_definitions": []
     },
     {
+      "path": "scripts/search-empty-review.py",
+      "sha256": "18a8c4a7538922b4115676347f5f861c36ce8277dd23dd7c2225e6435d04f0f8",
+      "bytes": 12433,
+      "lines": 205,
+      "code": true,
+      "status": "reviewed",
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 7,
+      "annotated_definitions": 6,
+      "missing_definitions": [
+        {
+          "name": "main",
+          "line": 156,
+          "end_line": 200,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
       "path": "scripts/search-history-analyze.py",
       "sha256": "120802664347339e34861383e09c8c90dfa7f32db2dc650b631442548fbd5216",
       "bytes": 16870,
@@ -34176,9 +35832,16 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "62860a057d7edc0fd831d09471615d1b99745ee9e11f3a010b1b0dd340794ba9",
-  "javascript_inventory_sha256": "26c485436bfd8fcbbd354760594056de2f8fbf3b5d8e619e517b97c9daabe893",
-  "baseline_commit": "174a0cbefa3e44242119272c5b79eb46b640ce9f",
-  "branch": "fix/pulse-2026-11-18",
-  "unstaged_at_capture": []
+  "ledger_sha256": "b8f434eeb33e85696ecb8eea6c0c986fff8a611382564bc44f1df1653e213694",
+  "javascript_inventory_sha256": "c0ca962bae4c4f1b590e8022d6f6ced851fe1ef665c8fbe28f63cc84adde8a40",
+  "baseline_commit": "cd346efa545ac8a375b425179a76072deef85c32",
+  "branch": "int/2026-11-18-radical",
+  "unstaged_at_capture": [
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "docs/indicator-index.json",
+    "docs/indicator-index.md",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
+  ]
 }

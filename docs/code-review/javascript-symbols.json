@@ -2640,7 +2640,7 @@
     "anonymous_functions": 5
   },
   "frontend/src/components/ChartControls.component.test.jsx": {
-    "sha256": "bf6d6817221bdfbcd61ea61ed8e807a7fe991c9907ce516b66f6097bb06637b1",
+    "sha256": "93ac90ee98afde7129283a071a2799cab63a7c1c555c9ffcb2438b681b1adc0a",
     "definitions": [
       {
         "name": "get",
@@ -2720,7 +2720,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 39
+    "anonymous_functions": 40
   },
   "frontend/src/components/ChartDownloadMenu.component.test.jsx": {
     "sha256": "09b11bc8afb47294fd1e118766787c32732cef77d95e5bde1539c7d05a2feb82",
@@ -4666,13 +4666,61 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/DataTable.component.test.jsx": {
-    "sha256": "7eb48ae4a7f37a6b8d69774b2ecd48a7f044918563162099c03ea9e51aca46e0",
+    "sha256": "886a043e96e6128e128110bb6338d520890e42e2fe3d56ae8c1700d4a7af6e5b",
     "definitions": [
       {
         "name": "renderTable",
-        "line": 11,
-        "end_line": 13,
+        "line": 17,
+        "end_line": 19,
         "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pageNo",
+        "line": 22,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "monthly",
+        "line": 27,
+        "end_line": 33,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "matchMedia",
+        "line": 76,
+        "end_line": 76,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "matchMedia.addEventListener",
+        "line": 76,
+        "end_line": 76,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "matchMedia.removeEventListener",
+        "line": 76,
+        "end_line": 76,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "matchMedia",
+        "line": 80,
+        "end_line": 80,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "matchMedia.addEventListener",
+        "line": 80,
+        "end_line": 80,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "matchMedia.removeEventListener",
+        "line": 80,
+        "end_line": 80,
+        "kind": "ObjectMethod"
       }
     ],
     "imports": [
@@ -4695,30 +4743,52 @@
       {
         "source": "../lib/track",
         "line": 5
+      },
+      {
+        "source": "../lib/periodJump",
+        "line": 6
       }
     ],
     "exports": [],
-    "anonymous_functions": 32
+    "anonymous_functions": 42
   },
   "frontend/src/components/DataTable.jsx": {
-    "sha256": "4c3370950b7cfbd198ae015f4ac8842206e8fff3726146807c9dd905b9a7fb6e",
+    "sha256": "10d098d42582a53ea095166cba3992f09698a90c1269c87a972efbe92944287b",
     "definitions": [
       {
         "name": "useScrollMore",
-        "line": 34,
-        "end_line": 54,
+        "line": 39,
+        "end_line": 59,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DataTable",
-        "line": 56,
-        "end_line": 441,
+        "line": 61,
+        "end_line": 516,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "DataTable.runExport",
+        "name": "DataTable.openDatePicker",
+        "line": 128,
+        "end_line": 135,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "DataTable.pageLabel",
         "line": 200,
-        "end_line": 239,
+        "end_line": 205,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "DataTable.goToJump",
+        "line": 212,
+        "end_line": 220,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "DataTable.runExport",
+        "line": 253,
+        "end_line": 292,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -4733,87 +4803,91 @@
       },
       {
         "source": "../lib/format",
-        "line": 5
-      },
-      {
-        "source": "../lib/valueText",
-        "line": 6
-      },
-      {
-        "source": "../lib/track",
         "line": 7
       },
       {
-        "source": "../i18n",
+        "source": "../lib/valueText",
         "line": 8
       },
       {
-        "source": "../lib/tableSearch",
+        "source": "../lib/track",
         "line": 9
       },
       {
-        "source": "../lib/deltaText",
+        "source": "../i18n",
         "line": 10
       },
       {
-        "source": "../lib/indicatorSummary",
+        "source": "../lib/tableSearch",
         "line": 11
       },
       {
+        "source": "../lib/deltaText",
+        "line": 12
+      },
+      {
+        "source": "../lib/indicatorSummary",
+        "line": 13
+      },
+      {
         "source": "../lib/chartEvents",
-        "line": 14
-      },
-      {
-        "source": "../lib/gridExport",
-        "line": 15
-      },
-      {
-        "source": "../i18n",
         "line": 16
       },
       {
-        "source": "./Button",
+        "source": "../lib/periodJump",
         "line": 17
       },
       {
-        "source": "./Chip",
-        "line": 18
-      },
-      {
-        "source": "./Spinner",
-        "line": 19
-      },
-      {
-        "source": "./ChartDownloadMenu",
+        "source": "../lib/gridExport",
         "line": 20
       },
       {
-        "source": "./K5Accent",
+        "source": "../i18n",
         "line": 21
       },
       {
-        "source": "../styles/chart-controls.css",
+        "source": "./Button",
         "line": 22
       },
       {
-        "source": "../styles/w6e-indicator.css",
+        "source": "./Chip",
         "line": 23
       },
       {
-        "source": "../styles/z4-indicator.css",
+        "source": "./Spinner",
         "line": 24
       },
       {
-        "source": "../styles/k5-pages.css",
+        "source": "./ChartDownloadMenu",
         "line": 25
       },
       {
-        "source": "../styles/c11c-charts.css",
+        "source": "./K5Accent",
         "line": 26
       },
       {
-        "source": "../lib/countryFlag",
+        "source": "../styles/chart-controls.css",
         "line": 27
+      },
+      {
+        "source": "../styles/w6e-indicator.css",
+        "line": 28
+      },
+      {
+        "source": "../styles/z4-indicator.css",
+        "line": 29
+      },
+      {
+        "source": "../styles/k5-pages.css",
+        "line": 30
+      },
+      {
+        "source": "../styles/c11c-charts.css",
+        "line": 31
+      },
+      {
+        "source": "../lib/countryFlag",
+        "line": 32
       }
     ],
     "exports": [
@@ -4821,10 +4895,10 @@
         "names": [
           "default"
         ],
-        "line": 56
+        "line": 61
       }
     ],
-    "anonymous_functions": 39
+    "anonymous_functions": 48
   },
   "frontend/src/components/DeathsIndicatorControls.jsx": {
     "sha256": "9b4e6beead0b7a3c1df14a9153caf1f21cc34d8fc74ae6e054af72013671674b",
@@ -6286,60 +6360,72 @@
     "anonymous_functions": 15
   },
   "frontend/src/components/IndicatorChart.jsx": {
-    "sha256": "d8e1e6134cf3a28fa99fc1082a3e1f809cb69e27680c0cab17f94cf5a99dedec",
+    "sha256": "302b7ae150fdd500e923726f178ca2b3d74e3721c82b2e4408a3cbd4ef460e0f",
     "definitions": [
       {
         "name": "dateBasedWindowSize",
-        "line": 84,
-        "end_line": 94,
+        "line": 85,
+        "end_line": 95,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "rebaseVisibleRows",
-        "line": 100,
-        "end_line": 117,
+        "line": 101,
+        "end_line": 118,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CustomTooltip",
-        "line": 119,
-        "end_line": 225,
+        "line": 120,
+        "end_line": 226,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "LastPointMarker",
-        "line": 231,
-        "end_line": 266,
+        "line": 232,
+        "end_line": 267,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NowBeam",
-        "line": 271,
-        "end_line": 278,
+        "line": 272,
+        "end_line": 279,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PickedMarker",
+        "line": 285,
+        "end_line": 313,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorChart",
-        "line": 280,
-        "end_line": 1087,
+        "line": 315,
+        "end_line": 1177,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorChart.save",
-        "line": 336,
-        "end_line": 336,
+        "line": 375,
+        "end_line": 375,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorChart.handleRangeChange",
-        "line": 490,
-        "end_line": 496,
+        "line": 530,
+        "end_line": 536,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "IndicatorChart.handlePlotClick",
+        "line": 540,
+        "end_line": 554,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorChart.onOutside",
-        "line": 610,
-        "end_line": 612,
+        "line": 669,
+        "end_line": 671,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -6425,28 +6511,32 @@
         "line": 28
       },
       {
-        "source": "./Chip",
+        "source": "../lib/periodJump",
         "line": 29
       },
       {
-        "source": "./ChipGroup",
+        "source": "./Chip",
         "line": 30
       },
       {
-        "source": "../styles/chart-controls.css",
+        "source": "./ChipGroup",
         "line": 31
       },
       {
-        "source": "../styles/z4-indicator.css",
+        "source": "../styles/chart-controls.css",
         "line": 32
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "../styles/z4-indicator.css",
         "line": 33
       },
       {
-        "source": "../lib/glassChartDefs",
+        "source": "../styles/k4-charts.css",
         "line": 34
+      },
+      {
+        "source": "../lib/glassChartDefs",
+        "line": 35
       }
     ],
     "exports": [
@@ -6454,10 +6544,10 @@
         "names": [
           "default"
         ],
-        "line": 280
+        "line": 315
       }
     ],
-    "anonymous_functions": 76
+    "anonymous_functions": 79
   },
   "frontend/src/components/IndicatorChart.rebase.component.test.jsx": {
     "sha256": "60dbfb907b761537b346d9df5cea93444c6c5b30c98129bddfa0c3566887cf90",
@@ -21996,13 +22086,108 @@
     ],
     "anonymous_functions": 35
   },
+  "frontend/src/components/regions/WeeklyPrices.component.test.jsx": {
+    "sha256": "f0a6a464328f619e2908f1fc4cac5adb10a05ecbd991cdffc7605bcd9ca53acc",
+    "definitions": [
+      {
+        "name": "wrap",
+        "line": 18,
+        "end_line": 18,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "./WeeklyPrices",
+        "line": 3
+      },
+      {
+        "source": "../../i18n",
+        "line": 4
+      },
+      {
+        "source": "../../lib/weeklyPrice",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 8
+  },
+  "frontend/src/components/regions/WeeklyPrices.jsx": {
+    "sha256": "6824585d61bcfe47a7ecdd00d5bee3541385988ad2b7905bef5b3ffdf0342cd8",
+    "definitions": [
+      {
+        "name": "WeeklyPrices",
+        "line": 13,
+        "end_line": 106,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "WeeklyPrices.day",
+        "line": 23,
+        "end_line": 23,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 4
+      },
+      {
+        "source": "lucide-react",
+        "line": 5
+      },
+      {
+        "source": "../../i18n",
+        "line": 6
+      },
+      {
+        "source": "../../lib/format",
+        "line": 7
+      },
+      {
+        "source": "../../lib/weeklyPrice",
+        "line": 8
+      },
+      {
+        "source": "../../lib/track",
+        "line": 9
+      },
+      {
+        "source": "../../styles/calc-ui.css",
+        "line": 10
+      },
+      {
+        "source": "../../styles/fw-weekly.css",
+        "line": 11
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 13
+      }
+    ],
+    "anonymous_functions": 7
+  },
   "frontend/src/components/russia/LaborIndicatorGroups.jsx": {
-    "sha256": "571a0bbba31801547d5d0eedd1680366a54f21c768a36f4cc0a749e205a83def",
+    "sha256": "5ca5509cbdc23f1848f2531f4e3c7d3053e0dbf7b1eaba0da32f0c44c986a602",
     "definitions": [
       {
         "name": "LaborIndicatorGroups",
-        "line": 14,
-        "end_line": 52,
+        "line": 16,
+        "end_line": 54,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -22021,7 +22206,7 @@
         "names": [
           "default"
         ],
-        "line": 14
+        "line": 16
       }
     ],
     "anonymous_functions": 8
@@ -24534,7 +24719,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "cf846b1d0374b95bacbebd71f3eaef4b86740f1e22f26d0941d8756021a61785",
+    "sha256": "ddbf474d9a8b5bf8bf5ea298c4e49769c4e8fe535951e13f3004242e6d8ba255",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -24642,7 +24827,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "bad606fac2125f10059d05d7429e1530b3cdc3c0383efa5ab61ec5f1345736a9",
+    "sha256": "9860378b02ef563749c105407f3d2c7e3d26de47610fc92c07c118be26268c13",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -40323,6 +40508,116 @@
     "exports": [],
     "anonymous_functions": 11
   },
+  "frontend/src/lib/periodJump.js": {
+    "sha256": "d67abdee93d6b6fd3b1014b01062880979da25d3588295c97b4d47a823e24f5e",
+    "definitions": [
+      {
+        "name": "iso",
+        "line": 12,
+        "end_line": 14,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "periodJumpOptions",
+        "line": 22,
+        "end_line": 49,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "currentJumpValue",
+        "line": 52,
+        "end_line": 59,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "nearestRow",
+        "line": 65,
+        "end_line": 72,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "emitPeriodPick",
+        "line": 75,
+        "end_line": 78,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "onPeriodPick",
+        "line": 81,
+        "end_line": 86,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "onPeriodPick.listener",
+        "line": 83,
+        "end_line": 83,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "periodJumpOptions"
+        ],
+        "line": 22
+      },
+      {
+        "names": [
+          "currentJumpValue"
+        ],
+        "line": 52
+      },
+      {
+        "names": [
+          "nearestRow"
+        ],
+        "line": 65
+      },
+      {
+        "names": [
+          "emitPeriodPick"
+        ],
+        "line": 75
+      },
+      {
+        "names": [
+          "onPeriodPick"
+        ],
+        "line": 81
+      }
+    ],
+    "anonymous_functions": 6
+  },
+  "frontend/src/lib/periodJump.test.js": {
+    "sha256": "e4fbbcf25453ee8b8983ed167fbd70743226b3cae777906e0fe1cb3f39b15394",
+    "definitions": [
+      {
+        "name": "desc",
+        "line": 7,
+        "end_line": 7,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "pageLabel",
+        "line": 28,
+        "end_line": 28,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "./periodJump",
+        "line": 3
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 8
+  },
   "frontend/src/lib/periodPhrase.js": {
     "sha256": "36c0464cc2150329b087f588d51c951a5f53e9cca14ef3e1a309a2ca31574c3e",
     "definitions": [
@@ -48368,7 +48663,7 @@
     "anonymous_functions": 14
   },
   "frontend/src/lib/track.js": {
-    "sha256": "7aa3ee6cbe878baab0a0f69a0a450c9d21090334df0c28566c1cb188f6d28718",
+    "sha256": "60e943b8a779038e33c87172f187153f39f0fdb41bf378aaf132d96156890744",
     "definitions": [
       {
         "name": "sessionId",
@@ -50708,12 +51003,12 @@
     "anonymous_functions": 7
   },
   "frontend/src/lib/useSearchTracking.js": {
-    "sha256": "372d0daa61d4ebaf0402929fb94543c410d20c81ce5993ea74377277d600e802",
+    "sha256": "833a4ca8dca6395ff8975d669156e691a75fbf51b31271d1c47e634003b78fbb",
     "definitions": [
       {
         "name": "useSearchTracking",
         "line": 22,
-        "end_line": 31,
+        "end_line": 33,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -50738,7 +51033,7 @@
     "anonymous_functions": 3
   },
   "frontend/src/lib/useSearchTracking.test.js": {
-    "sha256": "64986ef2e5c566032d3b1c1c1c30373d7029d4be433c93365447026b020b5567",
+    "sha256": "912d4282338f2f2cc1dd430cdd372f5bb6c6b0b7a34cb866ce57c92e80bf50c7",
     "definitions": [],
     "imports": [
       {
@@ -50759,7 +51054,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 11
+    "anonymous_functions": 15
   },
   "frontend/src/lib/utm.js": {
     "sha256": "07259e45a6bbcf1d2cdd723dd0d3c00b6df3a30be3f3b49122851fb84a35b1d5",
@@ -51368,6 +51663,56 @@
     ],
     "exports": [],
     "anonymous_functions": 61
+  },
+  "frontend/src/lib/weeklyPrice.js": {
+    "sha256": "6fdbab32e3902c53bb63149b9f6ae28b9680c9b801391765296be8db10d15903",
+    "definitions": [
+      {
+        "name": "pointOn",
+        "line": 7,
+        "end_line": 16,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "kopText",
+        "line": 19,
+        "end_line": 26,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "weeklyRows",
+        "line": 29,
+        "end_line": 32,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "./regionUi",
+        "line": 4
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "pointOn"
+        ],
+        "line": 7
+      },
+      {
+        "names": [
+          "kopText"
+        ],
+        "line": 19
+      },
+      {
+        "names": [
+          "weeklyRows"
+        ],
+        "line": 29
+      }
+    ],
+    "anonymous_functions": 2
   },
   "frontend/src/lib/welcome.js": {
     "sha256": "e0d8c5130d3c08e983f464dda2a80fdc81ac17c788dc4dfc34051242df80fe2e",
@@ -55088,462 +55433,462 @@
     "anonymous_functions": 11
   },
   "frontend/src/pages/AdminBI.jsx": {
-    "sha256": "6e3d9727a9cede1fca44b5f142b2ae7cc4d64f98773dab9ad866dea99807c3f4",
+    "sha256": "93d9e6dc5e6f3751189d032c3aa0bca0609af30cff51d0183c3c0de163394d3b",
     "definitions": [
       {
         "name": "eventLabel",
-        "line": 169,
-        "end_line": 169,
+        "line": 170,
+        "end_line": 170,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fmtInt",
-        "line": 173,
-        "end_line": 173,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "fmtPct",
         "line": 174,
         "end_line": 174,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "clip",
+        "name": "fmtPct",
         "line": 175,
         "end_line": 175,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "clip",
+        "line": 176,
+        "end_line": 176,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "isBuilding",
-        "line": 181,
-        "end_line": 181,
+        "line": 182,
+        "end_line": 182,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchDashboard",
-        "line": 183,
-        "end_line": 191,
+        "line": 184,
+        "end_line": 192,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useMetrikaCompare",
-        "line": 215,
-        "end_line": 225,
+        "line": 216,
+        "end_line": 226,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useMetrikaCompare.toggle",
-        "line": 220,
-        "end_line": 223,
+        "line": 221,
+        "end_line": 224,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MethodHint",
-        "line": 229,
-        "end_line": 244,
+        "line": 230,
+        "end_line": 245,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Card",
-        "line": 246,
-        "end_line": 290,
+        "line": 247,
+        "end_line": 291,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MetrikaOverlay",
-        "line": 293,
-        "end_line": 300,
+        "line": 294,
+        "end_line": 301,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Empty",
-        "line": 302,
-        "end_line": 304,
+        "line": 303,
+        "end_line": 305,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Kpi",
-        "line": 306,
-        "end_line": 323,
+        "line": 307,
+        "end_line": 324,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Donut",
-        "line": 326,
-        "end_line": 358,
+        "line": 327,
+        "end_line": 359,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HBars",
-        "line": 361,
-        "end_line": 381,
+        "line": 362,
+        "end_line": 382,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "usePager",
-        "line": 385,
-        "end_line": 394,
+        "line": 386,
+        "end_line": 395,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Pager",
-        "line": 396,
-        "end_line": 416,
+        "line": 397,
+        "end_line": 417,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PhraseTable",
-        "line": 421,
-        "end_line": 445,
+        "line": 422,
+        "end_line": 446,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "dictToBars",
-        "line": 447,
-        "end_line": 449,
+        "line": 448,
+        "end_line": 450,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "median",
-        "line": 451,
-        "end_line": 456,
+        "line": 452,
+        "end_line": 457,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WeekPulse",
-        "line": 464,
-        "end_line": 540,
+        "line": 465,
+        "end_line": 541,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TreemapCell",
-        "line": 543,
-        "end_line": 558,
+        "line": 544,
+        "end_line": 559,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TransitionMatrix",
-        "line": 561,
-        "end_line": 617,
+        "line": 562,
+        "end_line": 618,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TransitionMatrix.top",
-        "line": 571,
-        "end_line": 571,
+        "line": 572,
+        "end_line": 572,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PwaCard",
-        "line": 624,
-        "end_line": 665,
+        "line": 625,
+        "end_line": 666,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "OverviewTab",
-        "line": 667,
-        "end_line": 761,
+        "line": 668,
+        "end_line": 766,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "OverviewTab.spark",
-        "line": 678,
-        "end_line": 678,
+        "line": 680,
+        "end_line": 680,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AcquisitionTab",
-        "line": 763,
-        "end_line": 905,
+        "line": 768,
+        "end_line": 910,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "FunnelTab",
-        "line": 907,
-        "end_line": 1005,
+        "line": 912,
+        "end_line": 1010,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CohortTable",
-        "line": 1008,
-        "end_line": 1046,
+        "line": 1013,
+        "end_line": 1051,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RetentionTab",
-        "line": 1048,
-        "end_line": 1115,
+        "line": 1053,
+        "end_line": 1120,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PagesTab",
-        "line": 1117,
-        "end_line": 1244,
+        "line": 1122,
+        "end_line": 1249,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DemandTab",
-        "line": 1246,
-        "end_line": 1353,
+        "line": 1251,
+        "end_line": 1358,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NavigationTab",
-        "line": 1355,
-        "end_line": 1409,
+        "line": 1360,
+        "end_line": 1414,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PairedBars",
-        "line": 1414,
-        "end_line": 1430,
+        "line": 1419,
+        "end_line": 1435,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AudienceTab",
-        "line": 1432,
-        "end_line": 1524,
+        "line": 1437,
+        "end_line": 1529,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EventsTab",
-        "line": 1526,
-        "end_line": 1565,
+        "line": 1531,
+        "end_line": 1570,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EventsRegistryCard",
-        "line": 1567,
-        "end_line": 1602,
+        "line": 1572,
+        "end_line": 1607,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HypothesesTab",
-        "line": 1604,
-        "end_line": 1645,
+        "line": 1609,
+        "end_line": 1650,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DatasetTab",
-        "line": 1673,
-        "end_line": 1737,
+        "line": 1678,
+        "end_line": 1742,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fmtDriverValue",
-        "line": 1746,
-        "end_line": 1749,
+        "line": 1751,
+        "end_line": 1754,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DriverNode",
-        "line": 1760,
-        "end_line": 1831,
+        "line": 1765,
+        "end_line": 1836,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MetricTreeTab",
-        "line": 1834,
-        "end_line": 1943,
+        "line": 1839,
+        "end_line": 1948,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MetricTreeTab.formatter",
-        "line": 1850,
-        "end_line": 1850,
+        "line": 1855,
+        "end_line": 1855,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "FunnelSteps",
-        "line": 1946,
-        "end_line": 1971,
+        "line": 1951,
+        "end_line": 1976,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "GoalReconciliationCard",
-        "line": 1975,
-        "end_line": 2034,
+        "line": 1980,
+        "end_line": 2039,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ConversionTab",
-        "line": 2037,
-        "end_line": 2082,
+        "line": 2042,
+        "end_line": 2087,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BehaviorTab",
-        "line": 2085,
-        "end_line": 2201,
+        "line": 2090,
+        "end_line": 2206,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2120,
-        "end_line": 2120,
+        "line": 2125,
+        "end_line": 2125,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2132,
-        "end_line": 2132,
+        "line": 2137,
+        "end_line": 2137,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BehaviorTab.formatter",
-        "line": 2146,
-        "end_line": 2146,
+        "line": 2151,
+        "end_line": 2151,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PeopleCard",
-        "line": 2205,
-        "end_line": 2256,
+        "line": 2210,
+        "end_line": 2261,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AudienceFullTab",
-        "line": 2259,
-        "end_line": 2281,
+        "line": 2264,
+        "end_line": 2286,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ProductLoopTab",
-        "line": 2288,
-        "end_line": 2405,
+        "line": 2293,
+        "end_line": 2410,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SlicesTab",
-        "line": 2408,
-        "end_line": 2526,
+        "line": 2413,
+        "end_line": 2531,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SlicesTab.queryFn",
-        "line": 2416,
-        "end_line": 2416,
+        "line": 2421,
+        "end_line": 2421,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SlicesTab.queryFn",
-        "line": 2424,
-        "end_line": 2424,
+        "line": 2429,
+        "end_line": 2429,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SlicesTab.dimValue",
-        "line": 2438,
-        "end_line": 2443,
+        "line": 2443,
+        "end_line": 2448,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ReliabilityTab",
-        "line": 2529,
-        "end_line": 2648,
+        "line": 2534,
+        "end_line": 2653,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ReliabilityTab.vitalStatus",
-        "line": 2535,
-        "end_line": 2539,
+        "line": 2540,
+        "end_line": 2544,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BotnessCard",
-        "line": 2652,
-        "end_line": 2697,
+        "line": 2657,
+        "end_line": 2702,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BotnessCard.inCorridor",
-        "line": 2656,
-        "end_line": 2656,
+        "line": 2661,
+        "end_line": 2661,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AcquisitionFullTab",
-        "line": 2700,
-        "end_line": 2807,
+        "line": 2705,
+        "end_line": 2812,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AcquisitionFullTab.fmtRub",
-        "line": 2707,
-        "end_line": 2707,
+        "line": 2712,
+        "end_line": 2712,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "TermsLegend",
-        "line": 2814,
-        "end_line": 2846,
+        "line": 2819,
+        "end_line": 2851,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminLogin",
-        "line": 2850,
-        "end_line": 2895,
+        "line": 2855,
+        "end_line": 2900,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminLogin.submit",
-        "line": 2856,
-        "end_line": 2868,
+        "line": 2861,
+        "end_line": 2873,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MailTab",
-        "line": 2915,
-        "end_line": 3046,
+        "line": 2920,
+        "end_line": 3051,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MailTab.queryFn",
-        "line": 2919,
-        "end_line": 2919,
+        "line": 2924,
+        "end_line": 2924,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MailTab.total",
-        "line": 2927,
-        "end_line": 2927,
+        "line": 2932,
+        "end_line": 2932,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MailTab.flag",
-        "line": 2932,
-        "end_line": 2936,
+        "line": 2937,
+        "end_line": 2941,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI",
-        "line": 3063,
-        "end_line": 3209,
+        "line": 3068,
+        "end_line": 3214,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminBI.queryFn",
-        "line": 3083,
-        "end_line": 3087,
+        "line": 3088,
+        "end_line": 3092,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refetchInterval",
-        "line": 3089,
-        "end_line": 3094,
+        "line": 3094,
+        "end_line": 3099,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refreshNow",
-        "line": 3102,
-        "end_line": 3106,
+        "line": 3107,
+        "end_line": 3111,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.openSlices",
-        "line": 3119,
-        "end_line": 3119,
+        "line": 3124,
+        "end_line": 3124,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -55598,7 +55943,7 @@
         "names": [
           "default"
         ],
-        "line": 3063
+        "line": 3068
       }
     ],
     "anonymous_functions": 216
@@ -60360,84 +60705,84 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/RegionIndicatorPage.jsx": {
-    "sha256": "1d68dd5391e31e908ea82941d454d51e7afd8c59c7013c1b1965787b38b12cad",
+    "sha256": "da2592ed5275ee484eafcbffd944b977ee4ddfe6fc34a9814106f102493fdb42",
     "definitions": [
       {
         "name": "toYoYSeries",
-        "line": 58,
-        "end_line": 70,
+        "line": 59,
+        "end_line": 71,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isNegativeCapable",
-        "line": 75,
-        "end_line": 77,
+        "line": 76,
+        "end_line": 78,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "StatCell",
-        "line": 79,
-        "end_line": 88,
+        "line": 80,
+        "end_line": 89,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "statValue",
-        "line": 91,
-        "end_line": 93,
+        "line": 92,
+        "end_line": 94,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "monthName",
-        "line": 96,
-        "end_line": 98,
+        "line": 97,
+        "end_line": 99,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorPage",
-        "line": 111,
-        "end_line": 889,
+        "line": 112,
+        "end_line": 900,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorPage.requireAuth",
-        "line": 154,
-        "end_line": 159,
+        "line": 155,
+        "end_line": 160,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.handleExportTable",
-        "line": 161,
-        "end_line": 191,
+        "line": 162,
+        "end_line": 192,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.handleExportPng",
-        "line": 193,
-        "end_line": 202,
+        "line": 194,
+        "end_line": 203,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.at",
-        "line": 295,
-        "end_line": 298,
+        "line": 296,
+        "end_line": 299,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.trimUnitTail",
-        "line": 332,
-        "end_line": 332,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "RegionIndicatorPage.onSelect",
-        "line": 585,
-        "end_line": 585,
+        "line": 333,
+        "end_line": 333,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
         "line": 586,
         "end_line": 586,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionIndicatorPage.onSelect",
+        "line": 587,
+        "end_line": 587,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -60495,100 +60840,104 @@
         "line": 23
       },
       {
-        "source": "../lib/z2PriceHistory",
+        "source": "../components/regions/WeeklyPrices",
         "line": 24
       },
       {
-        "source": "../components/regions/MonthlyPriceParts",
+        "source": "../lib/z2PriceHistory",
         "line": 25
       },
       {
-        "source": "../lib/z2Price",
+        "source": "../components/regions/MonthlyPriceParts",
         "line": 26
       },
       {
-        "source": "../components/regions/R6Annual",
-        "line": 29
+        "source": "../lib/z2Price",
+        "line": 27
       },
       {
-        "source": "../lib/r6Annual",
+        "source": "../components/regions/R6Annual",
         "line": 30
       },
       {
-        "source": "../components/regions/DownloadMenu",
+        "source": "../lib/r6Annual",
         "line": 31
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../components/regions/DownloadMenu",
         "line": 32
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/ApiRetryBanner",
         "line": 33
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../components/LoadingNote",
         "line": 34
       },
       {
-        "source": "../components/CabinetActionsSlot",
+        "source": "../components/Breadcrumbs",
         "line": 35
       },
       {
-        "source": "../lib/cabinetSubjects",
+        "source": "../components/CabinetActionsSlot",
         "line": 36
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../lib/cabinetSubjects",
         "line": 37
       },
       {
-        "source": "../components/Chip",
+        "source": "../components/Skeleton",
         "line": 38
       },
       {
-        "source": "../context/authContext",
+        "source": "../components/Chip",
         "line": 39
       },
       {
-        "source": "../lib/api",
+        "source": "../context/authContext",
         "line": 40
       },
       {
-        "source": "../lib/chartImage",
+        "source": "../lib/api",
         "line": 41
       },
       {
-        "source": "../lib/track",
+        "source": "../lib/chartImage",
         "line": 42
       },
       {
-        "source": "../lib/downloadSubject",
+        "source": "../lib/track",
         "line": 43
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../lib/downloadSubject",
         "line": 44
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/breadcrumbs",
         "line": 45
       },
       {
-        "source": "../i18n",
-        "line": 50
+        "source": "../lib/sitePaths",
+        "line": 46
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../i18n",
         "line": 51
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../styles/platform-pages.css",
         "line": 52
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/regions-w4.css",
         "line": 53
+      },
+      {
+        "source": "../styles/k6-country.css",
+        "line": 54
       }
     ],
     "exports": [
@@ -60596,7 +60945,7 @@
         "names": [
           "default"
         ],
-        "line": 111
+        "line": 112
       }
     ],
     "anonymous_functions": 48
@@ -60633,7 +60982,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/pages/RegionProfile.jsx": {
-    "sha256": "b135653f600eb7bdde1d10dc762982ca9595be2ba4037019fdc1cc221394d489",
+    "sha256": "ab96e4ac503094708a9279267f974a3382a0bdfec7302a274f31b131949048b4",
     "definitions": [
       {
         "name": "normalize",
@@ -64516,7 +64865,7 @@
     "anonymous_functions": 32
   },
   "frontend/src/pages/WorldRegionProfile.jsx": {
-    "sha256": "9cc3d33f373a8032a9715bdd174ebab9acf7c4fa794961545afc7635632a9395",
+    "sha256": "702656676db40f65ff8876a5ac3225845f9ba8269bb916117123cf5d7659e382",
     "definitions": [
       {
         "name": "normalize",
