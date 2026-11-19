@@ -229,3 +229,32 @@ def test_ssr_card_of_social_series_has_no_price_wording(locale, banned, expected
     for phrase in banned:
         assert phrase not in body, phrase
     assert expected in body
+
+
+def test_monthly_upsert_is_split_under_asyncpg_parameter_limit(monkeypatch):
+    """Первая загрузка 57824 отдаёт всю историю ряда одним списком: запись режется на порции (стенд 19.11.2026)."""
+    from app.services import emiss_regional_parser as base
+
+    calls = []
+
+    class _Result:
+        def __init__(self, n):
+            self.n = n
+
+        def fetchall(self):
+            return [(True,)] * self.n
+
+    class _Db:
+        async def execute(self, stmt):
+            n = len(stmt.compile().params) // 4
+            calls.append(n)
+            return _Result(n)
+
+        async def flush(self):
+            return None
+
+    assert base._UPSERT_CHUNK * 4 < 32767
+    monkeypatch.setattr(base, "_UPSERT_CHUNK", 3)
+    values = [(1, 2, 202600 + m, float(m)) for m in range(1, 8)]
+    added, updated = asyncio.run(base._upsert_monthly_points(_Db(), values))
+    assert calls == [3, 3, 1] and (added, updated) == (7, 0)

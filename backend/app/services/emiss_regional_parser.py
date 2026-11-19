@@ -450,30 +450,39 @@ async def run_emiss_regional_update(
     return stats
 
 
+# asyncpg принимает не больше 32 767 параметров в одном запросе; у строки их 4. Первая загрузка зарплаты 57824
+# (вся история ряда одним вызовом, 19.11.2026) упала на стенде с InterfaceError — поэтому запись идёт порциями.
+_UPSERT_CHUNK = 5000
+
+
 async def _upsert_monthly_points(
     db: AsyncSession,
     values: list[tuple[int, int, int, float]],
 ) -> tuple[int, int]:
-    """INSERT … ON CONFLICT DO UPDATE (guard value) для region_monthly_data."""
-    stmt = pg_insert(RegionMonthlyPoint).values([
-        {
-            "indicator_id": ind_id,
-            "region_id": reg_id,
-            "month": period,
-            "value": value,
-        }
-        for ind_id, reg_id, period, value in values
-    ])
-    result = await db.execute(
-        stmt.on_conflict_do_update(
-            constraint="uq_region_monthly_point",
-            set_={"value": stmt.excluded.value},
-            where=(RegionMonthlyPoint.__table__.c.value != stmt.excluded.value),
-        ).returning(literal_inserted())
-    )
-    rows = result.fetchall()
-    added = sum(1 for (ins,) in rows if ins)
-    updated = len(rows) - added
+    """INSERT … ON CONFLICT DO UPDATE (guard value) для region_monthly_data, порциями по ``_UPSERT_CHUNK`` строк."""
+    added = updated = 0
+    for start in range(0, len(values), _UPSERT_CHUNK):
+        part = values[start:start + _UPSERT_CHUNK]
+        stmt = pg_insert(RegionMonthlyPoint).values([
+            {
+                "indicator_id": ind_id,
+                "region_id": reg_id,
+                "month": period,
+                "value": value,
+            }
+            for ind_id, reg_id, period, value in part
+        ])
+        result = await db.execute(
+            stmt.on_conflict_do_update(
+                constraint="uq_region_monthly_point",
+                set_={"value": stmt.excluded.value},
+                where=(RegionMonthlyPoint.__table__.c.value != stmt.excluded.value),
+            ).returning(literal_inserted())
+        )
+        rows = result.fetchall()
+        part_added = sum(1 for (ins,) in rows if ins)
+        added += part_added
+        updated += len(rows) - part_added
     await db.flush()
     return added, updated
 
