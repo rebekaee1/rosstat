@@ -903,10 +903,14 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
                 error_pages[page.split("?")[0]] += 1
         elif etype == "api_timing":
             u = str(pr.get("u") or "")[:120]
-            try:
-                api[u].append(float(pr.get("ms") or 0))
-            except (TypeError, ValueError):
-                pass
+            # `hid` (с 19.11.2026): вкладка уходила в фон во время запроса — время включает сон ноутбука и
+            # заморозку вкладки, а не ответ сервера (481 с при ответе nginx за миллисекунды). В задержку не идёт;
+            # отказы и 5xx такого запроса считаются, как раньше.
+            if not pr.get("hid"):
+                try:
+                    api[u].append(float(pr.get("ms") or 0))
+                except (TypeError, ValueError):
+                    pass
             if not pr.get("ok"):
                 api_fail += 1
             try:
