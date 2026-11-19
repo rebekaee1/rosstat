@@ -2988,3 +2988,8 @@ from app.data.cbr_household_credit import regional_copy_en as _cbr_credit_copy_e
 
 for _code, _copy in _cbr_credit_copy_en().items():
     REGION_INDICATORS_EN.setdefault(_code, _copy)
+# Bank of Russia deposit and loan rates by region and federal district, DataService (2026-11-19).
+from app.data.cbr_regional_rates import SERIES as _RATE_SERIES, copy_en as _rate_copy_en  # noqa: E402
+
+for _series in _RATE_SERIES:
+    REGION_INDICATORS_EN.setdefault(_series.code, _rate_copy_en(_series))

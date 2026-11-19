@@ -31,9 +31,9 @@ const CATEGORY_DEFS = [
     flagshipCode: 'cpi',
     sentiment: 'inverse',
     description:
-      'Индекс потребительских цен на товары и услуги. Цены производителей по отраслям и товарам. Цены на стройматериалы и в строительстве. Цены на недвижимость.',
+      'Индекс потребительских цен на товары и услуги. Цены производителей по отраслям и товарам. Цены на стройматериалы и в строительстве. Цены на недвижимость. Инфляционные ожидания населения.',
     descriptionEn:
-      'Consumer price index for goods and services. Producer prices by industry and product. Construction materials and building costs. Housing prices.',
+      'Consumer price index for goods and services. Producer prices by industry and product. Construction materials and building costs. Housing prices. Household inflation expectations.',
     relatedSlugs: ['rates', 'finance', 'labor'],
   },
   {
@@ -47,9 +47,9 @@ const CATEGORY_DEFS = [
     status: 'active',
     flagshipCode: 'key-rate',
     sentiment: 'neutral',
-    description: 'Ключевая ставка ЦБ, RUONIA. Ставки по вкладам, автокредитам и ипотеке.',
+    description: 'Ключевая ставка ЦБ, RUONIA. Ставки по вкладам, максимальная ставка десяти крупнейших банков, автокредиты и ипотека.',
     descriptionEn:
-      'CBR key rate, RUONIA. Deposit, auto loan and mortgage rates.',
+      'CBR key rate, RUONIA. Deposit rates, the maximum rate of the ten largest banks, auto loan and mortgage rates.',
     relatedSlugs: ['prices', 'finance', 'business'],
   },
   {

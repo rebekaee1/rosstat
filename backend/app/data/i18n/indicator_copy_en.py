@@ -17,6 +17,7 @@ from app.data.emiss_income import SERIES as INCOME_SERIES, UNITS_EN as INCOME_UN
 from app.data.emiss_labor import SERIES
 from app.data import emiss_steel as _steel
 from app.data.cbr_household_credit import copy_en as _cbr_credit_copy_en
+from app.data import cbr_household_rates as _cbr_household
 from app.data import emiss_producer_prices as _producer_prices
 
 
@@ -57,6 +58,7 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
     },
     # Household credit and mortgages, Bank of Russia DataService (2026-11-19).
     **_cbr_credit_copy_en(),
+    **_cbr_household.copy_en(),
     **{
         code: {
             "name": series.name_en,

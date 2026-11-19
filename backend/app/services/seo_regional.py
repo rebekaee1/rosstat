@@ -75,6 +75,9 @@ from app.data.cbr_household_credit import macro_by_table as _credit_macro_by_tab
 
 for _table, _macro in _credit_macro_by_table().items():
     MACRO_BY_TABLE.setdefault(_table, _macro)
+# Ставка по ипотеке региона (Банк России, 19.11.2026) → федеральная mortgage-rate: тот же показатель, есть у всех
+# субъектов. Ставки по вкладам и кредитам 19.s2–19.s5 есть только по федеральным округам — без моста в рейтинг.
+MACRO_BY_TABLE.setdefault("19.s1", "mortgage-rate")
 
 _REGIONS_TITLE = "Регионы России — социально-экономические показатели 85 субъектов РФ"
 _REGIONS_DESC = (
