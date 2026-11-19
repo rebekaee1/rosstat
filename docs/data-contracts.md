@@ -1435,3 +1435,29 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 (`search_rewrite`), в нём есть `corrected_query` — переписанный текст; окно поиска показывает «Показаны результаты
 для: …». Ответ из частей «X и Y» несёт `intent` первой части и строки частей поочерёдно. Ревизия кэша ответов `r6`.
 Событие `search_query` локальных полей страниц регионов не отправляется, пока набор показателей региона не загружен.
+
+## Строка «присылать» и первый экран страниц входа (19.11.2026, ветка feat/acq-site, не выпущено)
+
+Основание — общая стратегия совета 19.11.2026 (`.artifacts/council-2026-11-19/общая-стратегия.md`, раздел 1).
+
+- **Флаги** (`app/config.py`, по умолчанию выключены): `acq_site_line_enabled` — строка «Присылать в Telegram»;
+  `acq_site_line_topics` — темы публичного бота через запятую (по умолчанию `inflation,gold,keyrate,deposit,mortgage,usd,eur`;
+  топливо `diesel,ai92,ai95` добавляют, когда загрузка свежая); `acq_site_first_screen_enabled` — «Следующее обновление» и
+  «Скачать таблицу за все годы».
+- **`GET /api/v1/site-acq/config`** (`api/site_acq.py`, `Cache-Control: no-store`):
+  `{line: bool, topics: [str], bot: str, first_screen: bool}`. `line` = флаг строки И `public_bot_enabled` И имя бота;
+  при `line=false` темы и имя пустые. Неизвестные боту темы отбрасываются.
+- **Страницы**: карточки России и валют `fuel-diesel`, `fuel-ai92`, `fuel-ai95`, `cpi` (`cpi-yoy`), `gold-price`, `key-rate`,
+  `deposit-rate`, `mortgage-rate`, `usd-rub`, `eur-rub` — строка с Telegram; `wages-nominal`, `population` — только первый экран.
+  Компонент `SubscribeLine.jsx` стоит под блоком «Актуальные данные» в `IndicatorDetail.jsx` и `GenericIndicatorView.jsx`,
+  обычная и годовая страница одинаково. Серверный HTML для роботов не меняется.
+- **Ссылка**: `https://t.me/<bot>?start=site_<тема>`; тема — ключ `public_bot.TOPICS` (на ИПЦ — `inflation`, бот присылает инфляцию за год).
+- **Дата выхода**: `GET /api/v1/calendar/upcoming?limit=1&indicator_code=<код>` (теперь `fetchCalendarUpcoming` передаёт `indicator_code`);
+  коды календаря — `cpi`, `key-rate`, `deposit-rate`, `mortgage-rate`, `wages-nominal`, `population`. Дневные ряды — «каждый рабочий день»,
+  недельное топливо — «по средам», ставка ЦБ — дата решения.
+- **Задержка**: сервер пометил ряд `freshness.level = stale`, или последняя точка старше нормы частоты (день 6, неделя 12,
+  месяц 100, квартал 200, год 500 дней) и выхода по календарю нет в ближайшие 14 дней. Тогда строка говорит «Источник задерживает
+  новые данные» и ссылку в бота не показывает.
+- **События** (`lib/track.js`, first-party и цель Метрики): `subscribe_line_view` — один раз на страницу и тему, когда видна ссылка
+  в Telegram; `subscribe_line_click` — нажатие. Параметры `{topic, channel: 'telegram' | 'email', path}`. Почтовый способ (`channel: 'email'`)
+  подставляет ветка почты через проп `emailSlot`. «Скачать таблицу» зовёт тот же обработчик, что кнопка над графиком (`download_excel`, тот же замок).

@@ -132,10 +132,12 @@ export function useDashboardSparklines() {
   });
 }
 
-export function useCalendarUpcoming(params = {}) {
+export function useCalendarUpcoming(params = {}, options = {}) {
+  const { enabled = true } = options;
   return useQuery({
     queryKey: ['calendar-upcoming', params],
     queryFn: ({ signal }) => fetchCalendarUpcoming(params, { signal }),
+    enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });

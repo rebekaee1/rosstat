@@ -4288,4 +4288,16 @@ export default {
   'fw.foot': 'Average price across filling stations of the region, all chains together: official statistics do not publish prices of individual chains. Weekly records from {first} to {last}.',
   'fw.tableToggle': 'All weekly prices ({n})',
   'fw.colDate': 'Record date',
+  // Acquisition, council 19.11.2026: the «send me» line under the number (components/SubscribeLine.jsx).
+  'acq.aria': 'New data',
+  'acq.when.delayed': 'The source is late with new data. We will show it here as soon as it is out.',
+  'acq.when.daily': 'Updated every business day.',
+  'acq.when.cpi': '{month} inflation is out on {date}.',
+  'acq.when.cpiApprox': '{month} inflation is expected around {date}.',
+  'acq.when.keyrate': 'Next rate decision: {date}.',
+  'acq.when.next': 'Next update: {date}.',
+  'acq.when.nextApprox': 'Next update: around {date}.',
+  'acq.when.fuelWeekly': 'A new price comes out once a week, on Wednesdays.',
+  'acq.telegram': 'Send to Telegram',
+  'acq.download': 'Download the full table',
 };
