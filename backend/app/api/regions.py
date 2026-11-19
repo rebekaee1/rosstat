@@ -309,7 +309,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
                    Region.kind == "region")
         )).scalar()
         if last_month is None:
-            raise HTTPException(404, "Нет данных по этому показателю")
+            return await _quarterly_heatmap(db, indicator, cache_key)
         last_year = int(last_month) // 100
         # R9-C: тот же месяц год назад — для «за год» в строках рейтинга цен.
         reg_ids = {rid: slug_ for rid, slug_ in (await db.execute(
@@ -366,6 +366,43 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
             {"slug": s, "name": _rname(s, n), "value": _fmt(float(v)), "raw": float(v),
              **({"prev": prev_by_slug[s]} if s in prev_by_slug else {})}
             for s, n, v in rows
+        ],
+    }
+    await cache_set(cache_key, result, settings.cache_ttl_data)
+    return result
+
+
+async def _quarterly_heatmap(db: AsyncSession, indicator: RegionIndicator, cache_key: str) -> dict:
+    """Карта и рейтинг квартального ряда: значения субъектов за последний квартал, где они есть (19.11.2026)."""
+    from app.models import RegionQuarterlyPoint as Q
+    from app.services.regional_quarterly import quarter_label
+
+    last_q = (await db.execute(
+        select(func.max(Q.quarter)).join(Region, Region.id == Q.region_id)
+        .where(Q.indicator_id == indicator.id, Region.kind == "region")
+    )).scalar()
+    if last_q is None:
+        raise HTTPException(404, "Нет данных по этому показателю")
+    rows = (await db.execute(
+        select(Region.slug, Region.name, Q.value).join(Region, Region.id == Q.region_id)
+        .where(Q.indicator_id == indicator.id, Q.quarter == last_q, Region.kind == "region")
+    )).all()
+    # Тот же квартал год назад — для «за год» в строках рейтинга.
+    prev_by_slug = dict((await db.execute(
+        select(Region.slug, Q.value).join(Region, Region.id == Q.region_id)
+        .where(Q.indicator_id == indicator.id, Q.quarter == int(last_q) - 10, Region.kind == "region")
+    )).all())
+    copy = _icopy(indicator)
+    result = {
+        "indicator": {"code": indicator.code, "name": copy["name"], "unit": copy["unit"]},
+        "year": int(last_q) // 10,
+        "quarter": int(last_q),
+        "period_label": quarter_label(int(last_q)),
+        **region_rating_meta(indicator.code, indicator.table_code),
+        "values": [
+            {"slug": s_, "name": _rname(s_, n_), "value": _fmt(float(v)), "raw": float(v),
+             **({"prev": float(prev_by_slug[s_])} if s_ in prev_by_slug else {})}
+            for s_, n_, v in rows
         ],
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
@@ -727,7 +764,7 @@ async def _russia_price_movers(db: AsyncSession, region_id: int, top: int = 10) 
 
 @router.get("/{slug}")
 async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("regions", f"profile:prices-v4:{slug}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"profile:prices-v5:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -794,6 +831,18 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
             prev[iid] = (p_month[0] // 100, p_month[1])
         month_of[iid] = (month, p_month[0] if p_month else None)
 
+    # Квартальный слой (цена 1 м² жилья, доходы к прожиточному минимуму; 19.11.2026): два последних квартала.
+    from app.services.regional_quarterly import latest_quarterly_points, quarter_label
+
+    quarter_of: dict[int, tuple[int, int | None]] = {}
+    for (iid, _rid), pts in (await latest_quarterly_points(db, [i.id for i in inds], [region.id], n=2)).items():
+        if iid in latest:
+            continue
+        latest[iid] = (pts[0][0] // 10, pts[0][1])
+        if len(pts) > 1:
+            prev[iid] = (pts[1][0] // 10, pts[1][1])
+        quarter_of[iid] = (pts[0][0], pts[1][0] if len(pts) > 1 else None)
+
     sections: dict[int, dict] = {}
     headline = {}
     growth_map = (
@@ -820,6 +869,10 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
             meta = price_meta(i.code)
             if meta:
                 item.update(_price_fields(meta))
+        elif i.id in quarter_of:
+            # YYYYQ последней и предыдущей точки: карточка квартального ряда.
+            item["quarter"], item["prev_quarter"] = quarter_of[i.id]
+            item["period_label"] = quarter_label(item["quarter"])
         sec = sections.setdefault(i.section_num, {
             "num": i.section_num,
             "name": copy["section"] or i.section_name,
@@ -956,7 +1009,12 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
     )).all()
     series = [{"year": y, "value": _fmt(float(v))} for y, v in series_rows]
     if not series:
-        raise HTTPException(404, "Нет данных по этому показателю для региона")
+        # Квартальный ряд (цена 1 м² жилья и др., 19.11.2026) — та же карточка, точки с кварталом.
+        quarterly = await _quarterly_detail(db, region, indicator)
+        if quarterly is None:
+            raise HTTPException(404, "Нет данных по этому показателю для региона")
+        await cache_set(cache_key, quarterly, settings.cache_ttl_data)
+        return quarterly
 
     # ряд РФ для сравнения
     russia_series = []
@@ -1024,6 +1082,49 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result
+
+
+async def _quarterly_detail(db: AsyncSession, region: Region, indicator: RegionIndicator) -> dict | None:
+    """Карточка квартального ряда в форме годовой: series с кварталом, ряд РФ, рейтинг по последнему кварталу."""
+    from app.models import RegionQuarterlyPoint as Q
+    from app.services.regional_quarterly import quarter_label, quarter_point, quarterly_rows
+
+    rows = await quarterly_rows(db, indicator.id, region.id)
+    if not rows:
+        return None
+    russia_series = []
+    if region.slug != "russia":
+        rf = (await db.execute(select(Region).where(Region.slug == "russia"))).scalar_one_or_none()
+        if rf:
+            russia_series = [quarter_point(q, v) for q, v in await quarterly_rows(db, indicator.id, rf.id)]
+    last_q = rows[-1][0]
+    rank_rows = (await db.execute(
+        select(Region.slug, Region.name, Q.value).join(Region, Region.id == Q.region_id)
+        .where(Q.indicator_id == indicator.id, Q.quarter == last_q, Region.kind == "region")
+        .order_by(region_rating_order_by(Q.value, indicator.code, indicator.table_code))
+    )).all()
+    rank = next((pos for pos, (s_, _n, _v) in enumerate(rank_rows, 1) if s_ == region.slug), None)
+    copy = _icopy(indicator)
+    return {
+        "region": {"slug": region.slug, "name": _rname(region.slug, region.name), "kind": region.kind},
+        "indicator": {
+            "code": indicator.code, "name": copy["name"], "unit": copy["unit"], "note": copy["note"],
+            "section_num": indicator.section_num, "section_name": copy["section"] or indicator.section_name,
+            "table_code": indicator.table_code, "macro_code": MACRO_BY_TABLE.get(indicator.table_code or ""),
+        },
+        "frequency": "quarterly",
+        "series": [quarter_point(q, v) for q, v in rows],
+        "russia_series": russia_series,
+        "rank": {
+            "position": rank, "total": len(rank_rows), "year": last_q // 10, "quarter": last_q,
+            "period_label": quarter_label(last_q),
+            "top": [{"slug": s_, "name": _rname(s_, n_), "value": _fmt(float(v))} for s_, n_, v in rank_rows[:5]],
+            "bottom": [{"slug": s_, "name": _rname(s_, n_), "value": _fmt(float(v))} for s_, n_, v in rank_rows[-3:]],
+            "around": _rank_around(rank_rows, rank),
+            **region_rating_meta(indicator.code, indicator.table_code),
+        } if rank else None,
+        "siblings": await _section_siblings(db, region, indicator),
+    }
 
 
 MONTH_NAMES_RU = (

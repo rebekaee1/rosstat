@@ -56,6 +56,7 @@ from app.models import (
     Region,
     RegionDataPoint,
     RegionMonthlyPoint,
+    RegionQuarterlyPoint,
     RegionWeeklyPoint,
     RegionIndicator,
     WorldCountry,
@@ -445,6 +446,10 @@ _REGIONAL_PAIR_DATA = union_all(
            (RegionDataPoint.year * 10000 + 1231).label("last_day")),
     select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.region_id,
            (RegionMonthlyPoint.month * 100 + 1).label("last_day")),
+    # Квартальный слой (19.11.2026): lastmod — первый день последнего месяца квартала.
+    select(RegionQuarterlyPoint.indicator_id, RegionQuarterlyPoint.region_id,
+           (RegionQuarterlyPoint.quarter.op("/")(10) * 10000
+            + RegionQuarterlyPoint.quarter.op("%")(10) * 300 + 1).label("last_day")),
     select(RegionWeeklyPoint.indicator_id, RegionWeeklyPoint.region_id,
            cast(extract("year", RegionWeeklyPoint.date) * 10000
                 + extract("month", RegionWeeklyPoint.date) * 100

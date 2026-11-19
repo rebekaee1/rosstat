@@ -1,4 +1,4 @@
-"""SQL-only metadata for the surviving annual/monthly regional history.
+"""SQL-only metadata for the surviving annual/monthly/quarterly regional history.
 
 Call inside the writer's transaction, after point writes. The caller commits
 and publishes cache generations; this module never commits or touches Redis.
@@ -9,7 +9,7 @@ from collections.abc import Iterable
 from sqlalchemy import func, or_, select, text, union_all, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import RegionDataPoint, RegionIndicator, RegionMonthlyPoint
+from app.models import RegionDataPoint, RegionIndicator, RegionMonthlyPoint, RegionQuarterlyPoint
 
 _REGIONAL_WRITE_LOCK_ID = 7063003
 
@@ -32,7 +32,7 @@ async def update_regional_year_bounds(
 ) -> int:
     """Refresh catalogue bounds from actual stored periods, including extras.
 
-    Monthly YYYYMM uses integer SQL division. An explicit empty id set is a
+    Monthly YYYYMM and quarterly YYYYQ use integer SQL division. An explicit empty id set is a
     no-op; a monthly writer restricts aggregation to its changed indicators.
     A seed passes None to reconcile every indicator, including empty ones.
     """
@@ -44,12 +44,17 @@ async def update_regional_year_bounds(
         RegionMonthlyPoint.indicator_id,
         RegionMonthlyPoint.month.op("/")(100).label("year"),
     )
+    quarterly = select(
+        RegionQuarterlyPoint.indicator_id,
+        RegionQuarterlyPoint.quarter.op("/")(10).label("year"),
+    )
     indicators = select(RegionIndicator.id)
     if ids is not None:
         annual = annual.where(RegionDataPoint.indicator_id.in_(ids))
         monthly = monthly.where(RegionMonthlyPoint.indicator_id.in_(ids))
+        quarterly = quarterly.where(RegionQuarterlyPoint.indicator_id.in_(ids))
         indicators = indicators.where(RegionIndicator.id.in_(ids))
-    periods = union_all(annual, monthly).subquery()
+    periods = union_all(annual, monthly, quarterly).subquery()
     selected = indicators.subquery()
     bounds = (
         select(selected.c.id, func.min(periods.c.year).label("lo"),

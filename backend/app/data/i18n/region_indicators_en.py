@@ -2960,3 +2960,11 @@ from app.data.emiss_price_goods import ALL_PRICE_GOODS as _PRICE_GOODS, copy_en 
 
 for _good in _PRICE_GOODS:
     REGION_INDICATORS_EN.setdefault(_good.code, _price_copy_en(_good))
+
+
+# Quarterly and annual EMISS regional series: housing prices, subsistence minimum (2026-11-19).
+from app.data.emiss_quarterly import all_series as _q_series, copy_en as _q_copy_en  # noqa: E402
+
+for _ds, _s in _q_series():
+    if _s.own_metadata:
+        REGION_INDICATORS_EN.setdefault(_s.code, _q_copy_en(_ds, _s))

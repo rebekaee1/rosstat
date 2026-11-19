@@ -725,6 +725,16 @@ async def emiss_weekly_fuel_job():
     await _job()
 
 
+async def emiss_quarterly_job():
+    """Квартальные ряды регионов ЕМИСС (жильё, доходы к прожиточному минимуму) и годовой прожиточный минимум.
+
+    Расписание в main.py, реализация — app.services.emiss_quarterly_parser (19.11.2026).
+    """
+    from app.services.emiss_quarterly_parser import emiss_quarterly_job as _job
+
+    await _job()
+
+
 
 # ---------------------------------------------------------------------------
 #  Staleness-мониторинг (Н-3): «источник молча умер» виден не через failed,
