@@ -23,10 +23,11 @@ def test_reverse_index_maps_card_and_link_codes():
     assert concept_slug_for_russia_code("weo-government-debt-gdp") == "government-debt-gdp"
     assert concept_slug_for_russia_code("weo-budget-balance-gdp") == "budget-balance-gdp"
     assert concept_slug_for_russia_code("weo-gdp-per-capita-usd") == "gdp-per-capita-usd"
+    # С 19.11.2026 есть мировой рейтинг ключевых ставок (BIS, policy-rate): ключевая ставка ЦБ РФ — тот же показатель.
+    assert concept_slug_for_russia_code("key-rate") == "policy-rate"
 
 
 def test_reverse_index_fail_closed_for_incompatible_cards():
-    assert concept_slug_for_russia_code("key-rate") is None
     assert concept_slug_for_russia_code("gdp-real") is None
     assert concept_slug_for_russia_code("gdp-nominal") is None
     assert concept_slug_for_russia_code("cpi-food") is None
