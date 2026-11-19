@@ -2983,3 +2983,8 @@ from app.data.emiss_quarterly import all_series as _q_series, copy_en as _q_copy
 for _ds, _s in _q_series():
     if _s.own_metadata:
         REGION_INDICATORS_EN.setdefault(_s.code, _q_copy_en(_ds, _s))
+# Bank of Russia deposit and loan rates by region and federal district, DataService (2026-11-19).
+from app.data.cbr_regional_rates import SERIES as _RATE_SERIES, copy_en as _rate_copy_en  # noqa: E402
+
+for _series in _RATE_SERIES:
+    REGION_INDICATORS_EN.setdefault(_series.code, _rate_copy_en(_series))

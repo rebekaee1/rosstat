@@ -766,6 +766,16 @@ async def emiss_quarterly_job():
     await _job()
 
 
+async def cbr_regional_rates_job():
+    """Ставки по вкладам и кредитам по регионам и федеральным округам (DataService Банка России, 19.11.2026).
+
+    Расписание в main.py, реализация — app.services.cbr_regional_rates_parser.
+    """
+    from app.services.cbr_regional_rates_parser import cbr_regional_rates_job as _job
+
+    await _job()
+
+
 
 # ---------------------------------------------------------------------------
 #  Staleness-мониторинг (Н-3): «источник молча умер» виден не через failed,

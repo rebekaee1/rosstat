@@ -70,6 +70,9 @@ from app.data.emiss_regional_cpi import macro_by_table as _cpi_macro_by_table  #
 
 for _table, _macro in _cpi_macro_by_table().items():
     MACRO_BY_TABLE.setdefault(_table, _macro)
+# Ставка по ипотеке региона (Банк России, 19.11.2026) → федеральная mortgage-rate: тот же показатель, есть у всех
+# субъектов. Ставки по вкладам и кредитам 19.s2–19.s5 есть только по федеральным округам — без моста в рейтинг.
+MACRO_BY_TABLE.setdefault("19.s1", "mortgage-rate")
 
 _REGIONS_TITLE = "Регионы России — социально-экономические показатели 85 субъектов РФ"
 _REGIONS_DESC = (

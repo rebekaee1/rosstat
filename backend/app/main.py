@@ -739,6 +739,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Ставки по вкладам и кредитам по регионам (DataService Банка России, 19.11.2026): ипотека выходит в начале
+        # месяца, вклады и кредиты — около 10-го. Первый прогон грузит историю с 2019 года (~120 запросов к cbr.ru,
+        # пауза 0,3 с, 1–2 минуты), дальше — прошлый и текущий год. Не в окна ЕМИСС и не в часы пика.
+        from app.tasks.scheduler import cbr_regional_rates_job as _cbr_regional_rates
+
+        scheduler.add_job(
+            locked_job(_cbr_regional_rates, "cbr_regional_rates", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=7, minute=30, day="4,12,18", timezone="Europe/Moscow"),
+            id="cbr_regional_rates",
+            name="Monthly CBR regional deposit and loan rates (region_monthly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # World: национальные паспорта (19 официальных источников, ~90 рядов)
         # обновляются ежедневно — данные пишут сразу, контур проверен живыми
         # прогонами. Eurostat-часть (TOC-driven, часы работы) остаётся

@@ -8897,6 +8897,17 @@ for _code, _keywords in _emiss_steel.seo_keywords().items():
 for _code, _meta in _emiss_steel.seo_meta().items():
     INDICATOR_SEO.setdefault(_code, _meta)
 
+
+# Банк России (19.11.2026): максимальная ставка по вкладам 10 банков, инфляционные ожидания и настроения населения.
+from app.data import cbr_household_rates as _cbr_household  # noqa: E402
+
+for _code, _keywords in _cbr_household.seo_keywords().items():
+    INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
+for _code, _meta in _cbr_household.seo_meta().items():
+    INDICATOR_SEO.setdefault(_code, _meta)
+for _code, _blocks in _cbr_household.seo_blocks().items():
+    INDICATOR_SEO_BLOCKS.setdefault(_code, _blocks)
+
 # Цены производителей по видам деятельности и товарам, цены в строительстве (ЕМИСС, 19.11.2026).
 from app.data import emiss_producer_prices as _emiss_producer_prices  # noqa: E402
 

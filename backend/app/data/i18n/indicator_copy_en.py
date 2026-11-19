@@ -16,6 +16,7 @@ from typing import TypedDict
 from app.data.emiss_income import SERIES as INCOME_SERIES, UNITS_EN as INCOME_UNITS_EN
 from app.data.emiss_labor import SERIES
 from app.data import emiss_steel as _steel
+from app.data import cbr_household_rates as _cbr_household
 from app.data import emiss_producer_prices as _producer_prices
 
 
@@ -54,6 +55,7 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         }
         for code, series in _steel.SERIES.items()
     },
+    **_cbr_household.copy_en(),
     **{
         code: {
             "name": series.name_en,
