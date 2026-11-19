@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from app.data.emiss_income import seed_indicators as emiss_income_indicators
 from app.data.emiss_labor import seed_indicators as emiss_labor_indicators
 from app.data.emiss_steel import seed_indicators as emiss_steel_indicators
+from app.data.emiss_producer_prices import seed_indicators as emiss_producer_price_indicators
 from app.data.cbr_currencies import seed_rows as cbr_currency_rows
 from app.data.cpi_provenance import cpi_provenance
 from app.database import async_session
@@ -4793,6 +4794,8 @@ INDICATORS = [
     },
     # Сталь в России (19.11.2026): помесячные цены производителей Росстата вместо снятого `steel`.
     *emiss_steel_indicators(),
+    # Цены производителей по видам деятельности и товарам, цены в строительстве (ЕМИСС, 19.11.2026).
+    *emiss_producer_price_indicators(),
     # Годовые оценки МВФ WEO по России — карточки каталога (категория «ВВП» /
     # «Государственные финансы»). Тот же ряд читает overlay рейтинга стран.
     # Прогноз платформы не строится: в ряд входят оценки выпуска фонда.
