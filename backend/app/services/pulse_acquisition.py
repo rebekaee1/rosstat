@@ -15,8 +15,9 @@
   каждую неделю. База на 19.11: 5,3 % и 1,4 %.
 * **Строка «присылать»** — события сайта `subscribe_line_view` / `subscribe_line_click` (свойства `topic`,
   `channel` = telegram | email). Нажатия считаем на 1 000 показов: решение совета по кнопке — по объёму показов.
-* **Нажал → открыл бота** — чаты публичного бота с первым кодом `site_*`, впервые пришедшие за окно.
-* **Подписки** — новые подписки публичного бота у чатов с сайта (`first_code` = `site_*`) и все новые; почтовые —
+* **Нажал → открыл бота** — чаты публичного бота с первым кодом `site_<тема>` (10 тем бота; `site_welcome`,
+  `site_research` и другие коды сайта не считаются), впервые пришедшие за окно.
+* **Подписки** — новые подписки публичного бота у чатов со строки (`first_code` = `site_<тема>`) и все новые; почтовые —
   новые слежения (`user_watches`) и согласия `watch_mail`.
 * **Регистрации** — по поводу (`user_signups.trigger`).
 * **ИИ** — визиты Метрики с ChatGPT, Алисы, Perplexity и других помощников (`traffic_channel.assistant_name`).
@@ -42,6 +43,17 @@ SAME_VISIT_GAP = timedelta(minutes=30)
 LINE_VIEW = "subscribe_line_view"
 LINE_CLICK = "subscribe_line_click"
 SITE_CODE_PREFIX = "site_"
+
+
+def site_topic_codes() -> tuple[str, ...]:
+    """Коды строки «присылать»: `site_<тема>` для тем публичного бота (10 тем).
+
+    Сайт шлёт в бота и другие коды (`site_welcome`, `site_research` — приветственный экран и исследования):
+    это не нажатие строки, поэтому «нажал → открыл бота» и «подписки с сайта» считаются только по темам.
+    """
+    from app.services.public_bot import TOPICS
+
+    return tuple(f"{SITE_CODE_PREFIX}{key}" for key in TOPICS)
 _IN_CHUNK = 900  # SQLite ограничивает число параметров запроса
 
 
@@ -178,16 +190,17 @@ async def _subscribe_line(db, start: datetime, end: datetime) -> dict[str, Any]:
 async def _subscriptions(db, start: datetime, end: datetime) -> dict[str, Any]:
     from app.models import Consent, PublicBotChat, PublicBotSubscription, UserWatch
 
+    codes = site_topic_codes()
     site_chats_new = int(await db.scalar(select(func.count()).select_from(PublicBotChat).where(
         PublicBotChat.first_seen_at >= start, PublicBotChat.first_seen_at < end,
-        PublicBotChat.first_code.like(f"{SITE_CODE_PREFIX}%"))) or 0)
+        PublicBotChat.first_code.in_(codes))) or 0)
     bot_new = int(await db.scalar(select(func.count()).select_from(PublicBotSubscription).where(
         PublicBotSubscription.created_at >= start, PublicBotSubscription.created_at < end)) or 0)
     bot_new_site = int(await db.scalar(
         select(func.count()).select_from(PublicBotSubscription)
         .join(PublicBotChat, PublicBotChat.chat_id == PublicBotSubscription.chat_id)
         .where(PublicBotSubscription.created_at >= start, PublicBotSubscription.created_at < end,
-               PublicBotChat.first_code.like(f"{SITE_CODE_PREFIX}%"))) or 0)
+               PublicBotChat.first_code.in_(codes))) or 0)
     bot_total = int(await db.scalar(select(func.count()).select_from(PublicBotSubscription)) or 0)
     watches_new = int(await db.scalar(select(func.count()).select_from(UserWatch).where(
         UserWatch.created_at >= start, UserWatch.created_at < end)) or 0)

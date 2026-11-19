@@ -19,7 +19,8 @@ LABEL = {"ru": "Как цитировать", "en": "How to cite"}
 def cite_text(*, name: str, source: str | None, url: str, as_of: date | None, locale: str) -> str:
     """«Forecast Economy. {Название}: источник данных — {источник}, на {дата}. {адрес}»."""
     en = locale == "en"
-    parts = [f"Forecast Economy. {name}"]
+    # Название с точкой на конце не даёт двух точек подряд (19.11.2026, рецензия №6).
+    parts = [f"Forecast Economy. {name.strip().rstrip('.')}"]
     tail = []
     if source:
         tail.append(f"data from {source}" if en else f"источник данных — {source}")

@@ -3099,6 +3099,10 @@ async def render_indicator_html(
     from app.services.regional_weekly import fuel_regions_section
 
     fuel_regions_html = await fuel_regions_section(db, indicator.code)
+    # «Как цитировать» цитирует саму карточку, как приложение (`IndicatorMethodologyPanel`): базовое название
+    # (`public_indicator_seo`, то же поле `name` в API) и дата последней точки базового ряда (`current_date` API),
+    # а не название и ряд режима (19.11.2026, рецензия №6).
+    cite_as_of = last_dt if data_indicator.id == indicator.id else (await _indicator_stats(db, indicator.id))[2]
     body = _indicator_body(
         indicator,
         category,
@@ -3121,6 +3125,8 @@ async def render_indicator_html(
         locale=loc,
         fuel_regions_html=fuel_regions_html,
         cite_url=_absolute(paths.russia_indicator(indicator.code)),
+        cite_name=base_name,
+        cite_as_of=cite_as_of,
     )
     canonical_path = paths.russia_indicator(indicator.code)
     # ?mode= не каноничен: INDEX_POLICY. Canonical всегда базовый URL карточки.
@@ -3901,7 +3907,8 @@ async def render_indicator_year_html(
     fuel_regions_html = await fuel_regions_section(db, code, year=year)
     from app.services.locale import get_locale
 
-    cite = _cite(h1_text, source, _absolute(canonical_path.split("?")[0]), last.date, get_locale())
+    # Адрес — canonical страницы: у зарегистрированного режима он несёт `?mode=` (19.11.2026, рецензия №6).
+    cite = _cite(h1_text, source, _absolute(canonical_path), last.date, get_locale())
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(year_trail)}
 {fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=year_lead_text)}
@@ -4113,6 +4120,8 @@ def _indicator_body(
     locale: str | None = None,
     fuel_regions_html: str = "",
     cite_url: str = "",
+    cite_name: str | None = None,
+    cite_as_of: date | None = None,
 ) -> str:
     from app.services.i18n_display import public_name
     from app.services.locale import get_locale
@@ -4355,7 +4364,7 @@ def _indicator_body(
 {dynamics_html}</section>
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p>
-{_cite(name, src, cite_url, current.date if current else last_dt, loc)}</section>
+{_cite(cite_name or name, src, cite_url, cite_as_of or (current.date if current else last_dt), loc)}</section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
 {years_section}{months_section}{fuel_regions_html}{world_compare_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
 </main>"""

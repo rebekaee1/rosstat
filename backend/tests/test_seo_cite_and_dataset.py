@@ -18,6 +18,9 @@ def test_cite_text_ru_and_en():
     html = cite_html(name="A <b>", source="Росстат", url="https://a/b", as_of=None, locale="ru")
     assert html.startswith('<p class="seo-cite"><span class="seo-cite__label">Как цитировать:</span>')
     assert "&lt;b&gt;" in html
+    # Название с точкой на конце — без двух точек подряд.
+    assert cite_text(name="Индекс цен.", source=None, url="https://a/b", as_of=None, locale="ru") == (
+        "Forecast Economy. Индекс цен. https://a/b")
 
 
 def test_year_page_has_cite_line(year_landing_client, auth_env):  # noqa: F811
@@ -44,3 +47,24 @@ def test_card_has_cite_and_no_closed_api_download(year_landing_client, auth_env)
     assert "DataDownload" not in html
     assert "/api/v1/indicators/" not in html
     assert '"@type": "Dataset"' in html or '"@type":"Dataset"' in html
+
+
+def test_mode_year_page_cites_its_canonical_with_mode(monkeypatch):
+    """Годовая страница режима цитирует свой canonical с `?mode=`, а не соседний вид ряда."""
+    import inspect
+
+    from app.services import seo_renderer
+
+    src = inspect.getsource(seo_renderer.render_indicator_year_html)
+    assert '_cite(h1_text, source, _absolute(canonical_path), last.date' in src
+    assert 'canonical_path = paths.russia_indicator_year(parent_code, year) + mode_query' in src
+
+
+def test_card_cites_base_name_like_the_app():
+    """Карточка цитирует базовое название и дату базового ряда — те же поля, что `name`/`current_date` API."""
+    import inspect
+
+    from app.services import seo_renderer
+
+    src = inspect.getsource(seo_renderer.render_indicator_html)
+    assert "cite_name=base_name" in src and "cite_as_of=cite_as_of" in src

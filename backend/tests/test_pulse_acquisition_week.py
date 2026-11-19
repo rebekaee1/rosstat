@@ -82,10 +82,14 @@ def test_build_week_counts_line_bot_subscriptions_signups_ai_and_google_ru():
             db.add_all([
                 PublicBotChat(chat_id="1", chat_hash="h1", first_code="site_inflation", first_seen_at=t, last_seen_at=t),
                 PublicBotChat(chat_id="2", chat_hash="h2", first_code="ig_bio", first_seen_at=t, last_seen_at=t),
+                # Приветственный экран и «Исследования» тоже ведут в бота с кодом site_*, но это не строка «присылать».
+                PublicBotChat(chat_id="3", chat_hash="h3", first_code="site_welcome", first_seen_at=t, last_seen_at=t),
+                PublicBotChat(chat_id="4", chat_hash="h4", first_code="site_research", first_seen_at=t, last_seen_at=t),
             ])
             await db.flush()
             db.add_all([PublicBotSubscription(chat_id="1", topic="inflation", created_at=t),
-                        PublicBotSubscription(chat_id="2", topic="usd", created_at=t)])
+                        PublicBotSubscription(chat_id="2", topic="usd", created_at=t),
+                        PublicBotSubscription(chat_id="3", topic="gold", created_at=t)])
             db.add(ServerSession(day=t.date(), visitor_id_hash="p1", started_at=t, ended_at=t,
                                  is_bot=False, is_internal=False, is_human=True))
             uid = uuid.uuid4()
@@ -105,7 +109,7 @@ def test_build_week_counts_line_bot_subscriptions_signups_ai_and_google_ru():
     assert w["line"]["clicks_by_channel"] == {"telegram": 1}
     s = w["subscriptions"]
     assert s["site_bot_chats_new"] == 1
-    assert s["bot_subscriptions_new"] == 2 and s["bot_subscriptions_new_from_site"] == 1
+    assert s["bot_subscriptions_new"] == 3 and s["bot_subscriptions_new_from_site"] == 1
     assert s["watch_mail_consents_new"] == 1
     assert w["signups"] == {"total": 1, "by_trigger": {"gate_download": 1}}
     assert w["people"]["human_visitors"] == 1
@@ -133,3 +137,13 @@ def test_week_block_is_visible_and_survives_old_or_broken_snapshot():
     assert "сами, не из поиска 1,4 %; в другой день 5,3 %" in block
     assert "на 1 000 показов" not in block  # без показов доли нет
     assert "&lt;" not in block and "<blockquote" not in block
+
+
+def test_site_topic_codes_are_the_bot_topics_only():
+    from app.services.public_bot import TOPICS
+    from app.services.pulse_acquisition import site_topic_codes
+
+    codes = site_topic_codes()
+    assert len(codes) == len(TOPICS) == 10
+    assert "site_inflation" in codes and "site_diesel" in codes
+    assert "site_welcome" not in codes and "site_research" not in codes

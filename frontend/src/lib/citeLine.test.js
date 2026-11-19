@@ -15,6 +15,10 @@ describe('citeText', () => {
     expect(citeText({ name: 'X', url: 'https://a/b', locale: 'ru' })).toBe('Forecast Economy. X. https://a/b');
   });
 
+  it('название с точкой на конце — без двух точек', () => {
+    expect(citeText({ name: 'Индекс цен.', url: 'https://a/b', locale: 'ru' })).toBe('Forecast Economy. Индекс цен. https://a/b');
+  });
+
   it('адрес без параметров', () => {
     expect(citeUrl({ origin: 'https://ru.forecasteconomy.com', pathname: '/russia/indicator/cpi' }))
       .toBe('https://ru.forecasteconomy.com/russia/indicator/cpi');

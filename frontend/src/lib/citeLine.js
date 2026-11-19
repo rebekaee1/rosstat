@@ -11,7 +11,9 @@ export function citeText({ name, source, url, asOf, locale }) {
   if (source) tail.push(en ? `data from ${source}` : `источник данных — ${source}`);
   const date = asOf ? formatDate(asOf, 'day', locale) : '';
   if (date && date !== '—') tail.push(en ? `as of ${date}` : `на ${date}`);
-  const head = `Forecast Economy. ${name}${tail.length ? `: ${tail.join(', ')}` : ''}`;
+  // Название с точкой на конце не даёт двух точек подряд (как в seo_cite.py).
+  const clean = String(name).trim().replace(/\.+$/, '');
+  const head = `Forecast Economy. ${clean}${tail.length ? `: ${tail.join(', ')}` : ''}`;
   return `${head}. ${url}`;
 }
 
