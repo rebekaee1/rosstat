@@ -15,6 +15,7 @@ from typing import TypedDict
 
 from app.data.emiss_income import SERIES as INCOME_SERIES, UNITS_EN as INCOME_UNITS_EN
 from app.data.emiss_labor import SERIES
+from app.data import emiss_steel as _steel
 
 
 class IndicatorCopyEn(TypedDict, total=False):
@@ -42,6 +43,15 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
             "unit": INCOME_UNITS_EN[series.unit],
         }
         for code, series in INCOME_SERIES.items()
+    },
+    **{
+        code: {
+            "name": series.name_en,
+            "description": series.explanation_en,
+            "methodology": _steel.METHODOLOGY_EN,
+            "unit": _steel.UNIT_EN,
+        }
+        for code, series in _steel.SERIES.items()
     },
     # --- Listed catalogue cards ---
     "cpi": {

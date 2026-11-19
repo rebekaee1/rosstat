@@ -115,9 +115,9 @@ const CATEGORY_DEFS = [
     status: 'active',
     flagshipCode: 'brent',
     sentiment: 'neutral',
-    description: 'Нефть, природный газ, уголь, золото, серебро, медь, пшеница и соя — мировые цены на сырьё.',
+    description: 'Нефть, природный газ, уголь, золото, серебро, медь, пшеница и соя — мировые цены на сырьё; сталь — цены производителей в России.',
     descriptionEn:
-      'Oil, natural gas, coal, gold, silver, copper, wheat and soy — global commodity prices.',
+      'Oil, natural gas, coal, gold, silver, copper, wheat and soy — global commodity prices; steel — Russian producer prices.',
     relatedSlugs: ['indices', 'currencies', 'trade'],
   },
   {

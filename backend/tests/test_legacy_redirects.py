@@ -29,7 +29,7 @@ class TestResolvers:
         codes = {row["code"] for row in seed_data.INDICATORS}
         for target in LEGACY_INDICATOR_REDIRECTS.values():
             # Снятый с витрины ряд ведём на его раздел каталога: карточки уже
-            # нет, а полка живая (сталь → «Товарные рынки»).
+            # нет, а полка живая.
             if target.startswith("/russia/category/"):
                 slug = target.removeprefix("/russia/category/").split("?")[0]
                 assert slug in CATEGORY_META, f"301-цель {target} — нет такой категории"
@@ -43,8 +43,8 @@ class TestResolvers:
 
         assert resolve_unlisted_indicator("copper-avg-week") == paths.russia_indicator("copper")
         assert resolve_unlisted_indicator("wheat-eop-month") == paths.russia_indicator("wheat")
-        # База снята с витрины целиком — ведём на её раздел каталога.
-        assert resolve_unlisted_indicator("steel-avg-year") == paths.russia_category("commodities")
+        # Мировая сталь снята; её срезы ведут туда же, куда сам `steel`, — на цену горячекатаного листа (19.11.2026).
+        assert resolve_unlisted_indicator("steel-avg-year") == paths.russia_indicator("steel-hot-rolled")
 
     def test_unlisted_generic_siblings_resolve(self):
         assert resolve_unlisted_indicator("current-account-yoy") == \

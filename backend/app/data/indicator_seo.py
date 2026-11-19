@@ -1405,6 +1405,7 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     "unemployment-annual",
     # 2026-08-16: нет свободного официального ценового ряда HRC без коммерческой
     # лицензии биржи; карточку снимаем с витрины (is_active=False в seed).
+    # С 19.11.2026 адрес ведёт 301 на steel-hot-rolled (цены производителей Росстата).
     "steel",
     "gbp-eur",
     "cny-eur",
@@ -8886,6 +8887,15 @@ from app.data import emiss_income as _emiss_income  # noqa: E402
 
 for _code, _keywords in _emiss_income.seo_keywords().items():
     INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
+
+
+# Сталь в России (ЕМИСС 57606, 19.11.2026): цены производителей вместо снятой мировой карточки `steel`.
+from app.data import emiss_steel as _emiss_steel  # noqa: E402
+
+for _code, _keywords in _emiss_steel.seo_keywords().items():
+    INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
+for _code, _meta in _emiss_steel.seo_meta().items():
+    INDICATOR_SEO.setdefault(_code, _meta)
 
 
 # ── «О показателе»: составляющие промышленного производства (ИПП) ───────────

@@ -2,8 +2,8 @@
 
 Каждый запрос ниже на боевом давал пустую или неверную выдачу при существующих рядах.
 Названия, коды и ключевые слова рядов повторяют настоящий каталог. Там, где ряда в каталоге
-нет (акцизы, цена стали, региональные данные раньше 1990 года), тест закрепляет честную
-пустую выдачу, а не подстановку похожего ряда.
+нет (акцизы, региональные данные раньше 1990 года), тест закрепляет честную пустую выдачу,
+а не подстановку похожего ряда. Цену стали каталог получил 19.11.2026 (ЕМИСС 57606).
 
 SQLite не сворачивает регистр кириллицы, поэтому названия, которые поиск находит запросом
 к базе (точное название ряда, мировые ряды), записаны строчными буквами.
@@ -14,6 +14,7 @@ from datetime import date
 import pytest
 from fastapi.testclient import TestClient
 
+from app.data.emiss_steel import SERIES as STEEL, seo_keywords as steel_keywords
 from app.services.search_intent import parse_intent, region_reading
 
 IMOEX_KEYWORDS = "индекс МосБиржи, IMOEX, индекс Московской биржи, фондовый индекс, индекс акций России, котировки IMOEX"
@@ -59,6 +60,8 @@ def gaps_client(auth_env):
                 Indicator(code='ipi', name='Индекс промышленного производства', name_en='Industrial Production Index', frequency='monthly'),
                 Indicator(code='fuel-diesel', name='цена дизельного топлива', name_en='Diesel fuel price', frequency='weekly', unit='руб./л'),
                 Indicator(code='depreciation-rate', name='Степень износа основных фондов', name_en='Depreciation rate of fixed assets', frequency='annual'),
+                *(Indicator(code=code, name=series.name.lower(), name_en=series.name_en, frequency='monthly', unit='руб./т',
+                    category='Товарные рынки', seo_keywords=steel_keywords()[code]) for code, series in STEEL.items()),
             ]
             db.add_all(national)
             regions = {slug: Region(slug=slug, name=name, kind='region') for slug, name in (
@@ -257,12 +260,19 @@ def test_excise_is_not_a_typo_of_shares(gaps_client):
     assert 'imoex' in codes(get(gaps_client, 'акции'))
 
 
-@pytest.mark.parametrize('q', ['цены на сталь', 'сталь', 'steel'])
+@pytest.mark.parametrize('q', ['цены на сталь', 'сталь', 'steel', 'цена стали'])
 def test_steel_is_not_steel_kitchenware(gaps_client, q):
-    """Товар из стали (чайник, кастрюля) — не цена стали; активного ряда цены стали в каталоге нет."""
-    body = get(gaps_client, q)
-    assert not {KETTLE, PAN}.intersection(codes(body)), body
-    assert body['results'] == [] and body['reason'] == 'no_coverage'
+    """Товар из стали (чайник, кастрюля) — не цена стали: выдача — цены производителей стали (19.11.2026)."""
+    found = codes(get(gaps_client, q))
+    assert not {KETTLE, PAN}.intersection(found), found
+    assert found and set(found) <= set(STEEL) and 'steel-hot-rolled' in found, found
+
+
+@pytest.mark.parametrize(('q', 'code'), [('арматура', 'steel-rebar'), ('цена арматуры', 'steel-rebar'),
+    ('горячекатаный прокат', 'steel-hot-rolled'), ('стальные трубы', 'steel-pipes'), ('металлопрокат', 'steel-hot-rolled')])
+def test_steel_products_are_found_by_their_words(gaps_client, q, code):
+    found = codes(get(gaps_client, q))
+    assert code in found[:3], found
 
 
 def test_steel_kitchenware_is_still_found_by_its_own_name(gaps_client):

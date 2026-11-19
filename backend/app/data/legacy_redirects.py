@@ -40,9 +40,9 @@ LEGACY_INDICATOR_REDIRECTS: dict[str, str] = {
     "gasoline-ai95": paths.russia_indicator("fuel-ai95"),
     "gdp-deflator": paths.russia_indicator("gdp-nominal"),
     "refinancing-rate": paths.russia_indicator("key-rate"),
-    # Сталь снята с витрины: свободного официального ряда котировок нет,
-    # держать мёртвый ряд с биржевого агрегатора нельзя. URL были в sitemap.
-    "steel": paths.russia_category("commodities"),
+    # Мировая цена стали снята 16.08.2026 (свободного официального ряда котировок нет); с 19.11.2026 адрес ведёт
+    # на ту же продукцию — горячекатаный лист — по ценам производителей Росстата. URL были в sitemap.
+    "steel": paths.russia_indicator("steel-hot-rolled"),
 }
 
 # Bespoke-ряды вне generic-реестра, державшиеся только на клиентском

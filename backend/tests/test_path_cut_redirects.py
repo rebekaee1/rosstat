@@ -60,7 +60,7 @@ class TestFinalLegacyTargets:
 
     def test_legacy_resolves_match_site_paths(self):
         assert resolve_legacy_indicator("inflation") == paths.russia_indicator("cpi")
-        assert resolve_legacy_indicator("steel") == paths.russia_category("commodities")
+        assert resolve_legacy_indicator("steel") == paths.russia_indicator("steel-hot-rolled")
 
 
 class TestSsrSingleHop:
