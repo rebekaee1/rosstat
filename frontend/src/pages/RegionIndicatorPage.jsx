@@ -299,8 +299,10 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
 
   const annualSibs = useMemo(() => (isMonthly ? (active?.siblings || []) : prioritizeIndicators(active?.siblings || [])), [isMonthly, active?.siblings]);
   const prevPoint = isQuarterly ? yearAgoQ : activeSeries.length > 1 ? activeSeries[activeSeries.length - 2] : null;
-  const absDelta = !isMonthly && delta && prevPoint && (isYearsUnit(active?.indicator?.unit) || isPercentUnit(active?.indicator?.unit))
-    ? gapText(last.value, prevPoint.value, active.indicator.unit, locale)
+  // Индекс в % (ИПЦ к году, индексы производства и тарифов): разница двух индексов — в п.п., а не «−0,2 % от 106,8 %».
+  const isIndexUnit = isMonthly && /^%/.test(active?.indicator?.unit || '');
+  const absDelta = delta && prevPoint && (isIndexUnit || (!isMonthly && (isYearsUnit(active?.indicator?.unit) || isPercentUnit(active?.indicator?.unit))))
+    ? gapText(last.value, prevPoint.value, isIndexUnit ? '%' : active.indicator.unit, locale)
     : null;
 
   const stats = useMemo(() => {
@@ -516,7 +518,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                   polarity={indicatorPolarity(indName)}
                   className="text-sm"
                 >
-                  {absDelta ? `${absDelta.text} ${t('regions.ind.deltaYoYAbs')}` : isMonthly && Math.abs(delta.pct) < 0.05 ? t('r5a.flatMonth') : t(isMonthly ? 'regions.ind.deltaMoM' : isQuarterly ? 'rq.deltaYoY' : 'regions.ind.deltaYoY', {
+                  {absDelta ? `${absDelta.text} ${t(isMonthly ? 'regions.ind.deltaMoMAbs' : 'regions.ind.deltaYoYAbs')}` : isMonthly && Math.abs(delta.pct) < 0.05 ? t('r5a.flatMonth') : t(isMonthly ? 'regions.ind.deltaMoM' : isQuarterly ? 'rq.deltaYoY' : 'regions.ind.deltaYoY', {
                     pct: `${delta.up ? '+' : delta.down ? '\u2212' : ''}${Math.abs(delta.pct).toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
                   }).replace('%', locale === 'en' ? '%' : `${NBSP}%`)}
                 </DeltaBadge>

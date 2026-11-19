@@ -4006,6 +4006,7 @@ export default {
   'r6c.stale': 'Свежее значение — за {year} год: Росстат публикует региональные данные с задержкой, более поздних лет пока нет.',
   'r6c.colGap': 'К России',
   'regions.ind.deltaYoYAbs': 'за год',
+  'regions.ind.deltaMoMAbs': 'за месяц',
   'r6c.sibsMore': 'Показать ещё {n}',
   'r6c.sibsLess': 'Свернуть список',
   'r6b.flatSince': 'с {date}',

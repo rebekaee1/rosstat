@@ -4001,6 +4001,7 @@ export default {
   'r6c.stale': 'Latest value is for {year}: Rosstat publishes regional data with a delay, later years are not out yet.',
   'r6c.colGap': 'vs Russia',
   'regions.ind.deltaYoYAbs': 'a year',
+  'regions.ind.deltaMoMAbs': 'over the month',
   'r6c.sibsMore': 'Show {n} more',
   'r6c.sibsLess': 'Collapse the list',
   'r6b.flatSince': 'since {date}',

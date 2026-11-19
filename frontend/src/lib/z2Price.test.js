@@ -12,6 +12,8 @@ describe('z2Price', () => {
     expect(compareRows(c, 'moskva', 110).map((r) => r.key)).toEqual(['russia']);
     expect(compareRows(c, 'altay', 110).map((r) => r.key)).toEqual(['russia', 'moskva']);
     expect(compareRows(c, 'altay', 110)[0].pct).toBeCloseTo(10);
+    // ИПЦ 106,6 % против 106,4 %: разница индексов в п.п. для подписи «здесь выше на 0,2 п.п.»
+    expect(compareRows({ russia: { value: 106.4 } }, 'lipetskaya-oblast', 106.6)[0].diff).toBeCloseTo(0.2);
     expect(compareRows(undefined, 'altay', 110)).toEqual([]);
   });
   it('groupSiblings: текущая группа первой, живые раньше снятых', () => {

@@ -73,6 +73,7 @@ export function compareRows(compare, regionSlug, lastValue) {
       value: Number(c.value),
       month: c.month ?? null,
       pct: ((lastValue - Number(c.value)) / Number(c.value)) * 100,
+      diff: lastValue - Number(c.value),
     });
   }
   return rows;
