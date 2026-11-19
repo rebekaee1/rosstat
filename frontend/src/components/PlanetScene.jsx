@@ -834,6 +834,10 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
         onCreated={({ gl }) => {
           gl.setClearColor(0x000000, 0);
           gl.domElement.setAttribute('aria-label', t('planet.earth'));
+          // Шар — рабочее управление без кнопки: касание выбирает страну или отвечает «данных пока нет», протяжка вращает,
+          // двойное касание приближает. Без пометки счётчик поведения (behavior.js) записывал каждое касание как клик «в пустоту»
+          // (19.11.2026: 14 человек и 73 таких клика за 30 дней, из них гипотезы Пульса 309 и 318).
+          gl.domElement.setAttribute('data-interactive', '');
         }}
       >
         <Suspense fallback={null}>
