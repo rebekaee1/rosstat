@@ -623,6 +623,19 @@ a.fe-today-card:hover .fe-today-card__go { color: var(--color-champagne-ink); tr
 .fe-cal-legend { padding: 10px 16px 12px; color: var(--color-text-secondary); font-size: 13px; }
 .fe-cal-legend__row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
 .fe-cal-legend__count { margin-left: auto; }
+/* Смена месяца (Пульс 363, 19.11.2026): сетка и список не заменяются заглушкой. Пока новый месяц грузится,
+   подпись месяца и прежний список тускнеют — только opacity и с задержкой --fe-pending-delay, чтобы быстрый
+   ответ из кэша не мигал; счёт событий прячется, список не нажимается. */
+.fe-cal-month-title,
+.fe-cal-list,
+.fe-cal-legend__count { transition: opacity 0.18s ease; }
+.fe-panel.is-pending .fe-cal-month-title,
+.fe-cal-list.is-pending { opacity: 0.55; transition-delay: var(--fe-pending-delay, 140ms); }
+.fe-cal-list.is-pending { pointer-events: none; }
+.fe-panel.is-pending .fe-cal-legend__count { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .fe-cal-month-title, .fe-cal-list, .fe-cal-legend__count { transition: none; }
+}
 .fe-cal-legend__hint { margin: 6px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
 .fe-cal-dayhead {
   margin: 0 0 12px;

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   fetchIndicators,
   fetchIndicator,
@@ -103,14 +103,20 @@ export function useSystemStatus() {
   });
 }
 
+/**
+ * `keepPrevious`: при смене месяца прежние данные остаются на экране (`isPlaceholderData`), пока новый
+ * месяц не пришёл — вместо заглушки на месте сетки. Поздний ответ прежнего месяца новый не перепишет:
+ * данные хранятся по ключу параметров, а после прихода показывается только ответ текущего ключа.
+ */
 export function useCalendarEvents(params = {}, options = {}) {
-  const { enabled = true } = options;
+  const { enabled = true, keepPrevious = false } = options;
   return useQuery({
     queryKey: ['calendar-events', params],
     queryFn: ({ signal }) => fetchCalendarEvents(params, { signal }),
     enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
+    ...(keepPrevious ? { placeholderData: keepPreviousData } : {}),
   });
 }
 
