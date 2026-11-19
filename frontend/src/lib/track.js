@@ -248,6 +248,9 @@ export const events = {
   EXPERIMENT_EXPOSURE: 'experiment_exposure',
 
   INDICATOR_VIEW: 'indicator_view',
+  // Привлечение (совет 19.11.2026): строка «присылать» под числом. Параметры: topic, channel (telegram | email), path.
+  SUBSCRIBE_LINE_VIEW: 'subscribe_line_view',
+  SUBSCRIBE_LINE_CLICK: 'subscribe_line_click',
   FREQUENCY_SWITCH: 'frequency_switch',
 
   OUTBOUND_LINK: 'outbound_link',

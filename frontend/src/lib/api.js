@@ -180,6 +180,8 @@ export const fetchCalendarUpcoming = (params = {}, { signal } = {}) => {
   const search = new URLSearchParams();
   if (params.limit) search.set('limit', String(params.limit));
   if (params.importance_min) search.set('importance_min', String(params.importance_min));
+  // Выход данных одного показателя (строка «присылать», совет 19.11.2026): сервер принимает indicator_code давно.
+  if (params.indicator_code) search.set('indicator_code', String(params.indicator_code));
   const q = search.toString();
   return api.get(`/calendar/upcoming${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
 };

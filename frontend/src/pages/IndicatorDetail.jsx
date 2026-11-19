@@ -12,6 +12,7 @@ import IndicatorHeroValue from '../components/IndicatorHeroValue';
 import R6bPulseStrip from '../components/R6bPulseStrip';
 import { WorldHeroLine } from '../components/WorldStatTiles';
 import FreshnessNote from '../components/FreshnessNote';
+import SubscribeLine from '../components/SubscribeLine';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import CpiIndicatorControls from '../components/CpiIndicatorControls';
@@ -655,6 +656,13 @@ export default function IndicatorDetail() {
       {provenance && <p role="note" className="mb-4 text-sm text-text-secondary">{provenance}</p>}
 
       <FreshnessNote freshness={indicator?.freshness} />
+      <SubscribeLine
+        code={code}
+        frequency={indicator?.frequency}
+        lastDate={heroSummary?.last?.date}
+        freshness={indicator?.freshness}
+        onDownloadExcel={handleDownloadExcel}
+      />
 
       {/* Оба переключателя — НАД графиком, сверху вниз:
           1) «Состав» (категории-родственники: cpi → cpi-food / housing-primary →

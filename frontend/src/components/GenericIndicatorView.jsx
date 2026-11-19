@@ -27,6 +27,7 @@ import { isFreshIntraday, useLiveQuote } from '../lib/tickerLive';
 import IndicatorHeroValue from './IndicatorHeroValue';
 import R6bPulseStrip from './R6bPulseStrip';
 import FreshnessNote from './FreshnessNote';
+import SubscribeLine from './SubscribeLine';
 import BrentLiveNote from './BrentLiveNote';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import { indicatorPolarity } from '../lib/deltaTone';
@@ -260,6 +261,13 @@ export default function GenericIndicatorView({
       </IndicatorDetailHeader>
 
       <FreshnessNote freshness={indicator?.freshness} />
+      <SubscribeLine
+        code={code}
+        frequency={indicator?.frequency}
+        lastDate={heroSummary?.last?.date}
+        freshness={indicator?.freshness}
+        onDownloadExcel={handleDownloadExcel}
+      />
       <BrentLiveNote code={code} />
 
       {/* R3-D: конвертер — главное действие на карточке курса, он стоит сразу под заголовком, а не после графика. */}
