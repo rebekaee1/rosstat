@@ -236,102 +236,102 @@
     "anonymous_functions": 1
   },
   "frontend/src/App.jsx": {
-    "sha256": "43677a7d7b6e8c5a78b7750098f713d74c379a43be2498c283fbbca3e249cf5f",
+    "sha256": "842eb75e83f361f3c6be9bff70118f027bd59f6db2083a9ffa7eea43483e898e",
     "definitions": [
       {
         "name": "ScrollToTop",
-        "line": 110,
-        "end_line": 121,
+        "line": 112,
+        "end_line": 123,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "YandexMetrikaHit",
-        "line": 123,
-        "end_line": 147,
+        "line": 125,
+        "end_line": 157,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorDetailKeyed",
-        "line": 149,
-        "end_line": 152,
+        "line": 159,
+        "end_line": 162,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldCountryRoute",
-        "line": 155,
-        "end_line": 161,
+        "line": 165,
+        "end_line": 171,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldIndicatorRoute",
-        "line": 164,
-        "end_line": 170,
+        "line": 174,
+        "end_line": 180,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RedirectTo",
-        "line": 172,
-        "end_line": 176,
+        "line": 182,
+        "end_line": 186,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NavigateKeepSearch",
-        "line": 179,
-        "end_line": 182,
+        "line": 189,
+        "end_line": 192,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalculatorsAlias",
-        "line": 185,
-        "end_line": 188,
+        "line": 195,
+        "end_line": 198,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CountriesToHome",
-        "line": 191,
-        "end_line": 194,
+        "line": 201,
+        "end_line": 204,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ServerNotFoundGate",
-        "line": 204,
-        "end_line": 207,
+        "line": 214,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedSpinner",
-        "line": 211,
-        "end_line": 218,
+        "line": 221,
+        "end_line": 228,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedRoutes",
-        "line": 220,
-        "end_line": 236,
+        "line": 230,
+        "end_line": 246,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "renderCabinetActions",
-        "line": 239,
-        "end_line": 239,
+        "line": 249,
+        "end_line": 249,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "renderCompareSave",
-        "line": 240,
-        "end_line": 240,
+        "line": 250,
+        "end_line": 250,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AppRoutes",
-        "line": 242,
-        "end_line": 397,
+        "line": 252,
+        "end_line": 407,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "App",
-        "line": 399,
-        "end_line": 405,
+        "line": 409,
+        "end_line": 415,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -346,123 +346,127 @@
       },
       {
         "source": "./components/Navbar",
-        "line": 11
-      },
-      {
-        "source": "./components/MobileDock",
         "line": 12
       },
       {
-        "source": "./components/YandexRSY",
+        "source": "./components/MobileDock",
         "line": 13
       },
       {
-        "source": "./components/CookieConsent",
+        "source": "./components/YandexRSY",
         "line": 14
       },
       {
-        "source": "./components/Footer",
+        "source": "./components/CookieConsent",
         "line": 15
       },
       {
-        "source": "./components/ScrollToAnchor",
+        "source": "./components/Footer",
         "line": 16
       },
       {
-        "source": "./components/ErrorBoundary",
+        "source": "./components/ScrollToAnchor",
         "line": 17
       },
       {
-        "source": "./components/RegisterNudge",
+        "source": "./components/ErrorBoundary",
         "line": 18
       },
       {
-        "source": "./components/DownloadLimitModal",
+        "source": "./components/RegisterNudge",
         "line": 19
       },
       {
-        "source": "./components/ApiInterestModal",
+        "source": "./components/DownloadLimitModal",
         "line": 20
       },
       {
-        "source": "./components/PwaInstallPrompt",
+        "source": "./components/ApiInterestModal",
         "line": 21
       },
       {
-        "source": "./components/welcome/WelcomeGate",
+        "source": "./components/PwaInstallPrompt",
         "line": 22
       },
       {
-        "source": "./components/RouteFallback",
+        "source": "./components/welcome/WelcomeGate",
         "line": 23
       },
       {
-        "source": "./components/PageProgress",
+        "source": "./components/RouteFallback",
         "line": 24
       },
       {
-        "source": "./components/SkipLink",
+        "source": "./components/PageProgress",
         "line": 25
       },
       {
-        "source": "./components/RecentPagesTracker",
+        "source": "./components/SkipLink",
         "line": 26
       },
       {
-        "source": "./components/cabinet/CabinetWiring",
+        "source": "./components/RecentPagesTracker",
         "line": 27
       },
       {
-        "source": "./components/cabinet/CabinetPrefsApplier",
+        "source": "./components/cabinet/CabinetWiring",
         "line": 28
       },
       {
-        "source": "./lib/cabinetActionsContext",
+        "source": "./components/cabinet/CabinetPrefsApplier",
         "line": 29
       },
       {
-        "source": "./components/LightScene",
+        "source": "./lib/cabinetActionsContext",
         "line": 30
       },
       {
-        "source": "./lib/cleanUrl",
+        "source": "./components/LightScene",
         "line": 31
       },
       {
-        "source": "./lib/calculatorAlias",
+        "source": "./lib/cleanUrl",
         "line": 32
       },
       {
-        "source": "./lib/behavior",
+        "source": "./lib/calculatorAlias",
         "line": 33
       },
       {
-        "source": "./lib/sessionReplay",
+        "source": "./lib/behavior",
         "line": 34
       },
       {
-        "source": "./lib/indicatorVariants",
+        "source": "./lib/routeHit",
         "line": 35
       },
       {
-        "source": "./context/AuthProvider",
+        "source": "./lib/sessionReplay",
         "line": 36
       },
       {
-        "source": "./i18n",
+        "source": "./lib/indicatorVariants",
         "line": 37
       },
       {
-        "source": "./pages/Dashboard",
+        "source": "./context/AuthProvider",
         "line": 38
       },
       {
-        "source": "./pages/NotFound",
+        "source": "./i18n",
         "line": 39
       },
       {
-        "source": "./lib/sitePaths",
+        "source": "./pages/Dashboard",
         "line": 40
+      },
+      {
+        "source": "./pages/NotFound",
+        "line": 41
+      },
+      {
+        "source": "./lib/sitePaths",
+        "line": 42
       }
     ],
     "exports": [
@@ -470,7 +474,7 @@
         "names": [
           "default"
         ],
-        "line": 399
+        "line": 409
       }
     ],
     "anonymous_functions": 68
@@ -2963,6 +2967,36 @@
     ],
     "exports": [],
     "anonymous_functions": 10
+  },
+  "frontend/src/components/ChartPickedMarker.jsx": {
+    "sha256": "1c3b322d73c9574b223f1a62946389ec50a60ff05712f9f35929d701e47d88c7",
+    "definitions": [
+      {
+        "name": "ChartPickedMarker",
+        "line": 9,
+        "end_line": 37,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "../lib/chartTheme",
+        "line": 1
+      },
+      {
+        "source": "../lib/chartPointLabel",
+        "line": 2
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 9
+      }
+    ],
+    "anonymous_functions": 0
   },
   "frontend/src/components/ChartSectionSkeleton.jsx": {
     "sha256": "b8c0609ac09b417c07f65533fb5dfbd6e81c953a9a6759207e8c495af3141391",
@@ -6360,72 +6394,60 @@
     "anonymous_functions": 15
   },
   "frontend/src/components/IndicatorChart.jsx": {
-    "sha256": "302b7ae150fdd500e923726f178ca2b3d74e3721c82b2e4408a3cbd4ef460e0f",
+    "sha256": "e0b098f8ebadd4ef1bcd24463eb520c7a8fa23b3ff2b23ecbb3f3f5f2d085962",
     "definitions": [
       {
         "name": "dateBasedWindowSize",
-        "line": 85,
-        "end_line": 95,
+        "line": 87,
+        "end_line": 97,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "rebaseVisibleRows",
-        "line": 101,
-        "end_line": 118,
+        "line": 103,
+        "end_line": 120,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CustomTooltip",
-        "line": 120,
-        "end_line": 226,
+        "line": 122,
+        "end_line": 228,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "LastPointMarker",
-        "line": 232,
-        "end_line": 267,
+        "line": 234,
+        "end_line": 269,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NowBeam",
-        "line": 272,
-        "end_line": 279,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "PickedMarker",
-        "line": 285,
-        "end_line": 313,
+        "line": 274,
+        "end_line": 281,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorChart",
-        "line": 315,
-        "end_line": 1177,
+        "line": 283,
+        "end_line": 1133,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorChart.save",
-        "line": 375,
-        "end_line": 375,
+        "line": 349,
+        "end_line": 349,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorChart.handleRangeChange",
-        "line": 530,
-        "end_line": 536,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "IndicatorChart.handlePlotClick",
-        "line": 540,
-        "end_line": 554,
+        "line": 504,
+        "end_line": 510,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorChart.onOutside",
-        "line": 669,
-        "end_line": 671,
+        "line": 625,
+        "end_line": 627,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -6515,28 +6537,36 @@
         "line": 29
       },
       {
-        "source": "./Chip",
+        "source": "../lib/chartPick",
         "line": 30
       },
       {
-        "source": "./ChipGroup",
+        "source": "./ChartPickedMarker",
         "line": 31
       },
       {
-        "source": "../styles/chart-controls.css",
+        "source": "./Chip",
         "line": 32
       },
       {
-        "source": "../styles/z4-indicator.css",
+        "source": "./ChipGroup",
         "line": 33
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "../styles/chart-controls.css",
         "line": 34
       },
       {
-        "source": "../lib/glassChartDefs",
+        "source": "../styles/z4-indicator.css",
         "line": 35
+      },
+      {
+        "source": "../styles/k4-charts.css",
+        "line": 36
+      },
+      {
+        "source": "../lib/glassChartDefs",
+        "line": 37
       }
     ],
     "exports": [
@@ -6544,10 +6574,10 @@
         "names": [
           "default"
         ],
-        "line": 315
+        "line": 283
       }
     ],
-    "anonymous_functions": 79
+    "anonymous_functions": 80
   },
   "frontend/src/components/IndicatorChart.rebase.component.test.jsx": {
     "sha256": "60dbfb907b761537b346d9df5cea93444c6c5b30c98129bddfa0c3566887cf90",
@@ -10584,235 +10614,259 @@
     ],
     "anonymous_functions": 2
   },
+  "frontend/src/components/PlanetScene.interactive.test.js": {
+    "sha256": "eb9b9d77a390a90eb80ea9718c21e76e91d569ae5b734679edb87e49abee65be",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "node:fs",
+        "line": 4
+      },
+      {
+        "source": "node:path",
+        "line": 5
+      },
+      {
+        "source": "node:url",
+        "line": 6
+      },
+      {
+        "source": "vitest",
+        "line": 7
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 3
+  },
   "frontend/src/components/PlanetScene.jsx": {
-    "sha256": "a7c2464251800d16a68a4bf6d3842463b136390aa0dc09a91f69c012abf2487c",
+    "sha256": "a83b61cf44a58f409e6115aa75e1fcbc96b0b8e14aefc63ae5176bbb0c41a6e7",
     "definitions": [
       {
         "name": "valueFor",
-        "line": 60,
-        "end_line": 62,
+        "line": 62,
+        "end_line": 64,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tracePath",
-        "line": 76,
-        "end_line": 79,
+        "line": 78,
+        "end_line": 81,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "paintAtlas",
-        "line": 85,
-        "end_line": 124,
+        "line": 87,
+        "end_line": 126,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "paintHighlight",
-        "line": 130,
-        "end_line": 155,
+        "line": 132,
+        "end_line": 157,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "usePlanetTextures",
-        "line": 158,
-        "end_line": 210,
+        "line": 160,
+        "end_line": 212,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetControls",
-        "line": 212,
-        "end_line": 510,
+        "line": 214,
+        "end_line": 518,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetControls.lockTilt",
-        "line": 280,
-        "end_line": 285,
+        "line": 283,
+        "end_line": 288,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.unlockTilt",
-        "line": 286,
-        "end_line": 289,
+        "line": 289,
+        "end_line": 292,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.report",
-        "line": 290,
-        "end_line": 298,
+        "line": 293,
+        "end_line": 306,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.onChange",
-        "line": 299,
-        "end_line": 308,
+        "line": 307,
+        "end_line": 316,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.onStart",
-        "line": 310,
-        "end_line": 317,
+        "line": 318,
+        "end_line": 325,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.onEnd",
-        "line": 318,
-        "end_line": 318,
+        "line": 326,
+        "end_line": 326,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.stopGesture",
-        "line": 324,
-        "end_line": 324,
+        "line": 332,
+        "end_line": 332,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.stopPinch",
-        "line": 328,
-        "end_line": 328,
+        "line": 336,
+        "end_line": 336,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.onWheel",
-        "line": 332,
-        "end_line": 342,
+        "line": 340,
+        "end_line": 350,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.enter",
-        "line": 344,
-        "end_line": 344,
+        "line": 352,
+        "end_line": 352,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.leave",
-        "line": 345,
-        "end_line": 345,
+        "line": 353,
+        "end_line": 353,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.zoomAt",
-        "line": 393,
-        "end_line": 400,
+        "line": 401,
+        "end_line": 408,
         "kind": "ObjectMethod"
       },
       {
         "name": "Earth",
-        "line": 512,
-        "end_line": 739,
+        "line": 520,
+        "end_line": 747,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Earth.down",
-        "line": 597,
-        "end_line": 605,
+        "line": 605,
+        "end_line": 613,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.additionalDown",
-        "line": 606,
-        "end_line": 615,
+        "line": 614,
+        "end_line": 623,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.move",
-        "line": 616,
-        "end_line": 618,
+        "line": 624,
+        "end_line": 626,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.end",
-        "line": 619,
-        "end_line": 624,
+        "line": 627,
+        "end_line": 632,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.hit",
-        "line": 647,
-        "end_line": 647,
+        "line": 655,
+        "end_line": 655,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.pointerMove",
-        "line": 648,
-        "end_line": 660,
+        "line": 656,
+        "end_line": 668,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.processTap",
-        "line": 662,
-        "end_line": 678,
+        "line": 670,
+        "end_line": 686,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.current",
-        "line": 679,
-        "end_line": 689,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "Earth.pointerUp",
-        "line": 690,
+        "line": 687,
         "end_line": 697,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "Earth.pointerUp",
+        "line": 698,
+        "end_line": 705,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "SceneContents",
-        "line": 741,
-        "end_line": 752,
+        "line": 749,
+        "end_line": 760,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SceneBoundary",
-        "line": 754,
-        "end_line": 759,
+        "line": 762,
+        "end_line": 767,
         "kind": "ClassDeclaration"
       },
       {
         "name": "SceneBoundary.getDerivedStateFromError",
-        "line": 756,
-        "end_line": 756,
+        "line": 764,
+        "end_line": 764,
         "kind": "ClassMethod"
       },
       {
         "name": "SceneBoundary.componentDidCatch",
-        "line": 757,
-        "end_line": 757,
+        "line": 765,
+        "end_line": 765,
         "kind": "ClassMethod"
       },
       {
         "name": "SceneBoundary.render",
-        "line": 758,
-        "end_line": 758,
+        "line": 766,
+        "end_line": 766,
         "kind": "ClassMethod"
       },
       {
         "name": "PlanetScene",
-        "line": 762,
-        "end_line": 861,
+        "line": 770,
+        "end_line": 873,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetScene.refine",
-        "line": 782,
-        "end_line": 787,
+        "line": 790,
+        "end_line": 795,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetScene.update",
-        "line": 815,
-        "end_line": 815,
+        "line": 823,
+        "end_line": 823,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ContextLifecycle",
-        "line": 863,
-        "end_line": 872,
+        "line": 875,
+        "end_line": 884,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ContextLifecycle.lost",
-        "line": 867,
-        "end_line": 867,
+        "line": 879,
+        "end_line": 879,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -10879,13 +10933,13 @@
         "names": [
           "default"
         ],
-        "line": 762
+        "line": 770
       }
     ],
     "anonymous_functions": 75
   },
   "frontend/src/components/PlanetView.component.test.jsx": {
-    "sha256": "e9db9c434820ad8c1cdd901329490829d0dbc25edb880a8802344c4bf5a61dcd",
+    "sha256": "0fe3b662e3e0d333326c233e5b968d5a1cd191424a1fa66db0b874514e9b0df5",
     "definitions": [
       {
         "name": "useT",
@@ -10972,39 +11026,51 @@
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "zoomIn",
+        "line": 1012,
+        "end_line": 1012,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "zoomOut",
+        "line": 1013,
+        "end_line": 1013,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "stubMatchMedia",
-        "line": 1196,
-        "end_line": 1201,
+        "line": 1235,
+        "end_line": 1240,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "stubMatchMedia.matchMedia",
-        "line": 1197,
-        "end_line": 1200,
+        "line": 1236,
+        "end_line": 1239,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "stubMatchMedia.matchMedia.addEventListener",
-        "line": 1199,
-        "end_line": 1199,
+        "line": 1238,
+        "end_line": 1238,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "stubMatchMedia.matchMedia.addListener",
-        "line": 1199,
-        "end_line": 1199,
+        "line": 1238,
+        "end_line": 1238,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "stubMatchMedia.matchMedia.removeEventListener",
-        "line": 1199,
-        "end_line": 1199,
+        "line": 1238,
+        "end_line": 1238,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "stubMatchMedia.matchMedia.removeListener",
-        "line": 1199,
-        "end_line": 1199,
+        "line": 1238,
+        "end_line": 1238,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -11031,201 +11097,201 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 173
+    "anonymous_functions": 179
   },
   "frontend/src/components/PlanetView.jsx": {
-    "sha256": "c1cd2ef77fcee5a0848a0a92d46dd51a0fddd6e8e90ec1c2028b6f41fb24ab01",
+    "sha256": "64a463305b9e8b95204a9f8fca4f6f26a1ed57cb68d0ed82f28f99ea2dee5008",
     "definitions": [
       {
         "name": "PlanetLink",
-        "line": 42,
-        "end_line": 45,
+        "line": 43,
+        "end_line": 46,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "collectionValue",
-        "line": 47,
-        "end_line": 49,
+        "line": 48,
+        "end_line": 50,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryAlias",
-        "line": 51,
-        "end_line": 53,
+        "line": 52,
+        "end_line": 54,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryName",
-        "line": 55,
-        "end_line": 57,
+        "line": 56,
+        "end_line": 58,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "hasValue",
-        "line": 59,
-        "end_line": 61,
+        "line": 60,
+        "end_line": 62,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "readHintSeen",
-        "line": 63,
-        "end_line": 65,
+        "line": 64,
+        "end_line": 66,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "writeHintSeen",
-        "line": 67,
-        "end_line": 69,
+        "line": 68,
+        "end_line": 70,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "legendBinRange",
-        "line": 75,
-        "end_line": 81,
+        "line": 76,
+        "end_line": 82,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "legendBinRange.format",
-        "line": 76,
-        "end_line": 76,
+        "line": 77,
+        "end_line": 77,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SceneBoundary",
-        "line": 83,
-        "end_line": 88,
+        "line": 84,
+        "end_line": 89,
         "kind": "ClassDeclaration"
       },
       {
         "name": "SceneBoundary.getDerivedStateFromError",
-        "line": 85,
-        "end_line": 85,
-        "kind": "ClassMethod"
-      },
-      {
-        "name": "SceneBoundary.componentDidCatch",
         "line": 86,
         "end_line": 86,
         "kind": "ClassMethod"
       },
       {
-        "name": "SceneBoundary.render",
+        "name": "SceneBoundary.componentDidCatch",
         "line": 87,
         "end_line": 87,
         "kind": "ClassMethod"
       },
       {
+        "name": "SceneBoundary.render",
+        "line": 88,
+        "end_line": 88,
+        "kind": "ClassMethod"
+      },
+      {
         "name": "PlanetView",
-        "line": 90,
-        "end_line": 843,
+        "line": 91,
+        "end_line": 852,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetView.update",
-        "line": 176,
-        "end_line": 176,
+        "line": 179,
+        "end_line": 179,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetView.update",
-        "line": 184,
-        "end_line": 184,
+        "line": 187,
+        "end_line": 187,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetView.fields",
-        "line": 223,
-        "end_line": 224,
+        "line": 226,
+        "end_line": 227,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetView.score",
-        "line": 225,
-        "end_line": 226,
+        "line": 228,
+        "end_line": 229,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetView.togglePlay",
-        "line": 420,
-        "end_line": 428,
+        "line": 429,
+        "end_line": 437,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetView.shareView",
-        "line": 430,
-        "end_line": 441,
+        "line": 439,
+        "end_line": 450,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetView.measure",
-        "line": 458,
-        "end_line": 461,
+        "line": 467,
+        "end_line": 470,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetView.optionId",
-        "line": 471,
-        "end_line": 471,
+        "line": 480,
+        "end_line": 480,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetView.fit",
-        "line": 519,
-        "end_line": 519,
+        "line": 528,
+        "end_line": 528,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetView.handleSearchKey",
-        "line": 541,
-        "end_line": 555,
+        "line": 550,
+        "end_line": 564,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetView.retryScene",
-        "line": 556,
-        "end_line": 560,
+        "line": 565,
+        "end_line": 569,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetView.chooseView",
-        "line": 562,
-        "end_line": 575,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "PlanetView.clearSelection",
-        "line": 576,
-        "end_line": 579,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "PlanetView.updateComparison",
-        "line": 581,
+        "line": 571,
         "end_line": 584,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "PlanetView.toggleComparison",
+        "name": "PlanetView.clearSelection",
         "line": 585,
         "end_line": 588,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "PlanetView.chooseComparisonCountry",
-        "line": 589,
-        "end_line": 592,
+        "name": "PlanetView.updateComparison",
+        "line": 590,
+        "end_line": 593,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "PlanetView.pickComparisonCountry",
-        "line": 593,
+        "name": "PlanetView.toggleComparison",
+        "line": 594,
         "end_line": 597,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "PlanetView.chooseConcept",
+        "name": "PlanetView.chooseComparisonCountry",
         "line": 598,
         "end_line": 601,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PlanetView.pickComparisonCountry",
+        "line": 602,
+        "end_line": 606,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PlanetView.chooseConcept",
+        "line": 607,
+        "end_line": 610,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -11316,10 +11382,10 @@
         "names": [
           "default"
         ],
-        "line": 90
+        "line": 91
       }
     ],
-    "anonymous_functions": 137
+    "anonymous_functions": 140
   },
   "frontend/src/components/PopulationStats.component.test.jsx": {
     "sha256": "2f42e595ffb0eb86c3caec6c272fda8333aeeb47c893cbccde30ee620a9e59a4",
@@ -12627,61 +12693,130 @@
     ],
     "anonymous_functions": 2
   },
+  "frontend/src/components/RegionAnnualChart.component.test.jsx": {
+    "sha256": "f155c285eb08ba65b2851517372c82f8c071b66a6012f5f9393074cd44a29144",
+    "definitions": [
+      {
+        "name": "ResponsiveContainer",
+        "line": 19,
+        "end_line": 19,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ComposedChart",
+        "line": 20,
+        "end_line": 23,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "get",
+        "line": 29,
+        "end_line": 29,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "renderChart",
+        "line": 45,
+        "end_line": 57,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "react-router-dom",
+        "line": 4
+      },
+      {
+        "source": "@tanstack/react-query",
+        "line": 5
+      },
+      {
+        "source": "../i18n",
+        "line": 6
+      },
+      {
+        "source": "../context/AuthProvider",
+        "line": 7
+      },
+      {
+        "source": "./RegionAnnualChart",
+        "line": 8
+      },
+      {
+        "source": "../lib/track",
+        "line": 9
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 13
+  },
   "frontend/src/components/RegionAnnualChart.jsx": {
-    "sha256": "609ab499a244160e35b226bba8124543b7b6fba575a0c39212c96fe413632ac1",
+    "sha256": "41653bc5208ecccb3d189d25db244a8dc11c59c7d1385f367d31feaf5efde628",
     "definitions": [
       {
         "name": "chartMayAnimate",
-        "line": 35,
-        "end_line": 38,
+        "line": 40,
+        "end_line": 43,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "monthTickLabel",
-        "line": 41,
-        "end_line": 48,
+        "line": 46,
+        "end_line": 53,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionTooltip",
-        "line": 50,
-        "end_line": 100,
+        "line": 55,
+        "end_line": 105,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionTooltip.fmt",
-        "line": 61,
-        "end_line": 61,
+        "line": 66,
+        "end_line": 66,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart",
-        "line": 104,
-        "end_line": 517,
+        "line": 109,
+        "end_line": 559,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionAnnualChart.periodKey",
-        "line": 132,
-        "end_line": 136,
+        "line": 143,
+        "end_line": 147,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart.idx",
-        "line": 200,
-        "end_line": 200,
+        "line": 211,
+        "end_line": 211,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart.formatLabel",
-        "line": 244,
-        "end_line": 247,
+        "line": 255,
+        "end_line": 258,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionAnnualChart.fmtLegend",
-        "line": 262,
-        "end_line": 262,
+        "line": 278,
+        "end_line": 278,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -12723,20 +12858,32 @@
         "line": 23
       },
       {
-        "source": "./ChartBrandCaption",
+        "source": "../lib/chartPick",
         "line": 24
       },
       {
-        "source": "./ChartGlassDefs",
+        "source": "../lib/track",
         "line": 25
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "./ChartBrandCaption",
         "line": 26
       },
       {
-        "source": "../styles/z2-price.css",
+        "source": "./ChartGlassDefs",
         "line": 27
+      },
+      {
+        "source": "./ChartPickedMarker",
+        "line": 28
+      },
+      {
+        "source": "../styles/k4-charts.css",
+        "line": 29
+      },
+      {
+        "source": "../styles/z2-price.css",
+        "line": 30
       }
     ],
     "exports": [
@@ -12744,10 +12891,10 @@
         "names": [
           "default"
         ],
-        "line": 104
+        "line": 109
       }
     ],
-    "anonymous_functions": 42
+    "anonymous_functions": 45
   },
   "frontend/src/components/RegionCrossLink.jsx": {
     "sha256": "5b48c3ce3947a1ef40549ea2fe3f193fedfee77c77c5e11e70b145732a854873",
@@ -14972,7 +15119,7 @@
     "anonymous_functions": 4
   },
   "frontend/src/components/WorldMap.component.test.jsx": {
-    "sha256": "728a71676630d1ace2779f2d9b33b606334bcd7a9aea31411f7468989e14f91d",
+    "sha256": "d9f89722dfa79c2cd8b7617667ca91cf155dfc5bc10d6fd30b82d78b61689eac",
     "definitions": [
       {
         "name": "renderMap",
@@ -15018,44 +15165,44 @@
       },
       {
         "name": "withCommand",
-        "line": 328,
-        "end_line": 328,
+        "line": 353,
+        "end_line": 353,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "getBoundingClientRect",
-        "line": 361,
-        "end_line": 361,
+        "line": 386,
+        "end_line": 386,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "setPointerCapture",
-        "line": 362,
-        "end_line": 362,
+        "line": 387,
+        "end_line": 387,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "getBoundingClientRect",
-        "line": 382,
-        "end_line": 382,
+        "line": 407,
+        "end_line": 407,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "setPointerCapture",
-        "line": 383,
-        "end_line": 383,
+        "line": 408,
+        "end_line": 408,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fillOf",
-        "line": 435,
-        "end_line": 439,
+        "line": 460,
+        "end_line": 464,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "hue",
-        "line": 460,
-        "end_line": 466,
+        "line": 485,
+        "end_line": 491,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -15086,189 +15233,189 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 49
+    "anonymous_functions": 54
   },
   "frontend/src/components/WorldMap.jsx": {
-    "sha256": "c5b031d223926e2c40ace7d2e6c1113b0f02b561b9017b6788bdf12404a563c1",
+    "sha256": "3a46fe2dcfee6436d0566ffb2249ad78aa226dbc3aa4f088e374f0bb6ecd98e9",
     "definitions": [
       {
         "name": "isNotAntarctica",
-        "line": 45,
-        "end_line": 45,
+        "line": 46,
+        "end_line": 46,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "resolveCountry",
-        "line": 71,
-        "end_line": 77,
+        "line": 72,
+        "end_line": 78,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "displayFeatureFor",
-        "line": 87,
-        "end_line": 89,
+        "line": 88,
+        "end_line": 90,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "shapeFor",
-        "line": 96,
-        "end_line": 103,
+        "line": 97,
+        "end_line": 104,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "getBaseDisplayFeatures",
-        "line": 107,
-        "end_line": 110,
+        "line": 108,
+        "end_line": 111,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "whenIdleAfterLoad",
-        "line": 117,
-        "end_line": 140,
+        "line": 118,
+        "end_line": 141,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "whenIdleAfterLoad.run",
-        "line": 122,
-        "end_line": 129,
+        "line": 123,
+        "end_line": 130,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "yieldToMain",
-        "line": 143,
-        "end_line": 143,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "nowMs",
         "line": 144,
         "end_line": 144,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "nowMs",
+        "line": 145,
+        "end_line": 145,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "mapInSlices",
-        "line": 150,
-        "end_line": 162,
+        "line": 151,
+        "end_line": 163,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "collectionValue",
-        "line": 164,
-        "end_line": 167,
+        "line": 165,
+        "end_line": 168,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatLegendValue",
-        "line": 169,
-        "end_line": 182,
+        "line": 170,
+        "end_line": 183,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatLegendValue.compact",
-        "line": 175,
-        "end_line": 177,
+        "line": 176,
+        "end_line": 178,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "bandText",
-        "line": 185,
-        "end_line": 191,
+        "line": 186,
+        "end_line": 192,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tubeGradient",
-        "line": 194,
-        "end_line": 199,
+        "line": 195,
+        "end_line": 200,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "legendBinLabel",
-        "line": 201,
-        "end_line": 206,
+        "line": 202,
+        "end_line": 207,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "clientToMap",
-        "line": 223,
-        "end_line": 231,
+        "line": 224,
+        "end_line": 232,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldMap",
-        "line": 233,
-        "end_line": 926,
+        "line": 234,
+        "end_line": 944,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldMap.isActive",
-        "line": 278,
-        "end_line": 278,
+        "line": 287,
+        "end_line": 287,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldMap.measure",
-        "line": 294,
-        "end_line": 298,
+        "line": 303,
+        "end_line": 307,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldMap.onWheel",
-        "line": 476,
-        "end_line": 481,
+        "line": 485,
+        "end_line": 490,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldMap.holdTwoFingers",
-        "line": 491,
-        "end_line": 493,
+        "line": 500,
+        "end_line": 502,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldMap.holdGesture",
-        "line": 494,
-        "end_line": 494,
+        "line": 503,
+        "end_line": 503,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldMap.describe",
-        "line": 563,
-        "end_line": 583,
+        "line": 579,
+        "end_line": 599,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldMap.enter",
-        "line": 584,
-        "end_line": 587,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "WorldMap.leave",
-        "line": 588,
-        "end_line": 591,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "WorldMap.fillFor",
-        "line": 592,
-        "end_line": 595,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "WorldMap.labelFor",
-        "line": 598,
+        "line": 600,
         "end_line": 603,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "WorldMap.leave",
+        "line": 604,
+        "end_line": 607,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "WorldMap.fillFor",
+        "line": 608,
+        "end_line": 611,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "WorldMap.labelFor",
+        "line": 614,
+        "end_line": 619,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "useCountryOutline",
-        "line": 939,
-        "end_line": 973,
+        "line": 957,
+        "end_line": 991,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CountrySilhouette",
-        "line": 980,
-        "end_line": 1128,
+        "line": 998,
+        "end_line": 1146,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -15338,24 +15485,28 @@
         "line": 30
       },
       {
-        "source": "../styles/world.css",
+        "source": "../lib/planetGeometry",
         "line": 31
       },
       {
-        "source": "./SourceLink",
+        "source": "../styles/world.css",
         "line": 32
       },
       {
-        "source": "./Chip",
+        "source": "./SourceLink",
         "line": 33
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "./Chip",
         "line": 34
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "../styles/platform-pages.css",
         "line": 35
+      },
+      {
+        "source": "../styles/k4-charts.css",
+        "line": 36
       }
     ],
     "exports": [
@@ -15363,22 +15514,22 @@
         "names": [
           "MAP_VIEWBOX"
         ],
-        "line": 42
+        "line": 43
       },
       {
         "names": [
           "default"
         ],
-        "line": 233
+        "line": 234
       },
       {
         "names": [
           "CountrySilhouette"
         ],
-        "line": 980
+        "line": 998
       }
     ],
-    "anonymous_functions": 82
+    "anonymous_functions": 84
   },
   "frontend/src/components/WorldMap.test.js": {
     "sha256": "ebfd6d693ac85eea3fa9a39f68fc5d86f211cad107e51b067e87f042ad42972c",
@@ -17777,7 +17928,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/calendar/CalendarGrid.jsx": {
-    "sha256": "f84256b1d7168b7076e886a682461e0dbee210f65f738486d60fbb1ef3028855",
+    "sha256": "7cd94f2400ff5ea5da40749ec5a14844a7ade66abf8ea77c920573057201d1d8",
     "definitions": [
       {
         "name": "buildGrid",
@@ -17794,7 +17945,7 @@
       {
         "name": "CalendarGrid",
         "line": 50,
-        "end_line": 253,
+        "end_line": 260,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -19114,7 +19265,7 @@
     "anonymous_functions": 29
   },
   "frontend/src/components/home/HomeDataScope.component.test.jsx": {
-    "sha256": "720fbeb133697655732c376253586109dbf1dc343f4b283f7c9993c4b838af37",
+    "sha256": "196b234b739859d6808123d4cf84115bf1a7755e733f7e0b3b4cde724703da75",
     "definitions": [
       {
         "name": "COUNTRIES",
@@ -19130,14 +19281,14 @@
       },
       {
         "name": "toJSON",
-        "line": 130,
-        "end_line": 130,
+        "line": 172,
+        "end_line": 172,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "run",
-        "line": 136,
-        "end_line": 136,
+        "line": 178,
+        "end_line": 178,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -19160,10 +19311,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 24
+    "anonymous_functions": 32
   },
   "frontend/src/components/home/HomeDataScope.jsx": {
-    "sha256": "8253280f8efd001188a4933c2939ca90dbde6132cd28016f81121c4f3ce1397d",
+    "sha256": "bfb874e563b5405e30a6a20444184ff75b8844f39744f42aff2718bdba28b9c3",
     "definitions": [
       {
         "name": "groupDigits",
@@ -19173,14 +19324,14 @@
       },
       {
         "name": "Stat",
-        "line": 25,
-        "end_line": 36,
+        "line": 27,
+        "end_line": 38,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomeDataScope",
-        "line": 44,
-        "end_line": 117,
+        "line": 48,
+        "end_line": 132,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -19247,7 +19398,7 @@
         "names": [
           "default"
         ],
-        "line": 44
+        "line": 48
       }
     ],
     "anonymous_functions": 2
@@ -26669,7 +26820,7 @@
     "anonymous_functions": 16
   },
   "frontend/src/lib/behavior.apitiming.test.js": {
-    "sha256": "731593aa5659c79ed10c2e23d96b3309a08dd986a60fddd53fdcb0a6009209be",
+    "sha256": "03f50157b198017ce9f7f681720e7be4eca5679891480b43892953d060f171fb",
     "definitions": [
       {
         "name": "ok",
@@ -26736,6 +26887,18 @@
         "line": 22,
         "end_line": 24,
         "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "setVisibility",
+        "line": 76,
+        "end_line": 79,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "setVisibility.get",
+        "line": 77,
+        "end_line": 77,
+        "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [
@@ -26749,7 +26912,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 11
+    "anonymous_functions": 19
   },
   "frontend/src/lib/behavior.browser.test.js": {
     "sha256": "7a01292b7de9425fb688fbdefbdb2cd71dacb6b0a68804b7ed8a351fdddfe3f2",
@@ -26917,7 +27080,7 @@
     "anonymous_functions": 4
   },
   "frontend/src/lib/behavior.js": {
-    "sha256": "0af9ce9bd62acce10a8109cd75414a9fe8665fbf0aba1032ccdb2b94818af50c",
+    "sha256": "4c6042be0a2b4c059b1a8eefb139f35c376e7a9c18d4816d053a92795eb21658",
     "definitions": [
       {
         "name": "isAutomationUa",
@@ -26933,452 +27096,476 @@
       },
       {
         "name": "sessionId",
-        "line": 136,
-        "end_line": 147,
+        "line": 143,
+        "end_line": 154,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "visitorId",
-        "line": 151,
-        "end_line": 167,
+        "line": 158,
+        "end_line": 174,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ymUid",
-        "line": 170,
-        "end_line": 177,
+        "line": 177,
+        "end_line": 184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createAttentionClock",
-        "line": 181,
-        "end_line": 215,
+        "line": 188,
+        "end_line": 222,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createAttentionClock.advance",
-        "line": 187,
-        "end_line": 194,
+        "line": 194,
+        "end_line": 201,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createAttentionClock.reset",
-        "line": 196,
-        "end_line": 196,
+        "line": 203,
+        "end_line": 203,
         "kind": "ObjectMethod"
       },
       {
         "name": "createAttentionClock.visibility",
-        "line": 197,
-        "end_line": 200,
+        "line": 204,
+        "end_line": 207,
         "kind": "ObjectMethod"
       },
       {
         "name": "createAttentionClock.input",
-        "line": 201,
-        "end_line": 206,
-        "kind": "ObjectMethod"
-      },
-      {
-        "name": "createAttentionClock.snapshot",
-        "line": 207,
-        "end_line": 212,
-        "kind": "ObjectMethod"
-      },
-      {
-        "name": "createAttentionClock.activeUntil",
-        "line": 213,
+        "line": 208,
         "end_line": 213,
         "kind": "ObjectMethod"
       },
       {
-        "name": "attentionVisible",
-        "line": 217,
+        "name": "createAttentionClock.snapshot",
+        "line": 214,
         "end_line": 219,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "createAttentionClock.activeUntil",
+        "line": 220,
+        "end_line": 220,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "attentionVisible",
+        "line": 224,
+        "end_line": 226,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "markActivity",
-        "line": 221,
-        "end_line": 228,
+        "line": 228,
+        "end_line": 235,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "captureInputTarget",
-        "line": 230,
-        "end_line": 241,
+        "line": 237,
+        "end_line": 248,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "originalInpTarget",
-        "line": 243,
-        "end_line": 255,
+        "line": 250,
+        "end_line": 262,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "consentAllows",
-        "line": 257,
-        "end_line": 267,
+        "line": 264,
+        "end_line": 274,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "newPageLoadId",
-        "line": 269,
-        "end_line": 271,
+        "line": 276,
+        "end_line": 278,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "listen",
-        "line": 273,
-        "end_line": 276,
+        "line": 280,
+        "end_line": 283,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "relativeTime",
-        "line": 278,
-        "end_line": 280,
+        "line": 285,
+        "end_line": 287,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "elementPath",
-        "line": 287,
-        "end_line": 315,
+        "line": 294,
+        "end_line": 322,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "elementText",
-        "line": 317,
-        "end_line": 321,
+        "line": 324,
+        "end_line": 328,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "cleanUrl",
-        "line": 323,
-        "end_line": 325,
+        "line": 330,
+        "end_line": 332,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "push",
-        "line": 327,
-        "end_line": 337,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "drainMoves",
-        "line": 339,
+        "line": 334,
         "end_line": 344,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "batchId",
+        "name": "drainMoves",
         "line": 346,
-        "end_line": 350,
+        "end_line": 351,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "batchId",
+        "line": 353,
+        "end_line": 357,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "deliveryCurrent",
-        "line": 352,
-        "end_line": 355,
+        "line": 359,
+        "end_line": 362,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "removeBatch",
-        "line": 357,
-        "end_line": 363,
+        "line": 364,
+        "end_line": 370,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "clearDelivery",
-        "line": 365,
-        "end_line": 372,
+        "line": 372,
+        "end_line": 379,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "retryAfterMs",
-        "line": 374,
-        "end_line": 381,
+        "line": 381,
+        "end_line": 388,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "deliveryResponse",
-        "line": 383,
-        "end_line": 391,
+        "line": 390,
+        "end_line": 398,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "acknowledge",
-        "line": 393,
-        "end_line": 399,
+        "line": 400,
+        "end_line": 406,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "applyDeliveryResult",
-        "line": 401,
-        "end_line": 411,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "finishDelivery",
-        "line": 413,
+        "line": 408,
         "end_line": 418,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "scheduleDelivery",
+        "name": "finishDelivery",
         "line": 420,
-        "end_line": 428,
+        "end_line": 425,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "scheduleDelivery",
+        "line": 427,
+        "end_line": 435,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pumpDelivery",
-        "line": 430,
-        "end_line": 452,
+        "line": 437,
+        "end_line": 459,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "sendLeavingBatches",
-        "line": 454,
-        "end_line": 477,
+        "line": 461,
+        "end_line": 484,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "flush",
-        "line": 479,
-        "end_line": 506,
+        "line": 486,
+        "end_line": 513,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "emitDwell",
-        "line": 510,
-        "end_line": 535,
+        "line": 517,
+        "end_line": 542,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "emitBlockViews",
-        "line": 538,
-        "end_line": 551,
+        "line": 545,
+        "end_line": 558,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "observeBlocksNow",
-        "line": 553,
-        "end_line": 570,
+        "line": 560,
+        "end_line": 577,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "overlayRects",
-        "line": 572,
-        "end_line": 582,
+        "line": 579,
+        "end_line": 589,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "refreshBlocks",
-        "line": 584,
-        "end_line": 600,
+        "line": 591,
+        "end_line": 607,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "scheduleGeometry",
-        "line": 602,
-        "end_line": 608,
+        "line": 609,
+        "end_line": 615,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resetBlocks",
-        "line": 610,
-        "end_line": 614,
+        "line": 617,
+        "end_line": 621,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupBlockObserver",
-        "line": 616,
-        "end_line": 629,
+        "line": 623,
+        "end_line": 636,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "emitSessionStart",
-        "line": 637,
-        "end_line": 714,
+        "line": 644,
+        "end_line": 721,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupVitals",
-        "line": 718,
-        "end_line": 750,
+        "line": 725,
+        "end_line": 757,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupVitals.report",
-        "line": 720,
-        "end_line": 741,
+        "line": 727,
+        "end_line": 748,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "setupErrorCapture",
-        "line": 754,
-        "end_line": 783,
+        "line": 761,
+        "end_line": 790,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "apiTimingUrl",
-        "line": 785,
-        "end_line": 787,
+        "line": 792,
+        "end_line": 794,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isApiTimingUrl",
-        "line": 789,
-        "end_line": 791,
+        "line": 796,
+        "end_line": 798,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "isPageHidden",
+        "line": 800,
+        "end_line": 802,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "hiddenMark",
+        "line": 805,
+        "end_line": 807,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "apiTimingPayload",
+        "line": 812,
+        "end_line": 816,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "setupApiTiming",
-        "line": 795,
-        "end_line": 853,
+        "line": 820,
+        "end_line": 884,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "setupApiTiming.onHidden",
+        "line": 821,
+        "end_line": 821,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "setupApiTiming.feFetch",
-        "line": 800,
-        "end_line": 814,
-        "kind": "FunctionExpression"
-      },
-      {
-        "name": "setupApiTiming.feXhrOpen",
-        "line": 824,
-        "end_line": 827,
-        "kind": "FunctionExpression"
-      },
-      {
-        "name": "setupApiTiming.feXhrSend",
-        "line": 828,
+        "line": 829,
         "end_line": 844,
         "kind": "FunctionExpression"
       },
       {
+        "name": "setupApiTiming.feXhrOpen",
+        "line": 854,
+        "end_line": 857,
+        "kind": "FunctionExpression"
+      },
+      {
+        "name": "setupApiTiming.feXhrSend",
+        "line": 858,
+        "end_line": 875,
+        "kind": "FunctionExpression"
+      },
+      {
         "name": "setupApiTiming._restoreFetch",
-        "line": 852,
-        "end_line": 852,
+        "line": 883,
+        "end_line": 883,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "formName",
-        "line": 856,
-        "end_line": 858,
+        "line": 887,
+        "end_line": 889,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onFormFocus",
-        "line": 860,
-        "end_line": 869,
+        "line": 891,
+        "end_line": 900,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onFormSubmit",
-        "line": 871,
-        "end_line": 875,
+        "line": 902,
+        "end_line": 906,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "enterPage",
-        "line": 877,
-        "end_line": 907,
+        "line": 908,
+        "end_line": 938,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "behaviorRouteChange",
-        "line": 910,
-        "end_line": 921,
+        "line": 941,
+        "end_line": 952,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "behaviorSetIdentity",
-        "line": 924,
-        "end_line": 926,
+        "line": 955,
+        "end_line": 957,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onClick",
-        "line": 928,
-        "end_line": 973,
+        "line": 959,
+        "end_line": 1011,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "interactionAction",
-        "line": 975,
-        "end_line": 977,
+        "line": 1013,
+        "end_line": 1015,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onPointer",
-        "line": 980,
-        "end_line": 1010,
+        "line": 1018,
+        "end_line": 1048,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "recordOverlayState",
-        "line": 1012,
-        "end_line": 1030,
+        "line": 1050,
+        "end_line": 1068,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onMove",
-        "line": 1032,
-        "end_line": 1044,
+        "line": 1070,
+        "end_line": 1082,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "observeScroll",
-        "line": 1046,
-        "end_line": 1052,
+        "line": 1084,
+        "end_line": 1090,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onScroll",
-        "line": 1054,
-        "end_line": 1062,
+        "line": 1092,
+        "end_line": 1100,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onCopy",
-        "line": 1064,
-        "end_line": 1071,
+        "line": 1102,
+        "end_line": 1109,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onLeave",
-        "line": 1073,
-        "end_line": 1083,
+        "line": 1111,
+        "end_line": 1121,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onVisibility",
-        "line": 1085,
-        "end_line": 1097,
+        "line": 1123,
+        "end_line": 1135,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "behaviorInit",
-        "line": 1102,
-        "end_line": 1113,
+        "line": 1140,
+        "end_line": 1151,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "startCollectors",
-        "line": 1115,
-        "end_line": 1146,
+        "line": 1153,
+        "end_line": 1184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "onConsentChange",
-        "line": 1148,
-        "end_line": 1168,
+        "line": 1186,
+        "end_line": 1206,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "_resetForTests",
-        "line": 1171,
-        "end_line": 1214,
+        "line": 1209,
+        "end_line": 1254,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -27413,65 +27600,118 @@
         "names": [
           "sessionId"
         ],
-        "line": 136
+        "line": 143
       },
       {
         "names": [
           "visitorId"
         ],
-        "line": 151
+        "line": 158
       },
       {
         "names": [
           "createAttentionClock"
         ],
-        "line": 181
+        "line": 188
       },
       {
         "names": [
           "consentAllows"
         ],
-        "line": 257
+        "line": 264
       },
       {
         "names": [
           "flush"
         ],
-        "line": 479
+        "line": 486
       },
       {
         "names": [
           "behaviorRouteChange"
         ],
-        "line": 910
+        "line": 941
       },
       {
         "names": [
           "behaviorSetIdentity"
         ],
-        "line": 924
+        "line": 955
       },
       {
         "names": [
           "behaviorInit"
         ],
-        "line": 1102
+        "line": 1140
       },
       {
         "names": [
           "_resetForTests"
         ],
-        "line": 1171
+        "line": 1209
       },
       {
         "names": [
           "_elementPath",
           "_consentAllows"
         ],
-        "line": 1216
+        "line": 1256
       }
     ],
-    "anonymous_functions": 42
+    "anonymous_functions": 43
+  },
+  "frontend/src/lib/behavior.label.test.js": {
+    "sha256": "2aacd22df0cdac043420d8a6a4895415f331026bfb230b7edf22774ab66364f5",
+    "definitions": [
+      {
+        "name": "ok",
+        "line": 10,
+        "end_line": 10,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ok.get",
+        "line": 10,
+        "end_line": 10,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ok.json",
+        "line": 10,
+        "end_line": 10,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "settle",
+        "line": 11,
+        "end_line": 11,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "clicks",
+        "line": 14,
+        "end_line": 17,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "sent",
+        "line": 39,
+        "end_line": 44,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 4
+      },
+      {
+        "source": "./behavior",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 13
   },
   "frontend/src/lib/behavior.test.js": {
     "sha256": "30a4b1aed4c211753027b68ca08632d5a95c59f9e015ba38eabbad5cad7fbda9",
@@ -30187,6 +30427,134 @@
     "exports": [],
     "anonymous_functions": 5
   },
+  "frontend/src/lib/calendarMonths.js": {
+    "sha256": "c842c0223d0224cae07d48b328a7c715657aa99a423620fb03ae1a8c216ac385",
+    "definitions": [
+      {
+        "name": "monthRange",
+        "line": 18,
+        "end_line": 22,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "shiftMonth",
+        "line": 25,
+        "end_line": 28,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "calendarMonthParams",
+        "line": 31,
+        "end_line": 39,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "calendarEventsKey",
+        "line": 42,
+        "end_line": 42,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "eventsInRange",
+        "line": 48,
+        "end_line": 51,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "usePrefetchNeighbourMonths",
+        "line": 57,
+        "end_line": 71,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "usePrefetchNeighbourMonths.queryFn",
+        "line": 66,
+        "end_line": 66,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "@tanstack/react-query",
+        "line": 2
+      },
+      {
+        "source": "./api",
+        "line": 3
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "WORLD_SOURCES"
+        ],
+        "line": 15
+      },
+      {
+        "names": [
+          "monthRange"
+        ],
+        "line": 18
+      },
+      {
+        "names": [
+          "shiftMonth"
+        ],
+        "line": 25
+      },
+      {
+        "names": [
+          "calendarMonthParams"
+        ],
+        "line": 31
+      },
+      {
+        "names": [
+          "calendarEventsKey"
+        ],
+        "line": 42
+      },
+      {
+        "names": [
+          "CALENDAR_STALE_MS"
+        ],
+        "line": 45
+      },
+      {
+        "names": [
+          "eventsInRange"
+        ],
+        "line": 48
+      },
+      {
+        "names": [
+          "usePrefetchNeighbourMonths"
+        ],
+        "line": 57
+      }
+    ],
+    "anonymous_functions": 2
+  },
+  "frontend/src/lib/calendarMonths.test.js": {
+    "sha256": "1e5f4505771d5d5826a0c87f77012add207d40948a85794cc88295252e96dc09",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./calendarMonths",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 6
+  },
   "frontend/src/lib/calendarStatus.js": {
     "sha256": "9c45f3e686b2bb305c6d46d5881c1a5d968384857fd7415c22dd2eeffd5f91a1",
     "definitions": [
@@ -31339,6 +31707,58 @@
       }
     ],
     "anonymous_functions": 3
+  },
+  "frontend/src/lib/chartPick.component.test.jsx": {
+    "sha256": "38dc9b970bfe0263ff7c4791e50468601d05c2c0f6a0b8d99540ed0d32eeb3a8",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "./chartPick",
+        "line": 3
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 18
+  },
+  "frontend/src/lib/chartPick.js": {
+    "sha256": "272de519a9b986bfb3551766825dca57f3ddc21b12b9c3057866d9289979926b",
+    "definitions": [
+      {
+        "name": "useChartPick",
+        "line": 18,
+        "end_line": 43,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useChartPick.handlePlotClick",
+        "line": 22,
+        "end_line": 35,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 12
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "useChartPick"
+        ],
+        "line": 18
+      }
+    ],
+    "anonymous_functions": 1
   },
   "frontend/src/lib/chartPointLabel.js": {
     "sha256": "b12addc44d93a539466177a5a7adf89b58ea2425702163057187965554e82b63",
@@ -38326,7 +38746,7 @@
     "anonymous_functions": 29
   },
   "frontend/src/lib/hooks.js": {
-    "sha256": "59373f4065a349eb03d5cece6fbd63f106460ac8cb13842fc0946175fda8d0a1",
+    "sha256": "081f3f95aa80de353e6566ff2f3225777d30a769b041f01cffc9bd658c00eaae",
     "definitions": [
       {
         "name": "indicatorsListQueryKey",
@@ -38420,62 +38840,62 @@
       },
       {
         "name": "useCalendarEvents",
-        "line": 106,
-        "end_line": 115,
+        "line": 111,
+        "end_line": 121,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useCalendarEvents.queryFn",
-        "line": 110,
-        "end_line": 110,
+        "line": 115,
+        "end_line": 115,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useCoverage",
-        "line": 117,
-        "end_line": 124,
+        "line": 123,
+        "end_line": 130,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useCoverage.queryFn",
-        "line": 120,
-        "end_line": 120,
+        "line": 126,
+        "end_line": 126,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useDashboardSparklines",
-        "line": 126,
-        "end_line": 133,
+        "line": 132,
+        "end_line": 139,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useDashboardSparklines.queryFn",
-        "line": 129,
-        "end_line": 129,
+        "line": 135,
+        "end_line": 135,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useCalendarUpcoming",
-        "line": 135,
-        "end_line": 142,
+        "line": 141,
+        "end_line": 148,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useCalendarUpcoming.queryFn",
-        "line": 138,
-        "end_line": 138,
+        "line": 144,
+        "end_line": 144,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useDemographicsStructure",
-        "line": 144,
-        "end_line": 151,
+        "line": 150,
+        "end_line": 157,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useDemographicsStructure.queryFn",
-        "line": 147,
-        "end_line": 147,
+        "line": 153,
+        "end_line": 153,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -38546,31 +38966,31 @@
         "names": [
           "useCalendarEvents"
         ],
-        "line": 106
+        "line": 111
       },
       {
         "names": [
           "useCoverage"
         ],
-        "line": 117
+        "line": 123
       },
       {
         "names": [
           "useDashboardSparklines"
         ],
-        "line": 126
+        "line": 132
       },
       {
         "names": [
           "useCalendarUpcoming"
         ],
-        "line": 135
+        "line": 141
       },
       {
         "names": [
           "useDemographicsStructure"
         ],
-        "line": 144
+        "line": 150
       }
     ],
     "anonymous_functions": 0
@@ -40820,7 +41240,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/lib/planetGeometry.js": {
-    "sha256": "a06825d75138ea4a957650717574846443509a77170bdfcc2259be039744fe4a",
+    "sha256": "f745c90dfb23b1a4f21f1484237560f93d4d7408f6c272c0d364d9b2e933a40a",
     "definitions": [
       {
         "name": "detailed",
@@ -40883,21 +41303,33 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "regionName",
+        "line": 141,
+        "end_line": 146,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "planetPlaceName",
+        "line": 152,
+        "end_line": 158,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "bindPlanetCountries",
-        "line": 145,
-        "end_line": 177,
+        "line": 165,
+        "end_line": 191,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pickPlanetCountry",
-        "line": 180,
-        "end_line": 192,
+        "line": 194,
+        "end_line": 206,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "planetNeedsFineFeatures",
-        "line": 195,
-        "end_line": 203,
+        "line": 209,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -40954,21 +41386,27 @@
       },
       {
         "names": [
+          "planetPlaceName"
+        ],
+        "line": 152
+      },
+      {
+        "names": [
           "bindPlanetCountries"
         ],
-        "line": 145
+        "line": 165
       },
       {
         "names": [
           "pickPlanetCountry"
         ],
-        "line": 180
+        "line": 194
       },
       {
         "names": [
           "planetNeedsFineFeatures"
         ],
-        "line": 195
+        "line": 209
       }
     ],
     "anonymous_functions": 10
@@ -45175,6 +45613,43 @@
       }
     ],
     "anonymous_functions": 1
+  },
+  "frontend/src/lib/routeHit.js": {
+    "sha256": "987b2a4ac10802b668258415032e38eac23c820e6b4f7763c70b3ab894f70bb2",
+    "definitions": [
+      {
+        "name": "isSamePageUrlSync",
+        "line": 16,
+        "end_line": 18,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "isSamePageUrlSync"
+        ],
+        "line": 16
+      }
+    ],
+    "anonymous_functions": 0
+  },
+  "frontend/src/lib/routeHit.test.js": {
+    "sha256": "6bceaa3493fbc9d6c1999cf4ea900f60119bc95e89393ec5bb3b93412768562e",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./routeHit",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
   },
   "frontend/src/lib/rowUnit.js": {
     "sha256": "f1f4a88acbe490787b46e433f23980c4c413d45c4697d21ef668f81da183a592",
@@ -56774,7 +57249,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/pages/CalendarPage.component.test.jsx": {
-    "sha256": "6eb6c48d1e0d76576352d5d179c19044e0f7aad9400f720da939dcfa22cef45d",
+    "sha256": "33e7c683084a72dffd074149a4da3d5f19b467fd229dff4434be82344e53e711",
     "definitions": [
       {
         "name": "render",
@@ -56786,6 +57261,36 @@
         "name": "rate",
         "line": 57,
         "end_line": 60,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ev",
+        "line": 97,
+        "end_line": 100,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "mockMonths",
+        "line": 103,
+        "end_line": 113,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "mockMonths.release",
+        "line": 111,
+        "end_line": 111,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "renderLive",
+        "line": 115,
+        "end_line": 115,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "prev",
+        "line": 156,
+        "end_line": 156,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -56812,39 +57317,33 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 9
+    "anonymous_functions": 21
   },
   "frontend/src/pages/CalendarPage.jsx": {
-    "sha256": "24020e95702b99e47387bd9e8b91b3056e6d49583d06b080ba63170a106ea89e",
+    "sha256": "9cac2e292a2217198ed8161580be0430408149ad2aecd5e058f9f2a432b70876",
     "definitions": [
       {
         "name": "formatDayLabel",
-        "line": 43,
-        "end_line": 60,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "monthRange",
-        "line": 62,
-        "end_line": 67,
+        "line": 41,
+        "end_line": 58,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarSkeleton",
-        "line": 69,
-        "end_line": 79,
+        "line": 60,
+        "end_line": 70,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DayEvents",
-        "line": 91,
-        "end_line": 116,
+        "line": 82,
+        "end_line": 107,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalendarPage",
-        "line": 118,
-        "end_line": 478,
+        "line": 109,
+        "end_line": 477,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -56855,103 +57354,107 @@
       },
       {
         "source": "react-router-dom",
-        "line": 5
+        "line": 2
       },
       {
         "source": "lucide-react",
-        "line": 6
+        "line": 3
       },
       {
         "source": "../lib/useMeta",
-        "line": 7
+        "line": 4
       },
       {
         "source": "../lib/pageMeta",
-        "line": 8
+        "line": 5
       },
       {
         "source": "../lib/hooks",
-        "line": 9
+        "line": 6
       },
       {
         "source": "../lib/format",
-        "line": 10
+        "line": 7
       },
       {
         "source": "../lib/uiTokens",
-        "line": 11
+        "line": 8
       },
       {
         "source": "../components/calendar/CalendarHero",
-        "line": 12
+        "line": 9
       },
       {
         "source": "../components/calendar/CalendarGrid",
-        "line": 13
+        "line": 10
       },
       {
         "source": "../components/calendar/CalendarEventCard",
-        "line": 14
+        "line": 11
       },
       {
         "source": "../components/calendar/CalendarUpcoming",
-        "line": 15
+        "line": 12
       },
       {
         "source": "../components/Skeleton",
-        "line": 16
+        "line": 13
       },
       {
         "source": "../components/ApiRetryBanner",
-        "line": 17
+        "line": 14
       },
       {
         "source": "../components/LoadingNote",
-        "line": 18
+        "line": 15
       },
       {
         "source": "../components/Breadcrumbs",
-        "line": 19
+        "line": 16
       },
       {
         "source": "../lib/track",
-        "line": 20
+        "line": 17
       },
       {
         "source": "../lib/calendarText",
-        "line": 21
+        "line": 18
       },
       {
         "source": "../lib/calendarGrouping",
-        "line": 22
+        "line": 19
       },
       {
         "source": "../lib/breadcrumbs",
-        "line": 23
+        "line": 20
+      },
+      {
+        "source": "../lib/calendarMonths",
+        "line": 21
       },
       {
         "source": "../lib/sitePaths",
-        "line": 24
+        "line": 22
       },
       {
         "source": "../i18n",
-        "line": 27
+        "line": 25
       },
       {
         "source": "../styles/indicator-russia.css",
-        "line": 28
+        "line": 26
       },
       {
         "source": "../styles/regions-w4.css",
-        "line": 29
+        "line": 27
       },
       {
         "source": "../styles/w5-pages.css",
-        "line": 30
+        "line": 28
       },
       {
         "source": "../styles/w6f-pages.css",
-        "line": 31
+        "line": 29
       }
     ],
     "exports": [
@@ -56959,7 +57462,7 @@
         "names": [
           "default"
         ],
-        "line": 118
+        "line": 109
       }
     ],
     "anonymous_functions": 45
@@ -64189,7 +64692,7 @@
     "anonymous_functions": 56
   },
   "frontend/src/pages/WorldRatingPage.jsx": {
-    "sha256": "c05f5e54f54adee55f6db8f487957295dc7ada28a8c29e0273d8c0662134fd3e",
+    "sha256": "5ff27e159a1dc1ae92f44c1b16c928410f0af33e56a7a0a1860ee9a19e82351a",
     "definitions": [
       {
         "name": "SortableTh",
@@ -66027,6 +66530,37 @@
     ],
     "exports": [],
     "anonymous_functions": 32
+  },
+  "frontend/src/styles/z6-rank-row.test.js": {
+    "sha256": "612bff3e5e011705d9a012e762c0bb46c1ec4677f27baa4a9d14721f4287f1f5",
+    "definitions": [
+      {
+        "name": "rule",
+        "line": 13,
+        "end_line": 17,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "node:fs",
+        "line": 4
+      },
+      {
+        "source": "node:path",
+        "line": 5
+      },
+      {
+        "source": "node:url",
+        "line": 6
+      },
+      {
+        "source": "vitest",
+        "line": 7
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 5
   },
   "frontend/src/test/renderPage.jsx": {
     "sha256": "b2c6ba4f9c060b112d62996f00a5b69d3d627cdf65075b82e7c94ce72e9182c8",
