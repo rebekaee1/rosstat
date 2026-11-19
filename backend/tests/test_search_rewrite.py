@@ -133,7 +133,9 @@ def codes(body):
 def test_registered_unemployment_in_own_words(rewrite_client):
     body = get(rewrite_client, 'регистрируемая безработица')
     assert REGISTERED in codes(body), body
-    assert body['corrected_query'] == 'уровень зарегистрированной безработицы'
+    # С 19.11.2026 «регистрируемая безработица» — понятие словаря (search_vocabulary): находится первым чтением,
+    # без переписи и без строки «Показаны результаты для». Перепись остаётся запасной (см. test_rewrite_words).
+    assert 'corrected_query' not in body
 
 
 def test_sown_area_word_order(rewrite_client):

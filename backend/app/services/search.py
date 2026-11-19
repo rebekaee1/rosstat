@@ -37,7 +37,7 @@ from app.models import (
 from app.services import search_index, site_paths as paths
 from app.services.locale import get_locale
 from app.services.search_intent import (
-    CONCEPTS, CONCEPTS_ALTERNATIVES, SEARCH_VERSION, SearchIntent, complete_nominal_alternative, geo_aliases, literal_identifier, match_score, matching_alternatives, normalize, parse_intent, phrase, region_reading, strip_geography,
+    CONCEPTS, CONCEPTS_ALTERNATIVES, SEARCH_VERSION, SearchIntent, complete_nominal_alternative, geo_aliases, literal_identifier, match_score, matching_alternatives, normalize, parse_intent, phrase, prefix_concept, region_reading, strip_geography,
 )
 from app.services.search_language import measure_matches, relevance_bonus, title_frequencies
 from app.services.search_language_sql import measure_constraints, _pattern_clause
@@ -804,6 +804,10 @@ async def _russia(db: AsyncSession, intent: SearchIntent, locale: str) -> list[d
         content_terms = [term for term in intent.terms if not term[0].startswith("search-")]
         if len(content_terms) == 1:
             headline = _RUSSIA_HEADLINES.get(content_terms[0][0])
+            if headline is None and content_terms[0] not in CONCEPTS_ALTERNATIVES:
+                # Недописанное слово («дизе»): главный ряд понятия, которое оно однозначно дописывает (19.11.2026).
+                completed = prefix_concept(content_terms[0][0])
+                headline = _RUSSIA_HEADLINES.get(completed[0]) if completed else None
             parent = urlsplit(russia_search_path(row.code, intent)).path.rsplit("/", 1)[-1]
             family_headline = bool(headline and (row.code == headline or russia_family_base(row.code) == headline or parent == headline))
             if family_headline:
@@ -1476,6 +1480,10 @@ _HEADLINE_ORDER = {code: rank for rank, code in enumerate((
     "ceni-ai95", "gdp-nominal"))}
 
 
+_BY_REGIONS = re.compile(r"(?<![a-zа-я])(?:по регионам|по субъектам|по областям|в регионах|в субъектах|"
+                         r"по субъектам рф|регионов россии|by regions?)(?![a-zа-я])")
+
+
 def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
     """Порядок выдачи: сильнее совпадение выше; при равенстве региональные ряды ниже; на языке хоста выше.
 
@@ -1484,6 +1492,9 @@ def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
     запроса региональные ряды идут в конец независимо от счёта.
     """
     single_letter = _is_single_letter_query(raw)
+    # «Безработица по регионам» (19.11.2026): слова «по регионам» не условие поиска, а просьба о разрезе по субъектам —
+    # региональные ряды идут первыми. Состав выдачи прежний.
+    by_regions = not intent.regions and bool(_BY_REGIONS.search(normalize(raw)))
     # Страна названа, регион нет («ВВП США»): ряды самой страны идут перед рядами её штатов и областей. Иначе сто
     # строк «ВРП Алабамы, Аляски…» с равным счётом заполняют выдачу, и национального ВВП в ней нет совсем.
     country_scope = bool(getattr(intent, "countries", None)) and not intent.regions
@@ -1492,6 +1503,7 @@ def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
         regional_indicator = item["kind"] in _REGIONAL_INDICATOR_KINDS
         return (
             1 if (single_letter or country_scope) and not intent.regions and regional_indicator else 0,
+            0 if by_regions and regional_indicator else 1 if by_regions else 0,
             -item["score"],
             # При равном счёте годовая инфляция страны выше индекса цен и месячного прироста.
             0 if _annual_inflation_row(item) else 1,
@@ -1737,11 +1749,21 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
                 sort_cheapest_first(raw, near)
                 response["nearest"] = {"note": note, "results": near[:MAX_NEAREST]}
         elif _nearest and _reading is None:
+            if intent.year is not None and intent.terms:
+                # 19.11.2026: за названный год точек нет («посевные площади воронежская область в 1980 году», ряды с
+                # 2000), а без года ряды есть. Основная выдача пуста (год обязателен, ADR-0016); в «Ближайшем» — те же
+                # ряды без года и пояснение «со словом 1980 ничего не нашлось».
+                yearless = replace(intent, year=None, month=None)
+                found = await federated_search(db, raw, limit=MAX_NEAREST * 2, _nearest=False,
+                                               _reading=(yearless, geometry, countries))
+                if found["results"]:
+                    response["nearest"] = {"note": "without_word", "words": [str(intent.year)],
+                                           "results": found["results"][:MAX_NEAREST]}
             # 14.11.2026: слово, которого нет ни в одном названии ряда, — основная выдача пуста (ADR-0016), а в
             # «Ближайшем» ряды без этого слова и пояснение, каких слов у нас нет (search_unknown_word).
             from app.services.search_unknown_word import readings_without_words
 
-            for reading, words in await readings_without_words(db, intent):
+            for reading, words in ([] if response.get("nearest") else await readings_without_words(db, intent)):
                 found = await federated_search(db, raw, limit=MAX_NEAREST * 2, _nearest=False,
                                                _reading=(reading, geometry, countries))
                 if found["results"]:

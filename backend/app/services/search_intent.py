@@ -84,7 +84,10 @@ CONCEPTS = (
         "kzt rub", "kztrub", "kzt", "tenge", "kazakhstani tenge"), ("kzt-rub", "kzt rub", "тенге")),
     (("курс доллара к иене", "курс иены", "курс йены", "курс японской иены", "иена", "иены", "иену", "йена", "йены", "йену", "usd jpy", "usdjpy"),
         ("usd-jpy", "usd jpy", "dollar yen")),
-    (("курс евро к доллару", "eur usd", "eurusd"), ("eur-usd", "eur usd")),
+    # «Евро доллар», «евро к доллару» — пара валют, а не два отдельных курса к рублю (19.11.2026: два обязательных
+    # понятия «евро» и «доллар» давали пустую выдачу при ряде «Курс евро к доллару»).
+    (("курс евро к доллару", "eur usd", "eurusd", "евро доллар", "евро к доллару", "евро доллара", "курс евро доллар",
+      "евро к доллару сша"), ("eur-usd", "eur usd")),
     (("индекс доллара", "dollar index", "dxy"), ("usd-index", "dollar index", "индекс доллара")),
     (("курс евро", "евро", "eur rub"), ("eur-rub", "eur rub", "евро")),
     (("биткоин", "биткойн", "биткоина", "биткойна", "bitcoin", "btc"), ("btc-usd", "bitcoin", "биткоин")),
@@ -324,6 +327,28 @@ def _control_neighbour(token: str) -> bool:
     return token not in _CONTROL_WORDS and any(edit_distance_one(token, alias) for alias in _CONTROL_WORDS)
 
 
+@lru_cache(maxsize=4096)
+def prefix_concept(token: str) -> tuple[str, ...] | None:
+    """Понятие, которое однозначно дописывает недописанное слово («дизе» → дизельное топливо); иначе None.
+
+    Только для порядка выдачи (19.11.2026): условие поиска остаётся словом как написано, понятие лишь поднимает
+    главный ряд своей семьи над рядами, где то же начало стоит в хвосте названия («газойль / дизель» Евростата).
+    Начало не короче четырёх букв и не само слово словаря; дописывает ровно одно понятие (не единица и не режим).
+    """
+    if len(token) < 4 or not re.fullmatch(r"[a-zа-я]+", token) or token in _ALIAS_WORDS:
+        return None
+    found = {alternatives[0]: alternatives for aliases, alternatives in CONCEPTS
+             if not alternatives[0].startswith("search-")
+             for alias in aliases for word in TOKEN_RE.findall(normalize(alias))[:1]
+             if len(word) > len(token) and word.startswith(token)}
+    return next(iter(found.values())) if len(found) == 1 else None
+
+
+# Все слова псевдонимов словаря: целое слово («курс», «цена») — не недописанное начало.
+_ALIAS_WORDS = frozenset(word for aliases, _alternatives in CONCEPTS for alias in aliases
+                         for word in TOKEN_RE.findall(unicodedata.normalize("NFKC", alias).casefold().replace("ё", "е")))
+
+
 def _concept_correction(token: str) -> tuple[str, tuple[str, ...]] | None:
     """Correct one long unknown word only when one noncontrol meaning exists."""
     if len(token) < 5 or _control_neighbour(token):
@@ -366,7 +391,10 @@ def nominal_variants(token: str) -> tuple[str, ...]:
         endings = (("ами", ("ы",)), ("ями", ("и",)),
             ("иях", ("ии", "ия")), ("ах", ("ы", "а")), ("ях", ("и", "я")),
             ("ов", ("ы", "", "а")), ("ев", ("и", "ь")), ("ей", ("и", "ь")),
-            ("ом", ("",)), ("а", ("",)), ("я", ("ь", "й")))
+            ("ом", ("",)), ("а", ("",)), ("я", ("ь", "й")),
+            # Именительный множественного → родительный (19.11.2026): названия рядов Росстата стоят в родительном
+            # («Численность активных абонентов …»), человек пишет «абоненты», «пользователи».
+            ("ы", ("ов", "")), ("и", ("ей", "ий")))
         for suffix, replacements in endings:
             if token.endswith(suffix) and len(token) - len(suffix) >= 3:
                 stem = token[:-len(suffix)]
@@ -376,7 +404,8 @@ def nominal_variants(token: str) -> tuple[str, ...]:
         # Complete agreeing adjective forms support genitive/locative native
         # labels without permitting an arbitrary prefix of another subject.
         for suffix, replacements in (("ого", ("ый", "ой")), ("его", ("ий",)),
-                ("ых", ("ые",)), ("их", ("ие",)), ("ом", ("ый", "ой")), ("ем", ("ий",))):
+                ("ых", ("ые",)), ("их", ("ие",)), ("ом", ("ый", "ой")), ("ем", ("ий",)),
+                ("ые", ("ых",)), ("ие", ("их",))):
             if token.endswith(suffix) and len(token) - len(suffix) >= 4:
                 forms.extend(token[:-len(suffix)] + ending for ending in replacements)
                 break
@@ -1018,13 +1047,19 @@ def region_reading(raw: str, intent: SearchIntent, geometry: list[dict], *,
         return wider
     if intent.countries or intent.regions or intent.literal:
         return None
+    # После пустой выдачи (19.11.2026): начало от трёх букв («… пен») и целое слово названия («… саха») годятся, если
+    # ведут ровно к одному субъекту и такое слово в запросе одно — иначе в «ростов износа пен» выбор субъекта был бы случаен.
+    hits = []
     for term in intent.terms:
         if term in CONCEPTS_ALTERNATIVES or term[0].startswith("search-") or " " in term[0]:
             continue
-        hinted = region_prefix_keys(term[0], geometry, goods=False)
+        hinted = region_prefix_keys(term[0], geometry, goods=False, minimum=3, whole_word=True)
         if len(hinted) == 1:
-            return SearchIntent(intent.query, intent.content, tuple(other for other in intent.terms if other is not term),
-                frozenset(("russia",)), frozenset(hinted), intent.year, intent.month, None, intent.corrected, None)
+            hits.append((term, hinted))
+    if len(hits) == 1:
+        term, hinted = hits[0]
+        return SearchIntent(intent.query, intent.content, tuple(other for other in intent.terms if other is not term),
+            frozenset(("russia",)), frozenset(hinted), intent.year, intent.month, None, intent.corrected, None)
     return None
 
 
