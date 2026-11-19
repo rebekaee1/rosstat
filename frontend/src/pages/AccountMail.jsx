@@ -9,15 +9,17 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import useDocumentMeta from '../lib/useMeta';
 import { useT } from '../i18n';
 import {
-  requestPasswordReset, resetPassword, resubscribeByLink,
+  confirmTopicMail, fetchTopicMailConfirm, requestPasswordReset, resetPassword, resubscribeByLink,
   unsubscribeByLink, verifyEmail,
 } from '../lib/api';
+import { track, events } from '../lib/track';
 import { apiErrorMessage } from '../lib/apiErrorMessage';
 import PasswordField from '../components/PasswordField';
 import Button from '../components/Button';
 import { cn } from '../lib/format';
 import '../styles/w5-pages.css';
 import '../styles/k8-tools.css';
+import '../styles/acq-mail.css';
 
 const inputClass = (invalid) => cn(
   'fe-input w-full px-3.5 py-2.5 rounded-xl text-text-primary focus:outline-none',
@@ -189,6 +191,77 @@ export function VerifyEmail() {
       {state === 'done' && <Note testId="verify-done">{t('mail.verify.done')}</Note>}
       {state === 'error' && <div role="alert" className="w5-auth-error mb-4" data-testid="verify-error">{error}</div>}
       <Button as={Link} to="/account" variant="secondary" className="w-full">{t('mail.toAccount')}</Button>
+    </Card>
+  );
+}
+
+/**
+ * Подтверждение подписки на показатель по почте (совет 19.11.2026). Открытие ссылки ничего не меняет
+ * (почтовые сканеры открывают ссылки сами): человек видит, что и куда будет приходить, и нажимает кнопку.
+ */
+export function TopicConfirm() {
+  const t = useT();
+  useDocumentMeta({ title: t('topicMail.confirm.title'), path: '/account/topic-confirm', robots: 'noindex, nofollow' });
+  const token = useLinkToken();
+  const [info, setInfo] = useState(null); // { title, email }
+  const [state, setState] = useState(token ? 'loading' : 'error');
+  const [error, setError] = useState(token ? null : t('mail.linkBroken'));
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState(null);
+  const ran = useRef(false);
+  useEffect(() => {
+    if (ran.current || !token) return;
+    ran.current = true;
+    fetchTopicMailConfirm(token)
+      .then((d) => { setInfo(d); setState('ready'); })
+      .catch((err) => { setError(apiErrorMessage(err, t)); setState('error'); });
+  }, [token, t]);
+
+  const confirm = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await confirmTopicMail(token);
+      setResult(res);
+      setState('done');
+      track(events.TOPIC_MAIL_CONFIRM, { indicator: res?.code || '', new_account: Boolean(res?.new_account) });
+    } catch (err) {
+      setError(apiErrorMessage(err, t));
+      setState('error');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Card title={t('topicMail.confirm.title')}>
+      {state === 'loading' && <Note testId="topic-confirm-loading">{t('mail.verify.pending')}</Note>}
+      {state === 'ready' && info && (
+        <>
+          <Note testId="topic-confirm-ready">{t('topicMail.confirm.question', { title: info.title, email: info.email })}</Note>
+          <Button className="w-full font-semibold" loading={busy} onClick={confirm} data-testid="topic-confirm-button">
+            {t('topicMail.confirm.button')}
+          </Button>
+        </>
+      )}
+      {state === 'done' && result && (
+        <>
+          <Note testId="topic-confirm-done">{t('topicMail.confirm.done', { title: result.title, email: result.email })}</Note>
+          {result.new_account ? (
+            <p className="text-sm text-text-secondary mb-4">
+              {t('topicMail.confirm.newAccount')}{' '}
+              <Link to="/account/forgot-password" className="acq-mail-link">{t('topicMail.confirm.setPassword')}</Link>
+            </p>
+          ) : null}
+          <Button as={Link} to="/" variant="secondary" className="w-full">{t('topicMail.confirm.toSite')}</Button>
+        </>
+      )}
+      {state === 'error' && (
+        <>
+          <div role="alert" className="w5-auth-error mb-4" data-testid="topic-confirm-error">{error}</div>
+          <Button as={Link} to="/" variant="secondary" className="w-full">{t('topicMail.confirm.toSite')}</Button>
+        </>
+      )}
     </Card>
   );
 }

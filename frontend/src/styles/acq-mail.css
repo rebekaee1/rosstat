@@ -1,0 +1,29 @@
+/* Подписка на показатель по почте (совет 19.11.2026): форма в строке «присылать» и предложение после скачивания.
+   Без рамок: поле — общий .fe-input, плита предложения — слой L1 с тенью L2 (design-system, разделы 3–4). */
+.acq-mail { display: grid; gap: 8px; max-width: 30rem; }
+.acq-mail-row { display: flex; gap: 8px; align-items: stretch; }
+.acq-mail-input { flex: 1 1 auto; min-width: 0; font-size: 16px; } /* 16 px: iOS не увеличивает страницу при фокусе */
+.acq-mail-btn { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; }
+.acq-mail-consent { display: flex; gap: 8px; align-items: flex-start; line-height: 1.45; }
+.acq-mail-consent input { margin-top: 2px; flex: 0 0 auto; }
+.acq-mail-link { color: var(--fe-blue, #1E3A6E); text-decoration: underline; text-underline-offset: 2px; }
+.acq-mail-error:empty { display: none; }
+.acq-mail-error { font-size: 13px; line-height: 1.45; color: #b91c1c; }
+:root[data-theme='dark'] .acq-mail-error { color: var(--color-negative); }
+.acq-mail-done { max-width: 30rem; line-height: 1.5; }
+
+/* Предложение после скачивания: слева внизу (справа внизу — значок регистрации), на телефоне — над нижней панелью. */
+.acq-offer {
+  position: fixed; z-index: 60; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--fe-dock-h, 0px));
+  width: min(26rem, calc(100vw - 32px)); padding: 16px 18px; border-radius: 18px;
+  background: linear-gradient(135deg, rgba(196, 210, 234, 0.3), transparent 75%), var(--fe-l1-bg);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
+}
+.acq-offer__head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+.acq-offer__title { flex: 1 1 auto; font-size: 15px; line-height: 1.4; font-weight: 600; color: var(--color-text-primary); }
+.acq-offer__close { flex: 0 0 auto; padding: 4px; border-radius: 999px; color: var(--color-text-secondary); }
+@media (max-width: 639.98px) {
+  .acq-offer { left: 12px; right: 12px; width: auto; }
+  .acq-mail-row { flex-direction: column; }
+}
+@media print { .acq-offer { display: none; } }
