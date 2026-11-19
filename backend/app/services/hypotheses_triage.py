@@ -8,20 +8,31 @@
   датасета считается «объединено», а не «опровергнуто»), обоснование «Объединена с #N: …»;
 * keep — без изменений.
 
+19.11.2026: второй вход — план JSON (`.artifacts/pulse-fixes-2026-11-19/hypotheses-plan-2026-11-19.json`):
+`[{id, action, verdict, keep_id, rationale}]`, действия close_true / close_false / close_duplicate (= merge,
+`keep_id` — ядро) / close_obsolete / keep. close_obsolete — проверить больше нечем (источник отключён): вердикт
+false, `source = "triage_obsolete"` (в сводке датасета «устарело», а не «опровергнуто»).
+Дубль закрывается и тогда, когда ядро уже закрыто или закрывается в этом же прогоне: вердикт дубля — вердикт ядра
+(повтор подтверждённой — подтверждён); при открытом ядре — false с `source = "triage_merge"`. Модель Пульса видит
+только открытые (`verdict IS NULL`), поэтому закрытый дубль из её входа уходит, а ядро остаётся.
+
 Идемпотентность: гипотеза, у которой уже есть вердикт или отметка `evidence_json.triage`, не трогается; повторный
-прогон ничего не меняет. Ядро объединения должно существовать и быть открытым (или закрываться в этом же прогоне не
-как дубль) — иначе строка пропускается с причиной. По умолчанию — только план; запись — с `apply=True`.
+прогон ничего не меняет. Ядро объединения должно существовать и само не объединяться в этом прогоне (без цепочек) —
+иначе строка пропускается с причиной. По умолчанию — только план; запись — с `apply=True`, одной транзакцией.
 Каждое применённое изменение возвращается для журнала (было/стало).
 """
 from __future__ import annotations
 
 import csv
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
 MERGE_SOURCE = "triage_merge"
-ACTIONS = ("close_true", "close_false", "merge", "keep")
+OBSOLETE_SOURCE = "triage_obsolete"
+ACTIONS = ("close_true", "close_false", "close_obsolete", "merge", "keep")
+_PLAN_ACTIONS = {"close_duplicate": "merge"}
 
 
 @dataclass(frozen=True)
@@ -33,7 +44,27 @@ class Decision:
     reason: str
 
 
+def read_plan_json(path: Path) -> list[Decision]:
+    """План JSON 19.11: [{id, action, verdict, keep_id, rationale}]. Вердикт закрытия сверяется с действием."""
+    out = []
+    for row in json.loads(Path(path).read_text(encoding="utf-8")):
+        action = _PLAN_ACTIONS.get(row.get("action"), row.get("action"))
+        if action not in ACTIONS:
+            raise ValueError(f"гипотеза {row.get('id')}: неизвестное действие {row.get('action')!r}")
+        expected = {"close_true": True, "close_false": False, "close_obsolete": False}.get(action)
+        if expected is not None and row.get("verdict") is not expected:
+            raise ValueError(f"гипотеза {row['id']}: действие {action} и вердикт {row.get('verdict')!r} расходятся")
+        if action == "merge" and not row.get("keep_id"):
+            raise ValueError(f"гипотеза {row['id']}: дубль без keep_id")
+        out.append(Decision(id=int(row["id"]), action=action,
+                            merge_into=int(row["keep_id"]) if action == "merge" else None,
+                            ref=None, reason=str(row.get("rationale") or "").strip()))
+    return out
+
+
 def read_decisions(path: Path) -> list[Decision]:
+    if Path(path).suffix.lower() == ".json":
+        return read_plan_json(path)
     out = []
     with open(path, encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
@@ -72,11 +103,21 @@ async def apply_triage(db, decisions: list[Decision], *, apply: bool, now: datet
         if d.action == "merge":
             core = await db.get(Hypothesis, d.merge_into) if d.merge_into else None
             core_decision = by_id.get(d.merge_into)
-            if core is None or core.verdict is not None or (core_decision and core_decision.action == "merge"):
-                skipped.append({"id": d.id, "why": f"ядро #{d.merge_into} не открыто или само объединяется"})
+            if core is None or (core_decision and core_decision.action == "merge"):
+                skipped.append({"id": d.id, "why": f"ядра #{d.merge_into} нет или оно само объединяется"})
                 continue
-            verdict, source = False, MERGE_SOURCE
+            # Вердикт дубля — вердикт ядра (уже вынесенный или выносимый этим прогоном); при открытом ядре — false.
+            if core.verdict is not None:
+                verdict = core.verdict
+            elif core_decision and core_decision.action in ("close_true", "close_false"):
+                verdict = core_decision.action == "close_true"
+            else:
+                verdict = False
+            source = MERGE_SOURCE
             rationale = f"Объединена с #{d.merge_into}: {d.reason}"
+        elif d.action == "close_obsolete":
+            verdict, source = False, OBSOLETE_SOURCE
+            rationale = f"Устарела {day}: {d.reason}"
         else:
             verdict, source = d.action == "close_true", h.source
             rationale = f"Расчистка {day}: {d.reason}" + (f" {d.ref}" if d.ref else "")

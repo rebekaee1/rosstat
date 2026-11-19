@@ -241,7 +241,8 @@ users.new_list): имён и почт новых людей в данных не
 В конце ответа, после строки ---HYPOTHESES---, выведи JSON-массив изменений
 гипотез (может быть пустым []): [{"id": число или null для новой, "statement":
 "утверждение", "verdict": true|false|null, "confidence": 0.0-1.0, "rationale":
-"на чём основано"}]. Не более 5 новых или обновлённых гипотез за день; закрытия
+"на чём основано"}]. Не более 5 новых или обновлённых гипотез за день; когда
+открытых 120 и больше, новая открытая не записывается — сначала закрой старые; закрытия
 существующих гипотез вердиктом (true/false) со ссылкой на [id] записи контекста в rationale
 идут отдельно — до 15 за день, ими расчищай завал открытых гипотез. Всё до разделителя — текст
 записки, без преамбул."""
@@ -353,6 +354,7 @@ async def _apply_hypothesis_updates(updates: list[dict]) -> int:
     applied = 0
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     open_statements: dict[int, str] | None = None
+    new_open = 0
     async with analytics_session() as db:
         for upd in select_hypothesis_updates(updates, _context_ids()):
             if not isinstance(upd, dict) or not str(upd.get("statement") or "").strip():
@@ -383,8 +385,16 @@ async def _apply_hypothesis_updates(updates: list[dict]) -> int:
                 same = similar_open_hypothesis(str(upd["statement"]), open_statements)
                 h = await db.get(Hypothesis, same) if same is not None else None
             if h is None:
+                # Потолок открытых: новая открытая гипотеза не пишется, пока открытых не меньше, чем модель видит во
+                # входе, — иначе часть открытых выпадает из её поля зрения и снова копится завал (19.11.2026: 242).
+                open_now = len(open_statements or {}) + new_open
+                if verdict is None and open_now >= OPEN_HYPOTHESES_IN_CONTEXT:
+                    logger.info("Pulse hypotheses: new open one skipped, %s open (cap %s)",
+                                open_now, OPEN_HYPOTHESES_IN_CONTEXT)
+                    continue
                 h = Hypothesis(created_at=now)
                 db.add(h)
+                new_open += verdict is None
             h.statement = str(upd["statement"])[:500]
             h.rationale = str(upd.get("rationale") or "")[:2000] or None
             h.verdict = verdict
