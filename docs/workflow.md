@@ -835,3 +835,55 @@ docker compose exec -T backend python /app/scripts/newsletter_personal.py metric
 3. Только после совпадения: `RUSTATS_ANALYTICS_SESSIONIZE_INCREMENTAL_ENABLED=true`, пересоздать scheduler (перед этим `docker diff` на ручные заплатки). Проверка: в журнале `Rollups 15min: {... 'mode': 'increment'}` три раза из четырёх, раз в час `'full'`.
 4. Замер: два снимка `pg_stat_statements` с разрывом ~1 час — чтение сессионизации до и после ([enterprise_resilience](enterprise_resilience.md#sessionize-plan-2026-11-14)).
 5. Откат: флаг `false` и пересоздание scheduler; отметка в Redis ни на что не влияет.
+
+<a id="points-autovacuum-release-2026-11-19"></a>
+
+## Выпуск автоочистки таблиц точек — миграция `20261119_points_autovacuum` (19.11.2026)
+
+Причина и цифры — [enterprise_resilience](enterprise_resilience.md#points-autovacuum-2026-11-19). Миграция только меняет параметры хранения `world_data_points` и `subnational_data_points` (`ALTER TABLE … SET`, блокировка SHARE UPDATE EXCLUSIVE: чтение и запись идут; предел ожидания 10 с, мешающую автоочистку Postgres снимает сам).
+
+**Порядок.** Разовую очистку выполнить **до** выпуска, в отдельный день или за несколько часов: после миграции накопленные 1,6 млн мёртвых строк превышают новый порог, и автоочистка начнёт проход сама через ~1 мин — внутри 15-минутного наблюдения `deploy.sh` это лишняя нагрузка на диск. Ручной `VACUUM` и `deploy.sh` одновременно не запускать: миграция ждёт ручной `VACUUM` и падает по пределу 10 с.
+
+**Окно.** Будни 07:40–10:00 МСК: после утреннего окна ETL 05:30–07:30 и до дневного пика людей (по `server_sessions.is_human` за 14 дней до 19.11: 07–08 ч — 140–210 человек в час, 11–13 ч — 360–370). Не ночью: 23:10–01:40 пакет прогнозов Европы читает эту таблицу, в 02:10/02:20 загрузки национальных паспортов и Евростата пишут в неё, 03:10 sitemap, 02:45–05:00 ручные партии прогнозов. Свободно на диске ≥ 3 ГБ (`df -h /`), WAL от очистки — сотни МБ.
+
+**Перед запуском** (тем же psql): `SELECT relid::regclass, phase FROM pg_stat_progress_vacuum;` — пусто; `SELECT pid, now()-xact_start FROM pg_stat_activity WHERE xact_start < now()-interval '10 min';` — пусто (иначе очистка не уберёт строки, видимые этой транзакции).
+
+**Команда** (на сервере, в фоне, чтобы обрыв SSH не прервал проход; `VACUUM FULL` и `CLUSTER` не использовать — они блокируют таблицу целиком):
+
+```bash
+ssh fe-prod
+cd /opt/rosstat
+cat > /root/vacuum-points.sql <<'SQL'
+SET statement_timeout = 0;
+SET lock_timeout = '5s';
+-- ручной VACUUM по умолчанию идёт без паузы; темп как у автоочистки ×2, чтобы не занять диск целиком
+SET vacuum_cost_delay = '2ms';
+SET vacuum_cost_limit = 400;
+\timing on
+VACUUM (ANALYZE, VERBOSE) world_data_points;
+VACUUM (ANALYZE, VERBOSE) subnational_data_points;
+SQL
+nohup sh -c "docker compose exec -T postgres sh -c 'psql -U \"\$POSTGRES_USER\" -d \"\$POSTGRES_DB\" -v ON_ERROR_STOP=1 -f -' < /root/vacuum-points.sql" > /root/vacuum-points-$(date +%F).log 2>&1 &
+```
+
+Ход: `SELECT relid::regclass, phase, heap_blks_scanned, heap_blks_total, index_vacuum_count FROM pg_stat_progress_vacuum;`. Остановить при необходимости: `SELECT pg_cancel_backend(pid) FROM pg_stat_progress_vacuum;` — сделанная часть не теряется, данные не страдают.
+
+**Оценка (не замер).** `world_data_points`: чтение ~0,2 ГБ страниц таблицы с мёртвыми строками + один полный проход трёх индексов 1,04 ГБ (1,6 млн адресов помещаются в `maintenance_work_mem` 256 МБ — один проход) + сбор статистики ~0,86 ГБ (цель 1000 у `indicator_id` читает почти всю таблицу); запись — изменённые страницы и WAL, сотни МБ. При 20–50 МБ/с ≈ 5–15 мин. `subnational_data_points`: таблица 0,26 ГБ (90 % страниц без отметки видимости) + индексы 0,6 ГБ ≈ 3–8 мин. Блокировок для сайта нет; ожидание диска у соседних запросов вырастет на время прохода.
+
+**Проверка результата:**
+
+```sql
+SET statement_timeout = '20s';
+SELECT relname, n_live_tup, n_dead_tup, last_vacuum, last_analyze FROM pg_stat_user_tables
+ WHERE relname IN ('world_data_points','subnational_data_points');          -- n_dead_tup около 0, даты сегодня
+SELECT relname, round(100.0*relallvisible/relpages,1) AS vis_pct FROM pg_class
+ WHERE relname IN ('world_data_points','subnational_data_points');          -- ≥ 99 %
+SELECT relname, reloptions FROM pg_class
+ WHERE relname IN ('world_data_points','subnational_data_points');          -- после выпуска: пять параметров миграции
+```
+
+В журнале VERBOSE: `removed … row versions` ≈ 1,6 млн и 0,65 млн. После выпуска проходы автоочистки этих таблиц видны в `docker compose logs postgres | grep 'automatic vacuum of table'`; ожидание — раз в несколько суток, `last_autovacuum` не старше недели.
+
+**Если обычной очистки мало.** Место мёртвых строк остаётся в файлах и переиспользуется новыми вставками; размер на диске не уменьшится. Оценка раздувания индексов `uq_world_data_point` 510 МБ и `world_data_points_pkey` 400 МБ относительно плотной сборки — порядка 10–20 % (расчёт по размеру записи, не замер). `pg_repack` в образе нет (`pg_available_extensions`), `VACUUM FULL`/`CLUSTER` держат исключительную блокировку минуты — сайт ждёт. Если раздувание подтвердится (`pgstattuple` есть в образе, но `CREATE EXTENSION` — запись, по слову владельца): `REINDEX INDEX CONCURRENTLY uq_world_data_point;` по одному индексу — нужно свободное место размером с индекс, полный проход таблицы, при сбое остаётся негодный индекс `…_ccnew` (снять `DROP INDEX CONCURRENTLY`); выигрыш — десятки–сотни МБ кэша. Сейчас не рекомендуется.
+
+**Откат.** `alembic downgrade 20261118_search_index` возвращает параметры по умолчанию (`ALTER TABLE … RESET`); очистку откатывать нечего.
