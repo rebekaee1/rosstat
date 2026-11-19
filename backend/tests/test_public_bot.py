@@ -930,3 +930,68 @@ def test_research_links_follow_group_setting(monkeypatch):
     assert pb.menu_keyboard()["inline_keyboard"][-1][0]["url"] == "https://t.me/+group"
     assert pb.research_keyboard()["inline_keyboard"][0][0]["url"] == "https://t.me/+group"
     assert "/research" in pb.HELP_TEXT
+
+
+# ---------------------------------------------------------------------------
+# Совет 19.11.2026: подписка сразу по ссылке со строки «Присылать» на сайте (`?start=site_<тема>`)
+# ---------------------------------------------------------------------------
+
+def test_site_codes_parse_and_utm():
+    assert pb.parse_start("/start site_diesel") == ("site_diesel", "diesel")
+    assert pb.parse_start("/start site_ai92") == ("site_ai92", "ai92")
+    assert pb.parse_start("/start site_inflation") == ("site_inflation", "inflation")
+    assert pb.site_topic("site_keyrate") == "keyrate" and pb.site_topic("SITE_USD") == "usd"
+    assert pb.site_topic("site_population") is None and pb.site_topic("r014_diesel") is None
+    assert pb.site_topic("xsite_diesel") is None and pb.site_topic(None) is None
+    url = pb.site_url(pb.TOPICS["diesel"], "site_diesel")
+    assert "utm_content=site_diesel" in url and "utm_campaign=diesel" in url
+    assert "utm_content" not in pb.site_url(pb.TOPICS["diesel"], "site_population")
+    # Каждая тема бота доступна по коду со строки сайта.
+    for key in pb.TOPICS:
+        assert pb.parse_start(f"/start site_{key}") == (f"site_{key}", key)
+
+
+def test_site_start_without_flag_keeps_button(env, monkeypatch):
+    maker, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_site_autosubscribe", False, raising=False)
+    asyncio.run(pb.handle_message(_msg("/start site_diesel")))
+    assert asyncio.run(_rows(maker, PublicBotSubscription)) == []
+    assert sent[-1]["kb"]["inline_keyboard"][0][0]["callback_data"] == "pb:s:diesel"
+    assert pb.SITE_SUBSCRIBED_HEADER not in sent[-1]["text"]
+
+
+def test_site_start_subscribes_at_once(env, monkeypatch):
+    maker, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_site_autosubscribe", True, raising=False)
+    asyncio.run(pb.handle_message(_msg("/start site_diesel")))
+    subs = asyncio.run(_rows(maker, PublicBotSubscription))
+    assert [(s.chat_id, s.topic) for s in subs] == [("555", "diesel")]
+    assert subs[0].last_point_date == date(2026, 10, 26)  # присылаем только следующую точку
+    texts = [s["text"] for s in sent]
+    assert texts[0].startswith(pb.SHORT_INTRO) and "/stop" in texts[0]
+    assert texts[1].startswith(pb.SITE_SUBSCRIBED_HEADER) and "<b>86,52 ₽ за литр</b>" in texts[1]
+    kb = sent[1]["kb"]["inline_keyboard"]
+    assert kb[0][0] == {"text": "🔕 Не присылать", "callback_data": "pb:u:diesel"}
+    assert "utm_content=site_diesel" in kb[1][1]["url"]
+    events = asyncio.run(_rows(maker, PublicBotEvent))
+    assert [(e.kind, e.code, e.topic) for e in events] == [
+        ("start", "site_diesel", "diesel"), ("subscribe", "site_diesel", "diesel")]
+    # Повторный переход по той же ссылке: без дубля подписки и без второго события «subscribe».
+    sent.clear()
+    asyncio.run(pb.handle_message(_msg("/start site_diesel")))
+    assert len(asyncio.run(_rows(maker, PublicBotSubscription))) == 1
+    kinds = [e.kind for e in asyncio.run(_rows(maker, PublicBotEvent))]
+    assert kinds.count("subscribe") == 1 and kinds.count("start") == 2
+    assert not sent[0]["text"].startswith(pb.SHORT_INTRO)  # вернувшемуся — без знакомства
+    # «Не присылать» — одна кнопка.
+    asyncio.run(pb.handle_callback(_cb("pb:u:diesel")))
+    assert asyncio.run(_rows(maker, PublicBotSubscription)) == []
+
+
+def test_site_flag_does_not_touch_other_codes(env, monkeypatch):
+    maker, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_site_autosubscribe", True, raising=False)
+    asyncio.run(pb.handle_message(_msg("/start r014_diesel")))
+    asyncio.run(pb.handle_message(_msg("/start diesel", chat_id=556)))
+    asyncio.run(pb.handle_message(_msg("/start site_population", chat_id=557)))
+    assert asyncio.run(_rows(maker, PublicBotSubscription)) == []

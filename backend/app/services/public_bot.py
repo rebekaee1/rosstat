@@ -131,6 +131,21 @@ def parse_start(text: str) -> tuple[str | None, str | None]:
     return code, topic
 
 
+SITE_PREFIX = "site_"
+
+
+def site_topic(code: str | None) -> str | None:
+    """`site_diesel` → `diesel`: ссылка со строки «Присылать» на странице сайта (совет 19.11.2026).
+    Только точный вид `site_<ключ темы>`; иначе None."""
+    if not code or not code.lower().startswith(SITE_PREFIX):
+        return None
+    key = code[len(SITE_PREFIX):].lower()
+    return key if key in TOPICS else None
+
+
+SITE_SUBSCRIBED_HEADER = "🔔 Буду присылать, когда выйдет новое значение. Отписаться — кнопка «Не присылать»."
+
+
 def _norm(text: str) -> str:
     return text.lower().replace("ё", "е")
 
@@ -263,7 +278,8 @@ def _change(now: float, before: float | None, is_rate: bool) -> str | None:
 def site_url(topic: Topic, code: str | None) -> str:
     q = {"utm_source": "telegram", "utm_medium": "bot", "utm_campaign": topic.key}
     # Тестер №9, 09.11: ?start=nonexistent попадал в utm_content — берём только коды роликов и наши метки.
-    if code and (re.match(r"^r\d{3}(_|$)", code) or code in TOPICS or code in ("inline", "site", "channel")):
+    if code and (re.match(r"^r\d{3}(_|$)", code) or code in TOPICS or code in ("inline", "site", "channel")
+                 or site_topic(code)):
         q["utm_content"] = code
     # Русский хост: apex — английская версия сайта (проверено 08.11.2026 на живом боте).
     return f"{ru_public_origin()}/russia/indicator/{topic.indicator}?{urlencode(q)}"
@@ -529,7 +545,7 @@ def bot_token() -> str:
     return settings.public_bot_token or settings.telegram_bot_token
 
 
-async def _reply_figure(chat_id: str, topic_key: str) -> None:
+async def _reply_figure(chat_id: str, topic_key: str, header: str | None = None) -> None:
     topic = TOPICS[topic_key]
     async with async_session() as db:
         chat = await _touch_chat(db, chat_id)
@@ -547,7 +563,8 @@ async def _reply_figure(chat_id: str, topic_key: str) -> None:
     if fig is None:
         await _send(chat_id, f"По теме «{escape(topic.title)}» сейчас нет данных. Выберите другую:", menu_keyboard())
         return
-    await _send(chat_id, figure_text(fig, cpi=cpi), figure_keyboard(topic, code, subscribed))
+    await _send(chat_id, figure_text(fig, header=header if subscribed else None, cpi=cpi),
+                figure_keyboard(topic, code, subscribed))
     if ask_source:
         await _send(chat_id, SOURCE_QUESTION, sources_keyboard())
 
@@ -604,7 +621,12 @@ async def handle_message(msg: dict) -> None:
             # По ссылке из ролика: короткая строка о боте, затем цифра с её кнопками внизу.
             if not returning:
                 await _send(chat_id, SHORT_INTRO + "\n\n" + privacy_line())
-            await _reply_figure(chat_id, topic)
+            header = None
+            if settings.public_bot_site_autosubscribe and site_topic(code) == topic:
+                # Со строки «Присылать» на сайте: подписываем сразу (совет 19.11.2026), отписка — кнопка под числом.
+                await subscribe(chat_id, topic, code=code)
+                header = SITE_SUBSCRIBED_HEADER
+            await _reply_figure(chat_id, topic, header=header)
         elif returning:
             names = ", ".join(TOPICS[s].title for s in subs if s in TOPICS)
             extra = f"\nПрисылаю новые данные: {escape(names)}." if names else ""
@@ -810,7 +832,7 @@ async def handle_member_update(upd: dict) -> None:
         await mark_blocked(chat_id)
 
 
-async def subscribe(chat_id: str, topic_key: str) -> None:
+async def subscribe(chat_id: str, topic_key: str, code: str | None = None) -> None:
     if topic_key == WEEK_TOPIC:
         # Пятничная сводка: last_sent_at=None, чтобы первая ушла в ближайшую пятницу.
         async with async_session() as db:
@@ -833,7 +855,9 @@ async def subscribe(chat_id: str, topic_key: str) -> None:
                 last_point_date=fig.last_date if fig else None,
                 last_value=fig.last_value if fig else None, last_sent_at=_now(),
             ))
-        _event(db, chat_id, "subscribe", topic=topic_key)
+            # code — откуда подписка (`site_<тема>` со строки сайта); Пульс считает подписки с сайта по нему.
+            # Повторный переход по той же ссылке уже подписанного человека подпиской не считается.
+            _event(db, chat_id, "subscribe", code=code, topic=topic_key)
         await db.commit()
 
 
