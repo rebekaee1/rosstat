@@ -2983,3 +2983,10 @@ from app.data.emiss_quarterly import all_series as _q_series, copy_en as _q_copy
 for _ds, _s in _q_series():
     if _s.own_metadata:
         REGION_INDICATORS_EN.setdefault(_s.code, _q_copy_en(_ds, _s))
+
+
+# Small and medium-sized businesses by region, FNS SME register (2026-11-19).
+from app.data.fns_msp import SERIES as _MSP_SERIES, copy_en as _msp_copy_en  # noqa: E402
+
+for _series in _MSP_SERIES:
+    REGION_INDICATORS_EN.setdefault(_series.code, _msp_copy_en(_series))

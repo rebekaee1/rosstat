@@ -37,6 +37,9 @@ config-driven через `model_config_json.product_label` (точное сов�
   fuel-diesel «Дизельное топливо, л»
 
 Прогноз — месячный (avg-month → monthly_auto), см. view_model_families.
+
+С 19.11.2026 из того же файла — 20 продуктов и АИ-98 (`app/data/rosstat_weekly_goods.py`, простые недельные ряды
+без прогноза). Файл качается один раз на прогон: кэш процесса 10 минут (`_weekly_xlsx`).
 """
 
 from __future__ import annotations
@@ -44,6 +47,8 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
+import threading
+import time
 from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
@@ -269,13 +274,29 @@ def fetch_fuel_bulletin_points(
     return [PricePoint(date=d, value=v) for d, v in sorted(out.items())]
 
 
+# Один файл на все товары (с 19.11.2026 — 24 ряда): прогон ETL качает его один раз за 10 минут, а не на каждый
+# ряд. Кэшируется только удачный ответ; ошибка не кэшируется — следующий ряд пробует сам.
+_XLSX_CACHE_TTL_S = 600
+_xlsx_lock = threading.Lock()
+_xlsx_cache: tuple[float, bytes] | None = None
+
+
+def _weekly_xlsx(session: requests.Session) -> bytes:
+    global _xlsx_cache
+    with _xlsx_lock:
+        if _xlsx_cache and time.monotonic() - _xlsx_cache[0] < _XLSX_CACHE_TTL_S:
+            return _xlsx_cache[1]
+        r = session.get(WEEKLY_SRED_CEN_URL, timeout=60)
+        r.raise_for_status()
+        _xlsx_cache = (time.monotonic(), r.content)
+        return r.content
+
+
 def fetch_weekly_price(product_label: str) -> tuple[list[PricePoint], str]:
     session = create_session()
     try:
         session.verify = False
-        r = session.get(WEEKLY_SRED_CEN_URL, timeout=60)
-        r.raise_for_status()
-        points = parse_weekly_price_xlsx(r.content, product_label)
+        points = parse_weekly_price_xlsx(_weekly_xlsx(session), product_label)
 
         # Свежая неделя выходит в HTML-бюллетене раньше, чем догоняет xlsx.
         # Бюллетень первичен: на совпадающих датах его значение затирает xlsx.

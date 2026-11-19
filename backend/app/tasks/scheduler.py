@@ -714,6 +714,16 @@ async def emiss_regional_job():
     await _job()
 
 
+async def fns_msp_job():
+    """Малый и средний бизнес по регионам помесячно (реестр МСП ФНС, 19.11.2026).
+
+    Расписание в main.py, реализация — app.services.fns_msp_regional.
+    """
+    from app.services.fns_msp_regional import fns_msp_job as _job
+
+    await _job()
+
+
 async def emiss_social_job():
     """Зарплата, пенсии и рождаемость по регионам помесячно (ЕМИСС 57824, 61699, 61698, 62852, 62853).
 

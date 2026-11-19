@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Копия в Git; живой файл: ~/Library/LaunchAgents/com.forecasteconomy.minfin-sync.plist (19.11.2026).
+     Минфин режет сети Timeweb, файлы на прод доставляет Mac: бюджет (minfin-sync-from-mac.sh) и ФНБ/госдолг
+     (minfin-debt-sync-from-mac.sh). 11:30 и 16:30; пропущенный запуск launchd догоняет после пробуждения.
+     Скрипты берутся из основной копии репозитория. Журнал — ~/Library/Application Support/ForecastEconomy/minfin-sync/sync.log.
+     Установка: cp scripts/mac/com.forecasteconomy.minfin-sync.plist ~/Library/LaunchAgents/ &&
+                launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.forecasteconomy.minfin-sync.plist -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.forecasteconomy.minfin-sync</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>-c</string>
+    <string>cd /Users/iprofi/tradingeconomics/rosstat &amp;&amp; { scripts/minfin-sync-from-mac.sh; scripts/minfin-debt-sync-from-mac.sh; }</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Hour</key><integer>11</integer><key>Minute</key><integer>30</integer></dict>
+    <dict><key>Hour</key><integer>16</integer><key>Minute</key><integer>30</integer></dict>
+  </array>
+  <key>ProcessType</key><string>Background</string>
+  <key>StandardOutPath</key><string>/Users/iprofi/Library/Application Support/ForecastEconomy/minfin-sync/launchd.out.log</string>
+  <key>StandardErrorPath</key><string>/Users/iprofi/Library/Application Support/ForecastEconomy/minfin-sync/launchd.err.log</string>
+</dict>
+</plist>

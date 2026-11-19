@@ -1436,16 +1436,20 @@ _MONTHLY_RU = {
 }
 
 
-def _mt(key: str, *, social: bool = False, **kwargs) -> str:
+def _mt(key: str, *, social: bool | str = False, **kwargs) -> str:
     # social — зарплата, пенсия, рождаемость (ЕМИСС, 19.11.2026): часть ценовых фраз («средние потребительские цены»,
     # «среднероссийская цена») к ним не подходит; свои тексты на обоих языках — в app.data.emiss_regional_social.
-    tpl = _social_monthly_text(key) if social else None
+    tpl = _social_monthly_text(key, social) if social else None
     tpl = tpl or regional_template(f"region_monthly.{key}") or _MONTHLY_RU[key]
     return tpl.format(**kwargs) if kwargs else tpl
 
 
-def _social_monthly_text(key: str) -> str | None:
-    from app.data.emiss_regional_social import MONTHLY_TEXT_EN, MONTHLY_TEXT_RU
+def _social_monthly_text(key: str, kind: bool | str = True) -> str | None:
+    # kind "msp" — малый бизнес из реестра ФНС (19.11.2026): свои тексты без Росстата и ЕМИСС.
+    if kind == "msp":
+        from app.data.fns_msp import MONTHLY_TEXT_EN, MONTHLY_TEXT_RU
+    else:
+        from app.data.emiss_regional_social import MONTHLY_TEXT_EN, MONTHLY_TEXT_RU
     from app.services.locale import get_locale
 
     return (MONTHLY_TEXT_EN if get_locale() == "en" else MONTHLY_TEXT_RU).get(key)
@@ -1475,8 +1479,9 @@ async def _render_region_indicator_monthly(
     «на начало года» — в FAQ. Отдельной страницы на дату нет.
     """
     from app.data.emiss_regional_social import is_social_code
+    from app.data.fns_msp import is_msp_code
 
-    mt = partial(_mt, social=is_social_code(code))
+    mt = partial(_mt, social="msp" if is_msp_code(code) else is_social_code(code))
     series = [(int(m), float(v)) for m, v in rows]
     first_period, first_value = series[0]
     last_period, last_value = series[-1]

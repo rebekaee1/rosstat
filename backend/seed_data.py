@@ -21,6 +21,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 from app.data.emiss_income import seed_indicators as emiss_income_indicators
 from app.data.emiss_labor import seed_indicators as emiss_labor_indicators
 from app.data.emiss_steel import seed_indicators as emiss_steel_indicators
+from app.data.minfin_debt import seed_indicators as minfin_debt_indicators
+from app.data.rosstat_weekly_goods import seed_indicators as weekly_goods_indicators
 from app.data.emiss_producer_prices import seed_indicators as emiss_producer_price_indicators
 from app.data.cbr_currencies import seed_rows as cbr_currency_rows
 from app.data.cpi_provenance import cpi_provenance
@@ -5021,6 +5023,10 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
+    # Недельные цены на продукты и АИ-98 из того же файла Росстата (19.11.2026).
+    *weekly_goods_indicators(),
+    # ФНБ и госдолг России, помесячные файлы Минфина (19.11.2026).
+    *minfin_debt_indicators(),
 ]
 
 
