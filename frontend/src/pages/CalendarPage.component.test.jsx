@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import CalendarPage from './CalendarPage';
 import { renderPage, mockApiGet } from '../test/renderPage';
 import api from '../lib/api';
@@ -88,5 +88,82 @@ describe('CalendarPage: видимые состояния', () => {
     });
     expect(await screen.findByText('Индекс потребительских цен')).toBeTruthy();
     expect(screen.queryByTestId('calendar-empty')).toBeNull();
+  });
+});
+
+// Пульс 363 (19.11.2026): на каждый новый месяц сетка с кнопками пропадала под заглушкой, нажатия
+// попадали в заглушку. Теперь прежний месяц стоит до ответа, соседние месяцы предзагружаются.
+describe('CalendarPage: переключение месяца без заглушки', () => {
+  const ev = (id, title, date) => ({
+    id, title, importance: 3, source: 'rosstat', scheduled_date: date, scheduled_time: '19:00',
+    source_event_uid: `rosstat-${id}-${date}`, indicator_code: `code-${id}`,
+  });
+
+  /** Ответы `/calendar?from=…` держатся, пока тест не отпустит месяц: `release('2031-04-01', data)`. */
+  function mockMonths(ready) {
+    const waiting = new Map();
+    const spy = vi.spyOn(api, 'get').mockImplementation((url) => {
+      if (url.startsWith('/calendar/upcoming')) return Promise.resolve({ data: { events: [] } });
+      const from = new URLSearchParams(url.split('?')[1]).get('from');
+      if (ready[from]) return Promise.resolve({ data: ready[from] });
+      return new Promise((resolve) => { waiting.set(from, resolve); });
+    });
+    const release = (from, data) => waiting.get(from)?.({ data });
+    return { spy, waiting, release };
+  }
+
+  const renderLive = () => renderPage(<CalendarPage />, { path: '/calendar', route: '/calendar?y=2031&m=4', locale: 'ru' });
+  const may = { '2031-05-01': { events: [ev(1, 'Майский выпуск', '2031-05-14')], total: 1 } };
+
+  it('после загрузки месяца запрашивает соседние месяцы заранее', async () => {
+    const { spy } = mockMonths(may);
+    renderLive();
+    expect((await screen.findAllByText('Майский выпуск')).length).toBeGreaterThan(0);
+    await waitFor(() => {
+      const froms = spy.mock.calls.map(([u]) => new URLSearchParams(u.split('?')[1] || '').get('from'));
+      expect(froms).toContain('2031-04-01');
+      expect(froms).toContain('2031-06-01');
+    });
+  });
+
+  it('пока грузится новый месяц, сетка и кнопки на месте, прежний список тускнеет; затем приходит новый', async () => {
+    const { release, waiting } = mockMonths(may);
+    renderLive();
+    expect((await screen.findAllByText('Майский выпуск')).length).toBeGreaterThan(0);
+    await waitFor(() => expect(waiting.has('2031-04-01')).toBe(true));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Предыдущий месяц' }));
+
+    const grid = screen.getByTestId('calendar-grid');
+    expect(grid.textContent).toContain('Апрель 2031');
+    expect(grid.getAttribute('aria-busy')).toBe('true');
+    expect(screen.getByTestId('calendar-list').className).toContain('is-pending');
+    expect(screen.queryByTestId('calendar-empty')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Предыдущий месяц' })).toBeTruthy();
+
+    release('2031-04-01', { events: [ev(2, 'Апрельский выпуск', '2031-04-10')], total: 1 });
+    expect((await screen.findAllByText('Апрельский выпуск')).length).toBeGreaterThan(0);
+    expect(screen.queryAllByText('Майский выпуск')).toHaveLength(0);
+    expect(screen.getByTestId('calendar-grid').getAttribute('aria-busy')).toBeNull();
+  });
+
+  it('быстрые нажатия: поздний ответ прошлого месяца не подменяет открытый', async () => {
+    const { release, waiting } = mockMonths(may);
+    renderLive();
+    expect((await screen.findAllByText('Майский выпуск')).length).toBeGreaterThan(0);
+    await waitFor(() => expect(waiting.has('2031-04-01')).toBe(true));
+
+    const prev = () => fireEvent.click(screen.getByRole('button', { name: 'Предыдущий месяц' }));
+    prev();
+    prev();
+    expect(screen.getByTestId('calendar-grid').textContent).toContain('Март 2031');
+    await waitFor(() => expect(waiting.has('2031-03-01')).toBe(true));
+
+    release('2031-03-01', { events: [ev(3, 'Мартовский выпуск', '2031-03-12')], total: 1 });
+    expect((await screen.findAllByText('Мартовский выпуск')).length).toBeGreaterThan(0);
+    release('2031-04-01', { events: [ev(2, 'Апрельский выпуск', '2031-04-10')], total: 1 });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(screen.queryAllByText('Апрельский выпуск')).toHaveLength(0);
+    expect(screen.getAllByText('Мартовский выпуск').length).toBeGreaterThan(0);
   });
 });

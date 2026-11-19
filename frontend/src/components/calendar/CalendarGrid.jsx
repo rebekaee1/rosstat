@@ -54,6 +54,7 @@ export default function CalendarGrid({
   selectedDate, onSelectDate,
   source, onSourceChange,
   recurringKeys, onlyImportant = false, onToggleImportant,
+  pending = false,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -101,7 +102,11 @@ export default function CalendarGrid({
   ];
 
   return (
-    <div data-testid="calendar-grid" className="fe-panel rounded-[1.5rem] overflow-hidden mb-6">
+    <div
+      data-testid="calendar-grid"
+      className={cn('fe-panel rounded-[1.5rem] overflow-hidden mb-6', pending && 'is-pending')}
+      aria-busy={pending || undefined}
+    >
       <div className="flex items-center justify-between px-4 py-3 fe-divider-b">
         <Button
           variant="ghost"
@@ -112,7 +117,8 @@ export default function CalendarGrid({
           <ChevronLeft className="w-5 h-5 text-text-secondary" aria-hidden="true" />
         </Button>
 
-        <h2 className="text-base font-semibold text-text-primary select-none">
+        {/* Месяц в заголовке меняется сразу по нажатию; пока его события грузятся, подпись чуть тускнеет. */}
+        <h2 className="fe-cal-month-title text-base font-semibold text-text-primary select-none" aria-live="polite">
           {t(`calendar.month.${month}`)} {year}
         </h2>
 
@@ -237,7 +243,8 @@ export default function CalendarGrid({
           <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500" /> {t('calendar.source.cbr')}</span>
           <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> {t('calendar.source.rosstat')}</span>
           <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> {t('calendar.source.minfin')}</span>
-          <span className="fe-cal-legend__count">{t('calendar.eventsCount', { n: oneOffCount })}</span>
+          {/* Пока месяц грузится, счёт «0 событий» был бы неправдой — число скрыто до ответа. */}
+          <span className="fe-cal-legend__count" aria-hidden={pending || undefined}>{t('calendar.eventsCount', { n: oneOffCount })}</span>
         </div>
         {/* Справка по цветам и жирным числам занимала три строки под сеткой: теперь она сворачивается. */}
         <details className="fe-acc fe-cal-legend__more">

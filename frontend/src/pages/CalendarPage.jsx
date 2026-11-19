@@ -1,7 +1,4 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-
-/** Мировые источники календаря (ФРС, BEA, Eurostat); бэкенд без `source` отдаёт только российские. */
-const WORLD_SOURCES = 'fed,bea,eurostat';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { CalendarX2, ChevronDown, Download, X } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
@@ -21,6 +18,7 @@ import { track, events } from '../lib/track';
 import { plainEventTitle, pluralForm } from '../lib/calendarText';
 import { groupSimilarEvents, findDailyRecurring, recurringKeyOf, pickDefaultDay } from '../lib/calendarGrouping';
 import { calendarMonthTrail, calendarTrail } from '../lib/breadcrumbs';
+import { calendarMonthParams, eventsInRange, shiftMonth, usePrefetchNeighbourMonths } from '../lib/calendarMonths';
 import {
   calendarPath,
 } from '../lib/sitePaths';
@@ -57,13 +55,6 @@ function formatDayLabel(dateStr, t) {
   if (eventDate.getTime() === today.getTime()) return `${t('calendar.today')}, ${day} ${month}`;
   if (eventDate.getTime() === tomorrow.getTime()) return `${t('calendar.tomorrow')}, ${day} ${month}`;
   return `${weekday}, ${day} ${month} ${year}`;
-}
-
-function monthRange(year, month) {
-  const from = `${year}-${String(month + 1).padStart(2, '0')}-01`;
-  const lastDay = new Date(year, month + 1, 0).getDate();
-  const to = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-  return { from, to };
 }
 
 function CalendarSkeleton({ onRefresh }) {
@@ -163,10 +154,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   }, [searchParams, setSearchParams, initYear, initMonth]);
 
   const goMonth = useCallback((delta) => {
-    let newMonth = month + delta;
-    let newYear = year;
-    if (newMonth > 11) { newMonth = 0; newYear++; }
-    else if (newMonth < 0) { newMonth = 11; newYear--; }
+    const { year: newYear, month: newMonth } = shiftMonth(year, month, delta);
     if (seoPath) {
       const mm = String(newMonth + 1).padStart(2, '0');
       navigate(calendarPath(newYear, mm));
@@ -205,16 +193,13 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     setPickedDate(dateStr);
   }, [seoPath, navigate, year, month, source, onlyImportant, syncParams]);
 
-  const dates = useMemo(() => monthRange(year, month), [year, month]);
+  const apiParams = useMemo(() => calendarMonthParams(year, month, source), [year, month, source]);
 
-  const apiParams = useMemo(() => ({
-    from: dates.from,
-    to: dates.to,
-    source: source === 'world' ? WORLD_SOURCES : (source || undefined),
-    limit: 500,
-  }), [dates, source]);
-
-  const { data, isLoading, isError, refetch, isFetching } = useCalendarEvents(apiParams);
+  // Смена месяца не убирает сетку: прежний месяц стоит, пока не пришёл новый (`monthPending`), соседние
+  // месяцы лежат в кэше заранее. Заглушка — только при первой загрузке страницы (Пульс 363, 19.11.2026).
+  const { data, isLoading, isError, refetch, isFetching, isPlaceholderData } = useCalendarEvents(apiParams, { keepPrevious: true });
+  const monthPending = Boolean(isPlaceholderData);
+  usePrefetchNeighbourMonths(year, month, source, Boolean(data) && !monthPending);
   // Ближайшее событие — самое важное из нескольких предстоящих, а не ежедневная ставка вроде RUONIA.
   // Ежедневная RUONIA (важность 2) занимала все 8 мест «Ближайших событий» и «Ближайшее событие»,
   // хотя через два дня выходил индекс цен (14.11.2026). Ежедневные публикации по правилу ЦБ из списка убраны:
@@ -227,10 +212,16 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const nextImportant = upcomingList?.find((e) => e.importance === 3) || upcomingList?.[0] || null;
 
   const monthEvents = useMemo(() => data?.events || [], [data]);
+
   // «Только важные»: события средней и высокой важности (без ежедневных курсов и рядовых публикаций).
   const allEvents = useMemo(
     () => (onlyImportant ? monthEvents.filter((e) => (e.importance || 0) >= 2) : monthEvents),
     [monthEvents, onlyImportant],
+  );
+  // В клетки нового месяца не попадают события прежнего, пока новый грузится.
+  const gridEvents = useMemo(
+    () => (monthPending ? eventsInRange(allEvents, apiParams) : allEvents),
+    [monthPending, allEvents, apiParams],
   );
   // Ошибка без данных: сетку не рисуем (раньше «календарь недоступен» стоял над готовой пустой сеткой), остаётся плашка с повтором.
   const failedWithoutData = isError && !data;
@@ -347,7 +338,8 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
               month={month}
               onPrev={() => goMonth(-1)}
               onNext={() => goMonth(1)}
-              events={allEvents}
+              events={gridEvents}
+              pending={monthPending}
               selectedDate={selectedDate}
               onSelectDate={handleSelectDate}
               source={source}
@@ -357,6 +349,12 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
               onToggleImportant={handleImportantChange}
             />
 
+            {/* Пока грузится новый месяц, прежний список тускнеет (через 140 мс, только opacity) и не нажимается. */}
+            <div
+              className={cn('fe-cal-list', monthPending && 'is-pending')}
+              aria-busy={monthPending || undefined}
+              data-testid="calendar-list"
+            >
             {selectedDate && (
               <div ref={dayHeadRef} className="mb-4 flex scroll-mt-24 items-center gap-2">
                 <h2 className="text-sm font-semibold text-text-primary">
@@ -389,7 +387,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
 
             {grouped.length === 0 ? (
               // При ошибке загрузки текст «нет событий» был бы неправдой — о причине уже говорит баннер выше.
-              !isError && !showRecurring && (
+              !isError && !showRecurring && !monthPending && (
                 <div
                   className="fe-reveal fe-reveal--free flex flex-col items-center rounded-[1.5rem] px-6 py-10 text-center fe-glass-lite"
                   role="status"
@@ -437,6 +435,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                 })}
               </div>
             )}
+            </div>
           </>
         )}
         </div>
