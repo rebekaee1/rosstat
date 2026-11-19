@@ -694,6 +694,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Малый и средний бизнес по регионам (реестр МСП ФНС, 19.11.2026): сводка на 10-е число выходит в тот же
+        # день или на следующий. Прогон 11-го и 14-го в 07:40 МСК, вне дней ЕМИСС; повтор стоит 2–3 запроса,
+        # первая загрузка — вся история (124 сводки, ~5 минут).
+        from app.tasks.scheduler import fns_msp_job as _fns_msp
+
+        scheduler.add_job(
+            locked_job(_fns_msp, "fns_msp", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=7, minute=40, day="11,14", timezone="Europe/Moscow"),
+            id="fns_msp",
+            name="Monthly FNS SME register by region (region_monthly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # Недельные цены на топливо по субъектам (ЕМИСС 37426, 18.11.2026): витрина обновляется по средам,
         # публикация бывает с опозданием на неделю-две. Четверг и суббота: повтор идемпотентен и стоит
         # одну страницу витрины и один-два запроса.

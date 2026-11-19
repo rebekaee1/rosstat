@@ -1444,18 +1444,23 @@ _MONTHLY_RU = {
 }
 
 
-def _mt(key: str, *, social: bool = False, sets: bool = False, texts: dict[str, str] | None = None, **kwargs) -> str:
+def _mt(key: str, *, social: bool | str = False, sets: bool = False, texts: dict[str, str] | None = None, **kwargs) -> str:
     # social — зарплата, пенсия, рождаемость (ЕМИСС, 19.11.2026): часть ценовых фраз («средние потребительские цены»,
-    # «среднероссийская цена») к ним не подходит; свои тексты на обоих языках — в app.data.emiss_regional_social.
+    # «среднероссийская цена») к ним не подходит; свои тексты на обоих языках — в app.data.emiss_regional_social;
+    # social="msp" — малый бизнес из реестра ФНС (app.data.fns_msp).
     # sets — помесячные наборы ЕМИСС зон E и F (app.data.emiss_regional_sets): те же тексты, свой источник.
     # texts — свой набор фраз ряда другого источника (кредиты и ипотека ЦБ: app.data.cbr_household_credit).
-    tpl = (texts or {}).get(key) or (_social_monthly_text(key, sets=sets) if (social or sets) else None)
+    tpl = (texts or {}).get(key) or (_social_monthly_text(key, social or True, sets=sets) if (social or sets) else None)
     tpl = tpl or regional_template(f"region_monthly.{key}") or _MONTHLY_RU[key]
     return tpl.format(**kwargs) if kwargs else tpl
 
 
-def _social_monthly_text(key: str, *, sets: bool = False) -> str | None:
-    from app.data.emiss_regional_social import MONTHLY_TEXT_EN, MONTHLY_TEXT_RU
+def _social_monthly_text(key: str, kind: bool | str = True, *, sets: bool = False) -> str | None:
+    # kind "msp" — малый бизнес из реестра ФНС (19.11.2026): свои тексты без Росстата и ЕМИСС.
+    if kind == "msp":
+        from app.data.fns_msp import MONTHLY_TEXT_EN, MONTHLY_TEXT_RU
+    else:
+        from app.data.emiss_regional_social import MONTHLY_TEXT_EN, MONTHLY_TEXT_RU
     from app.services.locale import get_locale
 
     en = get_locale() == "en"
@@ -1498,7 +1503,9 @@ async def _render_region_indicator_monthly(
     from app.data.emiss_regional_social import is_social_code
     from app.services.locale import get_locale
 
-    mt = partial(_mt, social=is_social_code(code), sets=code in EMISS_SETS, texts=_credit_texts(code, get_locale()))
+    from app.data.fns_msp import is_msp_code
+
+    mt = partial(_mt, social="msp" if is_msp_code(code) else is_social_code(code), sets=code in EMISS_SETS, texts=_credit_texts(code, get_locale()))
     series = [(int(m), float(v)) for m, v in rows]
     first_period, first_value = series[0]
     last_period, last_value = series[-1]

@@ -8927,6 +8927,16 @@ for _code, _keywords in _cbr_credit.seo_keywords().items():
     INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
 for _code, _meta in _cbr_credit.seo_meta().items():
     INDICATOR_SEO.setdefault(_code, _meta)
+# Недельные цены на продукты (Росстат) и ФНБ/госдолг (Минфин), 19.11.2026.
+from app.data import minfin_debt as _minfin_debt  # noqa: E402
+from app.data import rosstat_weekly_goods as _weekly_goods  # noqa: E402
+
+for _mod in (_weekly_goods, _minfin_debt):
+    for _code, _keywords in _mod.seo_keywords().items():
+        INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
+    for _code, _meta in _mod.seo_meta().items():
+        INDICATOR_SEO.setdefault(_code, _meta)
+
 
 # ── «О показателе»: составляющие промышленного производства (ИПП) ───────────
 #

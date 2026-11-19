@@ -24,6 +24,7 @@ from app.services.emiss_income_parser import EmissIncomeParser
 from app.services.emiss_labor_parser import EmissLaborParser
 from app.services.emiss_steel_parser import EmissSteelParser
 from app.services.cbr_household_rates_parser import CbrDepositMaxParser, CbrInflationExpectationsParser
+from app.services.minfin_debt_parser import MinfinDebtParser
 from app.services.emiss_producer_prices_parser import EmissProducerPricesParser
 from app.services.rosstat_labor_parser import RosstatLaborParser
 from app.services.rosstat_gdp_parser import RosstatGdpParser
@@ -105,6 +106,7 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     EmissSteelParser.parser_type: EmissSteelParser,
     CbrDepositMaxParser.parser_type: CbrDepositMaxParser,
     CbrInflationExpectationsParser.parser_type: CbrInflationExpectationsParser,
+    MinfinDebtParser.parser_type: MinfinDebtParser,
     EmissProducerPricesParser.parser_type: EmissProducerPricesParser,
     RosstatLaborParser.parser_type: RosstatLaborParser,
     RosstatGdpParser.parser_type: RosstatGdpParser,
