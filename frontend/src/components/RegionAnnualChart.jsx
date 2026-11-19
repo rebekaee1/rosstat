@@ -21,8 +21,11 @@ import {
 } from '../lib/chartTheme';
 import { useChartGlassIds, useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { yearTickPeriods } from '../lib/z2Price';
+import { useChartPick } from '../lib/chartPick';
+import { track, events } from '../lib/track';
 import ChartBrandCaption from './ChartBrandCaption';
 import ChartGlassDefs from './ChartGlassDefs';
+import ChartPickedMarker from './ChartPickedMarker';
 import '../styles/k4-charts.css';
 import '../styles/z2-price.css';
 
@@ -30,6 +33,8 @@ import '../styles/z2-price.css';
 const DUAL_AXIS_RATIO = 3;
 
 const COMPARE_COLOR = CHART_THEME.sapphire;
+// Высота оси X у Recharts по умолчанию: вертикаль закреплённой точки кончается над подписями лет.
+const X_AXIS_HEIGHT = 30;
 
 /** Линия «рисуется» один раз; у тех, кто просил меньше движения, сразу готовый график. */
 function chartMayAnimate() {
@@ -125,6 +130,12 @@ export default function RegionAnnualChart({
   const setWrap = useCallback((node) => { wrapRef.current = node; setWidthNode(node); }, [setWidthNode]);
   const glass = useChartGlassIds('k4r');
   const animate = chartMayAnimate();
+  // Нажатие на точку закрепляет её значение (как на графиках показателей с 18.11): на боевом 14 дней до 19.11
+  // по пустому плоту региональных графиков нажимали 70 человек, после выпуска 18.11 мёртвые нажатия по графикам
+  // остались только здесь. Повторное нажатие на ту же точку снимает выбор.
+  const { picked, handlePlotClick } = useChartPick(() => {
+    track(events.CHART_PICK, { source: 'region' });
+  });
 
   const monthly = frequency === 'monthly';
   const quarterly = frequency === 'quarterly';
@@ -250,6 +261,11 @@ export default function RegionAnnualChart({
 
   if (!data.length) return null;
 
+  // Закреплённая точка ищется в показанных данных: в режиме «Россия = 100» значение — индекс, как на оси.
+  const pickedRow = picked == null ? null : (plotData.find((d) => d.period === picked) || null);
+  const pickedValue = pickedRow ? (pickedRow.value ?? pickedRow.forecast) : null;
+  const pickedShown = pickedRow != null && pickedValue != null && Number.isFinite(Number(pickedValue));
+
   const chartMargin = {
     top: 12,
     right: dualAxis ? Math.max(8, rightAxisWidth - 4) : (isNarrow ? 8 : 12),
@@ -267,7 +283,9 @@ export default function RegionAnnualChart({
       <div
         ref={setWrap}
         onPointerDownCapture={touchTip.onPointerDownCapture}
-        style={{ width: '100%', height: chartHeight }}
+        data-interactive=""
+        data-picked={pickedShown ? 'true' : undefined}
+        style={{ width: '100%', height: chartHeight, cursor: 'crosshair' }}
         role="img"
         aria-label={t('regions.ind.chartAria', {
           region: regionName,
@@ -276,7 +294,7 @@ export default function RegionAnnualChart({
         })}
       >
         <ResponsiveContainer>
-          <ComposedChart data={plotData} margin={chartMargin}>
+          <ComposedChart data={plotData} margin={chartMargin} onClick={handlePlotClick}>
             <defs>
               <ChartGlassDefs ids={glass} width={Math.max(plotWidth, 320)} />
             </defs>
@@ -477,6 +495,30 @@ export default function RegionAnnualChart({
                 dot={false}
                 activeDot={{ r: 4.5, fill: CHART_THEME.champagneInk, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
+              />
+            )}
+            {pickedShown && (
+              <ReferenceDot
+                yAxisId="region"
+                x={pickedRow.period}
+                y={Number(pickedValue)}
+                r={5}
+                ifOverflow="visible"
+                isFront
+                shape={(props) => (
+                  <ChartPickedMarker
+                    cx={props.cx}
+                    cy={props.cy}
+                    top={chartMargin.top}
+                    bottom={chartHeight - chartMargin.bottom - X_AXIS_HEIGHT}
+                    date={pickedRow.label}
+                    value={formatRegionValue(pickedValue)}
+                    color={pickedRow.value == null ? CHART_THEME.forecast : CHART_THEME.gold}
+                    anchorEnd={Number(props.cx) > plotWidth * 0.55}
+                    below={false}
+                    showTag={!(touchTip.coarse && touchTip.open)}
+                  />
+                )}
               />
             )}
           </ComposedChart>
