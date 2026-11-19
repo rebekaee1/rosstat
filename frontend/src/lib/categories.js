@@ -81,9 +81,9 @@ const CATEGORY_DEFS = [
     status: 'active',
     flagshipCode: 'm2',
     sentiment: 'neutral',
-    description: 'Деньги в обращении, резервы, внешний долг, кредиты, депозиты, бюджет.',
+    description: 'Деньги в обращении, резервы, внешний долг, кредиты и ипотека населения, депозиты, бюджет.',
     descriptionEn:
-      'Money in circulation, reserves, external debt, credit, deposits, budget.',
+      'Money in circulation, reserves, external debt, household loans and mortgages, deposits, budget.',
     relatedSlugs: ['currencies', 'rates', 'trade'],
   },
   {

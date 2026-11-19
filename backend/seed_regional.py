@@ -41,6 +41,11 @@ def load_meta():
 
     known = {row["code"] for row in indicators}
     indicators += [row for row in emiss_sets_rows() if row["code"] not in known]
+    # Кредиты физлицам и ипотека по регионам помесячно (Банк России, 19.11.2026): точки пишет cbr_regional_credit_parser.
+    from app.data.cbr_household_credit import artifact_rows as cbr_credit_rows
+
+    known = {row["code"] for row in indicators}
+    indicators += [row for row in cbr_credit_rows() if row["code"] not in known]
     return regions, indicators
 
 

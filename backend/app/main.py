@@ -739,6 +739,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Кредиты физлицам и ипотека по регионам помесячно (Банк России DataService, 19.11.2026): ЦБ публикует месяц
+        # в начале второго месяца после него. Прогон без нового месяца стоит один запрос на ряд (Россия); с новым —
+        # ~96 запросов на ряд, 7 рядов, несколько минут. Первый после выпуска грузит историю с 2019 года.
+        from app.tasks.scheduler import cbr_regional_credit_job as _cbr_regional_credit
+
+        scheduler.add_job(
+            locked_job(_cbr_regional_credit, "cbr_regional_credit", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=7, minute=45, day="3,6,10,20", timezone="Europe/Moscow"),
+            id="cbr_regional_credit",
+            name="Monthly CBR household loans and mortgages by region (region_monthly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # World: национальные паспорта (19 официальных источников, ~90 рядов)
         # обновляются ежедневно — данные пишут сразу, контур проверен живыми
         # прогонами. Eurostat-часть (TOC-driven, часы работы) остаётся

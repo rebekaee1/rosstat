@@ -70,6 +70,11 @@ from app.data.emiss_regional_cpi import macro_by_table as _cpi_macro_by_table  #
 
 for _table, _macro in _cpi_macro_by_table().items():
     MACRO_BY_TABLE.setdefault(_table, _macro)
+# Кредиты физлицам и ипотека по регионам помесячно (Банк России, 19.11.2026) → карточки России тех же рядов.
+from app.data.cbr_household_credit import macro_by_table as _credit_macro_by_table  # noqa: E402
+
+for _table, _macro in _credit_macro_by_table().items():
+    MACRO_BY_TABLE.setdefault(_table, _macro)
 
 _REGIONS_TITLE = "Регионы России — социально-экономические показатели 85 субъектов РФ"
 _REGIONS_DESC = (
@@ -1436,10 +1441,11 @@ _MONTHLY_RU = {
 }
 
 
-def _mt(key: str, *, social: bool = False, **kwargs) -> str:
+def _mt(key: str, *, social: bool = False, texts: dict[str, str] | None = None, **kwargs) -> str:
     # social — зарплата, пенсия, рождаемость (ЕМИСС, 19.11.2026): часть ценовых фраз («средние потребительские цены»,
     # «среднероссийская цена») к ним не подходит; свои тексты на обоих языках — в app.data.emiss_regional_social.
-    tpl = _social_monthly_text(key) if social else None
+    # texts — свой набор фраз ряда другого источника (кредиты и ипотека ЦБ: app.data.cbr_household_credit).
+    tpl = (texts or {}).get(key) or (_social_monthly_text(key) if social else None)
     tpl = tpl or regional_template(f"region_monthly.{key}") or _MONTHLY_RU[key]
     return tpl.format(**kwargs) if kwargs else tpl
 
@@ -1474,9 +1480,11 @@ async def _render_region_indicator_monthly(
     страницы называет последнюю недельную цену с датой, таблица по неделям отвечает на «цену на дату», вопрос
     «на начало года» — в FAQ. Отдельной страницы на дату нет.
     """
+    from app.data.cbr_household_credit import monthly_texts as _credit_texts
     from app.data.emiss_regional_social import is_social_code
+    from app.services.locale import get_locale
 
-    mt = partial(_mt, social=is_social_code(code))
+    mt = partial(_mt, social=is_social_code(code), texts=_credit_texts(code, get_locale()))
     series = [(int(m), float(v)) for m, v in rows]
     first_period, first_value = series[0]
     last_period, last_value = series[-1]

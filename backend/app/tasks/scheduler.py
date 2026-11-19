@@ -735,6 +735,17 @@ async def emiss_regional_sets_job():
     await _job()
 
 
+
+async def cbr_regional_credit_job():
+    """Кредиты физлицам и ипотека по регионам помесячно (Банк России DataService, 19.11.2026).
+
+    Выдачи, долг и просрочка по кредитам физлицам и ипотеке, число и срок ипотек — в region_monthly_data.
+    Расписание в main.py, реализация — app.services.cbr_regional_credit_parser.
+    """
+    from app.services.cbr_regional_credit_parser import cbr_regional_credit_job as _job
+
+    await _job()
+
 async def emiss_weekly_fuel_job():
     """Недельные цены на топливо по субъектам (ЕМИСС 37426) в region_weekly_data.
 

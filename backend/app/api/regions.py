@@ -23,6 +23,7 @@ from app.data.region_indicator_polarity import (
     region_rating_order_by,
 )
 from app.data.emiss_regional_sets import SERIES_BY_CODE as EMISS_SET_SERIES
+from app.data.cbr_household_credit import SERIES_BY_REGIONAL as CBR_CREDIT_SERIES
 from app.data.emiss_price_goods import (
     HEADLINE_PRICE_CODES,
     PRICE_GROUPS,
@@ -951,6 +952,9 @@ async def _section_siblings(db: AsyncSession, region, indicator) -> list[dict]:
         # Помесячные наборы ЕМИСС (19.11.2026): сначала ряды того же набора, затем остальной раздел.
         own_set = {s.code for s in EMISS_SET_SERIES[indicator.code][0].series}
         siblings = sorted(all_sib, key=lambda x: (x.code not in own_set, x.table_code or "", x.code))[:12]
+    elif indicator.code in CBR_CREDIT_SERIES:
+        # Кредиты и ипотека ЦБ помесячно (19.11.2026): сначала соседние ряды ЦБ, затем годовой раздел «Финансы».
+        siblings = sorted(all_sib, key=lambda x: (x.code not in CBR_CREDIT_SERIES, x.table_code or "", x.code))[:12]
     else:
         siblings = sorted(all_sib, key=lambda x: x.code)[:12]
     sib_latest: dict[int, tuple[int, float]] = {}

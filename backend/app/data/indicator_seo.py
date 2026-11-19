@@ -186,7 +186,10 @@ INDICATOR_SEO_KEYWORDS: dict[str, str] = {
     ),
     "consumer-credit": (
         "кредиты населению, кредиты физлицам, портфель кредитов населения, "
-        "задолженность по кредитам, кредитование населения, Банк России"
+        "задолженность по кредитам, кредитование населения, Банк России, "
+        # 19.11.2026: пустые поиски людей (отчёт новых источников).
+        "задолженность населения, задолженность домохозяйств, долг домохозяйств, закредитованность, "
+        "задолженность по кредитам физическим лицам"
     ),
     "deposits-individual": (
         "вклады населения, депозиты физлиц, сбережения в банках, "
@@ -8905,6 +8908,14 @@ for _code, _keywords in _emiss_producer_prices.seo_keywords().items():
 for _code, _meta in _emiss_producer_prices.seo_meta().items():
     INDICATOR_SEO.setdefault(_code, _meta)
 
+
+# Кредиты населению и ипотека по ЦБ (19.11.2026): выдачи, просрочка, долг по ипотеке, число и срок ипотек.
+from app.data import cbr_household_credit as _cbr_credit  # noqa: E402
+
+for _code, _keywords in _cbr_credit.seo_keywords().items():
+    INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
+for _code, _meta in _cbr_credit.seo_meta().items():
+    INDICATOR_SEO.setdefault(_code, _meta)
 
 # ── «О показателе»: составляющие промышленного производства (ИПП) ───────────
 #
