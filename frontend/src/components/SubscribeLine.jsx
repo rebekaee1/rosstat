@@ -8,9 +8,9 @@
 // - «Скачать таблицу за все годы» — тот же обработчик и тот же замок, что у кнопки над графиком.
 // Без всплывающих окон и таймеров: строка стоит в странице и никому не мешает (решение совета, спор 5).
 // События: subscribe_line_view (один раз на страницу и тему), subscribe_line_click {topic, channel, path}.
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Download, Send } from 'lucide-react';
+import { Download, Mail, Send } from 'lucide-react';
 import { useCalendarUpcoming } from '../lib/hooks';
 import { formatDate } from '../lib/format';
 import { glueDate } from '../lib/periodPhrase';
@@ -24,6 +24,8 @@ import {
   useSiteAcqConfig,
 } from '../lib/siteAcq';
 import { track, events } from '../lib/track';
+import TopicMailForm from './TopicMailForm';
+import { useTopicMailEnabled } from '../lib/topicMail';
 import { useLocale, useT } from '../i18n';
 import '../styles/acq-line.css';
 
@@ -72,7 +74,10 @@ export default function SubscribeLine({
   const delayed = isDelayed({ freshness, frequency, lastDate, nextRelease, today: now });
   const copy = lineCopy({ code, frequency, lastDate, nextRelease, nextEstimated, delayed });
   const showTelegram = lineOn && !delayed;
-  const showWhen = Boolean(copy) && (firstOn || showTelegram);
+  const mailEnabled = useTopicMailEnabled();
+  const [mailOpen, setMailOpen] = useState(false);
+  const showMail = mailEnabled && Boolean(config.line && topic && config.topics.includes(topic)) && !delayed;
+  const showWhen = Boolean(copy) && (firstOn || showTelegram || showMail);
   const showDownload = firstOn && typeof onDownloadExcel === 'function';
 
   const seen = useRef('');
@@ -84,7 +89,7 @@ export default function SubscribeLine({
     track(events.SUBSCRIBE_LINE_VIEW, { topic, channel: 'telegram', path: pathname });
   }, [showTelegram, pathname, topic]);
 
-  if (!onPage || !(showWhen || showTelegram || showDownload || emailSlot)) return null;
+  if (!onPage || !(showWhen || showTelegram || showMail || showDownload || emailSlot)) return null;
 
   const whenText = copy ? t(`acq.when.${copy.key}`, {
     date: copy.params.date ? dayText(copy.params.date, locale, now) : '',
@@ -111,8 +116,22 @@ export default function SubscribeLine({
             <span>{t('acq.telegram')}</span>
           </a>
         ) : null}
-        {/* Почтовый способ той же строки — зона №4 (ветка feat/acq-mail) подставляет сюда свой элемент. */}
-        {emailSlot}
+        {/* Почтовый способ той же строки (зона №4): на темах строки и только когда данные не задерживаются.
+            TopicMailForm сам ничего не рисует при выключенном RUSTATS_TOPIC_MAIL_ENABLED. */}
+        {/* Почта свёрнута в тихую кнопку: два одинаковых «Присылать» рядом читаются как дубль, а поле с согласием
+            на телефоне занимает пол-экрана. Поле раскрывается по нажатию (сведение веток 19.11). */}
+        {emailSlot ?? (showMail && !mailOpen ? (
+          <button
+            type="button"
+            className="acq-line__btn fe-press"
+            data-testid="subscribe-line-mail-open"
+            onClick={() => setMailOpen(true)}
+          >
+            <Mail size={15} aria-hidden="true" />
+            <span>{t('acq.mail')}</span>
+          </button>
+        ) : null)}
+        {emailSlot == null && showMail && mailOpen ? <TopicMailForm code={code} topic={topic} source="line" compact /> : null}
         {showDownload ? (
           <button
             type="button"

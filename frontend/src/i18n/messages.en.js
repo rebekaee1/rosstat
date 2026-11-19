@@ -4299,6 +4299,7 @@ export default {
   'acq.when.nextApprox': 'Next update: around {date}.',
   'acq.when.fuelWeekly': 'A new price comes out once a week, on Wednesdays.',
   'acq.telegram': 'Send to Telegram',
+  'acq.mail': 'By email',
   'acq.download': 'Download the full table',
   // Подписка на показатель по почте (совет 19.11.2026).
   "topicMail.lead": "New values by email on the day data is released. No password, one-click unsubscribe.",
