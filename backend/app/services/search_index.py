@@ -43,7 +43,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models import (
-    Indicator, IndicatorData, RegionDataPoint, RegionMonthlyPoint, SearchIndexState, SearchRegionFactA,
+    Indicator, IndicatorData, RegionDataPoint, RegionMonthlyPoint, RegionQuarterlyPoint, SearchIndexState, SearchRegionFactA,
     SearchRegionFactB, SearchRussiaRowA, SearchRussiaRowB, SearchSubnationalFactA, SearchSubnationalFactB,
     SearchWorldRowA, SearchWorldRowB, SubnationalDataPoint, WorldDataPoint, WorldIndicator,
 )
@@ -69,7 +69,7 @@ _TABLES: dict[str, dict[str, tuple[type, ...]]] = {
 _SOURCES = {
     "world": ("world_indicators", "world_data_points"),
     "russia": ("indicators", "indicator_data"),
-    "territory": ("region_data", "region_monthly_data", "subnational_data_points"),
+    "territory": ("region_data", "region_monthly_data", "region_quarterly_data", "subnational_data_points"),
 }
 
 
@@ -158,7 +158,7 @@ def _russia_rows(target: Table):
 
 
 def _territory_rows(region_target: Table, subnational_target: Table):
-    annual, monthly = RegionDataPoint, RegionMonthlyPoint
+    annual, monthly, quarterly = RegionDataPoint, RegionMonthlyPoint, RegionQuarterlyPoint
     # Последний период с конечной точкой у пары: год и месяц. Есть период — есть факт (условие `search._annual_fact`
     # и `_monthly_fact` без периода). Точка пары за период одна (уникальный ключ), её значение — последнее значение
     # пары, как в `search_regional_groups._latest_by_region`.
@@ -168,11 +168,20 @@ def _territory_rows(region_target: Table, subnational_target: Table):
             _finite(annual.value)).group_by(annual.indicator_id, annual.region_id),
         select(monthly.indicator_id, monthly.region_id, literal(None, Integer), func.max(monthly.month)).where(
             _finite(monthly.value)).group_by(monthly.indicator_id, monthly.region_id),
+        # Квартальный слой (19.11.2026) отмечается как годовой факт пары: год последнего квартала, значение — этого
+        # квартала (ниже). Месячных путей у него нет; карточка показателя одна.
+        select(quarterly.indicator_id, quarterly.region_id, func.max(quarterly.quarter).op("/")(10),
+               literal(None, Integer)).where(_finite(quarterly.value)).group_by(
+            quarterly.indicator_id, quarterly.region_id),
     ).subquery()
     pairs = select(last.c.indicator_id, last.c.region_id, func.max(last.c.last_year).label("last_year"),
                    func.max(last.c.last_month).label("last_month")).group_by(last.c.indicator_id, last.c.region_id).subquery()
-    year_value = select(annual.value).where(annual.indicator_id == pairs.c.indicator_id,
+    annual_value = select(annual.value).where(annual.indicator_id == pairs.c.indicator_id,
         annual.region_id == pairs.c.region_id, annual.year == pairs.c.last_year).scalar_subquery()
+    quarter_value = select(quarterly.value).where(quarterly.indicator_id == pairs.c.indicator_id,
+        quarterly.region_id == pairs.c.region_id, _finite(quarterly.value)).order_by(
+        quarterly.quarter.desc()).limit(1).scalar_subquery()
+    year_value = func.coalesce(annual_value, quarter_value)
     month_value = select(monthly.value).where(monthly.indicator_id == pairs.c.indicator_id,
         monthly.region_id == pairs.c.region_id, monthly.month == pairs.c.last_month).scalar_subquery()
     regional = select(pairs.c.indicator_id, pairs.c.region_id, pairs.c.last_year.is_not(None),

@@ -19,12 +19,13 @@ from starlette.requests import Request
 
 from app.api import regions as api
 from app.core import cache
-from app.models import Base, Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint, RegionWeeklyPoint
+from app.models import Base, Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint, RegionQuarterlyPoint, RegionWeeklyPoint
 from app.services import emiss_regional_parser as parser
 
 
 # Недельный слой (18.11.2026) читают те же API и SSR карточки «топливо × регион».
-REGIONAL_TABLES = [m.__table__ for m in (Region, RegionIndicator, RegionDataPoint, RegionMonthlyPoint, RegionWeeklyPoint)]
+REGIONAL_TABLES = [m.__table__ for m in (Region, RegionIndicator, RegionDataPoint, RegionMonthlyPoint, RegionWeeklyPoint,
+                                     RegionQuarterlyPoint)]
 CODE = "ceni-ai92"
 SLUG = "belgorodskaya-oblast"
 

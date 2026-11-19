@@ -77,7 +77,8 @@ export default function RegionRatingPage() {
   const mineRow = ranked.find((r) => r.slug === mine) || null;
 
   // Цены ЕМИСС (месячный ряд): места не показываем — только значения и сравнение.
-  const period = isPrice ? (data.period_label || String(data.year)) : null;
+  // Квартальный ряд (19.11.2026): подпись квартала там же, где у цен подпись месяца.
+  const period = isPrice || data?.quarter != null ? (data.period_label || String(data.year)) : null;
   const rawName = data?.indicator?.name || '';
   const shortName = isPrice ? cleanPriceName(rawName, data.indicator.unit) : rawName;
   const val = (r) => Number(r.raw ?? r.value);
@@ -162,7 +163,7 @@ export default function RegionRatingPage() {
           <p className="mb-2 text-sm font-medium text-champagne-ink">
             {achievement ? t('regions.rating.eyebrowAchievement') : t('regions.rating.eyebrowNeutral')}
             {' — '}
-            {isPrice ? period : `${data.year} ${t('common.year').toLowerCase()}`}
+            {period || `${data.year} ${t('common.year').toLowerCase()}`}
           </p>
           <h1 className="r3b-rate-h1 font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
             {shortName}

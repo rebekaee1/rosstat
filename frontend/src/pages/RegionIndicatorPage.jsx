@@ -122,7 +122,9 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const [showRussia, setShowRussia] = useState(true);
   const [showYoYRaw, setShowYoY] = useState(false);
   // В-20: для знакопеременных рядов режим «% г/г» недоступен.
-  const showYoY = showYoYRaw && !isNegativeCapable(data?.series);
+  // Квартальный ряд (19.11.2026) приходит годовым запросом с frequency='quarterly': точки с кварталом.
+  const isQuarterly = !isMonthly && data?.frequency === 'quarterly';
+  const showYoY = showYoYRaw && !isQuarterly && !isNegativeCapable(data?.series);
   const [exporting, setExporting] = useState(false);
   const [rangePick, setRangeM] = useState(null);
   const [showReal, setShowReal] = useState(false);
@@ -170,7 +172,8 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
         filename,
         valueLabel: `${active.indicator.name} (${active.indicator.unit})`,
         points: activeSeries.map(p => ({
-          date: isMonthly ? `${p.year}-${String(p.month).padStart(2, '0')}-01` : `${p.year}-01-01`,
+          date: isMonthly ? `${p.year}-${String(p.month).padStart(2, '0')}-01`
+            : isQuarterly ? `${p.year}-${String(p.quarter * 3 - 2).padStart(2, '0')}-01` : `${p.year}-01-01`,
           actual: p.value,
           forecast: null,
         })),
@@ -212,8 +215,14 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const last = activeSeries[activeSeries.length - 1];
   const first = activeSeries[0];
   const lastLabel = last
-    ? (isMonthly ? `${monthName(last.month, locale)} ${last.year}` : String(last.year))
+    ? (isMonthly ? `${monthName(last.month, locale)} ${last.year}` : isQuarterly ? last.label : String(last.year))
     : '';
+  // Квартальный ряд: подпись периода вместо года в блоках годовой карточки (Россия, место, лидеры).
+  const periodOf = (p) => (isQuarterly ? p.label : p.year);
+  const russiaView = isQuarterly
+    ? (active?.russia_series || []).map(r => ({ ...r, year: r.label }))
+    : active?.russia_series;
+  const rankView = isQuarterly && active?.rank ? { ...active.rank, year: active.rank.period_label } : active?.rank;
 
   // Карточка рендерится от активного ряда (месячного или годового).
   const cardReady = isMonthly ? !!active : !!data;
@@ -236,15 +245,15 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
       region: regionName,
       value: formatRegionValue(last.value),
       unit: shortUnit(active.indicator.unit),
-      year: isMonthly ? lastLabel : last.year,
+      year: isMonthly || isQuarterly ? lastLabel : last.year,
     }),
-    description: t(isMonthly ? 'regions.ind.metaDescMonthly' : 'regions.ind.metaDesc', {
+    description: t(isMonthly ? 'regions.ind.metaDescMonthly' : isQuarterly ? 'rq.metaDesc' : 'regions.ind.metaDesc', {
       name: indName,
       region: regionName,
       value: formatRegionValue(last.value),
       unit: active.indicator.unit,
-      year: isMonthly ? lastLabel : last.year,
-      from: first.year,
+      year: isMonthly || isQuarterly ? lastLabel : last.year,
+      from: isQuarterly ? first.label : first.year,
       rank: active.rank
         ? t(
           active.rank.rank_as_achievement
@@ -278,12 +287,18 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     return mountJsonLd(jsonLd);
   }, [active, indName, regionName, first, last, locale, t]);
 
-  const delta = last && activeSeries.length > 1
-    ? yearDelta(last.value, activeSeries[activeSeries.length - 2].value)
+  // Квартальный ряд сравнивается с тем же кварталом год назад: сезонность не выдаётся за движение.
+  const yearAgoQ = isQuarterly && last
+    ? activeSeries.find(p => p.year === last.year - 1 && p.quarter === last.quarter)
     : null;
+  const delta = isQuarterly
+    ? (yearAgoQ ? yearDelta(last.value, yearAgoQ.value) : null)
+    : last && activeSeries.length > 1
+      ? yearDelta(last.value, activeSeries[activeSeries.length - 2].value)
+      : null;
 
   const annualSibs = useMemo(() => (isMonthly ? (active?.siblings || []) : prioritizeIndicators(active?.siblings || [])), [isMonthly, active?.siblings]);
-  const prevPoint = activeSeries.length > 1 ? activeSeries[activeSeries.length - 2] : null;
+  const prevPoint = isQuarterly ? yearAgoQ : activeSeries.length > 1 ? activeSeries[activeSeries.length - 2] : null;
   const absDelta = !isMonthly && delta && prevPoint && (isYearsUnit(active?.indicator?.unit) || isPercentUnit(active?.indicator?.unit))
     ? gapText(last.value, prevPoint.value, active.indicator.unit, locale)
     : null;
@@ -295,13 +310,13 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     const min = Math.min(...values);
     const at = (idx) => {
       const p = activeSeries[idx];
-      return isMonthly ? monthName(p.month, locale) + ' ' + p.year : p.year;
+      return isMonthly ? monthName(p.month, locale) + ' ' + p.year : (isQuarterly ? p.label : p.year);
     };
     return {
       max, maxAt: at(values.indexOf(max)),
       min, minAt: at(values.indexOf(min)),
     };
-  }, [activeSeries, isMonthly, locale]);
+  }, [activeSeries, isMonthly, isQuarterly, locale]);
 
   // «Лучший / худший год» там, где понятно, что хорошо (безработица ниже — лучше), иначе просто наибольшее и наименьшее.
   const extremePolarity = indicatorPolarity(indName, code);
@@ -501,7 +516,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                   polarity={indicatorPolarity(indName)}
                   className="text-sm"
                 >
-                  {absDelta ? `${absDelta.text} ${t('regions.ind.deltaYoYAbs')}` : isMonthly && Math.abs(delta.pct) < 0.05 ? t('r5a.flatMonth') : t(isMonthly ? 'regions.ind.deltaMoM' : 'regions.ind.deltaYoY', {
+                  {absDelta ? `${absDelta.text} ${t('regions.ind.deltaYoYAbs')}` : isMonthly && Math.abs(delta.pct) < 0.05 ? t('r5a.flatMonth') : t(isMonthly ? 'regions.ind.deltaMoM' : isQuarterly ? 'rq.deltaYoY' : 'regions.ind.deltaYoY', {
                     pct: `${delta.up ? '+' : delta.down ? '\u2212' : ''}${Math.abs(delta.pct).toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
                   }).replace('%', locale === 'en' ? '%' : `${NBSP}%`)}
                 </DeltaBadge>
@@ -516,7 +531,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             {isPrice && <p className="r5a-hero-month">{t('r5a.dataFor', { month: lastLabel })}</p>}
             {yearSum && !discontinued && <p className="r5a-year fe-num">{t('r5a.perYear', { sum: bigRub(yearSum, locale) })}</p>}
             {!isMonthly && active.russia_series?.length > 0 && (
-              <R6RussiaLine value={last.value} year={last.year} series={active.russia_series} unit={active.indicator.unit} locale={locale} t={t} />
+              <R6RussiaLine value={last.value} year={periodOf(last)} series={russiaView} unit={active.indicator.unit} locale={locale} t={t} />
             )}
             {discontinued && <DiscontinuedNote />}
             <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} nation={slug === 'russia'} />
@@ -532,7 +547,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <div className="text-sm text-text-secondary">
                 {isMonthly
                   ? t('w4.ind.rangeMonthly', { from: (sliceMonths(activeSeries, chartMonths)[0] || first).year, to: last.year, unit: rubCaption || unitLabel(active.indicator.unit, locale) || active.indicator.unit })
-                  : `${first.year}–${last.year}, ${showYoY ? t('w4.ind.yoyUnit') : (unitLabel(active.indicator.unit, locale) || active.indicator.unit)}`}
+                  : `${periodOf(first)}–${periodOf(last)}, ${showYoY ? t('w4.ind.yoyUnit') : (unitLabel(active.indicator.unit, locale) || active.indicator.unit)}`}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 {isMonthly && <RangeChips value={rangeM} onChange={setRangeM} total={activeSeries.length} />}
@@ -579,7 +594,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                       : (showRussia ? t('regions.ind.vsRussia') : t('regions.ind.addRussia'))}
                   </Chip>
                 )}
-                {!isMonthly && data.series.length > 2 && !isNegativeCapable(data.series) && (
+                {!isMonthly && !isQuarterly && data.series.length > 2 && !isNegativeCapable(data.series) && (
                   <Chip active={showYoY} onClick={() => setShowYoY(v => !v)} title={t('regions.ind.yoyTitle')}>
                     {t('w4.ind.yoyBtn')}
                   </Chip>
@@ -595,7 +610,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               </div>
             </div>
             <RegionAnnualChart
-              frequency={isMonthly ? 'monthly' : 'annual'}
+              frequency={isMonthly ? 'monthly' : isQuarterly ? 'quarterly' : 'annual'}
               series={isMonthly ? chartSeriesM : (showYoY ? toYoYSeries(data.series) : data.series)}
               russiaSeries={showRussia
                 ? (isMonthly
@@ -678,7 +693,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                   active.rank.rank_as_achievement
                     ? 'regions.ind.rankAchieve'
                     : 'regions.ind.rankNeutral',
-                  { year: active.rank.year },
+                  { year: rankView.year },
                 )
               }
               >
@@ -743,7 +758,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                   active.rank.rank_as_achievement
                     ? 'regions.ind.topAchieve'
                     : 'regions.ind.topNeutral',
-                  { year: active.rank.year },
+                  { year: rankView.year },
                 )}
               </h2>
               <ol className="space-y-0.5">
@@ -768,7 +783,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               >
                 {t('regions.ind.fullRanking')}
               </Link>
-              <R6RatingExtras rank={active.rank} slug={slug} code={code} unit={active.indicator.unit} locale={locale} russiaSeries={active.russia_series} t={t} />
+              <R6RatingExtras rank={rankView} slug={slug} code={code} unit={active.indicator.unit} locale={locale} russiaSeries={russiaView} t={t} />
             </div>
           )}
 
@@ -780,7 +795,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             >
               <span className="flex items-center gap-2 text-sm font-medium text-text-primary">
                 <Table2 size={15} className="text-text-secondary" />
-                {t(isMonthly ? 'z2.tableMonths' : 'regions.ind.tableToggle')}
+                {t(isMonthly ? 'z2.tableMonths' : isQuarterly ? 'rq.tableToggle' : 'regions.ind.tableToggle')}
               </span>
               <ChevronDown size={16} className={`text-text-secondary transition-transform ${showTable ? 'rotate-180' : ''}`} />
             </button>
@@ -790,7 +805,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                   <thead className="sticky top-0 bg-surface">
                     <tr className="text-left text-text-secondary">
                       <th className="px-3 py-2 font-medium sm:px-4">
-                        {isMonthly ? t('regions.ind.colMonth') : t('regions.ind.colYear')}
+                        {isMonthly ? t('regions.ind.colMonth') : isQuarterly ? t('rq.colQuarter') : t('regions.ind.colYear')}
                       </th>
                       <th className="px-3 py-2 text-right font-medium sm:px-4">{regionName}</th>
                       {active.russia_series?.length > 0 && (
@@ -804,12 +819,12 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                   </thead>
                   <tbody>
                     {tableRows.map(p => {
-                      const pKey = isMonthly ? p.label : p.year;
-                      const rf = active.russia_series?.find(r => (isMonthly ? r.label === p.label : r.year === p.year));
+                      const pKey = isMonthly || isQuarterly ? p.label : p.year;
+                      const rf = active.russia_series?.find(r => (isMonthly || isQuarterly ? r.label === p.label : r.year === p.year));
                       return (
                         <tr key={pKey} className="border-t border-border-subtle">
                           <td className="fe-num px-3 py-1.5 text-text-secondary sm:px-4">
-                            {isMonthly ? `${monthName(p.month, locale)} ${p.year}` : p.year}
+                            {isMonthly ? `${monthName(p.month, locale)} ${p.year}` : periodOf(p)}
                           </td>
                           <td className="fe-num px-3 py-1.5 text-right text-text-primary sm:px-4">{formatRegionNumber(p.value, active.indicator.unit, locale)}</td>
                           {active.russia_series?.length > 0 && (

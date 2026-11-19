@@ -724,6 +724,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Квартальные ряды регионов ЕМИСС (19.11.2026): цена 1 м² жилья и индексы (31452, 30925), цена 1 м² в центрах
+        # субъектов (61781), доходы к прожиточному минимуму (58537), прожиточный минимум (30957, годовой). Росстат
+        # публикует квартал через 5–7 недель; три прогона в месяц, каждый — 5–6 запросов, повтор идемпотентен.
+        from app.tasks.scheduler import emiss_quarterly_job as _emiss_quarterly
+
+        scheduler.add_job(
+            locked_job(_emiss_quarterly, "emiss_quarterly", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=7, minute=55, day="5,15,25", timezone="Europe/Moscow"),
+            id="emiss_quarterly",
+            name="Quarterly EMISS regional series (region_quarterly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # World: национальные паспорта (19 официальных источников, ~90 рядов)
         # обновляются ежедневно — данные пишут сразу, контур проверен живыми
         # прогонами. Eurostat-часть (TOC-driven, часы работы) остаётся

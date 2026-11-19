@@ -221,6 +221,32 @@ class RegionWeeklyPoint(Base):
     region: Mapped["Region"] = relationship()
 
 
+class RegionQuarterlyPoint(Base):
+    """Квартальная точка регионального показателя (19.11.2026, ADR-0008, четвёртая частота).
+
+    Своя таблица, как месяц и неделя: частоты в одной таблице не смешиваются. ``quarter`` хранится как
+    YYYYQ (20263 — III квартал 2026): сортировка совпадает с хронологией, год — целочисленное деление на 10.
+    Пишет ``app.services.emiss_quarterly_parser`` (ЕМИСС 31452, 30925, 61781, 58537). У показателя
+    заполнен ровно один слой: квартальный ряд не дублируется ни в годовой, ни в месячной таблице.
+    """
+
+    __tablename__ = "region_quarterly_data"
+    __table_args__ = (
+        UniqueConstraint("indicator_id", "region_id", "quarter", name="uq_region_quarterly_point"),
+        Index("ix_region_quarterly_indicator_quarter", "indicator_id", "quarter"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    indicator_id: Mapped[int] = mapped_column(
+        ForeignKey("region_indicators.id", ondelete="CASCADE"), nullable=False
+    )
+    region_id: Mapped[int] = mapped_column(
+        ForeignKey("regions.id", ondelete="CASCADE"), nullable=False
+    )
+    quarter: Mapped[int] = mapped_column(Integer, nullable=False)  # YYYYQ
+    value: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+
+
 # --- Мировой блок — отдельный multi-provider bounded context, по образцу ADR-0008 ---
 
 

@@ -4287,4 +4287,9 @@ export default {
   'fw.foot': 'Average price across filling stations of the region, all chains together: official statistics do not publish prices of individual chains. Weekly records from {first} to {last}.',
   'fw.tableToggle': 'All weekly prices ({n})',
   'fw.colDate': 'Record date',
+  // Quarterly regional series (housing price per m², income vs subsistence minimum; 2026-11-19).
+  'rq.metaDesc': '{name} in {region}: {value} {unit} in {year}. Quarterly history from {from} based on Rosstat, quarterly chart{rank}.',
+  'rq.colQuarter': 'Quarter',
+  'rq.deltaYoY': '{pct}% vs the same quarter a year earlier',
+  'rq.tableToggle': 'Table of quarterly values',
 };

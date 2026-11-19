@@ -1827,6 +1827,15 @@ async def render_region_indicator_html(
         .order_by(RegionDataPoint.year)
     )).all()
     if not rows:
+        # Квартальный слой (цена 1 м² жилья, доходы к прожиточному минимуму; 19.11.2026).
+        from app.services.regional_quarterly import quarterly_rows
+        from app.services.seo_regional_quarterly import render_region_indicator_quarterly
+
+        qrows = await quarterly_rows(db, indicator.id, region.id)
+        if qrows:
+            return await render_region_indicator_quarterly(
+                slug, code, region, indicator, qrows, db, fmt=_fmt, rname=_rname, icopy=_icopy,
+            )
         return 404, "<h1>Нет данных</h1>"
     series = [(int(y), float(v)) for y, v in rows]
     first_year, first_value = series[0]

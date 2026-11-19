@@ -31,7 +31,7 @@ from app.data.eurostat_titles_ru import listing_category_ru
 from app.data.world_indicator_titles_ru import title_override_for_code
 from app.models import (
     Indicator, IndicatorData, Region, RegionDataPoint, RegionIndicator,
-    RegionMonthlyPoint, SubnationalDataPoint, SubnationalIndicator,
+    RegionMonthlyPoint, RegionQuarterlyPoint, SubnationalDataPoint, SubnationalIndicator,
     SubnationalRegion, WorldCountry, WorldDataPoint, WorldIndicator,
 )
 from app.services import search_index, site_paths as paths
@@ -375,7 +375,12 @@ def _annual_fact(intent: SearchIntent):
         conditions.append(RegionDataPoint.year == intent.year)
     if intent.month is not None:
         return literal(False)
-    return exists(select(1).where(*conditions))
+    fact = exists(select(1).where(*conditions))
+    if intent.year is None:
+        # Квартальный ряд (19.11.2026) — тот же факт карточки, что годовой (так же отмечает поисковый индекс).
+        fact = or_(fact, exists(select(1).where(RegionQuarterlyPoint.indicator_id == RegionIndicator.id,
+            RegionQuarterlyPoint.region_id == Region.id, _finite(RegionQuarterlyPoint.value))))
+    return fact
 
 
 def _monthly_fact(intent: SearchIntent):
