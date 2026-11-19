@@ -5,6 +5,7 @@
 **Update 2026-11-13:** пункт 2 говорил «состав sitemap не меняется». Для робота Google на `ru.` индекс `/sitemap.xml` теперь короткий, без годовых шардов — [ADR-0030](0030-ru-google-short-sitemap.md). Метка `googlebot` остаётся; Яндекс и apex получают прежний индекс.
 **Update 2026-11-13 (запрет обхода, слова владельца «доделай все до конца кроме о проекте»):** те же годовые страницы стран мира и их регионов на `ru.` закрыты роботу Google для обхода в `robots.txt` (группа `Googlebot`, настройка `RUSTATS_RU_GOOGLE_DISALLOW_WORLD_YEARS`, по умолчанию включена). Основание — руководство Google об обходе больших сайтов (редакция 11.2026): метка `noindex` обход не экономит, робот всё равно скачивает страницу; адреса, которые не нужны в поиске, закрывают в `robots.txt`. Раздел «Почему так» ниже отклонял `robots.txt`, потому что запрет прячет метку и не убирает адрес из индекса. Это остаётся верным и принято как цена: хост `ru.` в выдаче Google 07–10.11 имел 0 показов, убирать из индекса почти нечего, а обход на 8,6 млн закрытых меткой страниц продолжал тратиться. Метка остаётся вторым слоем: при откате запрета робот снова её увидит. Россия, валюты, OG-картинки, Яндекс, Bing и apex не затронуты. Контракт — [data-contracts](../data-contracts.md#запрет-обхода-годовых-страниц-мира-роботу-google-на-ru--2026-11-13).
 **Update 2026-11-14:** пункт 3 («Apex не меняется») заменён [ADR-0031](0031-apex-google-demand-only-years.md): на apex метка `googlebot` ставится годовым страницам без спроса; старые адреса и `ru.` не меняются.
+**Update 2026-11-19 (совет):** записан инвариант «только Googlebot, Яндекс не трогаем» — раздел ниже; страж `backend/tests/test_google_only_yandex_invariant.py`.
 **Part of:** [`../data-contracts.md`](../data-contracts.md#возврат-русской-аудитории-в-google--2026-11-11).
 **Related:** [ADR-0013](0013-country-first-url-architecture.md) (язык = хост, path-cut), [ADR-0022](0022-priority-sitemap-and-index-control.md) (приоритетный sitemap; вариант C «noindex» был отклонён 12.10 как преждевременный), решение 20.09 «все canonical в sitemap» (CONTEXT, «История и индекс»).
 **Code anchors:** `backend/app/api/seo_pages.py` (`legacy_redirect_origin`, `_permanent_redirect`), `frontend/nginx.conf` (`map $host $legacy_ru_origin`, старые корни `/region/…`, `/regions…`, `/today…`, `/calendar…`, `/demographics`, `/region-rating/…`, `/region-vs/…`, `/category/…`), `backend/app/services/index_policy.py` (`is_ru_google_noindex_path`, `googlebot_meta_for_path`), `backend/app/services/seo_renderer.py` (`compose_document`), `backend/app/config.py` (`ru_google_noindex_world_years`), `backend/tests/test_ru_google_recovery.py`.
@@ -44,6 +45,15 @@
 ## Как мерить
 
 Раз в неделю по Search Console, база 11.11: клики из России 11 в неделю (цель > 30 за 6 недель), клики `ru.` 0 (> 10), последний визит робота на `ru.…/russia/indicator/key-rate` 27.09, клики остальных стран 52–72 (без падения), визиты из Яндекса ~1 850 в неделю (не ниже 1 600).
+
+## Инвариант 2026-11-19: только Googlebot, Яндекс не трогаем
+
+Совет шести агентов 19.11.2026 (`.artifacts/council-2026-11-19/общая-стратегия.md`, раздел 6.2) записал правило для этого решения и для всех следующих решений о составе индекса, включая решение по apex 23.12:
+
+- **Массовые страницы закрываем только для робота Google.** Разрешённые средства: метка `<meta name="googlebot">`, строки в группе `User-agent: Googlebot` файла `robots.txt`, короткий индекс sitemap по User-Agent робота Google. Общий `meta robots`, общие группы `robots.txt`, состав sitemap для остальных роботов, адреса, `canonical` и шаблоны заголовков ради Google не меняются.
+- **Почему.** Замер 19.11 (`raw_metrika_visits`, 30 дней): люди из Яндекса — около 7 650 визитов, это около 90 % людей сайта; 78 % из них входят на годовые страницы (`fuel-diesel/2026`, `fuel-ai92/2025`, `cpi/2026`, `gold-price/2026`, `world/rating/population/2026`). Для Google эти страницы — «массовые», для Яндекса — главный вход. Ошибка в сторону Яндекса стоила бы большей части людей; ошибка в сторону Google — недель ожидания.
+- **Проверка перед выпуском.** Любое изменение `index_policy.py`, `robots.txt`, sitemap или `meta robots` проходит `backend/tests/test_google_only_yandex_invariant.py`: все флаги Google включены, входные страницы Яндекса на обоих хостах открыты для обхода роботом Яндекса, `meta robots` у них `index`, короткий индекс роботу Яндекса не отдаётся. Новый механизм для Google добавляется в этот тест.
+- **Отмена правила** — только отдельным решением владельца с замером Яндекса до и после.
 
 ## Неизвестно
 
