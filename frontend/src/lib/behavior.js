@@ -130,6 +130,9 @@ let _captureStartedAt = 0;
 const _attention = createAttentionClock();
 let _errorCount = 0;
 let _apiCallCounter = 0;
+// Сколько раз вкладка уходила в фон: запрос, во время которого это случилось, меряет сон ноутбука и заморозку
+// фоновой вкладки, а не ответ сервера (`hid: 1` в api_timing).
+let _hiddenSeq = 0;
 // One clock per semantic block; duplicate DOM nodes never multiply its time.
 let _blocks = new Map();
 let _blockElements = new Map();
@@ -794,9 +797,31 @@ function isApiTimingUrl(url) {
   return Boolean(url) && url.indexOf('/api/') !== -1 && url.indexOf('/analytics/') === -1;
 }
 
+function isPageHidden() {
+  return typeof document !== 'undefined' && document.visibilityState === 'hidden';
+}
+
+/** Отметка видимости на старте запроса: счётчик уходов в фон и «скрыта ли вкладка сейчас». */
+function hiddenMark() {
+  return { seq: _hiddenSeq, hidden: isPageHidden() };
+}
+
+/** Событие api_timing. `hid: 1` — вкладка была скрыта на старте, на финише или уходила в фон в середине запроса:
+ *  такое время включает сон ноутбука и заморозку фоновой вкладки (19.11.2026: 481 с у пары запросов одного
+ *  посетителя при ответе сервера за миллисекунды). Видимые всё время запросы поля не получают. */
+function apiTimingPayload(url, t0, h0, status, ok) {
+  const payload = { u: apiTimingUrl(url), ms: Math.round(performance.now() - t0), st: status, ok: ok ? 1 : 0 };
+  if (h0.hidden || h0.seq !== _hiddenSeq || isPageHidden()) payload.hid = 1;
+  return payload;
+}
+
 /** Латентность API глазами клиента: обёртки fetch и XMLHttpRequest (Axios ходит через XHR),
  *  сэмпл 1 из N, только /api/. Измерение пассивно: ответ и ошибки не меняются. */
 function setupApiTiming() {
+  const onHidden = () => { if (isPageHidden()) _hiddenSeq += 1; };
+  listen(document, 'visibilitychange', onHidden);
+  // Page Lifecycle: замороженная фоновая вкладка (Chrome) — тоже не время сервера.
+  listen(document, 'freeze', () => { _hiddenSeq += 1; });
   const orig = window.fetch;
   const restores = [];
   if (typeof orig === 'function') {
@@ -808,11 +833,12 @@ function setupApiTiming() {
       _apiCallCounter += 1;
       if (_apiCallCounter % API_TIMING_SAMPLE !== 0) return orig.apply(this, arguments);
       const t0 = performance.now();
+      const h0 = hiddenMark();
       return orig.apply(this, arguments).then((resp) => {
-        push('api_timing', { u: apiTimingUrl(url), ms: Math.round(performance.now() - t0), st: resp.status, ok: resp.ok ? 1 : 0 });
+        push('api_timing', apiTimingPayload(url, t0, h0, resp.status, resp.ok));
         return resp;
       }, (err) => {
-        push('api_timing', { u: apiTimingUrl(url), ms: Math.round(performance.now() - t0), st: 0, ok: 0 });
+        push('api_timing', apiTimingPayload(url, t0, h0, 0, false));
         throw err;
       });
     };
@@ -836,10 +862,11 @@ function setupApiTiming() {
           _apiCallCounter += 1;
           if (_apiCallCounter % API_TIMING_SAMPLE === 0) {
             const t0 = performance.now();
+            const h0 = hiddenMark();
             // loadend срабатывает и при успехе, и при ошибке/таймауте/abort.
             this.addEventListener('loadend', () => {
               const st = this.status || 0;
-              push('api_timing', { u: apiTimingUrl(url), ms: Math.round(performance.now() - t0), st, ok: st >= 200 && st < 300 ? 1 : 0 });
+              push('api_timing', apiTimingPayload(url, t0, h0, st, st >= 200 && st < 300));
             }, { once: true });
           }
         }
@@ -1214,6 +1241,7 @@ export function _resetForTests() {
   _attention.reset(0, false);
   _errorCount = 0;
   _apiCallCounter = 0;
+  _hiddenSeq = 0;
   _blocks = new Map();
   _blockElements = new Map();
   _formsSeen = new Set();

@@ -71,3 +71,33 @@ describe('api_timing covers Axios XHR', () => {
     expect(Fake.prototype.send).toBe(origSend);
   });
 });
+
+describe('api_timing marks requests that spanned a hidden tab', () => {
+  const setVisibility = (state) => {
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => state });
+    document.dispatchEvent(new Event('visibilitychange'));
+  };
+  afterEach(() => { delete document.visibilityState; });
+
+  it('adds hid=1 only when the tab went to background during the request', async () => {
+    // Ответы ждут ручного resolve: между стартом и финишем вкладка уходит в фон и возвращается.
+    const pending = [];
+    const apiFetch = vi.fn(() => new Promise((resolve) => pending.push(resolve)));
+    vi.stubGlobal('fetch', (url, init) => (String(url).includes('/analytics/') ? fetchMock(url, init) : apiFetch(url, init)));
+    setVisibility('visible');
+    behaviorInit();
+
+    for (let i = 0; i < 5; i += 1) window.fetch(`/api/v1/ticker/live?lane=russia&n=${i}`);
+    setVisibility('hidden');
+    setVisibility('visible');
+    for (let i = 0; i < 5; i += 1) window.fetch(`/api/v1/ticker/live?lane=world&n=${i}`);
+    pending.forEach((resolve) => resolve({ ok: true, status: 200 }));
+    await settle();
+    flush(); await settle();
+
+    const timings = sentEvents().filter((event) => event.t === 'api_timing');
+    expect(timings).toHaveLength(2);
+    expect(timings[0].hid).toBe(1);
+    expect(timings[1].hid).toBeUndefined();
+  });
+});

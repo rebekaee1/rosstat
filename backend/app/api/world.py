@@ -11,6 +11,7 @@ import logging
 import math
 import time
 from collections import defaultdict
+from contextlib import asynccontextmanager
 from datetime import date
 from statistics import median
 
@@ -23,6 +24,7 @@ from app.core.cache import (
     cache_get,
     cache_set,
     fresh_world_catalog_key,
+    get_redis,
     get_versioned_durable_world_countries,
     is_current_world_countries_key,
     set_versioned_durable_world_countries,
@@ -1960,9 +1962,66 @@ def _price_chip_basis(concept_slug: str, indicator: WorldIndicator) -> dict | No
 
 
 async def country_detail_cache_key(slug: str) -> str:
-    """Ключ Redis каталога страны (тот же читает серверный HTML страны)."""
+    """Ключ Redis каталога страны (тот же читает серверный HTML страны).
+
+    Поколение — `world-catalog`, а не `world` (19.11.2026). В каталоге страны нет прогнозов: только ряды, их
+    названия и последние точки. `world` сдвигает и прогнозный конвейер (каждые 200 записей и в конце прогона), и
+    каждый такой сдвиг делал холодными каталоги всех стран; холодный каталог европейской страны (8,5 тыс. карточек)
+    строится 20–30 с и упирается в предел запроса базы. `world-catalog` сдвигают загрузки, меняющие состав или
+    описание каталога; новые значения при загрузке без изменения состава приходят через срок свежести записи
+    (`_CACHE_TTL`, фоновый пересчёт SWR), как раньше внутри одного поколения `world`.
+    Если Redis состояния недоступен, ключ строится по поколению `world`, как до 19.11.
+    """
     # v20 (14.11.2026): названия рядов с уточнением среза (world_series_title).
-    return await versioned_key("world", f"country:v20:{slug}:{get_locale()}")
+    rest = f"country:v20:{slug}:{get_locale()}"
+    try:
+        return await versioned_key("world-catalog", rest)
+    except Exception:  # noqa: BLE001 — Redis состояния лежит: прежнее поколение лучше ошибки страницы
+        logger.warning("country catalog key: world-catalog generation unavailable", exc_info=True)
+        return await versioned_key("world", rest)
+
+
+# Один холодный расчёт каталога страны на все процессы (19.11.2026). Клиент ждёт ответ 15 с и повторяет запрос
+# дважды (`useWorldCountry`); каждый повтор раньше начинал свой расчёт рядом с незаконченным первым (боевой 19.11:
+# три запроса Германии по 15 с, все 499). Остальные запросы ждут замок и читают готовую запись.
+# Замок живёт дольше трёх пределов запроса базы; ожидание ограничено, после него запрос считает сам, как раньше.
+_COUNTRY_BUILD_LOCK_SECONDS = 120
+_COUNTRY_BUILD_WAIT_SECONDS = 60.0
+# Рядов в одном запросе последних точек каталога страны (см. `_build_country_detail_payload`).
+_LATEST_POINTS_CHUNK = 2000
+
+
+@asynccontextmanager
+async def _country_build_turn(cache_key: str):
+    """Очередь расчёта каталога страны: `True`, если пришлось ждать чужой расчёт (тогда сначала перечитать кэш).
+
+    Redis недоступен или ожидание вышло — расчёт идёт без замка (fail-open, прежнее поведение).
+    """
+    lock = None
+    waited = False
+    try:
+        r = await get_redis()
+        lock = r.lock(
+            f"fe:lock:{cache_key}",
+            timeout=_COUNTRY_BUILD_LOCK_SECONDS,
+            blocking_timeout=_COUNTRY_BUILD_WAIT_SECONDS,
+            sleep=0.25,
+        )
+        if not await lock.acquire(blocking=False):
+            waited = True
+            if not await lock.acquire():
+                lock = None
+    except Exception:  # noqa: BLE001 — замок только снижает нагрузку, ответ без него тот же
+        logger.warning("country catalog build lock unavailable", exc_info=True)
+        lock = None
+    try:
+        yield waited
+    finally:
+        if lock is not None:
+            try:
+                await lock.release()
+            except Exception:  # noqa: BLE001 — замок истечёт сам
+                logger.warning("country catalog build lock release failed", exc_info=True)
 
 
 # Круг 12 (SPEED2): сжатая форма каталога страны (`?slim=1`). У страны Евростата 8 тыс. карточек по ~730 байт: категория
@@ -2040,7 +2099,34 @@ async def _country_detail_payload(slug: str, db: AsyncSession) -> dict:
     cached = await api_cache_get(cache_key, cache_get)
     if cached:
         return cached
+    async with _country_build_turn(cache_key) as waited:
+        if waited:
+            # Пока ждали, запись построил другой запрос: читаем её напрямую (фоновый пересчёт SWR тоже).
+            cached = await cache_get(cache_key)
+            if cached:
+                return cached
+        return await _build_country_detail_payload(slug, db, cache_key)
 
+
+async def _country_nonzero_signal(
+    db: AsyncSession,
+    indicator_ids: list[int],
+    recent: dict[int, list[tuple[date, float]]],
+) -> set[int]:
+    """То же множество, что `_ids_with_nonzero_signal(indicator_ids)`, но по уже прочитанным последним точкам.
+
+    Ненулевая точка среди последних — ряд в множестве; точек нет — ряда в нём нет. Базу спрашиваем только про ряды,
+    у которых все последние точки нули: ненулевая точка может быть раньше. Отдельная проверка всех рядов страны
+    стоила второго холодного прохода по `world_data_points` (боевой 19.11: Босния, 2,8 тыс. рядов — 3,9 с из 21 с).
+    """
+    signal = {iid for iid, points in recent.items() if any(value != 0 for _, value in points)}
+    zero_tail = [iid for iid in indicator_ids if iid in recent and iid not in signal]
+    if zero_tail:
+        signal |= await _ids_with_nonzero_signal(db, zero_tail)
+    return signal
+
+
+async def _build_country_detail_payload(slug: str, db: AsyncSession, cache_key: str) -> dict:
     country = await _country_by_slug(db, slug)
     all_inds = await _country_indicators_for_listing(db, country.id)
     from app.services.world_series_title import bind_title_axes, differing_axes
@@ -2058,8 +2144,17 @@ async def _country_detail_payload(slug: str, db: AsyncSession) -> dict:
             if primary is not None:
                 listed.append(primary)
 
+    # Последние две точки каждого ряда — одним проходом; по ним же отбор «есть ненулевая точка».
+    listed_ids = [i.id for i in listed]
+    recent: dict[int, list[tuple[date, float]]] = {}
+    # Частями: холодное чтение идёт ~3,7 мс на ряд (боевой 19.11), у европейской страны 8,5 тыс. рядов — больше
+    # предела запроса 30 с одним запросом, и каталог не строился вовсе. Каждая часть укладывается в предел.
+    for start in range(0, len(listed_ids), _LATEST_POINTS_CHUNK):
+        recent.update(await latest_world_point_series(
+            db, listed_ids[start:start + _LATEST_POINTS_CHUNK], limit=2,
+        ))
     # Защита: all-zero не в каталоге страны (даже если is_listed ещё true).
-    listed_signal = await _ids_with_nonzero_signal(db, [i.id for i in listed])
+    listed_signal = await _country_nonzero_signal(db, listed_ids, recent)
     listed = [i for i in listed if i.id in listed_signal]
     listed = filter_weo_shadowed_from_country_listing(listed, country.code)
 
@@ -2085,7 +2180,6 @@ async def _country_detail_payload(slug: str, db: AsyncSession) -> dict:
     last_map: dict[int, tuple[date, float]] = {}
     prev_map: dict[int, float] = {}
     if listed:
-        recent = await latest_world_point_series(db, [i.id for i in listed], limit=2)
         last_map = {iid: points[0] for iid, points in recent.items()}
         prev_map = {iid: points[1][1] for iid, points in recent.items() if len(points) > 1}
 
