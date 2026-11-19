@@ -1280,8 +1280,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "sha256": "99d97a1aa8a5b8eba45892280cb08c9b50d892356f64c900370c037c7b4b09aa",
-      "lines": 535
+      "sha256": "559383e4387a27dfcc2d6b5980d36984b985ef78bb5375747f8dff2516d0f696",
+      "lines": 544
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
@@ -168138,22 +168138,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 467,
-      "end_line": 473,
-      "owner": "_upsert_monthly_points",
-      "conditions": [],
-      "operation": "execute",
-      "receiver": "db",
-      "symbol": "app.services.emiss_regional_parser.db.execute",
-      "expression": "db.execute(stmt.on_conflict_do_update(constraint='uq_region_monthly_point', set_={'value': stmt.excluded.value}, where=RegionMonthlyPoint.__table__.c.value != stmt.excluded.value).returning(literal_inserted()))",
-      "expression_truncated": false,
-      "expression_chars": 210,
-      "ast_sha256": "26018f7540dae61d757239dbb27754eec16985bb13990f3e8920eddcb4706f1d"
-    },
-    {
-      "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 477,
-      "end_line": 477,
+      "line": 486,
+      "end_line": 486,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "operation": "flush",
@@ -168225,6 +168211,20 @@
       "expression_truncated": false,
       "expression_chars": 5,
       "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/emiss_regional_parser.py",
+      "line": 475,
+      "end_line": 481,
+      "owner": "_upsert_monthly_points",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.emiss_regional_parser.db.execute",
+      "expression": "db.execute(stmt.on_conflict_do_update(constraint='uq_region_monthly_point', set_={'value': stmt.excluded.value}, where=RegionMonthlyPoint.__table__.c.value != stmt.excluded.value).returning(literal_inserted()))",
+      "expression_truncated": false,
+      "expression_chars": 210,
+      "ast_sha256": "26018f7540dae61d757239dbb27754eec16985bb13990f3e8920eddcb4706f1d"
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
@@ -255781,8 +255781,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 466,
+      "end_line": 466,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -255827,15 +255827,6 @@
       ],
       "symbol": "app.models.RegionMonthlyPoint.region_id",
       "expression": "RegionMonthlyPoint.region_id"
-    },
-    {
-      "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 471,
-      "end_line": 471,
-      "owner": "_upsert_monthly_points",
-      "conditions": [],
-      "symbol": "app.models.RegionMonthlyPoint.__table__.c.value",
-      "expression": "RegionMonthlyPoint.__table__.c.value"
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
@@ -255910,12 +255901,12 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 479,
+      "end_line": 479,
       "owner": "_upsert_monthly_points",
       "conditions": [],
-      "symbol": "app.models.RegionMonthlyPoint.__table__.c",
-      "expression": "RegionMonthlyPoint.__table__.c"
+      "symbol": "app.models.RegionMonthlyPoint.__table__.c.value",
+      "expression": "RegionMonthlyPoint.__table__.c.value"
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
@@ -255970,12 +255961,12 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 479,
+      "end_line": 479,
       "owner": "_upsert_monthly_points",
       "conditions": [],
-      "symbol": "app.models.RegionMonthlyPoint.__table__",
-      "expression": "RegionMonthlyPoint.__table__"
+      "symbol": "app.models.RegionMonthlyPoint.__table__.c",
+      "expression": "RegionMonthlyPoint.__table__.c"
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
@@ -255988,8 +255979,17 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 479,
+      "end_line": 479,
+      "owner": "_upsert_monthly_points",
+      "conditions": [],
+      "symbol": "app.models.RegionMonthlyPoint.__table__",
+      "expression": "RegionMonthlyPoint.__table__"
+    },
+    {
+      "path": "backend/app/services/emiss_regional_parser.py",
+      "line": 479,
+      "end_line": 479,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -352156,8 +352156,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 453,
-      "end_line": 478,
+      "line": 458,
+      "end_line": 487,
       "owner": "<module>",
       "conditions": [],
       "name": "_upsert_monthly_points",
@@ -352165,8 +352165,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 481,
-      "end_line": 484,
+      "line": 490,
+      "end_line": 493,
       "owner": "<module>",
       "conditions": [],
       "name": "literal_inserted",
@@ -352174,8 +352174,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 490,
-      "end_line": 535,
+      "line": 499,
+      "end_line": 544,
       "owner": "<module>",
       "conditions": [],
       "name": "emiss_regional_job",

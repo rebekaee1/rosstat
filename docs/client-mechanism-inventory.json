@@ -102459,7 +102459,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/regions/MonthlyPriceParts.jsx": {
-      "sha256": "af7d663b2f376a1c1addc90a1eb2e80353aac3a2bc06f3e789ddad004854bdb3",
+      "sha256": "71f8f0cab7c6f9f6b751af16a44223ca89792d04fb02edc5911f31d4c75be677",
       "imports": [
         {
           "line": 3,
@@ -117829,7 +117829,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "cc356c79d52a152e917f3b86f3cea4e8aa83601265e1de7d72a0a85062171114",
+      "sha256": "2dd33cebc9313926aee3659a15cf381b913c6105a958d9abbd7d1cae1c864bb9",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -118252,7 +118252,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "9705660f1517fd47ea6ecca82bf704e0eea529a5843b162944945340b6755865",
+      "sha256": "260349b074088997654b49a30ee0403cabd4184f9db49fda9da7f662e8b5225e",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -199609,7 +199609,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/z2Price.js": {
-      "sha256": "b4d1566d3c48f375c137f4413aab04f204788e67ec8fb1872efc45e135a4c563",
+      "sha256": "279bccfa2397c54cdfde13449912f20e030ae3c0bdc13912bf4a12515096907a",
       "imports": [
         {
           "line": 2,
@@ -199687,247 +199687,247 @@
         },
         {
           "line": 64,
-          "end_line": 79,
+          "end_line": 80,
           "owner": "<module>",
           "name": "compareRows",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 82,
-          "end_line": 104,
+          "line": 83,
+          "end_line": 105,
           "owner": "<module>",
           "name": "groupSiblings",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 84,
-          "end_line": 84,
+          "line": 85,
+          "end_line": 85,
           "owner": "groupSiblings",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "siblings.some"
         },
         {
-          "line": 86,
-          "end_line": 90,
+          "line": 87,
+          "end_line": 91,
           "owner": "groupSiblings",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "siblings.forEach"
         },
         {
-          "line": 91,
-          "end_line": 95,
+          "line": 92,
+          "end_line": 96,
           "owner": "groupSiblings",
           "name": "rank",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 97,
-          "end_line": 97,
+          "line": 98,
+          "end_line": 98,
           "owner": "groupSiblings",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...map.entries()]\n    .sort"
         },
         {
-          "line": 98,
-          "end_line": 103,
+          "line": 99,
+          "end_line": 104,
           "owner": "groupSiblings",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...map.entries()]\n    .sort((a, b) => rank(a[0]) - rank(b[0]))\n    .map"
         },
         {
-          "line": 101,
-          "end_line": 101,
-          "owner": "groupSiblings.<callback@98>",
+          "line": 102,
+          "end_line": 102,
+          "owner": "groupSiblings.<callback@99>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items\n        .sort"
         },
         {
-          "line": 102,
-          "end_line": 102,
-          "owner": "groupSiblings.<callback@98>",
+          "line": 103,
+          "end_line": 103,
+          "owner": "groupSiblings.<callback@99>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items\n        .sort((a, b) => (Number(!!a.s.is_discontinued) - Number(!!b.s.is_discontinued)) || (a.i - b.i))\n        .map"
         },
         {
-          "line": 107,
-          "end_line": 124,
+          "line": 108,
+          "end_line": 125,
           "owner": "<module>",
           "name": "yearTickPeriods",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 120,
-          "end_line": 120,
+          "line": 121,
+          "end_line": 121,
           "owner": "yearTickPeriods",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.find"
         },
         {
-          "line": 126,
-          "end_line": 126,
+          "line": 127,
+          "end_line": 127,
           "owner": "<module>",
           "name": "upFirst",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 129,
-          "end_line": 135,
+          "line": 130,
+          "end_line": 136,
           "owner": "<module>",
           "name": "shortPriceName",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 138,
-          "end_line": 141,
+          "line": 139,
+          "end_line": 142,
           "owner": "<module>",
           "name": "unitSuffix",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 144,
-          "end_line": 146,
+          "line": 145,
+          "end_line": 147,
           "owner": "<module>",
           "name": "isRubPerUnit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 149,
-          "end_line": 153,
+          "line": 150,
+          "end_line": 154,
           "owner": "<module>",
           "name": "priceText",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 157,
-          "end_line": 164,
+          "line": 158,
+          "end_line": 165,
           "owner": "<module>",
           "name": "perUnitPrice",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 179,
-          "end_line": 183,
+          "line": 180,
+          "end_line": 184,
           "owner": "<module>",
           "name": "guessPriceGroup",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 186,
-          "end_line": 189,
+          "line": 187,
+          "end_line": 190,
           "owner": "<module>",
           "name": "pairKey",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 192,
-          "end_line": 198,
+          "line": 193,
+          "end_line": 199,
           "owner": "<module>",
           "name": "pairLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 201,
-          "end_line": 205,
+          "line": 202,
+          "end_line": 206,
           "owner": "<module>",
           "name": "pairSiblings",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 204,
-          "end_line": 204,
+          "line": 205,
+          "end_line": 205,
           "owner": "pairSiblings",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "siblings.filter"
         },
         {
-          "line": 208,
-          "end_line": 213,
+          "line": 209,
+          "end_line": 214,
           "owner": "<module>",
           "name": "pairsFirst",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 211,
-          "end_line": 211,
+          "line": 212,
+          "end_line": 212,
           "owner": "pairsFirst",
           "name": "hit",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 212,
-          "end_line": 212,
+          "line": 213,
+          "end_line": 213,
           "owner": "pairsFirst",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "siblings.filter"
         },
         {
-          "line": 216,
-          "end_line": 219,
+          "line": 217,
+          "end_line": 220,
           "owner": "<module>",
           "name": "yearlyCost",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 222,
-          "end_line": 225,
+          "line": 223,
+          "end_line": 226,
           "owner": "<module>",
           "name": "sliceMonths",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 228,
-          "end_line": 231,
+          "line": 229,
+          "end_line": 232,
           "owner": "<module>",
           "name": "compareFill",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 234,
-          "end_line": 236,
+          "line": 235,
+          "end_line": 237,
           "owner": "<module>",
           "name": "roundBig",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 239,
-          "end_line": 243,
+          "line": 240,
+          "end_line": 244,
           "owner": "<module>",
           "name": "bigRub",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 246,
-          "end_line": 248,
+          "line": 247,
+          "end_line": 249,
           "owner": "<module>",
           "name": "perAreaUnit",
           "kind": "FunctionDeclaration",
@@ -199962,8 +199962,8 @@
           "initializer": null
         },
         {
-          "line": 155,
-          "end_line": 155,
+          "line": 156,
+          "end_line": 156,
           "owner": "<module>",
           "name": "PER_ONE",
           "kind": "ObjectExpression",
@@ -199976,8 +199976,8 @@
           "initializer": null
         },
         {
-          "line": 166,
-          "end_line": 177,
+          "line": 167,
+          "end_line": 178,
           "owner": "<module>",
           "name": "GROUP_RULES",
           "kind": "ArrayExpression",
@@ -199999,7 +199999,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/z2Price.test.js": {
-      "sha256": "27e959229f88d654c24c6f58d2d542132415f03d7ae4ae536ab616117c5a03a8",
+      "sha256": "9181e12ac75ef806b4722097fca1962c1735a155e8908cdd5d144372d8eab8bb",
       "imports": [
         {
           "line": 1,
@@ -200041,7 +200041,7 @@
       "functions": [
         {
           "line": 4,
-          "end_line": 52,
+          "end_line": 54,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -200057,7 +200057,7 @@
         },
         {
           "line": 10,
-          "end_line": 16,
+          "end_line": 18,
           "owner": "<callback@4>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -200080,48 +200080,48 @@
           "callback_context": "compareRows(c, 'altay', 110).map"
         },
         {
-          "line": 17,
-          "end_line": 27,
+          "line": 19,
+          "end_line": 29,
           "owner": "<callback@4>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 24,
-          "end_line": 24,
-          "owner": "<callback@4>.<callback@17>",
+          "line": 26,
+          "end_line": 26,
+          "owner": "<callback@4>.<callback@19>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "g.map"
         },
         {
-          "line": 25,
-          "end_line": 25,
-          "owner": "<callback@4>.<callback@17>",
+          "line": 27,
+          "end_line": 27,
+          "owner": "<callback@4>.<callback@19>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "g[2].items.map"
         },
         {
-          "line": 28,
-          "end_line": 34,
+          "line": 30,
+          "end_line": 36,
           "owner": "<callback@4>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 35,
-          "end_line": 45,
+          "line": 37,
+          "end_line": 47,
           "owner": "<callback@4>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 46,
-          "end_line": 51,
+          "line": 48,
+          "end_line": 53,
           "owner": "<callback@4>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -236089,7 +236089,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/RegionIndicatorPage.jsx": {
-      "sha256": "d7890a73af9968d57c84a9230ec03c44d66edb298b2f9d33f4570aefcd48a6a0",
+      "sha256": "59e1c329405aea31d268919ec2a6f74fcd21aa2e49f422a6c02b21ea8850e41b",
       "imports": [
         {
           "line": 5,
@@ -236705,7 +236705,7 @@
         },
         {
           "line": 112,
-          "end_line": 919,
+          "end_line": 921,
           "owner": "<module>",
           "name": "RegionIndicatorPage",
           "kind": "FunctionDeclaration",
@@ -236848,297 +236848,297 @@
           "callback_context": "useMemo"
         },
         {
-          "line": 306,
-          "end_line": 319,
+          "line": 308,
+          "end_line": 321,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 308,
-          "end_line": 308,
-          "owner": "RegionIndicatorPage.<callback@306>",
+          "line": 310,
+          "end_line": 310,
+          "owner": "RegionIndicatorPage.<callback@308>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "activeSeries.map"
         },
         {
-          "line": 311,
-          "end_line": 314,
-          "owner": "RegionIndicatorPage.<callback@306>",
+          "line": 313,
+          "end_line": 316,
+          "owner": "RegionIndicatorPage.<callback@308>",
           "name": "at",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 336,
-          "end_line": 336,
+          "line": 338,
+          "end_line": 338,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 348,
-          "end_line": 348,
+          "line": 350,
+          "end_line": 350,
           "owner": "RegionIndicatorPage",
           "name": "trimUnitTail",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 350,
-          "end_line": 353,
+          "line": 352,
+          "end_line": 355,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    const m = String(displayName || '').match(/^(.{20,}?)\\s+[—–]\\s+(.{25,})$/);\n    return m ? [m[1], m[2]] : null;\n  }"
         },
         {
-          "line": 366,
-          "end_line": 370,
+          "line": 368,
+          "end_line": 372,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(active?.siblings || []).map"
         },
         {
-          "line": 390,
-          "end_line": 399,
+          "line": 392,
+          "end_line": 401,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (!isMonthly || activeSeries.length < 24) return null;\n    let mx = activeSeries[0];\n    let mn = activeSeries[0];\n    for (const pt of activeSeries) {\n      if (pt.value > mx.value) mx = pt;\n      if (pt.value < mn.value) mn = pt;\n    }\n    return { mx, mn };\n  }"
         },
         {
-          "line": 404,
-          "end_line": 408,
+          "line": 406,
+          "end_line": 410,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "activeSeries.map"
         },
         {
-          "line": 414,
-          "end_line": 414,
+          "line": 416,
+          "end_line": 416,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[\n      { key: 'z2.yearAgo', ch: changeOverMonths(activeSeries, 12) },\n      { key: 'z2.fiveYearsAgo', ch: changeOverMonths(activeSeries, 60) },\n    ].filter"
         },
         {
-          "line": 452,
-          "end_line": 452,
+          "line": 454,
+          "end_line": 454,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 458,
-          "end_line": 458,
+          "line": 460,
+          "end_line": 460,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[0, 1, 2, 3].map"
         },
         {
-          "line": 564,
-          "end_line": 567,
+          "line": 566,
+          "end_line": 569,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 572,
-          "end_line": 574,
+          "line": 574,
+          "end_line": 576,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regionOptions.map"
         },
         {
-          "line": 578,
-          "end_line": 578,
+          "line": 580,
+          "end_line": 580,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 578,
-          "end_line": 578,
-          "owner": "RegionIndicatorPage.<callback@578>",
+          "line": 580,
+          "end_line": 580,
+          "owner": "RegionIndicatorPage.<callback@580>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setShowReal"
         },
         {
-          "line": 586,
-          "end_line": 586,
+          "line": 588,
+          "end_line": 588,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 586,
-          "end_line": 586,
-          "owner": "RegionIndicatorPage.<callback@586>",
+          "line": 588,
+          "end_line": 588,
+          "owner": "RegionIndicatorPage.<callback@588>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setShowRussia"
         },
         {
-          "line": 598,
-          "end_line": 598,
+          "line": 600,
+          "end_line": 600,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 598,
-          "end_line": 598,
-          "owner": "RegionIndicatorPage.<callback@598>",
+          "line": 600,
+          "end_line": 600,
+          "owner": "RegionIndicatorPage.<callback@600>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setShowYoY"
         },
         {
-          "line": 605,
-          "end_line": 605,
+          "line": 607,
+          "end_line": 607,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 606,
-          "end_line": 606,
+          "line": 608,
+          "end_line": 608,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 649,
-          "end_line": 649,
+          "line": 651,
+          "end_line": 651,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 664,
-          "end_line": 664,
+          "line": 666,
+          "end_line": 666,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 714,
-          "end_line": 719,
+          "line": 716,
+          "end_line": 721,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "periodChanges.map"
         },
         {
-          "line": 765,
-          "end_line": 778,
+          "line": 767,
+          "end_line": 780,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "active.rank.top.map"
         },
         {
-          "line": 792,
-          "end_line": 792,
+          "line": 794,
+          "end_line": 794,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 792,
-          "end_line": 792,
-          "owner": "RegionIndicatorPage.<callback@792>",
+          "line": 794,
+          "end_line": 794,
+          "owner": "RegionIndicatorPage.<callback@794>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setShowTable"
         },
         {
-          "line": 821,
-          "end_line": 847,
+          "line": 823,
+          "end_line": 849,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "tableRows.map"
         },
         {
-          "line": 823,
-          "end_line": 823,
-          "owner": "RegionIndicatorPage.<callback@821>",
+          "line": 825,
+          "end_line": 825,
+          "owner": "RegionIndicatorPage.<callback@823>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "active.russia_series?.find"
         },
         {
-          "line": 865,
-          "end_line": 865,
+          "line": 867,
+          "end_line": 867,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 872,
-          "end_line": 872,
+          "line": 874,
+          "end_line": 874,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 881,
-          "end_line": 881,
+          "line": 883,
+          "end_line": 883,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "siblingsView.some"
         },
         {
-          "line": 890,
-          "end_line": 890,
+          "line": 892,
+          "end_line": 892,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "siblingsView.some"
         },
         {
-          "line": 896,
-          "end_line": 906,
+          "line": 898,
+          "end_line": 908,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "annualSibs.slice(0, sibsOpen || isMonthly ? undefined : R6_SIBS_FIRST).map"
         },
         {
-          "line": 909,
-          "end_line": 909,
+          "line": 911,
+          "end_line": 911,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 909,
-          "end_line": 909,
-          "owner": "RegionIndicatorPage.<callback@909>",
+          "line": 911,
+          "end_line": 911,
+          "owner": "RegionIndicatorPage.<callback@911>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setSibsOpen"
@@ -237365,8 +237365,8 @@
           ]
         },
         {
-          "line": 306,
-          "end_line": 319,
+          "line": 308,
+          "end_line": 321,
           "owner": "RegionIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -237375,8 +237375,8 @@
           ]
         },
         {
-          "line": 335,
-          "end_line": 338,
+          "line": 337,
+          "end_line": 340,
           "owner": "RegionIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -237400,104 +237400,104 @@
       ],
       "jsx_handlers": [
         {
-          "line": 446,
-          "end_line": 446,
+          "line": 448,
+          "end_line": 448,
           "owner": "RegionIndicatorPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{refetch}"
         },
         {
-          "line": 452,
-          "end_line": 452,
+          "line": 454,
+          "end_line": 454,
           "owner": "RegionIndicatorPage",
           "component": "LoadingNote",
           "event": "onRefresh",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 553,
-          "end_line": 553,
+          "line": 555,
+          "end_line": 555,
           "owner": "RegionIndicatorPage",
           "component": "RangeChips",
           "event": "onChange",
           "expression": "{setRangeM}"
         },
         {
-          "line": 562,
-          "end_line": 570,
+          "line": 564,
+          "end_line": 572,
           "owner": "RegionIndicatorPage",
           "component": "select",
           "event": "onChange",
           "expression": "{(e) => {\n                      setCompareSlug(e.target.value);\n                      if (e.target.value) track(events.REGION_COMPARE_ADD, { region: slug, compare: e.target.value, indicator: code });\n                    }}"
         },
         {
-          "line": 578,
-          "end_line": 578,
+          "line": 580,
+          "end_line": 580,
           "owner": "RegionIndicatorPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setShowReal((v) => !v)}"
         },
         {
-          "line": 586,
-          "end_line": 586,
+          "line": 588,
+          "end_line": 588,
           "owner": "RegionIndicatorPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setShowRussia(v => !v)}"
         },
         {
-          "line": 598,
-          "end_line": 598,
+          "line": 600,
+          "end_line": 600,
           "owner": "RegionIndicatorPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setShowYoY(v => !v)}"
         },
         {
-          "line": 649,
-          "end_line": 649,
+          "line": 651,
+          "end_line": 651,
           "owner": "RegionIndicatorPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setCompareSlug('')}"
         },
         {
-          "line": 664,
-          "end_line": 664,
+          "line": 666,
+          "end_line": 666,
           "owner": "RegionIndicatorPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setCompareSlug('')}"
         },
         {
-          "line": 791,
-          "end_line": 795,
+          "line": 793,
+          "end_line": 797,
           "owner": "RegionIndicatorPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setShowTable(v => !v)}"
         },
         {
-          "line": 863,
-          "end_line": 867,
+          "line": 865,
+          "end_line": 869,
           "owner": "RegionIndicatorPage",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: active.indicator.macro_code })}"
         },
         {
-          "line": 870,
-          "end_line": 874,
+          "line": 872,
+          "end_line": 876,
           "owner": "RegionIndicatorPage",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: 'compare' })}"
         },
         {
-          "line": 909,
-          "end_line": 909,
+          "line": 911,
+          "end_line": 911,
           "owner": "RegionIndicatorPage",
           "component": "button",
           "event": "onClick",

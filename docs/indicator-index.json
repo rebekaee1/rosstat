@@ -23445,7 +23445,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 4036,
+          "line": 4037,
           "kind": "other"
         },
         {
@@ -23510,7 +23510,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 4041,
+          "line": 4042,
           "kind": "other"
         },
         {
@@ -25165,7 +25165,7 @@
         },
         {
           "file": "frontend/src/pages/RegionIndicatorPage.jsx",
-          "line": 686,
+          "line": 688,
           "kind": "other"
         },
         {
@@ -88231,7 +88231,7 @@
         },
         {
           "file": "frontend/src/pages/RegionIndicatorPage.jsx",
-          "line": 348,
+          "line": 350,
           "kind": "other"
         },
         {
@@ -100548,7 +100548,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 4039,
+          "line": 4040,
           "kind": "other"
         },
         {
@@ -100613,7 +100613,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 4044,
+          "line": 4045,
           "kind": "other"
         },
         {
@@ -122988,12 +122988,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 4038,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 4068,
+          "line": 4039,
           "kind": "other"
         },
         {
@@ -123003,22 +122998,27 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 4240,
+          "line": 4070,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 4250,
+          "line": 4241,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 4253,
+          "line": 4251,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
           "line": 4254,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 4255,
           "kind": "other"
         },
         {
@@ -123068,7 +123068,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 4043,
+          "line": 4044,
           "kind": "other"
         },
         {

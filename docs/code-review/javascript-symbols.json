@@ -20572,7 +20572,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/regions/MonthlyPriceParts.jsx": {
-    "sha256": "af7d663b2f376a1c1addc90a1eb2e80353aac3a2bc06f3e789ddad004854bdb3",
+    "sha256": "71f8f0cab7c6f9f6b751af16a44223ca89792d04fb02edc5911f31d4c75be677",
     "definitions": [
       {
         "name": "DiscontinuedNote",
@@ -24870,7 +24870,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "cc356c79d52a152e917f3b86f3cea4e8aa83601265e1de7d72a0a85062171114",
+    "sha256": "2dd33cebc9313926aee3659a15cf381b913c6105a958d9abbd7d1cae1c864bb9",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -24978,7 +24978,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "9705660f1517fd47ea6ecca82bf704e0eea529a5843b162944945340b6755865",
+    "sha256": "260349b074088997654b49a30ee0403cabd4184f9db49fda9da7f662e8b5225e",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -54691,7 +54691,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/lib/z2Price.js": {
-    "sha256": "b4d1566d3c48f375c137f4413aab04f204788e67ec8fb1872efc45e135a4c563",
+    "sha256": "279bccfa2397c54cdfde13449912f20e030ae3c0bdc13912bf4a12515096907a",
     "definitions": [
       {
         "name": "parseYm",
@@ -54732,133 +54732,133 @@
       {
         "name": "compareRows",
         "line": 64,
-        "end_line": 79,
+        "end_line": 80,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupSiblings",
-        "line": 82,
-        "end_line": 104,
+        "line": 83,
+        "end_line": 105,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupSiblings.rank",
-        "line": 91,
-        "end_line": 95,
+        "line": 92,
+        "end_line": 96,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "yearTickPeriods",
-        "line": 107,
-        "end_line": 124,
+        "line": 108,
+        "end_line": 125,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "upFirst",
-        "line": 126,
-        "end_line": 126,
+        "line": 127,
+        "end_line": 127,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "shortPriceName",
-        "line": 129,
-        "end_line": 135,
+        "line": 130,
+        "end_line": 136,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "unitSuffix",
-        "line": 138,
-        "end_line": 141,
+        "line": 139,
+        "end_line": 142,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isRubPerUnit",
-        "line": 144,
-        "end_line": 146,
+        "line": 145,
+        "end_line": 147,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "priceText",
-        "line": 149,
-        "end_line": 153,
+        "line": 150,
+        "end_line": 154,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "perUnitPrice",
-        "line": 157,
-        "end_line": 164,
+        "line": 158,
+        "end_line": 165,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "guessPriceGroup",
-        "line": 179,
-        "end_line": 183,
+        "line": 180,
+        "end_line": 184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pairKey",
-        "line": 186,
-        "end_line": 189,
+        "line": 187,
+        "end_line": 190,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pairLabel",
-        "line": 192,
-        "end_line": 198,
+        "line": 193,
+        "end_line": 199,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pairSiblings",
-        "line": 201,
-        "end_line": 205,
+        "line": 202,
+        "end_line": 206,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pairsFirst",
-        "line": 208,
-        "end_line": 213,
+        "line": 209,
+        "end_line": 214,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pairsFirst.hit",
-        "line": 211,
-        "end_line": 211,
+        "line": 212,
+        "end_line": 212,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "yearlyCost",
-        "line": 216,
-        "end_line": 219,
+        "line": 217,
+        "end_line": 220,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "sliceMonths",
-        "line": 222,
-        "end_line": 225,
+        "line": 223,
+        "end_line": 226,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compareFill",
-        "line": 228,
-        "end_line": 231,
+        "line": 229,
+        "end_line": 232,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "roundBig",
-        "line": 234,
-        "end_line": 236,
+        "line": 235,
+        "end_line": 237,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "bigRub",
-        "line": 239,
-        "end_line": 243,
+        "line": 240,
+        "end_line": 244,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "perAreaUnit",
-        "line": 246,
-        "end_line": 248,
+        "line": 247,
+        "end_line": 249,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -54921,115 +54921,115 @@
         "names": [
           "groupSiblings"
         ],
-        "line": 82
+        "line": 83
       },
       {
         "names": [
           "yearTickPeriods"
         ],
-        "line": 107
+        "line": 108
       },
       {
         "names": [
           "shortPriceName"
         ],
-        "line": 129
+        "line": 130
       },
       {
         "names": [
           "unitSuffix"
         ],
-        "line": 138
+        "line": 139
       },
       {
         "names": [
           "isRubPerUnit"
         ],
-        "line": 144
+        "line": 145
       },
       {
         "names": [
           "priceText"
         ],
-        "line": 149
+        "line": 150
       },
       {
         "names": [
           "perUnitPrice"
         ],
-        "line": 157
+        "line": 158
       },
       {
         "names": [
           "guessPriceGroup"
         ],
-        "line": 179
+        "line": 180
       },
       {
         "names": [
           "pairKey"
         ],
-        "line": 186
+        "line": 187
       },
       {
         "names": [
           "pairLabel"
         ],
-        "line": 192
+        "line": 193
       },
       {
         "names": [
           "pairSiblings"
         ],
-        "line": 201
+        "line": 202
       },
       {
         "names": [
           "pairsFirst"
         ],
-        "line": 208
+        "line": 209
       },
       {
         "names": [
           "yearlyCost"
         ],
-        "line": 216
+        "line": 217
       },
       {
         "names": [
           "sliceMonths"
         ],
-        "line": 222
+        "line": 223
       },
       {
         "names": [
           "compareFill"
         ],
-        "line": 228
+        "line": 229
       },
       {
         "names": [
           "roundBig"
         ],
-        "line": 234
+        "line": 235
       },
       {
         "names": [
           "bigRub"
         ],
-        "line": 239
+        "line": 240
       },
       {
         "names": [
           "perAreaUnit"
         ],
-        "line": 246
+        "line": 247
       }
     ],
     "anonymous_functions": 10
   },
   "frontend/src/lib/z2Price.test.js": {
-    "sha256": "27e959229f88d654c24c6f58d2d542132415f03d7ae4ae536ab616117c5a03a8",
+    "sha256": "9181e12ac75ef806b4722097fca1962c1735a155e8908cdd5d144372d8eab8bb",
     "definitions": [],
     "imports": [
       {
@@ -61214,7 +61214,7 @@
     "anonymous_functions": 12
   },
   "frontend/src/pages/RegionIndicatorPage.jsx": {
-    "sha256": "d7890a73af9968d57c84a9230ec03c44d66edb298b2f9d33f4570aefcd48a6a0",
+    "sha256": "59e1c329405aea31d268919ec2a6f74fcd21aa2e49f422a6c02b21ea8850e41b",
     "definitions": [
       {
         "name": "toYoYSeries",
@@ -61249,7 +61249,7 @@
       {
         "name": "RegionIndicatorPage",
         "line": 112,
-        "end_line": 919,
+        "end_line": 921,
         "kind": "FunctionDeclaration"
       },
       {
@@ -61278,26 +61278,26 @@
       },
       {
         "name": "RegionIndicatorPage.at",
-        "line": 311,
-        "end_line": 314,
+        "line": 313,
+        "end_line": 316,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.trimUnitTail",
-        "line": 348,
-        "end_line": 348,
+        "line": 350,
+        "end_line": 350,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
-        "line": 605,
-        "end_line": 605,
+        "line": 607,
+        "end_line": 607,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
-        "line": 606,
-        "end_line": 606,
+        "line": 608,
+        "end_line": 608,
         "kind": "ArrowFunctionExpression"
       }
     ],

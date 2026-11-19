@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `639b18135749a3e08beefed3e99d5c0bd6a6933b`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `22c1a5f76026b77f55381cd3bd2fc431cbb5a1c1`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2716 |
 | Код, шаблоны и стили | 2207 |
 | Актуальные рецензии без пропусков guard | 2716 |
-| Именованные определения Python/JS: с аннотацией / всего | 18378 / 18378 |
+| Именованные определения Python/JS: с аннотацией / всего | 18385 / 18385 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -839,7 +839,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_emiss_regional_live_c27.py](../backend/tests/test_emiss_regional_live_c27.py) | reviewed | 35/35 | актуально |
 | [backend/tests/test_emiss_regional_parser.py](../backend/tests/test_emiss_regional_parser.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_emiss_regional_sets.py](../backend/tests/test_emiss_regional_sets.py) | reviewed | 31/31 | актуально |
-| [backend/tests/test_emiss_regional_social.py](../backend/tests/test_emiss_regional_social.py) | reviewed | 20/20 | актуально |
+| [backend/tests/test_emiss_regional_social.py](../backend/tests/test_emiss_regional_social.py) | reviewed | 27/27 | актуально |
 | [backend/tests/test_emiss_steel_parser.py](../backend/tests/test_emiss_steel_parser.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_emiss_weekly_fuel.py](../backend/tests/test_emiss_weekly_fuel.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_en_catalog.py](../backend/tests/test_en_catalog.py) | reviewed | 19/19 | актуально |

@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2502  ·  **Строк:** 1 569 030  ·  **Токенов (≈):** 15 153 155
+**Файлов:** 2502  ·  **Строк:** 1 569 075  ·  **Токенов (≈):** 15 153 720
 
 ## По верхним папкам
 
@@ -16,11 +16,11 @@
 | `(root)` | 8 | 2 917 | 67 808 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 1092 | 371 474 | 4 181 403 |
+| `backend` | 1092 | 371 512 | 4 181 765 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 579 | 26 274 |
 | `docs` | 154 | 974 329 | 8 428 536 |
-| `frontend` | 1075 | 192 557 | 2 125 071 |
+| `frontend` | 1075 | 192 564 | 2 125 274 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 143 | 25 609 | 318 411 |
 
@@ -43,9 +43,9 @@
 | `frontend/src/lib/viewModelFamilies.generated.json` | 22 202 | 131 488 |
 | `backend/app/data/indicator_seo.py` | 9 274 | 118 585 |
 | `docs/data-contracts.md` | 1 453 | 76 694 |
-| `frontend/src/i18n/messages.ru.js` | 4 300 | 60 770 |
+| `frontend/src/i18n/messages.ru.js` | 4 301 | 60 780 |
 | `docs/runtime-inventory.json` | 7 349 | 60 636 |
-| `frontend/src/i18n/messages.en.js` | 4 295 | 59 914 |
+| `frontend/src/i18n/messages.en.js` | 4 296 | 59 926 |
 | `backend/seed_data.py` | 5 748 | 59 635 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `backend/app/services/seo_renderer.py` | 4 376 | 52 818 |
@@ -116,7 +116,7 @@
 | `docs/knowledge-unknowns.md` | 201 | 12 605 |
 | `backend/app/config.py` | 816 | 12 589 |
 | `backend/tests/test_channel_author.py` | 926 | 12 404 |
-| `frontend/src/pages/RegionIndicatorPage.jsx` | 919 | 12 328 |
+| `frontend/src/pages/RegionIndicatorPage.jsx` | 921 | 12 397 |
 | `backend/tests/test_seo_world.py` | 1 133 | 12 232 |
 | `backend/app/services/download_content.py` | 1 010 | 12 094 |
 | `frontend/src/components/IndicatorChart.jsx` | 1 133 | 12 038 |
@@ -285,6 +285,7 @@
 | `backend/tests/test_telegram_reports.py` | 442 | 5 730 |
 | `backend/app/api/world_subnational.py` | 648 | 5 712 |
 | `frontend/src/styles/k5-pages.css` | 541 | 5 666 |
+| `backend/app/services/emiss_regional_parser.py` | 544 | 5 646 |
 | `backend/app/api/export.py` | 607 | 5 615 |
 | `backend/tests/test_derived_ops.py` | 633 | 5 574 |
 | `docs/research/_fpsr_raw/agent05.json` | 541 | 5 566 |
@@ -292,7 +293,6 @@
 | `frontend/src/lib/format.test.js` | 553 | 5 528 |
 | `backend/app/data/eurostat_units_ru.py` | 588 | 5 527 |
 | `frontend/src/styles/z3-home.css` | 411 | 5 525 |
-| `backend/app/services/emiss_regional_parser.py` | 535 | 5 515 |
 | `frontend/src/lib/worldApi.js` | 608 | 5 500 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
 | `backend/tests/test_indicator_year_landing.py` | 537 | 5 494 |
@@ -629,6 +629,8 @@
 | `backend/app/services/rosstat_gdp_parser.py` | 324 | 2 924 |
 | `backend/app/services/world_adapters/rbi_rates.py` | 338 | 2 919 |
 | `frontend/src/components/ChartControls.component.test.jsx` | 264 | 2 918 |
+| `frontend/src/components/regions/MonthlyPriceParts.jsx` | 254 | 2 915 |
+| `backend/tests/test_emiss_regional_social.py` | 260 | 2 914 |
 | `frontend/src/embed/EmbedChart.jsx` | 235 | 2 909 |
 | `backend/tests/test_emiss_regional_cpi.py` | 239 | 2 890 |
 | `frontend/src/pages/CalculatorsC11e.component.test.jsx` | 228 | 2 886 |
@@ -637,7 +639,6 @@
 | `backend/app/services/emiss_regional_sets_parser.py` | 244 | 2 873 |
 | `backend/tests/test_ru_google_short_sitemap.py` | 241 | 2 867 |
 | `backend/app/services/search_regional_groups.py` | 250 | 2 865 |
-| `frontend/src/components/regions/MonthlyPriceParts.jsx` | 254 | 2 864 |
 | `frontend/src/lib/chartImage.js` | 296 | 2 857 |
 | `backend/scripts/fix-world-country-prepositions.py` | 255 | 2 854 |
 | `frontend/src/pages/WorldRatingPage.w6d.component.test.jsx` | 229 | 2 852 |
@@ -678,14 +679,13 @@
 | `backend/scripts/apply-eurostat-listing-decisions.py` | 314 | 2 703 |
 | `backend/tests/test_hero_yoy.py` | 260 | 2 702 |
 | `backend/scripts/audit-world-titles.py` | 291 | 2 699 |
+| `frontend/src/lib/z2Price.js` | 249 | 2 698 |
 | `scripts/audit-world-titles.py` | 291 | 2 698 |
 | `backend/tests/test_world_concepts.py` | 294 | 2 690 |
 | `docs/adr/0005-official-calendar-source-bound.md` | 138 | 2 690 |
 | `backend/scripts/rebase-world-eurostat.py` | 231 | 2 688 |
 | `backend/tests/test_alerting.py` | 249 | 2 688 |
-| `frontend/src/lib/z2Price.js` | 248 | 2 688 |
 | `backend/tests/test_og_fit.py` | 296 | 2 686 |
-| `backend/tests/test_emiss_regional_social.py` | 231 | 2 683 |
 | `frontend/vite.config.js` | 252 | 2 682 |
 | `backend/app/data/emiss_quarterly.py` | 207 | 2 681 |
 | `frontend/src/components/home/HomeWorkbench.jsx` | 279 | 2 680 |
@@ -1707,6 +1707,7 @@
 | `frontend/src/lib/authReturn.test.js` | 49 | 774 |
 | `frontend/src/lib/behavior.label.test.js` | 76 | 774 |
 | `frontend/src/lib/cabinetWiring.js` | 72 | 774 |
+| `frontend/src/lib/z2Price.test.js` | 54 | 774 |
 | `backend/scripts/backfill-signup-attribution.py` | 71 | 773 |
 | `frontend/src/components/MapTimeline.component.test.jsx` | 68 | 773 |
 | `frontend/src/lib/track.consent.test.js` | 77 | 773 |
@@ -1760,7 +1761,6 @@
 | `backend/tests/test_search_r2z4_city_rent.py` | 59 | 725 |
 | `backend/tests/test_memory_trim_recycle.py` | 79 | 724 |
 | `frontend/src/components/IndicatorChart.rebase.component.test.jsx` | 75 | 724 |
-| `frontend/src/lib/z2Price.test.js` | 52 | 723 |
 | `frontend/src/lib/dataFreshness.js` | 66 | 722 |
 | `backend/tests/forecast_strategies/test_housing_quarterly_snapshot.py` | 79 | 720 |
 | `frontend/src/context/AuthProvider.jsx` | 70 | 720 |
