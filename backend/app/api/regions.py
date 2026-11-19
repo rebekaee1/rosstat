@@ -1179,7 +1179,9 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
 
     copy = _icopy(indicator)
     first_ym = min([rows[0][0]] + ([russia_series[0]["year"] * 100 + russia_series[0]["month"]] if russia_series else []))
-    cpi_chain = await _russia_cpi_chain(db, int(first_ym))
+    # «В ценах последнего месяца» имеет смысл только для рублей (цены, зарплата, пенсия); коэффициент рождаемости и
+    # число пенсионеров (19.11.2026) инфляцией не пересчитываются — без цепочки страница не показывает переключатель.
+    cpi_chain = await _russia_cpi_chain(db, int(first_ym)) if (indicator.unit or "").startswith("рубл") else []
     result = {
         "region": {
             "slug": region.slug,

@@ -2960,3 +2960,10 @@ from app.data.emiss_price_goods import ALL_PRICE_GOODS as _PRICE_GOODS, copy_en 
 
 for _good in _PRICE_GOODS:
     REGION_INDICATORS_EN.setdefault(_good.code, _price_copy_en(_good))
+
+
+# Monthly wages, pensions and fertility by region, EMISS 57824/61699/61698/62852/62853 (2026-11-19).
+from app.data.emiss_regional_social import SERIES as _SOCIAL_SERIES, copy_en as _social_copy_en  # noqa: E402
+
+for _series in _SOCIAL_SERIES:
+    REGION_INDICATORS_EN.setdefault(_series.code, _social_copy_en(_series))

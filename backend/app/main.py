@@ -664,6 +664,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Зарплата, пенсии и рождаемость по регионам (ЕМИСС, 19.11.2026): рождаемость выходит на 7-й рабочий день,
+        # пенсии — на 15-й, зарплата — к концу второго месяца. Три прогона в месяц, вне дней цен (15/20/25/28);
+        # прогон — около 27 запросов по 1–2 с, повторы идемпотентны.
+        from app.tasks.scheduler import emiss_social_job as _emiss_social
+
+        scheduler.add_job(
+            locked_job(_emiss_social, "emiss_social", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=8, minute=10, day="12,22,27", timezone="Europe/Moscow"),
+            id="emiss_social",
+            name="Monthly EMISS regional wages, pensions and fertility (region_monthly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # Недельные цены на топливо по субъектам (ЕМИСС 37426, 18.11.2026): витрина обновляется по средам,
         # публикация бывает с опозданием на неделю-две. Четверг и суббота: повтор идемпотентен и стоит
         # одну страницу витрины и один-два запроса.

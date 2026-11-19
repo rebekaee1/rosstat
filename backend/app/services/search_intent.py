@@ -7,6 +7,7 @@ import unicodedata
 from dataclasses import dataclass, replace
 from functools import lru_cache
 
+from app.data.emiss_regional_social import SEARCH_CONCEPTS as _SOCIAL_SEARCH_CONCEPTS
 from app.data.cbr_currencies import CBR_CURRENCIES as _CBR_CURRENCIES, search_concepts as _cbr_search_concepts
 from app.services.search_currency_aliases import currency_latin_concepts as _currency_latin_concepts
 from app.services.search_price_goods import has_price_goods, prepare_price_goods, price_goods_concepts as _price_goods_concepts
@@ -54,6 +55,8 @@ CONCEPTS = (
     (("ставка фрс", "ключевая ставка фрс", "процентная ставка фрс", "ставка федрезерва", "ставка федеральной резервной системы", "фрс",
         "fed rate", "fed funds rate", "federal funds rate", "fed funds", "federal reserve rate"),
         ("us-policy-rate", "federal funds", "федеральным фондам", "федеральные фонды")),
+    # Зарплата по отраслям в регионе (ЕМИСС, 19.11.2026).
+    *_SOCIAL_SEARCH_CONCEPTS,
     (("средняя заработная плата", "зарплата", "зарплаты", "заработная плата", "зпл", "зп", "з п", "salary", "wages"), ("wage", "salary", "заработн", "зарплат")),
     (("безработица", "безработицы", "уровень безработицы", "unemployment", "unemployment rate"), ("unemployment", "безработ", "jobless")),
     (("экспорт товаров", "exports of goods", "goods exports"), ("exports", "экспорт товаров", "exports of goods")),

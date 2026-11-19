@@ -18,6 +18,7 @@ Legacy query `/regions?view=map&indicator=&year=` → 301 на канон (seo_p
 """
 
 from datetime import date
+from functools import partial
 from html import escape
 
 from sqlalchemy import func, select
@@ -1429,9 +1430,19 @@ _MONTHLY_RU = {
 }
 
 
-def _mt(key: str, **kwargs) -> str:
-    tpl = regional_template(f"region_monthly.{key}") or _MONTHLY_RU[key]
+def _mt(key: str, *, social: bool = False, **kwargs) -> str:
+    # social — зарплата, пенсия, рождаемость (ЕМИСС, 19.11.2026): часть ценовых фраз («средние потребительские цены»,
+    # «среднероссийская цена») к ним не подходит; свои тексты на обоих языках — в app.data.emiss_regional_social.
+    tpl = _social_monthly_text(key) if social else None
+    tpl = tpl or regional_template(f"region_monthly.{key}") or _MONTHLY_RU[key]
     return tpl.format(**kwargs) if kwargs else tpl
+
+
+def _social_monthly_text(key: str) -> str | None:
+    from app.data.emiss_regional_social import MONTHLY_TEXT_EN, MONTHLY_TEXT_RU
+    from app.services.locale import get_locale
+
+    return (MONTHLY_TEXT_EN if get_locale() == "en" else MONTHLY_TEXT_RU).get(key)
 
 
 async def _render_region_indicator_monthly(
@@ -1457,6 +1468,9 @@ async def _render_region_indicator_monthly(
     страницы называет последнюю недельную цену с датой, таблица по неделям отвечает на «цену на дату», вопрос
     «на начало года» — в FAQ. Отдельной страницы на дату нет.
     """
+    from app.data.emiss_regional_social import is_social_code
+
+    mt = partial(_mt, social=is_social_code(code))
     series = [(int(m), float(v)) for m, v in rows]
     first_period, first_value = series[0]
     last_period, last_value = series[-1]
@@ -1489,25 +1503,25 @@ async def _render_region_indicator_monthly(
     first_label = _month_label(first_period)
 
     paragraphs = []
-    p1 = _mt("p1", indicator=escape(ind_name), region=escape(region_name),
+    p1 = mt("p1", indicator=escape(ind_name), region=escape(region_name),
              month_prep=escape(_month_label(last_period, "prep")), value=_fmt(last_value), unit=unit_sfx)
     mom = _pct(last_value, prev_value)
     if mom:
-        p1 += _mt("p1_mom", change=mom)
+        p1 += mt("p1_mom", change=mom)
     yoy = _pct(last_value, year_ago_value)
     if yoy:
-        p1 += _mt("p1_yoy", month_dat=escape(_month_label(last_period - 100, "dat")), change=yoy)
+        p1 += mt("p1_yoy", month_dat=escape(_month_label(last_period - 100, "dat")), change=yoy)
     paragraphs.append(p1)
-    paragraphs.append(_mt("p2", month_gen=escape(_month_label(first_period, "gen"))))
+    paragraphs.append(mt("p2", month_gen=escape(_month_label(first_period, "gen"))))
 
     if rf_last is not None:
         if abs(last_value - float(rf_last)) / (abs(float(rf_last)) or 1) < 0.005:
-            rel = _mt("rel_level")
+            rel = mt("rel_level")
         elif last_value > float(rf_last):
-            rel = _mt("rel_above")
+            rel = mt("rel_above")
         else:
-            rel = _mt("rel_below")
-        paragraphs.append(_mt("p3", month_prep=escape(_month_label(last_period, "prep")),
+            rel = mt("rel_below")
+        paragraphs.append(mt("p3", month_prep=escape(_month_label(last_period, "prep")),
                               value=_fmt(float(rf_last)), unit=unit_sfx, rel=rel))
 
     values_desc = [v for _p, v in series]
@@ -1515,7 +1529,7 @@ async def _render_region_indicator_monthly(
     vmin = min(values_desc)
     p_at = series[values_desc.index(vmax)][0]
     n_at = series[values_desc.index(vmin)][0]
-    paragraphs.append(_mt("extremes", max=_fmt(vmax), min=_fmt(vmin), unit=unit_sfx,
+    paragraphs.append(mt("extremes", max=_fmt(vmax), min=_fmt(vmin), unit=unit_sfx,
                           max_month=escape(_month_label(p_at)), min_month=escape(_month_label(n_at))))
     weekly = weekly or []
     weekly_html = ""
@@ -1525,12 +1539,12 @@ async def _render_region_indicator_monthly(
         rf_weekly = dict(await weekly_points(db, indicator.id, rf.id)) if rf else {}
         fuel = fuel_name_gen(code, ind_name)
         w_unit = weekly_unit(unit)
-        lead = _mt("w_lead", fuel=escape(fuel), region=escape(region_name),
+        lead = mt("w_lead", fuel=escape(fuel), region=escape(region_name),
                    date=escape(format_date_locale(w_last[0])), value=fmt_kop(w_last[1]), unit=escape(w_unit))
         if rf_weekly.get(w_last[0]) is not None:
-            lead += _mt("w_lead_rf", value=fmt_kop(rf_weekly[w_last[0]]), unit=escape(w_unit))
+            lead += mt("w_lead_rf", value=fmt_kop(rf_weekly[w_last[0]]), unit=escape(w_unit))
         paragraphs.insert(0, lead)
-        th_rf = f"<th>{escape(_mt('w_th_russia'))}</th>" if rf_weekly else ""
+        th_rf = f"<th>{escape(mt('w_th_russia'))}</th>" if rf_weekly else ""
         w_rows = "".join(
             f"<tr><td>{escape(format_date_locale(d))}</td><td>{fmt_kop(v)}</td>"
             + (f"<td>{fmt_kop(rf_weekly[d]) if d in rf_weekly else '—'}</td>" if rf_weekly else "")
@@ -1538,16 +1552,16 @@ async def _render_region_indicator_monthly(
             for d, v in reversed(weekly)
         )
         weekly_html = (
-            f'<section class="seo-section" id="weekly"><h2>{escape(_mt("w_h2", fuel=fuel, first=format_date_locale(weekly[0][0])))}</h2>'
-            f"<p>{escape(_mt('w_p'))}</p>"
-            f"<table><thead><tr><th>{escape(_mt('w_th_date'))}</th><th>{escape(region_name)}</th>{th_rf}</tr></thead>"
+            f'<section class="seo-section" id="weekly"><h2>{escape(mt("w_h2", fuel=fuel, first=format_date_locale(weekly[0][0])))}</h2>'
+            f"<p>{escape(mt('w_p'))}</p>"
+            f"<table><thead><tr><th>{escape(mt('w_th_date'))}</th><th>{escape(region_name)}</th>{th_rf}</tr></thead>"
             f"<tbody>{w_rows}</tbody></table></section>"
         )
         year_start = value_on(weekly, date(w_last[0].year, 1, 1))
         if year_start:
             weekly_faq = (
-                _mt("w_faq_q", fuel=fuel, region=region_name),
-                _mt("w_faq_a", year=w_last[0].year, date=format_date_locale(year_start[0]),
+                mt("w_faq_q", fuel=fuel, region=region_name),
+                mt("w_faq_a", year=w_last[0].year, date=format_date_locale(year_start[0]),
                     value=fmt_kop(year_start[1]), unit=w_unit, first=format_date_locale(weekly[0][0])),
             )
     paragraphs_html = "".join(f"<p>{p}</p>" for p in paragraphs)
@@ -1565,7 +1579,7 @@ async def _render_region_indicator_monthly(
         cp_items += (
             f"<li>{escape(last_label)} — {_fmt(last_value)}{unit_sfx}</li>"
         )
-        cp_h2 = _mt("checkpoints_h2", indicator=escape(ind_name), region=escape(region_name))
+        cp_h2 = mt("checkpoints_h2", indicator=escape(ind_name), region=escape(region_name))
         checkpoints_html = (
             f'<section class="seo-section"><h2>{cp_h2}</h2>'
             f"<ul>{cp_items}</ul></section>"
@@ -1575,19 +1589,19 @@ async def _render_region_indicator_monthly(
     # называла годовой интервал при месячном изменении).
     faq: list[tuple[str, str]] = [
         (
-            _mt("faq_value_q", short=ind_name.split(',')[0].lower(), region=region_name),
-            _mt("faq_value_a", month_prep=_month_label(last_period, "prep"), value=_fmt(last_value), unit=unit_sp),
+            mt("faq_value_q", short=ind_name.split(',')[0].lower(), region=region_name),
+            mt("faq_value_a", month_prep=_month_label(last_period, "prep"), value=_fmt(last_value), unit=unit_sp),
         ),
         (
-            _mt("faq_change_q"),
-            _mt("faq_change_a", month_gen=_month_label(prev_period, "gen"), month=last_label, change=mom)
-            if mom else _mt("faq_change_flat"),
+            mt("faq_change_q"),
+            mt("faq_change_a", month_gen=_month_label(prev_period, "gen"), month=last_label, change=mom)
+            if mom else mt("faq_change_flat"),
         ),
-        (_mt("faq_source_q"), _mt("faq_source_a")),
+        (mt("faq_source_q"), mt("faq_source_a")),
     ]
     if weekly_faq:
         faq.insert(1, weekly_faq)
-    faq_h2 = _mt("faq_h2")
+    faq_h2 = mt("faq_h2")
     faq_html = (
         f'<section class="seo-section"><h2>{escape(faq_h2)}</h2>'
         + "".join(f"<h3>{escape(q)}</h3><p>{escape(a)}</p>" for q, a in faq)
@@ -1639,16 +1653,16 @@ async def _render_region_indicator_monthly(
                 f"{_fmt(v)}{unit_sfx}</a></li>"
                 for s, n, v in neighbor_periods
             )
-            n_h2 = _mt("neighbors_h2")
+            n_h2 = mt("neighbors_h2")
             district_html = (
                 f'<section class="seo-section"><h2>{escape(n_h2)}</h2>'
                 f"<ul>{items}</ul></section>"
             )
 
     # таблица по месяцам (полная — 283 строки, помещается в скролл)
-    table_h2 = _mt("table_h2", indicator=ind_name)
-    th_month = _mt("th_month")
-    th_value = unit or _mt("th_value")
+    table_h2 = mt("table_h2", indicator=ind_name)
+    th_month = mt("th_month")
+    th_value = unit or mt("th_value")
     table_rows = "".join(
         f"<tr><td>{escape(_month_label(p))}</td><td>{_fmt(v)}</td></tr>"
         for p, v in reversed(series)
@@ -1661,9 +1675,9 @@ async def _render_region_indicator_monthly(
     )
 
     og_path = paths.og_region(slug, code)
-    alt = _mt("alt", indicator=ind_name, region=region_name, first=first_label, last=last_label,
+    alt = mt("alt", indicator=ind_name, region=region_name, first=first_label, last=last_label,
               value=_fmt(last_value), unit=unit).strip()
-    caption = _mt("caption", indicator=ind_name, region=region_name, first_year=first_year, last_year=last_year)
+    caption = mt("caption", indicator=ind_name, region=region_name, first_year=first_year, last_year=last_year)
     figure_html = (
         f'<figure class="seo-chart"><a class="seo-chart-link" '
         f'href="{escape(paths.region_indicator(slug, code))}#chart">'
@@ -1687,22 +1701,22 @@ async def _render_region_indicator_monthly(
             f'{escape(_icopy(sib)["name"] or sib.name)}</a></li>'
             for sib in siblings
         )
-        sib_h2 = _mt("siblings_h2", section=section_name)
+        sib_h2 = mt("siblings_h2", section=section_name)
         siblings_html = (
             f'<section class="seo-section"><h2>{escape(sib_h2)}</h2>'
             f"<ul>{items}</ul></section>"
         )
 
-    title = _mt("title", indicator=ind_name, region=region_name, value=_fmt(last_value), unit=unit,
+    title = mt("title", indicator=ind_name, region=region_name, value=_fmt(last_value), unit=unit,
                 month=_month_label_nom(last_period)).replace("  ", " ").strip()
-    desc = _mt("description", indicator=ind_name, region=region_name, value=_fmt(last_value), unit=unit,
+    desc = mt("description", indicator=ind_name, region=region_name, value=_fmt(last_value), unit=unit,
                month_prep=_month_label(last_period, "prep"), first_year=first_year).replace("  ", " ")
     if w_last:
         # Недельная цена свежее месячной и отвечает на «цену на дату»: она и в заголовке.
-        title = _mt("w_title", fuel=fuel_name_nom(code, ind_name), region=region_name,
+        title = mt("w_title", fuel=fuel_name_nom(code, ind_name), region=region_name,
                     value=fmt_kop(w_last[1]), unit=weekly_unit(unit),
                     date=format_date_locale(w_last[0])).replace("  ", " ").strip()
-        desc = _mt("w_description", indicator=ind_name, region=region_name, value=fmt_kop(w_last[1]),
+        desc = mt("w_description", indicator=ind_name, region=region_name, value=fmt_kop(w_last[1]),
                    unit=weekly_unit(unit),
                    date=format_date_locale(w_last[0]), first_year=weekly[0][0].year,
                    first_month_year=first_year).replace("  ", " ")
@@ -1717,12 +1731,12 @@ async def _render_region_indicator_monthly(
             "@context": "https://schema.org",
             "@type": "Dataset",
             "name": f"{ind_name} — {region_name}",
-            "description": _mt("dataset_description", indicator=ind_name, unit=unit, region=region_name,
+            "description": mt("dataset_description", indicator=ind_name, unit=unit, region=region_name,
                                first_year=first_year, last_year=last_year),
             "url": _absolute(paths.region_indicator(slug, code)),
             "temporalCoverage": f"{first_year}/{last_year}",
             "spatialCoverage": region_name,
-            "creator": {"@type": "Organization", "name": _mt("creator")},
+            "creator": {"@type": "Organization", "name": mt("creator")},
             "image": _absolute(og_path),
         },
         {
@@ -1732,15 +1746,15 @@ async def _render_region_indicator_monthly(
             "url": _absolute(og_path),
             "width": 1200,
             "height": 630,
-            "name": _mt("image_name", indicator=ind_name, region=region_name),
+            "name": mt("image_name", indicator=ind_name, region=region_name),
             "caption": alt,
             "representativeOfPage": True,
         },
     ]
 
     h1 = f"{ind_name} — {region_name}"
-    source_h2 = _mt("source_h2")
-    source_p = _mt("source_p", unit=unit or _mt("unit_fallback"), first=first_label, last=last_label)
+    source_h2 = mt("source_h2")
+    source_p = mt("source_p", unit=unit or mt("unit_fallback"), first=first_label, last=last_label)
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.region_indicator_trail(
     region_name, paths.region(slug), ind_name,
@@ -1766,7 +1780,7 @@ async def _render_region_indicator_monthly(
         canonical_path=paths.region_indicator(slug, code),
         body=body,
         json_ld=json_ld,
-        keywords=_mt("keywords", indicator=ind_name, region=region_name),
+        keywords=mt("keywords", indicator=ind_name, region=region_name),
         og_image=_absolute(og_path),
     )
     return 200, html
