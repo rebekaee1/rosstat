@@ -31,9 +31,9 @@ const CATEGORY_DEFS = [
     flagshipCode: 'cpi',
     sentiment: 'inverse',
     description:
-      'Индекс потребительских цен на товары и услуги. Индекс цен производителей. Цены на недвижимость.',
+      'Индекс потребительских цен на товары и услуги. Цены производителей по отраслям и товарам. Цены на стройматериалы и в строительстве. Цены на недвижимость.',
     descriptionEn:
-      'Consumer price index for goods and services. Producer prices. Housing prices.',
+      'Consumer price index for goods and services. Producer prices by industry and product. Construction materials and building costs. Housing prices.',
     relatedSlugs: ['rates', 'finance', 'labor'],
   },
   {

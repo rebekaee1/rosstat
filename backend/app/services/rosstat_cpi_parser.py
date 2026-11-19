@@ -23,6 +23,7 @@ from app.services.cbr_dataservice_parser import CbrDataServiceParser
 from app.services.emiss_income_parser import EmissIncomeParser
 from app.services.emiss_labor_parser import EmissLaborParser
 from app.services.emiss_steel_parser import EmissSteelParser
+from app.services.emiss_producer_prices_parser import EmissProducerPricesParser
 from app.services.rosstat_labor_parser import RosstatLaborParser
 from app.services.rosstat_gdp_parser import RosstatGdpParser
 from app.services.data_validator import validate_points
@@ -101,6 +102,7 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     EmissLaborParser.parser_type: EmissLaborParser,
     EmissIncomeParser.parser_type: EmissIncomeParser,
     EmissSteelParser.parser_type: EmissSteelParser,
+    EmissProducerPricesParser.parser_type: EmissProducerPricesParser,
     RosstatLaborParser.parser_type: RosstatLaborParser,
     RosstatGdpParser.parser_type: RosstatGdpParser,
     CbrDataServiceSumParser.parser_type: CbrDataServiceSumParser,

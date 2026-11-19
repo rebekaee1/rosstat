@@ -8897,6 +8897,14 @@ for _code, _keywords in _emiss_steel.seo_keywords().items():
 for _code, _meta in _emiss_steel.seo_meta().items():
     INDICATOR_SEO.setdefault(_code, _meta)
 
+# Цены производителей по видам деятельности и товарам, цены в строительстве (ЕМИСС, 19.11.2026).
+from app.data import emiss_producer_prices as _emiss_producer_prices  # noqa: E402
+
+for _code, _keywords in _emiss_producer_prices.seo_keywords().items():
+    INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
+for _code, _meta in _emiss_producer_prices.seo_meta().items():
+    INDICATOR_SEO.setdefault(_code, _meta)
+
 
 # ── «О показателе»: составляющие промышленного производства (ИПП) ───────────
 #
