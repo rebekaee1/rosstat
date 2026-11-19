@@ -6,6 +6,7 @@ import {
   Navigate,
   useParams,
   useLocation,
+  useNavigationType,
   Link,
 } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -31,6 +32,7 @@ import LightScene from './components/LightScene';
 import { cleanPathWithSearch } from './lib/cleanUrl';
 import { calculatorAliasTarget } from './lib/calculatorAlias';
 import { behaviorInit, behaviorRouteChange } from './lib/behavior';
+import { isSamePageUrlSync } from './lib/routeHit';
 import { sessionReplayInit, replayRouteChange } from './lib/sessionReplay';
 import { isVariantSiblingNavigation } from './lib/indicatorVariants';
 import { AuthProvider } from './context/AuthProvider';
@@ -122,12 +124,20 @@ function ScrollToTop() {
 
 function YandexMetrikaHit() {
   const location = useLocation();
+  const navigationType = useNavigationType();
   const isFirst = useRef(true);
   const prevUrl = useRef(cleanPathWithSearch(window.location.pathname, window.location.search));
+  const prevPathname = useRef(window.location.pathname);
   useEffect(() => { behaviorInit(); sessionReplayInit(); }, []);
   useEffect(() => {
     if (isFirst.current) { isFirst.current = false; return; }
     const url = cleanPathWithSearch(location.pathname, location.search);
+    const urlSync = isSamePageUrlSync({
+      navigationType, prevPathname: prevPathname.current, nextPathname: location.pathname,
+    });
+    prevPathname.current = location.pathname;
+    // Контрол записал состояние в адрес (год на карте, поля калькулятора) — тот же просмотр.
+    if (urlSync) { prevUrl.current = url; return undefined; }
     behaviorRouteChange(url);
     replayRouteChange();
     const referer = prevUrl.current;
@@ -142,7 +152,7 @@ function YandexMetrikaHit() {
       }
     }, 50);
     return () => clearTimeout(timer);
-  }, [location.pathname, location.search]);
+  }, [location.pathname, location.search, navigationType]);
   return null;
 }
 
