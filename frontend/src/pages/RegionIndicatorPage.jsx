@@ -407,7 +407,8 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     : '';
   const chartMonths = isMonthly ? rangeM : 0;
   const cpiChain = isMonthly ? monthly.data?.cpi_russia : null;
-  const realFull = isMonthly && last && !discontinued ? deflateSeries(activeSeries, cpiChain, last.year * 100 + last.month) : null;
+  // «В сегодняшних ценах» — только у цен: ввод жилья, индексы производства и тарифов инфляцией не пересчитываются.
+  const realFull = isMonthly && isPrice && last && !discontinued ? deflateSeries(activeSeries, cpiChain, last.year * 100 + last.month) : null;
   const chartSeriesM = isMonthly ? fillMonthGaps(sliceMonths(activeSeries, chartMonths)) : null;
   const chartEvents = isMonthly && chartMonths !== 24 && chartMonths !== 60 ? eventPeriods(chartSeriesM) : null;
   const realSlice = showReal && realFull ? sliceMonths(realFull, chartMonths) : null;

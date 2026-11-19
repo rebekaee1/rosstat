@@ -2967,3 +2967,8 @@ from app.data.emiss_regional_social import SERIES as _SOCIAL_SERIES, copy_en as 
 
 for _series in _SOCIAL_SERIES:
     REGION_INDICATORS_EN.setdefault(_series.code, _social_copy_en(_series))
+# Monthly regional EMISS sets: farm-gate prices, housing, industry, freight tariffs (2026-11-19).
+from app.data.emiss_regional_sets import copy_en as _emiss_sets_copy_en  # noqa: E402
+
+for _code, _copy in _emiss_sets_copy_en().items():
+    REGION_INDICATORS_EN.setdefault(_code, _copy)

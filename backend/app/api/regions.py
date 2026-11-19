@@ -22,6 +22,7 @@ from app.data.region_indicator_polarity import (
     region_rating_meta,
     region_rating_order_by,
 )
+from app.data.emiss_regional_sets import SERIES_BY_CODE as EMISS_SET_SERIES
 from app.data.emiss_price_goods import (
     HEADLINE_PRICE_CODES,
     PRICE_GROUPS,
@@ -893,6 +894,10 @@ async def _section_siblings(db: AsyncSession, region, indicator) -> list[dict]:
         # частота, в списке «Ещё в разделе» у цены товара они путают (круг 5, R5-A).
         all_sib = sorted((x for x in all_sib if price_meta(x.code)), key=_sib_rank)
         siblings = all_sib[:24]
+    elif indicator.code in EMISS_SET_SERIES:
+        # Помесячные наборы ЕМИСС (19.11.2026): сначала ряды того же набора, затем остальной раздел.
+        own_set = {s.code for s in EMISS_SET_SERIES[indicator.code][0].series}
+        siblings = sorted(all_sib, key=lambda x: (x.code not in own_set, x.table_code or "", x.code))[:12]
     else:
         siblings = sorted(all_sib, key=lambda x: x.code)[:12]
     sib_latest: dict[int, tuple[int, float]] = {}

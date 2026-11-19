@@ -679,6 +679,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Помесячные региональные наборы ЕМИСС (сельхозцены, жильё, промышленность, грузоперевозки; 19.11.2026):
+        # Росстат публикует месяц через 3–6 недель. Те же дни, что у цен 31448, на полчаса позже — один прогон
+        # стоит 2 запроса на набор; первый после выпуска грузит историю (~70 запросов, несколько минут).
+        from app.tasks.scheduler import emiss_regional_sets_job as _emiss_regional_sets
+
+        scheduler.add_job(
+            locked_job(_emiss_regional_sets, "emiss_regional_sets", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=8, minute=10, day="15,20,25,28", timezone="Europe/Moscow"),
+            id="emiss_regional_sets",
+            name="Monthly EMISS regional sets: farm prices, housing, industry, freight (region_monthly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # Недельные цены на топливо по субъектам (ЕМИСС 37426, 18.11.2026): витрина обновляется по средам,
         # публикация бывает с опозданием на неделю-две. Четверг и суббота: повтор идемпотентен и стоит
         # одну страницу витрины и один-два запроса.

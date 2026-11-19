@@ -724,6 +724,17 @@ async def emiss_social_job():
     await _job()
 
 
+async def emiss_regional_sets_job():
+    """Помесячные региональные наборы ЕМИСС 57693, 34118, 57806, 31076 (19.11.2026).
+
+    Сельхозцены производителей, ввод жилья, индексы производства и тарифы грузоперевозок по субъектам в
+    region_monthly_data. Расписание в main.py, реализация — app.services.emiss_regional_sets_parser.
+    """
+    from app.services.emiss_regional_sets_parser import emiss_regional_sets_job as _job
+
+    await _job()
+
+
 async def emiss_weekly_fuel_job():
     """Недельные цены на топливо по субъектам (ЕМИСС 37426) в region_weekly_data.
 
