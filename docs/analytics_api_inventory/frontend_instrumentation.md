@@ -279,6 +279,8 @@ Endpoint защищён origin-валидацией `app/api/analytics.py::event
 
 При navigation в SPA `App.jsx::YandexMetrikaHit` отправляет `cleanPathWithSearch(pathname, search)` — здесь `utm_*` уже включены в чёрный список (атрибуция уже сохранена на первом hit, дублировать не нужно).
 
+**Что считается новым просмотром (19.11.2026).** `YandexMetrikaHit` вызывает `behaviorRouteChange` (dwell прошлой страницы + новый `pageview`), `replayRouteChange` и `ym('hit')` только при переходе ссылкой (PUSH), назад/вперёд (POP) или замене со сменой пути (редирект на канон, смена показателя карты). Замена записи истории без смены пути (`navigate(..., { replace: true })` / `setSearchParams(..., { replace: true })` — год на карте `?year=`, поля калькулятора, режим графика, фильтры рейтинга) — тот же просмотр: правило `lib/routeHit.js::isSamePageUrlSync`. Причина: до 19.11 перетаскивание года на `/russia/region/map/*` давало десятки просмотров по 16–70 мс в секунду (боевой 16.09: один человек из Bing, 16 минут на карте — 268 просмотров), и Пульс видел «мгновенный уход с карт» (гипотезы 202, 208, 237, 277, 305). Смена счёта записана в `pulse_context.yaml` (`url-sync-not-pageview`).
+
 ### Sync с robots.txt
 
 Список `TRACKING_PARAMS` синхронизирован с директивой `Clean-param` в `frontend/public/robots.txt`. Если добавляете новый tracking-параметр — обновите оба места.
