@@ -84,10 +84,52 @@ describe('HomeDataScope: три числа платформы', () => {
     expect(screen.getByText('стран, и список растёт')).toBeTruthy();
   });
 
-  it('если в каталоге нет чисел, вместо них честный прочерк, а не выдуманное значение', async () => {
+  it('Пульс 242: если в каталоге нет чисел, плиток с прочерком нет, полоса сужается до известных', async () => {
     renderScope({ countries: [], total: 0 });
-    await waitFor(() => expect(screen.getAllByLabelText('нет данных')).toHaveLength(2));
+    await waitFor(() => expect(document.querySelectorAll('.fe-stat-wait')).toHaveLength(0));
+    const block = document.querySelector('[data-block="home-data-scope"]');
+    expect(block.textContent).not.toContain('\u2014');
+    expect(screen.queryByLabelText('нет данных')).toBeNull();
     expect(screen.queryByText('тыс.')).toBeNull();
+    expect(screen.queryByText('показателей')).toBeNull();
+    expect(screen.queryByText('стран, и список растёт')).toBeNull();
+    // Остаётся только глубина истории, и сетка под одну плитку, а не дыра на месте двух.
+    expect(document.querySelectorAll('.fe-scope-stat')).toHaveLength(1);
+    expect(screen.getByText('лет истории, с 1897 года')).toBeTruthy();
+    expect(block.querySelector('dl').style.getPropertyValue('--fe-scope-cols')).toBe('1');
+  });
+
+  it('Пульс 242: сбой ответа каталога не превращается в прочерк (RU, ошибка сервера после повтора)', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      ['/world/countries', () => { const err = new Error('boom'); err.response = { status: 500 }; throw err; }],
+    ]);
+    renderPage(<HomeDataScope />, { path: '/', route: '/' });
+    await waitFor(() => expect(document.querySelectorAll('.fe-stat-wait')).toHaveLength(0), { timeout: 5000 });
+    const block = document.querySelector('[data-block="home-data-scope"]');
+    expect(block.textContent).not.toContain('\u2014');
+    expect(screen.queryByLabelText('нет данных')).toBeNull();
+    expect(document.querySelectorAll('.fe-scope-stat')).toHaveLength(1);
+    expect(screen.getByText('лет истории, с 1897 года')).toBeTruthy();
+  });
+
+  it('Пульс 242: запасной набор вместо ответа (EN) тоже без прочерка', async () => {
+    mockApiGet([['/auth/me', { user: null }]]);
+    renderPage(<HomeDataScope />, { path: '/', route: '/', locale: 'en' });
+    await waitFor(() => expect(document.querySelectorAll('.fe-stat-wait')).toHaveLength(0), { timeout: 5000 });
+    const block = document.querySelector('[data-block="home-data-scope"]');
+    expect(block.textContent).not.toContain('\u2014');
+    expect(screen.queryByLabelText('no data')).toBeNull();
+    expect(screen.queryByText('countries and counting')).toBeNull();
+    expect(screen.getByText('years of history, since 1897')).toBeTruthy();
+  });
+
+  it('приподнимается под курсором только нажимаемая плитка: история без ссылки не изображает кнопку', async () => {
+    renderScope();
+    await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
+    const tiles = [...document.querySelectorAll('.fe-scope-stat')];
+    expect(tiles.map((tile) => tile.classList.contains('fe-scope-stat--link'))).toEqual([true, true, false]);
+    expect(document.querySelector('[data-block="home-data-scope"] dl').style.getPropertyValue('--fe-scope-cols')).toBe('');
   });
 
   it('нет текста-заглушки и запрещённого разделителя mid-dot', () => {
