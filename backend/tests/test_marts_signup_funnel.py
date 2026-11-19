@@ -243,6 +243,29 @@ def test_reliability_has_page_group_by_device_cells():
     _run_with_db(scenario)
 
 
+def test_reliability_files_failed_count_only_confirmed_people():
+    """19.11.2026: ферма Linux Chrome/157 двигает указатель; «у людей не загрузился messages.ru» 18.11 был ею."""
+    now = _now()
+
+    async def scenario(maker):
+        async with maker() as db:
+            src = "https://ru.forecasteconomy.com/assets/messages.ru-CZNFN4Jp.js"
+            for sid, visitor in (("farm", "vf"), ("unknown", "vu"), ("person", "vp")):
+                db.add(BehaviorEvent(event_type="js_error", page="/", occurred_at=now, session_id_hash=sid,
+                                     visitor_id_hash=visitor, params_json={"kind": "resource", "src": src, "tag": "LINK"}))
+                db.add(BehaviorEvent(event_type="move", page="/", occurred_at=now, session_id_hash=sid,
+                                     visitor_id_hash=visitor))
+            db.add(ServerSession(day=now.date(), visitor_id_hash="vf", started_at=now, ended_at=now, is_bot=True))
+            db.add(ServerSession(day=now.date(), visitor_id_hash="vu", started_at=now, ended_at=now, is_human=False))
+            db.add(ServerSession(day=now.date(), visitor_id_hash="vp", started_at=now, ended_at=now, is_human=True))
+            await db.commit()
+            data = await m.mart_reliability(db, resolve_period("7d"))
+        assert data["js_files_failed_own"] == {"total": 1, "top": {"messages.ru-CZNFN4Jp.js": 1}, "people": 1}
+        assert data["js_files_failed_inert_sessions"] == 2
+
+    _run_with_db(scenario)
+
+
 def test_daily_context_includes_new_marts_and_survives_a_failing_one(monkeypatch):
     async def boom(db, period):
         raise RuntimeError("slow query")
@@ -273,10 +296,11 @@ def test_reliability_splits_real_errors_files_not_loaded_and_5xx():
             own = "https://ru.forecasteconomy.com/assets/charts-AAA.js"
             db.add_all([
                 BehaviorEvent(event_type="js_error", page="/", occurred_at=now, session_id_hash="human",
-                              params_json={"kind": "resource", "src": own + "?v=1"}),
+                              visitor_id_hash="vh", params_json={"kind": "resource", "src": own + "?v=1"}),
                 BehaviorEvent(event_type="js_error", page="/", occurred_at=now, session_id_hash="human",
-                              params_json={"kind": "resource", "src": own}),
+                              visitor_id_hash="vh", params_json={"kind": "resource", "src": own}),
                 BehaviorEvent(event_type="click", page="/", occurred_at=now, session_id_hash="human"),
+                ServerSession(day=now.date(), visitor_id_hash="vh", started_at=now, ended_at=now, is_human=True),
                 # 08.11.2026: ферма без картинок - незагрузки у сессии без единого действия не считаются поломкой
                 BehaviorEvent(event_type="js_error", page="/", occurred_at=now, session_id_hash="farm",
                               params_json={"kind": "resource", "src": "https://forecasteconomy.com/brand/footer-desktop.webp"}),
@@ -299,7 +323,7 @@ def test_reliability_splits_real_errors_files_not_loaded_and_5xx():
             await db.commit()
             data = await m.mart_reliability(db, resolve_period("7d"))
         assert [e["error"] for e in data["js_errors_real_own"]] == ["TypeError: boom"]  # устаревшая вкладка не в счёт
-        assert data["js_files_failed_own"] == {"total": 2, "top": {"charts-AAA.js": 2}}
+        assert data["js_files_failed_own"] == {"total": 2, "top": {"charts-AAA.js": 2}, "people": 1}
         assert data["js_files_failed_inert_sessions"] == 1
         assert data["js_errors_total"] == 5  # прежние показатели не изменились
         assert data["api_5xx_sampled"] == 1 and data["api_5xx_by_group"] == {"api": 1}

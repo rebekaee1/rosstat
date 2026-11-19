@@ -386,7 +386,7 @@ rollback() {
   # Mark the restored release as newest before pruning, including when rolling
   # back after repeated unsuccessful deploy attempts.
   publish_frontend_assets "${PREV_FRONTEND_IMAGE}"
-  python3 "${ASSET_WORK}/archive.py" prune --archive "$ASSET_ARCHIVE" --keep 3
+  python3 "${ASSET_WORK}/archive.py" prune --archive "$ASSET_ARCHIVE" --keep 3 --max-age-hours 168
   echo "    откат выполнен (образы ${PREV_SHA})"
   exit 1
 }
@@ -702,8 +702,8 @@ done
 echo "    watch ok"
 stop_backend_log
 
-echo "==> assets: retain three accepted/recent frontend builds"
-python3 "${ASSET_WORK}/archive.py" prune --archive "$ASSET_ARCHIVE" --keep 3
+echo "==> assets: retain frontend builds of the last 7 days (at least three)"
+python3 "${ASSET_WORK}/archive.py" prune --archive "$ASSET_ARCHIVE" --keep 3 --max-age-hours 168
 trap - ERR
 
 # ── 7. Чистка старых версионированных образов (держим 3 последних) ────

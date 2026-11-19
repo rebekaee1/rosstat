@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -43,6 +44,38 @@ class AssetArchiveTests(unittest.TestCase):
         self.assertFalse((self.archive / "assets/behavior-standalone.js").exists())
         self.assertFalse((self.archive / "assets/lazy-01234567.js.map").exists())
         self.assertEqual(len(list((self.archive / "releases").glob("*.json"))), 3)
+
+    def test_age_window_keeps_releases_beyond_count(self):
+        # 19.11.2026: up to ten releases a day; a morning tab must keep its chunks by evening.
+        now = 1_000_000_000.0
+        for age_hours, label in ((200, "a"), (100, "b"), (30, "c"), (3, "d"), (1, "e")):
+            archive_module.publish(self.build(label), self.archive)
+            stamp = now - age_hours * 3600
+            for manifest in (self.archive / "releases").glob("*.json"):
+                if f"lazy-{label:0>8}.js" in json.loads(manifest.read_text()):
+                    os.utime(manifest, (stamp, stamp))
+        archive_module.prune(self.archive, 3, max_age_hours=168, now=now)
+        self.assertFalse((self.archive / "assets/lazy-0000000a.js").exists())
+        for label in ("b", "c", "d", "e"):
+            self.assertTrue((self.archive / f"assets/lazy-{label:0>8}.js").exists(), label)
+        self.assertEqual(len(list((self.archive / "releases").glob("*.json"))), 4)
+
+    def test_count_floor_survives_quiet_week(self):
+        now = 1_000_000_000.0
+        for age_hours, label in ((900, "a"), (800, "b"), (700, "c"), (600, "d")):
+            archive_module.publish(self.build(label), self.archive)
+            stamp = now - age_hours * 3600
+            for manifest in (self.archive / "releases").glob("*.json"):
+                if f"lazy-{label:0>8}.js" in json.loads(manifest.read_text()):
+                    os.utime(manifest, (stamp, stamp))
+        archive_module.prune(self.archive, 3, max_age_hours=168, now=now)
+        self.assertFalse((self.archive / "assets/lazy-0000000a.js").exists())
+        for label in ("b", "c", "d"):
+            self.assertTrue((self.archive / f"assets/lazy-{label:0>8}.js").exists(), label)
+
+    def test_negative_age_rejected(self):
+        with self.assertRaises(ValueError):
+            archive_module.prune(self.archive, 3, max_age_hours=-1)
 
     def test_immutable_collision_does_not_replace_existing_bytes(self):
         first = self.build("a")
