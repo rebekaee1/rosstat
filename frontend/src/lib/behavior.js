@@ -117,6 +117,10 @@ let _moveDistance = 0;
 let _movePoints = [];
 let _lastMove = { x: 0, y: 0, t: 0 };
 let _recentClicks = [];
+// Клик по подписи (label) браузер повторяет вторым кликом по её полю. Второй — не действие человека:
+// без пропуска один клик по подписи чекбокса давал два события, а два — «злую серию» (Пульс id 256, 19.11.2026).
+let _labelForward = null;
+const LABEL_FORWARD_MS = 100;
 let _timer = null;
 let _inited = false;
 let _enabled = true;
@@ -929,8 +933,15 @@ function onClick(e) {
   if (!_enabled) return;
   const el = e.target instanceof Element ? e.target : null;
   if (!el) return;
-  _clickCount += 1;
   const now = Date.now();
+  if (_labelForward && _labelForward.control === el && now - _labelForward.t < LABEL_FORWARD_MS) {
+    _labelForward = null;
+    return;
+  }
+  const label = el.closest('label');
+  const control = label?.control;
+  _labelForward = control && control !== el && !control.contains(el) ? { control, t: now } : null;
+  _clickCount += 1;
   const x = e.pageX, y = e.pageY;
 
   // rage: N кликов в маленьком радиусе за короткое окно
@@ -1178,6 +1189,7 @@ export function _resetForTests() {
   _queue = [];
   _movePoints = [];
   _recentClicks = [];
+  _labelForward = null;
   _inited = false;
   _enabled = true;
   _collectorsStarted = false;
