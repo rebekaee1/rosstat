@@ -3501,7 +3501,7 @@ Backend часть готова: 1208 событий, 46/76 source codes, `bad_p
 - **Годовые landing-страницы** `/indicator/{code}/{year}` (`render_indicator_year_html`): чистый SSR без React-bundle (`include_app=False`), data-driven итоги года + таблица + навигация по годам; в sitemap listed-индикаторы с ≥ 2 точками за год (priority 0.4). Nginx-regex в кавычках (`{2}` иначе ломает парсер конфига).
 - **RSS** `/feed.xml` + `<link rel="alternate">` во всех SSR-документах.
 - **ETag/304 на SSR** (`seo_pages.py`) + методы GET+HEAD (роботы шлют HEAD — был 405).
-- **Dataset JSON-LD**: `distribution` (DataDownload → `/api/v1/indicators/{code}/data`), `isAccessibleForFree`, `license`.
+- **Dataset JSON-LD**: `distribution` (DataDownload → `/api/v1/indicators/{code}/data`), `isAccessibleForFree`, `license`. *(19.11.2026: `distribution` убран — ADR-0003, п. 9, обновление.)*
 - **Autolink** терминов в seo_blocks (curated `AUTOLINK_TERMS` в `seo_renderer.py`), self-ссылки пропускаются.
 - **Code-split**: `xlsx` (~430 КБ) из статического импорта `lib/excel.js` → динамический `await import('xlsx')` при экспорте; чанк IndicatorDetail похудел на ~60%.
 
@@ -4105,3 +4105,11 @@ keep), вердикт сверяется с действием; дубль за�
 **Как сделано.** Как у рейтинга регионов 18.11: ссылка названия страны растянута на строку псевдоэлементом, вложенных ссылок нет, Tab проходит одну ссылку на строку, фокус подсвечивает строку. Отличие — опора: у строки таблицы, кроме `position: relative`, `transform: translate(0)`. Safari 26.6.2 строку таблицы по одному `position` опорой не делает: на пробной странице 19.11 все строки вели на последнюю ссылку таблицы; с `transform` каждая строка ведёт на свою. Файлы: `WorldRatingPage.jsx` (класс `z6-row__link`), `z6-rating.css`, `seo_world.py` (`table.seo-rank`), `seo_renderer.py` (два правила в `SEO_CRITICAL_CSS`). Узкий список рейтинга (`w2-rank-row`) уже был ссылкой целиком.
 
 **Не проверено.** Страница рейтинга целиком в браузере (широкий экран, Safari и Chrome) и годовая страница; подсказка периода у числа больше не всплывает под областью ссылки. Через день после выпуска — dead/rage по `tr.z6-row` и `seo-table-scroll` на `/world/rating/*` в Пульсе.
+
+## 2026-11-19 — сторож обещанной свежести: дата загрузки по UTC против даты выхода по Москве
+
+`app/services/promised_freshness.judge` сравнивает `fetch_log.started_at.date()` (наивное время UTC) с датой выхода
+по календарю (Москва). Загрузку между 00:00 и 03:00 МСК сторож засчитает предыдущим днём. Если выход был в тот же
+день, а загрузка прошла ночью, сторож может ошибочно сообщить об опоздании. При нынешнем ETL (06:00 и 20:00 МСК) это не влияет. Исправление: перевести
+`started_at` в Москву (`replace(tzinfo=UTC).astimezone(MSK)`) перед сравнением, если ETL получит ночной прогон.
+Найдено при рецензии ветки `feat/acq-data` (совет по привлечению, №1).

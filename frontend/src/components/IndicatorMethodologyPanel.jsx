@@ -4,6 +4,7 @@ import { localizeSource } from '../i18n/viewModeLabels';
 import { footerSourceLinks } from '../lib/footerNav';
 import { isExternalHref, pickExternalHref } from '../lib/sourceLink';
 import SourceLink from './SourceLink';
+import { citeText, citeUrl } from '../lib/citeLine';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
 
@@ -32,6 +33,11 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
   const methodology = content?.methodology || (locale === 'en'
     ? `Source: ${sourceName || 'the listed data provider'}. Forecasts, when available, are shown separately from observations.`
     : `Источник: ${sourceName || 'указанный поставщик данных'}. Прогноз, если он доступен, показан отдельно от фактических значений.`);
+
+  const pageUrl = citeUrl();
+  const cite = indicator?.name && pageUrl
+    ? citeText({ name: indicator.name, source: sourceName, url: pageUrl, asOf: indicator?.current_date, locale })
+    : '';
 
   return (
     <section data-block="methodology" className="fe-reveal fe-reveal--free fe-info-card" style={{ '--fe-duration': '0.35s', '--fe-rise': '10px' }}>
@@ -63,6 +69,12 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
             {externalHref ? <ExternalLink className="ml-auto h-3 w-3 shrink-0 opacity-60" aria-hidden="true" /> : null}
           </SourceLink>
         </div>
+      ) : null}
+
+      {cite ? (
+        <p className="fe-info-card__cite" data-block="cite">
+          <span className="fe-info-card__cite-label">{t('indicator.cite')}:</span> {cite}
+        </p>
       ) : null}
     </section>
   );

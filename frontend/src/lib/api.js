@@ -180,6 +180,8 @@ export const fetchCalendarUpcoming = (params = {}, { signal } = {}) => {
   const search = new URLSearchParams();
   if (params.limit) search.set('limit', String(params.limit));
   if (params.importance_min) search.set('importance_min', String(params.importance_min));
+  // Выход данных одного показателя (строка «присылать», совет 19.11.2026): сервер принимает indicator_code давно.
+  if (params.indicator_code) search.set('indicator_code', String(params.indicator_code));
   const q = search.toString();
   return api.get(`/calendar/upcoming${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
 };
@@ -378,3 +380,18 @@ export const exportGrid = ({ format, filename, title, columns, rows, meta, histo
 export const fetchAccountExport = () => api.get('/auth/account/export').then((r) => r.data);
 
 export default api;
+
+// ── Подписка на показатель по почте (совет 19.11.2026) ─────────────────────────────────────
+// Флаг на сервере: GET /topic-mail/config. Гость — адрес и согласие → письмо «подтвердите»;
+// вошедший — слежение сразу. Подтверждение — нажатием кнопки на /account/topic-confirm.
+export const fetchTopicMailConfig = () =>
+  api.get('/topic-mail/config').then((r) => r.data);
+
+export const subscribeTopicMail = ({ code, email, consent, page }) =>
+  api.post('/topic-mail/subscribe', { code, email, consent, page }).then((r) => r.data);
+
+export const fetchTopicMailConfirm = (t) =>
+  api.get('/topic-mail/confirm', { params: { t } }).then((r) => r.data);
+
+export const confirmTopicMail = (t) =>
+  api.post('/topic-mail/confirm', { t }).then((r) => r.data);

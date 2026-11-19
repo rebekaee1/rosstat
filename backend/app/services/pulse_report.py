@@ -178,7 +178,13 @@ world_ingest — загрузка мировых данных (datasets_failed �
 stale — сигнал, даже если ETL формально зелёный. telegram — доставка сообщений этого бота:
 failed — получатель что-то не получил. calendar — публикации официальных данных: что вышло в
 отчётный день и что ждём в ближайшие три дня (если вышел важный показатель и к нему пришли люди —
-свяжи это). Раздел с полем error не посчитался: не делай по нему выводов.
+свяжи это). acquisition_week — недельная строка привлечения (совет 19.11.2026), скользящие 7 дней:
+люди из Яндекса, возврат когорты (return.by_self_pct — «сам, не из поиска», главное число;
+return.other_day_pct — в другой день любым путём), строка «присылать» (line: показы, нажатия, на
+1 000 показов), чаты бота с сайта и подписки, регистрации по поводу, ИИ, Google-Россия (визиты
+Метрики, не клики Search Console). Это скользящее окно: соседние дни делят 6 дней из 7, не называй
+изменение за день «ростом недели». Пока показов строки меньше 1 000, не делай вывода о нажатиях.
+Раздел с полем error не посчитался: не делай по нему выводов.
 
 Блок seo — индексация в Яндексе: sitemap_urls_total (сколько URL публикует
 сайт), searchable_pages (сколько реально в поиске по Вебмастеру),
@@ -622,6 +628,20 @@ def _fallback_summary(snapshot: dict) -> str:
     return "\n".join(lines)
 
 
+def _acquisition_week_block(snapshot: dict) -> str:
+    """Недельная строка привлечения (совет 19.11.2026): видна всегда, не в свёрнутом блоке."""
+    from app.services.pulse_acquisition import week_lines
+
+    try:
+        lines = week_lines(snapshot.get("acquisition_week"))
+    except Exception:  # noqa: BLE001 — строка не должна ронять отчёт
+        logger.warning("Pulse acquisition week block failed", exc_info=True)
+        return ""
+    if not lines:
+        return ""
+    return "📈 <b>Привлечение за 7 дней</b>\n" + "\n".join(escape(line) for line in lines)
+
+
 def _people_digits(snapshot: dict) -> str | None:
     """Строка «люди / не подтверждено / роботы» (18.11.2026); None у снимков без раздела people."""
     from app.services.pulse_people import digits_line
@@ -730,6 +750,9 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
     )
 
     msg_parts = [f"🛰 <b>Пульс платформы — {d.isoformat()}</b>", "", body]
+    week = _acquisition_week_block(snapshot)
+    if week:
+        msg_parts += ["", week]
     raw = _raw_digits_block(snapshot)
     if raw:
         msg_parts += ["", raw]

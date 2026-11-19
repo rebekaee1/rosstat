@@ -49,6 +49,7 @@ _MACRO = {
     "api_interest_submit",    # заявка на платный API («фальшивая дверь», 2026-10-05)
     "pwa_installed",          # сайт установлен как приложение (appinstalled)
     "indicator_subscribe",    # подписка на показатель (круг 11: функция кабинета)
+    "topic_mail_confirm",     # подтвердил по письму подписку на тему из строки «присылать» (совет 19.11.2026)
 }
 
 # --- micro: ценные действия с продуктом ---
@@ -97,6 +98,8 @@ _INTENT = {
     "pwa_install_native_accepted",  # согласие в системном окне установки
     "pwa_install_entry_click",      # пункт «Установить приложение» в подвале
     "oauth_consent_open",           # открыл окно согласия перед входом через соцсеть
+    "subscribe_line_click",         # нажал «Присылать» в строке под числом (Telegram или почта; совет 19.11.2026)
+    "topic_mail_done",              # отправил адрес в строке «присылать» — ещё не подтверждено письмом
 }
 
 # --- engagement: вовлечение в контент и инструменты ---
@@ -175,6 +178,8 @@ _ENGAGEMENT = {
 
 # --- technical: не цели (ошибки, показы, consent, негативные сигналы) ---
 _TECHNICAL = {
+    "subscribe_line_view",          # показ строки «присылать» — знаменатель нажатий (совет 19.11.2026)
+    "download_mail_offer_view",     # показ предложения «присылать на почту» после скачивания
     "api_load_error",
     "error_reload",
     "api_retry",
@@ -211,6 +216,7 @@ _TECHNICAL = {
 _WEIGHT_OVERRIDES = {
     "signup": 100,
     "indicator_subscribe": 40,
+    "topic_mail_confirm": 40,
     "newsletter_opt_in": 60,
     "feedback_submit": 40,
     "api_interest_submit": 40,
@@ -275,7 +281,7 @@ EVENT_GROUPS: dict[str, frozenset[str]] = {
     }),
     GROUP_SHARE: frozenset({"share_link", "calc_share"}),
     GROUP_FAVORITE: frozenset({"favorite_add"}),
-    GROUP_SUBSCRIBE: frozenset({"indicator_subscribe", "push_permission"}),
+    GROUP_SUBSCRIBE: frozenset({"indicator_subscribe", "push_permission", "topic_mail_confirm"}),
     GROUP_LANGUAGE: frozenset({"locale_switch"}),
     # Ошибки загрузки на стороне сайта. Имя `api_error` в реестре не существует.
     GROUP_FRONT_ERROR: frozenset({"error_reload", "api_retry", "api_load_error"}),

@@ -53,9 +53,15 @@ function saveBlob(blob, filename) {
   trackFile(filename);
 }
 
-// После успешной выгрузки сообщаем UI остаток гостевого лимита (для кнопок).
-function emitDownloaded(remaining) {
-  window.dispatchEvent(new CustomEvent('fe:download-done', { detail: { remaining } }));
+// После успешной выгрузки сообщаем UI остаток гостевого лимита (для кнопок) и что скачано:
+// код ряда и страна — для предложения «присылать новые значения на почту» (AfterDownloadOffer).
+function emitDownloaded(remaining, subject) {
+  const detail = { remaining };
+  if (subject?.code) {
+    detail.code = subject.code;
+    detail.country = subject.country || null;
+  }
+  window.dispatchEvent(new CustomEvent('fe:download-done', { detail }));
 }
 
 // Лимит гостевых скачиваний: глобальное событие подхватывает модалка регистрации.
@@ -85,7 +91,7 @@ async function downloadExcelImpl(chartData, mode, indicatorCode, range, meta = {
   try {
     const { blob, remaining } = await exportTable(payload);
     saveBlob(blob, filename);
-    emitDownloaded(remaining);
+    emitDownloaded(remaining, payload.subject);
     return true;
   } catch (err) {
     if (handleLimit(err, indicatorCode, payload)) return false;
@@ -108,7 +114,7 @@ async function downloadCSVImpl(chartData, mode, indicatorCode, range, meta = {})
   try {
     const { blob, remaining } = await exportTable(payload);
     saveBlob(blob, filename);
-    emitDownloaded(remaining);
+    emitDownloaded(remaining, payload.subject);
     return true;
   } catch (err) {
     if (handleLimit(err, indicatorCode, payload)) return false;
@@ -120,7 +126,7 @@ async function downloadCSVImpl(chartData, mode, indicatorCode, range, meta = {})
 async function resumeExportImpl(payload) {
   const { blob, remaining } = await exportTable(payload);
   saveBlob(blob, payload.filename);
-  emitDownloaded(remaining);
+  emitDownloaded(remaining, payload.subject);
   clearPendingExport();
   track(payload.format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, {
     resumed_after_auth: true,

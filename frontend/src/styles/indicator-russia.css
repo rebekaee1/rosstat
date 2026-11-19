@@ -248,6 +248,9 @@
 .fe-info-card__text { color: var(--color-text-secondary); font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
 .fe-info-card__text > * + * { margin-top: 12px; }
 .fe-info-card__foot { margin-top: auto; padding-top: 16px; }
+/* «Как цитировать» (совет 19.11.2026): тихая строка под источником, адрес переносится по знакам. */
+.fe-info-card__cite { margin: 12px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.fe-info-card__cite-label { font-weight: 600; }
 .fe-info-card__source { width: 100%; justify-content: flex-start; min-width: 0; }
 .fe-info-card__source-text {
   display: inline-flex;

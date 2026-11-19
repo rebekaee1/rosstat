@@ -77,6 +77,12 @@ STRINGS = {
         "oauth.lead": "Мы получили запрос на смену пароля, но пароля у вашего аккаунта нет: вы входите через {provider}. Откройте страницу входа и выберите {provider}. Пароль можно задать позже в личном кабинете.",
         "oauth.button": "Перейти ко входу",
         "oauth.note": "Если вы не запрашивали смену пароля, ничего делать не нужно.",
+        "topic.subject": "Подтвердите подписку: {topic}",
+        "topic.preheader": "Одно нажатие — и новые значения будут приходить сюда.",
+        "topic.title": "Подтвердите подписку",
+        "topic.lead": "Вы попросили присылать на этот адрес новые значения: «{topic}». Письмо придёт, когда выйдут новые данные, — не чаще одного в день.",
+        "topic.button": "Подтвердить",
+        "topic.note": "Ссылка действует 7 дней. Если вы ничего не просили, ничего делать не нужно: без подтверждения писем не будет.",
         "reconfirm.subject": "Подтвердите почту, чтобы получать письма Forecast Economy",
         "reconfirm.preheader": "Одно нажатие — и письма будут приходить на этот адрес.",
         "reconfirm.title": "Подтвердите почту",
@@ -121,6 +127,12 @@ STRINGS = {
         "reset.lead": "We received a request to change the password of the account with this email. Press the button and set a new password.",
         "reset.button": "Set password",
         "reset.note": "The link is valid for one hour and works once. If you did not ask for a change, there is nothing to do: your password stays the same.",
+        "topic.subject": "Confirm your subscription: {topic}",
+        "topic.preheader": "One click and new values will arrive here.",
+        "topic.title": "Confirm your subscription",
+        "topic.lead": "You asked us to send new values of “{topic}” to this address. An email arrives when new data is out, at most once a day.",
+        "topic.button": "Confirm",
+        "topic.note": "The link is valid for 7 days. If you did not ask for this, there is nothing to do: without confirmation no emails are sent.",
         "oauth.subject": "How to sign in to Forecast Economy",
         "oauth.preheader": "No password: you sign in with {provider}.",
         "oauth.title": "You sign in with {provider}",
@@ -401,14 +413,14 @@ def _text_footer(locale: str, *, kind: str, unsubscribe_url: str | None, manage_
 
 # --- письма ---------------------------------------------------------------------
 
-ACTION_KINDS = ("verify", "reset", "oauth", "reconfirm")
+ACTION_KINDS = ("verify", "reset", "oauth", "reconfirm", "topic")
 
 
 def render_action(kind: str, locale: str, *, action_url: str, site_url: str, manage_url: str | None = None,
                   **fmt: str) -> RenderedMail:
     """Служебное письмо с одной кнопкой: verify (подтверждение адреса), reset (сброс пароля),
     oauth (пароля нет — вход через провайдера, ``provider=``), reconfirm (подтверждение адреса
-    для давно зарегистрированных)."""
+    для давно зарегистрированных), topic (подтверждение подписки на показатель, ``topic=``)."""
     if kind not in ACTION_KINDS:
         raise ValueError(kind)
 

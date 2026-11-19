@@ -10,6 +10,8 @@ base64url(HMAC-SHA256(mail_token_secret, purpose|payload)). Назначение
   unpers — «письма без персональной подборки» (выпуск остаётся, подборка по действиям — нет); без срока;
   verify — подтверждение адреса; 7 суток; привязан к адресу (смена адреса гасит ссылку);
   open   — пиксель открытия письма (ADR-0034): в поле человека стоит номер строки журнала писем; без срока;
+  topic  — подтверждение подписки на показатель по почте (гость, совет 19.11.2026); 7 суток; в поле
+           человека — номер заявки в Redis (адреса в ссылке нет), отпечаток адреса сверяется;
   reset  — сброс пароля; 1 час; привязан к отпечатку текущего хэша пароля, поэтому
            одноразовый: после смены пароля та же ссылка не подходит.
 """
@@ -24,9 +26,9 @@ from dataclasses import dataclass
 
 from app.config import settings
 
-PURPOSES = ("unsub", "unsub_watch", "unpers", "verify", "reset", "open")
+PURPOSES = ("unsub", "unsub_watch", "unpers", "verify", "reset", "open", "topic")
 TTL_SECONDS = {"unsub": None, "unsub_watch": None, "unpers": None, "verify": 7 * 24 * 3600, "reset": 3600,
-               "open": None}
+               "open": None, "topic": 7 * 24 * 3600}
 _SIG_LEN = 32
 
 

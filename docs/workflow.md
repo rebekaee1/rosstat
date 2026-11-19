@@ -744,6 +744,8 @@ docker compose exec -T backend python /app/scripts/mail.py reconfirm --send --ma
 
 **Письма «колокольчика».** `RUSTATS_MAIL_WATCH_DIGEST_ENABLED=true` + пересоздать scheduler: ежедневно в `RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK`:15 МСК одна сводка человеку с новыми значениями по его слежениям; только подтверждённые адреса; своя отписка. Счёт без отправки: `scripts/mail.py watch-digest`.
 
+**Подписка на показатель по почте (19.11.2026).** `RUSTATS_TOPIC_MAIL_ENABLED=true` + пересоздать backend: форма «Присылать на почту» в строке под числом и после скачивания, страница `/account/topic-confirm` (nginx отдаёт оболочку, noindex). Письма о новых значениях уходят только при включённых письмах колокольчика (строка выше). Проверка без людей: адрес из `RUSTATS_MAIL_ALLOWLIST` при `RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS=false` на стенде.
+
 **Выпуск рассылки.** `scripts/mail.py audience` (счёт, без адресов) → `campaign issue.json` (сухой прогон) → `campaign issue.json --test-to rebeka.ee@yandex.ru` → `campaign issue.json --send` только по команде владельца. Запуск повторяем, пока отчёт не перестанет показывать `stopped: max_per_run`; `server_limit` — остановиться и разобрать (лимит или подозрение на спам у почтового сервиса). Журнал: `select status, error, count(*) from mail_outbox where campaign='…' group by 1, 2`.
 
 ## Воронка письма (ADR-0034)

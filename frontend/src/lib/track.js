@@ -248,6 +248,9 @@ export const events = {
   EXPERIMENT_EXPOSURE: 'experiment_exposure',
 
   INDICATOR_VIEW: 'indicator_view',
+  // Привлечение (совет 19.11.2026): строка «присылать» под числом. Параметры: topic, channel (telegram | email), path.
+  SUBSCRIBE_LINE_VIEW: 'subscribe_line_view',
+  SUBSCRIBE_LINE_CLICK: 'subscribe_line_click',
   FREQUENCY_SWITCH: 'frequency_switch',
 
   OUTBOUND_LINK: 'outbound_link',
@@ -293,6 +296,11 @@ export const events = {
   REGISTER_NUDGE_VIEW: 'register_nudge_view',
   REGISTER_NUDGE_EXPAND: 'register_nudge_expand',
   REGISTER_NUDGE_CTA: 'register_nudge_cta',
+  // Подписка на показатель по почте (совет 19.11.2026): нажатие в строке «присылать» (общее имя с Telegram-частью,
+  // свойство channel = 'email'; сам ключ SUBSCRIBE_LINE_CLICK объявлен выше), итог запроса, показ предложения после скачивания, подтверждение по ссылке письма.
+  TOPIC_MAIL_DONE: 'topic_mail_done',
+  DOWNLOAD_MAIL_OFFER_VIEW: 'download_mail_offer_view',
+  TOPIC_MAIL_CONFIRM: 'topic_mail_confirm',
   // Приветственный экран (components/welcome): показ, шаг, пропуск, конец, нажатия «аккаунт / бот / канал».
   WELCOME_VIEW: 'welcome_view',
   WELCOME_STEP: 'welcome_step',

@@ -222,7 +222,7 @@ def test_pulse_extra_sections_are_sums_only(mail_env, auth_client, monkeypatch):
             return await pulse_extra.build_extra(db, now.date(), start, start + timedelta(days=1))
     extra = asyncio.run(_q())
     assert set(extra) == {"mail", "consents", "cabinet", "public_bot", "research", "world_ingest", "freshness",
-                          "telegram", "calendar"}
+                          "telegram", "calendar", "acquisition_week"}
     assert not [k for k, v in extra.items() if "error" in v], extra
     assert extra["mail"]["letters_by_kind"]["newsletter"]["sent"] == 2 and extra["mail"]["last_campaign"]["delivered"] == 2
     assert extra["consents"]["newsletter_opt_in"] == 2

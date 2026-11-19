@@ -544,13 +544,14 @@
   .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: 'head head' 'text foot';
+    grid-template-areas: 'head head' 'text foot' 'cite cite';
     column-gap: 32px;
     row-gap: 12px;
     align-items: start;
   }
   .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card__head { grid-area: head; }
   .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card__text { grid-area: text; min-width: 0; }
+  .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card__cite { grid-area: cite; margin: 0; }
   .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card__foot { grid-area: foot; align-self: end; margin-top: 0; padding-top: 0; max-width: 22rem; }
 }
 :root .z4-lower .fe-histtable { max-width: none; min-width: 0; }

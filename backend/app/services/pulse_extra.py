@@ -241,6 +241,12 @@ async def _calendar(db, d: date) -> dict[str, Any]:
             "scheduled_but_not_released_14d": overdue}
 
 
+async def _acquisition_week(db, d: date, end: datetime) -> dict[str, Any]:
+    from app.services import pulse_acquisition
+
+    return await pulse_acquisition.build_week(db, d, end)
+
+
 async def build_extra(db, d: date, start: datetime, end: datetime) -> dict[str, Any]:
     """Все новые разделы; раздел со сбоем отдаёт `{"error": …}` и не мешает остальным."""
     sections = {
@@ -253,6 +259,8 @@ async def build_extra(db, d: date, start: datetime, end: datetime) -> dict[str, 
         "freshness": lambda: _freshness(db, d),
         "telegram": lambda: _telegram(db, start, end),
         "calendar": lambda: _calendar(db, d),
+        # Совет 19.11.2026: недельная строка привлечения (`pulse_acquisition`).
+        "acquisition_week": lambda: _acquisition_week(db, d, end),
     }
     out: dict[str, Any] = {}
     for name, fn in sections.items():

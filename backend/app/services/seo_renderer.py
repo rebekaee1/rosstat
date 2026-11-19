@@ -202,6 +202,15 @@ def fit_meta(value: str, limit: int) -> str:
     return kept if kept else truncate_meta(value, limit - 1)
 
 
+def _cite(name: str, source: str | None, url: str, as_of: date | None, locale: str) -> str:
+    """Строка «Как цитировать» (совет 19.11.2026); без адреса страницы — пусто."""
+    if not url:
+        return ""
+    from app.services.seo_cite import cite_html
+
+    return cite_html(name=name, source=source, url=url, as_of=as_of, locale=locale)
+
+
 def _format_date(value: date | None) -> str:
     """Человекочитаемая дата («1 мая 2026» / «1 May 2026») — для видимого текста."""
     from app.services.display import format_date_locale
@@ -726,6 +735,8 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,san
 .seo-chart-cap{flex:1 1 12rem;text-align:left}
 .seo-chart-brand{margin-left:auto;flex:0 0 auto;font-size:.75rem;letter-spacing:.02em;color:rgba(26,26,46,.45);white-space:nowrap}
 .seo-forecast-note{margin:0 0 1.5rem;font-size:.9375rem;line-height:1.55;color:rgba(26,26,46,.72)}
+.seo-page p.seo-cite{margin:.75rem 0 0;font-size:.8125rem;line-height:1.5;color:rgba(26,26,46,.55);overflow-wrap:anywhere}
+.seo-cite__label{font-weight:600}
 .seo-topbar{position:sticky;top:0;z-index:10;background:rgba(248,249,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,0,0,.07)}
 .seo-topbar-in{max-width:56rem;margin:0 auto;padding:.8rem 1rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
 .seo-brand{font-weight:700;font-size:1rem;letter-spacing:-.01em;text-decoration:none!important;color:#1A1A2E}
@@ -3116,6 +3127,10 @@ async def render_indicator_html(
     from app.services.regional_weekly import fuel_regions_section
 
     fuel_regions_html = await fuel_regions_section(db, indicator.code)
+    # «Как цитировать» цитирует саму карточку, как приложение (`IndicatorMethodologyPanel`): базовое название
+    # (`public_indicator_seo`, то же поле `name` в API) и дата последней точки базового ряда (`current_date` API),
+    # а не название и ряд режима (19.11.2026, рецензия №6).
+    cite_as_of = last_dt if data_indicator.id == indicator.id else (await _indicator_stats(db, indicator.id))[2]
     body = _indicator_body(
         indicator,
         category,
@@ -3137,6 +3152,9 @@ async def render_indicator_html(
         seo_blocks=overlay.get("seo_blocks"),
         locale=loc,
         fuel_regions_html=fuel_regions_html,
+        cite_url=_absolute(paths.russia_indicator(indicator.code)),
+        cite_name=base_name,
+        cite_as_of=cite_as_of,
     )
     canonical_path = paths.russia_indicator(indicator.code)
     # ?mode= не каноничен: INDEX_POLICY. Canonical всегда базовый URL карточки.
@@ -3201,13 +3219,9 @@ async def render_indicator_html(
                 display_name,
             ),
             "isAccessibleForFree": True,
-            "distribution": [
-                {
-                    "@type": "DataDownload",
-                    "encodingFormat": "application/json",
-                    "contentUrl": _absolute(f"/api/v1/indicators/{data_indicator.code}/data"),
-                }
-            ],
+            # DataDownload на /api/v1/…/data убран 19.11.2026 (совет, раздел 7.1): /api/ закрыт в robots.txt
+            # и отвечает роботам 403, а файл для людей выдаётся после входа. Ссылка обещала роботу то, чего
+            # нет; отдельный открытый файл только для роботов не делаем — человек и робот видят одно.
             "image": og_path,
         },
         {
@@ -3919,6 +3933,10 @@ async def render_indicator_year_html(
     from app.services.regional_weekly import fuel_regions_section
 
     fuel_regions_html = await fuel_regions_section(db, code, year=year)
+    from app.services.locale import get_locale
+
+    # Адрес — canonical страницы: у зарегистрированного режима он несёт `?mode=` (19.11.2026, рецензия №6).
+    cite = _cite(h1_text, source, _absolute(canonical_path), last.date, get_locale())
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(year_trail)}
 {fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=year_lead_text)}
@@ -3929,7 +3947,7 @@ async def render_indicator_year_html(
 {fuel_regions_html}
 <section><h2>{escape(chart_h2)}</h2><p>{chart_p}</p></section>
 {f"<section><h2>{escape(other_h2)}</h2>{year_links}</section>" if year_links else ""}
-</main>"""
+{cite}</main>"""
     # temporalCoverage — по факту, не «до 31 декабря» для незакрытого года (В-26).
     # Для годового ряда с одной точкой покрытие — дата этой точки.
     # A closed calendar year does not prove observations exist through December.
@@ -4129,6 +4147,9 @@ def _indicator_body(
     seo_blocks: list | None = None,
     locale: str | None = None,
     fuel_regions_html: str = "",
+    cite_url: str = "",
+    cite_name: str | None = None,
+    cite_as_of: date | None = None,
 ) -> str:
     from app.services.i18n_display import public_name
     from app.services.locale import get_locale
@@ -4370,7 +4391,8 @@ def _indicator_body(
 </ul>
 {dynamics_html}</section>
 {_blocks_html(blocks, current_code=indicator.code)}
-<section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p></section>
+<section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p>
+{_cite(cite_name or name, src, cite_url, cite_as_of or (current.date if current else last_dt), loc)}</section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
 {years_section}{months_section}{fuel_regions_html}{world_compare_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
 </main>"""
