@@ -126,7 +126,7 @@ ym(107136069, 'init', {
 | `chart_mode_change` | `IndicatorDetail` | `CpiViewModePicker` | `mode`, `code`, `category` |
 | `chart_range_change` | `IndicatorDetail` | range-кнопки внутри `IndicatorChart` | `range`, `indicator`, `category` |
 | `chart_zoom` | `IndicatorChart` | reset zoom | `action`, `indicator`, `category` |
-| `chart_pick` | `IndicatorChart` | нажатие или касание точки графика (с 18.11.2026): значение закреплено, таблица страницы переходит к дате | `indicator`, `category` |
+| `chart_pick` | `IndicatorChart`; `RegionAnnualChart` (с 19.11.2026) | нажатие или касание точки графика (с 18.11.2026): значение закреплено; на странице показателя таблица переходит к дате | `IndicatorChart`: `indicator`, `category` (без `source`); `RegionAnnualChart`: `source` = `region` (регион и показатель — в URL события) |
 | `forecast_toggle` | `IndicatorChartSection` | переключатель «Прогноз» | `enabled`, `indicator`, `category` |
 | `forecast_view` | `IndicatorForecastSection` | IntersectionObserver ≥40% | `indicator`, `category`, `chartMode` |
 
