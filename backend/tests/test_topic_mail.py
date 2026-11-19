@@ -211,3 +211,73 @@ def test_confirm_mail_follows_design_rules(monkeypatch):
                              site_url="https://ru.forecasteconomy.com/", topic="Diesel")
         assert "Diesel" in mail.subject and len(mail.subject) <= 50
         assert "topic-confirm" in mail.text
+
+
+def test_double_confirm_gets_clear_answer_not_500(topic_env, auth_client):
+    """Второе одновременное нажатие (замок занят) — 409 «уже подтверждается»; после первого — «уже сработала»."""
+    from app.models import User
+    from app.services.mail import tokens
+
+    auth_client.cookies.clear()
+    auth_client.post(f"{URL}/subscribe", json={"code": CODE, "email": "allowed@example.com", "consent": True})
+    tok = _confirm_token(topic_env)
+    pid = tokens.verify("topic", tok).user_id
+    redis = topic_env["state_redis"]
+    auth_client.portal.call(redis.set, f"fe:topic_mail_lock:{pid}", "1")
+    busy = auth_client.post(f"{URL}/confirm", json={"t": tok})
+    assert busy.status_code == 409 and busy.json()["detail"]["code"] == "in_progress"
+    assert _db(auth_client, topic_env, lambda s: _all(s, User)) == []
+    # Замок снят (первое нажатие закончилось неудачей) — ссылка снова работает.
+    auth_client.portal.call(redis.delete, f"fe:topic_mail_lock:{pid}")
+    assert auth_client.post(f"{URL}/confirm", json={"t": tok}).json()["new_account"] is True
+    again = auth_client.post(f"{URL}/confirm", json={"t": tok})
+    assert again.status_code == 400 and again.json()["detail"]["code"] == "expired"
+    assert len(_db(auth_client, topic_env, lambda s: _all(s, User))) == 1
+
+
+def test_failed_confirm_releases_lock(topic_env, auth_client, monkeypatch):
+    from app.services.mail import topic_subscribe as svc
+
+    auth_client.cookies.clear()
+    auth_client.post(f"{URL}/subscribe", json={"code": CODE, "email": "allowed@example.com", "consent": True})
+    tok = _confirm_token(topic_env)
+
+    real = svc.add_subject
+
+    async def boom(*a, **k):
+        raise svc.TopicMailError("limit_reached", 409)
+    monkeypatch.setattr(svc, "add_subject", boom)
+    assert auth_client.post(f"{URL}/confirm", json={"t": tok}).json()["detail"]["code"] == "limit_reached"
+    monkeypatch.setattr(svc, "add_subject", real)
+    assert auth_client.post(f"{URL}/confirm", json={"t": tok}).json()["status"] == "subscribed"
+
+
+def test_account_created_meanwhile_is_reused(topic_env, auth_client):
+    from app.models import User
+    from app.services.mail import topic_subscribe as svc
+
+    uid = _register(auth_client, "allowed@example.com")
+    item = svc.Pending(id="p1", email="allowed@example.com", code=CODE, locale="ru", ip=None, user_agent=None, page=None)
+
+    async def run(s):
+        user, created = await svc.create_account(s, item)
+        return str(user.id), created
+    assert _db(auth_client, topic_env, run) == (uid, False)
+    assert len(_db(auth_client, topic_env, lambda s: _all(s, User))) == 1
+
+
+def test_redis_down_answers_try_later(topic_env, auth_client, monkeypatch):
+    from app.services.mail import topic_subscribe as svc
+
+    auth_client.cookies.clear()
+    auth_client.post(f"{URL}/subscribe", json={"code": CODE, "email": "allowed@example.com", "consent": True})
+    tok = _confirm_token(topic_env)
+
+    async def down():
+        raise ConnectionError("redis down")
+    monkeypatch.setattr(svc, "_redis", down)
+    r = auth_client.post(f"{URL}/subscribe", json={"code": CODE, "email": "rebeka.ee@yandex.ru", "consent": True})
+    assert r.status_code == 503 and r.json()["detail"]["code"] == "unavailable"
+    assert "Попробуйте позже" in r.json()["detail"]["message"] or "try again later" in r.json()["detail"]["message"]
+    assert auth_client.get(f"{URL}/confirm", params={"t": tok}).status_code == 503
+    assert auth_client.post(f"{URL}/confirm", json={"t": tok}).status_code == 503

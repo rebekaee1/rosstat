@@ -10,7 +10,9 @@
   с номером заявки — адреса в ссылке нет. Ответ на сайте всегда одинаковый: по нему нельзя узнать,
   есть ли адрес на сайте.
 * **Подтверждение** — только нажатием кнопки на странице `/account/topic-confirm` (POST): почтовые
-  сканеры открывают ссылки сами, GET ничего не меняет. Адрес уже есть на сайте — слежение
+  сканеры открывают ссылки сами, GET ничего не меняет. Замок в Redis (`claim`) не даёт двум одновременным
+  нажатиям создать аккаунт дважды: второе получает «уже подтверждается» (409). Redis недоступен —
+  ответ «попробуйте позже» (503), а не 500. Адрес уже есть на сайте — слежение
   добавляется этому аккаунту, адрес считается подтверждённым (человек открыл письмо). Адреса нет —
   создаётся аккаунт без пароля (вход — через «Забыли пароль?»), согласие `pd` пишется с IP и
   браузером из заявки, регистрация помечается поводом `topic_mail`.
@@ -83,20 +85,36 @@ async def _redis():
     return await get_state_redis()
 
 
+_LOCK = "fe:topic_mail_lock:{}"
+LOCK_TTL_SECONDS = 120
+
+
+def _unavailable(exc: Exception) -> TopicMailError:
+    """Redis состояния не ответил: человеку — «попробуйте позже» (503), а не 500."""
+    logger.error("topic mail: state redis unavailable (%s)", type(exc).__name__)
+    return TopicMailError("unavailable", 503)
+
+
 async def save_pending(*, email: str, code: str, locale: str, ip: str | None, user_agent: str | None,
                        page: str | None) -> Pending:
     pid = secrets.token_urlsafe(18)
     item = Pending(id=pid, email=service.normalize(email), code=code, locale="en" if locale == "en" else "ru",
                    ip=(ip or "")[:64] or None, user_agent=(user_agent or "")[:500] or None,
                    page=(page or "")[:200] or None)
-    r = await _redis()
-    await r.set(_KEY.format(pid), json.dumps(item.__dict__, ensure_ascii=False), ex=PENDING_TTL_SECONDS)
+    try:
+        r = await _redis()
+        await r.set(_KEY.format(pid), json.dumps(item.__dict__, ensure_ascii=False), ex=PENDING_TTL_SECONDS)
+    except Exception as exc:  # noqa: BLE001 — любой сбой Redis
+        raise _unavailable(exc) from exc
     return item
 
 
 async def load_pending(pid: str) -> Pending | None:
-    r = await _redis()
-    raw = await r.get(_KEY.format(pid))
+    try:
+        r = await _redis()
+        raw = await r.get(_KEY.format(pid))
+    except Exception as exc:  # noqa: BLE001
+        raise _unavailable(exc) from exc
     if not raw:
         return None
     try:
@@ -106,8 +124,33 @@ async def load_pending(pid: str) -> Pending | None:
 
 
 async def drop_pending(pid: str) -> None:
-    r = await _redis()
-    await r.delete(_KEY.format(pid))
+    """Удаляет заявку и замок: ссылка одноразовая. Сбой Redis не отменяет уже сделанную подписку
+    (заявка истечёт сама, повторное подтверждение вернёт «уже следите»)."""
+    try:
+        r = await _redis()
+        await r.delete(_KEY.format(pid), _LOCK.format(pid))
+    except Exception:  # noqa: BLE001
+        logger.warning("topic mail: pending %s not dropped (redis)", pid[:6])
+
+
+async def claim(pid: str) -> None:
+    """Замок на подтверждение заявки: второе одновременное нажатие получает in_progress (409)."""
+    try:
+        r = await _redis()
+        got = await r.set(_LOCK.format(pid), "1", nx=True, ex=LOCK_TTL_SECONDS)
+    except Exception as exc:  # noqa: BLE001
+        raise _unavailable(exc) from exc
+    if not got:
+        raise TopicMailError("in_progress", 409)
+
+
+async def release(pid: str) -> None:
+    """Снимает замок после неудачи: ссылку можно нажать снова."""
+    try:
+        r = await _redis()
+        await r.delete(_LOCK.format(pid))
+    except Exception:  # noqa: BLE001
+        logger.warning("topic mail: lock %s not released (redis)", pid[:6])
 
 
 def confirm_link(item: Pending) -> str:
@@ -179,19 +222,32 @@ async def add_subject(db: AsyncSession, user_id: uuid.UUID, code: str) -> tuple[
     return row, created
 
 
-async def create_account(db: AsyncSession, item: Pending) -> User:
-    """Аккаунт без пароля: случайный пароль никому не известен, вход — через «Забыли пароль?»."""
+async def create_account(db: AsyncSession, item: Pending) -> tuple[User, bool]:
+    """Аккаунт без пароля: случайный пароль никому не известен, вход — через «Забыли пароль?».
+
+    Если адрес успели занять параллельно (другая заявка на тот же адрес), берётся существующий
+    аккаунт: (user, False). Новый — (user, True)."""
+    from sqlalchemy.exc import IntegrityError
+
     from app.api.auth import AUTH_CONSENT_VERSION
     from app.services.identity.passwords import hash_password
 
     user = User(id=uuid.uuid4(), status="active")
-    db.add(user)
-    await db.flush()
-    db.add(EmailCredential(user_id=user.id, email=item.email, password_hash=hash_password(secrets.token_urlsafe(32)),
-                           email_verified=True))
-    db.add(Consent(user_id=user.id, kind="pd", version=AUTH_CONSENT_VERSION, ip=item.ip, user_agent=item.user_agent))
-    await db.flush()
-    return user
+    try:
+        async with db.begin_nested():
+            db.add(user)
+            await db.flush()
+            db.add(EmailCredential(user_id=user.id, email=item.email,
+                                   password_hash=hash_password(secrets.token_urlsafe(32)), email_verified=True))
+            db.add(Consent(user_id=user.id, kind="pd", version=AUTH_CONSENT_VERSION, ip=item.ip,
+                           user_agent=item.user_agent))
+            await db.flush()
+    except IntegrityError:
+        existing, _cred = await user_by_email(db, item.email)
+        if existing is None:
+            raise
+        return existing, False
+    return user, True
 
 
 async def mark_signup(db: AsyncSession, item: Pending, user: User) -> None:

@@ -26,6 +26,8 @@ vi.mock('../lib/track', () => ({
   events: new Proxy({}, { get: (_t, k) => String(k).toLowerCase() }),
 }));
 vi.mock('../lib/useMeta', () => ({ default: vi.fn() }));
+const watchState = { authed: false, watching: false, loaded: true };
+vi.mock('../lib/useCabinet', () => ({ useWatch: vi.fn(() => watchState) }));
 vi.mock('../i18n', () => ({ useT: () => (key, vars) => (vars ? `${key}:${JSON.stringify(vars)}` : key) }));
 
 const auth = (isAuthed) => ({ isAuthed, isLoading: false });
@@ -40,6 +42,7 @@ function at(ui, { authed = false, path = '/russia/indicator/fuel-diesel/2026' } 
 
 beforeEach(() => {
   vi.clearAllMocks();
+  Object.assign(watchState, { authed: false, watching: false, loaded: true });
   resetTopicMailConfig();
   window.sessionStorage.clear();
 });
@@ -120,5 +123,25 @@ describe('TopicConfirm', () => {
     at(<Routes><Route path="/account/topic-confirm" element={<TopicConfirm />} /></Routes>,
       { path: '/account/topic-confirm?t=x.y' });
     expect((await screen.findByTestId('topic-confirm-error')).textContent).toContain('Ссылка устарела');
+  });
+});
+
+describe('AfterDownloadOffer for a signed-in watcher', () => {
+  it('is not shown when the person already watches the series (or the list is still loading)', async () => {
+    Object.assign(watchState, { authed: true, watching: true, loaded: true });
+    at(<AfterDownloadOffer />, { authed: true });
+    await waitFor(() => expect(fetchTopicMailConfig).toHaveBeenCalled());
+    await act(async () => {});
+    act(() => { window.dispatchEvent(new CustomEvent('fe:download-done', { detail: { code: 'fuel-diesel' } })); });
+    expect(screen.queryByTestId('after-download-offer')).toBeNull();
+    expect(track).not.toHaveBeenCalledWith('download_mail_offer_view', expect.anything());
+
+    cleanup();
+    window.sessionStorage.clear();
+    Object.assign(watchState, { authed: true, watching: false, loaded: false });
+    at(<AfterDownloadOffer />, { authed: true });
+    await act(async () => {});
+    act(() => { window.dispatchEvent(new CustomEvent('fe:download-done', { detail: { code: 'cpi' } })); });
+    expect(screen.queryByTestId('after-download-offer')).toBeNull();
   });
 });

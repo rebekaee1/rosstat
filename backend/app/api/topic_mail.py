@@ -42,6 +42,10 @@ _MESSAGES = {
     "rate_limited": ("Слишком много запросов. Попробуйте через час.", "Too many requests. Try again in an hour."),
     "expired": ("Ссылка устарела или уже сработала. Подпишитесь ещё раз на странице показателя.",
                 "The link has expired or was already used. Subscribe again on the indicator page."),
+    "in_progress": ("Подписка уже подтверждается. Обновите страницу через минуту.",
+                    "The subscription is already being confirmed. Refresh the page in a minute."),
+    "unavailable": ("Подписка временно недоступна. Попробуйте позже.",
+                    "Subscriptions are temporarily unavailable. Please try again later."),
     "invalid_link": ("Ссылка повреждена. Подпишитесь ещё раз на странице показателя.",
                      "The link is broken. Subscribe again on the indicator page."),
 }
@@ -108,8 +112,11 @@ async def subscribe(body: SubscribeIn, request: Request, background: BackgroundT
         return sent
     if await mail_service.is_suppressed(db, email):
         return sent
-    item = await svc.save_pending(email=email, code=body.code.strip(), locale=locale, ip=ip, user_agent=ua,
-                                  page=body.page)
+    try:
+        item = await svc.save_pending(email=email, code=body.code.strip(), locale=locale, ip=ip, user_agent=ua,
+                                      page=body.page)
+    except svc.TopicMailError as err:
+        raise _err(err.code, err.status)
     try:
         rendered = svc.confirm_mail(item, title)
     except Exception:  # noqa: BLE001 — нет секрета ссылок: письмо не формируется, ответ тот же
@@ -153,34 +160,18 @@ async def confirm_state(t: str | None = None, db: AsyncSession = Depends(get_db)
 
 @router.post("/confirm", dependencies=[Depends(_require_enabled)])
 async def confirm(body: ConfirmIn, request: Request, db: AsyncSession = Depends(get_db)):
-    from app.api.auth import audit
-
     try:
         item = await svc.pending_from_token(body.t or "")
         title = await svc.series_title(db, item.code, item.locale)
+        await svc.claim(item.id)
     except svc.TopicMailError as err:
         raise _err(err.code, err.status)
-
-    user, cred = await svc.user_by_email(db, item.email)
-    created_account = False
-    if user is not None and user.status != "active":
-        raise _err("invalid_link", 400)
-    if user is None:
-        user = await svc.create_account(db, item)
-        created_account = True
-        await audit(db, user.id, "register", request, detail="topic_mail")
-    elif cred is not None and not cred.email_verified:
-        # Человек открыл письмо на этот адрес: адрес его.
-        cred.email_verified = True
-        await audit(db, user.id, "email_verified", request, detail="topic_mail")
     try:
-        _row, created = await svc.add_subject(db, user.id, item.code)
-    except svc.TopicMailError as err:
+        user, created_account = await _confirm_claimed(db, request, item)
+    except Exception:
         await db.rollback()
-        raise _err(err.code, err.status)
-    await svc.ensure_watch_mail_on(db, user.id, ip=item.ip, user_agent=item.user_agent)
-    await audit(db, user.id, "topic_mail_on", request, detail=item.code[:120])
-    await db.commit()
+        await svc.release(item.id)
+        raise
     await svc.drop_pending(item.id)
     if created_account:
         await svc.mark_signup(db, item, user)
@@ -194,3 +185,29 @@ async def confirm(body: ConfirmIn, request: Request, db: AsyncSession = Depends(
         })
     return {"ok": True, "status": "subscribed", "title": title, "code": item.code,
             "new_account": created_account, "email": mask_email(item.email)}
+
+
+async def _confirm_claimed(db: AsyncSession, request: Request, item: svc.Pending) -> tuple[User, bool]:
+    """Подтверждение под замком: аккаунт (найденный или новый), адрес подтверждён, слежение, согласие, commit."""
+    from app.api.auth import audit
+
+    user, cred = await svc.user_by_email(db, item.email)
+    created_account = False
+    if user is not None and user.status != "active":
+        raise _err("invalid_link", 400)
+    if user is None:
+        user, created_account = await svc.create_account(db, item)
+        if created_account:
+            await audit(db, user.id, "register", request, detail="topic_mail")
+    elif cred is not None and not cred.email_verified:
+        # Человек открыл письмо на этот адрес: адрес его.
+        cred.email_verified = True
+        await audit(db, user.id, "email_verified", request, detail="topic_mail")
+    try:
+        await svc.add_subject(db, user.id, item.code)
+    except svc.TopicMailError as err:
+        raise _err(err.code, err.status)
+    await svc.ensure_watch_mail_on(db, user.id, ip=item.ip, user_agent=item.user_agent)
+    await audit(db, user.id, "topic_mail_on", request, detail=item.code[:120])
+    await db.commit()
+    return user, created_account
