@@ -27,13 +27,13 @@ def test_year_page_gets_hero_button_clickable_tiles_and_bar_to_the_indicator_car
     tiles = soup.select("a.seo-tile")
     assert len(tiles) == 2 and all(t["href"] == target for t in tiles)
     assert not soup.select("div.seo-tile")
-    assert soup.select_one("aside.seo-bridge-bar a.seo-bridge-go")["href"] == target
+    assert soup.select_one("aside.seo-bridge-bar > a.seo-bridge-in")["href"] == target
 
 
 def test_page_without_indicator_card_leads_to_platform_home_and_keeps_tiles_plain():
     soup = _render("/russia/calendar/2026/05")
     assert soup.select_one(".seo-bridge-hero")["href"] == "/"
-    assert soup.select_one(".seo-bridge-go")["href"] == "/"
+    assert soup.select_one("a.seo-bridge-in")["href"] == "/"
     assert len(soup.select("div.seo-tile")) == 2
 
 
@@ -41,3 +41,16 @@ def test_english_copy_and_single_bar():
     soup = _render("/united-states/indicator/us-weo-ngdpd/2021", locale="en")
     assert "Open the interactive chart" in soup.select_one(".seo-bridge-hero").get_text()
     assert len(soup.select(".seo-bridge-bar")) == 1
+
+
+def test_bridge_bar_is_one_link_without_dead_zones():
+    """Гипотеза Пульса 287: касание по тексту капсулы было мёртвым — ссылкой была только кнопка «Open»."""
+    soup = _render("/united-states/indicator/us-bea-sainc4-30/1933", locale="en")
+    bar = soup.select_one("aside.seo-bridge-bar")
+    links = bar.select("a[href]")
+    assert len(links) == 1 and links[0].get("class") == ["seo-bridge-in"]
+    assert links[0]["href"] == "/united-states/indicator/us-bea-sainc4-30"
+    # Текст и кнопка лежат внутри ссылки, вложенных ссылок нет.
+    assert links[0].select_one(".seo-bridge-text b").get_text() == "Full history and comparison"
+    assert links[0].select_one("span.seo-bridge-go").get_text().startswith("Open")
+    assert not bar.select("div")
