@@ -717,10 +717,11 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,san
 .seo-page tbody tr:last-child td{border-bottom:none}
 .seo-page tbody tr:hover{background:rgba(184,148,47,.05)}
 .seo-page td:last-child,.seo-page th:last-child{text-align:right;font-variant-numeric:tabular-nums}
-.seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04);max-width:100%}
+.seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04);max-width:100%;position:relative}
 .seo-chart img{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:1200/630}
 .seo-chart-link{display:block;text-decoration:none!important;color:inherit}
 .seo-chart-link:hover{opacity:.97}
+.seo-chart-link::after{content:"";position:absolute;inset:0}
 .seo-chart figcaption{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:flex-end;gap:.35rem .75rem;font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06);text-align:right}
 .seo-chart-cap{flex:1 1 12rem;text-align:left}
 .seo-chart-brand{margin-left:auto;flex:0 0 auto;font-size:.75rem;letter-spacing:.02em;color:rgba(26,26,46,.45);white-space:nowrap}
@@ -1596,6 +1597,23 @@ def _responsive_chart_images(body: str) -> str:
     return html
 
 
+_CHART_LINK_TITLE = {"ru": "Открыть интерактивный график", "en": "Open the interactive chart"}
+
+
+def _label_chart_link(img) -> None:
+    """Подсказка у ссылки-картинки графика: куда ведёт нажатие (оба языка).
+
+    Имя ссылки остаётся из alt картинки, title — описание. Вся карточка графика
+    (вместе с подписью) нажимается через `.seo-chart-link::after` в критическом CSS:
+    19.11.2026 подпись под картинкой собирала dead-клики (11 человек за 30 дней).
+    """
+    from app.services.locale import get_locale
+
+    anchor = img.find_parent("a", class_="seo-chart-link")
+    if anchor is not None and not anchor.get("title"):
+        anchor["title"] = _CHART_LINK_TITLE["en" if get_locale() == "en" else "ru"]
+
+
 def _responsive_charts(body: str) -> tuple[str, str]:
     """Build responsive pictures and the first chart preload in one parse."""
     from urllib.parse import urlsplit
@@ -1636,6 +1654,7 @@ def _responsive_charts(body: str) -> tuple[str, str]:
                     picture.insert(position, source)
             img.find_parent("figure")["data-portrait"] = "true"
         img["decoding"] = "async"
+        _label_chart_link(img)
         if i == 0:
             # Без `fetchpriority=high`: картинка не должна опережать CSS и JS (см. `_lcp_preload_from_chart_img`).
             img["loading"] = "eager"
