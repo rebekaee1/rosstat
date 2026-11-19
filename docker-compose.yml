@@ -433,6 +433,11 @@ services:
       RUSTATS_PUBLIC_BOT_TOKEN: ${RUSTATS_PUBLIC_BOT_TOKEN:-}
       RUSTATS_PUBLIC_BOT_LLM_ENABLED: ${RUSTATS_PUBLIC_BOT_LLM_ENABLED:-false}
       RUSTATS_PUBLIC_BOT_LLM_MODEL: ${RUSTATS_PUBLIC_BOT_LLM_MODEL:-anthropic/claude-sonnet-5.5}
+      # Строка «присылать» под числом (совет 19.11.2026): подписка сразу по ?start=site_<тема>, строка и первый экран; всё выкл.
+      RUSTATS_PUBLIC_BOT_SITE_AUTOSUBSCRIBE: ${RUSTATS_PUBLIC_BOT_SITE_AUTOSUBSCRIBE:-false}
+      RUSTATS_ACQ_SITE_LINE_ENABLED: ${RUSTATS_ACQ_SITE_LINE_ENABLED:-false}
+      RUSTATS_ACQ_SITE_LINE_TOPICS: ${RUSTATS_ACQ_SITE_LINE_TOPICS:-inflation,gold,keyrate,deposit,mortgage,usd,eur}
+      RUSTATS_ACQ_SITE_FIRST_SCREEN_ENABLED: ${RUSTATS_ACQ_SITE_FIRST_SCREEN_ENABLED:-false}
       # Telegram-канал (ADR-0035): счётчик, модель-автор, публикация по кнопке владельца; всё выкл. по умолчанию
       RUSTATS_CHANNEL_CHAT_ID: ${RUSTATS_CHANNEL_CHAT_ID:-@forecasteconomy}
       RUSTATS_CHANNEL_STATS_ENABLED: ${RUSTATS_CHANNEL_STATS_ENABLED:-false}
