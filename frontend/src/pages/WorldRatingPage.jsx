@@ -1166,7 +1166,7 @@ export default function WorldRatingPage({ renderActions = null } = {}) {
                                 <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
                               </td>
                               <td className="px-4 py-3">
-                                <Link to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })} className="inline-flex items-center gap-2.5 font-medium text-text-primary transition-colors hover:text-champagne">
+                                <Link to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })} className="z6-row__link inline-flex items-center gap-2.5 font-medium text-text-primary transition-colors hover:text-champagne">
                                   <CountryFlag code={item.country_code} />
                                   {ratingCountryName(item)}
                                 </Link>
