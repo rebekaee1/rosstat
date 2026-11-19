@@ -135,7 +135,7 @@ def test_15min_runner_switches_between_full_and_increment(monkeypatch):
     monkeypatch.setattr(cache_mod, "get_state_redis", state)
     calls = []
 
-    async def fake_run(days=2, changed=None):
+    async def fake_run(days=2, changed=None, wait_for_lock=True):
         calls.append(changed)
         return {"sessions": 1}
 

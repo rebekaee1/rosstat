@@ -53,6 +53,11 @@ SESSION_GAP_MIN = 30  # правило Метрики: разрыв ≥ 30 ми�
 # Окно одного прохода сессионизации (МСК-дни). 15-минутный прогон (2 суток)
 # укладывается в одно окно; ночной 60-дневный — в ~20 окон с ограниченной памятью.
 SESSIONIZE_WINDOW_DAYS = 3
+# Один пересчёт за раз (19.11.2026). Ночной (60 дней) и 15-минутный (2 дня) прогоны пишут одни и те же строки:
+# delete+insert server_sessions окна и left_owner (сессия, начатая до окна и продолженная в нём), delete+insert
+# сводок за дни от начала окна. Каждая их транзакция начинается с транзакционной блокировки Postgres с этим
+# ключом; она снимается на commit/rollback, поэтому соединение держится не дольше одной транзакции шага.
+_ROLLUPS_LOCK_KEY = 0x0A11_5E55
 _SESSION_EVENT_TYPES = ("pageview", "dwell", "click", "move")
 # Портрет устройства (session_start -> behavior_sessions.started_at) пишется на десятки миллисекунд ПОЗЖЕ первого
 # pageview той же вкладки (прод 12.11.2026: медиана 0,04 с, 99 % до 0,8 с). У сессии из одного pageview без
@@ -1230,20 +1235,41 @@ async def sync_metrika_goals(db) -> int:
 # Jobs
 # ---------------------------------------------------------------------------
 
-@asynccontextmanager
-async def _rollup_session(statement_timeout_ms: int | None):
-    """Сессия пула аналитики; с `statement_timeout_ms` — свой предел запроса на первую транзакцию (SET LOCAL).
+class RollupsBusy(Exception):
+    """Другой пересчёт аналитики держит блокировку `_ROLLUPS_LOCK_KEY`; прогон без ожидания уступает."""
 
-    Сессионизация окна и каждая сводка — одна транзакция, поэтому предел действует на весь шаг; соединение
-    возвращается в пул со штатным пределом."""
+
+async def _lock_rollups(db, wait: bool) -> None:
+    """Транзакционная блокировка пересчёта (pg_advisory_xact_lock) первой командой транзакции шага.
+
+    `wait=True` (ночной прогон) — ждать, ожидание ограничено пределом запроса транзакции; 15-минутная
+    транзакция, которую он ждёт, короче минуты. `wait=False` (15-минутный) — pg_try_advisory_xact_lock;
+    занято → `RollupsBusy`: ночной прогон и так пересчитывает те же 2 дня. Не-Postgres (SQLite в тестах) — no-op.
+    """
+    if db.bind.dialect.name != "postgresql":
+        return
+    if wait:
+        await db.execute(text("SELECT pg_advisory_xact_lock(:k)"), {"k": _ROLLUPS_LOCK_KEY})
+    elif not (await db.execute(text("SELECT pg_try_advisory_xact_lock(:k)"), {"k": _ROLLUPS_LOCK_KEY})).scalar():
+        raise RollupsBusy("analytics rollups lock is held by another run")
+
+
+@asynccontextmanager
+async def _rollup_session(statement_timeout_ms: int | None, wait_for_lock: bool = True):
+    """Сессия пула аналитики под блокировкой пересчёта; с `statement_timeout_ms` — свой предел запроса на
+    первую транзакцию (SET LOCAL).
+
+    Сессионизация окна и каждая сводка — одна транзакция, поэтому предел и блокировка действуют на весь шаг;
+    соединение возвращается в пул со штатным пределом и без блокировки."""
     async with analytics_session() as db:
         if statement_timeout_ms:
             await set_local_statement_timeout(db, statement_timeout_ms)
+        await _lock_rollups(db, wait_for_lock)
         yield db
 
 
 async def run_rollups(days: int = 2, changed: dict | None = None,
-                      statement_timeout_ms: int | None = None) -> dict[str, int]:
+                      statement_timeout_ms: int | None = None, wait_for_lock: bool = True) -> dict[str, int]:
     """Общий прогон: сессионизация + все rollup'ы для окна N МСК-дней.
     Окно выравнивается по границе МСК-суток — пересчёт всегда затирает
     целые дни (идемпотентность delete+insert без «полудней» на стыке).
@@ -1251,7 +1277,12 @@ async def run_rollups(days: int = 2, changed: dict | None = None,
     `statement_timeout_ms` (18.11.2026) — предел запроса для транзакций этого прогона вместо общего предела
     пула аналитики (`analytics_db_statement_timeout_ms`, 60 с). Ночной пересчёт 60 дней передаёт
     `analytics_history_statement_timeout_ms`: окно дней бот-фермы 27–30.09.2026 (≈ 60 тыс. сессий в неделю)
-    не укладывалось в 60 с, исключение обрывало сессионизацию следующих окон и все сводки прогона."""
+    не укладывалось в 60 с, исключение обрывало сессионизацию следующих окон и все сводки прогона.
+
+    `wait_for_lock` (19.11.2026) — каждая транзакция прогона берёт `_ROLLUPS_LOCK_KEY`. True — ждать
+    (ночной); False — занято → `RollupsBusy` (15-минутный). 19.11.2026 ночной упал с
+    UniqueViolationError uq_server_session_visitor_start: 15-минутный в ту же минуту переносил ту же
+    left_owner-сессию (02.11 → 18.11), оба удалили и вставили одну строку в своих транзакциях."""
     from app.services.analytics_period import msk_day_start_utc
 
     since_day = msk_day(_utcnow() - timedelta(days=days))
@@ -1265,32 +1296,36 @@ async def run_rollups(days: int = 2, changed: dict | None = None,
     while True:
         next_day = window_day + timedelta(days=SESSIONIZE_WINDOW_DAYS)
         until = msk_day_start_utc(next_day) if next_day <= today else None
-        async with _rollup_session(statement_timeout_ms) as db:
+        async with _rollup_session(statement_timeout_ms, wait_for_lock) as db:
             extra = {"changed": changed} if changed is not None else {}
             n_sessions += await sessionize(db, msk_day_start_utc(window_day), until=until, **extra)
         if until is None:
             break
         window_day = next_day
-    async with _rollup_session(statement_timeout_ms) as db:
+    async with _rollup_session(statement_timeout_ms, wait_for_lock) as db:
         n_traffic = await rollup_daily_traffic(db, since_day)
-    async with _rollup_session(statement_timeout_ms) as db:
+    async with _rollup_session(statement_timeout_ms, wait_for_lock) as db:
         n_goals = await rollup_daily_goals(db, since_day)
     n_dims = 0
     try:
-        async with _rollup_session(statement_timeout_ms) as db:
+        async with _rollup_session(statement_timeout_ms, wait_for_lock) as db:
             n_dims = await rollup_daily_goal_dims(db, since_day)
+    except RollupsBusy:
+        raise
     except Exception:
         # Разрезы для отчётов не должны останавливать основные роллапы.
         logger.exception("daily_goal_dims rollup failed")
-    async with _rollup_session(statement_timeout_ms) as db:
+    async with _rollup_session(statement_timeout_ms, wait_for_lock) as db:
         n_pages = await rollup_daily_pages(db, since_day)
     n_signups = 0
     try:
         from app.services.signup_attribution import ensure_signup_attribution, refill_empty_attribution
 
-        async with _rollup_session(statement_timeout_ms) as db:
+        async with _rollup_session(statement_timeout_ms, wait_for_lock) as db:
             n_signups = await ensure_signup_attribution(db)
             await refill_empty_attribution(db, since=_utcnow() - timedelta(days=3))
+    except RollupsBusy:
+        raise
     except Exception:
         logger.exception("signup attribution failed")
     return {"sessions": n_sessions, "traffic": n_traffic, "goals": n_goals, "goal_dims": n_dims,
@@ -1341,7 +1376,11 @@ async def run_rollups_15min() -> dict:
         except (KeyError, TypeError, ValueError):
             full_at = None
     incremental = bool(prev and full_at and now - full_at < FULL_SESSIONIZE_EVERY and prev.get("marks"))
-    stats = await run_rollups(days=2, changed=prev["marks"] if incremental else None)
+    try:
+        stats = await run_rollups(days=2, changed=prev["marks"] if incremental else None, wait_for_lock=False)
+    except RollupsBusy:
+        # Идёт ночной пересчёт тех же дней. Отметки не сохраняются: следующий прогон возьмёт всё с прежних.
+        return {"mode": "skipped"}
     stats["mode"] = "increment" if incremental else "full"
     if settings.analytics_sessionize_incremental_enabled:
         await _save_marks({"marks": marks_now, "full_at": (full_at if incremental else now).isoformat()})
