@@ -38,6 +38,7 @@ const HINT_MS = 3000;
 const PLAY_STEP_MS = 950;
 // Ближе этого расстояния камеры шар заполняет сцену и превращается в карту: стеклянная сфера, каустика и тень снимаются (класс is-zoomed).
 const ZOOMED_DISTANCE = 2.9;
+const NO_ZOOM_LIMITS = { atMin: false, atMax: false };
 
 function PlanetLink({ href, children, ...props }) {
   const inRouter = useInRouterContext();
@@ -144,6 +145,8 @@ export default function PlanetView({
   const [hintExpired, setHintExpired] = useState(false);
   const [water, setWater] = useState(false);
   const [zoomedView, setZoomedView] = useState(false);
+  // Пределы масштаба текущей сцены (шар или карта): у предела кнопка «+» или «−» выключена, как у отдельной карты мира.
+  const [zoomLimits, setZoomLimits] = useState(NO_ZOOM_LIMITS);
   const [layer, setLayer] = useState('metric');
   const [playing, setPlaying] = useState(false);
   const [shared, setShared] = useState(false);
@@ -307,6 +310,12 @@ export default function PlanetView({
   // Сцена передаёт код страны и, для суши без страницы, её название.
   const handleSceneSelect = useCallback((code, place) => activateCountry(code, false, place), [activateCountry]);
   const handleMapSelect = useCallback((country) => activateCountry(country.code), [activateCountry]);
+  // Суша без страницы на плоской карте: та же карточка «Данных пока нет», что у шара. Без кода: камере карты некуда
+  // наводиться (контур вне каталога), карточка — весь ответ.
+  const handleMapPlace = useCallback((place) => activateCountry(null, false, place?.name ? { name: place.name, code: null } : null), [activateCountry]);
+  const handleZoomLimits = useCallback(({ atMin, atMax }) => {
+    setZoomLimits((previous) => (previous.atMin === atMin && previous.atMax === atMax ? previous : { atMin, atMax }));
+  }, []);
   const handleReady = useCallback(() => setSceneStatus('ready'), []);
   useEffect(() => {
     if (sceneStatus !== 'ready') { setVeilGone(false); return undefined; }
@@ -555,14 +564,14 @@ export default function PlanetView({
   }
   function retryScene() {
     setPlanetScene(() => lazy(() => import('./PlanetScene')));
-    setSceneGeneration((previous) => previous + 1); setSceneStatus('loading');
+    setSceneGeneration((previous) => previous + 1); setSceneStatus('loading'); setZoomLimits(NO_ZOOM_LIMITS);
     setViewKind('globe'); writePlanetViewPreference('globe');
   }
   // Переключатель «Карта | Шар»: выбранная страна остаётся, камера шара начинается заново (с выбранной страны, если она есть).
   function chooseView(kind) {
     // Уже показано то, что просят (кроме случая «шар не вышел, нажали Карта»: тогда убираем сообщение об ошибке).
     if (kind === (isMap ? 'map' : 'globe') && !(kind === 'map' && sceneFailed)) return;
-    setHoverCode(null); setHoverPlace(null); setZoomedView(false); setWater(false);
+    setHoverCode(null); setHoverPlace(null); setZoomedView(false); setWater(false); setZoomLimits(NO_ZOOM_LIMITS);
     commandId.current += 1;
     setCameraCommand(selectedCode ? { id: commandId.current, type: 'focus', countryCode: selectedCode, instant: true } : null);
     if (kind === 'globe') {
@@ -603,8 +612,8 @@ export default function PlanetView({
   // Кнопки масштаба и действия (играть, слои, поделиться): у шара лежат поверх сцены, у карты в одной строке под ней, чтобы не закрывать страны.
   const cameraControls = (
     <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
-      <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={zoomInLabel} data-tip={zoomInLabel}><Plus size={17} aria-hidden="true" /></button>
-      <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={zoomOutLabel} data-tip={zoomOutLabel}><Minus size={17} aria-hidden="true" /></button>
+      <button type="button" onClick={() => commandCamera('zoomIn')} disabled={zoomLimits.atMax} aria-label={zoomInLabel} data-tip={zoomInLabel}><Plus size={17} aria-hidden="true" /></button>
+      <button type="button" onClick={() => commandCamera('zoomOut')} disabled={zoomLimits.atMin} aria-label={zoomOutLabel} data-tip={zoomOutLabel}><Minus size={17} aria-hidden="true" /></button>
       {(!narrowScreen || isMap || zoomedView || water || selectedCountry) && <button type="button" onClick={() => commandCamera('reset')} aria-label={resetLabel} data-tip={resetLabel}><RotateCcw size={15} aria-hidden="true" /></button>}
       {homeLabel && !narrowScreen && <button type="button" className="planet-home-button" onClick={() => commandCamera('focus', homeCountry.code)} aria-label={homeLabel} data-tip={homeLabel}><LocateFixed size={16} aria-hidden="true" /></button>}
     </div>
@@ -666,7 +675,7 @@ export default function PlanetView({
   const mapFallback = <div className="planet-map-plate planet-map-plate--loading"><div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div></div>;
   const worldMapElement = (
     <Suspense fallback={mapFallback}>
-      <WorldMap {...worldMapProps} command={cameraCommand} onHover={touchNavigation ? undefined : handleHover} onSelect={handleMapSelect} />
+      <WorldMap {...worldMapProps} command={cameraCommand} onHover={touchNavigation ? undefined : handleHover} onSelect={handleMapSelect} onSelectPlace={handleMapPlace} onZoomLimits={handleZoomLimits} />
     </Suspense>
   );
   // Шар грузится заметно дольше карты: пока сцена не готова, стоит та же плоская карта (код и атлас уже загружены), приглушённая, с подписью.
@@ -782,7 +791,7 @@ export default function PlanetView({
                 <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
                   valueDigits={digits} onHover={handleHover} onSelect={handleSceneSelect} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
                   interactive touchNavigation={touchNavigation}
-                  autoRotate={!engaged && sceneStatus === 'ready'} startFocus={startFocus} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
+                  autoRotate={!engaged && sceneStatus === 'ready'} startFocus={startFocus} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} onZoomLimits={handleZoomLimits} />
               </Suspense></SceneBoundary>
               <PlanetOrb />
               <div className="planet-caustic" aria-hidden="true" />

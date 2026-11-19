@@ -295,6 +295,31 @@ describe('WorldMap embedded in the planet stage', () => {
     expect(onSelect).toHaveBeenCalledWith(countries[0], null);
   });
 
+  // 19.11.2026 (Пульс, гипотезы 283/314): нажатие на страну без страницы в каталоге получает тот же ответ, что на шаре.
+  it('суша без страницы отвечает на нажатие названием места, а без обработчика остаётся немой', () => {
+    const onSelectPlace = vi.fn();
+    const { container, unmount } = renderMap(embedded({ onSelectPlace }));
+    const places = [...container.querySelectorAll('svg path[data-interactive]')];
+    expect(places.length).toBeGreaterThan(50);
+    places.forEach((node) => fireEvent.click(node));
+    const names = onSelectPlace.mock.calls.map(([place]) => place.name);
+    expect(names).toContain('Франция');
+    expect(names).not.toContain('Германия');
+    expect(onSelectPlace.mock.calls.find(([place]) => place.name === 'Франция')[0].code).toBe('FR');
+    expect(screen.getByRole('button', { name: /Германия/ }).hasAttribute('data-interactive')).toBe(false);
+    unmount();
+    const { container: silent } = renderMap(embedded());
+    expect(silent.querySelector('svg path[data-interactive]')).toBeNull();
+  });
+
+  it('сообщает пределы масштаба: на общем виде «−» упирается, после «+» уже нет', () => {
+    const onZoomLimits = vi.fn();
+    const { rerender } = renderMap(embedded({ onZoomLimits }));
+    expect(onZoomLimits).toHaveBeenLastCalledWith({ atMin: true, atMax: false });
+    rerender(<LocaleProvider>{embedded({ onZoomLimits, command: { id: 1, type: 'zoomIn' } })}</LocaleProvider>);
+    expect(onZoomLimits).toHaveBeenLastCalledWith({ atMin: false, atMax: false });
+  });
+
   it('обводит выбранную страну', () => {
     const { container, rerender } = renderMap(embedded());
     expect(container.querySelector('[data-selected-outline]')).toBeNull();

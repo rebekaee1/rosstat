@@ -28,6 +28,7 @@ import { t as translateStandalone } from '../i18n/messages';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { countryReference } from '../lib/countryReference';
+import { countryCodeForFeature, planetPlaceName } from '../lib/planetGeometry';
 import '../styles/world.css';
 import SourceLink from './SourceLink';
 import Chip from './Chip';
@@ -248,8 +249,13 @@ export default function WorldMap({
   onHover,
   // Команда камеры из PlanetView: { id, type: 'zoomIn' | 'zoomOut' | 'reset' | 'focus', countryCode }.
   command = null,
+  // Встроенный вид: нажатие на сушу без страницы в каталоге ({ name, code }) — PlanetView отвечает карточкой «Данных пока нет», как у шара.
+  onSelectPlace,
+  // Встроенный вид: { atMin, atMax } при каждом изменении масштаба — PlanetView выключает «−» и «+» на пределах, как у отдельной карты.
+  onZoomLimits,
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const [scope, setScope] = useState(defaultScope === 'europe' ? 'europe' : 'world');
   const [hover, setHover] = useState(null);
   const [view, setView] = useState(RESET_VIEW);
@@ -269,6 +275,9 @@ export default function WorldMap({
   );
 
   useEffect(() => { viewRef.current = view; }, [view]);
+  const atMinZoom = view.k <= 1;
+  const atMaxZoom = view.k >= ZOOM_MAX;
+  useEffect(() => { onZoomLimits?.({ atMin: atMinZoom, atMax: atMaxZoom }); }, [onZoomLimits, atMinZoom, atMaxZoom]);
 
   // Сразу 110m (лёгкий), затем 50m лениво — береговая линия читается достойно,
   // без утяжеления первого бандла на 740 КБ. Детальный атлас грузится только
@@ -555,6 +564,13 @@ export default function WorldMap({
     if (panRef.current?.moved) return;
     onSelect?.(country, detailsByCode?.get(country.code) || null);
   }, [detailsByCode, onSelect]);
+  // Суша без страницы: тот же ответ, что у шара (карточка «Данных пока нет» с названием места); после сдвига карты не срабатывает.
+  const selectPlace = useCallback((geometry) => {
+    if (panRef.current?.moved || !geometry) return;
+    const code = countryCodeForFeature(geometry);
+    onSelectPlace?.({ name: planetPlaceName(geometry, locale), code });
+  }, [locale, onSelectPlace]);
+  const placeClickable = embedded && typeof onSelectPlace === 'function';
 
   const { k, tx, ty } = view;
   const hoverPeriod = formatWorldPeriod(hover?.detail?.date, periodFormat) || periodLabel;
@@ -631,8 +647,9 @@ export default function WorldMap({
         pointerEvents="none"
         aria-hidden="true"
       />
-      {shapes.map(({ key, code, d }) => {
+      {shapes.map(({ key, code, d }, index) => {
         const item = describe(code);
+        const placeTarget = !item.active && placeClickable;
         const isHover = Boolean(hover && item.country && hover.country.code === item.country.code);
         return (
           <path
@@ -642,13 +659,14 @@ export default function WorldMap({
             stroke={item.active ? 'rgba(30,38,56,0.4)' : 'rgba(30,38,56,0.14)'}
             strokeWidth={item.active ? 0.9 : 0.45}
             vectorEffect="non-scaling-stroke"
-            className={item.active
+            className={item.active || placeTarget
               ? 'cursor-pointer outline-none focus-visible:outline-none'
               : 'outline-none'}
             style={isHover ? {
               filter: 'brightness(0.94) drop-shadow(0 0 1.2px rgba(44,74,138,0.85))',
             } : undefined}
-            onClick={() => item.active && selectCountry(item.country)}
+            onClick={() => (item.active ? selectCountry(item.country) : placeTarget && selectPlace(features[index]))}
+            data-interactive={placeTarget ? '' : undefined}
             onMouseEnter={() => item.active && enter(item)}
             onMouseLeave={leave}
             onFocus={() => item.active && enter(item)}

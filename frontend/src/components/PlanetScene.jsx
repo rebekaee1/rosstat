@@ -43,6 +43,8 @@ const DETAIL_DISTANCE = 2.7;
 const DEEP_DISTANCE = 2.15;
 // Ближе этого расстояния на шаре подписываются страны, а не только выбранная.
 const LABEL_DISTANCE = 2.9;
+// Допуск сравнения с пределами расстояния: перелёт с плавным замедлением доходит до предела не точно в ноль.
+const LIMIT_EPSILON = 0.01;
 // Самовращение до первого касания: градусов в секунду и кадров в секунду (30: экономим батарею).
 const SPIN_DEGREES_PER_SECOND = 4.5;
 const SPIN_TICK_MS = 33;
@@ -211,7 +213,7 @@ function usePlanetTextures(budget, onError, wantDetail) {
 
 function PlanetControls({
   entries, valuesByCode, cameraCommand, reducedMotion, defaultScope, interactive, touchNavigation, onHover,
-  surfaceReady, onZoomDetail, onZoomDeep, autoRotate, onInteract, onView, onOcean, onZoomState, controlApi, homeFocus,
+  surfaceReady, onZoomDetail, onZoomDeep, autoRotate, onInteract, onView, onOcean, onZoomState, onZoomLimits, controlApi, homeFocus,
 }) {
   const { camera, gl, invalidate, size } = useThree();
   const controlsRef = useRef(null);
@@ -227,10 +229,11 @@ function PlanetControls({
   // Callbacks and data change identity often; the long-lived listeners below read the latest through this ref.
   const live = useRef({});
   live.current = {
-    vectors, onView, onOcean, onZoomState, onInteract, onZoomDetail, onZoomDeep, onHover, fitDistance, maxDistance, aspect,
+    vectors, onView, onOcean, onZoomState, onZoomLimits, onInteract, onZoomDetail, onZoomDeep, onHover, fitDistance, maxDistance, aspect,
   };
   const oceanRef = useRef(null);
   const zoomedRef = useRef(null);
+  const limitsRef = useRef('');
 
   const startFlight = useCallback((target, duration = FLIGHT_SECONDS) => {
     const controls = controlsRef.current;
@@ -293,6 +296,11 @@ function PlanetControls({
       live.current.onView?.({ lon: lonLat?.[0] ?? 0, lat: lonLat?.[1] ?? 0, distance });
       const zoomed = distance < LABEL_DISTANCE;
       if (zoomedRef.current !== zoomed) { zoomedRef.current = zoomed; live.current.onZoomState?.(zoomed); }
+      // Пределы масштаба: кнопки «+» и «−» в PlanetView выключаются, когда камера упёрлась (на касании ближний предел 1,9, у кнопок 1,45 — берём предел OrbitControls).
+      const atMin = distance >= controls.maxDistance - LIMIT_EPSILON;
+      const atMax = distance <= controls.minDistance + LIMIT_EPSILON;
+      const limits = (atMax ? 'in' : '') + (atMin ? 'out' : '');
+      if (limitsRef.current !== limits) { limitsRef.current = limits; live.current.onZoomLimits?.({ atMin, atMax }); }
       const water = !hasVisibleData(live.current.vectors, [camera.position.x, camera.position.y, camera.position.z], oceanReach(distance, camera.fov, live.current.aspect));
       if (oceanRef.current !== water) { oceanRef.current = water; live.current.onOcean?.(water); }
     };
@@ -834,6 +842,10 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
         onCreated={({ gl }) => {
           gl.setClearColor(0x000000, 0);
           gl.domElement.setAttribute('aria-label', t('planet.earth'));
+          // Шар — рабочее управление без кнопки: касание выбирает страну или отвечает «данных пока нет», протяжка вращает,
+          // двойное касание приближает. Без пометки счётчик поведения (behavior.js) записывал каждое касание как клик «в пустоту»
+          // (19.11.2026: 14 человек и 73 таких клика за 30 дней, из них гипотезы Пульса 309 и 318).
+          gl.domElement.setAttribute('data-interactive', '');
         }}
       >
         <Suspense fallback={null}>
