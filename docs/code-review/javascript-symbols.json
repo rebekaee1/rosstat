@@ -236,102 +236,102 @@
     "anonymous_functions": 1
   },
   "frontend/src/App.jsx": {
-    "sha256": "43677a7d7b6e8c5a78b7750098f713d74c379a43be2498c283fbbca3e249cf5f",
+    "sha256": "48ea8ef5258805ff5426d8d7bb642acc74575e24a34a744119e5542036563797",
     "definitions": [
       {
         "name": "ScrollToTop",
-        "line": 110,
-        "end_line": 121,
+        "line": 112,
+        "end_line": 123,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "YandexMetrikaHit",
-        "line": 123,
-        "end_line": 147,
+        "line": 125,
+        "end_line": 149,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorDetailKeyed",
-        "line": 149,
-        "end_line": 152,
+        "line": 151,
+        "end_line": 154,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldCountryRoute",
-        "line": 155,
-        "end_line": 161,
+        "line": 157,
+        "end_line": 163,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldIndicatorRoute",
-        "line": 164,
-        "end_line": 170,
+        "line": 166,
+        "end_line": 172,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RedirectTo",
-        "line": 172,
-        "end_line": 176,
+        "line": 174,
+        "end_line": 178,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NavigateKeepSearch",
-        "line": 179,
-        "end_line": 182,
+        "line": 181,
+        "end_line": 184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalculatorsAlias",
-        "line": 185,
-        "end_line": 188,
+        "line": 187,
+        "end_line": 190,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CountriesToHome",
-        "line": 191,
-        "end_line": 194,
+        "line": 193,
+        "end_line": 196,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ServerNotFoundGate",
-        "line": 204,
-        "end_line": 207,
+        "line": 206,
+        "end_line": 209,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedSpinner",
-        "line": 211,
-        "end_line": 218,
+        "line": 213,
+        "end_line": 220,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedRoutes",
-        "line": 220,
-        "end_line": 236,
+        "line": 222,
+        "end_line": 238,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "renderCabinetActions",
-        "line": 239,
-        "end_line": 239,
+        "line": 241,
+        "end_line": 241,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "renderCompareSave",
-        "line": 240,
-        "end_line": 240,
+        "line": 242,
+        "end_line": 242,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AppRoutes",
-        "line": 242,
-        "end_line": 397,
+        "line": 244,
+        "end_line": 406,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "App",
-        "line": 399,
-        "end_line": 405,
+        "line": 408,
+        "end_line": 414,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -470,10 +470,10 @@
         "names": [
           "default"
         ],
-        "line": 399
+        "line": 408
       }
     ],
-    "anonymous_functions": 68
+    "anonymous_functions": 71
   },
   "frontend/src/SpaRoot.jsx": {
     "sha256": "f06df2619a28073c38ba7021f6070257729d8d8887507defa0c2e655aaed9c40",
@@ -570,6 +570,92 @@
     ],
     "exports": [],
     "anonymous_functions": 11
+  },
+  "frontend/src/components/AfterDownloadOffer.jsx": {
+    "sha256": "d0c8fe253fd071d6d2cc257888bf06920cc2d3a889d2e19eec0a6ca199326d13",
+    "definitions": [
+      {
+        "name": "seen",
+        "line": 22,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "markSeen",
+        "line": 25,
+        "end_line": 31,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "AfterDownloadOffer",
+        "line": 33,
+        "end_line": 52,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "AfterDownloadOffer.onDone",
+        "line": 40,
+        "end_line": 45,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "OfferCard",
+        "line": 54,
+        "end_line": 74,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "lucide-react",
+        "line": 2
+      },
+      {
+        "source": "../i18n",
+        "line": 3
+      },
+      {
+        "source": "../lib/track",
+        "line": 4
+      },
+      {
+        "source": "../lib/format",
+        "line": 5
+      },
+      {
+        "source": "../lib/uiTokens",
+        "line": 6
+      },
+      {
+        "source": "./TopicMailForm",
+        "line": 7
+      },
+      {
+        "source": "../lib/topicMail",
+        "line": 8
+      },
+      {
+        "source": "../lib/useCabinet",
+        "line": 9
+      },
+      {
+        "source": "../styles/acq-mail.css",
+        "line": 10
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 33
+      }
+    ],
+    "anonymous_functions": 4
   },
   "frontend/src/components/ApiInterest.component.test.jsx": {
     "sha256": "4690066622859f96034824b0e2411acd97582ed4bf96d21fbe3189ed446db0c4",
@@ -5959,18 +6045,18 @@
     "anonymous_functions": 0
   },
   "frontend/src/components/GenericIndicatorView.jsx": {
-    "sha256": "01f584e018c7971c7d39a5aa720ad3586d9f85548adbb0a580090cc94202b6c5",
+    "sha256": "b2fedc38596f2497b2c6a20ad47655921dfe92634d01c069676443ff4e67d935",
     "definitions": [
       {
         "name": "IDENTITY",
-        "line": 84,
-        "end_line": 84,
+        "line": 85,
+        "end_line": 85,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "GenericIndicatorView",
-        "line": 86,
-        "end_line": 386,
+        "line": 87,
+        "end_line": 394,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -6092,52 +6178,56 @@
         "line": 29
       },
       {
-        "source": "./BrentLiveNote",
+        "source": "./SubscribeLine",
         "line": 30
       },
       {
-        "source": "../lib/cabinetSubjects",
+        "source": "./BrentLiveNote",
         "line": 31
       },
       {
-        "source": "../lib/deltaTone",
+        "source": "../lib/cabinetSubjects",
         "line": 32
       },
       {
-        "source": "../styles/z4-indicator.css",
+        "source": "../lib/deltaTone",
         "line": 33
       },
       {
-        "source": "../styles/k5-pages.css",
+        "source": "../styles/z4-indicator.css",
         "line": 34
       },
       {
-        "source": "../styles/r3d-card.css",
+        "source": "../styles/k5-pages.css",
         "line": 35
       },
       {
-        "source": "../styles/r6b-card.css",
+        "source": "../styles/r3d-card.css",
         "line": 36
       },
       {
-        "source": "../lib/track",
+        "source": "../styles/r6b-card.css",
         "line": 37
       },
       {
-        "source": "../lib/downloadSubject",
+        "source": "../lib/track",
         "line": 38
       },
       {
-        "source": "../i18n",
+        "source": "../lib/downloadSubject",
         "line": 39
       },
       {
-        "source": "./ApiRetryBanner",
+        "source": "../i18n",
         "line": 40
       },
       {
-        "source": "./LoadingNote",
+        "source": "./ApiRetryBanner",
         "line": 41
+      },
+      {
+        "source": "./LoadingNote",
+        "line": 42
       }
     ],
     "exports": [
@@ -6145,7 +6235,7 @@
         "names": [
           "default"
         ],
-        "line": 86
+        "line": 87
       }
     ],
     "anonymous_functions": 18
@@ -7130,7 +7220,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/IndicatorMethodologyPanel.component.test.jsx": {
-    "sha256": "e100b609625b08839474edf21d139faac1ca8f06bef10871ce65921f23eeb84c",
+    "sha256": "9d4f59ae44bb83c8bbe6b545a4137e4019634cfcf9b7709c9d7b0a57cc6ce5d2",
     "definitions": [
       {
         "name": "renderPanel",
@@ -7162,15 +7252,15 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 5
+    "anonymous_functions": 6
   },
   "frontend/src/components/IndicatorMethodologyPanel.jsx": {
-    "sha256": "944f0dd1907d10fc04c51877ada8ccd3c232214633c3bb1a5595c374fdc26506",
+    "sha256": "f7689ef6960eced04f8394761228fbb97ab1010810967e4c187696b30221d646",
     "definitions": [
       {
         "name": "IndicatorMethodologyPanel",
-        "line": 16,
-        "end_line": 69,
+        "line": 17,
+        "end_line": 81,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -7200,12 +7290,16 @@
         "line": 6
       },
       {
-        "source": "../styles/indicator-russia.css",
+        "source": "../lib/citeLine",
         "line": 7
       },
       {
-        "source": "../styles/x2-indicator.css",
+        "source": "../styles/indicator-russia.css",
         "line": 8
+      },
+      {
+        "source": "../styles/x2-indicator.css",
+        "line": 9
       }
     ],
     "exports": [
@@ -7213,7 +7307,7 @@
         "names": [
           "default"
         ],
-        "line": 16
+        "line": 17
       }
     ],
     "anonymous_functions": 1
@@ -13950,6 +14044,143 @@
     ],
     "anonymous_functions": 0
   },
+  "frontend/src/components/SubscribeLine.component.test.jsx": {
+    "sha256": "9903359360364c61b3c1c41aff59f15c9e399e8d0ec4e66b1507e05ac10c3f0f",
+    "definitions": [
+      {
+        "name": "stubConfig",
+        "line": 12,
+        "end_line": 20,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "stubConfig.json",
+        "line": 16,
+        "end_line": 16,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "text",
+        "line": 22,
+        "end_line": 22,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 3
+      },
+      {
+        "source": "./SubscribeLine",
+        "line": 4
+      },
+      {
+        "source": "../lib/siteAcq",
+        "line": 5
+      },
+      {
+        "source": "../lib/topicMail",
+        "line": 6
+      },
+      {
+        "source": "../lib/track",
+        "line": 7
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 31
+  },
+  "frontend/src/components/SubscribeLine.jsx": {
+    "sha256": "0def385e5d69abf5bb36324c73bcb3f5a20a18c724e79b9d0ebda7f753ef9277",
+    "definitions": [
+      {
+        "name": "dayText",
+        "line": 37,
+        "end_line": 42,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "monthText",
+        "line": 44,
+        "end_line": 49,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "SubscribeLine",
+        "line": 51,
+        "end_line": 160,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 16
+      },
+      {
+        "source": "react-router-dom",
+        "line": 17
+      },
+      {
+        "source": "lucide-react",
+        "line": 18
+      },
+      {
+        "source": "../lib/hooks",
+        "line": 19
+      },
+      {
+        "source": "../lib/format",
+        "line": 20
+      },
+      {
+        "source": "../lib/periodPhrase",
+        "line": 21
+      },
+      {
+        "source": "../lib/siteAcq",
+        "line": 22
+      },
+      {
+        "source": "../lib/track",
+        "line": 31
+      },
+      {
+        "source": "./TopicMailForm",
+        "line": 32
+      },
+      {
+        "source": "../lib/topicMail",
+        "line": 33
+      },
+      {
+        "source": "../i18n",
+        "line": 34
+      },
+      {
+        "source": "../styles/acq-line.css",
+        "line": 35
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 51
+      }
+    ],
+    "anonymous_functions": 5
+  },
   "frontend/src/components/TelemetryCard.jsx": {
     "sha256": "b6cb551923b5e03fb3bd146ea48f0f65d0de240b89ae253771bba2b865a09cc1",
     "definitions": [
@@ -13995,6 +14226,173 @@
       }
     ],
     "anonymous_functions": 0
+  },
+  "frontend/src/components/TopicMailForm.component.test.jsx": {
+    "sha256": "3ce38f3972c43fc8086e5d310f84f0247e52e290105a199c42bda96d5918fcf2",
+    "definitions": [
+      {
+        "name": "get",
+        "line": 26,
+        "end_line": 26,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useT",
+        "line": 31,
+        "end_line": 31,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "auth",
+        "line": 33,
+        "end_line": 33,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "at",
+        "line": 35,
+        "end_line": 41,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "fire",
+        "line": 89,
+        "end_line": 91,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "vitest",
+        "line": 3
+      },
+      {
+        "source": "react-router-dom",
+        "line": 4
+      },
+      {
+        "source": "./TopicMailForm",
+        "line": 5
+      },
+      {
+        "source": "../lib/topicMail",
+        "line": 6
+      },
+      {
+        "source": "./AfterDownloadOffer",
+        "line": 7
+      },
+      {
+        "source": "../pages/AccountMail",
+        "line": 8
+      },
+      {
+        "source": "../context/authContext",
+        "line": 9
+      },
+      {
+        "source": "../lib/api",
+        "line": 10
+      },
+      {
+        "source": "../lib/track",
+        "line": 13
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 32
+  },
+  "frontend/src/components/TopicMailForm.jsx": {
+    "sha256": "e8384ff5a50bcd02ba286bc853762a1a1a11a0cfa90cb54bb3f1bb5cfaec73b5",
+    "definitions": [
+      {
+        "name": "useAuthSafe",
+        "line": 30,
+        "end_line": 32,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "pagePath",
+        "line": 34,
+        "end_line": 36,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "TopicMailForm",
+        "line": 38,
+        "end_line": 129,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "TopicMailForm.submit",
+        "line": 51,
+        "end_line": 80,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "react-router-dom",
+        "line": 2
+      },
+      {
+        "source": "lucide-react",
+        "line": 3
+      },
+      {
+        "source": "../i18n",
+        "line": 4
+      },
+      {
+        "source": "../context/authContext",
+        "line": 5
+      },
+      {
+        "source": "../lib/api",
+        "line": 6
+      },
+      {
+        "source": "../lib/topicMail",
+        "line": 7
+      },
+      {
+        "source": "../lib/apiErrorMessage",
+        "line": 8
+      },
+      {
+        "source": "../lib/track",
+        "line": 9
+      },
+      {
+        "source": "../lib/format",
+        "line": 10
+      },
+      {
+        "source": "./Button",
+        "line": 11
+      },
+      {
+        "source": "../styles/acq-mail.css",
+        "line": 12
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 38
+      }
+    ],
+    "anonymous_functions": 2
   },
   "frontend/src/components/UnemploymentIndicatorControls.jsx": {
     "sha256": "cb5f15eeac13cacf3a0530dbc2a9cc2e882cee6d795df98ae5643437de3a2021",
@@ -24719,7 +25117,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "ddbf474d9a8b5bf8bf5ea298c4e49769c4e8fe535951e13f3004242e6d8ba255",
+    "sha256": "3c011edd2d856b3346a5859acd66043291f070ac4e2b6e1dd94409af9989b8b3",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -24827,7 +25225,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "9860378b02ef563749c105407f3d2c7e3d26de47610fc92c07c118be26268c13",
+    "sha256": "4e86a0b04a42b7520ce0dae11ef9a39e14dd6463711a004c61cdb56bb3ebce24",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -25532,7 +25930,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/lib/api.js": {
-    "sha256": "d39823ae01916236e4d6c0e7aaa4ab3af67638c383a647ec78106da52ef18153",
+    "sha256": "3c5f1cea5ecab459976c0f708aaa268d8fe78ab9f5073208415092ae9a820177",
     "definitions": [
       {
         "name": "hasIdempotencyKey",
@@ -25627,211 +26025,235 @@
       {
         "name": "fetchCalendarUpcoming",
         "line": 179,
-        "end_line": 185,
+        "end_line": 187,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchResearch",
-        "line": 188,
-        "end_line": 189,
+        "line": 190,
+        "end_line": 191,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "researchDownloadHref",
-        "line": 192,
-        "end_line": 192,
+        "line": 194,
+        "end_line": 194,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchCoverage",
-        "line": 194,
-        "end_line": 195,
+        "line": 196,
+        "end_line": 197,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchDashboardSparklines",
-        "line": 197,
-        "end_line": 198,
+        "line": 199,
+        "end_line": 200,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchDemographicsStructure",
-        "line": 200,
-        "end_line": 201,
+        "line": 202,
+        "end_line": 203,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchMe",
-        "line": 204,
-        "end_line": 205,
+        "line": 206,
+        "end_line": 207,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "registerUser",
-        "line": 207,
-        "end_line": 208,
+        "line": 209,
+        "end_line": 210,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "loginUser",
-        "line": 210,
-        "end_line": 211,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "logoutUser",
-        "line": 213,
+        "line": 212,
         "end_line": 213,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "logoutAll",
+        "name": "logoutUser",
         "line": 215,
         "end_line": 215,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "setPassword",
+        "name": "logoutAll",
         "line": 217,
-        "end_line": 218,
+        "end_line": 217,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "setPassword",
+        "line": 219,
+        "end_line": 220,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "unlinkIdentity",
-        "line": 220,
-        "end_line": 221,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "deleteAccount",
-        "line": 223,
+        "line": 222,
         "end_line": 223,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "submitFeedback",
+        "name": "deleteAccount",
         "line": 225,
-        "end_line": 226,
+        "end_line": 225,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "submitFeedback",
+        "line": 227,
+        "end_line": 228,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "submitApiInterest",
-        "line": 232,
-        "end_line": 233,
+        "line": 234,
+        "end_line": 235,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "updateNewsletter",
-        "line": 236,
-        "end_line": 237,
+        "line": 238,
+        "end_line": 239,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "verifyEmail",
-        "line": 240,
-        "end_line": 241,
+        "line": 242,
+        "end_line": 243,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "resendVerifyEmail",
-        "line": 243,
-        "end_line": 244,
+        "line": 245,
+        "end_line": 246,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "requestPasswordReset",
-        "line": 246,
-        "end_line": 247,
+        "line": 248,
+        "end_line": 249,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "resetPassword",
-        "line": 249,
-        "end_line": 250,
+        "line": 251,
+        "end_line": 252,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchUnsubscribeState",
-        "line": 252,
-        "end_line": 253,
+        "line": 254,
+        "end_line": 255,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "unsubscribeByLink",
-        "line": 255,
-        "end_line": 256,
+        "line": 257,
+        "end_line": 258,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "resubscribeByLink",
-        "line": 258,
-        "end_line": 259,
+        "line": 260,
+        "end_line": 261,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "updateProfile",
-        "line": 261,
-        "end_line": 262,
+        "line": 263,
+        "end_line": 264,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchDownloadQuota",
-        "line": 265,
-        "end_line": 266,
+        "line": 267,
+        "end_line": 268,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "absoluteAuthNext",
-        "line": 273,
-        "end_line": 284,
+        "line": 275,
+        "end_line": 286,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "oauthStartUrl",
-        "line": 288,
-        "end_line": 293,
+        "line": 290,
+        "end_line": 295,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchOAuthProviders",
-        "line": 296,
-        "end_line": 297,
+        "line": 298,
+        "end_line": 299,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "defaultExportHistory",
-        "line": 303,
-        "end_line": 310,
+        "line": 305,
+        "end_line": 312,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "withExportHref",
-        "line": 316,
-        "end_line": 322,
+        "line": 318,
+        "end_line": 324,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "postExportBlob",
-        "line": 328,
-        "end_line": 351,
+        "line": 330,
+        "end_line": 353,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "exportTable",
-        "line": 359,
-        "end_line": 362,
+        "line": 361,
+        "end_line": 364,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "exportGrid",
-        "line": 369,
-        "end_line": 372,
+        "line": 371,
+        "end_line": 374,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchAccountExport",
-        "line": 378,
-        "end_line": 378,
+        "line": 380,
+        "end_line": 380,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "fetchTopicMailConfig",
+        "line": 387,
+        "end_line": 388,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "subscribeTopicMail",
+        "line": 390,
+        "end_line": 391,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "fetchTopicMailConfirm",
+        "line": 393,
+        "end_line": 394,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "confirmTopicMail",
+        "line": 396,
+        "end_line": 397,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -25928,196 +26350,220 @@
         "names": [
           "fetchResearch"
         ],
-        "line": 188
+        "line": 190
       },
       {
         "names": [
           "researchDownloadHref"
         ],
-        "line": 192
+        "line": 194
       },
       {
         "names": [
           "fetchCoverage"
         ],
-        "line": 194
+        "line": 196
       },
       {
         "names": [
           "fetchDashboardSparklines"
         ],
-        "line": 197
+        "line": 199
       },
       {
         "names": [
           "fetchDemographicsStructure"
         ],
-        "line": 200
+        "line": 202
       },
       {
         "names": [
           "fetchMe"
         ],
-        "line": 204
+        "line": 206
       },
       {
         "names": [
           "registerUser"
         ],
-        "line": 207
+        "line": 209
       },
       {
         "names": [
           "loginUser"
         ],
-        "line": 210
+        "line": 212
       },
       {
         "names": [
           "logoutUser"
         ],
-        "line": 213
+        "line": 215
       },
       {
         "names": [
           "logoutAll"
         ],
-        "line": 215
+        "line": 217
       },
       {
         "names": [
           "setPassword"
         ],
-        "line": 217
+        "line": 219
       },
       {
         "names": [
           "unlinkIdentity"
         ],
-        "line": 220
+        "line": 222
       },
       {
         "names": [
           "deleteAccount"
         ],
-        "line": 223
+        "line": 225
       },
       {
         "names": [
           "submitFeedback"
         ],
-        "line": 225
+        "line": 227
       },
       {
         "names": [
           "submitApiInterest"
         ],
-        "line": 232
+        "line": 234
       },
       {
         "names": [
           "updateNewsletter"
         ],
-        "line": 236
+        "line": 238
       },
       {
         "names": [
           "verifyEmail"
         ],
-        "line": 240
+        "line": 242
       },
       {
         "names": [
           "resendVerifyEmail"
         ],
-        "line": 243
+        "line": 245
       },
       {
         "names": [
           "requestPasswordReset"
         ],
-        "line": 246
+        "line": 248
       },
       {
         "names": [
           "resetPassword"
         ],
-        "line": 249
+        "line": 251
       },
       {
         "names": [
           "fetchUnsubscribeState"
         ],
-        "line": 252
+        "line": 254
       },
       {
         "names": [
           "unsubscribeByLink"
         ],
-        "line": 255
+        "line": 257
       },
       {
         "names": [
           "resubscribeByLink"
         ],
-        "line": 258
+        "line": 260
       },
       {
         "names": [
           "updateProfile"
         ],
-        "line": 261
+        "line": 263
       },
       {
         "names": [
           "fetchDownloadQuota"
         ],
-        "line": 265
+        "line": 267
       },
       {
         "names": [
           "absoluteAuthNext"
         ],
-        "line": 273
+        "line": 275
       },
       {
         "names": [
           "oauthStartUrl"
         ],
-        "line": 288
+        "line": 290
       },
       {
         "names": [
           "fetchOAuthProviders"
         ],
-        "line": 296
+        "line": 298
       },
       {
         "names": [
           "exportTable"
         ],
-        "line": 359
+        "line": 361
       },
       {
         "names": [
           "exportGrid"
         ],
-        "line": 369
+        "line": 371
       },
       {
         "names": [
           "fetchAccountExport"
         ],
-        "line": 378
+        "line": 380
       },
       {
         "names": [
           "default"
         ],
-        "line": 380
+        "line": 382
+      },
+      {
+        "names": [
+          "fetchTopicMailConfig"
+        ],
+        "line": 387
+      },
+      {
+        "names": [
+          "subscribeTopicMail"
+        ],
+        "line": 390
+      },
+      {
+        "names": [
+          "fetchTopicMailConfirm"
+        ],
+        "line": 393
+      },
+      {
+        "names": [
+          "confirmTopicMail"
+        ],
+        "line": 396
       }
     ],
-    "anonymous_functions": 42
+    "anonymous_functions": 46
   },
   "frontend/src/lib/api.test.js": {
     "sha256": "e44c147b4622217efc3fc2c1d6d9548877028014cb36d7c1b5ee480eddea3328",
@@ -32032,6 +32478,60 @@
     "exports": [],
     "anonymous_functions": 28
   },
+  "frontend/src/lib/citeLine.js": {
+    "sha256": "8c3844f577855204908d222955ed5ed894a8afe90f0601c5bd1f314ea2f5bdbd",
+    "definitions": [
+      {
+        "name": "citeText",
+        "line": 8,
+        "end_line": 18,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "citeUrl",
+        "line": 21,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "./format",
+        "line": 1
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "citeText"
+        ],
+        "line": 8
+      },
+      {
+        "names": [
+          "citeUrl"
+        ],
+        "line": 21
+      }
+    ],
+    "anonymous_functions": 0
+  },
+  "frontend/src/lib/citeLine.test.js": {
+    "sha256": "edb88f5982ca196bcd7187b731ba92dc1e39862551a4cb9837ada203d4d86dec",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./citeLine",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 5
+  },
   "frontend/src/lib/cleanUrl.js": {
     "sha256": "eefccf9769e114079261b8cf55da0678768f892cb68078969f9ea8bfc4e6f355",
     "definitions": [
@@ -36008,7 +36508,7 @@
     "anonymous_functions": 13
   },
   "frontend/src/lib/excel.js": {
-    "sha256": "772b0b1374b433c700e106f997213b3b0d71b3ddceea37b4ee32246cbbbd4708",
+    "sha256": "3fe236c27a4569bebf68c135f9cdd8b84c64dc3b7c35783fa93f9e073eb3370a",
     "definitions": [
       {
         "name": "valueLabel",
@@ -36030,50 +36530,50 @@
       },
       {
         "name": "emitDownloaded",
-        "line": 57,
-        "end_line": 59,
+        "line": 58,
+        "end_line": 65,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "handleLimit",
-        "line": 62,
-        "end_line": 70,
+        "line": 68,
+        "end_line": 76,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "downloadExcelImpl",
-        "line": 72,
-        "end_line": 94,
+        "line": 78,
+        "end_line": 100,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "downloadCSVImpl",
-        "line": 96,
-        "end_line": 117,
+        "line": 102,
+        "end_line": 123,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resumeExportImpl",
-        "line": 120,
-        "end_line": 130,
+        "line": 126,
+        "end_line": 136,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "downloadExcel",
-        "line": 133,
-        "end_line": 133,
+        "line": 139,
+        "end_line": 139,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "downloadCSV",
-        "line": 134,
-        "end_line": 134,
+        "line": 140,
+        "end_line": 140,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "resumeExport",
-        "line": 135,
-        "end_line": 135,
+        "line": 141,
+        "end_line": 141,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -36104,19 +36604,19 @@
         "names": [
           "downloadExcel"
         ],
-        "line": 133
+        "line": 139
       },
       {
         "names": [
           "downloadCSV"
         ],
-        "line": 134
+        "line": 140
       },
       {
         "names": [
           "resumeExport"
         ],
-        "line": 135
+        "line": 141
       }
     ],
     "anonymous_functions": 3
@@ -38326,7 +38826,7 @@
     "anonymous_functions": 29
   },
   "frontend/src/lib/hooks.js": {
-    "sha256": "59373f4065a349eb03d5cece6fbd63f106460ac8cb13842fc0946175fda8d0a1",
+    "sha256": "6dc7186273dd4ab95ef9657ae315f3e319f0543b011e9067ee721e4f5999b27d",
     "definitions": [
       {
         "name": "indicatorsListQueryKey",
@@ -38457,25 +38957,25 @@
       {
         "name": "useCalendarUpcoming",
         "line": 135,
-        "end_line": 142,
+        "end_line": 144,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useCalendarUpcoming.queryFn",
-        "line": 138,
-        "end_line": 138,
+        "line": 139,
+        "end_line": 139,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useDemographicsStructure",
-        "line": 144,
-        "end_line": 151,
+        "line": 146,
+        "end_line": 153,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useDemographicsStructure.queryFn",
-        "line": 147,
-        "end_line": 147,
+        "line": 149,
+        "end_line": 149,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -38570,7 +39070,7 @@
         "names": [
           "useDemographicsStructure"
         ],
-        "line": 144
+        "line": 146
       }
     ],
     "anonymous_functions": 0
@@ -47357,6 +47857,150 @@
     ],
     "anonymous_functions": 0
   },
+  "frontend/src/lib/siteAcq.js": {
+    "sha256": "e983d86155e717388dd17166133929ce241e65b2a71088b685c66ff683c10fef",
+    "definitions": [
+      {
+        "name": "releaseCodeOf",
+        "line": 42,
+        "end_line": 44,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "dayNumber",
+        "line": 51,
+        "end_line": 56,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "isDelayed",
+        "line": 62,
+        "end_line": 71,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "nextPeriodMonth",
+        "line": 74,
+        "end_line": 79,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "lineCopy",
+        "line": 85,
+        "end_line": 101,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "botStartUrl",
+        "line": 103,
+        "end_line": 106,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "loadSiteAcqConfig",
+        "line": 111,
+        "end_line": 135,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "resetSiteAcqForTests",
+        "line": 138,
+        "end_line": 141,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useSiteAcqConfig",
+        "line": 143,
+        "end_line": 151,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 8
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "PAGE_TOPIC"
+        ],
+        "line": 14
+      },
+      {
+        "names": [
+          "FIRST_SCREEN_CODES"
+        ],
+        "line": 29
+      },
+      {
+        "names": [
+          "releaseCodeOf"
+        ],
+        "line": 42
+      },
+      {
+        "names": [
+          "isDelayed"
+        ],
+        "line": 62
+      },
+      {
+        "names": [
+          "nextPeriodMonth"
+        ],
+        "line": 74
+      },
+      {
+        "names": [
+          "lineCopy"
+        ],
+        "line": 85
+      },
+      {
+        "names": [
+          "botStartUrl"
+        ],
+        "line": 103
+      },
+      {
+        "names": [
+          "loadSiteAcqConfig"
+        ],
+        "line": 111
+      },
+      {
+        "names": [
+          "resetSiteAcqForTests"
+        ],
+        "line": 138
+      },
+      {
+        "names": [
+          "useSiteAcqConfig"
+        ],
+        "line": 143
+      }
+    ],
+    "anonymous_functions": 6
+  },
+  "frontend/src/lib/siteAcq.test.js": {
+    "sha256": "3c35c9bd413f65bd810b3c0d558c3ac4ee670b0953135cc899af5538f7c581b4",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./siteAcq",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 14
+  },
   "frontend/src/lib/siteOrigin.js": {
     "sha256": "443b4fb2a1afa4b98998c8e3b34007887f2ee02c78b73c5a5d86cd0a3ac52bba",
     "definitions": [
@@ -48621,6 +49265,54 @@
     ],
     "anonymous_functions": 0
   },
+  "frontend/src/lib/topicMail.js": {
+    "sha256": "fc2f45d9f9412dc920cbadc5e4af876cc79212a8896968a7f62f3a4138166f34",
+    "definitions": [
+      {
+        "name": "loadConfig",
+        "line": 9,
+        "end_line": 14,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "resetTopicMailConfig",
+        "line": 17,
+        "end_line": 17,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useTopicMailEnabled",
+        "line": 19,
+        "end_line": 27,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "./api",
+        "line": 2
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "resetTopicMailConfig"
+        ],
+        "line": 17
+      },
+      {
+        "names": [
+          "useTopicMailEnabled"
+        ],
+        "line": 19
+      }
+    ],
+    "anonymous_functions": 4
+  },
   "frontend/src/lib/track.consent.test.js": {
     "sha256": "465e530936206dad923e6deb9d0c31684f940797f5dc2a4018b7ee3378ba0416",
     "definitions": [
@@ -48663,7 +49355,7 @@
     "anonymous_functions": 14
   },
   "frontend/src/lib/track.js": {
-    "sha256": "60e943b8a779038e33c87172f187153f39f0fdb41bf378aaf132d96156890744",
+    "sha256": "0a2496dce1ffdad7779f8337d8f76626ac36e848b43e3b24180f92d507e8aade",
     "definitions": [
       {
         "name": "sessionId",
@@ -55246,72 +55938,84 @@
     "anonymous_functions": 20
   },
   "frontend/src/pages/AccountMail.jsx": {
-    "sha256": "c6fe3a7c0f7336c2697637bb5f6306c5ddc019489f38503586c1800a7b88a829",
+    "sha256": "13fd9a38aa5d6c9162af0ddfc1ba758e5cb933c63675fecd534863bc49a39a25",
     "definitions": [
       {
         "name": "inputClass",
-        "line": 22,
-        "end_line": 25,
+        "line": 24,
+        "end_line": 27,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Card",
-        "line": 27,
-        "end_line": 37,
+        "line": 29,
+        "end_line": 39,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Note",
-        "line": 39,
-        "end_line": 46,
+        "line": 41,
+        "end_line": 48,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useLinkToken",
-        "line": 52,
-        "end_line": 60,
+        "line": 54,
+        "end_line": 62,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ForgotPassword",
-        "line": 62,
-        "end_line": 109,
+        "line": 64,
+        "end_line": 111,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ForgotPassword.submit",
-        "line": 70,
-        "end_line": 82,
+        "line": 72,
+        "end_line": 84,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ResetPassword",
-        "line": 111,
-        "end_line": 168,
+        "line": 113,
+        "end_line": 170,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ResetPassword.submit",
-        "line": 121,
-        "end_line": 137,
+        "line": 123,
+        "end_line": 139,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "VerifyEmail",
-        "line": 170,
-        "end_line": 194,
+        "line": 172,
+        "end_line": 196,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "TopicConfirm",
+        "line": 202,
+        "end_line": 267,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "TopicConfirm.confirm",
+        "line": 220,
+        "end_line": 234,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "Unsubscribe",
-        "line": 196,
-        "end_line": 247,
+        "line": 269,
+        "end_line": 320,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Unsubscribe.toggle",
-        "line": 212,
-        "end_line": 222,
+        "line": 285,
+        "end_line": 295,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -55337,28 +56041,36 @@
         "line": 11
       },
       {
-        "source": "../lib/apiErrorMessage",
+        "source": "../lib/track",
         "line": 15
       },
       {
-        "source": "../components/PasswordField",
+        "source": "../lib/apiErrorMessage",
         "line": 16
       },
       {
-        "source": "../components/Button",
+        "source": "../components/PasswordField",
         "line": 17
       },
       {
-        "source": "../lib/format",
+        "source": "../components/Button",
         "line": 18
       },
       {
-        "source": "../styles/w5-pages.css",
+        "source": "../lib/format",
         "line": 19
       },
       {
-        "source": "../styles/k8-tools.css",
+        "source": "../styles/w5-pages.css",
         "line": 20
+      },
+      {
+        "source": "../styles/k8-tools.css",
+        "line": 21
+      },
+      {
+        "source": "../styles/acq-mail.css",
+        "line": 22
       }
     ],
     "exports": [
@@ -55366,34 +56078,40 @@
         "names": [
           "ForgotPassword"
         ],
-        "line": 62
+        "line": 64
       },
       {
         "names": [
           "ResetPassword"
         ],
-        "line": 111
+        "line": 113
       },
       {
         "names": [
           "VerifyEmail"
         ],
-        "line": 170
+        "line": 172
+      },
+      {
+        "names": [
+          "TopicConfirm"
+        ],
+        "line": 202
       },
       {
         "names": [
           "Unsubscribe"
         ],
-        "line": 196
+        "line": 269
       },
       {
         "names": [
           "default"
         ],
-        "line": 249
+        "line": 322
       }
     ],
-    "anonymous_functions": 10
+    "anonymous_functions": 13
   },
   "frontend/src/pages/AdminBI.component.test.jsx": {
     "sha256": "ea099e8a28fa99ee20b50f6bfd43be9f62c439a731914bb7ea1f95d49bd81664",
@@ -59418,24 +60136,24 @@
     "anonymous_functions": 4
   },
   "frontend/src/pages/IndicatorDetail.jsx": {
-    "sha256": "1aedc7fe9a63b24da4a445ff9659e3c46571c82e7ab6b2030d7c783045f60bef",
+    "sha256": "c8e3ccfba15e63dfef0a3f690475efc0fcdc4345e591f6ef580c968d22a07ca1",
     "definitions": [
       {
         "name": "readSavedViewMode",
-        "line": 87,
-        "end_line": 94,
+        "line": 88,
+        "end_line": 95,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "writeSavedViewMode",
-        "line": 95,
-        "end_line": 102,
+        "line": 96,
+        "end_line": 103,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorDetail",
-        "line": 110,
-        "end_line": 888,
+        "line": 111,
+        "end_line": 896,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -59489,172 +60207,176 @@
         "line": 14
       },
       {
-        "source": "../lib/cabinetSubjects",
+        "source": "../components/SubscribeLine",
         "line": 15
       },
       {
-        "source": "../components/VariantGroupPicker",
+        "source": "../lib/cabinetSubjects",
         "line": 16
       },
       {
-        "source": "../components/CpiIndicatorControls",
+        "source": "../components/VariantGroupPicker",
         "line": 17
       },
       {
-        "source": "../components/HousingIndicatorControls",
+        "source": "../components/CpiIndicatorControls",
         "line": 18
       },
       {
-        "source": "../components/PpiIndicatorControls",
+        "source": "../components/HousingIndicatorControls",
         "line": 19
       },
       {
-        "source": "../components/CbrTermSliceRateIndicatorControls",
+        "source": "../components/PpiIndicatorControls",
         "line": 20
       },
       {
-        "source": "../components/UnemploymentIndicatorControls",
+        "source": "../components/CbrTermSliceRateIndicatorControls",
         "line": 21
       },
       {
-        "source": "../components/ViewModePicker",
+        "source": "../components/UnemploymentIndicatorControls",
         "line": 22
       },
       {
-        "source": "../components/ViewModesPanel",
+        "source": "../components/ViewModePicker",
         "line": 23
       },
       {
-        "source": "../components/IndicatorTelemetryGrid",
+        "source": "../components/ViewModesPanel",
         "line": 24
       },
       {
-        "source": "../components/IndicatorChartSection",
+        "source": "../components/IndicatorTelemetryGrid",
         "line": 25
       },
       {
-        "source": "../components/IndicatorMethodologyPanel",
+        "source": "../components/IndicatorChartSection",
         "line": 26
       },
       {
-        "source": "../components/IndicatorForecastSection",
+        "source": "../components/IndicatorMethodologyPanel",
         "line": 27
       },
       {
-        "source": "../components/IndicatorDataTableSection",
+        "source": "../components/IndicatorForecastSection",
         "line": 28
       },
       {
-        "source": "../components/IndicatorSeoBlocks",
+        "source": "../components/IndicatorDataTableSection",
         "line": 29
       },
       {
-        "source": "../components/RegionCrossLink",
+        "source": "../components/IndicatorSeoBlocks",
         "line": 30
       },
       {
-        "source": "../components/RelatedIndicators",
+        "source": "../components/RegionCrossLink",
         "line": 31
       },
       {
-        "source": "../lib/indicatorVariants",
+        "source": "../components/RelatedIndicators",
         "line": 32
       },
       {
-        "source": "../lib/chartSeriesForViewMode",
+        "source": "../lib/indicatorVariants",
         "line": 33
       },
       {
-        "source": "../lib/indicatorSummary",
+        "source": "../lib/chartSeriesForViewMode",
         "line": 34
       },
       {
-        "source": "../lib/deltaTone",
+        "source": "../lib/indicatorSummary",
         "line": 35
       },
       {
-        "source": "../lib/format",
+        "source": "../lib/deltaTone",
         "line": 36
       },
       {
-        "source": "../lib/useIndicatorViewModeData",
+        "source": "../lib/format",
         "line": 37
       },
       {
-        "source": "../lib/viewModeFamilies",
+        "source": "../lib/useIndicatorViewModeData",
         "line": 38
       },
       {
+        "source": "../lib/viewModeFamilies",
+        "line": 39
+      },
+      {
         "source": "../lib/viewModeEngine",
-        "line": 45
+        "line": 46
       },
       {
         "source": "../components/GenericIndicatorView",
-        "line": 50
-      },
-      {
-        "source": "../i18n",
         "line": 51
       },
       {
-        "source": "../i18n/viewModeLabels",
+        "source": "../i18n",
         "line": 52
       },
       {
-        "source": "../i18n/resolveViewModeCopy",
+        "source": "../i18n/viewModeLabels",
         "line": 53
       },
       {
-        "source": "../lib/cpiViewModeResolve",
+        "source": "../i18n/resolveViewModeCopy",
         "line": 54
       },
       {
-        "source": "../lib/housingViewModeResolve",
+        "source": "../lib/cpiViewModeResolve",
         "line": 55
       },
       {
-        "source": "../lib/ppiViewModeResolve",
+        "source": "../lib/housingViewModeResolve",
         "line": 56
       },
       {
-        "source": "../lib/cbrTermSliceRateResolve",
+        "source": "../lib/ppiViewModeResolve",
         "line": 57
       },
       {
-        "source": "../lib/unemploymentViewModeResolve",
+        "source": "../lib/cbrTermSliceRateResolve",
         "line": 58
       },
       {
-        "source": "../lib/excel",
-        "line": 65
+        "source": "../lib/unemploymentViewModeResolve",
+        "line": 59
       },
       {
-        "source": "../lib/track",
+        "source": "../lib/excel",
         "line": 66
       },
       {
-        "source": "../lib/downloadSubject",
+        "source": "../lib/track",
         "line": 67
       },
       {
-        "source": "../lib/useScrollDepth",
+        "source": "../lib/downloadSubject",
         "line": 68
       },
       {
-        "source": "../lib/categories",
+        "source": "../lib/useScrollDepth",
         "line": 69
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/categories",
         "line": 70
       },
       {
+        "source": "../lib/sitePaths",
+        "line": 71
+      },
+      {
         "source": "../styles/z4-indicator.css",
-        "line": 73
+        "line": 74
       },
       {
         "source": "../styles/k5-pages.css",
-        "line": 74
+        "line": 75
       }
     ],
     "exports": [
@@ -59662,7 +60384,7 @@
         "names": [
           "default"
         ],
-        "line": 110
+        "line": 111
       }
     ],
     "anonymous_functions": 31
