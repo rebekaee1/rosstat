@@ -948,6 +948,9 @@ def _extra_core(snap: dict[str, Any]) -> dict[str, Any]:
     fresh = snap.get("freshness")
     if isinstance(fresh, dict) and "error" not in fresh:
         out["stale_series"] = (fresh.get("levels") or {}).get("stale", 0)
+    from app.services.pulse_acquisition import memory_core as acquisition_memory
+
+    out.update(acquisition_memory(snap.get("acquisition_week")))
     return out
 
 

@@ -3501,7 +3501,7 @@ Backend часть готова: 1208 событий, 46/76 source codes, `bad_p
 - **Годовые landing-страницы** `/indicator/{code}/{year}` (`render_indicator_year_html`): чистый SSR без React-bundle (`include_app=False`), data-driven итоги года + таблица + навигация по годам; в sitemap listed-индикаторы с ≥ 2 точками за год (priority 0.4). Nginx-regex в кавычках (`{2}` иначе ломает парсер конфига).
 - **RSS** `/feed.xml` + `<link rel="alternate">` во всех SSR-документах.
 - **ETag/304 на SSR** (`seo_pages.py`) + методы GET+HEAD (роботы шлют HEAD — был 405).
-- **Dataset JSON-LD**: `distribution` (DataDownload → `/api/v1/indicators/{code}/data`), `isAccessibleForFree`, `license`.
+- **Dataset JSON-LD**: `distribution` (DataDownload → `/api/v1/indicators/{code}/data`), `isAccessibleForFree`, `license`. *(19.11.2026: `distribution` убран — ADR-0003, п. 9, обновление.)*
 - **Autolink** терминов в seo_blocks (curated `AUTOLINK_TERMS` в `seo_renderer.py`), self-ссылки пропускаются.
 - **Code-split**: `xlsx` (~430 КБ) из статического импорта `lib/excel.js` → динамический `await import('xlsx')` при экспорте; чанк IndicatorDetail похудел на ~60%.
 

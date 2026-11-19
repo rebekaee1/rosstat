@@ -70,5 +70,17 @@ it('shows a source badge without a misleading link when no source URL is known',
     indicator: { code: 'some-series', name: 'X', source: 'Unknown agency' },
   });
   expect(screen.queryByRole('link', { name: /источник|source/i })).toBeNull();
-  expect(screen.getByText(/источник|source/i)).toBeTruthy();
+  expect(screen.getByText(/^(источник|source):/i)).toBeTruthy();
+});
+
+it('shows a quiet «how to cite» line with name, source, date and page address (council 19.11.2026)', () => {
+  renderPanel({
+    indicator: { code: 'fuel-diesel', name: 'Дизельное топливо', source: 'Росстат', current_date: '2026-11-09' },
+  });
+  const line = document.querySelector('[data-block="cite"]');
+  expect(line).toBeTruthy();
+  expect(line.textContent).toMatch(/^(Как цитировать|How to cite):/);
+  expect(line.textContent).toContain('Forecast Economy. Дизельное топливо');
+  expect(line.textContent).toContain(`${window.location.origin}${window.location.pathname}`);
+  expect(line.textContent).not.toContain('?');
 });

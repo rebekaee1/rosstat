@@ -151,6 +151,7 @@ Backend в `seo_renderer.get_app_assets()` ходит на
 7. **Sitemap**: `lastmod` = дата последней точки данных, priority 0.8 listed / 0.5 derived-sibling / 0.4 годовые.
 8. **Autolink в seo_blocks** (`_autolink`, curated `AUTOLINK_TERMS`): первое вхождение термина (ИПЦ, RUONIA, ключевая ставка, …) — ссылка на индикатор; self-ссылки пропускаются. SSR-only.
 9. **Dataset JSON-LD**: `distribution` (DataDownload → API), `isAccessibleForFree`, `license`, `dateModified` — кандидат в Google Dataset Search.
+   *Обновление 19.11.2026 (совет по привлечению, раздел 7.1):* `distribution` убран с карточки показателя. `/api/` закрыт в `robots.txt` и отвечает роботам 403, файл людям выдаётся после входа: ссылка обещала роботу то, чего нет. Открытый файл только для роботов не делаем — робот и человек видят одно. Вместо этого на карточке и годовой странице видимая строка «Как цитировать» (`seo_cite.py`, `frontend/src/lib/citeLine.js`): название, источник данных, дата значения, адрес страницы.
 10. **Meta description с актуальным значением** (`_enrich_description`) — CTR-сниппеты «Актуальное значение — N на дату».
 
 **Инвариант для новых индикаторов:** вся SEO-автоматика (sitemap, related, годовые страницы, OG-превью, RSS, IndexNow) подтягивает новый индикатор сама — из БД. Руками ничего добавлять не нужно; обязательны только осмысленные `seo_keywords` (см. чеклист «новый индикатор» в `AGENTS.md`).
