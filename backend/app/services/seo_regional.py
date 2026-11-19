@@ -1436,19 +1436,29 @@ _MONTHLY_RU = {
 }
 
 
-def _mt(key: str, *, social: bool = False, **kwargs) -> str:
+def _mt(key: str, *, social: bool = False, sets: bool = False, **kwargs) -> str:
     # social — зарплата, пенсия, рождаемость (ЕМИСС, 19.11.2026): часть ценовых фраз («средние потребительские цены»,
     # «среднероссийская цена») к ним не подходит; свои тексты на обоих языках — в app.data.emiss_regional_social.
-    tpl = _social_monthly_text(key) if social else None
+    # sets — помесячные наборы ЕМИСС зон E и F (app.data.emiss_regional_sets): те же тексты, свой источник.
+    tpl = _social_monthly_text(key, sets=sets) if (social or sets) else None
     tpl = tpl or regional_template(f"region_monthly.{key}") or _MONTHLY_RU[key]
     return tpl.format(**kwargs) if kwargs else tpl
 
 
-def _social_monthly_text(key: str) -> str | None:
+def _social_monthly_text(key: str, *, sets: bool = False) -> str | None:
     from app.data.emiss_regional_social import MONTHLY_TEXT_EN, MONTHLY_TEXT_RU
     from app.services.locale import get_locale
 
-    return (MONTHLY_TEXT_EN if get_locale() == "en" else MONTHLY_TEXT_RU).get(key)
+    en = get_locale() == "en"
+    if sets:
+        # Помесячные наборы ЕМИСС (сельхозцены, жильё, промышленность, услуги, турпоездки; 19.11.2026, зона F):
+        # тексты «не потребительской цены» те же, источник — без оговорки про Соцфонд.
+        from app.data.emiss_regional_sets import MONTHLY_TEXT_EN as SETS_EN, MONTHLY_TEXT_RU as SETS_RU
+
+        own = (SETS_EN if en else SETS_RU).get(key)
+        if own:
+            return own
+    return (MONTHLY_TEXT_EN if en else MONTHLY_TEXT_RU).get(key)
 
 
 async def _render_region_indicator_monthly(
@@ -1474,9 +1484,10 @@ async def _render_region_indicator_monthly(
     страницы называет последнюю недельную цену с датой, таблица по неделям отвечает на «цену на дату», вопрос
     «на начало года» — в FAQ. Отдельной страницы на дату нет.
     """
+    from app.data.emiss_regional_sets import SERIES_BY_CODE as EMISS_SETS
     from app.data.emiss_regional_social import is_social_code
 
-    mt = partial(_mt, social=is_social_code(code))
+    mt = partial(_mt, social=is_social_code(code), sets=code in EMISS_SETS)
     series = [(int(m), float(v)) for m, v in rows]
     first_period, first_value = series[0]
     last_period, last_value = series[-1]

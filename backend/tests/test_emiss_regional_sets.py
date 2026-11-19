@@ -180,7 +180,7 @@ def test_run_writes_through_injected_transport(monkeypatch):
 def test_catalogue_rows_are_monthly_unique_and_translated():
     rows = sets.artifact_rows()
     codes = [r["code"] for r in rows]
-    assert len(codes) == len(set(codes)) == 29
+    assert len(codes) == len(set(codes)) == 29 + 13  # + платные услуги 57788 и турпоездки 62900 (зона F)
     existing = json.loads((Path(__file__).parents[1] / "app/data/regional/indicators.json").read_text())
     assert not set(codes) & {r["code"] for r in existing}
     assert not {r["table_code"] for r in rows} & {r["table_code"] for r in existing}

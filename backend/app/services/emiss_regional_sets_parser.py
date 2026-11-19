@@ -20,11 +20,13 @@ from __future__ import annotations
 
 import asyncio
 import html
+import json
 import logging
 import re
 import time
 from datetime import date
 from math import isfinite
+from pathlib import Path
 from typing import Callable, Sequence
 
 from sqlalchemy import func, select
@@ -48,6 +50,7 @@ _RUSSIA_LEGACY_NAME = "Российская Федерация"
 _FALLBACK_TERRITORIES = {"1856621": "krasnodarskiy-kray"}
 _FALLBACK_NAMES = {"краснодарский край (с учетом фт «сириус»)": "krasnodarskiy-kray"}
 _SPACES = re.compile(r"\s+")
+_SET_TERRITORIES_PATH = Path(__file__).resolve().parents[1] / "data" / "regional" / "emiss_3301_territories.json"
 
 
 def _norm(text: str) -> str:
@@ -61,17 +64,27 @@ def _month(key: str) -> int | None:
     return MONTH_OIDS.get(key[3:].split("_", 1)[0])
 
 
+def set_territory_ids(rset: RegionalSet, default: Sequence[str]) -> list[str]:
+    """Территории запроса: общий справочник ОКАТО или свой список набора (62900 — измерение 3301)."""
+    if rset.territories_key is None:
+        return list(default)
+    return json.loads(_SET_TERRITORIES_PATH.read_text(encoding="utf-8"))[rset.territories_key]
+
+
 def build_params(rset: RegionalSet, year: int, territory_ids: Sequence[str]) -> list[tuple[str, str]]:
+    dim = rset.territory_dim
+    territory_ids = set_territory_ids(rset, territory_ids)
     params: list[tuple[str, str]] = [("lineObjectIds", rset.series_dim)]
-    params += [("lineObjectIds", dim) for dim in rset.extra_lines]
-    params += [("lineObjectIds", TERRITORY_DIM), ("columnObjectIds", "33560")]
+    params += [("lineObjectIds", d) for d in rset.extra_lines]
+    params += [("lineObjectIds", dim), ("columnObjectIds", "33560")]
     filters = [f"0_{rset.dataset}", f"3_{year}", *rset.filters]
     filters += [f"33560_{oid}" for oid in MONTH_OIDS]
     filters += [f"{rset.series_dim}_{oid}" for s in rset.series for oid in s.oids]
-    filters += [f"{TERRITORY_DIM}_{oid}" for oid in territory_ids]
-    filters += [f"{TERRITORY_DIM}_{oid}" for oid in _FALLBACK_TERRITORIES if oid not in territory_ids]
-    if _RUSSIA_LEGACY not in territory_ids:
-        filters.append(f"{TERRITORY_DIM}_{_RUSSIA_LEGACY}")
+    filters += [f"{dim}_{oid}" for oid in territory_ids]
+    if dim == TERRITORY_DIM:
+        filters += [f"{dim}_{oid}" for oid in _FALLBACK_TERRITORIES if oid not in territory_ids]
+        if _RUSSIA_LEGACY not in territory_ids:
+            filters.append(f"{dim}_{_RUSSIA_LEGACY}")
     params += [("selectedFilterIds", value) for value in filters]
     return params
 
@@ -90,8 +103,8 @@ def parse_year(
     rejected = 0
     for row in rows:
         code = by_label.get(_norm(row.get(f"dim{rset.series_dim}")))
-        territory = str(row.get(f"dim{TERRITORY_DIM}") or "").strip()
-        slug = dimnames.get(territory)
+        territory = str(row.get(f"dim{rset.territory_dim}") or "").strip()
+        slug = dimnames.get(territory) or rset.aliases.get(territory)
         spare = slug is None and (slug := _FALLBACK_NAMES.get(_norm(territory))) is not None
         if code is None or slug is None:
             continue
@@ -106,7 +119,8 @@ def parse_year(
                 continue
             if value == 0 and rset.min_value > 0:
                 continue  # цена или индекс «0» — продаж за месяц не было, это пропуск, а не значение
-            value *= rset.scale
+            if rset.scale != 1.0:
+                value = round(value * rset.scale, 6)  # тыс. руб. → млн руб.: без хвоста 49159.700000000004
             if not rset.min_value <= value <= rset.max_value:
                 rejected += 1
                 continue
@@ -235,7 +249,7 @@ async def emiss_regional_sets_job() -> dict[str, dict[str, int]]:
         try:
             if not await alert_muted("emiss_regional_sets:failed", _ALERT_MUTE_S):
                 await send_telegram(
-                    "🔴 <b>Региональные ряды ЕМИСС (сельхозцены, жильё, промышленность, грузоперевозки) не обновились</b>\n"
+                    "🔴 <b>Региональные ряды ЕМИСС (сельхозцены, жильё, промышленность, грузоперевозки, платные услуги, турпоездки) не обновились</b>\n"
                     + escape("; ".join(failures)),
                     kind="etl_alert",
                 )
