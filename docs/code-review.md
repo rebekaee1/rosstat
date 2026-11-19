@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `13c4ee8df8a8a41a1be79d6bcecd24e13306ca5c`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `b93f84c2699cbd54983ea5abdd0886dab732cc8f`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2670 |
-| Код, шаблоны и стили | 2179 |
-| Актуальные рецензии без пропусков guard | 2670 |
-| Именованные определения Python/JS: с аннотацией / всего | 18073 / 18073 |
+| Файлы в явно определённом scope | 2676 |
+| Код, шаблоны и стили | 2184 |
+| Актуальные рецензии без пропусков guard | 2676 |
+| Именованные определения Python/JS: с аннотацией / всего | 18141 / 18141 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -121,6 +121,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/alembic/versions/20261118_region_weekly.py](../backend/alembic/versions/20261118_region_weekly.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/20261118_search_index.py](../backend/alembic/versions/20261118_search_index.py) | reviewed | 3/3 | актуально |
 | [backend/alembic/versions/20261118_session_is_human.py](../backend/alembic/versions/20261118_session_is_human.py) | reviewed | 2/2 | актуально |
+| [backend/alembic/versions/20261119_points_autovacuum.py](../backend/alembic/versions/20261119_points_autovacuum.py) | reviewed | 3/3 | актуально |
+| [backend/alembic/versions/20261119_world_latest_points.py](../backend/alembic/versions/20261119_world_latest_points.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/8524e35ba1ee_init_schema.py](../backend/alembic/versions/8524e35ba1ee_init_schema.py) | reviewed | 2/2 | актуально |
 | [backend/app/__init__.py](../backend/app/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/__init__.py](../backend/app/api/__init__.py) | reviewed | 0/0 | актуально |
@@ -152,7 +154,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/api/sitemap.py](../backend/app/api/sitemap.py) | reviewed | 59/59 | актуально |
 | [backend/app/api/system.py](../backend/app/api/system.py) | reviewed | 7/7 | актуально |
 | [backend/app/api/ticker.py](../backend/app/api/ticker.py) | reviewed | 5/5 | актуально |
-| [backend/app/api/world.py](../backend/app/api/world.py) | reviewed | 65/65 | актуально |
+| [backend/app/api/world.py](../backend/app/api/world.py) | reviewed | 66/66 | актуально |
 | [backend/app/api/world_subnational.py](../backend/app/api/world_subnational.py) | reviewed | 19/19 | актуально |
 | [backend/app/assets/fonts/GolosText-OFL.txt](../backend/app/assets/fonts/GolosText-OFL.txt) | reviewed | 0/0 | актуально |
 | [backend/app/assets/fonts/GolosText-Variable.ttf](../backend/app/assets/fonts/GolosText-Variable.ttf) | asset_metadata_reviewed | 0/0 | актуально |
@@ -257,7 +259,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/world_superseded.py](../backend/app/data/world_superseded.py) | reviewed | 7/7 | актуально |
 | [backend/app/database.py](../backend/app/database.py) | reviewed | 6/6 | актуально |
 | [backend/app/main.py](../backend/app/main.py) | reviewed | 46/46 | актуально |
-| [backend/app/models.py](../backend/app/models.py) | reviewed | 104/104 | актуально |
+| [backend/app/models.py](../backend/app/models.py) | reviewed | 106/106 | актуально |
 | [backend/app/schemas.py](../backend/app/schemas.py) | reviewed | 14/14 | актуально |
 | [backend/app/security/__init__.py](../backend/app/security/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/security/auth.py](../backend/app/security/auth.py) | reviewed | 8/8 | актуально |
@@ -578,6 +580,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_forecast_pipeline.py](../backend/app/services/world_forecast_pipeline.py) | reviewed | 33/33 | актуально |
 | [backend/app/services/world_forecaster.py](../backend/app/services/world_forecaster.py) | reviewed | 20/20 | актуально |
 | [backend/app/services/world_imf_ingest.py](../backend/app/services/world_imf_ingest.py) | reviewed | 5/5 | актуально |
+| [backend/app/services/world_latest_points.py](../backend/app/services/world_latest_points.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/world_listed_counts.py](../backend/app/services/world_listed_counts.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/world_national_ingest.py](../backend/app/services/world_national_ingest.py) | reviewed | 44/44 | актуально |
 | [backend/app/services/world_official_forecast.py](../backend/app/services/world_official_forecast.py) | reviewed | 5/5 | актуально |
@@ -901,6 +904,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_path_cut_redirects.py](../backend/tests/test_path_cut_redirects.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_perf_batch2.py](../backend/tests/test_perf_batch2.py) | reviewed | 30/30 | актуально |
 | [backend/tests/test_pg_backup_offsite.py](../backend/tests/test_pg_backup_offsite.py) | reviewed | 8/8 | актуально |
+| [backend/tests/test_points_autovacuum_migration.py](../backend/tests/test_points_autovacuum_migration.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_price_goods_en.py](../backend/tests/test_price_goods_en.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_project_terrain.py](../backend/tests/test_project_terrain.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_public_bot.py](../backend/tests/test_public_bot.py) | reviewed | 103/103 | актуально |
@@ -1111,6 +1115,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_forecast_priority_config.py](../backend/tests/test_world_forecast_priority_config.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_world_forecast_publish_all.py](../backend/tests/test_world_forecast_publish_all.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_world_fred_adapter.py](../backend/tests/test_world_fred_adapter.py) | reviewed | 12/12 | актуально |
+| [backend/tests/test_world_latest_points.py](../backend/tests/test_world_latest_points.py) | reviewed | 36/36 | актуально |
 | [backend/tests/test_world_listed_counts.py](../backend/tests/test_world_listed_counts.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_world_mospi_adapter.py](../backend/tests/test_world_mospi_adapter.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_world_national_core_job.py](../backend/tests/test_world_national_core_job.py) | reviewed | 12/12 | актуально |
@@ -1202,6 +1207,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md](../docs/adr/0034-mail-funnel-tracking-and-pulse-audit.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0035-telegram-channel-author.md](../docs/adr/0035-telegram-channel-author.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0036-search-index.md](../docs/adr/0036-search-index.md) | reviewed | 0/0 | актуально |
+| [docs/adr/0037-world-latest-points.md](../docs/adr/0037-world-latest-points.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/README.md](../docs/agent-briefs/README.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/hotfix-brief.md](../docs/agent-briefs/hotfix-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/integration-brief.md](../docs/agent-briefs/integration-brief.md) | reviewed | 0/0 | актуально |

@@ -6,18 +6,18 @@
 
 - HTTP declarations: **201**
 - HTTP reachable paths: **201**
-- ORM tables: **97**
+- ORM tables: **99**
 - DTO schemas (own fields + resolved inherited bases): **53**
-- Settings fields: **348**
-- Settings reads: **901**
+- Settings fields: **354**
+- Settings reads: **909**
 - Direct environment reads: **36**
-- Jobs: **72**
+- Jobs: **73**
 - Middleware: **6**
-- Registry declarations: **1608**
-- Registry references: **3000**
-- Migration operations: **555**
-- Candidate effects: **3327**
-- Unresolved syntax: **3**
+- Registry declarations: **1611**
+- Registry references: **3006**
+- Migration operations: **570**
+- Candidate effects: **3381**
+- Unresolved syntax: **4**
 - MCP tools: **7**
 
 ## Routes
@@ -116,9 +116,9 @@
 | GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1558](../backend/app/api/world.py#L1558) |
 | GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1650](../backend/app/api/world.py#L1650) |
 | GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:2069](../backend/app/api/world.py#L2069) |
-| GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2368](../backend/app/api/world.py#L2368) |
-| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2625](../backend/app/api/world.py#L2625) |
-| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2827](../backend/app/api/world.py#L2827) |
+| GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2390](../backend/app/api/world.py#L2390) |
+| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2647](../backend/app/api/world.py#L2647) |
+| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2849](../backend/app/api/world.py#L2849) |
 | GET | /api/v1/world/{country_slug}/regions | app.api.world_subnational.list_regions | [backend/app/api/world_subnational.py:192](../backend/app/api/world_subnational.py#L192) |
 | GET | /api/v1/world/{country_slug}/regions/map/{code} | app.api.world_subnational.map_values | [backend/app/api/world_subnational.py:270](../backend/app/api/world_subnational.py#L270) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug} | app.api.world_subnational.region_profile | [backend/app/api/world_subnational.py:368](../backend/app/api/world_subnational.py#L368) |
@@ -230,12 +230,12 @@
 
 | Order | Class | Source |
 | --- | --- | --- |
-| 1 | app.services.og_webp.OgWebpMiddleware | [backend/app/main.py:2214](../backend/app/main.py#L2214) |
-| 2 | app.main.RateLimitMiddleware | [backend/app/main.py:2215](../backend/app/main.py#L2215) |
-| 3 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:2216](../backend/app/main.py#L2216) |
-| 4 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:2217](../backend/app/main.py#L2217) |
-| 5 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:2218](../backend/app/main.py#L2218) |
-| 6 | app.main.LocaleMiddleware | [backend/app/main.py:2234](../backend/app/main.py#L2234) |
+| 1 | app.services.og_webp.OgWebpMiddleware | [backend/app/main.py:2228](../backend/app/main.py#L2228) |
+| 2 | app.main.RateLimitMiddleware | [backend/app/main.py:2229](../backend/app/main.py#L2229) |
+| 3 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:2230](../backend/app/main.py#L2230) |
+| 4 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:2231](../backend/app/main.py#L2231) |
+| 5 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:2232](../backend/app/main.py#L2232) |
+| 6 | app.main.LocaleMiddleware | [backend/app/main.py:2248](../backend/app/main.py#L2248) |
 
 ## Table `session_replay_chunks`
 
@@ -2030,6 +2030,42 @@ Constraints: `[{'path': 'backend/app/models.py', 'line': 2395, 'end_line': 2395,
 
 Relationships: `[]`
 
+## Table `world_latest_points`
+
+| Python / SQL | Type | Nullable | Column arguments / options | Source |
+| --- | --- | --- | --- | --- |
+| indicator_id / indicator_id | Mapped[int] | False | ['Integer'] {'primary_key': 'True', 'autoincrement': 'False'} | [backend/app/models.py:2414](../backend/app/models.py#L2414) |
+| country_id / country_id | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2415](../backend/app/models.py#L2415) |
+| last_date / last_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2416](../backend/app/models.py#L2416) |
+| last_value / last_value | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:2417](../backend/app/models.py#L2417) |
+| prev_date / prev_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2418](../backend/app/models.py#L2418) |
+| prev_value / prev_value | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:2419](../backend/app/models.py#L2419) |
+| has_nonzero / has_nonzero | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:2420](../backend/app/models.py#L2420) |
+| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2421](../backend/app/models.py#L2421) |
+
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2406, 'end_line': 2412, 'owner': 'WorldLatestPoint', 'conditions': [], 'definition': "(Index('ix_world_latest_points_country', 'country_id', postgresql_include=('indicator_id', 'last_date', 'last_value', 'prev_date', 'prev_value', 'has_nonzero')),)"}]`
+
+Relationships: `[]`
+
+## Table `world_latest_points_state`
+
+| Python / SQL | Type | Nullable | Column arguments / options | Source |
+| --- | --- | --- | --- | --- |
+| id / id | Mapped[int] | False | ['Integer'] {'primary_key': 'True', 'autoincrement': 'False'} | [backend/app/models.py:2428](../backend/app/models.py#L2428) |
+| maintained_since / maintained_since | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2429](../backend/app/models.py#L2429) |
+| filled_at / filled_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2430](../backend/app/models.py#L2430) |
+| cursor_country_id / cursor_country_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2431](../backend/app/models.py#L2431) |
+| cursor_indicator_id / cursor_indicator_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2432](../backend/app/models.py#L2432) |
+| pass_started_at / pass_started_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2433](../backend/app/models.py#L2433) |
+| pass_completed_at / pass_completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2434](../backend/app/models.py#L2434) |
+| last_run_at / last_run_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2435](../backend/app/models.py#L2435) |
+| rows / rows | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2436](../backend/app/models.py#L2436) |
+| rows_changed / rows_changed | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2437](../backend/app/models.py#L2437) |
+
+Constraints: `[]`
+
+Relationships: `[]`
+
 ## Scheduler jobs
 
 | Job id | Callable | Trigger / conditions | Distributed lock | Source |
@@ -2102,6 +2138,7 @@ Relationships: `[]`
 | telegram_calm_summary | app.services.telegram_calm.calm_morning_summary_job | CronTrigger(hour=settings.telegram_calm_summary_cron_hour, minute=settings.telegram_calm_summary_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_calm_mode and settings.telegram_bot_token and settings.telegram_chat_id'] | unresolved | [backend/app/main.py:1534](../backend/app/main.py#L1534) |
 | freshness_watchdog | app.tasks.freshness_watchdog.freshness_watchdog_job | CronTrigger(hour=settings.freshness_watchdog_cron_hour, minute=settings.freshness_watchdog_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.freshness_watchdog_enabled'] | {'id_expression': "'freshness_watchdog'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1648](../backend/app/main.py#L1648) |
 | world_listed_counts | app.services.world_listed_counts.world_listed_counts_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled', 'settings.world_listed_counts_enabled'] | {'id_expression': "'world_listed_counts'", 'ttl_expression': '600'} | [backend/app/main.py:1677](../backend/app/main.py#L1677) |
+| world_latest_points | app.services.world_latest_points.world_latest_points_job | CronTrigger(hour=settings.world_latest_points_hours, minute='*/10', timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_latest_points_enabled'] | {'id_expression': "'world_latest_points'", 'ttl_expression': '900'} | [backend/app/main.py:1706](../backend/app/main.py#L1706) |
 | webmaster_recrawl_ru | app.services.webmaster_recrawl.recrawl_daily_job | CronTrigger(hour=9, minute=15, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.webmaster_recrawl_enabled and settings.yandex_webmaster_token', 'settings.apex_locale_en'] | unresolved | [backend/app/main.py:1020](../backend/app/main.py#L1020) |
 | public_bot_poll | app.services.public_bot.public_bot_poll_job | IntervalTrigger(seconds=60) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled', 'settings.public_bot_enabled and settings.public_bot_token'] | unresolved | [backend/app/main.py:1326](../backend/app/main.py#L1326) |
 | public_bot_notify | app.services.public_bot.public_bot_notify_job | IntervalTrigger(minutes=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled', 'settings.public_bot_enabled'] | unresolved | [backend/app/main.py:1339](../backend/app/main.py#L1339) |
@@ -2459,6 +2496,12 @@ Relationships: `[]`
 | RUSTATS_NEWSLETTER_PERSONAL_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:774](../backend/app/config.py#L774) |
 | RUSTATS_NEWSLETTER_PERSONAL_BATCH_PAUSE_SECONDS | float = 0.5 | 1 | [backend/app/config.py:775](../backend/app/config.py#L775) |
 | RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:779](../backend/app/config.py#L779) |
+| RUSTATS_WORLD_LATEST_POINTS_ENABLED | bool = False | 3 | [backend/app/config.py:786](../backend/app/config.py#L786) |
+| RUSTATS_WORLD_LATEST_POINTS_CHUNK | int = 1000 | 1 | [backend/app/config.py:787](../backend/app/config.py#L787) |
+| RUSTATS_WORLD_LATEST_POINTS_CHUNKS_PER_RUN | int = 6 | 1 | [backend/app/config.py:788](../backend/app/config.py#L788) |
+| RUSTATS_WORLD_LATEST_POINTS_RUN_SECONDS | float = 240.0 | 1 | [backend/app/config.py:789](../backend/app/config.py#L789) |
+| RUSTATS_WORLD_LATEST_POINTS_RESWEEP_DAYS | int = 7 | 1 | [backend/app/config.py:790](../backend/app/config.py#L790) |
+| RUSTATS_WORLD_LATEST_POINTS_HOURS | str = '4,8-21' | 1 | [backend/app/config.py:791](../backend/app/config.py#L791) |
 
 ## Registries and declarations
 
@@ -2468,6 +2511,8 @@ Relationships: `[]`
 | alembic.versions.20260930_session_reviews._STREAM_INDEXES | Tuple | sequence/source expression | [backend/alembic/versions/20260930_session_reviews.py:14](../backend/alembic/versions/20260930_session_reviews.py#L14) |
 | alembic.versions.20261116_mail_tracking._COLUMNS | Tuple | sequence/source expression | [backend/alembic/versions/20261116_mail_tracking.py:18](../backend/alembic/versions/20261116_mail_tracking.py#L18) |
 | alembic.versions.20261118_search_index._COPIES | Tuple | sequence/source expression | [backend/alembic/versions/20261118_search_index.py:24](../backend/alembic/versions/20261118_search_index.py#L24) |
+| alembic.versions.20261119_points_autovacuum.TABLES | Tuple | sequence/source expression | [backend/alembic/versions/20261119_points_autovacuum.py:38](../backend/alembic/versions/20261119_points_autovacuum.py#L38) |
+| alembic.versions.20261119_points_autovacuum.OPTIONS | Dict | 'autovacuum_vacuum_scale_factor', 'autovacuum_vacuum_threshold', 'autovacuum_vacuum_insert_scale_factor', 'autovacuum_analyze_scale_factor', 'log_autovacuum_min_duration' | [backend/alembic/versions/20261119_points_autovacuum.py:39](../backend/alembic/versions/20261119_points_autovacuum.py#L39) |
 | app.api.admin_bi._DASHBOARD_LOCK | Call | computed source expression | [backend/app/api/admin_bi.py:60](../backend/app/api/admin_bi.py#L60) |
 | app.api.admin_bi._INFLIGHT | Dict | sequence/source expression | [backend/app/api/admin_bi.py:71](../backend/app/api/admin_bi.py#L71) |
 | app.api.admin_bi._LAST_ERROR | Dict | sequence/source expression | [backend/app/api/admin_bi.py:72](../backend/app/api/admin_bi.py#L72) |
@@ -2815,8 +2860,8 @@ Relationships: `[]`
 | app.database._PUBLIC_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:25](../backend/app/database.py#L25) |
 | app.database._ANALYTICS_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:48](../backend/app/database.py#L48) |
 | app.main._TRUSTED_PROXY_NETS | Call | computed source expression | [backend/app/main.py:45](../backend/app/main.py#L45) |
-| app.main._GEO_EXCLUDED_PREFIXES | Tuple | sequence/source expression | [backend/app/main.py:1848](../backend/app/main.py#L1848) |
-| app.main._GEO_EXCLUDED_EXACT | Call | computed source expression | [backend/app/main.py:1851](../backend/app/main.py#L1851) |
+| app.main._GEO_EXCLUDED_PREFIXES | Tuple | sequence/source expression | [backend/app/main.py:1862](../backend/app/main.py#L1862) |
+| app.main._GEO_EXCLUDED_EXACT | Call | computed source expression | [backend/app/main.py:1865](../backend/app/main.py#L1865) |
 | app.services.account_erasure.TIME_WINDOW | Call | computed source expression | [backend/app/services/account_erasure.py:46](../backend/app/services/account_erasure.py#L46) |
 | app.services.action_policy.DENIED_ACTIONS | Set | sequence/source expression | [backend/app/services/action_policy.py:22](../backend/app/services/action_policy.py#L22) |
 | app.services.action_policy.HIGH_RISK_ACTIONS | Set | sequence/source expression | [backend/app/services/action_policy.py:33](../backend/app/services/action_policy.py#L33) |
@@ -3845,16 +3890,17 @@ Relationships: `[]`
 | app.services.world_forecaster.RETRYABLE_QUALITY_REASONS | Call | computed source expression | [backend/app/services/world_forecaster.py:466](../backend/app/services/world_forecaster.py#L466) |
 | app.services.world_forecaster._SELECTION_ORIGINS | Dict | 'annual', 'quarterly', 'monthly' | [backend/app/services/world_forecaster.py:471](../backend/app/services/world_forecaster.py#L471) |
 | app.services.world_forecaster.UNCHECKED_FALLBACK_REASONS | Call | computed source expression | [backend/app/services/world_forecaster.py:685](../backend/app/services/world_forecaster.py#L685) |
+| app.services.world_latest_points._PAYLOAD | Tuple | sequence/source expression | [backend/app/services/world_latest_points.py:83](../backend/app/services/world_latest_points.py#L83) |
 | app.services.world_national_ingest.PUBLIC_SOURCE_RU | Dict | 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi' | [backend/app/services/world_national_ingest.py:47](../backend/app/services/world_national_ingest.py#L47) |
 | app.services.world_national_ingest._ADAPTER_MODULES | Dict | 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi' | [backend/app/services/world_national_ingest.py:75](../backend/app/services/world_national_ingest.py#L75) |
 | app.services.world_national_ingest._FREQ_ALIASES | Dict | 'm', 'q', 'a', 'y', 'yearly', 'd', 'w', 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/world_national_ingest.py:96](../backend/app/services/world_national_ingest.py#L96) |
 | app.services.world_national_ingest._FREQ_ADJ_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/world_national_ingest.py:111](../backend/app/services/world_national_ingest.py#L111) |
 | app.services.world_national_ingest._CODE_RE | Call | computed source expression | [backend/app/services/world_national_ingest.py:119](../backend/app/services/world_national_ingest.py#L119) |
 | app.services.world_national_ingest.TRANSPORT_LABEL | Dict | 'fred' | [backend/app/services/world_national_ingest.py:392](../backend/app/services/world_national_ingest.py#L392) |
-| app.services.world_national_ingest._COUNTRY_DEFAULTS | Dict | 'CA', 'AU', 'UK', 'US', 'JP', 'KR', 'BR', 'MX', 'CN', 'IN' | [backend/app/services/world_national_ingest.py:1051](../backend/app/services/world_national_ingest.py#L1051) |
-| app.services.world_national_ingest._NOT_CONFIGURED_MARKERS | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1280](../backend/app/services/world_national_ingest.py#L1280) |
-| app.services.world_national_ingest._BLOCKED_MARKERS | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1282](../backend/app/services/world_national_ingest.py#L1282) |
-| app.services.world_national_ingest.NATIONAL_CORE_COUNTRIES | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1322](../backend/app/services/world_national_ingest.py#L1322) |
+| app.services.world_national_ingest._COUNTRY_DEFAULTS | Dict | 'CA', 'AU', 'UK', 'US', 'JP', 'KR', 'BR', 'MX', 'CN', 'IN' | [backend/app/services/world_national_ingest.py:1055](../backend/app/services/world_national_ingest.py#L1055) |
+| app.services.world_national_ingest._NOT_CONFIGURED_MARKERS | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1284](../backend/app/services/world_national_ingest.py#L1284) |
+| app.services.world_national_ingest._BLOCKED_MARKERS | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1286](../backend/app/services/world_national_ingest.py#L1286) |
+| app.services.world_national_ingest.NATIONAL_CORE_COUNTRIES | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1326](../backend/app/services/world_national_ingest.py#L1326) |
 | app.services.world_official_forecast._POSITIVE_CODES | Call | computed source expression | [backend/app/services/world_official_forecast.py:54](../backend/app/services/world_official_forecast.py#L54) |
 | app.services.world_official_forecast._PERCENT_BOUND_CODES | Call | computed source expression | [backend/app/services/world_official_forecast.py:55](../backend/app/services/world_official_forecast.py#L55) |
 | app.services.world_rank_values._FORCE_YOY_CONCEPTS | Call | computed source expression | [backend/app/services/world_rank_values.py:48](../backend/app/services/world_rank_values.py#L48) |
@@ -4090,6 +4136,7 @@ Relationships: `[]`
 | Kind | Source / symbol | Expression |
 | --- | --- | --- |
 | import_alias_collision | backend/app/services/session_analysis.py | ['sqlalchemy.dialects.postgresql.insert', 'sqlalchemy.dialects.sqlite.insert'] |
+| import_alias_collision | backend/app/services/world_latest_points.py | ['sqlalchemy.dialects.postgresql.insert', 'sqlalchemy.dialects.sqlite.insert'] |
 | import_alias_collision | backend/app/services/world_series_title.py | ['app.data.eurostat_dim_labels_en.label_for_dim_member', 'app.data.eurostat_dim_labels_ru.label_for_dim_member'] |
 | import_alias_collision | backend/app/tasks/scheduler.py | ['app.services.emiss_regional_parser.emiss_regional_job', 'app.services.emiss_weekly_fuel.emiss_weekly_fuel_job'] |
 
