@@ -63,6 +63,12 @@ MACRO_BY_TABLE = {
     "16.21": "fuel-ai95",
     "16.22": "fuel-diesel",
 }
+# Помесячный ИПЦ региона (ЕМИСС 31074, 19.11.2026): все товары, продукты, непродовольственные, услуги → те же
+# федеральные карточки ИПЦ. Годовой 20.1 остаётся мостом к cpi (его ищет RegionCrossLink первым по разделу).
+from app.data.emiss_regional_cpi import macro_by_table as _cpi_macro_by_table  # noqa: E402
+
+for _table, _macro in _cpi_macro_by_table().items():
+    MACRO_BY_TABLE.setdefault(_table, _macro)
 
 _REGIONS_TITLE = "Регионы России — социально-экономические показатели 85 субъектов РФ"
 _REGIONS_DESC = (
@@ -1491,10 +1497,12 @@ async def _render_region_indicator_monthly(
     paragraphs = []
     p1 = _mt("p1", indicator=escape(ind_name), region=escape(region_name),
              month_prep=escape(_month_label(last_period, "prep")), value=_fmt(last_value), unit=unit_sfx)
-    mom = _pct(last_value, prev_value)
+    # ИПЦ региона (ЕМИСС 31074, единица «% к …»): значение уже изменение цен — «изменение индекса» не пишем.
+    is_index = (indicator.unit or "").startswith("%")
+    mom = None if is_index else _pct(last_value, prev_value)
     if mom:
         p1 += _mt("p1_mom", change=mom)
-    yoy = _pct(last_value, year_ago_value)
+    yoy = None if is_index else _pct(last_value, year_ago_value)
     if yoy:
         p1 += _mt("p1_yoy", month_dat=escape(_month_label(last_period - 100, "dat")), change=yoy)
     paragraphs.append(p1)

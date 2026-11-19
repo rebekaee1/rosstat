@@ -725,6 +725,16 @@ async def emiss_weekly_fuel_job():
     await _job()
 
 
+async def emiss_regional_cpi_job():
+    """ИПЦ и стоимость наборов по регионам помесячно (ЕМИСС 31074, 31052, 31481) в region_monthly_data.
+
+    Расписание в main.py, реализация — app.services.emiss_regional_cpi_parser.
+    """
+    from app.services.emiss_regional_cpi_parser import emiss_regional_cpi_job as _job
+
+    await _job()
+
+
 
 # ---------------------------------------------------------------------------
 #  Staleness-мониторинг (Н-3): «источник молча умер» виден не через failed,
