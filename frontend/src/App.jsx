@@ -84,6 +84,8 @@ const ForgotPassword = lazy(() => import('./pages/AccountMail').then((m) => ({ d
 const ResetPassword = lazy(() => import('./pages/AccountMail').then((m) => ({ default: m.ResetPassword })));
 const VerifyEmail = lazy(() => import('./pages/AccountMail').then((m) => ({ default: m.VerifyEmail })));
 const Unsubscribe = lazy(() => import('./pages/AccountMail').then((m) => ({ default: m.Unsubscribe })));
+const TopicConfirm = lazy(() => import('./pages/AccountMail').then((m) => ({ default: m.TopicConfirm })));
+const AfterDownloadOffer = lazy(() => import('./components/AfterDownloadOffer'));
 const RegionsHome = lazy(() => import('./pages/RegionsHome'));
 const RegionProfile = lazy(() => import('./pages/RegionProfile'));
 const RegionIndicatorPage = lazy(() => import('./pages/RegionIndicatorPage'));
@@ -298,6 +300,7 @@ function AppRoutes() {
             <Route path="/account/reset-password" element={<ResetPassword />} />
             <Route path="/account/verify-email" element={<VerifyEmail />} />
             <Route path="/account/unsubscribe" element={<Unsubscribe />} />
+            <Route path="/account/topic-confirm" element={<TopicConfirm />} />
             <Route path="/admin/bi" element={<AdminBI />} />
 
             {/* Мир: хаб и рейтинги до country catch-all */}
@@ -383,6 +386,12 @@ function AppRoutes() {
       </main>
       <RegisterNudge />
       <PwaInstallPrompt />
+      {/* Предложение «присылать на почту» после скачивания: за флагом сервера topic_mail_enabled. */}
+      <ErrorBoundary fallback={null}>
+        <Suspense fallback={null}>
+          <AfterDownloadOffer />
+        </Suspense>
+      </ErrorBoundary>
       {/* Приветственный экран нового посетителя: за флагом сервера, по умолчанию выключен (lib/welcome.js). */}
       {/* Сбой экрана (не загрузился чанк после выпуска, ошибка отрисовки) не должен ронять сайт: без экрана — сразу сайт. */}
       <ErrorBoundary fallback={null}>

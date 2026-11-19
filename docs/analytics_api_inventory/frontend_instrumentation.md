@@ -211,6 +211,7 @@ ym(107136069, 'init', {
 | `search_select` | `IndicatorSearch` | выбор индикатора из поиска | `q`, `code` |
 | `search_abandon` | `IndicatorSearch` | закрыли поиск без выбора | `q`, `results` |
 | `register_nudge_view` / `register_nudge_expand` / `register_nudge_cta` | глобально | плашка «регистрация» | — |
+| `subscribe_line_click` (`channel=email`) / `topic_mail_done` / `download_mail_offer_view` / `topic_mail_confirm` | строка «присылать», `AfterDownloadOffer`, `/account/topic-confirm` | подписка на показатель по почте (19.11.2026, флаг `topic_mail_enabled`) | `topic`, `channel`, `source` (line/download), `status`, `indicator`, `new_account` |
 | `feedback_nudge_view` / `feedback_nudge_expand` / `feedback_nudge_cta` / `feedback_submit` | глобально | обратная связь | — |
 | `api_interest_view` | `ApiInterestLink` (график показателя; окно лимита) | показ точки входа «API и выгрузка с прогнозом», не чаще 1 раза за сессию на точку входа; только при `RUSTATS_API_INTEREST_ENABLED=true` | `source` (`indicator`/`limit_modal`) |
 | `api_interest_click` | `ApiInterestLink` | клик по точке входа, открывает окно заявки | `source`, `indicator_code` |
