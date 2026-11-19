@@ -3,6 +3,7 @@ import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { renderPage, mockApiGet } from '../test/renderPage';
 import SubscribeLine from './SubscribeLine';
 import { resetSiteAcqForTests } from '../lib/siteAcq';
+import { resetTopicMailConfig } from '../lib/topicMail';
 import * as track from '../lib/track';
 
 const TODAY = new Date('2026-11-19T12:00:00Z');
@@ -22,12 +23,17 @@ const text = (el) => el.textContent.replace(/\u00a0/g, ' ');
 
 describe('SubscribeLine (совет 19.11.2026)', () => {
   let spy;
+  let mailOn = false;
   beforeEach(() => {
     resetSiteAcqForTests();
+    resetTopicMailConfig();
     spy = vi.spyOn(track, 'track').mockImplementation(() => {});
-    mockApiGet([[/\/calendar\/upcoming\?limit=1&indicator_code=cpi$/, { events: [{ id: 1, scheduled_date: '2026-11-25', is_estimated: false }], total: 1 }]]);
+    mockApiGet([
+      [/\/calendar\/upcoming\?limit=1&indicator_code=cpi$/, { events: [{ id: 1, scheduled_date: '2026-11-25', is_estimated: false }], total: 1 }],
+      ['/topic-mail/config', () => ({ enabled: mailOn })],
+    ]);
   });
-  afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
+  afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); mailOn = false; });
 
   it('флаги выключены — ничего не рисует', async () => {
     stubConfig({ line: false, topics: [], bot: '', first_screen: false });
@@ -88,5 +94,48 @@ describe('SubscribeLine (совет 19.11.2026)', () => {
     const link = await screen.findByTestId('subscribe-line-telegram');
     expect(text(link)).toBe('Send to Telegram');
     await waitFor(() => expect(text(screen.getByTestId('subscribe-line-when'))).toBe('October inflation is out on 25 November.'));
+  });
+
+  it('почта без бота: кнопка «На почту» видна при выключенной Telegram-части; показ строки — channel email', async () => {
+    mailOn = true;
+    stubConfig({ line: false, topics: [], bot: '', first_screen: false, mail_topics: ['inflation', 'gold'] });
+    renderPage(<SubscribeLine code="cpi" frequency="monthly" lastDate="2026-09-01" today={TODAY} />, { route: '/russia/indicator/cpi', path: '/russia/indicator/:code' });
+    const open = await screen.findByTestId('subscribe-line-mail-open');
+    expect(screen.queryByTestId('subscribe-line-telegram')).toBeNull();
+    expect(text(open)).toBe('На почту');
+    await waitFor(() => expect(text(screen.getByTestId('subscribe-line-when'))).toBe('Инфляция за октябрь выйдет 25 ноября.'));
+    expect(spy).toHaveBeenCalledWith('subscribe_line_view', { topic: 'inflation', channel: 'email', path: '/russia/indicator/cpi' });
+  });
+
+  it('нажатие «На почту» пишется как subscribe_line_click {channel: email} и раскрывает форму вместо кнопки', async () => {
+    mailOn = true;
+    stubConfig({ ...ON, mail_topics: ON.topics });
+    renderPage(<SubscribeLine code="cpi" frequency="monthly" lastDate="2026-09-01" today={TODAY} />, { route: '/russia/indicator/cpi', path: '/russia/indicator/:code' });
+    const open = await screen.findByTestId('subscribe-line-mail-open');
+    await screen.findByTestId('subscribe-line-telegram');
+    await waitFor(() => expect(spy).toHaveBeenCalledWith('subscribe_line_view', expect.objectContaining({ channel: 'telegram,email' })));
+    expect(spy.mock.calls.filter(([name]) => name === 'subscribe_line_view')).toHaveLength(1);
+    fireEvent.click(open);
+    expect(spy).toHaveBeenCalledWith('subscribe_line_click', { topic: 'inflation', channel: 'email', path: '/russia/indicator/cpi' });
+    expect(screen.queryByTestId('subscribe-line-mail-open')).toBeNull();
+    expect(await screen.findByRole('checkbox')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Присылать' })).toBeTruthy();
+  });
+
+  it('почта не на теме из mail_topics или при задержке — кнопки нет', async () => {
+    mailOn = true;
+    stubConfig({ line: false, topics: [], bot: '', first_screen: true, mail_topics: ['gold'] });
+    renderPage(<SubscribeLine code="cpi" frequency="monthly" lastDate="2026-09-01" today={TODAY} onDownloadExcel={() => {}} />);
+    await screen.findByTestId('subscribe-line-download');
+    expect(screen.queryByTestId('subscribe-line-mail-open')).toBeNull();
+  });
+
+  it('при задержке источника кнопки «На почту» нет', async () => {
+    mailOn = true;
+    stubConfig({ line: false, topics: [], bot: '', first_screen: true, mail_topics: ['diesel'] });
+    renderPage(<SubscribeLine code="fuel-diesel" frequency="weekly" lastDate="2026-10-26" today={TODAY} onDownloadExcel={() => {}} />);
+    await screen.findByTestId('subscribe-line-when');
+    expect(text(screen.getByTestId('subscribe-line-when'))).toContain('Источник задерживает');
+    expect(screen.queryByTestId('subscribe-line-mail-open')).toBeNull();
   });
 });

@@ -4,9 +4,12 @@ GET /api/v1/site-acq/config отдаёт фронту, что показыват
 - `line` — строка «Присылать в Telegram» (ссылка в публичного бота `?start=site_<тема>`);
 - `topics` — темы бота, на которых строка разрешена (топливо добавляется, когда загрузка свежая);
 - `bot` — имя публичного бота для ссылки (не секрет: оно в адресе t.me);
-- `first_screen` — «Следующее обновление — {дата}» и «Скачать таблицу за все годы» на первом экране.
+- `first_screen` — «Следующее обновление — {дата}» и «Скачать таблицу за все годы» на первом экране;
+- `mail_topics` — темы, на которых строка предлагает почту (кнопка «На почту»). Не зависят от бота и флага
+  Telegram-части: почта — второй способ наравне, без условия (решение совета). Включает её свой флаг
+  `topic_mail_enabled` (GET /topic-mail/config).
 
-Строка не обещает подписку, если бот выключен: `line` = флаг строки И флаг публичного бота.
+Telegram-часть не обещает подписку, если бот выключен: `line` = флаг строки И флаг публичного бота.
 """
 from __future__ import annotations
 
@@ -37,4 +40,5 @@ async def site_acq_config(response: Response):
         "topics": line_topics() if line else [],
         "bot": settings.public_bot_username if line else "",
         "first_screen": bool(settings.acq_site_first_screen_enabled),
+        "mail_topics": line_topics(),
     }

@@ -19,7 +19,11 @@ def test_config_off_by_default(monkeypatch):
     r = _get()
     assert r.status_code == 200
     assert r.headers["cache-control"] == "no-store"
-    assert r.json() == {"line": False, "topics": [], "bot": "", "first_screen": False}
+    body = r.json()
+    assert {k: body[k] for k in ("line", "topics", "bot", "first_screen")} == {
+        "line": False, "topics": [], "bot": "", "first_screen": False}
+    # Почта не зависит от Telegram-части: темы для неё есть и при выключенной строке.
+    assert body["mail_topics"] == ["inflation", "gold", "keyrate", "deposit", "mortgage", "usd", "eur"]
 
 
 def test_line_needs_public_bot(monkeypatch):
@@ -27,6 +31,7 @@ def test_line_needs_public_bot(monkeypatch):
     monkeypatch.setattr(settings, "public_bot_enabled", False)
     body = _get().json()
     assert body["line"] is False and body["topics"] == [] and body["bot"] == ""
+    assert "inflation" in body["mail_topics"]
 
 
 def test_line_on_gives_topics_and_bot(monkeypatch):
@@ -37,6 +42,7 @@ def test_line_on_gives_topics_and_bot(monkeypatch):
     monkeypatch.setattr(settings, "acq_site_first_screen_enabled", True)
     assert _get().json() == {
         "line": True, "topics": ["inflation", "gold", "diesel"], "bot": "ForecastEconomyBot", "first_screen": True,
+        "mail_topics": ["inflation", "gold", "diesel"],
     }
 
 

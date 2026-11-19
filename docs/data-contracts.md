@@ -1437,28 +1437,36 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 для: …». Ответ из частей «X и Y» несёт `intent` первой части и строки частей поочерёдно. Ревизия кэша ответов `r6`.
 Событие `search_query` локальных полей страниц регионов не отправляется, пока набор показателей региона не загружен.
 
-## Строка «присылать» и первый экран страниц входа (19.11.2026, ветка feat/acq-site, не выпущено)
+## Строка «присылать» и первый экран страниц входа (19.11.2026, ветка int/2026-11-19-acq, не выпущено)
 
 Основание — общая стратегия совета 19.11.2026 (`.artifacts/council-2026-11-19/общая-стратегия.md`, раздел 1).
 
-- **Флаги** (`app/config.py`, по умолчанию выключены): `acq_site_line_enabled` — строка «Присылать в Telegram»;
+- **Флаги** (`app/config.py`, по умолчанию выключены): `acq_site_line_enabled` — «Присылать в Telegram»;
   `acq_site_line_topics` — темы публичного бота через запятую (по умолчанию `inflation,gold,keyrate,deposit,mortgage,usd,eur`;
   топливо `diesel,ai92,ai95` добавляют, когда загрузка свежая); `acq_site_first_screen_enabled` — «Следующее обновление» и
-  «Скачать таблицу за все годы».
+  «Скачать таблицу за все годы». Почтовый способ строки включает свой флаг `topic_mail_enabled` (`GET /topic-mail/config`).
 - **`GET /api/v1/site-acq/config`** (`api/site_acq.py`, `Cache-Control: no-store`):
-  `{line: bool, topics: [str], bot: str, first_screen: bool}`. `line` = флаг строки И `public_bot_enabled` И имя бота;
-  при `line=false` темы и имя пустые. Неизвестные боту темы отбрасываются.
+  `{line: bool, topics: [str], bot: str, first_screen: bool, mail_topics: [str]}`. `line` = флаг строки И `public_bot_enabled`
+  И имя бота; при `line=false` `topics` и `bot` пустые. `mail_topics` — те же темы из `acq_site_line_topics`, **не зависят**
+  от бота и флага Telegram-части: почта — второй способ наравне, без условия. Неизвестные боту темы отбрасываются.
 - **Страницы**: карточки России и валют `fuel-diesel`, `fuel-ai92`, `fuel-ai95`, `cpi` (`cpi-yoy`), `gold-price`, `key-rate`,
-  `deposit-rate`, `mortgage-rate`, `usd-rub`, `eur-rub` — строка с Telegram; `wages-nominal`, `population` — только первый экран.
+  `deposit-rate`, `mortgage-rate`, `usd-rub`, `eur-rub` — способы «присылать»; `wages-nominal`, `population` — только первый экран.
   Компонент `SubscribeLine.jsx` стоит под блоком «Актуальные данные» в `IndicatorDetail.jsx` и `GenericIndicatorView.jsx`,
   обычная и годовая страница одинаково. Серверный HTML для роботов не меняется.
-- **Ссылка**: `https://t.me/<bot>?start=site_<тема>`; тема — ключ `public_bot.TOPICS` (на ИПЦ — `inflation`, бот присылает инфляцию за год).
-- **Дата выхода**: `GET /api/v1/calendar/upcoming?limit=1&indicator_code=<код>` (теперь `fetchCalendarUpcoming` передаёт `indicator_code`);
+- **Способы**: «Присылать в Telegram» — ссылка `https://t.me/<bot>?start=site_<тема>` (тема в `topics`); «На почту» — тихая кнопка
+  (тема в `mail_topics` и `topic_mail_enabled`), по нажатию раскрывает `TopicMailForm` (`source="line"`, `compact`, `clickCounted`).
+  Проп `emailSlot`, если передан, заменяет кнопку и форму. Оба способа скрыты, пока источник задерживает данные.
+  Тема — ключ `public_bot.TOPICS` (на ИПЦ — `inflation`, бот присылает инфляцию за год).
+- **Дата выхода**: `GET /api/v1/calendar/upcoming?limit=1&indicator_code=<код>` (`fetchCalendarUpcoming` передаёт `indicator_code`);
   коды календаря — `cpi`, `key-rate`, `deposit-rate`, `mortgage-rate`, `wages-nominal`, `population`. Дневные ряды — «каждый рабочий день»,
   недельное топливо — «по средам», ставка ЦБ — дата решения.
 - **Задержка**: сервер пометил ряд `freshness.level = stale`, или последняя точка старше нормы частоты (день 6, неделя 12,
   месяц 100, квартал 200, год 500 дней) и выхода по календарю нет в ближайшие 14 дней. Тогда строка говорит «Источник задерживает
-  новые данные» и ссылку в бота не показывает.
-- **События** (`lib/track.js`, first-party и цель Метрики): `subscribe_line_view` — один раз на страницу и тему, когда видна ссылка
-  в Telegram; `subscribe_line_click` — нажатие. Параметры `{topic, channel: 'telegram' | 'email', path}`. Почтовый способ (`channel: 'email'`)
-  подставляет ветка почты через проп `emailSlot`. «Скачать таблицу» зовёт тот же обработчик, что кнопка над графиком (`download_excel`, тот же замок).
+  новые данные» и способов «присылать» не показывает.
+- **События** (`lib/track.js`, first-party и цель Метрики), один знаменатель на оба способа:
+  `subscribe_line_view {topic, channel, path}` — один раз на страницу и тему, когда виден хотя бы один способ; `channel` —
+  `telegram`, `email` или `telegram,email` (что показано в момент первого показа). `subscribe_line_click {topic, channel, path}` —
+  нажатие «Присылать в Telegram» (`channel: 'telegram'`) или «На почту» (`channel: 'email'`). Отправка почтовой формы из строки
+  второго `subscribe_line_click` не шлёт (`clickCounted`), её итог — `topic_mail_done`. Форма после скачивания (`source: 'download'`)
+  шлёт `subscribe_line_click {channel: 'email', source: 'download'}` при отправке, как раньше. «Скачать таблицу» зовёт тот же
+  обработчик, что кнопка над графиком (`download_excel`, тот же замок).

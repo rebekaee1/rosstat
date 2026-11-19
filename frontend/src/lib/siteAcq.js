@@ -8,7 +8,7 @@
 import { useEffect, useState } from 'react';
 
 const CONFIG_URL = '/api/v1/site-acq/config';
-const OFF = Object.freeze({ line: false, topics: [], bot: '', first_screen: false });
+const OFF = Object.freeze({ line: false, topics: [], bot: '', first_screen: false, mail_topics: [] });
 
 /** Код страницы → тема публичного бота. На ИПЦ бот присылает инфляцию за год (cpi-yoy), текст строки говорит о ней. */
 export const PAGE_TOPIC = Object.freeze({
@@ -121,6 +121,8 @@ export function loadSiteAcqConfig() {
             topics: Array.isArray(raw.topics) ? raw.topics.filter((t) => typeof t === 'string') : [],
             bot: typeof raw.bot === 'string' ? raw.bot : '',
             first_screen: raw.first_screen === true,
+            // Темы почтового способа: не зависят от бота и Telegram-части (почта наравне, решение совета).
+            mail_topics: Array.isArray(raw.mail_topics) ? raw.mail_topics.filter((t) => typeof t === 'string') : [],
           }
           : OFF;
       } catch {

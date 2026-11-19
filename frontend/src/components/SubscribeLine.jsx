@@ -1,13 +1,18 @@
 // Привлечение (совет 19.11.2026): одна строка под числом на 10 главных страницах входа из Яндекса.
 //
-// Что в строке (всё за флагами бэкенда, см. lib/siteAcq.js):
+// Что в строке (всё за флагами бэкенда, см. lib/siteAcq.js и lib/topicMail.js):
 // - когда выйдет новое значение по нашему календарю, или честное «источник задерживает»;
-// - «Присылать в Telegram» — ссылка в публичного бота `?start=site_<тема>` (только на темах бота
-//   и только когда данные не задерживаются: обещать новое значение, которого нет, нельзя);
-// - место для почтового способа (делает ветка почты, зона №4: `emailSlot`);
+// - «Присылать в Telegram» — ссылка в публичного бота `?start=site_<тема>` (темы config.topics, нужен включённый бот);
+// - «На почту» — тихая кнопка, по нажатию раскрывает TopicMailForm (темы config.mail_topics, флаг topic_mail_enabled;
+//   от бота и Telegram-части не зависит). Проп `emailSlot`, если передан, заменяет кнопку и форму;
+// - оба способа — только когда данные не задерживаются: обещать новое значение, которого нет, нельзя;
 // - «Скачать таблицу за все годы» — тот же обработчик и тот же замок, что у кнопки над графиком.
 // Без всплывающих окон и таймеров: строка стоит в странице и никому не мешает (решение совета, спор 5).
-// События: subscribe_line_view (один раз на страницу и тему), subscribe_line_click {topic, channel, path}.
+// События (один знаменатель на оба способа):
+// - subscribe_line_view {topic, channel, path} — один раз на страницу и тему, когда виден хотя бы один способ;
+//   channel = 'telegram' | 'email' | 'telegram,email' (какие способы показаны);
+// - subscribe_line_click {topic, channel, path} — нажатие «Присылать в Telegram» (channel 'telegram') или «На почту»
+//   (channel 'email'). Отправка почтовой формы — отдельное событие topic_mail_done (TopicMailForm).
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Download, Mail, Send } from 'lucide-react';
@@ -58,11 +63,15 @@ export default function SubscribeLine({
   const config = useSiteAcqConfig();
   const now = useMemo(() => today || new Date(), [today]);
 
+  const mailEnabled = useTopicMailEnabled();
+  const [mailOpen, setMailOpen] = useState(false);
+
   const onPage = FIRST_SCREEN_CODES.has(code);
   const topic = PAGE_TOPIC[code] || null;
   const lineOn = Boolean(config.line && topic && config.topics.includes(topic) && config.bot);
+  const mailOn = Boolean(mailEnabled && topic && config.mail_topics.includes(topic));
   const firstOn = Boolean(config.first_screen && onPage);
-  const releaseCode = (lineOn || firstOn) ? releaseCodeOf(code) : null;
+  const releaseCode = (lineOn || mailOn || firstOn) ? releaseCodeOf(code) : null;
   const { data: upcoming } = useCalendarUpcoming(
     { indicator_code: releaseCode || '', limit: 1 },
     { enabled: Boolean(releaseCode) },
@@ -74,20 +83,21 @@ export default function SubscribeLine({
   const delayed = isDelayed({ freshness, frequency, lastDate, nextRelease, today: now });
   const copy = lineCopy({ code, frequency, lastDate, nextRelease, nextEstimated, delayed });
   const showTelegram = lineOn && !delayed;
-  const mailEnabled = useTopicMailEnabled();
-  const [mailOpen, setMailOpen] = useState(false);
-  const showMail = mailEnabled && Boolean(config.line && topic && config.topics.includes(topic)) && !delayed;
+  const showMail = mailOn && !delayed;
   const showWhen = Boolean(copy) && (firstOn || showTelegram || showMail);
   const showDownload = firstOn && typeof onDownloadExcel === 'function';
+  const viewChannel = [showTelegram && 'telegram', showMail && 'email'].filter(Boolean).join(',');
 
+  // Показ — один на страницу и тему, даже если почта или Telegram догрузились позже (конфиги приходят отдельно):
+  // знаменатель нажатий в Пульсе не должен удваиваться.
   const seen = useRef('');
   useEffect(() => {
-    if (!showTelegram) return;
+    if (!viewChannel) return;
     const key = `${pathname}|${topic}`;
     if (seen.current === key) return;
     seen.current = key;
-    track(events.SUBSCRIBE_LINE_VIEW, { topic, channel: 'telegram', path: pathname });
-  }, [showTelegram, pathname, topic]);
+    track(events.SUBSCRIBE_LINE_VIEW, { topic, channel: viewChannel, path: pathname });
+  }, [viewChannel, pathname, topic]);
 
   if (!onPage || !(showWhen || showTelegram || showMail || showDownload || emailSlot)) return null;
 
@@ -116,8 +126,6 @@ export default function SubscribeLine({
             <span>{t('acq.telegram')}</span>
           </a>
         ) : null}
-        {/* Почтовый способ той же строки (зона №4): на темах строки и только когда данные не задерживаются.
-            TopicMailForm сам ничего не рисует при выключенном RUSTATS_TOPIC_MAIL_ENABLED. */}
         {/* Почта свёрнута в тихую кнопку: два одинаковых «Присылать» рядом читаются как дубль, а поле с согласием
             на телефоне занимает пол-экрана. Поле раскрывается по нажатию (сведение веток 19.11). */}
         {emailSlot ?? (showMail && !mailOpen ? (
@@ -125,13 +133,16 @@ export default function SubscribeLine({
             type="button"
             className="acq-line__btn fe-press"
             data-testid="subscribe-line-mail-open"
-            onClick={() => setMailOpen(true)}
+            onClick={() => {
+              track(events.SUBSCRIBE_LINE_CLICK, { topic, channel: 'email', path: pathname });
+              setMailOpen(true);
+            }}
           >
             <Mail size={15} aria-hidden="true" />
             <span>{t('acq.mail')}</span>
           </button>
         ) : null)}
-        {emailSlot == null && showMail && mailOpen ? <TopicMailForm code={code} topic={topic} source="line" compact /> : null}
+        {emailSlot == null && showMail && mailOpen ? <TopicMailForm code={code} topic={topic} source="line" compact clickCounted /> : null}
         {showDownload ? (
           <button
             type="button"

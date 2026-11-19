@@ -23,6 +23,7 @@ import '../styles/acq-mail.css';
  *  - `topic`   ключ темы строки «присылать» (для событий; у бота те же ключи), необязательно
  *  - `source`  'line' (строка под числом) | 'download' (после скачивания) — в событиях
  *  - `compact` без подписи над полем (строка под числом)
+ *  - `clickCounted` нажатие уже записано снаружи (кнопка «На почту» в строке) — subscribe_line_click при отправке не шлётся
  * Флаг сервера выключен — компонент ничего не рисует.
  */
 
@@ -34,7 +35,7 @@ function pagePath() {
   try { return String(window.location.pathname || '/').slice(0, 200); } catch { return null; }
 }
 
-export default function TopicMailForm({ code, topic, source = 'line', compact = false, className, onDone }) {
+export default function TopicMailForm({ code, topic, source = 'line', compact = false, className, onDone, clickCounted = false }) {
   const t = useT();
   const enabled = useTopicMailEnabled();
   const { isAuthed, isLoading } = useAuthSafe();
@@ -54,7 +55,9 @@ export default function TopicMailForm({ code, topic, source = 'line', compact = 
       setError(t('topicMail.consentRequired'));
       return;
     }
-    track(events.SUBSCRIBE_LINE_CLICK, { topic: topic || code, channel: 'email', source, path: pagePath() });
+    // В строке под числом нажатие уже записала кнопка «На почту» (SubscribeLine, проп clickCounted): второго
+    // subscribe_line_click нет — иначе в Пульсе одно намерение считалось бы дважды.
+    if (!clickCounted) track(events.SUBSCRIBE_LINE_CLICK, { topic: topic || code, channel: 'email', source, path: pagePath() });
     setBusy(true);
     try {
       const res = await subscribeTopicMail(isAuthed
