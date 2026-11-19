@@ -30,20 +30,27 @@ R7A_CONCEPTS = (
         "цена кв м", "стоимость кв м", "цена квадрата", "квадратный метр"),
         ("рынке жилья", "housing price", "tseny-na-pervichnom")),
     (("сбережения", "сбережений", "накопления", "накоплений"), ("вклады", "deposits")),
+    # 19.11.2026: пустые запросы «индекс стоимости жизни» — стоимость фиксированного набора (ЕМИСС 31052, помесячно).
+    # «Стоимость жизни самара» ведёт к прожиточному минимуму (R8-A) — здесь только «индекс стоимости жизни».
+    (("индекс стоимости жизни", "индекса стоимости жизни", "фиксированный набор", "фиксированного набора",
+        "стоимость фиксированного набора", "cost of living"),
+        ("фиксированного набора", "fixed basket", "cost of living")),
     (("численность занятых", "число занятых", "количество занятых", "занятых в экономике"),
         ("employment-count", "занятых", "employed", "employment")),
 )
 
 # Заголовочный показатель региона по бытовому слову (ключ — первое слово понятия; см. search._regions).
 REGION_HEADLINES_R7A = {
-    "cpi": "indeksy-potrebitelskih-tsen",
+    # 19.11.2026: свежий помесячный ИПЦ региона «за год» (ЕМИСС 31074) вместо годового ряда сборника до 2024.
+    "cpi": "ipc-vse-za-god",
     "population": "chislennost-naseleniya",
     "wages-nominal": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
     "employment-count": "srednegodovaya-chislennost-zanyatyh",
     # Ряд «в IV квартале 2001–2020» застыл на 2020 годе; действующий — с 2024.
     "прожиточн": "velichina-prozhitochnogo-minimuma-ustanovlennaya-v-tselom-po-3-11",
     "брачност": "obschie-koeffitsienty-brachnosti-na-1000-chelovek-naseleniya",
-    "набора продуктов": "stoimost-uslovnogo-minimalnogo-nabora-produktov-pitaniya",
+    "набора продуктов": "nabor-minimalnyy-produktov",
+    "фиксированного набора": "nabor-fiksirovannyy",
     "рынке жилья": "srednie-tseny-na-vtorichnom-rynke-zhilya",
 }
 

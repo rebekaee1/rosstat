@@ -2972,3 +2972,8 @@ from app.data.emiss_regional_sets import copy_en as _emiss_sets_copy_en  # noqa:
 
 for _code, _copy in _emiss_sets_copy_en().items():
     REGION_INDICATORS_EN.setdefault(_code, _copy)
+# Monthly regional consumer prices, EMISS 31074/31052/31481 (2026-11-19).
+from app.data.emiss_regional_cpi import SERIES as _CPI_SERIES, copy_en as _cpi_copy_en  # noqa: E402
+
+for _series in _CPI_SERIES:
+    REGION_INDICATORS_EN.setdefault(_series.code, _cpi_copy_en(_series))

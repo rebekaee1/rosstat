@@ -709,6 +709,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # ИПЦ и стоимость наборов по регионам помесячно (ЕМИСС 31074/31052/31481, 19.11.2026): Росстат выкладывает
+        # их в середине следующего месяца, как цены 31448. Те же дни, на 20 минут позже топлива (не одновременно
+        # к fedstat). Первый прогон после выпуска грузит историю с 2001–2002 года (~100 запросов, до получаса).
+        from app.tasks.scheduler import emiss_regional_cpi_job as _emiss_regional_cpi
+
+        scheduler.add_job(
+            locked_job(_emiss_regional_cpi, "emiss_regional_cpi", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=8, minute=0, day="15,20,25,28", timezone="Europe/Moscow"),
+            id="emiss_regional_cpi",
+            name="Monthly EMISS regional CPI and basket costs (region_monthly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # World: национальные паспорта (19 официальных источников, ~90 рядов)
         # обновляются ежедневно — данные пишут сразу, контур проверен живыми
         # прогонами. Eurostat-часть (TOC-driven, часы работы) остаётся

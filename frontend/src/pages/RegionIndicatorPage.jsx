@@ -382,14 +382,17 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     }
     return { mx, mn };
   })();
-  const yoyByKey = isMonthly
+  // ИПЦ региона помесячно (ЕМИСС 31074, 19.11.2026): значение уже изменение цен в % к базе — «изменение индекса
+  // за год» и «в ценах сегодня» для него бессмысленны, их не показываем.
+  const isIndexPct = isMonthly && /^%/.test(active?.indicator?.unit || '');
+  const yoyByKey = isMonthly && !isIndexPct
     ? new Map(activeSeries.map((pt, i, arr) => {
       const prev = i >= 12 ? arr[i - 12] : null;
       const ok = prev && prev.value && (pt.year * 12 + pt.month) - (prev.year * 12 + prev.month) === 12;
       return [pt.year * 12 + pt.month, ok ? ((pt.value - prev.value) / Math.abs(prev.value)) * 100 : null];
     }))
     : null;
-  const periodChanges = isMonthly
+  const periodChanges = isMonthly && !isIndexPct
     ? [
       { key: 'z2.yearAgo', ch: changeOverMonths(activeSeries, 12) },
       { key: 'z2.fiveYearsAgo', ch: changeOverMonths(activeSeries, 60) },
@@ -407,8 +410,8 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     : '';
   const chartMonths = isMonthly ? rangeM : 0;
   const cpiChain = isMonthly ? monthly.data?.cpi_russia : null;
-  // «В сегодняшних ценах» — только у цен: ввод жилья, индексы производства и тарифов инфляцией не пересчитываются.
-  const realFull = isMonthly && isPrice && last && !discontinued ? deflateSeries(activeSeries, cpiChain, last.year * 100 + last.month) : null;
+  // «В сегодняшних ценах» — только у рублёвых рядов (цены, зарплата, пенсия, стоимость наборов): ввод жилья, индексы производства и тарифов инфляцией не пересчитываются.
+  const realFull = isMonthly && !isIndexPct && (isPrice || /^рубл/i.test(active?.indicator?.unit || '')) && last && !discontinued ? deflateSeries(activeSeries, cpiChain, last.year * 100 + last.month) : null;
   const chartSeriesM = isMonthly ? fillMonthGaps(sliceMonths(activeSeries, chartMonths)) : null;
   const chartEvents = isMonthly && chartMonths !== 24 && chartMonths !== 60 ? eventPeriods(chartSeriesM) : null;
   const realSlice = showReal && realFull ? sliceMonths(realFull, chartMonths) : null;
@@ -793,7 +796,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                       {active.russia_series?.length > 0 && (
                         <th className="px-3 py-2 text-right font-medium sm:px-4">{t('regions.ind.russia')}</th>
                       )}
-                      {isMonthly && <th className="px-3 py-2 text-right font-medium sm:px-4">{t('r2z2.colYoy')}</th>}
+                      {yoyByKey && <th className="px-3 py-2 text-right font-medium sm:px-4">{t('r2z2.colYoy')}</th>}
                       {!isMonthly && active.russia_series?.length > 0 && (
                         <th className="px-3 py-2 text-right font-medium sm:px-4">{t('r6c.colGap')}</th>
                       )}
@@ -819,7 +822,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                               {rf ? (gapText(p.value, rf.value, active.indicator.unit, locale)?.text ?? '—') : '—'}
                             </td>
                           )}
-                          {isMonthly && (
+                          {yoyByKey && (
                             <td className="fe-num px-3 py-1.5 text-right text-text-secondary sm:px-4">
                               {yoyByKey.get(p.year * 12 + p.month) != null ? signedPct(yoyByKey.get(p.year * 12 + p.month), locale) : '\u2014'}
                             </td>
