@@ -24870,7 +24870,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "ddbf474d9a8b5bf8bf5ea298c4e49769c4e8fe535951e13f3004242e6d8ba255",
+    "sha256": "cc356c79d52a152e917f3b86f3cea4e8aa83601265e1de7d72a0a85062171114",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -24978,7 +24978,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "9860378b02ef563749c105407f3d2c7e3d26de47610fc92c07c118be26268c13",
+    "sha256": "9705660f1517fd47ea6ecca82bf704e0eea529a5843b162944945340b6755865",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -30697,7 +30697,7 @@
     "anonymous_functions": 12
   },
   "frontend/src/lib/categories.js": {
-    "sha256": "c35b8ed78aebfcd0c3b58fab3d6fce0f07aaf95fac401c5b3ab63776e2ae3dab",
+    "sha256": "3f84485c6d2d674cb6f1d45b9a22ccd6ca60e3a89606ba18afde1ce0f2af27b6",
     "definitions": [
       {
         "name": "getCategoryBySlug",
@@ -61167,7 +61167,7 @@
     "anonymous_functions": 20
   },
   "frontend/src/pages/RegionIndicatorPage.component.test.jsx": {
-    "sha256": "b0c510a72b5302ae3c798f03c1e1e1ee735382d633457bfc3bdef987ffb021b8",
+    "sha256": "6b3eeba5cd5a3f9be3f381ee4426b645ee8a7024479172dd38d8a2c1a6f92afe",
     "definitions": [
       {
         "name": "renderCard",
@@ -61179,6 +61179,12 @@
         "name": "chartBlockMounted",
         "line": 69,
         "end_line": 71,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "monthlyCpiSeries",
+        "line": 117,
+        "end_line": 125,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -61205,10 +61211,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 9
+    "anonymous_functions": 12
   },
   "frontend/src/pages/RegionIndicatorPage.jsx": {
-    "sha256": "da2592ed5275ee484eafcbffd944b977ee4ddfe6fc34a9814106f102493fdb42",
+    "sha256": "d7890a73af9968d57c84a9230ec03c44d66edb298b2f9d33f4570aefcd48a6a0",
     "definitions": [
       {
         "name": "toYoYSeries",
@@ -61243,49 +61249,55 @@
       {
         "name": "RegionIndicatorPage",
         "line": 112,
-        "end_line": 900,
+        "end_line": 919,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionIndicatorPage.requireAuth",
-        "line": 155,
-        "end_line": 160,
+        "line": 157,
+        "end_line": 162,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.handleExportTable",
-        "line": 162,
-        "end_line": 192,
+        "line": 164,
+        "end_line": 195,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.handleExportPng",
-        "line": 194,
-        "end_line": 203,
+        "line": 197,
+        "end_line": 206,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionIndicatorPage.periodOf",
+        "line": 221,
+        "end_line": 221,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.at",
-        "line": 296,
-        "end_line": 299,
+        "line": 311,
+        "end_line": 314,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.trimUnitTail",
-        "line": 333,
-        "end_line": 333,
+        "line": 348,
+        "end_line": 348,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
-        "line": 586,
-        "end_line": 586,
+        "line": 605,
+        "end_line": 605,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionIndicatorPage.onSelect",
-        "line": 587,
-        "end_line": 587,
+        "line": 606,
+        "end_line": 606,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -61451,7 +61463,38 @@
         "line": 112
       }
     ],
-    "anonymous_functions": 48
+    "anonymous_functions": 50
+  },
+  "frontend/src/pages/RegionIndicatorPage.quarterly.component.test.jsx": {
+    "sha256": "d2c038c1595a8e4d616f2c3e6055d6585679dd0892aa0872ed9256f7924e903c",
+    "definitions": [
+      {
+        "name": "q",
+        "line": 7,
+        "end_line": 7,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 2
+      },
+      {
+        "source": "./RegionIndicatorPage",
+        "line": 3
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 4
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 2
   },
   "frontend/src/pages/RegionProfile.component.test.jsx": {
     "sha256": "82ef813f0ea48cccc7657099828c8fddfb0ff3fae0d8f128fbe2d35db5535887",
@@ -61684,7 +61727,7 @@
     "anonymous_functions": 12
   },
   "frontend/src/pages/RegionRatingPage.jsx": {
-    "sha256": "86432ac4a4e5334eec9c85668f77009cc87a587dc1395d5f269800fab3f9edcd",
+    "sha256": "9961b99e4c937d421348b4e9c29b3cc8d8b4d91845708624b504351eceb7969b",
     "definitions": [
       {
         "name": "cleanPriceName",
@@ -61695,7 +61738,7 @@
       {
         "name": "RegionRatingPage",
         "line": 41,
-        "end_line": 402,
+        "end_line": 403,
         "kind": "FunctionDeclaration"
       },
       {
@@ -61712,26 +61755,26 @@
       },
       {
         "name": "RegionRatingPage.val",
-        "line": 83,
-        "end_line": 83,
+        "line": 84,
+        "end_line": 84,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionRatingPage.fmtU",
-        "line": 93,
-        "end_line": 93,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "RegionRatingPage.num1",
         "line": 94,
         "end_line": 94,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "RegionRatingPage.signed",
+        "name": "RegionRatingPage.num1",
         "line": 95,
         "end_line": 95,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionRatingPage.signed",
+        "line": 96,
+        "end_line": 96,
         "kind": "ArrowFunctionExpression"
       }
     ],

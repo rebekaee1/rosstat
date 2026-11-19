@@ -117829,7 +117829,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "ddbf474d9a8b5bf8bf5ea298c4e49769c4e8fe535951e13f3004242e6d8ba255",
+      "sha256": "cc356c79d52a152e917f3b86f3cea4e8aa83601265e1de7d72a0a85062171114",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -118252,7 +118252,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "9860378b02ef563749c105407f3d2c7e3d26de47610fc92c07c118be26268c13",
+      "sha256": "9705660f1517fd47ea6ecca82bf704e0eea529a5843b162944945340b6755865",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -132578,7 +132578,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/categories.js": {
-      "sha256": "c35b8ed78aebfcd0c3b58fab3d6fce0f07aaf95fac401c5b3ab63776e2ae3dab",
+      "sha256": "3f84485c6d2d674cb6f1d45b9a22ccd6ca60e3a89606ba18afde1ce0f2af27b6",
       "imports": [
         {
           "line": 14,
@@ -132698,7 +132698,7 @@
           "name": "CATEGORY_DEFS",
           "kind": "ArrayExpression",
           "entries": [
-            "{\n    slug: 'prices',\n    name: 'Цены и инфляция',\n    nameEn: 'Prices and inflation',\n    seoTitleEn: 'Prices and inflation in Russia',\n    seoDescriptionEn: 'CPI, inflation, and housing prices — Rosstat data and forecasts.',\n    icon: 'ShoppingCart',\n    apiCategory: 'Цены',\n    status: 'active',\n    flagshipCode: 'cpi',\n    sentiment: 'inverse',\n    description:\n      'Индекс потребительских цен на товары и услуги. Индекс цен производителей. Цены на недвижимость.',\n    descriptionEn:\n      'Consumer price index for goods and services. Producer prices. Housing prices.',\n    relatedSlugs: ['rates', 'finance', 'labor'],\n  }",
+            "{\n    slug: 'prices',\n    name: 'Цены и инфляция',\n    nameEn: 'Prices and inflation',\n    seoTitleEn: 'Prices and inflation in Russia',\n    seoDescriptionEn: 'CPI, inflation, and housing prices — Rosstat data and forecasts.',\n    icon: 'ShoppingCart',\n    apiCategory: 'Цены',\n    status: 'active',\n    flagshipCode: 'cpi',\n    sentiment: 'inverse',\n    description:\n      'Индекс потребительских цен на товары и услуги. Цены производителей по отраслям и товарам. Цены на стройматериалы и в строительстве. Цены на недвижимость.',\n    descriptionEn:\n      'Consumer price index for goods and services. Producer prices by industry and product. Construction materials and building costs. Housing prices.',\n    relatedSlugs: ['rates', 'finance', 'labor'],\n  }",
             "{\n    slug: 'rates',\n    name: 'Процентные ставки',\n    nameEn: 'Interest rates',\n    seoTitleEn: 'Interest rates in Russia',\n    seoDescriptionEn: 'Key rate, RUONIA, mortgage and deposit rates — Bank of Russia data.',\n    icon: 'Percent',\n    apiCategory: 'Ставки',\n    status: 'active',\n    flagshipCode: 'key-rate',\n    sentiment: 'neutral',\n    description: 'Ключевая ставка ЦБ, RUONIA. Ставки по вкладам, автокредитам и ипотеке.',\n    descriptionEn:\n      'CBR key rate, RUONIA. Deposit, auto loan and mortgage rates.',\n    relatedSlugs: ['prices', 'finance', 'business'],\n  }",
             "{\n    slug: 'currencies',\n    name: 'Валюты',\n    nameEn: 'Currencies',\n    seoTitleEn: 'Currency and cryptocurrency rates',\n    seoDescriptionEn:\n      'Ruble exchange rates, global currency pairs, and cryptocurrency prices from the Bank of Russia, ECB, and Binance.',\n    icon: 'CircleDollarSign',\n    apiCategory: 'Валюты',\n    status: 'active',\n    flagshipCode: 'usd-rub',\n    sentiment: 'inverse',\n    description: 'Курсы к рублю, мировые валютные пары и криптовалюты из разных источников.',\n    descriptionEn:\n      'Ruble exchange rates, global currency pairs, and cryptocurrency prices from multiple sources.',\n    relatedSlugs: ['finance', 'rates', 'trade'],\n  }",
             "{\n    slug: 'finance',\n    name: 'Деньги и бюджет',\n    nameEn: 'Money and budget',\n    seoTitleEn: 'Money and budget in Russia',\n    seoDescriptionEn:\n      'Money supply, reserves, credit, deposits, and the budget — Bank of Russia and Ministry of Finance data.',\n    icon: 'Wallet',\n    apiCategory: 'Финансы',\n    status: 'active',\n    flagshipCode: 'm2',\n    sentiment: 'neutral',\n    description: 'Деньги в обращении, резервы, внешний долг, кредиты, депозиты, бюджет.',\n    descriptionEn:\n      'Money in circulation, reserves, external debt, credit, deposits, budget.',\n    relatedSlugs: ['currencies', 'rates', 'trade'],\n  }",
@@ -235849,7 +235849,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/RegionIndicatorPage.component.test.jsx": {
-      "sha256": "b0c510a72b5302ae3c798f03c1e1e1ee735382d633457bfc3bdef987ffb021b8",
+      "sha256": "6b3eeba5cd5a3f9be3f381ee4426b645ee8a7024479172dd38d8a2c1a6f92afe",
       "imports": [
         {
           "line": 1,
@@ -236009,6 +236009,38 @@
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "waitFor"
+        },
+        {
+          "line": 117,
+          "end_line": 125,
+          "owner": "<module>",
+          "name": "monthlyCpiSeries",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 152,
+          "end_line": 170,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 153,
+          "end_line": 169,
+          "owner": "<callback@152>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 165,
+          "end_line": 165,
+          "owner": "<callback@152>.<callback@153>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
         }
       ],
       "hooks": [],
@@ -236032,12 +236064,32 @@
             "siblings"
           ],
           "initializer": null
+        },
+        {
+          "line": 127,
+          "end_line": 150,
+          "owner": "<module>",
+          "name": "CPI_MONTHLY",
+          "kind": "ObjectExpression",
+          "entries": [
+            "region",
+            "indicator",
+            "frequency",
+            "cpi_russia",
+            "compare",
+            "series",
+            "russia_series",
+            "weekly",
+            "weekly_russia",
+            "siblings"
+          ],
+          "initializer": null
         }
       ],
       "mcp_tools": []
     },
     "frontend/src/pages/RegionIndicatorPage.jsx": {
-      "sha256": "da2592ed5275ee484eafcbffd944b977ee4ddfe6fc34a9814106f102493fdb42",
+      "sha256": "d7890a73af9968d57c84a9230ec03c44d66edb298b2f9d33f4570aefcd48a6a0",
       "imports": [
         {
           "line": 5,
@@ -236653,95 +236705,95 @@
         },
         {
           "line": 112,
-          "end_line": 900,
+          "end_line": 919,
           "owner": "<module>",
           "name": "RegionIndicatorPage",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 146,
-          "end_line": 151,
+          "line": 148,
+          "end_line": 153,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 148,
-          "end_line": 148,
-          "owner": "RegionIndicatorPage.<callback@146>",
+          "line": 150,
+          "end_line": 150,
+          "owner": "RegionIndicatorPage.<callback@148>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "landing.data.districts.flatMap"
         },
         {
-          "line": 148,
-          "end_line": 148,
-          "owner": "RegionIndicatorPage.<callback@146>.<callback@148>",
+          "line": 150,
+          "end_line": 150,
+          "owner": "RegionIndicatorPage.<callback@148>.<callback@150>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "d.regions.map"
         },
         {
-          "line": 149,
-          "end_line": 149,
-          "owner": "RegionIndicatorPage.<callback@146>",
+          "line": 151,
+          "end_line": 151,
+          "owner": "RegionIndicatorPage.<callback@148>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "landing.data.districts.flatMap(d => d.regions.map(r => ({ slug: r.slug, name: r.name })))\n      .filter"
         },
         {
-          "line": 150,
-          "end_line": 150,
-          "owner": "RegionIndicatorPage.<callback@146>",
+          "line": 152,
+          "end_line": 152,
+          "owner": "RegionIndicatorPage.<callback@148>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "landing.data.districts.flatMap(d => d.regions.map(r => ({ slug: r.slug, name: r.name })))\n      .filter(r => r.slug !== slug)\n      .sort"
         },
         {
-          "line": 155,
-          "end_line": 160,
+          "line": 157,
+          "end_line": 162,
           "owner": "RegionIndicatorPage",
           "name": "requireAuth",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 162,
-          "end_line": 192,
+          "line": 164,
+          "end_line": 195,
           "owner": "RegionIndicatorPage",
           "name": "handleExportTable",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 172,
-          "end_line": 176,
+          "line": 174,
+          "end_line": 179,
           "owner": "RegionIndicatorPage.handleExportTable",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "activeSeries.map"
         },
         {
-          "line": 185,
-          "end_line": 185,
+          "line": 188,
+          "end_line": 188,
           "owner": "RegionIndicatorPage.handleExportTable",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 194,
-          "end_line": 203,
+          "line": 197,
+          "end_line": 206,
           "owner": "RegionIndicatorPage",
           "name": "handleExportPng",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 200,
-          "end_line": 200,
+          "line": 203,
+          "end_line": 203,
           "owner": "RegionIndicatorPage.handleExportPng",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -236749,187 +236801,179 @@
         },
         {
           "line": 221,
-          "end_line": 231,
+          "end_line": 221,
+          "owner": "RegionIndicatorPage",
+          "name": "periodOf",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 223,
+          "end_line": 223,
+          "owner": "RegionIndicatorPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(active?.russia_series || []).map"
+        },
+        {
+          "line": 230,
+          "end_line": 240,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 260,
-          "end_line": 279,
+          "line": 269,
+          "end_line": 288,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 285,
-          "end_line": 285,
+          "line": 292,
+          "end_line": 292,
+          "owner": "RegionIndicatorPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "activeSeries.find"
+        },
+        {
+          "line": 300,
+          "end_line": 300,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 291,
-          "end_line": 304,
+          "line": 306,
+          "end_line": 319,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 293,
-          "end_line": 293,
-          "owner": "RegionIndicatorPage.<callback@291>",
+          "line": 308,
+          "end_line": 308,
+          "owner": "RegionIndicatorPage.<callback@306>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "activeSeries.map"
         },
         {
-          "line": 296,
-          "end_line": 299,
-          "owner": "RegionIndicatorPage.<callback@291>",
+          "line": 311,
+          "end_line": 314,
+          "owner": "RegionIndicatorPage.<callback@306>",
           "name": "at",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 321,
-          "end_line": 321,
+          "line": 336,
+          "end_line": 336,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 333,
-          "end_line": 333,
+          "line": 348,
+          "end_line": 348,
           "owner": "RegionIndicatorPage",
           "name": "trimUnitTail",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 335,
-          "end_line": 338,
+          "line": 350,
+          "end_line": 353,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    const m = String(displayName || '').match(/^(.{20,}?)\\s+[—–]\\s+(.{25,})$/);\n    return m ? [m[1], m[2]] : null;\n  }"
         },
         {
-          "line": 351,
-          "end_line": 355,
+          "line": 366,
+          "end_line": 370,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(active?.siblings || []).map"
         },
         {
-          "line": 375,
-          "end_line": 384,
+          "line": 390,
+          "end_line": 399,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (!isMonthly || activeSeries.length < 24) return null;\n    let mx = activeSeries[0];\n    let mn = activeSeries[0];\n    for (const pt of activeSeries) {\n      if (pt.value > mx.value) mx = pt;\n      if (pt.value < mn.value) mn = pt;\n    }\n    return { mx, mn };\n  }"
         },
         {
-          "line": 386,
-          "end_line": 390,
+          "line": 404,
+          "end_line": 408,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "activeSeries.map"
         },
         {
-          "line": 396,
-          "end_line": 396,
+          "line": 414,
+          "end_line": 414,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[\n      { key: 'z2.yearAgo', ch: changeOverMonths(activeSeries, 12) },\n      { key: 'z2.fiveYearsAgo', ch: changeOverMonths(activeSeries, 60) },\n    ].filter"
         },
         {
-          "line": 433,
-          "end_line": 433,
+          "line": 452,
+          "end_line": 452,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 439,
-          "end_line": 439,
+          "line": 458,
+          "end_line": 458,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[0, 1, 2, 3].map"
         },
         {
-          "line": 545,
-          "end_line": 548,
+          "line": 564,
+          "end_line": 567,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 553,
-          "end_line": 555,
+          "line": 572,
+          "end_line": 574,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regionOptions.map"
         },
         {
-          "line": 559,
-          "end_line": 559,
+          "line": 578,
+          "end_line": 578,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 559,
-          "end_line": 559,
-          "owner": "RegionIndicatorPage.<callback@559>",
+          "line": 578,
+          "end_line": 578,
+          "owner": "RegionIndicatorPage.<callback@578>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setShowReal"
-        },
-        {
-          "line": 567,
-          "end_line": 567,
-          "owner": "RegionIndicatorPage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 567,
-          "end_line": 567,
-          "owner": "RegionIndicatorPage.<callback@567>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "setShowRussia"
-        },
-        {
-          "line": 579,
-          "end_line": 579,
-          "owner": "RegionIndicatorPage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 579,
-          "end_line": 579,
-          "owner": "RegionIndicatorPage.<callback@579>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "setShowYoY"
         },
         {
           "line": 586,
@@ -236940,129 +236984,161 @@
           "callback_context": null
         },
         {
-          "line": 587,
-          "end_line": 587,
+          "line": 586,
+          "end_line": 586,
+          "owner": "RegionIndicatorPage.<callback@586>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setShowRussia"
+        },
+        {
+          "line": 598,
+          "end_line": 598,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 630,
-          "end_line": 630,
+          "line": 598,
+          "end_line": 598,
+          "owner": "RegionIndicatorPage.<callback@598>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setShowYoY"
+        },
+        {
+          "line": 605,
+          "end_line": 605,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 645,
-          "end_line": 645,
+          "line": 606,
+          "end_line": 606,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 695,
-          "end_line": 700,
+          "line": 649,
+          "end_line": 649,
+          "owner": "RegionIndicatorPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 664,
+          "end_line": 664,
+          "owner": "RegionIndicatorPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 714,
+          "end_line": 719,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "periodChanges.map"
         },
         {
-          "line": 746,
-          "end_line": 759,
+          "line": 765,
+          "end_line": 778,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "active.rank.top.map"
         },
         {
-          "line": 773,
-          "end_line": 773,
+          "line": 792,
+          "end_line": 792,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 773,
-          "end_line": 773,
-          "owner": "RegionIndicatorPage.<callback@773>",
+          "line": 792,
+          "end_line": 792,
+          "owner": "RegionIndicatorPage.<callback@792>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setShowTable"
         },
         {
-          "line": 802,
-          "end_line": 828,
+          "line": 821,
+          "end_line": 847,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "tableRows.map"
         },
         {
-          "line": 804,
-          "end_line": 804,
-          "owner": "RegionIndicatorPage.<callback@802>",
+          "line": 823,
+          "end_line": 823,
+          "owner": "RegionIndicatorPage.<callback@821>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "active.russia_series?.find"
         },
         {
-          "line": 846,
-          "end_line": 846,
+          "line": 865,
+          "end_line": 865,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 853,
-          "end_line": 853,
+          "line": 872,
+          "end_line": 872,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 862,
-          "end_line": 862,
+          "line": 881,
+          "end_line": 881,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "siblingsView.some"
         },
         {
-          "line": 871,
-          "end_line": 871,
+          "line": 890,
+          "end_line": 890,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "siblingsView.some"
         },
         {
-          "line": 877,
-          "end_line": 887,
+          "line": 896,
+          "end_line": 906,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "annualSibs.slice(0, sibsOpen || isMonthly ? undefined : R6_SIBS_FIRST).map"
         },
         {
-          "line": 890,
-          "end_line": 890,
+          "line": 909,
+          "end_line": 909,
           "owner": "RegionIndicatorPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 890,
-          "end_line": 890,
-          "owner": "RegionIndicatorPage.<callback@890>",
+          "line": 909,
+          "end_line": 909,
+          "owner": "RegionIndicatorPage.<callback@909>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setSibsOpen"
@@ -237140,24 +237216,6 @@
           ]
         },
         {
-          "line": 126,
-          "end_line": 126,
-          "owner": "RegionIndicatorPage",
-          "callee": "useState",
-          "arguments": [
-            "false"
-          ]
-        },
-        {
-          "line": 127,
-          "end_line": 127,
-          "owner": "RegionIndicatorPage",
-          "callee": "useState",
-          "arguments": [
-            "null"
-          ]
-        },
-        {
           "line": 128,
           "end_line": 128,
           "owner": "RegionIndicatorPage",
@@ -237167,15 +237225,33 @@
           ]
         },
         {
-          "line": 132,
-          "end_line": 132,
+          "line": 129,
+          "end_line": 129,
+          "owner": "RegionIndicatorPage",
+          "callee": "useState",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 130,
+          "end_line": 130,
+          "owner": "RegionIndicatorPage",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 134,
+          "end_line": 134,
           "owner": "RegionIndicatorPage",
           "callee": "useAuth",
           "arguments": []
         },
         {
-          "line": 133,
-          "end_line": 133,
+          "line": 135,
+          "end_line": 135,
           "owner": "RegionIndicatorPage",
           "callee": "useRef",
           "arguments": [
@@ -237183,8 +237259,8 @@
           ]
         },
         {
-          "line": 136,
-          "end_line": 136,
+          "line": 138,
+          "end_line": 138,
           "owner": "RegionIndicatorPage",
           "callee": "useState",
           "arguments": [
@@ -237192,15 +237268,15 @@
           ]
         },
         {
-          "line": 137,
-          "end_line": 137,
+          "line": 139,
+          "end_line": 139,
           "owner": "RegionIndicatorPage",
           "callee": "useRegionsLanding",
           "arguments": []
         },
         {
-          "line": 138,
-          "end_line": 138,
+          "line": 140,
+          "end_line": 140,
           "owner": "RegionIndicatorPage",
           "callee": "useRegionIndicator",
           "arguments": [
@@ -237209,8 +237285,8 @@
           ]
         },
         {
-          "line": 139,
-          "end_line": 141,
+          "line": 141,
+          "end_line": 143,
           "owner": "RegionIndicatorPage",
           "callee": "useRegionIndicatorMonthly",
           "arguments": [
@@ -237220,8 +237296,8 @@
           ]
         },
         {
-          "line": 143,
-          "end_line": 145,
+          "line": 145,
+          "end_line": 147,
           "owner": "RegionIndicatorPage",
           "callee": "useRegionIndicatorMonthly",
           "arguments": [
@@ -237231,8 +237307,8 @@
           ]
         },
         {
-          "line": 146,
-          "end_line": 151,
+          "line": 148,
+          "end_line": 153,
           "owner": "RegionIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -237241,8 +237317,8 @@
           ]
         },
         {
-          "line": 220,
-          "end_line": 220,
+          "line": 229,
+          "end_line": 229,
           "owner": "RegionIndicatorPage",
           "callee": "useRef",
           "arguments": [
@@ -237250,8 +237326,8 @@
           ]
         },
         {
-          "line": 221,
-          "end_line": 231,
+          "line": 230,
+          "end_line": 240,
           "owner": "RegionIndicatorPage",
           "callee": "useEffect",
           "arguments": [
@@ -237260,17 +237336,17 @@
           ]
         },
         {
-          "line": 233,
-          "end_line": 258,
+          "line": 242,
+          "end_line": 267,
           "owner": "RegionIndicatorPage",
           "callee": "useDocumentMeta",
           "arguments": [
-            "active && last ? {\n    title: t(isMonthly ? 'regions.ind.metaTitleMonthly' : 'regions.ind.metaTitle', {\n      name: indName,\n      region: regionName,\n      value: formatRegionValue(last.value),\n      unit: shortUnit(active.indicator.unit),\n      year: isMonthly ? lastLabel : last.year,\n    }),\n    description: t(isMonthly ? 'regions.ind.metaDescMonthly' : 'regions.ind.metaDesc', {\n      name: indName,\n      region: regionName,\n      value: formatRegionValue(last.value),\n      unit: active.indicator.unit,\n      year: isMonthly ? lastLabel : last.year,\n      from: first.year,\n      rank: active.rank\n        ? t(\n          active.rank.rank_as_achievement\n            ? 'regions.ind.metaRankAchieve'\n            : 'regions.ind.metaRankNeutral',\n          { position: active.rank.position, total: active.rank.total },\n        )\n        : '.',\n    }),\n    path: regionIndicatorPath(slug, code),\n  } : null"
+            "active && last ? {\n    title: t(isMonthly ? 'regions.ind.metaTitleMonthly' : 'regions.ind.metaTitle', {\n      name: indName,\n      region: regionName,\n      value: formatRegionValue(last.value),\n      unit: shortUnit(active.indicator.unit),\n      year: isMonthly || isQuarterly ? lastLabel : last.year,\n    }),\n    description: t(isMonthly ? 'regions.ind.metaDescMonthly' : isQuarterly ? 'rq.metaDesc' : 'regions.ind.metaDesc', {\n      name: indName,\n      region: regionName,\n      value: formatRegionValue(last.value),\n      unit: active.indicator.unit,\n      year: isMonthly || isQuarterly ? lastLabel : last.year,\n      from: isQuarterly ? first.label : first.year,\n      rank: active.rank\n        ? t(\n          active.rank.rank_as_achievement\n            ? 'regions.ind.metaRankAchieve'\n            : 'regions.ind.metaRankNeutral',\n          { position: active.rank.position, total: active.rank.total },\n        )\n        : '.',\n    }),\n    path: regionIndicatorPath(slug, code),\n  } : null"
           ]
         },
         {
-          "line": 260,
-          "end_line": 279,
+          "line": 269,
+          "end_line": 288,
           "owner": "RegionIndicatorPage",
           "callee": "useEffect",
           "arguments": [
@@ -237279,8 +237355,8 @@
           ]
         },
         {
-          "line": 285,
-          "end_line": 285,
+          "line": 300,
+          "end_line": 300,
           "owner": "RegionIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -237289,18 +237365,18 @@
           ]
         },
         {
-          "line": 291,
-          "end_line": 304,
+          "line": 306,
+          "end_line": 319,
           "owner": "RegionIndicatorPage",
           "callee": "useMemo",
           "arguments": [
-            "() => {\n    if (!activeSeries.length) return null;\n    const values = activeSeries.map(p => p.value);\n    const max = Math.max(...values);\n    const min = Math.min(...values);\n    const at = (idx) => {\n      const p = activeSeries[idx];\n      return isMonthly ? monthName(p.month, locale) + ' ' + p.year : p.year;\n    };\n    return {\n      max, maxAt: at(values.indexOf(max)),\n      min, minAt: at(values.indexOf(min)),\n    };\n  }",
-            "[activeSeries, isMonthly, locale]"
+            "() => {\n    if (!activeSeries.length) return null;\n    const values = activeSeries.map(p => p.value);\n    const max = Math.max(...values);\n    const min = Math.min(...values);\n    const at = (idx) => {\n      const p = activeSeries[idx];\n      return isMonthly ? monthName(p.month, locale) + ' ' + p.year : (isQuarterly ? p.label : p.year);\n    };\n    return {\n      max, maxAt: at(values.indexOf(max)),\n      min, minAt: at(values.indexOf(min)),\n    };\n  }",
+            "[activeSeries, isMonthly, isQuarterly, locale]"
           ]
         },
         {
-          "line": 320,
-          "end_line": 323,
+          "line": 335,
+          "end_line": 338,
           "owner": "RegionIndicatorPage",
           "callee": "useMemo",
           "arguments": [
@@ -237313,8 +237389,8 @@
       "storage": [],
       "events": [
         {
-          "line": 158,
-          "end_line": 158,
+          "line": 160,
+          "end_line": 160,
           "owner": "RegionIndicatorPage.requireAuth",
           "callee": "window.dispatchEvent",
           "arguments": [
@@ -237324,104 +237400,104 @@
       ],
       "jsx_handlers": [
         {
-          "line": 427,
-          "end_line": 427,
+          "line": 446,
+          "end_line": 446,
           "owner": "RegionIndicatorPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{refetch}"
         },
         {
-          "line": 433,
-          "end_line": 433,
+          "line": 452,
+          "end_line": 452,
           "owner": "RegionIndicatorPage",
           "component": "LoadingNote",
           "event": "onRefresh",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 534,
-          "end_line": 534,
+          "line": 553,
+          "end_line": 553,
           "owner": "RegionIndicatorPage",
           "component": "RangeChips",
           "event": "onChange",
           "expression": "{setRangeM}"
         },
         {
-          "line": 543,
-          "end_line": 551,
+          "line": 562,
+          "end_line": 570,
           "owner": "RegionIndicatorPage",
           "component": "select",
           "event": "onChange",
           "expression": "{(e) => {\n                      setCompareSlug(e.target.value);\n                      if (e.target.value) track(events.REGION_COMPARE_ADD, { region: slug, compare: e.target.value, indicator: code });\n                    }}"
         },
         {
-          "line": 559,
-          "end_line": 559,
+          "line": 578,
+          "end_line": 578,
           "owner": "RegionIndicatorPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setShowReal((v) => !v)}"
         },
         {
-          "line": 567,
-          "end_line": 567,
+          "line": 586,
+          "end_line": 586,
           "owner": "RegionIndicatorPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setShowRussia(v => !v)}"
         },
         {
-          "line": 579,
-          "end_line": 579,
+          "line": 598,
+          "end_line": 598,
           "owner": "RegionIndicatorPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setShowYoY(v => !v)}"
         },
         {
-          "line": 630,
-          "end_line": 630,
+          "line": 649,
+          "end_line": 649,
           "owner": "RegionIndicatorPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setCompareSlug('')}"
         },
         {
-          "line": 645,
-          "end_line": 645,
+          "line": 664,
+          "end_line": 664,
           "owner": "RegionIndicatorPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setCompareSlug('')}"
         },
         {
-          "line": 772,
-          "end_line": 776,
+          "line": 791,
+          "end_line": 795,
           "owner": "RegionIndicatorPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setShowTable(v => !v)}"
         },
         {
-          "line": 844,
-          "end_line": 848,
+          "line": 863,
+          "end_line": 867,
           "owner": "RegionIndicatorPage",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: active.indicator.macro_code })}"
         },
         {
-          "line": 851,
-          "end_line": 855,
+          "line": 870,
+          "end_line": 874,
           "owner": "RegionIndicatorPage",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: 'compare' })}"
         },
         {
-          "line": 890,
-          "end_line": 890,
+          "line": 909,
+          "end_line": 909,
           "owner": "RegionIndicatorPage",
           "component": "button",
           "event": "onClick",
@@ -237442,13 +237518,123 @@
           "initializer": null
         },
         {
-          "line": 146,
-          "end_line": 151,
+          "line": 148,
+          "end_line": 153,
           "owner": "RegionIndicatorPage",
           "name": "regionOptions",
           "kind": "CallExpression",
           "entries": [],
           "initializer": "useMemo"
+        }
+      ],
+      "mcp_tools": []
+    },
+    "frontend/src/pages/RegionIndicatorPage.quarterly.component.test.jsx": {
+      "sha256": "d2c038c1595a8e4d616f2c3e6055d6585679dd0892aa0872ed9256f7924e903c",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "it",
+            "expect"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "@testing-library/react",
+          "category": "external_package",
+          "target": "@testing-library/react",
+          "bindings": [
+            "fireEvent",
+            "screen",
+            "within"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "./RegionIndicatorPage",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/pages/RegionIndicatorPage.jsx"
+          ],
+          "bindings": [
+            "RegionIndicatorPage"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "../test/renderPage",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/test/renderPage.jsx"
+          ],
+          "bindings": [
+            "renderPage",
+            "mockApiGet"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 7,
+          "end_line": 7,
+          "owner": "<module>",
+          "name": "q",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 32,
+          "end_line": 55,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 33,
+          "end_line": 54,
+          "owner": "<callback@32>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [
+        {
+          "line": 9,
+          "end_line": 30,
+          "owner": "<module>",
+          "name": "PAYLOAD",
+          "kind": "ObjectExpression",
+          "entries": [
+            "region",
+            "indicator",
+            "frequency",
+            "series",
+            "russia_series",
+            "rank",
+            "siblings"
+          ],
+          "initializer": null
         }
       ],
       "mcp_tools": []
@@ -238728,7 +238914,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/RegionRatingPage.jsx": {
-      "sha256": "86432ac4a4e5334eec9c85668f77009cc87a587dc1395d5f269800fab3f9edcd",
+      "sha256": "9961b99e4c937d421348b4e9c29b3cc8d8b4d91845708624b504351eceb7969b",
       "imports": [
         {
           "line": 1,
@@ -239038,7 +239224,7 @@
         },
         {
           "line": 41,
-          "end_line": 402,
+          "end_line": 403,
           "owner": "<module>",
           "name": "RegionRatingPage",
           "kind": "FunctionDeclaration",
@@ -239109,50 +239295,42 @@
           "callback_context": "ranked.find"
         },
         {
-          "line": 83,
-          "end_line": 83,
+          "line": 84,
+          "end_line": 84,
           "owner": "RegionRatingPage",
           "name": "val",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 84,
-          "end_line": 91,
+          "line": 85,
+          "end_line": 92,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 88,
-          "end_line": 88,
-          "owner": "RegionRatingPage.<callback@84>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "ranked.reduce"
-        },
-        {
           "line": 89,
           "end_line": 89,
-          "owner": "RegionRatingPage.<callback@84>",
+          "owner": "RegionRatingPage.<callback@85>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ranked.reduce"
         },
         {
-          "line": 93,
-          "end_line": 93,
-          "owner": "RegionRatingPage",
-          "name": "fmtU",
+          "line": 90,
+          "end_line": 90,
+          "owner": "RegionRatingPage.<callback@85>",
+          "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": null
+          "callback_context": "ranked.reduce"
         },
         {
           "line": 94,
           "end_line": 94,
           "owner": "RegionRatingPage",
-          "name": "num1",
+          "name": "fmtU",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
@@ -239160,7 +239338,7 @@
           "line": 95,
           "end_line": 95,
           "owner": "RegionRatingPage",
-          "name": "signed",
+          "name": "num1",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
@@ -239168,149 +239346,157 @@
           "line": 96,
           "end_line": 96,
           "owner": "RegionRatingPage",
+          "name": "signed",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 97,
+          "end_line": 97,
+          "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ranked.map"
         },
         {
-          "line": 99,
+          "line": 100,
+          "end_line": 103,
+          "owner": "RegionRatingPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 102,
           "end_line": 102,
+          "owner": "RegionRatingPage.<callback@100>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "data.values.map"
+        },
+        {
+          "line": 104,
+          "end_line": 107,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 101,
-          "end_line": 101,
-          "owner": "RegionRatingPage.<callback@99>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "data.values.map"
-        },
-        {
-          "line": 103,
+          "line": 106,
           "end_line": 106,
-          "owner": "RegionRatingPage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 105,
-          "end_line": 105,
-          "owner": "RegionRatingPage.<callback@103>",
+          "owner": "RegionRatingPage.<callback@104>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "data.values.map"
         },
         {
-          "line": 145,
-          "end_line": 145,
+          "line": 146,
+          "end_line": 146,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 195,
-          "end_line": 195,
+          "line": 196,
+          "end_line": 196,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 198,
-          "end_line": 198,
+          "line": 199,
+          "end_line": 199,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 207,
-          "end_line": 207,
+          "line": 208,
+          "end_line": 208,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 209,
-          "end_line": 209,
+          "line": 210,
+          "end_line": 210,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...ranked].sort"
         },
         {
-          "line": 209,
-          "end_line": 209,
+          "line": 210,
+          "end_line": 210,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...ranked].sort((a, b) => a.name.localeCompare(b.name, locale)).map"
         },
         {
-          "line": 214,
-          "end_line": 214,
+          "line": 215,
+          "end_line": 215,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 218,
-          "end_line": 222,
+          "line": 219,
+          "end_line": 223,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n                      const diff = stats.med ? ((val(mineRow) - stats.med) / stats.med) * 100 : 0;\n                      if (Math.abs(diff) < 0.5) return t('r4a.your.typical');\n                      return t(diff > 0 ? 'r9c.price.more' : 'r9c.price.less', { pct: num1(Math.abs(diff)), typical: fmtU(stats.med) });\n                    }"
         },
         {
-          "line": 225,
-          "end_line": 225,
+          "line": 226,
+          "end_line": 226,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ranked.filter"
         },
         {
-          "line": 233,
-          "end_line": 233,
+          "line": 234,
+          "end_line": 234,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 293,
-          "end_line": 293,
+          "line": 294,
+          "end_line": 294,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 314,
-          "end_line": 314,
+          "line": 315,
+          "end_line": 315,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 329,
-          "end_line": 370,
+          "line": 330,
+          "end_line": 371,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "ranked.map"
         },
         {
-          "line": 378,
-          "end_line": 378,
+          "line": 379,
+          "end_line": 379,
           "owner": "RegionRatingPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -239384,8 +239570,8 @@
           ]
         },
         {
-          "line": 84,
-          "end_line": 91,
+          "line": 85,
+          "end_line": 92,
           "owner": "RegionRatingPage",
           "callee": "useMemo",
           "arguments": [
@@ -239394,8 +239580,8 @@
           ]
         },
         {
-          "line": 99,
-          "end_line": 102,
+          "line": 100,
+          "end_line": 103,
           "owner": "RegionRatingPage",
           "callee": "useMemo",
           "arguments": [
@@ -239404,8 +239590,8 @@
           ]
         },
         {
-          "line": 103,
-          "end_line": 106,
+          "line": 104,
+          "end_line": 107,
           "owner": "RegionRatingPage",
           "callee": "useMemo",
           "arguments": [
@@ -239414,8 +239600,8 @@
           ]
         },
         {
-          "line": 115,
-          "end_line": 126,
+          "line": 116,
+          "end_line": 127,
           "owner": "RegionRatingPage",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -239485,72 +239671,72 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 138,
-          "end_line": 138,
+          "line": 139,
+          "end_line": 139,
           "owner": "RegionRatingPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{refetch}"
         },
         {
-          "line": 145,
-          "end_line": 145,
+          "line": 146,
+          "end_line": 146,
           "owner": "RegionRatingPage",
           "component": "LoadingNote",
           "event": "onRefresh",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 195,
-          "end_line": 195,
+          "line": 196,
+          "end_line": 196,
           "owner": "RegionRatingPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setSortOverride('desc')}"
         },
         {
-          "line": 198,
-          "end_line": 198,
+          "line": 199,
+          "end_line": 199,
           "owner": "RegionRatingPage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setSortOverride('asc')}"
         },
         {
-          "line": 207,
-          "end_line": 207,
+          "line": 208,
+          "end_line": 208,
           "owner": "RegionRatingPage",
           "component": "select",
           "event": "onChange",
           "expression": "{(e) => pickMine(e.target.value)}"
         },
         {
-          "line": 214,
-          "end_line": 214,
+          "line": 215,
+          "end_line": 215,
           "owner": "RegionRatingPage",
           "component": "a",
           "event": "onClick",
           "expression": "{(e) => { e.preventDefault(); document.getElementById(`r7c-row-${mineRow.slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
         },
         {
-          "line": 233,
-          "end_line": 233,
+          "line": 234,
+          "end_line": 234,
           "owner": "RegionRatingPage",
           "component": "a",
           "event": "onClick",
           "expression": "{(e) => { e.preventDefault(); document.getElementById(`r7c-row-${mineRow.slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
         },
         {
-          "line": 288,
-          "end_line": 294,
+          "line": 289,
+          "end_line": 295,
           "owner": "RegionRatingPage",
           "component": "RegionsMap",
           "event": "onSelect",
           "expression": "{(slug) => navigate(regionIndicatorPath(slug, code))}"
         },
         {
-          "line": 312,
-          "end_line": 319,
+          "line": 313,
+          "end_line": 320,
           "owner": "RegionRatingPage",
           "component": "button",
           "event": "onClick",
@@ -268526,17 +268712,17 @@
     }
   },
   "totals": {
-    "imports": 5007,
+    "imports": 5011,
     "routes": 100,
-    "functions": 16150,
+    "functions": 16160,
     "hooks": 2971,
     "http": 127,
     "storage": 253,
     "events": 470,
     "jsx_handlers": 1312,
-    "registries": 738,
+    "registries": 740,
     "mcp_tools": 7,
-    "files": 955,
+    "files": 956,
     "parse_errors": 0
   }
 }

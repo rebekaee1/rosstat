@@ -27,17 +27,17 @@
 
 ## Сводка
 
-- Всего кодов: **1708**
+- Всего кодов: **1758**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (перекрытая standalone-ветка): **24**
-- unresolved (нет ui_stack): **50**
+- unresolved (нет ui_stack): **100**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=1613, `housing`=8, `null`=50, `ppi`=5
+По стекам: `cpi`=32, `generic`=1613, `housing`=8, `null`=100, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
-`cny-eur`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `gbp-eur`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `steel`, `steel-hot-rolled`, `steel-pipes`, `steel-rebar`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`
+`build-bitumen`, `build-brick`, `build-cement`, `build-concrete`, `build-cost-housing`, `build-cost-industrial`, `build-cost-power-lines`, `build-cost-roads`, `build-crushed-stone`, `build-floor-slabs`, `build-insulation`, `build-mortar`, `build-silicate-brick`, `build-timber`, `cny-eur`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `gbp-eur`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `ppi-aluminium`, `ppi-beef`, `ppi-bread`, `ppi-building-materials`, `ppi-butter`, `ppi-cars`, `ppi-cement`, `ppi-chemicals`, `ppi-coal-mining`, `ppi-construction`, `ppi-construction-buildings`, `ppi-construction-civil`, `ppi-construction-specialised`, `ppi-copper`, `ppi-crude-oil`, `ppi-diesel`, `ppi-energy`, `ppi-flour`, `ppi-food-industry`, `ppi-gasoline`, `ppi-hard-coal`, `ppi-manufacturing`, `ppi-metallurgy`, `ppi-milk`, `ppi-mining`, `ppi-natural-gas`, `ppi-oil-gas`, `ppi-petroleum-products`, `ppi-pharma`, `ppi-pork`, `ppi-poultry`, `ppi-sugar`, `ppi-sunflower-oil`, `ppi-vehicles`, `ppi-water`, `ppi-wood`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `steel`, `steel-hot-rolled`, `steel-pipes`, `steel-rebar`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`
 
 ## Все индикаторы
 
@@ -222,6 +222,20 @@
 | `budget-revenue-yoy` | Бюджет | monthly | `generic` | derived_from_source | — | — |
 | `budget-revenue-yoy-quarter` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-revenue-yoy-year` | Бюджет | annual | `generic` | derived_from_source | — | — |
+| `build-bitumen` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-brick` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-cement` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-concrete` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-cost-housing` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-cost-industrial` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-cost-power-lines` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-cost-roads` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-crushed-stone` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-floor-slabs` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-insulation` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-mortar` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-silicate-brick` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `build-timber` | Цены | monthly | `null` | — | ✓ | no-stack |
 | `business-credit` | Финансы | monthly | `generic` | monthly_auto | ✓ | — |
 | `business-credit-avg-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `business-credit-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -1270,9 +1284,45 @@
 | `population-total-growth-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 | `population-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 | `ppi` | Цены | monthly | `ppi` | ppi_monthly | ✓ | — |
+| `ppi-aluminium` | Цены | monthly | `null` | — | ✓ | no-stack |
 | `ppi-annual` | Цены | annual | `ppi` | derived_from_source | — | — |
+| `ppi-beef` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-bread` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-building-materials` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-butter` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-cars` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-cement` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-chemicals` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-coal-mining` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-construction` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-construction-buildings` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-construction-civil` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-construction-specialised` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-copper` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-crude-oil` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-diesel` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-energy` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-flour` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-food-industry` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-gasoline` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-hard-coal` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-manufacturing` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-metallurgy` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-milk` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-mining` | Цены | monthly | `null` | — | ✓ | no-stack |
 | `ppi-mom` | Цены | monthly | `ppi` | derived_from_source | — | — |
+| `ppi-natural-gas` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-oil-gas` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-petroleum-products` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-pharma` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-pork` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-poultry` | Цены | monthly | `null` | — | ✓ | no-stack |
 | `ppi-qoq` | Цены | quarterly | `ppi` | derived_from_source | — | — |
+| `ppi-sugar` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-sunflower-oil` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-vehicles` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-water` | Цены | monthly | `null` | — | ✓ | no-stack |
+| `ppi-wood` | Цены | monthly | `null` | — | ✓ | no-stack |
 | `ppi-yoy` | Цены | monthly | `ppi` | derived_from_source | — | — |
 | `qar-rub` | Валюты | daily | `generic` | — | ✓ | — |
 | `qar-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
@@ -1762,7 +1812,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **221** · с полной матрицей: **159** · с пробелами: **62**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 160, 'orphan': 50}.
+Корней-семейств: **271** · с полной матрицей: **159** · с пробелами: **112**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 160, 'orphan': 100}.
 
 ## Систематические пробелы по типам
 
@@ -1791,8 +1841,8 @@
 | generic/T9s | signed-flow | quarter | 3 | — |
 | orphan/- | annual-count | year | 13 | `index:year`, `yoy:year` |
 | orphan/- | avg-level | day | 3 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:week`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
-| orphan/- | avg-level | month | 9 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
-| orphan/- | rate | month | 14 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
+| orphan/- | avg-level | month | 19 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
+| orphan/- | rate | month | 54 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 | orphan/- | rate | quarter | 2 | `pop:quarter`, `value:year`, `yoy:quarter`, `yoy:year` |
 | orphan/- | rate | year | 9 | `yoy:year` |
 
@@ -1807,6 +1857,20 @@
 | `cny-eur` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `gbp-eur` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `steel` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-bitumen` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-brick` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-cement` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-concrete` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-cost-housing` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-cost-industrial` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-cost-power-lines` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-cost-roads` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-crushed-stone` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-floor-slabs` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-insulation` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-mortar` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-silicate-brick` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `build-timber` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `employment-rate-age-25-54` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `employment-rate-age-55-64` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `employment-rate-youth` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
@@ -1815,6 +1879,42 @@
 | `labor-force-youth` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `long-term-unemployed` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `part-time-employed` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `ppi-aluminium` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-beef` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-bread` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-building-materials` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-butter` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-cars` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-cement` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-chemicals` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-coal-mining` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-construction` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-construction-buildings` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-construction-civil` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-construction-specialised` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-copper` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-crude-oil` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-diesel` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-energy` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-flour` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-food-industry` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-gasoline` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-hard-coal` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-manufacturing` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-metallurgy` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-milk` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-mining` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-natural-gas` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-oil-gas` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-petroleum-products` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-pharma` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-pork` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-poultry` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-sugar` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-sunflower-oil` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-vehicles` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-water` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `ppi-wood` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `short-term-unemployed` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `steel-hot-rolled` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `steel-pipes` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
@@ -1866,6 +1966,6 @@
 ## Измерения паспорта (агрегат)
 
 - **Без полных текстов** (18): `birth-rate`, `death-rate`, `exports-monthly`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`, `working-age-population`
-- **Без прогноза** (62): `cny-eur`, `coal`, `copper`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `silver`, `soybean`, `steel`, `steel-hot-rolled`, `steel-pipes`, `steel-rebar`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
+- **Без прогноза** (112): `build-bitumen`, `build-brick`, `build-cement`, `build-concrete`, `build-cost-housing`, `build-cost-industrial`, `build-cost-power-lines`, `build-cost-roads`, `build-crushed-stone`, `build-floor-slabs`, `build-insulation`, `build-mortar`, `build-silicate-brick`, `build-timber`, `cny-eur`, `coal`, `copper`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `ppi-aluminium`, `ppi-beef`, `ppi-bread`, `ppi-building-materials`, `ppi-butter`, `ppi-cars`, `ppi-cement`, `ppi-chemicals`, `ppi-coal-mining`, `ppi-construction`, `ppi-construction-buildings`, `ppi-construction-civil`, `ppi-construction-specialised`, `ppi-copper`, `ppi-crude-oil`, `ppi-diesel`, `ppi-energy`, `ppi-flour`, `ppi-food-industry`, `ppi-gasoline`, `ppi-hard-coal`, `ppi-manufacturing`, `ppi-metallurgy`, `ppi-milk`, `ppi-mining`, `ppi-natural-gas`, `ppi-oil-gas`, `ppi-petroleum-products`, `ppi-pharma`, `ppi-pork`, `ppi-poultry`, `ppi-sugar`, `ppi-sunflower-oil`, `ppi-vehicles`, `ppi-water`, `ppi-wood`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `silver`, `soybean`, `steel`, `steel-hot-rolled`, `steel-pipes`, `steel-rebar`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
 - **SEO не curated** (54): `cny-eur`, `deposit-rate-long`, `deposit-rate-medium`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `exports-monthly`, `gbp-eur`, `housing-affordability-primary`, `imports-monthly`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `services-exports-monthly`, `services-imports-monthly`, `short-term-unemployed`, `trade-balance-monthly`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`
 

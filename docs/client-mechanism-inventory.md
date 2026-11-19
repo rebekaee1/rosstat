@@ -2,17 +2,17 @@
 
 Источник: Babel AST текущих tracked frontend/MCP файлов. Генератор не исполняет приложение и не присваивает reviewed.
 
-- imports: 5007
+- imports: 5011
 - routes: 100
-- functions: 16150
+- functions: 16160
 - hooks: 2971
 - http: 127
 - storage: 253
 - events: 470
 - jsx_handlers: 1312
-- registries: 738
+- registries: 740
 - mcp_tools: 7
-- files: 955
+- files: 956
 - parse_errors: 0
 
 Полные call sites, выражения, anonymous callbacks, owner и строки — [JSON](client-mechanism-inventory.json). Смысл, loading/empty/error/access и исключения — [досье клиента](code-review/client-mechanism-acceptance-2026-09-30.md) и рецензии соответствующего файла.
