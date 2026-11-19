@@ -921,6 +921,21 @@ async def lifespan(app: FastAPI):
                 coalesce=True,
             )
 
+        # Сторож обещанной свежести (19.11.2026): дизель, ИПЦ, ставки и курсы, которые предлагаем присылать.
+        # После утреннего ETL (06:00) и недельного топлива по субъектам (чт 08:20).
+        if settings.promised_freshness_watchdog_enabled:
+            from app.services.promised_freshness import promised_freshness_job
+
+            scheduler.add_job(
+                promised_freshness_job,
+                trigger=CronTrigger(hour=10, minute=5, timezone="Europe/Moscow"),
+                id="promised_freshness",
+                name="Promised series freshness (subscribe line / public bot topics)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
         # Н-3: «источник молча умер» (вечный no_new_data) — ежедневная сверка
         # max(data.date) против SLA частоты каждого индикатора, после утреннего ETL.
         from app.tasks.scheduler import staleness_check_job

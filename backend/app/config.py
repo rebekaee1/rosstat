@@ -145,6 +145,11 @@ class Settings(BaseSettings):
     # публикуют данные в течение дня — утренний прогон их не застаёт.
     scheduler_evening_hour: int = 20
     scheduler_evening_minute: int = 0
+    # Недельные цены топлива по субъектам из PDF-бюллетеня Росстата поверх витрины ЕМИСС 37426, которая
+    # отстаёт на 2–3 недели (19.11.2026: витрина — 26.10, бюллетень — 16.11). Выкл. по умолчанию.
+    regional_fuel_bulletin_enabled: bool = False
+    # Сторож обещанной свежести (темы строки «присылать» и бота): сообщение в утреннюю сводку. Выкл. по умолчанию.
+    promised_freshness_watchdog_enabled: bool = False
     # Late FRED pass: US market close ~16:00 ET ≈ 23:00 MSK (EDT). Evening
     # full ETL at 20:00 MSK is too early for same-day Treasury / EIA / Fed
     # points that land on FRED after the US afternoon. This pass is insurance

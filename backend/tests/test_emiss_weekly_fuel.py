@@ -164,3 +164,108 @@ def test_rows_without_any_price_mean_format_change():
 
     with pytest.raises(w.EmissFormatError):
         asyncio.run(w.fetch_year(2025, {1: "1853940"}, [], {}, post_grid=fake_post))
+
+
+# --- Цены по субъектам из PDF-бюллетеня Росстата (19.11.2026) ---------------------------------------
+# Текст — pypdf-выгрузка 175_18-11-2026.pdf. 19.11 витрина 37426 стояла на 26.10; бюллетень за 26.10
+# (169n-ben28.pdf) совпал с её точками на боевом во всех 373 парах «марка × территория».
+
+from pathlib import Path  # noqa: E402
+
+from app.services.emiss_regional_parser import load_dimnames  # noqa: E402
+
+_BULLETIN_175 = (Path(__file__).parent / "fixtures" / "rosstat_fuel" / "bulletin_175_2026-11-18_pypdf.txt").read_text(
+    encoding="utf-8"
+)
+
+
+def test_bulletin_gives_all_subjects_districts_and_russia_on_registration_date():
+    reg_date, points, unmatched = w.parse_bulletin_regional_text(
+        _BULLETIN_175, w.bulletin_territory_map(load_dimnames())
+    )
+    assert reg_date == date(2026, 11, 16)
+    assert unmatched == []
+    slugs = {slug for _code, slug in points}
+    assert len(slugs) == 94  # 85 субъектов + 8 округов + Россия
+    assert points[("ceni-dt", "russia")] == 87.09  # = федеральный ряд fuel-diesel на 16.11
+    assert points[("ceni-ai92", "russia")] == 70.04
+    assert points[("ceni-dt", "moskva")] == 82.96
+    assert points[("ceni-ai95", "respublika-severnaya-osetiya")] == 82.03
+    # Многострочные названия и «… (кроме …)»: берётся весь субъект, не его часть.
+    assert points[("ceni-dt", "hanty-mansiyskiy-ao")] == 95.42
+    assert points[("ceni-dt", "tyumenskaya-oblast")] == 93.81
+    assert points[("ceni-dt", "arhangelskaya-oblast")] == 86.86
+    # «…» — нет данных: точки нет, соседние марки есть.
+    assert ("ceni-ai98", "nenetskiy-ao") not in points
+    assert points[("ceni-dt", "nenetskiy-ao")] == 92.06
+
+
+def test_bulletin_row_with_ascii_dots_does_not_glue_to_next_name():
+    text = (
+        "Средние потребительские цены на бензин автомобильный и дизельное топливо на 26 октября 2026 года\n"
+        "рублей за литр\n"
+        "Магаданская область 94,45 92,97 96,48 ... 137,75\n"
+        "Сахалинская область 70,10 67,20 72,30 99,00 80,40\n"
+    )
+    tmap = w.bulletin_territory_map(load_dimnames())
+    reg_date, points, unmatched = w.parse_bulletin_regional_text(text, tmap)
+    assert reg_date == date(2026, 10, 26) and unmatched == []
+    assert points[("ceni-dt", "magadanskaya-oblast")] == 137.75
+    assert ("ceni-ai98", "magadanskaya-oblast") not in points
+    assert points[("ceni-dt", "sahalinskaya-oblast")] == 80.40
+
+
+def test_bulletin_without_regional_table_gives_nothing():
+    assert w.parse_bulletin_regional_text("Об оценке индекса потребительских цен", {}) == (None, {}, [])
+
+
+class _Rows:
+    def __init__(self, rows):
+        self._rows = rows
+
+    def scalars(self):
+        return self._rows
+
+    def all(self):
+        return self._rows
+
+
+class _FakeDb:
+    def __init__(self, indicators, regions):
+        self._answers = [_Rows(indicators), _Rows(regions)]
+        self.commits = 0
+
+    async def execute(self, _stmt):
+        return self._answers.pop(0)
+
+    async def commit(self):
+        self.commits += 1
+
+    async def rollback(self):
+        pass
+
+
+def test_bulletin_update_writes_points_for_known_indicators_and_regions(monkeypatch):
+    from types import SimpleNamespace
+
+    written: list[dict] = []
+
+    async def fake_upsert(_db, values):
+        written.extend(values)
+        return len(values), 0
+
+    async def noop(*_a, **_k):
+        return None
+
+    monkeypatch.setattr(w, "_upsert_weekly", fake_upsert)
+    monkeypatch.setattr(w, "acquire_regional_write_lock", noop)
+    monkeypatch.setattr(w, "publish_committed_regional_changes", noop)
+    db = _FakeDb(
+        [SimpleNamespace(code="ceni-dt", id=7), SimpleNamespace(code="ceni-ai92", id=5)],
+        [("russia", 1), ("moskva", 77)],
+    )
+    stats = asyncio.run(w.run_bulletin_regional_update(db, fetch_texts=lambda: [_BULLETIN_175]))
+    assert stats["bulletins"] == 1 and stats["dates"] == 1 and stats["unmatched"] == 0
+    got = {(r["indicator_id"], r["region_id"]): r["value"] for r in written}
+    assert got == {(7, 1): 87.09, (5, 1): 70.04, (7, 77): 82.96, (5, 77): 68.62}
+    assert {r["date"] for r in written} == {date(2026, 11, 16)}

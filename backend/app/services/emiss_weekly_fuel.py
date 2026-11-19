@@ -394,6 +394,197 @@ async def run_weekly_fuel_update(
     return stats
 
 
+# ---------------------------------------------------------------------------
+#  Цены по субъектам из бюллетеня Росстата (19.11.2026).
+#
+#  Витрина 37426 догоняет Росстат с опозданием: 19.11.2026 в ней последняя неделя — 26.10, а бюллетень
+#  «О потребительских ценах на нефтепродукты» (PDF, по средам) уже несёт таблицу «Средние потребительские
+#  цены на бензин автомобильный и дизельное топливо на 16 ноября 2026 года» по всем субъектам. Это тот же
+#  источник (Росстат, еженедельная регистрация), поэтому бюллетень закрывает последние недели, а витрина
+#  потом перезаписывает те же точки идемпотентным upsert. Дата — день регистрации из заголовка таблицы,
+#  такой же, как у федерального ряда. Флаг `regional_fuel_bulletin_enabled` (по умолчанию выкл.).
+# ---------------------------------------------------------------------------
+
+# Колонки таблицы после «Бензин автомобильный» (всего): АИ-92, АИ-95, АИ-98 и выше, дизельное топливо.
+BULLETIN_COLUMNS: tuple[str, ...] = ("ceni-ai92", "ceni-ai95", "ceni-ai98", "ceni-dt")
+_BULLETIN_TABLE_DATE_RE = re.compile(
+    r"дизельное\s*топливо\s*на\s*(\d{1,2})\s*([а-яё]+)\s*(\d{4})", re.IGNORECASE,
+)
+_BULLETIN_ROW_RE = re.compile(
+    r"^(?P<name>.*?)\s*(?P<vals>(?:(?:\d{1,4},\d{2}|…|\.{3}|-)\s+){4}(?:\d{1,4},\d{2}|…|\.{3}|-))\s*$"
+)
+_BULLETIN_PRICE_RE = re.compile(r"\d{1,4},\d{2}")
+# Строки шапки и подвала: обрывают накопленное имя, сами именем не становятся.
+_BULLETIN_NOISE_RE = re.compile(
+    r"^\s*(?:\d{1,2}|в\s*том\s*числе:?|бензин|автомо|бильный|марки|аи-|и\s*выше|дизельное|топливо|рублей"
+    r"|средние|\*|_+|\d\s)",
+    re.IGNORECASE,
+)
+# Названия бюллетеня, которые после нормализации не совпадают со справочником витрины.
+_BULLETIN_ALIASES: dict[str, str] = {
+    "российская федерация": "russia",
+    "г. москва": "moskva",
+    "г. санкт-петербург": "sankt-peterburg",
+    "г. севастополь": "sevastopol",
+    "чувашская республика": "chuvashskaya-respublika",
+    "кемеровская область": "kemerovskaya-oblast",
+}
+_GENITIVE_MONTHS = {
+    "января": 1, "февраля": 2, "марта": 3, "апреля": 4, "мая": 5, "июня": 6,
+    "июля": 7, "августа": 8, "сентября": 9, "октября": 10, "ноября": 11, "декабря": 12,
+}
+
+
+def _norm_territory(name: str) -> str:
+    n = name.replace("*", " ").replace("ё", "е").replace("Ё", "Е").lower()
+    n = re.sub(r"\bавт\.\s*округ", "автономный округ", n)
+    n = re.sub(r"\bавт\.\s*область", "автономная область", n)
+    n = re.sub(r"\s*-\s*", "-", n)
+    return re.sub(r"\s+", " ", n).strip()
+
+
+def bulletin_territory_map(dimnames: dict[str, str]) -> dict[str, str]:
+    """Нормализованное название субъекта → slug: справочник витрины (без пояснений в скобках) + псевдонимы."""
+    out: dict[str, str] = {}
+    for name, slug in dimnames.items():
+        if not name or name.isdigit():
+            continue
+        out.setdefault(_norm_territory(re.sub(r"\s*\([^)]*\)\s*$", "", name)), slug)
+        out.setdefault(_norm_territory(name), slug)
+    out.update(_BULLETIN_ALIASES)
+    return out
+
+
+def parse_bulletin_regional_text(
+    text: str, territory_map: dict[str, str],
+) -> tuple[date | None, dict[tuple[str, str], float], list[str]]:
+    """Текст PDF-бюллетеня → (дата регистрации, {(код, slug): цена}, нераспознанные названия).
+
+    Имя субъекта бывает разорвано на 2–3 строки («Ханты-Мансийский / авт. округ - Югра»), поэтому
+    строки без цен копятся в буфер имени; строки шапки буфер сбрасывают. «… (кроме …)» — часть
+    сложного субъекта, её пропускаем: сам субъект идёт отдельной строкой. «…» — нет данных.
+    """
+    m = _BULLETIN_TABLE_DATE_RE.search(text)
+    if not m:
+        return None, {}, []
+    month = _GENITIVE_MONTHS.get(m.group(2).lower())
+    if not month:
+        return None, {}, []
+    try:
+        reg_date = date(int(m.group(3)), month, int(m.group(1)))
+    except ValueError:
+        return None, {}, []
+
+    points: dict[tuple[str, str], float] = {}
+    unmatched: list[str] = []
+    buffer: list[str] = []
+    for line in text[m.end():].splitlines():
+        row = _BULLETIN_ROW_RE.match(line.strip())
+        if row is None:
+            if _BULLETIN_NOISE_RE.match(line) or not line.strip() or _BULLETIN_PRICE_RE.search(line):
+                # Строка с ценами, которую не удалось разобрать, — не имя: не даём ей прилипнуть к соседу.
+                buffer = []
+            else:
+                buffer.append(line.strip())
+                buffer = buffer[-3:]
+            continue
+        name = " ".join(buffer + [row.group("name").strip()]).strip()
+        buffer = []
+        if not name or "кроме" in name.lower():
+            continue
+        slug = territory_map.get(_norm_territory(name))
+        if slug is None:
+            unmatched.append(name)
+            continue
+        values = row.group("vals").split()
+        for code, raw in zip(BULLETIN_COLUMNS, values[1:]):
+            value = parse_ru_float(raw) if _BULLETIN_PRICE_RE.fullmatch(raw) else None
+            if value is not None and 1 < value < 1000:
+                points[(code, slug)] = round(value, 2)
+    return reg_date, points, unmatched
+
+
+def _bulletin_texts_sync(max_pages: int = 1) -> list[str]:
+    """Текст всех страниц свежих PDF-бюллетеней о ценах на нефтепродукты (первая страница ленты)."""
+    from io import BytesIO
+
+    from pypdf import PdfReader
+
+    from app.services.rosstat_weekly_price_parser import iter_fuel_bulletins
+
+    session = create_session()
+    session.verify = False
+    texts: list[str] = []
+    try:
+        for href, content in iter_fuel_bulletins(session, max_pages):
+            if content[:5] != b"%PDF-":
+                continue
+            try:
+                reader = PdfReader(BytesIO(content))
+                texts.append("\n".join((page.extract_text() or "") for page in reader.pages))
+            except Exception:  # noqa: BLE001 — битый PDF не роняет прогон
+                logger.warning("regional fuel bulletin PDF unreadable: %s", href, exc_info=True)
+    finally:
+        session.close()
+    return texts
+
+
+async def run_bulletin_regional_update(
+    db: AsyncSession,
+    *,
+    fetch_texts: Callable[[], list[str]] | None = None,
+    dimnames: dict[str, str] | None = None,
+) -> dict[str, int]:
+    """Свежие бюллетени → цены по субъектам на дату регистрации → upsert в region_weekly_data."""
+    if dimnames is None:
+        dimnames = load_dimnames()
+    territory_map = bulletin_territory_map(dimnames)
+    indicators = {
+        ind.code: ind.id
+        for ind in (await db.execute(
+            select(RegionIndicator).where(RegionIndicator.code.in_(list(BULLETIN_COLUMNS)))
+        )).scalars()
+    }
+    regions = dict((await db.execute(select(Region.slug, Region.id))).all())
+    await db.commit()  # сеть — вне транзакции
+
+    texts = await asyncio.to_thread(fetch_texts or _bulletin_texts_sync)
+    stats = {"bulletins": 0, "dates": 0, "added": 0, "updated": 0, "unmatched": 0}
+    values: dict[tuple[int, int, date], float] = {}
+    seen_dates: set[date] = set()
+    for text in texts:
+        reg_date, points, unmatched = parse_bulletin_regional_text(text, territory_map)
+        if reg_date is None or not points:
+            continue
+        stats["bulletins"] += 1
+        seen_dates.add(reg_date)
+        if unmatched:
+            stats["unmatched"] += len(unmatched)
+            logger.warning("regional fuel bulletin %s: не сопоставлены %s", reg_date, unmatched[:10])
+        for (code, slug), value in points.items():
+            if code in indicators and slug in regions:
+                values[(indicators[code], regions[slug], reg_date)] = value
+    stats["dates"] = len(seen_dates)
+    if not values:
+        return stats
+    rows = [
+        {"indicator_id": ind, "region_id": reg, "date": d, "value": v}
+        for (ind, reg, d), v in values.items()
+    ]
+    try:
+        await acquire_regional_write_lock(db)
+        added, updated = await _upsert_weekly(db, rows)
+        await db.commit()
+    except BaseException:
+        await db.rollback()
+        raise
+    stats["added"], stats["updated"] = added, updated
+    if added or updated:
+        await publish_committed_regional_changes()
+    logger.info("regional fuel bulletin: %s", stats)
+    return stats
+
+
 _ALERT_MUTE_S = 3 * 24 * 3600
 
 
@@ -403,6 +594,16 @@ async def emiss_weekly_fuel_job() -> dict[str, int]:
     try:
         async with async_session() as db:
             stats = await run_weekly_fuel_update(db)
+        from app.config import settings
+
+        if settings.regional_fuel_bulletin_enabled:
+            # Витрина 37426 отстаёт на 2–3 недели; бюллетень Росстата даёт последнюю неделю по субъектам.
+            # Его сбой не отменяет результат витрины и не роняет задачу.
+            try:
+                async with async_session() as db:
+                    stats["bulletin"] = await run_bulletin_regional_update(db)
+            except Exception:  # noqa: BLE001
+                logger.warning("regional fuel bulletin update failed", exc_info=True)
         if stats.get("unparsed"):
             from app.services.alerting import alert_muted, send_telegram
 

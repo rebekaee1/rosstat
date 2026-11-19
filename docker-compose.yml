@@ -422,6 +422,9 @@ services:
       # Сторож свежести рядов: раз в сутки, одно сообщение в Telegram (выкл. по умолчанию)
       RUSTATS_FRESHNESS_WATCHDOG_ENABLED: ${RUSTATS_FRESHNESS_WATCHDOG_ENABLED:-false}
       RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE: ${RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE:-25}
+      # Сторож обещанной свежести (темы строки «присылать» и бота) и цены топлива по субъектам из бюллетеня (выкл.)
+      RUSTATS_PROMISED_FRESHNESS_WATCHDOG_ENABLED: ${RUSTATS_PROMISED_FRESHNESS_WATCHDOG_ENABLED:-false}
+      RUSTATS_REGIONAL_FUEL_BULLETIN_ENABLED: ${RUSTATS_REGIONAL_FUEL_BULLETIN_ENABLED:-false}
       RUSTATS_TELEGRAM_POLLER_ENABLED: ${RUSTATS_TELEGRAM_POLLER_ENABLED:-false}
       # Публичный режим бота (ADR-0027): чужие личные чаты получают цифры и подписку; выкл. по умолчанию
       RUSTATS_PUBLIC_BOT_ENABLED: ${RUSTATS_PUBLIC_BOT_ENABLED:-false}
