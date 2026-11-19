@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `b93f84c2699cbd54983ea5abdd0886dab732cc8f`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `5ab4154944702b48df90dd76e3d69b7b8ca533b3`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2676 |
-| Код, шаблоны и стили | 2184 |
-| Актуальные рецензии без пропусков guard | 2676 |
-| Именованные определения Python/JS: с аннотацией / всего | 18141 / 18141 |
+| Файлы в явно определённом scope | 2680 |
+| Код, шаблоны и стили | 2187 |
+| Актуальные рецензии без пропусков guard | 2680 |
+| Именованные определения Python/JS: с аннотацией / всего | 18157 / 18157 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -190,6 +190,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/emiss_income.py](../backend/app/data/emiss_income.py) | reviewed | 5/5 | актуально |
 | [backend/app/data/emiss_labor.py](../backend/app/data/emiss_labor.py) | body_reviewed | 4/4 | актуально |
 | [backend/app/data/emiss_price_goods.py](../backend/app/data/emiss_price_goods.py) | reviewed | 18/18 | актуально |
+| [backend/app/data/emiss_steel.py](../backend/app/data/emiss_steel.py) | reviewed | 4/4 | актуально |
 | [backend/app/data/eurostat_codelists_en.json](../backend/app/data/eurostat_codelists_en.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/eurostat_country_visibility.py](../backend/app/data/eurostat_country_visibility.py) | reviewed | 5/5 | актуально |
 | [backend/app/data/eurostat_deep_expand.py](../backend/app/data/eurostat_deep_expand.py) | reviewed | 9/9 | актуально |
@@ -339,6 +340,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/emiss_income_parser.py](../backend/app/services/emiss_income_parser.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/emiss_labor_parser.py](../backend/app/services/emiss_labor_parser.py) | body_reviewed | 3/3 | актуально |
 | [backend/app/services/emiss_regional_parser.py](../backend/app/services/emiss_regional_parser.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/emiss_steel_parser.py](../backend/app/services/emiss_steel_parser.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/emiss_weekly_fuel.py](../backend/app/services/emiss_weekly_fuel.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/eurostat_parser.py](../backend/app/services/eurostat_parser.py) | reviewed | 35/35 | актуально |
 | [backend/app/services/eurostat_rebase.py](../backend/app/services/eurostat_rebase.py) | reviewed | 18/18 | актуально |
@@ -678,6 +680,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/fixtures/calendar/rosstat_plans_type52_2026-11-14.html](../backend/tests/fixtures/calendar/rosstat_plans_type52_2026-11-14.html) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/census_nst_est2025_alldata.csv](../backend/tests/fixtures/census_nst_est2025_alldata.csv) | artifact_schema_reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/census_popest_2020_alldata.csv](../backend/tests/fixtures/census_popest_2020_alldata.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/emiss_steel/dataGrid_57606_2026-11-19.json](../backend/tests/fixtures/emiss_steel/dataGrid_57606_2026-11-19.json) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/ibge_sidra_1209_br.json](../backend/tests/fixtures/ibge_sidra_1209_br.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/ibge_sidra_6579_br.json](../backend/tests/fixtures/ibge_sidra_6579_br.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/imf_weo_ngdpd_usa.json](../backend/tests/fixtures/imf_weo_ngdpd_usa.json) | artifact_schema_reviewed | 0/0 | актуально |
@@ -803,6 +806,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_emiss_price_goods.py](../backend/tests/test_emiss_price_goods.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_emiss_regional_live_c27.py](../backend/tests/test_emiss_regional_live_c27.py) | reviewed | 35/35 | актуально |
 | [backend/tests/test_emiss_regional_parser.py](../backend/tests/test_emiss_regional_parser.py) | reviewed | 20/20 | актуально |
+| [backend/tests/test_emiss_steel_parser.py](../backend/tests/test_emiss_steel_parser.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_emiss_weekly_fuel.py](../backend/tests/test_emiss_weekly_fuel.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_en_catalog.py](../backend/tests/test_en_catalog.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_en_catalog_sources_units.py](../backend/tests/test_en_catalog_sources_units.py) | reviewed | 4/4 | актуально |
@@ -985,7 +989,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_search_language_sql.py](../backend/tests/test_search_language_sql.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_search_native_facets.py](../backend/tests/test_search_native_facets.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_search_native_titles.py](../backend/tests/test_search_native_titles.py) | reviewed | 7/7 | актуально |
-| [backend/tests/test_search_pulse_gaps.py](../backend/tests/test_search_pulse_gaps.py) | reviewed | 28/28 | актуально |
+| [backend/tests/test_search_pulse_gaps.py](../backend/tests/test_search_pulse_gaps.py) | reviewed | 29/29 | актуально |
 | [backend/tests/test_search_pulse_gaps_2026_11_19.py](../backend/tests/test_search_pulse_gaps_2026_11_19.py) | reviewed | 21/21 | актуально |
 | [backend/tests/test_search_quantity_facets.py](../backend/tests/test_search_quantity_facets.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_search_r2z4_city_rent.py](../backend/tests/test_search_r2z4_city_rent.py) | reviewed | 6/6 | актуально |

@@ -30697,7 +30697,7 @@
     "anonymous_functions": 12
   },
   "frontend/src/lib/categories.js": {
-    "sha256": "86f595f4b11d2923dfb8fdae35bdc78c953a302ead30984dbd6d698298af7895",
+    "sha256": "c35b8ed78aebfcd0c3b58fab3d6fce0f07aaf95fac401c5b3ab63776e2ae3dab",
     "definitions": [
       {
         "name": "getCategoryBySlug",

@@ -519,6 +519,11 @@
       "lines": 693
     },
     {
+      "path": "backend/app/data/emiss_steel.py",
+      "sha256": "5da124e9a39d695e592b43eec8a31f55c9977d6b8124511d4be2af4b1ad5142c",
+      "lines": 128
+    },
+    {
       "path": "backend/app/data/eurostat_codelists_en.json",
       "sha256": "f7d7cb261b4f874901ef34ec33f10aebfda77dfd7b961753385806675406ee7b",
       "lines": 1438
@@ -615,8 +620,8 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "sha256": "44727d43dedca9b7b6d76e7f2037b4f7dce855b4e95207f1cc922b6399ea7b67",
-      "lines": 1101
+      "sha256": "8ae7a9208a56143606addd35391b2f7e940962813578bd839917de0a78687905",
+      "lines": 1111
     },
     {
       "path": "backend/app/data/i18n/price_goods_en.py",
@@ -640,18 +645,18 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "sha256": "3213d2d113147b6c4aa9003cd8c0915adebac46590516242f7f1d2bd6363860c",
-      "lines": 9256
+      "sha256": "1774fe420355bf6efa25c283848c488b069e6df0cb305872d64325c0841f54f4",
+      "lines": 9266
     },
     {
       "path": "backend/app/data/legacy_redirects.py",
-      "sha256": "f4020bc1cf49bb97606c6dc356682fe99376ddce14036ed394b0b7821dc0d06b",
+      "sha256": "ef872fcbfbc3404acff5cc1eab75f9bfe88722fa5d719fca599230069aaaf66d",
       "lines": 650
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "07670afa87685cdaa6cfe35c0ced34006ba0724a386c701aa29ec14214dc8039",
-      "lines": 340
+      "sha256": "a743c3c74ddfd5c335a91ed43137befe13ac3bdda65574fdc9f2c9b91b276100",
+      "lines": 346
     },
     {
       "path": "backend/app/data/region_indicator_polarity.py",
@@ -1229,6 +1234,11 @@
       "lines": 535
     },
     {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "sha256": "e533a8e3cd5794581ca5c15f192a99438da01b67bdce5d549fc703c03175c2bf",
+      "lines": 83
+    },
+    {
       "path": "backend/app/services/emiss_weekly_fuel.py",
       "sha256": "ed325f381bcdd5069d7bc750f49663db10f95e217962f848eedd95e2e94d8dfb",
       "lines": 432
@@ -1790,8 +1800,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "sha256": "887ac7210c65b042df5cf6ef4e11458aa5673cdaabcabb55cbffa481df0f92ef",
-      "lines": 142
+      "sha256": "35817df098ee483310d29c1220843b8bf2fa22254a27d295351ce6ebf32fb126",
+      "lines": 144
     },
     {
       "path": "backend/app/services/rosstat_demo_parser.py",
@@ -1890,8 +1900,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "sha256": "3d3a3d8cab0afd71f2107c5aa4ba1f16b0dce24fbf8136c18b9aceae6af77894",
-      "lines": 1217
+      "sha256": "43ceb78d939ac04879a0b3406d78357131578a47404743f63dc17f8fdacf9402",
+      "lines": 1219
     },
     {
       "path": "backend/app/services/search_language.py",
@@ -1975,7 +1985,7 @@
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "sha256": "be8603217ced1b6334f25ab6791f628f9585c7f5c3a69def5212f679fbc78b95",
+      "sha256": "c336fb826a0fea9717a57087b8f40f58c1643efa55cf924e1e4ebc5afdb2f746",
       "lines": 716
     },
     {
@@ -2805,8 +2815,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "sha256": "febc4008266710dd781b799a02b462dac9170657f653092382ac2236ca29fe92",
-      "lines": 5742
+      "sha256": "34f3e419d6cb344f3a627f4c4f7136091e5f367052017837dd1aa17cd27d07da",
+      "lines": 5745
     },
     {
       "path": "backend/seed_regional.py",
@@ -49229,8 +49239,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 422,
-      "end_line": 422,
+      "line": 424,
+      "end_line": 424,
       "owner": "_extract_denominators",
       "conditions": [],
       "call": "match.start()",
@@ -49238,8 +49248,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 471,
+      "end_line": 471,
       "owner": "_outside_literal_query",
       "conditions": [
         "tuple((match[0] for match in window)) == parts"
@@ -49249,83 +49259,12 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 491,
+      "end_line": 491,
       "owner": "_percent_word_spans",
       "conditions": [],
       "call": "match.start()",
       "symbol": "app.services.search_intent.match.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 869,
-      "end_line": 869,
-      "owner": "parse_intent",
-      "conditions": [],
-      "call": "match.start()",
-      "symbol": "app.services.search_intent.match.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 904,
-      "end_line": 904,
-      "owner": "parse_intent",
-      "conditions": [],
-      "call": "hit.start()",
-      "symbol": "app.services.search_intent.hit.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 475,
-      "end_line": 475,
-      "owner": "_outside_literal_query",
-      "conditions": [
-        "tuple((match[0] for match in window)) == parts",
-        "prefix",
-        "leading"
-      ],
-      "call": "leading.start()",
-      "symbol": "app.services.search_intent.leading.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 507,
-      "end_line": 507,
-      "owner": "_alias_occurrences",
-      "conditions": [],
-      "call": "match.start()",
-      "symbol": "app.services.search_intent.match.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 741,
-      "end_line": 741,
-      "owner": "strip_geography",
-      "conditions": [],
-      "call": "token_match.start()",
-      "symbol": "app.services.search_intent.token_match.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 811,
-      "end_line": 811,
-      "owner": "_unmasked_query",
-      "conditions": [
-        "not text[phrase_offset:phrase_offset + len(match[0])].strip()"
-      ],
-      "call": "match.start()",
-      "symbol": "app.services.search_intent.match.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 695,
-      "end_line": 695,
-      "owner": "strip_geography",
-      "conditions": [
-        "len(mismatches) == 1 and min(map(len, mismatches[0])) >= 4 and (mismatches[0][0] not in actual_geo_aliases) and edit_distance_one(*mismatches[0]) and (not fx_subject_positions.intersection(range(window[0].start(), window[-1].end())))"
-      ],
-      "call": "window[0].start()",
-      "symbol": "app.services.search_intent.window[0].start"
     },
     {
       "path": "backend/app/services/search_intent.py",
@@ -49338,17 +49277,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 905,
-      "end_line": 905,
-      "owner": "parse_intent",
-      "conditions": [],
-      "call": "match.start()",
-      "symbol": "app.services.search_intent.match.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 923,
-      "end_line": 923,
+      "line": 906,
+      "end_line": 906,
       "owner": "parse_intent",
       "conditions": [],
       "call": "hit.start()",
@@ -49356,8 +49286,88 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 939,
-      "end_line": 939,
+      "line": 477,
+      "end_line": 477,
+      "owner": "_outside_literal_query",
+      "conditions": [
+        "tuple((match[0] for match in window)) == parts",
+        "prefix",
+        "leading"
+      ],
+      "call": "leading.start()",
+      "symbol": "app.services.search_intent.leading.start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 509,
+      "end_line": 509,
+      "owner": "_alias_occurrences",
+      "conditions": [],
+      "call": "match.start()",
+      "symbol": "app.services.search_intent.match.start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 743,
+      "end_line": 743,
+      "owner": "strip_geography",
+      "conditions": [],
+      "call": "token_match.start()",
+      "symbol": "app.services.search_intent.token_match.start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 813,
+      "end_line": 813,
+      "owner": "_unmasked_query",
+      "conditions": [
+        "not text[phrase_offset:phrase_offset + len(match[0])].strip()"
+      ],
+      "call": "match.start()",
+      "symbol": "app.services.search_intent.match.start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 697,
+      "end_line": 697,
+      "owner": "strip_geography",
+      "conditions": [
+        "len(mismatches) == 1 and min(map(len, mismatches[0])) >= 4 and (mismatches[0][0] not in actual_geo_aliases) and edit_distance_one(*mismatches[0]) and (not fx_subject_positions.intersection(range(window[0].start(), window[-1].end())))"
+      ],
+      "call": "window[0].start()",
+      "symbol": "app.services.search_intent.window[0].start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 873,
+      "end_line": 873,
+      "owner": "parse_intent",
+      "conditions": [],
+      "call": "match.start()",
+      "symbol": "app.services.search_intent.match.start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 907,
+      "end_line": 907,
+      "owner": "parse_intent",
+      "conditions": [],
+      "call": "match.start()",
+      "symbol": "app.services.search_intent.match.start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 925,
+      "end_line": 925,
+      "owner": "parse_intent",
+      "conditions": [],
+      "call": "hit.start()",
+      "symbol": "app.services.search_intent.hit.start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 941,
+      "end_line": 941,
       "owner": "parse_intent",
       "conditions": [
         "len(mismatches) == 1 and min(map(len, mismatches[0])) >= 3 and (not _control_neighbour(mismatches[0][0])) and edit_distance_one(*mismatches[0])"
@@ -49367,8 +49377,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 470,
-      "end_line": 470,
+      "line": 472,
+      "end_line": 472,
       "owner": "_outside_literal_query",
       "conditions": [
         "tuple((match[0] for match in window)) == parts"
@@ -49378,8 +49388,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 694,
-      "end_line": 694,
+      "line": 696,
+      "end_line": 696,
       "owner": "strip_geography",
       "conditions": [],
       "call": "window[0].start()",
@@ -49387,25 +49397,14 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 711,
-      "end_line": 711,
+      "line": 713,
+      "end_line": 713,
       "owner": "strip_geography",
       "conditions": [
         "index and match[0] == 's'"
       ],
       "call": "match.start()",
       "symbol": "app.services.search_intent.match.start"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 747,
-      "end_line": 747,
-      "owner": "strip_geography",
-      "conditions": [
-        "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
-      ],
-      "call": "token_match.start()",
-      "symbol": "app.services.search_intent.token_match.start"
     },
     {
       "path": "backend/app/services/search_intent.py",
@@ -49420,8 +49419,19 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 748,
-      "end_line": 748,
+      "line": 751,
+      "end_line": 751,
+      "owner": "strip_geography",
+      "conditions": [
+        "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
+      ],
+      "call": "token_match.start()",
+      "symbol": "app.services.search_intent.token_match.start"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 750,
+      "end_line": 750,
       "owner": "strip_geography",
       "conditions": [
         "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
@@ -53910,6 +53920,92 @@
       "expression_truncated": false,
       "expression_chars": 91,
       "ast_sha256": "6c29b9bf68a9ec950e4b97667d88dd16d7950b3c1f5471ccc634633126b63118",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 42,
+      "end_line": 69,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SERIES",
+      "symbol": "app.data.emiss_steel.SERIES",
+      "kind": "Dict",
+      "literal_keys": [
+        "'steel-hot-rolled'",
+        "'steel-rebar'",
+        "'steel-pipes'"
+      ],
+      "entries": [
+        {
+          "key": "'steel-hot-rolled'",
+          "expression": "SteelSeries('1694672', 'Прокат листовой горячекатаный стальной, без дополнительной обработки', 'Цена стали: горячекатаный лист', 'Steel price: hot-rolled sheet', 'Средняя цена производителей горячекатаного стального листа и рулона в России, рублей за тонну. Это базовый вид проката: из него делают хо",
+          "expression_truncated": true,
+          "expression_chars": 557,
+          "ast_sha256": "d08226856e58deaa307da503f00ddd6134664b4b3c8fa32c9af946940ca8d58d"
+        },
+        {
+          "key": "'steel-rebar'",
+          "expression": "SteelSeries('1694665', 'Прокат сортовой и катанка стальные прочие, кованые, горячекатаные, горячетянутые или экструдированные, без дополнительной обработки, включая смотанные после прокатки, из нелегированных сталей', 'Цена стали: арматура и сортовой прокат', 'Steel price: rebar and bars', 'Средняя ",
+          "expression_truncated": true,
+          "expression_chars": 673,
+          "ast_sha256": "0359e2cbe927c414846cf2e5dbcaa232dc38f9e8ffd9e7e34f4ebc870c8a45a1"
+        },
+        {
+          "key": "'steel-pipes'",
+          "expression": "SteelSeries('1694350', 'Трубы стальные электросварные', 'Цена стали: электросварные трубы', 'Steel price: welded pipes', 'Средняя цена производителей стальных электросварных труб в России, рублей за тонну. Это самые массовые стальные трубы: для водопровода и отопления, строительных конструкций и тру",
+          "expression_truncated": true,
+          "expression_chars": 501,
+          "ast_sha256": "cd04a05deeb0bc55ea8ed2f3e4e03abdf21e5150bbf8daeff927d1d9dc1f9eaa"
+        }
+      ],
+      "expression": "{'steel-hot-rolled': SteelSeries('1694672', 'Прокат листовой горячекатаный стальной, без дополнительной обработки', 'Цена стали: горячекатаный лист', 'Steel price: hot-rolled sheet', 'Средняя цена производителей горячекатаного стального листа и рулона в России, рублей за тонну. Это базовый вид проката: из него делают холоднокатаный лист, трубы, металлоконструкции и детали машин.', 'Average producer price of hot-rolled steel sheet and coil in Russia, roubles per tonne. It is the basic flat product used for cold-rolled sheet, pipes, structural steelwork and machine parts.'), 'steel-rebar': SteelSeries('1694665', 'Прокат сортовой и катанка стальные прочие, кованые, горячекатаные, горячетянутые или экструдированные, без дополнительной обработки, включая смотанные после прокатки, из нелегированных сталей', 'Цена стали: арматура и сортовой прокат', 'Steel price: rebar and bars', 'Средняя цена производителей сортового проката и катанки из углеродистой стали в России, рублей за тонну. Сюда входят арматура, круг, квадрат и катанка — основной стальной прокат для стройки.', 'Average producer price of carbon steel bars and wire rod in Russia, roubles per tonne. It covers rebar, round and square bars and wire rod, the main steel products used in construction.'), 'steel-pipes': SteelSeries('1694350', 'Трубы стальные электросварные', 'Цена стали: электросварные трубы', 'Steel price: welded pipes', 'Средняя цена производителей стальных электросварных труб в России, рублей за тонну. Это самые массовые стальные трубы: для водопровода и отопления, строительных конструкций и трубопроводов.', 'Average producer price of electric-welded steel pipes in Russia, roubles per tonne. These are the most common steel pipes, used for water and heating systems, structures and pipelines.')}",
+      "expression_truncated": false,
+      "expression_chars": 1787,
+      "ast_sha256": "29fe159640341ff43c71c87c4657ff832628035640fcb9556cfd524143ae4cd5",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 88,
+      "end_line": 92,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "KEYWORDS_BY_CODE",
+      "symbol": "app.data.emiss_steel.KEYWORDS_BY_CODE",
+      "kind": "Dict",
+      "literal_keys": [
+        "'steel-hot-rolled'",
+        "'steel-rebar'",
+        "'steel-pipes'"
+      ],
+      "entries": [
+        {
+          "key": "'steel-hot-rolled'",
+          "expression": "'горячекатаный прокат, горячекатаный лист, листовой прокат, рулонная сталь, лист стальной'",
+          "expression_truncated": false,
+          "expression_chars": 90,
+          "ast_sha256": "6a0eb5f35cdfdd97a32a3273ea8ce610a8891a9ae4cbd9f4e0f490f5d7adcf16"
+        },
+        {
+          "key": "'steel-rebar'",
+          "expression": "'арматура, цена арматуры, стоимость арматуры, сортовой прокат, катанка, круг стальной'",
+          "expression_truncated": false,
+          "expression_chars": 86,
+          "ast_sha256": "709235a10621204666e872408ddcc6f6cd3814108c9c04fd638f7207a878ba1e"
+        },
+        {
+          "key": "'steel-pipes'",
+          "expression": "'трубы стальные, цена труб, стальные трубы, электросварные трубы, трубы водогазопроводные'",
+          "expression_truncated": false,
+          "expression_chars": 90,
+          "ast_sha256": "de6ead7a41c2d14eda18a008ff398e1aeb02c9c2ce4fcf26664e1b9976da8d75"
+        }
+      ],
+      "expression": "{'steel-hot-rolled': 'горячекатаный прокат, горячекатаный лист, листовой прокат, рулонная сталь, лист стальной', 'steel-rebar': 'арматура, цена арматуры, стоимость арматуры, сортовой прокат, катанка, круг стальной', 'steel-pipes': 'трубы стальные, цена труб, стальные трубы, электросварные трубы, трубы водогазопроводные'}",
+      "expression_truncated": false,
+      "expression_chars": 322,
+      "ast_sha256": "34f4bd39a8f0ff7ada6369ea1f2fc2bd08090b210d656525ed7e4050ee0efabe",
       "runtime_expansion": false
     },
     {
@@ -72604,14 +72700,15 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 27,
-      "end_line": 1088,
+      "line": 28,
+      "end_line": 1098,
       "owner": "<module>",
       "conditions": [],
       "name": "INDICATOR_COPY_EN",
       "symbol": "app.data.i18n.indicator_copy_en.INDICATOR_COPY_EN",
       "kind": "Dict",
       "literal_keys": [
+        "**unpack",
         "**unpack",
         "**unpack",
         "'cpi'",
@@ -72808,6 +72905,13 @@
           "expression_truncated": false,
           "expression_chars": 185,
           "ast_sha256": "4a79b3df16ab9e34b3cc45554a0eae8108d793c3ad21bd47781e131f5ec39213"
+        },
+        {
+          "key": null,
+          "expression": "{code: {'name': series.name_en, 'description': series.explanation_en, 'methodology': _steel.METHODOLOGY_EN, 'unit': _steel.UNIT_EN} for code, series in _steel.SERIES.items()}",
+          "expression_truncated": false,
+          "expression_chars": 174,
+          "ast_sha256": "9436bbecf6e2172b21fc34960e2e9816243d991ba643a9d281196d273207b6fc"
         },
         {
           "key": "'cpi'",
@@ -74063,10 +74167,10 @@
           "ast_sha256": "e68f49f997c838bc624c7591ac62edc379287645f1152a67ac35c4534135d834"
         }
       ],
-      "expression": "{**{code: {'name': series.name_en, 'description': series.explanation_en, 'methodology': series.coverage[1], 'unit': '%' if series.unit == '%' else 'thousand people'} for code, series in SERIES.items()}, **{code: {'name': series.name_en, 'description': series.explanation_en, 'methodology': series.coverage[1], 'unit': INCOME_UNITS_EN[series.unit]} for code, series in INCOME_SERIES.items()}, 'cpi': {'name': 'Consumer Price Index', 'description': 'The consumer price index (CPI) measures changes in prices of goods and services purchased by households for final consumption. It is the main gauge of consumer inflation and is used to index wages, pensions and social transfers.', 'methodology': 'The CPI compares the cost of a fixed basket of goods and services in the current period with its cost in the base period. Rosstat observes prices across a broad sample of localities and items. On the card, the default comparison base is the previous month (100 means no change).', 'unit': '%'}, 'cpi-food': {'name': 'Food CPI', 'description': 'The food CPI tracks prices of foodstuffs in the consumer basket. It shows how much grocery prices contribute to overall inflation and often leads turning points in the headline CPI.', 'methodology': 'Calculated by Rosstat as the price index for food items relative to the previous month (100 means no change). The same observation network and basket weights apply as for the headline CPI, restricted to the food segment. Chart modes on the card (trailing 12-month inflation, month-on-month, weekly, index) reuse this series.', 'unit': '%'}, 'cpi-nonfood': {'name': 'Non-food CPI', 'description': 'The non-food CPI tracks prices of non-food goods in the consumer basket — clothing, durables, fuel at the pump and other merchandise excluding food and services.', 'methodology': 'Rosstat publishes the non-food goods price index relative to the previous month. Coverage matches the non-food part of the CPI basket. Mode switches on the card transform the same offi",
+      "expression": "{**{code: {'name': series.name_en, 'description': series.explanation_en, 'methodology': series.coverage[1], 'unit': '%' if series.unit == '%' else 'thousand people'} for code, series in SERIES.items()}, **{code: {'name': series.name_en, 'description': series.explanation_en, 'methodology': series.coverage[1], 'unit': INCOME_UNITS_EN[series.unit]} for code, series in INCOME_SERIES.items()}, **{code: {'name': series.name_en, 'description': series.explanation_en, 'methodology': _steel.METHODOLOGY_EN, 'unit': _steel.UNIT_EN} for code, series in _steel.SERIES.items()}, 'cpi': {'name': 'Consumer Price Index', 'description': 'The consumer price index (CPI) measures changes in prices of goods and services purchased by households for final consumption. It is the main gauge of consumer inflation and is used to index wages, pensions and social transfers.', 'methodology': 'The CPI compares the cost of a fixed basket of goods and services in the current period with its cost in the base period. Rosstat observes prices across a broad sample of localities and items. On the card, the default comparison base is the previous month (100 means no change).', 'unit': '%'}, 'cpi-food': {'name': 'Food CPI', 'description': 'The food CPI tracks prices of foodstuffs in the consumer basket. It shows how much grocery prices contribute to overall inflation and often leads turning points in the headline CPI.', 'methodology': 'Calculated by Rosstat as the price index for food items relative to the previous month (100 means no change). The same observation network and basket weights apply as for the headline CPI, restricted to the food segment. Chart modes on the card (trailing 12-month inflation, month-on-month, weekly, index) reuse this series.', 'unit': '%'}, 'cpi-nonfood': {'name': 'Non-food CPI', 'description': 'The non-food CPI tracks prices of non-food goods in the consumer basket — clothing, durables, fuel at the pump and other merchandise excluding food and services.', 'methodology': 'Rossta",
       "expression_truncated": true,
-      "expression_chars": 64941,
-      "ast_sha256": "74154beb935f7008799a61e179aa63f3f0776526c5ec12981b144907f5cd3db1",
+      "expression_chars": 65119,
+      "ast_sha256": "3846465550617c2f0316187d4df77d7d2204025394ac3909eecd8c8d2f176c4e",
       "runtime_expansion": false
     },
     {
@@ -92609,7 +92713,7 @@
     {
       "path": "backend/app/data/indicator_seo.py",
       "line": 1288,
-      "end_line": 1411,
+      "end_line": 1412,
       "owner": "<module>",
       "conditions": [],
       "name": "INDICATOR_HIDDEN_FROM_LISTING",
@@ -92625,8 +92729,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 1767,
-      "end_line": 8522,
+      "line": 1768,
+      "end_line": 8523,
       "owner": "<module>",
       "conditions": [],
       "name": "INDICATOR_SEO_BLOCKS",
@@ -93380,8 +93484,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8529,
-      "end_line": 8638,
+      "line": 8530,
+      "end_line": 8639,
       "owner": "<module>",
       "conditions": [],
       "name": "_COMMODITY_BLOCK_SPECS",
@@ -93447,8 +93551,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8729,
-      "end_line": 8805,
+      "line": 8730,
+      "end_line": 8806,
       "owner": "<module>",
       "conditions": [],
       "name": "_FX_RATE_BLOCK_SPECS",
@@ -93482,8 +93586,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8896,
-      "end_line": 8933,
+      "line": 8906,
+      "end_line": 8943,
       "owner": "<module>",
       "conditions": [],
       "name": "_IPI_COMPONENT_BLOCK_SPECS",
@@ -93533,8 +93637,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9003,
-      "end_line": 9007,
+      "line": 9013,
+      "end_line": 9017,
       "owner": "<module>",
       "conditions": [],
       "name": "_FUEL_BLOCK_SPECS",
@@ -93576,8 +93680,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9077,
-      "end_line": 9196,
+      "line": 9087,
+      "end_line": 9206,
       "owner": "<module>",
       "conditions": [],
       "name": "_WEO_BLOCK_SPECS",
@@ -93680,16 +93784,16 @@
         },
         {
           "key": "'steel'",
-          "expression": "paths.russia_category('commodities')",
+          "expression": "paths.russia_indicator('steel-hot-rolled')",
           "expression_truncated": false,
-          "expression_chars": 36,
-          "ast_sha256": "f04fef06f6fad869b5a3076ccfef2e40b1547630df1ae0a144ddbcc47cda3bce"
+          "expression_chars": 42,
+          "ast_sha256": "17fbb52be596d2bfdb32ce78ddb346555a6126442cea999005aa6b40bbfbed5c"
         }
       ],
-      "expression": "{'inflation': paths.russia_indicator('cpi'), 'gasoline-ai92': paths.russia_indicator('fuel-ai92'), 'gasoline-ai95': paths.russia_indicator('fuel-ai95'), 'gdp-deflator': paths.russia_indicator('gdp-nominal'), 'refinancing-rate': paths.russia_indicator('key-rate'), 'steel': paths.russia_category('commodities')}",
+      "expression": "{'inflation': paths.russia_indicator('cpi'), 'gasoline-ai92': paths.russia_indicator('fuel-ai92'), 'gasoline-ai95': paths.russia_indicator('fuel-ai95'), 'gdp-deflator': paths.russia_indicator('gdp-nominal'), 'refinancing-rate': paths.russia_indicator('key-rate'), 'steel': paths.russia_indicator('steel-hot-rolled')}",
       "expression_truncated": false,
-      "expression_chars": 310,
-      "ast_sha256": "3b2420dec8872201c11674773ee125f36307293687c1b8111b4d84b4dc0ecfcd",
+      "expression_chars": 316,
+      "ast_sha256": "1c63bb1fb0d161db14002c618bd4da2c85fae03898a08cca1760f94484a79e89",
       "runtime_expansion": false
     },
     {
@@ -117879,8 +117983,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 93,
-      "end_line": 130,
+      "line": 94,
+      "end_line": 132,
       "owner": "<module>",
       "conditions": [],
       "name": "PARSER_REGISTRY",
@@ -117895,6 +117999,7 @@
         "CbrDataServiceParser.parser_type",
         "EmissLaborParser.parser_type",
         "EmissIncomeParser.parser_type",
+        "EmissSteelParser.parser_type",
         "RosstatLaborParser.parser_type",
         "RosstatGdpParser.parser_type",
         "CbrDataServiceSumParser.parser_type",
@@ -117980,6 +118085,13 @@
           "expression_truncated": false,
           "expression_chars": 17,
           "ast_sha256": "5eb249591d772f5c7d1bf614ec120951509b9d88205513d4d198a41374e0cd46"
+        },
+        {
+          "key": "EmissSteelParser.parser_type",
+          "expression": "EmissSteelParser",
+          "expression_truncated": false,
+          "expression_chars": 16,
+          "ast_sha256": "6584171aa0768f8f90fc07002f3f6602f4732ec42c7642aa38151ad521fe1208"
         },
         {
           "key": "RosstatLaborParser.parser_type",
@@ -118178,10 +118290,10 @@
           "ast_sha256": "dfcc26707b2a8ce2725ac69feecfe70f684da927c3734693bb68ec1ae297b42c"
         }
       ],
-      "expression": "{RosstatCpiParser.parser_type: RosstatCpiParser, CbrKeyRateParser.parser_type: CbrKeyRateParser, CbrFxParser.parser_type: CbrFxParser, CbrRuoniaParser.parser_type: CbrRuoniaParser, CbrMonetaryParser.parser_type: CbrMonetaryParser, CbrDataServiceParser.parser_type: CbrDataServiceParser, EmissLaborParser.parser_type: EmissLaborParser, EmissIncomeParser.parser_type: EmissIncomeParser, RosstatLaborParser.parser_type: RosstatLaborParser, RosstatGdpParser.parser_type: RosstatGdpParser, CbrDataServiceSumParser.parser_type: CbrDataServiceSumParser, MinfinBudgetParser.parser_type: MinfinBudgetParser, RosstatWeeklyCpiParser.parser_type: RosstatWeeklyCpiParser, RosstatIpiParser.parser_type: RosstatIpiParser, RosstatHousingParser.parser_type: RosstatHousingParser, RosstatPopulationParser.parser_type: RosstatPopulationParser, RosstatPpiParser.parser_type: RosstatPpiParser, CbrBopParser.parser_type: CbrBopParser, CbrTradeGoodsMonthlyParser.parser_type: CbrTradeGoodsMonthlyParser, CbrTradeServicesMonthlyParser.parser_type: CbrTradeServicesMonthlyParser, CbrReservesParser.parser_type: CbrReservesParser, CbrDebtParser.parser_type: CbrDebtParser, CbrGoldParser.parser_type: CbrGoldParser, RosstatDemoParser.parser_type: RosstatDemoParser, RosstatIndParser.parser_type: RosstatIndParser, RosstatScienceParser.parser_type: RosstatScienceParser, RosstatFixedAssetsParser.parser_type: RosstatFixedAssetsParser, BinanceBtcUsdtParser.parser_type: BinanceBtcUsdtParser, BrentDailyFredParser.parser_type: BrentDailyFredParser, FredCsvParser.parser_type: FredCsvParser, WorldBankPinkSheetParser.parser_type: WorldBankPinkSheetParser, EcbFxParser.parser_type: EcbFxParser, ImfWeoParser.parser_type: ImfWeoParser, CbrMonetaryAggParser.parser_type: CbrMonetaryAggParser, MoexIndexParser.parser_type: MoexIndexParser, RosstatWeeklyPriceParser.parser_type: RosstatWeeklyPriceParser}",
+      "expression": "{RosstatCpiParser.parser_type: RosstatCpiParser, CbrKeyRateParser.parser_type: CbrKeyRateParser, CbrFxParser.parser_type: CbrFxParser, CbrRuoniaParser.parser_type: CbrRuoniaParser, CbrMonetaryParser.parser_type: CbrMonetaryParser, CbrDataServiceParser.parser_type: CbrDataServiceParser, EmissLaborParser.parser_type: EmissLaborParser, EmissIncomeParser.parser_type: EmissIncomeParser, EmissSteelParser.parser_type: EmissSteelParser, RosstatLaborParser.parser_type: RosstatLaborParser, RosstatGdpParser.parser_type: RosstatGdpParser, CbrDataServiceSumParser.parser_type: CbrDataServiceSumParser, MinfinBudgetParser.parser_type: MinfinBudgetParser, RosstatWeeklyCpiParser.parser_type: RosstatWeeklyCpiParser, RosstatIpiParser.parser_type: RosstatIpiParser, RosstatHousingParser.parser_type: RosstatHousingParser, RosstatPopulationParser.parser_type: RosstatPopulationParser, RosstatPpiParser.parser_type: RosstatPpiParser, CbrBopParser.parser_type: CbrBopParser, CbrTradeGoodsMonthlyParser.parser_type: CbrTradeGoodsMonthlyParser, CbrTradeServicesMonthlyParser.parser_type: CbrTradeServicesMonthlyParser, CbrReservesParser.parser_type: CbrReservesParser, CbrDebtParser.parser_type: CbrDebtParser, CbrGoldParser.parser_type: CbrGoldParser, RosstatDemoParser.parser_type: RosstatDemoParser, RosstatIndParser.parser_type: RosstatIndParser, RosstatScienceParser.parser_type: RosstatScienceParser, RosstatFixedAssetsParser.parser_type: RosstatFixedAssetsParser, BinanceBtcUsdtParser.parser_type: BinanceBtcUsdtParser, BrentDailyFredParser.parser_type: BrentDailyFredParser, FredCsvParser.parser_type: FredCsvParser, WorldBankPinkSheetParser.parser_type: WorldBankPinkSheetParser, EcbFxParser.parser_type: EcbFxParser, ImfWeoParser.parser_type: ImfWeoParser, CbrMonetaryAggParser.parser_type: CbrMonetaryAggParser, MoexIndexParser.parser_type: MoexIndexParser, RosstatWeeklyPriceParser.parser_type: RosstatWeeklyPriceParser}",
       "expression_truncated": false,
-      "expression_chars": 1868,
-      "ast_sha256": "9e4df5875550cc1ff6c94da5180e0ee58cf751a7e685b166c3b73d247cf45b73",
+      "expression_chars": 1916,
+      "ast_sha256": "69df8d448138e9b6b32353f3525a16d1dc8726ff56bffd389b509e4ca914674b",
       "runtime_expansion": false
     },
     {
@@ -121931,7 +122043,7 @@
     {
       "path": "backend/app/services/search_intent.py",
       "line": 32,
-      "end_line": 141,
+      "end_line": 143,
       "owner": "<module>",
       "conditions": [],
       "name": "CONCEPTS",
@@ -121941,14 +122053,14 @@
       "entries": [],
       "expression": "((('ввп на душу населения', 'ввп на душу', 'gdp per capita', 'per capita gdp'), ('gdp-per-capita', 'gdp per capita', 'ввп на душу', 'внутренний продукт на душу', 'domestic product per capita')), (('мрот', 'minimum wage', 'минимальная зарплата'), ('minimum-wage', 'minimum wage', 'минимальная заработная плата', 'минимальный размер оплаты труда')), (('ипц', 'cpi', 'инфляция', 'инфляции', 'inflation', 'рост цен'), ('cpi', 'inflation', 'hicp', 'потребительских цен', 'consumer price')), (('ввп', 'gdp', 'валовой продукт'), ('gdp', 'ввп', 'валовой внутренний продукт', 'gross domestic product')), (('врп на душу населения', 'врп на душу', 'валовой региональный продукт на душу населения', 'валовый региональный продукт на душу населения', 'валовой региональный продукт на душу', 'grp per capita', 'gross regional product per capita'), ('valovoy-regionalnyy-produkt-na-dushu-naseleniya', 'валовой региональный продукт на душу', 'валового регионального продукта на душу', 'gross regional product per capita')), (('врп', 'grp', 'валовой региональный продукт', 'валовый региональный продукт', 'валового регионального продукта', 'gross regional product'), ('valovoy-regionalnyy-produkt', 'валовой региональный продукт', 'валового регионального продукта', 'gross regional product')), (('ключевая ставка', 'ставка цб', 'key rate', 'cbr rate', 'central bank rate'), ('key-rate', 'ключевая ставка', 'policy-rate')), (('ставка фрс', 'ключевая ставка фрс', 'процентная ставка фрс', 'ставка федрезерва', 'ставка федеральной резервной системы', 'фрс', 'fed rate', 'fed funds rate', 'federal funds rate', 'fed funds', 'federal reserve rate'), ('us-policy-rate', 'federal funds', 'федеральным фондам', 'федеральные фонды')), (('средняя заработная плата', 'зарплата', 'зарплаты', 'заработная плата', 'зпл', 'зп', 'з п', 'salary', 'wages'), ('wage', 'salary', 'заработн', 'зарплат')), (('безработица', 'безработицы', 'уровень безработицы', 'unemployment', 'unemployment rate'), ('unemployment', 'безработ', 'jobless')),",
       "expression_truncated": true,
-      "expression_chars": 8085,
-      "ast_sha256": "6e5c5bec28415dd38f3ea2fa567db1bb6336ff843c9a31ed59185fdb8612c4ae",
+      "expression_chars": 8181,
+      "ast_sha256": "df3c67eac10a917aadd79c54a2636ef18a89e1d05fcca4287a2691d45fcfa8ad",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 145,
-      "end_line": 147,
+      "line": 147,
+      "end_line": 149,
       "owner": "<module>",
       "conditions": [],
       "name": "_SINGLE_ALIASES",
@@ -121964,8 +122076,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 148,
-      "end_line": 152,
+      "line": 150,
+      "end_line": 154,
       "owner": "<module>",
       "conditions": [],
       "name": "_CONTROL_WORDS",
@@ -121981,8 +122093,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 153,
-      "end_line": 154,
+      "line": 155,
+      "end_line": 156,
       "owner": "<module>",
       "conditions": [],
       "name": "_CURRENCY_KEYS",
@@ -121998,8 +122110,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 155,
-      "end_line": 156,
+      "line": 157,
+      "end_line": 158,
       "owner": "<module>",
       "conditions": [],
       "name": "_FX_SUBJECT_KEYS",
@@ -122015,8 +122127,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 157,
-      "end_line": 160,
+      "line": 159,
+      "end_line": 162,
       "owner": "<module>",
       "conditions": [],
       "name": "_DENOMINATOR_COUNTS",
@@ -122146,8 +122258,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 161,
-      "end_line": 164,
+      "line": 163,
+      "end_line": 166,
       "owner": "<module>",
       "conditions": [],
       "name": "_DENOMINATOR_RE",
@@ -122163,8 +122275,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 168,
-      "end_line": 168,
+      "line": 170,
+      "end_line": 170,
       "owner": "<module>",
       "conditions": [],
       "name": "_AMBIGUOUS_ISO",
@@ -122180,8 +122292,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 169,
-      "end_line": 169,
+      "line": 171,
+      "end_line": 171,
       "owner": "<module>",
       "conditions": [],
       "name": "_CODE_RE",
@@ -122197,8 +122309,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 171,
-      "end_line": 186,
+      "line": 173,
+      "end_line": 188,
       "owner": "<module>",
       "conditions": [],
       "name": "COUNTRY_ALIASES",
@@ -122328,8 +122440,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 187,
-      "end_line": 197,
+      "line": 189,
+      "end_line": 199,
       "owner": "<module>",
       "conditions": [],
       "name": "REGION_ALIASES",
@@ -122403,8 +122515,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 198,
-      "end_line": 219,
+      "line": 200,
+      "end_line": 221,
       "owner": "<module>",
       "conditions": [],
       "name": "_CITY_REGION_ALIASES",
@@ -122582,8 +122694,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 222,
-      "end_line": 238,
+      "line": 224,
+      "end_line": 240,
       "owner": "<module>",
       "conditions": [],
       "name": "_COLLOQUIAL_REGION_ALIASES",
@@ -122721,8 +122833,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 243,
-      "end_line": 251,
+      "line": 245,
+      "end_line": 253,
       "owner": "<module>",
       "conditions": [],
       "name": "SECOND_READING_REGION_ALIASES",
@@ -122788,8 +122900,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 259,
+      "end_line": 259,
       "owner": "<module>",
       "conditions": [],
       "name": "_LAYOUT_EN_RU",
@@ -122805,8 +122917,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 260,
+      "end_line": 260,
       "owner": "<module>",
       "conditions": [],
       "name": "_LAYOUT_RU_EN",
@@ -122822,8 +122934,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 259,
-      "end_line": 266,
+      "line": 261,
+      "end_line": 268,
       "owner": "<module>",
       "conditions": [],
       "name": "MONTHS",
@@ -122839,8 +122951,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 348,
-      "end_line": 349,
+      "line": 350,
+      "end_line": 351,
       "owner": "<module>",
       "conditions": [],
       "name": "_ALIAS_WORDS",
@@ -122856,8 +122968,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 523,
-      "end_line": 523,
+      "line": 525,
+      "end_line": 525,
       "owner": "<module>",
       "conditions": [],
       "name": "CONCEPT_MATCHERS",
@@ -122873,8 +122985,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 816,
-      "end_line": 817,
+      "line": 818,
+      "end_line": 819,
       "owner": "<module>",
       "conditions": [],
       "name": "_RATE_QUOTE_CODES",
@@ -122890,8 +123002,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1009,
-      "end_line": 1009,
+      "line": 1011,
+      "end_line": 1011,
       "owner": "<module>",
       "conditions": [],
       "name": "CONCEPTS_ALTERNATIVES",
@@ -122907,8 +123019,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1010,
-      "end_line": 1010,
+      "line": 1012,
+      "end_line": 1012,
       "owner": "<module>",
       "conditions": [],
       "name": "_CONCEPT_BY_CODE",
@@ -122924,8 +123036,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1015,
-      "end_line": 1018,
+      "line": 1017,
+      "end_line": 1020,
       "owner": "<module>",
       "conditions": [],
       "name": "_REGIONAL_PRODUCT",
@@ -122959,8 +123071,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1095,
-      "end_line": 1095,
+      "line": 1097,
+      "end_line": 1097,
       "owner": "<module>",
       "conditions": [],
       "name": "EXACT_ONLY_WORDS",
@@ -125287,8 +125399,8 @@
           "key": "'commodities'",
           "expression": "CategorySeo(slug='commodities', name='Товарные рынки', api_category='Товарные рынки', title='Цены на сырьё и товарные рынки', description='Нефть Brent, газ, золото, медь, пшеница — мировые цены на сырьевые товары по официальным источникам.', intro='Раздел собирает мировые цены на ключевые сырьевые т",
           "expression_truncated": true,
-          "expression_chars": 568,
-          "ast_sha256": "38491237dc97e0ad1106e93f3b737e363888048c21ec164beca08f6f97dabf9f"
+          "expression_chars": 605,
+          "ast_sha256": "3d0423d4638d34f571d16a6c2cab824282a2381ccadee27abbf48e117c109bf0"
         },
         {
           "key": "'labor'",
@@ -125335,8 +125447,8 @@
       ],
       "expression": "{'prices': CategorySeo(slug='prices', name='Цены и инфляция', api_category='Цены', title='Цены и инфляция в России', description='ИПЦ, инфляция, цены на жильё — данные Росстата и прогнозы.', intro='Раздел собирает показатели потребительских цен, инфляции и цен на жильё. Здесь можно смотреть динамику ИПЦ, годовые и квартальные изменения, а также связанные индексы по основным группам товаров и услуг.', flagship_code='cpi', keywords='инфляция в России, ИПЦ, индекс потребительских цен, рост цен, инфляция Росстат, цены на продукты, цены на жильё, прогноз инфляции, инфляция Россия 2026, ИЦП', blocks=(SeoBlock('Что важно в разделе', 'Ценовые индикаторы помогают оценивать инфляционное давление, изменение покупательной способности и динамику отдельных компонентов потребительской корзины.'),)), 'rates': CategorySeo(slug='rates', name='Процентные ставки', api_category='Ставки', title='Процентные ставки в России', description='Ключевая ставка ЦБ, RUONIA, ипотека, депозиты — данные Банка России.', intro='Раздел объединяет ключевую ставку, рыночные денежные ставки и ставки по банковским продуктам.', flagship_code='key-rate', keywords='ключевая ставка ЦБ, ставка Банка России, RUONIA, ставка по ипотеке, ставка по вкладам, депозитная ставка, ставка ЦБ РФ, ставка рефинансирования, прогноз ключевой ставки'), 'currencies': CategorySeo(slug='currencies', name='Валюты', api_category='Валюты', title='Курсы валют и криптовалют', description='Курсы валют к рублю и мировые валютные пары, а также цены криптовалют. Данные Банка России, ЕЦБ и Binance.', intro='Курсы к рублю, мировые валютные пары и криптовалюты в одном разделе. У каждого курса указан свой источник и дата обновления.', flagship_code='usd-rub', keywords='курс доллара, курс евро, курс юаня, USD RUB, EUR RUB, CNY RUB, курс валюты ЦБ, EUR USD, GBP USD, USD CNY, BTC USD, криптовалюты'), 'indices': CategorySeo(slug='indices', name='Биржевые индексы', api_category='Индексы', title='Биржевые индексы России', description='Индекс МосБиржи",
       "expression_truncated": true,
-      "expression_chars": 6685,
-      "ast_sha256": "569615acca7eafe72ba5c2aef711d4b392b2a26e7812fdc02a06775192cf4e6b",
+      "expression_chars": 6722,
+      "ast_sha256": "3917b4efbeabef4c630f5130d52fd2355eb3ca16475cf0bd311a5b083a574d1b",
       "runtime_expansion": false
     },
     {
@@ -140402,8 +140514,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 56,
-      "end_line": 5018,
+      "line": 57,
+      "end_line": 5021,
       "owner": "<module>",
       "conditions": [],
       "name": "INDICATORS",
@@ -140413,14 +140525,14 @@
       "entries": [],
       "expression": "[{'code': 'cpi', 'name': 'Индекс потребительских цен на товары и услуги', 'name_en': 'Consumer Price Index', 'unit': '%', 'frequency': 'monthly', 'source': 'Росстат', 'source_url': 'https://rosstat.gov.ru/statistics/price', 'description': CPI_DESCRIPTION, 'methodology': CPI_METHODOLOGY, 'parser_type': 'rosstat_cpi_xlsx', 'model_config_json': {'forecast_steps': 12}, 'is_active': True, 'category': 'Цены', 'excel_sheet': '01'}, {'code': 'cpi-food', 'name': 'Индекс потребительских цен на продовольственные товары', 'name_en': 'Food CPI', 'unit': '%', 'frequency': 'monthly', 'source': 'Росстат', 'source_url': 'https://rosstat.gov.ru/statistics/price', 'description': 'Индекс потребительских цен на продовольственные товары.', 'methodology': 'Индекс цен на продовольственные товары относительно предыдущего месяца: 100 означает, что цены на продукты питания не изменились. Считает Росстат по той же сети наблюдения и весам корзины, что и общий индекс потребительских цен, но только по продовольственной группе. Режимы на карточке (инфляция за 12 месяцев, к предыдущему периоду, индекс) строятся из этого официального ряда.', 'parser_type': 'rosstat_cpi_xlsx', 'model_config_json': {'forecast_steps': 12}, 'is_active': True, 'category': 'Цены', 'excel_sheet': '02'}, {'code': 'cpi-nonfood', 'name': 'Индекс потребительских цен на непродовольственные товары', 'name_en': 'Non-food CPI', 'unit': '%', 'frequency': 'monthly', 'source': 'Росстат', 'source_url': 'https://rosstat.gov.ru/statistics/price', 'description': 'Индекс потребительских цен на непродовольственные товары.', 'methodology': 'Индекс цен на непродовольственные товары относительно предыдущего месяца. Охват совпадает с непродовольственной частью потребительской корзины Росстата: одежда, товары длительного пользования, топливо на АЗС и прочие непродовольственные товары без услуг. Режимы на карточке преобразуют тот же официальный месячный ряд.', 'parser_type': 'rosstat_cpi_xlsx', 'model_config_json': {'forecast_steps': 12}, 'is_ac",
       "expression_truncated": true,
-      "expression_chars": 144995,
-      "ast_sha256": "4691b62e0307d77d8208cd33967c3c55364a552b8dc4cd61aca5a111eafbfb03",
+      "expression_chars": 145022,
+      "ast_sha256": "5cf349e6411bdaaf60ca455968c3c7c52791712dd6564ba1b51f362de0d880de",
       "runtime_expansion": false
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5029,
-      "end_line": 5029,
+      "line": 5032,
+      "end_line": 5032,
       "owner": "<module>",
       "conditions": [],
       "name": "_PARENT_META",
@@ -140436,8 +140548,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5030,
-      "end_line": 5030,
+      "line": 5033,
+      "end_line": 5033,
       "owner": "<module>",
       "conditions": [],
       "name": "_EXISTING_CODES",
@@ -140453,8 +140565,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5032,
-      "end_line": 5034,
+      "line": 5035,
+      "end_line": 5037,
       "owner": "<module>",
       "conditions": [],
       "name": "_GRAN_PERIOD",
@@ -140504,8 +140616,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5035,
-      "end_line": 5038,
+      "line": 5038,
+      "end_line": 5041,
       "owner": "<module>",
       "conditions": [],
       "name": "_GRAN_EOP",
@@ -140555,8 +140667,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5137,
-      "end_line": 5137,
+      "line": 5140,
+      "end_line": 5140,
       "owner": "<module>",
       "conditions": [],
       "name": "_FCAST_STEPS_BY_FREQ",
@@ -140598,8 +140710,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5203,
-      "end_line": 5229,
+      "line": 5206,
+      "end_line": 5232,
       "owner": "<module>",
       "conditions": [],
       "name": "MONTHLY_AUTO_FORECAST_CODES",
@@ -140615,8 +140727,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5246,
-      "end_line": 5253,
+      "line": 5249,
+      "end_line": 5256,
       "owner": "<module>",
       "conditions": [],
       "name": "ANNUAL_AUTO_FORECAST_CODES",
@@ -140632,8 +140744,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5356,
-      "end_line": 5356,
+      "line": 5359,
+      "end_line": 5359,
       "owner": "<module>",
       "conditions": [],
       "name": "_SEO_FIELDS",
@@ -145361,8 +145473,8 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 1095,
-      "end_line": 1095,
+      "line": 1105,
+      "end_line": 1105,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.i18n.indicator_copy_en.INDICATOR_COPY_EN",
@@ -145447,8 +145559,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8721,
-      "end_line": 8721,
+      "line": 8722,
+      "end_line": 8722,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS",
@@ -145459,8 +145571,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8871,
-      "end_line": 8871,
+      "line": 8872,
+      "end_line": 8872,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS",
@@ -145471,8 +145583,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8996,
-      "end_line": 8996,
+      "line": 9006,
+      "end_line": 9006,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS",
@@ -145483,8 +145595,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9070,
-      "end_line": 9070,
+      "line": 9080,
+      "end_line": 9080,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS",
@@ -145495,8 +145607,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9256,
-      "end_line": 9256,
+      "line": 9266,
+      "end_line": 9266,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS",
@@ -145507,8 +145619,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8879,
-      "end_line": 8879,
+      "line": 8880,
+      "end_line": 8880,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS",
@@ -145516,8 +145628,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8880,
-      "end_line": 8880,
+      "line": 8881,
+      "end_line": 8881,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO",
@@ -145525,8 +145637,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8881,
-      "end_line": 8881,
+      "line": 8882,
+      "end_line": 8882,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS",
@@ -145534,12 +145646,30 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8888,
-      "end_line": 8888,
+      "line": 8889,
+      "end_line": 8889,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS",
       "expression": "INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)"
+    },
+    {
+      "path": "backend/app/data/indicator_seo.py",
+      "line": 8896,
+      "end_line": 8896,
+      "owner": "<module>",
+      "conditions": [],
+      "registry": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS",
+      "expression": "INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)"
+    },
+    {
+      "path": "backend/app/data/indicator_seo.py",
+      "line": 8898,
+      "end_line": 8898,
+      "owner": "<module>",
+      "conditions": [],
+      "registry": "app.data.indicator_seo.INDICATOR_SEO",
+      "expression": "INDICATOR_SEO.setdefault(_code, _meta)"
     },
     {
       "path": "backend/app/data/world_aggregation.py",
@@ -145854,8 +145984,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.services.search_intent.REGION_ALIASES",
@@ -145958,8 +146088,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5191,
-      "end_line": 5191,
+      "line": 5194,
+      "end_line": 5194,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING",
@@ -145967,8 +146097,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5193,
-      "end_line": 5193,
+      "line": 5196,
+      "end_line": 5196,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING",
@@ -145976,8 +146106,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5186,
-      "end_line": 5186,
+      "line": 5189,
+      "end_line": 5189,
       "owner": "<module>",
       "conditions": [],
       "registry": "seed_data.INDICATORS",
@@ -174434,8 +174564,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 467,
+      "end_line": 467,
       "owner": "_outside_literal_query",
       "conditions": [],
       "operation": "set",
@@ -174448,8 +174578,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 678,
-      "end_line": 679,
+      "line": 680,
+      "end_line": 681,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "update",
@@ -174462,8 +174592,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 752,
-      "end_line": 752,
+      "line": 754,
+      "end_line": 754,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -174476,8 +174606,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 753,
-      "end_line": 753,
+      "line": 755,
+      "end_line": 755,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -174490,8 +174620,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 417,
-      "end_line": 417,
+      "line": 419,
+      "end_line": 419,
       "owner": "_extract_denominators",
       "conditions": [],
       "operation": "set",
@@ -174504,8 +174634,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 422,
-      "end_line": 422,
+      "line": 424,
+      "end_line": 424,
       "owner": "_extract_denominators",
       "conditions": [],
       "operation": "update",
@@ -174518,8 +174648,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 447,
-      "end_line": 447,
+      "line": 449,
+      "end_line": 449,
       "owner": "_extract_point_units",
       "conditions": [],
       "operation": "set",
@@ -174532,8 +174662,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 453,
+      "end_line": 453,
       "owner": "_extract_point_units",
       "conditions": [],
       "operation": "update",
@@ -174546,8 +174676,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 673,
+      "end_line": 673,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -174560,8 +174690,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 706,
-      "end_line": 706,
+      "line": 708,
+      "end_line": 708,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -174574,36 +174704,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 715,
-      "end_line": 715,
-      "owner": "strip_geography",
-      "conditions": [],
-      "operation": "set",
-      "receiver": null,
-      "symbol": "app.services.search_intent.set",
-      "expression": "set()",
-      "expression_truncated": false,
-      "expression_chars": 5,
-      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 754,
-      "end_line": 754,
-      "owner": "strip_geography",
-      "conditions": [],
-      "operation": "set",
-      "receiver": null,
-      "symbol": "app.services.search_intent.set",
-      "expression": "set()",
-      "expression_truncated": false,
-      "expression_chars": 5,
-      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 754,
-      "end_line": 754,
+      "line": 717,
+      "end_line": 717,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "set",
@@ -174623,6 +174725,34 @@
       "operation": "set",
       "receiver": null,
       "symbol": "app.services.search_intent.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 756,
+      "end_line": 756,
+      "owner": "strip_geography",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.search_intent.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 758,
+      "end_line": 758,
+      "owner": "strip_geography",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.search_intent.set",
       "expression": "set(range(start, end))",
       "expression_truncated": false,
       "expression_chars": 22,
@@ -174630,8 +174760,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 761,
-      "end_line": 761,
+      "line": 763,
+      "end_line": 763,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "add",
@@ -174644,8 +174774,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 766,
-      "end_line": 766,
+      "line": 768,
+      "end_line": 768,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "add",
@@ -174658,8 +174788,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 895,
-      "end_line": 895,
+      "line": 897,
+      "end_line": 897,
       "owner": "parse_intent",
       "conditions": [
         "years"
@@ -174674,8 +174804,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 919,
-      "end_line": 919,
+      "line": 921,
+      "end_line": 921,
       "owner": "parse_intent",
       "conditions": [],
       "operation": "set",
@@ -174688,8 +174818,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 950,
-      "end_line": 950,
+      "line": 952,
+      "end_line": 952,
       "owner": "parse_intent",
       "conditions": [],
       "operation": "set",
@@ -174702,8 +174832,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 480,
-      "end_line": 480,
+      "line": 482,
+      "end_line": 482,
       "owner": "_outside_literal_query",
       "conditions": [
         "tuple((match[0] for match in window)) == parts"
@@ -174718,8 +174848,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 737,
-      "end_line": 737,
+      "line": 739,
+      "end_line": 739,
       "owner": "strip_geography",
       "conditions": [],
       "operation": "add",
@@ -174732,8 +174862,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 768,
-      "end_line": 768,
+      "line": 770,
+      "end_line": 770,
       "owner": "strip_geography",
       "conditions": [
         "item['kind'] != 'country'"
@@ -174748,8 +174878,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 695,
-      "end_line": 695,
+      "line": 697,
+      "end_line": 697,
       "owner": "strip_geography",
       "conditions": [
         "len(mismatches) == 1 and min(map(len, mismatches[0])) >= 4 and (mismatches[0][0] not in actual_geo_aliases) and edit_distance_one(*mismatches[0]) and (not fx_subject_positions.intersection(range(window[0].start(), window[-1].end())))"
@@ -174764,8 +174894,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 712,
-      "end_line": 712,
+      "line": 714,
+      "end_line": 714,
       "owner": "strip_geography",
       "conditions": [
         "index and match[0] == 's'",
@@ -174781,8 +174911,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 978,
-      "end_line": 978,
+      "line": 980,
+      "end_line": 980,
       "owner": "parse_intent",
       "conditions": [
         "residual_terms and (not countries) and (not regions) and (len(terms) > len(residual_terms))",
@@ -174798,8 +174928,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 748,
-      "end_line": 748,
+      "line": 750,
+      "end_line": 750,
       "owner": "strip_geography",
       "conditions": [
         "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
@@ -174814,8 +174944,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 748,
-      "end_line": 748,
+      "line": 750,
+      "end_line": 750,
       "owner": "strip_geography",
       "conditions": [
         "' ' not in alias and len(alias) >= 5 and edit_distance_one(token, alias)"
@@ -191393,8 +191523,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5030,
-      "end_line": 5030,
+      "line": 5033,
+      "end_line": 5033,
       "owner": "<module>",
       "conditions": [],
       "operation": "set",
@@ -191407,8 +191537,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5191,
-      "end_line": 5191,
+      "line": 5194,
+      "end_line": 5194,
       "owner": "<module>",
       "conditions": [],
       "operation": "update",
@@ -191421,8 +191551,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5193,
-      "end_line": 5193,
+      "line": 5196,
+      "end_line": 5196,
       "owner": "<module>",
       "conditions": [],
       "operation": "update",
@@ -191435,8 +191565,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5188,
-      "end_line": 5188,
+      "line": 5191,
+      "end_line": 5191,
       "owner": "<module>",
       "conditions": [],
       "operation": "add",
@@ -191449,8 +191579,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5321,
-      "end_line": 5323,
+      "line": 5324,
+      "end_line": 5326,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "operation": "set",
@@ -191463,8 +191593,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5347,
-      "end_line": 5348,
+      "line": 5350,
+      "end_line": 5351,
       "owner": "_store_seed_hash",
       "conditions": [
         "row is None"
@@ -191479,8 +191609,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5352,
-      "end_line": 5352,
+      "line": 5355,
+      "end_line": 5355,
       "owner": "_store_seed_hash",
       "conditions": [],
       "operation": "commit",
@@ -191493,8 +191623,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5447,
-      "end_line": 5447,
+      "line": 5450,
+      "end_line": 5450,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "snap_row is None"
@@ -191509,8 +191639,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5338,
-      "end_line": 5340,
+      "line": 5341,
+      "end_line": 5343,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "operation": "execute",
@@ -191523,8 +191653,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5501,
-      "end_line": 5501,
+      "line": 5504,
+      "end_line": 5504,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -191537,8 +191667,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5504,
-      "end_line": 5516,
+      "line": 5507,
+      "end_line": 5519,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191551,8 +191681,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5539,
-      "end_line": 5539,
+      "line": 5542,
+      "end_line": 5542,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -191565,8 +191695,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5568,
-      "end_line": 5568,
+      "line": 5571,
+      "end_line": 5571,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -191579,8 +191709,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5582,
-      "end_line": 5584,
+      "line": 5585,
+      "end_line": 5587,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -191593,8 +191723,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5585,
-      "end_line": 5587,
+      "line": 5588,
+      "end_line": 5590,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191607,8 +191737,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5601,
-      "end_line": 5601,
+      "line": 5604,
+      "end_line": 5604,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191621,8 +191751,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5609,
-      "end_line": 5609,
+      "line": 5612,
+      "end_line": 5612,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -191635,8 +191765,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5675,
-      "end_line": 5675,
+      "line": 5678,
+      "end_line": 5678,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191649,8 +191779,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5694,
-      "end_line": 5694,
+      "line": 5697,
+      "end_line": 5697,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -191663,8 +191793,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5723,
-      "end_line": 5725,
+      "line": 5726,
+      "end_line": 5728,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "execute",
@@ -191677,8 +191807,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5302,
-      "end_line": 5302,
+      "line": 5305,
+      "end_line": 5305,
       "owner": "_stored_seed_hash",
       "conditions": [],
       "operation": "rollback",
@@ -191691,8 +191821,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5413,
-      "end_line": 5416,
+      "line": 5416,
+      "end_line": 5419,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "operation": "execute",
@@ -191705,8 +191835,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5441,
-      "end_line": 5441,
+      "line": 5444,
+      "end_line": 5444,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "updates"
@@ -191721,8 +191851,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5498,
-      "end_line": 5498,
+      "line": 5501,
+      "end_line": 5501,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191735,8 +191865,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5523,
-      "end_line": 5532,
+      "line": 5526,
+      "end_line": 5535,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191749,8 +191879,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5534,
-      "end_line": 5538,
+      "line": 5537,
+      "end_line": 5541,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191763,8 +191893,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5557,
-      "end_line": 5557,
+      "line": 5560,
+      "end_line": 5560,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191777,8 +191907,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5561,
-      "end_line": 5565,
+      "line": 5564,
+      "end_line": 5568,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191791,8 +191921,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5603,
-      "end_line": 5607,
+      "line": 5606,
+      "end_line": 5610,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191805,8 +191935,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5627,
-      "end_line": 5627,
+      "line": 5630,
+      "end_line": 5630,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191819,8 +191949,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5639,
-      "end_line": 5639,
+      "line": 5642,
+      "end_line": 5642,
       "owner": "_seed_full",
       "conditions": [
         "gap_count"
@@ -191835,8 +191965,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5654,
-      "end_line": 5654,
+      "line": 5657,
+      "end_line": 5657,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -191849,8 +191979,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5715,
-      "end_line": 5715,
+      "line": 5718,
+      "end_line": 5718,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "commit",
@@ -191863,8 +191993,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5730,
-      "end_line": 5730,
+      "line": 5733,
+      "end_line": 5733,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "commit",
@@ -191877,8 +192007,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5635,
-      "end_line": 5635,
+      "line": 5638,
+      "end_line": 5638,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191891,8 +192021,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5662,
-      "end_line": 5662,
+      "line": 5665,
+      "end_line": 5665,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "rollback",
@@ -191905,8 +192035,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5690,
-      "end_line": 5690,
+      "line": 5693,
+      "end_line": 5693,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -191919,8 +192049,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5720,
-      "end_line": 5720,
+      "line": 5723,
+      "end_line": 5723,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "rollback",
@@ -191933,8 +192063,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5601,
-      "end_line": 5601,
+      "line": 5604,
+      "end_line": 5604,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -191947,8 +192077,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5321,
-      "end_line": 5323,
+      "line": 5324,
+      "end_line": 5326,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "operation": "execute",
@@ -191961,8 +192091,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5339,
-      "end_line": 5339,
+      "line": 5342,
+      "end_line": 5342,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "operation": "update",
@@ -191975,8 +192105,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5505,
-      "end_line": 5505,
+      "line": 5508,
+      "end_line": 5508,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -191989,8 +192119,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5441,
-      "end_line": 5441,
+      "line": 5444,
+      "end_line": 5444,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "updates"
@@ -192005,8 +192135,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5524,
-      "end_line": 5524,
+      "line": 5527,
+      "end_line": 5527,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -192019,8 +192149,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5535,
-      "end_line": 5535,
+      "line": 5538,
+      "end_line": 5538,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -192033,8 +192163,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5562,
-      "end_line": 5562,
+      "line": 5565,
+      "end_line": 5565,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "delete",
@@ -192047,8 +192177,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5604,
-      "end_line": 5604,
+      "line": 5607,
+      "end_line": 5607,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -251520,6 +251650,42 @@
       "expression": "RegionMonthlyPoint"
     },
     {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 78,
+      "end_line": 78,
+      "owner": "EmissSteelParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 78,
+      "end_line": 78,
+      "owner": "EmissSteelParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 78,
+      "end_line": 78,
+      "owner": "EmissSteelParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 78,
+      "end_line": 78,
+      "owner": "EmissSteelParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
       "path": "backend/app/services/emiss_weekly_fuel.py",
       "line": 287,
       "end_line": 287,
@@ -274821,8 +274987,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 40,
-      "end_line": 40,
+      "line": 41,
+      "end_line": 41,
       "owner": "RosstatCpiParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -274830,8 +274996,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 42,
-      "end_line": 42,
+      "line": 43,
+      "end_line": 43,
       "owner": "RosstatCpiParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -320151,8 +320317,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5345,
-      "end_line": 5345,
+      "line": 5348,
+      "end_line": 5348,
       "owner": "_store_seed_hash",
       "conditions": [],
       "symbol": "app.models.SeedState",
@@ -320160,8 +320326,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5404,
-      "end_line": 5404,
+      "line": 5407,
+      "end_line": 5407,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.SeedState",
@@ -320169,8 +320335,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5298,
-      "end_line": 5298,
+      "line": 5301,
+      "end_line": 5301,
       "owner": "_stored_seed_hash",
       "conditions": [],
       "symbol": "app.models.SeedState",
@@ -320178,8 +320344,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5347,
-      "end_line": 5347,
+      "line": 5350,
+      "end_line": 5350,
       "owner": "_store_seed_hash",
       "conditions": [
         "row is None"
@@ -320189,8 +320355,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5447,
-      "end_line": 5447,
+      "line": 5450,
+      "end_line": 5450,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "snap_row is None"
@@ -320200,8 +320366,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
+      "line": 5589,
+      "end_line": 5589,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -320209,8 +320375,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
+      "line": 5589,
+      "end_line": 5589,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.name",
@@ -320218,8 +320384,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
+      "line": 5589,
+      "end_line": 5589,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.category",
@@ -320227,8 +320393,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
+      "line": 5589,
+      "end_line": 5589,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.source",
@@ -320236,8 +320402,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5414,
-      "end_line": 5414,
+      "line": 5417,
+      "end_line": 5417,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -320245,8 +320411,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5414,
-      "end_line": 5414,
+      "line": 5417,
+      "end_line": 5417,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.seo_title",
@@ -320254,8 +320420,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5414,
-      "end_line": 5414,
+      "line": 5417,
+      "end_line": 5417,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.seo_description",
@@ -320263,8 +320429,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5415,
-      "end_line": 5415,
+      "line": 5418,
+      "end_line": 5418,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.seo_keywords",
@@ -320272,8 +320438,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5415,
-      "end_line": 5415,
+      "line": 5418,
+      "end_line": 5418,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.seo_blocks",
@@ -320281,8 +320447,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5489,
-      "end_line": 5489,
+      "line": 5492,
+      "end_line": 5492,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320290,8 +320456,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
+      "line": 5589,
+      "end_line": 5589,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320299,8 +320465,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
+      "line": 5589,
+      "end_line": 5589,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320308,8 +320474,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
+      "line": 5589,
+      "end_line": 5589,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320317,8 +320483,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
+      "line": 5589,
+      "end_line": 5589,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320326,8 +320492,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5675,
-      "end_line": 5675,
+      "line": 5678,
+      "end_line": 5678,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -320335,8 +320501,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5724,
-      "end_line": 5724,
+      "line": 5727,
+      "end_line": 5727,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -320344,8 +320510,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5414,
-      "end_line": 5414,
+      "line": 5417,
+      "end_line": 5417,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320353,8 +320519,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5414,
-      "end_line": 5414,
+      "line": 5417,
+      "end_line": 5417,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320362,8 +320528,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5414,
-      "end_line": 5414,
+      "line": 5417,
+      "end_line": 5417,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320371,8 +320537,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5415,
-      "end_line": 5415,
+      "line": 5418,
+      "end_line": 5418,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320380,8 +320546,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5415,
-      "end_line": 5415,
+      "line": 5418,
+      "end_line": 5418,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320389,351 +320555,12 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5557,
-      "end_line": 5557,
+      "line": 5560,
+      "end_line": 5560,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
       "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5601,
-      "end_line": 5601,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5627,
-      "end_line": 5627,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator.code",
-      "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5675,
-      "end_line": 5675,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5675,
-      "end_line": 5675,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5724,
-      "end_line": 5724,
-      "owner": "generate_forecasts",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5724,
-      "end_line": 5724,
-      "owner": "generate_forecasts",
-      "conditions": [],
-      "symbol": "app.models.Indicator.is_active",
-      "expression": "Indicator.is_active"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5339,
-      "end_line": 5339,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.models.Indicator.code",
-      "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5506,
-      "end_line": 5506,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator.code",
-      "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5557,
-      "end_line": 5557,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator.id",
-      "expression": "Indicator.id"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5557,
-      "end_line": 5557,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5564,
-      "end_line": 5564,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5627,
-      "end_line": 5627,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator.id",
-      "expression": "Indicator.id"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5627,
-      "end_line": 5627,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5724,
-      "end_line": 5724,
-      "owner": "generate_forecasts",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5339,
-      "end_line": 5339,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5339,
-      "end_line": 5339,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5441,
-      "end_line": 5441,
-      "owner": "_apply_seo_preserving_overrides",
-      "conditions": [
-        "updates"
-      ],
-      "symbol": "app.models.Indicator.code",
-      "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5505,
-      "end_line": 5505,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5506,
-      "end_line": 5506,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5525,
-      "end_line": 5525,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator.code",
-      "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5536,
-      "end_line": 5536,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator.code",
-      "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5557,
-      "end_line": 5557,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5563,
-      "end_line": 5563,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.indicator_id",
-      "expression": "IndicatorData.indicator_id"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5564,
-      "end_line": 5564,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5605,
-      "end_line": 5605,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator.code",
-      "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5627,
-      "end_line": 5627,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5632,
-      "end_line": 5632,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5687,
-      "end_line": 5687,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5322,
-      "end_line": 5322,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.models.Indicator.is_active.is_",
-      "expression": "Indicator.is_active.is_"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5441,
-      "end_line": 5441,
-      "owner": "_apply_seo_preserving_overrides",
-      "conditions": [
-        "updates"
-      ],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5441,
-      "end_line": 5441,
-      "owner": "_apply_seo_preserving_overrides",
-      "conditions": [
-        "updates"
-      ],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5524,
-      "end_line": 5524,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5525,
-      "end_line": 5525,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5535,
-      "end_line": 5535,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5536,
-      "end_line": 5536,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5562,
-      "end_line": 5562,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5563,
-      "end_line": 5563,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
     },
     {
       "path": "backend/seed_data.py",
@@ -320746,8 +320573,17 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5605,
-      "end_line": 5605,
+      "line": 5630,
+      "end_line": 5630,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5678,
+      "end_line": 5678,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320755,8 +320591,35 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5322,
-      "end_line": 5322,
+      "line": 5678,
+      "end_line": 5678,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5727,
+      "end_line": 5727,
+      "owner": "generate_forecasts",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5727,
+      "end_line": 5727,
+      "owner": "generate_forecasts",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_active",
+      "expression": "Indicator.is_active"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5342,
+      "end_line": 5342,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -320764,17 +320627,71 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5322,
-      "end_line": 5322,
-      "owner": "_retire_orphan_siblings",
+      "line": 5509,
+      "end_line": 5509,
+      "owner": "_seed_full",
       "conditions": [],
-      "symbol": "app.models.Indicator.is_active",
-      "expression": "Indicator.is_active"
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5322,
-      "end_line": 5322,
+      "line": 5560,
+      "end_line": 5560,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator.id",
+      "expression": "Indicator.id"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5560,
+      "end_line": 5560,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5567,
+      "end_line": 5567,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5630,
+      "end_line": 5630,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator.id",
+      "expression": "Indicator.id"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5630,
+      "end_line": 5630,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5727,
+      "end_line": 5727,
+      "owner": "generate_forecasts",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5342,
+      "end_line": 5342,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -320782,8 +320699,257 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5322,
-      "end_line": 5322,
+      "line": 5342,
+      "end_line": 5342,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5444,
+      "end_line": 5444,
+      "owner": "_apply_seo_preserving_overrides",
+      "conditions": [
+        "updates"
+      ],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5508,
+      "end_line": 5508,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5509,
+      "end_line": 5509,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5528,
+      "end_line": 5528,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5539,
+      "end_line": 5539,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5560,
+      "end_line": 5560,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5566,
+      "end_line": 5566,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5567,
+      "end_line": 5567,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5608,
+      "end_line": 5608,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5630,
+      "end_line": 5630,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5635,
+      "end_line": 5635,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5690,
+      "end_line": 5690,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5325,
+      "end_line": 5325,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_active.is_",
+      "expression": "Indicator.is_active.is_"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5444,
+      "end_line": 5444,
+      "owner": "_apply_seo_preserving_overrides",
+      "conditions": [
+        "updates"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5444,
+      "end_line": 5444,
+      "owner": "_apply_seo_preserving_overrides",
+      "conditions": [
+        "updates"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5527,
+      "end_line": 5527,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5528,
+      "end_line": 5528,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5538,
+      "end_line": 5538,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5539,
+      "end_line": 5539,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5565,
+      "end_line": 5565,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5566,
+      "end_line": 5566,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5607,
+      "end_line": 5607,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5608,
+      "end_line": 5608,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5325,
+      "end_line": 5325,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5325,
+      "end_line": 5325,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_active",
+      "expression": "Indicator.is_active"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5325,
+      "end_line": 5325,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5325,
+      "end_line": 5325,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -333308,6 +333474,42 @@
       "kind": "FunctionDef"
     },
     {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 33,
+      "end_line": 39,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SteelSeries",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 95,
+      "end_line": 111,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "seed_indicators",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 114,
+      "end_line": 115,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "seo_keywords",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 118,
+      "end_line": 128,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "seo_meta",
+      "kind": "FunctionDef"
+    },
+    {
       "path": "backend/app/data/eurostat_country_visibility.py",
       "line": 30,
       "end_line": 59,
@@ -334362,8 +334564,8 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 20,
-      "end_line": 24,
+      "line": 21,
+      "end_line": 25,
       "owner": "<module>",
       "conditions": [],
       "name": "IndicatorCopyEn",
@@ -334371,8 +334573,8 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 1098,
-      "end_line": 1100,
+      "line": 1108,
+      "end_line": 1110,
       "owner": "<module>",
       "conditions": [],
       "name": "get_indicator_copy_en",
@@ -334425,8 +334627,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 1413,
-      "end_line": 1533,
+      "line": 1414,
+      "end_line": 1534,
       "owner": "<module>",
       "conditions": [],
       "name": "_corp_loan_rate_seo_blocks",
@@ -334434,8 +334636,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 1536,
-      "end_line": 1649,
+      "line": 1537,
+      "end_line": 1650,
       "owner": "<module>",
       "conditions": [],
       "name": "_ind_loan_rate_seo_blocks",
@@ -334443,8 +334645,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 1652,
-      "end_line": 1762,
+      "line": 1653,
+      "end_line": 1763,
       "owner": "<module>",
       "conditions": [],
       "name": "_deposit_rate_seo_blocks",
@@ -334452,8 +334654,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8641,
-      "end_line": 8717,
+      "line": 8642,
+      "end_line": 8718,
       "owner": "<module>",
       "conditions": [],
       "name": "_build_commodity_blocks",
@@ -334461,8 +334663,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8808,
-      "end_line": 8867,
+      "line": 8809,
+      "end_line": 8868,
       "owner": "<module>",
       "conditions": [],
       "name": "_build_fx_rate_blocks",
@@ -334470,8 +334672,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8936,
-      "end_line": 8992,
+      "line": 8946,
+      "end_line": 9002,
       "owner": "<module>",
       "conditions": [],
       "name": "_build_ipi_component_blocks",
@@ -334479,8 +334681,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9010,
-      "end_line": 9066,
+      "line": 9020,
+      "end_line": 9076,
       "owner": "<module>",
       "conditions": [],
       "name": "_build_fuel_blocks",
@@ -334488,8 +334690,8 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9199,
-      "end_line": 9252,
+      "line": 9209,
+      "end_line": 9262,
       "owner": "<module>",
       "conditions": [],
       "name": "_build_weo_blocks",
@@ -345668,6 +345870,42 @@
       "kind": "AsyncFunctionDef"
     },
     {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 31,
+      "end_line": 32,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_month",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 35,
+      "end_line": 69,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "fetch_series",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 72,
+      "end_line": 83,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "EmissSteelParser",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 75,
+      "end_line": 83,
+      "owner": "EmissSteelParser",
+      "conditions": [],
+      "name": "_fetch_and_parse",
+      "kind": "AsyncFunctionDef"
+    },
+    {
       "path": "backend/app/services/emiss_weekly_fuel.py",
       "line": 103,
       "end_line": 104,
@@ -356516,8 +356754,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 34,
-      "end_line": 63,
+      "line": 35,
+      "end_line": 64,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatCpiParser",
@@ -356525,8 +356763,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 133,
-      "end_line": 142,
+      "line": 135,
+      "end_line": 144,
       "owner": "<module>",
       "conditions": [],
       "name": "get_parser",
@@ -356534,8 +356772,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 37,
-      "end_line": 60,
+      "line": 38,
+      "end_line": 61,
       "owner": "RosstatCpiParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -356543,8 +356781,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 62,
-      "end_line": 63,
+      "line": 63,
+      "end_line": 64,
       "owner": "RosstatCpiParser",
       "conditions": [],
       "name": "_validate",
@@ -359333,8 +359571,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 280,
-      "end_line": 281,
+      "line": 282,
+      "end_line": 283,
       "owner": "<module>",
       "conditions": [],
       "name": "_normalize_text",
@@ -359342,8 +359580,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 284,
-      "end_line": 285,
+      "line": 286,
+      "end_line": 287,
       "owner": "<module>",
       "conditions": [],
       "name": "normalize",
@@ -359351,8 +359589,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 289,
-      "end_line": 290,
+      "line": 291,
+      "end_line": 292,
       "owner": "<module>",
       "conditions": [],
       "name": "_tokens_of_normalized",
@@ -359360,8 +359598,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 293,
-      "end_line": 294,
+      "line": 295,
+      "end_line": 296,
       "owner": "<module>",
       "conditions": [],
       "name": "tokens",
@@ -359369,8 +359607,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 298,
-      "end_line": 299,
+      "line": 300,
+      "end_line": 301,
       "owner": "<module>",
       "conditions": [],
       "name": "_phrase_of_normalized",
@@ -359378,8 +359616,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 302,
-      "end_line": 303,
+      "line": 304,
+      "end_line": 305,
       "owner": "<module>",
       "conditions": [],
       "name": "phrase",
@@ -359387,8 +359625,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 307,
-      "end_line": 321,
+      "line": 309,
+      "end_line": 323,
       "owner": "<module>",
       "conditions": [],
       "name": "edit_distance_one",
@@ -359396,8 +359634,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 325,
-      "end_line": 327,
+      "line": 327,
+      "end_line": 329,
       "owner": "<module>",
       "conditions": [],
       "name": "_control_neighbour",
@@ -359405,8 +359643,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 331,
-      "end_line": 344,
+      "line": 333,
+      "end_line": 346,
       "owner": "<module>",
       "conditions": [],
       "name": "prefix_concept",
@@ -359414,8 +359652,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 352,
-      "end_line": 358,
+      "line": 354,
+      "end_line": 360,
       "owner": "<module>",
       "conditions": [],
       "name": "_concept_correction",
@@ -359423,8 +359661,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 362,
-      "end_line": 412,
+      "line": 364,
+      "end_line": 414,
       "owner": "<module>",
       "conditions": [],
       "name": "nominal_variants",
@@ -359432,8 +359670,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 415,
-      "end_line": 423,
+      "line": 417,
+      "end_line": 425,
       "owner": "<module>",
       "conditions": [],
       "name": "_extract_denominators",
@@ -359441,8 +359679,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 426,
-      "end_line": 435,
+      "line": 428,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "name": "_percentage_word_text",
@@ -359450,8 +359688,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 438,
-      "end_line": 454,
+      "line": 440,
+      "end_line": 456,
       "owner": "<module>",
       "conditions": [],
       "name": "_extract_point_units",
@@ -359459,8 +359697,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 457,
-      "end_line": 481,
+      "line": 459,
+      "end_line": 483,
       "owner": "<module>",
       "conditions": [],
       "name": "_outside_literal_query",
@@ -359468,8 +359706,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 484,
-      "end_line": 489,
+      "line": 486,
+      "end_line": 491,
       "owner": "<module>",
       "conditions": [],
       "name": "_percent_word_spans",
@@ -359477,8 +359715,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 493,
-      "end_line": 494,
+      "line": 495,
+      "end_line": 496,
       "owner": "<module>",
       "conditions": [],
       "name": "_alias_pattern",
@@ -359486,8 +359724,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 497,
-      "end_line": 507,
+      "line": 499,
+      "end_line": 509,
       "owner": "<module>",
       "conditions": [],
       "name": "_alias_occurrences",
@@ -359495,8 +359733,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 510,
-      "end_line": 520,
+      "line": 512,
+      "end_line": 522,
       "owner": "<module>",
       "conditions": [],
       "name": "_compile_concept_matchers",
@@ -359504,8 +359742,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 526,
-      "end_line": 587,
+      "line": 528,
+      "end_line": 589,
       "owner": "<module>",
       "conditions": [],
       "name": "_russian_geo_cases",
@@ -359513,8 +359751,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 590,
-      "end_line": 604,
+      "line": 592,
+      "end_line": 606,
       "owner": "<module>",
       "conditions": [],
       "name": "_geographic_possessive_aliases",
@@ -359522,8 +359760,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 607,
-      "end_line": 647,
+      "line": 609,
+      "end_line": 649,
       "owner": "<module>",
       "conditions": [],
       "name": "geo_aliases",
@@ -359531,8 +359769,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 651,
-      "end_line": 661,
+      "line": 653,
+      "end_line": 663,
       "owner": "<module>",
       "conditions": [],
       "name": "SearchIntent",
@@ -359540,8 +359778,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 664,
-      "end_line": 770,
+      "line": 666,
+      "end_line": 772,
       "owner": "<module>",
       "conditions": [],
       "name": "strip_geography",
@@ -359549,8 +359787,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 773,
-      "end_line": 802,
+      "line": 775,
+      "end_line": 804,
       "owner": "<module>",
       "conditions": [],
       "name": "literal_identifier",
@@ -359558,8 +359796,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 805,
-      "end_line": 813,
+      "line": 807,
+      "end_line": 815,
       "owner": "<module>",
       "conditions": [],
       "name": "_unmasked_query",
@@ -359567,8 +359805,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 820,
-      "end_line": 1006,
+      "line": 822,
+      "end_line": 1008,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_intent",
@@ -359576,8 +359814,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1021,
-      "end_line": 1028,
+      "line": 1023,
+      "end_line": 1030,
       "owner": "<module>",
       "conditions": [],
       "name": "_regional_product",
@@ -359585,8 +359823,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1031,
-      "end_line": 1063,
+      "line": 1033,
+      "end_line": 1065,
       "owner": "<module>",
       "conditions": [],
       "name": "region_reading",
@@ -359594,8 +359832,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1067,
-      "end_line": 1076,
+      "line": 1069,
+      "end_line": 1078,
       "owner": "<module>",
       "conditions": [],
       "name": "matching_alternatives",
@@ -359603,8 +359841,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1079,
-      "end_line": 1087,
+      "line": 1081,
+      "end_line": 1089,
       "owner": "<module>",
       "conditions": [],
       "name": "complete_nominal_alternative",
@@ -359612,8 +359850,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1098,
-      "end_line": 1120,
+      "line": 1100,
+      "end_line": 1122,
       "owner": "<module>",
       "conditions": [],
       "name": "_typo_pattern",
@@ -359621,8 +359859,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1128,
-      "end_line": 1148,
+      "line": 1130,
+      "end_line": 1150,
       "owner": "<module>",
       "conditions": [],
       "name": "_alternative_plan",
@@ -359630,8 +359868,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1160,
-      "end_line": 1169,
+      "line": 1162,
+      "end_line": 1171,
       "owner": "<module>",
       "conditions": [],
       "name": "_row_evidence",
@@ -359639,8 +359877,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1172,
-      "end_line": 1217,
+      "line": 1174,
+      "end_line": 1219,
       "owner": "<module>",
       "conditions": [],
       "name": "match_score",
@@ -359648,8 +359886,8 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 846,
-      "end_line": 850,
+      "line": 848,
+      "end_line": 852,
       "owner": "parse_intent",
       "conditions": [],
       "name": "price_base_replacement",
@@ -379044,8 +379282,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5041,
-      "end_line": 5132,
+      "line": 5044,
+      "end_line": 5135,
       "owner": "<module>",
       "conditions": [],
       "name": "_sibling_texts",
@@ -379053,8 +379291,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5265,
-      "end_line": 5293,
+      "line": 5268,
+      "end_line": 5296,
       "owner": "<module>",
       "conditions": [],
       "name": "compute_seed_hash",
@@ -379062,8 +379300,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5296,
-      "end_line": 5303,
+      "line": 5299,
+      "end_line": 5306,
       "owner": "<module>",
       "conditions": [],
       "name": "_stored_seed_hash",
@@ -379071,8 +379309,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5306,
-      "end_line": 5341,
+      "line": 5309,
+      "end_line": 5344,
       "owner": "<module>",
       "conditions": [],
       "name": "_retire_orphan_siblings",
@@ -379080,8 +379318,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5344,
-      "end_line": 5352,
+      "line": 5347,
+      "end_line": 5355,
       "owner": "<module>",
       "conditions": [],
       "name": "_store_seed_hash",
@@ -379089,8 +379327,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5359,
-      "end_line": 5362,
+      "line": 5362,
+      "end_line": 5365,
       "owner": "<module>",
       "conditions": [],
       "name": "_seo_fp",
@@ -379098,8 +379336,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5365,
-      "end_line": 5366,
+      "line": 5368,
+      "end_line": 5369,
       "owner": "<module>",
       "conditions": [],
       "name": "_seo_empty",
@@ -379107,8 +379345,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5369,
-      "end_line": 5393,
+      "line": 5372,
+      "end_line": 5396,
       "owner": "<module>",
       "conditions": [],
       "name": "_seo_decide",
@@ -379116,8 +379354,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5396,
-      "end_line": 5451,
+      "line": 5399,
+      "end_line": 5454,
       "owner": "<module>",
       "conditions": [],
       "name": "_apply_seo_preserving_overrides",
@@ -379125,8 +379363,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5454,
-      "end_line": 5476,
+      "line": 5457,
+      "end_line": 5479,
       "owner": "<module>",
       "conditions": [],
       "name": "seed",
@@ -379134,8 +379372,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5479,
-      "end_line": 5698,
+      "line": 5482,
+      "end_line": 5701,
       "owner": "<module>",
       "conditions": [],
       "name": "_seed_full",
@@ -379143,8 +379381,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5701,
-      "end_line": 5731,
+      "line": 5704,
+      "end_line": 5734,
       "owner": "<module>",
       "conditions": [],
       "name": "generate_forecasts",
@@ -379152,8 +379390,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5274,
-      "end_line": 5282,
+      "line": 5277,
+      "end_line": 5285,
       "owner": "compute_seed_hash",
       "conditions": [],
       "name": "_canon",
@@ -388119,8 +388357,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5456,
-      "end_line": 5456,
+      "line": 5459,
+      "end_line": 5459,
       "owner": "seed",
       "conditions": [],
       "name": "FORCE_SEED",
@@ -388131,8 +388369,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5597,
-      "end_line": 5597,
+      "line": 5600,
+      "end_line": 5600,
       "owner": "_seed_full",
       "conditions": [],
       "name": "FORCE_SEED_SEO",
@@ -392989,6 +393227,38 @@
       "symbol": "app.data.emiss_price_goods._TOUR"
     },
     {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 96,
+      "end_line": 96,
+      "owner": "seed_indicators",
+      "conditions": [],
+      "symbol": "app.data.emiss_steel.SERIES"
+    },
+    {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 115,
+      "end_line": 115,
+      "owner": "seo_keywords",
+      "conditions": [],
+      "symbol": "app.data.emiss_steel.KEYWORDS_BY_CODE"
+    },
+    {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 115,
+      "end_line": 115,
+      "owner": "seo_keywords",
+      "conditions": [],
+      "symbol": "app.data.emiss_steel.SERIES"
+    },
+    {
+      "path": "backend/app/data/emiss_steel.py",
+      "line": 127,
+      "end_line": 127,
+      "owner": "seo_meta",
+      "conditions": [],
+      "symbol": "app.data.emiss_steel.SERIES"
+    },
+    {
       "path": "backend/app/data/eurostat_deep_expand.py",
       "line": 37,
       "end_line": 37,
@@ -394323,40 +394593,40 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 1095,
-      "end_line": 1095,
+      "line": 1105,
+      "end_line": 1105,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.i18n.indicator_copy_en.INDICATOR_COPY_EN"
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 1100,
-      "end_line": 1100,
+      "line": 1110,
+      "end_line": 1110,
       "owner": "get_indicator_copy_en",
       "conditions": [],
       "symbol": "app.data.i18n.indicator_copy_en.INDICATOR_COPY_EN"
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 42,
-      "end_line": 42,
+      "line": 43,
+      "end_line": 43,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.emiss_income.UNITS_EN"
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 35,
-      "end_line": 35,
+      "line": 36,
+      "end_line": 36,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.emiss_labor.SERIES"
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 44,
-      "end_line": 44,
+      "line": 45,
+      "end_line": 45,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.emiss_income.SERIES"
@@ -394513,27 +394783,19 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8720,
-      "end_line": 8720,
+      "line": 8721,
+      "end_line": 8721,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo._COMMODITY_BLOCK_SPECS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8721,
-      "end_line": 8721,
+      "line": 8722,
+      "end_line": 8722,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
-    },
-    {
-      "path": "backend/app/data/indicator_seo.py",
-      "line": 8870,
-      "end_line": 8870,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo._FX_RATE_BLOCK_SPECS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
@@ -394541,52 +394803,60 @@
       "end_line": 8871,
       "owner": "<module>",
       "conditions": [],
+      "symbol": "app.data.indicator_seo._FX_RATE_BLOCK_SPECS"
+    },
+    {
+      "path": "backend/app/data/indicator_seo.py",
+      "line": 8872,
+      "end_line": 8872,
+      "owner": "<module>",
+      "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8995,
-      "end_line": 8995,
+      "line": 9005,
+      "end_line": 9005,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo._IPI_COMPONENT_BLOCK_SPECS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8996,
-      "end_line": 8996,
+      "line": 9006,
+      "end_line": 9006,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9069,
-      "end_line": 9069,
+      "line": 9079,
+      "end_line": 9079,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo._FUEL_BLOCK_SPECS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9070,
-      "end_line": 9070,
+      "line": 9080,
+      "end_line": 9080,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9255,
-      "end_line": 9255,
+      "line": 9265,
+      "end_line": 9265,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo._WEO_BLOCK_SPECS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 9256,
-      "end_line": 9256,
+      "line": 9266,
+      "end_line": 9266,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
@@ -394601,19 +394871,11 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8879,
-      "end_line": 8879,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
-    },
-    {
-      "path": "backend/app/data/indicator_seo.py",
       "line": 8880,
       "end_line": 8880,
       "owner": "<module>",
       "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
@@ -394621,15 +394883,39 @@
       "end_line": 8881,
       "owner": "<module>",
       "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
+    },
+    {
+      "path": "backend/app/data/indicator_seo.py",
+      "line": 8882,
+      "end_line": 8882,
+      "owner": "<module>",
+      "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "line": 8888,
-      "end_line": 8888,
+      "line": 8889,
+      "end_line": 8889,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
+    },
+    {
+      "path": "backend/app/data/indicator_seo.py",
+      "line": 8896,
+      "end_line": 8896,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
+    },
+    {
+      "path": "backend/app/data/indicator_seo.py",
+      "line": 8898,
+      "end_line": 8898,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
@@ -399599,6 +399885,30 @@
       "line": 221,
       "end_line": 221,
       "owner": "fetch_month_points",
+      "conditions": [],
+      "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 76,
+      "end_line": 76,
+      "owner": "EmissSteelParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.data.emiss_steel.SERIES"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 32,
+      "end_line": 32,
+      "owner": "_month",
+      "conditions": [],
+      "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
+    },
+    {
+      "path": "backend/app/services/emiss_steel_parser.py",
+      "line": 38,
+      "end_line": 38,
+      "owner": "fetch_series",
       "conditions": [],
       "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
     },
@@ -404625,16 +404935,16 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 134,
-      "end_line": 134,
+      "line": 136,
+      "end_line": 136,
       "owner": "get_parser",
       "conditions": [],
       "symbol": "app.services.rosstat_cpi_parser.PARSER_REGISTRY"
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 139,
-      "end_line": 139,
+      "line": 141,
+      "end_line": 141,
       "owner": "get_parser",
       "conditions": [
         "cls is None"
@@ -406220,16 +406530,16 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 920,
-      "end_line": 920,
+      "line": 922,
+      "end_line": 922,
       "owner": "parse_intent",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPT_MATCHERS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 928,
-      "end_line": 928,
+      "line": 930,
+      "end_line": 930,
       "owner": "parse_intent",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPT_MATCHERS"
@@ -406252,48 +406562,48 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 145,
+      "end_line": 145,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_units.UNIT_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 255,
+      "end_line": 255,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.REGION_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 602,
+      "end_line": 602,
       "owner": "_geographic_possessive_aliases",
       "conditions": [],
       "symbol": "app.services.search_intent.COUNTRY_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 602,
+      "end_line": 602,
       "owner": "_geographic_possessive_aliases",
       "conditions": [],
       "symbol": "app.services.search_intent.REGION_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 885,
-      "end_line": 885,
+      "line": 887,
+      "end_line": 887,
       "owner": "parse_intent",
       "conditions": [],
       "symbol": "app.services.search_intent.MONTHS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1010,
-      "end_line": 1010,
+      "line": 1012,
+      "end_line": 1012,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.CONCEPTS"
@@ -406308,11 +406618,515 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 145,
+      "end_line": 145,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_r8a.R8A_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 147,
+      "end_line": 147,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 150,
+      "end_line": 150,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 329,
+      "end_line": 329,
+      "owner": "_control_neighbour",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CONTROL_WORDS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 340,
+      "end_line": 340,
+      "owner": "prefix_concept",
+      "conditions": [],
+      "symbol": "app.services.search_intent._ALIAS_WORDS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 342,
+      "end_line": 342,
+      "owner": "prefix_concept",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 350,
+      "end_line": 350,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 358,
+      "end_line": 358,
+      "owner": "_concept_correction",
+      "conditions": [],
+      "symbol": "app.services.search_intent._SINGLE_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 376,
+      "end_line": 376,
+      "owner": "nominal_variants",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CONTROL_WORDS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 420,
+      "end_line": 420,
+      "owner": "_extract_denominators",
+      "conditions": [],
+      "symbol": "app.services.search_intent._DENOMINATOR_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 434,
+      "end_line": 434,
+      "owner": "_percentage_word_text",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 446,
+      "end_line": 446,
+      "owner": "_extract_point_units",
+      "conditions": [],
+      "symbol": "app.services.search_units.UNIT_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 674,
+      "end_line": 674,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 720,
+      "end_line": 720,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 785,
+      "end_line": 785,
+      "owner": "literal_identifier",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 811,
+      "end_line": 811,
+      "owner": "_unmasked_query",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 904,
+      "end_line": 904,
+      "owner": "parse_intent",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPT_MATCHERS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 997,
+      "end_line": 997,
+      "owner": "parse_intent",
+      "conditions": [
+        "allow_layout and (not literal) and (not countries) and (not regions) and (not term_hits) and content"
+      ],
+      "symbol": "app.services.search_intent._LAYOUT_RU_EN"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 997,
+      "end_line": 997,
+      "owner": "parse_intent",
+      "conditions": [
+        "allow_layout and (not literal) and (not countries) and (not regions) and (not term_hits) and content"
+      ],
+      "symbol": "app.services.search_intent._LAYOUT_EN_RU"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1011,
+      "end_line": 1011,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1076,
+      "end_line": 1076,
+      "owner": "matching_alternatives",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 145,
+      "end_line": 145,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_r7a.R7A_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 254,
+      "end_line": 254,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CITY_REGION_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 254,
+      "end_line": 254,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_r6a.CITY_REGION_ALIASES_R6A"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 254,
+      "end_line": 254,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent._COLLOQUIAL_REGION_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 292,
+      "end_line": 292,
+      "owner": "_tokens_of_normalized",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 371,
+      "end_line": 371,
+      "owner": "nominal_variants",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CONTROL_WORDS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 522,
+      "end_line": 522,
+      "owner": "_compile_concept_matchers",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 675,
+      "end_line": 675,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent._FX_SUBJECT_KEYS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 678,
+      "end_line": 678,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_units.UNIT_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 685,
+      "end_line": 685,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 707,
+      "end_line": 707,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 782,
+      "end_line": 782,
+      "owner": "literal_identifier",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CODE_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 928,
+      "end_line": 928,
+      "owner": "parse_intent",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 985,
+      "end_line": 985,
+      "owner": "parse_intent",
+      "conditions": [],
+      "symbol": "app.services.search_intent._RATE_QUOTE_CODES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1056,
+      "end_line": 1056,
+      "owner": "region_reading",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1138,
+      "end_line": 1138,
+      "owner": "_alternative_plan",
+      "conditions": [],
+      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1145,
+      "end_line": 1145,
+      "owner": "_alternative_plan",
+      "conditions": [],
+      "symbol": "app.services.search_intent.EXACT_ONLY_WORDS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 145,
+      "end_line": 145,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_r6a.R6A_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 152,
+      "end_line": 152,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 158,
+      "end_line": 158,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.cbr_currencies.CBR_CURRENCIES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 255,
+      "end_line": 255,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.REGION_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 329,
+      "end_line": 329,
+      "owner": "_control_neighbour",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CONTROL_WORDS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 351,
+      "end_line": 351,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 463,
+      "end_line": 463,
+      "owner": "_outside_literal_query",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 463,
+      "end_line": 463,
+      "owner": "_outside_literal_query",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 489,
+      "end_line": 489,
+      "owner": "_percent_word_spans",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 613,
+      "end_line": 613,
+      "owner": "geo_aliases",
+      "conditions": [
+        "item['kind'] == 'country'"
+      ],
+      "symbol": "app.services.search_intent.COUNTRY_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 615,
+      "end_line": 615,
+      "owner": "geo_aliases",
+      "conditions": [
+        "not (item['kind'] == 'country')"
+      ],
+      "symbol": "app.services.search_intent.REGION_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 679,
+      "end_line": 679,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CURRENCY_KEYS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 731,
+      "end_line": 731,
+      "owner": "strip_geography",
+      "conditions": [],
+      "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 801,
+      "end_line": 801,
+      "owner": "literal_identifier",
+      "conditions": [],
+      "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 819,
+      "end_line": 819,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.cbr_currencies.CBR_CURRENCIES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1028,
+      "end_line": 1028,
+      "owner": "_regional_product",
+      "conditions": [],
+      "symbol": "app.services.search_intent._CONCEPT_BY_CODE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1046,
+      "end_line": 1046,
+      "owner": "region_reading",
+      "conditions": [],
+      "symbol": "app.services.search_intent.SECOND_READING_REGION_ALIASES"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 145,
+      "end_line": 145,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.search_vocabulary.VOCABULARY_CONCEPTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 344,
+      "end_line": 344,
+      "owner": "prefix_concept",
+      "conditions": [],
+      "symbol": "app.services.search_intent.TOKEN_RE"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 421,
+      "end_line": 421,
+      "owner": "_extract_denominators",
+      "conditions": [],
+      "symbol": "app.services.search_intent._DENOMINATOR_COUNTS"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 606,
+      "end_line": 606,
+      "owner": "_geographic_possessive_aliases",
+      "conditions": [],
+      "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1026,
+      "end_line": 1026,
+      "owner": "_regional_product",
+      "conditions": [],
+      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1028,
+      "end_line": 1028,
+      "owner": "_regional_product",
+      "conditions": [],
+      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1028,
+      "end_line": 1028,
+      "owner": "_regional_product",
+      "conditions": [],
+      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
+    },
+    {
+      "path": "backend/app/services/search_intent.py",
+      "line": 1045,
+      "end_line": 1045,
+      "owner": "region_reading",
+      "conditions": [],
+      "symbol": "app.services.search_intent.SECOND_READING_REGION_ALIASES"
     },
     {
       "path": "backend/app/services/search_intent.py",
@@ -406324,520 +407138,16 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 148,
-      "end_line": 148,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 327,
-      "end_line": 327,
-      "owner": "_control_neighbour",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CONTROL_WORDS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 338,
-      "end_line": 338,
-      "owner": "prefix_concept",
-      "conditions": [],
-      "symbol": "app.services.search_intent._ALIAS_WORDS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 340,
-      "end_line": 340,
-      "owner": "prefix_concept",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 348,
-      "end_line": 348,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 356,
-      "end_line": 356,
-      "owner": "_concept_correction",
-      "conditions": [],
-      "symbol": "app.services.search_intent._SINGLE_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 374,
-      "end_line": 374,
-      "owner": "nominal_variants",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CONTROL_WORDS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 418,
-      "end_line": 418,
-      "owner": "_extract_denominators",
-      "conditions": [],
-      "symbol": "app.services.search_intent._DENOMINATOR_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 432,
-      "end_line": 432,
-      "owner": "_percentage_word_text",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 444,
-      "end_line": 444,
-      "owner": "_extract_point_units",
-      "conditions": [],
-      "symbol": "app.services.search_units.UNIT_CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 672,
-      "end_line": 672,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 718,
-      "end_line": 718,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 783,
-      "end_line": 783,
-      "owner": "literal_identifier",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 809,
-      "end_line": 809,
-      "owner": "_unmasked_query",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 902,
-      "end_line": 902,
-      "owner": "parse_intent",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPT_MATCHERS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 995,
-      "end_line": 995,
-      "owner": "parse_intent",
-      "conditions": [
-        "allow_layout and (not literal) and (not countries) and (not regions) and (not term_hits) and content"
-      ],
-      "symbol": "app.services.search_intent._LAYOUT_RU_EN"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 995,
-      "end_line": 995,
-      "owner": "parse_intent",
-      "conditions": [
-        "allow_layout and (not literal) and (not countries) and (not regions) and (not term_hits) and content"
-      ],
-      "symbol": "app.services.search_intent._LAYOUT_EN_RU"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1009,
-      "end_line": 1009,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1074,
-      "end_line": 1074,
-      "owner": "matching_alternatives",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 143,
-      "end_line": 143,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_r7a.R7A_CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 252,
-      "end_line": 252,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CITY_REGION_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 252,
-      "end_line": 252,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_r6a.CITY_REGION_ALIASES_R6A"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 252,
-      "end_line": 252,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent._COLLOQUIAL_REGION_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 290,
-      "end_line": 290,
-      "owner": "_tokens_of_normalized",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 369,
-      "end_line": 369,
-      "owner": "nominal_variants",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CONTROL_WORDS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 520,
-      "end_line": 520,
-      "owner": "_compile_concept_matchers",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 673,
-      "end_line": 673,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent._FX_SUBJECT_KEYS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 676,
-      "end_line": 676,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_units.UNIT_CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 683,
-      "end_line": 683,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 705,
-      "end_line": 705,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 780,
-      "end_line": 780,
-      "owner": "literal_identifier",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CODE_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 926,
-      "end_line": 926,
-      "owner": "parse_intent",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 983,
-      "end_line": 983,
-      "owner": "parse_intent",
-      "conditions": [],
-      "symbol": "app.services.search_intent._RATE_QUOTE_CODES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1054,
-      "end_line": 1054,
-      "owner": "region_reading",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1136,
-      "end_line": 1136,
-      "owner": "_alternative_plan",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS_ALTERNATIVES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1143,
-      "end_line": 1143,
-      "owner": "_alternative_plan",
-      "conditions": [],
-      "symbol": "app.services.search_intent.EXACT_ONLY_WORDS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 143,
-      "end_line": 143,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_r6a.R6A_CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 150,
-      "end_line": 150,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 156,
-      "end_line": 156,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.cbr_currencies.CBR_CURRENCIES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 253,
-      "end_line": 253,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent.REGION_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 327,
-      "end_line": 327,
-      "owner": "_control_neighbour",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CONTROL_WORDS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 349,
-      "end_line": 349,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 461,
-      "end_line": 461,
-      "owner": "_outside_literal_query",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 461,
-      "end_line": 461,
-      "owner": "_outside_literal_query",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 487,
-      "end_line": 487,
-      "owner": "_percent_word_spans",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 611,
-      "end_line": 611,
-      "owner": "geo_aliases",
-      "conditions": [
-        "item['kind'] == 'country'"
-      ],
-      "symbol": "app.services.search_intent.COUNTRY_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 613,
-      "end_line": 613,
-      "owner": "geo_aliases",
-      "conditions": [
-        "not (item['kind'] == 'country')"
-      ],
-      "symbol": "app.services.search_intent.REGION_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 677,
-      "end_line": 677,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CURRENCY_KEYS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 729,
-      "end_line": 729,
-      "owner": "strip_geography",
-      "conditions": [],
-      "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 799,
-      "end_line": 799,
-      "owner": "literal_identifier",
-      "conditions": [],
-      "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 817,
-      "end_line": 817,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.cbr_currencies.CBR_CURRENCIES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1026,
-      "end_line": 1026,
-      "owner": "_regional_product",
-      "conditions": [],
-      "symbol": "app.services.search_intent._CONCEPT_BY_CODE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1044,
-      "end_line": 1044,
-      "owner": "region_reading",
-      "conditions": [],
-      "symbol": "app.services.search_intent.SECOND_READING_REGION_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 143,
-      "end_line": 143,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_vocabulary.VOCABULARY_CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 342,
-      "end_line": 342,
-      "owner": "prefix_concept",
-      "conditions": [],
-      "symbol": "app.services.search_intent.TOKEN_RE"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 419,
-      "end_line": 419,
-      "owner": "_extract_denominators",
-      "conditions": [],
-      "symbol": "app.services.search_intent._DENOMINATOR_COUNTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 604,
-      "end_line": 604,
-      "owner": "_geographic_possessive_aliases",
-      "conditions": [],
-      "symbol": "app.services.search_intent._AMBIGUOUS_ISO"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1024,
-      "end_line": 1024,
-      "owner": "_regional_product",
-      "conditions": [],
-      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1026,
-      "end_line": 1026,
-      "owner": "_regional_product",
-      "conditions": [],
-      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1026,
-      "end_line": 1026,
-      "owner": "_regional_product",
-      "conditions": [],
-      "symbol": "app.services.search_intent._REGIONAL_PRODUCT"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 1043,
-      "end_line": 1043,
-      "owner": "region_reading",
-      "conditions": [],
-      "symbol": "app.services.search_intent.SECOND_READING_REGION_ALIASES"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 143,
-      "end_line": 143,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.search_intent.CONCEPTS"
-    },
-    {
-      "path": "backend/app/services/search_intent.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 145,
+      "end_line": 145,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_language.LANGUAGE_CONCEPTS"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 1003,
-      "end_line": 1003,
+      "line": 1005,
+      "end_line": 1005,
       "owner": "parse_intent",
       "conditions": [
         "allow_layout and (not literal) and (not countries) and (not regions) and (not term_hits) and content",
@@ -406847,16 +407157,16 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 146,
-      "end_line": 146,
+      "line": 148,
+      "end_line": 148,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent.TOKEN_RE"
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 164,
+      "end_line": 164,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.search_intent._DENOMINATOR_COUNTS"
@@ -413935,51 +414245,147 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5231,
-      "end_line": 5231,
+      "line": 5234,
+      "end_line": 5234,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data.INDICATORS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5255,
-      "end_line": 5255,
+      "line": 5258,
+      "end_line": 5258,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data.INDICATORS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5030,
-      "end_line": 5030,
+      "line": 5033,
+      "end_line": 5033,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data._PARENT_META"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5029,
-      "end_line": 5029,
+      "line": 5032,
+      "end_line": 5032,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data.INDICATORS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5141,
-      "end_line": 5141,
+      "line": 5144,
+      "end_line": 5144,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data._EXISTING_CODES"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5143,
-      "end_line": 5143,
+      "line": 5146,
+      "end_line": 5146,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data._PARENT_META"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5194,
+      "end_line": 5194,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5196,
+      "end_line": 5196,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5238,
+      "end_line": 5238,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "seed_data.MONTHLY_AUTO_FORECAST_CODES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5259,
+      "end_line": 5259,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "seed_data.ANNUAL_AUTO_FORECAST_CODES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5332,
+      "end_line": 5332,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.data.legacy_redirects._SIBLING_SUFFIXES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5428,
+      "end_line": 5428,
+      "owner": "_apply_seo_preserving_overrides",
+      "conditions": [],
+      "symbol": "seed_data._SEO_FIELDS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5491,
+      "end_line": 5491,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "seed_data.INDICATORS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5605,
+      "end_line": 5605,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5046,
+      "end_line": 5046,
+      "owner": "_sibling_texts",
+      "conditions": [],
+      "symbol": "seed_data._PARENT_META"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5118,
+      "end_line": 5118,
+      "owner": "_sibling_texts",
+      "conditions": [],
+      "symbol": "seed_data._GRAN_PERIOD"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5119,
+      "end_line": 5119,
+      "owner": "_sibling_texts",
+      "conditions": [],
+      "symbol": "seed_data._GRAN_EOP"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5189,
+      "end_line": 5189,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "seed_data.INDICATORS"
     },
     {
       "path": "backend/seed_data.py",
@@ -413987,127 +414393,7 @@
       "end_line": 5191,
       "owner": "<module>",
       "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5193,
-      "end_line": 5193,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5235,
-      "end_line": 5235,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "seed_data.MONTHLY_AUTO_FORECAST_CODES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5256,
-      "end_line": 5256,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "seed_data.ANNUAL_AUTO_FORECAST_CODES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5329,
-      "end_line": 5329,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.data.legacy_redirects._SIBLING_SUFFIXES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5425,
-      "end_line": 5425,
-      "owner": "_apply_seo_preserving_overrides",
-      "conditions": [],
-      "symbol": "seed_data._SEO_FIELDS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5488,
-      "end_line": 5488,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "seed_data.INDICATORS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5602,
-      "end_line": 5602,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5043,
-      "end_line": 5043,
-      "owner": "_sibling_texts",
-      "conditions": [],
-      "symbol": "seed_data._PARENT_META"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5115,
-      "end_line": 5115,
-      "owner": "_sibling_texts",
-      "conditions": [],
-      "symbol": "seed_data._GRAN_PERIOD"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5116,
-      "end_line": 5116,
-      "owner": "_sibling_texts",
-      "conditions": [],
-      "symbol": "seed_data._GRAN_EOP"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5186,
-      "end_line": 5186,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "seed_data.INDICATORS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5188,
-      "end_line": 5188,
-      "owner": "<module>",
-      "conditions": [],
       "symbol": "seed_data._EXISTING_CODES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5285,
-      "end_line": 5285,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "seed_data.INDICATORS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5286,
-      "end_line": 5286,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5287,
-      "end_line": 5287,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
     },
     {
       "path": "backend/seed_data.py",
@@ -414115,39 +414401,7 @@
       "end_line": 5288,
       "owner": "compute_seed_hash",
       "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5290,
-      "end_line": 5290,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "app.data.wages_historical.MONTHLY_GAP_FILL"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5319,
-      "end_line": 5319,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.data.view_model_families.FAMILIES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5320,
-      "end_line": 5320,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.data.view_model_families.FAMILIES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5599,
-      "end_line": 5599,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
+      "symbol": "seed_data.INDICATORS"
     },
     {
       "path": "backend/seed_data.py",
@@ -414155,23 +414409,103 @@
       "end_line": 5289,
       "owner": "compute_seed_hash",
       "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5290,
+      "end_line": 5290,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5291,
+      "end_line": 5291,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5293,
+      "end_line": 5293,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "app.data.wages_historical.MONTHLY_GAP_FILL"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5322,
+      "end_line": 5322,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.data.view_model_families.FAMILIES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5323,
+      "end_line": 5323,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.data.view_model_families.FAMILIES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5602,
+      "end_line": 5602,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5292,
+      "end_line": 5292,
+      "owner": "compute_seed_hash",
+      "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5423,
-      "end_line": 5423,
+      "line": 5426,
+      "end_line": 5426,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "seed_data._SEO_FIELDS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5581,
-      "end_line": 5581,
+      "line": 5584,
+      "end_line": 5584,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5597,
+      "end_line": 5597,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5629,
+      "end_line": 5629,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.data.wages_historical.MONTHLY_GAP_FILL"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5715,
+      "end_line": 5715,
+      "owner": "generate_forecasts",
+      "conditions": [],
+      "symbol": "app.services.calculation_engine.DERIVED_SPECS"
     },
     {
       "path": "backend/seed_data.py",
@@ -414179,60 +414513,36 @@
       "end_line": 5594,
       "owner": "_seed_full",
       "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5626,
-      "end_line": 5626,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.data.wages_historical.MONTHLY_GAP_FILL"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5712,
-      "end_line": 5712,
-      "owner": "generate_forecasts",
-      "conditions": [],
-      "symbol": "app.services.calculation_engine.DERIVED_SPECS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5591,
-      "end_line": 5591,
-      "owner": "_seed_full",
-      "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5614,
-      "end_line": 5614,
+      "line": 5617,
+      "end_line": 5617,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5615,
-      "end_line": 5615,
+      "line": 5618,
+      "end_line": 5618,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5652,
-      "end_line": 5652,
+      "line": 5655,
+      "end_line": 5655,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.services.calculation_engine.DERIVED_SPECS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5157,
-      "end_line": 5157,
+      "line": 5160,
+      "end_line": 5160,
       "owner": "<module>",
       "conditions": [
         "not (_strategy == 'monthly_auto')",
