@@ -30,8 +30,8 @@
       "data_schema_reviewed": 8,
       "reviewed": 2381
     },
-    "definitions": 17944,
-    "annotated_definitions": 17944,
+    "definitions": 17945,
+    "annotated_definitions": 17945,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -2339,8 +2339,8 @@
     },
     {
       "path": "backend/app/data/pulse_context.yaml",
-      "sha256": "baf636952af1e31e37162166bbca8fcaba6c29d13bb2a6d2a472f7472457c2b0",
-      "bytes": 23540,
+      "sha256": "f524b3e57a2f6d0dc86370e885508e6dfc81516f2d1e576c0a0ceddd58818ab4",
+      "bytes": 23500,
       "lines": 272,
       "code": false,
       "status": "reviewed",
@@ -5329,9 +5329,9 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "ccb689e110fbac146c1807765d69da6badf2926a6a652dce092288c76c4a00ba",
-      "bytes": 51993,
-      "lines": 758,
+      "sha256": "d779a7a55efe08ab391048773063ae959c8dda2e9ed5a04b2a7b19984f178991",
+      "bytes": 52644,
+      "lines": 763,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -11309,15 +11309,15 @@
     },
     {
       "path": "backend/tests/test_pulse.py",
-      "sha256": "2b0cb5cd52836e345ac38896b70352a9e5db0fed50f27c2bf40a8bb6f497959e",
-      "bytes": 34020,
-      "lines": 773,
+      "sha256": "7419b9cba4e5356b32522b11351dd190652eeac9e53a3daf55d5720d56c593c5",
+      "bytes": 34701,
+      "lines": 784,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 89,
-      "annotated_definitions": 89,
+      "definitions": 90,
+      "annotated_definitions": 90,
       "missing_definitions": []
     },
     {
@@ -15456,7 +15456,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "098ba90621dc159e2e26bddb831898fd4a58c6c3b9ca1b169a78035a962ff106",
+      "sha256": "fad14789c8a72bcf77d521feb9c528635737ba8fd06c84cc012dbb0392ba1f0c",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -15963,9 +15963,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "dae3f4b4d50ea972d82b394b80f31dc8fc71d17f8059499ec0cc3942549c23ee",
-      "bytes": 3989675,
-      "lines": 141451,
+      "sha256": "0832b6163042269c5699a21c95422967177f024b3cf5825de46824106a5f36e9",
+      "bytes": 3989782,
+      "lines": 141456,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -15976,7 +15976,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "5317137ed55ed5a8b275a89665db97d1b5b6bdce52ab07a8c0476923886ab4f1",
+      "sha256": "4e79892756c980078d01c1c194eeb02f8aa7d95730c2a1e67a2a5fd059890952",
       "bytes": 165775,
       "lines": 1865,
       "code": false,
@@ -16028,7 +16028,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "294decd7c0c03ab2c3199c52edfafcb85d7fa26dcce701e5d73fda7fca24c2a0",
+      "sha256": "6bf7c6c881030193398fb5e4210f29d9ed50df3de8bef92f3f97ca7c63e6bd90",
       "bytes": 14085839,
       "lines": 424992,
       "code": false,
@@ -16041,7 +16041,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "78a570036882dc5cf6d235bdc2992d7644af53a2a2e5e2cc2598573b496f47c0",
+      "sha256": "f395ba6e48feb278b3473ca1f65b777bc2b543ef96ca823b7d022b25979aa144",
       "bytes": 724077,
       "lines": 4101,
       "code": false,
@@ -34540,9 +34540,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "155361ff2fe80f7b2362e543603338a93a70bd575a9d9616a27db9acd73a1d94",
+  "ledger_sha256": "3ccc3c0eb4ca2ad8962added2bb2b0c160c0097c0767d79cc40a664875fb53e1",
   "javascript_inventory_sha256": "c0ca962bae4c4f1b590e8022d6f6ced851fe1ef665c8fbe28f63cc84adde8a40",
-  "baseline_commit": "027e7a160af2366c94bdf2ba321d12539d495f3e",
-  "branch": "fix/pulse-2026-11-18",
+  "baseline_commit": "e7748b083c46e7d66df5bd27a37c797a6f18277c",
+  "branch": "fix/pulse-neutral-voice",
   "unstaged_at_capture": []
 }

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `027e7a160af2366c94bdf2ba321d12539d495f3e`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `e7748b083c46e7d66df5bd27a37c797a6f18277c`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2654 |
 | Код, шаблоны и стили | 2163 |
 | Актуальные рецензии без пропусков guard | 2654 |
-| Именованные определения Python/JS: с аннотацией / всего | 17944 / 17944 |
+| Именованные определения Python/JS: с аннотацией / всего | 17945 / 17945 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -905,7 +905,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_project_terrain.py](../backend/tests/test_project_terrain.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_public_bot.py](../backend/tests/test_public_bot.py) | reviewed | 103/103 | актуально |
 | [backend/tests/test_public_year_contract.py](../backend/tests/test_public_year_contract.py) | reviewed | 9/9 | актуально |
-| [backend/tests/test_pulse.py](../backend/tests/test_pulse.py) | reviewed | 89/89 | актуально |
+| [backend/tests/test_pulse.py](../backend/tests/test_pulse.py) | reviewed | 90/90 | актуально |
 | [backend/tests/test_pulse_context.py](../backend/tests/test_pulse_context.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_pulse_llm_payload_no_pii.py](../backend/tests/test_pulse_llm_payload_no_pii.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_pulse_signals_2026_11_18.py](../backend/tests/test_pulse_signals_2026_11_18.py) | reviewed | 5/5 | актуально |

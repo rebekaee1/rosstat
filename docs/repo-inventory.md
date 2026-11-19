@@ -2,12 +2,12 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-11-18
+**Сгенерировано:** 2026-11-19
 
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2440  ·  **Строк:** 1 538 576  ·  **Токенов (≈):** 14 763 113
+**Файлов:** 2440  ·  **Строк:** 1 538 592  ·  **Токенов (≈):** 14 763 338
 
 ## По верхним папкам
 
@@ -16,7 +16,7 @@
 | `(root)` | 8 | 2 914 | 67 736 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 1043 | 356 377 | 3 949 721 |
+| `backend` | 1043 | 356 393 | 3 949 946 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 579 | 26 274 |
 | `docs` | 153 | 960 043 | 8 284 236 |
@@ -140,8 +140,8 @@
 | `docs/research/_fpsr_raw/agent01.json` | 779 | 10 111 |
 | `scripts/build-design-review.mjs` | 407 | 9 931 |
 | `backend/app/tasks/scheduler.py` | 910 | 9 910 |
+| `backend/app/services/pulse_report.py` | 763 | 9 855 |
 | `backend/app/services/eurostat_parser.py` | 1 009 | 9 773 |
-| `backend/app/services/pulse_report.py` | 758 | 9 763 |
 | `docker-compose.yml` | 640 | 9 754 |
 | `backend/app/services/search_language.py` | 413 | 9 641 |
 | `backend/app/services/newsletter_personal/build.py` | 788 | 9 636 |
@@ -178,13 +178,13 @@
 | `scripts/audit-seo-title-dupes.py` | 909 | 8 178 |
 | `backend/tests/test_world_subnational.py` | 760 | 8 119 |
 | `backend/app/services/world_forecast_pipeline.py` | 899 | 8 110 |
+| `backend/tests/test_pulse.py` | 784 | 8 029 |
 | `frontend/src/pages/WorldCountry.component.test.jsx` | 721 | 8 009 |
 | `backend/app/services/search_dimensions.py` | 516 | 8 000 |
 | `scripts/build-indicator-index.py` | 722 | 7 995 |
 | `backend/tests/test_search_federated.py` | 546 | 7 970 |
 | `backend/tests/fixtures/calendar/fomc_calendar_2026-11-14.html` | 677 | 7 962 |
 | `backend/app/services/mail/templates.py` | 584 | 7 943 |
-| `backend/tests/test_pulse.py` | 773 | 7 890 |
 | `docs/research/data-comparison-2026-10-05.md` | 253 | 7 883 |
 | `frontend/src/styles/z4-indicator.css` | 673 | 7 780 |
 | `backend/app/services/seo_world_compare.py` | 750 | 7 779 |
@@ -444,7 +444,7 @@
 | `frontend/src/styles/w6d.css` | 222 | 4 028 |
 | `frontend/src/lib/api.js` | 380 | 4 020 |
 | `frontend/src/lib/planetLabels.test.js` | 272 | 4 016 |
-| `backend/app/data/pulse_context.yaml` | 272 | 3 986 |
+| `backend/app/data/pulse_context.yaml` | 272 | 3 980 |
 | `backend/app/data/world_concepts.py` | 386 | 3 964 |
 | `frontend/src/components/PwaInstall.component.test.jsx` | 351 | 3 961 |
 | `frontend/src/components/CurrencyPairChart.jsx` | 328 | 3 959 |

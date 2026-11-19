@@ -356,6 +356,17 @@ def test_pulse_prompt_does_not_infer_campaign_state():
     assert "не число активных кампаний" in _SYSTEM_PROMPT
 
 
+def test_pulse_prompt_and_context_are_neutral():
+    """19.11.2026: Пульс читают двое (владелец и skrakan) — записка без обращения к одному читателю."""
+    from app.services.pulse_context import load_entries
+    from app.services.pulse_report import _SYSTEM_PROMPT
+
+    assert "несколько человек" in _SYSTEM_PROMPT and "без обращения к читателю" in _SYSTEM_PROMPT
+    assert "владельцу" not in _SYSTEM_PROMPT and "владелец знает" not in _SYSTEM_PROMPT
+    for entry in load_entries():
+        assert "владел" not in entry.title + entry.expect, entry.id
+
+
 def test_acquisition_missing_is_not_zero():
     snap = {**SNAP, "acquisition": {}}
     for render in (_fallback_summary, _raw_digits_block):
