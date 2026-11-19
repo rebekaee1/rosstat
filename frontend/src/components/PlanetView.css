@@ -117,6 +117,8 @@
   color: var(--planet-ink); background: transparent; box-shadow: none; cursor: pointer;
 }
 .planet-camera-controls button::before, .planet-round::before { content: ''; position: absolute; inset: -4px; }
+/* Предел масштаба: кнопка гаснет, как у отдельной карты мира (disabled:opacity-35), и не обещает действия. */
+.planet-camera-controls button:disabled { opacity: .35; cursor: default; }
 .planet-round.is-active { color: var(--fe-on-active, #F2F5FA); background: var(--fe-glass-active); box-shadow: var(--fe-shadow-active); }
 .planet-pill {
   display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 14px; border-radius: 999px;

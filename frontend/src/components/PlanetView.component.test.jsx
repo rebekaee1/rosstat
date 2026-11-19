@@ -1004,6 +1004,45 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     }
   });
 
+  // 19.11.2026 (Пульс, пункт 4): у предела масштаба кнопка гаснет, а не молчит; и на шаре, и на карте.
+  it('disables + and − at the zoom limits reported by the globe and by the map', async () => {
+    window.localStorage.setItem('fe_planet_view', 'globe');
+    const { unmount } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    const zoomIn = () => screen.getByRole('button', { name: 'planet.zoomIn' });
+    const zoomOut = () => screen.getByRole('button', { name: 'planet.zoomOut' });
+    expect(zoomIn().disabled).toBe(false);
+    expect(zoomOut().disabled).toBe(false);
+    act(() => scene.props.onZoomLimits({ atMin: false, atMax: true }));
+    expect(zoomIn().disabled).toBe(true);
+    expect(zoomOut().disabled).toBe(false);
+    act(() => scene.props.onZoomLimits({ atMin: true, atMax: false }));
+    expect(zoomIn().disabled).toBe(false);
+    expect(zoomOut().disabled).toBe(true);
+    fireEvent.click(mapButton());
+    await screen.findByTestId('fallback-map');
+    expect(screen.getByRole('button', { name: 'map.zoomOut' }).disabled).toBe(false);
+    act(() => scene.mapProps.onZoomLimits({ atMin: true, atMax: false }));
+    expect(screen.getByRole('button', { name: 'map.zoomOut' }).disabled).toBe(true);
+    expect(screen.getByRole('button', { name: 'map.zoomIn' }).disabled).toBe(false);
+    unmount();
+  });
+
+  it('answers a press on land without a page on the map with the same place card as the globe', async () => {
+    window.localStorage.setItem('fe_planet_view', 'map');
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    fireEvent.click(screen.getByRole('button', { name: 'Select on map' }));
+    const commandBefore = scene.mapProps.command;
+    act(() => scene.mapProps.onSelectPlace({ name: 'Чад', code: 'TD' }));
+    const card = container.querySelector('.planet-place-card');
+    expect(card.textContent).toContain('Чад');
+    expect(card.textContent).toContain('w6c.place.noData');
+    expect(container.querySelector('[data-selected-country="DE"]')).toBeNull();
+    // Контура вне каталога у карты нет: камера карты не получает новой команды, ответ — карточка.
+    expect(scene.mapProps.command).toBe(commandBefore);
+  });
+
   it('drives the map with the same +, − and home buttons (map captions) and clearing the selection resets the view', async () => {
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
     await screen.findByTestId('fallback-map');

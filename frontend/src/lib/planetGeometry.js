@@ -137,6 +137,26 @@ export function countryFocusLonLat(item) {
   return validLonLat(first) ? [wrapLongitude(first[0]), first[1]] : null;
 }
 
+const regionNames = new Map();
+function regionName(code, locale) {
+  if (typeof Intl.DisplayNames !== 'function') return null;
+  const lang = locale === 'en' ? 'en' : 'ru';
+  if (!regionNames.has(lang)) regionNames.set(lang, new Intl.DisplayNames([lang], { type: 'region', fallback: 'none' }));
+  try { return regionNames.get(lang).of(code) || null; } catch { return null; }
+}
+
+/**
+ * Название суши без страницы в каталоге: так шар и плоская карта одинаково называют место в карточке «Данных пока нет».
+ * Порядок: название региона браузера по ISO-коду, русское имя безкодовой территории, имя из атласа.
+ */
+export function planetPlaceName(feature, locale = 'ru') {
+  const code = countryCodeForFeature(feature);
+  const atlasName = feature?.properties?.name || code || '';
+  return (code && regionName(code, locale))
+    || (locale !== 'en' && UNCODED_NAMES_RU[atlasName])
+    || atlasName;
+}
+
 /**
  * Adapter independent of React/WebGL. `code` is ISO, `dataCode` retains UK/EL;
  * `country` is the original catalog object, or null when no public route exists.
@@ -148,9 +168,6 @@ export function bindPlanetCountries(countries = [], features = WORLD_FEATURES, {
     const code = normalizePlanetCountryCode(country?.code);
     if (code && !countryByCode.has(code)) countryByCode.set(code, country);
   }
-  const displayNames = typeof Intl.DisplayNames === 'function'
-    ? new Intl.DisplayNames([locale === 'en' ? 'en' : 'ru'], { type: 'region', fallback: 'none' })
-    : null;
   return features.filter((item) => ['Polygon', 'MultiPolygon'].includes(item?.geometry?.type))
     .map((item, index) => {
       const code = countryCodeForFeature(item);
@@ -159,10 +176,7 @@ export function bindPlanetCountries(countries = [], features = WORLD_FEATURES, {
       const countryName = locale === 'en'
         ? country?.name_en || country?.name
         : country?.name || country?.name_ru;
-      const name = countryName
-        || (code && displayNames?.of(code))
-        || (locale !== 'en' && UNCODED_NAMES_RU[atlasName])
-        || atlasName;
+      const name = countryName || planetPlaceName(item, locale);
       return {
         id: `${item.id ?? 'uncoded'}:${atlasName || index}`,
         code,
