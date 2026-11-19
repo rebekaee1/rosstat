@@ -1009,10 +1009,12 @@ body.seo-fast a.seo-tile::after{content:"";position:absolute;top:.9rem;right:.95
 body.seo-fast a.seo-tile:hover,body.seo-fast a.seo-tile:focus-visible{transform:translateY(-3px);box-shadow:0 18px 30px -22px rgba(30,58,110,.55)}
 body.seo-fast a.seo-tile:hover::after{opacity:1;transform:translate(2px,-2px) rotate(45deg)}
 body.seo-fast .seo-bridge-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;padding:.7rem 1rem calc(.7rem + env(safe-area-inset-bottom,0px));pointer-events:none;opacity:0;transform:translateY(16px);animation:seoBridgeIn .45s ease 1.4s forwards}
-body.seo-fast .seo-bridge-in{display:flex;align-items:center;gap:.9rem;width:100%;max-width:44rem;padding:.55rem .6rem .55rem 1.2rem;border-radius:999px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 18px 40px -22px rgba(30,38,56,.55),inset 0 1px 0 #fff;pointer-events:auto}
+body.seo-fast .seo-bridge-in{color:#202a3c!important;text-decoration:none!important;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:.9rem;width:100%;max-width:44rem;padding:.55rem .6rem .55rem 1.2rem;border-radius:999px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 18px 40px -22px rgba(30,38,56,.55),inset 0 1px 0 #fff;pointer-events:auto}
 body.seo-fast .seo-bridge-text{flex:1;min-width:0;font-size:.9rem;line-height:1.3;color:#202a3c}
 body.seo-fast .seo-bridge-text b{display:block;font-size:.95rem}
 body.seo-fast .seo-bridge-go{flex:none;display:inline-flex;align-items:center;gap:.4rem;min-height:46px;padding:0 1.2rem;border-radius:999px;background:linear-gradient(135deg,#2c4a8a,#1e3a6e);color:#fff!important;font-weight:650;text-decoration:none!important;white-space:nowrap}
+body.seo-fast .seo-bridge-go svg{width:18px;height:18px;transition:transform .2s ease}
+body.seo-fast .seo-bridge-in:hover .seo-bridge-go svg,body.seo-fast .seo-bridge-in:focus-visible .seo-bridge-go svg{transform:translateX(3px)}
 body.seo-fast .seo-bridge-short{display:none}
 @media(max-width:520px){body.seo-fast .seo-bridge-text span{display:none}body.seo-fast .seo-bridge-long{display:none}body.seo-fast .seo-bridge-short{display:inline}body.seo-fast .seo-bridge-hero{display:flex;width:100%;justify-content:space-between;padding:0 1.3rem}}
 @keyframes seoBridgeIn{to{opacity:1;transform:none}}
@@ -1747,10 +1749,14 @@ def _add_platform_bridge(soup: BeautifulSoup, parent: str) -> None:
             tile["href"] = target
 
     if not soup.select_one(".seo-bridge-bar"):
+        # Плашка — одна ссылка целиком: стеклянная капсула выглядит нажимаемой, и касание по тексту
+        # («Вся история и сравнение») тоже ведёт на платформу. До 19.11 ссылкой была только кнопка
+        # «Открыть», а касания по тексту капсулы сборщик кликов записывал как мёртвые (гипотеза Пульса 287).
         bar = BeautifulSoup(
-            '<aside class="seo-bridge-bar" aria-label="' + escape(bar_title) + '"><div class="seo-bridge-in">'
-            f'<div class="seo-bridge-text"><b>{escape(bar_title)}</b><span>{escape(bar_text)}</span></div>'
-            f'<a class="seo-bridge-go" href="{escape(target)}">{escape(bar_go)}{_BRIDGE_ARROW}</a></div></aside>',
+            '<aside class="seo-bridge-bar" aria-label="' + escape(bar_title) + '">'
+            f'<a class="seo-bridge-in" href="{escape(target)}">'
+            f'<span class="seo-bridge-text"><b>{escape(bar_title)}</b><span>{escape(bar_text)}</span></span>'
+            f'<span class="seo-bridge-go">{escape(bar_go)}{_BRIDGE_ARROW}</span></a></aside>',
             "html.parser",
         )
         soup.append(bar)
