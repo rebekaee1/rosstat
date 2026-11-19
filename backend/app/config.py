@@ -778,6 +778,18 @@ class Settings(BaseSettings):
     # Вход обычной сессией; email сверяется по способам входа пользователя.
     admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"
 
+    # Последние две точки мировых рядов — узкая копия для каталога страны (services/world_latest_points.py, ADR-0037,
+    # 19.11.2026). Флаг включает чтение копии каталогом и задачу обхода; выключен — каталог читает таблицу точек, как
+    # раньше. Каталог берёт копию только после первого полного прохода. Обход идёт часами `world_latest_points_hours`
+    # (МСК, вне окон ETL) раз в 10 минут: до `chunks_per_run` частей по `chunk` опубликованных рядов, не дольше
+    # `run_seconds`; полный повтор раз в `resweep_days` суток. Первое заполнение — командой (docs/workflow.md).
+    world_latest_points_enabled: bool = False
+    world_latest_points_chunk: int = 1000
+    world_latest_points_chunks_per_run: int = 6
+    world_latest_points_run_seconds: float = 240.0
+    world_latest_points_resweep_days: int = 7
+    world_latest_points_hours: str = "4,8-21"
+
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
 
     @property

@@ -887,3 +887,37 @@ SELECT relname, reloptions FROM pg_class
 **Если обычной очистки мало.** Место мёртвых строк остаётся в файлах и переиспользуется новыми вставками; размер на диске не уменьшится. Оценка раздувания индексов `uq_world_data_point` 510 МБ и `world_data_points_pkey` 400 МБ относительно плотной сборки — порядка 10–20 % (расчёт по размеру записи, не замер). `pg_repack` в образе нет (`pg_available_extensions`), `VACUUM FULL`/`CLUSTER` держат исключительную блокировку минуты — сайт ждёт. Если раздувание подтвердится (`pgstattuple` есть в образе, но `CREATE EXTENSION` — запись, по слову владельца): `REINDEX INDEX CONCURRENTLY uq_world_data_point;` по одному индексу — нужно свободное место размером с индекс, полный проход таблицы, при сбое остаётся негодный индекс `…_ccnew` (снять `DROP INDEX CONCURRENTLY`); выигрыш — десятки–сотни МБ кэша. Сейчас не рекомендуется.
 
 **Откат.** `alembic downgrade 20261118_search_index` возвращает параметры по умолчанию (`ALTER TABLE … RESET`); очистку откатывать нечего.
+
+<a id="world-latest-points-release-2026-11-19"></a>
+
+## Выпуск копии последних точек для каталога страны — миграция `20261119_world_latest_points` (19.11.2026)
+
+Решение — [ADR-0037](adr/0037-world-latest-points.md), цифры — [enterprise_resilience](enterprise_resilience.md#world-latest-points-2026-11-19). Миграция только создаёт две пустые таблицы (секунды). Флаг `RUSTATS_WORLD_LATEST_POINTS_ENABLED` выключен: после выкладки поведение то же, загрузчики раз в минуту на процесс проверяют, заведена ли копия (нет — ничего не пишут).
+
+1. **Выкладка** кода и миграции обычным порядком. Проверка: `alembic current` = `20261119_world_latest_points`; `SELECT count(*) FROM world_latest_points;` — 0.
+2. **Заполнение** — после выкладки и 15-минутного наблюдения, в будни 08:00–10:00 МСК (вне ETL 05:30–07:30 и ночного окна 23:10–03:10; не одновременно с разовой очисткой из [п.15](#points-autovacuum-release-2026-11-19) — обе читают таблицу точек). Команда заводит копию, ждёт 2 мин, пока загрузчики начнут её вести, и проходит страны частями по 1 000 рядов с паузой 0,5 с; часть, на которую пришлась загрузка, повторяет через 30 с:
+
+   ```bash
+   ssh fe-prod
+   cd /opt/rosstat
+   nohup docker compose exec -T scheduler python -m app.services.world_latest_points > /root/world-latest-points-$(date +%F).log 2>&1 &
+   ```
+
+   Ход: `SELECT * FROM world_latest_points_state;` (`cursor_country_id` растёт, `rows_changed` — записанные строки). Оценка 10–50 мин (~560 тыс. чтений с диска). Остановить можно в любой момент (`kill` процесса или `pg_cancel_backend`) — повторный запуск продолжит с курсора. Готово, когда в журнале `'status': 'pass_done'`, в состоянии `filled_at` не пусто, `rows` ≈ 281 тыс.
+3. **Сверка до включения** (только чтение): для одной страны сравнить копию с таблицей точек —
+
+   ```sql
+   SET statement_timeout = '20s';
+   SELECT count(*) AS differ FROM world_latest_points c
+   CROSS JOIN LATERAL (SELECT array_agg(date ORDER BY date DESC) d, array_agg(value ORDER BY date DESC) v
+                       FROM (SELECT date, value FROM world_data_points p WHERE p.indicator_id = c.indicator_id
+                             ORDER BY date DESC LIMIT 2) t) x
+   WHERE c.country_id = (SELECT id FROM world_countries WHERE slug = 'kosovo')
+     AND (c.last_date IS DISTINCT FROM x.d[1] OR c.last_value IS DISTINCT FROM x.v[1]
+          OR c.prev_date IS DISTINCT FROM x.d[2] OR c.prev_value IS DISTINCT FROM x.v[2]);
+   ```
+
+   Ожидание — 0.
+4. **Включение**: `RUSTATS_WORLD_LATEST_POINTS_ENABLED=true` в `.env` (backend и scheduler берут его из общего блока compose), пересоздать backend и scheduler вне окна наблюдения выкладки. Каталоги стран в кэше остаются до срока свежести; проверить холодный: `curl -s -o /dev/null -w '%{time_total}\n' 'https://forecasteconomy.com/api/v1/world/countries/kosovo?slim=1'` после сдвига поколения или на стране без записи в Redis. В журнале backend нет `world latest points unavailable`; в журнале scheduler раз в 10 мин в часы 04, 08–21 МСК — `world latest points sweep: …` только когда идёт проход (повтор раз в 7 суток).
+5. **Проверка после**: `pg_stat_statements` — запрос последних точек `world_data_points … LIMIT 2` у каталога больше не растёт в часы без загрузок; `api_timing` людей `countries/*` — сравнить с 14 днями до выпуска.
+6. **Откат**: флаг `false` и пересоздание backend и scheduler — каталог читает таблицу точек. Остановить и ведение копии загрузчиками: `DELETE FROM world_latest_points_state;`. Таблицы удаляет `alembic downgrade 20261119_points_autovacuum`.

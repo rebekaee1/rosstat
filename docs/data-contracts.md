@@ -1435,3 +1435,19 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 (`search_rewrite`), в нём есть `corrected_query` — переписанный текст; окно поиска показывает «Показаны результаты
 для: …». Ответ из частей «X и Y» несёт `intent` первой части и строки частей поочерёдно. Ревизия кэша ответов `r6`.
 Событие `search_query` локальных полей страниц регионов не отправляется, пока набор показателей региона не загружен.
+
+<a id="world-latest-points-2026-11-19"></a>
+## Последние две точки мировых рядов — 2026-11-19 (ADR-0037, ветка агента, не выпущено)
+
+Форма ответа `GET /api/v1/world/countries/{slug}` (и `?slim=1`) не меняется: `last_value`, `last_date`, `prev_value`,
+`change` и отбор «есть ненулевая точка» те же. Источник последних точек за флагом `RUSTATS_WORLD_LATEST_POINTS_ENABLED` —
+таблица `world_latest_points` (миграция `20261119_world_latest_points`), без флага, до первого полного прохода и для рядов,
+которых в копии нет, — `world_data_points`, как раньше.
+
+| Таблица | Строка | Ключ, индекс | Кто пишет |
+|---|---|---|---|
+| `world_latest_points` | `indicator_id`, `country_id`, `last_date`/`last_value`, `prev_date`/`prev_value` (`Numeric(20,6)`, как в точках; пусто — у ряда нет точек / одна точка), `has_nonzero` (есть точка `value <> 0`), `synced_at` | PK `indicator_id`; `ix_world_latest_points_country (country_id) INCLUDE (все столбцы)` | загрузчики после записи точек ряда (`sync_latest_points`, та же транзакция); обход `world_latest_points` |
+| `world_latest_points_state` | одна строка `id=1`: `maintained_since` (копия заведена — загрузчики пишут), `filled_at` (первый полный проход — каталог читает), курсор обхода, `pass_*`, `rows`, `rows_changed` | PK `id` | обход и команда `python -m app.services.world_latest_points` |
+
+Внешних ключей нет: строка удалённого ряда безвредна (каталог берёт только ряды страны из `world_indicators`) и
+удаляется обходом. Порядок выпуска и сверка — [workflow](workflow.md#world-latest-points-release-2026-11-19).

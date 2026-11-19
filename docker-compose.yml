@@ -287,6 +287,9 @@ services:
       # 20261012c_world_listed_cnt; выключено). Включать в backend и scheduler одновременно.
       RUSTATS_WORLD_LISTED_COUNTS_ENABLED: ${RUSTATS_WORLD_LISTED_COUNTS_ENABLED:-false}
       RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS: ${RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS:-21600}
+      # 19.11.2026, ADR-0037: каталог страны читает последние точки из копии world_latest_points (после первого
+      # заполнения командой, docs/workflow.md); в scheduler — задача обхода. Выключено.
+      RUSTATS_WORLD_LATEST_POINTS_ENABLED: ${RUSTATS_WORLD_LATEST_POINTS_ENABLED:-false}
       # Круг 13, R-BRENT: живая нефть Brent с Мосбиржи в ленте. ВЫКЛЮЧЕНО до договора с биржей (бесплатные данные ISS
       # разрешены только «для ознакомления»). Включать только после подписания; нужен процесс scheduler (читает общий env).
       RUSTATS_MOEX_BRENT_LIVE_ENABLED: ${RUSTATS_MOEX_BRENT_LIVE_ENABLED:-false}

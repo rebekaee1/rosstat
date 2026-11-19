@@ -2126,6 +2126,35 @@ async def _country_nonzero_signal(
     return signal
 
 
+async def _country_recent_points(
+    db: AsyncSession, country_id: int, indicator_ids: list[int],
+) -> tuple[dict[int, list[tuple[date, float]]], set[int]]:
+    """Последние две точки рядов страны и множество рядов с ненулевой точкой.
+
+    Сначала узкая копия `world_latest_points` (ADR-0037, за флагом `world_latest_points_enabled`): строки страны
+    читаются из одного индекса. Ряды, которых в копии нет, и весь каталог без копии — из таблицы точек частями.
+    Ответ один и тот же: копия хранит ровно эти две точки и отметку «есть ненулевая точка».
+    """
+    from app.services.world_latest_points import read_latest_points
+
+    copy = await read_latest_points(db, country_id, indicator_ids)
+    recent: dict[int, list[tuple[date, float]]] = dict(copy.recent) if copy is not None else {}
+    signal: set[int] = set(copy.nonzero) if copy is not None else set()
+    rest = list(copy.missing) if copy is not None else list(indicator_ids)
+    if not rest:
+        return recent, signal
+    rest_recent: dict[int, list[tuple[date, float]]] = {}
+    # Частями: холодное чтение идёт ~3,7 мс на ряд (боевой 19.11), у европейской страны 8,5 тыс. рядов — больше
+    # предела запроса 30 с одним запросом, и каталог не строился вовсе. Каждая часть укладывается в предел.
+    for start in range(0, len(rest), _LATEST_POINTS_CHUNK):
+        rest_recent.update(await latest_world_point_series(
+            db, rest[start:start + _LATEST_POINTS_CHUNK], limit=2,
+        ))
+    recent.update(rest_recent)
+    signal |= await _country_nonzero_signal(db, rest, rest_recent)
+    return recent, signal
+
+
 async def _build_country_detail_payload(slug: str, db: AsyncSession, cache_key: str) -> dict:
     country = await _country_by_slug(db, slug)
     all_inds = await _country_indicators_for_listing(db, country.id)
@@ -2146,15 +2175,8 @@ async def _build_country_detail_payload(slug: str, db: AsyncSession, cache_key: 
 
     # Последние две точки каждого ряда — одним проходом; по ним же отбор «есть ненулевая точка».
     listed_ids = [i.id for i in listed]
-    recent: dict[int, list[tuple[date, float]]] = {}
-    # Частями: холодное чтение идёт ~3,7 мс на ряд (боевой 19.11), у европейской страны 8,5 тыс. рядов — больше
-    # предела запроса 30 с одним запросом, и каталог не строился вовсе. Каждая часть укладывается в предел.
-    for start in range(0, len(listed_ids), _LATEST_POINTS_CHUNK):
-        recent.update(await latest_world_point_series(
-            db, listed_ids[start:start + _LATEST_POINTS_CHUNK], limit=2,
-        ))
+    recent, listed_signal = await _country_recent_points(db, country.id, listed_ids)
     # Защита: all-zero не в каталоге страны (даже если is_listed ещё true).
-    listed_signal = await _country_nonzero_signal(db, listed_ids, recent)
     listed = [i for i in listed if i.id in listed_signal]
     listed = filter_weo_shadowed_from_country_listing(listed, country.code)
 

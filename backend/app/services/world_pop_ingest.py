@@ -233,6 +233,10 @@ async def _upsert_population_series(
         target.points_count = int(count or 0)
         target.history_start = history_start
         target.history_end = history_end
+    # Копия последних точек для каталога страны (ADR-0037) — в той же транзакции, что и точки.
+    from app.services.world_latest_points import sync_latest_points
+
+    await sync_latest_points(db, [indicator_id])
     return 1, touched
 
 

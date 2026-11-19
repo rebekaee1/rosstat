@@ -310,6 +310,10 @@ async def refresh_indicator_extent(db: AsyncSession, indicator_id: int) -> None:
         ind.points_count = int(count or 0)
         ind.history_start = history_start
         ind.history_end = history_end
+    # Копия последних точек для каталога страны (ADR-0037) — в той же транзакции, что и точки.
+    from app.services.world_latest_points import sync_latest_points
+
+    await sync_latest_points(db, [indicator_id])
 
 
 async def upsert_indicator_meta(

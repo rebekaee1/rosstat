@@ -1699,6 +1699,20 @@ async def lifespan(app: FastAPI):
             next_run_time=datetime.now(dt_timezone.utc) + timedelta(minutes=settings.search_index_first_build_delay_minutes),
         )
 
+        # Последние две точки мировых рядов для каталога страны (ADR-0037, 19.11.2026): обход сверяет копию с таблицей
+        # точек частями, раз в 10 минут в часы вне ETL. Без флага world_latest_points_enabled задача не регистрируется.
+        if settings.world_latest_points_enabled:
+            from app.services.world_latest_points import world_latest_points_job
+            scheduler.add_job(
+                locked_job(world_latest_points_job, "world_latest_points", ttl_seconds=900),
+                trigger=CronTrigger(hour=settings.world_latest_points_hours, minute="*/10", timezone="Europe/Moscow"),
+                id="world_latest_points",
+                name="World latest points sweep (country catalogue copy, ADR-0037)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
         asyncio.create_task(_cleanup_stuck_fetch_logs())
 
         # «New indicator initial ETL trap» + forecast gap-fill (steps>0 без

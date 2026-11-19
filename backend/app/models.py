@@ -2393,3 +2393,45 @@ class SearchSubnationalFactA(_SearchSubnationalFact, Base):
 class SearchSubnationalFactB(_SearchSubnationalFact, Base):
     __tablename__ = "search_subnational_facts_b"
     __table_args__ = (Index("ix_search_subnational_facts_b_region", "region_id"),)
+
+
+# --- Последние две точки мировых рядов: узкая копия для каталога страны (19.11.2026, ADR-0037) ---
+# Наполняют загрузчики (`services.world_latest_points.sync_latest_points`) и обход планировщика; читает каталог страны
+# за флагом `world_latest_points_enabled`. Миграция 20261119_world_latest_points.
+
+
+class WorldLatestPoint(Base):
+    """Последняя и предпоследняя точка мирового ряда и отметка «есть ненулевая точка» (как в таблице точек)."""
+    __tablename__ = "world_latest_points"
+    __table_args__ = (
+        # Каталог страны читает строки страны целиком из индекса, не трогая таблицу.
+        Index(
+            "ix_world_latest_points_country", "country_id",
+            postgresql_include=("indicator_id", "last_date", "last_value", "prev_date", "prev_value", "has_nonzero"),
+        ),
+    )
+
+    indicator_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    country_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    last_date: Mapped[date | None] = mapped_column(Date)
+    last_value: Mapped[float | None] = mapped_column(Numeric(20, 6))
+    prev_date: Mapped[date | None] = mapped_column(Date)
+    prev_value: Mapped[float | None] = mapped_column(Numeric(20, 6))
+    has_nonzero: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    synced_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+
+class WorldLatestPointsState(Base):
+    """Одна строка (id=1): копия заведена (`maintained_since`), заполнена (`filled_at`), курсор обхода."""
+    __tablename__ = "world_latest_points_state"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    maintained_since: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    filled_at: Mapped[datetime | None] = mapped_column(DateTime)
+    cursor_country_id: Mapped[int | None] = mapped_column(Integer)
+    cursor_indicator_id: Mapped[int | None] = mapped_column(Integer)
+    pass_started_at: Mapped[datetime | None] = mapped_column(DateTime)
+    pass_completed_at: Mapped[datetime | None] = mapped_column(DateTime)
+    last_run_at: Mapped[datetime | None] = mapped_column(DateTime)
+    rows: Mapped[int | None] = mapped_column(Integer)
+    rows_changed: Mapped[int | None] = mapped_column(Integer)
