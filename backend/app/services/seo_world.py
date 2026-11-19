@@ -91,7 +91,16 @@ def world_listing_light_options() -> list:
         for name in _WORLD_HEAVY_TEXT_COLUMNS
     ]
 WORLD_RATING_DEFAULT_CONCEPT = "gdp-usd"
-_WORLD_RATING_LOW_FIRST = frozenset({"unemployment-rate", "long-term-interest-rate"})
+# Сначала лучшие: низкая безработица, бедность, неравенство. Ключевая ставка — сначала самые высокие (19.11.2026):
+# по ней ищут, где ставка выше, а «лучше» здесь не определено.
+_WORLD_RATING_LOW_FIRST = frozenset({
+    "unemployment-rate",
+    "long-term-interest-rate",
+    "youth-unemployment-rate",
+    "gini-index",
+    "poverty-rate",
+    "income-share-top10",
+})
 _WORLD_RATING_MONEY_CONCEPTS = frozenset({
     "gdp-volume-quarterly",
     "gdp-volume-annual",
@@ -569,6 +578,9 @@ _SOURCE_BY_PROVIDER: dict[str, str] = {
     "mospi": "Министерство статистики и программной реализации Индии",
     "rbi": "Резервный банк Индии",
     "imf": "Международный валютный фонд",
+    "bis": "Банк международных расчётов",
+    "worldbank": "Всемирный банк",
+    "ilo": "Международная организация труда",
     "census": "Бюро переписи населения США",
     "ibge": "Бразильский институт географии и статистики (IBGE)",
 }

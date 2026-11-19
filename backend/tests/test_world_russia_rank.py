@@ -27,8 +27,12 @@ def test_russia_links_cover_comparable_rating_concepts_only():
         "gdp-per-capita-usd",
         "budget-balance-gdp",
         "government-debt-gdp",
+        "policy-rate",
+        "youth-unemployment-rate",
     }
     assert russia_link_for_concept("activity-rate") is None
+    assert russia_link_for_concept("gini-index") is None
+    assert russia_link_for_concept("poverty-rate") is None
     assert russia_link_for_concept("long-term-interest-rate") is None
     assert russia_link_for_concept("gdp-nominal") is None
     assert RUSSIA_CONCEPT_LINKS["gdp-usd"].indicator_code == "weo-gdp-usd"

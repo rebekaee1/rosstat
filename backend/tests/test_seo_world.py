@@ -483,6 +483,22 @@ def world_seo_client(auth_env):
                     date=date(2024, i + 1, 1),
                     value=1.0 + i,
                 ))
+            # Ряды международных издателей (BIS, Всемирный банк, МОТ; 19.11.2026) — по одному на понятие.
+            from app.services.world_intl_sources import SERIES, indicator_code
+
+            for series in SERIES:
+                intl = WorldIndicator(
+                    country_id=de.id, provider=series.provider, code=indicator_code("DE", series),
+                    dataset_id=series.dataset_id, slice_json={"series": series.series_id},
+                    slice_hash=f"intl-{series.code_suffix}", name_ru=series.name_ru, name_en=series.name_en,
+                    name_quality="curated", unit=series.unit, unit_ru=series.unit_ru, frequency="annual",
+                    category_ru=series.category_ru, source=series.source_ru, history_start=date(2023, 1, 1),
+                    history_end=date(2024, 1, 1), points_count=2, is_listed=True,
+                )
+                db.add(intl)
+                await db.flush()
+                for i, value in enumerate((10.0, 11.0)):
+                    db.add(WorldDataPoint(indicator_id=intl.id, date=date(2023 + i, 1, 1), value=value))
             await db.commit()
 
     asyncio.run(_seed())
@@ -839,6 +855,12 @@ def test_world_rating_surface_nonempty_and_gated(world_seo_client):
         "gdp-per-capita-eu",
         "gdp-usd",
         "gdp-per-capita-usd",
+        "policy-rate",
+        "youth-unemployment-rate",
+        "gini-index",
+        "poverty-rate",
+        "income-share-top10",
+        "life-expectancy",
     }
     assert "gdp-volume-annual" not in rating_slugs
     assert "gdp-volume-quarterly" not in rating_slugs

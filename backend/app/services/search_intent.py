@@ -51,7 +51,9 @@ CONCEPTS = (
         ("valovoy-regionalnyy-produkt", "валовой региональный продукт", "валового регионального продукта",
         "gross regional product")),
     # `policy-rate` — код ключевой ставки других стран (us-policy-rate, uk-policy-rate): «ключевая ставка США» находит ставку ФРС.
-    (("ключевая ставка", "ставка цб", "key rate", "cbr rate", "central bank rate"), ("key-rate", "ключевая ставка", "policy-rate")),
+    # `lpr-1y` (19.11.2026): у Китая ключевая ставка — LPR на 1 год (cn-lpr-1y), кода policy-rate у неё нет, и «ключевая
+    # ставка Китай» давала пустую выдачу. Индия — ряд BIS `in-bis-policy-rate` (ставка РБИ с сайта банка недоступна).
+    (("ключевая ставка", "ставка цб", "key rate", "cbr rate", "central bank rate"), ("key-rate", "ключевая ставка", "policy-rate", "lpr-1y")),
     (("ставка фрс", "ключевая ставка фрс", "процентная ставка фрс", "ставка федрезерва", "ставка федеральной резервной системы", "фрс",
         "fed rate", "fed funds rate", "federal funds rate", "fed funds", "federal reserve rate"),
         ("us-policy-rate", "federal funds", "федеральным фондам", "федеральные фонды")),

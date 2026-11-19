@@ -31,6 +31,12 @@ def test_concept_catalog_is_small_and_explicitly_surface_gated():
         "gdp-per-capita-eu",
         "gdp-usd",
         "gdp-per-capita-usd",
+        "policy-rate",
+        "youth-unemployment-rate",
+        "gini-index",
+        "poverty-rate",
+        "income-share-top10",
+        "life-expectancy",
     }
     for concept in WORLD_CONCEPTS:
         assert "resolve" in concept.enabled_surfaces

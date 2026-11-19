@@ -763,6 +763,26 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Мир: BIS (ключевые ставки), Всемирный банк (Джини, бедность, продолжительность жизни), МОТ
+        # (безработица молодёжи) — 19.11.2026. Раз в сутки после национальных рядов; десяток запросов,
+        # ~25 тыс. точек на всю историю. Откат — RUSTATS_WORLD_INTL_INGEST_ENABLED=false.
+        if settings.world_intl_ingest_enabled:
+            from app.services.world_intl_ingest import run_world_intl_ingest
+
+            scheduler.add_job(
+                locked_job(run_world_intl_ingest, "world_intl_ingest", ttl_seconds=3600),
+                trigger=CronTrigger(
+                    hour=settings.world_eurostat_ingest_hour,
+                    minute=50,
+                    timezone="Europe/Moscow",
+                ),
+                id="world_intl_ingest",
+                name="World international publishers ingest (BIS, World Bank, ILO)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
         # Eurostat publishes API batches twice daily. Each database first gets
         # two audited shadow runs, then bounded live refreshes with a backlog.
         if settings.world_eurostat_ingest_enabled:

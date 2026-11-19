@@ -72,6 +72,11 @@ export const HOME_COUNTRY_CONCEPT_LABEL_KEYS = Object.freeze({
   'long-term-interest-rate': 'home.concept.long-term-interest-rate',
   'activity-rate': 'home.concept.activity-rate',
   'gdp-per-capita-eu': 'home.concept.gdp-per-capita-eu',
+  'youth-unemployment-rate': 'home.concept.youth-unemployment-rate',
+  'gini-index': 'home.concept.gini-index',
+  'poverty-rate': 'home.concept.poverty-rate',
+  'income-share-top10': 'home.concept.income-share-top10',
+  'life-expectancy': 'home.concept.life-expectancy',
 });
 
 /**
@@ -245,6 +250,12 @@ export const WORLD_RATING_QUERY_NAME_KEYS = Object.freeze({
   'gdp-per-capita-eu': 'world.rating.query.gdp-per-capita-eu',
   'gdp-usd': 'world.rating.query.gdp-usd',
   'gdp-per-capita-usd': 'world.rating.query.gdp-per-capita-usd',
+  'policy-rate': 'world.rating.query.policy-rate',
+  'youth-unemployment-rate': 'world.rating.query.youth-unemployment-rate',
+  'gini-index': 'world.rating.query.gini-index',
+  'poverty-rate': 'world.rating.query.poverty-rate',
+  'income-share-top10': 'world.rating.query.income-share-top10',
+  'life-expectancy': 'world.rating.query.life-expectancy',
 });
 
 /**

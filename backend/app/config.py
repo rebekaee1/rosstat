@@ -789,6 +789,8 @@ class Settings(BaseSettings):
     world_latest_points_run_seconds: float = 240.0
     world_latest_points_resweep_days: int = 7
     world_latest_points_hours: str = "4,8-21"
+    # Ряды BIS / Всемирного банка / МОТ для стран мира (19.11.2026, `world_intl_ingest`).
+    world_intl_ingest_enabled: bool = True
 
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
 
