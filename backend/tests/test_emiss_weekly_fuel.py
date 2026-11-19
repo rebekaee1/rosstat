@@ -269,3 +269,43 @@ def test_bulletin_update_writes_points_for_known_indicators_and_regions(monkeypa
     got = {(r["indicator_id"], r["region_id"]): r["value"] for r in written}
     assert got == {(7, 1): 87.09, (5, 1): 70.04, (7, 77): 82.96, (5, 77): 68.62}
     assert {r["date"] for r in written} == {date(2026, 11, 16)}
+
+
+def test_job_runs_bulletin_even_when_emiss_showcase_fails_and_then_reraises(monkeypatch):
+    """19.11.2026: сбой витрины (403 fedstat) не отменяет последнюю неделю из бюллетеня."""
+    from contextlib import asynccontextmanager
+
+    from app.config import settings
+
+    calls: list[str] = []
+    sent: list[str] = []
+
+    @asynccontextmanager
+    async def fake_session():
+        yield object()
+
+    async def failing_showcase(_db):
+        calls.append("emiss")
+        raise RuntimeError("fedstat 403")
+
+    async def bulletin(_db):
+        calls.append("bulletin")
+        return {"bulletins": 1}
+
+    async def not_muted(*_a, **_k):
+        return False
+
+    async def fake_send(text, kind=None):
+        sent.append(kind)
+        return True
+
+    monkeypatch.setattr(w, "async_session", fake_session)
+    monkeypatch.setattr(w, "run_weekly_fuel_update", failing_showcase)
+    monkeypatch.setattr(w, "run_bulletin_regional_update", bulletin)
+    monkeypatch.setattr(settings, "regional_fuel_bulletin_enabled", True)
+    monkeypatch.setattr("app.services.alerting.alert_muted", not_muted)
+    monkeypatch.setattr("app.services.alerting.send_telegram", fake_send)
+    with pytest.raises(RuntimeError, match="fedstat 403"):
+        asyncio.run(w.emiss_weekly_fuel_job())
+    assert calls == ["emiss", "bulletin"]
+    assert sent == ["etl_alert"]

@@ -927,7 +927,8 @@ async def lifespan(app: FastAPI):
             from app.services.promised_freshness import promised_freshness_job
 
             scheduler.add_job(
-                promised_freshness_job,
+                # Под общим замком: два планировщика не пришлют одно сообщение дважды.
+                locked_job(promised_freshness_job, "promised_freshness", ttl_seconds=15 * 60),
                 trigger=CronTrigger(hour=10, minute=5, timezone="Europe/Moscow"),
                 id="promised_freshness",
                 name="Promised series freshness (subscribe line / public bot topics)",

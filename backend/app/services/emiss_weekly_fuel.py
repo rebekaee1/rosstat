@@ -42,7 +42,7 @@ import re
 import time
 from collections import defaultdict
 from datetime import date
-from typing import Callable, Iterable, Sequence
+from typing import Any, Callable, Iterable, Sequence
 
 from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
@@ -588,35 +588,34 @@ async def run_bulletin_regional_update(
 _ALERT_MUTE_S = 3 * 24 * 3600
 
 
-async def emiss_weekly_fuel_job() -> dict[str, int]:
-    """Точка входа планировщика: недельные цены на топливо по субъектам."""
+async def emiss_weekly_fuel_job() -> dict[str, Any]:
+    """Точка входа планировщика: недельные цены на топливо по субъектам.
+
+    Витрина 37426 и бюллетень Росстата независимы (19.11.2026): сбой витрины (fedstat отвечал 403 адресу прода)
+    не отменяет шаг бюллетеня с последней неделей, а сбой бюллетеня не отменяет витрину. Ошибка витрины после
+    шага бюллетеня поднимается дальше с прежним алертом.
+    """
     started = time.monotonic()
+    stats: dict[str, Any] = {}
+    emiss_error: Exception | None = None
     try:
         async with async_session() as db:
-            stats = await run_weekly_fuel_update(db)
-        from app.config import settings
+            stats.update(await run_weekly_fuel_update(db))
+    except Exception as exc:  # noqa: BLE001 — поднимается ниже, после шага бюллетеня
+        emiss_error = exc
 
-        if settings.regional_fuel_bulletin_enabled:
-            # Витрина 37426 отстаёт на 2–3 недели; бюллетень Росстата даёт последнюю неделю по субъектам.
-            # Его сбой не отменяет результат витрины и не роняет задачу.
-            try:
-                async with async_session() as db:
-                    stats["bulletin"] = await run_bulletin_regional_update(db)
-            except Exception:  # noqa: BLE001
-                logger.warning("regional fuel bulletin update failed", exc_info=True)
-        if stats.get("unparsed"):
-            from app.services.alerting import alert_muted, send_telegram
+    from app.config import settings
 
-            if not await alert_muted("emiss_weekly_fuel:unparsed", _ALERT_MUTE_S):
-                await send_telegram(
-                    "🟡 <b>Недельные цены на топливо по регионам: ответ получен, цены не разобраны</b> — "
-                    f"лет без разбора: {stats['unparsed']}. Вероятно, источник сменил формат ответа.",
-                    kind="etl_alert",
-                )
-        logger.info("emiss_weekly_fuel_job done in %.1fs: %s", time.monotonic() - started, stats)
-        return stats
-    except Exception as exc:
-        logger.exception("emiss_weekly_fuel_job failed")
+    if settings.regional_fuel_bulletin_enabled:
+        # Витрина 37426 отстаёт на 2–3 недели; бюллетень Росстата даёт последнюю неделю по субъектам.
+        try:
+            async with async_session() as db:
+                stats["bulletin"] = await run_bulletin_regional_update(db)
+        except Exception:  # noqa: BLE001
+            logger.warning("regional fuel bulletin update failed", exc_info=True)
+
+    if emiss_error is not None:
+        logger.error("emiss_weekly_fuel_job failed", exc_info=emiss_error)
         from html import escape
 
         from app.services.alerting import alert_muted, exception_reason, send_telegram
@@ -625,9 +624,21 @@ async def emiss_weekly_fuel_job() -> dict[str, int]:
             if not await alert_muted("emiss_weekly_fuel:failed", _ALERT_MUTE_S):
                 await send_telegram(
                     "🔴 <b>Парсер недельных цен на топливо по регионам упал</b>\n"
-                    f"Причина: {escape(exception_reason(exc, 300))}",
+                    f"Причина: {escape(exception_reason(emiss_error, 300))}",
                     kind="etl_alert",
                 )
         except Exception:  # noqa: BLE001 — алерт не должен маскировать исключение
             pass
-        raise
+        raise emiss_error
+
+    if stats.get("unparsed"):
+        from app.services.alerting import alert_muted, send_telegram
+
+        if not await alert_muted("emiss_weekly_fuel:unparsed", _ALERT_MUTE_S):
+            await send_telegram(
+                "🟡 <b>Недельные цены на топливо по регионам: ответ получен, цены не разобраны</b> — "
+                f"лет без разбора: {stats['unparsed']}. Вероятно, источник сменил формат ответа.",
+                kind="etl_alert",
+            )
+    logger.info("emiss_weekly_fuel_job done in %.1fs: %s", time.monotonic() - started, stats)
+    return stats
