@@ -13,15 +13,22 @@
    **Trap (2026-07-01):** Росстат обновляет xlsx с лагом — свежая неделя
    выходит сначала ТОЛЬКО в HTML-бюллетене (п. 2), а xlsx догоняет позже.
 
-2. HTML-бюллетень «О потребительских ценах на нефтепродукты с N по M …»
-   (`/storage/mediabank/<num>_<DD-MM-YYYY>.html`, публикуется по средам,
-   discovery через central-news — переиспользуем механизм
-   `rosstat_weekly_inflation_parser._find_bulletin_urls_central_news`).
+2. Бюллетень «О потребительских ценах на нефтепродукты с N по M …»
+   (публикуется по средам, discovery через central-news по заголовку ссылки).
    В бюллетене таблица «Средние потребительские цены на бензин автомобильный
    и дизельное топливо по Российской Федерации» (рублей за литр) с колонками
-   двух дат регистрации. `_parse_fuel_bulletin_html` вытаскивает строки
-   «марки АИ-92» / «марки АИ-95» / «Дизельное топливо». Только для
-   fuel-меток; для прочих товаров источник один — xlsx.
+   двух дат регистрации. Вытаскиваем строки «марки АИ-92» / «марки АИ-95» /
+   «Дизельное топливо». Только для fuel-меток; для прочих товаров источник
+   один — xlsx.
+
+   **С октября 2026 бюллетень выходит в PDF** (`175_18-11-2026.pdf`,
+   `169n-ben28.pdf`), ссылка в ленте бывает абсолютной, имя файла произвольное.
+   До 19.11.2026 парсер искал только `…_DD-MM-YYYY.html`: бюллетень молча
+   пропадал, свежая неделя ждала xlsx (12.11 он догнал, 18–19.11 — нет:
+   точка 16.11 стояла в PDF, а на сайте и в боте оставалась цена на 9.11).
+   Теперь ссылка узнаётся по заголовку (`_NEWS_LINK_RE` недельного ИПЦ),
+   PDF читается pypdf (`_parse_fuel_bulletin_text`), а сбой xlsx (404 в дни
+   частичного восстановления Росстата) больше не отменяет бюллетень.
 
 Результат — union (бюллетень поверх xlsx на совпадающих датах: бюллетень
 первичен, xlsx повторяет его же значения).
@@ -58,6 +65,7 @@ from app.services.data_validator import validate_points
 from app.services.http_client import create_session
 from app.services.rosstat_weekly_inflation_parser import (
     _MONTH_MAP,
+    _NEWS_LINK_RE,
     _parse_column_date,
     _sheet_year,
 )
@@ -72,9 +80,9 @@ CENTRAL_NEWS_URL = "https://rosstat.gov.ru/central-news"
 _FUEL_BULLETIN_TITLE_RE = re.compile(
     r"потребительских\s+ценах\s+на\s+нефтепродукты", re.IGNORECASE,
 )
-_BULLETIN_HREF_RE = re.compile(
-    r'href="(/storage/mediabank/\d+_\d{2}-\d{2}-\d{4}\.html)"\s*[^>]*>\s*([^<]{15,300})',
-)
+# Ссылка ленты: относительная или абсолютная, HTML или PDF, имя файла любое (общий шаблон с недельным ИПЦ).
+_BULLETIN_HREF_RE = _NEWS_LINK_RE
+_FUEL_PDF_MAX_PAGES = 1  # таблица по России стоит на первой странице; дальше — субъекты
 _REG_DATE_RE = re.compile(
     r"(\d{1,2})\s*(" + "|".join(_MONTH_MAP.keys()) + r")\s*(\d{4})", re.IGNORECASE,
 )
@@ -234,10 +242,115 @@ def _parse_fuel_bulletin_html(html: str, row_label: str) -> list[PricePoint]:
     return []
 
 
+_RF_TABLE_RE = re.compile(r"дизельное\s*топливо\s*по\s*российской\s*федерации", re.IGNORECASE)
+_RF_TABLE_END_RE = re.compile(r"средние\s*потребительские\s*цены", re.IGNORECASE)
+_PRICE_RE = re.compile(r"(?<![\d,])(\d{1,4},\d{2})(?![\d])")
+
+
+def _parse_fuel_bulletin_text(text: str, row_label: str) -> list[PricePoint]:
+    """Средние цены (руб/л) по России из текста PDF-бюллетеня (pypdf).
+
+    Фрагмент — от «… дизельное топливо по Российской Федерации» до следующей
+    таблицы «Средние потребительские цены …» (по субъектам). В нём две даты
+    регистрации («9 ноября 2026 г.», «16 ноября 2026 г.») и строки
+    «марки АИ-92  70,01 70,04», «Дизельное топливо 86,63 87,09».
+    pypdf иногда рвёт слова пробелом — даты ищутся и в тексте без пробелов.
+    """
+    m = _RF_TABLE_RE.search(text)
+    if not m:
+        return []
+    frag = text[m.end():]
+    end = _RF_TABLE_END_RE.search(frag)
+    if end:
+        frag = frag[: end.start()]
+    frag = frag[:1500]
+
+    reg_dates: list[date] = []
+    for candidate in (frag, re.sub(r"\s+", "", frag)):
+        found: list[date] = []
+        for d, mon, y in _REG_DATE_RE.findall(candidate):
+            month = _MONTH_MAP.get(mon.lower())
+            if not month:
+                continue
+            try:
+                found.append(date(int(y), month, int(d)))
+            except ValueError:
+                continue
+        if len(found) >= 2:
+            reg_dates = found[:2]
+            break
+    if len(reg_dates) < 2 or reg_dates[0] >= reg_dates[1]:
+        return []
+
+    label_re = re.compile(r"\s*".join(re.escape(ch) for ch in row_label.replace(" ", "")), re.IGNORECASE)
+    for line in frag.splitlines():
+        lm = label_re.search(line)
+        if not lm:
+            continue
+        # «марки АИ-98 и выше» не должна совпасть с «аи-9…»: метка целиком, дальше — только цены.
+        tail = line[lm.end():]
+        if re.match(r"\s*и\s*выше", tail, re.IGNORECASE):
+            continue
+        vals = [float(v.replace(",", ".")) for v in _PRICE_RE.findall(tail)]
+        if len(vals) < 2:
+            continue
+        return [
+            PricePoint(date=d, value=round(v, 2))
+            for d, v in zip(reg_dates, vals[:2])
+            if 1 < v < 1000
+        ]
+    return []
+
+
+def _parse_fuel_bulletin_content(content: bytes, url: str, row_label: str) -> list[PricePoint]:
+    """Бюллетень в любом виде: PDF (с октября 2026) или HTML."""
+    if content[:5] == b"%PDF-" or url.lower().endswith(".pdf"):
+        try:
+            from io import BytesIO
+
+            from pypdf import PdfReader
+
+            reader = PdfReader(BytesIO(content))
+            text = "\n".join((p.extract_text() or "") for p in reader.pages[:_FUEL_PDF_MAX_PAGES])
+        except Exception:  # noqa: BLE001 — битый PDF не должен ронять прогон
+            logger.warning("fuel bulletin PDF unreadable: %s", url, exc_info=True)
+            return []
+        return _parse_fuel_bulletin_text(text, row_label)
+    return _parse_fuel_bulletin_html(content.decode("utf-8", errors="replace"), row_label)
+
+
+def iter_fuel_bulletins(session: requests.Session, max_pages: int = 3):
+    """(href, content) свежих бюллетеней «О потребительских ценах на нефтепродукты» из ленты central-news.
+
+    Общий обход для федеральных цен (здесь) и цен по субъектам (`emiss_weekly_fuel`): сетевые
+    сбои отдельной страницы ленты или файла пропускаются с предупреждением.
+    """
+    seen: set[str] = set()
+    for page in range(1, max_pages + 1):
+        try:
+            r = session.get(CENTRAL_NEWS_URL, params={"page": page}, timeout=20)
+        except requests.RequestException as exc:
+            logger.warning("central-news page=%d failed: %s", page, exc)
+            continue
+        if r.status_code != 200:
+            continue
+        for href, title in _BULLETIN_HREF_RE.findall(r.text):
+            if href in seen or not _FUEL_BULLETIN_TITLE_RE.search(title):
+                continue
+            seen.add(href)
+            try:
+                br = session.get("https://rosstat.gov.ru" + href, timeout=30)
+            except requests.RequestException as exc:
+                logger.warning("fuel bulletin %s fetch failed: %s", href, exc)
+                continue
+            if br.status_code == 200:
+                yield href, br.content
+
+
 def fetch_fuel_bulletin_points(
     session: requests.Session, product_label: str, max_pages: int = 3,
 ) -> list[PricePoint]:
-    """Свежие цены топлива из HTML-бюллетеней ленты central-news.
+    """Свежие цены топлива из бюллетеней ленты central-news (HTML или PDF).
 
     Смотрим только первые страницы ленты (бюллетень выходит еженедельно,
     steady-state — page=1); xlsx закрывает всю историю, бюллетень нужен
@@ -247,25 +360,9 @@ def fetch_fuel_bulletin_points(
     if not row_label:
         return []
     out: dict[date, float] = {}
-    for page in range(1, max_pages + 1):
-        try:
-            r = session.get(CENTRAL_NEWS_URL, params={"page": page}, timeout=20)
-            if r.status_code != 200:
-                continue
-            for href, title in _BULLETIN_HREF_RE.findall(r.text):
-                if not _FUEL_BULLETIN_TITLE_RE.search(title):
-                    continue
-                try:
-                    br = session.get("https://rosstat.gov.ru" + href, timeout=30)
-                    if br.status_code != 200:
-                        continue
-                    html = br.content.decode("utf-8", errors="replace")
-                    for pt in _parse_fuel_bulletin_html(html, row_label):
-                        out.setdefault(pt.date, pt.value)
-                except requests.RequestException as exc:
-                    logger.warning("fuel bulletin %s fetch failed: %s", href, exc)
-        except requests.RequestException as exc:
-            logger.warning("central-news page=%d failed: %s", page, exc)
+    for href, content in iter_fuel_bulletins(session, max_pages):
+        for pt in _parse_fuel_bulletin_content(content, href, row_label):
+            out.setdefault(pt.date, pt.value)
     return [PricePoint(date=d, value=v) for d, v in sorted(out.items())]
 
 
@@ -273,17 +370,26 @@ def fetch_weekly_price(product_label: str) -> tuple[list[PricePoint], str]:
     session = create_session()
     try:
         session.verify = False
-        r = session.get(WEEKLY_SRED_CEN_URL, timeout=60)
-        r.raise_for_status()
-        points = parse_weekly_price_xlsx(r.content, product_label)
+        xlsx_error: requests.RequestException | None = None
+        points: list[PricePoint] = []
+        try:
+            r = session.get(WEEKLY_SRED_CEN_URL, timeout=60)
+            r.raise_for_status()
+            points = parse_weekly_price_xlsx(r.content, product_label)
+        except requests.RequestException as exc:
+            # 404 xlsx в дни частичного восстановления Росстата (11.11.2026) не должен отменять бюллетень.
+            xlsx_error = exc
+            logger.warning("nedel_sred_cen.xlsx fetch failed, trying bulletin only: %s", exc)
 
-        # Свежая неделя выходит в HTML-бюллетене раньше, чем догоняет xlsx.
+        # Свежая неделя выходит в бюллетене раньше, чем догоняет xlsx.
         # Бюллетень первичен: на совпадающих датах его значение затирает xlsx.
         try:
             bulletin = fetch_fuel_bulletin_points(session, product_label)
         except Exception as exc:  # noqa: BLE001 — bulletin best-effort
             logger.warning("fuel bulletin discovery failed: %s", exc)
             bulletin = []
+        if xlsx_error is not None and not bulletin:
+            raise xlsx_error
         if bulletin:
             merged = {p.date: p.value for p in points}
             merged.update({p.date: p.value for p in bulletin})
