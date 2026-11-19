@@ -28,6 +28,12 @@ SIMPLE_NAMES: dict[str, tuple[str, str]] = {
     "population": ("Население", "Population"),
     "long-term-interest-rate": ("Доходность гособлигаций", "Government bond yield"),
     "activity-rate": ("Работают или ищут работу", "Working or looking for work"),
+    "policy-rate": ("Ключевая ставка", "Policy rate"),
+    "youth-unemployment-rate": ("Безработица молодёжи", "Youth unemployment"),
+    "gini-index": ("Неравенство доходов", "Income inequality"),
+    "poverty-rate": ("Крайняя бедность", "Extreme poverty"),
+    "income-share-top10": ("Доходы 10% самых обеспеченных", "Income of the richest 10%"),
+    "life-expectancy": ("Продолжительность жизни", "Life expectancy"),
 }
 
 

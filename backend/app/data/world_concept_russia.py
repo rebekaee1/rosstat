@@ -179,6 +179,38 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "so the figures do not coincide."
         ),
     ),
+    # Ключевая ставка Банка России — тот же смысл, что ставки центральных банков в ряду BIS (19.11.2026).
+    "policy-rate": RussiaConceptLink(
+        indicator_code="key-rate",
+        value_kind="level",
+        source_ru="Банк России",
+        source_en="Bank of Russia",
+        note_ru=(
+            "Для России в рейтинг входит ключевая ставка Банка России на конец года. Ставки других стран — "
+            "по данным центральных банков, собранным Банком международных расчётов, или по национальному "
+            "ряду центрального банка, если он есть на сайте."
+        ),
+        note_en=(
+            "For Russia the ranking uses the Bank of Russia key rate at the end of the year. Other countries’ "
+            "rates come from their central banks via the Bank for International Settlements, or from the "
+            "central bank’s own series where the site has one."
+        ),
+    ),
+    "youth-unemployment-rate": RussiaConceptLink(
+        indicator_code="unemployment-youth",
+        value_kind="level",
+        note_ru=(
+            "Для России в рейтинг входит безработица 15–24 лет по обследованию рабочей силы Росстата. "
+            "Значения других стран — по оценкам Международной организации труда для того же возраста."
+        ),
+        note_en=(
+            "For Russia the ranking uses the unemployment rate of people aged 15–24 from Rosstat’s labour "
+            "force survey. Other countries follow International Labour Organization estimates for the same ages."
+        ),
+    ),
+    # gini-index — у Росстата коэффициент по распределению доходов из баланса доходов, у Всемирного банка —
+    # по обследованиям домохозяйств: 0,40 и 33 не сопоставимы, Россию в рейтинг не ставим.
+    # poverty-rate — национальная черта бедности ≠ международная 3 $ в день.
     # gdp-volume-* — национальная валюта, rating-поверхности нет.
     # long-term-interest-rate — доходность облигаций ≠ ключевая ставка ЦБ.
     # activity-rate / gdp-per-capita-eu — нет честного отечественного аналога.

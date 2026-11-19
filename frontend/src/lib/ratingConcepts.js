@@ -15,7 +15,7 @@ export const RATING_GROUPS = Object.freeze([
   {
     id: 'prices-work',
     labelKey: 'w6d.rating.group.pricesWork',
-    slugs: ['hicp-index', 'unemployment-rate', 'activity-rate'],
+    slugs: ['hicp-index', 'unemployment-rate', 'youth-unemployment-rate', 'activity-rate'],
   },
   {
     id: 'state',
@@ -25,7 +25,7 @@ export const RATING_GROUPS = Object.freeze([
   {
     id: 'people',
     labelKey: 'w6d.rating.group.people',
-    slugs: ['population'],
+    slugs: ['population', 'life-expectancy', 'gini-index', 'income-share-top10', 'poverty-rate'],
   },
 ]);
 
@@ -46,6 +46,11 @@ export const RATING_ICON_KEYS = Object.freeze({
   'long-term-interest-rate': 'percent',
   'policy-rate': 'percent',
   population: 'users',
+  'youth-unemployment-rate': 'briefcase',
+  'life-expectancy': 'activity',
+  'gini-index': 'scale',
+  'income-share-top10': 'coins',
+  'poverty-rate': 'users',
 });
 
 export function ratingIconKey(slug) {

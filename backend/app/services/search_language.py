@@ -63,6 +63,9 @@ LANGUAGE_CONCEPTS = (
  (("среднедушевые доходы", "доходы на душу", "доход на человека", "income per person", "per capita income"), ("income-per-capita", "среднедушев", "per capita income")),
  (("доходы населения", "денежные доходы", "household income"), ("household-income", "доходы населения", "household income", "денежные доходы")),
  (("неравенство доходов", "разрыв в доходах", "income inequality", "gini", "джини"), ("gini", "джини", "gini", "income inequality")),
+ # Доля доходов верхнего дециля (Всемирный банк `{страна}-wb-income-top10`, 19.11.2026).
+ (("доля доходов 10 самых богатых", "доля доходов самых богатых", "доходы 10 самых богатых", "доходы самых богатых",
+   "доля доходов богатых", "income share top 10", "income share of the richest 10"), ("income-top10", "доля доходов 10", "income share held")),
  (("бедность", "бедности", "poverty", "poverty rate", "черта бедности"), ("poverty", "бедност", "poverty")),
  (("продукты питания", "цены на продукты", "продовольственная инфляция", "food inflation", "food price", "еда", "grocery", "food", "продукты"), ("cpi-food", "продовольствен", "food price", "food and non alcoholic")),
  (("food sector", "пищевая отрасль"), ("food-industry", "food", "пищев", "продуктов питания")),

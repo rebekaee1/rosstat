@@ -759,6 +759,12 @@ _RATING_CATALOG_ORDER: tuple[str, ...] = (
     "government-debt-gdp",
     "budget-balance-gdp",
     "long-term-interest-rate",
+    "policy-rate",
+    "youth-unemployment-rate",
+    "life-expectancy",
+    "gini-index",
+    "income-share-top10",
+    "poverty-rate",
 )
 
 

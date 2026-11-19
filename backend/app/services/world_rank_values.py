@@ -244,6 +244,12 @@ WORLD_RATING_QUERY_NAMES: dict[str, str] = {
     "gdp-per-capita-eu": "ВВП на душу относительно среднего по ЕС",
     "gdp-usd": "ВВП в текущих долларах США",
     "gdp-per-capita-usd": "ВВП на душу населения в текущих долларах США",
+    "policy-rate": "ключевой ставке центрального банка",
+    "youth-unemployment-rate": "безработице молодёжи 15–24 лет",
+    "gini-index": "индексу Джини",
+    "poverty-rate": "доле населения в крайней бедности",
+    "income-share-top10": "доле доходов 10% самых обеспеченных",
+    "life-expectancy": "ожидаемой продолжительности жизни",
 }
 
 # English (nominative) for «Country ranking by …».
@@ -258,6 +264,12 @@ WORLD_RATING_QUERY_NAMES_EN: dict[str, str] = {
     "gdp-per-capita-eu": "GDP per capita relative to the EU average",
     "gdp-usd": "GDP in current US dollars",
     "gdp-per-capita-usd": "GDP per capita in current US dollars",
+    "policy-rate": "central bank policy rate",
+    "youth-unemployment-rate": "youth unemployment rate, ages 15–24",
+    "gini-index": "Gini index",
+    "poverty-rate": "share of population in extreme poverty",
+    "income-share-top10": "income share of the richest 10%",
+    "life-expectancy": "life expectancy at birth",
 }
 
 _WORLD_REGION_EN = {

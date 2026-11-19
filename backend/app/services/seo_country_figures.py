@@ -56,6 +56,12 @@ _LABELS_RU = {
     "long-term-interest-rate": "Доходность гособлигаций",
     "activity-rate": "Экономическая активность населения",
     "gdp-per-capita-eu": "ВВП на душу, % от среднего по ЕС",
+    "policy-rate": "Ключевая ставка",
+    "youth-unemployment-rate": "Безработица молодёжи",
+    "gini-index": "Индекс Джини",
+    "poverty-rate": "Крайняя бедность",
+    "income-share-top10": "Доходы 10% самых обеспеченных",
+    "life-expectancy": "Продолжительность жизни",
 }
 _LABELS_EN = {
     "hicp-index": "Inflation",
@@ -70,6 +76,12 @@ _LABELS_EN = {
     "long-term-interest-rate": "Government bond yield",
     "activity-rate": "Economic activity rate",
     "gdp-per-capita-eu": "GDP per capita, % of EU average",
+    "policy-rate": "Policy rate",
+    "youth-unemployment-rate": "Youth unemployment",
+    "gini-index": "Gini index",
+    "poverty-rate": "Extreme poverty",
+    "income-share-top10": "Income of the richest 10%",
+    "life-expectancy": "Life expectancy",
 }
 
 _SCALES_RU = ("тыс.", "млн", "млрд", "трлн")
