@@ -663,6 +663,7 @@ export default {
 
   'indicator.methodology': 'Methodology',
   'indicator.source': 'Source: {source}',
+  'indicator.cite': 'How to cite',
   'indicator.chartModeLabel': 'Chart for selected view',
   'indicator.chartDynamicsLabel': 'Indicator history',
   'indicator.about': 'About this indicator',

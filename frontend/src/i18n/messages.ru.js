@@ -662,6 +662,7 @@ export default {
 
   'indicator.methodology': 'Методология',
   'indicator.source': 'Источник: {source}',
+  'indicator.cite': 'Как цитировать',
   'indicator.chartModeLabel': 'График выбранного режима',
   'indicator.chartDynamicsLabel': 'Динамика показателя',
   'indicator.about': 'О показателе',
