@@ -1260,8 +1260,10 @@ async def render_world_rating_html(
         # «изменение за год, %» само описывает колонку: «Значение, изменение
         # за год, %» распадается на три запятых и не читается.
         value_head = escape(shared_unit[0].upper() + shared_unit[1:])
+    # 19.11.2026: `seo-rank` — строка нажимается целиком (ссылка страны растянута на строку стилем
+    # в seo_renderer): 20 человек за 30 дней нажимали в число и поля строки годовой страницы рейтинга.
     table_html = (
-        '<div class="seo-scroll"><table><thead><tr>'
+        '<div class="seo-scroll"><table class="seo-rank"><thead><tr>'
         f"<th>{escape(th_rank)}</th><th>{escape(th_country)}</th>"
         f"<th>{value_head}</th>{unit_head}<th>{escape(th_period)}</th>"
         f"</tr></thead><tbody>{rows_html}</tbody></table></div>"

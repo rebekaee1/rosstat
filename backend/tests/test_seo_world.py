@@ -854,7 +854,7 @@ def test_world_rating_surface_nonempty_and_gated(world_seo_client):
         assert snapshot.json()["items"], f"пустой снапшот рейтинга: {slug}"
         ssr = world_seo_client.get(f"/seo/world/rating/{slug}")
         assert ssr.status_code == 200, slug
-        assert "<table>" in ssr.text
+        assert "<table class=\"seo-rank\">" in ssr.text
 
     for slug in ("gdp-volume-annual", "gdp-volume-quarterly"):
         assert world_seo_client.get(f"/seo/world/rating/{slug}").status_code == 404
@@ -1105,3 +1105,29 @@ def test_weo_circle12_units_on_english_pages_are_human():
         assert seo_world._unit_sfx_of(growth) == " %"
     finally:
         reset_locale(token)
+
+
+@pytest.mark.parametrize("locale", ["ru", "en"])
+def test_seo_world_rating_year_row_clickable_whole(world_seo_client, locale):
+    """19.11.2026: строка рейтинга на годовой странице нажимается целиком.
+
+    20 человек за 30 дней нажимали в число и поля строки — ссылкой было только название страны.
+    В строке одна ссылка (растянута стилем), строка — опора через transform (Safari не берёт по position).
+    """
+    from bs4 import BeautifulSoup
+
+    from app.services.seo_renderer import SEO_CRITICAL_CSS
+
+    r = world_seo_client.get(f"/seo/world/rating/unemployment-rate/2024?preview_locale={locale}")
+    assert r.status_code == 200
+    soup = BeautifulSoup(r.text, "html.parser")
+    table = soup.select_one("table.seo-rank")
+    assert table is not None
+    rows = table.select("tbody tr")
+    assert rows
+    for row in rows:
+        links = row.find_all("a")
+        assert len(links) == 1
+        assert links[0].parent.name == "td"
+    assert ".seo-page table.seo-rank tbody tr{position:relative;transform:translate(0);cursor:pointer}" in SEO_CRITICAL_CSS
+    assert ".seo-page table.seo-rank tbody td>a::after{content:\"\";position:absolute;inset:0;z-index:1}" in SEO_CRITICAL_CSS

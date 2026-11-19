@@ -892,6 +892,9 @@ body.seo-fast .seo-more summary::after{content:"";width:8px;height:8px;margin-le
 body.seo-fast .seo-more[open] summary::after{transform:rotate(-135deg)}
 body.seo-fast .seo-more summary:focus-visible{outline:2px solid #2c4a8a;outline-offset:3px}
 body.seo-fast .seo-more > .seo-table-scroll{margin-top:.6rem}
+/* 19.11.2026: строка рейтинга стран нажимается целиком — ссылка страны растянута на строку. Опора — transform: Safari не делает строку таблицы опорой по одному position. */
+.seo-page table.seo-rank tbody tr{position:relative;transform:translate(0);cursor:pointer}
+.seo-page table.seo-rank tbody td>a::after{content:"";position:absolute;inset:0;z-index:1}
 body.seo-fast .seo-note-more p{margin:.6rem 0 0;font-size:.9rem}
 body.seo-fast .seo-chart figcaption{justify-content:flex-start;text-align:left}
 body.seo-fast .seo-cta{margin-top:2rem}
