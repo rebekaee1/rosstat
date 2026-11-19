@@ -20,12 +20,14 @@ const groupDigits = (locale) => {
 
 /**
  * Плитка числа: значок и крупное золотое число сверху, пояснение фразой снизу (читается как предложение:
- * «268 тыс. показателей», «55 стран, и список растёт»). Если задан `to`, вся плитка нажимается.
+ * «268 тыс. показателей», «55 стран, и список растёт»). Если задан `to`, вся плитка нажимается
+ * и только она приподнимается под курсором (класс `fe-scope-stat--link`): плитка без ссылки
+ * не изображает кнопку.
  */
 function Stat({ to, label, icon: Icon, children }) {
   // Допустимая для <dl> разметка: группа dt + dd. Ссылка живёт внутри dd и растягивается на всю плитку.
   return (
-    <div className="fe-scope-stat">
+    <div className={`fe-scope-stat${to ? ' fe-scope-stat--link' : ''}`}>
       <dd className="fe-stat-num">
         {Icon ? <span className="fe-scope-stat__icon" aria-hidden="true"><Icon size={16} /></span> : null}
         {to ? <Link to={to} className="fe-scope-stat__link fe-press">{children}</Link> : children}
@@ -40,6 +42,8 @@ function Stat({ to, label, icon: Icon, children }) {
  * «обновляется по мере публикации» и раскрывающийся абзац «Только официальные источники» (оба текста есть в подвале и на «О проекте»):
  * главная была «чуть нагруженной». Числа набегают один раз, когда блок попал в экран (без IntersectionObserver и при «уменьшить движение» сразу итоговые);
  * итоговый текст всегда лежит в разметке. Пока каталог не ответил, на месте числа «…», а не устаревший запасной набор.
+ * Пульс 242 (19.11.2026): если каталог так и не дал числа (сбой ответа, запасной набор), плитки нет вовсе:
+ * прочерк «—» на месте числа читался как пустое значение, которое ждут по нажатию. Полоса сужается до известных чисел.
  */
 export default function HomeDataScope() {
   const t = useT();
@@ -57,13 +61,19 @@ export default function HomeDataScope() {
   const pending = countriesQ.isLoading;
   const isEn = locale === 'en';
 
-  const dash = <span aria-label={t('homehero.stat.unknown')}>—</span>;
   const wait = <span className="fe-stat-wait" aria-label={t('common.loading')}>…</span>;
 
   const countriesLabel = t('w6b.scope.countries');
   const yearsWord = isEn
     ? t('w6b.scope.yearsWord')
     : pluralRu(years || 0, [t('w6b.scope.yearsWord_one'), t('w6b.scope.yearsWord_few'), t('w6b.scope.yearsWord_many')]);
+
+  const showIndicators = pending || Boolean(indicators);
+  const showCountries = pending || countriesCount != null;
+  const showYears = Boolean(years);
+  const showPrices = Boolean(priceTotal) && !isEn;
+  const tiles = [showIndicators, showCountries, showYears, showPrices].filter(Boolean).length;
+  if (tiles === 0) return null;
 
   return (
     <aside
@@ -78,33 +88,38 @@ export default function HomeDataScope() {
           {t('home.scope.title')}
         </h2>
 
-        <dl className={`fe-scope-stats${priceTotal && !isEn ? ' fe-scope-stats--four' : ''}`}>
-          <Stat
-            to={isEn ? worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT) : russiaCategoriesPath()}
-            label={t('w6b.scope.indicators')}
-            icon={BarChart3}
-          >
-            {pending ? wait : indicators ? (
-              <>
-                <CountUp value={indicators.value} format={numberFormat} group="scope" />
-                {indicators.unit ? (
-                  <span className="fe-stat-unit">{t(`homehero.stat.${indicators.unit}`)}</span>
-                ) : null}
-              </>
-            ) : dash}
-          </Stat>
-          <Stat to="/#countries" label={countriesLabel} icon={Globe2}>
-            {pending ? wait : countriesCount != null ? <CountUp value={countriesCount} format={numberFormat} group="scope" /> : dash}
-          </Stat>
-          <Stat label={t('w6b.scope.history', { years: yearsWord, since: since || '' })} icon={History}>
-            {years ? (
-              <>
-                <span className="fe-stat-unit fe-stat-unit--lead">{t('w6b.scope.upTo')}</span>
-                <CountUp value={years} format={numberFormat} group="scope" />
-              </>
-            ) : dash}
-          </Stat>
-          {priceTotal && !isEn ? (
+        <dl
+          className={`fe-scope-stats${tiles === 4 ? ' fe-scope-stats--four' : ''}`}
+          style={tiles < 3 ? { '--fe-scope-cols': tiles } : undefined}
+        >
+          {showIndicators ? (
+            <Stat
+              to={isEn ? worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT) : russiaCategoriesPath()}
+              label={t('w6b.scope.indicators')}
+              icon={BarChart3}
+            >
+              {pending ? wait : (
+                <>
+                  <CountUp value={indicators.value} format={numberFormat} group="scope" />
+                  {indicators.unit ? (
+                    <span className="fe-stat-unit">{t(`homehero.stat.${indicators.unit}`)}</span>
+                  ) : null}
+                </>
+              )}
+            </Stat>
+          ) : null}
+          {showCountries ? (
+            <Stat to="/#countries" label={countriesLabel} icon={Globe2}>
+              {pending ? wait : <CountUp value={countriesCount} format={numberFormat} group="scope" />}
+            </Stat>
+          ) : null}
+          {showYears ? (
+            <Stat label={t('w6b.scope.history', { years: yearsWord, since: since || '' })} icon={History}>
+              <span className="fe-stat-unit fe-stat-unit--lead">{t('w6b.scope.upTo')}</span>
+              <CountUp value={years} format={numberFormat} group="scope" />
+            </Stat>
+          ) : null}
+          {showPrices ? (
             <Stat to={regionHubPath()} label={t('r9a.scope.prices')} icon={ShoppingBasket}>
               <CountUp value={priceTotal} format={numberFormat} group="scope" />
             </Stat>

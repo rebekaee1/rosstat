@@ -42,7 +42,7 @@
 }
 .fe-scope-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--fe-scope-cols, 3), minmax(0, 1fr));
   gap: 0;
   margin: 14px -10px 0;
 }
