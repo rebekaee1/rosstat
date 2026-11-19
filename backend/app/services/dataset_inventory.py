@@ -233,6 +233,8 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
         # 14.11.2026: дубли, закрытые расчисткой (source = triage_merge), - «объединено», а не «опровергнуто».
         if source == "triage_merge" and verdict is not None:
             key = "merged"
+        elif source == "triage_obsolete" and verdict is not None:  # 19.11.2026: проверить нечем — «устарело»
+            key = "obsolete"
         else:
             key = "open" if verdict is None else ("true" if verdict else "false")
         h_by_verdict[key] = h_by_verdict.get(key, 0) + n
