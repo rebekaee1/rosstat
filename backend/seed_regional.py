@@ -35,6 +35,12 @@ CHUNK = 10_000
 def load_meta():
     regions = json.loads((DATA_DIR / "regions.json").read_text())
     indicators = json.loads((DATA_DIR / "indicators.json").read_text())
+    # Помесячные наборы ЕМИСС (сельхозцены, жильё, промышленность, грузоперевозки; 19.11.2026): метаданные
+    # живут в реестре кода, точки пишет emiss_regional_sets_parser.
+    from app.data.emiss_regional_sets import artifact_rows as emiss_sets_rows
+
+    known = {row["code"] for row in indicators}
+    indicators += [row for row in emiss_sets_rows() if row["code"] not in known]
     return regions, indicators
 
 
