@@ -4,6 +4,12 @@
 минимуму (58537) пишутся в квартальный слой ``region_quarterly_data`` (YYYYQ); прожиточный минимум по группам
 (30957) — в годовой ``region_data``: с 2021 года он устанавливается на год.
 
+Зона F (19.11.2026): пенсии по видам Соцфонда (62164) — квартальный слой, значение «на 1 января / апреля / июля /
+октября» = I–IV квартал (известно с первого дня квартала, поэтому текущий квартал не отрезается); территории —
+межведомственный ОКАТО 30628 (oid и названия — как у пенсии 61699 в ``emiss_regional_social``). Итоги сезона в
+сельском хозяйстве — годовой слой с одной датой из сезона: урожай на 1 ноября (34165), яровой сев на 1 июня
+(34158); год без этой даты не пишется. Заглушки источника (1 000 000 тыс. га) отсекаются ``max_value``.
+
 Транспорт — тот же ``_post_grid``, что у цен 31448 (прямой ход → HTTP-прокси → SOCKS; адресу прода fedstat
 отвечает 403). Запрос: строки — территория, измерения ряда и год; столбец — период; территории перечислены явно
 («все территории» источник не отдаёт). Ключ ячейки ответа — ``dim<oid периода>_d…_i…``, год — в ``dim3`` строки
@@ -33,9 +39,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import publish_committed_regional_changes
-from app.data.emiss_quarterly import (
-    DATASETS, QUARTER_OIDS, RUSSIA_LEGACY, RUSSIA_WITHOUT_NEW, Dataset, QSeries,
-)
+from app.data.emiss_quarterly import DATASETS, RUSSIA_LEGACY, RUSSIA_WITHOUT_NEW, Dataset, QSeries
 from app.database import async_session
 from app.models import Region, RegionDataPoint, RegionIndicator, RegionQuarterlyPoint
 from app.services.emiss_regional_parser import (
@@ -66,6 +70,17 @@ def load_territories() -> tuple[list[str], dict[str, str]]:
     return oids, dimnames
 
 
+def dataset_territories(
+    ds: Dataset, territory_oids: list[str], dimnames: dict[str, str],
+) -> tuple[list[str], dict[str, str]]:
+    """Территории запроса и «название → slug» набора: общий ОКАТО (57831) или межведомственный (30628, Соцфонд)."""
+    if ds.territory_dim == "57831":
+        return territory_oids, dimnames
+    from app.services.emiss_regional_social import load_territories as social_territories, territory_slugs
+
+    return social_territories()[ds.territories_key or str(ds.id)], territory_slugs(dimnames)
+
+
 def current_quarter(today: date) -> int:
     return today.year * 10 + (today.month - 1) // 3 + 1
 
@@ -86,14 +101,15 @@ def parse_dataset_response(
     by_key = {s.key: s for s in ds.series}
     alias = {name: slug for name, (_oid, slug) in ds.aliases.items()}
     alias.update({oid: slug for _name, (oid, slug) in ds.aliases.items()})
-    series_dims = [d for d in ds.line_dims if d not in ("57831", "3")]
+    series_dims = [d for d in ds.line_dims if d not in (ds.territory_dim, "3")]
+    period_map = ds.period_map
     last_q = current_quarter(today)
     # (код, slug, период) → значение; Россия и подменные названия собираются отдельно и решаются ниже.
     main: dict[tuple[str, str, int], float] = {}
     russia: dict[tuple[str, int], dict[str, float]] = {}
     aliased: dict[tuple[str, str, int], float] = {}
     for row in rows:
-        territory = str(row.get("dim57831") or "").strip()
+        territory = str(row.get(f"dim{ds.territory_dim}") or "").strip()
         year_text = str(row.get("dim3") or "").strip()
         if not year_text.isdigit():
             continue
@@ -103,18 +119,22 @@ def parse_dataset_response(
             continue
         for key, raw in row.items():
             oid = _period_oid(key)
-            if oid is None or oid not in ds.period_oids:
+            if oid is None or oid not in period_map:
                 continue
             value = parse_ru_float(raw)
             if value is None or not isfinite(value) or value <= 0:
                 continue
+            if ds.max_value is not None and value > ds.max_value:
+                continue  # заглушка источника (у 34158 бывает 1 000 000), не значение
             if ds.layer == "annual":
                 period = year
                 if year > today.year:  # плановые годы (прожиточный минимум на 2027 год)
                     continue
             else:
-                period = year * 10 + QUARTER_OIDS[oid]
-                if period >= last_q:  # квартал ещё не закончился: значение может быть только плановым
+                period = year * 10 + period_map[oid]
+                # Квартал ещё не закончился: значение может быть только плановым. Значение «на 1-е число»
+                # квартала известно с его первого дня.
+                if period > last_q or (period == last_q and not ds.at_quarter_start):
                     continue
             if series.min_year and year < series.min_year:
                 continue
@@ -145,9 +165,11 @@ async def fetch_dataset(
     today: date, post_grid: Callable | None = None,
 ) -> list[Point]:
     post_grid = post_grid or _post_grid
+    territory_oids, dimnames = dataset_territories(ds, territory_oids, dimnames)
+    dim = ds.territory_dim
     filters = [
         f"0_{ds.id}", f"30611_{ds.unit_oid}", *(f"33560_{oid}" for oid in ds.period_oids), *ds.fixed_filters,
-        *(f"57831_{oid}" for oid in territory_oids), *(f"57831_{oid}" for oid, _slug in ds.aliases.values()),
+        *(f"{dim}_{oid}" for oid in territory_oids), *(f"{dim}_{oid}" for oid, _slug in ds.aliases.values()),
         *(f"3_{year}" for year in years),
     ]
     payload = await post_grid(ds.id, [
@@ -285,7 +307,7 @@ async def emiss_quarterly_job() -> dict[str, int]:
                 from html import escape
 
                 await send_telegram(
-                    "🔴 <b>Квартальные ряды регионов (жильё, прожиточный минимум) не обновились</b>\n"
+                    "🔴 <b>Квартальные ряды регионов (жильё, прожиточный минимум, пенсии по видам, итоги сева и уборки) не обновились</b>\n"
                     f"Причина: {escape(exception_reason(exc, 300))}",
                     kind="etl_alert",
                 )
