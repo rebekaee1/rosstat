@@ -50,16 +50,25 @@ const btnBase = 'min-w-0 whitespace-normal! text-center';
 // Свёрнутая плашка: подпись кнопки в одну строку (перенос задал бы лишнюю высоту).
 const btnCompact = 'min-w-0 whitespace-nowrap text-center';
 
-// Сессионная память «плашку уже видели и прокрутили мимо»: без неё она возвращалась после каждого перехода (круг 8, S1).
+// Память «плашку уже видели и прокрутили мимо»: без неё она возвращалась после каждого перехода (круг 8, S1).
+// Правка 33: помним и между визитами (localStorage, 7 суток): плашка не появляется заново на каждом заходе и после смены языка в том же
+// браузере. Выбор «Хорошо» / «Только необходимые» хранится отдельно (lib/consent.js) и навсегда, пока не сменится редакция политики.
 const SNOOZE_KEY = 'fe:consent:snooze';
+const SNOOZE_UNTIL_KEY = 'fe:consent:snooze-until';
+const SNOOZE_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 function readSnooze() {
-  try { return window.sessionStorage.getItem(SNOOZE_KEY) === '1'; } catch { return false; }
+  try { if (window.sessionStorage.getItem(SNOOZE_KEY) === '1') return true; } catch { /* дальше проверим долгую память */ }
+  try { return Number(window.localStorage.getItem(SNOOZE_UNTIL_KEY) || 0) > Date.now(); } catch { return false; }
 }
 function writeSnooze(on) {
   try {
     if (on) window.sessionStorage.setItem(SNOOZE_KEY, '1');
     else window.sessionStorage.removeItem(SNOOZE_KEY);
   } catch { /* Без хранилища плашка просто прячется до перезагрузки. */ }
+  try {
+    if (on) window.localStorage.setItem(SNOOZE_UNTIL_KEY, String(Date.now() + SNOOZE_DAYS_MS));
+    else window.localStorage.removeItem(SNOOZE_UNTIL_KEY);
+  } catch { /* то же */ }
 }
 
 function notifyOverlayVisibility(visible, expanded) {

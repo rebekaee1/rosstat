@@ -1129,6 +1129,11 @@ _BOOT_SCRIPT = (
     'if(location.pathname.indexOf("/embed/")===0||'
     'navigator.webdriver||'
     '/bot|crawl|spider|slurp|facebookexternalhit|lighthouse|headless/i.test(navigator.userAgent||""))return;'
+    # Правка 16: возврат назад/вперёд и смена языка — без заставки (зеркало frontend/index.html).
+    'var nav=performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];'
+    'if(nav&&nav.type==="back_forward")return;'
+    'var sw=document.cookie.match(/(?:^|;\\s*)fe_lang_switch=(\\d+)/);'
+    'if(sw&&Date.now()-Number(sw[1])<=20000)return;'
     'h.classList.add("fe-boot");'
     f'setTimeout(function(){{h.classList.remove("fe-boot")}},{BOOT_FALLBACK_MS});'
     '}catch(e){}})();'
@@ -2006,8 +2011,11 @@ def compose_document(
     else:
         spa_hide = _SPA_SSR_HIDE_SCRIPT
         boot_bar = _ssr_boot_bar()
-        boot_head = f"{_BOOT_STYLE}\n{_BOOT_SCRIPT}"
-        boot_splash = _ssr_boot_splash()
+        # Правка 16: страница пришла с содержимым (есть h1) — заставку не ставим вовсе: серверная разметка видна сразу,
+        # до загрузки основного скрипта. Заставка остаётся только для тела без заголовка (пустая оболочка).
+        if "<h1" not in body:
+            boot_head = f"{_BOOT_STYLE}\n{_BOOT_SCRIPT}"
+            boot_splash = _ssr_boot_splash()
         if "seo-platform-nav" not in body:
             # SPA-SSR без chrome: бот видит только prerender в #root. Единый блок
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —

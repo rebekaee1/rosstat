@@ -23,12 +23,39 @@ it('the skeleton is visible at once (no delayed fade-in) and is shaped like card
   expect(skeleton.querySelectorAll('.skeleton').length).toBeGreaterThanOrEqual(8);
 });
 
-it('never prints the server-rendered text for a human: only the skeleton, even when a snapshot exists', () => {
-  window.__feSsrSnapshot = '<div class="seo-page"><h1>Key rate</h1></div>';
-  render(<LocaleProvider locale="ru"><RouteFallback /></LocaleProvider>);
-  expect(document.querySelector('.fe-ssr-hold')).toBeNull();
-  expect(document.body.textContent).not.toContain('Key rate');
-  delete window.__feSsrSnapshot;
+// Правка 16: серверная разметка снимается при импорте модуля (до первого рендера React), поэтому проверяем через свежий импорт.
+async function importWithServerMarkup(html) {
+  vi.resetModules();
+  document.body.innerHTML = html ? `<div id="root">${html}</div>` : '<div id="root"></div>';
+  return (await import('./RouteFallback')).default;
+}
+
+it('keeps the server-rendered page on screen (no skeleton, no "Загружаем") when the server sent content', async () => {
+  const Fallback = await importWithServerMarkup(`<main class="seo-page"><h1>Key rate</h1>${'<p>text</p>'.repeat(60)}</main>`);
+  const { LocaleProvider: Provider } = await import('../i18n');
+  render(<Provider locale="ru"><Fallback /></Provider>);
+  expect(screen.getByTestId('ssr-hold').textContent).toContain('Key rate');
+  expect(screen.queryByTestId('loading-note')).toBeNull();
+  expect(document.querySelector('.fe-route-skel')).toBeNull();
+  document.body.innerHTML = '';
+});
+
+it('is quiet on back/forward: no skeleton and no caption, only the height is kept', async () => {
+  const Fallback = await importWithServerMarkup('');
+  const { LocaleProvider: Provider } = await import('../i18n');
+  render(<Provider locale="ru"><Fallback quiet /></Provider>);
+  expect(screen.getByTestId('route-quiet')).toBeTruthy();
+  expect(screen.queryByTestId('loading-note')).toBeNull();
+  expect(document.querySelector('.fe-route-skel')).toBeNull();
+});
+
+it('is quiet right after a language switch (fresh fe_lang_switch cookie)', async () => {
+  document.cookie = `fe_lang_switch=${Date.now()}; Path=/`;
+  const Fallback = await importWithServerMarkup('');
+  const { LocaleProvider: Provider } = await import('../i18n');
+  render(<Provider locale="ru"><Fallback /></Provider>);
+  expect(screen.getByTestId('route-quiet')).toBeTruthy();
+  document.cookie = 'fe_lang_switch=; Max-Age=0; Path=/';
 });
 
 it('offers a refresh button after the wait gets long', () => {

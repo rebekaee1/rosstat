@@ -96,7 +96,19 @@
     </style>
     <script>
       (function(){try{var h=document.documentElement;
+      /* Правка 51: язык страницы до загрузки скрипта (Safari решает про перевод по нему); LocaleProvider уточнит после загрузки. */
+      var hn=location.hostname,qs=location.search,en0=/^((www|en)\.)?forecasteconomy\.com$/i.test(hn);
+      if(/^ru\./i.test(hn)||/[?&]preview_locale=ru/.test(qs))en0=false;
+      if(/[?&]preview_locale=en/.test(qs))en0=true;
+      var pm=document.cookie.match(/(?:^|;\s*)fe_locale_pref=(en|ru)/i);
+      if(pm&&!/^(ru|en)\./i.test(hn)&&!/[?&]preview_locale=/.test(qs))en0=pm[1].toLowerCase()==="en";
+      h.lang=en0?"en":"ru";
       if(location.pathname.indexOf("/embed/")===0||navigator.webdriver||/bot|crawl|spider|slurp|facebookexternalhit|lighthouse|headless/i.test(navigator.userAgent||""))return;
+      /* Правка 16: возврат назад/вперёд и смена языка — заставку не показываем (место прокрутки и вид страницы остаются). */
+      var nav=performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];
+      if(nav&&nav.type==="back_forward")return;
+      var sw=document.cookie.match(/(?:^|;\s*)fe_lang_switch=(\d+)/);
+      if(sw&&Date.now()-Number(sw[1])<=20000)return;
       h.classList.add("fe-boot");
       if(/^((www|en)\.)?forecasteconomy\.com$/i.test(location.hostname)&&location.hostname.indexOf("ru.")!==0)h.classList.add("fe-boot-en");
       setTimeout(function(){h.classList.remove("fe-boot")},12000);

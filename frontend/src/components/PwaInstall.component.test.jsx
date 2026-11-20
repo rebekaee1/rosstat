@@ -78,6 +78,7 @@ beforeEach(() => {
   pwa.resetPwaForTests();
   track.mockClear();
   document.body.innerHTML = '';
+  window.sessionStorage.removeItem('fe:pwa-card-shown');
   window.matchMedia = vi.fn((q) => ({ matches: false, media: q, addEventListener() {}, removeEventListener() {} }));
   setUa(UA.android);
 });
@@ -347,5 +348,38 @@ describe('RU/EN паритет', () => {
     expect(keys('ru').length).toBeGreaterThanOrEqual(12);
     expect(keys('en')).toEqual(keys('ru'));
     for (const k of keys('ru')) expect(MESSAGES.en[k].trim()).not.toBe('');
+  });
+});
+
+describe('правка 33: не поверх чисел и один раз за визит', () => {
+  function addFooter(top) {
+    const footer = document.createElement('footer');
+    footer.className = 'fe-footer';
+    footer.getBoundingClientRect = () => ({ top, bottom: top + 800 });
+    document.body.appendChild(footer);
+    return footer;
+  }
+
+  it('пока подвал ниже окна (человек читает данные), карточка не появляется; у подвала появляется', async () => {
+    secondVisit(); await enable(); window.dispatchEvent(prompt());
+    const footer = addFooter(window.innerHeight + 2000);
+    renderCard();
+    await advance(DATA_PAGE_DWELL_MS + 5000);
+    expect(screen.queryByTestId('pwa-install-card')).toBeNull();
+    footer.getBoundingClientRect = () => ({ top: window.innerHeight - 300, bottom: window.innerHeight + 500 });
+    await advance(3000);
+    expect(screen.getByTestId('pwa-install-card')).toBeTruthy();
+  });
+
+  it('после показа в этом визите вторая карточка не открывается (даже после нового монтирования)', async () => {
+    secondVisit(); await enable(); window.dispatchEvent(prompt());
+    const view = renderCard();
+    await advance(DATA_PAGE_DWELL_MS + 5000);
+    expect(screen.getByTestId('pwa-install-card')).toBeTruthy();
+    expect(window.sessionStorage.getItem('fe:pwa-card-shown')).toBe('1');
+    view.unmount();
+    renderCard();
+    await advance(DATA_PAGE_DWELL_MS + 5000);
+    expect(screen.queryByTestId('pwa-install-card')).toBeNull();
   });
 });

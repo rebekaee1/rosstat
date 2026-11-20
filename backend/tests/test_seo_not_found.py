@@ -201,8 +201,8 @@ def test_not_found_is_the_app_document_when_the_shell_is_available(monkeypatch):
     root = html.split('<div id="root">', 1)[1]
     assert "<h1>Такой страницы нет</h1>" in root
     assert 'class="seo-topbar"' not in html and 'class="seo-foot-in"' not in html
-    # Бумажная заставка на первом кадре: человек не видит белого экрана.
-    assert 'class="fe-boot-splash"' in html
+    # Правка 16: страница с содержимым (h1) приходит без заставки: серверный текст виден сразу, белого экрана нет (фон бумаги на html).
+    assert 'class="fe-boot-splash"' not in html
 
 
 def test_not_found_route_keeps_status_and_noindex_in_the_app_shell(client, monkeypatch):

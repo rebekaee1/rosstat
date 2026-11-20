@@ -120,11 +120,21 @@ export function isAccountPath(pathname = '') {
 }
 
 /**
+ * Раздел «Туризм» (правка 43): сам раздел и страницы его показателей (код ряда начинается с «tour-»: регион, рейтинг, мир).
+ * Раньше такие страницы (`/russia/region/<регион>/tour-…`) подсвечивали «Цены по регионам», потому что адрес начинается с `/russia/region`.
+ */
+export function isTourismPath(pathname = '') {
+  return /(^|\/)(tourism|tour-[^/]*)(\/|$)/.test(String(pathname));
+}
+
+/**
  * Самый длинный совпавший префикс среди пунктов; граница сегмента обязательна.
  * Круг 11, G (U33): пункт-якорь («Страны» → `/#countries`) подсвечивается, когда в адресе тот же якорь (`hash`) или человек долистал до
  * раздела с каталогом (`anchorInView`): раньше он не подсвечивался никогда и казался просто обновлением главной.
  */
 export function resolveActiveNavId(pathname, items = PRIMARY_NAV, hash = '', anchorInView = false) {
+  // Туризм: подсвечиваем текущий раздел; где отдельного пункта нет (верхняя пилюля, нижняя панель), не подсвечиваем чужой.
+  if (isTourismPath(pathname)) return items.some((item) => item.id === 'tourism') ? 'tourism' : null;
   let bestId = null;
   let bestLen = -1;
   for (const item of items) {
