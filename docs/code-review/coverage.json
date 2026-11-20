@@ -21,7 +21,7 @@
   "counts": {
     "files": 2805,
     "code_files": 2265,
-    "current_reviews": 2802,
+    "current_reviews": 2805,
     "statuses": {
       "artifact_schema_reviewed": 87,
       "asset_metadata_reviewed": 174,
@@ -31,8 +31,8 @@
       "reviewed": 2530
     },
     "definitions": 18997,
-    "annotated_definitions": 18993,
-    "files_needing_attention": 3
+    "annotated_definitions": 18997,
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -11158,26 +11158,11 @@
       "lines": 330,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 27,
-      "annotated_definitions": 25,
-      "missing_definitions": [
-        {
-          "name": "test_year_goes_by_quarters_and_glues_into_the_same_points.post",
-          "line": 301,
-          "end_line": 307,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_failed_quarter_fails_the_whole_year.post",
-          "line": 322,
-          "end_line": 326,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 27,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_emiss_regional_live_c27.py",
@@ -11212,20 +11197,11 @@
       "lines": 259,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 31,
-      "annotated_definitions": 30,
-      "missing_definitions": [
-        {
-          "name": "regions_client.seed",
-          "line": 214,
-          "end_line": 237,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 31,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_emiss_regional_social.py",
@@ -11949,20 +11925,11 @@
       "lines": 401,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 42,
-      "annotated_definitions": 41,
-      "missing_definitions": [
-        {
-          "name": "test_host_closing_connection_via_relay_keeps_relay_and_is_not_403.fake_request",
-          "line": 378,
-          "end_line": 385,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 42,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_http_error_monitor.py",
@@ -36536,13 +36503,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "b24d16d8ce966017beb0b77d49e6fa51ba712e3836dbc0dc2516282077a1333d",
+  "ledger_sha256": "514d7b86001e2f12316cea5275a344a970e6bb9229f4bb457b54e0978245bd4e",
   "javascript_inventory_sha256": "425dea827fc71b6d8559e33d9e9ceac5378562b40c9c07928ca069a54a99de76",
-  "baseline_commit": "a6c595114a8a549fbad73bc2548fab065f12dfb3",
+  "baseline_commit": "c01d5d028841c8a7ed88f7fe51ae0457aabef0b7",
   "branch": "int/2026-11-20-pulse",
-  "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
