@@ -71,6 +71,42 @@ const IND = {
   siblings: [],
 };
 
+describe('z5: статусы рейтинга и объект source', () => {
+  it('статусы из данных подписаны словами, пропущенные регионы остаются в счёте, минимум без них', async () => {
+    const vals = values();
+    vals.push({ slug: 'moskva', name: 'Москва', value: 0, raw: 0, status: 'not_introduced' });
+    vals.push({ slug: 'krym', name: 'Крым', value: 0, raw: 0, status: 'zero_year' });
+    mountRating('tour-nalog-za-god', {
+      indicator: { code: 'tour-nalog-za-god', name: 'Туристический налог за год', unit: 'миллионов рублей', ranked: true, source: { name: 'ФНС России', url: 'https://nalog.gov.ru', about: 'Форма 5-ТН' } },
+      year: 2025, values: vals, missing: [{ slug: 'tyva', name: 'Тыва', status: 'no_data' }],
+    });
+    await screen.findByTestId('rating-mine');
+    const rows = screen.getAllByTestId('kt5-none-row').map((r) => r.textContent);
+    expect(rows.join('|')).toMatch(/налог не введён/);
+    expect(rows.join('|')).toMatch(/за год поступлений не было/);
+    expect(rows.join('|')).toMatch(/нет данных/);
+    expect(rows).toHaveLength(3);
+    expect(document.querySelector('.r7c-rate-tiles').textContent).not.toContain('Москва');
+    expect(document.body.textContent).toMatch(/\(15\)|15 регион/);
+    expect(screen.getByText(/ФНС России. Форма 5-ТН/)).toBeTruthy();
+  });
+
+  it('source-объект: методология и region_method; ranked=false прячет место и рейтинг', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/regions\/moskva\/i\/gosti$/, { ...IND, indicator: { ...IND.indicator, source: { name: 'Ростуризм', url: 'https://rst.gov.ru', about: 'Оценка турпотока.', region_method: 'Метод региона.' }, ranked: false, data_updated_at: '2026-11-01' } }],
+      [/^\/regions\/?$/, { districts: [], russia: null, totals: {} }],
+    ]);
+    renderPage(<RegionIndicatorPage />, { path: '/russia/region/:slug/:code', route: '/russia/region/moskva/gosti' });
+    const box = await screen.findByTestId('kt5-source');
+    expect(box.textContent).toMatch(/Источник: Ростуризм/);
+    expect(box.textContent).toMatch(/Оценка турпотока\. Метод региона\./);
+    expect(box.querySelector('a').getAttribute('href')).toBe('https://rst.gov.ru');
+    expect(screen.queryByText(/место 1 из 85/)).toBeNull();
+    expect(document.querySelector('[data-block="region-rating"]')).toBeNull();
+  });
+});
+
 describe('z5: страница показателя региона', () => {
   function mount(slug, payload) {
     mockApiGet([

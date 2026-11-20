@@ -69,10 +69,16 @@ export default function RegionRatingPage() {
     const live = [];
     for (const row of data.values) {
       const n = Number(row.raw ?? row.value);
-      const isNone = row.not_introduced === true || row.no_data === true
+      // Статус из данных (not_introduced | zero_year | no_receipts_yet) главнее; без него работаем по значению.
+      const isNone = Boolean(row.status) || row.not_introduced === true || row.no_data === true
         || row.raw === null || row.value === null
         || (zeroIsNone && !(n > 0));
       (isNone ? none : live).push(row);
+    }
+    // Пропущенные регионы (missing[].status) остаются в счёте: не «84 regions» при 85.
+    if (!isPrice || zeroIsNone) {
+      const have = new Set(data.values.map((v) => v.slug));
+      for (const m of data.missing || []) if (m?.slug && !have.has(m.slug)) none.push({ ...m, status: m.status || 'no_data' });
     }
     const rows = live.sort((a, b) => {
       const av = a.raw ?? a.value;
@@ -81,9 +87,11 @@ export default function RegionRatingPage() {
     });
     none.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
     return [rows.map((row, i) => ({ ...row, rank: i + 1 })), none];
-  }, [data, sortDirection, zeroIsNone]);
+  }, [data, sortDirection, zeroIsNone, isPrice]);
   // Сколько регионов в рейтинге: берём из данных, одинаково в подписях.
   const total = ranked.length + noneRows.length;
+  const STATUS_KEYS = { not_introduced: 'kt5_st_not_introduced', zero_year: 'kt5_st_zero_year', no_receipts_yet: 'kt5_st_no_receipts_yet', no_data: 'kt5_st_no_data' };
+  const noneLabel = (row) => t(STATUS_KEYS[row.status] || (row.no_data ? 'kt5_st_no_data' : 'kt5_taxNone'));
 
   // «Мой регион» общий с хабом: выбор помнится в браузере.
   const [mine, setMine] = useState(() => { try { return localStorage.getItem('fe-my-region') || localStorage.getItem('r4a-my-region') || ''; } catch { return ''; } });
@@ -404,7 +412,7 @@ export default function RegionRatingPage() {
                         </Link>
                       </td>
                       <td className="whitespace-nowrap px-4 py-2 text-right text-xs text-text-secondary">
-                        {t('kt5_taxNone')}
+                        {noneLabel(row)}
                       </td>
                     </tr>
                   ))}
@@ -413,7 +421,7 @@ export default function RegionRatingPage() {
             </div>
           </section>
 
-          {isPrice && Array.isArray(data.missing) && data.missing.length > 0 && (
+          {isPrice && !zeroIsNone && Array.isArray(data.missing) && data.missing.length > 0 && (
             <p className="r9c-missing" data-testid="r9c-missing">
               {t('r9c.price.missing', { period, names: data.missing.map((m) => m.name).join(', ') })}
             </p>
@@ -422,7 +430,15 @@ export default function RegionRatingPage() {
           <section className="rounded-3xl p-5 fe-glass-lite">
             <h2 className="mb-2 font-display text-base font-semibold text-text-primary">{t('regions.rating.sourceHeading')}</h2>
             <p className="text-sm leading-relaxed text-text-secondary">
-              {isPrice ? t('r9c.price.source', { period }) : t('w4.rating.source', { year: data.year })}
+              {isPrice ? t('r9c.price.source', { period }) : (data.indicator.source?.name
+                ? [data.indicator.source.name, data.indicator.source.about].filter(Boolean).join('. ')
+                : t('w4.rating.source', { year: data.year }))}
+              {!isPrice && data.indicator.source?.url && (
+                <>
+                  {' '}
+                  <a href={data.indicator.source.url} target="_blank" rel="noopener noreferrer" className="text-champagne-ink hover:underline">{t('kt5_srcOpen')}</a>
+                </>
+              )}
             </p>
           </section>
         </>

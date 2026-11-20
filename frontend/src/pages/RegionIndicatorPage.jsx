@@ -150,7 +150,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   );
   // Страница РФ: «Все регионы →» ведёт на рейтинг этого показателя, если он есть (тот же запрос, что у рейтинга, общий кэш).
   const ratingProbe = useRegionsHeatmap(code, slug === 'russia');
-  const hasRegionRating = slug === 'russia' && (ratingProbe.data?.values?.length || 0) >= 10;
+  const hasRegionRating = slug === 'russia' && ratingProbe.data?.indicator?.ranked !== false && (ratingProbe.data?.values?.length || 0) >= 10;
   const regionOptions = useMemo(() => {
     if (!landing.data) return [];
     return landing.data.districts.flatMap(d => d.regions.map(r => ({ slug: r.slug, name: r.name })))
@@ -393,6 +393,13 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     : '';
   // Абсолютные величины (гости, поездки, штуки): «в России выше на N %» бессмысленно, вместо него доля региона в стране.
   const additiveMonthly = isMonthly && !isPrice && isAdditiveUnit(active?.indicator?.unit);
+  // Источник и методология: объект source {name, url, about, region_method}; запасной путь — прежние плоские поля.
+  const srcObj = active?.indicator?.source && typeof active.indicator.source === 'object' ? active.indicator.source : null;
+  const srcName = srcObj?.name || (typeof active?.indicator?.source === 'string' ? active.indicator.source : '') || active?.indicator?.source_note || '';
+  const srcUrl = srcObj?.url || active?.indicator?.source_url || '';
+  const srcAbout = [srcObj?.about || active?.indicator?.note, srcObj?.region_method].filter(Boolean).join(' ');
+  // Места среди регионов нет, если API сказал ranked=false: ни места, ни рейтинга, ни «Все регионы →».
+  const ranked = active?.indicator?.ranked !== false;
   const compareList = isMonthly && !discontinued && last
     ? compareRows(compareData, slug, last.value).filter((r) => !(additiveMonthly && r.key === 'russia'))
     : [];
@@ -546,7 +553,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             {/* Страница РФ не сравнивается с собой; у абсолютных показателей регион — доля страны, а не «ниже на N %». */}
             {!isMonthly && slug !== 'russia' && active.russia_series?.length > 0 && (
               isAdditiveUnit(active.indicator.unit)
-                ? <R6ShareLine value={last.value} year={periodOf(last)} series={russiaView} unit={active.indicator.unit} rank={rankView} locale={locale} t={t} />
+                ? <R6ShareLine value={last.value} year={periodOf(last)} series={russiaView} unit={active.indicator.unit} rank={ranked ? rankView : null} locale={locale} t={t} />
                 : <R6RussiaLine value={last.value} year={periodOf(last)} series={russiaView} unit={active.indicator.unit} locale={locale} t={t} />
             )}
             {slug === 'russia' && hasRegionRating && (
@@ -556,7 +563,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             )}
             {discontinued && <DiscontinuedNote />}
             {monthlyShareSeries && (
-              <R6ShareLine value={last.value} year={lastLabel} series={monthlyShareSeries} unit={active.indicator.unit} rank={rankView} locale={locale} t={t} />
+              <R6ShareLine value={last.value} year={lastLabel} series={monthlyShareSeries} unit={active.indicator.unit} rank={ranked ? rankView : null} locale={locale} t={t} />
             )}
             <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} nation={slug === 'russia'} />
             {isPrice && !discontinued && <CopyForClient text={shareText} />}
@@ -700,19 +707,19 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               API региона пока не отдаёт: показываем то, что есть (пояснение ряда), источник — когда он придёт. */}
           <section className="kt5-source mb-6 rounded-3xl p-4 fe-glass-lite" data-block="region-source" data-testid="kt5-source">
             <h2 className="mb-2 text-sm font-semibold text-text-primary">{t('kt5_srcHeading')}</h2>
-            {(active.indicator.source || active.indicator.source_note) && (
+            {srcName && (
               <p className="mb-1.5 text-[13px] leading-relaxed text-text-secondary">
-                {t('kt5_srcLine', { source: active.indicator.source || active.indicator.source_note })}
-                {active.indicator.source_url && (
+                {t('kt5_srcLine', { source: srcName })}
+                {srcUrl && (
                   <>
                     {' '}
-                    <a href={active.indicator.source_url} target="_blank" rel="noopener noreferrer" className="text-champagne-ink hover:underline">{t('kt5_srcOpen')}</a>
+                    <a href={srcUrl} target="_blank" rel="noopener noreferrer" className="text-champagne-ink hover:underline">{t('kt5_srcOpen')}</a>
                   </>
                 )}
               </p>
             )}
-            {active.indicator.note && (
-              <p className="mb-1.5 text-[13px] leading-relaxed text-text-secondary">{active.indicator.note}</p>
+            {srcAbout && (
+              <p className="mb-1.5 text-[13px] leading-relaxed text-text-secondary">{srcAbout}</p>
             )}
             <p className="text-[13px] leading-relaxed text-text-secondary">
               <span className="font-medium text-text-primary">{t('kt5_citeLabel')}</span>
@@ -720,9 +727,9 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <span data-testid="kt5-cite" className="select-all">
                 {citeText({
                   name: `${indName} — ${regionName}`,
-                  source: active.indicator.source || active.indicator.source_note || '',
+                  source: srcName,
                   url: citeUrl(),
-                  asOf: active.indicator.updated_at || null,
+                  asOf: active.indicator.data_updated_at || active.indicator.updated_at || null,
                   locale,
                 })}
               </span>
@@ -744,7 +751,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
           )}
 
           <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            {active.rank?.position && (
+            {ranked && active.rank?.position && (
               <StatCell label={
                 t(
                   active.rank.rank_as_achievement
@@ -808,7 +815,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             )}
           </div>
 
-          {active.rank?.top?.length > 0 && (
+          {ranked && active.rank?.top?.length > 0 && (
             <div data-block="region-rating" className="mb-6 rounded-3xl p-4 fe-glass-lite">
               <h2 className="text-sm font-semibold text-text-primary mb-3">
                 {t(

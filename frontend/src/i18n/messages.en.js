@@ -4623,4 +4623,8 @@ export default {
   'kt5_srcLine': 'Source: {source}.',
   'kt5_srcOpen': 'Open the source',
   'kt5_citeLabel': 'How to cite:',
+  'kt5_st_not_introduced': 'tax not introduced',
+  'kt5_st_zero_year': 'no receipts for the year',
+  'kt5_st_no_receipts_yet': 'no receipts yet',
+  'kt5_st_no_data': 'no data',
 };

@@ -4628,4 +4628,8 @@ export default {
   'kt5_srcLine': 'Источник: {source}.',
   'kt5_srcOpen': 'Открыть источник',
   'kt5_citeLabel': 'Как цитировать:',
+  'kt5_st_not_introduced': 'налог не введён',
+  'kt5_st_zero_year': 'за год поступлений не было',
+  'kt5_st_no_receipts_yet': 'поступлений пока нет',
+  'kt5_st_no_data': 'нет данных',
 };
