@@ -269,7 +269,8 @@ ANNUAL_KSR: tuple[TSeries, ...] = (
             "тысяч м²", "thousand m²",
             _KSR_RU + "Общая площадь номеров на конец года.",
             _KSR_EN + "Total floor area of rooms at year end.",
-            "emiss", "6.t8", emiss=Emiss(44041, "тысяча квадратных метров", seed=False)),
+            "emiss", "6.t8", emiss=Emiss(44041, "тысяча квадратных метров", seed=False,
+                         alt_units=(("квадратный метр", 0.001),))),  # стенд 20.11: на странице «квадратный метр»
     TSeries("tour-gostinicy-nomera-vysshey-kategorii", "annual",
             "Номера высшей категории в гостиницах",
             "Top-category rooms in hotels",
@@ -285,7 +286,8 @@ ANNUAL_KSR: tuple[TSeries, ...] = (
             "«без звёзд» по итогам классификации.",
             "Rooms in hotels and other accommodation that have been assigned a category (stars or “no stars”) "
             "through classification.",
-            "emiss", "6.t10", emiss=Emiss(62159, "единица", seed=False)),
+            "emiss", "6.t10", emiss=Emiss(62159, "единица", seed=False,
+                         alt_units=(("тысяча единиц", 1000.0),))),  # стенд 20.11: «тысяча единиц»
 )
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -475,6 +477,19 @@ ANNUAL_FIRMS: tuple[TSeries, ...] = (
 # измерения, которые здесь не названы, загрузчик берёт «итоговым» значением («Всего»).
 
 ANNUAL_PENDING: tuple[TSeries, ...] = (
+    # 62199 на странице — «миллион рублей» (стенд 20.11.2026): это сама валовая добавленная стоимость туриндустрии,
+    # а доля в ВРП — соседний набор 62197 (каталог ЕМИСС: «ВДС туристской индустрии … и доля в ВРП», 62197/62199).
+    # Если у 62197 единица окажется не «процент», загрузчик его пропустит и напишет в лог.
+    TSeries("tour-vds-turindustrii", "annual",
+            "Валовая добавленная стоимость туристской индустрии", "Gross value added of the tourism industry",
+            "миллионов рублей", "RUB million",
+            "Сколько стоимости за год создали в регионе гостиницы, общепит, турфирмы, перевозчики и другие "
+            "отрасли, обслуживающие туристов (оценка Росстата).",
+            "Value added during the year by the region's hotels, restaurants, tour companies, carriers and other "
+            "industries serving tourists (Rosstat estimate).",
+            "emiss", "6.t43", first_year=2019,
+            emiss=Emiss(62199, "миллион рублей", seed=False, alt_units=(("тысяча рублей", 0.001),)),
+            keywords="ВДС туризма, вклад туризма в экономику региона"),
     TSeries("tour-vds-turindustrii-dolya-vrp", "annual",
             "Доля туристской индустрии в экономике региона", "Tourism industry share of the regional economy",
             "% валового регионального продукта", "% of gross regional product",
@@ -482,7 +497,7 @@ ANNUAL_PENDING: tuple[TSeries, ...] = (
             "другие отрасли, обслуживающие туристов (оценка Росстата).",
             "Share of gross regional product created by hotels, restaurants, tour companies, carriers and other "
             "industries serving tourists (Rosstat estimate).",
-            "emiss", "6.t40", first_year=2019, emiss=Emiss(62199, "процент", seed=False),
+            "emiss", "6.t40", first_year=2019, emiss=Emiss(62197, "процент", seed=False),
             keywords="доля туризма в ВРП, вклад туризма в экономику региона"),
     TSeries("tour-deti-organizacii-otdyha", "annual",
             "Число организаций отдыха и оздоровления детей", "Children's holiday and recreation organisations",
