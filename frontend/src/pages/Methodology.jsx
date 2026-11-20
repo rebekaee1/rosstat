@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Database, Calculator, TrendingUp, Globe2, Ban, ShieldAlert, LineChart,
+  Database, Calculator, TrendingUp, Globe2, Ban, ShieldAlert, LineChart, Plane,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
@@ -18,11 +18,14 @@ import '../styles/z8-tools.css';
 
 const STEPS = [1, 2, 3, 4];
 const SOURCES = ['rosstat', 'cbr', 'minfin', 'imf', 'eurostat', 'us'];
+const TOURISM_SOURCES = [1, 2, 3, 4, 5];
+const TOURISM_DEFS = ['trip', 'arrival', 'guest', 'night'];
 const TOC = [
   ['principles', 'x4.meth.data.title'],
   ['steps', 'x4.meth.how.title'],
   ['read', 'x4.meth.forecast.title'],
   ['countries', 'x4.meth.world.title'],
+  ['tourism', 'kt6_meth_title'],
   ['skip', 'x4.meth.skip.title'],
   ['limits', 'x4.meth.limits.title'],
 ];
@@ -162,6 +165,29 @@ export default function Methodology() {
               </Link>
             </p>
           </InfoMore>
+        </InfoCard>
+
+        <InfoCard icon={Plane} title={t('kt6_meth_title')} id="tourism" wide>
+          <p>{t('kt6_meth_lead')}</p>
+          <ul className="fe-z8-sources" aria-label={t('kt6_meth_srcAria')}>
+            {TOURISM_SOURCES.map((n) => (
+              <li key={n} className="fe-z8-source">
+                <span className="fe-z8-source__badge" aria-hidden="true">{t(`kt6_meth_src_${n}_badge`)}</span>
+                <span className="fe-z8-source__text">
+                  <strong>{t(`kt6_meth_src_${n}_name`)}</strong>
+                  <span>{t(`kt6_meth_src_${n}_desc`)}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p><strong className="text-text-primary">{t('kt6_meth_defs_title')}</strong></p>
+          {TOURISM_DEFS.map((id) => (
+            <p key={id}>
+              <strong className="text-text-primary">{t(`kt6_meth_def_${id}_term`)}</strong>
+              {' — '}
+              {t(`kt6_meth_def_${id}`)}
+            </p>
+          ))}
         </InfoCard>
 
         <InfoCard icon={Ban} title={t('x4.meth.skip.title')} id="skip">

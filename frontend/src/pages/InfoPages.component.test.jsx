@@ -63,7 +63,7 @@ describe('Methodology', () => {
     expect(container.querySelectorAll('details.w5-more-inline').length).toBeGreaterThanOrEqual(5);
   });
 
-  it('раунд 2: «Откуда данные» с плитками источников, справа оглавление со ссылками на все шесть разделов', async () => {
+  it('раунд 2: «Откуда данные» с плитками источников, справа оглавление со ссылками на все разделы', async () => {
     mockApiGet([['/auth/me', { user: null }]]);
     const { container } = renderPage(<Methodology />, { path: '/methodology', route: '/methodology' });
     expect(await screen.findByRole('heading', { level: 1 })).toBeTruthy();
@@ -71,7 +71,11 @@ describe('Methodology', () => {
     expect(sources).toEqual(['Росстат', 'Банк России', 'Минфин России', 'МВФ', 'Евростат', 'Ведомства США']);
     const toc = within(container.querySelector('.fe-z8-meth__toc'));
     const hrefs = toc.getAllByRole('link').map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual(['#principles', '#steps', '#read', '#countries', '#skip', '#limits']);
+    expect(hrefs).toEqual(['#principles', '#steps', '#read', '#countries', '#tourism', '#skip', '#limits']);
+    // Правка 42: блок про туризм — пять источников и четыре определения.
+    expect([...container.querySelectorAll('#tourism .fe-z8-source strong')].map((n) => n.textContent)).toHaveLength(5);
+    const defs = [...container.querySelectorAll('#tourism p strong')].map((n) => n.textContent);
+    expect(defs).toEqual(expect.arrayContaining(['Туристская поездка', 'Прибытие', 'Размещённый', 'Ночёвка']));
     for (const href of hrefs) expect(container.querySelector(href)).toBeTruthy();
     expect(toc.getAllByRole('link')[0].getAttribute('aria-current')).toBe('location');
     // Карточки держат высоту содержимого, а не растягиваются по соседней.

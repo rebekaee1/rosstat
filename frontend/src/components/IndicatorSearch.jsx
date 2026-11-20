@@ -13,6 +13,8 @@ import { quotedWords } from '../lib/quotedWords';
 import { rowUnit } from '../lib/rowUnit';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
+import { cleanRecentPages, cleanRecentQueries, searchSectionOf } from '../lib/searchSection';
+import { regionRubleUnit } from '../lib/searchValueUnit';
 import { useWorldCountries, useWorldRatingConcepts } from '../lib/worldApi';
 import { dedupeSearchRows, describeSearchResult, searchSuggestions, separateVisibleTwins } from '../lib/searchExamples';
 import { friendlySearchName } from '../lib/searchGroups';
@@ -163,11 +165,14 @@ export default function IndicatorSearch({
   const interactionRef = useRef('');
 
   const qTrim = query.trim();
-  const globalSearch = useGlobalSearch(qTrim, { enabled: shouldLoad && open && !isComposing });
+  // Раздел, из которого ищут (правка 17, 50): из «Туризма» — туристские ряды страны и региона и свои «Популярное».
+  const section = useMemo(() => searchSectionOf(location.pathname), [location.pathname]);
+  const searchEnabled = shouldLoad && open && !isComposing;
+  const globalSearch = useGlobalSearch(qTrim, section ? { enabled: searchEnabled, section } : { enabled: searchEnabled });
   const isSearchPending = Boolean(qTrim) && (isComposing || globalSearch.isDebouncing || globalSearch.isPending);
   const isSearchError = Boolean(qTrim) && !globalSearch.isDebouncing && globalSearch.isError;
   const isLoading = isSearchPending;
-  const suggestions = useMemo(() => searchSuggestions(t), [t]);
+  const suggestions = useMemo(() => searchSuggestions(t, undefined, section), [t, section]);
   const popular = useMemo(() => suggestions.map((item) => item.text), [suggestions]);
   // Флаги в выдаче: код страны берём из общего (кэшированного) каталога стран, он грузится только при открытом поиске.
   const countriesQ = useWorldCountries({ enabled: shouldLoad && open });
@@ -216,8 +221,15 @@ export default function IndicatorSearch({
   // Круг 9 (P7): в пустом поле сначала недавние запросы этого браузера, затем примеры. Список читается при каждом открытии окна.
   // Круг 11 (D): запросов видно до 6, под ними последние открытые страницы («Вы смотрели»); оба списка живут только в этом браузере.
   /* eslint-disable react-hooks/exhaustive-deps -- recentVersion нужен, чтобы список перечитался после «Очистить» */
-  const recent = useMemo(() => (open ? readRecentQueries().slice(0, RECENT_SHOWN) : []), [open, recentVersion]);
-  const recentPages = useMemo(() => (open ? readRecentVisited(RECENT_PAGES_SHOWN) : []), [open, recentVersion]);
+  // Правка 50: страницы без повторов и на языке интерфейса; запрос, совпавший с названием страницы, не дублирует её.
+  const recentPages = useMemo(
+    () => (open ? cleanRecentPages(readRecentVisited(RECENT_PAGES_SHOWN * 4), locale).slice(0, RECENT_PAGES_SHOWN) : []),
+    [open, recentVersion, locale],
+  );
+  const recent = useMemo(
+    () => (open ? cleanRecentQueries(readRecentQueries(), recentPages).slice(0, RECENT_SHOWN) : []),
+    [open, recentVersion, recentPages],
+  );
   /* eslint-enable react-hooks/exhaustive-deps */
   const suggestionRows = useMemo(() => [
     ...recent.map((text, i) => ({
@@ -901,24 +913,31 @@ function regionValueText(entry, unit, locale) {
   const rawUnit = String(unit || '').trim();
   // Единица коротко и без повторов в каждой строке: «₽», «%»; длинное «рублей за литр» уже в заголовке строки.
   const long = splitUnit(plainUnit(rawUnit, locale)).short;
-  const short = /руб|₽|rub/i.test(rawUnit) ? '₽' : rawUnit.includes('%') ? '%' : long && long.length <= 5 ? long : '';
+  // Правка 8: у рублей сохраняется множитель ряда («млн ₽»), иначе «1 757 млн руб.» читалось как «1 757 ₽».
+  const short = regionRubleUnit(rawUnit, locale) || (rawUnit.includes('%') ? '%' : long && long.length <= 5 ? long : '');
   const value = formatValue(entry.value, abs >= 1000 ? 0 : abs >= 100 ? 1 : 2, locale);
   return short ? `${value}\u00A0${short}` : value;
 }
 
 /** Z4: регионы одного показателя под строкой «Россия»: первые видны, остальные раскрываются кнопкой «Ещё N регионов». */
-function RegionGroupChips({ group, unit, expanded, onToggle, onPick, t, locale }) {
+function RegionGroupChips({ group, unit, frequency, expanded, onToggle, onPick, t, locale }) {
   const regions = group.regions;
   const shown = expanded ? regions : regions.slice(0, REGION_CHIPS_VISIBLE);
   // Разброс по регионам одной строкой: торопящемуся человеку это ответ быстрее, чем листать сорок регионов.
   const valued = regions.filter((entry) => entry.value != null && Number.isFinite(Number(entry.value)));
   const low = valued.length >= 5 ? valued.reduce((a, b) => (Number(b.value) < Number(a.value) ? b : a)) : null;
   const high = valued.length >= 5 ? valued.reduce((a, b) => (Number(b.value) > Number(a.value) ? b : a)) : null;
+  // Правка 8: диапазон называет период чисел («2025», «август 2026»): год и «с начала года» дают разные максимумы.
+  const newest = valued.map((entry) => entry.date).filter(Boolean).sort().pop();
+  const rangePeriod = newest ? formatDate(newest, PERIOD_FORMAT[frequency] || 'full', locale) : '';
+  const rangeVars = low && high ? { min: regionValueText(low, unit, locale), max: regionValueText(high, unit, locale) } : null;
   return (
     <div className="w6d-sr-chips z4s-region-chips" role="group" aria-label={t('z4s.regions.aria')}>
       {low && high && Number(low.value) !== Number(high.value) ? (
         <p className="z4s-region-range">
-          {t('r2z4.regions.range', { min: regionValueText(low, unit, locale), max: regionValueText(high, unit, locale) })}
+          {rangePeriod && rangePeriod !== '—'
+            ? t('kt6_search_regions_range_period', { ...rangeVars, period: rangePeriod })
+            : t('r2z4.regions.range', rangeVars)}
         </p>
       ) : null}
       {shown.map((entry) => {
@@ -1049,7 +1068,7 @@ function SearchRow({
         </div>
       ) : null}
       {item.regional_group?.regions?.length ? (
-        <RegionGroupChips group={item.regional_group} unit={item.unit} expanded={expanded} onToggle={onToggle} t={t} locale={locale}
+        <RegionGroupChips group={item.regional_group} unit={item.unit} frequency={item.frequency} expanded={expanded} onToggle={onToggle} t={t} locale={locale}
           onPick={(entry) => onPick(row, index + 1, { key: `${item.key}:${entry.slug}`, kind: 'region_indicator', path: entry.path, navigation: entry.navigation || 'spa' })} />
       ) : null}
       {row.type === 'byCountry' ? (

@@ -43,6 +43,9 @@ from app.services.search_language import measure_matches, relevance_bonus, title
 from app.services.search_language_sql import measure_constraints, _pattern_clause
 from app.services.search_units import UNIT_RULES, UNIT_EXCLUDES, DENOMINATOR_RULES, unit_metadata, denominator_metadata
 from app.services.search_dimensions import dimension_constraints, dimension_metadata, native_dimension_labels, native_dimension_match_clause, native_dimension_text
+from app.services.search_section import (
+    SECTION_LEAD_ROWS, exact_word_bonus, known_section, query_words, wants_tourism_lead, with_tourism_lead,
+)
 from app.services.search_variants import collapse_equivalent, disambiguate_titles
 from app.services.search_regional_groups import (
     attach_group_values, attach_region_row_values, demote_stale_region_rows, group_regional_rows, section_suggestions,
@@ -1631,14 +1634,18 @@ async def _rewritten_or_split(db: AsyncSession, raw: str, geometry: list[dict], 
 
 async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _nearest: bool = True,
         _reading: tuple[SearchIntent, list[dict], dict[str, WorldCountry]] | None = None,
-        _rewrite: bool = True) -> dict:
-    """One query contract with bounded SQL and truthful availability states."""
+        _rewrite: bool = True, section: str | None = None) -> dict:
+    """One query contract with bounded SQL and truthful availability states.
+
+    `section` (20.11.2026, правка 17): раздел сайта, из которого человек ищет («tourism»); без него поведение прежнее.
+    """
+    section = known_section(section)
     empty = {"results": [], "total": 0, "has_more": False, "version": SEARCH_VERSION}
     if _reading is None and _rewrite:
         # Вставленная ссылка на поиск ЕМИСС/Росстата (20.11.2026): ищем то, что искали там.
         from_link = search_text_from_link(raw)
         if from_link:
-            found = await federated_search(db, from_link, limit=limit, _nearest=_nearest)
+            found = await federated_search(db, from_link, limit=limit, _nearest=_nearest, section=section)
             return {**found, "corrected_query": found.get("corrected_query") or from_link}
     if not phrase(raw):
         return empty
@@ -1678,6 +1685,11 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
     if not intent.terms and not intent.countries:
         return {**empty, "reason": "unsupported_query", "intent": summary}
     locale = get_locale()
+    tourism_rows: list[dict] = []
+    if _reading is None and wants_tourism_lead(intent, section):
+        # Из раздела «Туризм» по названию страны или региона нужны их туристские ряды: тот же поиск со словом «туризм».
+        tourism_rows = (await federated_search(db, f"{raw} туризм", limit=SECTION_LEAD_ROWS * 3, _nearest=False,
+                                               _rewrite=False)).get("results", [])
     budget = min(_MAX_CANDIDATES, max(100, limit * 4))
     entities = await _entities(db, geometry, intent, locale)
     russia = await _russia(db, intent, locale)
@@ -1692,10 +1704,13 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
     # Exact identities dominate; subject-specific inverse-frequency evidence only
     # breaks close lexical ties inside the already eligible candidate set.
     frequencies = title_frequencies(intent.terms, results)
+    exact_words = query_words(raw)
     for item in results:
         if item["score"] < 900:
             item["score"] += relevance_bonus(intent.terms, names=(item.get("name_ru", ""), item.get("name_en", "")),
                 frequencies=frequencies, count=len(results))
+            # Правка 17: слово запроса целиком в названии выше похожих по написанию слов и синонимов.
+            item["score"] += exact_word_bonus(exact_words, (item.get("name_ru", ""), item.get("name_en", "")))
     results.sort(key=_result_sort_key(intent, locale, raw))
     seen, unique = set(), []
     for result in results:
@@ -1710,6 +1725,8 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
     unique = group_regional_rows(unique, has_regions=bool(intent.regions), locale=locale)
     # Туризм (20.11.2026): флагманы России первыми, строки округа без названного места — в конце.
     unique = tourism_first(unique, intent)
+    if tourism_rows:
+        unique = with_tourism_lead(unique, tourism_rows)
     final, position = [], 0
     while position < len(unique) and len(final) <= limit:
         batch = unique[position:position + limit + 1 - len(final)]
