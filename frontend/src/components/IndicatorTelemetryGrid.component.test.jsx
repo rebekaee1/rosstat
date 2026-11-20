@@ -48,3 +48,17 @@ describe('круг 9 (Y10): подписи сравнения и окно ста
     expect(screen.queryByText(/Исторический максимум/)).toBeNull();
   });
 });
+
+describe('туризм 20.11.2026: карточки сетки в той же единице, что и шапка', () => {
+  it('«7,8 млн поездок» и предыдущее «5,6 млн поездок», а не «5 629,93 тыс. поездок»', () => {
+    render(
+      <LocaleProvider locale="ru">
+        <IndicatorTelemetryGrid indicator={{ frequency: 'quarterly', unit: 'тыс. поездок' }} adj={(x) => x}
+          safeViewMode="level" chartMode="level"
+          viewStats={{ currentValue: 7770.915, previousValue: 5629.931, currentDate: '2026-06-01' }} />
+      </LocaleProvider>,
+    );
+    expect(screen.getByText(/: 7\.7709/)).toBeTruthy();
+    expect(screen.getByText(/: 5\.6299/)).toBeTruthy();
+  });
+});

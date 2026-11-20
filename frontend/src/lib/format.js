@@ -496,6 +496,18 @@ export function unitSuffix(unit = '%') {
   return cfg ? cfg.suffix.trim() : unit;
 }
 
+/** У единицы есть своя настройка точности (UNIT_CONFIG): «ед.» — 0, «%» — 2. */
+export function unitDigitsKnown(unit) {
+  return Object.prototype.hasOwnProperty.call(UNIT_CONFIG, unit);
+}
+
+/** Знаков для числа без укрупнения в плитке: целое число в любой единице, кроме процентов, — без «,00» («17 535 ед.»). */
+export function plainValueDigits(val, unit) {
+  const num = Number(val);
+  if (unitDigitsKnown(unit)) return UNIT_CONFIG[unit].digits;
+  return Number.isInteger(num) && unit !== '%' ? 0 : 2;
+}
+
 export function unitDigits(unit = '%') {
   return (UNIT_CONFIG[unit] || { digits: 2 }).digits;
 }

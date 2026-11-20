@@ -3,7 +3,7 @@ import { useIndicatorData } from '../lib/hooks';
 import Sparkline from './Sparkline';
 import { ArrowRight } from 'lucide-react';
 import { formatTileValue } from '../lib/indicatorSummary';
-import { formatValue, resolveDateFormat, cn, isCpiIndex } from '../lib/format';
+import { formatValue, resolveDateFormat, cn, isCpiIndex, plainValueDigits } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import { russiaIndicatorPath } from '../lib/sitePaths';
@@ -64,7 +64,7 @@ export default function IndicatorTile({
   // R6-B: «3 072,80 млрд руб.» читается как «3,1 трлн руб.»; изменение берётся в тех же единицах, что и число.
   const big = displayVal != null && displayUnit !== '%' ? formatTileValue(displayVal, displayUnit, { locale }) : null;
   const compact = big?.compacted ? big : null;
-  const shownText = compact ? compact.text : formatValue(displayVal, undefined, locale);
+  const shownText = compact ? compact.text : formatValue(displayVal, plainValueDigits(displayVal, displayUnit), locale);
   const shownUnit = compact ? compact.unit : displayUnit;
   const dateFmt = resolveDateFormat({ frequency: indicator.frequency });
   const polarity = indicatorPolarity(indicator.name, indicator.name_en, indicator.code);

@@ -1,11 +1,11 @@
-import { formatDate, resolveDateFormat, chartValueDigits } from '../lib/format';
+import { formatDate, resolveDateFormat, chartValueDigits, unitDigitsKnown } from '../lib/format';
 import { cpiInflationGranularity, dataModeForUrlMode } from '../lib/cpiViewModeResolve';
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { glueDate, periodPhrase, sincePhrase } from '../lib/periodPhrase';
 import {
-  bestGrowth, growthOverYears, unitKind, windowStats,
+  bestGrowth, dataDigitsOf, formatTileValue, growthOverYears, unitKind, windowStats,
 } from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
 import { visibleRangeStats } from '../lib/rangeStats';
@@ -136,7 +136,20 @@ export default function IndicatorTelemetryGrid({
   const currentValue = heroOverride ? indicator.hero_value
     : (s?.currentValue ?? adj(indicator?.current_value));
   const heroUnit = heroOverride ? (indicator.hero_unit || '%') : displayUnit;
-  const valueDigits = chartValueDigits(unit, safeViewMode === 'step-weekly' ? 'step-weekly' : dataMode);
+  const unitDefaultDigits = chartValueDigits(unit, safeViewMode === 'step-weekly' ? 'step-weekly' : dataMode);
+  // Единица без своей настройки точности («тыс. поездок», «мест»): знаков столько, сколько в самих данных — счётчики без «,00».
+  const baseDigits = unitDigitsKnown(unit) || !Array.isArray(points) || !points.length
+    ? unitDefaultDigits
+    : Math.min(unitDefaultDigits, dataDigitsOf(points));
+  // Крупное число карточки укрупняется так же, как в шапке («7,8 млн поездок», а не «7 770,92 тыс. поездок»),
+  // и все карточки сетки (предыдущее, максимум, среднее, изменение) показываются в той же единице.
+  const big = !heroOverride && !isIndexUnit && unit !== '%' && currentValue != null
+    ? formatTileValue(currentValue, unit, { locale })
+    : null;
+  const scale = big?.compacted ? big : null;
+  const sv = (v) => (scale && v != null && Number.isFinite(Number(v)) ? Number(v) / scale.div : v);
+  const cardUnit = scale ? scale.unit : displayUnit;
+  const valueDigits = scale ? scale.digits : baseDigits;
   const previousValue = s?.previousValue ?? indicator?.previous_value;
   const pctChange = unit === 'индекс' && previousValue && !heroOverride
     ? +(((s?.currentValue ?? adj(indicator?.current_value)) - previousValue) / previousValue * 100).toFixed(2)
@@ -177,10 +190,10 @@ export default function IndicatorTelemetryGrid({
       <div className="fe-tele-grid">
         <TelemetryCard
           label={currentLabel}
-          value={currentValue}
-          unit={heroUnit}
+          value={sv(currentValue)}
+          unit={scale ? cardUnit : heroUnit}
           valueDigits={valueDigits}
-          change={heroOverride ? undefined : (s?.change ?? indicator?.change)}
+          change={heroOverride ? undefined : sv(s?.change ?? indicator?.change)}
           pctChange={heroOverride ? undefined : pctChange}
           meta={currentMeta}
           delay={0}
@@ -189,8 +202,8 @@ export default function IndicatorTelemetryGrid({
         />
         <TelemetryCard
           label={previousLabel}
-          value={s?.previousValue ?? adj(indicator?.previous_value)}
-          unit={displayUnit}
+          value={sv(s?.previousValue ?? adj(indicator?.previous_value))}
+          unit={cardUnit}
           valueDigits={valueDigits}
           meta={periodPhrase(t, s?.previousDate ?? cpiPrevDate, dateFmt, locale)}
           delay={1}
@@ -218,8 +231,8 @@ export default function IndicatorTelemetryGrid({
         {!growthMode && (windowed || s?.highest || stats?.highest) && (
           <TelemetryCard
             label={windowed ? windowLabel('max') : t('w3.tele.max')}
-            value={windowed ? windowed.highest.value : (s?.highest?.value ?? adj(stats?.highest?.value))}
-            unit={displayUnit}
+            value={sv(windowed ? windowed.highest.value : (s?.highest?.value ?? adj(stats?.highest?.value)))}
+            unit={cardUnit}
             valueDigits={valueDigits}
             meta={periodPhrase(t, windowed ? windowed.highest.date : (s?.highest?.date ?? stats?.highest?.date), dateFmt, locale)
               ? t('w3.tele.peakOn', { date: glueDate(formatDate(windowed ? windowed.highest.date : (s?.highest?.date ?? stats?.highest?.date), dateFmt, locale)) })
@@ -230,8 +243,8 @@ export default function IndicatorTelemetryGrid({
         {!growthMode && (windowed || s?.average != null || stats?.average != null) && (
           <TelemetryCard
             label={windowed ? windowLabel('avg') : t('w3.tele.avg')}
-            value={windowed ? windowed.average : (s?.average ?? adj(stats?.average))}
-            unit={displayUnit}
+            value={sv(windowed ? windowed.average : (s?.average ?? adj(stats?.average)))}
+            unit={cardUnit}
             valueDigits={valueDigits}
             meta={windowed ? undefined : (firstYear ? t('w3.tele.dataSince', { year: firstYear }) : undefined)}
             delay={3}

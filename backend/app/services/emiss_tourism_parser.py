@@ -172,8 +172,16 @@ def series_points(main: dict[date, float], cfg: dict, denominator: dict[date, fl
 _FILTERS_BLOCK = re.compile(r"filters: \{(.*?)left_columns", re.S)
 
 
+_JS_ESCAPE = re.compile(r"\\u([0-9a-fA-F]{4})|\\(['\"\\\\/])")
+
+
 def _unescape(text: str) -> str:
-    return text.encode().decode("unicode_escape") if "\\u" in text else text
+    """Подпись из JS-строки страницы: раскрываются только ``\\uXXXX`` и экранированные кавычки/слэши.
+
+    ``encode().decode("unicode_escape")`` портил строку, где обычная кириллица стоит рядом с ``\\u``-кодами: UTF-8
+    байты кириллицы читались как Latin-1 («Ð\x9fÐ°…»).
+    """
+    return _JS_ESCAPE.sub(lambda m: chr(int(m.group(1), 16)) if m.group(1) else m.group(2), text)
 
 
 def parse_page_filters(page: str) -> dict[str, dict[str, str]]:
