@@ -535,3 +535,43 @@ def test_stand_units_rescaled_and_js_escapes(terr):
     assert dict(R.SERIES_BY_CODE["tour-ksr-nomera-klassificirovannye"].emiss.alt_units)["тысяча единиц"] == 1000.0
     assert R.SERIES_BY_CODE["tour-vds-turindustrii"].emiss.src_unit == "миллион рублей"
     assert R.SERIES_BY_CODE["tour-vds-turindustrii-dolya-vrp"].emiss.dataset == 62197
+
+
+# --- добор g2: оценки регионов, Москва ---------------------------------------------------------------------------
+
+
+def test_regional_flow_one_measure_per_region_and_breaks(terr):
+    rows = [
+        {"country_or_region": "Ставропольский край", "period": "2022", "origin": "всего туристов (индикатор ГП)",
+         "value": "1975930"},
+        {"country_or_region": "Ставропольский край", "period": "2023",
+         "origin": "всего туристов (индикатор ГП, оценка Росстата)", "value": "2971133"},
+        {"country_or_region": "Ставропольский край", "period": "2025",
+         "origin": "всего посетителей (операторы связи, вкл. однодневных)", "value": "9000000"},
+        {"country_or_region": "Ставропольский край", "period": "2023", "origin": "иностранцы", "value": "5000"},
+        {"country_or_region": "Республика Крым", "period": "2025-12", "origin": "туристы", "value": "1"},
+    ]
+    pts, meta = L.regional_flow_points(rows, terr)
+    assert pts == [("tour-turpotok-ocenka-regiona", "stavropolskiy-kray", 2022, 1975.93),
+                   ("tour-turpotok-ocenka-regiona", "stavropolskiy-kray", 2023, 2971.133)]
+    assert meta["stavropolskiy-kray"]["breaks"] == [2023]
+
+
+def test_moscow_open_data_last_date_in_year():
+    rows = [{"country_or_region": "Москва", "period": "2025", "origin": "всего", "indicator": "tourists_annual",
+             "value": "26500000"},
+            {"country_or_region": "Москва", "period": "2024-01-10", "origin": "все категории",
+             "indicator": "classified_accommodation_objects", "value": "2000"},
+            {"country_or_region": "Москва", "period": "2024-12-28", "origin": "все категории",
+             "indicator": "classified_accommodation_objects", "value": "2102"}]
+    assert sorted(L.moscow_points(rows)) == [("tour-moskva-reestr-obekty", "moskva", 2024, 2102.0),
+                                             ("tour-turpotok-ocenka-regiona", "moskva", 2025, 26500.0)]
+
+
+def test_regional_estimate_has_method_and_no_rating():
+    assert "tour-turpotok-ocenka-regiona" in R.NOT_RANKED
+    ru = R.region_method("tour-turpotok-ocenka-regiona", "stavropolskiy-kray", "ru")
+    assert "2023" in ru and "разрывается" in ru
+    en = R.region_method("tour-turpotok-ocenka-regiona", "stavropolskiy-kray", "en")
+    assert en.startswith("Method of this region") and not any("а" <= ch <= "я" for ch in en.casefold())
+    assert R.region_method("tour-ksr-mesta", "moskva") is None

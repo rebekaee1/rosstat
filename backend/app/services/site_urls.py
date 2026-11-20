@@ -519,7 +519,9 @@ async def _rating_eligible_codes(db: AsyncSession) -> list[tuple[str, int]]:
         .having(func.count(func.distinct(RegionDataPoint.region_id)) >= 10)
         .order_by(RegionIndicator.code)
     )
-    return [(code, int(y)) for code, y in (await db.execute(stmt)).all()]
+    from app.data.tourism_regional import NOT_RANKED  # оценки регионов по своим методикам — без рейтинга
+
+    return [(code, int(y)) for code, y in (await db.execute(stmt)).all() if code not in NOT_RANKED]
 
 
 async def _rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:

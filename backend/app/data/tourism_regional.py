@@ -133,6 +133,28 @@ SOURCES: dict[str, dict[str, str]] = {
                     "year divided by year-end bed places times 365 days. Seasonal beds are treated as open all year, "
                     "so resort regions show lower occupancy than in season.",
     },
+    "regions": {
+        "ru": "оценки органов власти регионов",
+        "en": "regional authorities' estimates",
+        "about_ru": "Источник — оценка турпотока, которую публикует сам регион (министерство туризма, отчёт по "
+                    "госпрограмме, открытые данные; часть лет — со слов чиновников в СМИ). У каждого региона своя "
+                    "методика: одни считают только туристов с ночёвкой, другие — всех приезжих, включая однодневных, "
+                    "третьи с какого-то года берут оценку Росстата. Регионы между собой не сравнимы; это не ряд "
+                    "Росстата.",
+        "about_en": "Source: the tourist-flow estimate published by the region itself (tourism ministry, state "
+                    "programme report, open data; some years from officials quoted in the media). Each region uses "
+                    "its own method: some count only overnight tourists, others all visitors including day "
+                    "trippers, others switched to Rosstat's estimate. Regions are not comparable with each other; "
+                    "this is not a Rosstat series.",
+    },
+    "mos": {
+        "ru": "Комитет по туризму Москвы (открытые данные)",
+        "en": "Moscow City Tourism Committee (open data)",
+        "about_ru": "Источник — портал открытых данных Москвы (data.mos.ru): реестр классифицированных средств "
+                    "размещения города. Точки — на дату обновления набора (2025 год — на 31 июля).",
+        "about_en": "Source: Moscow open data portal (data.mos.ru), register of the city's classified "
+                    "accommodation. Points are as of the dataset update date (2025: 31 July).",
+    },
     "sber": {
         "ru": "СберИндекс (приближённая оценка)",
         "en": "SberIndex (approximate estimate)",
@@ -1032,9 +1054,41 @@ PUBLICATIONS: tuple[TSeries, ...] = (
             "rosstat_calc", "6.t93", first_year=2002, keywords="загрузка гостиниц, заполняемость отелей"),
 )
 
+# Добор 20.11.2026 (g2): оценки турпотока самих регионов и реестр размещения Москвы. Сравнивать регионы по ним
+# нельзя, поэтому рейтинга регионов у этих рядов нет (NOT_RANKED); методика региона — в tourism_region_methods.json.
+REGIONAL_ESTIMATES: tuple[TSeries, ...] = (
+    TSeries("tour-turpotok-ocenka-regiona", "annual", "Турпоток по оценке региона",
+            "Tourist flow, regional estimate", "тысяч человек", "thousand people",
+            "Сколько туристов приняли за год по оценке самого региона. Методика у каждого региона своя (с ночёвкой, "
+            "все приезжие, оценка Росстата), её описание и годы смены методики — на странице региона. С оценкой "
+            "турпотока Росстата и между регионами эти цифры не сравнимы. Москва — открытые данные Комитета по "
+            "туризму.",
+            "Tourists received during the year according to the region's own estimate. Each region has its own "
+            "method (overnight stays, all visitors, Rosstat's estimate); the method and the years it changed are "
+            "described on the region page. Not comparable with Rosstat's tourist flow or across regions. Moscow — "
+            "open data of the City Tourism Committee.",
+            "regions", "6.t95", scale=THOUSAND, first_year=2010,
+            keywords="турпоток региона, сколько туристов приехало, туристов за год по данным региона"),
+    TSeries("tour-moskva-reestr-obekty", "annual", "Гостиницы и прочие средства размещения в реестре Москвы",
+            "Accommodation in the Moscow register", "объектов", "properties",
+            "Сколько гостиниц, хостелов и апарт-отелей числится в реестре классифицированных средств размещения "
+            "Москвы на дату обновления в году.",
+            "Hotels, hostels and apart-hotels in Moscow's register of classified accommodation as of the update "
+            "date in the year.", "mos", "6.t96", first_year=2018),
+    TSeries("tour-moskva-reestr-nomera", "annual", "Номера в реестре средств размещения Москвы",
+            "Rooms in the Moscow accommodation register", "номеров", "rooms",
+            "Номера во всех средствах размещения из реестра Москвы.", "Rooms in all properties of the Moscow register.",
+            "mos", "6.t97", first_year=2024),
+    TSeries("tour-moskva-reestr-mesta", "annual", "Места в реестре средств размещения Москвы",
+            "Bed places in the Moscow accommodation register", "мест", "bed places",
+            "Места во всех средствах размещения из реестра Москвы.",
+            "Bed places in all properties of the Moscow register.", "mos", "6.t98", first_year=2024),
+)
+NOT_RANKED = frozenset(s.code for s in REGIONAL_ESTIMATES)
+
 SERIES: tuple[TSeries, ...] = (
     *ANNUAL_KSR, *ANNUAL_SANATORIUMS, *ANNUAL_FIRMS, *ANNUAL_PENDING, *MONTHLY_EMISS, *MONTHLY_TRANSPORT,
-    *MONTHLY_CPI, *TURPOTOK, *QUARTERLY_CBR, *TAX, *REGISTRIES, *PUBLICATIONS,
+    *MONTHLY_CPI, *TURPOTOK, *QUARTERLY_CBR, *TAX, *REGISTRIES, *PUBLICATIONS, *REGIONAL_ESTIMATES,
 )
 SERIES_BY_CODE: dict[str, TSeries] = {s.code: s for s in SERIES}
 
@@ -1112,3 +1166,30 @@ def monthly_texts(code: str, locale: str) -> dict[str, str] | None:
         "description": ("{indicator} в регионе {region}: {value} {unit} в {month_prep}. Динамика с {first_year} "
                         "года, график и таблица по месяцам, сравнение со средним по России. Источник — " + name + "."),
     }
+
+
+_METHODS_PATH = None
+
+
+def region_method(code: str, slug: str | None, locale: str = "ru") -> str | None:
+    """Методика оценки турпотока конкретного региона и годы её смены (``regional/tourism_region_methods.json``)."""
+    if code != "tour-turpotok-ocenka-regiona" or not slug:
+        return None
+    import json
+    from pathlib import Path
+
+    global _METHODS_PATH
+    _METHODS_PATH = _METHODS_PATH or Path(__file__).resolve().parent / "regional" / "tourism_region_methods.json"
+    m = json.loads(_METHODS_PATH.read_text(encoding="utf-8")).get(slug)
+    if not m:
+        return None
+    breaks = m.get("breaks") or []
+    if locale == "en":
+        text = f"Method of this region: {m['kind_en']}."
+        if breaks:
+            text += " The method changed in " + ", ".join(map(str, breaks)) + ": the series has a break there."
+        return text
+    text = f"Как считает регион: {m['who']} {m['method']}".strip()
+    if breaks:
+        text += " Методика менялась в " + ", ".join(map(str, breaks)) + " году — в эти годы ряд разрывается."
+    return text + (f" {m['note']}" if m.get("note") else "")

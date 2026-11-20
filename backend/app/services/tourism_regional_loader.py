@@ -1114,6 +1114,87 @@ def occupancy_points(points: Iterable[Point]) -> list[Point]:
     return to_points(SERIES_BY_CODE["tour-ksr-zagruzka-mest"], {k: v for k, v in raw.items() if 0 < v <= 100})
 
 
+# --- добор g2: оценки турпотока регионов, открытые данные Москвы ---------------------------------------------------
+
+_PART = re.compile(r"^(иностран|экскурсант|туристы организован|туристы неорганизован|туристы за|туристы вне|"
+                   r"туристы нарастающ|туристы из регионов|российские|туристы, нарастающ)", re.I)
+_DOUBTFUL = re.compile(r"СМИ|прогноз|прежняя|ориентировочно", re.I)
+
+
+def _flow_kind(origin: str) -> str:
+    o = origin.casefold()
+    if re.search(r"посетител|экскурсант|мобильн|операторы|туристско-экскурс", o):
+        return "visitors"
+    if "ночёв" in o or "ночев" in o:
+        return "overnight"
+    return "tourists"
+
+
+def regional_flow_points(rows: Iterable[dict], territories: Territories) -> tuple[list[Point], dict[str, dict]]:
+    """Оценки турпотока регионов (``g2/regions/tidy.csv``) → точки и годы смены методики по региону.
+
+    Берутся только целые годы и итог по региону (не иностранцы, не сезон, не нарастающий итог). У региона остаётся
+    одна мера — та, которой больше лет (Ставрополье: индикатор госпрограммы, без «9 млн по операторам связи»).
+    Из двух цифр за год — та, что не из пересказа СМИ. Разрыв методики — год, когда регион перешёл на оценку
+    Росстата или обратно."""
+    by_region: dict[str, dict[int, list[tuple[bool, str, float]]]] = defaultdict(lambda: defaultdict(list))
+    for r in rows:
+        period, origin = str(r.get("period") or ""), str(r.get("origin") or "")
+        if not period.isdigit() or _PART.search(origin):
+            continue
+        slug, spare = territories.resolve(r.get("country_or_region") or "")
+        value = parse_ru_float(r.get("value"))
+        if slug is None or spare or value is None or value <= 0:
+            continue
+        by_region[slug][int(period)].append((bool(_DOUBTFUL.search(origin)), origin, value))
+    raw: dict[tuple[str, int], float] = {}
+    meta: dict[str, dict] = {}
+    for slug, years in by_region.items():
+        kinds = [_flow_kind(o) for opts in years.values() for _d, o, _v in opts]
+        main = max(set(kinds), key=kinds.count)
+        chosen: dict[int, tuple[str, float]] = {}
+        for year, opts in years.items():
+            opts = sorted((o for o in opts if _flow_kind(o[1]) == main), key=lambda t: t[0])
+            if opts:
+                chosen[year] = (opts[0][1], opts[0][2])
+        breaks, prev = [], None
+        for year in sorted(chosen):
+            rosstat = "росстат" in chosen[year][0].casefold()
+            if prev is not None and rosstat != prev:
+                breaks.append(year)
+            prev = rosstat
+        for year, (_o, v) in chosen.items():
+            raw[(slug, year)] = v
+        meta[slug] = {"kind": main, "breaks": breaks}
+    return to_points(SERIES_BY_CODE["tour-turpotok-ocenka-regiona"], raw), meta
+
+
+def moscow_points(rows: Iterable[dict]) -> list[Point]:
+    """Открытые данные Москвы: турпоток (Комитет по туризму) и реестр размещения — последняя дата в году."""
+    flow: dict[tuple[str, int], float] = {}
+    reg: dict[str, dict[int, tuple[str, float]]] = defaultdict(dict)
+    want = {("classified_accommodation_objects", "все категории"): "tour-moskva-reestr-obekty",
+            ("classified_accommodation_rooms", "все типы"): "tour-moskva-reestr-nomera",
+            ("classified_accommodation_places", "все типы"): "tour-moskva-reestr-mesta"}
+    for r in rows:
+        if (r.get("country_or_region") or "").strip() != "Москва":
+            continue
+        period, value = str(r.get("period") or ""), parse_ru_float(r.get("value"))
+        if value is None or len(period) < 4 or not period[:4].isdigit():
+            continue
+        key = (r.get("indicator"), (r.get("origin") or "").strip())
+        if key == ("tourists_annual", "всего") and period.isdigit():
+            flow[("moskva", int(period))] = value
+        elif key in want:
+            year = int(period[:4])
+            if period >= reg[want[key]].get(year, ("", 0))[0]:
+                reg[want[key]][year] = (period, value)
+    points = to_points(SERIES_BY_CODE["tour-turpotok-ocenka-regiona"], flow)
+    for code, years in reg.items():
+        points += to_points(SERIES_BY_CODE[code], {("moskva", y): v for y, (_p, v) in years.items()})
+    return points
+
+
 _PRICE_URL = "https://rosstat.gov.ru/storage/mediabank/sred_potreb_cen_{mm:02d}-{yyyy}.xlsx"
 
 
