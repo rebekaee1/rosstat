@@ -23,6 +23,7 @@ import IndicatorSearch from '../components/IndicatorSearch';
 import CurrencyDesk, { CurrencyDeskSkeleton } from '../components/CurrencyDesk';
 import { readSavedRates } from '../lib/currencySaved';
 import R7PricesBlock from '../components/R7PricesBlock';
+import TourismFloors, { TourismJump } from '../components/TourismFloors';
 import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
@@ -182,6 +183,8 @@ export default function CategoryPage({ fixedSlug }) {
         );
       })()}
 
+      {cat.slug === 'tourism' && <TourismJump />}
+
       {isPricesCategory && <R7PricesBlock surface="category" />}
 
       {!isCurrencies && (
@@ -275,6 +278,7 @@ export default function CategoryPage({ fixedSlug }) {
         )}
       </section>
 
+      {cat.slug === 'tourism' && <TourismFloors />}
 
       {relatedCategories.length > 0 && (
         <section data-block="related-categories" className="mt-12">

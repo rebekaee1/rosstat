@@ -221,6 +221,24 @@ const CATEGORY_DEFS = [
       'Postgraduate and doctoral students. Number of R&D organizations. Enterprise innovation activity.',
     relatedSlugs: ['population', 'business', 'labor'],
   },
+  {
+    // Туризм (20.11.2026): Россия — ряды категории «Туризм»; регионы и мир — этажи TourismFloors на той же странице.
+    slug: 'tourism',
+    name: 'Туризм',
+    nameEn: 'Tourism',
+    seoTitleEn: 'Tourism in Russia, its regions and the world — statistics',
+    seoDescriptionEn:
+      'Tourist flows, outbound and inbound trips, hotels and overnight stays, health resorts, and tourist spending — official data for Russia, its regions, and countries worldwide.',
+    icon: 'Plane',
+    apiCategory: 'Туризм',
+    status: 'active',
+    flagshipCode: 'tour-outbound-trips',
+    sentiment: 'neutral',
+    description: 'Поездки россиян по стране и за границу, въезд иностранцев. Гостиницы, ночёвки, санатории, турфирмы. Траты туристов. Регионы России и страны мира.',
+    descriptionEn:
+      'Trips by Russians at home and abroad, foreign visitors. Hotels, overnight stays, health resorts, tour operators. Tourist spending. Russian regions and countries worldwide.',
+    relatedSlugs: ['trade', 'population', 'prices'],
+  },
 ];
 
 export const CATEGORIES = withCategorySeo(CATEGORY_DEFS);

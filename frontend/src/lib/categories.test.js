@@ -9,8 +9,9 @@ import {
 } from './categories';
 
 describe('categories', () => {
-  it('has 12 categories (+«Индексы» MOEX, +«Товарные рынки» сырьё)', () => {
-    expect(CATEGORIES).toHaveLength(12);
+  it('has 13 categories (+«Индексы» MOEX, +«Товарные рынки» сырьё, +«Туризм» 20.11.2026)', () => {
+    expect(CATEGORIES).toHaveLength(13);
+    expect(getCategoryBySlug('tourism')?.apiCategory).toBe('Туризм');
   });
 
   it('currencies category exists and points to apiCategory="Валюты"', () => {

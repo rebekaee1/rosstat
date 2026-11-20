@@ -29,6 +29,7 @@ from app.api.human_pass import router as human_pass_router
 from app.api.research import router as research_router
 from app.api.mail import router as mail_router
 from app.api.topic_mail import router as topic_mail_router
+from app.api.tourism import router as tourism_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(indicators_router)
@@ -61,3 +62,4 @@ api_router.include_router(human_pass_router)
 api_router.include_router(research_router)
 api_router.include_router(mail_router)
 api_router.include_router(topic_mail_router)
+api_router.include_router(tourism_router)

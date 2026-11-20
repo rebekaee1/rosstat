@@ -19,6 +19,7 @@ from app.services.search_vocabulary import VOCABULARY_CONCEPTS, GRAMMAR_WORDS, p
 from app.services.search_r6a import CITY_REGION_ALIASES_R6A, R6A_CONCEPTS
 from app.services.search_r7a import R7A_CONCEPTS
 from app.services.search_r8a import R8A_CONCEPTS
+from app.services.search_tourism import TOURISM_CONCEPTS
 from app.services.search_units import UNIT_CONCEPTS
 from app.services.search_dimensions import DIMENSION_CONCEPTS, prepare_dimensions
 
@@ -155,7 +156,7 @@ CONCEPTS = (
     (("проценты", "процент", "percent", "percentage"), ("search-unit-percent",)),
 )
 
-CONCEPTS = CONCEPTS + LANGUAGE_CONCEPTS + VOCABULARY_CONCEPTS + R6A_CONCEPTS + R7A_CONCEPTS + R8A_CONCEPTS + UNIT_CONCEPTS + DIMENSION_CONCEPTS
+CONCEPTS = CONCEPTS + LANGUAGE_CONCEPTS + VOCABULARY_CONCEPTS + R6A_CONCEPTS + R7A_CONCEPTS + R8A_CONCEPTS + TOURISM_CONCEPTS + UNIT_CONCEPTS + DIMENSION_CONCEPTS
 
 _SINGLE_ALIASES = tuple((phrase_alias, alternatives) for aliases, alternatives in CONCEPTS
     for alias in aliases if " " not in (phrase_alias := " ".join(TOKEN_RE.findall(

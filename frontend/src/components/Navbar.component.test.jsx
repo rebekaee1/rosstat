@@ -75,8 +75,8 @@ describe('Navbar H-4 menu', () => {
     const menu = document.getElementById('fe-nav-mobile-menu');
     const hrefs = (root) => [...root.querySelectorAll('a')].map((a) => a.getAttribute('href'));
     const links = hrefs(menu);
-    // Порядок: страны, цены по регионам (круг 3), рейтинг, сравнение, прогнозы, категории, валюты, «Как мы считаем».
-    const order = ['/russia/region', '/#countries', '/world/rating/gdp-usd', '/compare', '/forecasts', '/russia/category', '/currencies', '/methodology'];
+    // Порядок: страны, цены по регионам (круг 3), рейтинг, сравнение, прогнозы, категории, валюты, туризм (20.11.2026), «Как мы считаем».
+    const order = ['/russia/region', '/#countries', '/world/rating/gdp-usd', '/compare', '/forecasts', '/russia/category', '/currencies', '/russia/category/tourism', '/methodology'];
     expect(order.map((href) => links.indexOf(href))).toEqual([...order.keys()]);
     expect(within(menu).queryByRole('link', { name: 'Демография' })).toBeNull();
 
