@@ -340,6 +340,21 @@ def rows_from_grid(payload: dict, *, territory_dim: str, period_titles: dict[str
 _PAGE_URL = "https://www.fedstat.ru/indicator/{id}"
 
 
+_JS_ESCAPE = re.compile(r"\\(u[0-9a-fA-F]{4}|.)", re.S)
+
+
+def _js_unescape(text: str) -> str:
+    """Строка JS в одинарных кавычках: ``\\uXXXX``, ``\\/``, ``\\'`` и т. п. Без ``unicode_escape``: тот ругается
+    на ``\\/`` (DeprecationWarning на стенде 20.11.2026) и портит кириллицу без экранирования."""
+    simple = {"n": "\n", "t": "\t", "r": "\r", "b": "\b", "f": "\f"}
+
+    def one(m: re.Match) -> str:
+        x = m.group(1)
+        return chr(int(x[1:], 16)) if x[0] == "u" and len(x) == 5 else simple.get(x, x)
+
+    return _JS_ESCAPE.sub(one, text)
+
+
 def parse_indicator_page(page: str) -> dict:
     """Страница набора → {'filters': {dim: {'title', 'values': {oid: title}}}, 'unit', 'title'}.
 
@@ -350,9 +365,7 @@ def parse_indicator_page(page: str) -> dict:
     end = page.index("left_columns:", start)
     js = page[start:end].rstrip().rstrip(",")
     js = re.sub(r"([{,\s])([A-Za-z_0-9]+):", lambda m: f'{m.group(1)}"{m.group(2)}":', js)
-    js = re.sub(r"'((?:[^'\\]|\\.)*)'",
-                lambda m: json.dumps(m.group(1).encode("utf-8").decode("unicode_escape")
-                                     if "\\u" in m.group(1) else m.group(1).replace("\\'", "'")), js)
+    js = re.sub(r"'((?:[^'\\]|\\.)*)'", lambda m: json.dumps(_js_unescape(m.group(1))), js)
     js = re.sub(r",\s*}", "}", js)
     raw = json.loads(js)
     filters = {}
@@ -364,8 +377,7 @@ def parse_indicator_page(page: str) -> dict:
         m = re.search(name + r": '((?:[^'\\]|\\.)*)'", page)
         if not m:
             return ""
-        text = m.group(1)
-        return text.encode("utf-8").decode("unicode_escape") if "\\u" in text else text
+        return _js_unescape(m.group(1))
 
     return {"filters": filters, "unit": _str("unit"), "title": _str("title")}
 

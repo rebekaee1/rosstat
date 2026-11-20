@@ -524,3 +524,14 @@ def test_tourism_in_russia_book_columns(terr):
                    ("tour-gostinicy-nomera", 2022): 485899, ("tour-gostinicy-nomera", 2023): 528685,
                    ("tour-gostinicy-nomera-vysshey-kategorii", 2022): 59725,
                    ("tour-gostinicy-nomera-vysshey-kategorii", 2023): 61018}
+
+
+def test_stand_units_rescaled_and_js_escapes(terr):
+    """Стенд 20.11.2026: 44041 — «квадратный метр», 62159 — «тысяча единиц»; в подписях страницы бывает «\\/»."""
+    s = R.SERIES_BY_CODE["tour-ksr-ploshchad-nomerov"]
+    page = L.parse_indicator_page(_page(1, "x").replace("'Ночёвки'", "'a\\/b \\u0420'"))
+    assert page["filters"]["0"]["values"]["1"] == "a/b Р"
+    assert dict(s.emiss.alt_units)["квадратный метр"] == 0.001
+    assert dict(R.SERIES_BY_CODE["tour-ksr-nomera-klassificirovannye"].emiss.alt_units)["тысяча единиц"] == 1000.0
+    assert R.SERIES_BY_CODE["tour-vds-turindustrii"].emiss.src_unit == "миллион рублей"
+    assert R.SERIES_BY_CODE["tour-vds-turindustrii-dolya-vrp"].emiss.dataset == 62197
