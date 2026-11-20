@@ -219,6 +219,24 @@ def _scaled_series(
     return [(d, float(v) * link.scale) for d, v in series]
 
 
+_PERIODS_PER_YEAR = {"monthly": 12, "quarterly": 4}
+
+
+def closed_year_sums(series: list[tuple[date, float]], frequency: str | None) -> list[tuple[date, float]]:
+    """Сумма каждого закрытого календарного года (все месяцы или кварталы на месте), датой — последняя точка года."""
+    needed = _PERIODS_PER_YEAR.get(normalize_frequency(frequency))
+    if needed is None:
+        return series
+    by_year: dict[int, list[tuple[date, float]]] = {}
+    for when, value in series:
+        by_year.setdefault(when.year, []).append((when, value))
+    out = []
+    for year, points in sorted(by_year.items()):
+        if len({when for when, _ in points}) == needed:
+            out.append((max(when for when, _ in points), sum(value for _, value in points)))
+    return out
+
+
 def _rank_mode_for_link(link: RussiaConceptLink, concept_mode: RankMode) -> RankMode:
     # cpi-yoy уже годовое изменение: второй YoY превратил бы % в бессмыслицу.
     if link.value_kind == "yoy_ready":
@@ -244,7 +262,8 @@ _NATIVE_COMPARE_FREQUENCIES = frozenset({"monthly", "quarterly"})
 
 def russia_compare_is_native(concept_slug: str, indicator_frequency: str | None) -> bool:
     """Отдаёт ли сравнение российский ряд понятия в его частоте (иначе — годовые значения)."""
-    if concept_slug in _GDP_USD_METHOD_CONCEPTS or russia_link_for_concept(concept_slug) is None:
+    link = russia_link_for_concept(concept_slug)
+    if concept_slug in _GDP_USD_METHOD_CONCEPTS or link is None or link.annual_sum:
         return False
     return normalize_frequency(indicator_frequency) in _NATIVE_COMPARE_FREQUENCIES
 
@@ -306,6 +325,8 @@ async def russia_yearly_by_code(
         return {}
     _indicator, series = loaded
     series = _scaled_series(series, link)
+    if link.annual_sum:
+        series = closed_year_sums(series, getattr(_indicator, "frequency", None))
     mode = _rank_mode_for_link(link, concept_mode)
     from app.services.locale import get_locale
 

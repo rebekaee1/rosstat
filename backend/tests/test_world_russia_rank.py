@@ -29,6 +29,8 @@ def test_russia_links_cover_comparable_rating_concepts_only():
         "government-debt-gdp",
         "policy-rate",
         "youth-unemployment-rate",
+        "outbound-trips",
+        "tourist-arrivals",
     }
     assert russia_link_for_concept("activity-rate") is None
     assert russia_link_for_concept("gini-index") is None

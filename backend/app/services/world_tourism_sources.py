@@ -97,6 +97,16 @@ class TourismSeries(IntlSeries):
     scale: float = 1.0  # множитель к значению издателя (МВФ: доллары → млн долл.)
 
 
+HOST_NOTE_RU = "По данным принимающей страны."
+HOST_NOTE_EN = "Host-country data."
+
+
+def host_country(series: TourismSeries) -> TourismSeries:
+    """Ряд туристов глазами страны назначения: пометка в описании отличает его от выезда россиян по данным ФСБ."""
+    return replace(series, description_ru=f"{HOST_NOTE_RU} {series.description_ru}",
+                   description_en=f"{HOST_NOTE_EN} {series.description_en}")
+
+
 def _imf(item: str, entry: str, suffix: str, name_ru: str, name_en: str, desc_ru: str, desc_en: str,
          keywords: str) -> TourismSeries:
     side_ru = (
@@ -226,17 +236,19 @@ def _unt(code: str, suffix: str, name_ru: str, name_en: str, unit: str, unit_ru:
 
 UNT_SERIES: tuple[TourismSeries, ...] = (
     _unt("INBD_TRIP_TOTL_TOTL_TOUR", "unt-inbound-tourists", "Прибытия иностранных туристов",
-         "International tourist arrivals", "THS", "тыс. поездок", "thousand trips",
+         "International tourist arrivals", "MIO", "млн прибытий", "million arrivals",
          "Сколько раз иностранцы приезжали в страну с ночёвкой за год. Один человек, приехавший дважды, "
          "считается дважды.",
          "How many times foreigners arrived in the country and stayed at least one night during the year. "
          "A person who came twice counts twice.",
-         "туристы {country}, турпоток {country}, сколько туристов посетили {country}, въездной туризм {country}"),
+         "туристы {country}, турпоток {country}, сколько туристов посетили {country}, въездной туризм {country}",
+         scale=1e-3),
     _unt("INBD_TRIP_TOTL_TOTL_VSTR", "unt-inbound-visitors", "Прибытия иностранных посетителей",
-         "International visitor arrivals", "THS", "тыс. поездок", "thousand trips",
+         "International visitor arrivals", "MIO", "млн прибытий", "million arrivals",
          "Все приезды иностранцев в страну за год — и с ночёвкой, и однодневные, включая пассажиров круизов.",
          "All arrivals of foreigners during the year, overnight and same-day, including cruise passengers.",
-         "иностранные посетители {country}, въезд иностранцев {country}"),
+         "иностранные посетители {country}, въезд иностранцев {country}",
+         scale=1e-3),
     _unt("INBD_ACCM_HOTL_GUES", "unt-inbound-hotel-guests", "Иностранные гости гостиниц",
          "Non-resident guests in hotels", "THS_PER", "тыс. человек", "thousand guests",
          "Сколько иностранцев заселились в гостиницы и похожие средства размещения страны за год.",
@@ -258,15 +270,17 @@ UNT_SERIES: tuple[TourismSeries, ...] = (
          "Nights residents spent in hotels and similar establishments in their own country during the year.",
          "внутренний туризм гостиницы {country}, ночёвки в отелях {country}"),
     _unt("OUTB_TRIP_TOTL_TOTL_TOUR", "unt-outbound-tourists", "Выездные туристские поездки",
-         "Outbound tourism trips", "THS", "тыс. поездок", "thousand trips",
+         "Outbound tourism trips", "MIO", "млн поездок", "million trips",
          "Сколько поездок с ночёвкой жители страны совершили за границу за год.",
          "Overnight trips residents made abroad during the year.",
-         "выездной туризм {country}, поездки за границу {country}"),
+         "выездной туризм {country}, поездки за границу {country}",
+         scale=1e-3),
     _unt("OUTB_TRIP_TOTL_TOTL_VSTR", "unt-outbound-visitors", "Все выезды жителей за границу",
-         "Outbound visitor departures", "THS", "тыс. поездок", "thousand trips",
+         "Outbound visitor departures", "MIO", "млн поездок", "million trips",
          "Все поездки жителей страны за границу за год — и с ночёвкой, и однодневные.",
          "All trips residents made abroad during the year, overnight and same-day.",
-         "выезд за границу {country}, выездные поездки {country}"),
+         "выезд за границу {country}, выездные поездки {country}",
+         scale=1e-3),
     _unt("CPTY_ACCM_HOTL_ESTB", "unt-hotels", "Число гостиниц", "Number of hotels", "NR", "единиц", "units",
          "Сколько гостиниц и похожих средств размещения работает в стране.",
          "Number of hotels and similar establishments in the country.",
@@ -356,7 +370,7 @@ _RU_ARRIVALS_KEYWORDS = (
     "россияне {country}"
 )
 
-OECD_RU_ARRIVALS = TourismSeries(
+OECD_RU_ARRIVALS = host_country(TourismSeries(
     provider=OECD_PROVIDER, dataset_id="inbound", series_id="TOP_MKT:RUS", code_suffix="tour-arrivals-russia",
     concept_slug="tour-arrivals-russia", name_ru="Туристы из России", name_en="Tourist arrivals from Russia",
     unit="PER", unit_ru="человек", frequency="annual", category_ru=TOURISM_CATEGORY_RU,
@@ -371,7 +385,7 @@ OECD_RU_ARRIVALS = TourismSeries(
                     "country: border counts, visitor surveys or hotel registrations. Overnight tourists by country "
                     "of residence. Where a country reports both border and hotel counts, the more recent series "
                     "is used. Annual."),
-)
+))
 
 _ESTAT_METHOD_RU = (
     "Евростат публикует платёжный баланс стран Европы с разбивкой по странам-партнёрам. Статья «Поездки» — "
@@ -385,7 +399,7 @@ _ESTAT_METHOD_EN = (
     "shopping, medical care and education. International fares are excluded. Annual, million euro. Some "
     "countries withhold partner detail, which leaves gaps."
 )
-ESTAT_RU_CREDIT = TourismSeries(
+ESTAT_RU_CREDIT = host_country(TourismSeries(
     provider=ESTAT_PROVIDER, dataset_id="bop_its6_det", series_id="SD:CRE:RU",
     code_suffix="estat-travel-russia-receipts", concept_slug="travel-russia-receipts",
     name_ru="Траты жителей России в поездках в страну", name_en="Travel spending by Russian residents in the country",
@@ -397,7 +411,7 @@ ESTAT_RU_CREDIT = TourismSeries(
     keywords_ru="российские туристы {country}, траты россиян {country}, туристы из России {country}",
     unit_en="million euro", description_en="How much Russian residents spent in the country on trips during the year.",
     methodology_en=_ESTAT_METHOD_EN,
-)
+))
 ESTAT_RU_DEBIT = replace(
     ESTAT_RU_CREDIT, series_id="SD:DEB:RU", code_suffix="estat-travel-russia-payments",
     concept_slug="travel-russia-payments", name_ru="Траты жителей страны в поездках в Россию",
@@ -407,7 +421,7 @@ ESTAT_RU_DEBIT = replace(
     description_en="How much the country's residents spent on trips to Russia during the year.",
 )
 
-CYSTAT_RU_ARRIVALS = TourismSeries(
+CYSTAT_RU_ARRIVALS = host_country(TourismSeries(
     provider=CYSTAT_PROVIDER, dataset_id="2021010E", series_id="Russia", code_suffix="tour-arrivals-russia",
     concept_slug="tour-arrivals-russia", name_ru="Туристы из России", name_en="Tourist arrivals from Russia",
     unit="PER", unit_ru="человек", frequency="monthly", category_ru=TOURISM_CATEGORY_RU,
@@ -422,7 +436,7 @@ CYSTAT_RU_ARRIVALS = TourismSeries(
                     "ports of the Republic: non-residents staying at least one night, by country of usual "
                     "residence. Monthly. Where the sample is too small and the value is flagged unreliable, the "
                     "month is left blank."),
-)
+))
 CYSTAT_TOTAL_ARRIVALS = replace(
     CYSTAT_RU_ARRIVALS, series_id="TOTAL", code_suffix="tour-arrivals-total", concept_slug="tour-arrivals-total",
     name_ru="Прибытия туристов", name_en="Tourist arrivals",
@@ -441,7 +455,7 @@ _GEOSTAT_METHOD_EN = (
     "The value is the average monthly number of visits in the quarter, in thousands; a person who came twice "
     "makes two visits. Citizenship is by passport."
 )
-GEOSTAT_RU_VISITS = TourismSeries(
+GEOSTAT_RU_VISITS = host_country(TourismSeries(
     provider=GEOSTAT_PROVIDER, dataset_id="0505EN0204", series_id="Russia", code_suffix="tour-visits-russia",
     concept_slug="tour-visits-russia", name_ru="Визиты граждан России", name_en="Visits by citizens of Russia",
     unit="THS", unit_ru="тыс. визитов в месяц", frequency="quarterly", category_ru=TOURISM_CATEGORY_RU,
@@ -451,7 +465,7 @@ GEOSTAT_RU_VISITS = TourismSeries(
     keywords_ru="россияне {country}, туристы из России {country}, сколько россиян посетили {country}",
     unit_en="thousand visits per month", description_en="Visits by Russian citizens, monthly average for the quarter.",
     methodology_en=_GEOSTAT_METHOD_EN,
-)
+))
 GEOSTAT_TOTAL_VISITS = replace(
     GEOSTAT_RU_VISITS, series_id="Total", code_suffix="tour-visits-total", concept_slug="tour-visits-total",
     name_ru="Визиты иностранных посетителей", name_en="Inbound visits",
@@ -502,7 +516,7 @@ def _nat(provider: str, suffix: str, frequency: str, name_ru: str, name_en: str,
          method_ru: str, method_en: str, *, unit: str = "PER", unit_ru: str = "человек", unit_en: str = "people",
          keywords: str = _RU_ARRIVALS_KEYWORDS, dataset: str = "national") -> TourismSeries:
     source_ru, url = NATIONAL_SOURCES[provider]
-    return TourismSeries(
+    return host_country(TourismSeries(
         provider=provider, dataset_id=dataset, series_id=suffix, code_suffix=suffix, concept_slug=suffix,
         name_ru=name_ru, name_en=name_en, unit=unit, unit_ru=unit_ru, frequency=frequency,
         category_ru=TOURISM_CATEGORY_RU, source_ru=source_ru, source_url=url,
@@ -510,7 +524,7 @@ def _nat(provider: str, suffix: str, frequency: str, name_ru: str, name_en: str,
         methodology_ru=f"{method_ru} {_FREQ_RU[frequency]}.",
         keywords_ru=keywords, unit_en=unit_en, description_en=f"{what_en} {_PERIOD_EN[frequency]}.",
         methodology_en=f"{method_en} {_FREQ_EN[frequency]}.",
-    )
+    ))
 
 
 _TOTAL_KEYWORDS = "туристы {country}, сколько туристов {country}, турпоток {country}"

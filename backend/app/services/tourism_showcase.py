@@ -235,7 +235,12 @@ async def _world_block(db: AsyncSession) -> dict:
             })
     # Страны, где считают туристов из России, — первыми; дальше обычный порядок стран сайта.
     ordered = sorted(countries.values(), key=lambda c: (0 if c["russia"] else 1, c.pop("order"), c["name"]))
-    return {"count": len(rows), "countries": ordered, "concepts": concepts}
+    # «Показать все страны (54)» рядом с «каталогом из 55 стран»: 55 — 54 зарубежные страны и Россия, у которой
+    # свой раздел; Косово в каталоге выключено. Подпись строится из этих полей, а не из числа карточек.
+    return {
+        "count": len(rows), "countries": ordered, "concepts": concepts,
+        "countries_count": len(ordered), "russia_included": False,
+    }
 
 
 async def _russia_count(db: AsyncSession) -> int:
