@@ -38,7 +38,8 @@ def test_imf_quarters_in_million_dollars_and_annual_fallback():
 def test_untourism_long_format_m49_and_regions_skipped():
     parsed = src.parse_untourism_workbooks([_bytes("untourism_sample.xlsx")])
     arrivals = dict(parsed[("unt-inbound-tourists", "TR")])
-    assert arrivals[date(2022, 1, 1)] == pytest.approx(50453.0)
+    # Прибытия — в миллионах (рейтинг «млн прибытий»): 50 453 тыс. → 50,453 млн.
+    assert arrivals[date(2022, 1, 1)] == pytest.approx(50.453)
     assert ("tourism-gdp-share", "ES") in parsed
     # Занятые — в тысячах человек.
     employment = parsed[("unt-tourism-employment", "ES")][-1][1]
@@ -302,3 +303,22 @@ def test_closed_national_history_is_kept_past_silence_rule():
     fetched = {src.NBS_CN_PROVIDER: ({("tour-arrivals-russia", "CN"): _pts(1995, 2018)}, {})}
     plan = plan_writes(fetched, set(), {"CN"}, today=date(2030, 1, 1))
     assert len(plan[src.NBS_CN_PROVIDER]) == 1
+
+
+def test_russia_in_tourism_ratings_sums_closed_years_in_millions():
+    from app.data.world_concept_russia import RUSSIA_CONCEPT_LINKS
+    from app.services.world_russia_rank import closed_year_sums, russia_compare_is_native
+
+    link = RUSSIA_CONCEPT_LINKS["outbound-trips"]
+    assert link.indicator_code == "tour-outbound-trips" and link.annual_sum and link.scale == 0.001
+    assert "ФСБ" in link.note_ru and "FSB" in link.note_en
+    quarters = [(date(2025, m, 1), 7000.0) for m in (1, 4, 7, 10)] + [(date(2026, 1, 1), 6000.0)]
+    assert closed_year_sums(quarters, "quarterly") == [(date(2025, 10, 1), 28000.0)]  # 2026 не закрыт
+    assert not russia_compare_is_native("outbound-trips", "quarterly")
+
+
+def test_host_country_note_on_destination_series():
+    assert src.CYSTAT_RU_ARRIVALS.description_ru.startswith("По данным принимающей страны.")
+    assert src.KTB_RU_ARRIVALS.description_en.startswith("Host-country data.")
+    assert src.OECD_RU_ARRIVALS.description_ru.startswith("По данным принимающей страны.")
+    assert not src.ESTAT_RU_DEBIT.description_ru.startswith("По данным")  # траты жителей страны в России

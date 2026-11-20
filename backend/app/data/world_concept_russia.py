@@ -31,6 +31,8 @@ class RussiaConceptLink:
     # Пусто — «Росстат». Для МВФ-оверлея задаём явно, чтобы рейтинг не врал.
     source_ru: str | None = None
     source_en: str | None = None
+    # Поточный ряд месяца/квартала (поездки ФСБ): в рейтинг идёт сумма закрытого календарного года.
+    annual_sum: bool = False
 
 
 # Только честно сопоставимые по смыслу и приводимые к единице таблицы.
@@ -207,6 +209,45 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "For Russia the ranking uses the unemployment rate of people aged 15–24 from Rosstat’s labour "
             "force survey. Other countries follow International Labour Organization estimates for the same ages."
         ),
+    ),
+    # Туризм (20.11.2026): у остальных стран — UN Tourism (туристы с ночёвкой), у России — пограничная служба
+    # ФСБ (поездки с туристскими, деловыми и частными целями, без однодневных). Квартальные поездки суммируются
+    # за закрытый год и переводятся из тысяч в миллионы.
+    "outbound-trips": RussiaConceptLink(
+        indicator_code="tour-outbound-trips",
+        value_kind="level",
+        scale=0.001,
+        annual_sum=True,
+        note_ru=(
+            "Для России — данные пограничной службы ФСБ России (публикует Росстат): выезды россиян за рубеж с "
+            "туристскими, деловыми и частными целями за год. У других стран — UN Tourism по данным самих стран. "
+            "Источник и способ счёта у России другие, сравнивать стоит порядок величин."
+        ),
+        note_en=(
+            "For Russia — border data of the FSB of Russia (published by Rosstat): trips abroad by Russian "
+            "citizens for tourism, business and private purposes over the year. Other countries — UN Tourism, "
+            "from national data. Russia's source and method differ; compare orders of magnitude."
+        ),
+        source_ru="Пограничная служба ФСБ России (Росстат)",
+        source_en="FSB Border Service of Russia (Rosstat)",
+    ),
+    "tourist-arrivals": RussiaConceptLink(
+        indicator_code="tour-inbound-trips",
+        value_kind="level",
+        scale=0.001,
+        annual_sum=True,
+        note_ru=(
+            "Для России — данные пограничной службы ФСБ России (публикует Росстат): въезды иностранцев с "
+            "туристскими, деловыми и частными целями за год. У других стран — UN Tourism по данным самих стран. "
+            "Источник и способ счёта у России другие, сравнивать стоит порядок величин."
+        ),
+        note_en=(
+            "For Russia — border data of the FSB of Russia (published by Rosstat): arrivals of foreigners for "
+            "tourism, business and private purposes over the year. Other countries — UN Tourism, from national "
+            "data. Russia's source and method differ; compare orders of magnitude."
+        ),
+        source_ru="Пограничная служба ФСБ России (Росстат)",
+        source_en="FSB Border Service of Russia (Rosstat)",
     ),
     # gini-index — у Росстата коэффициент по распределению доходов из баланса доходов, у Всемирного банка —
     # по обследованиям домохозяйств: 0,40 и 33 не сопоставимы, Россию в рейтинг не ставим.

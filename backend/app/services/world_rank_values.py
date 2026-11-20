@@ -61,6 +61,8 @@ _FLOW_RANK_CONCEPTS = frozenset({
     "gdp-per-capita-usd",
     "budget-balance-gdp",
     "activity-rate",
+    "tourist-arrivals",
+    "outbound-trips",
 })
 
 

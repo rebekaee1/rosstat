@@ -680,6 +680,10 @@ golden-series теста и фиксации здесь.
   Казахстан — январь–сентябрь 2026 нарастающим, Египет — ОЭСР 2008–2025) сведены в
   `.artifacts/tourism-2026-11-20/build/t3-destinations-without-country-page.csv` для раздела «Туризм» России и статей.
 - Понятия рейтинга (годовые): `tourist-arrivals`, `outbound-trips`, `tourism-gdp-share`, `tourism-employment-share`.
+  Прибытия и выезды UN Tourism хранятся в миллионах («млн прибытий», «млн поездок»; круг наблюдателей 20.11,
+  правки 9 и 47). Россия в этих двух рейтингах — поездки ФСБ (`tour-inbound-trips`, `tour-outbound-trips`):
+  сумма закрытого года, тысячи → миллионы, с пометкой о другом источнике (`RussiaConceptLink.annual_sum`).
+  Ряды стран назначения начинаются с «По данным принимающей страны» (правка 41).
 - Тексты карточек на EN — из описания ряда (`curated_copy_en`): в базе мировых рядов английских описаний нет.
 - Тест — `backend/tests/test_world_tourism_sources.py`, фикстуры — выборки из файлов сбора `tests/fixtures/world_tourism/`.
 
