@@ -593,7 +593,9 @@ async def check_bot_calibration() -> dict | None:
 # одному поисковику большее из двух чисел не меньше COUNTER_MISMATCH_MIN_VISITS и отличается от меньшего не меньше
 # чем в COUNTER_MISMATCH_RATIO раз — заметка в утреннюю сводку 09:10 (вид counter_mismatch в спокойном режиме,
 # не мгновенный алерт). Наша сторона — портреты без роботов и своих (`human_portrait_conditions`), сторона Метрики —
-# органика без headless.
+# органика без headless. 20.11.2026: наша сторона — только подтверждённые люди (people-need-evidence); до этого
+# 18–19.11 сводка писала «Google: у нас 76/87, в Метрике 13/15», а людей среди них было 11/12 — остальное ферма
+# «не подтверждено».
 COUNTER_MISMATCH_MIN_VISITS = 30
 COUNTER_MISMATCH_RATIO = 3.0
 _METRIKA_ENGINE_NAMES = {"yandex": "Яндекс", "google": "Google", "bing": "Bing", "duckduckgo": "DuckDuckGo",

@@ -18,7 +18,7 @@ from collections import Counter
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 
 from app.config import settings
 from app.core.cache import get_state_redis
@@ -46,6 +46,7 @@ from app.models import (
     MetrikaSearchPhrase,
     OAuthIdentity,
     RawMetrikaVisit,
+    ServerSession,
     User,
     WebmasterSearchQuery,
 )
@@ -204,18 +205,24 @@ async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
     from app.services.analytics_marts import metrika_visit_not_headless
 
     # Без headless-роботов: иначе ферма 2026-09 давала LLM «20k прямых визитов».
+    # 20.11.2026: и без «прямых» визитов длительностью 0 с — 19.11 их было 1 973 из 2 459 (Сингапур 1 817,
+    # Китай 81), Метрика их роботами не помечает, наш счётчик те же заходы считает роботами. Число таких
+    # визитов остаётся отдельной строкой, чтобы ферму было видно, но в total/by_source она не попадает.
     human = metrika_visit_not_headless()
-    visits_total = await db.scalar(
-        select(func.count(RawMetrikaVisit.id)).where(
-            RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id, human)
-    ) or 0
+    zero_direct = and_(RawMetrikaVisit.traffic_source == "direct",
+                       func.coalesce(RawMetrikaVisit.duration_seconds, 0) == 0)
+    day_where = (RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id, human)
+    by_source = dict((await db.execute(
+        select(RawMetrikaVisit.traffic_source, func.count())
+        .where(*day_where, ~zero_direct)
+        .group_by(RawMetrikaVisit.traffic_source)
+    )).all())
+    visits_total = sum(int(n or 0) for n in by_source.values())
     if visits_total:
-        by_source = dict((await db.execute(
-            select(RawMetrikaVisit.traffic_source, func.count())
-            .where(RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id, human)
-            .group_by(RawMetrikaVisit.traffic_source)
-        )).all())
-        acq["raw_visits"] = {"total": visits_total, "by_source": by_source}
+        direct_zero = int(await db.scalar(
+            select(func.count(RawMetrikaVisit.id)).where(*day_where, zero_direct)) or 0)
+        acq["raw_visits"] = {"total": visits_total, "by_source": by_source,
+                             "direct_zero_seconds_excluded": direct_zero}
     return acq
 
 
@@ -413,13 +420,28 @@ async def _bot_signals(d: date) -> dict[str, Any]:
             .order_by(func.count().desc())
             .limit(8)
         )).all()
+        # 20.11.2026: алерт — только о сингапурских сессиях, которые прошли мимо фильтра роботов. 19.11 из 1288
+        # сессий Сингапура 1275 уже были роботами (server_sessions.is_bot) и ни в один счёт людей не попали;
+        # алерт по сырому числу сообщал о работающем фильтре как о проблеме.
+        sg_names = ("sg", "singapore", "сингапур")
+        bot_visitors = select(ServerSession.visitor_id_hash).where(
+            ServerSession.day == d, ServerSession.is_bot.is_(True))
+        sg_not_bot = int(await db.scalar(
+            select(func.count()).select_from(BehaviorSession).where(
+                BehaviorSession.started_at >= start, BehaviorSession.started_at < end,
+                BehaviorSession.country.in_(sg_names + ("SG", "Singapore", "Сингапур")),
+                or_(BehaviorSession.visitor_id_hash.is_(None),
+                    BehaviorSession.visitor_id_hash.notin_(bot_visitors)),
+            )
+        ) or 0)
     share = round(100 * webdriver / total, 1) if total else 0
     sg_n = 0
     for k, v in by_country_rows:
         name = (k or "").casefold()
-        if name in {"sg", "singapore", "сингапур"}:
+        if name in sg_names:
             sg_n += int(v)
     sg_share = round(100 * sg_n / total, 1) if total else 0
+    sg_not_bot_share = round(100 * sg_not_bot / total, 1) if total else 0
     if webdriver >= 30 and share >= 20:
         try:
             from app.services.analytics_alerts import _alert
@@ -429,12 +451,13 @@ async def _bot_signals(d: date) -> dict[str, Any]:
             )
         except Exception:  # noqa: BLE001
             logger.warning("bot_wave alert failed", exc_info=True)
-    if sg_n >= 50 and sg_share >= 25:
+    if sg_not_bot >= 50 and sg_not_bot_share >= 25:
         try:
             from app.services.analytics_alerts import _alert
             await _alert(
                 "sg_scrape",
-                f"Скрейп из Сингапура: {sg_n} сессий ({sg_share}% от {total}) за {d}. "
+                f"Скрейп из Сингапура прошёл мимо фильтра роботов: {sg_not_bot} сессий не помечены роботом "
+                f"({sg_not_bot_share}% от {total}; всего из Сингапура {sg_n}) за {d}. "
                 "Bind-cookie fe_bind (кросс-IP) + хостинговые ASN, не страны.",
             )
         except Exception:  # noqa: BLE001
@@ -446,6 +469,7 @@ async def _bot_signals(d: date) -> dict[str, Any]:
         "webdriver_share_pct": share,
         "singapore": sg_n,
         "singapore_share_pct": sg_share,
+        "singapore_not_bot": sg_not_bot,
         "top_countries": {str(k or "unknown"): int(v) for k, v in by_country_rows},
     }
 
