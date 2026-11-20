@@ -684,3 +684,11 @@ def test_formerly_pending_sets_now_in_snapshot():
         assert code in codes, code
     assert ("oborot-obschestvennogo-pitaniya", "russia", 2024) not in pts  # у сборника; продление — с 2025
     assert not {"tour-deti-turpoezdki", "tour-ksr-nomera-klassificirovannye", "obshchepit-oborot-mes"} & codes
+
+
+
+def test_cpi_history_in_snapshot_from_2002():
+    pts = {(c, s, p): v for c, s, p, v in L.read_seed() if c.startswith(("tour-ipc-", "ipc-"))}
+    assert pts[("tour-ipc-turciya", "russia", 202204)] == 226.09  # расхождение 18: это число Росстата
+    assert pts[("tour-ipc-gostinicy", "moskva", 200201)] == 111.78
+    assert max(p for (c, _s, p) in pts if c == "tour-ipc-gostinicy") == 202609
