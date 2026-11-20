@@ -215,8 +215,8 @@ def parse_gva(content: bytes, table: str) -> list[DataPoint]:
 
 # ── Загрузка ──────────────────────────────────────────────────────────────────
 
-def fetch_file(pattern: str, snapshot: str) -> tuple[bytes, str]:
-    return resolve_mediabank_file(catalog_urls=[TOURISM_PAGE], name_patterns=[pattern])
+def fetch_file(pattern: str, snapshot: str, page: str = TOURISM_PAGE) -> tuple[bytes, str]:
+    return resolve_mediabank_file(catalog_urls=[page], name_patterns=[pattern])
 
 
 def snapshot_file(snapshot: str) -> tuple[bytes, str]:
@@ -226,13 +226,14 @@ def snapshot_file(snapshot: str) -> tuple[bytes, str]:
 class _TourismFileParser(BaseParser):
     pattern: ClassVar[str]
     snapshot: ClassVar[str]
+    page: ClassVar[str] = TOURISM_PAGE
 
     def _parse(self, content: bytes, cfg: dict) -> list[DataPoint]:
         raise NotImplementedError
 
     async def _fetch_and_parse(self, db, indicator, cfg, fetch_log):
         try:
-            content, url = await asyncio.to_thread(fetch_file, self.pattern, self.snapshot)
+            content, url = await asyncio.to_thread(fetch_file, self.pattern, self.snapshot, self.page)
         except Exception as exc:  # noqa: BLE001 — сеть/бан/имя файла: решает наличие истории
             has_history = await db.scalar(
                 select(func.count()).select_from(IndicatorData).where(IndicatorData.indicator_id == indicator.id)
@@ -309,3 +310,86 @@ class TourismDestinationParser(BaseParser):
     async def _fetch_and_parse(self, db, indicator, cfg, fetch_log):
         text = (SNAPSHOT_DIR / DESTINATIONS_FILE).read_text(encoding="utf-8")
         return parse_destination(text, cfg["dest_iso2"], cfg["dest_kind"]), indicator.source_url
+
+
+# ── ИПЦ туристских позиций по России (ipc_spr_MM-YYYY.xlsx, 20.11.2026) ──────
+#
+# Файл «Индексы потребительских цен и структура потребительских расходов» перезаписывается каждый месяц и хранит
+# только текущий и прошлый год: лист на месяц (имя «ММГГГГ»; сентябрь 2025 назван «0922025»), строки — группы и
+# товары-представители с локальным кодом во втором столбце, столбцы — вес в расходах, индекс к предыдущему месяцу, к
+# декабрю, к тому же месяцу прошлого года. Ряд — изменение цены к тому же месяцу прошлого года, в процентах (индекс
+# минус 100); позиция ищется по коду, а не по названию. Загруженная история при обрезке файла сохраняется.
+
+PRICE_PAGE = "https://rosstat.gov.ru/statistics/price"
+CPI_PATTERN = r"ipc_spr_\d{2}-\d{4}\.xlsx$"
+CPI_SNAPSHOT = "ipc_spr_09-2026.xlsx"
+_CPI_SHEET = re.compile(r"^(\d{2})\d*?((?:19|20)\d{2})$")
+
+
+def parse_cpi_item(content: bytes, item: str) -> list[DataPoint]:
+    wb = _load(content)
+    try:
+        points: list[DataPoint] = []
+        for name in wb.sheetnames:
+            m = _CPI_SHEET.match(name.strip())
+            if not m or not 1 <= int(m.group(1)) <= 12:
+                continue
+            day = date(int(m.group(2)), int(m.group(1)), 1)
+            for row in wb[name].iter_rows(values_only=True):
+                if len(row) > 5 and str(row[1]).strip() == item:
+                    yoy = _num(row[5])
+                    if yoy is not None:
+                        if not 20 < yoy < 500:
+                            raise RosstatTourismFormatError(f"{name}: индекс {yoy} у позиции {item}")
+                        points.append(DataPoint(day, round(yoy - 100, 2)))
+                    break
+    finally:
+        wb.close()
+    if not points:
+        raise RosstatTourismFormatError(f"позиция {item}: ни одной точки")
+    return sorted(points, key=lambda p: p.date)
+
+
+class RosstatTourismCpiParser(_TourismFileParser):
+    parser_type: ClassVar[str] = "rosstat_tourism_cpi"
+    pattern = CPI_PATTERN
+    snapshot = CPI_SNAPSHOT
+    page = PRICE_PAGE
+
+    def _parse(self, content: bytes, cfg: dict) -> list[DataPoint]:
+        return parse_cpi_item(content, str(cfg["cpi_item"]))
+
+
+# ── Разовые официальные ряды (tourism_static.csv, 20.11.2026) ─────────────────
+#
+# Источники без живого машиночитаемого ряда или с прекращённой публикацией: курортный сбор 2018–2024 (Казначейство,
+# форма 0503317; эксперимент закончен, остаточные поступления 2025 года не берутся); туристический налог по кварталам
+# поступления (ФНС, 1-НМ, нарастающий итог → квартал; итог 2025 года сходится с Казначейством: 5 635,3 и 5 636,5 млн
+# руб.; в Москве налог не введён — поэтому её нет у Казначейства, у ФНС там ноль); цена дня в санатории и доме отдыха
+# 1991–2025 (до 1998 года — деноминированные рубли, делены на 1000); таблицы сборника «Туризм в России» 2024 года за
+# 2014–2023 (сборник снят с сайта Росстата, взят из веб-архива). Ряд обновляется заменой файла.
+
+STATIC_FILE = "tourism_static.csv"
+
+
+def parse_static(text: str, code: str) -> list[DataPoint]:
+    import csv
+
+    points = []
+    for r in csv.DictReader(io.StringIO(text), delimiter=";"):
+        if r["code"] != code:
+            continue
+        period = r["period"].strip()
+        day = date.fromisoformat(period) if "-" in period else date(int(period), 1, 1)
+        points.append(DataPoint(day, float(r["value"])))
+    if not points:
+        raise RosstatTourismFormatError(f"{code}: нет строк в {STATIC_FILE}")
+    return sorted(points, key=lambda p: p.date)
+
+
+class TourismStaticParser(BaseParser):
+    parser_type: ClassVar[str] = "tourism_static_file"
+
+    async def _fetch_and_parse(self, db, indicator, cfg, fetch_log):
+        text = (SNAPSHOT_DIR / STATIC_FILE).read_text(encoding="utf-8")
+        return parse_static(text, cfg.get("static_code", indicator.code)), indicator.source_url

@@ -20930,6 +20930,120 @@
     "unit": "тыс. чел.",
     "variantAxis": null
   },
+  "tour-firm-tourists-abroad": {
+    "base": "tour-firm-tourists-abroad",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-firm-tourists-abroad",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-firm-tourists-abroad-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-firm-tourists-abroad-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Туристы турфирм в поездках за рубеж",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-firm-tourists-russia": {
+    "base": "tour-firm-tourists-russia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-firm-tourists-russia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-firm-tourists-russia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-firm-tourists-russia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Туристы турфирм в поездках по России",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
   "tour-gva": {
     "base": "tour-gva",
     "defaultMode": "level",
@@ -21516,6 +21630,162 @@
     "name": "Номерной фонд гостиниц и других средств размещения",
     "template": "T10",
     "unit": "тыс. номеров",
+    "variantAxis": null
+  },
+  "tour-hotel-workers": {
+    "base": "tour-hotel-workers",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hotel-workers",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "чел."
+      },
+      {
+        "code": "tour-hotel-workers-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-workers-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Работники гостиниц и других средств размещения",
+    "template": "T10",
+    "unit": "чел.",
+    "variantAxis": null
+  },
+  "tour-household-spending": {
+    "base": "tour-household-spending",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-household-spending",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "руб."
+      },
+      {
+        "code": "tour-household-spending-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-household-spending-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Расходы семей на туризм и отдых",
+    "template": "T10",
+    "unit": "руб.",
+    "variantAxis": null
+  },
+  "tour-household-spending-share": {
+    "base": "tour-household-spending-share",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-household-spending-share",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "%"
+      },
+      {
+        "code": "tour-household-spending-share-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "п.п."
+      }
+    ],
+    "name": "Доля туризма и отдыха в расходах семей",
+    "template": "T10a",
+    "unit": "%",
     "variantAxis": null
   },
   "tour-inbound-abkhazia": {
@@ -22766,6 +23036,63 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-new-hotel-beds": {
+    "base": "tour-new-hotel-beds",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-new-hotel-beds",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "мест"
+      },
+      {
+        "code": "tour-new-hotel-beds-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-new-hotel-beds-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Ввод мест в новых гостиницах",
+    "template": "T10",
+    "unit": "мест",
+    "variantAxis": null
+  },
   "tour-outbound-abkhazia": {
     "base": "tour-outbound-abkhazia",
     "defaultMode": "level",
@@ -23897,6 +24224,519 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-package-price": {
+    "base": "tour-package-price",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-package-price",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. руб."
+      },
+      {
+        "code": "tour-package-price-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-package-price-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Средняя стоимость турпакета",
+    "template": "T10",
+    "unit": "тыс. руб.",
+    "variantAxis": null
+  },
+  "tour-package-price-domestic": {
+    "base": "tour-package-price-domestic",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-package-price-domestic",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. руб."
+      },
+      {
+        "code": "tour-package-price-domestic-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-package-price-domestic-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Средняя стоимость тура по России",
+    "template": "T10",
+    "unit": "тыс. руб.",
+    "variantAxis": null
+  },
+  "tour-package-price-outbound": {
+    "base": "tour-package-price-outbound",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-package-price-outbound",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. руб."
+      },
+      {
+        "code": "tour-package-price-outbound-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-package-price-outbound-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Средняя стоимость зарубежного тура",
+    "template": "T10",
+    "unit": "тыс. руб.",
+    "variantAxis": null
+  },
+  "tour-packages": {
+    "base": "tour-packages",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-packages",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс."
+      },
+      {
+        "code": "tour-packages-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-packages-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Турпакеты, проданные населению",
+    "template": "T10",
+    "unit": "тыс.",
+    "variantAxis": null
+  },
+  "tour-packages-domestic": {
+    "base": "tour-packages-domestic",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-packages-domestic",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс."
+      },
+      {
+        "code": "tour-packages-domestic-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-packages-domestic-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Турпакеты по России, проданные россиянам",
+    "template": "T10",
+    "unit": "тыс.",
+    "variantAxis": null
+  },
+  "tour-packages-outbound": {
+    "base": "tour-packages-outbound",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-packages-outbound",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс."
+      },
+      {
+        "code": "tour-packages-outbound-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-packages-outbound-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Турпакеты за рубеж, проданные россиянам",
+    "template": "T10",
+    "unit": "тыс.",
+    "variantAxis": null
+  },
+  "tour-packages-value": {
+    "base": "tour-packages-value",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-packages-value",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-packages-value-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-packages-value-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Стоимость проданных турпакетов",
+    "template": "T10",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-price-rest-house": {
+    "base": "tour-price-rest-house",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-price-rest-house",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "руб."
+      },
+      {
+        "code": "tour-price-rest-house-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-price-rest-house-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Цена дня в доме отдыха",
+    "template": "T10",
+    "unit": "руб.",
+    "variantAxis": null
+  },
+  "tour-price-sanatorium": {
+    "base": "tour-price-sanatorium",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-price-sanatorium",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "руб."
+      },
+      {
+        "code": "tour-price-sanatorium-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-price-sanatorium-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Цена дня в санатории",
+    "template": "T10",
+    "unit": "руб.",
+    "variantAxis": null
+  },
   "tour-rail-passenger-km": {
     "base": "tour-rail-passenger-km",
     "defaultMode": "level",
@@ -24131,6 +24971,63 @@
     "unit": "млн чел.",
     "variantAxis": null
   },
+  "tour-resort-fee": {
+    "base": "tour-resort-fee",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-resort-fee",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млн руб."
+      },
+      {
+        "code": "tour-resort-fee-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-resort-fee-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Курортный сбор в России",
+    "template": "T10",
+    "unit": "млн руб.",
+    "variantAxis": null
+  },
   "tour-sanatorium-guests": {
     "base": "tour-sanatorium-guests",
     "defaultMode": "level",
@@ -24300,6 +25197,93 @@
     "name": "Доходы санаториев",
     "template": "T10",
     "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-tax": {
+    "base": "tour-tax",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-tax",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млн руб."
+      },
+      {
+        "code": "tour-tax-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн руб."
+      },
+      {
+        "code": "tour-tax-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-tax-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-tax-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-tax-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Туристический налог в России",
+    "template": "T9",
+    "unit": "млн руб.",
     "variantAxis": null
   },
   "tour-travel-balance": {

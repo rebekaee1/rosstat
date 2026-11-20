@@ -712,8 +712,211 @@ def _dest_series() -> list[TourSeries]:
     return out
 
 
+# ── Вторая волна (c4, 20.11.2026): цены, налоги с туристов, сборник «Туризм в России» ─
+
+PRICE_PAGE = "https://rosstat.gov.ru/statistics/price"
+TREASURY_URL = "https://roskazna.gov.ru/ispolnenie-byudzhetov/konsolidirovannye-byudzhety-subektov/"
+FNS_1NM_URL = "https://www.nalog.gov.ru/rn77/related_activities/statistics_and_analytics/forms/"
+BOOK_URL = "https://rosstat.gov.ru/statistics/turizm"
+
+_M_CPI = (
+    "Росстат каждый месяц регистрирует цены на одни и те же услуги-представители в городах России и считает, на "
+    "сколько процентов они изменились к тому же месяцу прошлого года. Цена поездки за границу — стоимость типового "
+    "тура (перелёт и проживание) у туроператоров; цена гостиницы — сутки проживания одного человека. Росстат "
+    "публикует такие индексы по позициям только за текущий и прошлый год, поэтому ряд начинается с 2025 года и "
+    "дальше копится на сайте."
+)
+_M_CPI_EN = (
+    "Each month Rosstat records prices of the same representative services across Russian cities and computes the "
+    "percentage change from the same month a year earlier. A trip abroad is a typical package (flight and stay) "
+    "sold by tour operators; a hotel price is one night for one person. Rosstat publishes item-level indices only "
+    "for the current and previous year, so the series starts in 2025 and accumulates on this site."
+)
+
+CPI_ITEMS: tuple[tuple[str, str, str, str, str, bool], ...] = (
+    # код серии, код Росстата, название (после «Цены: »), en, подпись в группе, на витрине
+    ("tourism", "9530", "услуги в сфере туризма", "tourism services", "Все услуги туризма", True),
+    ("domestic", "9560", "внутренний туризм", "domestic tourism", "Внутренний туризм", False),
+    ("abroad", "9540", "зарубежный туризм", "outbound tourism", "Зарубежный туризм", False),
+    ("turkey", "9541", "поездка на отдых в Турцию", "holiday trip to Turkey", "Турция", False),
+    ("egypt", "9552", "поездка на отдых в Египет", "holiday trip to Egypt", "Египет", False),
+    ("belarus", "9553", "поездка в Беларусь", "trip to Belarus", "Беларусь", False),
+    ("caucasus", "9555", "поездки в страны Закавказья", "trips to the South Caucasus", "Закавказье", False),
+    ("central-asia", "9556", "поездки в страны Средней Азии", "trips to Central Asia", "Средняя Азия", False),
+    ("se-asia", "9559", "поездки в страны Юго-Восточной Азии", "trips to Southeast Asia", "Юго-Восточная Азия",
+     False),
+    ("black-sea", "9536", "отдых на Черноморском побережье России", "holiday on Russia's Black Sea coast",
+     "Черноморское побережье", False),
+    ("russia-tours", "9535", "экскурсионные туры по России", "sightseeing tours in Russia", "Туры по России",
+     False),
+    ("river-cruise", "9532", "речной круиз по России", "river cruise in Russia", "Речной круиз", False),
+    ("excursions", "9550", "экскурсионные услуги", "excursion services", "Экскурсии", False),
+    ("bus-excursion", "9534", "автобусная экскурсия", "bus excursion", "Автобусная экскурсия", False),
+    ("hotels", "9490", "гостиницы и прочие места проживания", "hotels and other accommodation",
+     "Все средства размещения", True),
+    ("hotel-1", "9462", "гостиница 1* или мотель", "1-star hotel or motel", "Гостиница 1*", False),
+    ("hotel-2", "9463", "гостиница 2*", "2-star hotel", "Гостиница 2*", False),
+    ("hotel-3", "9464", "гостиница 3*", "3-star hotel", "Гостиница 3*", False),
+    ("hotel-4-5", "9465", "гостиница 4*–5*", "4-5-star hotel", "Гостиница 4*–5*", False),
+    ("hostel", "9466", "хостел", "hostel", "Хостел", False),
+    ("sanatoria", "9600", "санаторно-оздоровительные услуги", "health resort services", "Санаторно-оздоровительные",
+     False),
+    ("sanatorium-day", "9606", "день в санатории", "a day in a sanatorium", "Санаторий", False),
+    ("rest-house-day", "9607", "день в доме отдыха или пансионате", "a day in a rest house", "Дом отдыха", False),
+)
+_CPI_HOTEL_FROM = 14  # позиции с этого индекса — вторая группа (размещение и санатории)
+
+
+def _cpi_series() -> list[TourSeries]:
+    out = []
+    # Позиции, введённые в корзину в 2025 году: изменение к прошлому году Росстат даёт с января 2026.
+    new_2025 = {"hotel-1", "hotel-2", "hotel-3", "hotel-4-5", "hostel", "sanatoria", "sanatorium-day",
+                "rest-house-day"}
+    for slug, item, label, label_en, _short, listed in CPI_ITEMS:
+        name = f"Цены на туризм: {label}"
+        since = 2026 if slug in new_2025 else 2025
+        out.append(_s(
+            f"tour-cpi-{slug}", name, f"Tourism prices: {label_en}", "% г/г", "% y/y", "monthly", SRC_ROSSTAT,
+            PRICE_PAGE, "rosstat_tourism_cpi", {"cpi_item": item},
+            f"На сколько процентов изменились цены ({label}) к тому же месяцу прошлого года. Данные с {since} года.",
+            f"Year-on-year change in prices for {label_en}, per cent. Since {since}.", _M_CPI, _M_CPI_EN,
+            f"цены на {label}, подорожание, инфляция в туризме, стоимость отдыха",
+            f"Росстата по месяцам с {since} года", listed=listed, min_value=None,
+            seo_title=f"Цены на {label}: на сколько подорожало за год",
+        ))
+    return out
+
+
+_M_STATIC = (
+    "Ряд собран из официальной публикации, у которой нет постоянно обновляемой машиночитаемой версии, и обновляется "
+    "на сайте вручную."
+)
+_M_STATIC_EN = "Compiled from an official publication without a regularly updated machine-readable version."
+_M_BOOK = (
+    "Данные статистического сборника Росстата «Туризм в России» 2024 года (2014–2023). Сборник снят с сайта Росстата, "
+    "таблицы взяты из его архивной копии; более нового выпуска нет. " + _M_STATIC
+)
+_M_BOOK_EN = (
+    "Data from Rosstat's statistical yearbook Tourism in Russia, 2024 edition (2014-2023). The yearbook was removed "
+    "from Rosstat's website and the tables come from its archived copy; no newer edition exists."
+)
+
+
+def _static_series() -> list[TourSeries]:
+    S = "tourism_static_file"
+    book = "Росстата по годам 2014–2023"
+    out = [
+        _s("tour-tax", "Туристический налог в России", "Tourist tax in Russia", "млн руб.", "RUB mn", "quarterly",
+           "ФНС России", FNS_1NM_URL, S, {},
+           "Сколько туристического налога поступило в бюджеты регионов и муниципалитетов за квартал, миллионов "
+           "рублей. Налог действует с 2025 года вместо курортного сбора и взимается с проживания в гостиницах.",
+           "Tourist tax received by regional and municipal budgets per quarter, RUB million. The tax replaced the "
+           "resort fee in 2025 and is charged on hotel stays.",
+           "Отчёт ФНС России о начислении и поступлении налогов (форма 1-НМ). Гостиницы платят налог раз в квартал — "
+           "до 28-го числа месяца после квартала, поэтому в первом квартале 2025 года поступлений ещё не было, а "
+           "квартал на сайте — это деньги, поступившие в этом квартале. Итог 2025 года (5,64 млрд руб.) совпадает с "
+           "отчётом Федерального казначейства об исполнении бюджетов. В Москве налог не введён. " + _M_STATIC,
+           "Federal Tax Service report on tax accruals and receipts (form 1-NM). Hotels pay quarterly, by the 28th "
+           "of the month after the quarter, so no receipts arrived in Q1 2025; a quarter on this site is the money "
+           "received in it. The 2025 total matches the Federal Treasury budget execution report. Moscow has not "
+           "introduced the tax.",
+           "туристический налог, туристический сбор, налог с туристов, налог на проживание в гостинице",
+           "ФНС России по кварталам с 2025 года", family="T9"),
+        _s("tour-resort-fee", "Курортный сбор в России", "Resort fee in Russia", "млн руб.", "RUB mn", "annual",
+           "Федеральное казначейство", TREASURY_URL, S, {},
+           "Сколько курортного сбора поступило в бюджеты за год, миллионов рублей. Сбор брали в 2018–2024 годах в "
+           "Краснодарском, Ставропольском и Алтайском краях, на «Сириусе» и в Санкт-Петербурге; с 2025 года его "
+           "заменил туристический налог.",
+           "Resort fee received by budgets during the year, RUB million. The fee was charged in 2018-2024 in "
+           "Krasnodar, Stavropol and Altai territories, Sirius and St Petersburg; the tourist tax replaced it in 2025.",
+           "Отчёт Федерального казначейства об исполнении консолидированных бюджетов субъектов (форма 0503317), "
+           "доходы по коду платы за пользование курортной инфраструктурой. Остаточные поступления 2025 года после "
+           "окончания эксперимента не показаны. " + _M_STATIC,
+           "Federal Treasury report on execution of consolidated regional budgets (form 0503317), revenue code for "
+           "the resort infrastructure fee. Residual receipts in 2025 after the experiment ended are not shown.",
+           "курортный сбор, сбор с отдыхающих, Сочи, Крым, Кавминводы", "Казначейства по годам 2018–2024",
+           family="T10"),
+        _s("tour-price-sanatorium", "Цена дня в санатории", "Price of a day in a sanatorium", "руб.", "RUB",
+           "annual", SRC_ROSSTAT, PRICE_PAGE, S, {},
+           "Средняя цена одного дня в санатории в России на конец года, рублей. С 1991 года.",
+           "Average price of one day in a sanatorium in Russia at year end, roubles. Since 1991.",
+           "Средняя потребительская цена Росстата на конец года по России. Цены 1991–1997 годов пересчитаны в "
+           "деноминированные рубли (разделены на 1000), поэтому ряд непрерывен. До 2000 года в наблюдение входили "
+           "в основном профсоюзные и ведомственные санатории.",
+           "Rosstat's average consumer price at year end. Prices for 1991-1997 are converted to redenominated "
+           "roubles (divided by 1000) so the series is continuous.",
+           "цена санатория, стоимость санатория, путёвка в санаторий, сколько стоит санаторий",
+           "Росстата по годам с 1991 года", family="T10"),
+        _s("tour-price-rest-house", "Цена дня в доме отдыха", "Price of a day in a rest house", "руб.", "RUB",
+           "annual", SRC_ROSSTAT, PRICE_PAGE, S, {},
+           "Средняя цена одного дня в доме отдыха или пансионате в России на конец года, рублей. С 1991 года.",
+           "Average price of one day in a rest house or boarding house in Russia at year end, roubles. Since 1991.",
+           "Средняя потребительская цена Росстата на конец года по России. Цены 1991–1997 годов пересчитаны в "
+           "деноминированные рубли (разделены на 1000).",
+           "Rosstat's average consumer price at year end. Prices for 1991-1997 are converted to redenominated "
+           "roubles (divided by 1000).", "цена дома отдыха, пансионат, стоимость отдыха",
+           "Росстата по годам с 1991 года", family="T10", listed=False),
+    ]
+    book_rows = [
+        ("tour-packages", "Турпакеты, проданные населению", "Package tours sold", "тыс.", "thousand",
+         "Сколько турпакетов продали турфирмы населению за год, тысяч — туры по России и за рубеж.",
+         "Package tours sold by travel firms during the year, thousand.", "турпакеты, путёвки, продажи туров", True,
+         "T10"),
+        ("tour-packages-domestic", "Турпакеты по России, проданные россиянам", "Domestic package tours sold",
+         "тыс.", "thousand", "Сколько туров по России продали турфирмы россиянам за год, тысяч.",
+         "Package tours within Russia sold to Russian citizens, thousand.", "туры по России", False, "T10"),
+        ("tour-packages-outbound", "Турпакеты за рубеж, проданные россиянам", "Outbound package tours sold",
+         "тыс.", "thousand", "Сколько зарубежных туров продали турфирмы россиянам за год, тысяч.",
+         "Package tours abroad sold to Russian citizens, thousand.", "зарубежные туры", False, "T10"),
+        ("tour-packages-value", "Стоимость проданных турпакетов", "Value of package tours sold", "млрд руб.",
+         "RUB bn", "Сколько население заплатило турфирмам за турпакеты за год, миллиардов рублей.",
+         "Amount paid by the population for package tours during the year, RUB billion.", "выручка турфирм",
+         False, "T10"),
+        ("tour-package-price", "Средняя стоимость турпакета", "Average package tour price", "тыс. руб.",
+         "RUB thousand", "Средняя цена одного турпакета, проданного населению, тысяч рублей.",
+         "Average price of one package tour sold to the population, RUB thousand.",
+         "стоимость путёвки, сколько стоит тур, цена тура", True, "T10"),
+        ("tour-package-price-domestic", "Средняя стоимость тура по России", "Average domestic package tour price",
+         "тыс. руб.", "RUB thousand", "Средняя цена одного тура по России, проданного россиянам, тысяч рублей.",
+         "Average price of one domestic package tour, RUB thousand.", "цена тура по России", False, "T10"),
+        ("tour-package-price-outbound", "Средняя стоимость зарубежного тура", "Average outbound package tour price",
+         "тыс. руб.", "RUB thousand", "Средняя цена одного зарубежного тура, проданного россиянам, тысяч рублей.",
+         "Average price of one outbound package tour, RUB thousand.", "цена тура за границу", False, "T10"),
+        ("tour-firm-tourists-russia", "Туристы турфирм в поездках по России", "Travel firm clients on domestic tours",
+         "тыс. чел.", "thousand people", "Сколько российских туристов турфирмы отправили в туры по России за год, тысяч.",
+         "Russian tourists sent by travel firms on domestic tours, thousand.", "организованный туризм", False, "T10"),
+        ("tour-firm-tourists-abroad", "Туристы турфирм в поездках за рубеж", "Travel firm clients on tours abroad",
+         "тыс. чел.", "thousand people", "Сколько российских туристов турфирмы отправили в зарубежные туры за год, тысяч.",
+         "Russian tourists sent by travel firms on tours abroad, thousand.", "организованный туризм", False, "T10"),
+        ("tour-household-spending", "Расходы семей на туризм и отдых", "Household spending on tourism and leisure",
+         "руб.", "RUB", "Сколько в среднем тратит на туризм и отдых один член семьи за год, рублей, по обследованию "
+         "бюджетов домашних хозяйств.", "Average annual spending on tourism and leisure per household member, "
+         "roubles.", "расходы на отпуск, траты на отдых", True, "T10"),
+        ("tour-household-spending-share", "Доля туризма и отдыха в расходах семей",
+         "Share of tourism and leisure in household spending", "%", "%",
+         "Какую долю всех потребительских расходов семьи тратят на туризм и отдых, процентов.",
+         "Share of tourism and leisure in household consumer spending, per cent.", "доля расходов на отдых", False,
+         "T10a"),
+        ("tour-hotel-workers", "Работники гостиниц и других средств размещения",
+         "Employees of hotels and other accommodation", "чел.", "people",
+         "Среднесписочная численность работников гостиниц, санаториев и других коллективных средств размещения, "
+         "человек.", "Average number of employees of collective accommodation establishments.",
+         "работники гостиниц, занятость в туризме", False, "T10"),
+        ("tour-new-hotel-beds", "Ввод мест в новых гостиницах", "New hotel bed places commissioned", "мест",
+         "bed places", "Сколько мест в гостиницах ввели в действие за год.",
+         "Hotel bed places commissioned during the year.", "строительство гостиниц, новые отели", False, "T10"),
+    ]
+    for code, name, name_en, unit, unit_en, desc, desc_en, kw, listed, fam in book_rows:
+        out.append(_s(code, name, name_en, unit, unit_en, "annual", SRC_ROSSTAT, BOOK_URL, S, {},
+                      desc + " Данные 2014–2023 годов." if code != "tour-hotel-workers" else desc + " 2019–2023.",
+                      desc_en, _M_BOOK, _M_BOOK_EN, kw, book, family=fam, listed=listed,
+                      yoy_unit="п.п." if fam == "T10a" else None))
+    return out
+
+
 SERIES: dict[str, TourSeries] = {s.code: s for s in (*_cbr_series(), *_fsb_series(), *_gva_series(),
-                                                     *_emiss_series(), *_dest_series())}
+                                                     *_emiss_series(), *_dest_series(), *_cpi_series(),
+                                                     *_static_series())}
 
 
 # ── Группы срезов (frontend indicatorVariants.js повторяет их; тест сверяет) ──
@@ -767,6 +970,38 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
         ("tour-hotel-rooms", "Номера", "Rooms"),
         ("tour-hotel-beds", "Места", "Bed places"),
         ("tour-hotel-revenue", "Доходы", "Revenue"),
+        ("tour-hotel-workers", "Работники", "Employees"),
+        ("tour-new-hotel-beds", "Новые места", "New bed places"),
+    )),
+    ("tourCpiTrips", "Цены на поездки и экскурсии", tuple(
+        (f"tour-cpi-{c[0]}", c[4], c[3].capitalize()) for c in CPI_ITEMS[:_CPI_HOTEL_FROM]
+    )),
+    ("tourCpiStay", "Цены на гостиницы и санатории", tuple(
+        (f"tour-cpi-{c[0]}", c[4], c[3].capitalize()) for c in CPI_ITEMS[_CPI_HOTEL_FROM:]
+    )),
+    ("tourStayPrice", "Цена дня отдыха", (
+        ("tour-price-sanatorium", "Санаторий", "Sanatorium"),
+        ("tour-price-rest-house", "Дом отдыха", "Rest house"),
+    )),
+    ("tourTaxes", "Налоги с туристов", (
+        ("tour-tax", "Туристический налог", "Tourist tax"),
+        ("tour-resort-fee", "Курортный сбор", "Resort fee"),
+    )),
+    ("tourFirms", "Турфирмы и турпакеты", (
+        ("tour-packages", "Турпакеты", "Package tours"),
+        ("tour-packages-domestic", "Туры по России", "Domestic tours"),
+        ("tour-packages-outbound", "Туры за рубеж", "Tours abroad"),
+        ("tour-packages-value", "Стоимость турпакетов", "Value of tours"),
+        ("tour-package-price", "Средняя цена тура", "Average tour price"),
+        ("tour-package-price-domestic", "Цена тура по России", "Domestic tour price"),
+        ("tour-package-price-outbound", "Цена тура за рубеж", "Outbound tour price"),
+        ("tour-firm-tourists-russia", "Туристы по России", "Tourists in Russia"),
+        ("tour-firm-tourists-abroad", "Туристы за рубеж", "Tourists abroad"),
+        ("tour-agencies", "Число турфирм", "Travel firms"),
+    )),
+    ("tourHousehold", "Расходы семей на отдых", (
+        ("tour-household-spending", "На человека", "Per person"),
+        ("tour-household-spending-share", "Доля в расходах", "Share of spending"),
     )),
     ("tourSanatoria", "Санатории", (
         ("tour-sanatorium-guests", "Размещённые", "Guests"),
@@ -873,6 +1108,14 @@ _WHY["dest"] = (
     "Статистика страны назначения — второй взгляд на выездной туризм: она показывает, сколько россиян страна "
     "действительно приняла, и помогает сверить российские данные о выезде с данными принимающей стороны."
 )
+_WHY["prices"] = (
+    "Цены на туры, гостиницы и санатории показывают, во что обходится отдых, и объясняют сдвиги спроса: дорожают "
+    "закрытые направления, дешевеют те, где растёт предложение. Туристские услуги — заметная часть инфляции услуг."
+)
+_WHY["static"] = (
+    "Ряд дополняет основные показатели туризма тем, что публикуется редко: налоги с туристов, продажи турфирм, "
+    "расходы семей на отдых, работники и новые места в гостиницах."
+)
 _FREQ = {
     "cbr": ("Банк России публикует квартальный платёжный баланс примерно через полтора месяца после квартала, "
             "месячную торговлю услугами — около 15-го числа следующего месяца. Последние месяцы — оценка."),
@@ -882,6 +1125,8 @@ _FREQ = {
            "уточняет в феврале следующего года.",
     "transport": "Росавиация и Росстат публикуют месячные данные примерно через полтора-два месяца после месяца.",
     "hotels": "Годовые данные выходят весной–летом следующего года, оперативные помесячные — через два-три месяца.",
+    "prices": "Индексы по позициям Росстат публикует ежемесячно; средние цены дня отдыха — раз в год.",
+    "static": "Источник обновляется раз в год или публикация прекращена; на сайте ряд обновляется вручную.",
     "dest": "Страны публикуют данные в своём графике; на сайте ряд обновляется вручную при выходе новых данных.",
 }
 
@@ -893,6 +1138,10 @@ def _group(s: TourSeries) -> str:
         return "fsb"
     if s.parser_type == "tourism_destination_file":
         return "dest"
+    if s.parser_type == "rosstat_tourism_cpi" or s.code.startswith("tour-price-"):
+        return "prices"
+    if s.parser_type == "tourism_static_file":
+        return "static"
     if s.parser_type == "rosstat_tourism_gva":
         return "gva"
     if s.code.startswith(("tour-air", "tour-rail")):

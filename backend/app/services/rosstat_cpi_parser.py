@@ -25,7 +25,8 @@ from app.services.emiss_labor_parser import EmissLaborParser
 from app.services.emiss_steel_parser import EmissSteelParser
 from app.services.emiss_tourism_parser import EmissTourismParser
 from app.services.rosstat_tourism_parser import (
-    RosstatTourismGvaParser, RosstatTourismTripsParser, TourismDestinationParser,
+    RosstatTourismCpiParser, RosstatTourismGvaParser, RosstatTourismTripsParser, TourismDestinationParser,
+    TourismStaticParser,
 )
 from app.services.cbr_household_rates_parser import CbrDepositMaxParser, CbrInflationExpectationsParser
 from app.services.minfin_debt_parser import MinfinDebtParser
@@ -112,6 +113,8 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatTourismTripsParser.parser_type: RosstatTourismTripsParser,
     RosstatTourismGvaParser.parser_type: RosstatTourismGvaParser,
     TourismDestinationParser.parser_type: TourismDestinationParser,
+    RosstatTourismCpiParser.parser_type: RosstatTourismCpiParser,
+    TourismStaticParser.parser_type: TourismStaticParser,
     CbrDepositMaxParser.parser_type: CbrDepositMaxParser,
     CbrInflationExpectationsParser.parser_type: CbrInflationExpectationsParser,
     MinfinDebtParser.parser_type: MinfinDebtParser,
