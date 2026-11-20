@@ -21,6 +21,7 @@ import IndicatorSeoBlocks from './IndicatorSeoBlocks';
 import RelatedIndicators from './RelatedIndicators';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
+import { tourismParentCode } from '../lib/indicatorPeers';
 import { resolveDateFormat } from '../lib/format';
 import { WorldHeroLine } from './WorldStatTiles';
 import { isFreshIntraday, useLiveQuote } from '../lib/tickerLive';
@@ -124,10 +125,16 @@ export default function GenericIndicatorView({
     dataPoints, viewStats, forecastResp, forecastEnabled, hasForecast, isLoading, isError, refetch, isFetching,
   } = useGenericViewModeData({ family, urlMode: viewMode, indicator });
 
+  // Описание: сначала ряд режима, затем сама страница (у производного ряда «к году» своего описания нет — было «показаны опубликованные
+  // наблюдения»), затем родительский показатель (ряд по стране `tour-outbound-egypt` → `tour-outbound-trips`).
+  const ownDescription = effectiveIndicator?.description || indicator?.description;
+  const ownMethodology = effectiveIndicator?.methodology || indicator?.methodology;
+  const parentCode = (!ownDescription || !ownMethodology) ? tourismParentCode(code) : null;
+  const { data: parentIndicator } = useIndicator(parentCode);
   const methodologyContent = useMemo(() => ({
-    description: effectiveIndicator?.description,
-    methodology: effectiveIndicator?.methodology,
-  }), [effectiveIndicator?.description, effectiveIndicator?.methodology]);
+    description: ownDescription || parentIndicator?.description,
+    methodology: ownMethodology || parentIndicator?.methodology,
+  }), [ownDescription, ownMethodology, parentIndicator?.description, parentIndicator?.methodology]);
 
   const downloadMeta = useMemo(() => ({
     name: effectiveIndicator?.name, unit: effectiveIndicator?.unit,
@@ -155,7 +162,8 @@ export default function GenericIndicatorView({
     unit: effectiveIndicator?.unit,
     dataDigits: dataDigitsOf(dataPoints),
     locale,
-  }), [heroPoints, dataPoints, effectiveIndicator?.frequency, effectiveIndicator?.unit, locale]);
+    seasonal: indicator?.seasonal === true && heroPoints === dataPoints ? true : undefined,
+  }), [heroPoints, dataPoints, indicator?.seasonal, effectiveIndicator?.frequency, effectiveIndicator?.unit, locale]);
   const heroDateFormat = resolveDateFormat({ chartMode: 'cpi', frequency: effectiveIndicator?.frequency, safeViewMode: safeMode });
   const heroFreq = effectiveIndicator?.frequency;
   // Ряд «по дням»: изменение считается от значения предыдущего дня (круг 12, Г3); при недельной или месячной детализации подпись прежняя.

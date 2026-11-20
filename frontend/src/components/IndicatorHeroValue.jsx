@@ -74,12 +74,18 @@ export default function IndicatorHeroValue({
     // «К прошлому кварталу» давало «+38 %» там, где это лето, а не рост. Нет точки год назад: изменения не показываем.
     const yoy = summary.sameYear;
     if (yoy) {
-      const pctText = formatPercentChangeFine(yoy.pct, locale);
-      delta = pctText == null ? (
+      // Проценты (загрузка мест): разница в пунктах, а не процент от процента.
+      const rate = kind === 'rate';
+      const abs = rate
+        ? formatDeltaWithUnit(last.value - yoy.from.value, unitParts.short.startsWith('%') ? '%' : unitParts.short, { digits: shown.digits, locale })
+        : null;
+      const pctText = rate ? null : formatPercentChangeFine(yoy.pct, locale);
+      const flat = rate ? abs.flat : pctText == null;
+      delta = flat ? (
         <p className="z4-hv__delta"><DeltaBadge delta={0}>{t('w6e.delta.flat')}</DeltaBadge></p>
       ) : (
         <p className="z4-hv__delta">
-          <DeltaBadge delta={yoy.pct} polarity={polarity}>{pctText}</DeltaBadge>
+          <DeltaBadge delta={rate ? last.value - yoy.from.value : yoy.pct} polarity={polarity}>{rate ? abs.text : pctText}</DeltaBadge>
           <span className="z4-hv__since">{t('kt1_delta_sameYear')}</span>
         </p>
       );

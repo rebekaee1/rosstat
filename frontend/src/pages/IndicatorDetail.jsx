@@ -564,7 +564,9 @@ export default function IndicatorDetail() {
     unit: heroUnit,
     dataDigits: dataDigitsOf(heroPoints),
     locale,
-  }), [heroPoints, effectiveIndicator?.frequency, heroUnit, locale]);
+    // Сезонность из API; в режимах «к прошлому году» и пр. ряд уже преобразован, сравнивать его с собой год назад нельзя.
+    seasonal: indicator?.seasonal === true && heroPoints === dataPoints ? true : undefined,
+  }), [heroPoints, dataPoints, indicator?.seasonal, effectiveIndicator?.frequency, heroUnit, locale]);
   const heroDateFormat = resolveDateFormat({
     chartMode, frequency: effectiveIndicator?.frequency, safeViewMode,
   });

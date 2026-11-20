@@ -98,3 +98,37 @@ it('«Как цитировать»: данные за квартал и дат�
   await waitFor(() => expect(writeText).toHaveBeenCalledTimes(1));
   expect(writeText.mock.calls[0][0]).toMatch(/^Forecast Economy\. Выезд: источник данных — Росстат, данные за II кв\. 2026/);
 });
+
+it('туристский ряд без описания: заглушки «показаны опубликованные наблюдения» нет; у остальных рядов она остаётся (№26)', () => {
+  const { unmount } = render(
+    <LocaleProvider>
+      <MemoryRouter>
+        <IndicatorMethodologyPanel indicator={{ code: 'tour-outbound-egypt', name: 'Выезд: Египет', source: 'Росстат' }} content={{}} />
+      </MemoryRouter>
+    </LocaleProvider>,
+  );
+  expect(document.querySelector('[data-block="methodology"]').textContent).not.toMatch(/опубликованные наблюдения|Прогноз, если он доступен/);
+  unmount();
+  render(
+    <LocaleProvider>
+      <MemoryRouter>
+        <IndicatorMethodologyPanel indicator={{ code: 'cpi-x', name: 'ИПЦ', source: 'Росстат' }} content={{}} />
+      </MemoryRouter>
+    </LocaleProvider>,
+  );
+  expect(document.querySelector('[data-block="methodology"]').textContent).toMatch(/опубликованные наблюдения/);
+});
+
+it('туристский ряд с описанием от родителя показывает его текст', () => {
+  render(
+    <LocaleProvider>
+      <MemoryRouter>
+        <IndicatorMethodologyPanel
+          indicator={{ code: 'tour-outbound-egypt', name: 'Выезд: Египет', source: 'Росстат' }}
+          content={{ description: 'Описание родителя.', methodology: 'Методика родителя.' }}
+        />
+      </MemoryRouter>
+    </LocaleProvider>,
+  );
+  expect(document.querySelector('[data-block="methodology"]').textContent).toContain('Описание родителя.');
+});

@@ -30,10 +30,12 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
   // Внутренний переход — только если вызывающая страница передала страницу
   // самого источника. Ссылка на Россию/текущую карточку маскировала отсутствие URL.
   const internalPath = sourcePath && !isExternalHref(sourcePath) ? sourcePath : null;
-  const description = content?.description || (locale === 'en'
+  // Туристские ряды без описания: заглушку не показываем вовсе (круг наблюдателей, №26).
+  const tourism = String(indicator?.code ?? '').startsWith('tour-');
+  const description = content?.description || (tourism ? '' : locale === 'en'
     ? `${indicator?.name || 'This indicator'} shows the published observations and their dates. Select a view above the chart to inspect its level or change over time.`
     : `${indicator?.name || 'Показатель'}: на графике показаны опубликованные наблюдения и их даты. Режим над графиком позволяет изучить уровень или изменение ряда.`);
-  const methodology = content?.methodology || (locale === 'en'
+  const methodology = content?.methodology || (tourism ? '' : locale === 'en'
     ? `Source: ${sourceName || 'the listed data provider'}. Forecasts, when available, are shown separately from observations.`
     : `Источник: ${sourceName || 'указанный поставщик данных'}. Прогноз, если он доступен, показан отдельно от фактических значений.`);
 
@@ -61,8 +63,9 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
         <h3 className="fe-info-card__title">{t('indicator.methodology')}</h3>
       </div>
 
+      {description || methodology ? (
       <div className="fe-info-card__text">
-        <div>{description}</div>
+        {description ? <div>{description}</div> : null}
         {methodology && (
           <details className="fe-more">
             <summary className="fe-more__summary">{t('w3.method.more')}</summary>
@@ -70,6 +73,7 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
           </details>
         )}
       </div>
+      ) : null}
 
       {indicator?.source ? (
         <div className="fe-info-card__foot">

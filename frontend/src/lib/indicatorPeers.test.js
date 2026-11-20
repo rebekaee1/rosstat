@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pickPeers, rankRelatedIndicators } from './indicatorPeers';
+import { pickPeers, rankRelatedIndicators, tourismParentCode } from './indicatorPeers';
 
 const peers = [
   ['PL', 'poland', 'Польша', 'Poland'], ['DE', 'germany', 'Германия', 'Germany'], ['AT', 'austria', 'Австрия', 'Austria'],
@@ -32,5 +32,15 @@ describe('rankRelatedIndicators', () => {
     expect(rankRelatedIndicators(cur, list).map((i) => i.code))
       .toEqual(['tour-outbound-turkey', 'tour-outbound-spend', 'tour-inbound-trips', 'tour-agencies']);
     expect(rankRelatedIndicators(cur, null)).toEqual([]);
+  });
+});
+
+describe('tourismParentCode', () => {
+  it('ряд по стране → родительский показатель; остальные ряды без родителя', () => {
+    expect(tourismParentCode('tour-outbound-egypt')).toBe('tour-outbound-trips');
+    expect(tourismParentCode('tour-inbound-china')).toBe('tour-inbound-trips');
+    expect(tourismParentCode('tour-outbound-trips')).toBeNull();
+    expect(tourismParentCode('cpi')).toBeNull();
+    expect(tourismParentCode(undefined)).toBeNull();
   });
 });

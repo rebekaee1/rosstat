@@ -42,3 +42,9 @@ export function rankRelatedIndicators(current, candidates) {
     .sort((a, b) => (b.points - a.points) || (a.index - b.index))
     .map((entry) => entry.item);
 }
+
+/** Родительский показатель ряда по стране: `tour-outbound-egypt` → `tour-outbound-trips`; у остальных рядов null. */
+export function tourismParentCode(code) {
+  const match = /^tour-(inbound|outbound)-(?!trips$)[a-z0-9-]+$/.exec(String(code ?? ''));
+  return match ? `tour-${match[1]}-trips` : null;
+}
