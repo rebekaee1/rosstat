@@ -268,12 +268,7 @@ CATEGORY_META_EN: dict[str, CategorySeo] = {
             "Tourist flows, outbound and inbound trips, hotels and overnight stays, health resorts, "
             "and tourist spending — official data for Russia, its regions, and countries worldwide."
         ),
-        intro=(
-            "Official tourism statistics in one place: how many trips Russians make at home and "
-            "abroad, how many foreign visitors come to Russia, how full hotels and health resorts "
-            "are, and how much travellers spend. Below are the same measures for Russia's regions "
-            "and a comparison with countries worldwide."
-        ),
+        intro="Trips by Russians and foreign visitors, hotels and tourist spending — for Russia, its regions and countries worldwide.",
         flagship_code="tour-outbound-trips",
         keywords=(
             "tourism in Russia, tourism statistics, tourist flow, domestic tourism, outbound tourism, "
