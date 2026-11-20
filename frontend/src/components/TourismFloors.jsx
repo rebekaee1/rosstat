@@ -166,7 +166,7 @@ export default function TourismFloors() {
           )}
           {countries.length > 0 && (
             <p className="t6-trips__all">
-              <Link to="/" className="t6-card__more">
+              <Link to="/" className="t6-trips__more">
                 {countriesLabel(world, countries, t, locale)}
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </Link>

@@ -49,71 +49,6 @@
   text-transform: uppercase;
 }
 
-/* Карточка показателя региона: название, период, три первых субъекта, ссылки на рейтинг и карту. */
-.t6-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
-  gap: 18px;
-}
-.t6-card {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 20px 22px 18px;
-  border-radius: 1.5rem;
-}
-.t6-card__title {
-  color: var(--color-text-primary);
-  font-size: 1rem;
-  font-weight: 640;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-}
-@media (hover: hover) { .t6-card__title:hover { color: var(--color-champagne-ink); } }
-.t6-card__meta { margin: -4px 0 2px; color: var(--color-text-tertiary); font-size: 0.8125rem; line-height: 1.4; }
-
-.t6-rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.t6-rank__row {
-  display: grid;
-  grid-template-columns: 1.25rem minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 10px;
-  padding: 7px 0;
-}
-.t6-rank__n { color: var(--color-text-tertiary); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
-.t6-rank__name {
-  min-width: 0;
-  color: var(--color-text-primary);
-  font-size: 0.9375rem;
-  text-decoration: none;
-  overflow-wrap: anywhere;
-}
-@media (hover: hover) { .t6-rank__name:hover { color: var(--color-champagne-ink); } }
-.t6-rank__v {
-  color: var(--color-text-primary);
-  font-size: 0.9375rem;
-  font-weight: 620;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.t6-card__links { display: flex; align-items: center; gap: 18px; margin: auto 0 0; padding-top: 6px; font-size: 0.875rem; }
-.t6-card__more, .t6-card__map {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--color-champagne-ink);
-  font-weight: 600;
-  text-decoration: none;
-}
-.t6-card__map { color: var(--color-text-secondary); font-weight: 500; }
-@media (hover: hover) {
-  .t6-card__more:hover svg { transform: translateX(2px); }
-  .t6-card__map:hover { color: var(--color-text-primary); }
-}
-.t6-card__more svg { transition: transform 0.2s var(--fe-ease-reveal, ease); }
-
 /* Тихие строки: остальные показатели регионов и рейтинги стран. */
 .t6-rows {
   list-style: none;
@@ -145,48 +80,13 @@
 .t6-ratings { margin-bottom: 26px; }
 .t6-ratings .t6-floor__sub { margin-top: 0; }
 
-/* Страны: название, число показателей и до трёх прямых ссылок на ряды. */
-.t6-countries {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
-  gap: 14px;
-}
-.t6-country { padding: 16px 18px; border-radius: 1.25rem; }
-.t6-country__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.t6-country__name { color: var(--color-text-primary); font-weight: 640; text-decoration: none; }
-@media (hover: hover) { .t6-country__name:hover { color: var(--color-champagne-ink); } }
-.t6-country__series { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
-.t6-country__series a {
-  display: block;
-  color: var(--color-text-secondary);
-  font-size: 0.8125rem;
-  line-height: 1.4;
-  text-decoration: none;
-  overflow-wrap: anywhere;
-}
-@media (hover: hover) { .t6-country__series a:hover { color: var(--color-text-primary); } }
-
 @media (max-width: 640px) {
   .t6-jump { margin: -20px 0 24px; gap: 4px 18px; }
   .t6-floor { margin-top: 44px; }
-  .t6-card { padding: 18px 18px 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .t6-jump__link::after, .t6-card__more svg, .t6-row__arrow { transition: none; }
-}
-
-/* Второй заход (по данным стенда): группа карточки, смысловые группы регионов, «Показать все», плитки стран. */
-.t6-card__group {
-  margin: 0 0 -4px;
-  color: var(--color-text-tertiary);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  .t6-jump__link::after, .t6-row__arrow, .t6-trips__more svg { transition: none; }
 }
 
 .t6-groups {
@@ -213,26 +113,6 @@
 }
 .t6-line__name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 @media (hover: hover) { .t6-line:hover { color: var(--color-text-primary); } }
-
-.t6-more {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-  padding: 6px 0;
-  background: none;
-  border: 0;
-  color: var(--color-champagne-ink);
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.t6-more__icon { transition: transform 0.25s var(--fe-ease-reveal, ease); }
-.t6-more__icon.is-open { transform: rotate(180deg); }
-.t6-countries + .t6-more { margin-top: 14px; }
-
-@media (prefers-reduced-motion: reduce) { .t6-more__icon { transition: none; } }
 
 /* z3 (20.11.2026): свёрнутые группы вместо карточек «топ-3» и плиток стран; один список «Куда ездят россияне». */
 .t6-group > summary { list-style: none; cursor: pointer; margin-bottom: 0; align-items: center; min-height: 44px; }
@@ -266,3 +146,7 @@
 @media (hover: hover) { .t6-trip:hover .t6-trip__name { color: var(--color-champagne-ink); } }
 .t6-trips__all { margin: 14px 0 0; font-size: 0.9375rem; }
 @media (prefers-reduced-motion: reduce) { .t6-group__chev { transition: none; } }
+
+.t6-trips__more { display: inline-flex; align-items: center; gap: 6px; color: var(--color-champagne-ink); font-weight: 600; text-decoration: none; }
+.t6-trips__more svg { transition: transform 0.2s var(--fe-ease-reveal, ease); }
+@media (hover: hover) { .t6-trips__more:hover svg { transform: translateX(2px); } }
