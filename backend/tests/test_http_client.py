@@ -309,3 +309,50 @@ def test_direct_and_proxy_both_down_still_arms_host_breaker(monkeypatch):
             s.get("https://rosstat.gov.ru/x")
     assert http_client._host_down_remaining("rosstat.gov.ru") > 0
     assert http_client.host_down_max_remaining() > 0
+
+
+def _relay_session(monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "etl_http_proxy_url", "http://relay.test:8888")
+    monkeypatch.setattr(settings, "etl_socks_proxy_url", "")
+    return create_session(proxy=True, socks=False, retry=Retry(total=0, raise_on_status=False))
+
+
+def test_slow_host_via_relay_does_not_arm_hop_breaker(monkeypatch):
+    """20.11.2026: медленный ответ fedstat через релей (ReadTimeout) не выключал релей на 20 минут и не превращался в 403."""
+    s = _relay_session(monkeypatch)
+    calls: list[str | None] = []
+    slow = [True]
+
+    def fake_request(self, method, url, **kwargs):
+        px = (kwargs.get("proxies") or {}).get("https")
+        calls.append(px)
+        if not px:
+            return _resp(403)  # адрес прода fedstat режет всегда
+        if slow[0]:
+            raise requests.ReadTimeout("fedstat считает сетку дольше таймаута")
+        return _resp(200)
+
+    with patch.object(requests.Session, "request", fake_request):
+        with pytest.raises(requests.ReadTimeout):
+            s.post("https://www.fedstat.ru/indicator/dataGrid.do?id=31074")
+        assert http_client._hop_down_remaining("www.fedstat.ru", "http://relay.test:8888") == 0
+        assert http_client._host_down_remaining("www.fedstat.ru") == 0
+        slow[0] = False
+        calls.clear()
+        assert s.post("https://www.fedstat.ru/indicator/dataGrid.do?id=57693").status_code == 200
+    assert calls == [None, "http://relay.test:8888"]
+
+
+def test_relay_refusing_connection_still_arms_hop_breaker(monkeypatch):
+    s = _relay_session(monkeypatch)
+
+    def fake_request(self, method, url, **kwargs):
+        if (kwargs.get("proxies") or {}).get("https"):
+            raise requests.exceptions.ConnectTimeout("relay silent")
+        return _resp(403)
+
+    with patch.object(requests.Session, "request", fake_request):
+        assert s.post("https://www.fedstat.ru/indicator/dataGrid.do?id=1").status_code == 403
+    assert http_client._hop_down_remaining("www.fedstat.ru", "http://relay.test:8888") > 0
