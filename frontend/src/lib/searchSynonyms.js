@@ -29,9 +29,14 @@ const SYNONYM_GROUPS = [
   // федерального кода: региональный ряд «Индексы потребительских цен…» должен
   // находиться по слову «инфляция» так же, как карточка cpi.
   { targets: ['cpi', 'inflation', 'hicp-index'], keys: ['ипц', 'cpi', 'ipc', 'инфляция', 'inflation', 'hicp', 'рост цен'], phrases: ['потребительских цен', 'consumer price', 'consumer prices'] },
-  { targets: ['gdp', 'gdp-nominal', 'gdp-real', 'gdp-volume-quarterly', 'gdp-volume-annual'], keys: ['ввп', 'gdp', 'валовой продукт'] },
-  { targets: ['valovoy-regionalnyy-produkt', 'real-gdp'], keys: ['врп', 'grp', 'gross regional product'] },
-  { targets: ['gdp-per-capita', 'gdp-per-capita-usd', 'gdp-per-capita-eu', 'weo-gdp-per-capita-usd'], keys: ['ввп на душу', 'gdp per capita', 'per capita', 'на душу'] },
+  // `regional` — как та же мера называется у субъекта России. Ряда «ВВП» у региона нет, есть ВРП; в наборе
+  // региональных рядов (страница региона, рейтинги, карта) «ввп», «валовый внутренний продукт» без этой связи
+  // давали пустоту (Пульс 19.11.2026: три человека на страницах регионов). Связь пробуется только после пустой
+  // выдачи, поэтому в наборах с национальным ВВП «ввп» по-прежнему находит ВВП.
+  { targets: ['gdp', 'gdp-nominal', 'gdp-real', 'gdp-volume-quarterly', 'gdp-volume-annual'], keys: ['ввп', 'gdp', 'валовой продукт', 'валовой внутренний продукт', 'gross domestic product'], regional: ['valovoy-regionalnyy-produkt'] },
+  // «Внутренний региональный продукт» — частое смешение ВВП и ВРП (Пульс 19.11.2026), смысл однозначен.
+  { targets: ['valovoy-regionalnyy-produkt', 'real-gdp'], keys: ['врп', 'grp', 'gross regional product', 'валовой региональный продукт', 'внутренний региональный продукт'] },
+  { targets: ['gdp-per-capita', 'gdp-per-capita-usd', 'gdp-per-capita-eu', 'weo-gdp-per-capita-usd'], keys: ['ввп на душу', 'gdp per capita', 'per capita', 'на душу'], regional: ['valovoy-regionalnyy-produkt-na-dushu-naseleniya'] },
   { targets: ['key-rate'], keys: ['ставка цб', 'ключевая ставка', 'ключевая', 'key rate', 'cbr rate', 'ставка'] },
   { targets: ['fuel'], keys: ['бензин', 'gasoline', 'petrol', 'топливо', 'аи'] },
   { targets: ['fuel-ai95'], keys: ['бензин 95', 'аи-95', 'аи95', 'ai95', 'ai-95'] },
@@ -85,6 +90,19 @@ const SYNONYM_PHRASES = (() => {
     for (const key of keys) {
       const n = normalizeSearchQuery(key);
       if (n) map[n] = unique([...(map[n] || []), ...phrases.map(normalizeSearchQuery)]);
+    }
+  }
+  return map;
+})();
+
+/** alias → codes of the same measure for a Russian region (see `regional` above). */
+const SYNONYM_REGIONAL = (() => {
+  const map = Object.create(null);
+  for (const { keys, regional } of SYNONYM_GROUPS) {
+    if (!regional?.length) continue;
+    for (const key of keys) {
+      const n = normalizeSearchQuery(key);
+      if (n) map[n] = unique([...(map[n] || []), ...regional]);
     }
   }
   return map;
@@ -242,13 +260,68 @@ function russianStem(token) {
 
 const COUNT_WORDS = new Set(['количество', 'численность', 'число', 'count', 'number']);
 
+function sameWord(word, part) {
+  return word === part || russianStem(word) === russianStem(part) || oneEdit(word, part);
+}
+
+/**
+ * Multiword alias in another word order or still being typed (20.11.2026, Пульс 19.11): «внутренний валовой пр»,
+ * «валовый вн», «внутренний ре». Every word of the window must be a distinct word of the alias (inflection or one
+ * typo allowed); only the last word of the whole query may be an unfinished beginning (2+ letters). A window that
+ * covers only part of the alias must end the query, hold at least two non-stop words and lead to one concept.
+ * No word of the query is dropped: the window becomes one unit, the rest stay required.
+ */
+function looseAliasUnit(words, consumed, { partial }) {
+  const last = words.length - 1;
+  const found = [];
+  for (const alias of SYNONYM_KEYS) {
+    const parts = tokenize(alias);
+    if (parts.length < 2) continue;
+    for (let size = Math.min(parts.length, words.length); size >= 2; size -= 1) {
+      for (let i = 0; i <= words.length - size; i += 1) {
+        const window = words.slice(i, i + size);
+        if (window.some((_word, offset) => consumed.has(i + offset))) continue;
+        if (size < parts.length && (!partial || i + size - 1 !== last)) continue;
+        if (window.filter((word) => !STOP_WORDS.has(word)).length < 2) continue;
+        const free = new Set(parts.map((_part, index) => index));
+        const ok = window.every((word, offset) => {
+          const tail = i + offset === last && word.length >= 2;
+          const index = [...free].find((k) => sameWord(word, parts[k]))
+            ?? (tail ? [...free].find((k) => parts[k].startsWith(word)) : undefined);
+          if (index === undefined) return false;
+          free.delete(index);
+          return true;
+        });
+        if (ok) found.push({ alias, start: i, size, full: size === parts.length, exact: window.join(' ') === parts.join(' ') });
+      }
+    }
+  }
+  if (!found.length) return null;
+  const full = found.filter((hit) => hit.full).sort((a, b) => b.size - a.size || Number(b.exact) - Number(a.exact));
+  if (full.length) return full[0];
+  const concepts = new Set(found.map((hit) => SEARCH_SYNONYMS[hit.alias].join('|')));
+  return concepts.size === 1 ? found.sort((a, b) => b.size - a.size)[0] : null;
+}
+
 // Longest intents consume their own words; remaining qualifiers are separate
 // required terms. "GDP per capita Germany" cannot fall back to any GDP row.
 function queryUnits(q) {
-  if (SEARCH_SYNONYMS[q]) return [{ text: q, targets: SEARCH_SYNONYMS[q], phrases: SYNONYM_PHRASES[q] }];
+  if (SEARCH_SYNONYMS[q]) return [{ text: q, targets: SEARCH_SYNONYMS[q], phrases: SYNONYM_PHRASES[q], regional: SYNONYM_REGIONAL[q] }];
   const words = tokenize(q);
   const consumed = new Set();
   const units = [];
+  const takeLoose = (partial) => {
+    for (let hit = looseAliasUnit(words, consumed, { partial }); hit; hit = looseAliasUnit(words, consumed, { partial })) {
+      for (let offset = 0; offset < hit.size; offset += 1) consumed.add(hit.start + offset);
+      units.push({
+        text: words.slice(hit.start, hit.start + hit.size).join(' '), targets: SEARCH_SYNONYMS[hit.alias],
+        phrases: SYNONYM_PHRASES[hit.alias], regional: SYNONYM_REGIONAL[hit.alias], corrected: !hit.exact,
+      });
+    }
+  };
+  // Whole multiword aliases first, in any order: «внутренний валовой продукт» is one concept, not
+  // «валовой продукт» plus a stray required «внутренний».
+  takeLoose(false);
   for (const alias of SYNONYM_KEYS) {
     const parts = tokenize(alias);
     if (!parts.length) continue;
@@ -260,10 +333,11 @@ function queryUnits(q) {
       const typo = parts.length === 1 && oneEdit(words[i], parts[0]);
       if (!exact && !partial && !typo && !inflection) continue;
       parts.forEach((_part, offset) => consumed.add(i + offset));
-      units.push({ text: words.slice(i, i + parts.length).join(' '), targets: SEARCH_SYNONYMS[alias], phrases: SYNONYM_PHRASES[alias], corrected: !exact });
+      units.push({ text: words.slice(i, i + parts.length).join(' '), targets: SEARCH_SYNONYMS[alias], phrases: SYNONYM_PHRASES[alias], regional: SYNONYM_REGIONAL[alias], corrected: !exact });
       break;
     }
   }
+  takeLoose(true);
   words.forEach((word, index) => {
     if (!consumed.has(index) && !STOP_WORDS.has(word)) units.push({ text: word });
   });
@@ -384,6 +458,13 @@ export function filterSearchOptions(options, rawQuery, {
       const correctedUnits = queryUnits(corrected);
       ranked = docs.map((doc) => ({ ...doc, score: scoreDocument(doc, corrected, correctedUnits) })).filter((doc) => doc.score >= 0);
     }
+  }
+  // A pool of Russian regional rows has no GDP: there the same measure is ВРП. Only after nothing matched,
+  // so pools with national GDP keep their answer.
+  if (!ranked.length && units.some((unit) => unit.regional)) {
+    const regionalUnits = units.map((unit) => (unit.regional
+      ? { ...unit, targets: [...unit.targets, ...unit.regional], corrected: true } : unit));
+    ranked = docs.map((doc) => ({ ...doc, score: scoreDocument(doc, q, regionalUnits) })).filter((doc) => doc.score >= 0);
   }
   ranked.sort((a, b) => b.score - a.score || a.index - b.index);
   const result = ranked.map((doc) => doc.original);

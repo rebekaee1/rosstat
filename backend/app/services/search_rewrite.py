@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import time
 
@@ -29,7 +30,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Indicator, RegionIndicator, SubnationalIndicator
-from app.services.search_intent import (CONCEPTS, STOP_WORDS, SearchIntent, edit_distance_one, geo_aliases, normalize,
+from app.services.search_intent import (CONCEPTS, STOP_WORDS, TOKEN_RE, SearchIntent, edit_distance_one, geo_aliases, normalize,
                                         tokens)
 from app.services.search_unknown_word import word_in_names
 
@@ -98,7 +99,90 @@ def rewrite_words(raw: str) -> str:
     text = _GLUED_DIGITS.sub("", text)
     if re.search(r"[a-zа-я]{3}", text):
         text = _SHORT_NUMBER.sub(" ", text)
-    return " ".join(text.split())
+    return complete_concept_phrase(" ".join(text.split()))
+
+
+def _same_word(word: str, part: str) -> bool:
+    """Слово фразы понятия: то же, с одной опечаткой или другим окончанием («валовый» — «валовой»,
+    «внутреннего» — «внутренний»)."""
+    if word == part:
+        return True
+    if min(len(word), len(part)) < 5:
+        return False
+    common = len(os.path.commonprefix((word, part)))
+    return edit_distance_one(word, part) or (common >= 5 and common >= max(len(word), len(part)) - 3)
+
+
+def _concept_phrases() -> tuple[tuple[str, tuple[str, ...], tuple[str, ...]], ...]:
+    out = []
+    for aliases, alternatives in CONCEPTS:
+        if alternatives[0].startswith("search-"):
+            continue
+        for alias in aliases:
+            parts = tokens(alias)
+            if len(parts) >= 2 and not re.search(r"\d", alias):
+                out.append((" ".join(parts), parts, alternatives))
+    return tuple(out)
+
+
+_PHRASES = _concept_phrases()
+
+
+def _canonical_phrase(alternatives: tuple[str, ...], matched: str) -> str:
+    """Первая фраза понятия на том же алфавите: окно «Показаны результаты для» пишет «валовой региональный продукт»,
+    а не смешение «внутренний региональный продукт», по которому человек его нашёл."""
+    latin = bool(re.search(r"[a-z]", matched))
+    return next((joined for joined, _parts, group in _PHRASES
+                 if group == alternatives and bool(re.search(r"[a-z]", joined)) == latin), matched)
+
+
+def complete_concept_phrase(text: str) -> str:
+    """Конец запроса — фраза понятия в другом порядке или недописанная (20.11.2026, Пульс 19.11.2026).
+
+    «внутренний валовой пр», «валовый вн», «внутренний ре»: каждое слово конца запроса — своё слово одной фразы
+    понятия (с опечаткой или окончанием), а последнее — недописанное начало слова от двух букв (без него запрос не
+    трогается: «площади зерновых» — целые слова, их читает первое чтение). Не меньше двух значимых
+    слов. Конец заменяется фразой целиком. Если подходят фразы разных понятий, берутся самые короткие; когда и среди
+    них понятий больше одного — запрос не меняется. Слова до этого конца остаются как были."""
+    matches = list(TOKEN_RE.finditer(text))
+    words = tuple(match[0] for match in matches)
+    if len(words) < 2 or text[matches[-1].end():].strip():
+        return text
+    for size in range(min(len(words), 6), 1, -1):
+        window = words[-size:]
+        if sum(word not in STOP_WORDS for word in window) < 2:
+            continue
+        hits = []
+        for joined, parts, alternatives in _PHRASES:
+            if len(parts) < size:
+                continue
+            free = list(range(len(parts)))
+            ok = True
+            for position, word in enumerate(window):
+                index = next((k for k in free if _same_word(word, parts[k])), None)
+                if index is None and position == size - 1 and len(word) >= 2:
+                    index = next((k for k in free if parts[k].startswith(word)), None)
+                    unfinished = index is not None
+                elif position == size - 1:
+                    unfinished = False
+                if index is None:
+                    ok = False
+                    break
+                free.remove(index)
+            # Только недописанное последнее слово: целые слова в своих формах — дело первого чтения и словаря.
+            if ok and unfinished:
+                hits.append((len(parts), joined, alternatives))
+        if not hits:
+            continue
+        shortest = min(hit[0] for hit in hits)
+        best = [hit for hit in hits if hit[0] == shortest]
+        if len({hit[2] for hit in best}) != 1:
+            return text
+        joined = _canonical_phrase(best[0][2], best[0][1])
+        if " ".join(window) == joined:
+            return text
+        return (text[:matches[-size].start()] + joined).strip()
+    return text
 
 
 _VOCABULARY_TTL = 6 * 3600
