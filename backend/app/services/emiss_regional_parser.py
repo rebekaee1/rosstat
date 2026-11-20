@@ -55,6 +55,13 @@ excluded.value``. Если точки и границы истории в мет
 - ответ со строками, но без единой разобранной цены, — признак смены формата:
   предупреждение и ``unparsed`` в статистике вместо тихого нуля;
 - в алерт о падении попадает причина.
+
+Правка 20.11.2026 (алерты «ИПЦ по регионам упал» и «региональные ряды ЕМИСС не обновились», оба «HTTP 403»):
+адрес прода fedstat режет 403 всегда, данные идут через HTTP-релей. Тяжёлая сетка ИПЦ считается у fedstat дольше
+60 с; чтение обрывалось, urllib3 повторял его 3 раза, и ``ReadTimeout`` релея взводил предохранитель хопа на 20 минут.
+Дальше каждый запрос к fedstat — и задача наборов в 08:10 — получал прямой 403 без попытки через релей (журнал
+релея: ни одного соединения с 05:07 до 08:09 UTC). Теперь чтение ждёт 180 с, повторяет только наш цикл, а
+``ReadTimeout`` хопа не взводит предохранитель и не подменяется 403 (``http_client._via_next_hop``).
 """
 
 from __future__ import annotations
@@ -70,6 +77,7 @@ from typing import Callable, Sequence
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
+from urllib3.util.retry import Retry
 
 from app.core.cache import publish_committed_regional_changes
 from app.database import async_session
@@ -114,11 +122,16 @@ _OKATO_PATH = Path(__file__).resolve().parents[1] / "data" / "regional" / "emiss
 # «Название территории в ответе dataGrid.do → slug» (в ответе dim57831 — название, не oid).
 _DIMNAMES_PATH = Path(__file__).resolve().parents[1] / "data" / "regional" / "emiss_dimnames.json"
 
-_FETCH_TIMEOUT = 60.0
+# Тяжёлая сетка (ИПЦ 31074 за год по 95 территориям) считается на стороне fedstat дольше минуты: 20.11.2026 через
+# релей прода — два обрыва по 60 с, третья попытка 32 с. Чтение ждём до 180 с, повтор тайм-аута — только наш цикл
+# `_ATTEMPTS` (urllib3 не повторяет чтение: иначе попытки множатся 4 × 3).
+_FETCH_TIMEOUT = 180.0
 _ATTEMPTS = 4
 _PAUSE_BETWEEN_REQUESTS = 0.4
 # Статусы, которые повтором не лечатся: бан по адресу, отсутствие ресурса, ошибка запроса.
 _NO_RETRY_STATUSES = frozenset({400, 401, 403, 404, 405})
+# Транспортный повтор: только соединение; чтение и статусы повторяет `_post_grid_sync` с паузой.
+_GRID_RETRY = Retry(total=1, connect=1, read=0, allowed_methods=["POST"])
 
 
 class EmissFormatError(RuntimeError):
@@ -250,7 +263,7 @@ def _post_grid_sync(indicator_id: int, body: bytes, headers: dict[str, str]) -> 
     """POST dataGrid.do через ETL-сессию (прямой ход → HTTP-прокси → SOCKS), с повтором транзиентных сбоев."""
     import requests
 
-    session = create_session(timeout=int(_FETCH_TIMEOUT))
+    session = create_session(timeout=int(_FETCH_TIMEOUT), retry=_GRID_RETRY)
     last_err: Exception | None = None
     try:
         for attempt in range(_ATTEMPTS):

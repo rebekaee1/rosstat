@@ -135,6 +135,36 @@ class TestPostGridViaEtlSession:
             mod._post_grid_sync(31448, b"x=1", {})
         assert session.calls == 4
 
+    def test_grid_waits_for_slow_source_and_retries_only_in_own_loop(self, monkeypatch):
+        """20.11.2026: сетка ИПЦ считается у fedstat дольше минуты; urllib3 чтение не повторяет, повторяет наш цикл."""
+        import app.services.emiss_regional_parser as mod
+
+        seen = {}
+
+        def fake_create_session(timeout=60, **kw):
+            seen["timeout"], seen["retry"] = timeout, kw.get("retry")
+            return _FakeSession([200])
+
+        monkeypatch.setattr(mod, "create_session", fake_create_session)
+        assert mod._post_grid_sync(31074, b"x=1", {}) == {"results": []}
+        assert seen["timeout"] >= 150
+        assert seen["retry"] is not None and seen["retry"].read == 0
+
+    def test_read_timeout_names_the_real_cause(self, monkeypatch):
+        import requests
+
+        mod, session = self._patch(monkeypatch, [])
+
+        def slow(*a, **kw):
+            session.calls += 1
+            raise requests.ReadTimeout("read timed out")
+
+        session.post = slow
+        with pytest.raises(RuntimeError) as err:
+            mod._post_grid_sync(31074, b"x=1", {})
+        assert "ReadTimeout" in str(err.value) and "403" not in str(err.value)
+        assert session.calls == mod._ATTEMPTS
+
 
 class TestJobAlerts:
     def _patch(self, monkeypatch, run):
