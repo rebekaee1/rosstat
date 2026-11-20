@@ -7348,7 +7348,7 @@
     {
       "id": "tourism-code-flags-2026-11-20",
       "observed_date_msk": "2026-11-20",
-      "local_source_commit": "03727d3b",
+      "local_source_commit": "8b334fd6",
       "kind": "code defaults, not a server observation",
       "scope": "Флаги и задачи расписания раздела «Туризм» в коде ветки int/2026-11-20-tourism (config.py, main.py, tasks/scheduler.py, docker-compose.yml). Сервер и стенд не опрашивались; код не выпущен. Порядок включения — docs/workflow.md#tourism-release-2026-11-20, решение — ADR-0038.",
       "settings": [
@@ -7356,8 +7356,8 @@
           "env": "RUSTATS_WORLD_TOURISM_INGEST_ENABLED",
           "setting": "world_tourism_ingest_enabled",
           "default": false,
-          "passed_by_compose": false,
-          "effect": "регистрирует еженедельную задачу world_tourism_ingest (пн, час world_eurostat_ingest_hour=2, минута 55, МСК; locked_job ttl 3600 с): МВФ, UN Tourism, ОЭСР, Евростат, CYSTAT, Geostat + снимок национальных служб. Без флага задачи нет; ручной запуск python -m app.services.world_tourism_ingest работает всегда. В environment docker-compose переменной нет — значение из .env хоста до контейнера не дойдёт"
+          "passed_by_compose": true,
+          "effect": "регистрирует еженедельную задачу world_tourism_ingest (пн, час world_eurostat_ingest_hour=2, минута 55, МСК; locked_job ttl 3600 с): МВФ, UN Tourism, ОЭСР, Евростат, CYSTAT, Geostat + снимок национальных служб. Без флага задачи нет; ручной запуск python -m app.services.world_tourism_ingest работает всегда. Передаётся в контейнеры через environment docker-compose с f7889cb0 (${RUSTATS_WORLD_TOURISM_INGEST_ENABLED:-false}); до этой правки значение .env хоста не доходило"
         }
       ],
       "scheduled_jobs": [

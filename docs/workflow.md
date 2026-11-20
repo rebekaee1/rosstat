@@ -944,8 +944,8 @@ SELECT relname, reloptions FROM pg_class
    флагов нет. В журнале ожидаемы «незнакомые территории» только для ДНР/ЛНР/Запорожской/Херсонской и сносок.
 3. **Мир** — вручную `docker compose exec backend python -m app.services.world_tourism_ingest` (~2 мин, МВФ ~60 с;
    снимок национальных служб входит сам). Еженедельная задача (пн 02:55 МСК) — только после
-   `RUSTATS_WORLD_TOURISM_INGEST_ENABLED=true`; **строки в `environment` docker-compose для этого флага нет** —
-   без неё значение из `/opt/rosstat/.env` в контейнер не попадёт (добавить отдельной правкой перед включением).
+   `RUSTATS_WORLD_TOURISM_INGEST_ENABLED=true` в `/opt/rosstat/.env` (переменная в `environment` docker-compose с
+   `f7889cb0`, по умолчанию `false`) и пересоздание backend и scheduler вне окна наблюдения выкладки.
 4. **Проверка:** `/russia/category/tourism` (RU/EN) — три этажа; `/api/v1/tourism/overview`; карточки из отчётов
    impl-1/2/3; `/research/{russians-travel-abroad,foreign-tourists-russia,tourist-tax-russia,domestic-tourism-russia}`
    — nginx `location ~ ^/research/{slug}` ведёт на `/seo/research/{slug}`; sitemap содержит четыре адреса статей.

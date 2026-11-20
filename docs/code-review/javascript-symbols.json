@@ -8220,7 +8220,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/IndicatorTelemetryGrid.component.test.jsx": {
-    "sha256": "59bd073429e3e9abffa505a6e625abbe834e09456e7f0852fbb0ec6104cede5b",
+    "sha256": "0bab1d0ff74a4a2017c17b043278fa96b4e345810ee707c1cd388554d4089897",
     "definitions": [
       {
         "name": "default",
@@ -8254,27 +8254,33 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 8
+    "anonymous_functions": 11
   },
   "frontend/src/components/IndicatorTelemetryGrid.jsx": {
-    "sha256": "290faffc76b0d7f8bfec0c570e4a5cb7be5eb80c9a6e26ec89c6f0b805a49b01",
+    "sha256": "f20013f7f47a3f19ee4af465d93684f570ff40dfa9f33ffafa46367f12d217aa",
     "definitions": [
       {
         "name": "IndicatorTelemetryGrid",
         "line": 22,
-        "end_line": 243,
+        "end_line": 256,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "IndicatorTelemetryGrid.sv",
+        "line": 150,
+        "end_line": 150,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "IndicatorTelemetryGrid.yearsWord",
-        "line": 155,
-        "end_line": 157,
+        "line": 168,
+        "end_line": 170,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorTelemetryGrid.windowLabel",
-        "line": 166,
-        "end_line": 173,
+        "line": 179,
+        "end_line": 186,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -8347,7 +8353,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/IndicatorTile.jsx": {
-    "sha256": "6e5df42288bb8546f7ba958d137cdf49c24614ae4d8b4fec3c5e86ee29e5dc16",
+    "sha256": "7d92c4caa2dfe95154afb5969fce92b5e2798b84d6e2ba2ae197ae20000ac82c",
     "definitions": [
       {
         "name": "TileSpark",
@@ -14613,7 +14619,7 @@
     "anonymous_functions": 2
   },
   "frontend/src/components/TourismFloors.component.test.jsx": {
-    "sha256": "356624c8be732a32115166413b34890cd504020631df539d628ead5b69f45a5c",
+    "sha256": "2199e1330f9f5b5aedce740de9f86ac7b0a7460370179402b668d5ea41232400",
     "definitions": [
       {
         "name": "useTourismOverview",
@@ -14635,8 +14641,8 @@
       },
       {
         "name": "mount",
-        "line": 41,
-        "end_line": 43,
+        "line": 45,
+        "end_line": 47,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -14659,60 +14665,82 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 10
+    "anonymous_functions": 13
   },
   "frontend/src/components/TourismFloors.jsx": {
-    "sha256": "7c6dbbabcd7aca7aee4be69f81f76df6e51813d49142859a87fd1b506b22f4e5",
+    "sha256": "ed976307e20a66cd8964a18cb9a6fcef0a5315bc38a197f1a8e1587dd1a088e0",
     "definitions": [
       {
         "name": "valueDigits",
-        "line": 21,
-        "end_line": 26,
+        "line": 28,
+        "end_line": 32,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "floorsOf",
-        "line": 28,
-        "end_line": 35,
+        "line": 34,
+        "end_line": 44,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TourismJump",
-        "line": 38,
-        "end_line": 55,
+        "line": 47,
+        "end_line": 64,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "MoreToggle",
+        "line": 66,
+        "end_line": 74,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "LeaderCard",
+        "line": 76,
+        "end_line": 107,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "RegionGroup",
+        "line": 109,
+        "end_line": 136,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TourismFloors",
-        "line": 57,
-        "end_line": 164,
+        "line": 138,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       }
     ],
     "imports": [
       {
+        "source": "react",
+        "line": 15
+      },
+      {
         "source": "react-router-dom",
-        "line": 10
+        "line": 16
       },
       {
         "source": "lucide-react",
-        "line": 11
+        "line": 17
       },
       {
         "source": "../lib/hooks",
-        "line": 12
+        "line": 18
       },
       {
         "source": "../lib/format",
-        "line": 13
+        "line": 19
       },
       {
         "source": "../i18n",
-        "line": 14
+        "line": 20
       },
       {
         "source": "../styles/t6-tourism.css",
-        "line": 15
+        "line": 21
       }
     ],
     "exports": [
@@ -14720,16 +14748,16 @@
         "names": [
           "TourismJump"
         ],
-        "line": 38
+        "line": 47
       },
       {
         "names": [
           "default"
         ],
-        "line": 57
+        "line": 138
       }
     ],
-    "anonymous_functions": 9
+    "anonymous_functions": 16
   },
   "frontend/src/components/UnemploymentIndicatorControls.jsx": {
     "sha256": "cb5f15eeac13cacf3a0530dbc2a9cc2e882cee6d795df98ae5643437de3a2021",
@@ -25458,7 +25486,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "1cb19e9c5265bcf76dcf6f4f8bcd47e51e9457ed1fec5d76f78b43a5a8b16b77",
+    "sha256": "cabe4fa37a74bf003e8d6f9596999cbf083d6afdd0a12e98911950be3fe7b5d4",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -25566,7 +25594,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "3a528284e7e18c025a82a7ca50488328d82976e04ca48ca473473daae16f1da1",
+    "sha256": "2e58e830fa98584a082f03d6c6c4f139943c889c54b7633faa5706762a157326",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -31410,54 +31438,54 @@
     "anonymous_functions": 12
   },
   "frontend/src/lib/categories.js": {
-    "sha256": "0e6884fd41c96ce9ff67851141a26842e3129637d0c5eb83cd924b859794a087",
+    "sha256": "295cd92b0dd7fa3e3882069713d8e0187130e6bc9d9068a946d242c7838e6192",
     "definitions": [
       {
         "name": "getCategoryBySlug",
-        "line": 246,
-        "end_line": 248,
+        "line": 249,
+        "end_line": 251,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "categoryLabel",
-        "line": 251,
-        "end_line": 254,
+        "line": 254,
+        "end_line": 257,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "categoryDescription",
-        "line": 257,
-        "end_line": 260,
+        "line": 260,
+        "end_line": 263,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isIndicatorListed",
-        "line": 268,
-        "end_line": 271,
+        "line": 271,
+        "end_line": 274,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "indicatorCategoryKey",
-        "line": 274,
-        "end_line": 278,
+        "line": 277,
+        "end_line": 281,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "displayCategoryLabel",
-        "line": 288,
-        "end_line": 294,
+        "line": 291,
+        "end_line": 297,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "findCategoryByApiLabel",
-        "line": 296,
-        "end_line": 303,
+        "line": 299,
+        "end_line": 306,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countInCategory",
-        "line": 305,
-        "end_line": 310,
+        "line": 308,
+        "end_line": 313,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -31472,55 +31500,55 @@
         "names": [
           "CATEGORIES"
         ],
-        "line": 244
+        "line": 247
       },
       {
         "names": [
           "getCategoryBySlug"
         ],
-        "line": 246
+        "line": 249
       },
       {
         "names": [
           "categoryLabel"
         ],
-        "line": 251
+        "line": 254
       },
       {
         "names": [
           "categoryDescription"
         ],
-        "line": 257
+        "line": 260
       },
       {
         "names": [
           "isIndicatorListed"
         ],
-        "line": 268
+        "line": 271
       },
       {
         "names": [
           "indicatorCategoryKey"
         ],
-        "line": 274
+        "line": 277
       },
       {
         "names": [
           "displayCategoryLabel"
         ],
-        "line": 288
+        "line": 291
       },
       {
         "names": [
           "findCategoryByApiLabel"
         ],
-        "line": 296
+        "line": 299
       },
       {
         "names": [
           "countInCategory"
         ],
-        "line": 305
+        "line": 308
       }
     ],
     "anonymous_functions": 3
@@ -37668,7 +37696,7 @@
     "anonymous_functions": 15
   },
   "frontend/src/lib/format.js": {
-    "sha256": "93060e72d24d63e7c733f3a2f25385d140fd56ab74d745d78f191de640a4671b",
+    "sha256": "a277765cdef562313c03dfaf5b8678ac089b0d594da79ceba22398a3f31902bc",
     "definitions": [
       {
         "name": "resolveFormatLocale",
@@ -37827,105 +37855,117 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "unitDigitsKnown",
+        "line": 500,
+        "end_line": 502,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "plainValueDigits",
+        "line": 505,
+        "end_line": 509,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "unitDigits",
-        "line": 499,
-        "end_line": 501,
+        "line": 511,
+        "end_line": 513,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "chartValueDigits",
-        "line": 508,
-        "end_line": 510,
+        "line": 520,
+        "end_line": 522,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatAxisTick",
-        "line": 512,
-        "end_line": 529,
+        "line": 524,
+        "end_line": 541,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compactDigitsFor",
-        "line": 552,
-        "end_line": 555,
+        "line": 564,
+        "end_line": 567,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "trimZeroDecimals",
-        "line": 557,
-        "end_line": 560,
+        "line": 569,
+        "end_line": 572,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatCompactNumber",
-        "line": 567,
-        "end_line": 584,
+        "line": 579,
+        "end_line": 596,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatCompactParts",
-        "line": 591,
-        "end_line": 616,
+        "line": 603,
+        "end_line": 628,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatCompactParts.plain",
-        "line": 599,
-        "end_line": 603,
+        "line": 611,
+        "end_line": 615,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "formatCompactWithUnit",
-        "line": 619,
-        "end_line": 623,
+        "line": 631,
+        "end_line": 635,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatPeriodShort",
-        "line": 629,
-        "end_line": 644,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "formatChange",
-        "line": 646,
-        "end_line": 652,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "cn",
-        "line": 654,
+        "line": 641,
         "end_line": 656,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "formatChange",
+        "line": 658,
+        "end_line": 664,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "cn",
+        "line": 666,
+        "end_line": 668,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "isCpiIndex",
-        "line": 677,
-        "end_line": 679,
+        "line": 689,
+        "end_line": 691,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "adjustCpiDisplay",
-        "line": 681,
-        "end_line": 685,
+        "line": 693,
+        "end_line": 697,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "adjustCpiForecastDisplay",
-        "line": 687,
-        "end_line": 699,
+        "line": 699,
+        "end_line": 711,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "relativeTimeEn",
-        "line": 701,
-        "end_line": 703,
+        "line": 713,
+        "end_line": 715,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "relativeTime",
-        "line": 705,
-        "end_line": 729,
+        "line": 717,
+        "end_line": 741,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -38022,81 +38062,93 @@
       },
       {
         "names": [
+          "unitDigitsKnown"
+        ],
+        "line": 500
+      },
+      {
+        "names": [
+          "plainValueDigits"
+        ],
+        "line": 505
+      },
+      {
+        "names": [
           "unitDigits"
         ],
-        "line": 499
+        "line": 511
       },
       {
         "names": [
           "chartValueDigits"
         ],
-        "line": 508
+        "line": 520
       },
       {
         "names": [
           "formatAxisTick"
         ],
-        "line": 512
+        "line": 524
       },
       {
         "names": [
           "formatCompactNumber"
         ],
-        "line": 567
+        "line": 579
       },
       {
         "names": [
           "formatCompactParts"
         ],
-        "line": 591
+        "line": 603
       },
       {
         "names": [
           "formatCompactWithUnit"
         ],
-        "line": 619
+        "line": 631
       },
       {
         "names": [
           "formatPeriodShort"
         ],
-        "line": 629
+        "line": 641
       },
       {
         "names": [
           "formatChange"
         ],
-        "line": 646
+        "line": 658
       },
       {
         "names": [
           "cn"
         ],
-        "line": 654
+        "line": 666
       },
       {
         "names": [
           "isCpiIndex"
         ],
-        "line": 677
+        "line": 689
       },
       {
         "names": [
           "adjustCpiDisplay"
         ],
-        "line": 681
+        "line": 693
       },
       {
         "names": [
           "adjustCpiForecastDisplay"
         ],
-        "line": 687
+        "line": 699
       },
       {
         "names": [
           "relativeTime"
         ],
-        "line": 705
+        "line": 717
       }
     ],
     "anonymous_functions": 11
@@ -58633,12 +58685,12 @@
     "anonymous_functions": 7
   },
   "frontend/src/pages/CategoryPage.jsx": {
-    "sha256": "23faef4132f9cc1c35bebf9acdb59b34cebdf0eb6e6412cdb24e37ddf3d611bd",
+    "sha256": "ea1d081c608566bea7cc3496567667dce55d94eeb6d5bcf4850763aba0ca40ce",
     "definitions": [
       {
         "name": "CategoryPage",
         "line": 54,
-        "end_line": 319,
+        "end_line": 325,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -58776,7 +58828,7 @@
         "line": 54
       }
     ],
-    "anonymous_functions": 18
+    "anonymous_functions": 22
   },
   "frontend/src/pages/ComparePage.c10.component.test.jsx": {
     "sha256": "7c50bbea955b3fae44ded2841fda25f06d631c64adcfa58188d2293310bf8f2d",

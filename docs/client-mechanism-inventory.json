@@ -39744,7 +39744,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/IndicatorTelemetryGrid.component.test.jsx": {
-      "sha256": "59bd073429e3e9abffa505a6e625abbe834e09456e7f0852fbb0ec6104cede5b",
+      "sha256": "0bab1d0ff74a4a2017c17b043278fa96b4e345810ee707c1cd388554d4089897",
       "imports": [
         {
           "line": 1,
@@ -39880,6 +39880,30 @@
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
+        },
+        {
+          "line": 52,
+          "end_line": 64,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 53,
+          "end_line": 63,
+          "owner": "<callback@52>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 56,
+          "end_line": 56,
+          "owner": "<callback@52>.<callback@53>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
         }
       ],
       "hooks": [],
@@ -39891,7 +39915,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/IndicatorTelemetryGrid.jsx": {
-      "sha256": "290faffc76b0d7f8bfec0c570e4a5cb7be5eb80c9a6e26ec89c6f0b805a49b01",
+      "sha256": "f20013f7f47a3f19ee4af465d93684f570ff40dfa9f33ffafa46367f12d217aa",
       "imports": [
         {
           "line": 1,
@@ -39905,7 +39929,8 @@
           "bindings": [
             "formatDate",
             "resolveDateFormat",
-            "chartValueDigits"
+            "chartValueDigits",
+            "unitDigitsKnown"
           ]
         },
         {
@@ -39987,6 +40012,8 @@
           ],
           "bindings": [
             "bestGrowth",
+            "dataDigitsOf",
+            "formatTileValue",
             "growthOverYears",
             "unitKind",
             "windowStats"
@@ -40085,7 +40112,7 @@
       "functions": [
         {
           "line": 22,
-          "end_line": 243,
+          "end_line": 256,
           "owner": "<module>",
           "name": "IndicatorTelemetryGrid",
           "kind": "FunctionDeclaration",
@@ -40100,16 +40127,24 @@
           "callback_context": "[...Array(4)].map"
         },
         {
-          "line": 155,
-          "end_line": 157,
+          "line": 150,
+          "end_line": 150,
+          "owner": "IndicatorTelemetryGrid",
+          "name": "sv",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 168,
+          "end_line": 170,
           "owner": "IndicatorTelemetryGrid",
           "name": "yearsWord",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 166,
-          "end_line": 173,
+          "line": 179,
+          "end_line": 186,
           "owner": "IndicatorTelemetryGrid",
           "name": "windowLabel",
           "kind": "ArrowFunctionExpression",
@@ -40140,7 +40175,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/IndicatorTile.jsx": {
-      "sha256": "6e5df42288bb8546f7ba958d137cdf49c24614ae4d8b4fec3c5e86ee29e5dc16",
+      "sha256": "7d92c4caa2dfe95154afb5969fce92b5e2798b84d6e2ba2ae197ae20000ac82c",
       "imports": [
         {
           "line": 1,
@@ -40216,7 +40251,8 @@
             "formatValue",
             "resolveDateFormat",
             "cn",
-            "isCpiIndex"
+            "isCpiIndex",
+            "plainValueDigits"
           ]
         },
         {
@@ -73885,7 +73921,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/TourismFloors.component.test.jsx": {
-      "sha256": "356624c8be732a32115166413b34890cd504020631df539d628ead5b69f45a5c",
+      "sha256": "2199e1330f9f5b5aedce740de9f86ac7b0a7460370179402b668d5ea41232400",
       "imports": [
         {
           "line": 3,
@@ -73910,6 +73946,7 @@
           "target": "@testing-library/react",
           "bindings": [
             "cleanup",
+            "fireEvent",
             "render",
             "screen",
             "within"
@@ -74008,49 +74045,73 @@
           "callback_context": "afterEach"
         },
         {
-          "line": 41,
-          "end_line": 43,
+          "line": 35,
+          "end_line": 35,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "Array.from"
+        },
+        {
+          "line": 45,
+          "end_line": 47,
           "owner": "<module>",
           "name": "mount",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 45,
-          "end_line": 59,
+          "line": 49,
+          "end_line": 64,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 52,
-          "end_line": 52,
-          "owner": "<callback@45>",
+          "line": 56,
+          "end_line": 56,
+          "owner": "<callback@49>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...card.querySelectorAll('.t6-rank__name')].map"
         },
         {
           "line": 61,
-          "end_line": 68,
+          "end_line": 61,
+          "owner": "<callback@49>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[...regions.querySelectorAll('.t6-group__title')].map"
+        },
+        {
+          "line": 66,
+          "end_line": 77,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 70,
-          "end_line": 82,
+          "line": 79,
+          "end_line": 86,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 74,
-          "end_line": 74,
-          "owner": "<callback@70>",
+          "line": 88,
+          "end_line": 100,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 92,
+          "end_line": 92,
+          "owner": "<callback@88>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...nav.querySelectorAll('a')].map"
@@ -74064,7 +74125,7 @@
       "registries": [
         {
           "line": 17,
-          "end_line": 39,
+          "end_line": 43,
           "owner": "<module>",
           "name": "FULL",
           "kind": "ObjectExpression",
@@ -74079,11 +74140,22 @@
       "mcp_tools": []
     },
     "frontend/src/components/TourismFloors.jsx": {
-      "sha256": "7c6dbbabcd7aca7aee4be69f81f76df6e51813d49142859a87fd1b506b22f4e5",
+      "sha256": "ed976307e20a66cd8964a18cb9a6fcef0a5315bc38a197f1a8e1587dd1a088e0",
       "imports": [
         {
-          "line": 10,
-          "end_line": 10,
+          "line": 15,
+          "end_line": 15,
+          "owner": "<module>",
+          "specifier": "react",
+          "category": "external_package",
+          "target": "react",
+          "bindings": [
+            "useState"
+          ]
+        },
+        {
+          "line": 16,
+          "end_line": 16,
           "owner": "<module>",
           "specifier": "react-router-dom",
           "category": "external_package",
@@ -74093,19 +74165,20 @@
           ]
         },
         {
-          "line": 11,
-          "end_line": 11,
+          "line": 17,
+          "end_line": 17,
           "owner": "<module>",
           "specifier": "lucide-react",
           "category": "external_package",
           "target": "lucide-react",
           "bindings": [
-            "ArrowRight"
+            "ArrowRight",
+            "ChevronDown"
           ]
         },
         {
-          "line": 12,
-          "end_line": 12,
+          "line": 18,
+          "end_line": 18,
           "owner": "<module>",
           "specifier": "../lib/hooks",
           "category": "owned_source",
@@ -74117,8 +74190,8 @@
           ]
         },
         {
-          "line": 13,
-          "end_line": 13,
+          "line": 19,
+          "end_line": 19,
           "owner": "<module>",
           "specifier": "../lib/format",
           "category": "owned_source",
@@ -74130,8 +74203,8 @@
           ]
         },
         {
-          "line": 14,
-          "end_line": 14,
+          "line": 20,
+          "end_line": 20,
           "owner": "<module>",
           "specifier": "../i18n",
           "category": "owned_source",
@@ -74144,8 +74217,8 @@
           ]
         },
         {
-          "line": 15,
-          "end_line": 15,
+          "line": 21,
+          "end_line": 21,
           "owner": "<module>",
           "specifier": "../styles/t6-tourism.css",
           "category": "owned_source",
@@ -74158,151 +74231,295 @@
       "routes": [],
       "functions": [
         {
-          "line": 21,
-          "end_line": 26,
+          "line": 28,
+          "end_line": 32,
           "owner": "<module>",
           "name": "valueDigits",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 28,
-          "end_line": 35,
+          "line": 34,
+          "end_line": 44,
           "owner": "<module>",
           "name": "floorsOf",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 30,
-          "end_line": 30,
+          "line": 37,
+          "end_line": 37,
           "owner": "floorsOf",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regions.filter"
         },
         {
-          "line": 31,
-          "end_line": 31,
+          "line": 39,
+          "end_line": 39,
           "owner": "floorsOf",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "groupKeys\n    .map"
+        },
+        {
+          "line": 39,
+          "end_line": 39,
+          "owner": "floorsOf.<callback@39>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "regions.filter"
         },
         {
-          "line": 38,
-          "end_line": 55,
+          "line": 40,
+          "end_line": 40,
+          "owner": "floorsOf",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "groupKeys\n    .map((key) => ({ key, items: regions.filter((r) => r.group === key) }))\n    .filter"
+        },
+        {
+          "line": 47,
+          "end_line": 64,
           "owner": "<module>",
           "name": "TourismJump",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 50,
-          "end_line": 52,
+          "line": 59,
+          "end_line": 61,
           "owner": "TourismJump",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items.map"
         },
         {
-          "line": 57,
-          "end_line": 164,
+          "line": 66,
+          "end_line": 74,
+          "owner": "<module>",
+          "name": "MoreToggle",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 76,
+          "end_line": 107,
+          "owner": "<module>",
+          "name": "LeaderCard",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 90,
+          "end_line": 96,
+          "owner": "LeaderCard",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "row.leaders.map"
+        },
+        {
+          "line": 109,
+          "end_line": 136,
+          "owner": "<module>",
+          "name": "RegionGroup",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 121,
+          "end_line": 128,
+          "owner": "RegionGroup",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "shown.map"
+        },
+        {
+          "line": 132,
+          "end_line": 132,
+          "owner": "RegionGroup",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 132,
+          "end_line": 132,
+          "owner": "RegionGroup.<callback@132>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setOpen"
+        },
+        {
+          "line": 138,
+          "end_line": 217,
           "owner": "<module>",
           "name": "TourismFloors",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 73,
-          "end_line": 98,
+          "line": 155,
+          "end_line": 155,
           "owner": "TourismFloors",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "featured.map"
         },
         {
-          "line": 82,
-          "end_line": 88,
-          "owner": "TourismFloors.<callback@73>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "row.leaders.map"
-        },
-        {
-          "line": 105,
-          "end_line": 113,
+          "line": 160,
+          "end_line": 160,
           "owner": "TourismFloors",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "rest.map"
+          "callback_context": "groups.map"
         },
         {
-          "line": 130,
-          "end_line": 137,
+          "line": 176,
+          "end_line": 183,
           "owner": "TourismFloors",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "concepts.map"
         },
         {
-          "line": 143,
-          "end_line": 157,
+          "line": 191,
+          "end_line": 205,
           "owner": "TourismFloors",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "countries.map"
+          "callback_context": "shownCountries.map"
         },
         {
-          "line": 151,
-          "end_line": 153,
-          "owner": "TourismFloors.<callback@143>",
+          "line": 199,
+          "end_line": 201,
+          "owner": "TourismFloors.<callback@191>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "c.series.map"
+        },
+        {
+          "line": 209,
+          "end_line": 209,
+          "owner": "TourismFloors",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 209,
+          "end_line": 209,
+          "owner": "TourismFloors.<callback@209>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setAllCountries"
         }
       ],
       "hooks": [
         {
-          "line": 39,
-          "end_line": 39,
+          "line": 48,
+          "end_line": 48,
           "owner": "TourismJump",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 40,
-          "end_line": 40,
+          "line": 49,
+          "end_line": 49,
           "owner": "TourismJump",
           "callee": "useTourismOverview",
           "arguments": []
         },
         {
-          "line": 58,
-          "end_line": 58,
-          "owner": "TourismFloors",
+          "line": 67,
+          "end_line": 67,
+          "owner": "MoreToggle",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 59,
-          "end_line": 59,
-          "owner": "TourismFloors",
+          "line": 77,
+          "end_line": 77,
+          "owner": "LeaderCard",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 78,
+          "end_line": 78,
+          "owner": "LeaderCard",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 60,
-          "end_line": 60,
+          "line": 110,
+          "end_line": 110,
+          "owner": "RegionGroup",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 111,
+          "end_line": 111,
+          "owner": "RegionGroup",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 139,
+          "end_line": 139,
+          "owner": "TourismFloors",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 140,
+          "end_line": 140,
           "owner": "TourismFloors",
           "callee": "useTourismOverview",
           "arguments": []
+        },
+        {
+          "line": 142,
+          "end_line": 142,
+          "owner": "TourismFloors",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
         }
       ],
       "http": [],
       "storage": [],
       "events": [],
-      "jsx_handlers": [],
+      "jsx_handlers": [
+        {
+          "line": 69,
+          "end_line": 69,
+          "owner": "MoreToggle",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{onToggle}"
+        },
+        {
+          "line": 131,
+          "end_line": 132,
+          "owner": "RegionGroup",
+          "component": "MoreToggle",
+          "event": "onToggle",
+          "expression": "{() => setOpen((v) => !v)}"
+        },
+        {
+          "line": 208,
+          "end_line": 209,
+          "owner": "TourismFloors",
+          "component": "MoreToggle",
+          "event": "onToggle",
+          "expression": "{() => setAllCountries((v) => !v)}"
+        }
+      ],
       "registries": [],
       "mcp_tools": []
     },
@@ -120648,7 +120865,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "1cb19e9c5265bcf76dcf6f4f8bcd47e51e9457ed1fec5d76f78b43a5a8b16b77",
+      "sha256": "cabe4fa37a74bf003e8d6f9596999cbf083d6afdd0a12e98911950be3fe7b5d4",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -121071,7 +121288,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "3a528284e7e18c025a82a7ca50488328d82976e04ca48ca473473daae16f1da1",
+      "sha256": "2e58e830fa98584a082f03d6c6c4f139943c889c54b7633faa5706762a157326",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -135767,7 +135984,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/categories.js": {
-      "sha256": "0e6884fd41c96ce9ff67851141a26842e3129637d0c5eb83cd924b859794a087",
+      "sha256": "295cd92b0dd7fa3e3882069713d8e0187130e6bc9d9068a946d242c7838e6192",
       "imports": [
         {
           "line": 14,
@@ -135786,88 +136003,88 @@
       "routes": [],
       "functions": [
         {
-          "line": 246,
-          "end_line": 248,
+          "line": 249,
+          "end_line": 251,
           "owner": "<module>",
           "name": "getCategoryBySlug",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 247,
-          "end_line": 247,
+          "line": 250,
+          "end_line": 250,
           "owner": "getCategoryBySlug",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "CATEGORIES.find"
         },
         {
-          "line": 251,
-          "end_line": 254,
+          "line": 254,
+          "end_line": 257,
           "owner": "<module>",
           "name": "categoryLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 257,
-          "end_line": 260,
+          "line": 260,
+          "end_line": 263,
           "owner": "<module>",
           "name": "categoryDescription",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 268,
-          "end_line": 271,
+          "line": 271,
+          "end_line": 274,
           "owner": "<module>",
           "name": "isIndicatorListed",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 274,
-          "end_line": 278,
+          "line": 277,
+          "end_line": 281,
           "owner": "<module>",
           "name": "indicatorCategoryKey",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 288,
-          "end_line": 294,
+          "line": 291,
+          "end_line": 297,
           "owner": "<module>",
           "name": "displayCategoryLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 296,
-          "end_line": 303,
+          "line": 299,
+          "end_line": 306,
           "owner": "<module>",
           "name": "findCategoryByApiLabel",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 300,
-          "end_line": 300,
+          "line": 303,
+          "end_line": 303,
           "owner": "findCategoryByApiLabel",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "CATEGORIES.find"
         },
         {
-          "line": 305,
-          "end_line": 310,
+          "line": 308,
+          "end_line": 313,
           "owner": "<module>",
           "name": "countInCategory",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 308,
-          "end_line": 308,
+          "line": 311,
+          "end_line": 311,
           "owner": "countInCategory",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -135882,7 +136099,7 @@
       "registries": [
         {
           "line": 21,
-          "end_line": 242,
+          "end_line": 245,
           "owner": "<module>",
           "name": "CATEGORY_DEFS",
           "kind": "ArrayExpression",
@@ -135899,13 +136116,13 @@
             "{\n    slug: 'trade',\n    name: 'Внешняя торговля',\n    nameEn: 'Foreign trade',\n    seoTitleEn: 'Foreign trade of Russia',\n    seoDescriptionEn:\n      'Exports, imports, trade balance, and the current account — quarterly Bank of Russia data.',\n    icon: 'Globe',\n    apiCategory: 'Торговля',\n    status: 'active',\n    flagshipCode: 'current-account',\n    sentiment: 'neutral',\n    description: 'Экспорт товаров и услуг, импорт товаров и услуг, сальдо торгового баланса, сальдо текущего счёта.',\n    descriptionEn:\n      'Exports and imports of goods and services, trade balance, current account balance.',\n    relatedSlugs: ['finance', 'gdp', 'business'],\n  }",
             "{\n    slug: 'business',\n    name: 'Бизнес и инвестиции',\n    nameEn: 'Business and investment',\n    seoTitleEn: 'Business and investment in Russia',\n    seoDescriptionEn:\n      'Industrial production index (mining, manufacturing, energy, water supply), retail trade, and investment — Rosstat data.',\n    icon: 'Factory',\n    apiCategory: 'Бизнес',\n    status: 'active',\n    flagshipCode: 'ipi',\n    sentiment: 'positive',\n    description: 'Индекс промышленного производства и его разделы: добыча, обрабатывающие производства, энергетика, водоснабжение. Розничная торговля, износ основных фондов, инвестиции.',\n    descriptionEn:\n      'Industrial production index and its sections: mining, manufacturing, energy, water supply. Retail trade, fixed asset wear, investment.',\n    relatedSlugs: ['gdp', 'rates', 'trade'],\n  }",
             "{\n    slug: 'science',\n    name: 'Наука и образование',\n    nameEn: 'Science and education',\n    seoTitleEn: 'Science and education in Russia',\n    seoDescriptionEn:\n      'Postgraduate students, R&D organizations, and innovation activity — Rosstat data.',\n    icon: 'GraduationCap',\n    apiCategory: 'Наука',\n    status: 'active',\n    flagshipCode: 'rd-personnel',\n    sentiment: 'positive',\n    description: 'Аспиранты, докторанты. Число организаций НИР. Инновационная активность предприятий.',\n    descriptionEn:\n      'Postgraduate and doctoral students. Number of R&D organizations. Enterprise innovation activity.',\n    relatedSlugs: ['population', 'business', 'labor'],\n  }",
-            "{\n    // Туризм (20.11.2026): Россия — ряды категории «Туризм»; регионы и мир — этажи TourismFloors на той же странице.\n    slug: 'tourism',\n    name: 'Туризм',\n    nameEn: 'Tourism',\n    seoTitleEn: 'Tourism in Russia, its regions and the world — statistics',\n    seoDescriptionEn:\n      'Tourist flows, outbound and inbound trips, hotels and overnight stays, health resorts, and tourist spending — official data for Russia, its regions, and countries worldwide.',\n    icon: 'Plane',\n    apiCategory: 'Туризм',\n    status: 'active',\n    flagshipCode: 'tour-outbound-trips',\n    sentiment: 'neutral',\n    description: 'Поездки россиян по стране и за границу, въезд иностранцев. Гостиницы, ночёвки, санатории, турфирмы. Траты туристов. Регионы России и страны мира.',\n    descriptionEn:\n      'Trips by Russians at home and abroad, foreign visitors. Hotels, overnight stays, health resorts, tour operators. Tourist spending. Russian regions and countries worldwide.',\n    relatedSlugs: ['trade', 'population', 'prices'],\n  }"
+            "{\n    // Туризм (20.11.2026): Россия — ряды категории «Туризм»; регионы и мир — этажи TourismFloors на той же странице.\n    slug: 'tourism',\n    name: 'Туризм',\n    nameEn: 'Tourism',\n    seoTitleEn: 'Tourism in Russia, its regions and the world — statistics',\n    seoDescriptionEn:\n      'Tourist flows, outbound and inbound trips, hotels and overnight stays, health resorts, and tourist spending — official data for Russia, its regions, and countries worldwide.',\n    icon: 'Plane',\n    apiCategory: 'Туризм',\n    status: 'active',\n    flagshipCode: 'tour-outbound-trips',\n    // Порядок первых карточек раздела (зеркало backend tourism_showcase.RUSSIA_LEAD_CODES): потоки и деньги раньше ёмкости.\n    leadCodes: ['tour-outbound-trips', 'tour-inbound-trips', 'tour-hotel-nights-monthly', 'tour-travel-imports',\n      'tour-travel-exports', 'tour-gva-share', 'tour-hotel-guests', 'tour-travel-balance'],\n    sentiment: 'neutral',\n    description: 'Поездки россиян по стране и за границу, въезд иностранцев. Гостиницы, ночёвки, санатории, турфирмы. Траты туристов. Регионы России и страны мира.',\n    descriptionEn:\n      'Trips by Russians at home and abroad, foreign visitors. Hotels, overnight stays, health resorts, tour operators. Tourist spending. Russian regions and countries worldwide.',\n    relatedSlugs: ['trade', 'population', 'prices'],\n  }"
           ],
           "initializer": null
         },
         {
-          "line": 244,
-          "end_line": 244,
+          "line": 247,
+          "end_line": 247,
           "owner": "<module>",
           "name": "CATEGORIES",
           "kind": "CallExpression",
@@ -135913,8 +136130,8 @@
           "initializer": "withCategorySeo"
         },
         {
-          "line": 285,
-          "end_line": 285,
+          "line": 288,
+          "end_line": 288,
           "owner": "<module>",
           "name": "CATEGORY_DISPLAY_OVERRIDES",
           "kind": "CallExpression",
@@ -152517,7 +152734,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/format.js": {
-      "sha256": "93060e72d24d63e7c733f3a2f25385d140fd56ab74d745d78f191de640a4671b",
+      "sha256": "a277765cdef562313c03dfaf5b8678ac089b0d594da79ceba22398a3f31902bc",
       "imports": [
         {
           "line": 1,
@@ -152800,168 +153017,184 @@
           "callback_context": null
         },
         {
-          "line": 499,
-          "end_line": 501,
+          "line": 500,
+          "end_line": 502,
+          "owner": "<module>",
+          "name": "unitDigitsKnown",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 505,
+          "end_line": 509,
+          "owner": "<module>",
+          "name": "plainValueDigits",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 511,
+          "end_line": 513,
           "owner": "<module>",
           "name": "unitDigits",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 508,
-          "end_line": 510,
+          "line": 520,
+          "end_line": 522,
           "owner": "<module>",
           "name": "chartValueDigits",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 512,
-          "end_line": 529,
+          "line": 524,
+          "end_line": 541,
           "owner": "<module>",
           "name": "formatAxisTick",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 552,
-          "end_line": 555,
+          "line": 564,
+          "end_line": 567,
           "owner": "<module>",
           "name": "compactDigitsFor",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 557,
-          "end_line": 560,
+          "line": 569,
+          "end_line": 572,
           "owner": "<module>",
           "name": "trimZeroDecimals",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 567,
-          "end_line": 584,
+          "line": 579,
+          "end_line": 596,
           "owner": "<module>",
           "name": "formatCompactNumber",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 578,
-          "end_line": 578,
+          "line": 590,
+          "end_line": 590,
           "owner": "formatCompactNumber",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "SCALE_WORDS.ru.find"
         },
         {
-          "line": 583,
-          "end_line": 583,
+          "line": 595,
+          "end_line": 595,
           "owner": "formatCompactNumber",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "SCALE_WORDS.ru.find"
         },
         {
-          "line": 591,
-          "end_line": 616,
+          "line": 603,
+          "end_line": 628,
           "owner": "<module>",
           "name": "formatCompactParts",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 599,
-          "end_line": 603,
+          "line": 611,
+          "end_line": 615,
           "owner": "formatCompactParts",
           "name": "plain",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 609,
-          "end_line": 609,
+          "line": 621,
+          "end_line": 621,
           "owner": "formatCompactParts",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "SCALE_WORDS[loc].find"
         },
         {
-          "line": 619,
-          "end_line": 623,
+          "line": 631,
+          "end_line": 635,
           "owner": "<module>",
           "name": "formatCompactWithUnit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 629,
-          "end_line": 644,
+          "line": 641,
+          "end_line": 656,
           "owner": "<module>",
           "name": "formatPeriodShort",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 646,
-          "end_line": 652,
+          "line": 658,
+          "end_line": 664,
           "owner": "<module>",
           "name": "formatChange",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 654,
-          "end_line": 656,
+          "line": 666,
+          "end_line": 668,
           "owner": "<module>",
           "name": "cn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 677,
-          "end_line": 679,
+          "line": 689,
+          "end_line": 691,
           "owner": "<module>",
           "name": "isCpiIndex",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 681,
-          "end_line": 685,
+          "line": 693,
+          "end_line": 697,
           "owner": "<module>",
           "name": "adjustCpiDisplay",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 687,
-          "end_line": 699,
+          "line": 699,
+          "end_line": 711,
           "owner": "<module>",
           "name": "adjustCpiForecastDisplay",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 693,
-          "end_line": 696,
+          "line": 705,
+          "end_line": 708,
           "owner": "adjustCpiForecastDisplay",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "forecastResp.forecast.values.map"
         },
         {
-          "line": 701,
-          "end_line": 703,
+          "line": 713,
+          "end_line": 715,
           "owner": "<module>",
           "name": "relativeTimeEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 705,
-          "end_line": 729,
+          "line": 717,
+          "end_line": 741,
           "owner": "<module>",
           "name": "relativeTime",
           "kind": "FunctionDeclaration",
@@ -153037,8 +153270,8 @@
           "initializer": null
         },
         {
-          "line": 535,
-          "end_line": 538,
+          "line": 547,
+          "end_line": 550,
           "owner": "<module>",
           "name": "SCALE_WORDS",
           "kind": "ObjectExpression",
@@ -153049,8 +153282,8 @@
           "initializer": null
         },
         {
-          "line": 539,
-          "end_line": 539,
+          "line": 551,
+          "end_line": 551,
           "owner": "<module>",
           "name": "SCALE_SHORT_EN",
           "kind": "ObjectExpression",
@@ -153063,8 +153296,8 @@
           "initializer": null
         },
         {
-          "line": 542,
-          "end_line": 547,
+          "line": 554,
+          "end_line": 559,
           "owner": "<module>",
           "name": "UNIT_SCALE_MULT",
           "kind": "ObjectExpression",
@@ -218625,7 +218858,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/CategoryPage.jsx": {
-      "sha256": "23faef4132f9cc1c35bebf9acdb59b34cebdf0eb6e6412cdb24e37ddf3d611bd",
+      "sha256": "ea1d081c608566bea7cc3496567667dce55d94eeb6d5bcf4850763aba0ca40ce",
       "imports": [
         {
           "line": 1,
@@ -219033,7 +219266,7 @@
       "functions": [
         {
           "line": 54,
-          "end_line": 319,
+          "end_line": 325,
           "owner": "<module>",
           "name": "CategoryPage",
           "kind": "FunctionDeclaration",
@@ -219104,81 +219337,113 @@
           "callback_context": "(indicators ?? []).filter"
         },
         {
+          "line": 145,
+          "end_line": 145,
+          "owner": "CategoryPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "cat.leadCodes.map"
+        },
+        {
+          "line": 147,
+          "end_line": 147,
+          "owner": "CategoryPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "listed.map"
+        },
+        {
           "line": 148,
           "end_line": 148,
+          "owner": "CategoryPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "listed.map((ind, i) => [ind, lead.has(ind.code) ? lead.get(ind.code) : lead.size + i])\n      .sort"
+        },
+        {
+          "line": 148,
+          "end_line": 148,
+          "owner": "CategoryPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "listed.map((ind, i) => [ind, lead.has(ind.code) ? lead.get(ind.code) : lead.size + i])\n      .sort((a, b) => a[1] - b[1]).map"
+        },
+        {
+          "line": 154,
+          "end_line": 154,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "filtered.filter"
         },
         {
-          "line": 166,
-          "end_line": 184,
+          "line": 172,
+          "end_line": 190,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n        const feat = CATEGORY_FEATURES[slug];\n        const Icon = feat.icon;\n        return (\n          <Link\n            to={feat.to}\n            className=\"fe-press group flex items-center gap-5 rounded-[1.5rem] p-5 md:p-6 mb-8 fe-glass-lite fe-float\"\n          >\n            <div className=\"shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl fe-glass-2\">\n              <Icon className=\"w-6 h-6 text-champagne-ink\" />\n            </div>\n            <div className=\"flex-1 min-w-0\">\n              <p className=\"text-sm font-semibold text-text-primary mb-0.5\">{t(feat.titleKey)}</p>\n              <p className=\"text-xs text-text-secondary leading-relaxed\">{t(feat.descKey)}</p>\n            </div>\n            <ArrowRight className=\"w-5 h-5 text-champagne-ink shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all\" />\n          </Link>\n        );\n      }"
         },
         {
-          "line": 205,
-          "end_line": 205,
+          "line": 211,
+          "end_line": 211,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 216,
-          "end_line": 216,
+          "line": 222,
+          "end_line": 222,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 223,
-          "end_line": 225,
+          "line": 229,
+          "end_line": 231,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...Array(6)].map"
         },
         {
-          "line": 240,
-          "end_line": 242,
+          "line": 246,
+          "end_line": 248,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 248,
-          "end_line": 259,
+          "line": 254,
+          "end_line": 265,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "filtered.map"
         },
         {
-          "line": 264,
-          "end_line": 274,
+          "line": 270,
+          "end_line": 280,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "filtered.map"
         },
         {
-          "line": 292,
-          "end_line": 313,
+          "line": 298,
+          "end_line": 319,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "relatedCategories.map"
         },
         {
-          "line": 296,
-          "end_line": 300,
-          "owner": "CategoryPage.<callback@292>",
+          "line": 302,
+          "end_line": 306,
+          "owner": "CategoryPage.<callback@298>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -219319,25 +219584,25 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 203,
-          "end_line": 207,
+          "line": 209,
+          "end_line": 213,
           "owner": "CategoryPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 216,
-          "end_line": 216,
+          "line": 222,
+          "end_line": 222,
           "owner": "CategoryPage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 293,
-          "end_line": 302,
-          "owner": "CategoryPage.<callback@292>",
+          "line": 299,
+          "end_line": 308,
+          "owner": "CategoryPage.<callback@298>",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.RELATED_LINK_CLICK, {\n                  from: slug,\n                  to: rel.slug,\n                  surface: 'category-related',\n                })}"
@@ -273472,14 +273737,14 @@
     }
   },
   "totals": {
-    "imports": 5114,
+    "imports": 5115,
     "routes": 104,
-    "functions": 16433,
-    "hooks": 3025,
+    "functions": 16456,
+    "hooks": 3030,
     "http": 134,
     "storage": 259,
     "events": 478,
-    "jsx_handlers": 1334,
+    "jsx_handlers": 1337,
     "registries": 748,
     "mcp_tools": 7,
     "files": 971,

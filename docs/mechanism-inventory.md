@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **84**
 - Middleware: **6**
-- Registry declarations: **1863**
-- Registry references: **3515**
+- Registry declarations: **1870**
+- Registry references: **3523**
 - Migration operations: **576**
-- Candidate effects: **3602**
+- Candidate effects: **3606**
 - Unresolved syntax: **6**
 - MCP tools: **7**
 
@@ -2926,21 +2926,21 @@ Relationships: `[]`
 | app.data.tourism_regional.SECTION_TRANSPORT | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:147](../backend/app/data/tourism_regional.py#L147) |
 | app.data.tourism_regional.SECTION_PRICES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:148](../backend/app/data/tourism_regional.py#L148) |
 | app.data.tourism_regional.ANNUAL_KSR | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:204](../backend/app/data/tourism_regional.py#L204) |
-| app.data.tourism_regional.ANNUAL_SANATORIUMS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:297](../backend/app/data/tourism_regional.py#L297) |
-| app.data.tourism_regional.DESTINATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:369](../backend/app/data/tourism_regional.py#L369) |
-| app.data.tourism_regional.ORIGINS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:404](../backend/app/data/tourism_regional.py#L404) |
-| app.data.tourism_regional.ANNUAL_FIRMS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:415](../backend/app/data/tourism_regional.py#L415) |
-| app.data.tourism_regional.ANNUAL_PENDING | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:477](../backend/app/data/tourism_regional.py#L477) |
-| app.data.tourism_regional.MONTHLY_EMISS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:513](../backend/app/data/tourism_regional.py#L513) |
-| app.data.tourism_regional.MONTHLY_TRANSPORT | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:624](../backend/app/data/tourism_regional.py#L624) |
-| app.data.tourism_regional.MONTHLY_CPI | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:691](../backend/app/data/tourism_regional.py#L691) |
-| app.data.tourism_regional.TURPOTOK | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:710](../backend/app/data/tourism_regional.py#L710) |
-| app.data.tourism_regional.QUARTERLY_CBR | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:767](../backend/app/data/tourism_regional.py#L767) |
-| app.data.tourism_regional.TAX | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:803](../backend/app/data/tourism_regional.py#L803) |
-| app.data.tourism_regional.REGISTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:825](../backend/app/data/tourism_regional.py#L825) |
-| app.data.tourism_regional.PUBLICATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:891](../backend/app/data/tourism_regional.py#L891) |
-| app.data.tourism_regional.SERIES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:1020](../backend/app/data/tourism_regional.py#L1020) |
-| app.data.tourism_regional.SERIES_BY_CODE | DictComp | computed source expression | [backend/app/data/tourism_regional.py:1024](../backend/app/data/tourism_regional.py#L1024) |
+| app.data.tourism_regional.ANNUAL_SANATORIUMS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:299](../backend/app/data/tourism_regional.py#L299) |
+| app.data.tourism_regional.DESTINATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:371](../backend/app/data/tourism_regional.py#L371) |
+| app.data.tourism_regional.ORIGINS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:406](../backend/app/data/tourism_regional.py#L406) |
+| app.data.tourism_regional.ANNUAL_FIRMS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:417](../backend/app/data/tourism_regional.py#L417) |
+| app.data.tourism_regional.ANNUAL_PENDING | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:479](../backend/app/data/tourism_regional.py#L479) |
+| app.data.tourism_regional.MONTHLY_EMISS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:528](../backend/app/data/tourism_regional.py#L528) |
+| app.data.tourism_regional.MONTHLY_TRANSPORT | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:639](../backend/app/data/tourism_regional.py#L639) |
+| app.data.tourism_regional.MONTHLY_CPI | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:706](../backend/app/data/tourism_regional.py#L706) |
+| app.data.tourism_regional.TURPOTOK | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:725](../backend/app/data/tourism_regional.py#L725) |
+| app.data.tourism_regional.QUARTERLY_CBR | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:782](../backend/app/data/tourism_regional.py#L782) |
+| app.data.tourism_regional.TAX | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:818](../backend/app/data/tourism_regional.py#L818) |
+| app.data.tourism_regional.REGISTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:840](../backend/app/data/tourism_regional.py#L840) |
+| app.data.tourism_regional.PUBLICATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:906](../backend/app/data/tourism_regional.py#L906) |
+| app.data.tourism_regional.SERIES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:1035](../backend/app/data/tourism_regional.py#L1035) |
+| app.data.tourism_regional.SERIES_BY_CODE | DictComp | computed source expression | [backend/app/data/tourism_regional.py:1039](../backend/app/data/tourism_regional.py#L1039) |
 | app.data.tourism_russia.INBOUND_COUNTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:319](../backend/app/data/tourism_russia.py#L319) |
 | app.data.tourism_russia.OUTBOUND_COUNTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:333](../backend/app/data/tourism_russia.py#L333) |
 | app.data.tourism_russia.AIR_DIMS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:463](../backend/app/data/tourism_russia.py#L463) |
@@ -2949,11 +2949,11 @@ Relationships: `[]`
 | app.data.tourism_russia.DESTINATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:700](../backend/app/data/tourism_russia.py#L700) |
 | app.data.tourism_russia._DEST_DEFAULT_TAIL | Dict | 'egypt', 'thailand', 'uzbekistan', 'kazakhstan' | [backend/app/data/tourism_russia.py:749](../backend/app/data/tourism_russia.py#L749) |
 | app.data.tourism_russia.CPI_ITEMS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:800](../backend/app/data/tourism_russia.py#L800) |
-| app.data.tourism_russia.SERIES | DictComp | computed source expression | [backend/app/data/tourism_russia.py:981](../backend/app/data/tourism_russia.py#L981) |
-| app.data.tourism_russia.VARIANT_GROUPS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:988](../backend/app/data/tourism_russia.py#L988) |
-| app.data.tourism_russia._FORECAST_CFG | Dict | 'monthly_auto', 'annual_auto', 'generic_quarterly', 'signed_quarterly' | [backend/app/data/tourism_russia.py:1087](../backend/app/data/tourism_russia.py#L1087) |
-| app.data.tourism_russia._WHY | Dict | 'cbr', 'fsb', 'gva', 'transport', 'hotels' | [backend/app/data/tourism_russia.py:1146](../backend/app/data/tourism_russia.py#L1146) |
-| app.data.tourism_russia._FREQ | Dict | 'cbr', 'fsb', 'gva', 'transport', 'hotels', 'prices', 'static', 'dest' | [backend/app/data/tourism_russia.py:1184](../backend/app/data/tourism_russia.py#L1184) |
+| app.data.tourism_russia.SERIES | DictComp | computed source expression | [backend/app/data/tourism_russia.py:982](../backend/app/data/tourism_russia.py#L982) |
+| app.data.tourism_russia.VARIANT_GROUPS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:989](../backend/app/data/tourism_russia.py#L989) |
+| app.data.tourism_russia._FORECAST_CFG | Dict | 'monthly_auto', 'annual_auto', 'generic_quarterly', 'signed_quarterly' | [backend/app/data/tourism_russia.py:1088](../backend/app/data/tourism_russia.py#L1088) |
+| app.data.tourism_russia._WHY | Dict | 'cbr', 'fsb', 'gva', 'transport', 'hotels' | [backend/app/data/tourism_russia.py:1147](../backend/app/data/tourism_russia.py#L1147) |
+| app.data.tourism_russia._FREQ | Dict | 'cbr', 'fsb', 'gva', 'transport', 'hotels', 'prices', 'static', 'dest' | [backend/app/data/tourism_russia.py:1185](../backend/app/data/tourism_russia.py#L1185) |
 | app.data.view_model_families.GRAN_ORDER | Tuple | sequence/source expression | [backend/app/data/view_model_families.py:46](../backend/app/data/view_model_families.py#L46) |
 | app.data.view_model_families.GRAN_LABEL | Dict | 'day', 'week', 'month', 'quarter', 'year' | [backend/app/data/view_model_families.py:48](../backend/app/data/view_model_families.py#L48) |
 | app.data.view_model_families.GRAN_FREQUENCY | Dict | 'day', 'week', 'month', 'quarter', 'year' | [backend/app/data/view_model_families.py:57](../backend/app/data/view_model_families.py#L57) |
@@ -3303,6 +3303,7 @@ Relationships: `[]`
 | app.services.emiss_tourism_parser.MONTHS | Tuple | sequence/source expression | [backend/app/services/emiss_tourism_parser.py:52](../backend/app/services/emiss_tourism_parser.py#L52) |
 | app.services.emiss_tourism_parser.QUARTERS | Dict | 'i квартал', 'ii квартал', 'iii квартал', 'iv квартал' | [backend/app/services/emiss_tourism_parser.py:55](../backend/app/services/emiss_tourism_parser.py#L55) |
 | app.services.emiss_tourism_parser._FILTERS_BLOCK | Call | computed source expression | [backend/app/services/emiss_tourism_parser.py:172](../backend/app/services/emiss_tourism_parser.py#L172) |
+| app.services.emiss_tourism_parser._JS_ESCAPE | Call | computed source expression | [backend/app/services/emiss_tourism_parser.py:175](../backend/app/services/emiss_tourism_parser.py#L175) |
 | app.services.emiss_weekly_fuel.WEEKLY_FUELS | Dict | '1709730', '1709750', '1755184', '1755196' | [backend/app/services/emiss_weekly_fuel.py:74](../backend/app/services/emiss_weekly_fuel.py#L74) |
 | app.services.emiss_weekly_fuel._FUEL_LABELS | Dict | 'Бензин автомобильный марки АИ-92, л', 'Бензин автомобильный марки АИ-95, л', 'Бензин автомобильный марки АИ-98 и выше, л', 'Дизельное топливо, л' | [backend/app/services/emiss_weekly_fuel.py:81](../backend/app/services/emiss_weekly_fuel.py#L81) |
 | app.services.emiss_weekly_fuel.NATIONAL_BY_REGIONAL | Dict | 'ceni-ai92', 'ceni-ai95', 'ceni-dt' | [backend/app/services/emiss_weekly_fuel.py:88](../backend/app/services/emiss_weekly_fuel.py#L88) |
@@ -3859,7 +3860,7 @@ Relationships: `[]`
 | app.services.seo_renderer.AUTOLINK_TERMS | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2351](../backend/app/services/seo_renderer.py#L2351) |
 | app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2525](../backend/app/services/seo_renderer.py#L2525) |
 | app.services.seo_renderer.HOME_POPULAR_CODES_RU | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2543](../backend/app/services/seo_renderer.py#L2543) |
-| app.services.seo_renderer._SSR_VS_COUNTRY_LABELS | Dict | 'germany', 'united-states', 'france', 'china', 'japan', 'russia' | [backend/app/services/seo_renderer.py:4093](../backend/app/services/seo_renderer.py#L4093) |
+| app.services.seo_renderer._SSR_VS_COUNTRY_LABELS | Dict | 'germany', 'united-states', 'france', 'china', 'japan', 'russia' | [backend/app/services/seo_renderer.py:4098](../backend/app/services/seo_renderer.py#L4098) |
 | app.services.seo_research._COPY | Dict | 'ru', 'en' | [backend/app/services/seo_research.py:18](../backend/app/services/seo_research.py#L18) |
 | app.services.seo_today._MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/seo_today.py:49](../backend/app/services/seo_today.py#L49) |
 | app.services.seo_today._STALE_AFTER_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/seo_today.py:95](../backend/app/services/seo_today.py#L95) |
@@ -3997,23 +3998,29 @@ Relationships: `[]`
 | app.services.tourism_regional_loader._STRUCTURAL | Set | sequence/source expression | [backend/app/services/tourism_regional_loader.py:233](../backend/app/services/tourism_regional_loader.py#L233) |
 | app.services.tourism_regional_loader._TOTAL | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:234](../backend/app/services/tourism_regional_loader.py#L234) |
 | app.services.tourism_regional_loader._CELL | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:307](../backend/app/services/tourism_regional_loader.py#L307) |
-| app.services.tourism_regional_loader._QUARTER | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:464](../backend/app/services/tourism_regional_loader.py#L464) |
-| app.services.tourism_regional_loader._ROMAN | Dict | 'I', 'II', 'III', 'IV' | [backend/app/services/tourism_regional_loader.py:465](../backend/app/services/tourism_regional_loader.py#L465) |
-| app.services.tourism_regional_loader._CBR_CODES | Dict | ('exp', 'всего'), ('exp', 'деловые'), ('exp', 'личные'), ('exp', 'туристские услуги'), ('imp', 'всего'), ('imp', 'деловые'), ('imp', 'личные'), ('imp', 'туристские услуги') | [backend/app/services/tourism_regional_loader.py:466](../backend/app/services/tourism_regional_loader.py#L466) |
-| app.services.tourism_regional_loader._TURPOTOK_SHEET | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:562](../backend/app/services/tourism_regional_loader.py#L562) |
-| app.services.tourism_regional_loader._TURPOTOK_CODES | Dict | ('1', '1'), ('1', '2'), ('2', '1'), ('2', '2') | [backend/app/services/tourism_regional_loader.py:563](../backend/app/services/tourism_regional_loader.py#L563) |
-| app.services.tourism_regional_loader._YTD_QUARTER | Dict | 'январь-март', 'январь-июнь', 'январь-сентябрь', 'январь-декабрь' | [backend/app/services/tourism_regional_loader.py:565](../backend/app/services/tourism_regional_loader.py#L565) |
-| app.services.tourism_regional_loader._FNS_ZIP | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:643](../backend/app/services/tourism_regional_loader.py#L643) |
-| app.services.tourism_regional_loader._TURPOTOK_LINK | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:717](../backend/app/services/tourism_regional_loader.py#L717) |
-| app.services.tourism_regional_loader._ACTIVE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:737](../backend/app/services/tourism_regional_loader.py#L737) |
-| app.services.tourism_regional_loader.INN_REGION | Dict | '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '83', '86', '87', '89', '91', '92', '80', '81', '84', '85', '88' | [backend/app/services/tourism_regional_loader.py:795](../backend/app/services/tourism_regional_loader.py#L795) |
-| app.services.tourism_regional_loader._PRICE_SHEET | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:930](../backend/app/services/tourism_regional_loader.py#L930) |
-| app.services.tourism_regional_loader._PRICE_OWN | Dict | 'проезд в купейном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути', 'проезд в плацкартном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути' | [backend/app/services/tourism_regional_loader.py:931](../backend/app/services/tourism_regional_loader.py#L931) |
-| app.services.tourism_regional_loader._TUR_RUS | Dict | 'R5t1', 'R5t2', 'R5t3', 'R5t4' | [backend/app/services/tourism_regional_loader.py:983](../backend/app/services/tourism_regional_loader.py#L983) |
-| app.services.tourism_regional_loader.TOCHNO | Dict | 'tour-platnye-uslugi-gostinicy', 'tour-platnye-uslugi-sanatorii', 'tour-platnye-uslugi-specksr', 'tour-platnye-turistskie-uslugi', 'tour-ifo-gostinicy', 'tour-ifo-sanatorii', 'tour-ifo-specksr', 'tour-ifo-turistskie', 'tour-ipc-gostinicy-dek', 'tour-ipc-sanatorii-dek', 'tour-ipc-vnutrenniy-turizm-dek', 'tour-ipc-zarubezhnyy-turizm-dek', 'tour-organizacii-otdyha-chislo', 'tour-sanatorii-v-uzkom-smysle', 'tour-sanatorii-detskie', 'tour-sanatorii-profilaktorii', 'tour-obshchepit-restorany', 'tour-obshchepit-stolovye', 'tour-obshchepit-rezultat-restorany', 'tour-investicii-gostinicy-restorany' | [backend/app/services/tourism_regional_loader.py:1039](../backend/app/services/tourism_regional_loader.py#L1039) |
+| app.services.tourism_regional_loader._JS_ESCAPE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:343](../backend/app/services/tourism_regional_loader.py#L343) |
+| app.services.tourism_regional_loader._QUARTER | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:476](../backend/app/services/tourism_regional_loader.py#L476) |
+| app.services.tourism_regional_loader._ROMAN | Dict | 'I', 'II', 'III', 'IV' | [backend/app/services/tourism_regional_loader.py:477](../backend/app/services/tourism_regional_loader.py#L477) |
+| app.services.tourism_regional_loader._CBR_CODES | Dict | ('exp', 'всего'), ('exp', 'деловые'), ('exp', 'личные'), ('exp', 'туристские услуги'), ('imp', 'всего'), ('imp', 'деловые'), ('imp', 'личные'), ('imp', 'туристские услуги') | [backend/app/services/tourism_regional_loader.py:478](../backend/app/services/tourism_regional_loader.py#L478) |
+| app.services.tourism_regional_loader._TURPOTOK_SHEET | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:574](../backend/app/services/tourism_regional_loader.py#L574) |
+| app.services.tourism_regional_loader._TURPOTOK_CODES | Dict | ('1', '1'), ('1', '2'), ('2', '1'), ('2', '2') | [backend/app/services/tourism_regional_loader.py:575](../backend/app/services/tourism_regional_loader.py#L575) |
+| app.services.tourism_regional_loader._YTD_QUARTER | Dict | 'январь-март', 'январь-июнь', 'январь-сентябрь', 'январь-декабрь' | [backend/app/services/tourism_regional_loader.py:577](../backend/app/services/tourism_regional_loader.py#L577) |
+| app.services.tourism_regional_loader._FNS_ZIP | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:655](../backend/app/services/tourism_regional_loader.py#L655) |
+| app.services.tourism_regional_loader._TURPOTOK_LINK | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:729](../backend/app/services/tourism_regional_loader.py#L729) |
+| app.services.tourism_regional_loader._ACTIVE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:749](../backend/app/services/tourism_regional_loader.py#L749) |
+| app.services.tourism_regional_loader.INN_REGION | Dict | '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '83', '86', '87', '89', '91', '92', '80', '81', '84', '85', '88' | [backend/app/services/tourism_regional_loader.py:807](../backend/app/services/tourism_regional_loader.py#L807) |
+| app.services.tourism_regional_loader._PRICE_SHEET | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:942](../backend/app/services/tourism_regional_loader.py#L942) |
+| app.services.tourism_regional_loader._PRICE_OWN | Dict | 'проезд в купейном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути', 'проезд в плацкартном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути' | [backend/app/services/tourism_regional_loader.py:943](../backend/app/services/tourism_regional_loader.py#L943) |
+| app.services.tourism_regional_loader._TUR_RUS | Dict | 'R5t1', 'R5t2', 'R5t3', 'R5t4' | [backend/app/services/tourism_regional_loader.py:995](../backend/app/services/tourism_regional_loader.py#L995) |
+| app.services.tourism_regional_loader.TOCHNO | Dict | 'tour-platnye-uslugi-gostinicy', 'tour-platnye-uslugi-sanatorii', 'tour-platnye-uslugi-specksr', 'tour-platnye-turistskie-uslugi', 'tour-ifo-gostinicy', 'tour-ifo-sanatorii', 'tour-ifo-specksr', 'tour-ifo-turistskie', 'tour-ipc-gostinicy-dek', 'tour-ipc-sanatorii-dek', 'tour-ipc-vnutrenniy-turizm-dek', 'tour-ipc-zarubezhnyy-turizm-dek', 'tour-organizacii-otdyha-chislo', 'tour-sanatorii-v-uzkom-smysle', 'tour-sanatorii-detskie', 'tour-sanatorii-profilaktorii', 'tour-obshchepit-restorany', 'tour-obshchepit-stolovye', 'tour-obshchepit-rezultat-restorany', 'tour-investicii-gostinicy-restorany' | [backend/app/services/tourism_regional_loader.py:1051](../backend/app/services/tourism_regional_loader.py#L1051) |
 | app.services.tourism_showcase._TOURISM_NAME | Call | computed source expression | [backend/app/services/tourism_showcase.py:37](../backend/app/services/tourism_showcase.py#L37) |
 | app.services.tourism_showcase._NOT_TOURISM_NAME | Call | computed source expression | [backend/app/services/tourism_showcase.py:43](../backend/app/services/tourism_showcase.py#L43) |
 | app.services.tourism_showcase._SQL_STEMS | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:46](../backend/app/services/tourism_showcase.py#L46) |
+| app.services.tourism_showcase.RUSSIA_LEAD_CODES | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:56](../backend/app/services/tourism_showcase.py#L56) |
+| app.services.tourism_showcase.REGION_GROUPS | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:63](../backend/app/services/tourism_showcase.py#L63) |
+| app.services.tourism_showcase.REGION_GROUP_ORDER | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:71](../backend/app/services/tourism_showcase.py#L71) |
+| app.services.tourism_showcase._RUSSIA_SERIES | Call | computed source expression | [backend/app/services/tourism_showcase.py:182](../backend/app/services/tourism_showcase.py#L182) |
+| app.services.tourism_showcase._SIDE_SERIES | Call | computed source expression | [backend/app/services/tourism_showcase.py:183](../backend/app/services/tourism_showcase.py#L183) |
 | app.services.traffic_channel._SEARCH_HOSTS | Tuple | sequence/source expression | [backend/app/services/traffic_channel.py:24](../backend/app/services/traffic_channel.py#L24) |
 | app.services.traffic_channel._YANDEX_SERVICE_PREFIXES | Tuple | sequence/source expression | [backend/app/services/traffic_channel.py:29](../backend/app/services/traffic_channel.py#L29) |
 | app.services.traffic_channel._NOT_SEARCH_HOSTS | Tuple | sequence/source expression | [backend/app/services/traffic_channel.py:44](../backend/app/services/traffic_channel.py#L44) |

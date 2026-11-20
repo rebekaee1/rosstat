@@ -810,13 +810,13 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "sha256": "fbe47d3be67b390b5a4c1e322f5b5c560eab437d1cb21490f96338f8e15b0dd9",
-      "lines": 1099
+      "sha256": "cd4981d7f0a143d948c01a1ed838175d339745adaf5068535dafcc513c23769e",
+      "lines": 1114
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "sha256": "4ceeb1ee9abbed638dd1b77d11bdf6024cd53c245af4fb2647c61e02ae0ac9a3",
-      "lines": 1255
+      "sha256": "3a623fc56194bfbd4aac9d00cb90d827a817544ff732498043bb3256656fff64",
+      "lines": 1256
     },
     {
       "path": "backend/app/data/tourism_snapshots/emiss_31003.json",
@@ -1485,8 +1485,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "sha256": "450a3b90ce0611f07fb3fb651c8f217f2d7daf39f0dd7c8a2269f095c0d79a19",
-      "lines": 258
+      "sha256": "16e093d7ef4b766d383f99c46c4d3e40d45d133db5e874685024e650de297ad7",
+      "lines": 266
     },
     {
       "path": "backend/app/services/emiss_weekly_fuel.py",
@@ -2345,8 +2345,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "378ec4a8a2a142a3353ce7b58c8ace417ceb182263feefefddea83440f60bbd8",
-      "lines": 4407
+      "sha256": "ba4475d2df17289fb59804980dcaa3ac5e63c09e4d9b5bba3836b406d45824bf",
+      "lines": 4412
     },
     {
       "path": "backend/app/services/seo_research.py",
@@ -2360,8 +2360,8 @@
     },
     {
       "path": "backend/app/services/seo_tourism.py",
-      "sha256": "d9e8a9473e1c0945577314bddb011f594d2a44287d51318aebe39a7205c09a31",
-      "lines": 83
+      "sha256": "aebf819778a47c5750b7ff9a734b8a00dcb1407bf7f2a2e72cac7849d53853f7",
+      "lines": 94
     },
     {
       "path": "backend/app/services/seo_weekly_report.py",
@@ -2530,13 +2530,13 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "sha256": "19466cf18b76e4aef6f1ad9b1034388d9251b2e8f4a02661586eb738727a6b59",
-      "lines": 1346
+      "sha256": "911706a423a17eca77aa3a49461b0a595873c5f0b5aeca75043f2be7e46b0f3d",
+      "lines": 1358
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "sha256": "fc7643bf1a9b4ce84b7fb78b838a294e80bcc48bedcf069b6eb8683cc0b4fff7",
-      "lines": 196
+      "sha256": "2b307805a8c7f4df22b2c9e2f3caae80204155494f0ab05f15369ec022be57e2",
+      "lines": 272
     },
     {
       "path": "backend/app/services/traffic_channel.py",
@@ -47027,8 +47027,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 537,
-      "end_line": 537,
+      "line": 549,
+      "end_line": 549,
       "owner": "_get_sync",
       "conditions": [
         "'rosstat.gov.ru' in url"
@@ -47038,8 +47038,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 271,
+      "end_line": 271,
       "owner": "tourism_overview",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -100089,7 +100089,7 @@
     {
       "path": "backend/app/data/tourism_regional.py",
       "line": 204,
-      "end_line": 289,
+      "end_line": 291,
       "owner": "<module>",
       "conditions": [],
       "name": "ANNUAL_KSR",
@@ -100099,14 +100099,14 @@
       "entries": [],
       "expression": "(TSeries('kollektivnye-sredstva-razmescheniya-chislo-kollektivnyh-sredstv-razmescheniya', 'annual', '', '', '', '', '', '', 'emiss', '6.7.1', first_year=2002, min_year=2025, own_metadata=False, emiss=Emiss(31579, 'единица')), TSeries('kollektivnye-sredstva-razmescheniya-chislennost-razmeschennyh-lits', 'annual', '', '', '', '', '', '', 'emiss', '6.7.2', scale=THOUSAND, first_year=2002, min_year=2025, own_metadata=False, emiss=Emiss(31560, 'человек')), TSeries('tour-ksr-mesta', 'annual', 'Число мест в гостиницах и прочих средствах размещения', 'Bed places in hotels and other collective accommodation', 'мест', 'bed places', _KSR_RU + 'Число мест (коек) на конец года.', _KSR_EN + 'Number of bed places at year end.', 'emiss', '6.t1', emiss=Emiss(31583, 'единица'), keywords='сколько мест в гостиницах, коечный фонд, вместимость гостиниц'), TSeries('tour-ksr-nomera', 'annual', 'Число номеров в гостиницах и прочих средствах размещения', 'Rooms in hotels and other collective accommodation', 'номеров', 'rooms', _KSR_RU + 'Число номеров на конец года.', _KSR_EN + 'Number of rooms at year end.', 'emiss', '6.t2', emiss=Emiss(31586, 'единица'), keywords='номерной фонд, число номеров в гостиницах'), TSeries('tour-ksr-nochevki', 'annual', 'Ночёвки в гостиницах и прочих средствах размещения', 'Nights spent in hotels and other collective accommodation', 'тысяч ночёвок', 'thousand nights', _KSR_RU + 'Сколько ночей за год провели постояльцы: один гость на три ночи — три ночёвки.', _KSR_EN + 'Nights spent by guests during the year: one guest staying three nights counts as three.', 'emiss', '6.t3', scale=THOUSAND, emiss=Emiss(31587, 'единица'), keywords='ночевки в гостиницах, турпоток, загрузка гостиниц'), TSeries('tour-ksr-dohody', 'annual', 'Доходы гостиниц и прочих средств размещения', 'Revenue of hotels and other collective accommodation', 'миллионов рублей', 'RUB million', _KSR_RU + 'Доходы от услуг за год без НДС и акцизов.', _KSR_EN + 'Revenue from services over the year, excludin",
       "expression_truncated": true,
-      "expression_chars": 4595,
-      "ast_sha256": "cbf2fe46e2f9573f714ebbdc2531f1f13955fb07addff86742a1903d61bb4e35",
+      "expression_chars": 4676,
+      "ast_sha256": "61aa9251323e0ca39f7d997ac01f7f6f2218cbb3d57ca561a46f2bcb2e1fdf49",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 297,
-      "end_line": 335,
+      "line": 299,
+      "end_line": 337,
       "owner": "<module>",
       "conditions": [],
       "name": "ANNUAL_SANATORIUMS",
@@ -100122,8 +100122,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 369,
-      "end_line": 402,
+      "line": 371,
+      "end_line": 404,
       "owner": "<module>",
       "conditions": [],
       "name": "DESTINATIONS",
@@ -100139,8 +100139,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 404,
-      "end_line": 413,
+      "line": 406,
+      "end_line": 415,
       "owner": "<module>",
       "conditions": [],
       "name": "ORIGINS",
@@ -100156,8 +100156,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 415,
-      "end_line": 471,
+      "line": 417,
+      "end_line": 473,
       "owner": "<module>",
       "conditions": [],
       "name": "ANNUAL_FIRMS",
@@ -100173,8 +100173,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 477,
-      "end_line": 505,
+      "line": 479,
+      "end_line": 520,
       "owner": "<module>",
       "conditions": [],
       "name": "ANNUAL_PENDING",
@@ -100182,16 +100182,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "(TSeries('tour-vds-turindustrii-dolya-vrp', 'annual', 'Доля туристской индустрии в экономике региона', 'Tourism industry share of the regional economy', '% валового регионального продукта', '% of gross regional product', 'Какую часть валового регионального продукта создают гостиницы, общепит, турфирмы, перевозчики и другие отрасли, обслуживающие туристов (оценка Росстата).', 'Share of gross regional product created by hotels, restaurants, tour companies, carriers and other industries serving tourists (Rosstat estimate).', 'emiss', '6.t40', first_year=2019, emiss=Emiss(62199, 'процент', seed=False), keywords='доля туризма в ВРП, вклад туризма в экономику региона'), TSeries('tour-deti-organizacii-otdyha', 'annual', 'Число организаций отдыха и оздоровления детей', \"Children's holiday and recreation organisations\", 'единиц', 'units', 'Сколько в регионе работало лагерей и других организаций отдыха и оздоровления детей за год (загородные, санаторные, палаточные, лагеря при школах). Продолжает закрытый в 2017 году ряд «детские оздоровительные лагеря».', \"Children's holiday and recreation organisations operating in the region during the year (country, sanatorium, tent and school-based camps). Continues the children's camps series closed in 2017.\", 'emiss', '6.t42', first_year=2018, emiss=Emiss(59153, 'единица', seed=False), keywords='детские лагеря, сколько детских лагерей, летний отдых детей'), TSeries('tour-deti-turpoezdki', 'annual', 'Доля школьников, совершивших туристские поездки', 'Share of schoolchildren who went on tourist trips', '% детей', '% of children', 'Доля детей, которые за год хотя бы раз съездили в туристскую или экскурсионную поездку, по данным Росстата и Минпросвещения.', 'Share of children who went on at least one tourist or excursion trip during the year, Rosstat and Ministry of Education data.', 'emiss', '6.t41', first_year=2019, emiss=Emiss(60944, 'процент', seed=False)))",
-      "expression_truncated": false,
-      "expression_chars": 1920,
-      "ast_sha256": "955563a2b2f665787e0a326bbe42ab2c34d530f9fcc1361d8d1df8287e17d3d6",
+      "expression": "(TSeries('tour-vds-turindustrii', 'annual', 'Валовая добавленная стоимость туристской индустрии', 'Gross value added of the tourism industry', 'миллионов рублей', 'RUB million', 'Сколько стоимости за год создали в регионе гостиницы, общепит, турфирмы, перевозчики и другие отрасли, обслуживающие туристов (оценка Росстата).', \"Value added during the year by the region's hotels, restaurants, tour companies, carriers and other industries serving tourists (Rosstat estimate).\", 'emiss', '6.t43', first_year=2019, emiss=Emiss(62199, 'миллион рублей', seed=False, alt_units=(('тысяча рублей', 0.001),)), keywords='ВДС туризма, вклад туризма в экономику региона'), TSeries('tour-vds-turindustrii-dolya-vrp', 'annual', 'Доля туристской индустрии в экономике региона', 'Tourism industry share of the regional economy', '% валового регионального продукта', '% of gross regional product', 'Какую часть валового регионального продукта создают гостиницы, общепит, турфирмы, перевозчики и другие отрасли, обслуживающие туристов (оценка Росстата).', 'Share of gross regional product created by hotels, restaurants, tour companies, carriers and other industries serving tourists (Rosstat estimate).', 'emiss', '6.t40', first_year=2019, emiss=Emiss(62197, 'процент', seed=False), keywords='доля туризма в ВРП, вклад туризма в экономику региона'), TSeries('tour-deti-organizacii-otdyha', 'annual', 'Число организаций отдыха и оздоровления детей', \"Children's holiday and recreation organisations\", 'единиц', 'units', 'Сколько в регионе работало лагерей и других организаций отдыха и оздоровления детей за год (загородные, санаторные, палаточные, лагеря при школах). Продолжает закрытый в 2017 году ряд «детские оздоровительные лагеря».', \"Children's holiday and recreation organisations operating in the region during the year (country, sanatorium, tent and school-based camps). Continues the children's camps series closed in 2017.\", 'emiss', '6.t42', first_year=2018, emiss=Emiss(59153, 'единица', seed=False), ke",
+      "expression_truncated": true,
+      "expression_chars": 2580,
+      "ast_sha256": "bbcd7b280137120d96b7961467b64195481b4738a4072eade96c39228c0f685c",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 513,
-      "end_line": 616,
+      "line": 528,
+      "end_line": 631,
       "owner": "<module>",
       "conditions": [],
       "name": "MONTHLY_EMISS",
@@ -100207,8 +100207,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 624,
-      "end_line": 669,
+      "line": 639,
+      "end_line": 684,
       "owner": "<module>",
       "conditions": [],
       "name": "MONTHLY_TRANSPORT",
@@ -100224,8 +100224,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 691,
-      "end_line": 705,
+      "line": 706,
+      "end_line": 720,
       "owner": "<module>",
       "conditions": [],
       "name": "MONTHLY_CPI",
@@ -100241,8 +100241,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 710,
-      "end_line": 750,
+      "line": 725,
+      "end_line": 765,
       "owner": "<module>",
       "conditions": [],
       "name": "TURPOTOK",
@@ -100258,8 +100258,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 767,
-      "end_line": 801,
+      "line": 782,
+      "end_line": 816,
       "owner": "<module>",
       "conditions": [],
       "name": "QUARTERLY_CBR",
@@ -100275,8 +100275,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 803,
-      "end_line": 823,
+      "line": 818,
+      "end_line": 838,
       "owner": "<module>",
       "conditions": [],
       "name": "TAX",
@@ -100292,8 +100292,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 825,
-      "end_line": 870,
+      "line": 840,
+      "end_line": 885,
       "owner": "<module>",
       "conditions": [],
       "name": "REGISTRIES",
@@ -100309,8 +100309,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 891,
-      "end_line": 1018,
+      "line": 906,
+      "end_line": 1033,
       "owner": "<module>",
       "conditions": [],
       "name": "PUBLICATIONS",
@@ -100326,8 +100326,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1020,
-      "end_line": 1023,
+      "line": 1035,
+      "end_line": 1038,
       "owner": "<module>",
       "conditions": [],
       "name": "SERIES",
@@ -100343,8 +100343,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1024,
-      "end_line": 1024,
+      "line": 1039,
+      "end_line": 1039,
       "owner": "<module>",
       "conditions": [],
       "name": "SERIES_BY_CODE",
@@ -100692,8 +100692,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 981,
-      "end_line": 983,
+      "line": 982,
+      "end_line": 984,
       "owner": "<module>",
       "conditions": [],
       "name": "SERIES",
@@ -100709,8 +100709,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 988,
-      "end_line": 1076,
+      "line": 989,
+      "end_line": 1077,
       "owner": "<module>",
       "conditions": [],
       "name": "VARIANT_GROUPS",
@@ -100726,8 +100726,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1087,
-      "end_line": 1094,
+      "line": 1088,
+      "end_line": 1095,
       "owner": "<module>",
       "conditions": [],
       "name": "_FORECAST_CFG",
@@ -100777,8 +100777,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1146,
-      "end_line": 1171,
+      "line": 1147,
+      "end_line": 1172,
       "owner": "<module>",
       "conditions": [],
       "name": "_WHY",
@@ -100836,8 +100836,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1184,
-      "end_line": 1196,
+      "line": 1185,
+      "end_line": 1197,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ",
@@ -115736,6 +115736,23 @@
       "expression_truncated": false,
       "expression_chars": 49,
       "ast_sha256": "1db83a66eed32f07126ba60c5200cc063a776dc3371a4929158c43b866f1d5b8",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/emiss_tourism_parser.py",
+      "line": 175,
+      "end_line": 175,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_JS_ESCAPE",
+      "symbol": "app.services.emiss_tourism_parser._JS_ESCAPE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('\\\\\\\\u([0-9a-fA-F]{4})|\\\\\\\\([\\'\\\\\"\\\\\\\\\\\\\\\\/])')",
+      "expression_truncated": false,
+      "expression_chars": 58,
+      "ast_sha256": "a236bc1ed711b98cf8993fe88990114a4842466e36ee7a454fa7b030a629e596",
       "runtime_expansion": true
     },
     {
@@ -136990,8 +137007,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4093,
-      "end_line": 4100,
+      "line": 4098,
+      "end_line": 4105,
       "owner": "<module>",
       "conditions": [],
       "name": "_SSR_VS_COUNTRY_LABELS",
@@ -137203,7 +137220,7 @@
     {
       "path": "backend/app/services/seo_tourism.py",
       "line": 16,
-      "end_line": 33,
+      "end_line": 38,
       "owner": "<module>",
       "conditions": [],
       "name": "_COPY",
@@ -137216,23 +137233,23 @@
       "entries": [
         {
           "key": "'ru'",
-          "expression": "{'regions': 'Туризм по регионам России', 'regions_lead': 'Рейтинги субъектов: где больше гостиниц, туристов и поездок. Три лидера — по последнему году.', 'leaders': 'Лидеры', 'world': 'Туризм в странах мира', 'world_lead': 'Официальные ряды национальных служб статистики и международных организаций.'",
+          "expression": "{'regions': 'Туризм по регионам России', 'regions_lead': 'Субъекты по группам показателей: турпоток, размещение, деньги, цены, транспорт, турфирмы. Три лидера — по последним данным.', 'leaders': 'Лидеры', 'world': 'Туризм в странах мира', 'world_lead': 'Официальные ряды национальных служб статистики",
           "expression_truncated": true,
-          "expression_chars": 330,
-          "ast_sha256": "7483d604fa4abef65003cb36e23f92cfa3766f0b6ab251f88b67c4306ac7827d"
+          "expression_chars": 547,
+          "ast_sha256": "87dd1a035cdfe5edc6f5a5b375cf2f41789a70a57c4830202d3ca894587b2712"
         },
         {
           "key": "'en'",
-          "expression": "{'regions': \"Tourism across Russia's regions\", 'regions_lead': 'Regional rankings: where there are more hotels, tourists and trips. Top three for the latest year.', 'leaders': 'Leaders', 'world': 'Tourism in countries worldwide', 'world_lead': 'Official series from national statistical offices and i",
+          "expression": "{'regions': \"Tourism across Russia's regions\", 'regions_lead': 'Regions by group: tourist flows, accommodation, money, prices, transport, tour operators. Top three on the latest data.', 'leaders': 'Leaders', 'world': 'Tourism in countries worldwide', 'world_lead': 'Official series from national stat",
           "expression_truncated": true,
-          "expression_chars": 360,
-          "ast_sha256": "92f5007e568d8ae82c888911a85e9599e6c10e6f25c208e2833e5f676ed95d74"
+          "expression_chars": 596,
+          "ast_sha256": "472eadb7d21d4d91f47dd2ff0e184a0df90bcc030a693b986031ff3f83d36815"
         }
       ],
-      "expression": "{'ru': {'regions': 'Туризм по регионам России', 'regions_lead': 'Рейтинги субъектов: где больше гостиниц, туристов и поездок. Три лидера — по последнему году.', 'leaders': 'Лидеры', 'world': 'Туризм в странах мира', 'world_lead': 'Официальные ряды национальных служб статистики и международных организаций.', 'ratings': 'Рейтинги стран'}, 'en': {'regions': \"Tourism across Russia's regions\", 'regions_lead': 'Regional rankings: where there are more hotels, tourists and trips. Top three for the latest year.', 'leaders': 'Leaders', 'world': 'Tourism in countries worldwide', 'world_lead': 'Official series from national statistical offices and international organisations.', 'ratings': 'Country rankings'}}",
+      "expression": "{'ru': {'regions': 'Туризм по регионам России', 'regions_lead': 'Субъекты по группам показателей: турпоток, размещение, деньги, цены, транспорт, турфирмы. Три лидера — по последним данным.', 'leaders': 'Лидеры', 'world': 'Туризм в странах мира', 'world_lead': 'Официальные ряды национальных служб статистики и международных организаций.', 'ratings': 'Рейтинги стран', 'groups': {'flows': 'Турпоток и гости', 'stay': 'Гостиницы и санатории', 'money': 'Доходы, траты и налоги', 'prices': 'Цены', 'transport': 'Транспорт', 'business': 'Турфирмы и общепит'}}, 'en': {'regions': \"Tourism across Russia's regions\", 'regions_lead': 'Regions by group: tourist flows, accommodation, money, prices, transport, tour operators. Top three on the latest data.', 'leaders': 'Leaders', 'world': 'Tourism in countries worldwide', 'world_lead': 'Official series from national statistical offices and international organisations.', 'ratings': 'Country rankings', 'groups': {'flows': 'Tourist flows and guests', 'stay': 'Hotels and health resorts', 'money': 'Revenue, spending and taxes', 'prices': 'Prices', 'transport': 'Transport', 'business': 'Tour operators and catering'}}}",
       "expression_truncated": false,
-      "expression_chars": 706,
-      "ast_sha256": "1fda959b94183df9674a9fcd4413ebe06bd343aabc6f5d8d8561a096b7f90d18",
+      "expression_chars": 1159,
+      "ast_sha256": "00165a327bee1c861249a21b2b0af1162a02b8c72909577921ff4de8c72e7844",
       "runtime_expansion": false
     },
     {
@@ -142732,8 +142749,25 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 343,
+      "end_line": 343,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_JS_ESCAPE",
+      "symbol": "app.services.tourism_regional_loader._JS_ESCAPE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('\\\\\\\\(u[0-9a-fA-F]{4}|.)', re.S)",
+      "expression_truncated": false,
+      "expression_chars": 43,
+      "ast_sha256": "aaa2a5d0029963b8456cb3d4b7e94592f8756306053cf1fbd38c2981fd4c2ddb",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 476,
+      "end_line": 476,
       "owner": "<module>",
       "conditions": [],
       "name": "_QUARTER",
@@ -142749,8 +142783,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 477,
+      "end_line": 477,
       "owner": "<module>",
       "conditions": [],
       "name": "_ROMAN",
@@ -142800,8 +142834,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 466,
-      "end_line": 471,
+      "line": 478,
+      "end_line": 483,
       "owner": "<module>",
       "conditions": [],
       "name": "_CBR_CODES",
@@ -142883,8 +142917,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 562,
-      "end_line": 562,
+      "line": 574,
+      "end_line": 574,
       "owner": "<module>",
       "conditions": [],
       "name": "_TURPOTOK_SHEET",
@@ -142900,8 +142934,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 563,
-      "end_line": 564,
+      "line": 575,
+      "end_line": 576,
       "owner": "<module>",
       "conditions": [],
       "name": "_TURPOTOK_CODES",
@@ -142951,8 +142985,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 565,
-      "end_line": 565,
+      "line": 577,
+      "end_line": 577,
       "owner": "<module>",
       "conditions": [],
       "name": "_YTD_QUARTER",
@@ -143002,8 +143036,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 643,
-      "end_line": 643,
+      "line": 655,
+      "end_line": 655,
       "owner": "<module>",
       "conditions": [],
       "name": "_FNS_ZIP",
@@ -143019,8 +143053,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 717,
-      "end_line": 717,
+      "line": 729,
+      "end_line": 729,
       "owner": "<module>",
       "conditions": [],
       "name": "_TURPOTOK_LINK",
@@ -143036,8 +143070,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 737,
-      "end_line": 737,
+      "line": 749,
+      "end_line": 749,
       "owner": "<module>",
       "conditions": [],
       "name": "_ACTIVE",
@@ -143053,8 +143087,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 795,
-      "end_line": 823,
+      "line": 807,
+      "end_line": 835,
       "owner": "<module>",
       "conditions": [],
       "name": "INN_REGION",
@@ -143792,8 +143826,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 930,
-      "end_line": 930,
+      "line": 942,
+      "end_line": 942,
       "owner": "<module>",
       "conditions": [],
       "name": "_PRICE_SHEET",
@@ -143809,8 +143843,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 931,
-      "end_line": 936,
+      "line": 943,
+      "end_line": 948,
       "owner": "<module>",
       "conditions": [],
       "name": "_PRICE_OWN",
@@ -143844,8 +143878,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 983,
-      "end_line": 991,
+      "line": 995,
+      "end_line": 1003,
       "owner": "<module>",
       "conditions": [],
       "name": "_TUR_RUS",
@@ -143895,8 +143929,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1039,
-      "end_line": 1073,
+      "line": 1051,
+      "end_line": 1085,
       "owner": "<module>",
       "conditions": [],
       "name": "TOCHNO",
@@ -144122,6 +144156,91 @@
       "expression_chars": 138,
       "ast_sha256": "dbc651e52eb25b512bc1a3ceb954217f2527d24093eeffa8d7230f479715fd1f",
       "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 56,
+      "end_line": 59,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "RUSSIA_LEAD_CODES",
+      "symbol": "app.services.tourism_showcase.RUSSIA_LEAD_CODES",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('tour-outbound-trips', 'tour-inbound-trips', 'tour-hotel-nights-monthly', 'tour-travel-imports', 'tour-travel-exports', 'tour-gva-share', 'tour-hotel-guests', 'tour-travel-balance')",
+      "expression_truncated": false,
+      "expression_chars": 182,
+      "ast_sha256": "7f8f0e6fd87250262745c723844e8f9228c97acd7940848182802b00ddccd6f1",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 63,
+      "end_line": 70,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "REGION_GROUPS",
+      "symbol": "app.services.tourism_showcase.REGION_GROUPS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "(('transport', re.compile('пассажир|проезд', re.I)), ('prices', re.compile('индекс[а-я ]*цен|средняя цена|цена дня', re.I)), ('money', re.compile('доля туристской|доход|трат|затрат|услуг|оборот|налог|сбор|инвестиц|прибыль', re.I)), ('flows', re.compile('турпоток|поездк|туристы|туристов|отдыхающ|гости |россияне|иностран|граждане|ночёв|ночев|школьник|размещённ|размещенн', re.I)), ('business', re.compile('турфирм|туристск[а-я]* фирм|туропер|турагент|экскурсион|ресторан|столов|питани|турпакет', re.I)))",
+      "expression_truncated": false,
+      "expression_chars": 503,
+      "ast_sha256": "96c1d142d89460abf2dfc5b5bbb7ed7d4f811d5b33279251a148c71bcb7793ea",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 71,
+      "end_line": 71,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "REGION_GROUP_ORDER",
+      "symbol": "app.services.tourism_showcase.REGION_GROUP_ORDER",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('flows', 'stay', 'money', 'prices', 'transport', 'business')",
+      "expression_truncated": false,
+      "expression_chars": 61,
+      "ast_sha256": "b54f7d37a7fed038064ad8e2b433b673e1246e9b875c5a31c94aa874ffce1bfa",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 182,
+      "end_line": 182,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_RUSSIA_SERIES",
+      "symbol": "app.services.tourism_showcase._RUSSIA_SERIES",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('росси|russia', re.I)",
+      "expression_truncated": false,
+      "expression_chars": 32,
+      "ast_sha256": "896eb17376f1c79f3d1cfa36499ee6531a69e0d667014e74bee7df59fd3ae5d3",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 183,
+      "end_line": 183,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_SIDE_SERIES",
+      "symbol": "app.services.tourism_showcase._SIDE_SERIES",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('занят|employ|индекс \\\\(|index \\\\(', re.I)",
+      "expression_truncated": false,
+      "expression_chars": 53,
+      "ast_sha256": "b10463543ca27730c9754b568bde13a5861fa8371c83df8c90531d9c8019ec52",
+      "runtime_expansion": true
     },
     {
       "path": "backend/app/services/traffic_channel.py",
@@ -158943,8 +159062,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1172,
-      "end_line": 1175,
+      "line": 1173,
+      "end_line": 1176,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.tourism_russia._WHY",
@@ -158955,8 +159074,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1176,
-      "end_line": 1179,
+      "line": 1177,
+      "end_line": 1180,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.tourism_russia._WHY",
@@ -158967,8 +159086,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1180,
-      "end_line": 1183,
+      "line": 1181,
+      "end_line": 1184,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.tourism_russia._WHY",
@@ -169880,8 +169999,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1101,
-      "end_line": 1101,
+      "line": 1102,
+      "end_line": 1102,
       "owner": "seed_indicators",
       "conditions": [],
       "operation": "update",
@@ -191785,8 +191904,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2987,
-      "end_line": 2987,
+      "line": 2992,
+      "end_line": 2992,
       "owner": "render_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -191799,8 +191918,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3286,
-      "end_line": 3292,
+      "line": 3291,
+      "end_line": 3297,
       "owner": "indicator_data_years",
       "conditions": [],
       "operation": "execute",
@@ -191813,8 +191932,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3300,
-      "end_line": 3304,
+      "line": 3305,
+      "end_line": 3309,
       "owner": "yearly_last_points",
       "conditions": [],
       "operation": "execute",
@@ -191827,8 +191946,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3649,
-      "end_line": 3651,
+      "line": 3654,
+      "end_line": 3656,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "operation": "execute",
@@ -191841,8 +191960,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3665,
-      "end_line": 3672,
+      "line": 3670,
+      "end_line": 3677,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "operation": "execute",
@@ -191855,8 +191974,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4057,
-      "end_line": 4062,
+      "line": 4062,
+      "end_line": 4067,
       "owner": "_latest_rows",
       "conditions": [],
       "operation": "execute",
@@ -191869,8 +191988,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4067,
-      "end_line": 4073,
+      "line": 4072,
+      "end_line": 4078,
       "owner": "_indicator_stats",
       "conditions": [],
       "operation": "execute",
@@ -191883,8 +192002,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4081,
-      "end_line": 4089,
+      "line": 4086,
+      "end_line": 4094,
       "owner": "_related_indicators",
       "conditions": [],
       "operation": "execute",
@@ -191925,8 +192044,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3091,
-      "end_line": 3101,
+      "line": 3096,
+      "end_line": 3106,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -191973,8 +192092,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3026,
-      "end_line": 3028,
+      "line": 3031,
+      "end_line": 3033,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -191989,8 +192108,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3065,
-      "end_line": 3069,
+      "line": 3070,
+      "end_line": 3074,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -192023,8 +192142,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3656,
-      "end_line": 3658,
+      "line": 3661,
+      "end_line": 3663,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -196135,8 +196254,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 952,
-      "end_line": 952,
+      "line": 964,
+      "end_line": 964,
       "owner": "price_points",
       "conditions": [],
       "operation": "update",
@@ -196149,8 +196268,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1196,
-      "end_line": 1196,
+      "line": 1208,
+      "end_line": 1208,
       "owner": "write_points",
       "conditions": [],
       "operation": "set",
@@ -196205,8 +196324,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 623,
-      "end_line": 623,
+      "line": 635,
+      "end_line": 635,
       "owner": "fns_tax_points",
       "conditions": [],
       "operation": "add",
@@ -196219,8 +196338,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1090,
-      "end_line": 1090,
+      "line": 1102,
+      "end_line": 1102,
       "owner": "tochno_points",
       "conditions": [],
       "operation": "add",
@@ -196233,8 +196352,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1124,
-      "end_line": 1124,
+      "line": 1136,
+      "end_line": 1136,
       "owner": "write_seed",
       "conditions": [],
       "operation": "set",
@@ -196247,8 +196366,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1185,
-      "end_line": 1186,
+      "line": 1197,
+      "end_line": 1198,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -196277,8 +196396,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 708,
-      "end_line": 708,
+      "line": 720,
+      "end_line": 720,
       "owner": "fetch_fns",
       "conditions": [],
       "operation": "set",
@@ -196291,8 +196410,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1154,
-      "end_line": 1157,
+      "line": 1166,
+      "end_line": 1169,
       "owner": "ensure_indicators",
       "conditions": [],
       "operation": "execute",
@@ -196305,8 +196424,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1214,
-      "end_line": 1214,
+      "line": 1226,
+      "end_line": 1226,
       "owner": "write_points",
       "conditions": [],
       "operation": "commit",
@@ -196319,8 +196438,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1212,
-      "end_line": 1212,
+      "line": 1224,
+      "end_line": 1224,
       "owner": "write_points",
       "conditions": [],
       "operation": "update",
@@ -196333,8 +196452,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1216,
-      "end_line": 1216,
+      "line": 1228,
+      "end_line": 1228,
       "owner": "write_points",
       "conditions": [],
       "operation": "rollback",
@@ -196347,8 +196466,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 601,
-      "end_line": 601,
+      "line": 613,
+      "end_line": 613,
       "owner": "turpotok_points",
       "conditions": [
         "value is not None and value > 0"
@@ -196363,8 +196482,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1030,
-      "end_line": 1030,
+      "line": 1042,
+      "end_line": 1042,
       "owner": "tur_rus_points",
       "conditions": [
         "value is not None and value >= 0"
@@ -196379,8 +196498,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1158,
-      "end_line": 1160,
+      "line": 1170,
+      "end_line": 1172,
       "owner": "ensure_indicators",
       "conditions": [],
       "operation": "execute",
@@ -196393,8 +196512,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1180,
-      "end_line": 1180,
+      "line": 1192,
+      "end_line": 1192,
       "owner": "write_points",
       "conditions": [],
       "operation": "execute",
@@ -196407,8 +196526,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1185,
-      "end_line": 1186,
+      "line": 1197,
+      "end_line": 1198,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -196423,8 +196542,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1209,
-      "end_line": 1209,
+      "line": 1221,
+      "end_line": 1221,
       "owner": "write_points",
       "conditions": [],
       "operation": "execute",
@@ -196437,8 +196556,22 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 131,
-      "end_line": 131,
+      "line": 154,
+      "end_line": 154,
+      "owner": "_regional_block",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.tourism_showcase.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 206,
+      "end_line": 206,
       "owner": "_world_block",
       "conditions": [],
       "operation": "set",
@@ -196451,22 +196584,52 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 133,
-      "end_line": 133,
+      "line": 110,
+      "end_line": 110,
+      "owner": "_rating_ready",
+      "conditions": [
+        "not ids"
+      ],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.tourism_showcase.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 172,
+      "end_line": 172,
+      "owner": "_regional_block",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "featured_groups",
+      "symbol": "app.services.tourism_showcase.featured_groups.add",
+      "expression": "featured_groups.add(item['group'])",
+      "expression_truncated": false,
+      "expression_chars": 34,
+      "ast_sha256": "fe53836da63c32f0ed9f0c8c3be4b20d005b8fa33d71aeca94a1ed4f6cbaaed8"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 208,
+      "end_line": 208,
       "owner": "_world_block",
       "conditions": [],
       "operation": "add",
       "receiver": "datasets",
       "symbol": "app.services.tourism_showcase.datasets.add",
-      "expression": "datasets.add(ind.dataset_id)",
+      "expression": "datasets.add(dataset_id)",
       "expression_truncated": false,
-      "expression_chars": 28,
-      "ast_sha256": "a31e8f30aa5f14c5551ca75eb83e623c53afffea63515c89a19c10ed6f7ff00e"
+      "expression_chars": 24,
+      "ast_sha256": "1595f58d8bfd15a775793c630da12060aa474eb6667a0668cb604ca3ce1edd83"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 152,
-      "end_line": 152,
+      "line": 227,
+      "end_line": 227,
       "owner": "_world_block",
       "conditions": [],
       "operation": "set",
@@ -196479,8 +196642,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 190,
-      "end_line": 190,
+      "line": 266,
+      "end_line": 266,
       "owner": "tourism_overview",
       "conditions": [],
       "operation": "cache_get",
@@ -196493,8 +196656,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 271,
+      "end_line": 271,
       "owner": "tourism_overview",
       "conditions": [],
       "operation": "cache_set",
@@ -196507,8 +196670,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 154,
-      "end_line": 154,
+      "line": 229,
+      "end_line": 229,
       "owner": "_world_block",
       "conditions": [],
       "operation": "set",
@@ -196521,22 +196684,36 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 122,
-      "end_line": 129,
+      "line": 111,
+      "end_line": 116,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.tourism_showcase.db.execute",
+      "expression": "db.execute(select(RegionDataPoint.indicator_id, RegionDataPoint.year, func.count(func.distinct(RegionDataPoint.region_id))).join(Region, Region.id == RegionDataPoint.region_id).where(RegionDataPoint.indicator_id.in_(ids), Region.kind == 'region').group_by(RegionDataPoint.indicator_id, RegionDataPoint.year))",
+      "expression_truncated": false,
+      "expression_chars": 308,
+      "ast_sha256": "32f7b7ddc70c24de5b8a6bbf8ca69553c407f63e33f86cd0637605df68b311fd"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 196,
+      "end_line": 203,
       "owner": "_world_block",
       "conditions": [],
       "operation": "execute",
       "receiver": "db",
       "symbol": "app.services.tourism_showcase.db.execute",
-      "expression": "db.execute(select(WorldIndicator, WorldCountry).join(WorldCountry, WorldCountry.id == WorldIndicator.country_id).where(WorldIndicator.category_ru == CATEGORY_RU, WorldIndicator.is_listed.is_(True), WorldCountry.is_active.is_(True)).order_by(WorldCountry.sort_order, WorldCountry.slug, WorldIndicator.points_count.desc(), WorldIndicator.code))",
+      "expression": "db.execute(select(WorldIndicator.code, WorldIndicator.name_ru, WorldIndicator.name_en, WorldIndicator.dataset_id, WorldIndicator.points_count, WorldCountry.slug, WorldCountry.name_ru, WorldCountry.name_en, WorldCountry.sort_order).join(WorldCountry, WorldCountry.id == WorldIndicator.country_id).where(WorldIndicator.category_ru == CATEGORY_RU, WorldIndicator.is_listed.is_(True), WorldCountry.is_active.is_(True)))",
       "expression_truncated": false,
-      "expression_chars": 342,
-      "ast_sha256": "29d392ab253e03f7d3c65171de53acb91afaa76fa217724c882869afa2545bb3"
+      "expression_chars": 415,
+      "ast_sha256": "b7bac005ab26c31fd419655134fdae66d517ef389ea6a1e4df755d9bc637de12"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 186,
-      "end_line": 186,
+      "line": 262,
+      "end_line": 262,
       "owner": "tourism_overview",
       "conditions": [],
       "operation": "versioned_key",
@@ -196549,8 +196726,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 187,
-      "end_line": 187,
+      "line": 263,
+      "end_line": 263,
       "owner": "tourism_overview",
       "conditions": [],
       "operation": "versioned_key",
@@ -196563,8 +196740,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 188,
-      "end_line": 188,
+      "line": 264,
+      "end_line": 264,
       "owner": "tourism_overview",
       "conditions": [],
       "operation": "versioned_key",
@@ -196577,8 +196754,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 74,
-      "end_line": 81,
+      "line": 127,
+      "end_line": 134,
       "owner": "_regional_block",
       "conditions": [],
       "operation": "execute",
@@ -196591,8 +196768,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 166,
-      "end_line": 170,
+      "line": 242,
+      "end_line": 246,
       "owner": "_russia_count",
       "conditions": [],
       "operation": "execute",
@@ -270184,8 +270361,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 248,
+      "end_line": 248,
       "owner": "EmissTourismParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -270193,8 +270370,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 248,
+      "end_line": 248,
       "owner": "EmissTourismParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -270202,8 +270379,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 248,
+      "end_line": 248,
       "owner": "EmissTourismParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -270211,8 +270388,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 248,
+      "end_line": 248,
       "owner": "EmissTourismParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -305854,8 +306031,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3285,
-      "end_line": 3285,
+      "line": 3290,
+      "end_line": 3290,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -305863,8 +306040,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4016,
-      "end_line": 4016,
+      "line": 4021,
+      "end_line": 4021,
       "owner": "_indicator_alt_freq_links",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -305872,8 +306049,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4077,
-      "end_line": 4077,
+      "line": 4082,
+      "end_line": 4082,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -305881,8 +306058,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4138,
-      "end_line": 4138,
+      "line": 4143,
+      "end_line": 4143,
       "owner": "_indicator_body",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -305962,8 +306139,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3285,
-      "end_line": 3285,
+      "line": 3290,
+      "end_line": 3290,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306056,8 +306233,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3303,
-      "end_line": 3303,
+      "line": 3308,
+      "end_line": 3308,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -306065,8 +306242,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3671,
-      "end_line": 3671,
+      "line": 3676,
+      "end_line": 3676,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -306159,8 +306336,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2987,
-      "end_line": 2987,
+      "line": 2992,
+      "end_line": 2992,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -306168,8 +306345,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2987,
-      "end_line": 2987,
+      "line": 2992,
+      "end_line": 2992,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -306177,8 +306354,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3303,
-      "end_line": 3303,
+      "line": 3308,
+      "end_line": 3308,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306186,8 +306363,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3650,
-      "end_line": 3650,
+      "line": 3655,
+      "end_line": 3655,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -306195,8 +306372,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3650,
-      "end_line": 3650,
+      "line": 3655,
+      "end_line": 3655,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -306204,8 +306381,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3671,
-      "end_line": 3671,
+      "line": 3676,
+      "end_line": 3676,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306213,8 +306390,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4072,
-      "end_line": 4072,
+      "line": 4077,
+      "end_line": 4077,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -306222,8 +306399,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4084,
-      "end_line": 4084,
+      "line": 4089,
+      "end_line": 4089,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -306231,8 +306408,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4085,
-      "end_line": 4085,
+      "line": 4090,
+      "end_line": 4090,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed.is_",
@@ -306240,8 +306417,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4086,
-      "end_line": 4086,
+      "line": 4091,
+      "end_line": 4091,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.category",
@@ -306249,8 +306426,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4087,
-      "end_line": 4087,
+      "line": 4092,
+      "end_line": 4092,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -306341,8 +306518,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2987,
-      "end_line": 2987,
+      "line": 2992,
+      "end_line": 2992,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306350,8 +306527,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2987,
-      "end_line": 2987,
+      "line": 2992,
+      "end_line": 2992,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306359,8 +306536,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2987,
-      "end_line": 2987,
+      "line": 2992,
+      "end_line": 2992,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -306368,8 +306545,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3650,
-      "end_line": 3650,
+      "line": 3655,
+      "end_line": 3655,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306377,8 +306554,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3650,
-      "end_line": 3650,
+      "line": 3655,
+      "end_line": 3655,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306386,8 +306563,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3650,
-      "end_line": 3650,
+      "line": 3655,
+      "end_line": 3655,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -306395,8 +306572,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4072,
-      "end_line": 4072,
+      "line": 4077,
+      "end_line": 4077,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306404,8 +306581,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4082,
-      "end_line": 4082,
+      "line": 4087,
+      "end_line": 4087,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306413,8 +306590,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4084,
-      "end_line": 4084,
+      "line": 4089,
+      "end_line": 4089,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -306422,8 +306599,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4085,
-      "end_line": 4085,
+      "line": 4090,
+      "end_line": 4090,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed",
@@ -306431,8 +306608,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4086,
-      "end_line": 4086,
+      "line": 4091,
+      "end_line": 4091,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306440,8 +306617,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4087,
-      "end_line": 4087,
+      "line": 4092,
+      "end_line": 4092,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306494,8 +306671,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2987,
-      "end_line": 2987,
+      "line": 2992,
+      "end_line": 2992,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306503,8 +306680,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3027,
-      "end_line": 3027,
+      "line": 3032,
+      "end_line": 3032,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -306514,8 +306691,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3027,
-      "end_line": 3027,
+      "line": 3032,
+      "end_line": 3032,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -306525,8 +306702,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3067,
-      "end_line": 3067,
+      "line": 3072,
+      "end_line": 3072,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -306537,8 +306714,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3067,
-      "end_line": 3067,
+      "line": 3072,
+      "end_line": 3072,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -306549,8 +306726,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3302,
-      "end_line": 3302,
+      "line": 3307,
+      "end_line": 3307,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -306558,8 +306735,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3650,
-      "end_line": 3650,
+      "line": 3655,
+      "end_line": 3655,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306567,8 +306744,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3668,
-      "end_line": 3668,
+      "line": 3673,
+      "end_line": 3673,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -306576,8 +306753,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4060,
-      "end_line": 4060,
+      "line": 4065,
+      "end_line": 4065,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -306585,8 +306762,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4069,
-      "end_line": 4069,
+      "line": 4074,
+      "end_line": 4074,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -306594,8 +306771,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4070,
-      "end_line": 4070,
+      "line": 4075,
+      "end_line": 4075,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -306603,8 +306780,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4071,
-      "end_line": 4071,
+      "line": 4076,
+      "end_line": 4076,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -306612,8 +306789,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4084,
-      "end_line": 4084,
+      "line": 4089,
+      "end_line": 4089,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306621,8 +306798,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4085,
-      "end_line": 4085,
+      "line": 4090,
+      "end_line": 4090,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -306648,8 +306825,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3027,
-      "end_line": 3027,
+      "line": 3032,
+      "end_line": 3032,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -306659,8 +306836,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3027,
-      "end_line": 3027,
+      "line": 3032,
+      "end_line": 3032,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -306670,8 +306847,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3027,
-      "end_line": 3027,
+      "line": 3032,
+      "end_line": 3032,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -306681,8 +306858,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3066,
-      "end_line": 3066,
+      "line": 3071,
+      "end_line": 3071,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -306693,8 +306870,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3067,
-      "end_line": 3067,
+      "line": 3072,
+      "end_line": 3072,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -306705,8 +306882,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3067,
-      "end_line": 3067,
+      "line": 3072,
+      "end_line": 3072,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -306717,8 +306894,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3290,
-      "end_line": 3290,
+      "line": 3295,
+      "end_line": 3295,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -306726,8 +306903,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3301,
-      "end_line": 3301,
+      "line": 3306,
+      "end_line": 3306,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -306735,8 +306912,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3301,
-      "end_line": 3301,
+      "line": 3306,
+      "end_line": 3306,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData.value",
@@ -306744,8 +306921,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3302,
-      "end_line": 3302,
+      "line": 3307,
+      "end_line": 3307,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306753,8 +306930,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3657,
-      "end_line": 3657,
+      "line": 3662,
+      "end_line": 3662,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -306764,8 +306941,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3657,
-      "end_line": 3657,
+      "line": 3662,
+      "end_line": 3662,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -306775,8 +306952,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3666,
-      "end_line": 3666,
+      "line": 3671,
+      "end_line": 3671,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306784,8 +306961,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3668,
-      "end_line": 3668,
+      "line": 3673,
+      "end_line": 3673,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306793,8 +306970,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3669,
-      "end_line": 3669,
+      "line": 3674,
+      "end_line": 3674,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -306802,8 +306979,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4060,
-      "end_line": 4060,
+      "line": 4065,
+      "end_line": 4065,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306811,8 +306988,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4069,
-      "end_line": 4069,
+      "line": 4074,
+      "end_line": 4074,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306820,8 +306997,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4070,
-      "end_line": 4070,
+      "line": 4075,
+      "end_line": 4075,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306829,8 +307006,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4071,
-      "end_line": 4071,
+      "line": 4076,
+      "end_line": 4076,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306847,8 +307024,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3027,
-      "end_line": 3027,
+      "line": 3032,
+      "end_line": 3032,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -306858,8 +307035,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3067,
-      "end_line": 3067,
+      "line": 3072,
+      "end_line": 3072,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -306870,8 +307047,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3290,
-      "end_line": 3290,
+      "line": 3295,
+      "end_line": 3295,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306879,8 +307056,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3301,
-      "end_line": 3301,
+      "line": 3306,
+      "end_line": 3306,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306888,8 +307065,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3301,
-      "end_line": 3301,
+      "line": 3306,
+      "end_line": 3306,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306897,8 +307074,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3656,
-      "end_line": 3656,
+      "line": 3661,
+      "end_line": 3661,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -306908,8 +307085,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3657,
-      "end_line": 3657,
+      "line": 3662,
+      "end_line": 3662,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -306919,8 +307096,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3657,
-      "end_line": 3657,
+      "line": 3662,
+      "end_line": 3662,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -306930,8 +307107,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3669,
-      "end_line": 3669,
+      "line": 3674,
+      "end_line": 3674,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306939,8 +307116,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4059,
-      "end_line": 4059,
+      "line": 4064,
+      "end_line": 4064,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -306948,8 +307125,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3098,
-      "end_line": 3098,
+      "line": 3103,
+      "end_line": 3103,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -306959,8 +307136,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3099,
-      "end_line": 3099,
+      "line": 3104,
+      "end_line": 3104,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -306970,8 +307147,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3657,
-      "end_line": 3657,
+      "line": 3662,
+      "end_line": 3662,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -306981,8 +307158,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4058,
-      "end_line": 4058,
+      "line": 4063,
+      "end_line": 4063,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -306990,12 +307167,114 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4059,
-      "end_line": 4059,
+      "line": 4064,
+      "end_line": 4064,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
       "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3103,
+      "end_line": 3103,
+      "owner": "render_indicator_html",
+      "conditions": [
+        "(indicator.frequency or '').startswith('month')"
+      ],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3104,
+      "end_line": 3104,
+      "owner": "render_indicator_html",
+      "conditions": [
+        "(indicator.frequency or '').startswith('month')"
+      ],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3293,
+      "end_line": 3293,
+      "owner": "indicator_data_years",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3101,
+      "end_line": 3101,
+      "owner": "render_indicator_html",
+      "conditions": [
+        "(indicator.frequency or '').startswith('month')"
+      ],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3293,
+      "end_line": 3293,
+      "owner": "indicator_data_years",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3101,
+      "end_line": 3101,
+      "owner": "render_indicator_html",
+      "conditions": [
+        "(indicator.frequency or '').startswith('month')"
+      ],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3292,
+      "end_line": 3292,
+      "owner": "indicator_data_years",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.id",
+      "expression": "IndicatorData.id"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3292,
+      "end_line": 3292,
+      "owner": "indicator_data_years",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3098,
+      "end_line": 3098,
+      "owner": "render_indicator_html",
+      "conditions": [
+        "(indicator.frequency or '').startswith('month')"
+      ],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3099,
+      "end_line": 3099,
+      "owner": "render_indicator_html",
+      "conditions": [
+        "(indicator.frequency or '').startswith('month')"
+      ],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
@@ -307012,108 +307291,6 @@
       "path": "backend/app/services/seo_renderer.py",
       "line": 3099,
       "end_line": 3099,
-      "owner": "render_indicator_html",
-      "conditions": [
-        "(indicator.frequency or '').startswith('month')"
-      ],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3288,
-      "end_line": 3288,
-      "owner": "indicator_data_years",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.indicator_id",
-      "expression": "IndicatorData.indicator_id"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3096,
-      "end_line": 3096,
-      "owner": "render_indicator_html",
-      "conditions": [
-        "(indicator.frequency or '').startswith('month')"
-      ],
-      "symbol": "app.models.IndicatorData.indicator_id",
-      "expression": "IndicatorData.indicator_id"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3288,
-      "end_line": 3288,
-      "owner": "indicator_data_years",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3096,
-      "end_line": 3096,
-      "owner": "render_indicator_html",
-      "conditions": [
-        "(indicator.frequency or '').startswith('month')"
-      ],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3287,
-      "end_line": 3287,
-      "owner": "indicator_data_years",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.id",
-      "expression": "IndicatorData.id"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3287,
-      "end_line": 3287,
-      "owner": "indicator_data_years",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3093,
-      "end_line": 3093,
-      "owner": "render_indicator_html",
-      "conditions": [
-        "(indicator.frequency or '').startswith('month')"
-      ],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3094,
-      "end_line": 3094,
-      "owner": "render_indicator_html",
-      "conditions": [
-        "(indicator.frequency or '').startswith('month')"
-      ],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3093,
-      "end_line": 3093,
-      "owner": "render_indicator_html",
-      "conditions": [
-        "(indicator.frequency or '').startswith('month')"
-      ],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3094,
-      "end_line": 3094,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -324996,8 +325173,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1174,
-      "end_line": 1174,
+      "line": 1186,
+      "end_line": 1186,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -325005,8 +325182,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1175,
-      "end_line": 1175,
+      "line": 1187,
+      "end_line": 1187,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.RegionQuarterlyPoint",
@@ -325014,8 +325191,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1176,
-      "end_line": 1176,
+      "line": 1188,
+      "end_line": 1188,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -325023,8 +325200,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1152,
-      "end_line": 1152,
+      "line": 1164,
+      "end_line": 1164,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325032,8 +325209,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1231,
-      "end_line": 1231,
+      "line": 1243,
+      "end_line": 1243,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -325041,8 +325218,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1231,
-      "end_line": 1231,
+      "line": 1243,
+      "end_line": 1243,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionQuarterlyPoint",
@@ -325050,8 +325227,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1232,
-      "end_line": 1232,
+      "line": 1244,
+      "end_line": 1244,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -325059,8 +325236,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1180,
-      "end_line": 1180,
+      "line": 1192,
+      "end_line": 1192,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -325068,8 +325245,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1180,
-      "end_line": 1180,
+      "line": 1192,
+      "end_line": 1192,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -325077,8 +325254,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1159,
-      "end_line": 1159,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.in_",
@@ -325086,8 +325263,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1180,
-      "end_line": 1180,
+      "line": 1192,
+      "end_line": 1192,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -325095,8 +325272,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1180,
-      "end_line": 1180,
+      "line": 1192,
+      "end_line": 1192,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -325104,8 +325281,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1234,
-      "end_line": 1234,
+      "line": 1246,
+      "end_line": 1246,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -325113,8 +325290,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1159,
-      "end_line": 1159,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -325122,8 +325299,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1159,
-      "end_line": 1159,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.id",
@@ -325131,8 +325308,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1159,
-      "end_line": 1159,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -325140,8 +325317,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1234,
-      "end_line": 1234,
+      "line": 1246,
+      "end_line": 1246,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325149,8 +325326,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1234,
-      "end_line": 1234,
+      "line": 1246,
+      "end_line": 1246,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325158,8 +325335,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1159,
-      "end_line": 1159,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325167,8 +325344,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1159,
-      "end_line": 1159,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325176,8 +325353,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1159,
-      "end_line": 1159,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325185,8 +325362,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1186,
-      "end_line": 1186,
+      "line": 1198,
+      "end_line": 1198,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -325196,8 +325373,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1234,
-      "end_line": 1234,
+      "line": 1246,
+      "end_line": 1246,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.id",
@@ -325205,8 +325382,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1185,
-      "end_line": 1185,
+      "line": 1197,
+      "end_line": 1197,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -325216,8 +325393,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1185,
-      "end_line": 1185,
+      "line": 1197,
+      "end_line": 1197,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -325227,8 +325404,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1186,
-      "end_line": 1186,
+      "line": 1198,
+      "end_line": 1198,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -325238,8 +325415,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1234,
-      "end_line": 1234,
+      "line": 1246,
+      "end_line": 1246,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325247,8 +325424,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1156,
-      "end_line": 1156,
+      "line": 1168,
+      "end_line": 1168,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325256,8 +325433,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1185,
-      "end_line": 1185,
+      "line": 1197,
+      "end_line": 1197,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -325267,8 +325444,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1185,
-      "end_line": 1185,
+      "line": 1197,
+      "end_line": 1197,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -325278,8 +325455,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1186,
-      "end_line": 1186,
+      "line": 1198,
+      "end_line": 1198,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -325289,89 +325466,44 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 112,
-      "end_line": 112,
-      "owner": "_world_name",
+      "line": 115,
+      "end_line": 115,
+      "owner": "_rating_ready",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
+      "symbol": "app.models.RegionDataPoint.indicator_id",
+      "expression": "RegionDataPoint.indicator_id"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 127,
-      "end_line": 127,
-      "owner": "_world_block",
+      "line": 115,
+      "end_line": 115,
+      "owner": "_rating_ready",
       "conditions": [],
-      "symbol": "app.models.WorldCountry.sort_order",
-      "expression": "WorldCountry.sort_order"
+      "symbol": "app.models.RegionDataPoint.year",
+      "expression": "RegionDataPoint.year"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 127,
-      "end_line": 127,
-      "owner": "_world_block",
+      "line": 115,
+      "end_line": 115,
+      "owner": "_rating_ready",
       "conditions": [],
-      "symbol": "app.models.WorldCountry.slug",
-      "expression": "WorldCountry.slug"
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 128,
-      "end_line": 128,
-      "owner": "_world_block",
+      "line": 115,
+      "end_line": 115,
+      "owner": "_rating_ready",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator.code",
-      "expression": "WorldIndicator.code"
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 127,
-      "end_line": 127,
-      "owner": "_world_block",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 127,
-      "end_line": 127,
-      "owner": "_world_block",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 127,
-      "end_line": 127,
-      "owner": "_world_block",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.points_count.desc",
-      "expression": "WorldIndicator.points_count.desc"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 128,
-      "end_line": 128,
-      "owner": "_world_block",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 127,
-      "end_line": 127,
-      "owner": "_world_block",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.points_count",
-      "expression": "WorldIndicator.points_count"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 125,
-      "end_line": 125,
+      "line": 201,
+      "end_line": 201,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.category_ru",
@@ -325379,8 +325511,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 125,
-      "end_line": 125,
+      "line": 201,
+      "end_line": 201,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -325388,8 +325520,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 126,
-      "end_line": 126,
+      "line": 202,
+      "end_line": 202,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -325397,62 +325529,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 127,
-      "end_line": 127,
-      "owner": "_world_block",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 168,
-      "end_line": 168,
-      "owner": "_russia_count",
-      "conditions": [],
-      "symbol": "app.models.Indicator.category",
-      "expression": "Indicator.category"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 168,
-      "end_line": 168,
-      "owner": "_russia_count",
-      "conditions": [],
-      "symbol": "app.models.Indicator.is_active.is_",
-      "expression": "Indicator.is_active.is_"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 168,
-      "end_line": 168,
-      "owner": "_russia_count",
-      "conditions": [],
-      "symbol": "app.models.Indicator.is_listed.is_",
-      "expression": "Indicator.is_listed.is_"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 76,
-      "end_line": 76,
-      "owner": "_regional_block",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.code.like",
-      "expression": "RegionIndicator.code.like"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 77,
-      "end_line": 77,
-      "owner": "_regional_block",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.section_name.like",
-      "expression": "RegionIndicator.section_name.like"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 200,
+      "end_line": 200,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -325460,8 +325538,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 125,
-      "end_line": 125,
+      "line": 201,
+      "end_line": 201,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -325469,8 +325547,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 125,
-      "end_line": 125,
+      "line": 201,
+      "end_line": 201,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -325478,8 +325556,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 126,
-      "end_line": 126,
+      "line": 202,
+      "end_line": 202,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -325487,71 +325565,26 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 167,
-      "end_line": 167,
-      "owner": "_russia_count",
+      "line": 114,
+      "end_line": 114,
+      "owner": "_rating_ready",
       "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
+      "symbol": "app.models.RegionDataPoint.indicator_id.in_",
+      "expression": "RegionDataPoint.indicator_id.in_"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 168,
-      "end_line": 168,
-      "owner": "_russia_count",
+      "line": 114,
+      "end_line": 114,
+      "owner": "_rating_ready",
       "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
+      "symbol": "app.models.Region.kind",
+      "expression": "Region.kind"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 168,
-      "end_line": 168,
-      "owner": "_russia_count",
-      "conditions": [],
-      "symbol": "app.models.Indicator.is_active",
-      "expression": "Indicator.is_active"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 168,
-      "end_line": 168,
-      "owner": "_russia_count",
-      "conditions": [],
-      "symbol": "app.models.Indicator.is_listed",
-      "expression": "Indicator.is_listed"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 75,
-      "end_line": 75,
-      "owner": "_regional_block",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.is_listed.is_",
-      "expression": "RegionIndicator.is_listed.is_"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 76,
-      "end_line": 76,
-      "owner": "_regional_block",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.code",
-      "expression": "RegionIndicator.code"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 77,
-      "end_line": 77,
-      "owner": "_regional_block",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.section_name",
-      "expression": "RegionIndicator.section_name"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 200,
+      "end_line": 200,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -325559,8 +325592,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 200,
+      "end_line": 200,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -325568,8 +325601,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 125,
-      "end_line": 125,
+      "line": 201,
+      "end_line": 201,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -325577,8 +325610,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 126,
-      "end_line": 126,
+      "line": 202,
+      "end_line": 202,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -325586,8 +325619,179 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 168,
-      "end_line": 168,
+      "line": 244,
+      "end_line": 244,
+      "owner": "_russia_count",
+      "conditions": [],
+      "symbol": "app.models.Indicator.category",
+      "expression": "Indicator.category"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "_russia_count",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_active.is_",
+      "expression": "Indicator.is_active.is_"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "_russia_count",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_listed.is_",
+      "expression": "Indicator.is_listed.is_"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 113,
+      "end_line": 113,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 114,
+      "end_line": 114,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.indicator_id",
+      "expression": "RegionDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 114,
+      "end_line": 114,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 129,
+      "end_line": 129,
+      "owner": "_regional_block",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code.like",
+      "expression": "RegionIndicator.code.like"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 130,
+      "end_line": 130,
+      "owner": "_regional_block",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.section_name.like",
+      "expression": "RegionIndicator.section_name.like"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 197,
+      "end_line": 197,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 197,
+      "end_line": 197,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_ru",
+      "expression": "WorldIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 197,
+      "end_line": 197,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_en",
+      "expression": "WorldIndicator.name_en"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 197,
+      "end_line": 197,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.dataset_id",
+      "expression": "WorldIndicator.dataset_id"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.points_count",
+      "expression": "WorldIndicator.points_count"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.slug",
+      "expression": "WorldCountry.slug"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.name_ru",
+      "expression": "WorldCountry.name_ru"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.name_en",
+      "expression": "WorldCountry.name_en"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 199,
+      "end_line": 199,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.sort_order",
+      "expression": "WorldCountry.sort_order"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 200,
+      "end_line": 200,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 200,
+      "end_line": 200,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 243,
+      "end_line": 243,
       "owner": "_russia_count",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -325595,8 +325799,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 168,
-      "end_line": 168,
+      "line": 244,
+      "end_line": 244,
       "owner": "_russia_count",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -325604,8 +325808,215 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 244,
+      "end_line": 244,
+      "owner": "_russia_count",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_active",
+      "expression": "Indicator.is_active"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "_russia_count",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_listed",
+      "expression": "Indicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 113,
+      "end_line": 113,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.Region.id",
+      "expression": "Region.id"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 113,
+      "end_line": 113,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.region_id",
+      "expression": "RegionDataPoint.region_id"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 114,
+      "end_line": 114,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 128,
+      "end_line": 128,
+      "owner": "_regional_block",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.is_listed.is_",
+      "expression": "RegionIndicator.is_listed.is_"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 129,
+      "end_line": 129,
+      "owner": "_regional_block",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 130,
+      "end_line": 130,
+      "owner": "_regional_block",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.section_name",
+      "expression": "RegionIndicator.section_name"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 197,
+      "end_line": 197,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 197,
+      "end_line": 197,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 197,
+      "end_line": 197,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 197,
+      "end_line": 197,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 199,
+      "end_line": 199,
+      "owner": "_world_block",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "_russia_count",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 244,
+      "end_line": 244,
+      "owner": "_russia_count",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 112,
+      "end_line": 112,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.indicator_id",
+      "expression": "RegionDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 112,
+      "end_line": 112,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.year",
+      "expression": "RegionDataPoint.year"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 113,
+      "end_line": 113,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.Region",
+      "expression": "Region"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 113,
+      "end_line": 113,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 128,
+      "end_line": 128,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325613,8 +326024,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 128,
+      "end_line": 128,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -325622,8 +326033,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 76,
-      "end_line": 76,
+      "line": 129,
+      "end_line": 129,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325631,8 +326042,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 77,
-      "end_line": 77,
+      "line": 130,
+      "end_line": 130,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325640,8 +326051,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 132,
+      "end_line": 132,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.name.like",
@@ -325649,44 +326060,26 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 123,
-      "end_line": 123,
-      "owner": "_world_block",
+      "line": 112,
+      "end_line": 112,
+      "owner": "_rating_ready",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 123,
-      "end_line": 123,
-      "owner": "_world_block",
+      "line": 112,
+      "end_line": 112,
+      "owner": "_rating_ready",
       "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 124,
-      "end_line": 124,
-      "owner": "_world_block",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 124,
-      "end_line": 124,
-      "owner": "_world_block",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_showcase.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 128,
+      "end_line": 128,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -325694,8 +326087,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 132,
+      "end_line": 132,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.name",
@@ -325703,12 +326096,30 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 112,
+      "end_line": 112,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint.region_id",
+      "expression": "RegionDataPoint.region_id"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 132,
+      "end_line": 132,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
       "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 112,
+      "end_line": 112,
+      "owner": "_rating_ready",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
     },
     {
       "path": "backend/app/services/upsert.py",
@@ -359596,8 +360007,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 345,
-      "end_line": 348,
+      "line": 347,
+      "end_line": 350,
       "owner": "<module>",
       "conditions": [],
       "name": "_firms",
@@ -359605,8 +360016,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 357,
-      "end_line": 361,
+      "line": 359,
+      "end_line": 363,
       "owner": "<module>",
       "conditions": [],
       "name": "_travellers",
@@ -359614,8 +360025,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 682,
-      "end_line": 688,
+      "line": 697,
+      "end_line": 703,
       "owner": "<module>",
       "conditions": [],
       "name": "_cpi",
@@ -359623,8 +360034,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 761,
-      "end_line": 764,
+      "line": 776,
+      "end_line": 779,
       "owner": "<module>",
       "conditions": [],
       "name": "_cbr",
@@ -359632,8 +360043,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 878,
-      "end_line": 882,
+      "line": 893,
+      "end_line": 897,
       "owner": "<module>",
       "conditions": [],
       "name": "_pub",
@@ -359641,8 +360052,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1034,
-      "end_line": 1042,
+      "line": 1049,
+      "end_line": 1057,
       "owner": "<module>",
       "conditions": [],
       "name": "price_tourism_codes",
@@ -359650,8 +360061,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1045,
-      "end_line": 1051,
+      "line": 1060,
+      "end_line": 1066,
       "owner": "<module>",
       "conditions": [],
       "name": "emiss_datasets",
@@ -359659,8 +360070,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1054,
-      "end_line": 1057,
+      "line": 1069,
+      "end_line": 1072,
       "owner": "<module>",
       "conditions": [],
       "name": "is_tourism_code",
@@ -359668,8 +360079,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1060,
-      "end_line": 1062,
+      "line": 1075,
+      "end_line": 1077,
       "owner": "<module>",
       "conditions": [],
       "name": "source_of",
@@ -359677,8 +360088,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1065,
-      "end_line": 1068,
+      "line": 1080,
+      "end_line": 1083,
       "owner": "<module>",
       "conditions": [],
       "name": "source_note",
@@ -359686,8 +360097,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1071,
-      "end_line": 1074,
+      "line": 1086,
+      "end_line": 1089,
       "owner": "<module>",
       "conditions": [],
       "name": "copy_en",
@@ -359695,8 +360106,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1078,
-      "end_line": 1099,
+      "line": 1093,
+      "end_line": 1114,
       "owner": "<module>",
       "conditions": [],
       "name": "monthly_texts",
@@ -359795,7 +360206,7 @@
     {
       "path": "backend/app/data/tourism_russia.py",
       "line": 869,
-      "end_line": 978,
+      "end_line": 979,
       "owner": "<module>",
       "conditions": [],
       "name": "_static_series",
@@ -359803,8 +360214,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1079,
-      "end_line": 1080,
+      "line": 1080,
+      "end_line": 1081,
       "owner": "<module>",
       "conditions": [],
       "name": "hidden_codes",
@@ -359812,8 +360223,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1083,
-      "end_line": 1084,
+      "line": 1084,
+      "end_line": 1085,
       "owner": "<module>",
       "conditions": [],
       "name": "forecast_codes",
@@ -359821,8 +360232,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1097,
-      "end_line": 1118,
+      "line": 1098,
+      "end_line": 1119,
       "owner": "<module>",
       "conditions": [],
       "name": "seed_indicators",
@@ -359830,8 +360241,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1121,
-      "end_line": 1128,
+      "line": 1122,
+      "end_line": 1129,
       "owner": "<module>",
       "conditions": [],
       "name": "family_defs",
@@ -359839,8 +360250,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1131,
-      "end_line": 1132,
+      "line": 1132,
+      "end_line": 1133,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_keywords",
@@ -359848,8 +360259,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1135,
-      "end_line": 1136,
+      "line": 1136,
+      "end_line": 1137,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_meta",
@@ -359857,8 +360268,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1139,
-      "end_line": 1141,
+      "line": 1140,
+      "end_line": 1142,
       "owner": "<module>",
       "conditions": [],
       "name": "copy_en",
@@ -359866,8 +360277,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1199,
-      "end_line": 1214,
+      "line": 1200,
+      "end_line": 1215,
       "owner": "<module>",
       "conditions": [],
       "name": "_group",
@@ -359875,8 +360286,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1217,
-      "end_line": 1234,
+      "line": 1218,
+      "end_line": 1235,
       "owner": "<module>",
       "conditions": [],
       "name": "_mode_text",
@@ -359884,8 +360295,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1237,
-      "end_line": 1255,
+      "line": 1238,
+      "end_line": 1256,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_blocks",
@@ -371650,8 +372061,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 175,
-      "end_line": 176,
+      "line": 178,
+      "end_line": 184,
       "owner": "<module>",
       "conditions": [],
       "name": "_unescape",
@@ -371659,8 +372070,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 179,
-      "end_line": 197,
+      "line": 187,
+      "end_line": 205,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_page_filters",
@@ -371668,8 +372079,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 200,
-      "end_line": 207,
+      "line": 208,
+      "end_line": 215,
       "owner": "<module>",
       "conditions": [],
       "name": "_fetch_page_sync",
@@ -371677,8 +372088,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 210,
-      "end_line": 220,
+      "line": 218,
+      "end_line": 228,
       "owner": "<module>",
       "conditions": [],
       "name": "grid_params",
@@ -371686,8 +372097,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 223,
-      "end_line": 225,
+      "line": 231,
+      "end_line": 233,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_dataset",
@@ -371695,8 +372106,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 228,
-      "end_line": 230,
+      "line": 236,
+      "end_line": 238,
       "owner": "<module>",
       "conditions": [],
       "name": "load_snapshot",
@@ -371704,8 +372115,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 233,
-      "end_line": 258,
+      "line": 241,
+      "end_line": 266,
       "owner": "<module>",
       "conditions": [],
       "name": "EmissTourismParser",
@@ -371713,8 +372124,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 236,
-      "end_line": 258,
+      "line": 244,
+      "end_line": 266,
       "owner": "EmissTourismParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -389639,7 +390050,7 @@
     {
       "path": "backend/app/services/seo_renderer.py",
       "line": 2884,
-      "end_line": 2950,
+      "end_line": 2955,
       "owner": "<module>",
       "conditions": [],
       "name": "render_category_html",
@@ -389647,8 +390058,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2953,
-      "end_line": 2963,
+      "line": 2958,
+      "end_line": 2968,
       "owner": "<module>",
       "conditions": [],
       "name": "_related_categories",
@@ -389656,8 +390067,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2966,
-      "end_line": 3280,
+      "line": 2971,
+      "end_line": 3285,
       "owner": "<module>",
       "conditions": [],
       "name": "render_indicator_html",
@@ -389665,8 +390076,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3283,
-      "end_line": 3293,
+      "line": 3288,
+      "end_line": 3298,
       "owner": "<module>",
       "conditions": [],
       "name": "indicator_data_years",
@@ -389674,8 +390085,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3296,
-      "end_line": 3310,
+      "line": 3301,
+      "end_line": 3315,
       "owner": "<module>",
       "conditions": [],
       "name": "yearly_last_points",
@@ -389683,8 +390094,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3313,
-      "end_line": 3331,
+      "line": 3318,
+      "end_line": 3336,
       "owner": "<module>",
       "conditions": [],
       "name": "neighbor_year_window",
@@ -389692,8 +390103,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3334,
-      "end_line": 3384,
+      "line": 3339,
+      "end_line": 3389,
       "owner": "<module>",
       "conditions": [],
       "name": "year_change_lines",
@@ -389701,8 +390112,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3387,
-      "end_line": 3525,
+      "line": 3392,
+      "end_line": 3530,
       "owner": "<module>",
       "conditions": [],
       "name": "year_history_position_lines",
@@ -389710,8 +390121,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3528,
-      "end_line": 3621,
+      "line": 3533,
+      "end_line": 3626,
       "owner": "<module>",
       "conditions": [],
       "name": "_year_page_title_desc",
@@ -389719,8 +390130,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3627,
-      "end_line": 4013,
+      "line": 3632,
+      "end_line": 4018,
       "owner": "<module>",
       "conditions": [],
       "name": "render_indicator_year_html",
@@ -389728,8 +390139,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4016,
-      "end_line": 4042,
+      "line": 4021,
+      "end_line": 4047,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_alt_freq_links",
@@ -389737,8 +390148,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4045,
-      "end_line": 4053,
+      "line": 4050,
+      "end_line": 4058,
       "owner": "<module>",
       "conditions": [],
       "name": "_category_for_api",
@@ -389746,8 +390157,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4056,
-      "end_line": 4063,
+      "line": 4061,
+      "end_line": 4068,
       "owner": "<module>",
       "conditions": [],
       "name": "_latest_rows",
@@ -389755,8 +390166,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4066,
-      "end_line": 4074,
+      "line": 4071,
+      "end_line": 4079,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_stats",
@@ -389764,8 +390175,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4077,
-      "end_line": 4090,
+      "line": 4082,
+      "end_line": 4095,
       "owner": "<module>",
       "conditions": [],
       "name": "_related_indicators",
@@ -389773,8 +390184,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4103,
-      "end_line": 4134,
+      "line": 4108,
+      "end_line": 4139,
       "owner": "<module>",
       "conditions": [],
       "name": "_russia_world_compare_ssr_section",
@@ -389782,8 +390193,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4137,
-      "end_line": 4407,
+      "line": 4142,
+      "end_line": 4412,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_body",
@@ -389827,8 +390238,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3021,
-      "end_line": 3042,
+      "line": 3026,
+      "end_line": 3047,
       "owner": "render_indicator_html",
       "conditions": [],
       "name": "_mode_view",
@@ -389836,8 +390247,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3412,
-      "end_line": 3413,
+      "line": 3417,
+      "end_line": 3418,
       "owner": "year_history_position_lines",
       "conditions": [],
       "name": "_num",
@@ -389845,8 +390256,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3451,
-      "end_line": 3463,
+      "line": 3456,
+      "end_line": 3468,
       "owner": "year_history_position_lines",
       "conditions": [],
       "name": "_gap_ago",
@@ -389863,8 +390274,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3859,
-      "end_line": 3860,
+      "line": 3864,
+      "end_line": 3865,
       "owner": "render_indicator_year_html",
       "conditions": [
         "not (single_point)"
@@ -390063,8 +390474,8 @@
     },
     {
       "path": "backend/app/services/seo_tourism.py",
-      "line": 36,
-      "end_line": 37,
+      "line": 41,
+      "end_line": 42,
       "owner": "<module>",
       "conditions": [],
       "name": "_a",
@@ -390072,8 +390483,8 @@
     },
     {
       "path": "backend/app/services/seo_tourism.py",
-      "line": 40,
-      "end_line": 83,
+      "line": 45,
+      "end_line": 94,
       "owner": "<module>",
       "conditions": [],
       "name": "tourism_sections",
@@ -395492,8 +395903,17 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 343,
-      "end_line": 370,
+      "line": 346,
+      "end_line": 355,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_js_unescape",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 358,
+      "end_line": 382,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_indicator_page",
@@ -395501,8 +395921,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 373,
-      "end_line": 378,
+      "line": 385,
+      "end_line": 390,
       "owner": "<module>",
       "conditions": [],
       "name": "territory_dim_of",
@@ -395510,8 +395930,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 381,
-      "end_line": 413,
+      "line": 393,
+      "end_line": 425,
       "owner": "<module>",
       "conditions": [],
       "name": "build_grid_params",
@@ -395519,8 +395939,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 416,
-      "end_line": 428,
+      "line": 428,
+      "end_line": 440,
       "owner": "<module>",
       "conditions": [],
       "name": "_fetch_page_sync",
@@ -395528,8 +395948,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 431,
-      "end_line": 457,
+      "line": 443,
+      "end_line": 469,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_emiss_dataset",
@@ -395537,8 +395957,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 474,
-      "end_line": 521,
+      "line": 486,
+      "end_line": 533,
       "owner": "<module>",
       "conditions": [],
       "name": "cbr_points",
@@ -395546,8 +395966,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 524,
-      "end_line": 527,
+      "line": 536,
+      "end_line": 539,
       "owner": "<module>",
       "conditions": [],
       "name": "drop_zero_series",
@@ -395555,8 +395975,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 530,
-      "end_line": 545,
+      "line": 542,
+      "end_line": 557,
       "owner": "<module>",
       "conditions": [],
       "name": "_get_sync",
@@ -395564,8 +395984,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 548,
-      "end_line": 556,
+      "line": 560,
+      "end_line": 568,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_cbr",
@@ -395573,8 +395993,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 568,
-      "end_line": 605,
+      "line": 580,
+      "end_line": 617,
       "owner": "<module>",
       "conditions": [],
       "name": "turpotok_points",
@@ -395582,8 +396002,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 612,
-      "end_line": 628,
+      "line": 624,
+      "end_line": 640,
       "owner": "<module>",
       "conditions": [],
       "name": "fns_tax_points",
@@ -395591,8 +396011,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 631,
-      "end_line": 639,
+      "line": 643,
+      "end_line": 651,
       "owner": "<module>",
       "conditions": [],
       "name": "fns_rows_from_csv",
@@ -395600,8 +396020,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 646,
-      "end_line": 652,
+      "line": 658,
+      "end_line": 664,
       "owner": "<module>",
       "conditions": [],
       "name": "fns_zip_month",
@@ -395609,8 +396029,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 655,
-      "end_line": 694,
+      "line": 667,
+      "end_line": 706,
       "owner": "<module>",
       "conditions": [],
       "name": "fns_zip_rows",
@@ -395618,8 +396038,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 697,
-      "end_line": 713,
+      "line": 709,
+      "end_line": 725,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_fns",
@@ -395627,8 +396047,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 720,
-      "end_line": 730,
+      "line": 732,
+      "end_line": 742,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_turpotok",
@@ -395636,8 +396056,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 740,
-      "end_line": 759,
+      "line": 752,
+      "end_line": 771,
       "owner": "<module>",
       "conditions": [],
       "name": "fsa_points",
@@ -395645,8 +396065,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 762,
-      "end_line": 789,
+      "line": 774,
+      "end_line": 801,
       "owner": "<module>",
       "conditions": [],
       "name": "_fsa_records_sync",
@@ -395654,8 +396074,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 826,
-      "end_line": 834,
+      "line": 838,
+      "end_line": 846,
       "owner": "<module>",
       "conditions": [],
       "name": "turagent_points",
@@ -395663,8 +396083,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 837,
-      "end_line": 846,
+      "line": 849,
+      "end_line": 858,
       "owner": "<module>",
       "conditions": [],
       "name": "touroperator_points",
@@ -395672,8 +396092,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 855,
-      "end_line": 880,
+      "line": 867,
+      "end_line": 892,
       "owner": "<module>",
       "conditions": [],
       "name": "_efrt_sync",
@@ -395681,8 +396101,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 883,
-      "end_line": 886,
+      "line": 895,
+      "end_line": 898,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_efrt",
@@ -395690,8 +396110,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 893,
-      "end_line": 906,
+      "line": 905,
+      "end_line": 918,
       "owner": "<module>",
       "conditions": [],
       "name": "sber_points",
@@ -395699,8 +396119,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 914,
-      "end_line": 927,
+      "line": 926,
+      "end_line": 939,
       "owner": "<module>",
       "conditions": [],
       "name": "kurort_points",
@@ -395708,8 +396128,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 939,
-      "end_line": 940,
+      "line": 951,
+      "end_line": 952,
       "owner": "<module>",
       "conditions": [],
       "name": "_price_key",
@@ -395717,8 +396137,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 943,
-      "end_line": 980,
+      "line": 955,
+      "end_line": 992,
       "owner": "<module>",
       "conditions": [],
       "name": "price_points",
@@ -395726,8 +396146,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 994,
-      "end_line": 1034,
+      "line": 1006,
+      "end_line": 1046,
       "owner": "<module>",
       "conditions": [],
       "name": "tur_rus_points",
@@ -395735,8 +396155,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1076,
-      "end_line": 1094,
+      "line": 1088,
+      "end_line": 1106,
       "owner": "<module>",
       "conditions": [],
       "name": "tochno_points",
@@ -395744,8 +396164,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1097,
-      "end_line": 1102,
+      "line": 1109,
+      "end_line": 1114,
       "owner": "<module>",
       "conditions": [],
       "name": "occupancy_points",
@@ -395753,8 +396173,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1108,
-      "end_line": 1116,
+      "line": 1120,
+      "end_line": 1128,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_prices",
@@ -395762,8 +396182,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1123,
-      "end_line": 1130,
+      "line": 1135,
+      "end_line": 1142,
       "owner": "<module>",
       "conditions": [],
       "name": "write_seed",
@@ -395771,8 +396191,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1133,
-      "end_line": 1137,
+      "line": 1145,
+      "end_line": 1149,
       "owner": "<module>",
       "conditions": [],
       "name": "read_seed",
@@ -395780,8 +396200,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1140,
-      "end_line": 1160,
+      "line": 1152,
+      "end_line": 1172,
       "owner": "<module>",
       "conditions": [],
       "name": "ensure_indicators",
@@ -395789,8 +396209,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1163,
-      "end_line": 1220,
+      "line": 1175,
+      "end_line": 1232,
       "owner": "<module>",
       "conditions": [],
       "name": "write_points",
@@ -395798,8 +396218,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1223,
-      "end_line": 1239,
+      "line": 1235,
+      "end_line": 1251,
       "owner": "<module>",
       "conditions": [],
       "name": "_last_years",
@@ -395807,8 +396227,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1242,
-      "end_line": 1248,
+      "line": 1254,
+      "end_line": 1260,
       "owner": "<module>",
       "conditions": [],
       "name": "plan_years",
@@ -395816,8 +396236,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1251,
-      "end_line": 1299,
+      "line": 1263,
+      "end_line": 1311,
       "owner": "<module>",
       "conditions": [],
       "name": "run_tourism_regional_update",
@@ -395825,8 +396245,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1302,
-      "end_line": 1306,
+      "line": 1314,
+      "end_line": 1318,
       "owner": "<module>",
       "conditions": [],
       "name": "_fsa_live",
@@ -395834,8 +396254,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1309,
-      "end_line": 1331,
+      "line": 1321,
+      "end_line": 1343,
       "owner": "<module>",
       "conditions": [],
       "name": "tourism_regional_job",
@@ -395888,8 +396308,17 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 363,
-      "end_line": 368,
+      "line": 351,
+      "end_line": 353,
+      "owner": "_js_unescape",
+      "conditions": [],
+      "name": "one",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 376,
+      "end_line": 380,
       "owner": "parse_indicator_page",
       "conditions": [],
       "name": "_str",
@@ -395897,8 +396326,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 664,
-      "end_line": 668,
+      "line": 676,
+      "end_line": 680,
       "owner": "fns_zip_rows",
       "conditions": [],
       "name": "name",
@@ -395906,8 +396335,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1337,
-      "end_line": 1344,
+      "line": 1349,
+      "end_line": 1356,
       "owner": "<module>",
       "conditions": [
         "__name__ == '__main__'"
@@ -395917,8 +396346,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 54,
-      "end_line": 63,
+      "line": 74,
+      "end_line": 83,
       "owner": "<module>",
       "conditions": [],
       "name": "is_tourism_region_indicator",
@@ -395926,8 +396355,26 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 66,
-      "end_line": 68,
+      "line": 86,
+      "end_line": 91,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "region_group",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 94,
+      "end_line": 96,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_is_breakdown",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 99,
+      "end_line": 104,
       "owner": "<module>",
       "conditions": [],
       "name": "_region_sort_key",
@@ -395935,8 +396382,17 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 71,
-      "end_line": 109,
+      "line": 107,
+      "end_line": 121,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_rating_ready",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 124,
+      "end_line": 173,
       "owner": "<module>",
       "conditions": [],
       "name": "_regional_block",
@@ -395944,8 +396400,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 112,
-      "end_line": 115,
+      "line": 176,
+      "end_line": 179,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_name",
@@ -395953,8 +396409,17 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 118,
-      "end_line": 162,
+      "line": 186,
+      "end_line": 189,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_world_series_key",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 192,
+      "end_line": 238,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_block",
@@ -395962,8 +396427,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 165,
-      "end_line": 170,
+      "line": 241,
+      "end_line": 246,
       "owner": "<module>",
       "conditions": [],
       "name": "_russia_count",
@@ -395971,8 +396436,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 173,
-      "end_line": 179,
+      "line": 249,
+      "end_line": 255,
       "owner": "<module>",
       "conditions": [],
       "name": "build_overview",
@@ -395980,8 +396445,8 @@
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 182,
-      "end_line": 196,
+      "line": 258,
+      "end_line": 272,
       "owner": "<module>",
       "conditions": [],
       "name": "tourism_overview",
@@ -424844,115 +425309,195 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 879,
-      "end_line": 879,
+      "line": 894,
+      "end_line": 894,
       "owner": "_pub",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SECTION_TOURISM"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1048,
-      "end_line": 1048,
+      "line": 1063,
+      "end_line": 1063,
       "owner": "emiss_datasets",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1021,
-      "end_line": 1021,
+      "line": 1036,
+      "end_line": 1036,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.ANNUAL_KSR"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1021,
-      "end_line": 1021,
+      "line": 1036,
+      "end_line": 1036,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.ANNUAL_SANATORIUMS"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1021,
-      "end_line": 1021,
+      "line": 1036,
+      "end_line": 1036,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.ANNUAL_FIRMS"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1021,
-      "end_line": 1021,
+      "line": 1036,
+      "end_line": 1036,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.ANNUAL_PENDING"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1021,
-      "end_line": 1021,
+      "line": 1036,
+      "end_line": 1036,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.MONTHLY_EMISS"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1021,
-      "end_line": 1021,
+      "line": 1036,
+      "end_line": 1036,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.MONTHLY_TRANSPORT"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1037,
+      "end_line": 1037,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.MONTHLY_CPI"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1037,
+      "end_line": 1037,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.TURPOTOK"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1037,
+      "end_line": 1037,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.QUARTERLY_CBR"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1037,
+      "end_line": 1037,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.TAX"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1037,
+      "end_line": 1037,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.REGISTRIES"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1022,
-      "end_line": 1022,
+      "line": 1037,
+      "end_line": 1037,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.PUBLICATIONS"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 1039,
+      "end_line": 1039,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SERIES"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 663,
+      "end_line": 663,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_TRANSPORT"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 672,
+      "end_line": 672,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_TRANSPORT"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 681,
+      "end_line": 681,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_TRANSPORT"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 701,
+      "end_line": 701,
+      "owner": "_cpi",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_PRICES"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 980,
+      "end_line": 980,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_PRICES"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 983,
+      "end_line": 983,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_PRICES"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 986,
+      "end_line": 986,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_PRICES"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 989,
+      "end_line": 989,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_PRICES"
+    },
+    {
+      "path": "backend/app/data/tourism_regional.py",
+      "line": 1015,
+      "end_line": 1015,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SECTION_PRICES"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
@@ -424960,140 +425505,60 @@
       "end_line": 1024,
       "owner": "<module>",
       "conditions": [],
-      "symbol": "app.data.tourism_regional.SERIES"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 648,
-      "end_line": 648,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_TRANSPORT"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 657,
-      "end_line": 657,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_TRANSPORT"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 666,
-      "end_line": 666,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_TRANSPORT"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 686,
-      "end_line": 686,
-      "owner": "_cpi",
-      "conditions": [],
       "symbol": "app.data.tourism_regional.SECTION_PRICES"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 965,
-      "end_line": 965,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_PRICES"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 968,
-      "end_line": 968,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_PRICES"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 971,
-      "end_line": 971,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_PRICES"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 974,
-      "end_line": 974,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_PRICES"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 1000,
-      "end_line": 1000,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_PRICES"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 1009,
-      "end_line": 1009,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SECTION_PRICES"
-    },
-    {
-      "path": "backend/app/data/tourism_regional.py",
-      "line": 1056,
-      "end_line": 1056,
+      "line": 1071,
+      "end_line": 1071,
       "owner": "is_tourism_code",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1061,
-      "end_line": 1061,
+      "line": 1076,
+      "end_line": 1076,
       "owner": "source_of",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1062,
-      "end_line": 1062,
+      "line": 1077,
+      "end_line": 1077,
       "owner": "source_of",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SOURCES"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1067,
-      "end_line": 1067,
+      "line": 1082,
+      "end_line": 1082,
       "owner": "source_note",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SOURCES"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 1074,
-      "end_line": 1074,
+      "line": 1089,
+      "end_line": 1089,
       "owner": "copy_en",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 455,
+      "end_line": 455,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.DESTINATIONS"
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 464,
+      "end_line": 464,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_regional.ORIGINS"
@@ -425132,24 +425597,24 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1172,
-      "end_line": 1172,
+      "line": 1173,
+      "end_line": 1173,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia._WHY"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1176,
-      "end_line": 1176,
+      "line": 1177,
+      "end_line": 1177,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia._WHY"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1180,
-      "end_line": 1180,
+      "line": 1181,
+      "end_line": 1181,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia._WHY"
@@ -425172,24 +425637,24 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1098,
-      "end_line": 1098,
+      "line": 1099,
+      "end_line": 1099,
       "owner": "seed_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1125,
-      "end_line": 1125,
+      "line": 1126,
+      "end_line": 1126,
       "owner": "family_defs",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1239,
-      "end_line": 1239,
+      "line": 1240,
+      "end_line": 1240,
       "owner": "seo_blocks",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
@@ -425220,112 +425685,112 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1009,
-      "end_line": 1009,
+      "line": 1010,
+      "end_line": 1010,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.DESTINATIONS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1025,
-      "end_line": 1025,
+      "line": 1026,
+      "end_line": 1026,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.AIRPORTS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1080,
-      "end_line": 1080,
+      "line": 1081,
+      "end_line": 1081,
       "owner": "hidden_codes",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1084,
-      "end_line": 1084,
+      "line": 1085,
+      "end_line": 1085,
       "owner": "forecast_codes",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1100,
-      "end_line": 1100,
+      "line": 1101,
+      "end_line": 1101,
       "owner": "seed_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_russia._FORECAST_CFG"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1132,
-      "end_line": 1132,
+      "line": 1133,
+      "end_line": 1133,
       "owner": "seo_keywords",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1136,
-      "end_line": 1136,
+      "line": 1137,
+      "end_line": 1137,
       "owner": "seo_meta",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1141,
-      "end_line": 1141,
+      "line": 1142,
+      "end_line": 1142,
       "owner": "copy_en",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1244,
-      "end_line": 1244,
+      "line": 1245,
+      "end_line": 1245,
       "owner": "seo_blocks",
       "conditions": [],
       "symbol": "app.data.tourism_russia._WHY"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1252,
-      "end_line": 1252,
+      "line": 1253,
+      "end_line": 1253,
       "owner": "seo_blocks",
       "conditions": [],
       "symbol": "app.data.tourism_russia._FREQ"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1001,
-      "end_line": 1001,
+      "line": 1002,
+      "end_line": 1002,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.INBOUND_COUNTRIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1005,
-      "end_line": 1005,
+      "line": 1006,
+      "end_line": 1006,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.OUTBOUND_COUNTRIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1042,
-      "end_line": 1042,
+      "line": 1043,
+      "end_line": 1043,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.CPI_ITEMS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1045,
-      "end_line": 1045,
+      "line": 1046,
+      "end_line": 1046,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.CPI_ITEMS"
@@ -425340,8 +425805,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1008,
-      "end_line": 1008,
+      "line": 1009,
+      "end_line": 1009,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia._DEST_DEFAULT_TAIL"
@@ -430774,8 +431239,16 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 181,
-      "end_line": 181,
+      "line": 184,
+      "end_line": 184,
+      "owner": "_unescape",
+      "conditions": [],
+      "symbol": "app.services.emiss_tourism_parser._JS_ESCAPE"
+    },
+    {
+      "path": "backend/app/services/emiss_tourism_parser.py",
+      "line": 189,
+      "end_line": 189,
       "owner": "parse_page_filters",
       "conditions": [],
       "symbol": "app.services.emiss_tourism_parser._FILTERS_BLOCK"
@@ -430829,8 +431302,8 @@
     },
     {
       "path": "backend/app/services/emiss_tourism_parser.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 223,
+      "end_line": 223,
       "owner": "grid_params",
       "conditions": [],
       "symbol": "app.services.emiss_tourism_parser.TERRITORY_DIMS"
@@ -440011,8 +440484,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4296,
-      "end_line": 4296,
+      "line": 4301,
+      "end_line": 4301,
       "owner": "_indicator_body",
       "conditions": [],
       "symbol": "app.services.seo_content.GLOBAL_INDICATOR_BLOCKS"
@@ -440079,16 +440552,16 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3010,
-      "end_line": 3010,
+      "line": 3015,
+      "end_line": 3015,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.data.view_model_families.FAMILY_BY_BASE"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4050,
-      "end_line": 4050,
+      "line": 4055,
+      "end_line": 4055,
       "owner": "_category_for_api",
       "conditions": [],
       "symbol": "app.services.seo_content.CATEGORY_META"
@@ -440137,8 +440610,18 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4125,
-      "end_line": 4125,
+      "line": 2899,
+      "end_line": 2899,
+      "owner": "render_category_html",
+      "conditions": [
+        "slug == 'tourism'"
+      ],
+      "symbol": "app.services.tourism_showcase.RUSSIA_LEAD_CODES"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 4130,
+      "end_line": 4130,
       "owner": "_russia_world_compare_ssr_section",
       "conditions": [],
       "symbol": "app.services.seo_renderer._SSR_VS_COUNTRY_LABELS"
@@ -440165,8 +440648,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2961,
-      "end_line": 2961,
+      "line": 2966,
+      "end_line": 2966,
       "owner": "_related_categories",
       "conditions": [],
       "symbol": "app.services.seo_content.CATEGORY_META"
@@ -440237,8 +440720,8 @@
     },
     {
       "path": "backend/app/services/seo_tourism.py",
-      "line": 44,
-      "end_line": 44,
+      "line": 49,
+      "end_line": 49,
       "owner": "tourism_sections",
       "conditions": [],
       "symbol": "app.services.seo_tourism._COPY"
@@ -442419,8 +442902,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1147,
-      "end_line": 1147,
+      "line": 1159,
+      "end_line": 1159,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES"
@@ -442459,65 +442942,65 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 577,
-      "end_line": 577,
+      "line": 355,
+      "end_line": 355,
+      "owner": "_js_unescape",
+      "conditions": [],
+      "symbol": "app.services.tourism_regional_loader._JS_ESCAPE"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 589,
+      "end_line": 589,
       "owner": "turpotok_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TURPOTOK_CODES"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 625,
-      "end_line": 625,
+      "line": 637,
+      "end_line": 637,
       "owner": "fns_tax_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 639,
+      "end_line": 639,
       "owner": "fns_tax_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 701,
-      "end_line": 701,
+      "line": 713,
+      "end_line": 713,
       "owner": "fetch_fns",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._FNS_ZIP"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 723,
-      "end_line": 723,
+      "line": 735,
+      "end_line": 735,
       "owner": "fetch_turpotok",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TURPOTOK_LINK"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 757,
-      "end_line": 757,
+      "line": 769,
+      "end_line": 769,
       "owner": "fsa_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 758,
-      "end_line": 758,
+      "line": 770,
+      "end_line": 770,
       "owner": "fsa_points",
-      "conditions": [],
-      "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 834,
-      "end_line": 834,
-      "owner": "turagent_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
@@ -442525,38 +443008,46 @@
       "path": "backend/app/services/tourism_regional_loader.py",
       "line": 846,
       "end_line": 846,
+      "owner": "turagent_points",
+      "conditions": [],
+      "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 858,
+      "end_line": 858,
       "owner": "touroperator_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 906,
-      "end_line": 906,
+      "line": 918,
+      "end_line": 918,
       "owner": "sber_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 927,
-      "end_line": 927,
+      "line": 939,
+      "end_line": 939,
       "owner": "kurort_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1001,
-      "end_line": 1001,
+      "line": 1013,
+      "end_line": 1013,
       "owner": "tur_rus_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TUR_RUS"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1102,
-      "end_line": 1102,
+      "line": 1114,
+      "end_line": 1114,
       "owner": "occupancy_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
@@ -442589,80 +443080,80 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 515,
+      "end_line": 515,
       "owner": "cbr_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._QUARTER"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 504,
-      "end_line": 504,
+      "line": 516,
+      "end_line": 516,
       "owner": "cbr_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._CBR_CODES"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 520,
-      "end_line": 520,
+      "line": 532,
+      "end_line": 532,
       "owner": "cbr_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 586,
+      "end_line": 586,
       "owner": "turpotok_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TURPOTOK_SHEET"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 604,
-      "end_line": 604,
+      "line": 616,
+      "end_line": 616,
       "owner": "turpotok_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 749,
-      "end_line": 749,
+      "line": 761,
+      "end_line": 761,
       "owner": "fsa_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._ACTIVE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 956,
-      "end_line": 956,
+      "line": 968,
+      "end_line": 968,
       "owner": "price_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._PRICE_SHEET"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1033,
-      "end_line": 1033,
+      "line": 1045,
+      "end_line": 1045,
       "owner": "tur_rus_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1093,
-      "end_line": 1093,
+      "line": 1105,
+      "end_line": 1105,
       "owner": "tochno_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1189,
-      "end_line": 1189,
+      "line": 1201,
+      "end_line": 1201,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
@@ -442709,16 +443200,16 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 394,
-      "end_line": 394,
+      "line": 406,
+      "end_line": 406,
       "owner": "build_grid_params",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._STRUCTURAL"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 517,
+      "end_line": 517,
       "owner": "cbr_points",
       "conditions": [
         "m and (kind, current) in _CBR_CODES"
@@ -442727,32 +443218,32 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 830,
-      "end_line": 830,
+      "line": 842,
+      "end_line": 842,
       "owner": "turagent_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader.INN_REGION"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 842,
-      "end_line": 842,
+      "line": 854,
+      "end_line": 854,
       "owner": "touroperator_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader.INN_REGION"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1078,
-      "end_line": 1078,
+      "line": 1090,
+      "end_line": 1090,
       "owner": "tochno_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader.TOCHNO"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1181,
-      "end_line": 1181,
+      "line": 1193,
+      "end_line": 1193,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
@@ -442788,16 +443279,16 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 405,
-      "end_line": 405,
+      "line": 417,
+      "end_line": 417,
       "owner": "build_grid_params",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TOTAL"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 517,
+      "end_line": 517,
       "owner": "cbr_points",
       "conditions": [
         "m and (kind, current) in _CBR_CODES"
@@ -442806,8 +443297,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 589,
-      "end_line": 589,
+      "line": 601,
+      "end_line": 601,
       "owner": "turpotok_points",
       "conditions": [
         "not (m.group(1) == '1' and t == YEAR_TITLE)"
@@ -442816,8 +443307,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 952,
-      "end_line": 952,
+      "line": 964,
+      "end_line": 964,
       "owner": "price_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._PRICE_OWN"
@@ -442843,8 +443334,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 602,
+      "end_line": 602,
       "owner": "turpotok_points",
       "conditions": [
         "not (m.group(1) == '1' and t == YEAR_TITLE)",
@@ -442854,8 +443345,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 484,
-      "end_line": 484,
+      "line": 496,
+      "end_line": 496,
       "owner": "cbr_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._QUARTER"
@@ -442870,40 +443361,80 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1159,
-      "end_line": 1159,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 149,
-      "end_line": 149,
+      "line": 88,
+      "end_line": 88,
+      "owner": "region_group",
+      "conditions": [],
+      "symbol": "app.services.tourism_showcase.REGION_GROUPS"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 224,
+      "end_line": 224,
       "owner": "_world_block",
       "conditions": [],
       "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 61,
-      "end_line": 61,
+      "line": 81,
+      "end_line": 81,
       "owner": "is_tourism_region_indicator",
       "conditions": [],
       "symbol": "app.services.tourism_showcase._NOT_TOURISM_NAME"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 173,
+      "end_line": 173,
+      "owner": "_regional_block",
+      "conditions": [],
+      "symbol": "app.services.tourism_showcase.REGION_GROUP_ORDER"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 83,
+      "end_line": 83,
       "owner": "is_tourism_region_indicator",
       "conditions": [],
       "symbol": "app.services.tourism_showcase._TOURISM_NAME"
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
-      "line": 79,
-      "end_line": 79,
+      "line": 103,
+      "end_line": 103,
+      "owner": "_region_sort_key",
+      "conditions": [],
+      "symbol": "app.services.tourism_showcase.REGION_GROUP_ORDER"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 188,
+      "end_line": 188,
+      "owner": "_world_series_key",
+      "conditions": [],
+      "symbol": "app.services.tourism_showcase._RUSSIA_SERIES"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 189,
+      "end_line": 189,
+      "owner": "_world_series_key",
+      "conditions": [],
+      "symbol": "app.services.tourism_showcase._SIDE_SERIES"
+    },
+    {
+      "path": "backend/app/services/tourism_showcase.py",
+      "line": 132,
+      "end_line": 132,
       "owner": "_regional_block",
       "conditions": [],
       "symbol": "app.services.tourism_showcase._SQL_STEMS"

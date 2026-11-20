@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `9d621e9a229378154c6c725a85bf489cc4429cf2`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `8b334fd6184895c65d477247cb442c84f14ab8e9`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2918 |
 | Код, шаблоны и стили | 2287 |
 | Актуальные рецензии без пропусков guard | 2918 |
-| Именованные определения Python/JS: с аннотацией / всего | 19339 / 19339 |
+| Именованные определения Python/JS: с аннотацией / всего | 19357 / 19357 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -611,8 +611,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/ticker_sources/binance.py](../backend/app/services/ticker_sources/binance.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/ticker_sources/moex_brent.py](../backend/app/services/ticker_sources/moex_brent.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/ticker_sources/moex_iss.py](../backend/app/services/ticker_sources/moex_iss.py) | reviewed | 4/4 | актуально |
-| [backend/app/services/tourism_regional_loader.py](../backend/app/services/tourism_regional_loader.py) | reviewed | 60/60 | актуально |
-| [backend/app/services/tourism_showcase.py](../backend/app/services/tourism_showcase.py) | reviewed | 8/8 | актуально |
+| [backend/app/services/tourism_regional_loader.py](../backend/app/services/tourism_regional_loader.py) | reviewed | 62/62 | актуально |
+| [backend/app/services/tourism_showcase.py](../backend/app/services/tourism_showcase.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/traffic_channel.py](../backend/app/services/traffic_channel.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/ua_parser.py](../backend/app/services/ua_parser.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/upsert.py](../backend/app/services/upsert.py) | reviewed | 9/9 | актуально |
@@ -1235,9 +1235,9 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_ticker_sources.py](../backend/tests/test_ticker_sources.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_title_uniqueness.py](../backend/tests/test_title_uniqueness.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_topic_mail.py](../backend/tests/test_topic_mail.py) | reviewed | 23/23 | актуально |
-| [backend/tests/test_tourism_regional.py](../backend/tests/test_tourism_regional.py) | reviewed | 45/45 | актуально |
-| [backend/tests/test_tourism_russia.py](../backend/tests/test_tourism_russia.py) | reviewed | 25/25 | актуально |
-| [backend/tests/test_tourism_showcase.py](../backend/tests/test_tourism_showcase.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_tourism_regional.py](../backend/tests/test_tourism_regional.py) | reviewed | 46/46 | актуально |
+| [backend/tests/test_tourism_russia.py](../backend/tests/test_tourism_russia.py) | reviewed | 26/26 | актуально |
+| [backend/tests/test_tourism_showcase.py](../backend/tests/test_tourism_showcase.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_unemployment_seo.py](../backend/tests/test_unemployment_seo.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_upsert.py](../backend/tests/test_upsert.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_us_br_pop_adapter.py](../backend/tests/test_us_br_pop_adapter.py) | reviewed | 11/11 | актуально |
@@ -1868,7 +1868,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/IndicatorSearch.z4s.component.test.jsx](../frontend/src/components/IndicatorSearch.z4s.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/IndicatorSeoBlocks.jsx](../frontend/src/components/IndicatorSeoBlocks.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/IndicatorTelemetryGrid.component.test.jsx](../frontend/src/components/IndicatorTelemetryGrid.component.test.jsx) | reviewed | 2/2 | актуально |
-| [frontend/src/components/IndicatorTelemetryGrid.jsx](../frontend/src/components/IndicatorTelemetryGrid.jsx) | reviewed | 3/3 | актуально |
+| [frontend/src/components/IndicatorTelemetryGrid.jsx](../frontend/src/components/IndicatorTelemetryGrid.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/IndicatorTile.jsx](../frontend/src/components/IndicatorTile.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/InfoCard.jsx](../frontend/src/components/InfoCard.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/K5Accent.component.test.jsx](../frontend/src/components/K5Accent.component.test.jsx) | reviewed | 0/0 | актуально |
@@ -1960,7 +1960,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/TopicMailForm.component.test.jsx](../frontend/src/components/TopicMailForm.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/TopicMailForm.jsx](../frontend/src/components/TopicMailForm.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/TourismFloors.component.test.jsx](../frontend/src/components/TourismFloors.component.test.jsx) | reviewed | 4/4 | актуально |
-| [frontend/src/components/TourismFloors.jsx](../frontend/src/components/TourismFloors.jsx) | reviewed | 4/4 | актуально |
+| [frontend/src/components/TourismFloors.jsx](../frontend/src/components/TourismFloors.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/components/UnemploymentIndicatorControls.jsx](../frontend/src/components/UnemploymentIndicatorControls.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/UnemploymentViewModePicker.jsx](../frontend/src/components/UnemploymentViewModePicker.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/UsCatalogNav.jsx](../frontend/src/components/UsCatalogNav.jsx) | reviewed | 1/1 | актуально |
@@ -2291,7 +2291,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/forecastPublicText.test.js](../frontend/src/lib/forecastPublicText.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/forecastShowcase.js](../frontend/src/lib/forecastShowcase.js) | reviewed | 10/10 | актуально |
 | [frontend/src/lib/forecastShowcase.test.js](../frontend/src/lib/forecastShowcase.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/format.js](../frontend/src/lib/format.js) | reviewed | 43/43 | актуально |
+| [frontend/src/lib/format.js](../frontend/src/lib/format.js) | reviewed | 45/45 | актуально |
 | [frontend/src/lib/format.test.js](../frontend/src/lib/format.test.js) | reviewed | 8/8 | актуально |
 | [frontend/src/lib/frequencySwitcher.js](../frontend/src/lib/frequencySwitcher.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/frequencySwitcher.test.js](../frontend/src/lib/frequencySwitcher.test.js) | reviewed | 0/0 | актуально |
