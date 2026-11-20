@@ -420,7 +420,7 @@ export default function DataTable({
                 title={changeNote}
               >
                 {changeHead}
-                <span className="kt2-histtable__note block text-[11px] font-normal text-text-tertiary">{changeNote}</span>
+                <span className="kt2-histtable__note block ml-auto max-w-[6.5rem] whitespace-normal text-[11px] font-normal leading-tight text-text-tertiary">{changeNote}</span>
               </th>
             </tr>
           </thead>

@@ -17,7 +17,6 @@
 Legacy query `/regions?view=map&indicator=&year=` → 301 на канон (seo_pages).
 """
 
-import re
 from datetime import date
 from functools import partial
 from html import escape
@@ -551,23 +550,25 @@ async def _region_demand_links(db: AsyncSession, slug: str, inds: list) -> str:
     )
 
 
-# Тема «Культура, отдых и туризм» (№6) содержит и не туристские ряды (театры, стадионы, бассейны, библиотеки):
-# в «Ещё в разделе» туристских страниц их нет, как и в API (круг «Туризм» 20.11.2026).
-_NON_TOURISM_NAME = re.compile(r"театр|стадион|бассейн|библиотек|музе[ий]|спортивн|кинотеатр|зоопарк|theat|stadium|swimming|librar|museum|sports", re.I)
-_TOURISM_SECTION_NUM = 6
+def _tourism_siblings(siblings, indicator, limit):
+    """«Ещё в разделе» туристских рядов: тот же список, что отдаёт API (`is_tourism_sibling` из tourism_regional):
+    без театров, музеев, спорта и библиотек, свои ряды первыми. У остальных тем без изменений."""
+    from app.data.tourism_regional import SERIES_BY_CODE, is_tourism_sibling
 
-
-def _tourism_siblings(siblings, section_num, limit):
-    """Соседи по разделу: в туристской теме без нетуристских рядов; в остальных темах без изменений."""
     rows = list(siblings)
-    if section_num == _TOURISM_SECTION_NUM:
-        rows = [x for x in rows if not _NON_TOURISM_NAME.search(f"{x.name or ''} {_icopy(x)['name'] or ''}")]
+    if indicator.code in SERIES_BY_CODE or (
+        indicator.section_num == 6 and is_tourism_sibling(indicator.code, indicator.table_code)
+    ):
+        rows = [x for x in rows if is_tourism_sibling(x.code, x.table_code)]
+        rows.sort(key=lambda x: (x.code not in SERIES_BY_CODE, x.table_code or "", x.code))
     return rows[:limit]
 
 
 def _is_zero_none_series(code: str) -> bool:
-    """Ряды туристического налога и курортного сбора: ноль значит «налога нет», а не «самое малое значение»."""
-    return str(code).startswith(("tour-nalog", "tour-sbor", "kurort"))
+    """Ряды туристического налога и курортного сбора (тот же список, что у статусов нулей в API)."""
+    from app.data.tourism_regional import ZERO_NOT_CHANGE
+
+    return str(code) in ZERO_NOT_CHANGE
 
 
 def _rating_copy(*, achievement: bool) -> dict[str, str]:
@@ -835,7 +836,7 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
         .order_by(RegionIndicator.code)
         .limit(60)
     )).scalars().all()
-    siblings = _tourism_siblings(siblings, indicator.section_num, 24)
+    siblings = _tourism_siblings(siblings, indicator, 24)
     siblings = (await _with_region_years(db, list(siblings)))[:12]
     siblings_html = ""
     if siblings:
@@ -1816,7 +1817,7 @@ async def _render_region_indicator_monthly(
         .order_by(RegionIndicator.code)
         .limit(40)
     )).scalars().all()
-    siblings = _tourism_siblings(siblings, indicator.section_num, 10)
+    siblings = _tourism_siblings(siblings, indicator, 10)
     siblings_html = ""
     if siblings:
         items = "".join(
@@ -2274,7 +2275,7 @@ async def render_region_indicator_html(
         .order_by(RegionIndicator.code)
         .limit(40)
     )).scalars().all()
-    siblings = _tourism_siblings(siblings, indicator.section_num, 10)
+    siblings = _tourism_siblings(siblings, indicator, 10)
     siblings_html = ""
     if siblings:
         items = "".join(

@@ -53,7 +53,7 @@ export default function RegionRatingPage() {
   );
   // Ноль у налога — не «самое дешёвое», а «налог не введён или сбора не было». Признак из данных (not_introduced / no_data)
   // главнее; пока его нет, работаем по значению: 0 или пусто у рядов туристического налога.
-  const zeroIsNone = /^tour-nalog/.test(String(data?.indicator?.code || code || ''));
+  const zeroIsNone = /^tour-(nalog|kurort)/.test(String(data?.indicator?.code || code || ''));
   // Цены: владельцу точки важно «где дешевле» — по умолчанию сначала дешёвые.
   const serverSort = isPrice ? 'asc' : (data?.default_sort === 'asc' ? 'asc' : 'desc');
   // null = ещё не трогали переключатель → берём направление с сервера.

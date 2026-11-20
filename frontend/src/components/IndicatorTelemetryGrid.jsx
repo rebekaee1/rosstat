@@ -8,6 +8,7 @@ import {
   bestGrowth, dataDigitsOf, formatTileValue, isGrowthBaseReliable, sameYearChange, unitKind, windowStats,
 } from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
+import { valueDigitsFor } from '../lib/seriesDigits';
 import { visibleRangeStats } from '../lib/rangeStats';
 import { useLocale, useT } from '../i18n';
 import TelemetryCard from './TelemetryCard';
@@ -138,9 +139,15 @@ export default function IndicatorTelemetryGrid({
   const heroUnit = heroOverride ? (indicator.hero_unit || '%') : displayUnit;
   const unitDefaultDigits = chartValueDigits(unit, safeViewMode === 'step-weekly' ? 'step-weekly' : dataMode);
   // Единица без своей настройки точности («тыс. поездок», «мест»): знаков столько, сколько в самих данных — счётчики без «,00».
-  const baseDigits = unitDigitsKnown(unit) || !Array.isArray(points) || !points.length
-    ? unitDefaultDigits
-    : Math.min(unitDefaultDigits, dataDigitsOf(points));
+  // Счётные единицы: точность по фактическим точкам (общая с графиком и таблицей, `valueDigitsFor`), остальные как были.
+  const countDigits = Array.isArray(points) && points.length
+    ? valueDigitsFor(unit, points.map((point) => point.value), dataMode)
+    : unitDefaultDigits;
+  const baseDigits = countDigits !== unitDefaultDigits
+    ? countDigits
+    : (unitDigitsKnown(unit) || !Array.isArray(points) || !points.length
+      ? unitDefaultDigits
+      : Math.min(unitDefaultDigits, dataDigitsOf(points)));
   // Крупное число карточки укрупняется так же, как в шапке («7,8 млн поездок», а не «7 770,92 тыс. поездок»),
   // и все карточки сетки (предыдущее, максимум, среднее, изменение) показываются в той же единице.
   const big = !heroOverride && !isIndexUnit && unit !== '%' && currentValue != null
