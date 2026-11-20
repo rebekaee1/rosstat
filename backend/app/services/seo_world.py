@@ -612,6 +612,7 @@ _SOURCE_BY_PROVIDER: dict[str, str] = {
     "rzs_serbia": "Республиканское статистическое управление Сербии",
     "ine_spain": "Национальный институт статистики Испании (INE)",
     "eurostat_residence": "Евростат",
+    "nbs_china_yearbook": "Национальное бюро статистики Китая",
 }
 
 

@@ -474,6 +474,7 @@ MONSTAT_PROVIDER = "monstat"
 RZS_PROVIDER = "rzs_serbia"
 INE_PROVIDER = "ine_spain"
 ESTAT_RES_PROVIDER = "eurostat_residence"
+NBS_CN_PROVIDER = "nbs_china_yearbook"
 
 NATIONAL_SOURCES = {
     KTB_PROVIDER: ("Министерство культуры и туризма Турции", "https://yigm.ktb.gov.tr/TR-249704/aylik-bultenler.html"),
@@ -486,6 +487,7 @@ NATIONAL_SOURCES = {
     MONSTAT_PROVIDER: ("Статистическое управление Черногории (Monstat)", "https://www.monstat.org/eng/page.php?id=1454&page_id=1454"),
     RZS_PROVIDER: ("Республиканское статистическое управление Сербии", "https://opendata.stat.gov.rs/"),
     INE_PROVIDER: ("Национальный институт статистики Испании (INE)", "https://www.ine.es/"),
+    NBS_CN_PROVIDER: ("Национальное бюро статистики Китая", "https://www.stats.gov.cn/sj/ndsj/"),
     ESTAT_RES_PROVIDER: ("Евростат", "https://ec.europa.eu/eurostat/databrowser/view/tour_occ_ninraw/default/table"),
 }
 SOURCE_BY_PROVIDER.update({key: value[0] for key, value in NATIONAL_SOURCES.items()})
@@ -603,6 +605,12 @@ _ES_H_RU = ("Национальный институт статистики Ис
             "Россию отдельно институт показывал до февраля 2022 года.")
 _ES_H_EN = ("National Statistics Institute of Spain, hotel occupancy survey: guests and nights by country of "
             "residence. Russia was shown separately until February 2022.")
+_CN_M_RU = ("Национальное бюро статистики Китая (статистический ежегодник): въезды иностранцев по стране "
+            "гражданства — каждый въезд считается отдельно. Бюро публикует в десятках тысяч; здесь — в людях. "
+            "За 1996–1997 годы ежегодники разбивки не дают; после 2018 года Китай её не публикует.")
+_CN_M_EN = ("National Bureau of Statistics of China (Statistical Yearbook): foreign visitor arrivals by "
+            "nationality, each entry counted. Published in tens of thousands; shown here in people. No country "
+            "detail for 1996–1997; China stopped publishing it after 2018.")
 _ER_M_RU = ("Евростат по данным национальных служб: прибытия и ночёвки жителей России в гостиницах, на турбазах, "
             "в кемпингах и других средствах размещения страны (разделы 55.1–55.3 классификатора отраслей).")
 _ER_M_EN = ("Eurostat, from national data: arrivals and nights of Russian residents in hotels, holiday "
@@ -681,6 +689,37 @@ TIDY_SPECS: tuple[TidySpec, ...] = (
              _total_arrivals(JNTO_PROVIDER, "monthly", "Иностранные гости", "Foreign visitor arrivals",
                              "Сколько иностранцев приехало в страну", "How many foreign visitors arrived",
                              _JNTO_M_RU, _JNTO_M_EN)),
+    # JNTO, годовые таблицы (сбор g3): цель поездки с 2004 года, итоги въезда и выезда с 1964 года.
+    TidySpec("JP", "japan_annual", "arrivals_tourism", ("Россия",),
+             _nat(JNTO_PROVIDER, "tour-arrivals-russia-leisure", "annual", "Туристы из России: отдых",
+                  "Arrivals from Russia: tourism", "Сколько граждан России приехало в страну отдыхать",
+                  "How many Russian nationals came to the country for tourism", _JNTO_M_RU, _JNTO_M_EN)),
+    TidySpec("JP", "japan_annual", "arrivals_business", ("Россия",),
+             _nat(JNTO_PROVIDER, "tour-arrivals-russia-business", "annual", "Деловые поездки из России",
+                  "Business arrivals from Russia", "Сколько граждан России приехало в страну по работе",
+                  "How many Russian nationals came to the country on business", _JNTO_M_RU, _JNTO_M_EN)),
+    TidySpec("JP", "japan_annual", "visitor_arrivals_total", ("Всего",),
+             _nat(JNTO_PROVIDER, "tour-arrivals-total-annual", "annual", "Иностранные гости за год",
+                  "Foreign visitor arrivals, annual", "Сколько иностранцев приехало в страну",
+                  "How many foreign visitors arrived", _JNTO_M_RU + " Годовой ряд — с 1964 года.",
+                  _JNTO_M_EN + " The annual series starts in 1964.", keywords=_TOTAL_KEYWORDS)),
+    TidySpec("JP", "japan_annual", "japanese_departures_total", ("Граждане Японии",),
+             _nat(JNTO_PROVIDER, "tour-outbound-residents", "annual", "Поездки жителей за границу",
+                  "Outbound departures of nationals", "Сколько раз граждане страны выезжали за границу",
+                  "How many times the country's nationals travelled abroad",
+                  "Национальная туристическая организация Японии по данным иммиграционной службы: выезды "
+                  "граждан Японии за рубеж, с 1964 года.",
+                  "Japan National Tourism Organization, based on immigration data: departures of Japanese "
+                  "nationals, since 1964.", keywords="поездки за границу {country}, выездной туризм {country}")),
+    # Китайский статистический ежегодник: иностранцы по странам, 1995–2018 (дальше КНР разбивку не публикует).
+    TidySpec("CN", "china", "foreign_visitor_arrivals_by_country", ("Россия",),
+             _ru_arrivals(NBS_CN_PROVIDER, "annual", "Сколько раз граждане России въезжали в страну",
+                          "How many times Russian nationals entered the country", _CN_M_RU, _CN_M_EN),
+             scale=10000.0),
+    TidySpec("CN", "china", "foreign_visitor_arrivals_by_country", ("Всего",),
+             _total_arrivals(NBS_CN_PROVIDER, "annual", "Въезды иностранцев", "Foreign visitor arrivals",
+                             "Сколько раз иностранцы въезжали в страну", "How many times foreigners entered the country",
+                             _CN_M_RU, _CN_M_EN), scale=10000.0),
     TidySpec("KR", "korea", "foreign_visitor_arrivals_by_nationality", ("러시아",),
              _ru_arrivals(KTO_PROVIDER, "monthly", "Сколько туристов-граждан России приехало в страну",
                           "How many tourists with Russian citizenship arrived", _KTO_M_RU, _KTO_M_EN)),
@@ -711,7 +750,12 @@ TIDY_SPECS: tuple[TidySpec, ...] = (
              _acc(ESTAT_RES_PROVIDER, "annual", True, _ER_M_RU, _ER_M_EN, prefix="estat")),
 )
 TIDY_PROVIDERS = tuple(dict.fromkeys(spec.series.provider for spec in TIDY_SPECS))
-TIDY_FOLDERS = {spec.series.provider: spec.folder for spec in TIDY_SPECS}
+# Папка → файл таблицы сбора (c5 — `<папка>/tidy.csv`; годовые таблицы JNTO сбора g3 — свой файл).
+TIDY_FILES = {"japan_annual": "japan/tidy_annual.csv"}
+
+
+def tidy_file(folder: str) -> str:
+    return TIDY_FILES.get(folder, f"{folder}/tidy.csv")
 
 ALL_SERIES: tuple[TourismSeries, ...] = (
     IMF_SERIES + UNT_SERIES

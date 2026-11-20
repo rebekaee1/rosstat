@@ -281,3 +281,24 @@ def test_repository_snapshot_feeds_national_series_without_files():
     assert ("estat-accommodation-nights-russia", "TR") in eurostat
     for provider in src.TIDY_PROVIDERS:
         assert fetch_tidy(provider)[0], provider
+
+
+def test_snapshot_japan_annual_history_and_china_yearbook_in_people():
+    from app.services.world_tourism_ingest import fetch_tidy
+
+    japan, _ = fetch_tidy(src.JNTO_PROVIDER)
+    leisure = dict(japan[("tour-arrivals-russia-leisure", "JP")])
+    assert leisure[date(2025, 1, 1)] == 179013.0
+    assert japan[("tour-outbound-residents", "JP")][0][0] == date(1964, 1, 1)
+    assert japan[("tour-arrivals-total-annual", "JP")][-1] == (date(2025, 1, 1), 42683301.0)
+    china, _ = fetch_tidy(src.NBS_CN_PROVIDER)
+    russia = dict(china[("tour-arrivals-russia", "CN")])
+    # Ежегодник КНР: 241,55 десятков тысяч въездов в 2018 году → люди.
+    assert russia[date(2018, 1, 1)] == pytest.approx(2415500.0)
+    assert date(1996, 1, 1) not in russia
+
+
+def test_closed_national_history_is_kept_past_silence_rule():
+    fetched = {src.NBS_CN_PROVIDER: ({("tour-arrivals-russia", "CN"): _pts(1995, 2018)}, {})}
+    plan = plan_writes(fetched, set(), {"CN"}, today=date(2030, 1, 1))
+    assert len(plan[src.NBS_CN_PROVIDER]) == 1
