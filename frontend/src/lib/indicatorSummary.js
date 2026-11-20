@@ -326,7 +326,7 @@ export function rankAmongCountries(items, countryCode, ownValue) {
  * }}
  */
 export function buildIndicatorSummary({
-  points, frequency, unit, modeType, dataDigits = 2, locale = 'ru', now = new Date(),
+  points, frequency, unit, modeType, dataDigits = 2, locale = 'ru', now = new Date(), seasonal = undefined,
 }) {
   const valid = finitePoints(points);
   if (!valid.length) return null;
@@ -360,7 +360,8 @@ export function buildIndicatorSummary({
     changeAbs,
     changePct,
     yearPct: yearGrowth ? yearGrowth.pct : null,
-    seasonal: isSeasonalLevel(kind, frequency),
+    // Признак из API (`seasonal: true`) верен для любой единицы, в том числе процентов; без него: правило по частоте и виду ряда.
+    seasonal: seasonal === true ? (frequency === 'monthly' || frequency === 'quarterly') : isSeasonalLevel(kind, frequency),
     sameYear: sameYearChange(valid, frequency),
     growth: kind === 'rate' ? null : bestGrowth(valid),
     growthReliable: kind === 'rate' ? false : isGrowthBaseReliable(valid, bestGrowth(valid), frequency),

@@ -20,16 +20,23 @@ export default function R6bPulseStrip({
   if (summary?.seasonal) {
     // Сезонный ряд: то же одно сравнение, что в шапке на компьютере (с тем же периодом прошлого года).
     const yoy = summary.sameYear;
-    const pctText = yoy ? formatPercentChangeFine(yoy.pct, locale) : null;
     if (yoy) {
-      delta = pctText == null ? (
+      // Проценты (загрузка мест): разница в пунктах, остальное в процентах.
+      const rate = summary.kind === 'rate';
+      const diff = summary.last.value - yoy.from.value;
+      const abs = rate
+        ? formatDeltaWithUnit(diff, splitUnit(summary.shown.unit).short.startsWith('%') ? '%' : splitUnit(summary.shown.unit).short, { digits: summary.shown.digits, locale })
+        : null;
+      const pctText = rate ? null : formatPercentChangeFine(yoy.pct, locale);
+      const flat = rate ? abs.flat : pctText == null;
+      delta = (
         <p className="r6b-pulse__delta" data-testid="r6b-delta">
-          <DeltaBadge delta={0}>{t('w6e.delta.flat')}</DeltaBadge>
-        </p>
-      ) : (
-        <p className="r6b-pulse__delta" data-testid="r6b-delta">
-          <DeltaBadge delta={yoy.pct} polarity={polarity}>{pctText}</DeltaBadge>
-          <span className="r6b-pulse__since">{t('kt1_delta_sameYear')}</span>
+          {flat ? <DeltaBadge delta={0}>{t('w6e.delta.flat')}</DeltaBadge> : (
+            <>
+              <DeltaBadge delta={rate ? diff : yoy.pct} polarity={polarity}>{rate ? abs.text : pctText}</DeltaBadge>
+              <span className="r6b-pulse__since">{t('kt1_delta_sameYear')}</span>
+            </>
+          )}
         </p>
       );
     }
