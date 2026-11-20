@@ -1,7 +1,7 @@
 """Серверная копия этажей «Регионы России» и «Мир» страницы «Туризм» (`/russia/category/tourism`).
 
 Тот же набор, что видит посетитель (app/services/tourism_showcase.py): ссылки на рейтинги регионов,
-на карточки регионов-лидеров, на ряды стран мира и рейтинги стран. Пустой этаж не выводится.
+на группы региональных рядов, рейтинги стран, список «Куда ездят россияне» и ссылку «все страны». Пустой этаж не выводится.
 """
 
 from __future__ import annotations
@@ -16,26 +16,50 @@ from app.services.tourism_showcase import tourism_overview
 _COPY = {
     "ru": {
         "regions": "Туризм по регионам России",
-        "regions_lead": "Субъекты по группам показателей: турпоток, размещение, деньги, цены, транспорт, турфирмы. Три лидера — по последним данным.",
-        "leaders": "Лидеры",
         "world": "Туризм в странах мира",
-        "world_lead": "Официальные ряды национальных служб статистики и международных организаций.",
         "ratings": "Рейтинги стран",
+        "outbound": "Куда ездят россияне",
+        "all_countries": "Все страны ({n})",
+        "all_countries_ex": "{n} {word} (Россия — в своём разделе)",
         "groups": {"flows": "Турпоток и гости", "stay": "Гостиницы и санатории", "money": "Доходы, траты и налоги",
                    "prices": "Цены", "transport": "Транспорт", "business": "Турфирмы и общепит"},
     },
     "en": {
         "regions": "Tourism across Russia's regions",
-        "regions_lead": "Regions by group: tourist flows, accommodation, money, prices, transport, tour operators. Top three on the latest data.",
-        "leaders": "Leaders",
         "world": "Tourism in countries worldwide",
-        "world_lead": "Official series from national statistical offices and international organisations.",
         "ratings": "Country rankings",
+        "outbound": "Where Russians travel",
+        "all_countries": "All countries ({n})",
+        "all_countries_ex": "{n} countries (Russia has its own section)",
         "groups": {"flows": "Tourist flows and guests", "stay": "Hotels and health resorts",
                    "money": "Revenue, spending and taxes", "prices": "Prices", "transport": "Transport",
                    "business": "Tour operators and catering"},
     },
 }
+
+
+def _ru_countries_word(n: int) -> str:
+    if n % 10 == 1 and n % 100 != 11:
+        return "страна"
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return "страны"
+    return "стран"
+
+
+def countries_label(world: dict, en: bool) -> str:
+    """Подпись ссылки «все страны»: число — из `countries_count`, иначе длина списка (прежний путь)."""
+    copy = _COPY["en" if en else "ru"]
+    n = world.get("countries_count")
+    if n is None:
+        n = len(world.get("countries") or [])
+    if world.get("russia_included") is False:
+        return copy["all_countries_ex"].format(n=n, word=_ru_countries_word(int(n)))
+    return copy["all_countries"].format(n=n)
+
+
+def _number(value: float, en: bool) -> str:
+    text = f"{value:,.0f}"
+    return text if en else text.replace(",", "\u00a0")
 
 
 def _a(path: str, label: str) -> str:
@@ -44,9 +68,11 @@ def _a(path: str, label: str) -> str:
 
 async def tourism_sections(db: AsyncSession) -> tuple[str, list[dict]]:
     """HTML двух этажей и элементы `mainEntity` для CollectionPage."""
+    from app.services import site_paths as paths
     from app.services.seo_renderer import _absolute
 
-    copy = _COPY["en" if get_locale() == "en" else "ru"]
+    en = get_locale() == "en"
+    copy = _COPY["en" if en else "ru"]
     data = await tourism_overview(db)
     parts: list[str] = []
     entities: list[dict] = []
@@ -60,35 +86,30 @@ async def tourism_sections(db: AsyncSession) -> tuple[str, list[dict]]:
                 continue
             items = []
             for row in rows:
-                leaders = row.get("leaders") or []
-                tail = ""
-                if leaders:
-                    tail = f' — {escape(copy["leaders"])}: ' + ", ".join(_a(l["path"], l["name"]) for l in leaders)
-                items.append(f'<li>{_a(row["path"], row["name"])}{tail}</li>')
+                items.append(f'<li>{_a(row["path"], row["name"])}</li>')
                 entities.append({"@type": "Dataset", "name": row["name"], "url": _absolute(row["path"])})
             groups_html.append(f'<h3>{escape(copy["groups"].get(key, key))}</h3><ul>{"".join(items)}</ul>')
-        parts.append(
-            f'<section><h2>{escape(copy["regions"])}</h2><p>{escape(copy["regions_lead"])}</p>'
-            f'{"".join(groups_html)}</section>'
-        )
+        parts.append(f'<section><h2>{escape(copy["regions"])}</h2>{"".join(groups_html)}</section>')
 
     world = data.get("world", {})
     countries = world.get("countries") or []
     concepts = world.get("concepts") or []
-    if countries or concepts:
-        items = []
-        for country in countries:
-            series = ", ".join(_a(s["path"], s["name"]) for s in country.get("series") or [])
-            items.append(f'<li>{_a(country["path"], country["name"])}{": " + series if series else ""}</li>')
-            for s in country.get("series") or []:
-                entities.append({"@type": "Dataset", "name": f'{country["name"]}: {s["name"]}',
-                                 "url": _absolute(s["path"])})
-        ratings = ""
+    outbound = (world.get("outbound") or {}).get("items") or []
+    if countries or concepts or outbound:
+        body = ""
         if concepts:
-            ratings = (f'<h3>{escape(copy["ratings"])}</h3><ul>'
-                       + "".join(f'<li>{_a(c["path"], c["name"])}</li>' for c in concepts) + "</ul>")
-        parts.append(
-            f'<section><h2>{escape(copy["world"])}</h2><p>{escape(copy["world_lead"])}</p>'
-            f'{ratings}<ul>{"".join(items)}</ul></section>'
-        )
+            body += (f'<h3>{escape(copy["ratings"])}</h3><ul>'
+                     + "".join(f'<li>{_a(c["path"], c["name"])}</li>' for c in concepts) + "</ul>")
+        if outbound:
+            unit = (world.get("outbound") or {}).get("unit") or ""
+            lines = "".join(
+                f'<li>{_a(r["path"], r["name"])} — {_number(r["value"], en)} {escape(unit)}, {escape(str(r["period"]))}</li>'
+                for r in outbound
+            )
+            body += f'<h3>{escape(copy["outbound"])}</h3><ol>{lines}</ol>'
+            for r in outbound:
+                entities.append({"@type": "Dataset", "name": r["name"], "url": _absolute(r["path"])})
+        if countries:
+            body += f'<p>{_a(paths.home(), countries_label(world, en))}</p>'
+        parts.append(f'<section><h2>{escape(copy["world"])}</h2>{body}</section>')
     return ("\n".join(parts) + "\n") if parts else "", entities[:40]

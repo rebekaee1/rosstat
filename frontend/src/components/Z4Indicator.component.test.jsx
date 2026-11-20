@@ -141,6 +141,57 @@ describe('IndicatorHeroValue: главное число в шапке', () => {
     expect(Number(container.querySelector('.z4-hv__value').style.getPropertyValue('--z4-hv-len'))).toBeGreaterThanOrEqual(4);
   });
 
+  it('сезонный квартальный ряд: одно сравнение с тем же периодом прошлого года, прежней плашки к прошлому кварталу нет', () => {
+    const q = [
+      { date: '2025-04-01', value: 100 }, { date: '2025-07-01', value: 150 },
+      { date: '2026-01-01', value: 60 }, { date: '2026-04-01', value: 104 },
+    ];
+    const s = buildIndicatorSummary({ points: q, frequency: 'quarterly', unit: 'тыс. поездок', locale: 'ru', now: NOW });
+    const { container } = wrap(
+      <IndicatorHeroValue summary={s} points={q} dateFormat="quarterly" frequency="quarterly" deltaSuffix="к прошлому кварталу" />,
+    );
+    const text = container.textContent.replace(/\u00A0/g, ' ');
+    expect(text).toMatch(/\+4,0/);
+    expect(text).toContain('к тому же периоду прошлого года');
+    expect(text).not.toContain('к прошлому кварталу');
+    expect(text).not.toMatch(/\+73/);
+    // Строка «Данные до…» у числа убрана: период уже в подписи.
+    expect(container.querySelector('[data-testid="data-freshness"]')).toBeNull();
+  });
+
+  describe('признак seasonal из API', () => {
+    const q = [
+      { date: '2025-04-01', value: 40 }, { date: '2025-07-01', value: 60 },
+      { date: '2026-01-01', value: 30 }, { date: '2026-04-01', value: 45 },
+    ];
+    const hero = (seasonal, frequency, unit, points = q) => {
+      const s = buildIndicatorSummary({ points, frequency, unit, locale: 'ru', now: NOW, seasonal });
+      return wrap(
+        <IndicatorHeroValue summary={s} points={points} dateFormat="quarterly" frequency={frequency} deltaSuffix="к прошлому кварталу" />,
+      ).container.textContent.replace(/\u00A0/g, ' ');
+    };
+
+    it('seasonal true у процентного ряда: разница с тем же кварталом в пунктах', () => {
+      const text = hero(true, 'quarterly', '%');
+      expect(text).toContain('к тому же периоду прошлого года');
+      expect(text).toMatch(/\+5,0/);
+      expect(text).not.toContain('к прошлому кварталу');
+    });
+
+    it('seasonal нет в ответе: процентный ряд сравнивается по-старому, с прошлым значением', () => {
+      const text = hero(undefined, 'quarterly', '%');
+      expect(text).toContain('к прошлому кварталу');
+      expect(text).not.toContain('к тому же периоду');
+    });
+
+    it('годовой ряд: признак не меняет подпись «к 2024»', () => {
+      const yearly = Array.from({ length: 4 }, (_, i) => ({ date: `${2022 + i}-01-01`, value: 100 + i * 10 }));
+      const text = hero(true, 'annual', 'тыс. поездок', yearly);
+      expect(text).toContain('к 2024');
+      expect(text).not.toContain('к тому же периоду');
+    });
+  });
+
   it('оценка текущего года подписана словами', () => {
     const withEstimate = [...points, { date: '2026-01-01', value: 31000 }];
     const estimate = buildIndicatorSummary({

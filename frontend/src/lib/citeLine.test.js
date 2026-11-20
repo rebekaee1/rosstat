@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { citeText, citeUrl } from './citeLine';
+import { citeText, citeUrl, formatAccessDate } from './citeLine';
 
 describe('citeText', () => {
   it('ru: название, источник, дата, адрес — как в SSR', () => {
@@ -23,5 +23,20 @@ describe('citeText', () => {
     expect(citeUrl({ origin: 'https://ru.forecasteconomy.com', pathname: '/russia/indicator/cpi' }))
       .toBe('https://ru.forecasteconomy.com/russia/indicator/cpi');
     expect(citeUrl(null)).toBe('');
+  });
+
+  it('период словами и дата обращения, а не код периода как дата (№2)', () => {
+    expect(citeText({
+      name: 'Выезд', source: 'Росстат', period: 'за II кв. 2026', accessDate: new Date(2026, 10, 20),
+      url: 'https://x/y', locale: 'ru',
+    })).toBe('Forecast Economy. Выезд: источник данных — Росстат, данные за II кв. 2026, дата обращения 20.11.2026. https://x/y');
+    expect(citeText({
+      name: 'Trips', source: 'Rosstat', period: 'for Q2 2026', accessDate: new Date(2026, 10, 20), asOf: '2026-06-01',
+      url: 'https://x/y', locale: 'en',
+    })).toBe('Forecast Economy. Trips: data from Rosstat, data for Q2 2026, accessed 20.11.2026. https://x/y');
+    expect(citeText({ name: 'X', period: 'за II кв. 2026', accessDate: new Date(2026, 10, 20), asOf: '2026-06-01', url: 'u', locale: 'ru' }))
+      .not.toMatch(/1 июня/);
+    expect(formatAccessDate(new Date(2026, 0, 5))).toBe('05.01.2026');
+    expect(formatAccessDate('nope')).toBe('');
   });
 });

@@ -11,8 +11,10 @@ import { useT } from '../i18n';
 import { tableRowMatches } from '../lib/tableSearch';
 import { formatDeltaNumber } from '../lib/deltaText';
 import {
-  growthDigits, isPercentChangeUnit, unitKind,
+  isPercentChangeUnit, unitKind,
 } from '../lib/indicatorSummary';
+import { hasGaps } from '../lib/seriesGaps';
+import { yearAgoRow } from '../lib/yearAgo';
 import { medianStepDays } from '../lib/chartEvents';
 import {
   currentJumpValue, nearestRow, onPeriodPick, periodJumpOptions,
@@ -154,41 +156,48 @@ export default function DataTable({
     return rows;
   }, [data, search, sortAsc, dateFormat, unit, valueDigits, onlyChanges, changedDates, rangeActive, inRange]);
 
-  // Изменение к прошлому периоду и самые высокое и низкое значения считаем по всему ряду, а не по странице.
-  // Единица изменения пишется один раз в заголовке столбца («Изменение, п. п.»), в строках только число со знаком.
+  // Изменение «к году» (к тому же периоду прошлого года) и самые высокое и низкое значения считаем по всему ряду, а не по странице.
+  // Сезонный ряд к прошлому кварталу даёт шум, поэтому колонка одна: к году. У годового ряда это предыдущий год.
+  // Единица изменения пишется один раз в заголовке столбца («К году, п. п.»), в строках только число со знаком, везде одно число знаков.
   const rate = unitKind(unit) === 'rate';
+  const changeDigits = rate ? (valueDigits ?? 2) : 1;
   const { changes, changeNums, maxDate, minDate } = useMemo(() => {
     const asc = [...(data || [])]
       .filter((r) => r && r.date && Number.isFinite(Number(r.value)))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
+    const byDate = new Map(asc.map((r) => [String(r.date).slice(0, 10), r]));
     const map = new Map();
     const nums = new Map();
     let hi = null;
     let lo = null;
-    asc.forEach((row, i) => {
+    asc.forEach((row) => {
       const v = Number(row.value);
       if (hi == null || v > Number(hi.value)) hi = row;
       if (lo == null || v < Number(lo.value)) lo = row;
-      if (i === 0) return;
-      const prev = Number(asc[i - 1].value);
+      // Пропуск в ряду (нет того же периода прошлого года): прочерк, проценты через пропуск не считаются.
+      const base = yearAgoRow(row.date, byDate, yearMode);
+      if (!base) return;
+      const prev = Number(base.value);
       if (rate) {
-        const shown = formatDeltaNumber(v - prev, { digits: valueDigits ?? 2, locale });
+        const shown = formatDeltaNumber(v - prev, { digits: changeDigits, locale });
         map.set(row.date, shown.text);
         nums.set(row.date, v - prev);
       } else if (prev > 0 && v >= 0) {
         const pct = (v / prev - 1) * 100;
-        const shown = formatDeltaNumber(pct, { digits: growthDigits(pct), locale });
+        const shown = formatDeltaNumber(pct, { digits: changeDigits, locale });
         map.set(row.date, shown.text);
         nums.set(row.date, pct);
       }
     });
+    // Максимум и минимум «за всё время» не отмечаем, если в ряду есть пропущенные периоды: сравнение шло бы через пропуск.
+    const marks = asc.length > 2 && !hasGaps(asc);
     return {
       changes: map,
       changeNums: nums,
-      maxDate: asc.length > 2 ? hi?.date : null,
-      minDate: asc.length > 2 ? lo?.date : null,
+      maxDate: marks ? hi?.date : null,
+      minDate: marks ? lo?.date : null,
     };
-  }, [data, rate, valueDigits, locale]);
+  }, [data, rate, changeDigits, locale, yearMode]);
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const visiblePage = Math.min(page, Math.max(0, totalPages - 1));
@@ -243,8 +252,9 @@ export default function DataTable({
     ? (percentLike ? ppLabel : (String(tableUnit || '').length <= 14 ? tableUnit : ''))
     : '%';
   const changeHead = changeUnit
-    ? t('c11c.table.changeUnit', { unit: changeUnit })
-    : t('w6e.table.change');
+    ? t('kt2_table_yoyUnit', { unit: changeUnit })
+    : t('kt2_table_yoy');
+  const changeNote = yearMode ? t('kt2_table_yoyNoteAnnual') : t('kt2_table_yoyNote');
   const moreRight = useScrollMore(scrollRef, [pageData.length, headerHoldsUnit, changeHead]);
 
   const exportRows = useMemo(() => [...(data || [])]
@@ -331,10 +341,9 @@ export default function DataTable({
             <input
               type={yearMode ? 'number' : 'date'}
               inputMode={yearMode ? 'numeric' : undefined}
-              value={rangeFrom}
+              value={rangeFrom || (yearMode ? bounds.first.slice(0, 4) : bounds.first)}
               min={yearMode ? bounds.first.slice(0, 4) : bounds.first}
               max={yearMode ? bounds.last.slice(0, 4) : bounds.last}
-              placeholder={yearMode ? bounds.first.slice(0, 4) : undefined}
               onChange={(e) => { setRangeFrom(e.target.value); setPage(0); }}
               onClick={openDatePicker}
               aria-label={t('c11c.table.from')}
@@ -345,10 +354,9 @@ export default function DataTable({
             <input
               type={yearMode ? 'number' : 'date'}
               inputMode={yearMode ? 'numeric' : undefined}
-              value={rangeTo}
+              value={rangeTo || (yearMode ? bounds.last.slice(0, 4) : bounds.last)}
               min={yearMode ? bounds.first.slice(0, 4) : bounds.first}
               max={yearMode ? bounds.last.slice(0, 4) : bounds.last}
-              placeholder={yearMode ? bounds.last.slice(0, 4) : undefined}
               onChange={(e) => { setRangeTo(e.target.value); setPage(0); }}
               onClick={openDatePicker}
               aria-label={t('c11c.table.to')}
@@ -409,9 +417,10 @@ export default function DataTable({
               <th
                 scope="col"
                 className="text-right px-5 py-3 text-[13px] font-semibold text-text-secondary"
-                title={changeUnit ? undefined : (tableUnit || undefined)}
+                title={changeNote}
               >
                 {changeHead}
+                <span className="kt2-histtable__note block text-[11px] font-normal text-text-tertiary">{changeNote}</span>
               </th>
             </tr>
           </thead>
@@ -450,8 +459,8 @@ export default function DataTable({
                 >
                   <td className="px-5 py-2.5 text-text-secondary text-sm tabular-nums">
                     {formatDate(row.date, dateFormat)}
-                    {row.date === maxDate && <span className="fe-histtable__tag">{t('w6e.table.max')}</span>}
-                    {row.date === minDate && <span className="fe-histtable__tag">{t('w6e.table.min')}</span>}
+                    {row.date === maxDate && <span className="fe-histtable__tag">{t('kt2_table_maxAll')}</span>}
+                    {row.date === minDate && <span className="fe-histtable__tag">{t('kt2_table_minAll')}</span>}
                   </td>
                   <td className="px-5 py-2.5 text-right text-sm font-semibold tabular-nums text-text-primary">
                     {unitInCells

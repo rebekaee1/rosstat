@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   bestGrowth,
+  buildIndicatorSummary,
+  isGrowthBaseReliable,
+  isSeasonalLevel,
+  splitHostCountryNote,
   formatPercentChange,
   formatTileValue,
   growthOverYears,
@@ -169,5 +173,52 @@ describe('проценты изменения не считаются индек
     expect(preferPercentUnit('индекс 2015=100', 'изменение за год, %')).toBe('изменение за год, %');
     expect(preferPercentUnit('индекс 2015=100', 'индекс 2015=100')).toBe('индекс 2015=100');
     expect(preferPercentUnit('%', 'изменение за год, %')).toBe('%');
+  });
+});
+
+describe('круг наблюдателей «Туризм»: сезонные ряды, база роста, пометка принимающей страны', () => {
+  const q = [
+    { date: '2025-04-01', value: 100 }, { date: '2025-07-01', value: 150 },
+    { date: '2026-01-01', value: 60 }, { date: '2026-04-01', value: 138 },
+  ];
+
+  it('сезонный квартальный ряд: sameYear считается с тем же кварталом прошлого года', () => {
+    const s = buildIndicatorSummary({ points: q, frequency: 'quarterly', unit: 'тыс. поездок' });
+    expect(s.seasonal).toBe(true);
+    expect(s.sameYear.pct).toBeCloseTo(38, 5);
+    expect(s.sameYear.from.date).toBe('2025-04-01');
+  });
+
+  it('нет точки год назад: sameYear пуст, а не берётся ближайшая', () => {
+    const s = buildIndicatorSummary({
+      points: [{ date: '2025-01-01', value: 100 }, { date: '2026-04-01', value: 110 }], frequency: 'quarterly', unit: 'тыс. поездок',
+    });
+    expect(s.sameYear).toBeNull();
+  });
+
+  it('проценты и годовые ряды сезонными не считаются', () => {
+    expect(isSeasonalLevel('rate', 'monthly')).toBe(false);
+    expect(isSeasonalLevel('level', 'annual')).toBe(false);
+    expect(isSeasonalLevel('level', 'monthly')).toBe(true);
+  });
+
+  it('isGrowthBaseReliable: почти ноль, рост свыше 1000 %, пропуск рядом с базой', () => {
+    const mk = (f) => Array.from({ length: 41 }, (_, i) => ({
+      date: `${2016 + Math.floor(i / 4)}-${String(1 + (i % 4) * 3).padStart(2, '0')}-01`, value: f(i),
+    }));
+    const flat = mk(() => 100);
+    expect(isGrowthBaseReliable(flat, bestGrowth(flat), 'quarterly')).toBe(true);
+    const nearZero = mk((i) => (i === 0 ? 1 : 100));
+    expect(isGrowthBaseReliable(nearZero, bestGrowth(nearZero), 'quarterly')).toBe(false);
+    const gap = flat.filter((_, i) => i !== 1);
+    expect(isGrowthBaseReliable(gap, bestGrowth(gap), 'quarterly')).toBe(false);
+    expect(isGrowthBaseReliable(flat, null, 'quarterly')).toBe(false);
+  });
+
+  it('splitHostCountryNote: обе формулировки, остальной текст остаётся', () => {
+    expect(splitHostCountryNote('По данным принимающей страны. Число поездок.')).toEqual({ host: true, rest: 'Число поездок.' });
+    expect(splitHostCountryNote('Host-country data. Trips.')).toEqual({ host: true, rest: 'Trips.' });
+    expect(splitHostCountryNote('Число поездок.')).toEqual({ host: false, rest: 'Число поездок.' });
+    expect(splitHostCountryNote(undefined)).toEqual({ host: false, rest: '' });
   });
 });

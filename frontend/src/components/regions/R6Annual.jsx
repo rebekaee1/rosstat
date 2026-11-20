@@ -3,6 +3,7 @@
 import { Link } from 'react-router-dom';
 import { formatRegionWithUnit } from '../../lib/regionUi';
 import { gapText } from '../../lib/r6Annual';
+import { isAdditiveUnit, shareOfRussia } from '../../lib/regionShare';
 import { regionIndicatorPath } from '../../lib/sitePaths';
 import '../../styles/r6c-annual.css';
 
@@ -18,6 +19,23 @@ export function R6RussiaLine({ value, year, series, unit, locale, t }) {
     <p className="r6c-russia fe-num" data-testid="r6c-russia">
       <span className="r6c-russia__ref">{t('r6c.russiaYear', { year, value: formatRegionWithUnit(rf.value, unit, locale) })}</span>
       <span className="r6c-russia__gap">{phrase}</span>
+    </p>
+  );
+}
+
+/** Для абсолютных показателей вместо «в России выше на N %»: доля региона в России и место среди регионов. */
+export function R6ShareLine({ value, year, series, unit, rank, locale, t }) {
+  const rf = series?.find((p) => p.year === year);
+  if (!rf || !isAdditiveUnit(unit)) return null;
+  const share = shareOfRussia(value, rf.value);
+  if (share == null) return null;
+  const pct = share.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 });
+  return (
+    <p className="r6c-russia fe-num" data-testid="kt5-share">
+      <span className="r6c-russia__ref">{t('kt5_shareOfRussia', { year, share: `${pct}${locale === 'en' ? '%' : '\u00a0%'}` })}</span>
+      {rank?.position && rank?.total ? (
+        <span className="r6c-russia__gap">{t('kt5_placeOf', { pos: rank.position, total: rank.total })}</span>
+      ) : null}
     </p>
   );
 }

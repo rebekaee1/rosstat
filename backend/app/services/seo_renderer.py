@@ -202,13 +202,13 @@ def fit_meta(value: str, limit: int) -> str:
     return kept if kept else truncate_meta(value, limit - 1)
 
 
-def _cite(name: str, source: str | None, url: str, as_of: date | None, locale: str) -> str:
+def _cite(name: str, source: str | None, url: str, as_of: date | None, locale: str, frequency: str | None = None) -> str:
     """Строка «Как цитировать» (совет 19.11.2026); без адреса страницы — пусто."""
     if not url:
         return ""
     from app.services.seo_cite import cite_html
 
-    return cite_html(name=name, source=source, url=url, as_of=as_of, locale=locale)
+    return cite_html(name=name, source=source, url=url, as_of=as_of, locale=locale, frequency=frequency)
 
 
 def _format_date(value: date | None) -> str:
@@ -1129,6 +1129,11 @@ _BOOT_SCRIPT = (
     'if(location.pathname.indexOf("/embed/")===0||'
     'navigator.webdriver||'
     '/bot|crawl|spider|slurp|facebookexternalhit|lighthouse|headless/i.test(navigator.userAgent||""))return;'
+    # Правка 16: возврат назад/вперёд и смена языка — без заставки (зеркало frontend/index.html).
+    'var nav=performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];'
+    'if(nav&&nav.type==="back_forward")return;'
+    'var sw=document.cookie.match(/(?:^|;\\s*)fe_lang_switch=(\\d+)/);'
+    'if(sw&&Date.now()-Number(sw[1])<=20000)return;'
     'h.classList.add("fe-boot");'
     f'setTimeout(function(){{h.classList.remove("fe-boot")}},{BOOT_FALLBACK_MS});'
     '}catch(e){}})();'
@@ -2006,8 +2011,11 @@ def compose_document(
     else:
         spa_hide = _SPA_SSR_HIDE_SCRIPT
         boot_bar = _ssr_boot_bar()
-        boot_head = f"{_BOOT_STYLE}\n{_BOOT_SCRIPT}"
-        boot_splash = _ssr_boot_splash()
+        # Правка 16: страница пришла с содержимым (есть h1) — заставку не ставим вовсе: серверная разметка видна сразу,
+        # до загрузки основного скрипта. Заставка остаётся только для тела без заголовка (пустая оболочка).
+        if "<h1" not in body:
+            boot_head = f"{_BOOT_STYLE}\n{_BOOT_SCRIPT}"
+            boot_splash = _ssr_boot_splash()
         if "seo-platform-nav" not in body:
             # SPA-SSR без chrome: бот видит только prerender в #root. Единый блок
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
@@ -3950,7 +3958,7 @@ async def render_indicator_year_html(
     from app.services.locale import get_locale
 
     # Адрес — canonical страницы: у зарегистрированного режима он несёт `?mode=` (19.11.2026, рецензия №6).
-    cite = _cite(h1_text, source, _absolute(canonical_path), last.date, get_locale())
+    cite = _cite(h1_text, source, _absolute(canonical_path), last.date, get_locale(), frequency="annual")
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(year_trail)}
 {fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=year_lead_text)}
@@ -4406,7 +4414,7 @@ def _indicator_body(
 {dynamics_html}</section>
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p>
-{_cite(cite_name or name, src, cite_url, cite_as_of or (current.date if current else last_dt), loc)}</section>
+{_cite(cite_name or name, src, cite_url, cite_as_of or (current.date if current else last_dt), loc, frequency)}</section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
 {years_section}{months_section}{fuel_regions_html}{world_compare_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
 </main>"""

@@ -16,3 +16,35 @@ export function pickPeers(peers, currentSlug, locale, limit = MAX_PEERS) {
     .slice(0, limit);
 }
 
+
+function codeTokens(code) {
+  return String(code ?? '').toLowerCase().split('-').filter(Boolean);
+}
+
+/**
+ * «Похожие показатели» по смыслу (круг наблюдателей 20.11.2026, №34): сначала ряды с общим началом кода («tour-outbound-…» к
+ * «tour-outbound-…»), затем та же частота и единица; при равенстве остаётся порядок раздела.
+ */
+export function rankRelatedIndicators(current, candidates) {
+  const own = codeTokens(current?.code);
+  const score = (item) => {
+    const other = codeTokens(item?.code);
+    let common = 0;
+    while (common < own.length && common < other.length && own[common] === other[common]) common += 1;
+    // Общее только «tour» — это весь раздел, смысла не несёт: считаем с двух общих частей.
+    let points = common >= 2 ? common * 10 : 0;
+    if (current?.frequency && item?.frequency === current.frequency) points += 2;
+    if (current?.unit && item?.unit === current.unit) points += 1;
+    return points;
+  };
+  return (Array.isArray(candidates) ? candidates : [])
+    .map((item, index) => ({ item, index, points: score(item) }))
+    .sort((a, b) => (b.points - a.points) || (a.index - b.index))
+    .map((entry) => entry.item);
+}
+
+/** Родительский показатель ряда по стране: `tour-outbound-egypt` → `tour-outbound-trips`; у остальных рядов null. */
+export function tourismParentCode(code) {
+  const match = /^tour-(inbound|outbound)-(?!trips$)[a-z0-9-]+$/.exec(String(code ?? ''));
+  return match ? `tour-${match[1]}-trips` : null;
+}

@@ -91,7 +91,7 @@
     "tourism": {
       "description": "Турпоток, поездки за границу и въезд иностранцев, гостиницы и ночёвки, санатории, траты туристов — официальные данные по России, регионам и странам мира.",
       "h1": "Туризм в России, регионах и мире — статистика",
-      "intro": "Здесь собрана статистика туризма из официальных источников: сколько поездок совершают россияне внутри страны и за границу, сколько иностранцев приезжает в Россию, как заполнены гостиницы и санатории, сколько туристы тратят. Ниже — те же показатели по регионам России и сравнение со странами мира.",
+      "intro": "Поездки россиян и иностранцев, гостиницы и траты туристов — по России, регионам и странам мира.",
       "name": "Туризм",
       "slug": "tourism",
       "title": "Туризм в России, регионах и мире — статистика"
@@ -198,7 +198,7 @@
       "tourism": {
         "description": "Tourist flows, outbound and inbound trips, hotels and overnight stays, health resorts, and tourist spending — official data for Russia, its regions, and countries worldwide.",
         "h1": "Tourism in Russia, its regions and the world — statistics",
-        "intro": "Official tourism statistics in one place: how many trips Russians make at home and abroad, how many foreign visitors come to Russia, how full hotels and health resorts are, and how much travellers spend. Below are the same measures for Russia's regions and a comparison with countries worldwide.",
+        "intro": "Trips by Russians and foreign visitors, hotels and tourist spending — for Russia, its regions and countries worldwide.",
         "name": "Tourism",
         "slug": "tourism",
         "title": "Tourism in Russia, its regions and the world — statistics"

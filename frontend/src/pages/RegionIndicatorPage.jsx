@@ -13,7 +13,7 @@ import { getSiteOrigin } from '../lib/siteOrigin';
 import { completeDataset } from '../lib/datasetJsonLd';
 import { mountJsonLd } from '../lib/jsonLd';
 import {
-  useRegionIndicator, useRegionIndicatorMonthly, useRegionsLanding,
+  useRegionIndicator, useRegionIndicatorMonthly, useRegionsLanding, useRegionsHeatmap,
   formatRegionValue, shortUnit, yearDelta,
 } from '../lib/regionsApi';
 import DeltaBadge from '../components/DeltaBadge';
@@ -27,8 +27,11 @@ import GroupedSiblings, { CompareLines, AreaCalc, CopyForClient, DiscontinuedNot
 import {
   bigRub, changeOverMonths, compareRows, guessPriceGroup, pairsFirst, roundBig, sliceMonths, yearlyCost, isRubPerUnit, perUnitPrice, pickField, priceText, shortPriceName, signedPct, unitSuffix, ymLabel, ymLabelFrom,
 } from '../lib/z2Price';
-import { R6RussiaLine, R6RankCaption, R6SinceStart, R6RatingExtras, R6StaleNote } from '../components/regions/R6Annual';
+import { R6RussiaLine, R6ShareLine, R6RankCaption, R6SinceStart, R6RatingExtras, R6StaleNote } from '../components/regions/R6Annual';
 import { gapText, isYearsUnit } from '../lib/r6Annual';
+import { CHART_THEME } from '../lib/chartTheme';
+import { isAdditiveUnit } from '../lib/regionShare';
+import { citeText, citeUrl } from '../lib/citeLine';
 import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
@@ -145,6 +148,9 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const moskvaMonthly = useRegionIndicatorMonthly(
     slug !== 'moskva' ? 'moskva' : null, slug !== 'moskva' ? code : null, isMonthly,
   );
+  // Страница РФ: «Все регионы →» ведёт на рейтинг этого показателя, если он есть (тот же запрос, что у рейтинга, общий кэш).
+  const ratingProbe = useRegionsHeatmap(code, slug === 'russia');
+  const hasRegionRating = slug === 'russia' && ratingProbe.data?.indicator?.ranked !== false && (ratingProbe.data?.values?.length || 0) >= 10;
   const regionOptions = useMemo(() => {
     if (!landing.data) return [];
     return landing.data.districts.flatMap(d => d.regions.map(r => ({ slug: r.slug, name: r.name })))
@@ -385,9 +391,21 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const lastMonthLabel = isMonthly
     ? (ymLabel(pickField(active, 'last_month'), locale) || lastLabel)
     : '';
+  // Абсолютные величины (гости, поездки, штуки): «в России выше на N %» бессмысленно, вместо него доля региона в стране.
+  const additiveMonthly = isMonthly && !isPrice && isAdditiveUnit(active?.indicator?.unit);
+  // Источник и методология: объект source {name, url, about, region_method}; запасной путь — прежние плоские поля.
+  const srcObj = active?.indicator?.source && typeof active.indicator.source === 'object' ? active.indicator.source : null;
+  const srcName = srcObj?.name || (typeof active?.indicator?.source === 'string' ? active.indicator.source : '') || active?.indicator?.source_note || '';
+  const srcUrl = srcObj?.url || active?.indicator?.source_url || '';
+  const srcAbout = [srcObj?.about || active?.indicator?.note, srcObj?.region_method].filter(Boolean).join(' ');
+  // Места среди регионов нет, если API сказал ranked=false: ни места, ни рейтинга, ни «Все регионы →».
+  const ranked = active?.indicator?.ranked !== false;
   const compareList = isMonthly && !discontinued && last
-    ? compareRows(compareData, slug, last.value)
+    ? compareRows(compareData, slug, last.value).filter((r) => !(additiveMonthly && r.key === 'russia'))
     : [];
+  const monthlyShareSeries = additiveMonthly && slug !== 'russia' && compareData?.russia?.value != null && last
+    ? [{ year: lastLabel, value: Number(compareData.russia.value) }]
+    : null;
   const lastYm = last ? last.year * 100 + last.month : null;
   const monthlyExtremes = (() => {
     if (!isMonthly || activeSeries.length < 24) return null;
@@ -532,10 +550,21 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             {isPrice && !discontinued && <AreaCalc value={last.value} unit={active.indicator.unit} />}
             {isPrice && <p className="r5a-hero-month">{t('r5a.dataFor', { month: lastLabel })}</p>}
             {yearSum && !discontinued && <p className="r5a-year fe-num">{t('r5a.perYear', { sum: bigRub(yearSum, locale) })}</p>}
-            {!isMonthly && active.russia_series?.length > 0 && (
-              <R6RussiaLine value={last.value} year={periodOf(last)} series={russiaView} unit={active.indicator.unit} locale={locale} t={t} />
+            {/* Страница РФ не сравнивается с собой; у абсолютных показателей регион — доля страны, а не «ниже на N %». */}
+            {!isMonthly && slug !== 'russia' && active.russia_series?.length > 0 && (
+              isAdditiveUnit(active.indicator.unit)
+                ? <R6ShareLine value={last.value} year={periodOf(last)} series={russiaView} unit={active.indicator.unit} rank={ranked ? rankView : null} locale={locale} t={t} />
+                : <R6RussiaLine value={last.value} year={periodOf(last)} series={russiaView} unit={active.indicator.unit} locale={locale} t={t} />
+            )}
+            {slug === 'russia' && hasRegionRating && (
+              <Link to={regionRatingPath(code)} className="fe-tap-inline mt-2 text-sm font-medium text-champagne-ink hover:underline" data-testid="kt5-all-regions">
+                {t('kt5_allRegions')}
+              </Link>
             )}
             {discontinued && <DiscontinuedNote />}
+            {monthlyShareSeries && (
+              <R6ShareLine value={last.value} year={lastLabel} series={monthlyShareSeries} unit={active.indicator.unit} rank={ranked ? rankView : null} locale={locale} t={t} />
+            )}
             <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} nation={slug === 'russia'} />
             {isPrice && !discontinued && <CopyForClient text={shareText} />}
           </div>
@@ -624,7 +653,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                   ? (sliceMonths(compareMonthly.data?.series, chartMonths) || null)
                   : (showYoY ? toYoYSeries(compare.data?.series) : (compare.data?.series || null)))
                 : null}
-              compareName={compareSlug ? (compare.data?.region?.name || '') : ''}
+              compareName={compareSlug ? ((isMonthly ? compareMonthly.data : compare.data)?.region?.name || regionOptions.find((r) => r.slug === compareSlug)?.name || '') : ''}
               unit={showYoY ? t('w4.ind.yoyShort') : (unitLabel(active.indicator.unit, locale) || active.indicator.unit)}
               regionName={regionName}
               axisUnit={isMonthly ? (rubCaption || unitLabel(active.indicator.unit, locale) || active.indicator.unit) : ''}
@@ -641,11 +670,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             {compareSlug && isMonthly && compareMonthly.data && (
               <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary px-1" data-no-export="true">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block w-4 h-0.5 rounded bg-champagne" />
+                  <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: CHART_THEME.gold }} />
                   {regionName}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: '#5B7DA8' }} />
+                  <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: CHART_THEME.sapphire }} />
                   {compareMonthly.data.region.name}
                 </span>
                 <button onClick={() => setCompareSlug('')} className="fe-tap-inline text-text-secondary underline hover:text-text-primary">
@@ -656,11 +685,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             {compareSlug && !isMonthly && compare.data && (
               <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary px-1" data-no-export="true">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block w-4 h-0.5 rounded bg-champagne" />
+                  <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: CHART_THEME.gold }} />
                   {regionName}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: '#5B7DA8' }} />
+                  <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: CHART_THEME.sapphire }} />
                   {compare.data.region.name}
                 </span>
                 <button onClick={() => setCompareSlug('')} className="fe-tap-inline text-text-secondary underline hover:text-text-primary">
@@ -673,6 +702,39 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <p className="z2p-source" lang={locale}>{t('r2z2.source', { month: lastMonthLabel })}</p>
             )}
             </div>
+
+          {/* Источник, методология и строка цитирования: раньше под графиком была только подпись сайта. Поля source/source_url
+              API региона пока не отдаёт: показываем то, что есть (пояснение ряда), источник — когда он придёт. */}
+          <section className="kt5-source mb-6 rounded-3xl p-4 fe-glass-lite" data-block="region-source" data-testid="kt5-source">
+            <h2 className="mb-2 text-sm font-semibold text-text-primary">{t('kt5_srcHeading')}</h2>
+            {srcName && (
+              <p className="mb-1.5 text-[13px] leading-relaxed text-text-secondary">
+                {t('kt5_srcLine', { source: srcName })}
+                {srcUrl && (
+                  <>
+                    {' '}
+                    <a href={srcUrl} target="_blank" rel="noopener noreferrer" className="text-champagne-ink hover:underline">{t('kt5_srcOpen')}</a>
+                  </>
+                )}
+              </p>
+            )}
+            {srcAbout && (
+              <p className="mb-1.5 text-[13px] leading-relaxed text-text-secondary">{srcAbout}</p>
+            )}
+            <p className="text-[13px] leading-relaxed text-text-secondary">
+              <span className="font-medium text-text-primary">{t('kt5_citeLabel')}</span>
+              {' '}
+              <span data-testid="kt5-cite" className="select-all">
+                {citeText({
+                  name: `${indName} — ${regionName}`,
+                  source: srcName,
+                  url: citeUrl(),
+                  asOf: active.indicator.data_updated_at || active.indicator.updated_at || null,
+                  locale,
+                })}
+              </span>
+            </p>
+          </section>
 
           {isMonthly && monthly.data?.weekly?.length > 0 && (
             <WeeklyPrices
@@ -689,7 +751,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
           )}
 
           <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            {active.rank?.position && (
+            {ranked && active.rank?.position && (
               <StatCell label={
                 t(
                   active.rank.rank_as_achievement
@@ -753,7 +815,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             )}
           </div>
 
-          {active.rank?.top?.length > 0 && (
+          {ranked && active.rank?.top?.length > 0 && (
             <div data-block="region-rating" className="mb-6 rounded-3xl p-4 fe-glass-lite">
               <h2 className="text-sm font-semibold text-text-primary mb-3">
                 {t(

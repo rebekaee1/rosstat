@@ -321,9 +321,22 @@ describe('круг 8, S1: после первой прокрутки плашк�
     expect(screen.queryByRole('dialog')).toBeNull();
     cleanup();
     window.sessionStorage.clear();
+    window.localStorage.removeItem('fe:consent:snooze-until');
     await scrollTo(0);
     renderConsent();
     expect(screen.getByRole('dialog')).toBeTruthy();
+  });
+
+  it('правка 33: молчаливое скрытие помнится и между визитами (7 суток), а не только в одной вкладке', async () => {
+    renderConsent();
+    await scrollTo(120);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(Number(window.localStorage.getItem('fe:consent:snooze-until'))).toBeGreaterThan(Date.now());
+    cleanup();
+    window.sessionStorage.clear();
+    await scrollTo(0);
+    renderConsent();
+    expect(screen.queryByRole('dialog')).toBeNull();
   });
 
   it('настройки из меню или подвала (событие) раскрываются и после прокрутки', async () => {

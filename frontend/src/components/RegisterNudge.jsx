@@ -78,6 +78,13 @@ const FEEDBACK_VARIANT = {
   },
 };
 
+// Правка 33: мобильная плашка «Скачивайте данные бесплатно» показывается один раз за визит (вкладку) и только когда на экране подвал:
+// не поверх чисел. Фаза: idle, shown (на экране у подвала), done (до конца визита не возвращается).
+const MOBILE_DONE_KEY = 'fe_nudge_m_done';
+function readMobileDone() {
+  try { return window.sessionStorage.getItem(MOBILE_DONE_KEY) === '1'; } catch { return false; }
+}
+
 function readDismissed(key) {
   try { return localStorage.getItem(key) === '1'; } catch { return false; }
 }
@@ -99,6 +106,7 @@ export default function RegisterNudge() {
   const [actions, setActions] = useState(() => readActions());
   const [downloadAttempted, setDownloadAttempted] = useState(() => hasDownloadAttempt());
   const [nearFooter, setNearFooter] = useState(false);
+  const [mobilePhase, setMobilePhase] = useState(() => (readMobileDone() ? 'done' : 'idle'));
   const [prevPath, setPrevPath] = useState(location.pathname);
   const lastTrackedRef = useRef(null);
 
@@ -156,6 +164,16 @@ export default function RegisterNudge() {
     }
   }, [visible, variant]);
 
+  // Без IntersectionObserver (старый браузер, тесты) подвал не отслеживаем: плашка не прячется.
+  const canWatchFooter = typeof IntersectionObserver !== 'undefined';
+  const mobileAtFooter = !canWatchFooter || nearFooter;
+  if (visible && mobilePhase === 'idle' && mobileAtFooter) setMobilePhase('shown');
+  if (mobilePhase === 'shown' && canWatchFooter && !nearFooter) {
+    setMobilePhase('done');
+    try { window.sessionStorage.setItem(MOBILE_DONE_KEY, '1'); } catch { /* до конца вкладки не критично */ }
+  }
+  const showMobile = visible && mobilePhase === 'shown';
+
   if (!visible) return null;
 
   const expand = () => {
@@ -172,6 +190,7 @@ export default function RegisterNudge() {
 
   return (
     <>
+    {showMobile ? (
     <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-m fe-nudge-root sm:hidden print:hidden" aria-label={pill}>
       <span className="fe-nudge-m__icon" aria-hidden="true"><Sparkles className="h-5 w-5" /></span>
       <div className="fe-nudge-m__text">
@@ -188,6 +207,7 @@ export default function RegisterNudge() {
         {t(variant.ctaKey)}
       </Button>
     </aside>
+    ) : null}
     <div
       className="fe-nudge-root fe-nudge-desk hidden sm:block print:hidden"
       data-near-footer={nearFooter && !expanded ? 'true' : undefined}

@@ -134,10 +134,10 @@ describe('DataTable', () => {
     expect(screen.getByText('Значение')).toBeTruthy();
   });
 
-  it('изменение: единица один раз в заголовке («Изменение, п. п.»), в строках знак и число', () => {
+  it('изменение: единица один раз в заголовке («К году, п. п.»), в строках знак и число', () => {
     const rows = [{ date: '2025-01-01', value: 3.0 }, { date: '2024-01-01', value: 2.5 }];
     renderTable(<DataTable data={rows} unit="изменение за год, %" valueDigits={1} />);
-    expect(screen.getByText('Изменение, п. п.')).toBeTruthy();
+    expect(screen.getByText('К году, п. п.')).toBeTruthy();
     expect(screen.getByText('+0,5')).toBeTruthy();
     expect(screen.queryByText(/annual change/)).toBeNull();
   });

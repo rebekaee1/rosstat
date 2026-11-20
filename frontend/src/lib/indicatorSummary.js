@@ -92,6 +92,46 @@ export function growthOverYears(points, years, { maxGapDays = 400 } = {}) {
   return { pct: (b / a - 1) * 100, years, from, to: last };
 }
 
+// Допуск при поиске «того же периода прошлого года»: месяц — до 20 дней, квартал — до 45. Дальше точки нет, и сравнение не показываем.
+const SAME_PERIOD_GAP_DAYS = Object.freeze({ daily: 5, weekly: 10, monthly: 20, quarterly: 45 });
+
+/** Сравнение с тем же периодом прошлого года (II кв. 2026 к II кв. 2025). null, если такой точки в ряду нет. */
+export function sameYearChange(points, frequency) {
+  return growthOverYears(points, 1, { maxGapDays: SAME_PERIOD_GAP_DAYS[frequency] ?? 120 });
+}
+
+/**
+ * Ряд сезонный по частоте: у обычных величин (поездки, ночёвки, траты) по месяцам и кварталам «к прошлому периоду» даёт сезон
+ * («+38 %» весной), а не рост. Для таких рядов шапка сравнивает с тем же периодом прошлого года (круг наблюдателей 20.11.2026, №1).
+ */
+export function isSeasonalLevel(kind, frequency) {
+  return kind === 'level' && (frequency === 'monthly' || frequency === 'quarterly');
+}
+
+/**
+ * Надёжна ли база сравнения «за 10 лет»: рост, посчитанный от почти нуля («1 676 %») или через пропуск в ряду, вводит в заблуждение.
+ * База ненадёжна, если она меньше 5 % от медианы ряда, рост от неё больше 1000 %, падение больше 90 %
+ * либо рядом с базой пропущены периоды (соседние точки дальше полутора шагов ряда).
+ */
+export function isGrowthBaseReliable(points, growth, frequency) {
+  if (!growth) return false;
+  const valid = finitePoints(points);
+  const base = Number(growth.from.value);
+  const sorted = valid.map((p) => Number(p.value)).sort((a, b) => a - b);
+  const median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0;
+  if (!(base > 0) || (median > 0 && base < median * 0.05)) return false;
+  if (growth.pct > 1000 || growth.pct < -90) return false;
+  const stepDays = { daily: 1, weekly: 7, monthly: 31, quarterly: 92, annual: 366 }[frequency];
+  if (stepDays) {
+    const idx = valid.indexOf(growth.from);
+    const limit = stepDays * 1.5;
+    const gapTo = (a, b) => (Date.parse(isoOf(b.date)) - Date.parse(isoOf(a.date))) / DAY_MS;
+    if (idx > 0 && gapTo(valid[idx - 1], valid[idx]) > limit) return false;
+    if (idx >= 0 && idx < valid.length - 1 && gapTo(valid[idx], valid[idx + 1]) > limit) return false;
+  }
+  return true;
+}
+
 /** Самое длинное окно из списка, для которого хватает истории (10, затем 5, затем 3 года). */
 export function bestGrowth(points, windows = [10, 5, 3]) {
   for (const years of windows) {
@@ -286,7 +326,7 @@ export function rankAmongCountries(items, countryCode, ownValue) {
  * }}
  */
 export function buildIndicatorSummary({
-  points, frequency, unit, modeType, dataDigits = 2, locale = 'ru', now = new Date(),
+  points, frequency, unit, modeType, dataDigits = 2, locale = 'ru', now = new Date(), seasonal = undefined,
 }) {
   const valid = finitePoints(points);
   if (!valid.length) return null;
@@ -320,7 +360,25 @@ export function buildIndicatorSummary({
     changeAbs,
     changePct,
     yearPct: yearGrowth ? yearGrowth.pct : null,
+    // Признак из API (`seasonal: true`) верен для любой единицы, в том числе процентов; без него: правило по частоте и виду ряда.
+    seasonal: seasonal === true ? (frequency === 'monthly' || frequency === 'quarterly') : isSeasonalLevel(kind, frequency),
+    sameYear: sameYearChange(valid, frequency),
     growth: kind === 'rate' ? null : bestGrowth(valid),
+    growthReliable: kind === 'rate' ? false : isGrowthBaseReliable(valid, bestGrowth(valid), frequency),
     stats: kind === 'rate' ? windowStats(valid, 10) : null,
   };
+}
+
+const HOST_NOTE_RE = /^\s*(?:По данным принимающей страны|Host-country data)\s*[.:]?\s*/i;
+
+/**
+ * Ряды стран назначения (турпоток в Кипр, Турцию) считает принимающая страна, а не Росстат: описание начинается с пометки
+ * «По данным принимающей страны.». Пометку выносим в подзаголовок страницы, остальной текст остаётся описанием.
+ * @returns {{ host: boolean, rest: string }}
+ */
+export function splitHostCountryNote(description) {
+  const text = typeof description === 'string' ? description : '';
+  const match = HOST_NOTE_RE.exec(text);
+  if (!match) return { host: false, rest: text };
+  return { host: true, rest: text.slice(match[0].length).trim() };
 }

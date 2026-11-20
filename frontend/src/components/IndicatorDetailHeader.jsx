@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { Activity } from 'lucide-react';
 import { displayCategoryLabel, findCategoryByApiLabel } from '../lib/categories';
 import { indicatorDetailHeaderMobileLines } from '../lib/indicatorVariants';
 import { SkeletonBox } from './Skeleton';
@@ -14,20 +13,10 @@ import {
 } from '../lib/breadcrumbs';
 import { isGlobalMarketIndicator } from '../lib/globalMarketIndicators';
 import { useLocale } from '../i18n';
-import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import AccentTitle from './K5Accent';
 import CabinetActionsSlot from './CabinetActionsSlot';
 import '../styles/z4-indicator.css';
 import '../styles/k5-pages.css';
-
-const FREQ_MAP = {
-  monthly: 'Помесячно',
-  quarterly: 'Ежеквартально',
-  annual: 'Ежегодно',
-  weekly: 'Еженедельно',
-  irregular: 'Нерегулярно',
-  daily: 'По дням',
-};
 
 function MobileTitle({ title }) {
   const lines = indicatorDetailHeaderMobileLines(title);
@@ -57,7 +46,6 @@ export default function IndicatorDetailHeader({
   indicator,
   code,
   loading,
-  displayFrequency,
   children = null,
   aside = null,
   subject = null,
@@ -65,7 +53,6 @@ export default function IndicatorDetailHeader({
 }) {
   const { locale } = useLocale();
   const { year } = useParams();
-  const effectiveFrequency = displayFrequency ?? indicator?.frequency;
   const apiCategory = indicator?.category_ru || indicator?.category;
   const shownCategory = displayCategoryLabel(code, apiCategory);
   const category = findCategoryByApiLabel(shownCategory);
@@ -95,14 +82,10 @@ export default function IndicatorDetailHeader({
     : (globalMarket
       ? globalMarketIndicatorTrail(categoryCrumbName, category?.slug, title, code)
       : russiaIndicatorTrail(categoryCrumbName, category?.slug, title, code));
+  // Крошки в одну строку без повтора названия: текущая страница уже стоит заголовком (круг наблюдателей 20.11.2026).
   const crumbs = nameKnown
-    ? fullCrumbs
+    ? fullCrumbs.slice(0, -1)
     : fullCrumbs.map((item, index) => (index === 0 ? item : { ...item, name: '' }));
-  const freqLabel = localizeViewModeLabel(
-    FREQ_MAP[effectiveFrequency] || effectiveFrequency,
-    locale,
-  );
-
   return (
     <div className="fe-data-header fe-indicator-header z4-hero fe-cursor-light" data-has-value={aside ? 'true' : 'false'}>
       <div className="z4-hero__main">
@@ -120,12 +103,6 @@ export default function IndicatorDetailHeader({
         ) : (
           <>
             <div className={`${REVEAL} fe-ind-meta`} style={revealStyle(1)}>
-              {freqLabel ? (
-                <span className="fe-ind-badge">
-                  <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
-                  {freqLabel}
-                </span>
-              ) : null}
               <CabinetActionsSlot className="z4-hero__actions" subject={subject} renderActions={renderActions} />
             </div>
 

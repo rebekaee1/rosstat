@@ -23,7 +23,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.core.cache import cache_get, cache_set, versioned_key
-from app.models import Indicator, Region, RegionDataPoint, RegionIndicator, WorldCountry, WorldIndicator
+from app.models import (
+    Indicator,
+    IndicatorData,
+    Region,
+    RegionDataPoint,
+    RegionIndicator,
+    WorldCountry,
+    WorldIndicator,
+)
 from app.services import site_paths as paths
 from app.services.locale import get_locale
 
@@ -31,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 CATEGORY_RU = "Туризм"
 CODE_PREFIX = "tour-"
-CACHE_REST = "tourism-overview:v2"
+CACHE_REST = "tourism-overview:v3"
 
 # Туристическое название регионального ряда. Слова — предметы туризма, а не коды рядов.
 _TOURISM_NAME = re.compile(
@@ -46,9 +54,8 @@ _NOT_TOURISM_NAME = re.compile(r"зарплат|заработн|оборот о
 _SQL_STEMS = ("урист", "уризм", "урпо", "уропер", "урфирм", "утёвк", "утевк", "остиниц", "Отел", "отел", "азмещени",
               "очёв", "очев", "анатор", "урорт")
 
-FEATURED_REGIONAL = 6   # сколько групп получают карточку с тремя лидерами (по одной на группу)
-LEADERS = 3
 WORLD_SERIES_PER_COUNTRY = 2
+OUTBOUND_TOP = 10        # строк в списке «Куда ездят россияне»
 RATING_MIN_REGIONS = 10  # как у серверных страниц рейтинга и карты (seo_regional): меньше — страницы нет
 
 # Первые карточки России: потоки людей и деньги, затем ёмкость. Остальные ряды категории — после них
@@ -121,8 +128,13 @@ async def _rating_ready(db: AsyncSession, ids: list[int]) -> set[int]:
     return {iid for iid, (_y, n) in latest.items() if n >= RATING_MIN_REGIONS}
 
 
+def _fix_typos(text: str | None) -> str:
+    # В названиях и единицах загруженных рядов встречается «обьект»; на экране — «объект».
+    return (text or "").replace("обьект", "объект").replace("Обьект", "Объект")
+
+
 async def _regional_block(db: AsyncSession) -> dict:
-    from app.api.regions import _icopy, regions_heatmap  # локальный импорт: api.regions тянет весь роутер
+    from app.api.regions import _icopy  # локальный импорт: api.regions тянет весь роутер
 
     candidates = (await db.execute(
         select(RegionIndicator).where(RegionIndicator.is_listed.is_(True)).where(or_(
@@ -140,8 +152,8 @@ async def _regional_block(db: AsyncSession) -> dict:
         has_rating = ind.id in ready
         items.append({
             "code": ind.code,
-            "name": copy["name"],
-            "unit": copy["unit"],
+            "name": _fix_typos(copy["name"]),
+            "unit": _fix_typos(copy["unit"]),
             "year": ind.year_max,
             "group": region_group(ind.name),
             # Месячные и квартальные ряды страниц рейтинга и карты не имеют: ведём на страницу ряда по России
@@ -151,26 +163,48 @@ async def _regional_block(db: AsyncSession) -> dict:
             "map_path": paths.region_map(ind.code) if has_rating else None,
         })
     items.sort(key=_region_sort_key)
-    featured_groups: set[str] = set()
-    for item in items:
-        if len(featured_groups) >= FEATURED_REGIONAL or item["group"] in featured_groups:
-            continue
-        try:
-            heat = await regions_heatmap(item["code"], db)
-        except Exception:  # нет точек у субъектов — показатель остаётся без лидеров
-            logger.debug("tourism: no heatmap for %s", item["code"], exc_info=True)
-            continue
-        values = sorted(heat.get("values") or [], key=lambda v: v.get("raw", 0), reverse=True)
-        if len(values) < LEADERS:
-            continue
-        item["period"] = heat.get("period_label") or heat.get("year")
-        item["leaders"] = [
-            {"slug": v["slug"], "name": v["name"], "value": v["value"],
-             "path": paths.region_indicator(v["slug"], item["code"])}
-            for v in values[:LEADERS]
-        ]
-        featured_groups.add(item["group"])
     return {"count": len(items), "groups": list(REGION_GROUP_ORDER), "items": items}
+
+
+async def _outbound_top(db: AsyncSession, en: bool) -> dict:
+    """«Куда ездят россияне»: страны по числу выездных поездок за последний полный год (сумма четырёх кварталов).
+
+    Ряды `tour-outbound-<страна>` уже лежат в данных (тысяч поездок за квартал); год берётся по общему ряду
+    `tour-outbound-trips`, если в нём есть четыре квартала, иначе по самому свежему полному году стран.
+    """
+    from app.data.tourism_russia import OUTBOUND_COUNTRIES
+
+    by_code = {f"tour-outbound-{c.slug}": c for c in OUTBOUND_COUNTRIES}
+    rows = (await db.execute(
+        select(Indicator.code, IndicatorData.date, IndicatorData.value)
+        .join(IndicatorData, IndicatorData.indicator_id == Indicator.id)
+        .where(Indicator.code.in_([*by_code, "tour-outbound-trips"]), Indicator.is_active.is_(True))
+    )).all()
+    quarters: dict[str, dict[int, dict[int, float]]] = {}
+    for code, day, value in rows:
+        quarters.setdefault(code, {}).setdefault(day.year, {})[(day.month - 1) // 3] = float(value)
+
+    def full_years(code: str) -> set[int]:
+        return {y for y, q in quarters.get(code, {}).items() if len(q) == 4}
+
+    year_pool = full_years("tour-outbound-trips") or {y for code in by_code for y in full_years(code)}
+    if not year_pool:
+        return {"year": None, "items": []}
+    year = max(year_pool)
+    items = []
+    for code, country in by_code.items():
+        if year not in full_years(code):
+            continue
+        total = sum(quarters[code][year].values())
+        items.append({
+            "slug": country.slug,
+            "name": country.name_en if en else country.name,
+            "path": paths.russia_indicator(code),
+            "value": round(total, 1),
+            "period": year,
+        })
+    items.sort(key=lambda r: (-r["value"], r["name"]))
+    return {"year": year, "unit": "thousand" if en else "тыс.", "items": items[:OUTBOUND_TOP]}
 
 
 def _world_name(name_ru: str, name_en: str | None, en: bool) -> str:
@@ -240,6 +274,7 @@ async def _world_block(db: AsyncSession) -> dict:
     return {
         "count": len(rows), "countries": ordered, "concepts": concepts,
         "countries_count": len(ordered), "russia_included": False,
+        "outbound": await _outbound_top(db, en),
     }
 
 

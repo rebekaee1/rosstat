@@ -1,13 +1,13 @@
 import { rememberAuthView, restoredAuthView } from '../lib/authReturn';
-import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
+import { useEffect, useRef, useMemo, useState, useCallback, useId } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, Bar, XAxis, YAxis,
   Tooltip, CartesianGrid, ReferenceLine, ReferenceArea, ReferenceDot,
 } from 'recharts';
-import { Activity, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
+import { Activity, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon, SlidersHorizontal } from 'lucide-react';
 import {
   formatDate, formatAxisTick, formatValue,
-  chartValueDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
+  unitSuffix, cn, pickChartAxisTicks, chartAxisTickBudget,
 } from '../lib/format';
 import { track, events } from '../lib/track';
 import { valueWithUnit } from '../lib/valueText';
@@ -25,6 +25,8 @@ import ChartBrush from './ChartBrush';
 import { ChartEventsList, EventsChip } from './ChartEvents';
 import { eventReferenceLines, useEventsToggle } from '../lib/chartEventMarks';
 import { eventsInWindow } from '../lib/chartEvents';
+import { insertGapRows, withoutGapRows } from '../lib/seriesGaps';
+import { valueDigitsFor, yAxisLabelWidth } from '../lib/seriesDigits';
 import { formatPointLabel, pointLabelWidth } from '../lib/chartPointLabel';
 import { emitPeriodPick } from '../lib/periodJump';
 import { useChartPick } from '../lib/chartPick';
@@ -156,7 +158,7 @@ function CustomTooltip({
           className="fe-chart-tip__value"
           style={isForecast ? { color: CHART_THEME.forecastInk } : undefined}
         >
-          {numericTooltipOnly
+          {numericTooltipOnly && !isForecast
             ? formatValue(main.value, valueDigits)
             : valueWithUnit(main.value, valueDigits, unit)}
         </span>
@@ -313,7 +315,15 @@ export default function IndicatorChart({
 }) {
   const t = useT();
   const { locale } = useLocale();
-  const digits = chartValueDigits(unit, chartMode ?? mode);
+  // Точность — по фактическим точкам ряда (счётные единицы без «1 847,69 тыс.»); прогноз и подсказки берут её же.
+  const digits = useMemo(
+    () => valueDigitsFor(
+      unit,
+      (mode === 'cpi' ? cpiData : inflation?.actuals || []).map((p) => p?.value),
+      chartMode ?? mode,
+    ),
+    [unit, mode, cpiData, inflation, chartMode],
+  );
   const glass = useChartGlassIds('k4');
   const chartAreaRef = useRef(null);
   const rangeOptions = (RANGE_PRESETS[rangePreset] || RANGE_PRESETS.default).map((opt) => ({
@@ -345,6 +355,11 @@ export default function IndicatorChart({
   const [chartType, setChartType] = useState(savedView?.chartType ?? defaultChartType);
   // Круг 11: отметки событий (выключены, пока человек не включит).
   const [eventsOn, toggleEvents] = useEventsToggle();
+  // Тип графика и «События» спрятаны за «Изменить вид»: над графиком остаются только периоды.
+  const [viewOpen, setViewOpen] = useState(false);
+  const viewPanelId = `${useId()}-view`;
+  // Единица стоит у оси, а не в заголовке (правка 20).
+  const axisUnit = unitSuffix(unit) || '';
   useEffect(() => {
     const save = () => rememberAuthView(viewKey, { range, windowOverride, offset, chartType });
     window.addEventListener('fe:auth-leave', save);
@@ -435,7 +450,7 @@ export default function IndicatorChart({
       });
     }
 
-    if (!resolvedComparisonSeries.length) return base;
+    if (!resolvedComparisonSeries.length) return insertGapRows(base);
     const rows = new Map(base.map((row) => [row.date, { ...row }]));
     for (const series of resolvedComparisonSeries) {
       for (const point of series.data || []) {
@@ -450,10 +465,12 @@ export default function IndicatorChart({
   }, [inflation, cpiData, forecastData, showForecast, mode, resolvedComparisonSeries]);
 
   const dataLen = chartData.length;
+  // Пропущен период (Египет: после 2015 сразу 2019): линия факта рвётся, а не тянется через пропуск.
+  const seriesHasGap = useMemo(() => chartData.some((row) => row._gap), [chartData]);
 
   // Полный ряд (факт + прогноз) для выгрузки CSV/Excel — независимо от
   // видимого окна графика. Экспорт обязан отдавать всю историю, не 5-летний срез.
-  useEffect(() => { onFullDataRef.current?.(chartData); }, [chartData]);
+  useEffect(() => { onFullDataRef.current?.(withoutGapRows(chartData)); }, [chartData]);
 
   // Сохранённый до входа вид мог указывать на период, которого больше нет в списке (например, «3 года»).
   const activeRange = rangeOptions.some((r) => r.key === range) ? range : defaultRange;
@@ -499,7 +516,7 @@ export default function IndicatorChart({
     return buildForecastVisualSeries(visibleData);
   }, [visibleData, showForecast, chartType]);
 
-  useEffect(() => { onChartDataRef.current?.(visibleData); }, [visibleData]);
+  useEffect(() => { onChartDataRef.current?.(withoutGapRows(visibleData)); }, [visibleData]);
 
   const handleRangeChange = (key) => {
     setRange(key);
@@ -658,10 +675,9 @@ export default function IndicatorChart({
     const absMax = Math.max(Math.abs(niceMin), Math.abs(niceMax));
     // Крупные числа подписываем «24 млн», а не «24 000 000»: ось не съедает четверть ширины графика.
     const compact = needsCompactAxis(absMax);
-    const sampleLabel = compact
-      ? formatAxisTickCompact(niceMin < 0 ? niceMin : absMax, digits, locale)
-      : formatAxisTick(niceMin < 0 ? niceMin : absMax, digits);
-    const w = Math.max(40, Math.min(120, sampleLabel.length * 7.5 + 12));
+    // Ширина оси — по самой длинной подписи среди всех делений, иначе «10 000» над «−2» обрезается до «0,000» (правка 38).
+    const labelOf = (v) => (compact ? formatAxisTickCompact(v, digits, locale) : formatAxisTick(v, digits));
+    const w = yAxisLabelWidth(ticks.map(labelOf));
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks, yCompact: compact };
   }, [visibleData, digits, resolvedComparisonSeries, locale]);
 
@@ -795,30 +811,11 @@ export default function IndicatorChart({
   return (
     <div className="fe-panel fe-chart-card fe-reveal" style={REVEAL_STYLE}>
       <div className="fe-chart-toolbar flex items-center justify-between mb-5 flex-wrap gap-3">
-        <h3 className="fe-chart-title">
+        {/* Заголовок остаётся для скринридера и поисковиков; на экране над графиком только периоды, единица стоит у оси (правка 20). */}
+        <h3 className="fe-chart-title sr-only">
           {title}
         </h3>
-        {/* ml-auto: при длинном заголовке контролы переносятся на новую строку,
-            но всегда прижаты вправо (а не уезжают влево). Созвон 2026-06-16. */}
         <div className="flex items-center gap-2 flex-wrap ml-auto">
-          <ChipGroup label={t('chart.typeAria')} className="fe-seg" style={{ '--seg-i': TYPE_OPTIONS.findIndex((o) => o.key === chartType), '--seg-n': TYPE_OPTIONS.length }}>
-            {/* Бегунок общего жёлоба: сам едет под выбранную кнопку (transform), кнопки лежат поверх. */}
-            <span className="fe-seg__thumb" aria-hidden="true" />
-            {TYPE_OPTIONS.map((opt) => {
-              const IconComp = opt.icon;
-              return (
-                <Chip
-                  key={opt.key}
-                  active={chartType === opt.key}
-                  onClick={() => setChartType(opt.key)}
-                  className="fe-chip--seg"
-                >
-                  <IconComp className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                  <span>{t(opt.labelKey)}</span>
-                </Chip>
-              );
-            })}
-          </ChipGroup>
           {isZoomed && (
             <Chip
               aria-pressed={undefined}
@@ -829,7 +826,18 @@ export default function IndicatorChart({
               {t('chart.resetZoom')}
             </Chip>
           )}
-          <EventsChip on={eventsOn} onToggle={toggleEvents} count={eventMarks.length} />
+          <Chip
+            aria-pressed={undefined}
+            aria-expanded={viewOpen}
+            aria-controls={viewPanelId}
+            onClick={() => setViewOpen((v) => !v)}
+            className="fe-chip--ghost fe-chip--icon"
+            title={t('y2.view.change')}
+            data-testid="chart-view-toggle"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+            <span className="sr-only">{t('y2.view.change')}</span>
+          </Chip>
           <ChipGroup label={t('chart.rangeAria')} className="fe-chip-row--tight">
             {rangeOptions.map(opt => (
               <Chip
@@ -843,6 +851,30 @@ export default function IndicatorChart({
           </ChipGroup>
         </div>
       </div>
+
+      {viewOpen && (
+        <div id={viewPanelId} className="fe-chart-viewpanel flex items-center gap-2 flex-wrap mb-4" data-testid="chart-view-panel">
+  <ChipGroup label={t('chart.typeAria')} className="fe-seg" style={{ '--seg-i': TYPE_OPTIONS.findIndex((o) => o.key === chartType), '--seg-n': TYPE_OPTIONS.length }}>
+    {/* Бегунок общего жёлоба: сам едет под выбранную кнопку (transform), кнопки лежат поверх. */}
+    <span className="fe-seg__thumb" aria-hidden="true" />
+    {TYPE_OPTIONS.map((opt) => {
+      const IconComp = opt.icon;
+      return (
+        <Chip
+          key={opt.key}
+          active={chartType === opt.key}
+          onClick={() => setChartType(opt.key)}
+          className="fe-chip--seg"
+        >
+          <IconComp className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+          <span>{t(opt.labelKey)}</span>
+        </Chip>
+      );
+    })}
+  </ChipGroup>
+          <EventsChip on={eventsOn} onToggle={toggleEvents} count={eventMarks.length} />
+        </div>
+      )}
 
       {rebased && (
         <p className="fe-chart-note" role="note">
@@ -869,6 +901,19 @@ export default function IndicatorChart({
         )}
         style={{ touchAction: 'pan-y' }}
       >
+        {axisUnit ? (
+          <span
+            className="fe-chart-axisunit"
+            data-testid="chart-axis-unit"
+            aria-hidden="true"
+            style={{
+              position: 'absolute', top: 6, left: 8, zIndex: 1, pointerEvents: 'none',
+              fontSize: 12, lineHeight: '16px', color: CHART_THEME.axis, fontFamily: CHART_THEME.font,
+            }}
+          >
+            {axisUnit}
+          </span>
+        ) : null}
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={visualData} margin={{ top: 38, right: 14, bottom: 16, left: 0 }} onClick={handlePlotClick}>
             <defs>
@@ -975,7 +1020,7 @@ export default function IndicatorChart({
                 dot={false}
                 activeDot={isDragging ? false : { r: 5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
-                connectNulls
+                connectNulls={!seriesHasGap}
               />
             ) : (
               <Area
@@ -989,7 +1034,7 @@ export default function IndicatorChart({
                 dot={false}
                 activeDot={isDragging ? false : { r: 5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
-                connectNulls
+                connectNulls={!seriesHasGap}
               />
             )}
 

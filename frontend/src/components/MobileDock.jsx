@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { BarChart3, Coins, Ellipsis, Globe2, ShoppingBasket } from 'lucide-react';
 import { cn } from '../lib/format';
 import { useT } from '../i18n';
-import { COUNTRIES_ANCHOR_ID, OPEN_NAV_MENU_EVENT, RATES_TO, WORLD_RATING_TO, resolveActiveNavId } from '../lib/navItems';
+import { COUNTRIES_ANCHOR_ID, OPEN_NAV_MENU_EVENT, isTourismPath, RATES_TO, WORLD_RATING_TO, resolveActiveNavId } from '../lib/navItems';
 import { useAnchorInView } from '../lib/useAnchorInView';
 import { regionHubPath } from '../lib/sitePaths';
 import { useScrollDirection } from '../lib/useScrollDirection';
@@ -39,10 +39,13 @@ export default function MobileDock() {
   const hidden = pathname.startsWith('/admin');
   const overFooter = useFooterTone().dock;
   const suppressed = useDockSuppressed();
-  const visible = !hidden && deep && !stickyShown && !suppressed && dir === 'up';
+  // Правка 32: над подвалом панель не показываем вовсе (закрывала ссылки и реквизиты), вернётся при прокрутке вверх.
+  const visible = !hidden && deep && !stickyShown && !suppressed && !overFooter && dir === 'up';
   // «Страны» подсвечены по адресу (#countries) и пока человек читает каталог стран на главной (круг 11, G, U33).
   const countriesInView = useAnchorInView(COUNTRIES_ANCHOR_ID, pathname === '/' && !hidden);
-  const activeId = pathname === regionHubPath() || pathname.startsWith(`${regionHubPath()}/`)
+  const activeId = isTourismPath(pathname)
+    ? null
+    : pathname === regionHubPath() || pathname.startsWith(`${regionHubPath()}/`)
     ? 'region-prices'
     : resolveActiveNavId(pathname, undefined, hash, countriesInView);
 

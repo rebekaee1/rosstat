@@ -58,8 +58,11 @@ def tourism_client(auth_env):
     from fastapi.testclient import TestClient
 
     from app.data.world_concepts import WORLD_CONCEPTS
+    from sqlalchemy import select
+
     from app.models import (
         Indicator,
+        IndicatorData,
         Region,
         RegionDataPoint,
         RegionIndicator,
@@ -74,6 +77,20 @@ def tourism_client(auth_env):
             db.add(Indicator(code="tour-outbound-trips", name="Выездные туристские поездки россиян",
                              name_en="Outbound tourist trips by Russians", unit="тыс.", frequency="quarterly",
                              category="Туризм", source="Росстат", is_active=True, is_listed=True))
+            # Выезд по странам: тысяч поездок по кварталам. У Китая нет четвёртого квартала 2025, у 2026 года — только первый.
+            quarters = {"tour-outbound-trips": (10, 10, 10, 10), "tour-outbound-turkey": (5, 6, 7, 8),
+                        "tour-outbound-egypt": (1, 1, 2, 2), "tour-outbound-china": (9, 9, 9, None)}
+            for code, values in quarters.items():
+                ind = (await db.execute(select(Indicator).where(Indicator.code == code))).scalar_one_or_none()
+                if ind is None:
+                    ind = Indicator(code=code, name=code, unit="тыс.", frequency="quarterly", category="Туризм",
+                                    source="Росстат", is_active=True, is_listed=False)
+                    db.add(ind)
+                    await db.flush()
+                for q, value in enumerate(values):
+                    if value is not None:
+                        db.add(IndicatorData(indicator_id=ind.id, date=date(2025, 3 * q + 3, 28), value=value))
+                db.add(IndicatorData(indicator_id=ind.id, date=date(2026, 3, 28), value=1))
             regions = [Region(slug=s, name=n, kind="region") for s, n in (
                 ("moskva", "г. Москва"), ("krasnodarskiy-kray", "Краснодарский край"),
                 ("respublika-krym", "Республика Крым"), ("tverskaya-oblast", "Тверская область"))]
@@ -108,7 +125,7 @@ def tourism_client(auth_env):
         yield client, rating
 
 
-def test_overview_has_regions_with_leaders_and_world(tourism_client):
+def test_overview_has_regions_without_leaders_and_world(tourism_client):
     client, rating = tourism_client
     body = client.get("/api/v1/tourism/overview").json()
     assert body["russia"] == {"count": 1, "path": "/russia/category/tourism"}
@@ -120,16 +137,38 @@ def test_overview_has_regions_with_leaders_and_world(tourism_client):
     # Четыре субъекта — у ряда нет страницы рейтинга и карты (нужно ≥ 10): ссылка на ряд по России.
     assert hotels["rating_path"] is None and hotels["map_path"] is None
     assert hotels["path"] == "/russia/region/russia/kollektivnye-sredstva"
-    assert [leader["slug"] for leader in hotels["leaders"]] == ["krasnodarskiy-kray", "moskva", "respublika-krym"]
-    assert hotels["leaders"][0]["path"] == "/russia/region/krasnodarskiy-kray/kollektivnye-sredstva"
+    # Карточек «топ-3 регионов» нет: каталог групп не повторяется лидерами.
+    assert "leaders" not in hotels and "period" not in hotels
 
     world = body["world"]
     assert world["count"] == 1
     assert world["countries"][0]["slug"] == "turkey"
     assert world["countries"][0]["series"][0]["path"] == "/turkey/indicator/tr-tourist-arrivals"
     assert [c["slug"] for c in world["concepts"]] == [rating.slug]
+    # «Куда ездят россияне»: сумма четырёх кварталов 2025 года; Китай без полного года и ряд без данных не попадают.
+    outbound = world["outbound"]
+    assert outbound["year"] == 2025
+    assert [(r["slug"], r["value"], r["period"]) for r in outbound["items"]] == [("turkey", 26.0, 2025), ("egypt", 6.0, 2025)]
+    assert outbound["items"][0]["path"] == "/russia/indicator/tour-outbound-turkey"
     # Публичный ответ без диапазонов и служебных полей.
     assert "lower" not in json.dumps(body) and "upper" not in json.dumps(body)
+
+
+def test_typo_in_region_names_is_fixed():
+    from app.services.tourism_showcase import _fix_typos
+
+    assert _fix_typos("Данные, обьектов") == "Данные, объектов"
+
+
+def test_all_countries_label_uses_count_and_russia_flag():
+    from app.services.seo_tourism import countries_label
+
+    world = {"countries": [{}] * 3}
+    assert countries_label(world, en=False) == "Все страны (3)"
+    assert countries_label({**world, "countries_count": 54}, en=False) == "Все страны (54)"
+    assert countries_label({**world, "countries_count": 54, "russia_included": False}, en=False) == "54 страны (Россия — в своём разделе)"
+    assert countries_label({**world, "countries_count": 55, "russia_included": False}, en=False) == "55 стран (Россия — в своём разделе)"
+    assert countries_label({**world, "countries_count": 54, "russia_included": False}, en=True) == "54 countries (Russia has its own section)"
 
 
 def test_ssr_tourism_page_has_three_floors_and_markup(tourism_client):
@@ -142,15 +181,19 @@ def test_ssr_tourism_page_has_three_floors_and_markup(tourism_client):
     assert 'href="/russia/indicator/tour-outbound-trips"' in html
     assert "Туризм по регионам России" in html and 'href="/russia/region/russia/kollektivnye-sredstva"' in html
     assert "<h3>Гостиницы и санатории</h3>" in html
-    assert 'href="/russia/region/krasnodarskiy-kray/kollektivnye-sredstva"' in html
-    assert "Туризм в странах мира" in html and 'href="/turkey/indicator/tr-tourist-arrivals"' in html
+    assert "Лидеры" not in html and 'href="/russia/region/krasnodarskiy-kray/kollektivnye-sredstva"' not in html
+    assert "Туризм в странах мира" in html
+    assert "<h3>Куда ездят россияне</h3>" in html
+    assert 'href="/russia/indicator/tour-outbound-turkey"' in html and "Турция" in html
+    # Подпись числа стран строится из countries_count / russia_included: «54 страны (Россия — в своём разделе)».
+    assert re.search(r'<a href="/">[^<]*\d+[^<]*стран[^<]*</a>', html)
     assert f'href="/world/rating/{rating.slug}"' in html
     assert 'name="keywords"' in html and "турпоток" in html
     ld = [json.loads(m) for m in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
     page = next(b for b in ld if b.get("@type") == "CollectionPage")
     urls = {e["url"] for e in page["mainEntity"]}
     assert any(u.endswith("/russia/region/russia/kollektivnye-sredstva") for u in urls)
-    assert any(u.endswith("/turkey/indicator/tr-tourist-arrivals") for u in urls)
+    assert any(u.endswith("/russia/indicator/tour-outbound-turkey") for u in urls)
 
 
 def test_ssr_tourism_page_in_english(tourism_client, auth_env):
@@ -170,6 +213,7 @@ def test_ssr_tourism_page_in_english(tourism_client, auth_env):
     assert "<h1>Tourism in Russia, its regions and the world" in html
     assert "Tourism across Russia&#x27;s regions" in html or "Tourism across Russia's regions" in html
     assert "Tourism in countries worldwide" in html and ">Turkey<" in html
+    assert "<h3>Where Russians travel</h3>" in html and re.search(r"\d+ countries \(Russia has its own section\)|All countries \(", html)
     assert "Туризм по регионам" not in html
 
 
@@ -239,9 +283,7 @@ def test_rating_links_only_when_page_exists(auth_env):
     assert rows["tour-ksr-razmeshcheno-mes"]["rating_path"] is None
     assert rows["tour-ksr-razmeshcheno-mes"]["map_path"] is None
     assert rows["tour-ksr-razmeshcheno-mes"]["path"] == "/russia/region/russia/tour-ksr-razmeshcheno-mes"
-    # По карточке с лидерами на группу: поток (месячный) и деньги (годовой).
-    assert rows["tour-ksr-razmeshcheno-mes"]["leaders"][0]["slug"] == "r10"
-    assert rows["tour-nalog-za-god"]["leaders"][0]["slug"] == "r10"
+    assert all("leaders" not in row for row in rows.values())
 
 
 def test_tourism_query_puts_russia_flagships_first_and_districts_last():

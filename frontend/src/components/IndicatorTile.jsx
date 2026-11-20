@@ -35,8 +35,16 @@ function TileSpark({ code, polarity, index, height = 40 }) {
   );
 }
 
+// Раздел «Туризм»: целое — без «,00», до 10 — два знака, до 100 — один.
+function calmDigits(value) {
+  const n = Math.abs(Number(value));
+  if (!Number.isFinite(n) || Number.isInteger(Number(n.toFixed(2))) || n >= 100) return 0;
+  return n >= 10 ? 1 : 2;
+}
+
 export default function IndicatorTile({
   indicator, delay = 0, displayOverride, surface = 'home', commonPhrase = null, spark = false, row = false,
+  calm = false,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -74,9 +82,15 @@ export default function IndicatorTile({
     : null) || indicator.category || t('tile.metric');
 
   // Единица стоит рядом с числом; в изменении её не повторяем («84,41 USD, +0,12 USD»). Для процентов — короткое «п. п.» / «pp» (круг 6, R6-B: длинные слова выталкивали плашку).
+  // calm (лента «Туризм»): приращение с единицей числа, без «,00»; цвет смысла не ставим.
+  const deltaValue = compact ? changeNum / compact.div : changeNum;
+  const deltaUnitText = displayUnit === '%' ? displayUnit : calm ? shownUnit : '';
   const change = changeNum != null && Number.isFinite(changeNum)
-    ? formatDeltaWithUnit(compact ? changeNum / compact.div : changeNum, displayUnit === '%' ? displayUnit : '', { locale, plain: false })
+    ? formatDeltaWithUnit(deltaValue, deltaUnitText, calm
+      ? { locale, plain: false, digits: calmDigits(deltaValue) }
+      : { locale, plain: false })
     : null;
+  const tilePolarity = calm ? 'neutral' : polarity;
   const periodKey = hasHero ? 'year' : indicator.frequency;
   const perText = ['daily', 'weekly', 'monthly', 'quarterly', 'annual', 'year'].includes(periodKey)
     ? t(`w3.tile.per.${periodKey}`)
@@ -156,7 +170,7 @@ export default function IndicatorTile({
           <h3 className="fe-tile__title">{title}</h3>
         </div>
         {isActive ? (
-          <span className="fe-tile__go" aria-hidden="true"><ArrowRight className="h-3.5 w-3.5" /></span>
+          calm ? null : <span className="fe-tile__go" aria-hidden="true"><ArrowRight className="h-3.5 w-3.5" /></span>
         ) : (
           <span className="fe-tile__soon">{t('tile.pending')}</span>
         )}
@@ -177,7 +191,7 @@ export default function IndicatorTile({
                 <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
               ) : (
                 <span className="fe-tile__delta">
-                  <DeltaBadge delta={changeNum} polarity={polarity}>{change.text}</DeltaBadge>
+                  <DeltaBadge delta={changeNum} polarity={tilePolarity}>{change.text}</DeltaBadge>
                   <span className="fe-tile__vs">{perText}</span>
                 </span>
               )

@@ -15,8 +15,28 @@ function cookieAttrs() {
   return `; Path=/; SameSite=Lax${domain}${secure}`;
 }
 
+const SWITCH_COOKIE = 'fe_lang_switch';
+
+/** Метка «страницу перезагрузили из-за смены языка»: заставку загрузки не показываем (правка 16). Ставится всегда, даже у верха. */
+function markLanguageSwitch() {
+  try {
+    document.cookie = `${SWITCH_COOKIE}=${Date.now()}; Max-Age=${MAX_AGE_S}${cookieAttrs()}`;
+  } catch { /* без cookie заставка просто покажется */ }
+}
+
+/** true, если эта загрузка страницы случилась сразу после смены языка (метка свежая). Метку не стирает. */
+export function isLanguageSwitchLanding() {
+  try {
+    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${SWITCH_COOKIE}=(\\d+)`));
+    return !!match && Date.now() - Number(match[1]) <= FRESH_MS;
+  } catch {
+    return false;
+  }
+}
+
 /** Вызывается прямо перед сменой языка. Возвращает true, если позиция сохранена. */
 export function rememberScrollForLanguageSwitch() {
+  markLanguageSwitch();
   try {
     const y = Math.round(window.scrollY || 0);
     if (y < MIN_Y) return false;

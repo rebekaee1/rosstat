@@ -23,7 +23,8 @@ import IndicatorSearch from '../components/IndicatorSearch';
 import CurrencyDesk, { CurrencyDeskSkeleton } from '../components/CurrencyDesk';
 import { readSavedRates } from '../lib/currencySaved';
 import R7PricesBlock from '../components/R7PricesBlock';
-import TourismFloors, { TourismJump } from '../components/TourismFloors';
+import TourismFloors, { TourismJump, TourismRussiaCatalog } from '../components/TourismFloors';
+import { splitTourismFeed } from '../lib/tourismFeed';
 import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
@@ -147,7 +148,11 @@ export default function CategoryPage({ fixedSlug }) {
     ? listed.map((ind, i) => [ind, lead.has(ind.code) ? lead.get(ind.code) : lead.size + i])
       .sort((a, b) => a[1] - b[1]).map(([ind]) => ind)
     : listed;
-  const commonPhrase = commonTilePhrase(filtered, t, locale);
+  // Туризм: в ленте до восьми рядов со свежими данными, остальные — свёрнутыми группами ниже.
+  const isTourism = cat.slug === 'tourism';
+  const tourismSplit = isTourism ? splitTourismFeed(listed, cat.leadCodes) : null;
+  const feed = tourismSplit ? tourismSplit.feed : filtered;
+  const commonPhrase = commonTilePhrase(feed, t, locale);
   // Короткие списки ежедневных котировок (курсы, крипто) — компактными строками с мини-графиком,
   // а не стопкой больших карточек.
   const compactRows = filtered.length >= 3 && filtered.length <= 16
@@ -165,7 +170,7 @@ export default function CategoryPage({ fixedSlug }) {
           {catSeo?.h1 || categoryLabel(cat, locale)}
         </h1>
         <p className="text-text-secondary leading-relaxed text-[1.02rem]">
-          {catSeo?.intro || categoryDescription(cat, locale)}
+          {isTourism ? t('kt3_intro') : (catSeo?.intro || categoryDescription(cat, locale))}
         </p>
       </header>
 
@@ -267,10 +272,11 @@ export default function CategoryPage({ fixedSlug }) {
               </>
             ) : (
               <div className="fe-cat-grid">
-                {filtered.map((ind, i) => (
+                {feed.map((ind, i) => (
                   <IndicatorTile
                     commonPhrase={commonPhrase}
-                    spark={ind.frequency === 'daily' && filtered.length <= 14}
+                    calm={isTourism}
+                    spark={ind.frequency === 'daily' && feed.length <= 14}
                     key={ind.code}
                     indicator={ind}
                     delay={i}
@@ -284,7 +290,8 @@ export default function CategoryPage({ fixedSlug }) {
         )}
       </section>
 
-      {cat.slug === 'tourism' && <TourismFloors />}
+      {isTourism && tourismSplit && <TourismRussiaCatalog indicators={tourismSplit.rest} />}
+      {isTourism && <TourismFloors />}
 
       {relatedCategories.length > 0 && (
         <section data-block="related-categories" className="mt-12">

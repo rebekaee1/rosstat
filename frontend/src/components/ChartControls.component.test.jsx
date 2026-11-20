@@ -145,6 +145,7 @@ describe('IndicatorChart', () => {
     const after = within(range).getAllByRole('button').filter((b) => b.getAttribute('aria-pressed') === 'true');
     expect(after).toHaveLength(1);
     expect(after[0]).toBe(within(range).getAllByRole('button')[2]);
+    fireEvent.click(screen.getByTestId('chart-view-toggle'));
     const type = screen.getByRole('group', { name: 'Тип графика' });
     expect(within(type).getAllByRole('button')).toHaveLength(3);
     within(type).getAllByRole('button').forEach((b) => expect(b.className).toContain('fe-chip'));
@@ -173,6 +174,7 @@ describe('IndicatorChart', () => {
 
   it('вид графика подписан словами, периоды короткие и одинаковые', () => {
     renderChart();
+    fireEvent.click(screen.getByTestId('chart-view-toggle'));
     const type = screen.getByRole('group', { name: 'Тип графика' });
     expect(within(type).getAllByRole('button').map((b) => b.textContent)).toEqual(['Область', 'Линия', 'Столбцы']);
     const range = screen.getByRole('group', { name: 'Период графика' });

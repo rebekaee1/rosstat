@@ -255,7 +255,7 @@ export default function IndicatorChartSection({
   return (
     <section id="chart" data-block="chart" className="fe-chart-section z4-chart-section" aria-busy={chartLoading ? true : undefined}>
       <div className="fe-chart-head z4-chart-head">
-        <h2 className="fe-chart-head__title">{t('indicator.chartDynamicsLabel')}</h2>
+        <h2 className="fe-chart-head__title sr-only">{t('indicator.chartDynamicsLabel')}</h2>
 
         <div className="fe-chart-actions">
           <ForecastControl
