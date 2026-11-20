@@ -1,21 +1,12 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "3ff3f246b997c36bbd8411392b3a49987a16f39a",
+  "baseline_commit": "0e7e9818544decbf539ee908e3fc75c55b10eff7",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/javascript-symbols.json",
-    "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/code-review/materials-2026-09-30.json"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -1974,7 +1965,7 @@
     {"path": "backend/tests/test_zone_i_sources.py", "kind": "code", "bytes": 17621, "lines": 356, "sha256": "aaab6903fafc51a781fbf9448f9025cb917727bb6e36a6b11607eb943ce9ea48", "symlink": false, "nodes": 33, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "clickhouse/low-memory-users.xml", "kind": "asset/data/config", "bytes": 788, "lines": 13, "sha256": "080f86dcb363402e39661016991bd3476b535dc80bc6984dc2111e046a62cbff", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "clickhouse/low-memory.xml", "kind": "asset/data/config", "bytes": 1507, "lines": 24, "sha256": "bcc85a0843dec3a7afb3d5ed811535527dbdec50d231159563d27ff794635803", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
-    {"path": "deploy/approved-shas.txt", "kind": "asset/data/config", "bytes": 36070, "lines": 204, "sha256": "fa6eae8176e4961cf1714fee782b60f28ca7984c641a6c9bedc663c39a04f2f9", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
+    {"path": "deploy/approved-shas.txt", "kind": "asset/data/config", "bytes": 36766, "lines": 205, "sha256": "241c8b39aa8709f06b416f853d8c9509e821c6cb085baeb99c21977fc2b2510b", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/crawler-status.sh", "kind": "code", "bytes": 1629, "lines": 27, "sha256": "ea82bf493bad414d81eddc88dd381e7961ff80ba28dce7460c5e9726875afda7", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/fail2ban-install.sh", "kind": "code", "bytes": 2999, "lines": 68, "sha256": "2ee43268ca7d9bafa8b54e47a3e2ff10ecc66d36df380d5abd986a999aa06771", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/fail2ban/fail2ban.local", "kind": "asset/data/config", "bytes": 630, "lines": 8, "sha256": "b618bb47f654280eee2ce8206e0ab2fe5883453c46271416e21571cdcbc69973", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
@@ -3508,7 +3499,7 @@
     {"path": "scripts/metrika-baseline-snapshot.py", "kind": "code", "bytes": 8777, "lines": 218, "sha256": "4802662c8a2f7b7bae6111d51b9a644349d7a462e5a7422b9e5d5153852f2799", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/metrika-goals-audit.py", "kind": "code", "bytes": 11116, "lines": 200, "sha256": "61521e21df3e8b112c7a987042251dbba7ac908bbb3ca0063197cef93d718948", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/metrika_daily_report.py", "kind": "code", "bytes": 84312, "lines": 1915, "sha256": "2c59bac5634d541ba2e1799363e1dc1448c744d6e107a95dd0b61f632621dbfa", "symlink": false, "nodes": 72, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
-    {"path": "scripts/minfin-debt-sync-from-mac.sh", "kind": "code", "bytes": 6850, "lines": 120, "sha256": "908efb5e6da90377ca5683cb159327a03627d7a1902a78917e90b09f37e9cb78", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
+    {"path": "scripts/minfin-debt-sync-from-mac.sh", "kind": "code", "bytes": 6856, "lines": 120, "sha256": "5f1974fbdeebe0b3b5c2685cbb9cd9cb818a64b0381b4297ac21728aec9efedd", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/minfin-sync-from-mac.sh", "kind": "code", "bytes": 6089, "lines": 103, "sha256": "bdce3f32ce028bc18348cbd191ee6e13efd737fbaa75f72c9f0b5fd489fe4381", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/ops/staff-pass.sh", "kind": "code", "bytes": 2470, "lines": 28, "sha256": "345f314cdf0051430d9415c63fb6b74f78f8c3839ae4c08f9a488cc61a96acc8", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/pg-backup.sh", "kind": "code", "bytes": 10826, "lines": 174, "sha256": "9841024a47df57bd3dad8892f0a5b6d5da93ab8b0bcda9c5a14469c2b9356534", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "operations", "semantic_evidence": true, "semantic_current": false},

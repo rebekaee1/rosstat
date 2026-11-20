@@ -15937,9 +15937,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "fa6eae8176e4961cf1714fee782b60f28ca7984c641a6c9bedc663c39a04f2f9",
-      "bytes": 36070,
-      "lines": 204,
+      "sha256": "241c8b39aa8709f06b416f853d8c9509e821c6cb085baeb99c21977fc2b2510b",
+      "bytes": 36766,
+      "lines": 205,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -35879,8 +35879,8 @@
     },
     {
       "path": "scripts/minfin-debt-sync-from-mac.sh",
-      "sha256": "908efb5e6da90377ca5683cb159327a03627d7a1902a78917e90b09f37e9cb78",
-      "bytes": 6850,
+      "sha256": "5f1974fbdeebe0b3b5c2685cbb9cd9cb818a64b0381b4297ac21728aec9efedd",
+      "bytes": 6856,
       "lines": 120,
       "code": true,
       "status": "reviewed",
@@ -36503,17 +36503,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "e235f585f42b342753aeae98fd2025d30ce3d76570e3a1fa05eb3c987f02c891",
+  "ledger_sha256": "b2a0e36773292c3deb2b7f1d215d19815238978d742d803b6f4bf8efba3e1a56",
   "javascript_inventory_sha256": "425dea827fc71b6d8559e33d9e9ceac5378562b40c9c07928ca069a54a99de76",
-  "baseline_commit": "3ff3f246b997c36bbd8411392b3a49987a16f39a",
+  "baseline_commit": "0e7e9818544decbf539ee908e3fc75c55b10eff7",
   "branch": "int/2026-11-20-pulse",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }

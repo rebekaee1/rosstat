@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2583  ·  **Строк:** 1 606 895  ·  **Токенов (≈):** 15 566 460
+**Файлов:** 2583  ·  **Строк:** 1 606 896  ·  **Токенов (≈):** 15 566 567
 
 ## По верхним папкам
 
@@ -18,11 +18,11 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 1157 | 389 763 | 4 405 047 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 21 | 1 580 | 26 414 |
+| `deploy` | 21 | 1 581 | 26 519 |
 | `docs` | 154 | 992 061 | 8 594 271 |
 | `frontend` | 1089 | 194 236 | 2 146 619 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 145 | 25 756 | 320 254 |
+| `scripts` | 145 | 25 756 | 320 256 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -238,12 +238,12 @@
 | `frontend/src/components/RegionsMap.jsx` | 626 | 6 968 |
 | `frontend/src/styles/z1-tokens.css` | 480 | 6 938 |
 | `backend/app/services/world_cards.py` | 825 | 6 928 |
+| `deploy/approved-shas.txt` | 205 | 6 896 |
 | `docs/missed_data_audit.md` | 449 | 6 887 |
 | `deploy/test-bot-classes.sh` | 348 | 6 870 |
 | `docs/research/_fpsr_raw/agent09.json` | 471 | 6 863 |
 | `backend/app/services/newsletter_personal/compose.py` | 539 | 6 841 |
 | `backend/app/services/emiss_weekly_fuel.py` | 644 | 6 818 |
-| `deploy/approved-shas.txt` | 204 | 6 791 |
 | `docs/research/ui-brainstorm-scenarios-2026-10-04.md` | 250 | 6 781 |
 | `backend/app/data/emiss_producer_prices.py` | 393 | 6 709 |
 | `backend/app/services/mail/funnel.py` | 503 | 6 707 |
@@ -1223,7 +1223,7 @@
 | `frontend/src/pages/ResearchPage.jsx` | 121 | 1 419 |
 | `backend/tests/test_market_history_backfill.py` | 163 | 1 417 |
 | `backend/tests/test_search_country_concept_headline.py` | 106 | 1 415 |
-| `scripts/minfin-debt-sync-from-mac.sh` | 120 | 1 412 |
+| `scripts/minfin-debt-sync-from-mac.sh` | 120 | 1 414 |
 | `backend/tests/test_wall_counter.py` | 120 | 1 410 |
 | `docs/design/local-acceptance/performance-lab.json` | 214 | 1 410 |
 | `frontend/src/lib/recentPages.component.test.jsx` | 104 | 1 409 |
