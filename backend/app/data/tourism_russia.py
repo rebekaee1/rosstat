@@ -679,6 +679,22 @@ DEST_URLS = {
     "TH": "https://www.mots.go.th/news/category/411",
     "UZ": "https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_1031.json",
     "KZ": "https://stat.gov.kz/ru/industries/business-statistics/stat-tourism/",
+    "VN": "https://vietnamtourism.gov.vn/en/statistic/international",
+    "MV": "https://statisticsmaldives.gov.mv/yearbook/2026/",
+    "MV-M": "https://statisticsmaldives.gov.mv/yearbook/2026/",
+    "ID": "https://www.bps.go.id/en/statistics-table/2/MTQ3MCMy/",
+    "LK": "https://www.sltda.gov.lk/en/monthly-tourist-arrivals-reports-2026",
+    "BY": "https://www.belstat.gov.by/ofitsialnaya-statistika/realny-sector-ekonomiki/turizm/",
+    "SC": "https://www.nbs.gov.sc/component/edocman/2042-visitor-arrivals-data-series-2/download",
+    "DO": "https://www.bancentral.gov.do/a/d/2537-sector-turismo",
+    "MN": "https://data.1212.mn/api/v1/en/NSO/Industry,%20service/Tourism",
+    "MN-M": "https://data.1212.mn/api/v1/en/NSO/Industry,%20service/Tourism",
+    "MU": "https://statsmauritius.govmu.org/Pages/Statistics/By_Subject/Tourism/SB_Tourism.aspx",
+    "MU-M": "https://statsmauritius.govmu.org/Pages/Statistics/By_Subject/Tourism/SB_Tourism.aspx",
+    "TZ-ZN": "http://ocgs.go.tz/publication-list/24",
+    "CU": "https://onei.gob.cu/turismo-0",
+    "TJ": "https://www.stat.tj/ru/v-2025-godu-bolee-21-milliona-inostranczev-posetili-tadzhikistan/",
+    "AE-DU": "https://www.dubaidet.gov.ae/en/research-and-insights/annual-visitor-report-2025",
 }
 
 DESTINATIONS: tuple[tuple[str, str, str, str, str, str, str, str, str], ...] = (
@@ -690,24 +706,72 @@ DESTINATIONS: tuple[tuple[str, str, str, str, str, str, str, str, str], ...] = (
      "Граждане России, въехавшие с туристскими целями"),
     ("kazakhstan", "KZ", "ytd_quarterly", "quarterly", "Казахстан", "Kazakhstan",
      "Бюро национальной статистики Казахстана", "с 2026 года", "Посетители — граждане России (пересечения границы)"),
+    # c5, 20.11.2026: страны без своей страницы на сайте. Десятый элемент — шаблон режимов (у рядов с пропусками
+    # месяцев его нет: сумма за год по неполному году была бы занижена), одиннадцатый — подпись в группе.
+    ("vietnam", "VN", "monthly", "monthly", "Вьетнам", "Vietnam", "Национальное управление туризма Вьетнама",
+     "с 2012 года (часть месяцев не опубликована)", "Иностранные гости — граждане России", None, "Вьетнам"),
+    ("maldives", "MV", "annual", "annual", "Мальдивы", "Maldives", "Бюро статистики Мальдив", "с 2012 года",
+     "Туристы — граждане России", "T10", "Мальдивы"),
+    ("maldives-monthly", "MV-M", "monthly", "monthly", "Мальдивы", "Maldives", "Бюро статистики Мальдив",
+     "2018–2025 годов (2019–2020 — не все месяцы)", "Туристы — граждане России", None, "Мальдивы по месяцам"),
+    ("indonesia", "ID", "monthly", "monthly", "Индонезия", "Indonesia", "Статистическое агентство Индонезии",
+     "с 2017 года", "Иностранные туристы — граждане России (Бали и вся страна)", "T6", "Индонезия"),
+    ("sri-lanka", "LK", "monthly", "monthly", "Шри-Ланка", "Sri Lanka", "Управление по развитию туризма Шри-Ланки",
+     "с 2017 года (часть месяцев не опубликована)", "Туристы — граждане России", None, "Шри-Ланка"),
+    ("belarus", "BY", "annual", "annual", "Беларусь", "Belarus", "Белстат", "2021–2025 годов (кроме 2023)",
+     "Организованные туристы и экскурсанты из России, принятые турфирмами Беларуси", "T10", "Беларусь"),
+    ("seychelles", "SC", "monthly", "monthly", "Сейшелы", "Seychelles", "Национальное бюро статистики Сейшел",
+     "с 2000 года", "Гости из России", "T6", "Сейшелы"),
+    ("dominican-republic", "DO", "monthly", "monthly", "Доминикана", "Dominican Republic",
+     "Центральный банк Доминиканской Республики", "с 2000 года (часть месяцев не опубликована)",
+     "Граждане России, прилетевшие самолётом", None, "Доминикана"),
+    ("mongolia", "MN", "annual", "annual", "Монголия", "Mongolia", "Национальная статистическая служба Монголии",
+     "с 1999 года", "Иностранные туристы — граждане России", "T10", "Монголия"),
+    ("mongolia-monthly", "MN-M", "monthly", "monthly", "Монголия", "Mongolia",
+     "Национальная статистическая служба Монголии", "с 2023 года", "Иностранные туристы — граждане России", "T6",
+     "Монголия по месяцам"),
+    ("mauritius", "MU", "annual", "annual", "Маврикий", "Mauritius", "Statistics Mauritius", "с 1996 года",
+     "Туристы, проживающие в России", "T10", "Маврикий"),
+    ("mauritius-monthly", "MU-M", "monthly", "monthly", "Маврикий", "Mauritius", "Statistics Mauritius",
+     "с 2025 года", "Туристы, проживающие в России", "T6", "Маврикий по месяцам"),
+    ("zanzibar", "TZ-ZN", "monthly", "monthly", "Занзибар", "Zanzibar", "Управление статистики Занзибара",
+     "с 2015 года (часть месяцев не опубликована)", "Иностранные гости — граждане России", None, "Занзибар"),
+    ("cuba", "CU", "annual", "annual", "Куба", "Cuba", "Национальное статистическое управление Кубы",
+     "1993–2022 годов (по странам позже не публиковалось)", "Гости из России", "T10", "Куба"),
+    ("tajikistan", "TJ", "annual", "annual", "Таджикистан", "Tajikistan", "Агентство по статистике Таджикистана",
+     "за 2025 год (публикуется только в новостях агентства)", "Въехавшие граждане России", None, "Таджикистан"),
+    ("dubai", "AE-DU", "annual", "annual", "Дубай (ОАЭ)", "Dubai (UAE)", "Департамент экономики и туризма Дубая",
+     "за 2025 год", "Гости с ночёвкой из СНГ и Восточной Европы вместе с Россией (Россию отдельно Дубай не "
+     "публикует)", None, "Дубай: СНГ и Восточная Европа"),
 )
+
+# Подпись в группе и шаблон режимов для первых четырёх стран (кортежи без хвоста).
+_DEST_DEFAULT_TAIL = {"egypt": ("T10", "Египет"), "thailand": (None, "Таиланд"), "uzbekistan": ("T10", "Узбекистан"),
+                      "kazakhstan": (None, "Казахстан")}
 
 
 def _dest_series() -> list[TourSeries]:
     out = []
     per = {"annual": "за год", "monthly": "за месяц", "quarterly": "за квартал"}
     per_en = {"annual": "per year", "monthly": "per month", "quarterly": "per quarter"}
-    for slug, iso2, kind, freq, country, country_en, source, since, who in DESTINATIONS:
+    for slug, iso2, kind, freq, country, country_en, source, since, who, *tail in DESTINATIONS:
+        family, _label = tail or _DEST_DEFAULT_TAIL[slug]
         name = f"Прибытия россиян: {country} (данные страны)"
+        name_en = f"Russian arrivals in {country_en} (destination data)"
+        if slug.endswith("-monthly"):
+            name, name_en = name.replace("(данные страны)", "(данные страны, по месяцам)"), name_en + ", monthly"
+        if slug == "dubai":
+            name = "Дубай: гости из СНГ и Восточной Европы, включая Россию"
+            name_en = "Dubai: visitors from the CIS and Eastern Europe, including Russia"
         out.append(_s(
-            f"tour-dest-{slug}", name, f"Russian arrivals in {country_en} (destination data)", "тыс. чел.",
+            f"tour-dest-{slug}", name, name_en, "тыс. чел.",
             "thousand people", freq, source, DEST_URLS[iso2], "tourism_destination_file",
             {"dest_iso2": iso2, "dest_kind": kind},
             f"{who} по статистике страны назначения ({country}), тысяч человек {per[freq]}. Данные {since}.",
             f"Russian citizens arriving in {country_en} according to {country_en}'s statistics, thousand "
             f"{per_en[freq]}.", _M_DEST, _M_DEST_EN,
             f"россияне {country}, туристы из России {country}, {country}, выездной туризм",
-            f"{source} {since}", listed=slug == "egypt", family="T10" if freq == "annual" else None,
+            f"{source} {since}", listed=slug == "egypt", family=family,
         ))
     return out
 
@@ -941,7 +1005,8 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
         *((f"tour-outbound-{c.slug}", c.name, c.name_en) for c in OUTBOUND_COUNTRIES),
     )),
     ("tourDestinations", "Россияне по данным стран назначения", tuple(
-        (f"tour-dest-{d[0]}", d[4], d[5]) for d in DESTINATIONS
+        (f"tour-dest-{d[0]}", (d[10] if len(d) > 9 else _DEST_DEFAULT_TAIL[d[0]][1]),
+         d[5] + (", monthly" if d[0].endswith("-monthly") else "")) for d in DESTINATIONS
     )),
     ("tourEconomy", "Туризм в экономике", (
         ("tour-gva", "Добавленная стоимость", "Value added"),
