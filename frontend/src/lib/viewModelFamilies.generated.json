@@ -19447,6 +19447,5704 @@
     "unit": "руб.",
     "variantAxis": null
   },
+  "tour-agencies": {
+    "base": "tour-agencies",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-agencies",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "ед."
+      },
+      {
+        "code": "tour-agencies-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-agencies-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Число туроператоров и турагентств",
+    "template": "T10",
+    "unit": "ед.",
+    "variantAxis": null
+  },
+  "tour-air-load-factor": {
+    "base": "tour-air-load-factor",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "На конец периода",
+        "leaf": false
+      },
+      {
+        "id": "avg",
+        "label": "Средняя за период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-air-load-factor",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "level",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-load-factor-eop-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "eop-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-load-factor-eop-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "eop-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-load-factor-avg-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "avg-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-load-factor-avg-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "avg",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "avg-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-load-factor-mom",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "п.п."
+      },
+      {
+        "code": "tour-air-load-factor-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "п.п."
+      },
+      {
+        "code": "tour-air-load-factor-yoy",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "tour-air-load-factor-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "tour-air-load-factor-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "п.п."
+      },
+      {
+        "code": "tour-air-load-factor-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
+      }
+    ],
+    "name": "Занятость кресел в самолётах российских авиакомпаний",
+    "template": "T2y",
+    "unit": "%",
+    "variantAxis": null
+  },
+  "tour-air-passengers": {
+    "base": "tour-air-passengers",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-air-passengers",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-sum-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-mom",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-yoy",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиры российских авиакомпаний",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-air-passengers-charter": {
+    "base": "tour-air-passengers-charter",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-air-passengers-charter",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-charter-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-charter-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-charter-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-charter-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-charter-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-charter-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-charter-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-charter-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиры чартерных рейсов российских авиакомпаний",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-air-passengers-domestic": {
+    "base": "tour-air-passengers-domestic",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-air-passengers-domestic",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-domestic-sum-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-domestic-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-domestic-mom",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-domestic-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-domestic-yoy",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-domestic-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-domestic-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-domestic-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиры авиакомпаний на внутренних рейсах",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-air-passengers-international": {
+    "base": "tour-air-passengers-international",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-air-passengers-international",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-international-sum-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-international-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-air-passengers-international-mom",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-international-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-international-yoy",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-international-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-international-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-air-passengers-international-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиры авиакомпаний на международных рейсах",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-domodedovo": {
+    "base": "tour-airport-domodedovo",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-domodedovo",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-domodedovo-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-domodedovo-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-domodedovo-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-domodedovo-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-domodedovo-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-domodedovo-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-domodedovo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-domodedovo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Домодедово",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-koltsovo": {
+    "base": "tour-airport-koltsovo",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-koltsovo",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-koltsovo-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-koltsovo-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-koltsovo-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-koltsovo-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-koltsovo-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-koltsovo-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-koltsovo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-koltsovo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Кольцово",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-pulkovo": {
+    "base": "tour-airport-pulkovo",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-pulkovo",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-pulkovo-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-pulkovo-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-pulkovo-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-pulkovo-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-pulkovo-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-pulkovo-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-pulkovo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-pulkovo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Пулково",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-sheremetyevo": {
+    "base": "tour-airport-sheremetyevo",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-sheremetyevo",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-sheremetyevo-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-sheremetyevo-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-sheremetyevo-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-sheremetyevo-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-sheremetyevo-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-sheremetyevo-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-sheremetyevo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-sheremetyevo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Шереметьево",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-tolmachevo": {
+    "base": "tour-airport-tolmachevo",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-tolmachevo",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-tolmachevo-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-tolmachevo-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-tolmachevo-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-tolmachevo-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-tolmachevo-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-tolmachevo-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-tolmachevo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-tolmachevo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Толмачёво",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-vnukovo": {
+    "base": "tour-airport-vnukovo",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-vnukovo",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-vnukovo-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-vnukovo-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-vnukovo-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-vnukovo-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-vnukovo-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-vnukovo-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-vnukovo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-vnukovo-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Внуково",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-egypt": {
+    "base": "tour-dest-egypt",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-egypt",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-egypt-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-egypt-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Египет (данные страны)",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-uzbekistan": {
+    "base": "tour-dest-uzbekistan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-uzbekistan",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-uzbekistan-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-uzbekistan-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Узбекистан (данные страны)",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-gva": {
+    "base": "tour-gva",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-gva",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-gva-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-gva-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-yoy",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Добавленная стоимость туристской индустрии",
+    "template": "T9",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-gva-share-annual": {
+    "base": "tour-gva-share-annual",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-gva-share-annual",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-share-annual-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "п.п."
+      }
+    ],
+    "name": "Доля туризма в ВВП России (годовой ряд)",
+    "template": "T10a",
+    "unit": "%",
+    "variantAxis": null
+  },
+  "tour-hotel-beds": {
+    "base": "tour-hotel-beds",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hotel-beds",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. мест"
+      },
+      {
+        "code": "tour-hotel-beds-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-beds-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Число мест в гостиницах и других средствах размещения",
+    "template": "T10",
+    "unit": "тыс. мест",
+    "variantAxis": null
+  },
+  "tour-hotel-count": {
+    "base": "tour-hotel-count",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hotel-count",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "ед."
+      },
+      {
+        "code": "tour-hotel-count-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-count-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Число гостиниц и других средств размещения",
+    "template": "T10",
+    "unit": "ед.",
+    "variantAxis": null
+  },
+  "tour-hotel-guests": {
+    "base": "tour-hotel-guests",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hotel-guests",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млн чел."
+      },
+      {
+        "code": "tour-hotel-guests-yoy",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-guests-index",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Размещённые в гостиницах и других средствах размещения",
+    "template": "T10",
+    "unit": "млн чел.",
+    "variantAxis": null
+  },
+  "tour-hotel-nights": {
+    "base": "tour-hotel-nights",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hotel-nights",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млн ночёвок"
+      },
+      {
+        "code": "tour-hotel-nights-yoy",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-nights-index",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Ночёвки в гостиницах и других средствах размещения",
+    "template": "T10",
+    "unit": "млн ночёвок",
+    "variantAxis": null
+  },
+  "tour-hotel-nights-monthly": {
+    "base": "tour-hotel-nights-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hotel-nights-monthly",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн ночёвок"
+      },
+      {
+        "code": "tour-hotel-nights-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн ночёвок"
+      },
+      {
+        "code": "tour-hotel-nights-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн ночёвок"
+      },
+      {
+        "code": "tour-hotel-nights-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-nights-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-nights-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-nights-monthly-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-nights-monthly-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-nights-monthly-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Ночёвки в гостиницах по месяцам",
+    "template": "T6",
+    "unit": "млн ночёвок",
+    "variantAxis": null
+  },
+  "tour-hotel-revenue": {
+    "base": "tour-hotel-revenue",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hotel-revenue",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-hotel-revenue-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-revenue-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Доходы гостиниц и других средств размещения",
+    "template": "T10",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-hotel-rooms": {
+    "base": "tour-hotel-rooms",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hotel-rooms",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. номеров"
+      },
+      {
+        "code": "tour-hotel-rooms-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hotel-rooms-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Номерной фонд гостиниц и других средств размещения",
+    "template": "T10",
+    "unit": "тыс. номеров",
+    "variantAxis": null
+  },
+  "tour-inbound-abkhazia": {
+    "base": "tour-inbound-abkhazia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-abkhazia",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-abkhazia-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-abkhazia-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-abkhazia-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-abkhazia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-abkhazia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Абхазия",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-armenia": {
+    "base": "tour-inbound-armenia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-armenia",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-armenia-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-armenia-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-armenia-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-armenia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-armenia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Армения",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-azerbaijan": {
+    "base": "tour-inbound-azerbaijan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-azerbaijan",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-azerbaijan-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-azerbaijan-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-azerbaijan-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-azerbaijan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-azerbaijan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Азербайджан",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-belarus": {
+    "base": "tour-inbound-belarus",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-belarus",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-belarus-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-belarus-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-belarus-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-belarus-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-belarus-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Беларусь",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-china": {
+    "base": "tour-inbound-china",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-china",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-china-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-china-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-china-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-china-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-china-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Китай",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-georgia": {
+    "base": "tour-inbound-georgia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-georgia",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-georgia-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-georgia-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-georgia-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-georgia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-georgia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Грузия",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-germany": {
+    "base": "tour-inbound-germany",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-germany",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-germany-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-germany-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-germany-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-germany-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-germany-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Германия",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-kazakhstan": {
+    "base": "tour-inbound-kazakhstan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-kazakhstan",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-kazakhstan-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-kazakhstan-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-kazakhstan-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-kazakhstan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-kazakhstan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Казахстан",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-kyrgyzstan": {
+    "base": "tour-inbound-kyrgyzstan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-kyrgyzstan",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-kyrgyzstan-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-kyrgyzstan-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-kyrgyzstan-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-kyrgyzstan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-kyrgyzstan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Киргизия",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-mongolia": {
+    "base": "tour-inbound-mongolia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-mongolia",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-mongolia-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-mongolia-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-mongolia-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-mongolia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-mongolia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Монголия",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-tajikistan": {
+    "base": "tour-inbound-tajikistan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-tajikistan",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-tajikistan-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-tajikistan-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-tajikistan-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-tajikistan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-tajikistan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Таджикистан",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-trips": {
+    "base": "tour-inbound-trips",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-trips",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-trips-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-trips-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-trips-yoy",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-trips-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-trips-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки иностранцев в Россию",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-trips-monthly": {
+    "base": "tour-inbound-trips-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-trips-monthly",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-trips-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-trips-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-trips-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-trips-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-trips-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-trips-monthly-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-trips-monthly-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-trips-monthly-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки иностранцев в Россию (месячный ряд)",
+    "template": "T6",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-inbound-uzbekistan": {
+    "base": "tour-inbound-uzbekistan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-inbound-uzbekistan",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-uzbekistan-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-inbound-uzbekistan-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-uzbekistan-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-uzbekistan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-inbound-uzbekistan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Въездные туристские поездки в Россию: Узбекистан",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-abkhazia": {
+    "base": "tour-outbound-abkhazia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-abkhazia",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-abkhazia-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-abkhazia-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-abkhazia-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-abkhazia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-abkhazia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Абхазия",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-armenia": {
+    "base": "tour-outbound-armenia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-armenia",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-armenia-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-armenia-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-armenia-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-armenia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-armenia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Армения",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-azerbaijan": {
+    "base": "tour-outbound-azerbaijan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-azerbaijan",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-azerbaijan-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-azerbaijan-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-azerbaijan-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-azerbaijan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-azerbaijan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Азербайджан",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-china": {
+    "base": "tour-outbound-china",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-china",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-china-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-china-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-china-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-china-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-china-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Китай",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-egypt": {
+    "base": "tour-outbound-egypt",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-egypt",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-egypt-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-egypt-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-egypt-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-egypt-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-egypt-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Египет",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-georgia": {
+    "base": "tour-outbound-georgia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-georgia",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-georgia-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-georgia-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-georgia-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-georgia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-georgia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Грузия",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-kazakhstan": {
+    "base": "tour-outbound-kazakhstan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-kazakhstan",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-kazakhstan-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-kazakhstan-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-kazakhstan-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-kazakhstan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-kazakhstan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Казахстан",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-thailand": {
+    "base": "tour-outbound-thailand",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-thailand",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-thailand-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-thailand-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-thailand-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-thailand-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-thailand-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Таиланд",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-trips": {
+    "base": "tour-outbound-trips",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-trips",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-trips-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-trips-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-trips-yoy",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-trips-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-trips-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян за рубеж",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-turkey": {
+    "base": "tour-outbound-turkey",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-turkey",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-turkey-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-turkey-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-turkey-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-turkey-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-turkey-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Турция",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-uae": {
+    "base": "tour-outbound-uae",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-uae",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-uae-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-uae-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-uae-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-uae-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-uae-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: ОАЭ",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-uzbekistan": {
+    "base": "tour-outbound-uzbekistan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-uzbekistan",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-uzbekistan-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-uzbekistan-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-uzbekistan-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-uzbekistan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-uzbekistan-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Узбекистан",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-outbound-vietnam": {
+    "base": "tour-outbound-vietnam",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-outbound-vietnam",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-vietnam-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-outbound-vietnam-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-vietnam-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-vietnam-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-outbound-vietnam-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Выездные туристские поездки россиян: Вьетнам",
+    "template": "T9",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-rail-passenger-km": {
+    "base": "tour-rail-passenger-km",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-rail-passenger-km",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млрд пасс.-км"
+      },
+      {
+        "code": "tour-rail-passenger-km-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млрд пасс.-км"
+      },
+      {
+        "code": "tour-rail-passenger-km-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млрд пасс.-км"
+      },
+      {
+        "code": "tour-rail-passenger-km-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passenger-km-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passenger-km-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passenger-km-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passenger-km-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passenger-km-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажирооборот железнодорожного транспорта",
+    "template": "T6",
+    "unit": "млрд пасс.-км",
+    "variantAxis": null
+  },
+  "tour-rail-passengers": {
+    "base": "tour-rail-passengers",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-rail-passengers",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн чел."
+      },
+      {
+        "code": "tour-rail-passengers-sum-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн чел."
+      },
+      {
+        "code": "tour-rail-passengers-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн чел."
+      },
+      {
+        "code": "tour-rail-passengers-mom",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passengers-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passengers-yoy",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passengers-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passengers-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-rail-passengers-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиры железнодорожного транспорта",
+    "template": "T6",
+    "unit": "млн чел.",
+    "variantAxis": null
+  },
+  "tour-sanatorium-guests": {
+    "base": "tour-sanatorium-guests",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-sanatorium-guests",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млн чел."
+      },
+      {
+        "code": "tour-sanatorium-guests-yoy",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-sanatorium-guests-index",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Размещённые в санаториях",
+    "template": "T10",
+    "unit": "млн чел.",
+    "variantAxis": null
+  },
+  "tour-sanatorium-nights": {
+    "base": "tour-sanatorium-nights",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-sanatorium-nights",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млн ночёвок"
+      },
+      {
+        "code": "tour-sanatorium-nights-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-sanatorium-nights-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Ночёвки в санаториях",
+    "template": "T10",
+    "unit": "млн ночёвок",
+    "variantAxis": null
+  },
+  "tour-sanatorium-revenue": {
+    "base": "tour-sanatorium-revenue",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-sanatorium-revenue",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-sanatorium-revenue-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-sanatorium-revenue-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Доходы санаториев",
+    "template": "T10",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-travel-balance": {
+    "base": "tour-travel-balance",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-balance",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-balance-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-balance-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-balance-yoy",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-balance-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-balance-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "млн $"
+      }
+    ],
+    "name": "Сальдо поездок в платёжном балансе",
+    "template": "T9s",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-travel-business-exports": {
+    "base": "tour-travel-business-exports",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-business-exports",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-business-exports-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-business-exports-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-business-exports-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-business-exports-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-business-exports-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Траты иностранцев в деловых поездках по России",
+    "template": "T9",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-travel-business-imports": {
+    "base": "tour-travel-business-imports",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-business-imports",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-business-imports-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-business-imports-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-business-imports-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-business-imports-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-business-imports-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Траты россиян в деловых поездках за границу",
+    "template": "T9",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-travel-exports": {
+    "base": "tour-travel-exports",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-exports",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-exports-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-exports-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-exports-yoy",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-exports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-exports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Траты иностранцев в поездках по России",
+    "template": "T9",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-travel-exports-monthly": {
+    "base": "tour-travel-exports-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-exports-monthly",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-exports-monthly-sum-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-exports-monthly-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-exports-monthly-mom",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-exports-monthly-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-exports-monthly-yoy",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-exports-monthly-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-exports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-exports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Траты иностранцев в поездках по России (месячный ряд)",
+    "template": "T6",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-travel-imports": {
+    "base": "tour-travel-imports",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-imports",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-imports-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-imports-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-imports-yoy",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-imports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-imports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Траты россиян в поездках за границу",
+    "template": "T9",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-travel-imports-monthly": {
+    "base": "tour-travel-imports-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-imports-monthly",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-imports-monthly-sum-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-imports-monthly-sum-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-imports-monthly-mom",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-imports-monthly-qoq",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-imports-monthly-yoy",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-imports-monthly-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-imports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-imports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Траты россиян в поездках за границу (месячный ряд)",
+    "template": "T6",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-travel-personal-exports": {
+    "base": "tour-travel-personal-exports",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-personal-exports",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-personal-exports-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-personal-exports-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-personal-exports-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-personal-exports-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-personal-exports-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Траты иностранцев в личных поездках по России",
+    "template": "T9",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-travel-personal-imports": {
+    "base": "tour-travel-personal-imports",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-travel-personal-imports",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-personal-imports-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "tour-travel-personal-imports-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-personal-imports-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-personal-imports-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-travel-personal-imports-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Траты россиян в личных поездках за границу",
+    "template": "T9",
+    "unit": "млн $",
+    "variantAxis": null
+  },
   "trade-balance": {
     "base": "trade-balance",
     "defaultMode": "level",

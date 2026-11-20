@@ -45,6 +45,8 @@ ETL_TIMEOUT_BY_PARSER: dict[str, int] = {
     "rosstat_weekly_cpi": 600,
     # Minfin: direct 503 → Tor SOCKS (+ artifact). Ночью Tor иногда >5 мин.
     "minfin_budget_csv": 600,
+    # Туризм ЕМИСС: страница витрины + dataGrid (занятость кресел — два набора) через цепочку прокси.
+    "rosstat_emiss_tourism": 600,
 }
 
 logger = logging.getLogger(__name__)

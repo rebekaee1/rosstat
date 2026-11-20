@@ -15,6 +15,12 @@ Target rows:
 - `services-imports-monthly` → row label «Импорт услуг»
 - (`services-balance-monthly` row «Услуги » пока не нужен — see seed_data.py
   T3 scope: minimal_no_derived).
+
+Статья «Поездки» (раздел «Туризм», 20.11.2026; реестр — ``app.data.tourism_russia``):
+- `travel-balance-monthly` → строка «Поездки» (сальдо, отрицательное);
+- `travel-exports-monthly` / `travel-imports-monthly` → строки «Экспорт» / «Импорт » сразу под «Поездки».
+  Подписи «Экспорт»/«Импорт» повторяются под каждой статьёй, поэтому строка ищется после заголовка статьи,
+  а не по тексту. Последние месяцы помечены «(оценка)» и пересматриваются в следующих выпусках.
 """
 
 from __future__ import annotations
@@ -48,6 +54,13 @@ _MONTH_RU_SHORT = {
 _TARGET_LABEL = {
     "services-exports-monthly": "экспорт услуг",
     "services-imports-monthly": "импорт услуг",
+}
+
+# Статья → (заголовок статьи, строка под ним: None = сама статья).
+_ARTICLE_TARGET = {
+    "travel-balance-monthly": ("поездки", None),
+    "travel-exports-monthly": ("поездки", "экспорт"),
+    "travel-imports-monthly": ("поездки", "импорт"),
 }
 
 _HEADER_STR_RE = re.compile(
@@ -106,6 +119,20 @@ def fetch_trade_services_xlsx() -> tuple[bytes, str]:
         session.close()
 
 
+def _article_row(ws, header_row_idx: int, article: str, sub: str | None) -> int | None:
+    """Строка статьи (или её «Экспорт»/«Импорт» в двух строках под заголовком статьи)."""
+    for ri in range(header_row_idx + 1, ws.max_row + 1):
+        if str(ws.cell(row=ri, column=1).value or "").strip().lower() != article:
+            continue
+        if sub is None:
+            return ri
+        for rj in (ri + 1, ri + 2):
+            if str(ws.cell(row=rj, column=1).value or "").strip().lower() == sub:
+                return rj
+        return None
+    return None
+
+
 def parse_trade_services_monthly_xlsx(
     content: bytes, target: str,
 ) -> list[DataPoint]:
@@ -113,9 +140,9 @@ def parse_trade_services_monthly_xlsx(
 
     target: один из 'services-exports-monthly', 'services-imports-monthly'.
     """
-    if target not in _TARGET_LABEL:
+    if target not in _TARGET_LABEL and target not in _ARTICLE_TARGET:
         raise ValueError(f"Unknown services trade target: {target}")
-    label_needle = _TARGET_LABEL[target]
+    label_needle = _TARGET_LABEL.get(target) or "/".join(x for x in _ARTICLE_TARGET[target] if x)
 
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True)
     try:
@@ -146,14 +173,17 @@ def parse_trade_services_monthly_xlsx(
             )
 
         data_row_idx = None
-        for ri in range(header_row_idx + 1, ws.max_row + 1):
-            label = ws.cell(row=ri, column=1).value
-            if not label:
-                continue
-            label_norm = str(label).strip().lower()
-            if label_norm == label_needle:
-                data_row_idx = ri
-                break
+        if target in _ARTICLE_TARGET:
+            data_row_idx = _article_row(ws, header_row_idx, *_ARTICLE_TARGET[target])
+        else:
+            for ri in range(header_row_idx + 1, ws.max_row + 1):
+                label = ws.cell(row=ri, column=1).value
+                if not label:
+                    continue
+                label_norm = str(label).strip().lower()
+                if label_norm == label_needle:
+                    data_row_idx = ri
+                    break
 
         if data_row_idx is None:
             raise ValueError(

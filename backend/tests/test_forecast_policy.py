@@ -14,6 +14,7 @@ from seed_data import (
     _generated_sibling_codes,
 )
 from app.api.forecasts import DERIVED_CPI_FORECASTS
+from app.data.tourism_russia import forecast_codes as tourism_forecast_codes
 from app.services.forecast_pipeline import CPI_DERIVED_FORECAST_TARGETS
 
 
@@ -69,6 +70,8 @@ GENERIC_QUARTERLY_FORECAST_CODES = {
     "services-exports",
     "services-imports",
     "gdp-investment",
+    # Туризм (20.11.2026): траты в поездках, въезд и выезд, добавленная стоимость туриндустрии.
+    *tourism_forecast_codes("generic_quarterly"),
 }
 
 # Signed-quarterly — level-diff вариант той же multi-window OLS методологии
@@ -82,6 +85,8 @@ SIGNED_QUARTERLY_FORECAST_CODES = {
     # Чистые прямые иностранные инвестиции — знаковый квартальный ряд (может
     # быть отрицательным при оттоке), log-diff неопределён → level-diff OLS.
     "fdi-net",
+    # Сальдо поездок в платёжном балансе (туризм, 20.11.2026) — обычно отрицательное.
+    *tourism_forecast_codes("signed_quarterly"),
 }
 
 DERIVED_FROM_SOURCE_FORECAST_CODES = {

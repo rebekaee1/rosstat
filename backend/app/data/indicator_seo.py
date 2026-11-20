@@ -9305,3 +9305,18 @@ def _build_weo_blocks(spec: dict[str, str]) -> list[dict[str, str]]:
 
 for _code, _spec in _WEO_BLOCK_SPECS.items():
     INDICATOR_SEO_BLOCKS[_code] = _build_weo_blocks(_spec)
+
+
+# ── Туризм по России в целом (20.11.2026) ────────────────────────────────────
+#
+# Ключи, заголовки, «О показателе» и скрытые срезы — из реестра раздела `app/data/tourism_russia.py`. Скрытые ряды
+# достижимы через группы срезов (`indicatorVariants.js`) или переключатель частоты (`primary_indicator_code`).
+from app.data import tourism_russia as _tourism_russia  # noqa: E402
+
+for _code, _keywords in _tourism_russia.seo_keywords().items():
+    INDICATOR_SEO_KEYWORDS.setdefault(_code, _keywords)
+for _code, _meta in _tourism_russia.seo_meta().items():
+    INDICATOR_SEO.setdefault(_code, _meta)
+for _code, _blocks in _tourism_russia.seo_blocks().items():
+    INDICATOR_SEO_BLOCKS.setdefault(_code, _blocks)
+INDICATOR_HIDDEN_FROM_LISTING.update(_tourism_russia.hidden_codes())

@@ -164,6 +164,133 @@ export const VARIANT_GROUPS = [
       { code: 'wages-real', label: 'Реальная', labelKey: 'variant.wages.real' },
     ],
   },
+  // Туризм по России (20.11.2026): срезы повторяют backend/app/data/tourism_russia.py::VARIANT_GROUPS (тест сверяет).
+  {
+    label: 'Траты иностранцев в России',
+    labelKey: 'variant.tourTravelExports.group',
+    codes: [
+      { code: 'tour-travel-exports', label: 'Все поездки', labelKey: 'variant.tourTravelExports.travel-exports' },
+      { code: 'tour-travel-business-exports', label: 'Деловые', labelKey: 'variant.tourTravelExports.travel-business-exports' },
+      { code: 'tour-travel-personal-exports', label: 'Личные', labelKey: 'variant.tourTravelExports.travel-personal-exports' },
+    ],
+  },
+  {
+    label: 'Траты россиян за границей',
+    labelKey: 'variant.tourTravelImports.group',
+    codes: [
+      { code: 'tour-travel-imports', label: 'Все поездки', labelKey: 'variant.tourTravelImports.travel-imports' },
+      { code: 'tour-travel-business-imports', label: 'Деловые', labelKey: 'variant.tourTravelImports.travel-business-imports' },
+      { code: 'tour-travel-personal-imports', label: 'Личные', labelKey: 'variant.tourTravelImports.travel-personal-imports' },
+    ],
+  },
+  {
+    label: 'Въезд иностранцев по странам',
+    labelKey: 'variant.tourInbound.group',
+    codes: [
+      { code: 'tour-inbound-trips', label: 'Все страны', labelKey: 'variant.tourInbound.inbound-trips' },
+      { code: 'tour-inbound-kazakhstan', label: 'Казахстан', labelKey: 'variant.tourInbound.inbound-kazakhstan' },
+      { code: 'tour-inbound-china', label: 'Китай', labelKey: 'variant.tourInbound.inbound-china' },
+      { code: 'tour-inbound-uzbekistan', label: 'Узбекистан', labelKey: 'variant.tourInbound.inbound-uzbekistan' },
+      { code: 'tour-inbound-abkhazia', label: 'Абхазия', labelKey: 'variant.tourInbound.inbound-abkhazia' },
+      { code: 'tour-inbound-tajikistan', label: 'Таджикистан', labelKey: 'variant.tourInbound.inbound-tajikistan' },
+      { code: 'tour-inbound-belarus', label: 'Беларусь', labelKey: 'variant.tourInbound.inbound-belarus' },
+      { code: 'tour-inbound-armenia', label: 'Армения', labelKey: 'variant.tourInbound.inbound-armenia' },
+      { code: 'tour-inbound-mongolia', label: 'Монголия', labelKey: 'variant.tourInbound.inbound-mongolia' },
+      { code: 'tour-inbound-kyrgyzstan', label: 'Киргизия', labelKey: 'variant.tourInbound.inbound-kyrgyzstan' },
+      { code: 'tour-inbound-azerbaijan', label: 'Азербайджан', labelKey: 'variant.tourInbound.inbound-azerbaijan' },
+      { code: 'tour-inbound-georgia', label: 'Грузия', labelKey: 'variant.tourInbound.inbound-georgia' },
+      { code: 'tour-inbound-germany', label: 'Германия', labelKey: 'variant.tourInbound.inbound-germany' },
+    ],
+  },
+  {
+    label: 'Выезд россиян по странам',
+    labelKey: 'variant.tourOutbound.group',
+    codes: [
+      { code: 'tour-outbound-trips', label: 'Все страны', labelKey: 'variant.tourOutbound.outbound-trips' },
+      { code: 'tour-outbound-turkey', label: 'Турция', labelKey: 'variant.tourOutbound.outbound-turkey' },
+      { code: 'tour-outbound-abkhazia', label: 'Абхазия', labelKey: 'variant.tourOutbound.outbound-abkhazia' },
+      { code: 'tour-outbound-kazakhstan', label: 'Казахстан', labelKey: 'variant.tourOutbound.outbound-kazakhstan' },
+      { code: 'tour-outbound-uae', label: 'ОАЭ', labelKey: 'variant.tourOutbound.outbound-uae' },
+      { code: 'tour-outbound-china', label: 'Китай', labelKey: 'variant.tourOutbound.outbound-china' },
+      { code: 'tour-outbound-egypt', label: 'Египет', labelKey: 'variant.tourOutbound.outbound-egypt' },
+      { code: 'tour-outbound-georgia', label: 'Грузия', labelKey: 'variant.tourOutbound.outbound-georgia' },
+      { code: 'tour-outbound-thailand', label: 'Таиланд', labelKey: 'variant.tourOutbound.outbound-thailand' },
+      { code: 'tour-outbound-armenia', label: 'Армения', labelKey: 'variant.tourOutbound.outbound-armenia' },
+      { code: 'tour-outbound-uzbekistan', label: 'Узбекистан', labelKey: 'variant.tourOutbound.outbound-uzbekistan' },
+      { code: 'tour-outbound-azerbaijan', label: 'Азербайджан', labelKey: 'variant.tourOutbound.outbound-azerbaijan' },
+      { code: 'tour-outbound-vietnam', label: 'Вьетнам', labelKey: 'variant.tourOutbound.outbound-vietnam' },
+    ],
+  },
+  {
+    label: 'Россияне по данным стран назначения',
+    labelKey: 'variant.tourDestinations.group',
+    codes: [
+      { code: 'tour-dest-egypt', label: 'Египет', labelKey: 'variant.tourDestinations.dest-egypt' },
+      { code: 'tour-dest-thailand', label: 'Таиланд', labelKey: 'variant.tourDestinations.dest-thailand' },
+      { code: 'tour-dest-uzbekistan', label: 'Узбекистан', labelKey: 'variant.tourDestinations.dest-uzbekistan' },
+      { code: 'tour-dest-kazakhstan', label: 'Казахстан', labelKey: 'variant.tourDestinations.dest-kazakhstan' },
+    ],
+  },
+  {
+    label: 'Туризм в экономике',
+    labelKey: 'variant.tourEconomy.group',
+    codes: [
+      { code: 'tour-gva', label: 'Добавленная стоимость', labelKey: 'variant.tourEconomy.gva' },
+      { code: 'tour-gva-share', label: 'Доля в ВВП', labelKey: 'variant.tourEconomy.gva-share' },
+      { code: 'tour-gva-volume', label: 'Реальный рост', labelKey: 'variant.tourEconomy.gva-volume' },
+    ],
+  },
+  {
+    label: 'Авиаперевозки пассажиров',
+    labelKey: 'variant.tourAir.group',
+    codes: [
+      { code: 'tour-air-passengers', label: 'Все рейсы', labelKey: 'variant.tourAir.air-passengers' },
+      { code: 'tour-air-passengers-domestic', label: 'Внутренние', labelKey: 'variant.tourAir.air-passengers-domestic' },
+      { code: 'tour-air-passengers-international', label: 'Международные', labelKey: 'variant.tourAir.air-passengers-international' },
+      { code: 'tour-air-passengers-charter', label: 'Чартеры', labelKey: 'variant.tourAir.air-passengers-charter' },
+    ],
+  },
+  {
+    label: 'Пассажиропоток аэропортов',
+    labelKey: 'variant.tourAirports.group',
+    codes: [
+      { code: 'tour-airport-sheremetyevo', label: 'Шереметьево', labelKey: 'variant.tourAirports.airport-sheremetyevo' },
+      { code: 'tour-airport-vnukovo', label: 'Внуково', labelKey: 'variant.tourAirports.airport-vnukovo' },
+      { code: 'tour-airport-domodedovo', label: 'Домодедово', labelKey: 'variant.tourAirports.airport-domodedovo' },
+      { code: 'tour-airport-pulkovo', label: 'Пулково', labelKey: 'variant.tourAirports.airport-pulkovo' },
+      { code: 'tour-airport-koltsovo', label: 'Кольцово', labelKey: 'variant.tourAirports.airport-koltsovo' },
+      { code: 'tour-airport-tolmachevo', label: 'Толмачёво', labelKey: 'variant.tourAirports.airport-tolmachevo' },
+    ],
+  },
+  {
+    label: 'Железная дорога',
+    labelKey: 'variant.tourRail.group',
+    codes: [
+      { code: 'tour-rail-passengers', label: 'Пассажиры', labelKey: 'variant.tourRail.rail-passengers' },
+      { code: 'tour-rail-passenger-km', label: 'Пассажирооборот', labelKey: 'variant.tourRail.rail-passenger-km' },
+    ],
+  },
+  {
+    label: 'Гостиницы и средства размещения',
+    labelKey: 'variant.tourHotels.group',
+    codes: [
+      { code: 'tour-hotel-guests', label: 'Размещённые', labelKey: 'variant.tourHotels.hotel-guests' },
+      { code: 'tour-hotel-nights', label: 'Ночёвки', labelKey: 'variant.tourHotels.hotel-nights' },
+      { code: 'tour-hotel-count', label: 'Число объектов', labelKey: 'variant.tourHotels.hotel-count' },
+      { code: 'tour-hotel-rooms', label: 'Номера', labelKey: 'variant.tourHotels.hotel-rooms' },
+      { code: 'tour-hotel-beds', label: 'Места', labelKey: 'variant.tourHotels.hotel-beds' },
+      { code: 'tour-hotel-revenue', label: 'Доходы', labelKey: 'variant.tourHotels.hotel-revenue' },
+    ],
+  },
+  {
+    label: 'Санатории',
+    labelKey: 'variant.tourSanatoria.group',
+    codes: [
+      { code: 'tour-sanatorium-guests', label: 'Размещённые', labelKey: 'variant.tourSanatoria.sanatorium-guests' },
+      { code: 'tour-sanatorium-nights', label: 'Ночёвки', labelKey: 'variant.tourSanatoria.sanatorium-nights' },
+      { code: 'tour-sanatorium-revenue', label: 'Доходы', labelKey: 'variant.tourSanatoria.sanatorium-revenue' },
+    ],
+  },
 ];
 
 export function findVariantGroup(code) {
