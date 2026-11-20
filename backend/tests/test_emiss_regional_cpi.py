@@ -237,3 +237,51 @@ def test_network_failure_on_one_year_keeps_other_years_and_raises(tmp_path, monk
     with pytest.raises(RuntimeError, match="cpi-headline 2010"):
         asyncio.run(scenario())
     assert ("cpi-headline", 2011) in asked and ("food-set", 2026) in asked
+
+
+def test_three_failures_in_row_stop_the_run(tmp_path, monkeypatch):
+    """20.11.2026: после 11 загруженных лет — отказы подряд. Прогон останавливается на третьем, а не шлёт ещё 79."""
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.models import Base, RegionIndicator
+
+    db_path = tmp_path / "cpi-ban.db"
+    engine = create_engine(f"sqlite:///{db_path}")
+    Base.metadata.create_all(engine)
+    engine.dispose()
+    asked = []
+
+    async def banned_from_2013(req, year, territory_ids, dimnames, post_grid=None):
+        asked.append((req.name, year))
+        if year >= 2013:
+            raise RuntimeError("dataGrid.do?id=31074: HTTP 403")
+        return []
+
+    monkeypatch.setattr(parser, "fetch_year", banned_from_2013)
+    monkeypatch.setattr(parser, "_PAUSE_BETWEEN_REQUESTS", 0)
+    monkeypatch.setattr(parser, "acquire_regional_write_lock", lambda db: asyncio.sleep(0))
+
+    async def no_bounds(db, ids):
+        return False
+
+    monkeypatch.setattr(parser, "update_regional_year_bounds", no_bounds)
+
+    async def scenario():
+        eng = create_async_engine(f"sqlite+aiosqlite:///{db_path}")
+        maker = async_sessionmaker(eng, expire_on_commit=False)
+        try:
+            async with maker() as db:
+                for row in spec.artifact_rows():
+                    db.add(RegionIndicator(code=row["code"], table_code=row["table_code"], section_num=20,
+                                           section_name="Цены и тарифы", name=row["name"]))
+                await db.commit()
+                return await parser.run_emiss_regional_cpi_update(
+                    db, territory_ids=["1849012"], dimnames={}, today=date(2026, 11, 19))
+        finally:
+            await eng.dispose()
+
+    with pytest.raises(RuntimeError, match=r"не загружено запросов: 3 .*остановлен.*cpi-headline 2013"):
+        asyncio.run(scenario())
+    assert asked[-3:] == [("cpi-headline", 2013), ("cpi-headline", 2014), ("cpi-headline", 2015)]
+    assert len(asked) == 11 + 3
