@@ -9,7 +9,10 @@ import re
 from pathlib import Path
 
 
-def _spa_doc(**kwargs):
+_EMPTY_BODY = '<div class="seo-page"><p>Видимый роботу текст</p></div>'
+
+
+def _spa_doc(body=None, **kwargs):
     from app.services.seo_renderer import build_document
 
     return asyncio.run(
@@ -17,7 +20,7 @@ def _spa_doc(**kwargs):
             title="Test",
             description="Desc",
             canonical_path="/russia/today/cpi",
-            body='<main class="seo-page"><h1>Ключевая ставка</h1><p>Видимый роботу текст</p></main>',
+            body=body or '<main class="seo-page"><h1>Ключевая ставка</h1><p>Видимый роботу текст</p></main>',
             include_app=True,
             **kwargs,
         )
@@ -25,7 +28,7 @@ def _spa_doc(**kwargs):
 
 
 def test_spa_ssr_has_splash_style_script_and_markup_before_root():
-    html = _spa_doc()
+    html = _spa_doc(_EMPTY_BODY)
     assert 'id="fe-boot-css"' in html
     assert 'class="fe-boot-splash"' in html
     # заставка стоит до #root и скрыта без html.fe-boot
@@ -37,7 +40,7 @@ def test_spa_ssr_has_splash_style_script_and_markup_before_root():
 
 
 def test_boot_class_is_set_by_head_script_and_not_by_markup():
-    html = _spa_doc()
+    html = _spa_doc(_EMPTY_BODY)
     head = html.split("</head>", 1)[0]
     assert 'classList.add("fe-boot")' in head
     # класс не вшит в разметку: без JS и у роботов серверный текст виден
@@ -54,9 +57,35 @@ def test_boot_class_is_set_by_head_script_and_not_by_markup():
 
 
 def test_reveal_script_lifts_the_splash():
-    html = _spa_doc()
+    html = _spa_doc(_EMPTY_BODY)
     assert 'classList.remove("fe-boot")' in html
     assert 'classList.add("fe-js")' in html
+
+
+def test_page_with_server_content_gets_no_splash_at_all():
+    """Правка 16: сервер отдал страницу с h1 — ни стиля заставки, ни скрипта, ни разметки; текст виден до загрузки скрипта."""
+    html = _spa_doc()
+    assert "fe-boot-splash" not in html
+    assert 'classList.add("fe-boot")' not in html
+    assert "html.fe-boot #root{visibility:hidden}" not in html
+    root = html.split('<div id="root">', 1)[1]
+    assert "Ключевая ставка" in root
+
+
+def test_boot_script_skips_back_forward_and_language_switch():
+    html = _spa_doc(_EMPTY_BODY)
+    head = html.split("</head>", 1)[0]
+    assert 'nav.type==="back_forward"' in head
+    assert "fe_lang_switch=" in head
+    assert head.index("fe_lang_switch") < head.index('classList.add("fe-boot")')
+
+
+def test_ssr_root_has_no_site_chrome_to_double_with_the_client_shell():
+    """В #root SPA-SSR лежит только тело страницы: шапку и подвал рисует клиент (App), серверных копий нет."""
+    html = _spa_doc()
+    root = html.split('<div id="root">', 1)[1]
+    assert "<header" not in root and "<footer" not in root
+    assert "seo-ssr-header" not in root
 
 
 def test_server_text_stays_in_html_for_robots():
@@ -71,7 +100,7 @@ def test_splash_english_caption():
 
     token = set_locale("en")
     try:
-        html = _spa_doc()
+        html = _spa_doc(_EMPTY_BODY)
     finally:
         reset_locale(token)
     assert "Loading…" in html
@@ -102,7 +131,7 @@ def test_html_background_and_light_scheme_prevent_black_flash():
 
 def test_first_frame_is_paper_with_the_logo_not_a_white_or_grey_screen():
     """БД8: фон бумаги на самом html и в заставке, крупный логотип; чистые SSR-страницы не затронуты."""
-    html = _spa_doc()
+    html = _spa_doc(_EMPTY_BODY)
     css = html.split('<style id="fe-boot-css">', 1)[1].split("</style>", 1)[0]
     assert "html{background:#F4F5F7}" in css
     assert "html.fe-boot{overflow:hidden;background:#F4F5F7}" in css
@@ -152,7 +181,7 @@ def test_splash_has_card_progress_and_facts_by_host_language():
     from app.services.locale import reset_locale, set_locale
     from app.services.seo_renderer import _BOOT_FACTS
 
-    ru = _spa_doc()
+    ru = _spa_doc(_EMPTY_BODY)
     ru_splash = ru.split('<div class="fe-boot-splash"', 1)[1].split('<div id="root">', 1)[0]
     for cls in ("fe-boot-bgf", "fe-boot-bar", "fe-boot-card", "fe-boot-map", "fe-boot-tile", "fe-boot-facts"):
         assert cls in ru_splash
@@ -162,7 +191,7 @@ def test_splash_has_card_progress_and_facts_by_host_language():
 
     token = set_locale("en")
     try:
-        en_splash = _spa_doc().split('<div class="fe-boot-splash"', 1)[1].split('<div id="root">', 1)[0]
+        en_splash = _spa_doc(_EMPTY_BODY).split('<div class="fe-boot-splash"', 1)[1].split('<div id="root">', 1)[0]
     finally:
         reset_locale(token)
     for fact in _BOOT_FACTS["en"]:
@@ -172,7 +201,7 @@ def test_splash_has_card_progress_and_facts_by_host_language():
 
 def test_splash_css_keeps_owner_principles_and_motion_budget():
     """Без рамок, blur-фильтров и золотых заливок; кадры анимаций двигают только transform и opacity; reduced-motion учтён."""
-    css = _spa_doc().split('<style id="fe-boot-css">', 1)[1].split("</style>", 1)[0]
+    css = _spa_doc(_EMPTY_BODY).split('<style id="fe-boot-css">', 1)[1].split("</style>", 1)[0]
     assert not re.search(r"(?<![-\w])(border(?!-radius)|outline)[-\w]*\s*:", css)
     assert "backdrop-filter" not in css and "filter:" not in css
     for body in re.findall(r"@keyframes \w+\{(.*)\}(?=\n@|\n@media|$)", css, flags=re.M):
