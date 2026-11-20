@@ -77,6 +77,10 @@ export const HOME_COUNTRY_CONCEPT_LABEL_KEYS = Object.freeze({
   'poverty-rate': 'home.concept.poverty-rate',
   'income-share-top10': 'home.concept.income-share-top10',
   'life-expectancy': 'home.concept.life-expectancy',
+  'tourist-arrivals': 'home.concept.tourist-arrivals',
+  'outbound-trips': 'home.concept.outbound-trips',
+  'tourism-gdp-share': 'home.concept.tourism-gdp-share',
+  'tourism-employment-share': 'home.concept.tourism-employment-share',
 });
 
 /**
@@ -256,6 +260,10 @@ export const WORLD_RATING_QUERY_NAME_KEYS = Object.freeze({
   'poverty-rate': 'world.rating.query.poverty-rate',
   'income-share-top10': 'world.rating.query.income-share-top10',
   'life-expectancy': 'world.rating.query.life-expectancy',
+  'tourist-arrivals': 'world.rating.query.tourist-arrivals',
+  'outbound-trips': 'world.rating.query.outbound-trips',
+  'tourism-gdp-share': 'world.rating.query.tourism-gdp-share',
+  'tourism-employment-share': 'world.rating.query.tourism-employment-share',
 });
 
 /**

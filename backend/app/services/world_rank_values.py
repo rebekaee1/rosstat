@@ -250,6 +250,10 @@ WORLD_RATING_QUERY_NAMES: dict[str, str] = {
     "poverty-rate": "доле населения в крайней бедности",
     "income-share-top10": "доле доходов 10% самых обеспеченных",
     "life-expectancy": "ожидаемой продолжительности жизни",
+    "tourist-arrivals": "числу прибытий иностранных туристов",
+    "outbound-trips": "числу поездок жителей за границу",
+    "tourism-gdp-share": "доле туризма в ВВП",
+    "tourism-employment-share": "доле туризма в занятости",
 }
 
 # English (nominative) for «Country ranking by …».
@@ -270,6 +274,10 @@ WORLD_RATING_QUERY_NAMES_EN: dict[str, str] = {
     "poverty-rate": "share of population in extreme poverty",
     "income-share-top10": "income share of the richest 10%",
     "life-expectancy": "life expectancy at birth",
+    "tourist-arrivals": "international tourist arrivals",
+    "outbound-trips": "outbound tourism trips",
+    "tourism-gdp-share": "tourism share of GDP",
+    "tourism-employment-share": "tourism share of employment",
 }
 
 _WORLD_REGION_EN = {

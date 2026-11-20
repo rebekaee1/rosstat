@@ -34,6 +34,10 @@ SIMPLE_NAMES: dict[str, tuple[str, str]] = {
     "poverty-rate": ("Крайняя бедность", "Extreme poverty"),
     "income-share-top10": ("Доходы 10% самых обеспеченных", "Income of the richest 10%"),
     "life-expectancy": ("Продолжительность жизни", "Life expectancy"),
+    "tourist-arrivals": ("Иностранные туристы", "Foreign tourists"),
+    "outbound-trips": ("Поездки за границу", "Trips abroad"),
+    "tourism-gdp-share": ("Туризм в экономике", "Tourism in the economy"),
+    "tourism-employment-share": ("Работа в туризме", "Jobs in tourism"),
 }
 
 

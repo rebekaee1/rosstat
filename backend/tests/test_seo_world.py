@@ -499,6 +499,24 @@ def world_seo_client(auth_env):
                 await db.flush()
                 for i, value in enumerate((10.0, 11.0)):
                     db.add(WorldDataPoint(indicator_id=intl.id, date=date(2023 + i, 1, 1), value=value))
+            # Раздел «Туризм» (20.11.2026): годовые ряды понятий рейтинга — по одному на понятие.
+            from app.services import world_tourism_sources as tour
+
+            unt = {item.series_id: item for item in tour.UNT_SERIES}
+            for series in (unt["INBD_TRIP_TOTL_TOTL_TOUR"], unt["OUTB_TRIP_TOTL_TOTL_TOUR"], tour.OECD_GDP_SHARE,
+                           tour.OECD_EMP_SHARE):
+                trip = WorldIndicator(
+                    country_id=de.id, provider=series.provider, code=f"de-{series.code_suffix}",
+                    dataset_id=series.dataset_id, slice_json={"series": series.series_id},
+                    slice_hash=f"tour-{series.code_suffix}", name_ru=series.name_ru, name_en=series.name_en,
+                    name_quality="curated", unit=series.unit, unit_ru=series.unit_ru, frequency="annual",
+                    category_ru=series.category_ru, source=series.source_ru, history_start=date(2023, 1, 1),
+                    history_end=date(2024, 1, 1), points_count=2, is_listed=True,
+                )
+                db.add(trip)
+                await db.flush()
+                for i, value in enumerate((4.0, 4.5)):
+                    db.add(WorldDataPoint(indicator_id=trip.id, date=date(2023 + i, 1, 1), value=value))
             await db.commit()
 
     asyncio.run(_seed())
@@ -861,6 +879,10 @@ def test_world_rating_surface_nonempty_and_gated(world_seo_client):
         "poverty-rate",
         "income-share-top10",
         "life-expectancy",
+        "tourist-arrivals",
+        "outbound-trips",
+        "tourism-gdp-share",
+        "tourism-employment-share",
     }
     assert "gdp-volume-annual" not in rating_slugs
     assert "gdp-volume-quarterly" not in rating_slugs

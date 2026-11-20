@@ -37,6 +37,10 @@ def test_concept_catalog_is_small_and_explicitly_surface_gated():
         "poverty-rate",
         "income-share-top10",
         "life-expectancy",
+        "tourist-arrivals",
+        "outbound-trips",
+        "tourism-gdp-share",
+        "tourism-employment-share",
     }
     for concept in WORLD_CONCEPTS:
         assert "resolve" in concept.enabled_surfaces

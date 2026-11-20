@@ -828,6 +828,27 @@ async def lifespan(app: FastAPI):
                 coalesce=True,
             )
 
+        # Мир, раздел «Туризм» (20.11.2026): МВФ (поездки в платёжном балансе), UN Tourism, ОЭСР,
+        # Евростат (поездки в расчётах с Россией), Кипр и Грузия. Издатели обновляются раз в квартал или
+        # год — раз в неделю, в понедельник. Откат — RUSTATS_WORLD_TOURISM_INGEST_ENABLED=false.
+        if settings.world_tourism_ingest_enabled:
+            from app.services.world_tourism_ingest import run_world_tourism_ingest
+
+            scheduler.add_job(
+                locked_job(run_world_tourism_ingest, "world_tourism_ingest", ttl_seconds=3600),
+                trigger=CronTrigger(
+                    day_of_week="mon",
+                    hour=settings.world_eurostat_ingest_hour,
+                    minute=55,
+                    timezone="Europe/Moscow",
+                ),
+                id="world_tourism_ingest",
+                name="World tourism ingest (IMF BOP, UN Tourism, OECD, Eurostat, CYSTAT, Geostat)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
         # Eurostat publishes API batches twice daily. Each database first gets
         # two audited shadow runs, then bounded live refreshes with a backlog.
         if settings.world_eurostat_ingest_enabled:

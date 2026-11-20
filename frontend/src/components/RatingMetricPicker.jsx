@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Activity, Banknote, BarChart3, Briefcase, ChevronDown, Coins, Landmark, LayoutGrid, Percent,
-  PiggyBank, Scale, Search, TrendingUp, Users,
+  Palmtree, PiggyBank, Plane, Scale, Search, TrendingUp, Users,
 } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
 import { cn } from '../lib/format';
@@ -26,6 +26,8 @@ const ICONS = {
   piggy: PiggyBank,
   percent: Percent,
   users: Users,
+  plane: Plane,
+  palm: Palmtree,
   chart: BarChart3,
 };
 
