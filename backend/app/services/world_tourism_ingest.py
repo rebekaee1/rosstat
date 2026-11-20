@@ -11,20 +11,20 @@
   ряд UN Tourism не пишется, чтобы карточка не перескакивала между издателями.
 
 Национальные службы стран назначения (Турция, Армения, Азербайджан, Индия, Израиль, Япония, Корея, Черногория,
-Сербия, Испания) и Евростат «ночёвки по стране проживания» загружаются из таблиц сбора c5 20.11.2026
-(`raw/<страна>/tidy.csv`, `--tidy-dir`): их сайты отдают файлы с плавающими именами, часть не отвечает с прода
-(Турция). Ночная задача их не трогает; обновление — новый сбор и повторный запуск.
+Сербия, Испания) и Евростат «ночёвки по стране проживания» берутся из снимка `app/data/world_tourism_national.csv.gz`
+— нужные строки таблиц сбора c5 20.11.2026: их сайты отдают файлы с плавающими именами, часть не отвечает с прода
+(Турция). Обновление — новый сбор, `--build-snapshot <c5/raw>`, коммит снимка.
 
 Запуск::
 
-    # все издатели из сети (кроме Турции)
+    # все издатели: сеть + снимок национальных служб
     docker compose exec backend python -m app.services.world_tourism_ingest
     # выбранные издатели
     docker compose exec backend python -m app.services.world_tourism_ingest imf_bop untourism
     # из сохранённых файлов (каталог raw/ сбора 20.11.2026: imf_bop_travel.csv.gz, untourism/, oecd/, …)
     docker compose exec backend python -m app.services.world_tourism_ingest --raw-dir /tmp/tourism-raw
-    # национальные службы стран назначения из таблиц сбора (каталог c5/raw с папками стран)
-    docker compose exec backend python -m app.services.world_tourism_ingest --tidy-dir /tmp/c5raw
+    # пересобрать снимок национальных служб из таблиц сбора (на Mac, затем коммит)
+    python -m app.services.world_tourism_ingest --build-snapshot .artifacts/tourism-2026-11-20/c5/raw
 """
 
 from __future__ import annotations
@@ -51,6 +51,10 @@ NETWORK_PROVIDERS = (
     src.IMF_PROVIDER, src.UNT_PROVIDER, src.OECD_PROVIDER, src.ESTAT_PROVIDER, src.CYSTAT_PROVIDER,
     src.GEOSTAT_PROVIDER,
 )
+# Обычный запуск: живые издатели плюс национальные службы из снимка в репозитории.
+DEFAULT_PROVIDERS = NETWORK_PROVIDERS + src.TIDY_PROVIDERS
+# Снимок нужных рядов из таблиц сбора c5 (страны сайта, Россия и выбранные гражданства) — едет с кодом в образ.
+SNAPSHOT_PATH = Path(__file__).resolve().parents[1] / "data" / "world_tourism_national.csv.gz"
 TIMEOUT_SEC = 180
 _DATASET_BY_PROVIDER = {
     src.IMF_PROVIDER: "bop", src.UNT_PROVIDER: "bulk", src.OECD_PROVIDER: "tourism",
@@ -124,11 +128,54 @@ def _read(path: Path) -> bytes:
     return gzip.decompress(data) if path.suffix == ".gz" else data
 
 
-def fetch_tidy(provider: str, tidy_dir: Path) -> tuple[src.Parsed, dict]:
-    """Таблица сбора страны (`<tidy_dir>/<папка>/tidy.csv`) → ряды издателя."""
+def fetch_tidy(provider: str, tidy_dir: Path | None = None) -> tuple[src.Parsed, dict]:
+    """Ряды издателя из таблицы сбора (`<tidy_dir>/<папка>/tidy.csv`) или из снимка в репозитории."""
     specs = [spec for spec in src.TIDY_SPECS if spec.series.provider == provider]
-    path = tidy_dir / src.TIDY_FOLDERS[provider] / "tidy.csv"
-    return src.parse_tidy_csv(path.read_text(encoding="utf-8-sig"), specs), {}
+    if tidy_dir is not None:
+        text = (tidy_dir / src.TIDY_FOLDERS[provider] / "tidy.csv").read_text(encoding="utf-8-sig")
+    else:
+        text = snapshot_table(gzip.decompress(SNAPSHOT_PATH.read_bytes()).decode("utf-8"), src.TIDY_FOLDERS[provider])
+    return src.parse_tidy_csv(text, specs), {}
+
+
+_SNAPSHOT_HEADER = "folder;country;period;origin;indicator;value"
+
+
+def snapshot_table(snapshot: str, folder: str) -> str:
+    """Строки одной папки снимка в виде таблицы сбора `country;period;origin;indicator;value`."""
+    lines = ["country;period;origin;indicator;value"]
+    for line in snapshot.splitlines()[1:]:
+        head, _, rest = line.partition(";")
+        if head == folder:
+            lines.append(rest)
+    return "\n".join(lines) + "\n"
+
+
+def build_snapshot(tidy_dir: Path, out: Path = SNAPSHOT_PATH) -> int:
+    """Таблицы сбора → снимок: только строки, которые разбирают `TIDY_SPECS` (страны сайта, нужные подписи)."""
+    import csv
+    import io
+
+    wanted: dict[str, set[tuple[str, str]]] = {}
+    for spec in src.TIDY_SPECS:
+        for origin in spec.origins:
+            wanted.setdefault(spec.folder, set()).add((spec.indicator, src._origin_key(origin)))
+    catalog = set(src.M49_TO_CATALOG.values())
+    rows = [_SNAPSHOT_HEADER]
+    for folder in sorted(wanted):
+        reader = csv.DictReader(io.StringIO((tidy_dir / folder / "tidy.csv").read_text(encoding="utf-8-sig")),
+                                delimiter=";")
+        for row in reader:
+            if ((row.get("indicator") or "").strip(), src._origin_key(row.get("origin") or "")) not in wanted[folder]:
+                continue
+            if folder == "eurostat_by_residence":
+                geo = (row.get("country") or "").strip().upper()
+                if src.ESTAT_GEO_TO_CATALOG.get(geo, geo) not in catalog:
+                    continue
+            cells = [row.get(key) or "" for key in ("country", "period", "origin", "indicator", "value")]
+            rows.append(";".join([folder] + [cell.replace(";", ",") for cell in cells]))
+    out.write_bytes(gzip.compress(("\n".join(rows) + "\n").encode("utf-8"), mtime=0))
+    return len(rows) - 1
 
 
 def fetch_local(provider: str, raw_dir: Path) -> tuple[src.Parsed, dict]:
@@ -246,7 +293,7 @@ async def _log_failure(run_id: int | None, provider: str, dataset_id: str, error
 
 
 async def run_world_tourism_ingest(
-    providers: tuple[str, ...] = NETWORK_PROVIDERS,
+    providers: tuple[str, ...] = DEFAULT_PROVIDERS,
     *,
     raw_dir: Path | None = None,
     tidy_dir: Path | None = None,
@@ -263,9 +310,7 @@ async def run_world_tourism_ingest(
     for provider in providers:
         try:
             if provider in src.TIDY_PROVIDERS:
-                if tidy_dir is None:
-                    raise RuntimeError(f"{provider}: нужен каталог таблиц сбора (--tidy-dir)")
-                fetched[provider] = await asyncio.to_thread(fetch_tidy, provider, Path(tidy_dir))
+                fetched[provider] = await asyncio.to_thread(fetch_tidy, provider, tidy_dir)
             elif raw_dir is not None:
                 fetched[provider] = await asyncio.to_thread(fetch_local, provider, Path(raw_dir))
             else:
@@ -295,12 +340,12 @@ def _cli(argv: list[str]) -> dict:
             raw_dir = Path(next(args))
         elif arg == "--tidy-dir":
             tidy_dir = Path(next(args))
+        elif arg == "--build-snapshot":
+            return {"snapshot_rows": build_snapshot(Path(next(args)))}
         elif arg in src.PROVIDERS:
             chosen.append(arg)
     if not chosen:
-        chosen = list(src.TIDY_PROVIDERS) if tidy_dir and not raw_dir else list(NETWORK_PROVIDERS)
-        if tidy_dir and raw_dir:
-            chosen += list(src.TIDY_PROVIDERS)
+        chosen = list(src.TIDY_PROVIDERS) if tidy_dir and not raw_dir else list(DEFAULT_PROVIDERS)
     return asyncio.run(run_world_tourism_ingest(tuple(chosen), raw_dir=raw_dir, tidy_dir=tidy_dir))
 
 

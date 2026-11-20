@@ -216,7 +216,8 @@ def test_cli_tidy_dir_loads_national_tables_only(monkeypatch):
 
     monkeypatch.setattr("app.services.world_tourism_ingest.run_world_tourism_ingest", fake_run)
     _cli([])
-    assert not set(seen["providers"]) & set(src.TIDY_PROVIDERS)
+    # Обычный запуск: живые издатели и национальные службы из снимка в репозитории.
+    assert set(src.TIDY_PROVIDERS) <= set(seen["providers"]) and seen["tidy_dir"] is None
     _cli(["--tidy-dir", "/tmp/c5"])
     assert set(seen["providers"]) == set(src.TIDY_PROVIDERS) and str(seen["tidy_dir"]) == "/tmp/c5"
 
@@ -265,3 +266,18 @@ def test_tourism_rating_concepts_match_written_cards():
     assert concept_for_indicator(card(src.OECD_EMP_SHARE)).slug == "tourism-employment-share"
     # Квартальные траты туристов (МВФ) в рейтинг не идут.
     assert concept_for_indicator(card(src.IMF_SERIES[0])) is None
+
+
+def test_repository_snapshot_feeds_national_series_without_files():
+    from app.services.world_tourism_ingest import SNAPSHOT_PATH, fetch_tidy
+
+    assert SNAPSHOT_PATH.stat().st_size < 2_000_000
+    turkey, _ = fetch_tidy(src.KTB_PROVIDER)
+    assert dict(turkey[("tour-arrivals-russia", "TR")])[date(2026, 9, 1)] == 979647.0
+    assert len(turkey) == 19
+    armenia, _ = fetch_tidy(src.ARMSTAT_PROVIDER)
+    assert dict(armenia[("tour-arrivals-russia", "AM")])[date(2026, 7, 1)] == 704935.0 - 416743.0
+    eurostat, _ = fetch_tidy(src.ESTAT_RES_PROVIDER)
+    assert ("estat-accommodation-nights-russia", "TR") in eurostat
+    for provider in src.TIDY_PROVIDERS:
+        assert fetch_tidy(provider)[0], provider
