@@ -386,6 +386,20 @@ Public guard требует `official_explicit` либо `official_rule` **то�
 
 Утренняя сводка (`telegram_calm.calm_morning_summary_job` → `calendar_digest.morning_calendar_lines`): `calendar_watchdog_enabled` (по умолчанию да) — строка «Календарь: …» только если источник дат не обновлял свои события больше 36 часов или у главного ряда (ИПЦ, ставка, ИПП, ИЦП, безработица, зарплата, розница, ВВП, бюджет) нет будущей даты на 45 дней; `telegram_calendar_today_enabled` (по умолчанию нет) — «Сегодня в календаре» и «Источники перенесли» за сутки.
 
+<a id="calendar-cbr-monthly-2026-11-20"></a>
+**Выпуски ЦБ и ряды (20.11.2026, ветка `p20/10b-cbr-monthly`, не выпущено).** Событие файла ЦБ привязано к тому ряду, который этот выпуск действительно пополняет. Иначе после даты оно «ждёт данные», которых не будет.
+
+| Выпуск ЦБ (`vCalendar.ics`) | Как часто | Было | Стало |
+|---|---|---|---|
+| «Внешняя торговля РФ товарами (по методологии платёжного баланса)» | около 11-го числа | `exports`, `imports`, `trade-balance` (квартальные) | `exports-monthly`, `imports-monthly`, `trade-balance-monthly` (`trade.xls`, с 1997) |
+| «Внешняя торговля РФ услугами по месяцам» | около 15-го | `services-exports`, `services-imports` | `services-exports-monthly`, `services-imports-monthly` (`trade_monthly.xlsx`, с 2018) |
+| «Платёжный баланс РФ. Стандартные компоненты» | раз в квартал (30.09, 30.12…) | не было в календаре | `exports`, `imports`, `trade-balance`, `services-exports`, `services-imports`, `fdi-net` (`bal_of_payments_standart.xlsx`) |
+| «Платёжный баланс – оценка» / «Оценка платёжного баланса РФ» | около 15-го | `current-account` | без ряда: в `bop_est.xlsx` только месяцы последнего квартала и тот же квартал прошлого года, помесячной истории у ЦБ нет |
+| «Прямые инвестиции РФ по принципу активов/пассивов…» | раз в квартал (около 10-го) | `fdi-net` | без ряда: наш ряд берётся из стандартных компонент |
+| «Краткосрочный внешний долг… по остаточному сроку», «Информационно-аналитический комментарий…» | — | `external-debt`, `current-account` | не событие (`CBR_EVENT_EXCLUDE`); комментарий в 10:00 сдвигал время оценки ПБ с 16:00 |
+
+Событие без ряда (`indicator_id = NULL`, ключ `cbr:ics:<имя выпуска>:<тип>:<дата>`) после даты показывается как «Дата прошла». Сохранённые события старых привязок, включая ключи вида `cbr:<код>:sha256:…`, один раз переносит `rebind_stored_cbr_ics_events`. Функция вызывается в ночном `calendar_refresh` и повторно ничего не меняет. После переноса `confirm_releases_from_loads` подтверждает месячные выпуски за последние 75 дней. Код: `calendar_sources/official_calendar.py` (`CBR_EVENT_RULES`, `CBR_UNBOUND_EVENT_RULES`, `CBR_EVENT_EXCLUDE`, `CBR_ICS_REBIND`), тест `backend/tests/test_calendar_cbr_monthly.py`.
+
 ## 6. Пользователь, сессия и аналитические числа
 
 **Круг 11 (09.10.2026, локально, не выпущено):** личный кабинет (четыре таблицы `user_saved_items`, `user_watches`, `user_exports`, `user_preferences`, API `/cabinet/*` за флагом `RUSTATS_CABINET_ENABLED`) — [контракт](#c11-cabinet-2026-10-09); таблицы `user_signups` и `daily_goal_dims`, колонка `site_locale`, единые группы событий, приватность отчётов и Telegram-отчёты за флагами — [контракт](#c11-analytics-2026-10-09). ПДн-таблицы этого раздела теперь девять в identity-копии `scripts/pg-backup.sh` (пять прежних + четыре кабинета); `user_signups` в неё **не входит** (попадает только в полный dump).

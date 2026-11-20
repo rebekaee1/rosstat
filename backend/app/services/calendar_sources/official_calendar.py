@@ -89,11 +89,18 @@ INDICATOR_CALENDAR_CONTEXT = {
     "credit-rate-ind-over3y": "Средневзвешенная ставка по кредитам населению на срок свыше 3 лет.",
     "mortgage-rate": "Средневзвешенная ставка по жилищным (ипотечным) кредитам.",
     "auto-loan-rate": "Средневзвешенная ставка по автокредитам.",
-    "exports": "Стоимость товаров, вывезенных из России за месяц.",
-    "imports": "Стоимость товаров, ввезённых в Россию за месяц.",
+    "exports": "Стоимость товаров, вывезенных из России за квартал, по методологии платёжного баланса.",
+    "imports": "Стоимость товаров, ввезённых в Россию за квартал, по методологии платёжного баланса.",
     "trade-balance": "Сальдо торговли товарами: разница между экспортом и импортом.",
     "services-exports": "Стоимость услуг, оказанных резидентами России нерезидентам.",
     "services-imports": "Стоимость услуг, полученных резидентами России от нерезидентов.",
+    "exports-monthly": "Стоимость товаров, вывезенных из России за месяц.",
+    "imports-monthly": "Стоимость товаров, ввезённых в Россию за месяц.",
+    "trade-balance-monthly": "Сальдо торговли товарами за месяц: разница между экспортом и импортом.",
+    "services-exports-monthly": "Стоимость услуг, оказанных резидентами России нерезидентам за месяц.",
+    "services-imports-monthly": "Стоимость услуг, полученных резидентами России от нерезидентов за месяц.",
+    "direct-investment": "Прямые инвестиции в Россию и из России по принципу активов и пассивов и по направленности.",
+    "balance-of-payments-estimate": "Первая оценка Банка России: счёт текущих операций, торговля товарами и услугами за последние месяцы. Квартальные цифры уточняются позже.",
     "current-account": "Сальдо счёта текущих операций платёжного баланса: торговля товарами и услугами, первичные и вторичные доходы.",
     "external-debt": "Совокупная задолженность государства, банков и компаний России перед нерезидентами.",
     "fdi-net": "Чистый приток прямых иностранных инвестиций в небанковский сектор.",
@@ -341,25 +348,49 @@ CBR_EVENT_RULES = [
     (("auto-loan-rate",), "Показатели рынка автокредитования",
      "Auto Loan Market Indicators", "data_release", 1,
      (("автокредит",),)),
-    (("exports", "imports", "trade-balance"), "Внешняя торговля товарами",
+    # 20.11.2026: ежемесячные выпуски внешней торговли привязаны к месячным рядам ЦБ. До этого они
+    # стояли на квартальных рядах платёжного баланса, новой точки по ним не приходило, и у людей
+    # выпуск висел «ждём данные». Квартальные ряды обновляет выпуск стандартных компонент ниже.
+    (("exports-monthly", "imports-monthly", "trade-balance-monthly"), "Внешняя торговля товарами",
      "External Trade in Goods", "data_release", 2,
      (("внешняя торговля", "товарами"),)),
-    (("services-exports", "services-imports"), "Внешняя торговля услугами",
+    (("services-exports-monthly", "services-imports-monthly"), "Внешняя торговля услугами",
      "External Trade in Services", "data_release", 1,
      (("внешняя торговля", "услугами по месяцам"),)),
+    (("exports", "imports", "trade-balance", "services-exports", "services-imports", "fdi-net"),
+     "Платёжный баланс за квартал", "Quarterly Balance of Payments", "data_release", 1,
+     # В файле ЦБ первая буква «Cтандартные» латинская — ключ без неё.
+     (("платежный баланс российской федерации", "тандартные компоненты"),)),
     (("current-account",), "Счёт текущих операций платёжного баланса", "Current Account", "data_release", 2,
      (("счет текущих операций",), ("счёт текущих операций",), ("current account",))),
-    # Ежемесячная оценка платёжного баланса (с 14.11.2026): ЦБ публикует её около 15-го числа,
-    # это главная оперативная цифра по счёту текущих операций между квартальными выпусками.
-    (("current-account",), "Оценка платёжного баланса", "Balance of Payments Estimate", "data_release", 2,
-     (("платежный баланс – оценка",), ("оценка платежного баланса российской федерации",))),
     (("external-debt",), "Внешний долг РФ", "External Debt of the Russian Federation", "data_release", 1,
      (("внешний долг российской федерации",), ("external debt",))),
-    (("fdi-net",), "Прямые инвестиции РФ", "Foreign Direct Investment", "data_release", 1,
-     (("прямые инвестиции", "российской федерации"),)),
     (("key-rate",), "Ключевая ставка Банка России", "Bank of Russia Key Rate", "data_release", 3,
      (("ключевая ставка",), ("key rate",))),
 ]
+
+# Выпуски ЦБ, которые есть в календаре, но не дают точки ни одному нашему ряду (20.11.2026).
+# Событие показывается без ряда: после даты оно «прошло», а не «ждёт данные».
+# Оценка платёжного баланса (около 15-го числа): ЦБ держит в файле только месяцы последнего квартала
+# и тот же квартал прошлого года, помесячной истории счёта текущих операций у ЦБ нет. Квартальное
+# сальдо приходит отдельным выпуском («Счёт текущих операций…»), он привязан к ряду выше.
+# Прямые инвестиции по принципу активов/пассивов (около 10-го числа после квартала) — отдельная
+# таблица ЦБ; наш ряд чистых прямых инвестиций берётся из стандартных компонент платёжного баланса.
+CBR_UNBOUND_EVENT_RULES = [
+    ("direct-investment", "Прямые инвестиции РФ", "Foreign Direct Investment", "data_release", 1,
+     (("прямые инвестиции", "российской федерации"),)),
+    ("balance-of-payments-estimate", "Оценка платёжного баланса", "Balance of Payments Estimate",
+     "data_release", 2,
+     (("платежный баланс – оценка",), ("оценка платежного баланса российской федерации",))),
+]
+
+# Записи файла ЦБ, которые не являются выпуском данных наших рядов, хотя совпадают по словам:
+# комментарий к выпуску (выходит утром того же дня и сдвигал время события на 10:00) и таблица
+# краткосрочного долга по остаточному сроку (не меняет общий внешний долг, 13.11 висела «ждём данные»).
+CBR_EVENT_EXCLUDE = (
+    "информационно-аналитический комментарий",
+    "краткосрочный внешний долг",
+)
 
 
 async def refresh_official_calendar(
@@ -403,6 +434,7 @@ async def refresh_official_calendar(
         from app.services.calendar_sources.common import repair_legacy_cbr_ics_times
 
         await repair_legacy_cbr_ics_times(session)
+        await rebind_stored_cbr_ics_events(session)
         await prune_persisted_speculative_rosstat_monthly(session)
         await enrich_events_from_indicator_data(session)
         await confirm_releases_from_loads(session)
@@ -661,6 +693,85 @@ def build_minfin_rule_candidates(*, today: date, months_ahead: int) -> list[Cale
     return candidates
 
 
+# Прежняя привязка выпуска ЦБ → новая (20.11.2026). Ключ — код ряда, к которому событие было
+# привязано; значение — код месячного ряда или имя выпуска без ряда из правил выше.
+CBR_ICS_REBIND = {
+    "exports": "exports-monthly",
+    "imports": "imports-monthly",
+    "trade-balance": "trade-balance-monthly",
+    "services-exports": "services-exports-monthly",
+    "services-imports": "services-imports-monthly",
+    "current-account": "balance-of-payments-estimate",
+    "fdi-net": "direct-investment",
+}
+
+
+async def rebind_stored_cbr_ics_events(db: AsyncSession) -> int:
+    """Перепривязать сохранённые события файла ЦБ к рядам по текущим правилам (20.11.2026).
+
+    Свежий проход переписывает только две недели назад; старые события остались бы на квартальных
+    рядах и навсегда без факта выхода. Правка узкая: событие без факта выхода переезжает только по
+    ``CBR_ICS_REBIND`` и только если его исходная запись ЦБ (``raw_summary``) совпадает с новым
+    правилом; запись-исключение (комментарий, краткосрочный долг) удаляется. Остальное не трогается.
+    Повторный запуск ничего не меняет.
+    """
+    from sqlalchemy import select
+
+    from app.models import EconomicEvent, Indicator
+
+    # Все строки файла ЦБ, в том числе со старыми ключами «cbr:<код>:sha256:…» (до 14.11.2026).
+    rows = (await db.execute(
+        select(EconomicEvent).where(
+            EconomicEvent.source == "cbr",
+            EconomicEvent.date_confidence == "official_explicit",
+            ~EconomicEvent.event_key.like("cbr:key-rate-%"),
+        )
+    )).scalars().all()
+    if not rows:
+        return 0
+    codes = dict((await db.execute(select(Indicator.id, Indicator.code))).all())
+    ids = {code: id_ for id_, code in codes.items()}
+    taken_keys = {(r.event_type, r.event_key) for r in rows}
+    taken_slots = {(r.event_type, r.scheduled_date, r.indicator_id) for r in rows if r.indicator_id}
+    changed = 0
+    for row in rows:
+        if row.actual_value not in (None, ""):
+            continue
+        details = ((row.metadata_json or {}).get("provenance") or {}).get("details") or {}
+        summary = str(details.get("raw_summary") or "").lower()
+        if not summary:
+            continue
+        if any(marker in summary for marker in CBR_EVENT_EXCLUDE):
+            await db.delete(row)
+            changed += 1
+            continue
+        target = CBR_ICS_REBIND.get(codes.get(row.indicator_id, ""))
+        wanted = {part: code for code, part, _t, _te, etype, _i in _match_cbr_events(summary)
+                  if etype == row.event_type}
+        if target is None or target not in wanted:
+            continue
+        new_code = wanted[target]
+        new_id = ids.get(new_code) if new_code else None
+        if new_code is not None and new_id is None:
+            continue  # месячного ряда в базе ещё нет — подождать
+        new_key = cbr_ics_event_key(target, row.event_type, row.scheduled_date)
+        new_slot = (row.event_type, row.scheduled_date, new_id)
+        if (row.event_type, new_key) in taken_keys or (new_id and new_slot in taken_slots):
+            await db.delete(row)  # такое событие уже есть под новым ключом
+        else:
+            row.event_key = new_key
+            row.indicator_id = new_id
+            row.description = _event_description(target) or row.description
+            taken_keys.add((row.event_type, new_key))
+            if new_id:
+                taken_slots.add(new_slot)
+        changed += 1
+    if changed:
+        await db.commit()
+        logger.info("Calendar: %d CBR events rebound to monthly series or dropped", changed)
+    return changed
+
+
 def build_cbr_monetary_policy_candidates(
     *,
     today: date,
@@ -822,17 +933,17 @@ def parse_cbr_ics(
             continue
         raw_uid = _compact_source_uid(event.get("UID") or stable_key(event.get("SUMMARY", ""), scheduled.isoformat()))
         seen_codes: set[str] = set()
-        for code, title, title_en, event_type, importance in matches:
+        for code, key_part, title, title_en, event_type, importance in matches:
             # Первое совпавшее правило для показателя — главное (порядок CBR_EVENT_RULES значим).
-            if code in seen_codes:
+            if key_part in seen_codes:
                 continue
-            seen_codes.add(code)
-            slot = (code, event_type, scheduled)
+            seen_codes.add(key_part)
+            slot = (key_part, event_type, scheduled)
             current = chosen.get(slot)
             if current is not None and (current.scheduled_time or "99:99") <= (scheduled_time or "99:99"):
                 continue
             chosen[slot] = CalendarCandidate(
-                event_key=stable_key("cbr", "ics", code, event_type, scheduled.isoformat()),
+                event_key=cbr_ics_event_key(key_part, event_type, scheduled),
                 title=title,
                 title_en=title_en,
                 event_type=event_type,
@@ -845,7 +956,7 @@ def parse_cbr_ics(
                 importance=importance,
                 source_url=event.get("URL") or source_url,
                 source_event_uid=raw_uid,
-                description=_event_description(code) or event.get("SUMMARY"),
+                description=_event_description(key_part) or event.get("SUMMARY"),
                 metadata={
                     "feed": "cbr_ics",
                     "calendar_url": source_url,
@@ -947,12 +1058,23 @@ def _compact_source_uid(value: str) -> str:
     return "sha256:" + hashlib.sha256(cleaned.encode("utf-8")).hexdigest()
 
 
-def _match_cbr_events(blob: str) -> list[tuple[str, str, str, str, int]]:
-    matches: list[tuple[str, str, str, str, int]] = []
+def cbr_ics_event_key(key_part: str, event_type: str, scheduled: date) -> str:
+    """Ключ события файла ЦБ: код ряда (или имя выпуска без ряда), тип, дата."""
+    return stable_key("cbr", "ics", key_part, event_type, scheduled.isoformat())
+
+
+def _match_cbr_events(blob: str) -> list[tuple[str | None, str, str, str, str, int]]:
+    """Совпавшие правила: (код ряда или None, часть ключа, заголовок, заголовок EN, тип, важность)."""
+    if any(marker in blob for marker in CBR_EVENT_EXCLUDE):
+        return []
+    matches: list[tuple[str | None, str, str, str, str, int]] = []
     for codes, title, title_en, event_type, importance, keyword_groups in CBR_EVENT_RULES:
         if any(all(keyword in blob for keyword in group) for group in keyword_groups):
             for code in codes:
-                matches.append((code, title, title_en, event_type, importance))
+                matches.append((code, code, title, title_en, event_type, importance))
+    for slug, title, title_en, event_type, importance, keyword_groups in CBR_UNBOUND_EVENT_RULES:
+        if any(all(keyword in blob for keyword in group) for group in keyword_groups):
+            matches.append((None, slug, title, title_en, event_type, importance))
     return matches
 
 
