@@ -1,23 +1,15 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "8b334fd6184895c65d477247cb442c84f14ab8e9",
+  "baseline_commit": "4a481966e1e4ad3cab1c4b32d2c927e080df6de3",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/adr/0038-tourism-section.md",
     "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
     "docs/code-review/javascript-symbols.json",
     "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/runtime-inventory.json",
-    "docs/workflow.md"
+    "docs/code-review/reviews.jsonl"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -2122,7 +2114,7 @@
     {"path": "docs/architecture.md", "kind": "document", "bytes": 100551, "lines": 493, "sha256": "f37d6057276978a1d8e671bd524d830d93a516b1e32fac2e50e4307152d3a421", "symlink": false, "nodes": 33, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/backlog.md", "kind": "document", "bytes": 882653, "lines": 4122, "sha256": "9bf7d1122a046606483fa04cf346bee7f37bca1387a70b40be939f4734a5b813", "symlink": false, "nodes": 223, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/circle-playbook.md", "kind": "document", "bytes": 26180, "lines": 124, "sha256": "157a0677237f20afde22faf1bb85e95c88802c3a9bbb30742831a68485bc7daf", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7774289, "lines": 273753, "sha256": "5a634cb375f25f1fb10ad9f1e45b7880b465d14a3cc41e413f80f504d138e893", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 7774289, "lines": 273753, "sha256": "025656dfc61308c61f5a4a1b4d0d81da548d02c7f6412869fe47cb07642d50cf", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 14591, "lines": 146, "sha256": "7298acbecd33d5e85ac2f9e38121c346da1c06a28547336561b8244cf50fbe62", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 31882, "lines": 161, "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/data-contracts.md", "kind": "document", "bytes": 469104, "lines": 1546, "sha256": "73aff3f4bbed3be78b61cf2acdb848eff04912057187150e17fdd513668593c9", "symlink": false, "nodes": 118, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
@@ -2675,7 +2667,7 @@
     {"path": "frontend/src/components/TopicMailForm.component.test.jsx", "kind": "code", "bytes": 7402, "lines": 147, "sha256": "3ce38f3972c43fc8086e5d310f84f0247e52e290105a199c42bda96d5918fcf2", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/TopicMailForm.jsx", "kind": "code", "bytes": 6435, "lines": 129, "sha256": "e8384ff5a50bcd02ba286bc853762a1a1a11a0cfa90cb54bb3f1bb5cfaec73b5", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/TourismFloors.component.test.jsx", "kind": "code", "bytes": 6237, "lines": 100, "sha256": "2199e1330f9f5b5aedce740de9f86ac7b0a7460370179402b668d5ea41232400", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
-    {"path": "frontend/src/components/TourismFloors.jsx", "kind": "code", "bytes": 10009, "lines": 217, "sha256": "ed976307e20a66cd8964a18cb9a6fcef0a5315bc38a197f1a8e1587dd1a088e0", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
+    {"path": "frontend/src/components/TourismFloors.jsx", "kind": "code", "bytes": 10005, "lines": 217, "sha256": "7ba0a69ff9017b63815f0300749642519b8edce2ef950cb2707527d951544b6f", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/UnemploymentIndicatorControls.jsx", "kind": "code", "bytes": 414, "lines": 16, "sha256": "cb5f15eeac13cacf3a0530dbc2a9cc2e882cee6d795df98ae5643437de3a2021", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/UnemploymentViewModePicker.jsx", "kind": "code", "bytes": 2713, "lines": 99, "sha256": "f290e6fd7aaede286ed30f828f3a1714d9a32dc0f970afcfb5bd85d250e2c058", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/src/components/UsCatalogNav.jsx", "kind": "code", "bytes": 3535, "lines": 86, "sha256": "de3d6109f7fd0e333329ce142e7f820a58671f9946fd97503b20e39e2be98c71", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "browser", "semantic_evidence": false, "semantic_current": null},

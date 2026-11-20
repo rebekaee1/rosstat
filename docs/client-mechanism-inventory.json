@@ -74140,7 +74140,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/TourismFloors.jsx": {
-      "sha256": "ed976307e20a66cd8964a18cb9a6fcef0a5315bc38a197f1a8e1587dd1a088e0",
+      "sha256": "7ba0a69ff9017b63815f0300749642519b8edce2ef950cb2707527d951544b6f",
       "imports": [
         {
           "line": 15,

@@ -17835,7 +17835,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "5a634cb375f25f1fb10ad9f1e45b7880b465d14a3cc41e413f80f504d138e893",
+      "sha256": "025656dfc61308c61f5a4a1b4d0d81da548d02c7f6412869fe47cb07642d50cf",
       "bytes": 7774289,
       "lines": 273753,
       "code": false,
@@ -25024,8 +25024,8 @@
     },
     {
       "path": "frontend/src/components/TourismFloors.jsx",
-      "sha256": "ed976307e20a66cd8964a18cb9a6fcef0a5315bc38a197f1a8e1587dd1a088e0",
-      "bytes": 10009,
+      "sha256": "7ba0a69ff9017b63815f0300749642519b8edce2ef950cb2707527d951544b6f",
+      "bytes": 10005,
       "lines": 217,
       "code": true,
       "status": "reviewed",
@@ -37972,19 +37972,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "b76932745d6ff636002670682b61217112b8970528ff5560a277ca357231ee5e",
-  "javascript_inventory_sha256": "4b6ec844fccff14435414316587b3f36e3a35e6a05f284759e0f8253debd231e",
-  "baseline_commit": "8b334fd6184895c65d477247cb442c84f14ab8e9",
+  "ledger_sha256": "828cef6a0b1f485a4b81cb80bb1f15864f5ebb36dfd525d2b3ca5449d7a4ec4b",
+  "javascript_inventory_sha256": "eb53fbd7d89746733d1faaae4d49f59c52d00184cc59e7ab16a2e8acde09309a",
+  "baseline_commit": "4a481966e1e4ad3cab1c4b32d2c927e080df6de3",
   "branch": "int/2026-11-20-tourism",
   "unstaged_at_capture": [
-    "docs/adr/0038-tourism-section.md",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/runtime-inventory.json",
-    "docs/workflow.md"
+    "docs/client-mechanism-inventory.json"
   ]
 }
