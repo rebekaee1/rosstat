@@ -1462,6 +1462,27 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 Событие `search_query` локальных полей страниц регионов не отправляется, пока набор показателей региона не загружен.
 
 <a id="tourism-2026-11-20"></a>
+
+**Дополнение 21.11.2026 — круг наблюдателей и данные t1/t2/t3 (`int/2026-11-20-tourism`, не выпущено).**
+
+- **Миграция `20261120_region_data_updated`** (после `20261120_world_tourism_cat`, одна голова): `region_indicators.data_updated_at`
+  (Date, пусто — загрузчик дату не ведёт; пишет `tourism_regional_loader` при добавлении/изменении точек ряда); коды
+  `tour-avtobusy-passazhiry`, `tour-obshchepit-*` переименованы на месте в `avtobusy-passazhiry-mes`, `obshchepit-*` (не туризм).
+- **API регионов** (`/api/v1/regions/{slug}/i/{code}`, `…/monthly`, квартальный ответ): у рядов реестра туризма
+  `indicator.source` = {name, url, about, dataset, calculated, approximate, ranked, region_method}, `indicator.ranked`,
+  `indicator.data_updated_at`. **Рейтинг** `/api/v1/regions/heatmap/{code}`: `indicator.source`, `indicator.ranked`;
+  у налога и курортного сбора `values[].status` ∈ {`not_introduced`, `zero_year`, `no_receipts_yet`}, `missing[].status` ∈
+  {`not_introduced`, `no_data`}; у нуля и от нуля `prev` не отдаётся. Сборка — `services/tourism_regional_api.py`;
+  `NOT_RANKED` (загрузка мест, оценка турпотока регионов) — без места среди регионов. Прочие ряды — ответ прежний.
+- **API показателя России** (`/api/v1/indicators/{code}` и список): `seasonal: true` из `model_config_json.seasonal` —
+  шапка сравнивает с тем же периодом прошлого года, а не с прошлым месяцем/кварталом; у прочих рядов поле `null`.
+- **Поиск** `GET /api/v1/search?section=tourism` (`search_section.known_section`, неизвестное = без раздела): запрос-место
+  ставит туристские ряды сразу после строки места; точное слово в названии выше синонимов. Ревизия кэша `r7`, раздел — в
+  ключе (`:s-tourism`). Без `section` выдача прежняя.
+- **Мир:** UN Tourism прибытия/выезды хранятся в миллионах; Россия в рейтингах `tourist-arrivals`/`outbound-trips` — сумма
+  закрытого года поездок ФСБ (тыс. → млн, `RussiaConceptLink.annual_sum`, пометка источника); ряды стран назначения
+  начинаются с «По данным принимающей страны»; закрытая история национальных служб не отсекается правилом 8 лет.
+
 ## Туризм: ряды России, регионов и стран мира — 2026-11-20 (ADR-0038, `int/2026-11-20-tourism`, не выпущено)
 
 Источники и ловушки по каждому ряду — [data_sources](data_sources.md); решение — [ADR-0038](adr/0038-tourism-section.md);

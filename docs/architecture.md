@@ -491,3 +491,9 @@ native title, source frequency world не выдумывается по observat
 (мediabank, цепочка Минцифры), cbr.ru, ФНС (архивы 1-НМ), API Росаккредитации и ЕФРТ Минэкономразвития,
 api.imf.org, untourism.int, sdmx.oecd.org, Евростат, CYSTAT PxWeb, geostat.ge. Ресурсы: региональная задача
 до 2 ч под `locked_job`; мировой прогон ~2 мин (МВФ ~60 с); оба — в процессе scheduler.
+
+**21.11.2026.** Круг наблюдателей добавил слой полей API без новой подсистемы: `tourism_regional_api` (source/ranked/статусы
+нулей) поверх API регионов, `seasonal` в ответе показателя, `search_section` (параметр `section`) в федеративном поиске;
+миграция `20261120_region_data_updated` (колонка `data_updated_at`). На фронте — модули `seriesGaps`, `yearAgo`,
+`seriesDigits`, `tourismFeed`, `searchSection`, `regionShare`, `restoreScroll`. Снимок регионов вырос до 836 тыс. точек
+(история ИПЦ 31074 с 2002 года: боевому fedstat отвечает 403), пишется один раз на версию файла (отметка по хэшу в кэше).

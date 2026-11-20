@@ -932,7 +932,11 @@ SELECT relname, reloptions FROM pg_class
 [data-contracts](data-contracts.md#tourism-2026-11-20). Миграция только данных: у рядов Евростата `tour_*`
 `category_ru` «Общество» → «Туризм» (одним `UPDATE`, ~8,5 тыс. строк на боевом по оценке t3; откат —
 `alembic downgrade 20261119_region_quarterly` возвращает «Общество»). Голова цепочки одна:
-`… → 20261119_world_latest_points → 20261119_region_quarterly → 20261120_world_tourism_cat`.
+`… → 20261119_world_latest_points → 20261119_region_quarterly → 20261120_world_tourism_cat → 20261120_region_data_updated`.
+Вторая миграция (21.11.2026, круг наблюдателей) — `20261120_region_data_updated`: `ADD COLUMN region_indicators.data_updated_at`
+(без значения по умолчанию, секунды) и переименование пяти кодов автобусов/общепита на месте; откат —
+`alembic downgrade 20261120_world_tourism_cat`. Первый прогон `tourism_regional` пишет снимок 836 тыс. точек один раз на
+версию файла (время на боевом не измерено).
 
 1. **Выкладка** кода и миграции обычным порядком; затем `docker compose exec backend python seed_data.py`
    (карточки `tour-*` России). Первая загрузка России — ETL по типам `rosstat_tourism_trips`,
@@ -950,4 +954,5 @@ SELECT relname, reloptions FROM pg_class
    impl-1/2/3; `/research/{russians-travel-abroad,foreign-tourists-russia,tourist-tax-russia,domestic-tourism-russia}`
    — nginx `location ~ ^/research/{slug}` ведёт на `/seo/research/{slug}`; sitemap содержит четыре адреса статей.
 5. **Откат:** код — обычный; данные `tour-*` остаются (карточки без витрины безвредны); мировой контур — флаг
-   `false`; категория Евростата — `alembic downgrade 20261119_region_quarterly`.
+   `false`; колонка и коды — `alembic downgrade 20261120_world_tourism_cat`; категория Евростата —
+   `alembic downgrade 20261119_region_quarterly`.

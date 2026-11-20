@@ -7348,9 +7348,9 @@
     {
       "id": "tourism-code-flags-2026-11-20",
       "observed_date_msk": "2026-11-20",
-      "local_source_commit": "8b334fd6",
+      "local_source_commit": "4aa3920a",
       "kind": "code defaults, not a server observation",
-      "scope": "Флаги и задачи расписания раздела «Туризм» в коде ветки int/2026-11-20-tourism (config.py, main.py, tasks/scheduler.py, docker-compose.yml). Сервер и стенд не опрашивались; код не выпущен. Порядок включения — docs/workflow.md#tourism-release-2026-11-20, решение — ADR-0038.",
+      "scope": "Флаги и задачи расписания раздела «Туризм» в коде ветки int/2026-11-20-tourism (config.py, main.py, tasks/scheduler.py, docker-compose.yml). Сервер и стенд не опрашивались; код не выпущен. Дополнено 21.11.2026 (круг наблюдателей, данные t1–t3, добор g1–g3): снимок регионов 836 тыс. точек пишется один раз на версию файла. Порядок включения — docs/workflow.md#tourism-release-2026-11-20, решение — ADR-0038.",
       "settings": [
         {
           "env": "RUSTATS_WORLD_TOURISM_INGEST_ENABLED",
@@ -7383,7 +7383,8 @@
           "effect": "ETL_TIMEOUT_BY_PARSER['rosstat_emiss_tourism']=600 с; снимок tourism_snapshots только для пустого ряда (fallback_used)"
         }
       ],
-      "migration": "20261120_world_tourism_cat (только данные, down_revision 20261119_region_quarterly; одна голова)"
+      "migration": "20261120_world_tourism_cat (только данные) → 20261120_region_data_updated (ADD COLUMN region_indicators.data_updated_at, переименование 5 кодов автобусов/общепита); одна голова 20261120_region_data_updated",
+      "external_access": "fedstat.ru боевому серверу отвечает 403 (наблюдение сессий 20–21.11.2026, не замер этого цикла); пять витрин ЕМИСС (58956, 59664, 61042, 61047, 61048) требуют учётной записи"
     }
   ]
 }
