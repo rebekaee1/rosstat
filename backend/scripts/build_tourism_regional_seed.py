@@ -80,6 +80,24 @@ def main(root: Path, cbr_dir: Path | None, today: date) -> None:
     sber = root / "a5" / "raw" / "sberindex" / "kolichestvo-vnutrennikh-turistov.csv"
     points += L.sber_points(sber.read_text(encoding="utf-8"), terr)
 
+    # Сборщик c4 (20.11.2026): курортный сбор, «Туризм в России» 2024, tochno.st, средние цены туруслуг.
+    c4 = root / "c4" / "raw"
+    points += L.kurort_points((c4 / "kurort_sbor" / "kurort_tour_tax_treasury_2018_2025.csv").read_text("utf-8"), terr)
+    merged = {(c, s, p): v for c, s, p, v in L.tur_rus_points(
+        (c4 / "rosstat_pub" / "R5-tur_wb20250201.xlsx").read_bytes(), terr)}
+    with open(c4 / "tochno_st" / "tochno_tourism_filtered.csv", encoding="utf-8") as fh:
+        merged.update({(c, s, p): v for c, s, p, v in L.tochno_points(csv.DictReader(fh, delimiter=";"), terr)})
+    points += [(c, s, p, v) for (c, s, p), v in merged.items()]
+    best: dict[tuple[str, str, int], tuple[int, float]] = {}
+    for rank, name in enumerate(("sred_potreb_cen_09-2026.xlsx", "sred_potreb_cen_2025_wb.xlsx",
+                                 "sred_potreb_cen_2024_wb.xlsx", "sred_potreb_cen_09-2023_wb.xlsx",
+                                 "sred_potreb_cen_2022_wb.xlsx")):
+        for (c, s, p, v), r in L.price_points((c4 / "rosstat_price" / name).read_bytes(), terr, rank):
+            if (c, s, p) not in best or r < best[(c, s, p)][0]:
+                best[(c, s, p)] = (r, v)
+    points += [(c, s, p, v) for (c, s, p), (_r, v) in best.items()]
+    points += L.occupancy_points(points)
+
     n = L.write_seed(points)
     by_code = Counter(p[0] for p in points)
     for code, cnt in sorted(by_code.items()):

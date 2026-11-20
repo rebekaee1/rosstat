@@ -907,6 +907,216 @@ def sber_points(text: str, territories: Territories) -> list[Point]:
 
 
 # ---------------------------------------------------------------------------------------------------------------
+# Доработка 20.11.2026 (сборщик c4): курортный сбор (Казначейство), средние цены туруслуг (файлы Росстата),
+# «Туризм в России» 2024 по субъектам, сборники Росстата через tochno.st, расчёт загрузки мест.
+
+
+def kurort_points(text: str, territories: Territories) -> list[Point]:
+    """Выписка форм 0503317 Казначейства: «год;регион;доход;исполнено (руб.)», только курортный сбор."""
+    raw: dict[tuple[str, int], float] = {}
+    for r in csv.DictReader(io.StringIO(text), delimiter=";"):
+        if "курортный сбор" not in (r.get("доход") or "").casefold():
+            continue
+        slug, spare = territories.resolve(r.get("регион") or "")
+        value = parse_ru_float(r.get("исполнено_руб_конс_бюджет_субъекта"))
+        year = str(r.get("год") or "")
+        # 2025 год — недоимка после отмены сбора, а не сбор: ряд закрыт 2024 годом.
+        if slug is None or spare or value is None or not year.isdigit() or int(year) > 2024:
+            continue
+        raw[(slug, int(year))] = value
+    return to_points(SERIES_BY_CODE["tour-kurortnyy-sbor"], raw)
+
+
+_PRICE_SHEET = re.compile(r"^(\d{2})\((\d{4})\)$")
+_PRICE_OWN = {
+    "проезд в купейном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути":
+        "tour-cena-kupe-nefirmennyy",
+    "проезд в плацкартном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути":
+        "tour-cena-plackart-nefirmennyy",
+}
+
+
+def _price_key(label: str) -> str:
+    return norm_value(label).replace("на отдых ", "").replace(",поездка", ", поездка")
+
+
+def price_points(content: bytes, territories: Territories, rank: int = 0) -> list[tuple[Point, int]]:
+    """Файл «Средние потребительские цены» (лист на месяц «MM(YYYY)», строки — территории, столбцы — позиции) →
+    точки туристских позиций по России, округам и субъектам. Строки городов (код ОКАТО не круглый) не берутся:
+    страниц городов на сайте нет. ``rank`` — приоритет файла (позднее издание главнее)."""
+    import openpyxl
+
+    from app.data.tourism_regional import price_tourism_codes
+
+    codes = {_price_key(k): v for k, v in price_tourism_codes().items()}
+    codes.update({_price_key(k): v for k, v in _PRICE_OWN.items()})
+    wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
+    out: list[tuple[Point, int]] = []
+    for ws in wb.worksheets:
+        m = _PRICE_SHEET.match(ws.title.strip())
+        if not m:
+            continue
+        month = int(m.group(2)) * 100 + int(m.group(1))
+        rows = ws.iter_rows(values_only=True)
+        cols: dict[int, str] | None = None
+        prev = None
+        for r in rows:
+            if cols is None:
+                if prev is not None and prev[0] == "Код территории":
+                    cols = {i: codes[_price_key(c)] for i, c in enumerate(r) if c and _price_key(c) in codes}
+                prev = r
+                continue
+            code = r[0]
+            if not isinstance(code, (int, float)) or not (code < 1000 or int(code) % 10**9 == 0):
+                continue
+            slug, spare = territories.resolve(str(r[1] or ""))
+            if slug is None or spare:
+                continue
+            for i, c in cols.items():
+                v = r[i] if i < len(r) else None
+                value = v if isinstance(v, (int, float)) else parse_ru_float(v)
+                if value is not None and value > 0:
+                    out.append(((c, slug, month, float(value)), rank))
+    return out
+
+
+_TUR_RUS = {  # «Туризм в России» 2024, раздел 5: лист → {начало подписи группы колонок: код ряда}
+    "R5t1": {"число гостиниц": "tour-gostinicy-chislo", "число номеров": "tour-gostinicy-nomera",
+             "из них высшей категории": "tour-gostinicy-nomera-vysshey-kategorii",
+             "число мест, всего": "tour-gostinicy-mesta"},
+    "R5t2": {"число хостелов": "tour-hostely-chislo", "число мест, всего": "tour-hostely-mesta"},
+    "R5t3": {"число санаторно-курортных организаций": "tour-sanatorii-chislo", "число мест, всего": "tour-sanatorii-mesta"},
+    "R5t4": {"число организаций отдыха": "tour-organizacii-otdyha-chislo",
+             "число мест, всего": "tour-organizacii-otdyha-mesta"},
+}
+
+
+def tur_rus_points(content: bytes, territories: Territories) -> list[Point]:
+    """Таблицы «по субъектам за 2018–2023»: строка 4 — группа колонок, 5 — уточнение («высшей категории»),
+    6 — годы."""
+    import openpyxl
+
+    wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
+    cols_raw: dict[str, Collector] = defaultdict(Collector)
+    for sheet, wanted in _TUR_RUS.items():
+        if sheet not in wb.sheetnames:
+            continue
+        rows = [list(r) for r in wb[sheet].iter_rows(values_only=True)]
+        yrow = next(i for i, r in enumerate(rows[:10]) if sum(isinstance(c, int) and 1990 < c < 2100 for c in r) >= 3)
+        group = sub = ""
+        cols: dict[int, tuple[str, int]] = {}
+        for c in range(1, len(rows[yrow])):
+            g = norm_value(rows[yrow - 2][c]) if c < len(rows[yrow - 2]) and rows[yrow - 2][c] else ""
+            if g:
+                group, sub = g, ""
+            t = norm_value(rows[yrow - 1][c]) if c < len(rows[yrow - 1]) and rows[yrow - 1][c] else ""
+            if t:
+                sub = t
+            label = f"{group} {sub}".strip() if group == "из них" else group
+            year = rows[yrow][c]
+            code = wanted.get(label)
+            if code and isinstance(year, int):
+                cols[c] = (code, year)
+        for r in rows[yrow + 1:]:
+            if not r or not r[0]:
+                continue
+            slug, spare = territories.resolve(str(r[0]))
+            if slug is None or spare:
+                continue
+            for c, (code, year) in cols.items():
+                v = r[c] if c < len(r) else None
+                value = v if isinstance(v, (int, float)) else parse_ru_float(v)
+                if value is not None and value >= 0:
+                    cols_raw[code].add(code, slug, year, float(value))
+    points: list[Point] = []
+    for code, col in cols_raw.items():
+        points += to_points(SERIES_BY_CODE[code], {(s, p): v for (_c, s, p), v in col.raw().items()})
+    return points
+
+
+# tochno.st — плоская выгрузка сборников Росстата (CC BY 4.0): код → [(название показателя, подраздел | None)],
+# первая подошедшая пара главнее. Единицы проверены по выгрузке 13.03.2026; ряды «млрд руб. для России» не берутся.
+TOCHNO = {
+    "tour-platnye-uslugi-gostinicy": [
+        ("Объем платных услуг гостиниц и аналогичных услуг по предоставлению временного жилья", None),
+        ("Объем платных услуг гостиниц и аналогичных средств размещения", None)],
+    "tour-platnye-uslugi-sanatorii": [("Объем платных услуг санаторно-курортных организаций", None)],
+    "tour-platnye-uslugi-specksr": [("Объем платных услуг специализированных коллективных средств размещения", None)],
+    "tour-platnye-turistskie-uslugi": [("Объем платных туристских услуг населению", None)],
+    "tour-ifo-gostinicy": [
+        ("Индексы физического объема платных услуг гостиниц и аналогичных услуг по предоставлению временного жилья",
+         None),
+        ("Индексы физического объема платных услуг гостиниц и аналогичных средств размещения", None)],
+    "tour-ifo-sanatorii": [("Индексы физического объема платных услуг санаторно-курортных организаций", None)],
+    "tour-ifo-specksr": [("Индексы физического объема платных услуг специализированных коллективных средств "
+                          "размещения", None)],
+    "tour-ifo-turistskie": [("Индексы физического объема платных туристских услуг", None)],
+    "tour-ipc-gostinicy-dek": [("Индексы потребительских цен на услуги гостиниц", None)],
+    "tour-ipc-sanatorii-dek": [("Индексы потребительских цен на санаторно-оздоровительные услуги", None)],
+    "tour-ipc-vnutrenniy-turizm-dek": [("Индексы потребительских цен на услуги в сфере внутреннего и зарубежного "
+                                        "туризма", "Услуги в сфере внутреннего туризма")],
+    "tour-ipc-zarubezhnyy-turizm-dek": [("Индексы потребительских цен на услуги в сфере внутреннего и зарубежного "
+                                         "туризма", "Услуги в сфере зарубежного туризма")],
+    "tour-organizacii-otdyha-chislo": [("Число организаций отдыха", None)],
+    "tour-sanatorii-v-uzkom-smysle": [("Число санаториев", "Санатории")],
+    "tour-sanatorii-detskie": [("Число санаториев", "Из них санатории для детей")],
+    "tour-sanatorii-profilaktorii": [("Число санаториев-профилакториев", None)],
+    "tour-obshchepit-restorany": [("Наличие объектов общественного питания по состоянию на конец года",
+                                   "Рестораны, кафе, бары")],
+    "tour-obshchepit-stolovye": [("Наличие объектов общественного питания по состоянию на конец года",
+                                  "Общедоступные столовые, закусочные")],
+    "tour-obshchepit-rezultat-restorany": [
+        ("Сальдированный финансовый результат (прибыль минус убыток) деятельности организаций общественного питания",
+         "Деятельность ресторанов и услуги по доставке продуктов питания")],
+    "tour-investicii-gostinicy-restorany": [("Инвестиции в основной капитал по видам экономической деятельности",
+                                             None)],
+}
+
+
+def tochno_points(rows: Iterable[dict], territories: Territories) -> list[Point]:
+    keys = {(norm_value(n), norm_value(sub) if sub else None): (code, rank)
+            for code, alts in TOCHNO.items() for rank, (n, sub) in enumerate(alts)}
+    cols: dict[str, Collector] = defaultdict(Collector)
+    for r in rows:
+        name, sub = norm_value(r.get("indicator_name")), norm_value(r.get("subsection"))
+        hit = keys.get((name, sub)) or keys.get((name, None))
+        year, value = str(r.get("year") or ""), parse_ru_float(r.get("indicator_value"))
+        if not hit or not year.isdigit() or value is None or value <= -7e7:
+            continue  # -77777777 — «нет данных» в выгрузке
+        slug, spare = territories.resolve(r.get("object_name") or "")
+        if slug is None or spare:
+            continue
+        code, rank = hit
+        cols[code].add(code, slug, int(year), value, rank)
+    points: list[Point] = []
+    for code, col in cols.items():
+        points += to_points(SERIES_BY_CODE[code], {(s, p): v for (_c, s, p), v in col.raw().items()})
+    return points
+
+
+def occupancy_points(points: Iterable[Point]) -> list[Point]:
+    """Загрузка мест, расчёт: ночёвки (тыс.) × 1000 / (места на конец года × 365) × 100."""
+    nights = {(s, p): v for c, s, p, v in points if c == "tour-ksr-nochevki"}
+    places = {(s, p): v for c, s, p, v in points if c == "tour-ksr-mesta"}
+    raw = {k: round(n * 1000 / (places[k] * 365) * 100, 1) for k, n in nights.items() if places.get(k)}
+    return to_points(SERIES_BY_CODE["tour-ksr-zagruzka-mest"], {k: v for k, v in raw.items() if 0 < v <= 100})
+
+
+_PRICE_URL = "https://rosstat.gov.ru/storage/mediabank/sred_potreb_cen_{mm:02d}-{yyyy}.xlsx"
+
+
+async def fetch_prices(territories: Territories, today: date) -> list[Point]:
+    """Живой файл средних цен (обновляется помесячно, имя — по последнему месяцу): ищется от прошлого месяца назад."""
+    y, m = today.year, today.month
+    for _ in range(4):
+        y, m = (y - 1, 12) if m == 1 else (y, m - 1)
+        content = await asyncio.to_thread(_get_sync, _PRICE_URL.format(mm=m, yyyy=y), 180)
+        if content:
+            return [p for p, _r in price_points(content, territories)]
+    raise ValueError("Росстат: файл средних цен за последние месяцы не найден")
+
+
+# ---------------------------------------------------------------------------------------------------------------
 # Снимок и запись в базу.
 
 
@@ -968,13 +1178,20 @@ async def write_points(db, points: Sequence[Point], *, overwrite: bool) -> dict[
     await acquire_regional_write_lock(db)
     ids = await ensure_indicators(db)
     regions = dict((await db.execute(select(Region.slug, Region.id))).all())
+    external = {c for c, *_ in points if c not in SERIES_BY_CODE and c.startswith("ceni-")}
+    if external:  # цены туруслуг из файлов Росстата: ряды реестра цен, слой месячный
+        from app.models import RegionIndicator
+
+        ids.update(dict((await db.execute(select(RegionIndicator.code, RegionIndicator.id)
+                                          .where(RegionIndicator.code.in_(sorted(external))))).all()))
     grouped: dict[str, list[dict]] = defaultdict(list)
     for code, slug, period, value in points:
         s = SERIES_BY_CODE.get(code)
-        if s is None or code not in ids or slug not in regions:
+        layer = s.layer if s is not None else ("monthly" if code in external else None)
+        if layer is None or code not in ids or slug not in regions:
             continue
-        grouped[s.layer].append({"indicator_id": ids[code], "region_id": regions[slug],
-                                 layers[s.layer][1]: period, "value": value})
+        grouped[layer].append({"indicator_id": ids[code], "region_id": regions[slug],
+                               layers[layer][1]: period, "value": value})
     stats = {"added": 0, "updated": 0}
     affected: set[int] = set()
     try:
@@ -1071,6 +1288,12 @@ async def run_tourism_regional_update(
         except Exception as exc:  # noqa: BLE001
             logger.warning("tourism_regional: %s: %s", name, exc)
             stats["failed"].append(f"{name}: {str(exc)[:120]}")
+    if others:
+        try:  # цены туруслуг: только недостающие месяцы (основной загрузчик — ЕМИСС 31448)
+            stats["prices"] = await write_points(db, await fetch_prices(territories, today), overwrite=False)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("tourism_regional: prices: %s", exc)
+            stats["failed"].append(f"prices: {str(exc)[:120]}")
     if territories.unknown:
         logger.info("tourism_regional: незнакомые территории: %s", sorted(territories.unknown)[:30])
     return stats

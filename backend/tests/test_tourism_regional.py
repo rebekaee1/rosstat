@@ -297,7 +297,7 @@ def test_sber_month_is_moscow_month(terr):
 def test_seed_matches_sources_and_registry():
     pts = {(c, s, p): v for c, s, p, v in L.read_seed()}
     regions = {r["slug"] for r in json.loads((L._DATA / "regions.json").read_text(encoding="utf-8"))}
-    assert {c for c, _s, _p in pts} <= set(R.SERIES_BY_CODE)
+    assert {c for c, _s, _p in pts} <= set(R.SERIES_BY_CODE) | set(R.price_tourism_codes().values())
     assert {s for _c, s, _p in pts} <= regions
     assert pts[("tour-ksr-nochevki", "russia", 2024)] == 383490.447
     assert pts[("kollektivnye-sredstva-razmescheniya-chislennost-razmeschennyh-lits", "russia", 2025)] == 92042.736
@@ -306,8 +306,15 @@ def test_seed_matches_sources_and_registry():
     assert pts[("tour-cbr-poezdki-import", "russia", 20261)] == 9702.96
     assert pts[("tour-nalog-za-god", "russia", 2025)] == 5635.253
     # Наборы, не скачанные до бана fedstat, в снимке пусты — их догрузит живой прогон.
+    # Сборник «Туризм в России» 2024 закрыл часть не скачанных наборов (санатории, номера высшей категории).
     pending = {s.code for s in R.SERIES if s.emiss is not None and not s.emiss.seed}
-    assert not pending & {c for c, _s, _p in pts}
+    from_book = {"tour-sanatorii-chislo", "tour-sanatorii-mesta", "tour-gostinicy-nomera-vysshey-kategorii"}
+    assert pending & {c for c, _s, _p in pts} == from_book
+    assert pts[("tour-gostinicy-nomera-vysshey-kategorii", "russia", 2023)] == 61018
+    assert pts[("tour-kurortnyy-sbor", "sankt-peterburg", 2024)] == 747.068857
+    assert ("tour-kurortnyy-sbor", "russia", 2025) not in pts
+    assert pts[("tour-ksr-zagruzka-mest", "russia", 2024)] == 33.0
+    assert pts[("ceni-sanatoriy", "russia", 202609)] == 6131.68
 
 
 def test_plan_years_full_then_tail():
@@ -438,3 +445,82 @@ def test_other_page_unit_rescales(terr):
 def test_turpotok_link_on_rosstat_page():
     html = '<a href="/storage/mediabank/Turpotok_3kv-2026.xlsx">Оценка турпотока</a>'
     assert L._TURPOTOK_LINK.findall(html) == ["/storage/mediabank/Turpotok_3kv-2026.xlsx"]
+
+
+# --- сборщик c4: курортный сбор, сборники, цены, расчёт загрузки -------------------------------------------------
+
+
+def test_kurort_fee_rubles_to_millions_and_closed_2024(terr):
+    text = ("год;регион;доход;исполнено_руб_конс_бюджет_субъекта\n"
+            "2024;г. Санкт-Петербург;курортный сбор (эксперимент 2018–2024), КБК 1 15 08000 02;747068857.0\n"
+            "2025;Краснодарский край;курортный сбор (эксперимент 2018–2024), КБК 1 15 08000 02;130489157\n"
+            "2025;Краснодарский край;туристический налог;1\n")
+    assert L.kurort_points(text, terr) == [("tour-kurortnyy-sbor", "sankt-peterburg", 2024, 747.068857)]
+
+
+def test_tochno_alternatives_subsections_and_no_data(terr):
+    rows = [
+        {"indicator_name": "Число санаториев", "subsection": "Санатории", "object_name": "Российская Федерация",
+         "year": "2024", "indicator_value": "1324.0"},
+        {"indicator_name": "Число санаториев", "subsection": "Из них санатории для детей",
+         "object_name": "Российская Федерация", "year": "2024", "indicator_value": "505.0"},
+        {"indicator_name": "Объем платных услуг гостиниц и аналогичных средств размещения", "subsection": "CD",
+         "object_name": "Алтайский край", "year": "2022", "indicator_value": "100"},
+        {"indicator_name": "Объем платных услуг гостиниц и аналогичных услуг по предоставлению временного жилья",
+         "subsection": "CD", "object_name": "Алтайский край", "year": "2022", "indicator_value": "101"},
+        {"indicator_name": "Число организаций отдыха", "subsection": "CD", "object_name": "Алтайский край",
+         "year": "2021", "indicator_value": "-77777777.0"},
+    ]
+    assert sorted(L.tochno_points(rows, terr)) == [
+        ("tour-platnye-uslugi-gostinicy", "altayskiy-kray", 2022, 101.0),
+        ("tour-sanatorii-detskie", "russia", 2024, 505.0),
+        ("tour-sanatorii-v-uzkom-smysle", "russia", 2024, 1324.0),
+    ]
+
+
+def test_occupancy_is_labelled_calculation():
+    pts = [("tour-ksr-nochevki", "russia", 2024, 383490.447), ("tour-ksr-mesta", "russia", 2024, 3186017.0)]
+    assert L.occupancy_points(pts) == [("tour-ksr-zagruzka-mest", "russia", 2024, 33.0)]
+    assert R.source_of("tour-ksr-zagruzka-mest")["ru"] == "расчёт по данным Росстата"
+
+
+def test_price_file_subjects_only_and_codes(terr):
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "09(2026)"
+    for r in (["Код территории", "Наименование территории", 1, 2, 3],
+              [None, None, "Санаторий, день", "Поездка на отдых на Черноморское побережье России, поездка",
+               "Говядина бескостная, кг"],
+              [643, "Российская Федерация", 6131.68, 50000, 900],
+              [14000000000, "Белгородская область", 5000, "-", 800],
+              [14401000000, "Белгород", 5100, 1, 800]):
+        ws.append(r)
+    buf = io.BytesIO()
+    wb.save(buf)
+    pts = sorted(p for p, _r in L.price_points(buf.getvalue(), terr))
+    assert pts == [("ceni-poezdka-chernomore", "russia", 202609, 50000.0),
+                   ("ceni-sanatoriy", "belgorodskaya-oblast", 202609, 5000.0),
+                   ("ceni-sanatoriy", "russia", 202609, 6131.68)]
+
+
+def test_tourism_in_russia_book_columns(terr):
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "R5t1"
+    for r in (["◄К Разделу 5"], ["Число гостиниц …"], [],
+              [None, "Число гостиниц", None, "Число номеров", None, "из них", None],
+              [None, None, None, None, None, "высшей категории", None],
+              [None, 2022, 2023, 2022, 2023, 2022, 2023],
+              ["Российская Федерация", 13301, 14426, 485899, 528685, 59725, 61018]):
+        ws.append(r)
+    buf = io.BytesIO()
+    wb.save(buf)
+    pts = {(c, p): v for c, _s, p, v in L.tur_rus_points(buf.getvalue(), terr)}
+    assert pts == {("tour-gostinicy-chislo", 2022): 13301, ("tour-gostinicy-chislo", 2023): 14426,
+                   ("tour-gostinicy-nomera", 2022): 485899, ("tour-gostinicy-nomera", 2023): 528685,
+                   ("tour-gostinicy-nomera-vysshey-kategorii", 2022): 59725,
+                   ("tour-gostinicy-nomera-vysshey-kategorii", 2023): 61018}

@@ -103,6 +103,36 @@ SOURCES: dict[str, dict[str, str]] = {
                     "taxpayer number), so for chains it may differ from where offices operate. The series is the "
                     "number of register entries at month end.",
     },
+    "treasury": {
+        "ru": "Казначейство России",
+        "en": "Federal Treasury of Russia",
+        "about_ru": "Источник — Казначейство России, годовые отчёты об исполнении консолидированных бюджетов "
+                    "субъектов (форма 0503317, доход «курортный сбор»). Сбор взимали с 2018 по 2024 год в "
+                    "Краснодарском, Ставропольском и Алтайском краях, с 2024 — в Санкт-Петербурге; с 2025 года его "
+                    "заменил туристический налог.",
+        "about_en": "Source: Federal Treasury of Russia, annual reports on regional consolidated budgets (form "
+                    "0503317, “resort fee” revenue). The fee was levied in 2018–2024 in Krasnodar, Stavropol and "
+                    "Altai territories and from 2024 in St Petersburg; the tourist tax replaced it in 2025.",
+    },
+    "rosstat_pub": {
+        "ru": "Росстат",
+        "en": "Rosstat",
+        "about_ru": "Источник — Росстат, статистические сборники по субъектам («Туризм в России», «Платное "
+                    "обслуживание населения», «Здравоохранение в России», «Торговля в России», «Инвестиции в "
+                    "России»). Данные годовые, выходят с новым выпуском сборника.",
+        "about_en": "Source: Rosstat statistical yearbooks by region (Tourism in Russia, Paid Services, Healthcare, "
+                    "Trade, Investment in Russia). Annual data, updated with each new edition.",
+    },
+    "rosstat_calc": {
+        "ru": "расчёт по данным Росстата",
+        "en": "calculated from Rosstat data",
+        "about_ru": "Это не официальный показатель Росстата, а расчёт сайта по его данным: ночёвки за год делятся "
+                    "на число мест на конец года, умноженное на 365 дней. Места, работающие сезонно, расчёт считает "
+                    "открытыми весь год, поэтому у курортных регионов загрузка получается ниже фактической.",
+        "about_en": "Not an official Rosstat indicator but the site's calculation from Rosstat data: nights over the "
+                    "year divided by year-end bed places times 365 days. Seasonal beds are treated as open all year, "
+                    "so resort regions show lower occupancy than in season.",
+    },
     "sber": {
         "ru": "СберИндекс (приближённая оценка)",
         "en": "SberIndex (approximate estimate)",
@@ -839,11 +869,177 @@ REGISTRIES: tuple[TSeries, ...] = (
             "sber", "6.tm32", first_year=2019, allow_negative=True),
 )
 
+# ---------------------------------------------------------------------------------------------------------------
+# Доработка 20.11.2026 (сборщик c4): курортный сбор, сборники Росстата по субъектам, расчёт загрузки мест.
+
+_PUB = "rosstat_pub"
+
+
+def _pub(code: str, name_ru: str, name_en: str, unit_ru: str, unit_en: str, note_ru: str, note_en: str, table: str,
+         first_year: int, section: tuple[int, str, str] = SECTION_TOURISM, keywords: str = "",
+         allow_negative: bool = False) -> TSeries:
+    return TSeries(code, "annual", name_ru, name_en, unit_ru, unit_en, note_ru, note_en, _PUB, table,
+                   section=section, first_year=first_year, keywords=keywords, allow_negative=allow_negative)
+
+
+_IPC_DEC_RU = "Во сколько процентов от цены декабря прошлого года стоили услуги в декабре: 110 — подорожали на 10 %."
+_IPC_DEC_EN = "December prices as a percentage of December a year earlier: 110 means 10% dearer."
+_IFO_RU = ("Насколько изменился объём платных услуг за год без учёта роста цен: 105 — люди купили на 5 % больше "
+           "услуг, чем годом раньше.")
+_IFO_EN = "Change in paid services over the year at constant prices: 105 means 5% more services than a year earlier."
+
+PUBLICATIONS: tuple[TSeries, ...] = (
+    TSeries("tour-kurortnyy-sbor", "annual", "Курортный сбор", "Resort fee",
+            "миллионов рублей", "RUB million",
+            "Сколько курортного сбора поступило в бюджет региона за год. Сбор был экспериментом 2018–2024 годов "
+            "(Краснодарский, Ставропольский и Алтайский края, с 2024 года — Санкт-Петербург); с 2025 года его "
+            "заменил туристический налог. Поступления федеральной территории «Сириус» в ряды субъектов не входят.",
+            "Resort fee paid into the region's budget during the year. The fee was an experiment in 2018–2024 "
+            "(Krasnodar, Stavropol and Altai territories, St Petersburg from 2024); the tourist tax replaced it in "
+            "2025. Receipts of the Sirius federal territory are not included in regional series.",
+            "treasury", "6.t70", scale=1e-6, first_year=2018, keywords="курортный сбор, сколько собрали курортного сбора"),
+    _pub("tour-gostinicy-chislo", "Число гостиниц", "Number of hotels", "единиц", "units",
+         "Гостиницы, мотели и апарт-отели на конец года (без хостелов, санаториев и баз отдыха).",
+         "Hotels, motels and apart-hotels at year end (excluding hostels, sanatoriums and holiday centres).",
+         "6.t71", 2018, keywords="сколько гостиниц в регионе, отели"),
+    _pub("tour-gostinicy-nomera", "Число номеров в гостиницах", "Hotel rooms", "номеров", "rooms",
+         "Номера в гостиницах на конец года.", "Hotel rooms at year end.", "6.t72", 2018),
+    _pub("tour-gostinicy-mesta", "Число мест в гостиницах", "Hotel bed places", "мест", "bed places",
+         "Места (койки) в гостиницах на конец года.", "Hotel bed places at year end.", "6.t73", 2018),
+    _pub("tour-hostely-chislo", "Число хостелов", "Number of hostels", "единиц", "units",
+         "Хостелы на конец года.", "Hostels at year end.", "6.t74", 2018, keywords="хостелы"),
+    _pub("tour-hostely-mesta", "Число мест в хостелах", "Hostel bed places", "мест", "bed places",
+         "Места в хостелах на конец года.", "Hostel bed places at year end.", "6.t75", 2018),
+    _pub("tour-organizacii-otdyha-chislo", "Число баз и домов отдыха", "Holiday centres and rest homes",
+         "единиц", "units",
+         "Организации отдыха — базы и дома отдыха, турбазы, пансионаты без лечения — на конец года.",
+         "Holiday organisations (holiday centres, rest homes, tourist bases, boarding houses without treatment) at "
+         "year end.", "6.t76", 2010, keywords="базы отдыха, дома отдыха, турбазы"),
+    _pub("tour-organizacii-otdyha-mesta", "Число мест в базах и домах отдыха", "Bed places in holiday centres",
+         "мест", "bed places", "Места в организациях отдыха на конец года.",
+         "Bed places in holiday organisations at year end.", "6.t77", 2018),
+    _pub("tour-sanatorii-v-uzkom-smysle", "Число санаториев (без профилакториев)",
+         "Number of sanatoriums (excluding preventive care centres)", "единиц", "units",
+         "Санатории как учреждения лечения на конец года, по данным сборника «Здравоохранение в России». "
+         "Санаторно-курортных организаций в целом больше: туда входят профилактории и курортные поликлиники.",
+         "Sanatoriums as treatment facilities at year end, from the Healthcare in Russia yearbook. Health resort "
+         "organisations as a whole are more numerous: they include preventive care centres and resort clinics.",
+         "6.t78", 2010),
+    _pub("tour-sanatorii-detskie", "Число детских санаториев", "Number of children's sanatoriums", "единиц", "units",
+         "Санатории для детей на конец года.", "Children's sanatoriums at year end.", "6.t79", 2010,
+         keywords="детские санатории"),
+    _pub("tour-sanatorii-profilaktorii", "Число санаториев-профилакториев", "Number of preventive care sanatoriums",
+         "единиц", "units", "Санатории-профилактории (обычно при предприятиях) на конец года.",
+         "Preventive care sanatoriums (usually run by employers) at year end.", "6.t80", 2010),
+    _pub("tour-platnye-uslugi-gostinicy", "Платные услуги гостиниц за год", "Paid hotel services per year",
+         "миллионов рублей", "RUB million",
+         "Сколько жители и приезжие заплатили гостиницам и другим местам временного проживания за год.",
+         "What residents and visitors paid hotels and other short-stay accommodation during the year.",
+         "6.t81", 2010, keywords="выручка гостиниц за год"),
+    _pub("tour-platnye-uslugi-sanatorii", "Платные услуги санаториев за год", "Paid health resort services per year",
+         "миллионов рублей", "RUB million", "Сколько заплатили санаторно-курортным организациям за год.",
+         "Payments to health resort organisations during the year.", "6.t82", 2010),
+    _pub("tour-platnye-uslugi-specksr", "Платные услуги баз отдыха и других специализированных средств размещения "
+         "за год", "Paid services of holiday centres and other specialised accommodation per year",
+         "миллионов рублей", "RUB million",
+         "Сколько заплатили базам и домам отдыха, турбазам, детским лагерям за год.",
+         "Payments to holiday centres, tourist bases and children's camps during the year.", "6.t83", 2020),
+    _pub("tour-platnye-turistskie-uslugi", "Платные туристские услуги за год", "Paid tourism services per year",
+         "миллионов рублей", "RUB million",
+         "Сколько население заплатило турфирмам и туроператорам за год (ряд Росстат вёл до 2022 года).",
+         "Payments by the population to tour companies during the year (Rosstat kept the series until 2022).",
+         "6.t84", 2010, keywords="турагентства, продажи туров"),
+    _pub("tour-ifo-gostinicy", "Платные услуги гостиниц: изменение объёма за год", "Hotel services, volume change",
+         "% к предыдущему году", "% of previous year", _IFO_RU, _IFO_EN, "6.t85", 2010),
+    _pub("tour-ifo-sanatorii", "Платные услуги санаториев: изменение объёма за год",
+         "Health resort services, volume change", "% к предыдущему году", "% of previous year", _IFO_RU, _IFO_EN,
+         "6.t86", 2010),
+    _pub("tour-ifo-specksr", "Платные услуги баз отдыха: изменение объёма за год",
+         "Holiday centre services, volume change", "% к предыдущему году", "% of previous year", _IFO_RU, _IFO_EN,
+         "6.t87", 2020),
+    _pub("tour-ifo-turistskie", "Платные туристские услуги: изменение объёма за год",
+         "Tourism services, volume change", "% к предыдущему году", "% of previous year", _IFO_RU, _IFO_EN,
+         "6.t88", 2010),
+    _pub("tour-ipc-gostinicy-dek", "Индекс цен на услуги гостиниц за год (декабрь к декабрю)",
+         "Hotel price index, December on December", "% к декабрю прошлого года", "% of December a year earlier",
+         _IPC_DEC_RU, _IPC_DEC_EN, "20.ct10", 2010, section=SECTION_PRICES, keywords="подорожание гостиниц за год"),
+    _pub("tour-ipc-sanatorii-dek", "Индекс цен на санаторно-оздоровительные услуги за год (декабрь к декабрю)",
+         "Health resort price index, December on December", "% к декабрю прошлого года",
+         "% of December a year earlier", _IPC_DEC_RU, _IPC_DEC_EN, "20.ct11", 2010, section=SECTION_PRICES),
+    _pub("tour-ipc-vnutrenniy-turizm-dek", "Индекс цен на внутренний туризм за год (декабрь к декабрю)",
+         "Domestic tourism price index, December on December", "% к декабрю прошлого года",
+         "% of December a year earlier", _IPC_DEC_RU, _IPC_DEC_EN, "20.ct12", 2022, section=SECTION_PRICES),
+    _pub("tour-ipc-zarubezhnyy-turizm-dek", "Индекс цен на зарубежный туризм за год (декабрь к декабрю)",
+         "Outbound tourism price index, December on December", "% к декабрю прошлого года",
+         "% of December a year earlier", _IPC_DEC_RU, _IPC_DEC_EN, "20.ct13", 2022, section=SECTION_PRICES),
+    _pub("tour-obshchepit-restorany", "Число ресторанов, кафе и баров", "Restaurants, cafés and bars",
+         "единиц", "units", "Рестораны, кафе и бары на конец года (сборник «Торговля в России»).",
+         "Restaurants, cafés and bars at year end (Trade in Russia yearbook).", "6.t89", 2022,
+         keywords="сколько ресторанов и кафе в регионе"),
+    _pub("tour-obshchepit-stolovye", "Число общедоступных столовых и закусочных", "Public canteens and snack bars",
+         "единиц", "units", "Общедоступные столовые и закусочные на конец года.",
+         "Public canteens and snack bars at year end.", "6.t90", 2022),
+    _pub("tour-obshchepit-rezultat-restorany", "Прибыль минус убыток ресторанов", "Restaurants' net financial result",
+         "миллионов рублей", "RUB million",
+         "Сальдированный финансовый результат организаций «рестораны и доставка еды» за год: прибыль "
+         "прибыльных минус убыток убыточных.",
+         "Net financial result of restaurant and food delivery companies over the year: profits minus losses.",
+         "6.t91", 2020, allow_negative=True),
+    _pub("tour-investicii-gostinicy-restorany", "Инвестиции в гостиницы и рестораны",
+         "Investment in hotels and restaurants", "миллионов рублей", "RUB million",
+         "Инвестиции в основной капитал по виду деятельности «гостиницы и общепит» за год.",
+         "Fixed capital investment in accommodation and food services during the year.", "6.t92", 2022,
+         keywords="инвестиции в туризм, строительство гостиниц"),
+    TSeries("tour-cena-kupe-nefirmennyy", "monthly",
+            "Средняя цена: проезд в купейном вагоне нефирменного скорого поезда, 100 км",
+            "Average price: compartment car of a regular express train, per 100 km",
+            "рублей за 100 км пути", "RUB per 100 km",
+            "Средняя цена проезда в купе скорого нефирменного поезда дальнего следования в расчёте на 100 км, "
+            "на конец месяца. Данные Росстата.",
+            "Average fare in a compartment car of a regular long-distance express train per 100 km, at month end. "
+            "Rosstat data.", _PUB, "20.ct20", section=SECTION_PRICES, first_year=2022,
+            keywords="цена билета на поезд, купе"),
+    TSeries("tour-cena-plackart-nefirmennyy", "monthly",
+            "Средняя цена: проезд в плацкартном вагоне нефирменного скорого поезда, 100 км",
+            "Average price: open-plan sleeper of a regular express train, per 100 km",
+            "рублей за 100 км пути", "RUB per 100 km",
+            "Средняя цена проезда в плацкарте скорого нефирменного поезда дальнего следования в расчёте на 100 "
+            "км, на конец месяца. Данные Росстата.",
+            "Average fare in an open-plan sleeper car of a regular long-distance express train per 100 km, at "
+            "month end. Rosstat data.", _PUB, "20.ct21", section=SECTION_PRICES, first_year=2022,
+            keywords="цена плацкарта"),
+    TSeries("tour-ksr-zagruzka-mest", "annual", "Загрузка мест в гостиницах и прочих средствах размещения (расчёт)",
+            "Bed occupancy in collective accommodation (calculated)", "% мест", "% of bed places",
+            "Какая доля мест была занята в среднем за год: ночёвки за год, делённые на число мест на конец года "
+            "× 365. Расчёт по данным Росстата, не официальный показатель.",
+            "Average share of bed places occupied over the year: nights divided by year-end bed places × 365. "
+            "Calculated from Rosstat data, not an official indicator.",
+            "rosstat_calc", "6.t93", first_year=2002, keywords="загрузка гостиниц, заполняемость отелей"),
+)
+
 SERIES: tuple[TSeries, ...] = (
     *ANNUAL_KSR, *ANNUAL_SANATORIUMS, *ANNUAL_FIRMS, *ANNUAL_PENDING, *MONTHLY_EMISS, *MONTHLY_TRANSPORT,
-    *MONTHLY_CPI, *TURPOTOK, *QUARTERLY_CBR, *TAX, *REGISTRIES,
+    *MONTHLY_CPI, *TURPOTOK, *QUARTERLY_CBR, *TAX, *REGISTRIES, *PUBLICATIONS,
 )
 SERIES_BY_CODE: dict[str, TSeries] = {s.code: s for s in SERIES}
+
+# Средние цены туруслуг по субъектам (ЕМИСС 31448, ряды ``ceni-*`` реестра ``emiss_price_goods``): пока fedstat
+# закрыт, их помесячно продлевают файлы Росстата ``sred_potreb_cen_*.xlsx`` (2022-01 — 2026-09, снимок c4 и живой
+# файл). Пишутся только недостающие месяцы: ряд и метаданные остаются у реестра цен. Подпись столбца файла →
+# код ряда; позиции вне туризма (продукты, одежда) здесь не трогаются.
+PRICE_TOURISM_RX = (r"^(проживание в (гостинице|хостеле)|поездк|экскурс|речной круиз|санаторий|дом отдыха|"
+                    r"полет в салоне|проезд в (купейном|плацкартном|сидячих))")
+
+
+def price_tourism_codes() -> dict[str, str]:
+    """«подпись, единица» (нижний регистр) → код ряда цен."""
+    import re
+
+    from app.data.emiss_price_goods import ALL_PRICE_GOODS
+
+    rx = re.compile(PRICE_TOURISM_RX)
+    return {f"{g.label.casefold().strip()}, {g.per.casefold().strip()}": g.code
+            for g in ALL_PRICE_GOODS if rx.search(g.label.casefold().strip())}
 
 
 def emiss_datasets() -> dict[int, list[TSeries]]:
