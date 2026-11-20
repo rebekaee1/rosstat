@@ -31,6 +31,8 @@ import '../styles/z2-price.css';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
 const DUAL_AXIS_RATIO = 3;
+// Сравнение регионов: больше этой разницы масштабов — линии показываются как рост в % от начала периода.
+const COMPARE_REBASE_RATIO = 10;
 
 const COMPARE_COLOR = CHART_THEME.sapphire;
 // Высота оси X у Recharts по умолчанию: вертикаль закреплённой точки кончается над подписями лет.
@@ -52,7 +54,7 @@ function monthTickLabel(p, locale) {
   return `${names[m]} ${p.year}`;
 }
 
-function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, realLabel, tickLabel, indexNote, yoyLabel, yoyOf }) {
+function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, realLabel, tickLabel, indexNote, yoyLabel, yoyOf, percentFmt }) {
   if (!active || !payload?.length) return null;
   const region = payload.find(p => p.dataKey === 'value' && p.value != null);
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
@@ -63,7 +65,7 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
   const periodLabel = typeof rawPeriod === 'string' && rawPeriod ? rawPeriod.charAt(0).toUpperCase() + rawPeriod.slice(1) : rawPeriod;
   // Короткая единица («₽», «%») стоит рядом с числом, а не отдельной строкой внизу: раньше «₽» оставался сам по себе на второй строке.
   const inlineUnit = !indexNote && unit && String(unit).length <= 6 ? `\u00A0${unit}` : '';
-  const fmt = (v) => `${formatRegionValue(v)}${inlineUnit}`;
+  const fmt = percentFmt || ((v) => `${formatRegionValue(v)}${inlineUnit}`);
   return (
     <div className="fe-chart-tooltip fe-chart-tooltip--stack text-xs max-w-[calc(100vw-48px)]">
       <div className="text-text-secondary mb-1">{periodLabel}</div>
@@ -204,9 +206,34 @@ export default function RegionAnnualChart({
     () => data.every((d) => (d.russia == null || d.russia > 0) && (d.value == null || d.value >= 0) && (d.compare == null || d.compare >= 0)),
     [data],
   );
-  const indexMode = scalesDiffer && !forecastSeries?.length && positiveOnly;
-  const dualAxis = scalesDiffer && !indexMode;
+  // Сравнение двух регионов при разнице масштабов больше чем в 10 раз: общая ось прижимает меньший к нулю,
+  // поэтому все линии пересчитываются в «рост в % от начала периода» (нужны положительные значения).
+  const rebase = useMemo(() => {
+    if (!compareSeries?.length || forecastSeries?.length || !positiveOnly) return false;
+    const mx = (key) => Math.max(0, ...data.map((d) => Math.abs(d[key] ?? 0)));
+    const a = mx('value');
+    const b = mx('compare');
+    if (!a || !b) return false;
+    const ratio = Math.max(a, b) / Math.min(a, b);
+    return ratio > COMPARE_REBASE_RATIO;
+  }, [data, compareSeries, forecastSeries, positiveOnly]);
+  const indexMode = scalesDiffer && !forecastSeries?.length && positiveOnly && !rebase;
+  const dualAxis = scalesDiffer && !indexMode && !rebase;
   const plotData = useMemo(() => {
+    if (rebase) {
+      const base = {};
+      for (const key of ['value', 'compare', 'russia', 'real']) {
+        base[key] = data.find((d) => d[key] != null && Number(d[key]) > 0)?.[key] ?? null;
+      }
+      const pct = (v, key) => (v != null && base[key] ? (Number(v) / Number(base[key]) - 1) * 100 : null);
+      return data.map((d) => ({
+        ...d,
+        value: pct(d.value, 'value'),
+        compare: pct(d.compare, 'compare'),
+        russia: pct(d.russia, 'russia'),
+        real: pct(d.real, 'real'),
+      }));
+    }
     if (!indexMode) return data;
     const idx = (v, rf) => (v != null && rf ? (Number(v) / Number(rf)) * 100 : null);
     return data.map((d) => ({
@@ -215,7 +242,7 @@ export default function RegionAnnualChart({
       compare: idx(d.compare, d.russia),
       russia: d.russia ? 100 : null,
     }));
-  }, [data, indexMode]);
+  }, [data, indexMode, rebase]);
 
   const isNarrow = plotWidth > 0 && plotWidth < NARROW_CHART_WIDTH;
 
@@ -274,12 +301,20 @@ export default function RegionAnnualChart({
   };
   const chartHeight = isNarrow ? Math.min(height, 260) : height;
   const russiaLabel = nationalLabel || t('regions.ind.russia');
+  // Подсказка не должна начинаться с «: 38,7»: пустое имя заменяем словом.
+  const regionLabel = regionName || t('kt5_thisRegion');
+  const compareLabel = compareName || t('kt5_otherRegion');
+  const fmtPct = (v) => {
+    const n = Number(v);
+    const a = Math.abs(n).toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 });
+    return `${n > 0.04 ? '+' : n < -0.04 ? '\u2212' : ''}${a}\u00A0%`;
+  };
   const lastPoint = data[data.length - 1];
   const fmtLegend = (v) => Number(v).toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 1 });
 
   return (
     <div>
-      {axisUnit && !indexMode && <div className="z2p-axis-unit" aria-hidden="true">{axisUnit}</div>}
+      {axisUnit && !indexMode && !rebase && <div className="z2p-axis-unit" aria-hidden="true">{axisUnit}</div>}
       <div
         ref={setWrap}
         onPointerDownCapture={touchTip.onPointerDownCapture}
@@ -353,14 +388,15 @@ export default function RegionAnnualChart({
               content={(
                 <RegionTooltip
                   unit={unit}
-                  regionName={regionName}
-                  compareName={compareName}
+                  regionName={regionLabel}
+                  compareName={compareLabel}
+                  percentFmt={rebase ? fmtPct : null}
                   russiaLabel={russiaLabel}
                   forecastLabel={locale === 'en' ? 'Our forecast' : 'Наш прогноз'}
                   realLabel={realLabel}
-                  indexNote={indexMode ? t('w6f.reg.indexNote') : null}
+                  indexNote={indexMode ? t('w6f.reg.indexNote') : (rebase ? t('kt5_rebaseNote') : null)}
                   yoyLabel={t('r2z2.tipYoy')}
-                  yoyOf={monthly && !indexMode ? (v) => {
+                  yoyOf={monthly && !indexMode && !rebase ? (v) => {
                     const d = data.find((x) => String(x.period) === String(v));
                     if (d?.yoy == null) return null;
                     const a = Math.abs(d.yoy).toFixed(1).replace('.', locale === 'en' ? '.' : ',');
@@ -389,7 +425,7 @@ export default function RegionAnnualChart({
               animationDuration={900}
               animationEasing="ease-out"
             />
-            {!dated && !forecastSeries?.length && showRussia && !dualAxis && !indexMode && data.length > 0 && data[data.length - 1].russia != null && (
+            {!dated && !forecastSeries?.length && showRussia && !dualAxis && !indexMode && !rebase && data.length > 0 && data[data.length - 1].russia != null && (
               <ReferenceDot
                 yAxisId="region"
                 x={data[data.length - 1].period}
@@ -419,7 +455,7 @@ export default function RegionAnnualChart({
               <ReferenceDot
                 yAxisId="region"
                 x={data[data.length - 1].period}
-                y={data[data.length - 1].value}
+                y={plotData[plotData.length - 1].value}
                 r={4.5}
                 fill={CHART_THEME.gold}
                 stroke="#FFFFFF"
@@ -552,6 +588,11 @@ export default function RegionAnnualChart({
             {nationalLabel || t('regions.ind.axisRussia')}
           </span>
         </div>
+      )}
+      {rebase && (
+        <p className="mt-1.5 px-1 text-xs text-text-secondary" data-testid="rebase-note">
+          {t('kt5_rebaseExplain', { a: regionLabel, b: compareLabel })}
+        </p>
       )}
       <ChartBrandCaption />
     </div>

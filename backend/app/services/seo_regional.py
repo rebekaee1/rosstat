@@ -17,6 +17,7 @@
 Legacy query `/regions?view=map&indicator=&year=` → 301 на канон (seo_pages).
 """
 
+import re
 from datetime import date
 from functools import partial
 from html import escape
@@ -550,6 +551,25 @@ async def _region_demand_links(db: AsyncSession, slug: str, inds: list) -> str:
     )
 
 
+# Тема «Культура, отдых и туризм» (№6) содержит и не туристские ряды (театры, стадионы, бассейны, библиотеки):
+# в «Ещё в разделе» туристских страниц их нет, как и в API (круг «Туризм» 20.11.2026).
+_NON_TOURISM_NAME = re.compile(r"театр|стадион|бассейн|библиотек|музе[ий]|спортивн|кинотеатр|зоопарк|theat|stadium|swimming|librar|museum|sports", re.I)
+_TOURISM_SECTION_NUM = 6
+
+
+def _tourism_siblings(siblings, section_num, limit):
+    """Соседи по разделу: в туристской теме без нетуристских рядов; в остальных темах без изменений."""
+    rows = list(siblings)
+    if section_num == _TOURISM_SECTION_NUM:
+        rows = [x for x in rows if not _NON_TOURISM_NAME.search(f"{x.name or ''} {_icopy(x)['name'] or ''}")]
+    return rows[:limit]
+
+
+def _is_zero_none_series(code: str) -> bool:
+    """Ряды туристического налога и курортного сбора: ноль значит «налога нет», а не «самое малое значение»."""
+    return str(code).startswith(("tour-nalog", "tour-sbor", "kurort"))
+
+
 def _rating_copy(*, achievement: bool) -> dict[str, str]:
     """Подписи рейтинга: достижение vs нейтральный список по величине."""
     from app.services.locale import get_locale
@@ -715,7 +735,13 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
             RegionDataPoint.value, indicator.code, indicator.table_code
         ))
     )).all()
-    if len(rows) < 10:
+    # Туристический налог: ноль или пусто — «налог не введён или сбора не было», а не «наименьшее значение»:
+    # такие регионы остаются в счёте и в таблице, но не попадают в минимум (как на клиенте).
+    none_rows: list[tuple] = []
+    if _is_zero_none_series(code):
+        none_rows = [r for r in rows if r[2] is None or float(r[2]) <= 0]
+        rows = [r for r in rows if not (r[2] is None or float(r[2]) <= 0)]
+    if len(rows) + len(none_rows) < 10 or not rows:
         return 404, "<h1>Недостаточно данных</h1>"
 
     icopy = _icopy(indicator)
@@ -723,7 +749,8 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
     unit = icopy["unit"] or (indicator.unit or "")
     section_name = icopy["section"] or indicator.section_name
     rows = [(s, _rname(s, n), v) for s, n, v in rows]
-    total = len(rows)
+    none_rows = [(s, _rname(s, n), v) for s, n, v in none_rows]
+    total = len(rows) + len(none_rows)
     top = rows[:3]
     bottom = rows[-3:]
 
@@ -757,11 +784,16 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
 
     th_region = _rt("region_rating.th_region") or "Регион"
     th_value = unit or ("Value" if _rt("region_rating.th_region") else "Значение")
+    none_label = "tax not introduced or nothing collected" if _rt("region_rating.th_region") else "налог не введён или сбора не было"
     table_rows = "".join(
         f"<tr><td>{i}</td>"
         f'<td><a href="{escape(paths.region_indicator(s, code))}">{escape(n)}</a></td>'
         f"<td>{_fmt(float(v))}</td></tr>"
         for i, (s, n, v) in enumerate(rows, 1)
+    ) + "".join(
+        f'<tr><td>—</td><td><a href="{escape(paths.region_indicator(s, code))}">{escape(n)}</a></td>'
+        f"<td>{escape(none_label)}</td></tr>"
+        for s, n, _v in none_rows
     )
     table_html = (
         f'<div class="seo-scroll"><table><thead><tr><th>{escape(copy["table_col"])}</th>'
@@ -801,8 +833,9 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
                RegionIndicator.code != code,
                RegionIndicator.is_listed.is_(True))
         .order_by(RegionIndicator.code)
-        .limit(24)
+        .limit(60)
     )).scalars().all()
+    siblings = _tourism_siblings(siblings, indicator.section_num, 24)
     siblings = (await _with_region_years(db, list(siblings)))[:12]
     siblings_html = ""
     if siblings:
@@ -1781,8 +1814,9 @@ async def _render_region_indicator_monthly(
                RegionIndicator.code != indicator.code,
                RegionIndicator.is_listed.is_(True))
         .order_by(RegionIndicator.code)
-        .limit(10)
+        .limit(40)
     )).scalars().all()
+    siblings = _tourism_siblings(siblings, indicator.section_num, 10)
     siblings_html = ""
     if siblings:
         items = "".join(
@@ -2238,8 +2272,9 @@ async def render_region_indicator_html(
                RegionIndicator.code != indicator.code,
                RegionIndicator.is_listed.is_(True))
         .order_by(RegionIndicator.code)
-        .limit(10)
+        .limit(40)
     )).scalars().all()
+    siblings = _tourism_siblings(siblings, indicator.section_num, 10)
     siblings_html = ""
     if siblings:
         items = "".join(

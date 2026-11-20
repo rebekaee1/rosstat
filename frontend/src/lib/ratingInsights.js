@@ -72,11 +72,11 @@ export function countrySeries(valuesByYear, years, activeYear, code, limit = 12)
 }
 
 /** Место каждой страны в году: 1 — лучший по направлению (`desc` — больше лучше, `asc` — меньше лучше). */
-export function rankMap(valuesByYear, year, direction = 'desc') {
+export function rankMap(valuesByYear, year, direction = 'desc', only = null) {
   const bucket = valuesByYear?.[String(year)] || {};
   const rows = Object.entries(bucket)
     .map(([code, item]) => [code, numberOrNull(item)])
-    .filter(([, value]) => value != null)
+    .filter(([code, value]) => value != null && (!only || only.has(code)))
     .sort((a, b) => (direction === 'asc' ? a[1] - b[1] : b[1] - a[1]));
   const map = new Map();
   rows.forEach(([code], index) => map.set(code, index + 1));
@@ -94,16 +94,18 @@ export function rankShifts(valuesByYear, years, activeYear, direction = 'desc', 
   const candidates = [...(years || [])].map(Number)
     .filter((y) => y < Number(activeYear) && y >= target - 2 && y <= target + 1)
     .sort((a, b) => Math.abs(a - target) - Math.abs(b - target));
-  const nowMap = rankMap(valuesByYear, activeYear, direction);
-  if (nowMap.size < minCountries) return null;
+  const nowAll = rankMap(valuesByYear, activeYear, direction);
+  if (nowAll.size < minCountries) return null;
   for (const fromYear of candidates) {
-    const thenMap = rankMap(valuesByYear, fromYear, direction);
-    if (thenMap.size < minCountries) continue;
+    const thenAll = rankMap(valuesByYear, fromYear, direction);
+    if (thenAll.size < minCountries) continue;
+    // Места считаются только среди стран, которые есть в обоих годах: иначе «было 45, стало 26» в списке из 32.
+    const common = new Set([...nowAll.keys()].filter((code) => thenAll.has(code)));
+    const nowMap = rankMap(valuesByYear, activeYear, direction, common);
+    const thenMap = rankMap(valuesByYear, fromYear, direction, common);
     const moves = [];
     for (const [code, now] of nowMap) {
-      const then = thenMap.get(code);
-      if (then == null) continue;
-      moves.push({ code, now, then, change: then - now });
+      moves.push({ code, now, then: thenMap.get(code), change: thenMap.get(code) - now });
     }
     if (moves.length < minCountries) continue;
     const risers = moves.filter((m) => m.change > 0).sort((a, b) => b.change - a.change || a.now - b.now).slice(0, top);
