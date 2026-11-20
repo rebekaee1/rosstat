@@ -357,3 +357,14 @@ def test_g2_g3_history_airports_and_replaced_sri_lanka():
     abkhazia = {p.date.year: p.value for p in rt.parse_destination(dest, "AB", "annual")}
     assert 2014 not in abkhazia and abkhazia[2025] == 609.3
     assert "1,88 млн" in reg.SERIES["tour-dest-abkhazia"].methodology
+
+
+def test_border_history_country_slices_and_macao_year_to_date():
+    static = (SNAP / rt.STATIC_FILE).read_text(encoding="utf-8")
+    turkey = {p.date.year: p.value for p in rt.parse_static(static, "tour-hist-outbound-turkey")}
+    assert min(turkey) == 2002 and max(turkey) == 2013
+    assert "другой учёт" in reg.SERIES["tour-hist-outbound-turkey"].methodology
+    dest = (SNAP / rt.DESTINATIONS_FILE).read_text(encoding="utf-8")
+    assert [p.value for p in rt.parse_destination(dest, "MO", "annual")] == [4.112, 39.584]
+    ytd = {p.date: p.value for p in rt.parse_destination(dest, "MO-YTD", "monthly")}
+    assert ytd[date(2025, 12, 1)] == 39.584 and "с начала года" in reg.SERIES["tour-dest-macao-ytd"].name
