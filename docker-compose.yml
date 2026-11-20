@@ -290,6 +290,9 @@ services:
       # 19.11.2026, ADR-0037: каталог страны читает последние точки из копии world_latest_points (после первого
       # заполнения командой, docs/workflow.md); в scheduler — задача обхода. Выключено.
       RUSTATS_WORLD_LATEST_POINTS_ENABLED: ${RUSTATS_WORLD_LATEST_POINTS_ENABLED:-false}
+      # 20.11.2026, ADR-0038: еженедельная загрузка туризма стран мира (МВФ, UN Tourism, ОЭСР, Евростат,
+      # национальные службы) в scheduler. Выключено до первой ручной загрузки после выпуска.
+      RUSTATS_WORLD_TOURISM_INGEST_ENABLED: ${RUSTATS_WORLD_TOURISM_INGEST_ENABLED:-false}
       # Круг 13, R-BRENT: живая нефть Brent с Мосбиржи в ленте. ВЫКЛЮЧЕНО до договора с биржей (бесплатные данные ISS
       # разрешены только «для ознакомления»). Включать только после подписания; нужен процесс scheduler (читает общий env).
       RUSTATS_MOEX_BRENT_LIVE_ENABLED: ${RUSTATS_MOEX_BRENT_LIVE_ENABLED:-false}
