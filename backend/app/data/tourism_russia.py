@@ -37,6 +37,8 @@ SRC_CBR = "Банк России"
 SRC_ROSSTAT = "Росстат"
 SRC_FSB = "Росстат по данным ФСБ России"
 SRC_FAVT = "Росавиация (ЕМИСС)"
+SRC_FAVT_ARCHIVE = "Росавиация (архив отчётов)"
+FAVT_ARCHIVE_URL = "https://web.archive.org/web/2022/https://favt.gov.ru/dejatelnost-ajeroporty-i-ajerodromy-osnovnie-proizvodstvennie-pokazateli-aeroportov-obyom-perevoz/"
 
 
 @dataclass(frozen=True)
@@ -1170,6 +1172,100 @@ def _static_series() -> list[TourSeries]:
             _M_AIRPORT_ANNUAL, _M_AIRPORT_ANNUAL_EN, f"аэропорт {short}, пассажиропоток {short}, авиаперевозки",
             "по годам", family="T10", listed=listed,
         ))
+    # g1, 21.11.2026: отрасли туризма по России из ЕМИСС (выгрузка целиком при бане fedstat) и аэропорты ФАВТ.
+    _M_OKVED = (
+        "Росстат по видам экономической деятельности (ОКВЭД 2): организации, у которых это основной вид деятельности. "
+        "Это отраслевой счёт, а не туристская индустрия целиком (её считает ряд «Добавленная стоимость туристской "
+        "индустрии»): в гостиницы и общепит входят и рестораны для местных жителей, а турфирмы — только те, у кого "
+        "туризм основной вид деятельности. С 2023 года — без учёта новых субъектов Российской Федерации. " + _M_STATIC
+    )
+    _M_OKVED_EN = (
+        "Rosstat by economic activity (OKVED 2): organisations whose main activity it is. An industry account, not the "
+        "tourism industry as a whole. From 2023 excluding the territories identified by Rosstat as new constituent "
+        "entities."
+    )
+    for code, name, name_en, unit, unit_en, freq, ds, fam, desc, desc_en, kw, listed in (
+        ("tour-gva-hotels-food", "Добавленная стоимость гостиниц и общепита", "Value added of hotels and restaurants",
+         "млрд руб.", "RUB bn", "quarterly", 58250, "T9",
+         "Добавленная стоимость отрасли «Деятельность гостиниц и предприятий общественного питания» за квартал, "
+         "миллиардов рублей в текущих ценах. С 2011 года.",
+         "Gross value added of accommodation and food services per quarter, RUB billion at current prices.",
+         "гостиницы и общепит, рестораны, ВДС гостиниц", True),
+        ("tour-gva-culture-leisure", "Добавленная стоимость культуры, спорта и досуга",
+         "Value added of culture, sport and leisure", "млрд руб.", "RUB bn", "quarterly", 58250, "T9",
+         "Добавленная стоимость отрасли «Деятельность в области культуры, спорта, организации досуга и развлечений» "
+         "за квартал, миллиардов рублей в текущих ценах. С 2011 года.",
+         "Gross value added of arts, sport and recreation per quarter, RUB billion at current prices.",
+         "культура, спорт, досуг, развлечения", False),
+        ("tour-turnover-hotels", "Оборот гостиниц", "Turnover of hotels", "млрд руб.", "RUB bn", "monthly", 57710, "T6",
+         "Оборот организаций, у которых основной вид деятельности — гостиницы и прочие места для временного "
+         "проживания, за месяц, миллиардов рублей; крупные, средние и малые организации. С 2017 года.",
+         "Monthly turnover of accommodation organisations, RUB billion.", "выручка гостиниц, оборот отелей", False),
+        ("tour-turnover-travel-agencies", "Оборот турагентств и туроператоров",
+         "Turnover of travel agencies and tour operators", "млрд руб.", "RUB bn", "monthly", 57710, "T6",
+         "Оборот турагентств и туроператоров за месяц, миллиардов рублей; крупные, средние и малые организации. "
+         "С 2017 года.", "Monthly turnover of travel agencies and tour operators, RUB billion.",
+         "выручка турфирм, оборот туроператоров", True),
+        ("tour-turnover-hotels-food", "Оборот гостиниц и общепита", "Turnover of hotels and restaurants",
+         "млрд руб.", "RUB bn", "monthly", 57710, "T6",
+         "Оборот организаций гостиниц и общественного питания вместе за месяц, миллиардов рублей; крупные, "
+         "средние и малые организации. С 2017 года.", "Monthly turnover of accommodation and food services, RUB bn.",
+         "оборот общепита, рестораны", False),
+        ("tour-workers-hotels", "Работники гостиниц", "Employees of hotels", "тыс. чел.", "thousand people",
+         "monthly", 57848, "T8",
+         "Среднесписочная численность работников организаций гостиниц и прочих мест для временного проживания за "
+         "месяц, тысяч человек, по полному кругу организаций. С 2017 года.",
+         "Average monthly headcount of accommodation organisations, thousand.", "работники гостиниц, занятость", False),
+        ("tour-workers-travel-agencies", "Работники турагентств и туроператоров",
+         "Employees of travel agencies and tour operators", "тыс. чел.", "thousand people", "monthly", 57848, "T8",
+         "Среднесписочная численность работников турагентств и туроператоров за месяц, тысяч человек, по полному "
+         "кругу организаций. С 2017 года.", "Average monthly headcount of travel agencies, thousand.",
+         "работники турфирм", False),
+        ("tour-invest-hotels", "Инвестиции в гостиницы", "Fixed investment in hotels", "млрд руб.", "RUB bn",
+         "annual", 59084, "T10",
+         "Инвестиции в основной капитал организаций гостиниц и прочих мест для временного проживания за год, "
+         "миллиардов рублей; крупные и средние организации и не относящиеся к малому бизнесу. С 2017 года.",
+         "Annual fixed capital investment of accommodation organisations, RUB billion.",
+         "инвестиции в отели, строительство гостиниц", True),
+        ("tour-invest-hotels-food", "Инвестиции в гостиницы и общепит", "Fixed investment in hotels and restaurants",
+         "млрд руб.", "RUB bn", "annual", 59084, "T10",
+         "Инвестиции в основной капитал организаций гостиниц и общественного питания за год, миллиардов рублей. "
+         "С 2017 года.", "Annual fixed capital investment of accommodation and food services, RUB billion.",
+         "инвестиции в общепит", False),
+        ("tour-invest-travel-agencies", "Инвестиции турагентств и туроператоров",
+         "Fixed investment of travel agencies and tour operators", "млрд руб.", "RUB bn", "annual", 59084, "T10",
+         "Инвестиции в основной капитал турагентств и туроператоров за год, миллиардов рублей. С 2017 года.",
+         "Annual fixed capital investment of travel agencies and tour operators, RUB billion.",
+         "инвестиции турфирм", False),
+    ):
+        out.append(_s(code, name, name_en, unit, unit_en, freq, SRC_ROSSTAT, FEDSTAT.format(ds), S, {}, desc, desc_en,
+                      _M_OKVED, _M_OKVED_EN, kw, "Росстата", family=fam, listed=listed))
+    _M_FAVT_ARCHIVE = (
+        "Отчёты Росавиации «Объёмы перевозок через аэропорты России» (улетевшие и прилетевшие пассажиры, внутренние и "
+        "международные, регулярные и чартерные рейсы), взятые из архивных копий сайта: с марта 2022 года Росавиация "
+        "эти данные не публикует. " + _M_STATIC
+    )
+    _M_FAVT_ARCHIVE_EN = ("Federal Air Transport Agency airport traffic reports from archived copies of its website; "
+                          "publication stopped in March 2022.")
+    out.append(_s("tour-airports-russia-2019", "Пассажиропоток аэропортов России до 2022 года",
+                  "Passenger traffic of Russian airports until 2022", "тыс. чел.", "thousand people", "monthly",
+                  SRC_FAVT_ARCHIVE, FAVT_ARCHIVE_URL, S, {},
+                  "Сколько пассажиров улетело и прилетело через все аэропорты России за месяц, тысяч человек. "
+                  "Январь 2019 — февраль 2022 года.",
+                  "Departing and arriving passengers at all Russian airports per month, thousand. Jan 2019 - Feb 2022.",
+                  _M_FAVT_ARCHIVE, _M_FAVT_ARCHIVE_EN, "пассажиропоток аэропортов России, аэропорты", "Росавиации",
+                  family="T6", listed=False))
+    for slug, short, short_en in (("sochi", "Сочи", "Sochi"), ("kazan", "Казань", "Kazan"),
+                                  ("mineralnye-vody", "Минеральные Воды", "Mineralnye Vody"),
+                                  ("kaliningrad", "Калининград", "Kaliningrad")):
+        out.append(_s(f"tour-airport-monthly-{slug}", f"Пассажиропоток аэропорта {short} по месяцам",
+                      f"{short_en} airport monthly passenger traffic", "тыс. чел.", "thousand people", "monthly",
+                      SRC_FAVT_ARCHIVE, FAVT_ARCHIVE_URL, S, {},
+                      f"Сколько пассажиров улетело и прилетело через аэропорт {short} за месяц, тысяч человек, по "
+                      "отчётам Росавиации 2020 — февраля 2022 года.",
+                      f"Departing and arriving passengers at {short_en} airport per month, thousand. 2020 - Feb 2022.",
+                      _M_FAVT_ARCHIVE, _M_FAVT_ARCHIVE_EN, f"аэропорт {short}, пассажиропоток {short} по месяцам",
+                      "Росавиации", listed=False))
     for code, name, name_en, unit, unit_en, desc, desc_en, kw, listed, fam in book_rows:
         out.append(_s(code, name, name_en, unit, unit_en, "annual", SRC_ROSSTAT, BOOK_URL, S, {},
                       desc + " Данные 2014–2023 годов." if code != "tour-hotel-workers" else desc + " 2019–2023.",
@@ -1246,6 +1342,16 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
         ("tour-gva", "Добавленная стоимость", "Value added"),
         ("tour-gva-share", "Доля в ВВП", "Share of GDP"),
         ("tour-gva-volume", "Реальный рост", "Real growth"),
+        ("tour-gva-hotels-food", "Гостиницы и общепит: ВДС", "Hotels and restaurants: value added"),
+        ("tour-gva-culture-leisure", "Культура и досуг: ВДС", "Culture and leisure: value added"),
+        ("tour-turnover-hotels", "Оборот гостиниц", "Hotel turnover"),
+        ("tour-turnover-travel-agencies", "Оборот турфирм", "Travel agency turnover"),
+        ("tour-turnover-hotels-food", "Оборот гостиниц и общепита", "Hotels and restaurants turnover"),
+        ("tour-workers-hotels", "Работники гостиниц", "Hotel employees"),
+        ("tour-workers-travel-agencies", "Работники турфирм", "Travel agency employees"),
+        ("tour-invest-hotels", "Инвестиции в гостиницы", "Investment in hotels"),
+        ("tour-invest-hotels-food", "Инвестиции в гостиницы и общепит", "Investment in hotels and restaurants"),
+        ("tour-invest-travel-agencies", "Инвестиции турфирм", "Investment of travel agencies"),
     )),
     ("tourAir", "Авиаперевозки пассажиров", (
         ("tour-air-passengers", "Все рейсы", "All flights"),
@@ -1262,6 +1368,11 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
         ("tour-airport-annual-kazan", "Казань", "Kazan"),
         ("tour-airport-annual-mineralnye-vody", "Минеральные Воды", "Mineralnye Vody"),
         ("tour-airport-annual-kaliningrad", "Калининград", "Kaliningrad"),
+        ("tour-airport-monthly-sochi", "Сочи по месяцам", "Sochi, monthly"),
+        ("tour-airport-monthly-kazan", "Казань по месяцам", "Kazan, monthly"),
+        ("tour-airport-monthly-mineralnye-vody", "Минводы по месяцам", "Mineralnye Vody, monthly"),
+        ("tour-airport-monthly-kaliningrad", "Калининград по месяцам", "Kaliningrad, monthly"),
+        ("tour-airports-russia-2019", "Все аэропорты 2019–2022", "All airports 2019-2022"),
     )),
     ("tourHistOutbound", "Выезд россиян 1993–2013 по странам", (
         ("tour-hist-outbound", "Все страны", "All countries"),
