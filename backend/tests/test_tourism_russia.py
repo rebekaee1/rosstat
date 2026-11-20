@@ -368,3 +368,22 @@ def test_border_history_country_slices_and_macao_year_to_date():
     assert [p.value for p in rt.parse_destination(dest, "MO", "annual")] == [4.112, 39.584]
     ytd = {p.date: p.value for p in rt.parse_destination(dest, "MO-YTD", "monthly")}
     assert ytd[date(2025, 12, 1)] == 39.584 and "с начала года" in reg.SERIES["tour-dest-macao-ytd"].name
+
+
+def test_observer_round_sources_definitions_and_caveats():
+    s = reg.SERIES
+    # Правки 3 и 4: рабочие адреса — ЦБ без /svs/ (404), ряды Росстата ведут на витрины ЕМИСС, а не в раздел сайта.
+    assert all("/svs/" not in x.source_url for x in s.values())
+    assert s["tour-travel-imports"].source_url.endswith("/external_sector/ets/")
+    assert s["tour-outbound-turkey"].source_url.endswith("/59467") and s["tour-inbound-trips"].source_url.endswith("/59466")
+    assert not any("rosstat.gov.ru/statistics/" in x.source_url for x in s.values())
+    # Расхождение 15: одно определение туристской поездки по-русски и по-английски.
+    assert reg.TRIP_RU in s["tour-outbound-trips"].description and reg.TRIP_EN in s["tour-outbound-trips"].description_en
+    # Правка 27 и расхождение 10: оговорка о неполном выезде видна в описании, прогноз через смену полноты снят.
+    assert "неполные" in s["tour-outbound-egypt"].description and s["tour-outbound-trips"].forecast is None
+    # Правка 10, расхождения 5–6: пропуск 2016–2018 у Египта — в файле Росстата, и два счёта подписаны с обеих сторон.
+    assert "2016–2018" in s["tour-outbound-egypt"].description and "два разных счёта" in s["tour-dest-egypt"].methodology
+    # Расхождение 8: месячные ночёвки объяснены относительно годового итога.
+    assert "352,6" in s["tour-hotel-nights-monthly"].description
+    # Расхождение 16: фраза о переключателе частоты убрана.
+    assert "переключатель частоты" not in s["tour-travel-exports"].methodology

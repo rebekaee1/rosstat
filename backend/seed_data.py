@@ -2689,7 +2689,7 @@ INDICATORS = [
         "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/etg/",
         "description": (
             "Экспорт товаров из России (по методологии платёжного баланса). "
             "Квартальные данные в млн долларов. Источник: ЦБ РФ."
@@ -2719,7 +2719,7 @@ INDICATORS = [
         "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/etg/",
         "description": (
             "Импорт товаров в Россию (по методологии платёжного баланса). "
             "Квартальные данные в млн долларов. Источник: ЦБ РФ."
@@ -2748,7 +2748,7 @@ INDICATORS = [
         "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/etg/",
         "description": (
             "Торговый баланс (экспорт минус импорт товаров) по методологии "
             "платёжного баланса. Квартальные данные. Источник: ЦБ РФ."
@@ -2925,7 +2925,7 @@ INDICATORS = [
         "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/ed/",
         "description": (
             "Совокупный внешний долг Российской Федерации в млн долларов США. "
             "Квартальные остатки с 2003 года. Банк России."
@@ -3471,7 +3471,7 @@ INDICATORS = [
         "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/ets/",
         "description": (
             "Экспорт услуг из России по методологии платёжного баланса. "
             "Квартальные данные в млн долларов."
@@ -3501,7 +3501,7 @@ INDICATORS = [
         "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/ets/",
         "description": (
             "Импорт услуг в Россию по методологии платёжного баланса. "
             "Квартальные данные в млн долларов."
@@ -5553,7 +5553,7 @@ async def _seed_full():
                     is_active=True,
                     parser_type=trade_parser,
                     source="Банк России",
-                    source_url="https://www.cbr.ru/statistics/macro_itm/svs/",
+                    source_url="https://www.cbr.ru/statistics/macro_itm/external_sector/etg/",
                 )
             )
         for yoy_code in ("exports-yoy", "imports-yoy"):
