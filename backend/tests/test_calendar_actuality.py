@@ -134,7 +134,9 @@ def test_cbr_ics_maps_monthly_balance_of_payments_estimate():
 
     text = ICS_UTC.replace("Внешний долг Российской Федерации\n", "Платежный баланс – оценка\n")
     events = parse_cbr_ics(text, source_url="u", today=date(2026, 11, 14), months_ahead=2)
-    assert any(e.indicator_code == "current-account" and e.title == "Оценка платёжного баланса" for e in events)
+    # 20.11.2026: помесячной истории счёта текущих операций у ЦБ нет — выпуск идёт без ряда.
+    estimate = [e for e in events if e.title == "Оценка платёжного баланса"]
+    assert estimate and all(e.indicator_code is None for e in estimate)
 
 
 # --- График Росстата -------------------------------------------------------------------------
