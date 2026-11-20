@@ -1,7 +1,7 @@
 // Страница региона: /russia/region/{slug}
 // Как у стран: темы слева, сетка показателей справа.
-import { useEffect, useMemo, useState, useDeferredValue } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState, useDeferredValue } from 'react';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { GitCompare, MapPin, SearchX } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useRegionProfile } from '../lib/regionsApi';
@@ -35,6 +35,9 @@ import '../styles/z5-country.css';
 import '../styles/z1-prices.css';
 import '../styles/r5b-region.css';
 
+// Номер темы «Культура, отдых и туризм» в справочнике регионов.
+const TOURISM_SECTION = 6;
+
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
 }
@@ -46,7 +49,19 @@ export default function RegionProfile({ renderActions = null } = {}) {
   const { data, isLoading, isError, refetch, isFetching } = useRegionProfile(slug);
   const [query, setQuery] = useState('');
   const [activeSection, setActiveSection] = useState('');
+  // Переход из раздела «Туризм» (?topic=tourism или state.topic) открывает туристскую тему региона, а не цены на хлеб.
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const topicRaw = searchParams.get('topic') || location.state?.topic || '';
+  const topicNum = topicRaw === 'tourism' ? TOURISM_SECTION : (Number(topicRaw) || null);
+  const scrolledToTopic = useRef(false);
   const deferredQuery = useDeferredValue(query);
+  const topicFound = Boolean(topicNum && data?.sections?.some((sec) => Number(sec.num) === topicNum));
+  useEffect(() => {
+    if (!topicFound || scrolledToTopic.current) return;
+    scrolledToTopic.current = true;
+    requestAnimationFrame(() => document.getElementById('chart')?.scrollIntoView({ block: 'start' }));
+  }, [topicFound]);
   const searching = normalize(deferredQuery).length > 0;
 
   const regionName = data?.region?.name;
@@ -117,8 +132,9 @@ export default function RegionProfile({ renderActions = null } = {}) {
     ? headlineOrder.map((tc) => data.headline[tc]).filter(Boolean)
     : [];
 
-  const resolvedActive = filteredSections.some((s) => String(s.num) === String(activeSection))
-    ? filteredSections.find((s) => String(s.num) === String(activeSection))?.num
+  const wantedSection = activeSection || (topicFound ? topicNum : '');
+  const resolvedActive = filteredSections.some((s) => String(s.num) === String(wantedSection))
+    ? filteredSections.find((s) => String(s.num) === String(wantedSection))?.num
     : (filteredSections[0]?.num || '');
   const visibleSections = searching
     ? filteredSections
@@ -180,7 +196,7 @@ export default function RegionProfile({ renderActions = null } = {}) {
             </div>
           </div>
 
-          {!searching && (
+          {!searching && !topicFound && (
             <RegionPricesBlock
               slug={slug}
               sections={data.sections}

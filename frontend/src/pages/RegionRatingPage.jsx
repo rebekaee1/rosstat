@@ -45,7 +45,15 @@ export default function RegionRatingPage() {
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsHeatmap(code);
   const achievement = Boolean(data?.rank_as_achievement);
-  const isPrice = data?.month != null;
+  // Шаблон «цены» только для ценовых рядов. Месячный неценовой ряд (налог с начала года) берёт нейтральные слова.
+  const hasMonth = data?.month != null;
+  const isPrice = hasMonth && (
+    priceUnitLabel(data?.indicator?.unit) !== ''
+    || /^(Средняя цена|Average (consumer )?price)/i.test(data?.indicator?.name || '')
+  );
+  // Ноль у налога — не «самое дешёвое», а «налог не введён или сбора не было». Признак из данных (not_introduced / no_data)
+  // главнее; пока его нет, работаем по значению: 0 или пусто у рядов туристического налога.
+  const zeroIsNone = /^tour-nalog/.test(String(data?.indicator?.code || code || ''));
   // Цены: владельцу точки важно «где дешевле» — по умолчанию сначала дешёвые.
   const serverSort = isPrice ? 'asc' : (data?.default_sort === 'asc' ? 'asc' : 'desc');
   // null = ещё не трогали переключатель → берём направление с сервера.
@@ -55,15 +63,27 @@ export default function RegionRatingPage() {
   const setSortOverride = (value) => setSortState({ code, value });
   const sortDirection = sortOverride ?? serverSort;
 
-  const ranked = useMemo(() => {
-    if (!data?.values?.length) return [];
-    const rows = [...data.values].sort((a, b) => {
+  const [ranked, noneRows] = useMemo(() => {
+    if (!data?.values?.length) return [[], []];
+    const none = [];
+    const live = [];
+    for (const row of data.values) {
+      const n = Number(row.raw ?? row.value);
+      const isNone = row.not_introduced === true || row.no_data === true
+        || row.raw === null || row.value === null
+        || (zeroIsNone && !(n > 0));
+      (isNone ? none : live).push(row);
+    }
+    const rows = live.sort((a, b) => {
       const av = a.raw ?? a.value;
       const bv = b.raw ?? b.value;
       return sortDirection === 'asc' ? av - bv : bv - av;
     });
-    return rows.map((row, i) => ({ ...row, rank: i + 1 }));
-  }, [data, sortDirection]);
+    none.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+    return [rows.map((row, i) => ({ ...row, rank: i + 1 })), none];
+  }, [data, sortDirection, zeroIsNone]);
+  // Сколько регионов в рейтинге: берём из данных, одинаково в подписях.
+  const total = ranked.length + noneRows.length;
 
   // «Мой регион» общий с хабом: выбор помнится в браузере.
   const [mine, setMine] = useState(() => { try { return localStorage.getItem('fe-my-region') || localStorage.getItem('r4a-my-region') || ''; } catch { return ''; } });
@@ -78,18 +98,18 @@ export default function RegionRatingPage() {
 
   // Цены ЕМИСС (месячный ряд): места не показываем — только значения и сравнение.
   // Квартальный ряд (19.11.2026): подпись квартала там же, где у цен подпись месяца.
-  const period = isPrice || data?.quarter != null ? (data.period_label || String(data.year)) : null;
+  const period = hasMonth || data?.quarter != null ? (data.period_label || String(data.year)) : null;
   const rawName = data?.indicator?.name || '';
   const shortName = isPrice ? cleanPriceName(rawName, data.indicator.unit) : rawName;
   const val = (r) => Number(r.raw ?? r.value);
   const stats = useMemo(() => {
-    if (!isPrice || !ranked.length) return null;
+    if (!ranked.length) return null;
     const nums = ranked.map(val);
     const med = medianOf(nums);
     const lo = ranked.reduce((a, b) => (val(b) < val(a) ? b : a));
     const hi = ranked.reduce((a, b) => (val(b) > val(a) ? b : a));
     return { med, lo, hi, ratio: val(lo) > 0 ? val(hi) / val(lo) : null };
-  }, [ranked, isPrice]);
+  }, [ranked]);
   const pUnit = isPrice ? priceUnitLabel(data.indicator.unit) : '';
   const fmtU = (v) => (pUnit ? `${formatRegionNumber(v, data.indicator.unit, locale)}\u00a0${pUnit.replace(/ /g, '\u00a0')}` : formatRegionWithUnit(v, data.indicator.unit, locale));
   const num1 = (x) => x.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 });
@@ -99,8 +119,9 @@ export default function RegionRatingPage() {
   const bottom = isPrice && stats ? stats.hi : ranked[ranked.length - 1];
   const mapValues = useMemo(() => {
     if (!data?.values) return null;
-    return new Map(data.values.map((v) => [v.slug, v.raw ?? v.value]));
-  }, [data]);
+    const noneSlugs = new Set(noneRows.map((r) => r.slug));
+    return new Map(data.values.filter((v) => !noneSlugs.has(v.slug)).map((v) => [v.slug, v.raw ?? v.value]));
+  }, [data, noneRows]);
   const nameBySlug = useMemo(() => {
     if (!data?.values) return {};
     return Object.fromEntries(data.values.map((v) => [v.slug, v.name]));
@@ -108,9 +129,9 @@ export default function RegionRatingPage() {
 
   const bestLabel = isPrice ? t('r9c.price.lowest') : (achievement ? t('regions.rating.best') : t('regions.rating.highest'));
   const worstLabel = isPrice ? t('r9c.price.highest') : (achievement ? t('regions.rating.worst') : t('regions.rating.lowest'));
-  const listTitle = isPrice ? t('r9c.price.list', { n: ranked.length }) : achievement
-    ? t('regions.rating.listAchievement', { n: ranked.length })
-    : t('regions.rating.listNeutral', { n: ranked.length });
+  const listTitle = isPrice ? t('r9c.price.list', { n: total }) : achievement
+    ? t('regions.rating.listAchievement', { n: total })
+    : t('regions.rating.listNeutral', { n: total });
   const tableCol = achievement ? t('regions.rating.place') : '№';
 
   useDocumentMeta(data ? {
@@ -121,7 +142,7 @@ export default function RegionRatingPage() {
       : t('regions.rating.titleNeutral', { name: data.indicator.name, year: data.year }),
     description:
       `${shortName} (${period || data.year}): `
-      + `${ranked.length}.`
+      + `${total}.`
       + (top ? ` ${bestLabel} — ${top.name}.` : ''),
     path: regionRatingPath(code),
   } : null);
@@ -158,7 +179,7 @@ export default function RegionRatingPage() {
         </div>
       )}
 
-      {data && ranked.length >= 10 && (
+      {data && ranked.length >= 1 && total >= 10 && (
         <>
           <p className="mb-2 text-sm font-medium text-champagne-ink">
             {achievement ? t('regions.rating.eyebrowAchievement') : t('regions.rating.eyebrowNeutral')}
@@ -173,14 +194,14 @@ export default function RegionRatingPage() {
           </h1>
           <p className="r7c-rate-lead mb-5 max-w-3xl text-[15px] leading-relaxed text-text-secondary">
             {isPrice && stats ? t('r9c.price.lead', {
-              n: ranked.length,
+              n: total,
               period,
               lo: fmtU(val(stats.lo)),
               loRegion: stats.lo.name,
               hi: fmtU(val(stats.hi)),
               hiRegion: stats.hi.name,
             }) : t('w4.rating.lead', {
-              n: ranked.length,
+              n: total,
               name: data.indicator.name,
               year: data.year,
               best: bestLabel,
@@ -207,7 +228,7 @@ export default function RegionRatingPage() {
                 <span className="r7c-mine__label">{t('r7c.rank.mineLabel')}</span>
                 <select value={mine} onChange={(e) => pickMine(e.target.value)} aria-label={t('r7c.rank.mineAria')}>
                   <option value="">{t('r7c.rank.minePlaceholder')}</option>
-                  {[...ranked].sort((a, b) => a.name.localeCompare(b.name, locale)).map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>)}
+                  {[...ranked, ...noneRows].sort((a, b) => a.name.localeCompare(b.name, locale)).map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>)}
                 </select>
               </label>
               {mineRow && isPrice && stats && (
@@ -271,9 +292,14 @@ export default function RegionRatingPage() {
                 )}
               </div>
             ) : (
-              <div className="r7c-rate-tiles__year rounded-2xl p-4 fe-glass-lite">
-                <div className="text-xs font-medium text-text-secondary">{t('regions.rating.dataFor')}</div>
-                <div className="fe-num mt-1 font-semibold text-text-primary">{t('w4.map.yearLabel', { year: data.year })}</div>
+              <div className="r7c-rate-tiles__year rounded-2xl p-4 fe-glass-lite" data-testid="kt5-median">
+                <div className="text-xs font-medium text-text-secondary">{t('kt5_median')}</div>
+                <div className="fe-num mt-1 font-semibold text-text-primary">{fmtU(stats.med)}</div>
+                <div className="r9c-typical__sub">
+                  {zeroIsNone && noneRows.length > 0
+                    ? t('kt5_medianNote', { n: noneRows.length })
+                    : (period || t('w4.map.yearLabel', { year: data.year }))}
+                </div>
               </div>
             )}
           </div>
@@ -361,11 +387,24 @@ export default function RegionRatingPage() {
                         >
                           {formatRegionNumber(row.raw ?? row.value, data.indicator.unit, locale)}
                         </Link>
-                        {isPrice && stats?.med ? (
+                        {isPrice && stats?.med && val(row) > 0 ? (
                           <span className="r9c-dev fe-num" title={t('r9c.price.devTitle')}>
                             {signed(((val(row) - stats.med) / stats.med) * 100)}
                           </span>
                         ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                  {noneRows.map((row) => (
+                    <tr key={row.slug} id={`r7c-row-${row.slug}`} className="fe-row-link border-t border-border-subtle" data-testid="kt5-none-row">
+                      {!isPrice && <td className="fe-num px-4 py-2 text-text-secondary">—</td>}
+                      <td className="px-4 py-2">
+                        <Link to={regionPath(row.slug)} className="fe-row-link__a text-text-primary hover:text-champagne-ink transition-colors">
+                          {row.name}
+                        </Link>
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-2 text-right text-xs text-text-secondary">
+                        {t('kt5_taxNone')}
                       </td>
                     </tr>
                   ))}
@@ -389,7 +428,7 @@ export default function RegionRatingPage() {
         </>
       )}
 
-      {!isLoading && !isError && (!data || ranked.length < 10) && (
+      {!isLoading && !isError && (!data || ranked.length < 1 || total < 10) && (
         <div role="status" className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
           <BarChart3 size={24} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
           <p>{t('regions.rating.empty')}</p>
