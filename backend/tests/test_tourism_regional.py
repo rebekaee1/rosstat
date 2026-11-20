@@ -32,7 +32,8 @@ def test_registry_codes_tables_and_copy():
     codes = [s.code for s in R.SERIES]
     assert len(codes) == len(set(codes)) and all(len(c) <= 120 for c in codes)
     own = [s for s in R.SERIES if s.own_metadata]
-    assert all(s.code.startswith("tour-") for s in own)
+    assert all(s.code.startswith("tour-") or s.code in R.RENAMED.values() for s in own)
+    assert all(R.SERIES_BY_CODE[c].section[0] != 6 for c in R.RENAMED.values())
     tables = [s.table_code for s in own]
     assert len(tables) == len(set(tables)) and all(len(t) <= 20 for t in tables)
     assert all(s.name_ru and s.name_en and s.unit_ru and s.unit_en and s.note_ru and s.note_en for s in own)
@@ -429,7 +430,7 @@ def test_fns_archive_parsed_like_snapshot(terr):
 
 
 def test_other_page_unit_rescales(terr):
-    s = R.SERIES_BY_CODE["tour-obshchepit-oborot-mes"]
+    s = R.SERIES_BY_CODE["obshchepit-oborot-mes"]
 
     async def fetch_page(dataset):
         return _page(dataset, "миллион рублей").replace("1540294: {title: 'январь-февраль'},", "")
@@ -439,7 +440,7 @@ def test_other_page_unit_rescales(terr):
 
     pts = asyncio.run(L.fetch_emiss_dataset(31258, [s], [2026], terr, today=TODAY,
                                             fetch_page=fetch_page, post_grid=post_grid))
-    assert pts == [("tour-obshchepit-oborot-mes", "krasnodarskiy-kray", 202601, 1500.5)]
+    assert pts == [("obshchepit-oborot-mes", "krasnodarskiy-kray", 202601, 1500.5)]
 
 
 def test_turpotok_link_on_rosstat_page():
@@ -592,3 +593,57 @@ def test_region_methods_public_text_for_every_region():
             assert not jargon.search(text), (slug, text)
             assert len(text) < 600, slug
         assert not re.search(r"[а-яё]", R.region_method("tour-turpotok-ocenka-regiona", slug, "en").casefold())
+
+
+
+# --- круг наблюдателей 20.11.2026 -------------------------------------------------------------------------------
+
+
+def test_source_urls_point_to_publication_or_emiss():
+    for s in R.SERIES:
+        if not s.own_metadata:
+            continue
+        url = R.source_url(s.code, "stavropolskiy-kray")
+        assert url and url.startswith("http"), s.code
+        assert "/statistics/turizm" not in url and "macro_itm/svs" not in url
+        if s.emiss is not None:
+            assert url == f"https://www.fedstat.ru/indicator/{s.emiss.dataset}"
+    assert R.source_url("tour-turpotok-ocenka-regiona", "moskva") == "https://data.mos.ru/opendata/62056"
+
+
+def test_tax_zero_statuses_and_no_minus_100(auth_env):
+    from app.models import Region, RegionIndicator, RegionMonthlyPoint
+    from app.services.tourism_regional_api import zero_statuses
+
+    async def run():
+        async with auth_env["session_maker"]() as db:
+            regs = [Region(slug=s, name=s, kind="region") for s in ("moskva", "sankt-peterburg", "tomskaya-oblast")]
+            ind = RegionIndicator(code="tour-nalog-s-nachala-goda", name="x", table_code="6.tm20", section_num=6,
+                                  section_name="x")
+            db.add_all([*regs, ind])
+            await db.flush()
+            db.add(RegionMonthlyPoint(indicator_id=ind.id, region_id=regs[1].id, month=202604, value=162.8))
+            db.add(RegionMonthlyPoint(indicator_id=ind.id, region_id=regs[1].id, month=202605, value=0))
+            await db.commit()
+            values = [{"slug": "moskva", "raw": 0.0, "prev": 0.0}, {"slug": "sankt-peterburg", "raw": 0.0, "prev": 5.0},
+                      {"slug": "tomskaya-oblast", "raw": 0.0}, {"slug": "x", "raw": 3.0, "prev": 0.0}]
+            missing = [{"slug": "kurskaya-oblast"}]
+            await zero_statuses(db, ind.code, ind.id, "monthly", 202605, values, missing)
+            return values, missing
+
+    values, missing = asyncio.run(run())
+    assert [v.get("status") for v in values] == ["not_introduced", "no_receipts_yet", "zero_year", None]
+    assert all("prev" not in v for v in values)
+    assert missing == [{"slug": "kurskaya-oblast", "status": "no_data"}]
+
+
+def test_occupancy_and_regional_estimates_not_ranked():
+    assert {"tour-ksr-zagruzka-mest", "tour-turpotok-ocenka-regiona"} <= R.NOT_RANKED
+    assert "31583" in R.SERIES_BY_CODE["tour-ksr-zagruzka-mest"].note_ru
+
+
+def test_tourism_siblings_exclude_culture_and_sport():
+    assert not R.is_tourism_sibling("chislo-sportivnyh-sooruzheniy-plavatelnye-basseyny", "6.2.4")
+    assert not R.is_tourism_sibling("chislennost-zriteley-teatrov-i-chislo-posescheniy-muzeev", "6.1.1")
+    assert R.is_tourism_sibling("kollektivnye-sredstva-razmescheniya-chislo-kollektivnyh-sredstv-razmescheniya", "6.7.1")
+    assert R.is_tourism_sibling("turpoezdki-s-nachala-goda", "6.m1")

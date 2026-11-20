@@ -1073,11 +1073,11 @@ TOCHNO = {
     "tour-sanatorii-v-uzkom-smysle": [("Число санаториев", "Санатории")],
     "tour-sanatorii-detskie": [("Число санаториев", "Из них санатории для детей")],
     "tour-sanatorii-profilaktorii": [("Число санаториев-профилакториев", None)],
-    "tour-obshchepit-restorany": [("Наличие объектов общественного питания по состоянию на конец года",
+    "obshchepit-restorany": [("Наличие объектов общественного питания по состоянию на конец года",
                                    "Рестораны, кафе, бары")],
-    "tour-obshchepit-stolovye": [("Наличие объектов общественного питания по состоянию на конец года",
+    "obshchepit-stolovye": [("Наличие объектов общественного питания по состоянию на конец года",
                                   "Общедоступные столовые, закусочные")],
-    "tour-obshchepit-rezultat-restorany": [
+    "obshchepit-rezultat-restorany": [
         ("Сальдированный финансовый результат (прибыль минус убыток) деятельности организаций общественного питания",
          "Деятельность ресторанов и услуги по доставке продуктов питания")],
     "tour-investicii-gostinicy-restorany": [("Инвестиции в основной капитал по видам экономической деятельности",
@@ -1235,8 +1235,14 @@ async def ensure_indicators(db) -> dict[str, int]:
     from sqlalchemy import or_, select
     from sqlalchemy.dialects.postgresql import insert as pg_insert
 
+    from sqlalchemy import exists, update
+
+    from app.data.tourism_regional import RENAMED
     from app.models import RegionIndicator
 
+    for old, new in RENAMED.items():  # №37: ряды вне туризма переименованы, точки остаются за ними
+        await db.execute(update(RegionIndicator).where(
+            RegionIndicator.code == old, ~exists().where(RegionIndicator.code == new)).values(code=new))
     for s in SERIES:
         if not s.own_metadata:
             continue
@@ -1287,6 +1293,7 @@ async def write_points(db, points: Sequence[Point], *, overwrite: bool) -> dict[
                                layers[layer][1]: period, "value": value})
     stats = {"added": 0, "updated": 0}
     affected: set[int] = set()
+    touched: set[int] = set()
     try:
         for layer, values in grouped.items():
             model, _col, constraint = layers[layer]
@@ -1299,11 +1306,19 @@ async def write_points(db, points: Sequence[Point], *, overwrite: bool) -> dict[
                         where=(model.__table__.c.value != stmt.excluded.value))
                 else:
                     stmt = stmt.on_conflict_do_nothing(constraint=constraint)
-                rows = (await db.execute(stmt.returning(literal_inserted()))).fetchall()
-                stats["added"] += sum(1 for (ins,) in rows if ins)
-                stats["updated"] += sum(1 for (ins,) in rows if not ins)
+                rows = (await db.execute(stmt.returning(literal_inserted(), model.indicator_id))).fetchall()
+                stats["added"] += sum(1 for ins, _i in rows if ins)
+                stats["updated"] += sum(1 for ins, _i in rows if not ins)
                 affected.update(v["indicator_id"] for v in part)
+                touched.update(i for _ins, i in rows)
         changed = await update_regional_year_bounds(db, affected) if affected else 0
+        if touched:  # дата изменения данных ряда — для «как цитировать» (круг наблюдателей №2/№5)
+            from sqlalchemy import update
+
+            from app.models import RegionIndicator
+
+            await db.execute(update(RegionIndicator).where(RegionIndicator.id.in_(sorted(touched)))
+                             .values(data_updated_at=date.today()))
         await db.commit()
     except BaseException:
         await db.rollback()

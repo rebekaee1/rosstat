@@ -277,6 +277,17 @@ async def regions_catalog(db: AsyncSession = Depends(get_db)):
 from app.services.regional_monthly_latest import latest_monthly_points  # noqa: E402
 
 
+def _tour_fields(indicator: RegionIndicator, slug: str) -> dict:
+    """Круг наблюдателей 20.11.2026 (№5, №2): ``source`` (туризм по регионам: подпись, адрес публикации или набора
+    ЕМИСС, «что важно знать», методика региона), ``ranked`` (есть ли место среди регионов), ``data_updated_at``
+    (дата последнего изменения данных ряда загрузчиком, ISO; пусто — загрузчик дату не ведёт)."""
+    from app.services.tourism_regional_api import ranked_field, source_field
+
+    updated = getattr(indicator, "data_updated_at", None)
+    return {**source_field(indicator.code, slug, get_locale()), **ranked_field(indicator.code),
+            "data_updated_at": updated.isoformat() if updated else None}
+
+
 @router.get("/heatmap/{code}")
 async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
     """Значения показателя по всем субъектам за последний год — для карты.
@@ -354,11 +365,15 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
 
     polarity = region_rating_meta(indicator.code, indicator.table_code)
     copy = _icopy(indicator)
+    from app.services.tourism_regional_api import ranked_field, source_field, zero_statuses
+
     result = {
         "indicator": {
             "code": indicator.code,
             "name": copy["name"],
             "unit": copy["unit"],
+            **source_field(indicator.code, None, get_locale()),
+            **ranked_field(indicator.code),
         },
         "year": last_year,
         **({"month": int(last_month), "period_label": _month_label(int(last_month))} if last_month else {}),
@@ -370,6 +385,9 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
             for s, n, v in rows
         ],
     }
+    # Туризм (20.11.2026): нули налога — со статусом и без «−100 %», пропуски — «нет данных» / «не введён».
+    await zero_statuses(db, indicator.code, indicator.id, "monthly" if last_month else "annual",
+                        int(last_month) if last_month else int(last_year), result["values"], missing)
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result
 
@@ -395,8 +413,11 @@ async def _quarterly_heatmap(db: AsyncSession, indicator: RegionIndicator, cache
         .where(Q.indicator_id == indicator.id, Q.quarter == int(last_q) - 10, Region.kind == "region")
     )).all())
     copy = _icopy(indicator)
+    from app.services.tourism_regional_api import ranked_field, source_field
+
     result = {
-        "indicator": {"code": indicator.code, "name": copy["name"], "unit": copy["unit"]},
+        "indicator": {"code": indicator.code, "name": copy["name"], "unit": copy["unit"],
+                      **source_field(indicator.code, None, get_locale()), **ranked_field(indicator.code)},
         "year": int(last_q) // 10,
         "quarter": int(last_q),
         "period_label": quarter_label(int(last_q)),
@@ -956,7 +977,15 @@ async def _section_siblings(db: AsyncSession, region, indicator) -> list[dict]:
         # Кредиты и ипотека ЦБ помесячно (19.11.2026): сначала соседние ряды ЦБ, затем годовой раздел «Финансы».
         siblings = sorted(all_sib, key=lambda x: (x.code not in CBR_CREDIT_SERIES, x.table_code or "", x.code))[:12]
     else:
-        siblings = sorted(all_sib, key=lambda x: x.code)[:12]
+        from app.data.tourism_regional import SERIES_BY_CODE as _TOUR, is_tourism_sibling
+
+        if indicator.code in _TOUR or (indicator.section_num == 6
+                                       and is_tourism_sibling(indicator.code, indicator.table_code)):
+            # Туризм (круг наблюдателей №37): без театров, музеев, спорта и библиотек, свои ряды первыми.
+            all_sib = [x for x in all_sib if is_tourism_sibling(x.code, x.table_code)]
+            siblings = sorted(all_sib, key=lambda x: (x.code not in _TOUR, x.table_code or "", x.code))[:12]
+        else:
+            siblings = sorted(all_sib, key=lambda x: x.code)[:12]
     sib_latest: dict[int, tuple[int, float]] = {}
     if siblings:
         # Последний месяц соседа индексом, а не вся история (09.11.2026).
@@ -1059,6 +1088,10 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
         if s == region.slug:
             rank = pos
             break
+    from app.data.tourism_regional import NOT_RANKED
+
+    if indicator.code in NOT_RANKED:
+        rank = None  # методики регионов разные или расчёт занижает курорты: места среди регионов нет (20.11.2026)
     around = _rank_around(rank_rows, rank)
 
     # соседние показатели раздела (для блока «В этом разделе»)
@@ -1080,6 +1113,7 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
             "section_name": copy["section"] or indicator.section_name,
             "table_code": indicator.table_code,
             "macro_code": MACRO_BY_TABLE.get(indicator.table_code or ""),
+            **_tour_fields(indicator, region.slug),
         },
         "series": series,
         "russia_series": russia_series,
@@ -1120,6 +1154,7 @@ async def _quarterly_detail(db: AsyncSession, region: Region, indicator: RegionI
             "code": indicator.code, "name": copy["name"], "unit": copy["unit"], "note": copy["note"],
             "section_num": indicator.section_num, "section_name": copy["section"] or indicator.section_name,
             "table_code": indicator.table_code, "macro_code": MACRO_BY_TABLE.get(indicator.table_code or ""),
+            **_tour_fields(indicator, region.slug),
         },
         "frequency": "quarterly",
         "series": [quarter_point(q, v) for q, v in rows],
@@ -1308,6 +1343,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
             "table_code": indicator.table_code,
             "macro_code": MACRO_BY_TABLE.get(indicator.table_code or ""),
             **_monthly_price_fields(indicator.code, int(last_m)),
+            **_tour_fields(indicator, region.slug),
         },
         "frequency": "monthly",
         "cpi_russia": cpi_chain,

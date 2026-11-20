@@ -134,6 +134,8 @@ class RegionIndicator(Base):
     year_min: Mapped[int | None] = mapped_column(Integer)
     year_max: Mapped[int | None] = mapped_column(Integer)
     is_listed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    # Дата последнего добавления или изменения точки ряда загрузчиком (20.11.2026; пусто — загрузчик дату не ведёт).
+    data_updated_at: Mapped[date | None] = mapped_column(Date)
 
     data_points: Mapped[list["RegionDataPoint"]] = relationship(
         back_populates="indicator", cascade="all, delete-orphan", passive_deletes=True

@@ -1439,3 +1439,13 @@ IV квартал 2025 для доли зарегистрированных. Р�
 Рейтинга регионов и места среди регионов у ряда нет (`NOT_RANKED`): методики несопоставимы, с рядом Росстата не
 смешивается. Реестр размещения Москвы 2018–2025 — `tour-moskva-reestr-*` (последняя дата обновления в году).
 Петербург не взят: реестр гостиниц застыл на 2021 году, динамики нет.
+
+**Круг наблюдателей (20.11.2026).** Коды `tour-avtobusy-passazhiry` → `avtobusy-passazhiry-mes`, `tour-obshchepit-*` →
+`obshchepit-*` (раздел 15): не туризм; миграция `20261120_region_data_updated` переименовывает на месте и добавляет
+`region_indicators.data_updated_at` (дата последнего изменения данных ряда, пишет загрузчик туризма). API регионов
+(`/api/v1/regions/{slug}/i/{code}`, `…/monthly`, квартальный ответ того же адреса): `indicator.source`
+{name, url, about, dataset, calculated, approximate, ranked, region_method}, `indicator.ranked`,
+`indicator.data_updated_at`. Рейтинг (`/api/v1/regions/heatmap/{code}`): `indicator.source`, `indicator.ranked`;
+у налога и курортного сбора `values[].status` = `not_introduced` | `zero_year` | `no_receipts_yet`, `missing[].status` =
+`not_introduced` | `no_data`; у нулей и от нуля `prev` не отдаётся (нет «−100 %»). Загрузка мест и оценки регионов —
+без места среди регионов (`NOT_RANKED`). Адреса источников — набор ЕМИСС или файл/публикация (`source_url`).
