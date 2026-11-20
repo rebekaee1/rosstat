@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LocaleProvider } from '../i18n';
 import TelemetryCard from './TelemetryCard';
@@ -127,7 +127,7 @@ describe('ModeGroupsPicker', () => {
 });
 
 describe('IndicatorForecastSection без прогноза', () => {
-  it('компактная доброжелательная плашка с действием, без пунктира и жаргона', () => {
+  it('если прогноза для ряда нет, блок не показывается вовсе: ни карточки «Прогноза пока нет», ни ссылок', () => {
     const { container } = wrap(
       <IndicatorForecastSection
         indicator={{ code: 'x' }}
@@ -138,30 +138,23 @@ describe('IndicatorForecastSection без прогноза', () => {
         hasForecastData={false}
       />,
     );
-    const card = container.querySelector('[data-block="forecast-empty"]');
-    expect(card).toBeTruthy();
-    expect(card.className).not.toContain('border-dashed');
-    expect(card.textContent).not.toMatch(/режим|ряд|переключател/i);
-    const hrefs = within(card).getAllByRole('link').map((a) => a.getAttribute('href'));
-    // Не тупик: сравнение с другим показателем и каталог.
-    expect(hrefs.some((h) => h.includes('/russia/category'))).toBe(true);
-    expect(hrefs.some((h) => h.startsWith('/compare?codes=x'))).toBe(true);
+    expect(container.querySelector('[data-block="forecast-empty"]')).toBeNull();
+    expect(container.textContent).not.toContain('Прогноза пока нет');
+    expect(container.querySelector('section')).toBeNull();
   });
 
-  it('у курса валюты вместо «Другие показатели» ведёт к парам: евро, юань, нефть', () => {
+  it('выключенный пользователем прогноз по-прежнему показывает плашку «выключен»', () => {
     const { container } = wrap(
       <IndicatorForecastSection
-        indicator={{ code: 'usd-rub' }}
+        indicator={{ code: 'x' }}
         chartMode="cpi"
         safeViewMode="level"
-        forecastEnabled={false}
-        showForecast
-        hasForecastData={false}
+        forecastEnabled
+        showForecast={false}
+        hasForecastData
       />,
     );
-    const card = container.querySelector('[data-block="forecast-empty"]');
-    const names = within(card).getAllByRole('link').map((a) => a.textContent);
-    expect(names).toEqual(expect.arrayContaining(['Курс евро', 'Курс юаня', 'Нефть Brent']));
+    expect(container.querySelector('[data-block="forecast-empty"]')).toBeTruthy();
   });
 });
 
