@@ -473,9 +473,11 @@ export default function DataTable({
       {totalPages > 1 && (
         <div className="fe-histtable__pager p-4 flex items-center justify-between gap-3 k5-seam k5-seam--top">
           {/* По умолчанию сверху новые строки: «Вперёд» уводил в прошлое. Кнопки названы по времени (18.11.2026). */}
+          {/* data-fe-step: быстрая серия нажатий — листание, а не «злые клики» (behavior.js, 20.11.2026). */}
           <Button
             variant="secondary"
             className="fe-pager-btn"
+            data-fe-step="prev"
             onClick={() => { setPage(Math.max(0, visiblePage - 1)); track(events.TABLE_PAGE, { direction: 'prev' }); }}
             disabled={loading || visiblePage === 0}
           >
@@ -503,6 +505,7 @@ export default function DataTable({
           <Button
             variant="secondary"
             className="fe-pager-btn"
+            data-fe-step="next"
             onClick={() => { setPage(Math.min(totalPages - 1, visiblePage + 1)); track(events.TABLE_PAGE, { direction: 'next' }); }}
             disabled={loading || visiblePage >= totalPages - 1}
           >

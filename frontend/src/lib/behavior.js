@@ -65,6 +65,10 @@ const RAGE_COUNT = 3;
 // дорожка рамки периода под графиком). Без них каждое пользование рамкой записывалось как клик в некликабельное.
 const INTERACTIVE = 'a,button,input,select,textarea,label,summary,[role="button"],[role="link"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[role="slider"],[data-interactive],[onclick]';
 const NO_TEXT_CAPTURE = 'input,textarea,[contenteditable="true"]';
+// 20.11.2026: кнопки-шаги (`data-fe-step`: «Раньше / Позже» в таблице истории) отвечают на каждое нажатие —
+// три нажатия за 0,7 с там значат «листаю быстро», а не «не работает». Такая серия пишется как `step_burst`, не rage.
+// На боевом 06–20.11 «злые серии» по листанию были у 17 из 85 сессий, и каждое нажатие сменило страницу (table_page).
+const STEP_CONTROL = '[data-fe-step]';
 
 const ACTIVE_GAP_MS = 15_000;    // разрыв активности больше — время не «активное»
 const ERRORS_MAX_PER_PAGE = 10;  // потолок js_error с одной страницы
@@ -979,6 +983,7 @@ function onClick(e) {
 
   const interactive = el.closest(INTERACTIVE);
   const target = interactive || el;
+  const stepBurst = rage && Boolean(interactive?.closest(STEP_CONTROL));
   // авто-outbound: клик по внешней ссылке несёт целевой хост+путь
   let out = null;
   const anchor = el.closest && el.closest('a[href]');
@@ -998,7 +1003,8 @@ function onClick(e) {
     vx: window.innerWidth ? Math.round((e.clientX / window.innerWidth) * 100) : null,
     vy: window.innerHeight ? Math.round((e.clientY / window.innerHeight) * 100) : null,
     dead: interactive ? 0 : 1,
-    rage: rage ? 1 : 0,
+    rage: rage && !stepBurst ? 1 : 0,
+    ...(stepBurst ? { step_burst: 1 } : {}),
     // isTrusted=false — синтетический клик (скрипт/бот, не устройство ввода);
     // антибот-скоринг сервера читает этот флаг (BI 2.1, этап 3).
     ...(e.isTrusted ? {} : { synthetic: 1 }),
