@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import api from './api';
 import { useLocale } from '../i18n';
+import { searchTextFromLink } from './searchSynonyms';
 
 const searchKey = (locale, q, limit) => ['catalog-search', 'v3', locale, q, limit];
 const fetchSearch = (q, limit, signal) => api.get('/search', { params: { q, limit }, signal }).then((r) => r.data);
@@ -48,7 +49,9 @@ const isPlainEmpty = (data) => Boolean(data) && Array.isArray(data.results) && d
  */
 export default function useGlobalSearch(query, { enabled = true, limit = 100 } = {}) {
   const { locale } = useLocale();
-  const needle = String(query || '').trim();
+  // Вставленная ссылка на поиск другого сайта (ЕМИСС, Росстат): ищем то, что искали там, и пишем «Показаны результаты для».
+  const fromLink = searchTextFromLink(query);
+  const needle = fromLink || String(query || '').trim();
   const [settled, setSettled] = useState(needle);
   useEffect(() => {
     const timer = setTimeout(() => setSettled(needle), 300);
@@ -87,7 +90,12 @@ export default function useGlobalSearch(query, { enabled = true, limit = 100 } =
     gcTime: 5 * 60_000,
     retry: 1,
   });
-  if (!tail) return { ...request, isDebouncing, prefetch, flush };
+  if (!tail) {
+    if (fromLink && request.data && !request.data.corrected_query) {
+      return { ...request, data: { ...request.data, corrected_query: fromLink }, isDebouncing, prefetch, flush };
+    }
+    return { ...request, isDebouncing, prefetch, flush };
+  }
   if (!stable.data && !stable.isError) {
     // Ответ по дописанной части ещё идёт: не показываем «ничего не найдено» раньше времени.
     return { ...request, data: undefined, isPending: true, isLoading: true, isFetching: true, isSuccess: false, isDebouncing, prefetch, flush };

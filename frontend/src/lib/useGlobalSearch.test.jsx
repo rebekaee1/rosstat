@@ -123,3 +123,13 @@ it('does not replace a real answer, a finished word or the server "nearest" bloc
   await waitFor(() => expect(finished.result.current.data).toEqual(EMPTY));
   expect(api.get.mock.calls.map(([, options]) => options.params.q).sort()).toEqual(['ввп ес', 'коэффициент напряженности', 'мрот ом']);
 });
+
+// Пульс 19.11.2026: вставленная ссылка поиска ЕМИСС давала ноль. Ищем то, что искали там, и пишем «Показаны результаты для».
+it('searches the text of a pasted fedstat search link', async () => {
+  api.get.mockResolvedValue({ data: { results: [{ key: 'births' }], version: 'v2' } });
+  const link = 'https://www.fedstat.ru/indicators/search?searchText=%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82+%D1%80%D0%BE%D0%B6%D0%B4%D0%B0%D0%B5%D0%BC%D0%BE%D1%81%D1%82%D0%B8';
+  const { result } = renderHook(() => useGlobalSearch(link), { wrapper });
+  await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  expect(api.get).toHaveBeenCalledWith('/search', expect.objectContaining({ params: { q: 'Коэффициент рождаемости', limit: 100 } }));
+  expect(result.current.data.corrected_query).toBe('Коэффициент рождаемости');
+});

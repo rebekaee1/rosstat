@@ -7,8 +7,42 @@
 const TOKEN_RE = /[^a-z0-9а-я]+/g;
 const TOKEN_CHAR_RE = /[a-z0-9а-я]/;
 
+// Параметры адреса, в которых сайты носят текст поиска: ЕМИСС (fedstat.ru) — searchText, Росстат, Яндекс — text,
+// Google и большинство сайтов — q/query/search.
+const LINK_TEXT_PARAMS = ['searchtext', 'text', 'q', 'query', 'search', 'keyword', 'keywords'];
+const LINK_RE = /^(?:https?:\/\/|www\.)\S+$/i;
+
+/**
+ * Вставленная ссылка на поиск другого сайта → текст, который там искали (20.11.2026, Пульс за 19.11:
+ * «https://www.fedstat.ru/indicators/search?searchText=Коэффициент…» в поле региона давало ноль).
+ * Буквы в адресе закодированы (%D0%9A…): их раскодируем; оборванный хвост кода отбрасываем.
+ * Ссылка без такого параметра или не ссылка — null, запрос остаётся как набран.
+ */
+export function searchTextFromLink(raw) {
+  const text = String(raw || '').trim();
+  if (!LINK_RE.test(text) || !text.includes('?')) return null;
+  let params;
+  try {
+    params = new URL(/^www\./i.test(text) ? `https://${text}` : text).searchParams;
+  } catch {
+    return null;
+  }
+  const byName = new Map();
+  for (const [name, value] of params) {
+    const key = name.toLowerCase();
+    if (!byName.has(key)) byName.set(key, value);
+  }
+  for (const name of LINK_TEXT_PARAMS) {
+    const value = String(byName.get(name) || '')
+      .replace(/\uFFFD/g, '').replace(/%[0-9a-f]{0,2}$/i, '').replace(/\s+/g, ' ').trim();
+    if (/[\p{L}\p{N}]/u.test(value)) return value;
+  }
+  return null;
+}
+
 export function normalizeSearchQuery(raw) {
-  return String(raw || '')
+  const fromLink = typeof raw === 'string' && raw.includes('?') ? searchTextFromLink(raw) : null;
+  return String(fromLink ?? (raw || ''))
     .trim()
     .toLowerCase()
     .normalize('NFC')
@@ -494,5 +528,5 @@ export function expandSearchQuery(raw) {
   if (!q) return '';
   const direct = SEARCH_SYNONYMS[q];
   if (direct?.length) return direct[0];
-  return String(raw || '').trim();
+  return searchTextFromLink(raw) || String(raw || '').trim();
 }
