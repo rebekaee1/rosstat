@@ -27,17 +27,17 @@
 
 ## Сводка
 
-- Всего кодов: **1796**
+- Всего кодов: **2276**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (перекрытая standalone-ветка): **24**
-- unresolved (нет ui_stack): **138**
+- unresolved (нет ui_stack): **173**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=1613, `housing`=8, `null`=138, `ppi`=5
+По стекам: `cpi`=32, `generic`=2058, `housing`=8, `null`=173, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
-`build-bitumen`, `build-brick`, `build-cement`, `build-concrete`, `build-cost-housing`, `build-cost-industrial`, `build-cost-power-lines`, `build-cost-roads`, `build-crushed-stone`, `build-floor-slabs`, `build-insulation`, `build-mortar`, `build-silicate-brick`, `build-timber`, `cny-eur`, `consumer-credit-overdue`, `consumer-loans-issued`, `consumer-sentiment`, `deposit-rate-max`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai98`, `gbp-eur`, `gov-debt-domestic`, `gov-debt-external`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `inflation-expected`, `inflation-observed`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `mortgage-debt`, `mortgage-issued`, `mortgage-issued-count`, `mortgage-overdue`, `mortgage-term`, `nwf-gdp`, `nwf-liquid`, `nwf-volume`, `nwf-volume-usd`, `part-time-employed`, `ppi-aluminium`, `ppi-beef`, `ppi-bread`, `ppi-building-materials`, `ppi-butter`, `ppi-cars`, `ppi-cement`, `ppi-chemicals`, `ppi-coal-mining`, `ppi-construction`, `ppi-construction-buildings`, `ppi-construction-civil`, `ppi-construction-specialised`, `ppi-copper`, `ppi-crude-oil`, `ppi-diesel`, `ppi-energy`, `ppi-flour`, `ppi-food-industry`, `ppi-gasoline`, `ppi-hard-coal`, `ppi-manufacturing`, `ppi-metallurgy`, `ppi-milk`, `ppi-mining`, `ppi-natural-gas`, `ppi-oil-gas`, `ppi-petroleum-products`, `ppi-pharma`, `ppi-pork`, `ppi-poultry`, `ppi-sugar`, `ppi-sunflower-oil`, `ppi-vehicles`, `ppi-water`, `ppi-wood`, `price-apples`, `price-bananas`, `price-beef`, `price-bread`, `price-buckwheat`, `price-butter`, `price-cabbage`, `price-carrots`, `price-cheese`, `price-chicken`, `price-cucumbers`, `price-eggs`, `price-milk`, `price-onions`, `price-pork`, `price-potatoes`, `price-rice`, `price-sugar`, `price-sunflower-oil`, `price-tomatoes`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `steel`, `steel-hot-rolled`, `steel-pipes`, `steel-rebar`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`
+`build-bitumen`, `build-brick`, `build-cement`, `build-concrete`, `build-cost-housing`, `build-cost-industrial`, `build-cost-power-lines`, `build-cost-roads`, `build-crushed-stone`, `build-floor-slabs`, `build-insulation`, `build-mortar`, `build-silicate-brick`, `build-timber`, `cny-eur`, `consumer-credit-overdue`, `consumer-loans-issued`, `consumer-sentiment`, `deposit-rate-max`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai98`, `gbp-eur`, `gov-debt-domestic`, `gov-debt-external`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `inflation-expected`, `inflation-observed`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `mortgage-debt`, `mortgage-issued`, `mortgage-issued-count`, `mortgage-overdue`, `mortgage-term`, `nwf-gdp`, `nwf-liquid`, `nwf-volume`, `nwf-volume-usd`, `part-time-employed`, `ppi-aluminium`, `ppi-beef`, `ppi-bread`, `ppi-building-materials`, `ppi-butter`, `ppi-cars`, `ppi-cement`, `ppi-chemicals`, `ppi-coal-mining`, `ppi-construction`, `ppi-construction-buildings`, `ppi-construction-civil`, `ppi-construction-specialised`, `ppi-copper`, `ppi-crude-oil`, `ppi-diesel`, `ppi-energy`, `ppi-flour`, `ppi-food-industry`, `ppi-gasoline`, `ppi-hard-coal`, `ppi-manufacturing`, `ppi-metallurgy`, `ppi-milk`, `ppi-mining`, `ppi-natural-gas`, `ppi-oil-gas`, `ppi-petroleum-products`, `ppi-pharma`, `ppi-pork`, `ppi-poultry`, `ppi-sugar`, `ppi-sunflower-oil`, `ppi-vehicles`, `ppi-water`, `ppi-wood`, `price-apples`, `price-bananas`, `price-beef`, `price-bread`, `price-buckwheat`, `price-butter`, `price-cabbage`, `price-carrots`, `price-cheese`, `price-chicken`, `price-cucumbers`, `price-eggs`, `price-milk`, `price-onions`, `price-pork`, `price-potatoes`, `price-rice`, `price-sugar`, `price-sunflower-oil`, `price-tomatoes`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `steel`, `steel-hot-rolled`, `steel-pipes`, `steel-rebar`, `tour-cpi-abroad`, `tour-cpi-belarus`, `tour-cpi-black-sea`, `tour-cpi-bus-excursion`, `tour-cpi-caucasus`, `tour-cpi-central-asia`, `tour-cpi-domestic`, `tour-cpi-egypt`, `tour-cpi-excursions`, `tour-cpi-hostel`, `tour-cpi-hotel-1`, `tour-cpi-hotel-2`, `tour-cpi-hotel-3`, `tour-cpi-hotel-4-5`, `tour-cpi-hotels`, `tour-cpi-rest-house-day`, `tour-cpi-river-cruise`, `tour-cpi-russia-tours`, `tour-cpi-sanatoria`, `tour-cpi-sanatorium-day`, `tour-cpi-se-asia`, `tour-cpi-tourism`, `tour-cpi-turkey`, `tour-dest-dominican-republic`, `tour-dest-dubai`, `tour-dest-kazakhstan`, `tour-dest-maldives-monthly`, `tour-dest-sri-lanka`, `tour-dest-tajikistan`, `tour-dest-thailand`, `tour-dest-vietnam`, `tour-dest-zanzibar`, `tour-gva-share`, `tour-gva-volume`, `tour-travel-balance-monthly`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`
 
 ## Все индикаторы
 
@@ -1611,6 +1611,486 @@
 | `tmt-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `tmt-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `tmt-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `tour-agencies` | Туризм | annual | `generic` | — | ✓ | — |
+| `tour-agencies-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-agencies-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-air-load-factor` | Туризм | monthly | `generic` | — | ✓ | — |
+| `tour-air-load-factor-avg-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-load-factor-avg-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-air-load-factor-eop-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-load-factor-eop-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-air-load-factor-mom` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-air-load-factor-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-load-factor-yoy` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-air-load-factor-yoy-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-load-factor-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-air-passengers` | Туризм | monthly | `generic` | monthly_auto | ✓ | — |
+| `tour-air-passengers-charter` | Туризм | monthly | `generic` | — | — | — |
+| `tour-air-passengers-charter-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-air-passengers-charter-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-air-passengers-charter-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-air-passengers-charter-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-air-passengers-charter-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-air-passengers-charter-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-air-passengers-charter-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-air-passengers-domestic` | Туризм | monthly | `generic` | monthly_auto | — | — |
+| `tour-air-passengers-domestic-mom` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-domestic-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-domestic-sum-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-domestic-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-domestic-yoy` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-domestic-yoy-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-domestic-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-international` | Туризм | monthly | `generic` | monthly_auto | — | — |
+| `tour-air-passengers-international-mom` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-international-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-international-sum-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-international-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-international-yoy` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-international-yoy-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-international-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-mom` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-sum-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-yoy` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-yoy-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-air-passengers-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-airport-domodedovo` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-domodedovo-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-domodedovo-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-domodedovo-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-domodedovo-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-domodedovo-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-domodedovo-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-domodedovo-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-koltsovo` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-koltsovo-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-koltsovo-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-koltsovo-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-koltsovo-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-koltsovo-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-koltsovo-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-koltsovo-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-pulkovo` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-pulkovo-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-pulkovo-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-pulkovo-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-pulkovo-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-pulkovo-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-pulkovo-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-pulkovo-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-sheremetyevo` | Туризм | monthly | `generic` | — | ✓ | — |
+| `tour-airport-sheremetyevo-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-sheremetyevo-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-sheremetyevo-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-sheremetyevo-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-sheremetyevo-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-sheremetyevo-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-sheremetyevo-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-tolmachevo` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-tolmachevo-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-tolmachevo-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-tolmachevo-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-tolmachevo-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-tolmachevo-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-tolmachevo-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-tolmachevo-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-vnukovo` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-vnukovo-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-vnukovo-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-vnukovo-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-vnukovo-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-airport-vnukovo-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-airport-vnukovo-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-airport-vnukovo-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-cpi-abroad` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-belarus` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-black-sea` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-bus-excursion` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-caucasus` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-central-asia` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-domestic` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-egypt` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-excursions` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-hostel` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-hotel-1` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-hotel-2` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-hotel-3` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-hotel-4-5` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-hotels` | Туризм | monthly | `null` | — | ✓ | no-stack |
+| `tour-cpi-rest-house-day` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-river-cruise` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-russia-tours` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-sanatoria` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-sanatorium-day` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-se-asia` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-cpi-tourism` | Туризм | monthly | `null` | — | ✓ | no-stack |
+| `tour-cpi-turkey` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-dest-belarus` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-belarus-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-belarus-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-cuba` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-cuba-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-cuba-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-dominican-republic` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-dest-dubai` | Туризм | annual | `null` | — | — | no-stack |
+| `tour-dest-egypt` | Туризм | annual | `generic` | — | ✓ | — |
+| `tour-dest-egypt-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-egypt-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-indonesia` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-indonesia-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-indonesia-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-indonesia-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-indonesia-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-indonesia-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-indonesia-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-indonesia-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-kazakhstan` | Туризм | quarterly | `null` | — | — | no-stack |
+| `tour-dest-maldives` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-maldives-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-maldives-monthly` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-dest-maldives-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mauritius` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mauritius-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mauritius-monthly` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-mauritius-monthly-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-mauritius-monthly-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-mauritius-monthly-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-mauritius-monthly-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mauritius-monthly-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-mauritius-monthly-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-mauritius-monthly-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mauritius-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mongolia` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mongolia-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mongolia-monthly` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-mongolia-monthly-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-mongolia-monthly-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-mongolia-monthly-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-mongolia-monthly-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mongolia-monthly-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-mongolia-monthly-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-mongolia-monthly-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-mongolia-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-seychelles` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-seychelles-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-seychelles-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-seychelles-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-seychelles-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-seychelles-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-dest-seychelles-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-dest-seychelles-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-sri-lanka` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-dest-tajikistan` | Туризм | annual | `null` | — | — | no-stack |
+| `tour-dest-thailand` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-dest-uzbekistan` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-uzbekistan-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-uzbekistan-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-dest-vietnam` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-dest-zanzibar` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-firm-tourists-abroad` | Туризм | annual | `generic` | — | — | — |
+| `tour-firm-tourists-abroad-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-firm-tourists-abroad-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-firm-tourists-russia` | Туризм | annual | `generic` | — | — | — |
+| `tour-firm-tourists-russia-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-firm-tourists-russia-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-gva` | Туризм | quarterly | `generic` | generic_quarterly | ✓ | — |
+| `tour-gva-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-gva-share` | Туризм | quarterly | `null` | — | ✓ | no-stack |
+| `tour-gva-share-annual` | Туризм | annual | `generic` | — | — | — |
+| `tour-gva-share-annual-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-gva-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-gva-volume` | Туризм | quarterly | `null` | — | — | no-stack |
+| `tour-gva-yoy` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-gva-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-hotel-beds` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-beds-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-beds-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-count` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-count-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-count-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-guests` | Туризм | annual | `generic` | annual_auto | ✓ | — |
+| `tour-hotel-guests-index` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-hotel-guests-yoy` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-hotel-nights` | Туризм | annual | `generic` | annual_auto | — | — |
+| `tour-hotel-nights-index` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-hotel-nights-monthly` | Туризм | monthly | `generic` | — | ✓ | — |
+| `tour-hotel-nights-monthly-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-hotel-nights-monthly-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-hotel-nights-monthly-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-hotel-nights-monthly-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-nights-monthly-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-hotel-nights-monthly-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-hotel-nights-monthly-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-nights-yoy` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-hotel-revenue` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-revenue-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-revenue-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-rooms` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-rooms-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-rooms-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-workers` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-workers-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-hotel-workers-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-household-spending` | Туризм | annual | `generic` | — | ✓ | — |
+| `tour-household-spending-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-household-spending-share` | Туризм | annual | `generic` | — | — | — |
+| `tour-household-spending-share-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-household-spending-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-abkhazia` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-abkhazia-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-abkhazia-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-abkhazia-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-abkhazia-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-armenia` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-armenia-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-armenia-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-armenia-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-armenia-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-azerbaijan` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-azerbaijan-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-azerbaijan-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-azerbaijan-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-azerbaijan-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-belarus` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-belarus-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-belarus-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-belarus-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-belarus-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-china` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-china-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-china-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-china-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-china-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-georgia` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-georgia-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-georgia-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-georgia-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-georgia-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-germany` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-germany-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-germany-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-germany-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-germany-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-kazakhstan` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-kazakhstan-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-kazakhstan-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-kazakhstan-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-kazakhstan-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-kyrgyzstan` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-kyrgyzstan-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-kyrgyzstan-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-kyrgyzstan-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-kyrgyzstan-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-mongolia` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-mongolia-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-mongolia-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-mongolia-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-mongolia-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-tajikistan` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-tajikistan-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-tajikistan-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-tajikistan-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-tajikistan-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-trips` | Туризм | quarterly | `generic` | generic_quarterly | ✓ | — |
+| `tour-inbound-trips-monthly` | Туризм | monthly | `generic` | — | — | — |
+| `tour-inbound-trips-monthly-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-inbound-trips-monthly-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-trips-monthly-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-trips-monthly-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-trips-monthly-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-inbound-trips-monthly-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-trips-monthly-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-trips-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-inbound-trips-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-inbound-trips-yoy` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-inbound-trips-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-inbound-uzbekistan` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-uzbekistan-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-uzbekistan-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-inbound-uzbekistan-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-inbound-uzbekistan-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-new-hotel-beds` | Туризм | annual | `generic` | — | — | — |
+| `tour-new-hotel-beds-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-new-hotel-beds-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-abkhazia` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-abkhazia-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-abkhazia-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-abkhazia-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-abkhazia-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-armenia` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-armenia-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-armenia-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-armenia-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-armenia-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-azerbaijan` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-azerbaijan-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-azerbaijan-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-azerbaijan-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-azerbaijan-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-china` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-china-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-china-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-china-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-china-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-egypt` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-egypt-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-egypt-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-egypt-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-egypt-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-georgia` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-georgia-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-georgia-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-georgia-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-georgia-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-kazakhstan` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-kazakhstan-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-kazakhstan-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-kazakhstan-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-kazakhstan-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-thailand` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-thailand-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-thailand-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-thailand-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-thailand-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-trips` | Туризм | quarterly | `generic` | generic_quarterly | ✓ | — |
+| `tour-outbound-trips-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-outbound-trips-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-outbound-trips-yoy` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-outbound-trips-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-outbound-turkey` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-turkey-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-turkey-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-turkey-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-turkey-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-uae` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-uae-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-uae-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-uae-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-uae-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-uzbekistan` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-uzbekistan-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-uzbekistan-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-uzbekistan-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-uzbekistan-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-vietnam` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-vietnam-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-vietnam-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-outbound-vietnam-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-outbound-vietnam-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-package-price` | Туризм | annual | `generic` | — | ✓ | — |
+| `tour-package-price-domestic` | Туризм | annual | `generic` | — | — | — |
+| `tour-package-price-domestic-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-package-price-domestic-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-package-price-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-package-price-outbound` | Туризм | annual | `generic` | — | — | — |
+| `tour-package-price-outbound-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-package-price-outbound-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-package-price-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages` | Туризм | annual | `generic` | — | ✓ | — |
+| `tour-packages-domestic` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-domestic-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-domestic-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-outbound` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-outbound-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-outbound-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-value` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-value-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-value-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-packages-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-price-rest-house` | Туризм | annual | `generic` | — | — | — |
+| `tour-price-rest-house-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-price-rest-house-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-price-sanatorium` | Туризм | annual | `generic` | — | ✓ | — |
+| `tour-price-sanatorium-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-price-sanatorium-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-rail-passenger-km` | Туризм | monthly | `generic` | — | — | — |
+| `tour-rail-passenger-km-mom` | Туризм | monthly | `generic` | — | — | — |
+| `tour-rail-passenger-km-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-rail-passenger-km-sum-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-rail-passenger-km-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-rail-passenger-km-yoy` | Туризм | monthly | `generic` | — | — | — |
+| `tour-rail-passenger-km-yoy-quarter` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-rail-passenger-km-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-rail-passengers` | Туризм | monthly | `generic` | monthly_auto | ✓ | — |
+| `tour-rail-passengers-mom` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-rail-passengers-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-rail-passengers-sum-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-rail-passengers-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-rail-passengers-yoy` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-rail-passengers-yoy-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-rail-passengers-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-resort-fee` | Туризм | annual | `generic` | — | ✓ | — |
+| `tour-resort-fee-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-resort-fee-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-sanatorium-guests` | Туризм | annual | `generic` | annual_auto | ✓ | — |
+| `tour-sanatorium-guests-index` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-sanatorium-guests-yoy` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-sanatorium-nights` | Туризм | annual | `generic` | — | — | — |
+| `tour-sanatorium-nights-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-sanatorium-nights-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-sanatorium-revenue` | Туризм | annual | `generic` | — | — | — |
+| `tour-sanatorium-revenue-index` | Туризм | annual | `generic` | — | — | — |
+| `tour-sanatorium-revenue-yoy` | Туризм | annual | `generic` | — | — | — |
+| `tour-tax` | Туризм | quarterly | `generic` | — | ✓ | — |
+| `tour-tax-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-tax-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-tax-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-tax-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-travel-balance` | Туризм | quarterly | `generic` | signed_quarterly | ✓ | — |
+| `tour-travel-balance-monthly` | Туризм | monthly | `null` | — | — | no-stack |
+| `tour-travel-balance-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-balance-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-balance-yoy` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-balance-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-business-exports` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-business-exports-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-business-exports-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-travel-business-exports-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-business-exports-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-travel-business-imports` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-business-imports-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-business-imports-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-travel-business-imports-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-business-imports-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-travel-exports` | Туризм | quarterly | `generic` | generic_quarterly | ✓ | — |
+| `tour-travel-exports-monthly` | Туризм | monthly | `generic` | monthly_auto | — | — |
+| `tour-travel-exports-monthly-mom` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-monthly-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-monthly-sum-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-monthly-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-monthly-yoy` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-monthly-yoy-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-monthly-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-yoy` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-exports-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-imports` | Туризм | quarterly | `generic` | generic_quarterly | ✓ | — |
+| `tour-travel-imports-monthly` | Туризм | monthly | `generic` | monthly_auto | — | — |
+| `tour-travel-imports-monthly-mom` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-monthly-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-monthly-sum-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-monthly-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-monthly-yoy` | Туризм | monthly | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-monthly-yoy-quarter` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-monthly-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-qoq` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-sum-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-yoy` | Туризм | quarterly | `generic` | derived_from_source | — | — |
+| `tour-travel-imports-yoy-year` | Туризм | annual | `generic` | derived_from_source | — | — |
+| `tour-travel-personal-exports` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-personal-exports-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-personal-exports-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-travel-personal-exports-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-personal-exports-yoy-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-travel-personal-imports` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-personal-imports-qoq` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-personal-imports-sum-year` | Туризм | annual | `generic` | — | — | — |
+| `tour-travel-personal-imports-yoy` | Туризм | quarterly | `generic` | — | — | — |
+| `tour-travel-personal-imports-yoy-year` | Туризм | annual | `generic` | — | — | — |
 | `trade-balance` | Торговля | quarterly | `generic` | derived_from_source | ✓ | both, shadowed |
 | `trade-balance-monthly` | Торговля | monthly | `generic` | monthly_auto | — | — |
 | `trade-balance-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
@@ -1850,7 +2330,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **309** · с полной матрицей: **159** · с пробелами: **150**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 160, 'orphan': 138}.
+Корней-семейств: **434** · с полной матрицей: **249** · с пробелами: **185**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 250, 'orphan': 173}.
 
 ## Систематические пробелы по типам
 
@@ -1863,26 +2343,27 @@
 | bespoke/HOUSING | index | quarter | 2 | `pop:year` |
 | bespoke/PPI | index | month | 1 | `yoy:quarter`, `yoy:year` |
 | generic/T1 | rate | day | 72 | — |
-| generic/T10 | annual-count | year | 13 | — |
-| generic/T10a | annual-signed | year | 11 | — |
+| generic/T10 | annual-count | year | 45 | — |
+| generic/T10a | annual-signed | year | 13 | — |
 | generic/T12 | ratio-index | month | 2 | — |
-| generic/T2y | rate | month | 12 | — |
+| generic/T2y | rate | month | 13 | — |
 | generic/T3 | index | month | 5 | — |
 | generic/T3 | stock | month | 7 | — |
 | generic/T4 | stock | quarter | 1 | — |
 | generic/T5 | stock | week | 4 | — |
-| generic/T6 | flow | month | 10 | — |
+| generic/T6 | flow | month | 30 | — |
 | generic/T7 | signed-flow | month | 1 | — |
 | generic/T8 | avg-level | month | 8 | — |
 | generic/T8 | index | month | 1 | `pop:year` |
-| generic/T9 | gdp | quarter | 10 | — |
-| generic/T9s | signed-flow | quarter | 3 | — |
-| orphan/- | annual-count | year | 13 | `index:year`, `yoy:year` |
+| generic/T9 | gdp | quarter | 44 | — |
+| generic/T9s | signed-flow | quarter | 4 | — |
+| orphan/- | annual-count | year | 15 | `index:year`, `yoy:year` |
 | orphan/- | avg-level | day | 3 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:week`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
-| orphan/- | avg-level | month | 33 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
+| orphan/- | avg-level | month | 63 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
+| orphan/- | avg-level | quarter | 1 | `pop:quarter`, `value:year`, `yoy:quarter`, `yoy:year` |
 | orphan/- | avg-level | week | 21 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 | orphan/- | rate | month | 56 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
-| orphan/- | rate | quarter | 2 | `pop:quarter`, `value:year`, `yoy:quarter`, `yoy:year` |
+| orphan/- | rate | quarter | 4 | `pop:quarter`, `value:year`, `yoy:quarter`, `yoy:year` |
 | orphan/- | rate | week | 1 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 | orphan/- | rate | year | 9 | `yoy:year` |
 
@@ -1997,6 +2478,36 @@
 | `steel-hot-rolled` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `steel-pipes` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `steel-rebar` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-abroad` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-belarus` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-black-sea` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-bus-excursion` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-caucasus` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-central-asia` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-domestic` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-egypt` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-excursions` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-hostel` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-hotel-1` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-hotel-2` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-hotel-3` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-hotel-4-5` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-hotels` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-rest-house-day` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-river-cruise` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-russia-tours` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-sanatoria` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-sanatorium-day` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-se-asia` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-tourism` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-cpi-turkey` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-dest-dominican-republic` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-dest-maldives-monthly` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-dest-sri-lanka` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-dest-thailand` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-dest-vietnam` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-dest-zanzibar` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-travel-balance-monthly` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `unemployment-age-25-54` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `unemployment-age-25-54-men` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `unemployment-age-25-54-women` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
@@ -2009,6 +2520,9 @@
 | `unemployment-youth-men` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `unemployment-youth-women` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `registered-unemployment-share-quarterly` | orphan/- | rate | quarter | 0.2 | `value:year`, `pop:quarter`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `tour-dest-kazakhstan` | orphan/- | avg-level | quarter | 0.2 | `value:year`, `pop:quarter`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-gva-share` | orphan/- | rate | quarter | 0.2 | `value:year`, `pop:quarter`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `tour-gva-volume` | orphan/- | rate | quarter | 0.2 | `value:year`, `pop:quarter`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `unemployed-higher-education-share` | orphan/- | rate | quarter | 0.2 | `value:year`, `pop:quarter`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `cpi` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `cpi-food` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
@@ -2017,6 +2531,8 @@
 | `income-funds-ratio` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
 | `income-gini` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
 | `ppi` | bespoke/PPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
+| `tour-dest-dubai` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | curated |
+| `tour-dest-tajikistan` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | curated |
 | `wages-decile-1` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
 | `wages-decile-10` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
 | `wages-decile-2` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | generic |
@@ -2044,6 +2560,6 @@
 ## Измерения паспорта (агрегат)
 
 - **Без полных текстов** (18): `birth-rate`, `death-rate`, `exports-monthly`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`, `working-age-population`
-- **Без прогноза** (150): `build-bitumen`, `build-brick`, `build-cement`, `build-concrete`, `build-cost-housing`, `build-cost-industrial`, `build-cost-power-lines`, `build-cost-roads`, `build-crushed-stone`, `build-floor-slabs`, `build-insulation`, `build-mortar`, `build-silicate-brick`, `build-timber`, `cny-eur`, `coal`, `consumer-credit-overdue`, `consumer-loans-issued`, `consumer-sentiment`, `copper`, `deposit-rate-max`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai92`, `fuel-ai95`, `fuel-ai98`, `fuel-diesel`, `gbp-eur`, `gov-debt-domestic`, `gov-debt-external`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `inflation-expected`, `inflation-observed`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `mortgage-debt`, `mortgage-issued`, `mortgage-issued-count`, `mortgage-overdue`, `mortgage-term`, `nwf-gdp`, `nwf-liquid`, `nwf-volume`, `nwf-volume-usd`, `part-time-employed`, `ppi-aluminium`, `ppi-beef`, `ppi-bread`, `ppi-building-materials`, `ppi-butter`, `ppi-cars`, `ppi-cement`, `ppi-chemicals`, `ppi-coal-mining`, `ppi-construction`, `ppi-construction-buildings`, `ppi-construction-civil`, `ppi-construction-specialised`, `ppi-copper`, `ppi-crude-oil`, `ppi-diesel`, `ppi-energy`, `ppi-flour`, `ppi-food-industry`, `ppi-gasoline`, `ppi-hard-coal`, `ppi-manufacturing`, `ppi-metallurgy`, `ppi-milk`, `ppi-mining`, `ppi-natural-gas`, `ppi-oil-gas`, `ppi-petroleum-products`, `ppi-pharma`, `ppi-pork`, `ppi-poultry`, `ppi-sugar`, `ppi-sunflower-oil`, `ppi-vehicles`, `ppi-water`, `ppi-wood`, `price-apples`, `price-bananas`, `price-beef`, `price-bread`, `price-buckwheat`, `price-butter`, `price-cabbage`, `price-carrots`, `price-cheese`, `price-chicken`, `price-cucumbers`, `price-eggs`, `price-milk`, `price-onions`, `price-pork`, `price-potatoes`, `price-rice`, `price-sugar`, `price-sunflower-oil`, `price-tomatoes`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `silver`, `soybean`, `steel`, `steel-hot-rolled`, `steel-pipes`, `steel-rebar`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
+- **Без прогноза** (259): `build-bitumen`, `build-brick`, `build-cement`, `build-concrete`, `build-cost-housing`, `build-cost-industrial`, `build-cost-power-lines`, `build-cost-roads`, `build-crushed-stone`, `build-floor-slabs`, `build-insulation`, `build-mortar`, `build-silicate-brick`, `build-timber`, `cny-eur`, `coal`, `consumer-credit-overdue`, `consumer-loans-issued`, `consumer-sentiment`, `copper`, `deposit-rate-max`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai92`, `fuel-ai95`, `fuel-ai98`, `fuel-diesel`, `gbp-eur`, `gov-debt-domestic`, `gov-debt-external`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `inflation-expected`, `inflation-observed`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `mortgage-debt`, `mortgage-issued`, `mortgage-issued-count`, `mortgage-overdue`, `mortgage-term`, `nwf-gdp`, `nwf-liquid`, `nwf-volume`, `nwf-volume-usd`, `part-time-employed`, `ppi-aluminium`, `ppi-beef`, `ppi-bread`, `ppi-building-materials`, `ppi-butter`, `ppi-cars`, `ppi-cement`, `ppi-chemicals`, `ppi-coal-mining`, `ppi-construction`, `ppi-construction-buildings`, `ppi-construction-civil`, `ppi-construction-specialised`, `ppi-copper`, `ppi-crude-oil`, `ppi-diesel`, `ppi-energy`, `ppi-flour`, `ppi-food-industry`, `ppi-gasoline`, `ppi-hard-coal`, `ppi-manufacturing`, `ppi-metallurgy`, `ppi-milk`, `ppi-mining`, `ppi-natural-gas`, `ppi-oil-gas`, `ppi-petroleum-products`, `ppi-pharma`, `ppi-pork`, `ppi-poultry`, `ppi-sugar`, `ppi-sunflower-oil`, `ppi-vehicles`, `ppi-water`, `ppi-wood`, `price-apples`, `price-bananas`, `price-beef`, `price-bread`, `price-buckwheat`, `price-butter`, `price-cabbage`, `price-carrots`, `price-cheese`, `price-chicken`, `price-cucumbers`, `price-eggs`, `price-milk`, `price-onions`, `price-pork`, `price-potatoes`, `price-rice`, `price-sugar`, `price-sunflower-oil`, `price-tomatoes`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `silver`, `soybean`, `steel`, `steel-hot-rolled`, `steel-pipes`, `steel-rebar`, `tour-agencies`, `tour-air-passengers-charter`, `tour-airport-domodedovo`, `tour-airport-koltsovo`, `tour-airport-pulkovo`, `tour-airport-sheremetyevo`, `tour-airport-tolmachevo`, `tour-airport-vnukovo`, `tour-cpi-abroad`, `tour-cpi-belarus`, `tour-cpi-black-sea`, `tour-cpi-bus-excursion`, `tour-cpi-caucasus`, `tour-cpi-central-asia`, `tour-cpi-domestic`, `tour-cpi-egypt`, `tour-cpi-excursions`, `tour-cpi-hostel`, `tour-cpi-hotel-1`, `tour-cpi-hotel-2`, `tour-cpi-hotel-3`, `tour-cpi-hotel-4-5`, `tour-cpi-hotels`, `tour-cpi-rest-house-day`, `tour-cpi-river-cruise`, `tour-cpi-russia-tours`, `tour-cpi-sanatoria`, `tour-cpi-sanatorium-day`, `tour-cpi-se-asia`, `tour-cpi-tourism`, `tour-cpi-turkey`, `tour-dest-belarus`, `tour-dest-cuba`, `tour-dest-dominican-republic`, `tour-dest-dubai`, `tour-dest-egypt`, `tour-dest-indonesia`, `tour-dest-kazakhstan`, `tour-dest-maldives`, `tour-dest-maldives-monthly`, `tour-dest-mauritius`, `tour-dest-mauritius-monthly`, `tour-dest-mongolia`, `tour-dest-mongolia-monthly`, `tour-dest-seychelles`, `tour-dest-sri-lanka`, `tour-dest-tajikistan`, `tour-dest-thailand`, `tour-dest-uzbekistan`, `tour-dest-vietnam`, `tour-dest-zanzibar`, `tour-firm-tourists-abroad`, `tour-firm-tourists-russia`, `tour-gva-share`, `tour-gva-share-annual`, `tour-gva-volume`, `tour-hotel-beds`, `tour-hotel-count`, `tour-hotel-nights-monthly`, `tour-hotel-revenue`, `tour-hotel-rooms`, `tour-hotel-workers`, `tour-household-spending`, `tour-household-spending-share`, `tour-inbound-abkhazia`, `tour-inbound-armenia`, `tour-inbound-azerbaijan`, `tour-inbound-belarus`, `tour-inbound-china`, `tour-inbound-georgia`, `tour-inbound-germany`, `tour-inbound-kazakhstan`, `tour-inbound-kyrgyzstan`, `tour-inbound-mongolia`, `tour-inbound-tajikistan`, `tour-inbound-trips-monthly`, `tour-inbound-uzbekistan`, `tour-new-hotel-beds`, `tour-outbound-abkhazia`, `tour-outbound-armenia`, `tour-outbound-azerbaijan`, `tour-outbound-china`, `tour-outbound-egypt`, `tour-outbound-georgia`, `tour-outbound-kazakhstan`, `tour-outbound-thailand`, `tour-outbound-turkey`, `tour-outbound-uae`, `tour-outbound-uzbekistan`, `tour-outbound-vietnam`, `tour-package-price`, `tour-package-price-domestic`, `tour-package-price-outbound`, `tour-packages`, `tour-packages-domestic`, `tour-packages-outbound`, `tour-packages-value`, `tour-price-rest-house`, `tour-price-sanatorium`, `tour-rail-passenger-km`, `tour-resort-fee`, `tour-sanatorium-nights`, `tour-sanatorium-revenue`, `tour-tax`, `tour-travel-balance-monthly`, `tour-travel-business-exports`, `tour-travel-business-imports`, `tour-travel-personal-exports`, `tour-travel-personal-imports`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
 - **SEO не curated** (54): `cny-eur`, `deposit-rate-long`, `deposit-rate-medium`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `exports-monthly`, `gbp-eur`, `housing-affordability-primary`, `imports-monthly`, `income-funds-ratio`, `income-gini`, `income-share-bottom10`, `income-share-quintile-1`, `income-share-quintile-2`, `income-share-quintile-3`, `income-share-quintile-4`, `income-share-quintile-5`, `income-share-top10`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `services-exports-monthly`, `services-imports-monthly`, `short-term-unemployed`, `trade-balance-monthly`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `wages-decile-1`, `wages-decile-10`, `wages-decile-2`, `wages-decile-3`, `wages-decile-4`, `wages-decile-5`, `wages-decile-6`, `wages-decile-7`, `wages-decile-8`, `wages-decile-9`, `wages-median`
 
