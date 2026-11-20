@@ -1,0 +1,23 @@
+country;period;origin;indicator;value
+AM;2023-01..2023-03;Российская Федерация;tourists_ytd;236020
+AM;2023-01..2023-06;Российская Федерация;tourists_ytd;519186
+AM;2023-01..2023-09;Российская Федерация;tourists_ytd;927813
+AM;2023-01..2023-12;Российская Федерация;tourists_ytd;1137005
+AM;2024-01..2024-03;Российская Федерация;tourists_ytd;184317
+AM;2024-01..2024-06;Российская Федерация;tourists_ytd;395688
+AM;2024-01..2024-09;Российская Федерация;tourists_ytd;740890
+AM;2024-01..2024-12;Российская Федерация;tourists_ytd;937823
+AM;2025-01..2025-03;Российская Федерация;tourists_ytd;144072
+AM;2025-01..2025-06;Российская Федерация;tourists_ytd;338052
+AM;2025-01..2025-09;Российская Федерация;tourists_ytd;713479
+AM;2025-01..2025-12;Российская Федерация;tourists_ytd;921704
+AM;2025Q1;Total;inbound_tourists_quarter;386741
+AM;2025Q2;Total;inbound_tourists_quarter;520394
+AM;2025Q3;Total;inbound_tourists_quarter;827112
+AM;2025Q4;Total;inbound_tourists_quarter;529395
+AM;2026-01..2026-03;Российская Федерация;tourists_ytd;178321
+AM;2026-01..2026-06;Российская Федерация;tourists_ytd;416743
+AM;2026-01..2026-09;Российская Федерация;tourists_ytd;704935
+AM;2026Q1;Total;inbound_tourists_quarter;453138
+AM;2026Q2;Total;inbound_tourists_quarter;588460
+AM;2026Q3;Total;inbound_tourists_quarter;715751

@@ -1,0 +1,10 @@
+country;period;origin;indicator;value
+Spain;2026-09;Total;tourists_by_residence_FRONTUR;10139650.0
+Spain;2022-02;Total;tourists_by_residence_FRONTUR;3179288.0
+Spain;2022-01;Total;tourists_by_residence_FRONTUR;2501443.0
+Spain;2022-02;Russia;tourists_by_residence_FRONTUR;12965.0
+Spain;2022-01;Russia;tourists_by_residence_FRONTUR;18563.0
+Spain;2022-02;Russia;hotel_travellers;13582.0
+Spain;2022-01;Russia;hotel_travellers;15047.0
+Spain;2022-02;Russia;hotel_overnight_stays;38348.0
+Spain;2022-01;Russia;hotel_overnight_stays;40519.0

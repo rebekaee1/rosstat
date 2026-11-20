@@ -1,0 +1,82 @@
+country;period;origin;indicator;value
+TR;2014-01;ALMANYA;foreign_arrivals_month;97495
+TR;2014-01;BELARUS (B. RUSYA);foreign_arrivals_month;2412
+TR;2014-01;DİĞ. KUZEY AMERİKA  ÜLK.;foreign_arrivals_month;464
+TR;2014-01;DİĞ. ORTA AMERİKA ÜLK.;foreign_arrivals_month;255
+TR;2014-01;DİĞ.GÜN.AMERİKA ÜLK.;foreign_arrivals_month;597
+TR;2014-01;RUSYA FED.;foreign_arrivals_month;65412
+TR;2014-01;TOP.GÜN.AMERİKA;foreign_arrivals_month;8361
+TR;2014-01;TOPLAM AMERİKA;foreign_arrivals_month;9080
+TR;2014-01;YABANCI TOPLAM;foreign_arrivals_month;1146815
+TR;2014-01;İNGİLTERE;foreign_arrivals_month;29775
+TR;2015-01;ALMANYA;foreign_arrivals_month;115993
+TR;2015-01;Almanya;foreign_arrivals_month;115993
+TR;2015-01;Amerika Birleşik Devletleri;foreign_arrivals_month;26030
+TR;2015-01;BELARUS (B. RUSYA);foreign_arrivals_month;2421
+TR;2015-01;Beyaz Rusya (Belarus);foreign_arrivals_month;2421
+TR;2015-01;DİĞ. GÜNEY AMERİKA ÜLKELERİ;foreign_arrivals_month;647
+TR;2015-01;DİĞ. KUZEY AMERİKA  ÜLK.;foreign_arrivals_month;705
+TR;2015-01;DİĞ. ORTA AMERİKA ÜLK.;foreign_arrivals_month;315
+TR;2015-01;DİĞ.GÜN.AMERİKA ÜLK.;foreign_arrivals_month;647
+TR;2015-01;RUSYA FED.;foreign_arrivals_month;51058
+TR;2015-01;Rusya;foreign_arrivals_month;51058
+TR;2015-01;TOP.GÜN.AMERİKA;foreign_arrivals_month;10480
+TR;2015-01;TOPLAM AMERİKA;foreign_arrivals_month;11500
+TR;2015-01;TOPLAM GÜNEY AMERİKA;foreign_arrivals_month;10480
+TR;2015-01;TOPLAM KUZEY AMERİKA;foreign_arrivals_month;705
+TR;2015-01;TOPLAM ORTA AMERİKA;foreign_arrivals_month;315
+TR;2015-01;YABANCI TOPLAM;foreign_arrivals_month;1250941
+TR;2015-01;İNGİLTERE;foreign_arrivals_month;30868
+TR;2015-01;İngiltere (Birleşik Krallık);foreign_arrivals_month;30868
+TR;2015-03;ALMANYA;foreign_arrivals_month;279179
+TR;2015-03;Almanya;foreign_arrivals_month;279179
+TR;2015-03;Amerika Birleşik Devletleri;foreign_arrivals_month;41463
+TR;2015-03;BELARUS (B. RUSYA);foreign_arrivals_month;3191
+TR;2015-03;Beyaz Rusya (Belarus);foreign_arrivals_month;3191
+TR;2015-03;DİĞ. GÜNEY AMERİKA ÜLKELERİ;foreign_arrivals_month;1067
+TR;2015-03;DİĞ. KUZEY AMERİKA  ÜLK.;foreign_arrivals_month;1033
+TR;2015-03;DİĞ. ORTA AMERİKA ÜLK.;foreign_arrivals_month;471
+TR;2015-03;DİĞ.GÜN.AMERİKA ÜLK.;foreign_arrivals_month;1067
+TR;2015-03;RUSYA FED.;foreign_arrivals_month;58338
+TR;2015-03;Rusya Fed.;foreign_arrivals_month;58338
+TR;2015-03;TOP.GÜN.AMERİKA;foreign_arrivals_month;12350
+TR;2015-03;TOPLAM AMERİKA;foreign_arrivals_month;13854
+TR;2015-03;TOPLAM GÜNEY AMERİKA;foreign_arrivals_month;12350
+TR;2015-03;TOPLAM KUZEY AMERİKA;foreign_arrivals_month;1033
+TR;2015-03;TOPLAM ORTA AMERİKA;foreign_arrivals_month;471
+TR;2015-03;YABANCI TOPLAM;foreign_arrivals_month;1895940
+TR;2015-03;İNGİLTERE;foreign_arrivals_month;69251
+TR;2015-03;İngiltere (Birleşik Krallık);foreign_arrivals_month;69251
+TR;2025-09;Almanya;foreign_arrivals_month;817182
+TR;2025-09;Amerika Birleşik Devletleri;foreign_arrivals_month;182781
+TR;2025-09;Beyaz Rusya (Belarus);foreign_arrivals_month;48034
+TR;2025-09;DİĞ.  GÜNEY AMERİKA  ÜLKELERİ;foreign_arrivals_month;7892
+TR;2025-09;Rusya Fed.;foreign_arrivals_month;971226
+TR;2025-09;TOPLAM AMERİKA;foreign_arrivals_month;57244
+TR;2025-09;TOPLAM GÜNEY AMERİKA;foreign_arrivals_month;50199
+TR;2025-09;TOPLAM KUZEY AMERİKA;foreign_arrivals_month;3403
+TR;2025-09;TOPLAM ORTA AMERİKA;foreign_arrivals_month;3642
+TR;2025-09;YABANCI TOPLAM;foreign_arrivals_month;6087374
+TR;2025-09;İngiltere (Birleşik Krallık);foreign_arrivals_month;539605
+TR;2026-08;Almanya;foreign_arrivals_month;982353
+TR;2026-08;Amerika Birleşik Devletleri;foreign_arrivals_month;142510
+TR;2026-08;Beyaz Rusya (Belarus);foreign_arrivals_month;46806
+TR;2026-08;DİĞ.  GÜNEY AMERİKA  ÜLKELERİ;foreign_arrivals_month;6071
+TR;2026-08;Rusya Fed.;foreign_arrivals_month;1052211
+TR;2026-08;TOPLAM AMERİKA;foreign_arrivals_month;37799
+TR;2026-08;TOPLAM GÜNEY AMERİKA;foreign_arrivals_month;32729
+TR;2026-08;TOPLAM KUZEY AMERİKA;foreign_arrivals_month;2947
+TR;2026-08;TOPLAM ORTA AMERİKA;foreign_arrivals_month;2123
+TR;2026-08;YABANCI TOPLAM;foreign_arrivals_month;6963065
+TR;2026-08;İngiltere (Birleşik Krallık);foreign_arrivals_month;590898
+TR;2026-09;Almanya;foreign_arrivals_month;777516
+TR;2026-09;Amerika Birleşik Devletleri;foreign_arrivals_month;173757
+TR;2026-09;Beyaz Rusya (Belarus);foreign_arrivals_month;45508
+TR;2026-09;DİĞ.  GÜNEY AMERİKA  ÜLKELERİ;foreign_arrivals_month;7492
+TR;2026-09;Rusya Fed.;foreign_arrivals_month;979647
+TR;2026-09;TOPLAM AMERİKA;foreign_arrivals_month;53869
+TR;2026-09;TOPLAM GÜNEY AMERİKA;foreign_arrivals_month;47541
+TR;2026-09;TOPLAM KUZEY AMERİKA;foreign_arrivals_month;2977
+TR;2026-09;TOPLAM ORTA AMERİKA;foreign_arrivals_month;3351
+TR;2026-09;YABANCI TOPLAM;foreign_arrivals_month;6111821
+TR;2026-09;İngiltere (Birleşik Krallık);foreign_arrivals_month;480669

@@ -10,8 +10,10 @@
 - «Доля туризма в ВВП»: ОЭСР (свежее, год 2025) важнее UN Tourism; если ОЭСР в этот прогон не ответила,
   ряд UN Tourism не пишется, чтобы карточка не перескакивала между издателями.
 
-Турция: сайт министерства не отвечает через VPN и с российских адресов проверить его нельзя (20.11.2026),
-поэтому её бюллетень загружается из файла (`--ktb-file`); ночная задача её не трогает.
+Национальные службы стран назначения (Турция, Армения, Азербайджан, Индия, Израиль, Япония, Корея, Черногория,
+Сербия, Испания) и Евростат «ночёвки по стране проживания» загружаются из таблиц сбора c5 20.11.2026
+(`raw/<страна>/tidy.csv`, `--tidy-dir`): их сайты отдают файлы с плавающими именами, часть не отвечает с прода
+(Турция). Ночная задача их не трогает; обновление — новый сбор и повторный запуск.
 
 Запуск::
 
@@ -21,8 +23,8 @@
     docker compose exec backend python -m app.services.world_tourism_ingest imf_bop untourism
     # из сохранённых файлов (каталог raw/ сбора 20.11.2026: imf_bop_travel.csv.gz, untourism/, oecd/, …)
     docker compose exec backend python -m app.services.world_tourism_ingest --raw-dir /tmp/tourism-raw
-    # годовой пограничный бюллетень Турции
-    docker compose exec backend python -m app.services.world_tourism_ingest ktb_tr --ktb-file /tmp/2025yillik.xlsx
+    # национальные службы стран назначения из таблиц сбора (каталог c5/raw с папками стран)
+    docker compose exec backend python -m app.services.world_tourism_ingest --tidy-dir /tmp/c5raw
 """
 
 from __future__ import annotations
@@ -53,7 +55,7 @@ TIMEOUT_SEC = 180
 _DATASET_BY_PROVIDER = {
     src.IMF_PROVIDER: "bop", src.UNT_PROVIDER: "bulk", src.OECD_PROVIDER: "tourism",
     src.ESTAT_PROVIDER: "bop_its6_det", src.CYSTAT_PROVIDER: "2021010E", src.GEOSTAT_PROVIDER: "0505EN0204",
-    src.KTB_PROVIDER: "sinir_yillik",
+    **{provider: "national" for provider in src.TIDY_PROVIDERS},
 }
 # Ряд, который издатель не продолжает дольше этого срока (Канада по лечению — 2011 год), не заводится:
 # карточка с последним значением десятилетней давности вводит в заблуждение.
@@ -122,7 +124,14 @@ def _read(path: Path) -> bytes:
     return gzip.decompress(data) if path.suffix == ".gz" else data
 
 
-def fetch_local(provider: str, raw_dir: Path, *, ktb_file: Path | None = None) -> tuple[src.Parsed, dict]:
+def fetch_tidy(provider: str, tidy_dir: Path) -> tuple[src.Parsed, dict]:
+    """Таблица сбора страны (`<tidy_dir>/<папка>/tidy.csv`) → ряды издателя."""
+    specs = [spec for spec in src.TIDY_SPECS if spec.series.provider == provider]
+    path = tidy_dir / src.TIDY_FOLDERS[provider] / "tidy.csv"
+    return src.parse_tidy_csv(path.read_text(encoding="utf-8-sig"), specs), {}
+
+
+def fetch_local(provider: str, raw_dir: Path) -> tuple[src.Parsed, dict]:
     """Каталог сбора (`raw/` агента a4) → разобранные ряды; имена файлов — как у сбора 20.11.2026."""
     if provider == src.IMF_PROVIDER:
         return src.parse_imf_bop_csv(_text(_read(raw_dir / "imf_bop_travel.csv.gz")))
@@ -142,11 +151,6 @@ def fetch_local(provider: str, raw_dir: Path, *, ktb_file: Path | None = None) -
         if not files:
             raise FileNotFoundError("georgia/0505EN0204*.xlsx")
         return src.parse_geostat_visits_xlsx(files[0].read_bytes()), {}
-    if provider == src.KTB_PROVIDER:
-        path = ktb_file or next(iter(sorted((raw_dir / "turkey").glob("*yillik*sinir*.xlsx"))), None)
-        if path is None:
-            raise FileNotFoundError("turkey/*yillik*sinir*.xlsx")
-        return src.parse_ktb_yearly_xlsx(Path(path).read_bytes()), {}
     raise ValueError(provider)
 
 
@@ -245,7 +249,7 @@ async def run_world_tourism_ingest(
     providers: tuple[str, ...] = NETWORK_PROVIDERS,
     *,
     raw_dir: Path | None = None,
-    ktb_file: Path | None = None,
+    tidy_dir: Path | None = None,
     today: date | None = None,
 ) -> dict:
     """Издатели по очереди; сбой одного виден в журнале и не останавливает остальных."""
@@ -258,10 +262,12 @@ async def run_world_tourism_ingest(
     results: dict[str, object] = {}
     for provider in providers:
         try:
-            if raw_dir is not None or (provider == src.KTB_PROVIDER and ktb_file is not None):
-                fetched[provider] = await asyncio.to_thread(
-                    fetch_local, provider, Path(raw_dir or "."), ktb_file=ktb_file,
-                )
+            if provider in src.TIDY_PROVIDERS:
+                if tidy_dir is None:
+                    raise RuntimeError(f"{provider}: нужен каталог таблиц сбора (--tidy-dir)")
+                fetched[provider] = await asyncio.to_thread(fetch_tidy, provider, Path(tidy_dir))
+            elif raw_dir is not None:
+                fetched[provider] = await asyncio.to_thread(fetch_local, provider, Path(raw_dir))
             else:
                 fetched[provider] = await asyncio.to_thread(fetch_network, provider, iso3)
         except Exception as exc:  # noqa: BLE001 — сбой издателя пишется в журнал прогона
@@ -281,19 +287,21 @@ async def run_world_tourism_ingest(
 
 
 def _cli(argv: list[str]) -> dict:
-    raw_dir = ktb_file = None
+    raw_dir = tidy_dir = None
     chosen: list[str] = []
     args = iter(argv)
     for arg in args:
         if arg == "--raw-dir":
             raw_dir = Path(next(args))
-        elif arg == "--ktb-file":
-            ktb_file = Path(next(args))
+        elif arg == "--tidy-dir":
+            tidy_dir = Path(next(args))
         elif arg in src.PROVIDERS:
             chosen.append(arg)
     if not chosen:
-        chosen = list(NETWORK_PROVIDERS) + ([src.KTB_PROVIDER] if raw_dir or ktb_file else [])
-    return asyncio.run(run_world_tourism_ingest(tuple(chosen), raw_dir=raw_dir, ktb_file=ktb_file))
+        chosen = list(src.TIDY_PROVIDERS) if tidy_dir and not raw_dir else list(NETWORK_PROVIDERS)
+        if tidy_dir and raw_dir:
+            chosen += list(src.TIDY_PROVIDERS)
+    return asyncio.run(run_world_tourism_ingest(tuple(chosen), raw_dir=raw_dir, tidy_dir=tidy_dir))
 
 
 if __name__ == "__main__":
