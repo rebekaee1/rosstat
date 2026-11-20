@@ -43,7 +43,7 @@ function floorsOf(data) {
   return { regions, featured, groups, countries, concepts };
 }
 
-/** Короткая навигация «Россия · Регионы · Мир» под заголовком; только по этажам, где есть данные. */
+/** Короткая навигация «Россия, Регионы, Мир» под заголовком; только по этажам, где есть данные. */
 export function TourismJump() {
   const t = useT();
   const { data } = useTourismOverview();
