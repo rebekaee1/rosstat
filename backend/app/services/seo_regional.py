@@ -121,6 +121,18 @@ def _tour_source(code: str) -> tuple[str, str] | None:
     return src["en" if en else "ru"], src["about_en" if en else "about_ru"]
 
 
+def _tour_about(code: str, slug: str) -> str | None:
+    """«Откуда данные» годового ряда туризма; у оценки турпотока региона — ещё и методика этого региона."""
+    from app.data.tourism_regional import region_method
+    from app.services.locale import get_locale
+
+    ts = _tour_source(code)
+    if ts is None:
+        return None
+    method = region_method(code, slug, get_locale())
+    return f"{ts[1]} {method}" if method else ts[1]
+
+
 def _tour_source_p(code: str, unit: str, period: str) -> str | None:
     """Абзац «Источник данных» годового ряда туризма (20.11.2026) — вместо подписи сборника «Регионы России»."""
     from app.services.locale import get_locale
@@ -654,6 +666,9 @@ async def _with_region_years(db: AsyncSession, inds: list) -> list:
     рейтинги» ссылались на /russia/region-rating/ceni-* и /russia/region/map/ceni-* — у цен (таблицы
     20.m*) годовых данных по субъектам нет, страницы 404. Тот же признак, что у самого рейтинга.
     """
+    from app.data.tourism_regional import NOT_RANKED
+
+    inds = [ind for ind in inds if ind.code not in NOT_RANKED]
     if not inds:
         return []
     ids = [ind.id for ind in inds]
@@ -668,6 +683,10 @@ async def _with_region_years(db: AsyncSession, inds: list) -> list:
 
 async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, str]:
     """Рейтинг всех регионов по показателю: /russia/region-rating/{code}."""
+    from app.data.tourism_regional import NOT_RANKED
+
+    if code in NOT_RANKED:  # оценки регионов по своим методикам: ранжировать нельзя (20.11.2026)
+        return 404, "<h1>Рейтинга по этому показателю нет</h1>"
     indicator = (await db.execute(
         select(RegionIndicator).where(
             RegionIndicator.code == code, RegionIndicator.is_listed.is_(True)
@@ -1933,6 +1952,10 @@ async def render_region_indicator_html(
             RegionDataPoint.value, indicator.code, indicator.table_code
         ))
     )).all()
+    from app.data.tourism_regional import NOT_RANKED
+
+    if indicator.code in NOT_RANKED:
+        rank_rows = []  # методики регионов разные: места среди регионов не называем (20.11.2026)
     position = next(
         (i for i, (s, _v) in enumerate(rank_rows, 1) if s == region.slug), None
     )
@@ -2105,7 +2128,7 @@ async def render_region_indicator_html(
         _rt("region_indicator.faq_source_q") or (
             "Откуда взяты данные и как часто они обновляются?"
         ),
-        (_tour_source(code) or (None, None))[1] or _rt("region_indicator.faq_source_a") or (
+        _tour_about(code, slug) or _rt("region_indicator.faq_source_a") or (
             "Источник — официальный сборник Росстата «Регионы России. Социально-экономические "
             "показатели». Данные годовые, обновляются после выхода нового выпуска сборника."
         ),
