@@ -239,8 +239,8 @@ CATEGORY_META: dict[str, CategorySeo] = {
             "образование Росстат"
         ),
     ),
-    # Туризм (20.11.2026): один раздел для России, регионов и стран мира. Российские ряды — категория
-    # «Туризм» (коды tour-*), региональные и мировые блоки страницы собирает app/services/tourism_showcase.py.
+    # Tourism (2026-11-20): a single section for Russia, its regions and world countries. Russian series use category
+    # "Туризм" (codes tour-*); app/services/tourism_showcase.py assembles the regional and world blocks.
     "tourism": CategorySeo(
         slug="tourism",
         name="Туризм",

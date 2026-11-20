@@ -59,7 +59,7 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         }
         for code, series in _steel.SERIES.items()
     },
-    # Туризм по России (20.11.2026): название, описание, методология и единица из реестра раздела.
+    # Tourism, Russia (2026-11-20): name, description, methodology and unit from the section registry.
     **_tourism_russia.copy_en(),
     # Household credit and mortgages, Bank of Russia DataService (2026-11-19).
     **_cbr_credit_copy_en(),
