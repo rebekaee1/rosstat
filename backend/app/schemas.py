@@ -44,6 +44,9 @@ class IndicatorSummary(BaseModel):
     alternate_frequencies: dict[str, str] | None = None
     # Обратная ссылка: monthly counterpart → primary quarterly. Для SSR canonical.
     primary_indicator_code: str | None = None
+    # Сезонный ряд (model_config_json.seasonal): сравнение с прошлым месяцем/кварталом показывает сезон, а не рост —
+    # шапка страницы показателя сравнивает с тем же периодом прошлого года (круг наблюдателей, 21.11.2026).
+    seasonal: bool | None = None
 
     model_config = {"from_attributes": True}
 

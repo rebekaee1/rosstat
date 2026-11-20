@@ -1325,6 +1325,14 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
 )
 
 
+def is_seasonal(s: TourSeries) -> bool:
+    """Сезонный ряд: месяц или квартал туризма (поездки, траты, перевозки, ночёвки, загрузка кресел, налог). Сравнение
+    с прошлым периодом здесь — сезон, а не рост. Не сезонные: годовые ряды и ряды, уже выраженные к году (ИПЦ позиций,
+    реальный рост туриндустрии)."""
+    return (s.frequency in ("monthly", "quarterly") and s.parser_type != "rosstat_tourism_cpi"
+            and s.code != "tour-gva-volume")
+
+
 def hidden_codes() -> set[str]:
     return {code for code, s in SERIES.items() if not s.listed}
 
@@ -1350,6 +1358,8 @@ def seed_indicators():
         cfg.update(fc or {"forecast_steps": 0})
         if s.min_value is not None:
             cfg["validation"] = {"min": s.min_value}
+        if is_seasonal(s):
+            cfg["seasonal"] = True
         yield {
             "code": s.code,
             "name": s.name,

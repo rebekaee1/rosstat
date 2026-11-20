@@ -402,6 +402,7 @@ async def list_indicators(
             seo_keywords=ind.seo_keywords,
             alternate_frequencies=ind_mcfg.get("alternate_frequencies") or None,
             primary_indicator_code=ind_mcfg.get("primary_indicator_code") or None,
+            seasonal=bool(ind_mcfg.get("seasonal")) or None,
         ))
 
     serialized = [s.model_dump(mode="json") for s in out]
@@ -522,6 +523,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         updated_at=indicator.updated_at,
         alternate_frequencies=alt_freq,
         primary_indicator_code=primary_code,
+        seasonal=bool(mcfg.get("seasonal")) or None,
         hero_value=hero_value, hero_unit=hero_unit,
         hero_label=localize_hero_label(hero_label),
         hero_change=hero_change,

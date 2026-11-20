@@ -387,3 +387,16 @@ def test_observer_round_sources_definitions_and_caveats():
     assert "352,6" in s["tour-hotel-nights-monthly"].description
     # Расхождение 16: фраза о переключателе частоты убрана.
     assert "переключатель частоты" not in s["tour-travel-exports"].methodology
+
+
+def test_seasonal_flag_marks_monthly_and_quarterly_flows_for_the_indicator_api():
+    import seed_data
+
+    cfg = {row["code"]: row["model_config_json"] for row in seed_data.INDICATORS}
+    for code in ("tour-outbound-trips", "tour-air-load-factor", "tour-hotel-nights-monthly", "tour-tax",
+                 "tour-airport-sheremetyevo", "tour-dest-vietnam"):
+        assert cfg[code].get("seasonal") is True, code
+    for code in ("tour-hotel-guests", "tour-cpi-tourism", "tour-gva-volume", "tour-hist-outbound"):
+        assert not cfg[code].get("seasonal"), code
+    from app.schemas import IndicatorDetail
+    assert "seasonal" in IndicatorDetail.model_fields
