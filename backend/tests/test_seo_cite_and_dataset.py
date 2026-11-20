@@ -15,6 +15,14 @@ def test_cite_text_ru_and_en():
         "Forecast Economy. Дизельное топливо: источник данных — Росстат, на 9 ноября 2026. "
         "https://ru.forecasteconomy.com/russia/indicator/fuel-diesel")
     assert cite_text(name="X", source=None, url="https://a/b", as_of=None, locale="ru") == "Forecast Economy. X. https://a/b"
+    # №2 круга наблюдателей: известна частота — период словами и дата обращения, как на клиенте.
+    assert cite_text(name="Выезд", source="Росстат", url="https://a/b", as_of=date(2026, 6, 1), locale="ru",
+                     frequency="quarterly", accessed=date(2026, 11, 20)) == (
+        "Forecast Economy. Выезд: источник данных — Росстат, данные за II кв. 2026, дата обращения 20.11.2026. https://a/b")
+    assert cite_text(name="Trips", source="Rosstat", url="https://a/b", as_of=date(2025, 1, 1), locale="en",
+                     frequency="annual", accessed=date(2026, 11, 20)) == (
+        "Forecast Economy. Trips: data from Rosstat, data for 2025, accessed 20.11.2026. https://a/b")
+    assert "за июль 2026" in cite_text(name="X", source=None, url="u", as_of=date(2026, 7, 1), locale="ru", frequency="monthly")
     html = cite_html(name="A <b>", source="Росстат", url="https://a/b", as_of=None, locale="ru")
     assert html.startswith('<p class="seo-cite"><span class="seo-cite__label">Как цитировать:</span>')
     assert "&lt;b&gt;" in html
@@ -32,7 +40,8 @@ def test_year_page_has_cite_line(year_landing_client, auth_env):  # noqa: F811
     assert status == 200
     assert 'class="seo-cite"' in html
     assert "Как цитировать:" in html
-    assert "источник данных — Росстат, на 1 января 2025." in html
+    assert "источник данных — Росстат, данные за 2025 год, дата обращения " in html
+    assert "на 1 января 2025" not in html
     assert "/russia/indicator/population/2025" in html.split('class="seo-cite"', 1)[1].split("</p>", 1)[0]
 
 

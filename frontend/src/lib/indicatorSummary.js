@@ -363,6 +363,7 @@ export function buildIndicatorSummary({
     seasonal: isSeasonalLevel(kind, frequency),
     sameYear: sameYearChange(valid, frequency),
     growth: kind === 'rate' ? null : bestGrowth(valid),
+    growthReliable: kind === 'rate' ? false : isGrowthBaseReliable(valid, bestGrowth(valid), frequency),
     stats: kind === 'rate' ? windowStats(valid, 10) : null,
   };
 }

@@ -53,14 +53,9 @@ function renderCard({ lastYear = 2025, renderActions, description, locale } = {}
 describe('WorldIndicatorPage: круг 11 (F)', () => {
   it('рядом с главным числом значок «Данные до …»; устаревший ряд называется устаревшим', async () => {
     const { unmount } = renderCard({ lastYear: 2025 });
-    // Круг наблюдателей: у главного числа строки «Данные до…» больше нет, пометка осталась в строке под названием.
-    const badge = await waitFor(() => {
-      const found = document.querySelector('.z4-hero__line [data-testid="data-freshness"]');
-      expect(found).toBeTruthy();
-      return found;
-    });
-    expect(badge.getAttribute('data-level')).toBe('fresh');
-    expect(badge.textContent).toBe('Данные до 2025');
+    await screen.findByTestId('indicator-hero');
+    // Свежий ряд: «Данные до …» повторяет подпись периода, значка нет ни у числа, ни в строке под названием.
+    expect(document.querySelector('[data-testid="data-freshness"]')).toBeNull();
     unmount();
     renderCard({ lastYear: 2022 });
     const stale = await waitFor(() => {
