@@ -573,5 +573,22 @@ def test_regional_estimate_has_method_and_no_rating():
     ru = R.region_method("tour-turpotok-ocenka-regiona", "stavropolskiy-kray", "ru")
     assert "2023" in ru and "разрывается" in ru
     en = R.region_method("tour-turpotok-ocenka-regiona", "stavropolskiy-kray", "en")
-    assert en.startswith("Method of this region") and not any("а" <= ch <= "я" for ch in en.casefold())
+    assert en.startswith("Who is counted") and not any("а" <= ch <= "я" for ch in en.casefold())
     assert R.region_method("tour-ksr-mesta", "moskva") is None
+
+
+def test_region_methods_public_text_for_every_region():
+    import re
+
+    methods = json.loads((L._DATA / "tourism_region_methods.json").read_text(encoding="utf-8"))
+    slugs = {s for _c, s, _p in {(c, s, p) for c, s, p, _v in L.read_seed() if c == "tour-turpotok-ocenka-regiona"}}
+    assert slugs <= set(methods) and len(slugs) == 18
+    jargon = re.compile(r"\b(ГП|КСР|ИСР|СМИ|РФ|РК|РТ|РД|РА|МО|ЯО|ЛО|СПб|АО|ФО|ОКВЭД)\b")
+    for slug in slugs:
+        m = methods[slug]
+        for lang in ("ru", "en"):
+            assert m[f"who_{lang}"] and m[f"how_{lang}"], slug
+            text = R.region_method("tour-turpotok-ocenka-regiona", slug, lang)
+            assert not jargon.search(text), (slug, text)
+            assert len(text) < 600, slug
+        assert not re.search(r"[а-яё]", R.region_method("tour-turpotok-ocenka-regiona", slug, "en").casefold())
