@@ -59,7 +59,7 @@ print(latest_link(sys.stdin.read(), SOURCES[sys.argv[1]]) or "")
   [ -n "$url" ] || fail "$key: на странице нет ссылки на файл (сменилась вёрстка?)"
   curl -fsS -m 180 -A "$UA" -o "$TMP/$snapshot" "$url" || fail "$key: не скачался $url"
 
-  ssh -o BatchMode=yes -o ConnectTimeout=20 "$HOST" \
+  ssh -n -o BatchMode=yes -o ConnectTimeout=20 "$HOST" \
     "cd $REMOTE_DIR && docker compose exec -T scheduler cat $REMOTE_SNAP_DIR/$snapshot" > "$TMP/prod-$snapshot" \
     || fail "$key: не прочитан текущий снимок на проде"
 
@@ -94,7 +94,7 @@ PY
 )" || fail "$key: проверка файла не прошла: $(tail -1 "$TMP/check.err")"
 
   scp -q -o BatchMode=yes "$TMP/$snapshot" "$HOST:/tmp/fe-minfin-$snapshot" || fail "$key: scp на прод"
-  ssh -o BatchMode=yes "$HOST" "set -e; cd $REMOTE_DIR
+  ssh -n -o BatchMode=yes "$HOST" "set -e; cd $REMOTE_DIR
     for svc in scheduler backend; do
       docker cp /tmp/fe-minfin-$snapshot \"\$(docker compose ps -q \$svc)\":$REMOTE_SNAP_DIR/$snapshot
     done
