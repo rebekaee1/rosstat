@@ -692,3 +692,63 @@ def test_cpi_history_in_snapshot_from_2002():
     assert pts[("tour-ipc-turciya", "russia", 202204)] == 226.09  # расхождение 18: это число Росстата
     assert pts[("tour-ipc-gostinicy", "moskva", 200201)] == 111.78
     assert max(p for (c, _s, p) in pts if c == "tour-ipc-gostinicy") == 202609
+
+
+
+def test_extension_rows_outside_years_are_not_a_format_error(terr):
+    """Стенд 21.11.2026: 31258 отдал 96 строк за 2023–2024 — ряд сборника продлевается с 2025, это не сбой формата."""
+    s = R.SERIES_BY_CODE["oborot-obschestvennogo-pitaniya"]
+
+    async def fetch_page(dataset):
+        return _page(dataset, "миллион рублей").replace("1540294: {title: 'январь-февраль'}",
+                                                         "1540227: {title: 'январь-декабрь'}")
+
+    async def post_grid(dataset, params):
+        return {"results": [{"dim57831": "Краснодарский край", "dim3": "2024", "dim1540227_d1_i1": "1500,5"}]}
+
+    assert asyncio.run(L.fetch_emiss_dataset(31258, [s], [2024], terr, today=TODAY, fetch_page=fetch_page,
+                                             post_grid=post_grid)) == []
+
+    async def post_unknown(dataset, params):
+        return {"results": [{"dim57831": "Нигде", "dim3": "2025", "dim1540227_d1_i1": "1"}]}
+
+    with pytest.raises(ValueError, match="ни одна не узнана"):
+        asyncio.run(L.fetch_emiss_dataset(31258, [s], [2025], terr, today=TODAY, fetch_page=fetch_page,
+                                          post_grid=post_unknown))
+
+
+def test_run_uses_short_sessions_and_no_db_during_fetch(monkeypatch):
+    """Сеть без открытой сессии: каждая запись — своя сессия, скачивание идёт, когда все сессии закрыты."""
+    opened: list[int] = []
+    active = {"n": 0}
+
+    class _Session:
+        async def __aenter__(self):
+            active["n"] += 1
+            opened.append(1)
+            return object()
+
+        async def __aexit__(self, *a):
+            active["n"] -= 1
+
+    async def fake_write(db, points, *, overwrite):
+        return {"added": len(points), "updated": 0}
+
+    async def fake_seed(db):
+        return "applied earlier"
+
+    async def fake_last(db, sl):
+        return 2025
+
+    async def fake_fetch(*a, **k):
+        assert active["n"] == 0  # во время сетевого запроса сессия БД не открыта
+        return [("x", "russia", 2025, 1.0)]
+
+    monkeypatch.setattr(L, "write_points", fake_write)
+    monkeypatch.setattr(L, "_apply_seed_once", fake_seed)
+    monkeypatch.setattr(L, "_last_years", fake_last)
+    monkeypatch.setattr(L, "fetch_emiss_dataset", fake_fetch)
+    monkeypatch.setattr(L, "emiss_datasets", lambda: {31560: [R.SERIES_BY_CODE["tour-ksr-mesta"]]})
+    stats = asyncio.run(L.run_tourism_regional_update(_Session, today=TODAY, cbr=False, fsa=False, others=False,
+                                                      post_grid=lambda *a: None))
+    assert stats["emiss_31560"]["added"] >= 1 and len(opened) >= 3

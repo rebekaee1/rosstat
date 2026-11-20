@@ -254,8 +254,13 @@ def _matches(alt: tuple[str, ...], values: Sequence[str]) -> bool:
 
 def emiss_points(
     series_list: Sequence[TSeries], rows: Iterable[EmissRow], territories: Territories, *, today: date,
+    stats: dict[str, int] | None = None,
 ) -> list[Point]:
-    """Строки набора → точки его рядов. Слой и вид периода — у ряда; ряд берёт первую подошедшую альтернативу."""
+    """Строки набора → точки его рядов. Слой и вид периода — у ряда; ряд берёт первую подошедшую альтернативу.
+
+    ``stats["matched"]`` — строки, узнанные по периоду, позиции и территории (до отбора по годам): если их ноль при
+    непустом ответе, сменился формат; если узнаны, но все годы вне ряда (продление сборника с 2025 года) — это не
+    ошибка (стенд 21.11.2026, набор 31258)."""
     by_series: dict[str, Collector] = {s.code: Collector() for s in series_list}
     rows = list(rows)
     for s in series_list:
@@ -263,21 +268,23 @@ def emiss_points(
         kind = s.emiss.periods
         col = by_series[s.code]
         for row in rows:
-            if row.year < s.first_year or row.year > today.year:
-                continue
             idx = period_index(row.period, kind)
             if idx is None:
                 continue
             alt_rank = next((i for i, alt in enumerate(s.emiss.match) if _matches(alt, row.values)), None)
             if alt_rank is None:
                 continue
+            slug, spare = territories.resolve(row.territory)
+            if slug is None:
+                continue
+            if stats is not None:
+                stats["matched"] = stats.get("matched", 0) + 1
+            if row.year < s.first_year or row.year > today.year or (s.min_year and row.year < s.min_year):
+                continue
             value = parse_ru_float(row.raw)
             if value is None or not isfinite(value):
                 continue
             if s.emiss.periods != "ytd" and value == 0 and s.layer != "annual":
-                continue
-            slug, spare = territories.resolve(row.territory)
-            if slug is None:
                 continue
             period = row.year if kind in ("year", "dec") else row.year * 100 + idx
             if s.layer == "monthly" and period > today.year * 100 + today.month:
@@ -469,11 +476,21 @@ async def fetch_emiss_dataset(
         raise ValueError(f"ЕМИСС {dataset}: единица набора {page['unit']!r}, ожидалась "
                          f"{series_list[0].emiss.src_unit!r} — масштаб рядов был бы неверен")
     params, tdim, periods = build_grid_params(dataset, page["filters"], usable, years)
-    payload = await (post_grid or _post_grid)(dataset, params)
+    # Месячная сетка тяжёлых наборов (ИПЦ 31074) — четырьмя квартальными запросами, как у остальной ЕМИСС.
+    from app.services.emiss_regional_parser import post_grid_by_quarters
+
+    post = post_grid or _post_grid
+    # Делить по кварталам можно только чистые месяцы: квартальная разбивка убирает все прочие периоды
+    # («январь-февраль» нарастающих рядов), поэтому для них — один запрос.
+    if all(s.emiss.periods == "month" for s in usable):
+        payload = await post_grid_by_quarters(dataset, params, post_grid=post)
+    else:
+        payload = await post(dataset, params)
     rows = rows_from_grid(payload, territory_dim=tdim, period_titles=periods)
-    points = emiss_points(usable, rows, territories, today=today)
-    if rows and not points:
-        raise ValueError(f"ЕМИСС {dataset}: {len(rows)} строк, ни одна точка не разобрана")
+    found: dict[str, int] = {}
+    points = emiss_points(usable, rows, territories, today=today, stats=found)
+    if rows and not found.get("matched"):
+        raise ValueError(f"ЕМИСС {dataset}: {len(rows)} строк, ни одна не узнана (сменился формат ответа?)")
     return points
 
 
@@ -1368,6 +1385,9 @@ async def ensure_indicators(db) -> dict[str, int]:
     )).all())
 
 
+_COMMIT_EVERY = 10  # пачек по 5000 строк на транзакцию
+
+
 async def write_points(db, points: Sequence[Point], *, overwrite: bool) -> dict[str, int]:
     """Точки → слои по ряду; ``overwrite=False`` — только отсутствующие (снимок), иначе upsert с охраной значения."""
     from sqlalchemy import select
@@ -1403,6 +1423,7 @@ async def write_points(db, points: Sequence[Point], *, overwrite: bool) -> dict[
     stats = {"added": 0, "updated": 0}
     affected: set[int] = set()
     touched: set[int] = set()
+    batches = 0
     try:
         for layer, values in grouped.items():
             model, _col, constraint = layers[layer]
@@ -1420,6 +1441,10 @@ async def write_points(db, points: Sequence[Point], *, overwrite: bool) -> dict[
                 stats["updated"] += sum(1 for ins, _i in rows if not ins)
                 affected.update(v["indicator_id"] for v in part)
                 touched.update(i for _ins, i in rows)
+                batches += 1
+                if batches % _COMMIT_EVERY == 0:  # большой снимок — несколько коротких транзакций, не одна длинная
+                    await db.commit()
+                    await acquire_regional_write_lock(db)
         changed = await update_regional_year_bounds(db, affected) if affected else 0
         if touched:  # дата изменения данных ряда — для «как цитировать» (круг наблюдателей №2/№5)
             from sqlalchemy import update
@@ -1466,22 +1491,33 @@ def plan_years(series_list: Sequence[TSeries], last: int | None, today: date) ->
 
 
 async def run_tourism_regional_update(
-    db, *, today: date | None = None, emiss: bool = True, cbr: bool = True, fsa: bool = True, others: bool = True,
-    fetch_page: Callable | None = None, post_grid: Callable | None = None,
+    session_maker, *, today: date | None = None, emiss: bool = True, cbr: bool = True, fsa: bool = True,
+    others: bool = True, fetch_page: Callable | None = None, post_grid: Callable | None = None,
 ) -> dict[str, object]:
-    """Снимок (только недостающие точки) → живые источники по очереди; сбой одного не останавливает остальные."""
+    """Снимок (только недостающие точки) → живые источники по очереди; сбой одного не останавливает остальные.
+
+    Сеть и база разведены (стенд 21.11.2026: долгий запрос к fedstat при открытой сессии — «connection is closed»):
+    каждое чтение и каждая запись идут в своей короткой сессии ``session_maker()``, скачивание — без сессии."""
     today = today or date.today()
     territories = Territories()
-    stats: dict[str, object] = {"seed": await _apply_seed_once(db), "failed": []}
+
+    async def _db(fn):
+        async with session_maker() as db:
+            return await fn(db)
+
+    async def write(points, overwrite: bool):
+        return await _db(lambda db: write_points(db, points, overwrite=overwrite))
+
+    stats: dict[str, object] = {"seed": await _db(_apply_seed_once), "failed": []}
     if emiss:
         for dataset, series_list in emiss_datasets().items():
             try:
-                last = await _last_years(db, series_list)
+                last = await _db(lambda db, sl=series_list: _last_years(db, sl))
                 total = {"added": 0, "updated": 0}
                 for years in plan_years(series_list, last, today):
                     pts = await fetch_emiss_dataset(dataset, series_list, years, territories, today=today,
                                                     fetch_page=fetch_page, post_grid=post_grid)
-                    got = await write_points(db, pts, overwrite=True)
+                    got = await write(pts, True)
                     total = {k: total[k] + got[k] for k in total}
                     await asyncio.sleep(0.6 if post_grid is None else 0)
                 stats[f"emiss_{dataset}"] = total
@@ -1501,13 +1537,13 @@ async def run_tourism_regional_update(
         if not enabled:
             continue
         try:
-            stats[name] = await write_points(db, await fetch(), overwrite=True)
+            stats[name] = await write(await fetch(), True)
         except Exception as exc:  # noqa: BLE001
             logger.warning("tourism_regional: %s: %s", name, exc)
             stats["failed"].append(f"{name}: {str(exc)[:120]}")
     if others:
         try:  # цены туруслуг: только недостающие месяцы (основной загрузчик — ЕМИСС 31448)
-            stats["prices"] = await write_points(db, await fetch_prices(territories, today), overwrite=False)
+            stats["prices"] = await write(await fetch_prices(territories, today), False)
         except Exception as exc:  # noqa: BLE001
             logger.warning("tourism_regional: prices: %s", exc)
             stats["failed"].append(f"prices: {str(exc)[:120]}")
@@ -1551,8 +1587,7 @@ async def tourism_regional_job() -> dict[str, object]:
     from app.database import async_session
 
     started = time.monotonic()
-    async with async_session() as db:
-        stats = await run_tourism_regional_update(db)
+    stats = await run_tourism_regional_update(async_session)
     # ЕМИСС (бан fedstat) и реестр Минэкономразвития (пускает не все адреса) ждут следующего прогона молча:
     # данные из снимка на сайте остаются, лог — в статистике прогона.
     failed = [f for f in stats.get("failed", []) if not str(f).startswith(("ЕМИСС", "fedstat", "efrt"))]
@@ -1577,10 +1612,10 @@ if __name__ == "__main__":  # python -m app.services.tourism_regional_loader [--
     async def _main() -> None:
         from app.database import async_session
 
-        async with async_session() as db:
-            if "--seed-only" in sys.argv:
+        if "--seed-only" in sys.argv:
+            async with async_session() as db:
                 print(await write_points(db, read_seed(), overwrite=False))
-            else:
-                print(await run_tourism_regional_update(db))
+        else:
+            print(await run_tourism_regional_update(async_session))
 
     asyncio.run(_main())
