@@ -4541,4 +4541,7 @@ export default {
   "tourism.world.countries": "Страны",
   "tourism.world.showAll": "Показать все страны ({n})",
   "tourism.regions.all": "Все регионы",
+  "w6d.search.section.sections": "Разделы",
+  "tourism.search.section": "Туризм: Россия, регионы и мир",
+  "tourism.search.sectionHint": "Раздел: турпоток, гостиницы, траты туристов — все показатели",
 };

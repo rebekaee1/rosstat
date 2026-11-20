@@ -55,3 +55,41 @@ TOURISM_CONCEPTS = (
         "travel spending", "tourism receipts", "tourism expenditure", "travel receipts"),
         ("tour-spend", "поездки", "travel", "tourism receipts", "tourism expenditure")),
 )
+
+TOURISM_KEYS = frozenset(concept[1][0] for concept in TOURISM_CONCEPTS)
+
+
+def is_tourism_query(intent) -> bool:
+    """Запрос про туризм без названного места вне России: «туризм», «tourism», «гостиницы», «выездной туризм»."""
+    if not intent.terms or intent.terms[0][0] not in TOURISM_KEYS:
+        return False
+    return not intent.regions and intent.countries <= {"russia"}
+
+
+def tourism_first(rows: list[dict], intent) -> list[dict]:
+    """Порядок выдачи туристического запроса (20.11.2026, стенд: «туризм» начинался с турпотока ЦФО).
+
+    Сначала флагманы России в порядке витрины раздела, затем остальные ряды России `tour-*`, затем прочее;
+    строки федерального округа или отдельного субъекта (место в запросе не названо) — в конце, строка
+    «Россия» со сводкой по регионам остаётся на своём месте. Сортировка устойчивая: внутри ступени
+    прежний порядок по счёту.
+    """
+    if not is_tourism_query(intent):
+        return rows
+    from app.services.tourism_showcase import RUSSIA_LEAD_CODES
+
+    lead = {code: i for i, code in enumerate(RUSSIA_LEAD_CODES)}
+
+    def rank(row: dict) -> tuple[int, int]:
+        code = str(row.get("code") or "")
+        if row.get("kind") == "russia":
+            if code in lead:
+                return (0, lead[code])
+            if code.startswith("tour-"):
+                return (1, 0)
+        slug = row.get("region_slug")
+        if row.get("kind") == "region_indicator" and slug and slug != "russia" and not row.get("regional_group"):
+            return (3, 0)
+        return (2, 0)
+
+    return sorted(rows, key=rank)

@@ -242,3 +242,20 @@ def test_rating_links_only_when_page_exists(auth_env):
     # По карточке с лидерами на группу: поток (месячный) и деньги (годовой).
     assert rows["tour-ksr-razmeshcheno-mes"]["leaders"][0]["slug"] == "r10"
     assert rows["tour-nalog-za-god"]["leaders"][0]["slug"] == "r10"
+
+
+def test_tourism_query_puts_russia_flagships_first_and_districts_last():
+    from app.services.search_tourism import tourism_first
+
+    rows = [
+        {"key": "rg:cfo", "kind": "region_indicator", "code": "tour-turpotok-nochevki", "region_slug": "cfo"},
+        {"key": "ru:tour-cpi-hotels", "kind": "russia", "code": "tour-cpi-hotels"},
+        {"key": "w:al", "kind": "world", "code": "al-tourism-gdp-share"},
+        {"key": "ru:tour-inbound-trips", "kind": "russia", "code": "tour-inbound-trips"},
+        {"key": "rg:ru", "kind": "region_indicator", "code": "tour-ksr", "region_slug": "russia", "regional_group": {}},
+        {"key": "ru:tour-outbound-trips", "kind": "russia", "code": "tour-outbound-trips"},
+    ]
+    keys = [r["key"] for r in tourism_first(rows, parse_intent("туризм", []))]
+    assert keys == ["ru:tour-outbound-trips", "ru:tour-inbound-trips", "ru:tour-cpi-hotels", "w:al", "rg:ru", "rg:cfo"]
+    assert [r["key"] for r in tourism_first(rows, parse_intent("инфляция", []))] == [r["key"] for r in rows]
+    assert tourism_first(rows, parse_intent("tourism", []))[0]["code"] == "tour-outbound-trips"

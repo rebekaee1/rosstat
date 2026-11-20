@@ -70,6 +70,7 @@ _INFLATION_WORD = re.compile(r"инфляц|inflation")
 _ANNUAL_INFLATION_LEAD = 50
 from app.services.search_r6a import REGION_HEADLINES_R6A, arrears_demotion
 from app.services.search_r7a import REGION_HEADLINES_R7A, r7a_demotion
+from app.services.search_tourism import tourism_first
 from app.services.search_r8a import MAX_NEAREST, nearest_plan, nearest_query, r8a_demotion, short_region_name, sort_cheapest_first
 from app.services.search_rewrite import conjunction_parts, profile_only, rewritten_query, search_text_from_link
 
@@ -1707,6 +1708,8 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
     unique = collapse_equivalent(unique, world_rows)
     # Один региональный показатель по многим регионам — одна строка «Россия» со списком регионов.
     unique = group_regional_rows(unique, has_regions=bool(intent.regions), locale=locale)
+    # Туризм (20.11.2026): флагманы России первыми, строки округа без названного места — в конце.
+    unique = tourism_first(unique, intent)
     final, position = [], 0
     while position < len(unique) and len(final) <= limit:
         batch = unique[position:position + limit + 1 - len(final)]

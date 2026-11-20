@@ -4536,4 +4536,7 @@ export default {
   "tourism.world.countries": "Countries",
   "tourism.world.showAll": "Show all countries ({n})",
   "tourism.regions.all": "All regions",
+  "w6d.search.section.sections": "Sections",
+  "tourism.search.section": "Tourism: Russia, regions and the world",
+  "tourism.search.sectionHint": "Section: tourist flows, hotels, tourist spending — every indicator",
 };
