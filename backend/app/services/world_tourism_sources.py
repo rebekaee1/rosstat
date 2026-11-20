@@ -54,8 +54,8 @@ CYSTAT_PROVIDER = "cystat"
 GEOSTAT_PROVIDER = "geostat"
 KTB_PROVIDER = "ktb_tr"
 
-PROVIDERS = (
-    IMF_PROVIDER, UNT_PROVIDER, OECD_PROVIDER, ESTAT_PROVIDER, CYSTAT_PROVIDER, GEOSTAT_PROVIDER, KTB_PROVIDER,
+NETWORK_SOURCE_PROVIDERS = (
+    IMF_PROVIDER, UNT_PROVIDER, OECD_PROVIDER, ESTAT_PROVIDER, CYSTAT_PROVIDER, GEOSTAT_PROVIDER,
 )
 
 # Публичное имя издателя по машинному коду (RU; EN — через глоссарий).
@@ -460,42 +460,271 @@ GEOSTAT_TOTAL_VISITS = replace(
     description_en="Inbound visits, monthly average for the quarter.",
 )
 
-_KTB_METHOD_RU = (
-    "Министерство культуры и туризма Турции публикует пограничную статистику: сколько иностранцев въехало в "
-    "страну, по гражданству. Учитывается каждое пересечение границы на въезд, кроме однодневных посетителей "
-    "из соседних стран. Год."
+# ---------------------------------------------------------------------------
+# Национальные службы стран назначения (сбор c5 20.11.2026: `raw/<страна>/tidy.csv`)
+# ---------------------------------------------------------------------------
+
+ARMSTAT_PROVIDER = "armstat"
+AZSTAT_PROVIDER = "azstat"
+INDIA_PROVIDER = "mot_india"
+CBS_IL_PROVIDER = "cbs_israel"
+JNTO_PROVIDER = "jnto"
+KTO_PROVIDER = "kto_korea"
+MONSTAT_PROVIDER = "monstat"
+RZS_PROVIDER = "rzs_serbia"
+INE_PROVIDER = "ine_spain"
+ESTAT_RES_PROVIDER = "eurostat_residence"
+
+NATIONAL_SOURCES = {
+    KTB_PROVIDER: ("Министерство культуры и туризма Турции", "https://yigm.ktb.gov.tr/TR-249704/aylik-bultenler.html"),
+    ARMSTAT_PROVIDER: ("Статистический комитет Армении", "https://www.armstat.am/en/?nid=1039"),
+    AZSTAT_PROVIDER: ("Государственный комитет по статистике Азербайджана", "https://www.stat.gov.az/source/tourism/?lang=en"),
+    INDIA_PROVIDER: ("Министерство туризма Индии", "https://tourism.gov.in/market-research-and-statistics"),
+    CBS_IL_PROVIDER: ("Центральное статистическое бюро Израиля", "https://www.cbs.gov.il/en/"),
+    JNTO_PROVIDER: ("Национальная туристическая организация Японии (JNTO)", "https://www.jnto.go.jp/statistics/data/visitors-statistics/"),
+    KTO_PROVIDER: ("Корейская организация туризма", "https://datalab.visitkorea.or.kr/"),
+    MONSTAT_PROVIDER: ("Статистическое управление Черногории (Monstat)", "https://www.monstat.org/eng/page.php?id=1454&page_id=1454"),
+    RZS_PROVIDER: ("Республиканское статистическое управление Сербии", "https://opendata.stat.gov.rs/"),
+    INE_PROVIDER: ("Национальный институт статистики Испании (INE)", "https://www.ine.es/"),
+    ESTAT_RES_PROVIDER: ("Евростат", "https://ec.europa.eu/eurostat/databrowser/view/tour_occ_ninraw/default/table"),
+}
+SOURCE_BY_PROVIDER.update({key: value[0] for key, value in NATIONAL_SOURCES.items()})
+
+_FREQ_RU = {"monthly": "Месяц", "quarterly": "Квартал", "annual": "Год"}
+_FREQ_EN = {"monthly": "Monthly", "quarterly": "Quarterly", "annual": "Annual"}
+_PERIOD_RU = {"monthly": "за месяц", "quarterly": "за квартал", "annual": "за год"}
+_PERIOD_EN = {"monthly": "during the month", "quarterly": "during the quarter", "annual": "during the year"}
+
+
+def _nat(provider: str, suffix: str, frequency: str, name_ru: str, name_en: str, what_ru: str, what_en: str,
+         method_ru: str, method_en: str, *, unit: str = "PER", unit_ru: str = "человек", unit_en: str = "people",
+         keywords: str = _RU_ARRIVALS_KEYWORDS, dataset: str = "national") -> TourismSeries:
+    source_ru, url = NATIONAL_SOURCES[provider]
+    return TourismSeries(
+        provider=provider, dataset_id=dataset, series_id=suffix, code_suffix=suffix, concept_slug=suffix,
+        name_ru=name_ru, name_en=name_en, unit=unit, unit_ru=unit_ru, frequency=frequency,
+        category_ru=TOURISM_CATEGORY_RU, source_ru=source_ru, source_url=url,
+        description_ru=f"{what_ru} {_PERIOD_RU[frequency]}.",
+        methodology_ru=f"{method_ru} {_FREQ_RU[frequency]}.",
+        keywords_ru=keywords, unit_en=unit_en, description_en=f"{what_en} {_PERIOD_EN[frequency]}.",
+        methodology_en=f"{method_en} {_FREQ_EN[frequency]}.",
+    )
+
+
+_TOTAL_KEYWORDS = "туристы {country}, сколько туристов {country}, турпоток {country}"
+_KTB_M_RU = ("Министерство культуры и туризма Турции считает на границе каждый въезд иностранца по гражданству "
+             "(ежемесячный пограничный бюллетень). Однодневные посетители тоже входят.")
+_KTB_M_EN = ("The Ministry of Culture and Tourism of Türkiye counts every entry of a foreign national at the "
+             "border, by nationality (monthly border bulletin). Same-day visitors are included.")
+
+# Ведущие страны-поставщики туристов в Турцию (2025): код страны, турецкое название, «из …» и «from …».
+_KTB_ORIGINS: tuple[tuple[str, tuple[str, ...], str, str], ...] = (
+    ("de", ("ALMANYA",), "Германии", "Germany"),
+    ("uk", ("INGILTERE",), "Великобритании", "the United Kingdom"),
+    ("ir", ("IRAN",), "Ирана", "Iran"),
+    ("bg", ("BULGARISTAN",), "Болгарии", "Bulgaria"),
+    ("pl", ("POLONYA",), "Польши", "Poland"),
+    ("us", ("AMERIKABIRLEŞIKDEVLETLERI", "ABD"), "США", "the United States"),
+    ("ge", ("GÜRCISTAN",), "Грузии", "Georgia"),
+    ("nl", ("HOLLANDA",), "Нидерландов", "the Netherlands"),
+    ("ro", ("ROMANYA",), "Румынии", "Romania"),
+    ("fr", ("FRANSA",), "Франции", "France"),
+    ("iq", ("IRAK",), "Ирака", "Iraq"),
+    ("ua", ("UKRAYNA",), "Украины", "Ukraine"),
+    ("az", ("AZERBAYCAN",), "Азербайджана", "Azerbaijan"),
+    ("sa", ("SUUDIARABISTAN",), "Саудовской Аравии", "Saudi Arabia"),
+    ("it", ("ITALYA",), "Италии", "Italy"),
+    ("kz", ("KAZAKISTAN",), "Казахстана", "Kazakhstan"),
+    ("by", ("BEYAZRUSYA",), "Беларуси", "Belarus"),
 )
-_KTB_METHOD_EN = (
-    "The Ministry of Culture and Tourism of Türkiye publishes border statistics: foreign arrivals by "
-    "nationality. Every entry is counted. Annual."
+
+
+@dataclass(frozen=True)
+class TidySpec:
+    """Ряд из таблицы сбора `country;period;origin;indicator;value`."""
+
+    country: str  # код каталога; «*» — страна из строки (Евростат)
+    folder: str
+    indicator: str
+    origins: tuple[str, ...]  # подписи страны происхождения (сравниваются после `_origin_key`)
+    series: TourismSeries
+    scale: float = 1.0
+    cumulative: bool = False  # «2026-01..2026-09» нарастающим итогом → значение квартала
+
+
+def _ru_arrivals(provider: str, freq: str, what_ru: str, what_en: str, m_ru: str, m_en: str) -> TourismSeries:
+    return _nat(provider, "tour-arrivals-russia", freq, "Туристы из России", "Tourist arrivals from Russia",
+                what_ru, what_en, m_ru, m_en)
+
+
+def _total_arrivals(provider: str, freq: str, name_ru: str, name_en: str, what_ru: str, what_en: str, m_ru: str,
+                    m_en: str) -> TourismSeries:
+    return _nat(provider, "tour-arrivals-total", freq, name_ru, name_en, what_ru, what_en, m_ru, m_en,
+                keywords=_TOTAL_KEYWORDS)
+
+
+_ARM_M_RU = ("Статистический комитет Армении публикует число туристов по гражданству нарастающим итогом с начала "
+             "года; значение квартала — разность соседних итогов.")
+_ARM_M_EN = ("The Statistical Committee of Armenia publishes tourists by citizenship cumulatively from the start of "
+             "the year; the quarterly value is the difference between consecutive totals.")
+_AZ_M_RU = ("Государственный комитет по статистике Азербайджана по данным пограничной службы: иностранцы и лица без "
+            "гражданства, прибывшие в страну, по стране гражданства.")
+_AZ_M_EN = ("State Statistical Committee of Azerbaijan, based on border service data: foreigners and stateless "
+            "persons arriving in the country, by citizenship.")
+_IN_M_RU = ("Министерство туризма Индии по данным Бюро иммиграции: иностранные туристы по гражданству (без "
+            "индийцев, живущих за рубежом).")
+_IN_M_EN = ("Ministry of Tourism of India, based on Bureau of Immigration data: foreign tourist arrivals by "
+            "nationality (excluding non-resident Indians).")
+_IL_M_RU = ("Центральное статистическое бюро Израиля: туристы — приезжие с ночёвкой, по гражданству, по данным "
+            "пограничного учёта. Бюро публикует в тысячах.")
+_IL_M_EN = ("Israel Central Bureau of Statistics: tourists are visitors staying overnight, by citizenship, from "
+            "border records. Published in thousands.")
+_JNTO_M_RU = ("Национальная туристическая организация Японии по данным иммиграционной службы: иностранные гости по "
+              "национальности, без постоянных жителей страны. Последние месяцы — оценка, потом уточняется.")
+_JNTO_M_EN = ("Japan National Tourism Organization, based on immigration data: foreign visitors by nationality, "
+              "excluding residents. The latest months are estimates and are revised.")
+_KTO_M_RU = ("Корейская организация туризма по данным Министерства юстиции: иностранные туристы по гражданству, "
+             "без работающих и учащихся в стране.")
+_KTO_M_EN = ("Korea Tourism Organization, based on Ministry of Justice data: foreign tourists by nationality, "
+             "excluding those coming to work or study.")
+_ME_M_RU = ("Статистическое управление Черногории: гости гостиниц и других коллективных средств размещения по "
+            "стране постоянного проживания. Частное жильё сюда не входит.")
+_ME_M_EN = ("Statistical Office of Montenegro: guests of hotels and other collective accommodation by country of "
+            "residence. Private accommodation is excluded.")
+_RS_M_RU = ("Республиканское статистическое управление Сербии: прибытия и ночёвки иностранных туристов в средствах "
+            "размещения по стране проживания. Помесячно по странам — с 2025 года (новая методика).")
+_RS_M_EN = ("Statistical Office of the Republic of Serbia: arrivals and nights of foreign tourists in accommodation "
+            "by country of residence. Monthly country detail starts in 2025 (new methodology).")
+_ES_FR_RU = ("Национальный институт статистики Испании (опрос FRONTUR на границе): иностранные туристы по стране "
+             "проживания. Россию отдельно институт показывал до февраля 2022 года.")
+_ES_FR_EN = ("National Statistics Institute of Spain (FRONTUR border survey): foreign tourists by country of "
+             "residence. Russia was shown separately until February 2022.")
+_ES_H_RU = ("Национальный институт статистики Испании, обследование гостиниц: гости и ночёвки по стране проживания. "
+            "Россию отдельно институт показывал до февраля 2022 года.")
+_ES_H_EN = ("National Statistics Institute of Spain, hotel occupancy survey: guests and nights by country of "
+            "residence. Russia was shown separately until February 2022.")
+_ER_M_RU = ("Евростат по данным национальных служб: прибытия и ночёвки жителей России в гостиницах, на турбазах, "
+            "в кемпингах и других средствах размещения страны (разделы 55.1–55.3 классификатора отраслей).")
+_ER_M_EN = ("Eurostat, from national data: arrivals and nights of Russian residents in hotels, holiday "
+            "accommodation and campsites of the country (NACE 55.1–55.3).")
+
+KTB_RU_ARRIVALS = _ru_arrivals(KTB_PROVIDER, "monthly", "Сколько граждан России въехало в страну",
+                               "How many Russian citizens entered the country", _KTB_M_RU, _KTB_M_EN)
+KTB_TOTAL_ARRIVALS = _total_arrivals(KTB_PROVIDER, "monthly", "Прибытия иностранных посетителей",
+                                     "Foreign visitor arrivals", "Сколько иностранцев въехало в страну",
+                                     "How many foreigners entered the country", _KTB_M_RU, _KTB_M_EN)
+KTB_ORIGIN_SERIES = tuple(
+    (labels, _nat(KTB_PROVIDER, f"tour-arrivals-{code}", "monthly", f"Туристы из {name_ru}",
+                  f"Tourist arrivals from {name_en}", f"Сколько граждан {name_ru} въехало в страну",
+                  f"How many citizens of {name_en} entered the country", _KTB_M_RU, _KTB_M_EN,
+                  keywords=f"туристы из {name_ru} {{country}}, турпоток из {name_ru} {{country}}"))
+    for code, labels, name_ru, name_en in _KTB_ORIGINS
 )
-KTB_RU_ARRIVALS = TourismSeries(
-    provider=KTB_PROVIDER, dataset_id="sinir_yillik", series_id="Rusya Fed.", code_suffix="tour-arrivals-russia",
-    concept_slug="tour-arrivals-russia", name_ru="Туристы из России", name_en="Tourist arrivals from Russia",
-    unit="PER", unit_ru="человек", frequency="annual", category_ru=TOURISM_CATEGORY_RU,
-    source_ru=SOURCE_BY_PROVIDER[KTB_PROVIDER], source_url="https://yigm.ktb.gov.tr/",
-    description_ru="Сколько граждан России въехало в страну за год.", methodology_ru=_KTB_METHOD_RU,
-    keywords_ru=_RU_ARRIVALS_KEYWORDS, unit_en="people",
-    description_en="How many Russian citizens entered the country during the year.", methodology_en=_KTB_METHOD_EN,
+
+_ACC_RU_ARRIVALS = ("Туристы из России в средствах размещения", "Arrivals of Russian residents in accommodation",
+                    "Сколько жителей России заселилось в средства размещения страны",
+                    "How many Russian residents checked in to the country's accommodation")
+_ACC_RU_NIGHTS = ("Ночёвки туристов из России", "Nights spent by Russian residents",
+                  "Сколько ночей жители России провели в средствах размещения страны",
+                  "Nights Russian residents spent in the country's accommodation")
+
+
+def _acc(provider: str, freq: str, nights: bool, m_ru: str, m_en: str, *, prefix: str = "tour") -> TourismSeries:
+    name_ru, name_en, what_ru, what_en = _ACC_RU_NIGHTS if nights else _ACC_RU_ARRIVALS
+    if prefix == "tour-hotel":
+        name_ru, name_en, what_ru, what_en = (
+            ("Ночёвки туристов из России в гостиницах", "Hotel nights of Russian residents",
+             "Сколько ночей жители России провели в гостиницах страны",
+             "Nights Russian residents spent in the country's hotels")
+            if nights else
+            ("Гости гостиниц из России", "Hotel guests from Russia",
+             "Сколько жителей России заселилось в гостиницы страны",
+             "How many Russian residents checked in to the country's hotels")
+        )
+    suffix = f"{prefix}-accommodation-{'nights' if nights else 'arrivals'}-russia"
+    return _nat(provider, suffix, freq, name_ru, name_en, what_ru, what_en, m_ru, m_en,
+                unit="NGHT" if nights else "PER", unit_ru="ночёвок" if nights else "человек",
+                unit_en="nights" if nights else "people")
+
+
+TIDY_SPECS: tuple[TidySpec, ...] = (
+    TidySpec("TR", "turkey", "foreign_arrivals_month", ("RUSYAFED", "RUSYA"), KTB_RU_ARRIVALS),
+    TidySpec("TR", "turkey", "foreign_arrivals_month", ("YABANCITOPLAM",), KTB_TOTAL_ARRIVALS),
+    *(TidySpec("TR", "turkey", "foreign_arrivals_month", labels, series) for labels, series in KTB_ORIGIN_SERIES),
+    TidySpec("AM", "armenia", "tourists_ytd", ("РОССИЙСКАЯФЕДЕРАЦИЯ",),
+             _ru_arrivals(ARMSTAT_PROVIDER, "quarterly", "Сколько граждан России приехало в страну как туристы",
+                          "How many Russian citizens came to the country as tourists", _ARM_M_RU, _ARM_M_EN),
+             cumulative=True),
+    TidySpec("AM", "armenia", "inbound_tourists_quarter", ("TOTAL",),
+             _total_arrivals(ARMSTAT_PROVIDER, "quarterly", "Въездные туристы", "Inbound tourists",
+                             "Сколько иностранных туристов приехало в страну", "How many foreign tourists arrived",
+                             "Статистический комитет Армении: въездные туристы по данным пограничного учёта и "
+                             "обследований.", "Statistical Committee of Armenia: inbound tourists from border "
+                             "records and surveys.")),
+    TidySpec("AZ", "azerbaijan", "foreign_arrivals_by_country_annual", ("RUSSIANFEDERATION",),
+             _ru_arrivals(AZSTAT_PROVIDER, "annual", "Сколько граждан России прибыло в страну",
+                          "How many Russian citizens arrived in the country", _AZ_M_RU, _AZ_M_EN)),
+    TidySpec("AZ", "azerbaijan", "foreign_arrivals_by_country_annual", ("TOTAL",),
+             _total_arrivals(AZSTAT_PROVIDER, "annual", "Прибытия иностранцев", "Foreign arrivals",
+                             "Сколько иностранцев прибыло в страну", "How many foreigners arrived in the country",
+                             _AZ_M_RU, _AZ_M_EN)),
+    TidySpec("IN", "india", "FTAs_by_country_of_nationality", ("RUSSIANFEDERATION",),
+             _ru_arrivals(INDIA_PROVIDER, "annual", "Сколько туристов-граждан России приехало в страну",
+                          "How many tourists with Russian citizenship arrived", _IN_M_RU, _IN_M_EN)),
+    TidySpec("IL", "israel", "tourist_arrivals_by_citizenship_thousands", ("RUSSIANFEDERATION",),
+             _ru_arrivals(CBS_IL_PROVIDER, "monthly", "Сколько туристов-граждан России приехало в страну",
+                          "How many tourists with Russian citizenship arrived", _IL_M_RU, _IL_M_EN), scale=1000.0),
+    TidySpec("JP", "japan", "visitor_arrivals_by_nationality", ("RUSSIA",),
+             _ru_arrivals(JNTO_PROVIDER, "monthly", "Сколько граждан России приехало в страну",
+                          "How many Russian nationals visited the country", _JNTO_M_RU, _JNTO_M_EN)),
+    TidySpec("JP", "japan", "visitor_arrivals_by_nationality", ("TOTAL",),
+             _total_arrivals(JNTO_PROVIDER, "monthly", "Иностранные гости", "Foreign visitor arrivals",
+                             "Сколько иностранцев приехало в страну", "How many foreign visitors arrived",
+                             _JNTO_M_RU, _JNTO_M_EN)),
+    TidySpec("KR", "korea", "foreign_visitor_arrivals_by_nationality", ("러시아",),
+             _ru_arrivals(KTO_PROVIDER, "monthly", "Сколько туристов-граждан России приехало в страну",
+                          "How many tourists with Russian citizenship arrived", _KTO_M_RU, _KTO_M_EN)),
+    TidySpec("ME", "montenegro", "collective_arrivals", ("RUSKAFEDERACIJA",), _acc(MONSTAT_PROVIDER, "monthly", False,
+             _ME_M_RU, _ME_M_EN)),
+    TidySpec("ME", "montenegro", "collective_nights", ("RUSKAFEDERACIJA",), _acc(MONSTAT_PROVIDER, "monthly", True,
+             _ME_M_RU, _ME_M_EN)),
+    TidySpec("RS", "serbia", "foreign_arrivals_by_residence_monthly", ("RURUSKAFEDERACIJA",),
+             _acc(RZS_PROVIDER, "monthly", False, _RS_M_RU, _RS_M_EN)),
+    TidySpec("RS", "serbia", "foreign_nights_by_residence_monthly", ("RURUSKAFEDERACIJA",),
+             _acc(RZS_PROVIDER, "monthly", True, _RS_M_RU, _RS_M_EN)),
+    TidySpec("ES", "spain", "tourists_by_residence_FRONTUR", ("RUSSIA",),
+             _ru_arrivals(INE_PROVIDER, "monthly", "Сколько туристов-жителей России приехало в страну",
+                          "How many tourists resident in Russia arrived", _ES_FR_RU, _ES_FR_EN)),
+    TidySpec("ES", "spain", "tourists_by_residence_FRONTUR", ("TOTAL",),
+             _total_arrivals(INE_PROVIDER, "monthly", "Иностранные туристы", "Foreign tourists",
+                             "Сколько иностранных туристов приехало в страну", "How many foreign tourists arrived",
+                             "Национальный институт статистики Испании (опрос FRONTUR на границе): иностранные "
+                             "туристы с ночёвкой.", "National Statistics Institute of Spain (FRONTUR border survey): "
+                             "overnight foreign tourists.")),
+    TidySpec("ES", "spain", "hotel_travellers", ("RUSSIA",), _acc(INE_PROVIDER, "monthly", False, _ES_H_RU, _ES_H_EN,
+             prefix="tour-hotel")),
+    TidySpec("ES", "spain", "hotel_overnight_stays", ("RUSSIA",), _acc(INE_PROVIDER, "monthly", True, _ES_H_RU,
+             _ES_H_EN, prefix="tour-hotel")),
+    TidySpec("*", "eurostat_by_residence", "arrivals_in_tourist_accommodation_I551-I553", ("RU",),
+             _acc(ESTAT_RES_PROVIDER, "annual", False, _ER_M_RU, _ER_M_EN, prefix="estat")),
+    TidySpec("*", "eurostat_by_residence", "nights_in_tourist_accommodation_I551-I553", ("RU",),
+             _acc(ESTAT_RES_PROVIDER, "annual", True, _ER_M_RU, _ER_M_EN, prefix="estat")),
 )
-KTB_TOTAL_ARRIVALS = replace(
-    KTB_RU_ARRIVALS, series_id="TOPLAM", code_suffix="tour-arrivals-total", concept_slug="tour-arrivals-total",
-    name_ru="Прибытия иностранных посетителей", name_en="Foreign visitor arrivals",
-    description_ru="Сколько иностранцев въехало в страну за год.",
-    keywords_ru="туристы {country}, сколько туристов {country}, турпоток {country}",
-    description_en="How many foreigners entered the country during the year.",
-)
+TIDY_PROVIDERS = tuple(dict.fromkeys(spec.series.provider for spec in TIDY_SPECS))
+TIDY_FOLDERS = {spec.series.provider: spec.folder for spec in TIDY_SPECS}
 
 ALL_SERIES: tuple[TourismSeries, ...] = (
     IMF_SERIES + UNT_SERIES
     + (OECD_EMP_SHARE, OECD_GDP_SHARE, OECD_RU_ARRIVALS, ESTAT_RU_CREDIT, ESTAT_RU_DEBIT,
-       CYSTAT_RU_ARRIVALS, CYSTAT_TOTAL_ARRIVALS, GEOSTAT_RU_VISITS, GEOSTAT_TOTAL_VISITS,
-       KTB_RU_ARRIVALS, KTB_TOTAL_ARRIVALS)
+       CYSTAT_RU_ARRIVALS, CYSTAT_TOTAL_ARRIVALS, GEOSTAT_RU_VISITS, GEOSTAT_TOTAL_VISITS)
+    + tuple(spec.series for spec in TIDY_SPECS)
 )
 TOURISM_PROVIDERS = frozenset(item.provider for item in ALL_SERIES)
 _SERIES_BY_KEY = {(item.provider, item.code_suffix): item for item in ALL_SERIES}
 # Национальный ряд важнее ряда ОЭСР того же смысла и вытесняет его у страны (ADR-0012).
-NATIONAL_RU_ARRIVALS = {"CY": CYSTAT_PROVIDER, "TR": KTB_PROVIDER}
+NATIONAL_RU_ARRIVALS = {
+    "CY": CYSTAT_PROVIDER, "TR": KTB_PROVIDER, "IL": CBS_IL_PROVIDER,
+}
 
 
 def series_for_indicator(provider: str | None, code: str | None) -> TourismSeries | None:
@@ -801,37 +1030,64 @@ def geostat_visits_link(page_html: str) -> str | None:
     return match.group(0) if match else None
 
 
-def parse_ktb_yearly_xlsx(blob: bytes) -> Parsed:
-    """Годовой пограничный бюллетень Турции, лист «C-…»: иностранцы по гражданству, колонки — годы."""
-    wb = openpyxl.load_workbook(io.BytesIO(blob), read_only=True, data_only=True)
-    try:
-        name = next((sheet for sheet in wb.sheetnames if sheet.startswith("C-")), None)
-        if name is None:
-            return {}
-        years: list[int | None] | None = None
-        out: dict[tuple[str, str], list] = {}
-        for row in wb[name].iter_rows(values_only=True):
-            cells = list(row)
-            label_idx = next((i for i, cell in enumerate(cells) if isinstance(cell, str) and cell.strip()), None)
-            if label_idx is None:
+def _origin_key(label: str) -> str:
+    """Подпись страны без регистра, точек, пробелов и уточнения в скобках («İngiltere (Birleşik Krallık)»)."""
+    text = (label or "").split("(")[0].replace("İ", "I").replace("ı", "i")
+    return re.sub(r"[\s.]", "", text).upper()
+
+
+def _cumulative_to_quarters(points: list[tuple[str, float]]) -> list[tuple[date, float]]:
+    """«2026-01..2026-09» нарастающим итогом → значения кварталов (первый квартал года — как есть)."""
+    by_year: dict[int, dict[int, float]] = {}
+    for period, value in points:
+        match = re.fullmatch(r"(\d{4})-01\.\.(\d{4})-(\d{2})", period.strip())
+        if not match or match.group(1) != match.group(2) or int(match.group(3)) % 3:
+            continue
+        by_year.setdefault(int(match.group(1)), {})[int(match.group(3)) // 3] = value
+    out = []
+    for year, quarters in by_year.items():
+        for quarter in sorted(quarters):
+            previous = 0.0 if quarter == 1 else quarters.get(quarter - 1)
+            if previous is not None:
+                out.append((date(year, 3 * quarter - 2, 1), quarters[quarter] - previous))
+    return out
+
+
+def parse_tidy_csv(text: str, specs: Iterable[TidySpec]) -> Parsed:
+    """Таблица сбора `country;period;origin;indicator;value` → ряды по описаниям `TidySpec`."""
+    wanted: dict[tuple[str, str], TidySpec] = {}
+    for spec in specs:
+        for origin in spec.origins:
+            wanted[(spec.indicator, _origin_key(origin))] = spec
+    raw: dict[tuple[str, str], list] = {}
+    cumulative: dict[tuple[str, str], list] = {}
+    for row in csv.DictReader(io.StringIO(text.lstrip("﻿")), delimiter=";"):
+        spec = wanted.get(((row.get("indicator") or "").strip(), _origin_key(row.get("origin") or "")))
+        if spec is None:
+            continue
+        country = spec.country
+        if country == "*":
+            geo = (row.get("country") or "").strip().upper()
+            country = ESTAT_GEO_TO_CATALOG.get(geo, geo)
+            if country not in M49_TO_CATALOG.values():
                 continue
-            label = cells[label_idx].strip()
-            if years is None:
-                if label.upper().startswith("MİLLİYET") or label.upper().startswith("MILLIYET"):
-                    years = [int(c) if isinstance(c, (int, float)) and 1990 < c < 2100 else None for c in cells]
-                continue
-            series = KTB_RU_ARRIVALS if label == KTB_RU_ARRIVALS.series_id else (
-                KTB_TOTAL_ARRIVALS if label.upper() == KTB_TOTAL_ARRIVALS.series_id else None
-            )
-            if series is None:
-                continue
-            for year, cell in zip(years, cells):
-                value = _num(cell)
-                if year is not None and value is not None:
-                    out.setdefault((series.code_suffix, "TR"), []).append((date(year, 1, 1), value))
-        return _finish(out)
-    finally:
-        wb.close()
+        value = _num(row.get("value"))
+        if value is None:
+            continue
+        key = (spec.series.code_suffix, country)
+        if spec.cumulative:
+            cumulative.setdefault(key, []).append((row.get("period") or "", value * spec.scale))
+            continue
+        parsed = _period(row.get("period") or "")
+        if parsed is None or parsed[1] != spec.series.frequency:
+            continue
+        raw.setdefault(key, []).append((parsed[0], value * spec.scale))
+    for key, points in cumulative.items():
+        raw.setdefault(key, []).extend(_cumulative_to_quarters(points))
+    return _finish(raw)
+
+
+PROVIDERS = NETWORK_SOURCE_PROVIDERS + TIDY_PROVIDERS
 
 
 def series_lookup(provider: str, suffix: str) -> TourismSeries:

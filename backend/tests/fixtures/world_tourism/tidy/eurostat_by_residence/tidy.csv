@@ -1,0 +1,17 @@
+country;period;origin;indicator;value
+EL;2024;RU;arrivals_in_tourist_accommodation_I551-I553;98707.0
+EL;2025;RU;arrivals_in_tourist_accommodation_I551-I553;96926.0
+EU27_2020;2024;RU;arrivals_in_tourist_accommodation_I551-I553;1774825.0
+EU27_2020;2025;RU;arrivals_in_tourist_accommodation_I551-I553;1958527.0
+LI;2024;RU;arrivals_in_tourist_accommodation_I551-I553;210.0
+LI;2025;RU;arrivals_in_tourist_accommodation_I551-I553;261.0
+TR;2024;RU;arrivals_in_tourist_accommodation_I551-I553;6480977.0
+TR;2025;RU;arrivals_in_tourist_accommodation_I551-I553;7806204.0
+EL;2024;RU;nights_in_tourist_accommodation_I551-I553;387647.0
+EL;2025;RU;nights_in_tourist_accommodation_I551-I553;362741.0
+EU27_2020;2024;RU;nights_in_tourist_accommodation_I551-I553;5176920.0
+EU27_2020;2025;RU;nights_in_tourist_accommodation_I551-I553;5703487.0
+LI;2024;RU;nights_in_tourist_accommodation_I551-I553;310.0
+LI;2025;RU;nights_in_tourist_accommodation_I551-I553;335.0
+TR;2024;RU;nights_in_tourist_accommodation_I551-I553;22539715.0
+TR;2025;RU;nights_in_tourist_accommodation_I551-I553;27188856.0

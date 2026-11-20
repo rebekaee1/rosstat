@@ -90,12 +90,57 @@ def test_geostat_quarter_rows_inherit_year():
     assert ("tour-visits-total", "GE") in parsed
 
 
-def test_turkey_yearly_bulletin_russia_not_belarus():
-    parsed = src.parse_ktb_yearly_xlsx(_bytes("ktb_yillik_sample.xlsx"))
+def _tidy(folder: str) -> src.Parsed:
+    specs = [spec for spec in src.TIDY_SPECS if spec.folder == folder]
+    return src.parse_tidy_csv(_text(f"tidy/{folder}/tidy.csv"), specs)
+
+
+def test_turkey_monthly_russia_merges_spellings_and_top_origins():
+    parsed = _tidy("turkey")
     russia = dict(parsed[("tour-arrivals-russia", "TR")])
-    assert russia[date(2025, 1, 1)] == 6903981.0
-    assert russia[date(2010, 1, 1)] == 3107043.0
-    assert dict(parsed[("tour-arrivals-total", "TR")])[date(2025, 1, 1)] == 52775055.0
+    # «RUSYA FED.» (2014–2016), «Rusya» и «Rusya Fed.» — одна страна; сентябрь 2026 — 979 647 (бюллетень).
+    assert russia[date(2014, 1, 1)] > 0 and russia[date(2015, 1, 1)] > 0
+    assert russia[date(2026, 9, 1)] == 979647.0
+    assert ("tour-arrivals-total", "TR") in parsed
+    assert ("tour-arrivals-de", "TR") in parsed and ("tour-arrivals-uk", "TR") in parsed
+    assert ("tour-arrivals-us", "TR") in parsed
+    # «Beyaz Rusya» (Беларусь) — свой ряд и не попадает в российский.
+    belarus = dict(parsed[("tour-arrivals-by", "TR")])
+    assert belarus[date(2026, 9, 1)] != russia[date(2026, 9, 1)] and belarus[date(2026, 9, 1)] < 100000
+
+
+def test_armenia_cumulative_totals_become_quarters():
+    russia = dict(_tidy("armenia")[("tour-arrivals-russia", "AM")])
+    # 2026: янв–мар 178 321, янв–июн 416 743, янв–сен 704 935.
+    assert russia[date(2026, 1, 1)] == 178321.0
+    assert russia[date(2026, 4, 1)] == 416743.0 - 178321.0
+    assert russia[date(2026, 7, 1)] == 704935.0 - 416743.0
+    assert russia[date(2023, 10, 1)] == 1137005.0 - 927813.0
+
+
+def test_national_tables_of_destination_countries():
+    assert dict(_tidy("israel")[("tour-arrivals-russia", "IL")])[date(2026, 10, 1)] == pytest.approx(7900.0)
+    assert dict(_tidy("japan")[("tour-arrivals-russia", "JP")])[date(2026, 10, 1)] == 32600.0
+    assert ("tour-arrivals-total", "JP") in _tidy("japan")
+    assert _tidy("korea")[("tour-arrivals-russia", "KR")][-1][0] == date(2026, 8, 1)
+    me = _tidy("montenegro")
+    assert dict(me[("tour-accommodation-arrivals-russia", "ME")])[date(2026, 9, 1)] == 10881.0
+    assert ("tour-accommodation-nights-russia", "ME") in me
+    assert ("tour-accommodation-arrivals-russia", "RS") in _tidy("serbia")
+    assert _tidy("azerbaijan")[("tour-arrivals-russia", "AZ")][-1] == (date(2025, 1, 1), 614904.0)
+    assert ("tour-arrivals-russia", "IN") in _tidy("india")
+    spain = _tidy("spain")
+    assert spain[("tour-arrivals-russia", "ES")][-1][0] == date(2022, 2, 1)
+    assert spain[("tour-arrivals-total", "ES")][-1][0] == date(2026, 9, 1)
+    assert ("tour-hotel-accommodation-arrivals-russia", "ES") in spain
+
+
+def test_eurostat_nights_by_residence_only_catalog_countries():
+    parsed = _tidy("eurostat_by_residence")
+    countries = {country for _, country in parsed}
+    assert "TR" in countries and "EL" in countries
+    assert not countries & {"EU27_2020", "LI"}
+    assert ("estat-accommodation-nights-russia", "TR") in parsed
 
 
 def _pts(*years: int) -> list[tuple[date, float]]:
@@ -162,18 +207,19 @@ def test_eurostat_tourism_sets_join_tourism_section():
     assert localize_category_name("Туризм", locale="en") == "Tourism"
 
 
-def test_cli_turkey_needs_file(monkeypatch):
+def test_cli_tidy_dir_loads_national_tables_only(monkeypatch):
     seen = {}
 
-    async def fake_run(providers, *, raw_dir=None, ktb_file=None):
-        seen.update(providers=providers, raw_dir=raw_dir, ktb_file=ktb_file)
+    async def fake_run(providers, *, raw_dir=None, tidy_dir=None):
+        seen.update(providers=providers, raw_dir=raw_dir, tidy_dir=tidy_dir)
         return {}
 
     monkeypatch.setattr("app.services.world_tourism_ingest.run_world_tourism_ingest", fake_run)
     _cli([])
-    assert src.KTB_PROVIDER not in seen["providers"]
-    _cli(["ktb_tr", "--ktb-file", "/tmp/x.xlsx"])
-    assert seen["providers"] == ("ktb_tr",) and str(seen["ktb_file"]) == "/tmp/x.xlsx"
+    # Обычный запуск: живые издатели и национальные службы из снимка в репозитории.
+    assert set(src.TIDY_PROVIDERS) <= set(seen["providers"]) and seen["tidy_dir"] is None
+    _cli(["--tidy-dir", "/tmp/c5"])
+    assert set(seen["providers"]) == set(src.TIDY_PROVIDERS) and str(seen["tidy_dir"]) == "/tmp/c5"
 
 
 def test_english_card_copy_and_unit_on_api_and_ssr():
@@ -220,3 +266,18 @@ def test_tourism_rating_concepts_match_written_cards():
     assert concept_for_indicator(card(src.OECD_EMP_SHARE)).slug == "tourism-employment-share"
     # Квартальные траты туристов (МВФ) в рейтинг не идут.
     assert concept_for_indicator(card(src.IMF_SERIES[0])) is None
+
+
+def test_repository_snapshot_feeds_national_series_without_files():
+    from app.services.world_tourism_ingest import SNAPSHOT_PATH, fetch_tidy
+
+    assert SNAPSHOT_PATH.stat().st_size < 2_000_000
+    turkey, _ = fetch_tidy(src.KTB_PROVIDER)
+    assert dict(turkey[("tour-arrivals-russia", "TR")])[date(2026, 9, 1)] == 979647.0
+    assert len(turkey) == 19
+    armenia, _ = fetch_tidy(src.ARMSTAT_PROVIDER)
+    assert dict(armenia[("tour-arrivals-russia", "AM")])[date(2026, 7, 1)] == 704935.0 - 416743.0
+    eurostat, _ = fetch_tidy(src.ESTAT_RES_PROVIDER)
+    assert ("estat-accommodation-nights-russia", "TR") in eurostat
+    for provider in src.TIDY_PROVIDERS:
+        assert fetch_tidy(provider)[0], provider

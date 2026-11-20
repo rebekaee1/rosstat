@@ -10,19 +10,21 @@
 - «Доля туризма в ВВП»: ОЭСР (свежее, год 2025) важнее UN Tourism; если ОЭСР в этот прогон не ответила,
   ряд UN Tourism не пишется, чтобы карточка не перескакивала между издателями.
 
-Турция: сайт министерства не отвечает через VPN и с российских адресов проверить его нельзя (20.11.2026),
-поэтому её бюллетень загружается из файла (`--ktb-file`); ночная задача её не трогает.
+Национальные службы стран назначения (Турция, Армения, Азербайджан, Индия, Израиль, Япония, Корея, Черногория,
+Сербия, Испания) и Евростат «ночёвки по стране проживания» берутся из снимка `app/data/world_tourism_national.csv.gz`
+— нужные строки таблиц сбора c5 20.11.2026: их сайты отдают файлы с плавающими именами, часть не отвечает с прода
+(Турция). Обновление — новый сбор, `--build-snapshot <c5/raw>`, коммит снимка.
 
 Запуск::
 
-    # все издатели из сети (кроме Турции)
+    # все издатели: сеть + снимок национальных служб
     docker compose exec backend python -m app.services.world_tourism_ingest
     # выбранные издатели
     docker compose exec backend python -m app.services.world_tourism_ingest imf_bop untourism
     # из сохранённых файлов (каталог raw/ сбора 20.11.2026: imf_bop_travel.csv.gz, untourism/, oecd/, …)
     docker compose exec backend python -m app.services.world_tourism_ingest --raw-dir /tmp/tourism-raw
-    # годовой пограничный бюллетень Турции
-    docker compose exec backend python -m app.services.world_tourism_ingest ktb_tr --ktb-file /tmp/2025yillik.xlsx
+    # пересобрать снимок национальных служб из таблиц сбора (на Mac, затем коммит)
+    python -m app.services.world_tourism_ingest --build-snapshot .artifacts/tourism-2026-11-20/c5/raw
 """
 
 from __future__ import annotations
@@ -49,11 +51,15 @@ NETWORK_PROVIDERS = (
     src.IMF_PROVIDER, src.UNT_PROVIDER, src.OECD_PROVIDER, src.ESTAT_PROVIDER, src.CYSTAT_PROVIDER,
     src.GEOSTAT_PROVIDER,
 )
+# Обычный запуск: живые издатели плюс национальные службы из снимка в репозитории.
+DEFAULT_PROVIDERS = NETWORK_PROVIDERS + src.TIDY_PROVIDERS
+# Снимок нужных рядов из таблиц сбора c5 (страны сайта, Россия и выбранные гражданства) — едет с кодом в образ.
+SNAPSHOT_PATH = Path(__file__).resolve().parents[1] / "data" / "world_tourism_national.csv.gz"
 TIMEOUT_SEC = 180
 _DATASET_BY_PROVIDER = {
     src.IMF_PROVIDER: "bop", src.UNT_PROVIDER: "bulk", src.OECD_PROVIDER: "tourism",
     src.ESTAT_PROVIDER: "bop_its6_det", src.CYSTAT_PROVIDER: "2021010E", src.GEOSTAT_PROVIDER: "0505EN0204",
-    src.KTB_PROVIDER: "sinir_yillik",
+    **{provider: "national" for provider in src.TIDY_PROVIDERS},
 }
 # Ряд, который издатель не продолжает дольше этого срока (Канада по лечению — 2011 год), не заводится:
 # карточка с последним значением десятилетней давности вводит в заблуждение.
@@ -122,7 +128,57 @@ def _read(path: Path) -> bytes:
     return gzip.decompress(data) if path.suffix == ".gz" else data
 
 
-def fetch_local(provider: str, raw_dir: Path, *, ktb_file: Path | None = None) -> tuple[src.Parsed, dict]:
+def fetch_tidy(provider: str, tidy_dir: Path | None = None) -> tuple[src.Parsed, dict]:
+    """Ряды издателя из таблицы сбора (`<tidy_dir>/<папка>/tidy.csv`) или из снимка в репозитории."""
+    specs = [spec for spec in src.TIDY_SPECS if spec.series.provider == provider]
+    if tidy_dir is not None:
+        text = (tidy_dir / src.TIDY_FOLDERS[provider] / "tidy.csv").read_text(encoding="utf-8-sig")
+    else:
+        text = snapshot_table(gzip.decompress(SNAPSHOT_PATH.read_bytes()).decode("utf-8"), src.TIDY_FOLDERS[provider])
+    return src.parse_tidy_csv(text, specs), {}
+
+
+_SNAPSHOT_HEADER = "folder;country;period;origin;indicator;value"
+
+
+def snapshot_table(snapshot: str, folder: str) -> str:
+    """Строки одной папки снимка в виде таблицы сбора `country;period;origin;indicator;value`."""
+    lines = ["country;period;origin;indicator;value"]
+    for line in snapshot.splitlines()[1:]:
+        head, _, rest = line.partition(";")
+        if head == folder:
+            lines.append(rest)
+    return "\n".join(lines) + "\n"
+
+
+def build_snapshot(tidy_dir: Path, out: Path = SNAPSHOT_PATH) -> int:
+    """Таблицы сбора → снимок: только строки, которые разбирают `TIDY_SPECS` (страны сайта, нужные подписи)."""
+    import csv
+    import io
+
+    wanted: dict[str, set[tuple[str, str]]] = {}
+    for spec in src.TIDY_SPECS:
+        for origin in spec.origins:
+            wanted.setdefault(spec.folder, set()).add((spec.indicator, src._origin_key(origin)))
+    catalog = set(src.M49_TO_CATALOG.values())
+    rows = [_SNAPSHOT_HEADER]
+    for folder in sorted(wanted):
+        reader = csv.DictReader(io.StringIO((tidy_dir / folder / "tidy.csv").read_text(encoding="utf-8-sig")),
+                                delimiter=";")
+        for row in reader:
+            if ((row.get("indicator") or "").strip(), src._origin_key(row.get("origin") or "")) not in wanted[folder]:
+                continue
+            if folder == "eurostat_by_residence":
+                geo = (row.get("country") or "").strip().upper()
+                if src.ESTAT_GEO_TO_CATALOG.get(geo, geo) not in catalog:
+                    continue
+            cells = [row.get(key) or "" for key in ("country", "period", "origin", "indicator", "value")]
+            rows.append(";".join([folder] + [cell.replace(";", ",") for cell in cells]))
+    out.write_bytes(gzip.compress(("\n".join(rows) + "\n").encode("utf-8"), mtime=0))
+    return len(rows) - 1
+
+
+def fetch_local(provider: str, raw_dir: Path) -> tuple[src.Parsed, dict]:
     """Каталог сбора (`raw/` агента a4) → разобранные ряды; имена файлов — как у сбора 20.11.2026."""
     if provider == src.IMF_PROVIDER:
         return src.parse_imf_bop_csv(_text(_read(raw_dir / "imf_bop_travel.csv.gz")))
@@ -142,11 +198,6 @@ def fetch_local(provider: str, raw_dir: Path, *, ktb_file: Path | None = None) -
         if not files:
             raise FileNotFoundError("georgia/0505EN0204*.xlsx")
         return src.parse_geostat_visits_xlsx(files[0].read_bytes()), {}
-    if provider == src.KTB_PROVIDER:
-        path = ktb_file or next(iter(sorted((raw_dir / "turkey").glob("*yillik*sinir*.xlsx"))), None)
-        if path is None:
-            raise FileNotFoundError("turkey/*yillik*sinir*.xlsx")
-        return src.parse_ktb_yearly_xlsx(Path(path).read_bytes()), {}
     raise ValueError(provider)
 
 
@@ -242,10 +293,10 @@ async def _log_failure(run_id: int | None, provider: str, dataset_id: str, error
 
 
 async def run_world_tourism_ingest(
-    providers: tuple[str, ...] = NETWORK_PROVIDERS,
+    providers: tuple[str, ...] = DEFAULT_PROVIDERS,
     *,
     raw_dir: Path | None = None,
-    ktb_file: Path | None = None,
+    tidy_dir: Path | None = None,
     today: date | None = None,
 ) -> dict:
     """Издатели по очереди; сбой одного виден в журнале и не останавливает остальных."""
@@ -258,10 +309,10 @@ async def run_world_tourism_ingest(
     results: dict[str, object] = {}
     for provider in providers:
         try:
-            if raw_dir is not None or (provider == src.KTB_PROVIDER and ktb_file is not None):
-                fetched[provider] = await asyncio.to_thread(
-                    fetch_local, provider, Path(raw_dir or "."), ktb_file=ktb_file,
-                )
+            if provider in src.TIDY_PROVIDERS:
+                fetched[provider] = await asyncio.to_thread(fetch_tidy, provider, tidy_dir)
+            elif raw_dir is not None:
+                fetched[provider] = await asyncio.to_thread(fetch_local, provider, Path(raw_dir))
             else:
                 fetched[provider] = await asyncio.to_thread(fetch_network, provider, iso3)
         except Exception as exc:  # noqa: BLE001 — сбой издателя пишется в журнал прогона
@@ -281,19 +332,21 @@ async def run_world_tourism_ingest(
 
 
 def _cli(argv: list[str]) -> dict:
-    raw_dir = ktb_file = None
+    raw_dir = tidy_dir = None
     chosen: list[str] = []
     args = iter(argv)
     for arg in args:
         if arg == "--raw-dir":
             raw_dir = Path(next(args))
-        elif arg == "--ktb-file":
-            ktb_file = Path(next(args))
+        elif arg == "--tidy-dir":
+            tidy_dir = Path(next(args))
+        elif arg == "--build-snapshot":
+            return {"snapshot_rows": build_snapshot(Path(next(args)))}
         elif arg in src.PROVIDERS:
             chosen.append(arg)
     if not chosen:
-        chosen = list(NETWORK_PROVIDERS) + ([src.KTB_PROVIDER] if raw_dir or ktb_file else [])
-    return asyncio.run(run_world_tourism_ingest(tuple(chosen), raw_dir=raw_dir, ktb_file=ktb_file))
+        chosen = list(src.TIDY_PROVIDERS) if tidy_dir and not raw_dir else list(DEFAULT_PROVIDERS)
+    return asyncio.run(run_world_tourism_ingest(tuple(chosen), raw_dir=raw_dir, tidy_dir=tidy_dir))
 
 
 if __name__ == "__main__":
