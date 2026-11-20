@@ -4666,7 +4666,7 @@ export default {
   "kt6_search_era_touristTax": "(from 2025)",
   "kt6_search_regions_range_period": "Across regions: {min} to {max}, {period}",
   "kt6_meth_title": "Tourism: where the numbers come from",
-  "kt6_meth_lead": "The Tourism section is built from official statistics. The numbers are counted in different ways, so below is where they come from and what the four main words mean.",
+  "kt6_meth_lead": "Tourism figures come from Rosstat, the border service, the Bank of Russia and the tax service. Trip, arrival, guest and overnight stay are four different counts and cannot be added up.",
   "kt6_meth_srcAria": "Sources of tourism statistics",
   "kt6_meth_src_1_badge": "RS",
   "kt6_meth_src_1_name": "Rosstat and EMISS",
