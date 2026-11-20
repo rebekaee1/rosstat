@@ -13,6 +13,7 @@ from app.database import get_db
 from app.services.locale import get_locale
 from app.services.search import federated_search
 from app.services.search_latest import attach_latest
+from app.services.search_section import known_section
 from app.services.search_intent import SEARCH_VERSION, normalize
 
 logger = logging.getLogger(__name__)
@@ -40,12 +41,14 @@ _DATABASE_FAILURES = (DBAPIError, asyncio.TimeoutError, OSError)
 # r3 (08.10, круг 10): ряды страны выше рядов её штатов при запросе «ВВП США»; разговорные слова («что такое»).
 # r4 (08.11, Z4): региональные показатели свёрнуты в строку «Россия» со списком регионов; товары средних цен.
 # r6 (18.11, пункт 2 Пульса): пустой запрос пробует словарь каталога, опечатки, «X и Y» — прежние пустые ответы устарели.
-_CACHE_REVISION = "r6"
+# r7 (20.11.2026, круг «Туризм», z6): точное слово запроса в названии выше синонимов («ночёвки» без «овернайт»); параметр `section`.
+_CACHE_REVISION = "r7"
 
 
-def _cache_key(q: str, limit: int) -> str:
+def _cache_key(q: str, limit: int, section: str | None = None) -> str:
     digest = hashlib.sha1(normalize(q).encode("utf-8")).hexdigest()[:20]
-    return f"fe:search:{SEARCH_VERSION}:{_CACHE_REVISION}:{get_locale()}:{limit}:{digest}"
+    suffix = f":s-{section}" if section else ""
+    return f"fe:search:{SEARCH_VERSION}:{_CACHE_REVISION}:{get_locale()}:{limit}:{digest}{suffix}"
 
 
 def _last_good_key(key: str) -> str:
@@ -56,15 +59,18 @@ def _last_good_key(key: str) -> str:
 async def search(
     q: str = Query(..., min_length=1, max_length=256),
     limit: int = Query(50, ge=1, le=100),
+    section: str | None = Query(None, max_length=32, description="Раздел сайта, из которого ищут («tourism»); необязательный"),
     db: AsyncSession = Depends(get_db),
 ):
     """Countries, indicators and data-backed regional destinations."""
-    key = _cache_key(q, limit)
+    section = known_section(section)
+    key = _cache_key(q, limit, section)
     cached = await cache_get(key)
     if cached is not None:
         return cached
     try:
-        result = await federated_search(db, q, limit=limit)
+        # Раздел передаётся только когда он есть: без него вызов прежний.
+        result = await federated_search(db, q, limit=limit, **({"section": section} if section else {}))
     except _DATABASE_FAILURES as exc:
         last_good = await cache_get(_last_good_key(key))
         if last_good is not None:
