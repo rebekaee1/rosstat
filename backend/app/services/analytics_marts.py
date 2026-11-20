@@ -2209,13 +2209,23 @@ async def mart_signup_funnel(db: AsyncSession, period: Period | int = 7) -> dict
     names = {
         "viewed": ("indicator_view", "region_indicator_view"),
         "wall": tuple(sorted(events_in_group(GROUP_WALL))),
-        "register_click": ("register_nudge_cta", "header_register_click"),
+        # 20.11.2026: кнопки самого окна лимита («по почте», «войти») и «Создать аккаунт» приветственного
+        # экрана тоже нажатие «Регистрация». До этого шаг видел только шапку и приглашение, а из 62 упёршихся
+        # за 13–19.11 ни один не нажал их после стены: «упёрлись → нажали» сравнивал разных людей.
+        "register_click": ("register_nudge_cta", "header_register_click", "limit_modal_register"),
     }
+
+    def step_cond(step: str):
+        cond = FrontendEvent.event_name.in_(names[step])
+        if step == "register_click":
+            cond = or_(cond, and_(FrontendEvent.event_name == "welcome_cta",
+                                  FrontendEvent.params_json["target"].as_string() == "register"))
+        return cond
 
     async def people(step: str, locale: str | None = None) -> int:
         return int(await db.scalar(
             select(func.count(func.distinct(vkey)))
-            .where(FrontendEvent.event_name.in_(names[step]), *window, *human, *locale_cond(locale))
+            .where(step_cond(step), *window, *human, *locale_cond(locale))
         ) or 0)
 
     session_scope = [ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
@@ -2251,7 +2261,7 @@ async def mart_signup_funnel(db: AsyncSession, period: Period | int = 7) -> dict
         return {v for (v,) in (await db.execute(stmt.limit(20000))).all() if v}
 
     async def id_set_events(step: str) -> set[str]:
-        stmt = select(vkey).where(FrontendEvent.event_name.in_(names[step]), *window, *human).distinct().limit(20000)
+        stmt = select(vkey).where(step_cond(step), *window, *human).distinct().limit(20000)
         return {v for (v,) in (await db.execute(stmt)).all() if v}
 
     form_open_ids = await id_set(register_pv, consent_open)
@@ -2294,15 +2304,22 @@ async def mart_signup_funnel(db: AsyncSession, period: Period | int = 7) -> dict
         if last:
             dropped[last] += 1
 
-    # Самое слабое звено среди шагов регистрации (конверсия соседних шагов, база не меньше порога).
+    # Самое слабое звено среди шагов регистрации, по одним и тем же людям: из дошедших до шага —
+    # сколько дошли до любого следующего (шаги можно перепрыгнуть: из окна лимита вход через соцсеть
+    # сразу ведёт к «отправили»). До 20.11.2026 делили счётчик соседнего шага на счётчик этого, а это
+    # разные люди: Пульс 19.11 писал «из 54 упёршихся нажали „Регистрация“ 14», хотя ни один из этих
+    # 14 не упирался в лимит. База не меньше порога.
     weakest = None
-    chain = ["wall", "register_click", "form_open", "submit", "signed_up"]
-    for a, b in zip(chain, chain[1:]):
-        base, nxt = counts[a], counts[b]
+    chain = ["wall", "register_click", "form_open", "submit"]
+    for index, a in enumerate(chain):
+        reached = membership[a]
+        later = set(signed_visitors).union(*(membership[b] for b in chain[index + 1:]))
+        base, nxt = len(reached), len(reached & later)
         if base >= _WEAKEST_STEP_MIN_BASE:
-            rate = min(100.0, round(100 * nxt / base, 1))
+            rate = round(100 * nxt / base, 1)
             if weakest is None or rate < weakest["rate_pct"]:
-                weakest = {"from": a, "to": b, "base": base, "next": nxt, "rate_pct": rate}
+                to = chain[index + 1] if index + 1 < len(chain) else "signed_up"
+                weakest = {"from": a, "to": to, "base": base, "next": nxt, "rate_pct": rate}
 
     by_locale: dict[str, dict[str, int]] = {}
     for locale in ("ru", "en"):
@@ -2332,7 +2349,8 @@ async def mart_signup_funnel(db: AsyncSession, period: Period | int = 7) -> dict
         "engaged_not_registered": len(engaged),
         "weakest": weakest,
         "by_locale": by_locale,
-        "note": "шаги не вложены друг в друга; регистрации считаются по аккаунтам, остальное по людям",
+        "note": ("шаги не вложены друг в друга; регистрации считаются по аккаунтам, остальное по людям; "
+                 "слабое звено — из дошедших до шага сколько дошли дальше (те же люди)"),
     }
 
 

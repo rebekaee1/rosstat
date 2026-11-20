@@ -89,6 +89,7 @@ _INTENT = {
     "header_register_click",
     "header_login_click",
     "register_nudge_cta",
+    "limit_modal_register",         # «по почте» / «войти» в окне лимита гостя (20.11.2026)
     "feedback_nudge_cta",
     "register_nudge_expand",
     "feedback_nudge_expand",
@@ -198,6 +199,7 @@ _TECHNICAL = {
     "search_abandon",       # негативный сигнал «искал и не нашёл»
     "welcome_view",         # показ приветственного экрана — знаменатель
     "welcome_skip",         # «Пропустить» на приветственном экране
+    "limit_modal_close",    # закрыл окно лимита гостя без действия (20.11.2026)
     "outbound_link",        # уход с сайта — не вовлечение
     "api_interest_view",    # показ точки входа «API и выгрузка» — знаменатель CTR
     "pwa_install_prompt_view",       # показ окна «Установить приложение» — знаменатель CTR

@@ -7,6 +7,7 @@ import { useT } from '../i18n';
 import { useAuth } from '../context/authContext';
 import { authLink, prepareAuthReturn, pendingExport, clearPendingExport, currentReturnTo } from '../lib/authReturn';
 import { resumeExport } from '../lib/excel';
+import { track, events } from '../lib/track';
 import Button from './Button';
 import ApiInterestLink from './ApiInterestLink';
 import OAuthButtons from './OAuthButtons';
@@ -27,7 +28,17 @@ export default function DownloadLimitModal() {
   useEffect(() => {
     if (isAuthed && pendingExport()?.path === currentReturnTo()) setOpen(true);
   }, [isAuthed, location.pathname, location.search, location.hash]);
-  const close = () => { setOpen(false); if (isAuthed) clearPendingExport(); };
+  // Закрыл окно стены, ничего не нажав (крестик, Escape, подложка) — событие для воронки (20.11.2026).
+  const close = (via) => {
+    if (!canResume) track(events.LIMIT_MODAL_CLOSE, { via });
+    setOpen(false);
+    if (isAuthed) clearPendingExport();
+  };
+  const choose = (target) => {
+    track(events.LIMIT_MODAL_REGISTER, { target });
+    prepareAuthReturn();
+    setOpen(false);
+  };
   const resume = async () => {
     setBusy(true); setFailed(false);
     try { await resumeExport(pending.payload); setOpen(false); }
@@ -43,17 +54,22 @@ export default function DownloadLimitModal() {
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e) => { if (e.key === 'Escape') { setOpen(false); if (isAuthed) clearPendingExport(); } };
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      if (!canResume) track(events.LIMIT_MODAL_CLOSE, { via: 'escape' });
+      setOpen(false);
+      if (isAuthed) clearPendingExport();
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, isAuthed]);
+  }, [open, isAuthed, canResume]);
 
   if (!open) return null;
 
   return (
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center p-4 fe-k8-scrim fe-reveal [--fe-duration:0.18s] [--fe-rise:0px]"
-      onClick={close}
+      onClick={() => close('scrim')}
     >
       <div
         className="w-full max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain rounded-3xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
@@ -71,7 +87,7 @@ export default function DownloadLimitModal() {
           </div>
           <button
             type="button"
-            onClick={close}
+            onClick={() => close('x')}
             className={cn(FOCUS_RING, 'fe-press flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-text-tertiary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11')}
             aria-label={t('common.close')}
           >
@@ -84,7 +100,7 @@ export default function DownloadLimitModal() {
               {t(pending.payload ? 'download.resume.body' : 'download.resume.retryOnPage')}
             </p>
             {failed && <p role="alert" className="mb-4 text-sm text-negative">{t('download.resume.error')}</p>}
-            <Button loading={busy} onClick={pending.payload ? resume : close} className="w-full">{t(pending.payload ? 'download.resume.action' : 'download.resume.back')}</Button>
+            <Button loading={busy} onClick={pending.payload ? resume : () => close('back')} className="w-full">{t(pending.payload ? 'download.resume.action' : 'download.resume.back')}</Button>
           </>
         ) : (
           <>
@@ -107,14 +123,14 @@ export default function DownloadLimitModal() {
                 as={Link}
                 variant="secondary"
                 to={authLink('/register')}
-                onClick={() => { prepareAuthReturn(); setOpen(false); }}
+                onClick={() => choose('email')}
                 className="w-full"
               >
                 {t('download.limit.email')}
               </Button>
               <Link
                 to={authLink('/login')}
-                onClick={() => { prepareAuthReturn(); setOpen(false); }}
+                onClick={() => choose('login')}
                 className={cn(FOCUS_RING, 'self-center rounded-md px-2 py-1.5 text-sm text-text-secondary hover:text-text-primary')}
               >
                 {t('download.limit.haveAccount')}
